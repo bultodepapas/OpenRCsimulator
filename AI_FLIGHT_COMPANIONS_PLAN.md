@@ -45,7 +45,7 @@ screen stack, focus/navigation, theme and translation systems.
 | Aircraft | Checklist of catalog airplanes with positive integer selection weights 1–10, optional per-model maximum, and “same aircraft as player” shortcut. Resolve a concrete roster at launch using the traffic seed. Repeated models are allowed. Preserve catalog experimental labels. Exclude non-airplanes, preview/invalid data and unqualified AI profiles. |
 | Activities | Independent enable switches and Off/Low/Normal/High weights mapped to 0/1/3/6: takeoff/landing cycles, circuits/general flight, aerobatics, low passes, flybys, overtaking. Weights influence opportunities, not promised concurrency. Circuits, holding, go-arounds and necessary recovery/landing remain available as safety transitions. |
 | Pilot skill | Learner, Club, Experienced, or Mixed. Changes reaction delay, tracking precision, maneuver choices and decision consistency; never changes lift, thrust, servo limits, mass or collision rules. Mixed initially resolves 20/60/20 percent with a seeded draw. |
-| Incidents | Off, Rare, Occasional, Lively; expected eligible *opportunities per entire fleet*: 0, 1 per 20, 1 per 8, or 1 per 3 simulation minutes. Add separate **Allow crash-prone mistakes**, default Off. These are opportunities, not guaranteed crashes. |
+| Incidents | Off, Rare, Occasional, Lively; scheduled *opportunities per entire fleet* before eligibility/cooldown filtering: 0, 1 per 20, 1 per 8, or 1 per 3 simulation minutes. Add separate **Allow crash-prone mistakes**, default Off. These are opportunities, not guaranteed crashes. |
 | Player interaction | **Yield to player** always governs AI intentions. **Aircraft contact:** Off in MVP, optional On after AFC-23 qualifies coupled contacts. Off means aircraft-to-aircraft contact is disabled; avoidance still operates and terrain/scenery contact still applies. Show this limitation plainly. |
 | Traffic requests | Pause/menu actions **Request landing**, **Request takeoff**, **Clear the runway**, **Recall companions**, **Restart companions**, **Remove companions now**. Optional remappable actions use the existing input registry; do not claim unused keyboard keys without auditing bindings. |
 | Presentation | Companion engine-volume slider; optional concise traffic notices and labels; label distance limit. No automatic camera switch or compulsory crash popup. |
@@ -90,7 +90,7 @@ audit, not a benchmark or a claim that tests were run.
 | [Crash director](app/render/crash/director.gd), [crash guide](docs/CRASH-DAMAGE-PLAN.md) | Impact snapshots, severity estimates, bounded wreck/effects/audio exist. `configure(scene, …)` accesses Main's private fields. Introduce an explicit presentation context rather than making AI nodes impersonate Main. No established coupled aircraft-to-aircraft contact path was identified. |
 | [Flight audio](app/audio/flight_audio.gd) | Couples one aircraft to the field soundscape and player listener. Split reusable engine-source presentation from the one-per-field ambience/listener. Duplicating it for every companion would duplicate the field audio. |
 | [Preferences](app/app_state/preferences.gd), [Home](app/ui/home.gd), [Pause](app/ui/pause_menu.gd) | Versioned preferences, future-schema protection, focus/navigation and session holds exist. AppRoot direct launches deliberately ignore Home preferences. Preserve that distinction. |
-| [Failure system](app/failures/), [logging](docs/FLIGHT-LOGGING.md), [benchmarks](app/tests/bench_physics.gd) | Reuse supported per-session failures, read-only `.orfl` observations, exact/candidate comparisons and component timing. Current logs are not automatically a full fleet replay; legacy benchmark best-of averages are not fleet p95 latency evidence. |
+| [Failure system](app/failures/), [logging](docs/FLIGHT-LOGGING.md), [benchmarks](app/tests/bench_physics.gd), [complete-session probe](research/performance/README.md#complete-callback-cpu-probe) | Reuse supported per-session failures, read-only `.orfl` observations and exact/candidate comparisons. Adapt `research/performance/session_probe.gd` / `session_baseline.py` for complete callback timing and observer-cost controls. Its evidence is single-session; legacy benchmark best-of averages are not fleet p95 latency evidence. |
 
 The [Roadmap](ROADMAP.md) keeps Gate P, physical calibration and pilot validation
 open. The 500 microsecond player-physics target must not be multiplied into a
@@ -130,6 +130,13 @@ material mutation, damage state and actuator history remains independently owned
 An instance ID is monotonic within a fleet; a new sortie also receives a generation
 ID, so callbacks cannot affect a recycled slot.
 
+Add an explicit **controllerless** session policy before attaching an AI session
+to the tree. Current `FlightSession._ready()` can subscribe to global joystick
+events and auto-select a controller. AI sessions must skip device registration,
+polling, calibration, preference writes and keyboard callbacks entirely.
+`input_enabled = false` or `external_controller_selection = true` alone is not
+proof of this isolation.
+
 ### Fixed-step scheduling
 
 **Decision:** keep every active flying/taxiing aircraft on the existing 240 Hz,
@@ -148,19 +155,28 @@ When companions are enabled, the fleet clock coordinates the player session and
 all AI sessions:
 
 1. At global tick `k`, apply queued lifecycle/config changes. Snapshot all accepted
-   poses, velocities, contact states and intents. Include the player as a traffic
-   participant, never as an AI-controlled aircraft.
+   poses, velocities and contact states. Sample player input once through the
+   existing path and attach its current demand as advisory intent before planning.
+   Include the player as a traffic participant, never as an AI-controlled aircraft.
 2. Update due planning jobs using this same snapshot, in stable ID order. Update
    reservation grants and avoidance constraints. No agent observes another's
    partially advanced tick.
-3. Sample player input once through the existing path. Produce bounded AI demands;
-   update session equipment demands through the new non-device command interface.
+3. Produce bounded AI demands; update session equipment demands through the new
+   non-device command interface. Its packet contains roll/pitch/yaw/throttle and
+   optional supported flap/gear/brake demands, with a declared rates/trim policy.
+   Validate the complete packet before applying it; never sample player input twice.
    Preserve model `pre_tick`, actuator, fuel, failure and event processing.
 4. Step each active Simulation once and run the session completion/contact hooks.
    Buffer fleet-visible contact/world mutations until every participant is done.
 5. Resolve accepted fleet events in deterministic order, then publish the next
    traffic snapshot, logs and presentation data. Render-only callbacks cannot
    change the accepted simulation.
+
+Current `_on_sim_stepped` callbacks can commit session-local effects inside
+`sim.step()`. AFC-01/03 must separate those accepted local transitions from
+fleet-visible world/render publication and defer the latter until step 5. Each
+aircraft uses the same previously committed scenery mask throughout tick `k`;
+the next mask becomes visible to all at tick `k+1`.
 
 Start single-threaded. The disabled path retains its existing callbacks. A
 one-aircraft external-driver fixture must match the original session's complete
@@ -477,7 +493,11 @@ Event ordering is earliest crossing time, then canonical pair IDs; a terminal
 aircraft cannot receive another terminal event in that tick. Ground/scenery
 contacts that precede a pair event win. The joint commit/rollback contract must
 retain session modes, energy, contact/damage state and traffic state; raw body-array
-restore is insufficient. If this seam cannot preserve existing kernel transaction
+restore is insufficient. Existing `Simulation.stepped` observers publish per
+session, so AFC-23 must introduce a generic staged-publication boundary or a
+verified adapter transaction before paired events can be recorded as committed.
+Never emit a normal accepted log row and then silently rewrite its physical state.
+If this seam cannot preserve existing kernel transaction
 semantics, keep aircraft contact Off and leave AFC-23 open.
 
 Debris remains presentation-only initially. Keep a conservative settled wreck
@@ -493,6 +513,14 @@ Shared scenery damage requires one world authority. Retain the immutable collisi
 inventory; merge accepted damage by obstacle ID after the fleet tick and publish
 one mask to all sessions. Do not let one aircraft see a broken fence while another
 still collides with its intact proxy. Rendering mutations happen after publication.
+
+For Phases 1–4, the player remains the only scenery-damage author. A small
+`world_state.gd` bridge mirrors its committed mask into companions at tick
+boundaries; companion impacts produce their own crash aftermath but do not break
+scenery yet. Implement a validated damage-mask publication seam: current
+`set_collision_world()` rejects inventory identity changes after ticks have begun,
+so it must not be used to swap worlds midflight. AFC-21 promotes this bridge to
+the common authority and enables companion-authored scenery damage.
 
 ## 6. Performance, lifecycle and replay
 
@@ -583,6 +611,13 @@ activity/incident RNG state, shared damage/wreck occupancy, external player inpu
 and admission/settings events. Bound recording memory and surface disk/write errors.
 Do not change the read-only recorder into a planner.
 
+The v1 header must explicitly identify engine/build, solver source fingerprints,
+240 Hz timestep, controller/schema versions, each source/profile hash, RNG
+algorithm and stream states, stable aircraft IDs/generations, and global/local
+time origins. Event rows carry global tick, local tick, deterministic sequence
+number and affected generations. Record input/equipment, spawn/retire/reset,
+settings, contact and world changes with the same merge order used at runtime.
+
 Two verification modes are required:
 
 - **Accepted-input replay:** replay recorded per-tick aircraft inputs/equipment,
@@ -617,10 +652,14 @@ compilation or a screenshot.
 before adding product behavior. Dependencies: physics/SF, UI, aircraft, LU/CR/AUD
 owners; existing solo replay and baseline tooling. No new user-visible feature.
 
+**Primary files/scenes:** existing `app/sim/flight_session.gd`; proposed
+`config.gd`, `profile_loader.gd`, `fleet_record.gd` under `app/ai/companions/`;
+profile/field JSON and `research/ai-companions/`. No new gameplay scene yet.
+
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
-| AFC-00 | Register prefix/paths and this plan in docs/README; record source/engine/data identities, target hardware and baseline costs. Audit existing tick ordering, global/static caches, weather clocks, resource mutation, contacts and input callbacks. Build an offline 1/2/4-session feasibility harness in `research/ai-companions/`. | Pending: cost table, complete traces and isolation report; distinguish target-host measurements from headless throughput. |
-| AFC-01 | Extract the explicit FlightSession external-driver and non-device command seams described in §3. Keep legacy default scheduling and input policy. Prove gear/flaps/brakes/failures still run with AI input disabled. | Pending: `test_companions_session.gd`; original versus external-driver state/aux/continuous/modes/loads/contact equality for 10,000 ticks per eligible initial configuration. |
+| AFC-00 | Register prefix/paths and this plan in docs/README; record source/engine/data identities, target hardware and baseline costs. Audit existing tick ordering, global/static caches, weather clocks, resource mutation, contacts and input callbacks. Extend the existing complete-session probe with an offline 1/2/4-session feasibility harness in `research/ai-companions/`. | Pending: cost table, complete traces and isolation report; distinguish target-host measurements from headless throughput. |
+| AFC-01 | Extract the explicit FlightSession external-driver, controllerless and non-device command seams described in §3. Keep legacy default scheduling and input policy. Prove gear/flaps/brakes/failures still run with AI input disabled. | Pending: `test_companions_session.gd`; original versus external-driver state/aux/continuous/modes/loads/contact equality for 10,000 ticks per eligible initial configuration. |
 | AFC-02 | Add config/profile/field validators and offline profile qualification harness. Establish Stik circuit envelope and derive a Club traffic layout, exclusions and airborne admission slots. Implement fleet-record skeleton and bounded diagnostics outside product UI. | Pending: malformed/unsupported data refusal, current-source profile receipt, route-clearance proof and deterministic two-session fixture. |
 
 **Technical decision:** keep sessions and kernel laws intact; external orchestration
@@ -643,9 +682,14 @@ Dependencies: AFC-00…02; one qualified field/profile. No runway cycles,
 aerobatics or scheduled incidents yet. Terrain/scenery contact remains real;
 aircraft-to-aircraft physical contact is explicitly Off.
 
+**Primary files/scenes:** both proposed companion `.tscn` files; manager, agent,
+clock, pilot, guidance, controller, index, avoidance and world-state scripts;
+`app/render/companions/aircraft_view.gd`, `app/audio/companion_audio.gd`,
+`app/ui/companions_dialog.gd`; existing Main, AppRoot, Home, Pause and preferences.
+
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
-| AFC-03 | Add `companions.tscn`, manager, fleet clock, agent scene and one session per agent. Implement initial airborne join slots, ID/generation lifecycle, visibility-safe admission and common weather-time origin. | Pending: `test_companions_lifecycle.gd`; all participants receive exactly one tick, no startup overlaps, no input device reads by AI. |
+| AFC-03 | Add `companions.tscn`, manager, fleet clock, agent scene and one session per agent. Implement initial airborne join slots, ID/generation lifecycle, visibility-safe admission, common weather-time origin and the player-authored scenery-mask bridge. | Pending: `test_companions_lifecycle.gd`; all participants receive exactly one tick, no startup overlaps, no input device reads by AI, and a player-broken fence has the same occupancy for every aircraft. |
 | AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Pending: `test_companions_controller.gd`, `test_companions_avoidance.gd`; current-physics command/state traces and motion captures. |
 | AFC-05 | Bind aircraft views through the real builder and float64 render boundary. Add limited spatial engine sources, pilot-camera preservation, optional labels and crash/fault cleanup fallback. | Pending: `capture_companions.gd`; correct hinges/CG/propeller, no duplicate sky/camera/ambience, no stuck audio on pause/removal. |
 | AFC-06 | Add minimal Home/Pause controls: enabled, count, circuits, skill restricted to Experienced, seed, recall/remove. Persist only supported settings. Add explicit CLI `--companions=<0..3>` and `--companions-seed=<u32>` for deterministic developer launches; defaults remain Off. | Pending: `test_companions_ui.gd`; Home/direct-route isolation, restart, focus holds, invalid config refusal and keyboard/controller navigation. |
@@ -670,6 +714,11 @@ profile and solver-fault isolation; selected existing UI, field and log regressi
 **Outcome:** companions taxi, take off, join, land, vacate and repeat while other
 companions remain airborne. Dependencies: stable MVP plus ground/field owners and
 qualified ground profiles. Initial scope is Stik/Club in calm and mild wind.
+
+**Primary files/scenes:** existing companion scenes; proposed `airspace.gd`,
+`runway_coordinator.gd`, `maneuvers.gd`, Club traffic JSON, pilot/manager/controller
+extensions and `companion_status.gd`. Use the same aircraft scene through every
+ground/air transition.
 
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
@@ -701,6 +750,10 @@ choices. Qualify 4–8 active aircraft before enabling the Club afternoon preset
 Dependencies: complete sorties; each model owner supplies current configuration
 identity and evidence bounds.
 
+**Primary files/scenes:** existing companion scenes; proposed per-aircraft/Green
+profiles, `activity_scheduler.gd`, profile/avoidance/index extensions; existing
+AppRoot/scenario/UI integration with the NR owner.
+
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-11 | Qualify Turbo Lumber, Extra, P-51, Jet and Stik powertrain variants individually. Add profile inheritance only for proven common controller fields; bind every resolved profile to its exact source hash. | Pending: `test_companions_profiles.gd`; per-model speed/turn/energy/equipment matrices; explicit unsupported activity reasons. |
@@ -725,6 +778,10 @@ model/field/profile hash mismatch rejection.
 
 **Outcome:** visibly varied, simultaneous flight without making every airplane
 an aerobat. Dependencies: stable mixed traffic and qualified maneuver boxes.
+
+**Primary files/scenes:** existing companion scenes; `maneuvers.gd`,
+`activity_scheduler.gd`, `airspace.gd`, `avoidance.gd`, profile JSON and proposed
+`app/render/companions/debug_overlay.gd`; no separate scripted-flight scene.
 
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
@@ -753,6 +810,10 @@ planner deadlock or limit-removal mutations on disposable copies.
 including optional aircraft contact. Dependencies: reliable normal/recovery flight,
 CR/EM/SF owners and full fleet recording.
 
+**Primary files/scenes:** existing companion scenes; proposed
+`incident_scheduler.gd`, `traffic_contacts.gd`, expanded `world_state.gd` and
+`fleet_record.gd`; co-owned session, crash director/effects and failure adapters.
+
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-19 | Implement fleet-wide incident timing, eligibility/cooldowns, bounded mistake episodes and supported per-aircraft hardware-failure adapters. Add incident controls and clear opportunity-versus-outcome wording. | Pending: `test_companions_incidents.gd`; deterministic schedules, rates independent of render fps and aircraft count, cancellation logging and exact Off behavior. |
@@ -763,9 +824,11 @@ CR/EM/SF owners and full fleet recording.
 
 **Acceptance:** at least 30 injected opportunities per incident family demonstrate
 both successful recovery and, where qualified, physical failure without directly
-forcing a crash. A long headless scheduler run of 100,000 eligible simulated
-minutes matches the configured opportunity rate within a predeclared statistical
-interval; cooldown censoring is reported separately. Actual crash rate is measured,
+forcing a crash. A scheduler-only seeded Monte Carlo/analytic check samples
+100,000 simulated minutes by jumping between event deadlines, without stepping
+aircraft physics. The pre-filter opportunity count must lie in the predeclared
+99% Poisson interval; separately test the eligible/cooldown-filtered outcome
+against an independent reference scheduler. Actual crash rate is measured,
 not asserted equal to opportunity rate. Eight rapid terminal-event fixtures obey
 effect caps while retaining every occupied wreck region. AI crashes never pause
 the player's continuing flight or touch its accident archive.
@@ -783,12 +846,16 @@ runway during pause, stale pooled-generation callbacks and complete teardown.
 support them. Dependencies: stable feature workloads and profiling; optimization
 must preserve accepted behavior.
 
+**Primary files/scenes:** `bench_companions.gd`, `capture_companions.gd`, proposed
+`presentation_budget.gd`, aircraft-view/audio/index/manager optimizations and
+source-pipeline LOD outputs. The flight scenes and kernel contract stay the same.
+
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-24 | Add reproducible headless and rendered count/model/regime matrix; integrate frame-time and per-system diagnostics. Run warm/cold, all-visible, offscreen, queue and multi-crash cases. | Pending: `bench_companions.gd`, raw samples and p50/p95/p99 reports; no “best run” substitution. |
 | AFC-25 | Apply measured allocation/query/planner improvements and visual LOD/resource sharing; probe spatial MultiMesh batching only if justified. Preserve silhouette/control animation at useful viewing sizes. | Pending: state/decision equivalence, collision-oracle equality, before/after timing and pilot-view captures on the pinned renderer. |
 | AFC-26 | Add bounded engine voices, shadows/lights/smoke/wreck presentation and startup preparation; implement cost-aware admission and visible overload recovery. | Pending: worst-case spawn/crash spike measurements, player audio priority, deterministic recorded admission and 50-cycle soak. |
-| AFC-27 | Conditionally probe pure planning workers. If solver cost still prevents a named target count, evaluate the SF native-evaluator decision separately; otherwise omit that branch. Unlock only presets whose full mixed workload passes. | Pending: worker/single-thread decision equality and net speedup; per-platform supported-count matrix or explicit lower ceiling. |
+| AFC-27 | Conditionally probe pure planning workers. If solver cost still prevents a named target count, evaluate the SF native-evaluator decision separately; otherwise omit that branch. Extend UI/CLI counts up to 32 and unlock only presets whose full mixed workload passes. | Pending: worker/single-thread decision equality and net speedup; per-platform supported-count matrix or explicit lower ceiling. |
 
 **Acceptance:** pass §6 budgets for each advertised hardware/profile/count,
 using three repeated 120 s foreground runs after 30 s warmup, plus a 20-minute
@@ -809,6 +876,10 @@ quality settings.
 **Outcome:** understandable controls, readable traffic, repeatable bug reports and
 qualified native packages. Dependencies: all enabled feature gates and UI/AUD/DT
 owner review.
+
+**Primary files/scenes:** existing Home/Pause/Main integration and companion
+dialog/status/audio/view scripts; `app/i18n/`, Help/input references, export
+configuration and the canonical guide/evidence. No additional gameplay scene.
 
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |

@@ -4,6 +4,7 @@ extends Node3D
 const Model = preload("res://audio/soundscape_model.gd")
 const Wildlife = preload("res://audio/wildlife.gd")
 const GlowVoice = preload("res://audio/glow_voice.gd")
+const PowertrainAudio = preload("res://audio/powertrain_audio.gd")
 const WindsockAudioController = preload("res://audio/windsock_audio.gd")
 const PATH: String = "res://assets/audio/soundscape/"
 const RECORDED_PATH: String = PATH + "recorded/"
@@ -61,6 +62,8 @@ var kind: String = "glow_prop"
 var glow_family: String = ""
 var glow_voice = GlowVoice.new()
 var glow_player: AudioStreamPlayer3D
+var powertrain: Node3D
+var voice_profile: Dictionary = {}
 ## At most one validated field windsock; separate from the fourteen existing scene voices.
 var fabric_audio: RefCounted
 var _glow_pending_start: bool = false
@@ -119,10 +122,15 @@ func _enter_tree() -> void:
 		glow_voice.reset()
 	if fabric_audio != null:
 		fabric_audio.rebind(_bus_names[2])
+	if powertrain != null:
+		powertrain.rebind(_bus_names[1])
 
 
-func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026, explicit_glow_family: String = "") -> void:
+func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026, explicit_glow_family: String = "", installed_voice: Dictionary = {}) -> void:
 	kind = propulsion_kind
+	voice_profile = installed_voice.duplicate(true)
+	if str(voice_profile.get("family", "")) in [GlowVoice.FAMILY_2T, GlowVoice.FAMILY_4T]:
+		explicit_glow_family = str(voice_profile.family)
 	glow_family = explicit_glow_family if explicit_glow_family in [GlowVoice.FAMILY_2T, GlowVoice.FAMILY_4T] else ""
 	rng.seed = seed_value
 	_setup_buses()
@@ -166,6 +174,20 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		voices[CRICKET_FIRST + i].global_position = cricket_anchors[i]
 	assert(voices.size() == MAX_VOICES)
 	_levels.resize(voices.size())
+	if not voice_profile.is_empty():
+		var bank := PowertrainAudio.new()
+		add_child(bank)
+		if bank.configure(voice_profile, _bus_names[1]):
+			powertrain = bank
+			# No layered duplicate engine/propeller orders: the recording already contains the prop.
+			for index: int in 2:
+				_start_offsets.erase(index)
+				voices[index].stream = null
+			if glow_player != null:
+				glow_player.queue_free()
+				glow_player = null
+		else:
+			bank.queue_free()
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.get("type", "") == "windsock":
 			var anchor := Vector3(float(cue.east), float(cue.pole_height), -float(cue.north))
@@ -326,6 +348,8 @@ func reset_observer() -> void:
 	wildlife.reset()
 	if fabric_audio != null:
 		fabric_audio.reset()
+	if powertrain != null:
+		powertrain.reset_observer()
 
 
 func update_sound(snapshot: Dictionary, delta: float) -> void:
@@ -383,7 +407,11 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		glow_player.pitch_scale = lerpf(glow_player.pitch_scale, clampf(last_doppler, 0.1, 4.0), 1.0 - exp(-dt / 0.04))
 	_update_path_filters(snapshot, source, listener, dt)
 	var screen_gain: float = db_to_linear(-7.0 * screened)
-	if use_glow_voice:
+	if powertrain != null:
+		_level(0, 0.0, dt)
+		_level(1, 0.0, dt)
+		powertrain.update_sound(snapshot, dt, gain * screen_gain, last_doppler)
+	elif use_glow_voice:
 		# Explicit glow profiles use the physical firing cadence voice; the old motor and
 		# prop loops are absent for those profiles so their blade/fire orders cannot double.
 		_level(0, 0.0, dt)
@@ -543,7 +571,11 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 	var max_rpm: float = maxf(float(telemetry.get("max_rpm", 12000.0)), 1.0)
 	var spin: float = clampf(rpm / max_rpm, 0.0, 1.3)
 	# Presentation level law only; its amplitude has not been calibrated against a microphone.
+	var power: float = clampf(float(telemetry.throttle), 0.0, 1.0)
 	var target_level: float = (0.12 + 0.28 * sqrt(spin)) * smoothstep(30.0, 600.0, rpm)
+	if not voice_profile.is_empty():
+		# AUD-15: loaded exhaust dominates under power; closed-throttle windmilling keeps only mechanics.
+		target_level *= (0.48 + 1.15 * sqrt(power)) * db_to_linear(float(voice_profile.get("trim_db", 0.0)))
 	var level: float = lerpf(db_to_linear(glow_player.volume_db + AIRCRAFT_TRIM_DB), target_level * gain * screen_gain * duck, 1.0 - exp(-dt / 0.09))
 	glow_player.volume_db = linear_to_db(maxf(level, 0.0001)) - AIRCRAFT_TRIM_DB
 	if _glow_pending_start:
@@ -614,6 +646,8 @@ func _exit_tree() -> void:
 		voice.stop()
 	if glow_player != null:
 		glow_player.stop()
+	if powertrain != null:
+		powertrain.reset_observer()
 	if fabric_audio != null:
 		fabric_audio.stop()
 	for i: int in range(_bus_names.size() - 1, -1, -1):

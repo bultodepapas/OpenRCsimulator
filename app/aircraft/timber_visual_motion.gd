@@ -5,19 +5,28 @@ extends Node
 
 const TimberGeometry := preload("res://aircraft/timber_geometry.gd")
 const GroundWheels := preload("res://physics/ground_wheels.gd")
+const Frames := preload("res://render/frames.gd")
+const TIRE_DUST_TEXTURE: Texture2D = preload("res://assets/crash/smoke.png")
 
 const AIRCRAFT_ID := "turbo-lumber-evolution"
 const CONTACT_TO_GEAR := {"main_left": "left", "main_right": "right"}
 const MIN_DUST_NORMAL_LOAD_N := 2.0
 const LONGITUDINAL_SLIP_DUST_MPS := 0.75
 const LATERAL_SLIP_DUST_MPS := 0.65
-const DUST_AMOUNT := 8
-const DUST_LIFETIME_S := 0.42
+const LOOSE_SURFACE_ROLLING_FACTOR := 5.0
+const CABLE_CLEARANCE_TRAVEL_DEG := 6.0
+const DUST_AMOUNT := 12
+const DUST_LIFETIME_S := 0.56
 
 var _session: Node
 var _airplane: Dictionary = {}
 var _legs: Array[Dictionary] = []
 var _dust_emitters: Dictionary = {}
+var _cables: MeshInstance3D
+var _cable_runtime_mesh: ArrayMesh
+var _cable_surfaces: Array[Dictionary] = []
+var _cable_links: Array[Dictionary] = []
+var _last_cable_angles := {"left": 0.0, "right": 0.0}
 var _max_travel_rad := 0.0
 var _stopped := false
 
@@ -40,6 +49,8 @@ static func attach(airplane: Dictionary, session: Node) -> Node:
 		observer.free()
 		return null
 	root.add_child(observer)
+	if observer._is_source_airframe() and session.has_signal("resetting"):
+		session.resetting.connect(observer._on_session_resetting)
 	return observer
 
 
@@ -48,7 +59,8 @@ func _configure() -> bool:
 	var landing_gear: Dictionary = TimberGeometry.DATA.get("landing_gear", {})
 	var suspension: Dictionary = landing_gear.get("suspension", {})
 	var travel: Dictionary = suspension.get("travel_deg", {}).get("value", {})
-	_max_travel_rad = deg_to_rad(float(travel.get("value", 0.0)))
+	var authored_travel_deg := float(travel.get("value", 0.0))
+	_max_travel_rad = deg_to_rad(minf(authored_travel_deg, CABLE_CLEARANCE_TRAVEL_DEG))
 	if not is_finite(_max_travel_rad) or _max_travel_rad <= 0.0:
 		return false
 	var axes: Dictionary = suspension.get("axes", {})
@@ -75,22 +87,32 @@ func _configure() -> bool:
 		var axis_parent := (parent.global_basis.inverse() * axis_world).normalized()
 		if axis_root.length_squared() < 0.9 or axis_parent.length_squared() < 0.9:
 			continue
+		var axle_name := "wheel_left_axle" if role == "left" else "wheel_right_axle"
+		var axle := root.find_child(axle_name, true, false) as Node3D
+		if axle == null or not hinge.is_ancestor_of(axle):
+			continue
 		_legs.append({
 			"contact_index": contact_index,
 			"role": role,
 			"contact_name": contact_name,
+			"contact": contact,
 			"wheel": wheel,
 			"wheel_rest": wheel.position,
 			"hinge": hinge,
 			"hinge_rest": hinge.transform,
+			"axle": axle,
+			"axle_rest": axle.transform,
 			"axis_root": axis_root,
 			"axis_parent": axis_parent,
 			"pivot_root": root.to_local(hinge.global_position),
-			"tip_root": root.to_local(wheel.global_position),
+			"tip_root": root.to_local(axle.global_position),
 			"wheel_radius": float(contact.get("wheel_radius", 0.058)),
 		})
 		_dust_emitters[contact_index] = _make_dust_emitter(role)
-	return _legs.size() == 2
+	if _legs.size() != 2:
+		return false
+	_configure_cable_followers(suspension.get("cable_endpoints", {}), root)
+	return true
 
 
 func _is_vector3(value: Variant) -> bool:
@@ -100,53 +122,59 @@ func _is_vector3(value: Variant) -> bool:
 		and typeof(value[2]) in [TYPE_INT, TYPE_FLOAT]
 
 
-func _make_dust_emitter(role: String) -> GPUParticles3D:
-	var particles := GPUParticles3D.new()
+func _make_dust_emitter(role: String) -> CPUParticles3D:
+	var particles := CPUParticles3D.new()
 	particles.name = "TimberTireDust_" + role
 	particles.amount = DUST_AMOUNT
 	particles.lifetime = DUST_LIFETIME_S
 	particles.fixed_fps = 30
 	particles.local_coords = false
 	particles.emitting = false
-	var process := ParticleProcessMaterial.new()
-	process.direction = Vector3.UP
-	process.spread = 32.0
-	process.initial_velocity_min = 0.12
-	process.initial_velocity_max = 0.36
-	process.gravity = Vector3(0.0, -0.28, 0.0)
-	process.scale_min = 0.55
-	process.scale_max = 1.25
-	process.angular_velocity_min = -24.0
-	process.angular_velocity_max = 24.0
-	process.color_ramp = _dust_fade()
-	particles.process_material = process
-	var mesh := SphereMesh.new()
-	mesh.radius = 0.010
-	mesh.height = 0.020
-	mesh.radial_segments = 5
-	mesh.rings = 2
+	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	particles.direction = Vector3.UP
+	particles.spread = 28.0
+	particles.initial_velocity_min = 0.08
+	particles.initial_velocity_max = 0.24
+	particles.gravity = Vector3(0.0, -0.12, 0.0)
+	particles.scale_amount_min = 0.12
+	particles.scale_amount_max = 0.55
+	particles.angular_velocity_min = -18.0
+	particles.angular_velocity_max = 18.0
+	particles.use_fixed_seed = true
+	particles.seed = 7130 if role == "left" else 7131
+	particles.color_ramp = _dust_fade()
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
-	material.albedo_color = Color(0.46, 0.40, 0.31, 0.28)
+	material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	material.vertex_color_use_as_albedo = true
+	material.billboard_keep_scale = true
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.albedo_texture = TIRE_DUST_TEXTURE
+	var mesh := QuadMesh.new()
+	mesh.size = Vector2(0.055, 0.055)
 	mesh.material = material
-	particles.draw_pass_1 = mesh
+	particles.mesh = mesh
 	add_child(particles)
 	return particles
 
 
-func _dust_fade() -> GradientTexture1D:
+func _dust_fade() -> Gradient:
 	var fade := Gradient.new()
-	fade.offsets = PackedFloat32Array([0.0, 1.0])
-	fade.colors = PackedColorArray([Color(1.0, 1.0, 1.0, 0.32), Color(1.0, 1.0, 1.0, 0.0)])
-	var texture := GradientTexture1D.new()
-	texture.gradient = fade
-	return texture
+	fade.offsets = PackedFloat32Array([0.0, 0.12, 1.0])
+	fade.colors = PackedColorArray([
+		Color(0.38, 0.31, 0.23, 0.0),
+		Color(0.43, 0.35, 0.25, 0.36),
+		Color(0.48, 0.40, 0.30, 0.0),
+	])
+	return fade
 
 
 func _process(_delta: float) -> void:
 	if _stopped or not is_instance_valid(_session) or _session.sim == null:
+		return
+	if not _is_source_airframe():
+		_disable_detached_copy()
 		return
 	if not _session.crash.is_empty() or not str(_session.sim.fault_reason).is_empty():
 		_stop_after_crash()
@@ -159,7 +187,8 @@ func _process(_delta: float) -> void:
 	if compression.size() != contacts.size():
 		return
 	var root: Node3D = _airplane.root
-	var up_root: Vector3 = root.global_basis.inverse() * Vector3.UP
+	var up_root: Vector3 = root.global_basis.transposed() * Vector3.UP
+	var angles_by_role := {"left": 0.0, "right": 0.0}
 	for leg: Dictionary in _legs:
 		var index: int = leg.contact_index
 		if index < 0 or index >= compression.size():
@@ -168,13 +197,25 @@ func _process(_delta: float) -> void:
 		var hinge := leg.hinge as Node3D
 		if not is_instance_valid(wheel) or not is_instance_valid(hinge):
 			continue
-		var amount := maxf(0.0, float(compression[index]))
-		var angle := _suspension_angle(leg, amount, up_root)
+		var contact: Dictionary = leg.contact
+		var amount := float(compression[index])
+		if not is_finite(amount):
+			continue
+		amount = clampf(amount, 0.0, float(contact.get("max_compression", 0.10)))
+		var axis: Vector3 = leg.axis_root
+		var arm: Vector3 = leg.tip_root - leg.pivot_root
+		var max_height := maxf(0.0, _height_for_angle(axis, arm, _max_travel_rad, up_root))
+		var angle := _suspension_angle(leg, minf(amount, max_height), up_root)
 		var rest: Transform3D = leg.hinge_rest
 		hinge.transform = Transform3D(Basis(leg.axis_parent, angle) * rest.basis, rest.origin)
-		# GroundGearMotion translates the axle directly. Restore its captured mount-space
-		# origin so the authored hinge carries the wheel and strut together on one arc.
-		wheel.position = leg.wheel_rest
+		var arc_height := maxf(0.0, _height_for_angle(axis, arm, angle, up_root))
+		# GroundGearMotion applies world-up compression to the wheel wrapper. The spring
+		# hinge carries the leg; a small axle-slide remainder keeps the tire at that same
+		# rendered contact height after the authored cable-clearance limit is reached.
+		var wheel_up_local: Vector3 = wheel.get_parent().global_basis.inverse() * Vector3.UP
+		wheel.position = leg.wheel_rest + wheel_up_local * maxf(0.0, amount - arc_height)
+		angles_by_role[leg.role] = angle
+	_update_cable_followers(angles_by_role, root)
 	_update_contact_dust(state, contacts, compression)
 
 
@@ -214,10 +255,15 @@ func _update_contact_dust(state: PackedFloat64Array, contacts: Array, compressio
 	var surfaces: PackedFloat64Array = _session.ground_surfaces
 	var lake_value: Variant = _session.get("_lake")
 	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
+	var paused: bool = not _session.holds.is_empty()
 	for leg: Dictionary in _legs:
 		var index: int = leg.contact_index
-		var emitter := _dust_emitters.get(index) as GPUParticles3D
+		var emitter := _dust_emitters.get(index) as CPUParticles3D
 		if emitter == null or index >= contacts.size() or index >= wheel_speeds.size():
+			continue
+		emitter.speed_scale = 0.0 if paused else 1.0
+		if paused:
+			emitter.emitting = false
 			continue
 		var contact: Dictionary = contacts[index]
 		var frame: Dictionary = GroundWheels.frame(state, contact, steer, surfaces,
@@ -227,16 +273,74 @@ func _update_contact_dust(state: PackedFloat64Array, contacts: Array, compressio
 		var real_contact: bool = float(frame.get("normal_load", 0.0)) >= MIN_DUST_NORMAL_LOAD_N
 		var slipping: bool = absf(slip_speed) >= LONGITUDINAL_SLIP_DUST_MPS \
 			or absf(lateral_speed) >= LATERAL_SLIP_DUST_MPS
+		var loose_surface := _is_loose_surface(surfaces, frame)
 		var wheel := leg.wheel as Node3D
-		emitter.emitting = real_contact and slipping and compression[index] > 0.0
+		emitter.emitting = real_contact and loose_surface and slipping and compression[index] > 0.0
 		if emitter.emitting and is_instance_valid(wheel):
-			var contact_point := wheel.global_position - Vector3.UP * float(leg.wheel_radius)
-			emitter.global_transform = Transform3D(Basis.IDENTITY, contact_point)
+			var position: PackedFloat64Array = frame.get("position", PackedFloat64Array())
+			var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array())
+			if position.size() == 3 and normal.size() == 3:
+				var compression_m := maxf(0.0, float(frame.get("compression", 0.0)))
+				var contact_ned := position + normal * compression_m
+				emitter.global_transform = Transform3D(Basis.IDENTITY, Frames.ned_to_render(Array(contact_ned)))
+
+
+func _is_loose_surface(surfaces: PackedFloat64Array, frame: Dictionary) -> bool:
+	if surfaces.is_empty():
+		return false
+	var position: PackedFloat64Array = frame.get("position", PackedFloat64Array())
+	if position.size() != 3:
+		return false
+	var surface_index := GroundWheels.surface_at(surfaces, float(position[0]), float(position[1]))
+	return surface_index >= 0 and surface_index + 5 < surfaces.size() \
+		and surfaces[surface_index + 5] >= LOOSE_SURFACE_ROLLING_FACTOR
+
+
+func _on_session_resetting() -> void:
+	_stopped = false
+	set_process(true)
+	for leg: Dictionary in _legs:
+		var wheel := leg.wheel as Node3D
+		var hinge := leg.hinge as Node3D
+		var axle := leg.axle as Node3D
+		if is_instance_valid(hinge):
+			hinge.transform = leg.hinge_rest
+		if is_instance_valid(wheel):
+			wheel.position = leg.wheel_rest
+		if is_instance_valid(axle):
+			axle.transform = leg.axle_rest
+	for emitter: CPUParticles3D in _dust_emitters.values():
+		if is_instance_valid(emitter):
+			emitter.emitting = false
+			emitter.speed_scale = 1.0
+			emitter.restart()
+	_last_cable_angles = {"left": 0.0, "right": 0.0}
+	_update_cable_followers(_last_cable_angles, _airplane.root)
 
 
 func _stop_after_crash() -> void:
 	_stopped = true
 	set_process(false)
-	for emitter: GPUParticles3D in _dust_emitters.values():
+	for emitter: CPUParticles3D in _dust_emitters.values():
 		if is_instance_valid(emitter):
 			emitter.emitting = false
+
+
+func _is_source_airframe() -> bool:
+	var parent_root := get_parent() as Node3D
+	return parent_root != null and parent_root == _airplane.get("root")
+
+
+func _disable_detached_copy() -> void:
+	process_mode = Node.PROCESS_MODE_DISABLED
+	set_process(false)
+	var model_root := get_parent() as Node3D
+	if model_root != null:
+		var cable_copy := model_root.find_child("gear_cables", true, false) as MeshInstance3D
+		if cable_copy != null and cable_copy.mesh != null:
+			cable_copy.mesh = cable_copy.mesh.duplicate(true)
+	for child: Node in get_children():
+		if child is CPUParticles3D:
+			child.emitting = false
+			child.speed_scale = 0.0
+	_stopped = true

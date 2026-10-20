@@ -8,25 +8,26 @@ static func apply(root: Node3D) -> void:
 		return
 	root.set_meta("timber_factory_lights", true)
 	root.set_meta("light_groups", ["navigation", "strobe", "landing"])
-	var anchors := {}
+	var anchors := {nav_tail = {enabled = false}, strobe_left = {enabled = false}, strobe_right = {enabled = false}}
 	for side: String in ["left", "right"]:
 		var wing := root.find_child("wing_" + side + "_fixed", true, false) as MeshInstance3D
 		if wing == null:
 			continue
-		var sign_x := -1.0 if side == "left" else 1.0
 		var nav := _material_center(wing, "light_red" if side == "left" else "light_green")
 		anchors["nav_" + side] = _anchor(root, wing, nav)
-		anchors["strobe_" + side] = _anchor(root, wing, nav + Vector3(0, 0, 0.012))
-		var landing := Vector3(sign_x * 0.46, 0.115, 0.003)
-		# Follow the leading-edge skin instead of placing a lamp in front of it.
-		var nearest := INF
-		for surface in wing.mesh.get_surface_count():
-			for vertex: Vector3 in wing.mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]:
-				var distance := absf(vertex.x - landing.x) + absf(vertex.z) * 0.25
-				if distance < nearest:
-					nearest = distance
-					landing.y = vertex.y
-		anchors["landing" if side == "left" else "landing_right"] = _anchor(root, wing, landing)
+	var cowl := root.find_child("cowl", true, false) as Node3D
+	if cowl != null:
+		for side: float in [-1.0, 1.0]:
+			var landing := Vector3(side * 0.035, -0.035, -0.213)
+			anchors["landing" if side < 0 else "landing_right"] = _anchor(root, cowl, landing)
+			_landing_lens(cowl, landing)
+	var fuselage := root.find_child("fuselage_core", true, false) as Node3D
+	if fuselage != null:
+		anchors.strobe_dorsal = _anchor(root, fuselage, Vector3(0, 0.056, 0.288))
+		anchors.strobe_ventral = _anchor(root, fuselage, Vector3(0, -0.099, 0.400))
+	root.set_meta("light_anchors", anchors)
+
+static func _landing_lens(host: Node3D, landing: Vector3) -> void:
 		var lens := MeshInstance3D.new()
 		lens.name = "TimberLandingLens"
 		var mesh := SphereMesh.new()
@@ -36,19 +37,14 @@ static func apply(root: Node3D) -> void:
 		mesh.rings = 8
 		lens.mesh = mesh
 		lens.position = landing
-		lens.scale = Vector3(1.0, 0.55, 0.8)
+		lens.scale = Vector3(1.0, 1.0, 0.3)
 		var material := StandardMaterial3D.new()
 		material.albedo_color = Color("#d7e4e6")
 		material.metallic = 0.35
 		material.roughness = 0.18
 		lens.material_override = material
 		lens.set_meta("crash_no_bounds", true)
-		wing.add_child(lens)
-	var fuselage := root.find_child("fuselage_core", true, false) as Node3D
-	if fuselage != null:
-		anchors.strobe_dorsal = _anchor(root, fuselage, Vector3(0, 0.056, 0.288))
-		anchors.strobe_ventral = _anchor(root, fuselage, Vector3(0, -0.099, 0.400))
-	root.set_meta("light_anchors", anchors)
+		host.add_child(lens)
 
 static func _anchor(root: Node3D, host: Node3D, local: Vector3) -> Dictionary:
 	return {position = Imported.relative(root, host) * local,

@@ -1,0 +1,108 @@
+{
+  "schema": "openrc-timber-visual-details v1",
+  "aircraft_id": "turbo-lumber-evolution",
+  "source_glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "material_profiles": {
+    "foam": {
+      "materials": ["white"],
+      "roughness": 0.76,
+      "specular": 0.22,
+      "metallic": 0.0
+    },
+    "paint": {
+      "materials": ["red", "black", "dark_grey", "light_red", "light_green"],
+      "grow_meshes": ["elevator", "fin_fixed", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"],
+      "grow_amount_m": 0.0004,
+      "roughness": 0.46,
+      "specular": 0.28,
+      "metallic": 0.0
+    },
+    "glass_decal": {
+      "materials": ["glass"],
+      "roughness": 0.38,
+      "specular": 0.32,
+      "metallic": 0.0,
+      "opacity": 1.0
+    },
+    "metal": {
+      "materials": ["metal"],
+      "roughness": 0.3,
+      "specular": 0.55,
+      "metallic": 0.72
+    },
+    "plastic_hub": {
+      "materials": ["light_grey"],
+      "roughness": 0.52,
+      "specular": 0.28,
+      "metallic": 0.08
+    },
+    "rubber": {
+      "meshes": ["wheel_left", "wheel_right", "tailwheel"],
+      "materials": ["foam"],
+      "roughness": 0.94,
+      "specular": 0.14,
+      "metallic": 0.0,
+      "normal_scale": 0.08,
+      "world_tiling_per_m": 14.0
+    }
+  },
+  "surface_details": {
+    "fuselage_label": {
+      "host": "fuselage_core",
+      "text": "TURBO LUMBER EVOLUTION",
+      "local_position": [0.0603, 0.024, 0.465],
+      "font_size": 28,
+      "pixel_size_m": 0.00062,
+      "color": "#282c2f",
+      "sides": ["left", "right"]
+    },
+    "main_gear_springs": {
+      "host": "gear_cables",
+      "travel_fraction": [0.22, 0.78],
+      "coil_radius_m": 0.0033,
+      "wire_radius_m": 0.00072,
+      "turns": 18,
+      "segments_per_turn": 12
+    },
+    "main_wheel_hub_fasteners": {
+      "hosts": ["wheel_left", "wheel_right"],
+      "count": 6,
+      "circle_radius_m": 0.0087,
+      "head_radius_m": 0.00145,
+      "head_depth_m": 0.0012,
+      "axial_center_m": 0.018
+    }
+  },
+  "fracture_details": {
+    "wing_left": {
+      "host": "wing_left_fixed",
+      "cut_x_m": -0.072,
+      "spar_y_m": 0.104,
+      "spar_z_m": 0.102,
+      "spar_radius_m": 0.0048,
+      "spar_depth_m": 0.008
+    },
+    "wing_right": {
+      "host": "wing_right_fixed",
+      "cut_x_m": 0.072,
+      "spar_y_m": 0.104,
+      "spar_z_m": 0.102,
+      "spar_radius_m": 0.0048,
+      "spar_depth_m": 0.008
+    }
+  },
+  "free_texture": {
+    "id": "Rubber002",
+    "source_url": "https://ambientcg.com/view?id=Rubber002",
+    "download": "Rubber002_1K-PNG.zip",
+    "license": "CC0 1.0",
+    "maps": {
+      "normal": "source-textures/Rubber002_1K-PNG_NormalGL.png",
+      "roughness": "source-textures/Rubber002_1K-PNG_Roughness.png"
+    },
+    "runtime_maps": {
+      "normal": "Rubber002_1K-PNG_NormalGL.png",
+      "roughness": "Rubber002_1K-PNG_Roughness.png"
+    }
+  }
+}

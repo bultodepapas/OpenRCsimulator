@@ -666,6 +666,9 @@ static func attach(root: Node3D) -> Node3D:
 	var bindings := {navigation = [], strobe = [], landing = [], orientation = []}
 	for child: Node3D in kit.get_children():
 		var label := str(child.name)
+		if anchors.has(label) and anchors[label].get("enabled", true) == false:
+			child.visible = false
+			continue
 		var group := "navigation" if label.begins_with("nav_") else "strobe" if label.begins_with("strobe_") else "landing" if label.begins_with("landing_") else "orientation"
 		bindings[group].append(child)
 	bind_groups(kit, bindings, root.get_meta("light_groups", GROUPS))

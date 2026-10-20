@@ -515,29 +515,6 @@
    }
   },
   {
-   "id": "worn-pavilion-pilot",
-   "type": "track",
-   "zone": "pilot_line",
-   "surface": "worn",
-   "collides": false,
-   "width": {
-    "value": 0.65,
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Single-file foot traffic from the pavilion veranda to the central pilot station"
-   },
-   "points": {
-    "value": [
-     [-13.8, -0.25],
-     [-8.0, -0.15],
-     [-2.5, 0.0]
-    ],
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Foot access stays behind the flightline barrier and outside the grass runway"
-   }
-  },
-  {
    "id": "hay-bales",
    "type": "instances",
    "zone": "flight_box",
