@@ -120,6 +120,10 @@ Height change after 10 s and 30 s (m), before → after:
 
 The idle now descends on every glow aircraft, a quarter stick holds roughly level or descends (the FS-64V at 37 % trim still sinks 7°), and the trim throttle sits where a quarter stick is below it and a half stick above it. The half- and full-stick pull-ups remain: they are the thrust surplus of these installations (static thrust-to-weight 1.5–1.9), now entered from a trim at 20–37 % of the stick instead of 1–11 %.
 
+## Is it correct? Practice and measurements
+
+The owner asked whether the trim, the throttle for level flight, inverted flight and hands-off flight match real RC and full-scale practice. [trim-practice-comparison.md](trim-practice-comparison.md) sets the simulator's trim curves, power-pitch coupling, inverted pushes and modes against manuals, trimming charts, the FAA handbook, the Cessna 172S manual and the UMN Ultra Stick logs ([research note](trim-practice-research.md), [sources](trim-practice-sources.md)). In short: models are trimmed at a throttle (½ electric trainers, ¾ electric scale and STOL, ¼–⅓ glow trainers) and then climb at full and descend at idle, which is what the 50 % start gives; the simulator's trim slopes (4.5–19° of elevator per unit lift coefficient) bracket the measured Ultra Sticks (6.2–9.8); the inverted pushes equal the linear estimate from those slopes; and the phugoid damping is two to four times the measured 0.1 at matched speed ratio, a propulsion thrust-speed item, not a trim one.
+
 ## Verification
 
 - `power_step` is valid on all eight aircraft in [FT-05](../../flight-test/FT-05/README.md) (314 of 320 card tests valid); its constant-speed prediction agrees with the flown end angle in the settled cases (0.1–4° at idle and 25 %); the before/after tables come from the same card and tree except the glow law.
