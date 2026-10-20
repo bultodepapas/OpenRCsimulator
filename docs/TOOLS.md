@@ -84,9 +84,16 @@ without a paid subscription or credit card. `enable_free_tier` does not activate
 OSS eligibility; repository visibility and App access do. No CI workflow or API
 secret is needed.
 
+New accounts can show a 14-day Advanced trial. Public-repository OSS access is
+separate from that trial and continues without a paid subscription. Included
+OSS review limits differ from trial limits; check `coderabbit usage --agent`
+for current availability. Paid usage continuation is not required for OSS.
+
 Non-draft PRs targeting the default branch receive automatic reviews, including
-incremental reviews on pushes. Reviews pause after five reviewed commits to
-bound OSS allowance use. On a PR, comment `@coderabbitai review` for an incremental
+incremental reviews on pushes. Public repositories with fewer than 10 stars
+require a manual trigger under the OSS policy. Reviews pause after five reviewed
+commits on an active PR; this pause is separate from OSS quotas and rate limits.
+On a PR, comment `@coderabbitai review` for an incremental
 review, `@coderabbitai full review` to re-read the entire diff, or
 `@coderabbitai configuration` to inspect effective settings. Verify installation
 by opening a non-draft PR and checking for the CodeRabbit bot review/check;
