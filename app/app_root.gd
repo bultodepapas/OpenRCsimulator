@@ -29,6 +29,7 @@ const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const TimeOfDayDialog := preload("res://ui/time_of_day_dialog.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const FirstFlightHint := preload("res://ui/first_flight_hint.gd")
+const CalibrationCard := preload("res://ui/calibration_card.gd")
 const UpdateChecker := preload("res://app_state/update_checker.gd")
 const UpdateCheck := preload("res://app_state/update_check.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
@@ -127,6 +128,9 @@ var _settings_note: String = ""
 var last_random_scenario: Dictionary = {}
 var random_seed_source: Callable = Callable()
 var _random_seed_rng := RandomNumberGenerator.new()
+## Whether the OS window still has focus; tests replace it (headless always reports focus).
+var _selection_save_failed := false
+var window_focus_probe: Callable = func() -> bool: return DisplayServer.window_is_focused(get_window().get_window_id())
 var natural_random_screen: CanvasLayer:
 	get:
 		return screens.get_screen("natural_random") as CanvasLayer
@@ -277,12 +281,8 @@ static func weather_for_aircraft(id: String, raw: Variant) -> Dictionary:
 
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	# UI-32 (UI-30 AS-3): a rotorcraft only shows the weather without turbulence; the saved selection keeps it.
 	var home_weather: Dictionary = weather_for_aircraft(aircraft, preferences.get("weather_config", WeatherSettings.defaults()))
-	if home_weather != preferences.get("weather_config", WeatherSettings.defaults()):
-		preferences.weather_config = home_weather.duplicate(true)
-		var weather_save_error: Error = Preferences.save_to(preferences_path, preferences)
-		if weather_save_error != OK:
-			_settings_note = tr("Could not save settings (error %d).") % weather_save_error
 	var night_options: Dictionary = _night_options_from_preferences()
 	var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
 	var lighting_config: Dictionary = checked_lighting.config if checked_lighting.get("ok", false) else TimeOfDay.defaults()
@@ -302,8 +302,11 @@ func show_home() -> void:
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(landscape_id)
+	home.set_battery_mode(preferences.get("battery_mode", Preferences.DEFAULTS.battery_mode))
+	home.set_fuel_fill(preferences.get("fuel_fill", Preferences.DEFAULTS.fuel_fill))
 	home.set_aircraft(aircraft)
-	home.set_start_choice(preferences.get("start_choice", Preferences.DEFAULTS.start_choice))
+	home.set_start_preferences(preferences.get("start_choice", Preferences.DEFAULTS.start_choice),
+		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice))
 	home.set_weather_config(home_weather)
 	home.set_lighting_config(lighting_config)
 	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
@@ -424,21 +427,25 @@ func set_aircraft(id: String) -> void:
 	if home == null or not Catalog.has(id):
 		return
 	preferences.aircraft = id
-	home.set_aircraft(id)
-	if Catalog.is_rotorcraft(id):
-		preferences.weather_config = weather_for_aircraft(id, preferences.get("weather_config", WeatherSettings.defaults()))
-		home.set_weather_config(preferences.weather_config)
-	if Catalog.is_rotorcraft(id):
-		preferences.start_choice = "runway"
-		home.set_start_choice("runway")
-	elif not FlightSession.runway_aircraft_supported(id):
-		preferences.start_choice = "airborne"
+	home.set_aircraft(id) # shows the start remembered for this vehicle class (UI-32, UI-30 AS-7)
+	# UI-32 (UI-30 AS-3): show and fly a rotorcraft without turbulence; never remove it from the saved weather.
+	home.set_weather_config(weather_for_aircraft(id, preferences.get("weather_config", WeatherSettings.defaults())))
 	if preferences.start_choice == FlightSession.START_HALF_POWER:
-		preferences.start_choice = home.start_choice # D6e-R4: the former explicit choice is Home's airborne start
+		preferences.start_choice = "airborne" # D6e-R4: the former explicit choice is Home's airborne start
 	if home_scene != null:
 		home_scene.request_aircraft(id)
-	var err := Preferences.save_to(preferences_path, preferences)
-	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+
+
+## UI-32 (UI-30 F8): a selection keeps Home's note (failure debrief, launch rejection) unless saving it failed;
+## a later successful save clears only its own error.
+func _report_selection_save(err: Error) -> void:
+	if err != OK:
+		_selection_save_failed = true
+		home.set_note(tr("Could not save settings (error %d).") % err)
+	elif _selection_save_failed:
+		_selection_save_failed = false
+		home.set_note("")
 
 
 func _connect_home_preview(scene: Node3D) -> void:
@@ -535,6 +542,9 @@ func start_flight(request: Dictionary = {}) -> void:
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
 	var chosen_battery: String = departing_home.battery_mode if departing_home != null else ""
 	var chosen_fuel: float = departing_home.fuel_start_fill if departing_home != null else 1.0
+	# UI-32: the pilot's preferences (not the per-aircraft effective values) are what a successful Fly saves.
+	var battery_preference: String = departing_home.battery_preference() if departing_home != null else Preferences.DEFAULTS.battery_mode
+	var fuel_preference: float = departing_home.fuel_preference() if departing_home != null else Preferences.DEFAULTS.fuel_fill
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -582,7 +592,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""
 	if "fuel_start_fill" in flight: # FUEL-07: Home's fuel choice; random and direct routes start full or use --fuel=
 		flight.fuel_start_fill = chosen_fuel if has_home and not is_random else 1.0
-	flight.weather_config = chosen_weather.duplicate(true)
+	# UI-32 (UI-30 AS-3): rotorcraft fly without the turbulence they cannot use; the saved selection keeps it.
+	flight.weather_config = (weather_for_aircraft(route_aircraft_id, chosen_weather) if helicopter_route else chosen_weather).duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:
 		flight.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
@@ -630,7 +641,11 @@ func start_flight(request: Dictionary = {}) -> void:
 			screen.queue_free()
 	home_scene = null
 	if has_home and not is_random:
-		preferences.start_choice = chosen_start
+		if departing_home != null:
+			preferences.start_choice = departing_home.start_preference(false)
+			preferences.rotorcraft_start_choice = departing_home.start_preference(true)
+		preferences.battery_mode = battery_preference
+		preferences.fuel_fill = fuel_preference
 		preferences.weather_config = chosen_weather.duplicate(true)
 		preferences.lighting_config = chosen_lighting.duplicate(true)
 		var selected_night: Dictionary = _night_options_from_preferences()
@@ -651,6 +666,7 @@ func start_flight(request: Dictionary = {}) -> void:
 			if flight.has_signal("scenario_changed"):
 				flight.scenario_changed.connect(_on_scenario_changed)
 		_keyboard_reader = flight.session.read_raw
+		_attach_calibration_card(flight)
 		if controllers != null:
 			controllers.attach_session(flight.session)
 			if controllers.registry.selected_device_id("flight") >= 0:
@@ -674,6 +690,13 @@ func _finish_controller_launch(target: Node) -> void:
 			target.resume()
 			return
 	open_pause()
+
+
+## UI-31: the radio calibration steps stay visible whatever overlay preset is active (UI-30 PS-1).
+func _attach_calibration_card(target: Node) -> void:
+	var session: Variant = target.get("session") if target != null else null
+	if session is Node and _has_property(session, "calibration"):
+		target.add_child(CalibrationCard.new(session))
 
 
 func _create_flight(aircraft_id: String = "") -> Node:
@@ -1089,10 +1112,24 @@ func _notification(what: int) -> void:
 	# Losing focus already pauses the simulation (simulation.gd); show the menu so continuing is one visible action.
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
+		_check_window_focus_out.call_deferred()
+		return
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and flight != null and flight.session != null and flight.session.input_enabled:
 		_clear_controller_actions()
 		flight.session.controller_focus_lost()
 		open_pause.call_deferred()
+
+
+## UI-31 (UI-30 PS-12): on X11 the window's focus loss arrives about 250 ms before the application's. Embedded
+## dialogs also take focus from the root viewport, so only a real OS focus loss while flying opens Pause.
+func _check_window_focus_out() -> void:
+	if screens == null or screens.top() != null or _exit_request_active or window_focus_probe.call():
+		return
+	if flight != null and flight.session != null and flight.session.input_enabled:
+		_clear_controller_actions()
+		flight.session.controller_focus_lost()
+		open_pause()
 
 
 func _handle_wm_close_deferred() -> void:
@@ -1115,6 +1152,9 @@ func open_pause() -> void:
 	pause_menu.collective_control = helicopter_route
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
+	pause_menu.change_aircraft_requested.connect(change_aircraft)
+	pause_menu.change_aircraft_button.visible = has_home and not trial_pause
+	pause_menu.set_identity(_flight_identity(trial_pause))
 	pause_menu.workshop_requested.connect(open_workshop)
 	pause_menu.workshop_button.visible = not helicopter_route and not trial_pause
 	pause_menu.failure_settings_requested.connect(open_failures_settings)
@@ -1132,6 +1172,9 @@ func open_pause() -> void:
 	pause_menu.settings_button.visible = has_home
 	pause_menu.controls_button.visible = controllers != null
 	screens.push("pause", pause_menu)
+	# UI-31 (UI-30 PS-4): Pause owns the frozen flight; a flight-side tool cannot keep a hold under it.
+	if flight.has_method("cancel_smoke_assignment"):
+		flight.cancel_smoke_assignment()
 	var checked_failures: Dictionary = FailureConfig.validate(
 		preferences.get("failure_config", FailureConfig.defaults())
 	)
@@ -1277,6 +1320,10 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	flight.restart_requested.connect(_request_flight_restart)
 	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
 	flight._note = tr("Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause")
+	_attach_calibration_card(flight)
+	# UI-31 (UI-30 PS-3): attaching a selected controller pauses the session; launch it like a Home flight.
+	if controllers != null and controllers.registry.selected_device_id("flight") >= 0:
+		_finish_controller_launch.call_deferred(flight.session)
 
 
 func _return_to_workshop() -> void:
@@ -1533,7 +1580,7 @@ func open_weather(from: Control = null) -> void:
 		return
 	from = from if from != null else home.weather_button
 	var weather_dialog := WeatherDialog.new(
-		preferences.get("weather_config", WeatherSettings.defaults()),
+		weather_for_aircraft(home.aircraft_id, preferences.get("weather_config", WeatherSettings.defaults())),
 		preferences.get("lighting_config", TimeOfDay.defaults()),
 		_night_options_from_preferences(),
 		preferences.get("sky_config", SkyConfig.defaults()),
@@ -1558,10 +1605,10 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var checked_night: Dictionary = Preferences.validate_night_options(night_raw)
 	if not checked_night.get("ok", false):
 		return
-	var selected_weather: Dictionary = weather_for_aircraft(
-		str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft)), checked.config
-	)
+	var selected_aircraft := str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft))
+	var selected_weather: Dictionary = weather_for_aircraft(selected_aircraft, checked.config)
 	var turbulence_removed: bool = selected_weather != checked.config
+	var saved_weather: Dictionary = _weather_keeping_saved_turbulence(selected_aircraft, checked.config)
 	var lighting_changed: bool = preferences.get("lighting_config", TimeOfDay.defaults()) != checked_lighting.config
 	var checked_sky: Dictionary = SkyConfig.validate(weather_dialog.get("applied_sky_config"))
 	if not checked_sky.ok:
@@ -1569,7 +1616,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var sky_changed: bool = preferences.get("sky_config", SkyConfig.defaults()) != checked_sky.config
 	preferences.sky_config = checked_sky.config
 	var night_changed: bool = _night_options_from_preferences() != checked_night.options
-	preferences.weather_config = selected_weather.duplicate(true)
+	preferences.weather_config = saved_weather.duplicate(true)
 	preferences.lighting_config = checked_lighting.config.duplicate(true)
 	preferences.lighting_invalid = false
 	preferences.night_field_lighting = checked_night.options.field_lighting
@@ -1578,7 +1625,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 		preferences.time_of_day = "day"
 		Conditions.session_preset = "day"
 	if home != null:
-		home.set_weather_config(preferences.weather_config)
+		home.set_weather_config(selected_weather)
 		home.set_lighting_config(preferences.lighting_config)
 		home.set_sky_config(preferences.sky_config)
 		if lighting_changed:
@@ -1592,6 +1639,19 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	if home != null:
 		home.set_note(_settings_note)
 	close_weather()
+
+
+## UI-32 (UI-30 AS-3): wind edits made while a rotorcraft is selected keep the airplane turbulence that rotorcraft
+## cannot fly yet; an airplane selection saves the applied configuration as it is.
+func _weather_keeping_saved_turbulence(aircraft_id: String, applied: Dictionary) -> Dictionary:
+	if not Catalog.is_rotorcraft(aircraft_id):
+		return applied
+	var saved: Dictionary = WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults())).config
+	var merged: Dictionary = weather_for_aircraft(aircraft_id, applied)
+	if saved.has("turbulence_rms_mps") and merged.has("turbulence_rms_mps"):
+		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
+	var checked := WeatherSettings.validate(merged)
+	return checked.config if checked.ok else weather_for_aircraft(aircraft_id, applied)
 
 
 ## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.
@@ -1638,10 +1698,9 @@ func set_landscape(id: String) -> void:
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
 	home.set_landscape(id)
-	home.set_start_choice(home.start_choice)
+	home.reapply_start_preference()
 	preferences.landscape = id
-	var err: Error = Preferences.save_to(preferences_path, preferences)
-	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
 
 
 func close_weather() -> void:
@@ -1657,6 +1716,11 @@ func continue_flight() -> void:
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
 	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
 		pause_menu.set_note(pause_menu.status_text(flight.session))
+		pause_menu.focus_controller_recovery()
+		return
+	# UI-31 (UI-30 PS-4): closing Pause while another hold remains would leave a frozen flight without a menu.
+	if session.holds.keys().any(func(reason: Variant) -> bool: return str(reason) != "menu"):
+		pause_menu.set_note(tr("Close the other open window before continuing."))
 		return
 	_close_pause()
 	session.resume()
@@ -1672,6 +1736,13 @@ func _request_flight_restart() -> void:
 
 func restart_flight() -> void:
 	if not screens.is_top("pause"):
+		return
+	# UI-31 (UI-30 PS-11): an active manual trace is saved first; a failed save is the same explicit decision as End.
+	_begin_exit_request("restart", [_flight_recorder(flight)], Callable(self, "_commit_restart_flight"))
+
+
+func _commit_restart_flight() -> void:
+	if flight == null or not screens.is_top("pause"):
 		return
 	# Keep the menu hold until reset succeeds; rejected starts remain reviewable and frozen.
 	var helicopter_route := Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
@@ -1694,6 +1765,32 @@ func restart_flight() -> void:
 	else:
 		_close_pause()
 		session.resume()
+
+
+## UI-34a (UI-30 AS-1): the End-flight transaction (trace save or explicit decision), then the aircraft catalog.
+func change_aircraft() -> void:
+	if flight == null or not has_home or not _workshop_screens.is_empty() or not screens.is_top("pause"):
+		return
+	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_change_aircraft"))
+
+
+func _commit_change_aircraft() -> void:
+	_commit_end_flight()
+	if home != null:
+		home.open_aircraft_catalog.call_deferred() # after Home's own initial focus on Fly
+
+
+## "Aircraft · field" for the Pause header; a Workshop trial names itself first.
+func _flight_identity(trial: bool) -> String:
+	var aircraft_id := str(flight.get("aircraft_id")) if flight != null else ""
+	var parts: PackedStringArray = []
+	if trial:
+		parts.append(tr("Workshop trial"))
+	if Catalog.has(aircraft_id):
+		parts.append(tr(Catalog.entry(aircraft_id).name))
+	if Landscapes.has(landscape_id):
+		parts.append(tr(Landscapes.entry(landscape_id).name))
+	return " · ".join(parts)
 
 
 ## End a flight or return from a trial only after a trace is saved or explicitly resolved.

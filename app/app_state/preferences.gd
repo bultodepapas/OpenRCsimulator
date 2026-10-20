@@ -16,6 +16,8 @@ const MoonConfig := preload("res://environment/moon_config.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
+## FUEL-07: the start fills Home offers for finite-fuel aircraft (fractions of the tank).
+const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
 
 const DEFAULT_PATH := "user://settings.cfg"
 const SCHEMA := 5
@@ -33,6 +35,11 @@ const DEFAULTS := {
 	aircraft = Catalog.DEFAULT_ID,
 	landscape = Landscapes.DEFAULT_ID,
 	start_choice = "runway",
+	# UI-32: additive [flight] keys, no schema change. Rotorcraft keep their own start ("runway" is the pad), so
+	# browsing between classes never rewrites the airplane start; Home's battery/fuel choices persist after Fly.
+	rotorcraft_start_choice = "runway",
+	battery_mode = "pack",
+	fuel_fill = 1.0,
 	# The FW Home preset remains an additive schema-1 field; selecting astronomical lighting clears it to "day".
 	time_of_day = "evening",
 	# UI-06d: only fresh interactive preferences use gentle moving air; technical routes remain calm by default.
@@ -98,6 +105,15 @@ static func load_from(path: String) -> Dictionary:
 		if start_choice == "airborne" or (start_choice == "runway" and (FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft))) \
 				or (start_choice == FlightSession.START_HALF_POWER and FlightSession.half_power_start_supported(prefs.aircraft)):
 			prefs.start_choice = start_choice
+	var rotorcraft_start: Variant = cfg.get_value("flight", "rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice)
+	if typeof(rotorcraft_start) == TYPE_STRING and rotorcraft_start in ["runway", "airborne"]:
+		prefs.rotorcraft_start_choice = rotorcraft_start
+	var battery_mode: Variant = cfg.get_value("flight", "battery_mode", DEFAULTS.battery_mode)
+	if typeof(battery_mode) == TYPE_STRING and battery_mode in Catalog.BATTERY_MODES:
+		prefs.battery_mode = battery_mode
+	var fuel_fill: Variant = cfg.get_value("flight", "fuel_fill", DEFAULTS.fuel_fill)
+	if typeof(fuel_fill) == TYPE_FLOAT and fuel_fill in FUEL_FILLS:
+		prefs.fuel_fill = fuel_fill
 	var latency_marker: Variant = cfg.get_value("flight", "latency_marker", DEFAULTS.latency_marker)
 	if typeof(latency_marker) == TYPE_BOOL:
 		prefs.latency_marker = latency_marker
@@ -155,6 +171,10 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		return ERR_FILE_NO_PERMISSION
 	if typeof(prefs.get("latency_marker", DEFAULTS.latency_marker)) != TYPE_BOOL:
 		return ERR_INVALID_DATA
+	if not prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice) in ["runway", "airborne"] \
+			or not prefs.get("battery_mode", DEFAULTS.battery_mode) in Catalog.BATTERY_MODES \
+			or not float(prefs.get("fuel_fill", DEFAULTS.fuel_fill)) in FUEL_FILLS:
+		return ERR_INVALID_DATA
 	var checked_weather := WeatherSettings.validate(prefs.get("weather_config", DEFAULTS.weather_config))
 	if not checked_weather.ok:
 		return ERR_INVALID_DATA
@@ -192,6 +212,9 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
 	cfg.set_value("flight", "landscape", prefs.get("landscape", DEFAULTS.landscape))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
+	cfg.set_value("flight", "rotorcraft_start_choice", prefs.get("rotorcraft_start_choice", DEFAULTS.rotorcraft_start_choice))
+	cfg.set_value("flight", "battery_mode", prefs.get("battery_mode", DEFAULTS.battery_mode))
+	cfg.set_value("flight", "fuel_fill", float(prefs.get("fuel_fill", DEFAULTS.fuel_fill)))
 	cfg.set_value("flight", "time_of_day", time_of_day)
 	cfg.set_value("flight", "latency_marker", prefs.get("latency_marker", DEFAULTS.latency_marker))
 	cfg.set_value("flight", "weather_config", checked_weather.config.duplicate(true))

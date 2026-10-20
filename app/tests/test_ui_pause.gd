@@ -163,11 +163,14 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER) # Continue
 	_check("Enter on Continue resumes", app.pause_menu == null and not session.sim.paused)
 
-	# --- Esc during the radio calibration leaves the wizard, not the flight.
+	# --- Esc during the radio calibration leaves the wizard and shows Pause with the result (UI-31, UI-30 PS-1):
+	# the former second Esc press left a frozen flight without a menu in between.
 	session.calibration = RcCalibration.new()
 	await ui.tap(KEY_ESCAPE)
-	_check("Esc in the calibration wizard cancels it, no menu", session.calibration == null and app.pause_menu == null)
-	session.resume()
+	_check("Esc in the calibration wizard cancels it and opens Pause", session.calibration == null and app.pause_menu != null
+		and session.sim.paused)
+	app.continue_flight()
+	await ui.settle()
 
 	# --- A flight that cannot fly: Continue disabled and explained; Restart recovers.
 	session.sim.fault_reason = "test fault"

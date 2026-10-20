@@ -4549,3 +4549,50 @@ msgstr "Tamaño propuesto: %s%% · envergadura pendiente de validación."
 
 msgid "Each virtual size is simulated with scaled geometry; aerodynamic similarity is an estimate, especially at the smallest and largest sizes."
 msgstr "Cada tamaño virtual se simula con geometría escalada; la similitud aerodinámica es una estimación, sobre todo en los tamaños más pequeños y más grandes."
+
+# UI-31: calibration card, calibration results and Pause recovery (UI-30 audit).
+msgid "Radio calibration"
+msgstr "Calibración de la radio"
+
+msgid "Step %d of %d"
+msgstr "Paso %d de %d"
+
+msgid "Centre the sticks, throttle LOW, hands off. Press Enter"
+msgstr "Centra las palancas, acelerador al MÍNIMO, sin tocar. Pulsa Intro"
+
+msgid "Move the THROTTLE to FULL and back to LOW. Press Enter"
+msgstr "Lleva el ACELERADOR al MÁXIMO y vuelve al MÍNIMO. Pulsa Intro"
+
+msgid "Move the AILERON stick fully RIGHT, then LEFT, then centre. Press Enter"
+msgstr "Mueve la palanca de ALERONES a fondo a la DERECHA, luego a la IZQUIERDA y al centro. Pulsa Intro"
+
+msgid "Pull the ELEVATOR stick fully BACK, then FORWARD, then centre. Press Enter"
+msgstr "Tira de la palanca de PROFUNDIDAD a fondo hacia ATRÁS, luego hacia ADELANTE y al centro. Pulsa Intro"
+
+msgid "Move the RUDDER stick fully RIGHT, then LEFT, then centre. Press Enter"
+msgstr "Mueve la palanca de TIMÓN a fondo a la DERECHA, luego a la IZQUIERDA y al centro. Pulsa Intro"
+
+msgid "Radio axes: %s"
+msgstr "Ejes de la radio: %s"
+
+msgid "Enter or controller Accept: next step · Esc or controller Back: cancel"
+msgstr "Intro o Aceptar del control: siguiente paso · Esc o Atrás del control: cancelar"
+
+msgid "Radio calibrated and saved."
+msgstr "Radio calibrada y guardada."
+
+msgid "Radio calibrated for this flight, but the profile was not saved."
+msgstr "Radio calibrada para este vuelo, pero el perfil no se guardó."
+
+msgid "Radio calibration was not saved: %s"
+msgstr "La calibración de la radio no se guardó: %s"
+
+msgid "Close the other open window before continuing."
+msgstr "Cierra la otra ventana abierta antes de continuar."
+
+# UI-34a: switching aircraft from Pause and the Pause identity line (UI-30 audit).
+msgid "Change aircraft"
+msgstr "Cambiar aeronave"
+
+msgid "Workshop trial"
+msgstr "Prueba del taller"

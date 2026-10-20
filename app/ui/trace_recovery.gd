@@ -19,7 +19,7 @@ func save_if_recording(recorder: RefCounted) -> Dictionary:
 		return {ok = true, pending = false, error = OK}
 	if not bool(recorder.get("recording")):
 		var note := _property_text(recorder, "note")
-		if note.begins_with("trace save failed:"):
+		if note.begins_with("trace save failed:") or note.begins_with("helicopter trace save failed:"):
 			var error_code := _error_from_note(note)
 			_remember(recorder, error_code)
 			return {ok = false, pending = true, error = error_code}
@@ -117,8 +117,7 @@ func _property_text(object: Object, property_name: String) -> String:
 
 
 func _error_from_note(note: String) -> Error:
+	# "trace save failed: error 7" (airplane) or "helicopter trace save failed: 7" (rotorcraft recorder).
 	var marker := note.rfind("error ")
-	if marker < 0:
-		return ERR_CANT_CREATE
-	var raw_code := note.substr(marker + 6).strip_edges()
+	var raw_code := note.substr(marker + 6).strip_edges() if marker >= 0 else note.get_slice(":", note.get_slice_count(":") - 1).strip_edges()
 	return int(raw_code) if raw_code.is_valid_int() else ERR_CANT_CREATE

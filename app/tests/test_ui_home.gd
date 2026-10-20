@@ -419,12 +419,13 @@ func _run() -> void:
 		await process_frame
 	_check("helicopter preview finishes asynchronously", not home_helicopter_app.home_scene.preview_pending)
 	var selected_helicopter_weather: Dictionary = home_helicopter_app.home.weather_config
-	_check("helicopter selection clears only turbulence and preserves steady wind/gusts",
+	# UI-32 (UI-30 AS-3): the helicopter shows and flies without turbulence; the saved airplane selection keeps it.
+	_check("helicopter selection shows only steady wind/gusts and keeps the saved airplane turbulence",
 		not WeatherSettings.has_turbulence(selected_helicopter_weather)
 		and selected_helicopter_weather.speed_mps == WeatherSettings.GENTLE_PRACTICE.speed_mps
 		and selected_helicopter_weather.gust_mps == WeatherSettings.GENTLE_PRACTICE.gust_mps
 		and selected_helicopter_weather.gust_up_mps == WeatherSettings.GENTLE_PRACTICE.gust_up_mps
-		and home_helicopter_app.preferences.weather_config == selected_helicopter_weather)
+		and WeatherSettings.has_turbulence(home_helicopter_app.preferences.weather_config))
 	_check("Home selects the HX-700 visual and keeps Fly enabled",
 		home_helicopter_app.home.aircraft_id == "xcell-60-research"
 		and home_helicopter_app.home_scene.airplane.visual_family == "hx-700"
@@ -435,13 +436,14 @@ func _run() -> void:
 	await ui.settle()
 	var helicopter_weather_dialog: CanvasLayer = home_helicopter_app.weather_dialog
 	_check("reopened Weather editor starts from the supported helicopter selection",
-		helicopter_weather_dialog != null and not WeatherSettings.has_turbulence(home_helicopter_app.preferences.weather_config))
+		helicopter_weather_dialog != null and not WeatherSettings.has_turbulence(helicopter_weather_dialog.get("_base_config")))
 	if helicopter_weather_dialog != null:
 		helicopter_weather_dialog._on_turbulence_toggled(true)
 		helicopter_weather_dialog.apply_button.pressed.emit()
 		await ui.settle()
-		_check("Weather Apply clears unsupported turbulence and keeps the visible summary truthful",
-			not WeatherSettings.has_turbulence(home_helicopter_app.preferences.weather_config)
+		_check("Weather Apply keeps unsupported turbulence out of the helicopter summary and the saved airplane turbulence intact",
+			WeatherSettings.has_turbulence(home_helicopter_app.preferences.weather_config)
+			and home_helicopter_app.preferences.weather_config.turbulence_rms_mps == WeatherSettings.GENTLE_PRACTICE.turbulence_rms_mps
 			and not WeatherSettings.has_turbulence(home_helicopter_app.home.weather_config)
 			and not home_helicopter_app.home.weather_button.text.contains("Turbulence")
 			and home_helicopter_app.home.note_label.text.contains("Helicopter turbulence is not qualified"))

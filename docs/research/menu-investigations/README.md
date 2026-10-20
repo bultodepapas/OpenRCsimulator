@@ -1,5 +1,7 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-20: [UI-30 — menu system audit at 1080p and above](UI-30/README.md). Software-rendered (Xvfb/llvmpipe) captures of the production app from 1920×1080 to 5120×1440 (16:9, 16:10, 21:9, 32:9; EN/ES; 150% text), code review of pause, aircraft switching, theme and chrome, and 62 graded findings. The repair order is UI-31…38 in [the redesign plan](../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
+
 2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.
 
 ## UI-01-R1 — Fly directly into flight, 2026-10-19
