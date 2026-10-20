@@ -549,7 +549,7 @@ func _init() -> void:
 	controls_button.custom_minimum_size.y = 34
 	controls_button.custom_minimum_size.x = 120
 	controls_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	controls_button.tooltip_text = tr("Controller settings")
+	controls_button.tooltip_text = tr("Devices, profiles and radio calibration")
 	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
 	utility_row.add_child(controls_button)
 	help_button = _button("Help", "QuietButton")
@@ -1349,7 +1349,7 @@ func _update_weather_text() -> void:
 		weather_brief = tr("Updraft %s m/s") % String.num(gust_up, 1)
 	elif gust_up < 0.0:
 		weather_brief = tr("Downdraft %s m/s") % String.num(absf(gust_up), 1)
-	weather_button.text = "%s\n%s" % [tr("Weather"), weather_brief]
+	weather_button.text = "%s\n%s" % [tr("Conditions"), weather_brief]
 	var time_brief := tr("Evening") if time_of_day == "evening" else tr(Conditions.HOME_LABELS[time_of_day])
 	if compact and time_of_day == "night": time_brief = tr("Full moon")
 	if compact and time_of_day == "moonrise": time_brief = tr("Moonrise") # FW-MOON-11
@@ -1388,7 +1388,7 @@ func _update_control() -> void:
 		control_label.tooltip_text = tr("Flight: keyboard (no controller selected).")
 	else:
 		control_label.text = tr("Flight input: %s") % _flight_device_name
-		control_label.tooltip_text = tr("Flight controller: %s. Review your bindings in Controller settings.") % _flight_device_name
+		control_label.tooltip_text = tr("Flight controller: %s. Review your bindings in Controls.") % _flight_device_name
 	if _menu_device_name.is_empty():
 		controller_prompt_label.text = tr("Menu input: Keyboard")
 		controller_prompt_label.tooltip_text = tr("Press A / Cross to claim gamepad menu controls.")

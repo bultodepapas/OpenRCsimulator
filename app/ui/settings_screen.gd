@@ -180,7 +180,7 @@ func _build() -> void:
 	_language_picker.add_item("Español")
 	_language_picker.set_item_metadata(1, "es")
 	_language_picker.item_selected.connect(_language_selected)
-	_add_row(interface_page, "Interface language", _language_picker)
+	_add_row(interface_page, "Language", _language_picker)
 	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
 
 	var master_control := _volume_control("MasterVolumeControl", "MasterVolume", "MasterVolumeValue", _master_volume_changed)
@@ -203,7 +203,7 @@ func _build() -> void:
 	var controls_button := _button("Controls", "QuietButton", "Controls")
 	controls_button.pressed.connect(func() -> void: _request_route("controls", controls_button))
 	_destinations.add_child(controls_button)
-	var about_button := _button("Help & About", "QuietButton", "HelpAbout")
+	var about_button := _button("Help", "QuietButton", "HelpAbout")
 	about_button.pressed.connect(func() -> void: _request_route("about", about_button))
 	_destinations.add_child(about_button)
 	interface_page.add_child(_destinations)

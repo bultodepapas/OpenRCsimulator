@@ -7,6 +7,7 @@ extends CanvasLayer
 const Screen := preload("res://ui/screen.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const KeyCap := preload("res://ui/key_cap.gd")
 
 signal continue_requested
 signal restart_requested
@@ -62,6 +63,7 @@ var _failure_summary_disclosed := false
 var _controller_status_elapsed := 0.0
 var _controller_attention_elapsed := 0.0
 var _open_group := ""
+var _group_arrows := {} # group name -> disclosure chevron (UI-33)
 var _panel: PanelContainer
 var _sidebar_fade: TextureRect
 
@@ -130,11 +132,11 @@ func _init(can_end := true, trial_mode := false) -> void:
 	failure_summary_label.name = "FailureSummary"
 	failure_summary_label.visible = false
 	column.add_child(failure_summary_label)
-	controller_recovery_button = _button("Controller settings", "QuietButton", "ControllerRecovery")
+	controller_recovery_button = _button("Controls", "QuietButton", "ControllerRecovery")
 	controller_recovery_button.visible = false
 	controller_recovery_button.pressed.connect(func() -> void: controls_requested.emit(controller_recovery_button))
 	column.add_child(controller_recovery_button)
-	continue_button = _button("Resume trial" if trial_mode else "Continue", "PrimaryButton", "Continue")
+	continue_button = _button("Resume trial" if trial_mode else "Resume", "PrimaryButton", "Continue")
 	continue_button.custom_minimum_size.y = 56
 	continue_button.pressed.connect(func() -> void: continue_requested.emit())
 	column.add_child(continue_button)
@@ -149,24 +151,25 @@ func _init(can_end := true, trial_mode := false) -> void:
 	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
 	column.add_child(settings_button)
 
-	workshop_button = _button("Aircraft Workshop", "QuietButton", "Workshop")
-	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
-	workshop_button.visible = not trial_mode
-	session_options_container.add_child(workshop_button)
+	# UI-33 (UI-30 VC-4): this flight first, then the input setup, then what applies to the next flight.
 	time_of_day_button = _button("Time of day", "QuietButton", "TimeOfDay")
 	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
 	session_options_container.add_child(time_of_day_button)
-	failure_settings_button = _button("Failure settings · next flight", "QuietButton", "Failures")
-	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
-	failure_settings_button.visible = false # the direct route has no next Home flight
-	session_options_container.add_child(failure_settings_button)
-	controls_button = _button("Controller settings", "QuietButton", "ControllerSettings")
-	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
-	session_options_container.add_child(controls_button)
 	overlays_button = _button("Flight overlays", "QuietButton", "Overlays") # HUD-06; hidden when the flight has none
 	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
 	overlays_button.visible = false
 	session_options_container.add_child(overlays_button)
+	controls_button = _button("Controls", "QuietButton", "ControllerSettings")
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	session_options_container.add_child(controls_button)
+	failure_settings_button = _button("Failure settings · next flight", "QuietButton", "Failures")
+	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
+	failure_settings_button.visible = false # the direct route has no next Home flight
+	session_options_container.add_child(failure_settings_button)
+	workshop_button = _button("Workshop", "QuietButton", "Workshop")
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	workshop_button.visible = not trial_mode
+	session_options_container.add_child(workshop_button)
 
 	help_button = _button("Help", "QuietButton", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
@@ -180,7 +183,7 @@ func _init(can_end := true, trial_mode := false) -> void:
 	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
 	column.add_child(exit_options_button)
 	exit_options_container = _option_group("ExitOptionsGroup", column)
-	end_button = _button("Return to Workshop" if trial_mode else "End flight", "QuietButton", "End")
+	end_button = _button("Return to Workshop" if trial_mode else "Return to Home", "QuietButton", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end
 	if trial_mode:
@@ -188,7 +191,7 @@ func _init(can_end := true, trial_mode := false) -> void:
 		column.move_child(end_button, restart_button.get_index() + 1)
 	else:
 		exit_options_container.add_child(end_button)
-	quit_button = _button("Quit", "QuietButton", "Quit")
+	quit_button = _button("Quit to desktop", "QuietButton", "Quit")
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	exit_options_container.add_child(quit_button)
 	note_label = _wrapped_label()
@@ -294,7 +297,8 @@ func refresh() -> void:
 	_refresh_controller_value()
 	_refresh_controller_recovery()
 	failure_config_label.text = failure_config_text(_failure_config)
-	failure_config_label.visible = failure_config_label.text != ""
+	# UI-33 (UI-30 PS-5): next-flight failures are shown only where this pause can change them.
+	failure_config_label.visible = failure_config_label.text != "" and failure_settings_button.visible
 	failure_summary_label.text = active_failure_text(_session, _failure_notifications_enabled and _failure_summary_disclosed)
 	failure_summary_label.visible = failure_summary_label.text != ""
 
@@ -366,6 +370,9 @@ func _toggle_group(group_name: String) -> void:
 	exit_options_container.visible = _open_group == "exit"
 	session_options_button.button_pressed = _open_group == "session"
 	exit_options_button.button_pressed = _open_group == "exit"
+	for group: String in _group_arrows:
+		_group_arrows[group].direction = "down" if _open_group == group else "right"
+		_group_arrows[group].queue_redraw()
 	if previous_group != "" and _open_group == "":
 		(session_options_button if previous_group == "session" else exit_options_button).grab_focus()
 
@@ -389,7 +396,7 @@ func controller_attention(session: Node) -> bool:
 	return bool(session.get("_controller_lost")) or (session.radio.connected and not session.radio.armed)
 
 
-## Moves the focus to the top-level Controller settings action when it is shown (Continue was refused).
+## Moves the focus to the top-level Controls action when it is shown (Continue was refused).
 func focus_controller_recovery() -> void:
 	if controller_recovery_button.visible:
 		controller_recovery_button.grab_focus()
@@ -401,7 +408,7 @@ func _refresh_controller_recovery() -> void:
 	# the shortcut. A lost device or an unarmed radio needs it at once.
 	if needed and not bool(_session.get("_controller_lost")) and _session.radio.is_gamepad():
 		needed = _controller_attention_elapsed >= GAMEPAD_ATTENTION_DELAY
-	# Only where the shell offers Controller settings at all (controls_button is hidden without a registry).
+	# Only where the shell offers Controls at all (controls_button is hidden without a registry).
 	controller_recovery_button.visible = controls_button.visible and needed
 
 
@@ -456,22 +463,22 @@ func _session_status_text(session: Node) -> String:
 		return tr("This flight cannot continue: %s") % session.pause_reason
 	if bool(session.get("external_controller_selection")):
 		if bool(session.get("_controller_lost")):
-			return tr("Controller unavailable. Select a connected device or keyboard in Controller settings.")
+			return tr("Controller unavailable. Select a connected device or keyboard in Controls.")
 		if session.radio.connected and not session.radio.armed:
 			if session.radio.is_gamepad():
-				return tr("Checking controller input. If it does not respond, open Controller settings.")
-			return tr("Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio.")
+				return tr("Checking controller input. If it does not respond, open Controls.")
+			return tr("Lower the throttle to arm. If the mapping is wrong, open Controls and calibrate the selected radio.")
 		if session.radio.connected and session.radio.armed and session.crash.is_empty():
-			return tr("Controls ready. Select Continue to fly.")
+			return tr("Controls ready. Select Resume to fly.")
 	if not session.crash.is_empty():
 		if not session.crash_auto_restart:
-			return tr("Crashed. Continue to inspect the wreck, or restart the flight.")
-		return tr("Crashed. The flight restarts by itself after you continue.")
+			return tr("Crashed. Resume to inspect the wreck, or restart the flight.")
+		return tr("Crashed. The flight restarts by itself after you resume.")
 	match session.pause_reason:
 		"":
 			return ""
 		"radio disconnected":
-			return tr("The radio was disconnected: engine at idle, sticks centred. Continue flies with the keyboard, or plug the radio back in.")
+			return tr("The radio was disconnected: engine at idle, sticks centred. Resume flies with the keyboard, or plug the radio back in.")
 		"calibration cancelled":
 			return tr("Radio calibration cancelled; the previous profile stays.")
 	return session.pause_reason
@@ -504,16 +511,33 @@ func _button(text: String, variation: String, node_name: String) -> Button:
 func _disclosure_button(text: String, node_name: String) -> Button:
 	var button := _button(text, "QuietButton", node_name)
 	button.toggle_mode = true
+	# UI-33 (UI-30 VC-4): a group reads as a group, closed (right) or open (down).
+	var arrow := KeyCap.Arrow.new()
+	arrow.name = "Chevron"
+	arrow.direction = "right"
+	arrow.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+	arrow.offset_left = -30.0
+	arrow.offset_right = -12.0
+	arrow.offset_top = -9.0
+	arrow.offset_bottom = 9.0
+	button.add_child(arrow)
+	_group_arrows["session" if node_name == "SessionOptions" else "exit"] = arrow
 	return button
 
 
 func _option_group(node_name: String, parent: VBoxContainer) -> VBoxContainer:
+	# UI-33 (UI-30 VC-4): indented under its disclosure button, so an open group does not read as a flat list.
+	var indent := MarginContainer.new()
+	indent.name = node_name + "Indent"
+	indent.add_theme_constant_override("margin_left", 20)
+	indent.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(indent)
 	var group := VBoxContainer.new()
 	group.name = node_name
 	group.visible = false
 	group.add_theme_constant_override("separation", 8)
 	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	parent.add_child(group)
+	indent.add_child(group)
 	return group
 
 

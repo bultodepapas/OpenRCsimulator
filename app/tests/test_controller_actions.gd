@@ -41,9 +41,9 @@ func _initialize() -> void:
 	_check("rate and absolute throttle presets are distinguished in Spanish", TranslationServer.translate("Mode 2 · rate throttle") == "Modo 2 · acelerador incremental" and TranslationServer.translate("Trigger throttle") == "Acelerador absoluto en gatillo")
 	_check("radio recovery, profile type and safety prompts translate", TranslationServer.translate("Calibrate selected radio") == "Calibrar la radio seleccionada" and TranslationServer.translate("Profile type") == "Tipo de perfil" and TranslationServer.translate("Device selection changed; refresh and choose connected controllers.") == "La selección de controles cambió; actualiza la lista y elige controles conectados." and TranslationServer.translate("Checking controller input. If it does not respond, open Controller settings.") == "Comprobando el mando. Si no responde, abre Configuración del control." and TranslationServer.translate("CONTROLLER LOST · select controls to continue") == "CONTROL DESCONECTADO · selecciona controles para continuar")
 	var safety_translations := {
-		"Controller unavailable. Select a connected device or keyboard in Controller settings.": "Controlador no disponible. Elige un dispositivo conectado o el teclado en Configuración del control.",
+		"Controller unavailable. Select a connected device or keyboard in Controls.": "Controlador no disponible. Elige un dispositivo conectado o el teclado en Controles.",
 		"Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action.": "Mueve una vez cada control asignado, suelta las palancas y los gatillos y espera el neutro. Debes elegir Continuar explícitamente.",
-		"Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio.": "Baja el acelerador para armar. Si la asignación no es correcta, abre Configuración del control y calibra la radio seleccionada.",
+		"Lower the throttle to arm. If the mapping is wrong, open Controls and calibrate the selected radio.": "Baja el acelerador para armar. Si la asignación no es correcta, abre Controles y calibra la radio seleccionada.",
 	}
 	var safety_translations_ok := true
 	for source in safety_translations:

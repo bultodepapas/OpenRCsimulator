@@ -206,7 +206,7 @@ func _controller_routes() -> void:
 	await _wait(0.35)
 	_check("pad flight starts ready", session.radio.armed and not session.sim.paused and app.pause_menu == null)
 
-	# --- PS-2: a lost controller puts Controller settings at the top of Pause and focuses it.
+	# --- PS-2: a lost controller puts Controls at the top of Pause and focuses it.
 	app.open_pause()
 	await ui.settle()
 	_check("ready controller: no recovery action", app.pause_menu != null and not app.pause_menu.controller_recovery_button.visible)

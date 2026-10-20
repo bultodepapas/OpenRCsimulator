@@ -162,9 +162,9 @@ func _update_radio_help_text() -> void:
 	if radio_help_label == null:
 		return
 	if _vehicle_type == Reference.ROTORCRAFT:
-		radio_help_label.text = tr("USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates.")
+		radio_help_label.text = tr("USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controls. Throttle cut latches hold; releasing it never starts the rotor. K calibrates.")
 	else:
-		radio_help_label.text = tr("USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controller settings.")
+		radio_help_label.text = tr("USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controls.")
 
 
 ## Product, build identity (as exported, or "development"), engine and licence: what a bug report needs.

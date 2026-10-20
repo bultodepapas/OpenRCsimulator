@@ -211,7 +211,7 @@ func _build() -> void:
 	_settings_panel.add_child(shell)
 	var header := HBoxContainer.new()
 	header.name = "ControllerSetupHeader"
-	var title := _label("Controller settings", "TitleLabel")
+	var title := _label("Controls", "TitleLabel")
 	title.name = "ControllerSettingsTitle"
 	_settings_title = title
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL

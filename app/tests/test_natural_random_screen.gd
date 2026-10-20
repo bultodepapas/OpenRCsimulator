@@ -54,7 +54,7 @@ func _test_english_and_static_translation_modes() -> void:
 	var headings: Dictionary = {
 		"StockAirplaneHeading": "Stock airplane",
 		"ModelStatusHeading": "Model status",
-		"FlightConditionsHeading": "Flight conditions",
+		"FlightConditionsHeading": "Conditions",
 		"FlightDetailsHeading": "Flight details",
 	}
 	for node_name: String in headings:
