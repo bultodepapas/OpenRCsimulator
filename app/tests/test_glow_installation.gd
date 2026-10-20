@@ -126,6 +126,12 @@ func _test_installation(label: String, aircraft_path: String) -> void:
 		str(aircraft_load.get("errors", [])))
 	var no_angle_raw: Dictionary = raw.duplicate(true)
 	no_angle_raw.propulsion.propeller.erase("thrust_angles")
+	var shaft_modules: Array = ["normal_force", "pfactor_moment", "slipstream"].filter(func(m: String) -> bool: return no_angle_raw.propulsion.propeller.has(m))
+	if not shaft_modules.is_empty():
+		_check(label + " refuses its EX-14c propeller modules without explicit thrust angles",
+			not AircraftData.validate_and_derive(no_angle_raw.duplicate(true)).get("ok", false))
+	for module: String in shaft_modules: # these declare an explicit shaft, so the axis default needs them removed
+		no_angle_raw.propulsion.propeller.erase(module)
 	var default_axis_load: Dictionary = AircraftData.validate_and_derive(no_angle_raw)
 	_check(label + " omitted thrust angles resolve to the documented +x runtime rotor axis",
 		default_axis_load.get("ok", false)
@@ -350,11 +356,26 @@ func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictiona
 
 
 func _test_unsupported_modules(label: String, baseline: Dictionary, raw: Dictionary, model: Dictionary) -> void:
+	# EX-14c: a declared propeller module must arrive validated in the model, and only the quasi-static slipstream
+	# composes with the Glow layout (no wash states).
 	for module: String in ["normal_force", "pfactor_moment", "slipstream"]:
 		var candidate := raw.duplicate(true)
 		candidate.propulsion.propeller[module] = {}
-		var result: Dictionary = Installation.prepare_value(baseline, candidate, model.duplicate(true), PackedByteArray())
-		_check(label + " rejects unsupported optional propeller module " + module, not result.get("ok", false))
+		var unvalidated := model.duplicate(true)
+		unvalidated.propulsion.erase(module)
+		var result: Dictionary = Installation.prepare_value(baseline, candidate, unvalidated, PackedByteArray())
+		_check(label + " rejects an unvalidated optional propeller module " + module, not result.get("ok", false))
+	for stateful: String in ["edge_fraction", "reverse_fade", "transport_speed_floor"]:
+		var stateful_model := model.duplicate(true)
+		var wake: Dictionary = stateful_model.propulsion.get("slipstream", {}).duplicate(true)
+		wake[stateful] = 0.1
+		stateful_model.propulsion.slipstream = wake
+		var refused: Dictionary = Installation.prepare_value(baseline, raw, stateful_model, PackedByteArray())
+		_check(label + " rejects the stateful slipstream field " + stateful, not refused.get("ok", false))
+	if raw.propulsion.propeller.has("slipstream"):
+		var accepted: Dictionary = Installation.prepare_value(baseline, raw, model.duplicate(true), PackedByteArray())
+		_check(label + " accepts its validated normal force, P-factor and quasi-static slipstream",
+			accepted.get("ok", false), str(accepted.get("message", "")))
 	var legacy_shaft: Dictionary = raw.duplicate(true)
 	legacy_shaft.propulsion.engine.shaft = {}
 	var shaft_result: Dictionary = Installation.prepare_value(baseline, legacy_shaft, model.duplicate(true), PackedByteArray())

@@ -72,16 +72,23 @@ static func _load_components(state: PackedFloat64Array, model: Dictionary, d: Di
 ## exact state, wind and density; never reuse it across RK stages or simulation ticks.
 ## `stage_propulsion_loads`, when supplied, has the same requirement and is body
 ## force/moment about the reference CG. Empty retains the independent evaluation.
+## `stage_thrust_torque` ([N, N·m], EX-14c) is that same stage's propeller result; a Glow slipstream needs it with
+## `stage_propulsion_loads` so the wake carries the shaft's thrust and torque.
 static func loads_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, air: Dictionary, downwash_cl := NAN, transported_dv := PackedFloat64Array(),
-		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array()) -> PackedFloat64Array:
-	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv, ground_up, stage_propulsion_loads).loads
+		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array(),
+		stage_thrust_torque := PackedFloat64Array()) -> PackedFloat64Array:
+	return _components_from_air(state, model, d, rpm, rho, air, downwash_cl, transported_dv, ground_up, stage_propulsion_loads,
+		stage_thrust_torque).loads
 
 
 static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d: Dictionary, rpm: float,
 		rho: float, air: Dictionary, downwash_cl: float, transported_dv: PackedFloat64Array,
-		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array()) -> Dictionary:
+		ground_up := NAN, stage_propulsion_loads := PackedFloat64Array(),
+		stage_thrust_torque := PackedFloat64Array()) -> Dictionary:
 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
+	var washed: bool = not model.propulsion.get("slipstream", {}).is_empty()
+	var wake_thrust_torque: PackedFloat64Array = stage_thrust_torque
 	# Powered-device loads use their local inflow point: the turbine intake and the Glow propeller hub.
 	# The stage-reuse route already evaluated that same point; other legacy routes retain their convention.
 	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads
@@ -91,13 +98,19 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 			prop_air = Turbine.local_intake_velocity(air.v_air, state.slice(RB.RATE, RB.RATE + 3), model.propulsion)
 		elif Propulsion.is_glow(model.propulsion):
 			prop_air = Propulsion.hub_air_velocity(state, air.v_air, model.propulsion.offset)
-		propulsion_loads = Propulsion.loads(prop_air, rpm, model.propulsion, rho)
+		if washed and Propulsion.is_glow(model.propulsion):
+			# EX-14c: one hub evaluation feeds the shaft loads and the wake, exactly as the Glow stage route does.
+			wake_thrust_torque = Propulsion.thrust_torque(prop_air, rpm, model.propulsion, rho).slice(0, 2)
+			propulsion_loads = Propulsion.loads_from_thrust_torque(prop_air, rpm, model.propulsion, rho,
+				wake_thrust_torque[0], wake_thrust_torque[1])
+		else:
+			propulsion_loads = Propulsion.loads(prop_air, rpm, model.propulsion, rho)
 	var total := aero_loads.duplicate()
 	for i in 6:
 		total[i] += propulsion_loads[i]
 	# E0b (P51-12, opt-in): the propeller's slipstream on the tail surfaces. Absent data adds nothing at all.
-	if not model.propulsion.get("slipstream", {}).is_empty():
-		var wash := Slipstream.loads(state, air, d, model, rpm, rho, downwash_cl, transported_dv)
+	if washed:
+		var wash := Slipstream.stage_loads(state, air, d, model, rpm, rho, downwash_cl, transported_dv, 1, wake_thrust_torque)
 		for i in 6:
 			total[i] += wash[i]
 	return {

@@ -51,6 +51,14 @@ const PROFILE_W: Array[float] = [0.236926885056189, 0.478628670499366, 0.5688888
 static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
 		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array(),
 		swirl_subdivisions: int = 1) -> PackedFloat64Array:
+	return stage_loads(state, air, d, model, rpm, rho, downwash_cl, transported_dv, swirl_subdivisions, PackedFloat64Array())
+
+
+## loads() with EX-14c's stage_thrust_torque: optional [thrust N, shaft torque N·m] the propeller already produced at
+## this RK stage (the Glow hub-inflow result), so the wake carries the shaft's thrust and torque; empty re-evaluates them.
+static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
+		rho: float, downwash_cl: float, transported_dv: PackedFloat64Array, swirl_subdivisions: int,
+		stage_thrust_torque: PackedFloat64Array) -> PackedFloat64Array:
 	var prop: Dictionary = model.propulsion
 	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -62,7 +70,7 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		fade = 1.0 if v[0] >= 0.0 else 0.0
 	if fade == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	var tq := Propulsion.thrust_torque(v, rpm, prop, rho)
+	var tq := stage_thrust_torque if stage_thrust_torque.size() >= 2 else Propulsion.thrust_torque(v, rpm, prop, rho)
 	var w := wake(v, tq[0], tq[1], prop, rho)
 	var ss: Dictionary = prop.slipstream
 	var v0: float = v[0]

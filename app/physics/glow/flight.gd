@@ -614,7 +614,8 @@ static func _airframe(owner: Node, body: PackedFloat64Array, values: PackedFloat
 	var propeller_loads: PackedFloat64Array=Propulsion.loads_from_thrust_torque(hub_air,rpm,prop,
 		density,load.thrust_n,load.torque_nm)
 	var external: PackedFloat64Array=Dynamics.loads_from_air(body,model,owner._deflections(owner.sim.aux),rpm,
-		density,air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads)
+		density,air,owner.sim.aux[lag] if lag>=0 else NAN,PackedFloat64Array(),owner._ground_up(body),propeller_loads,
+		PackedFloat64Array([load.thrust_n,load.torque_nm])) # EX-14c: the wake carries this stage's thrust and torque
 	var ground: Dictionary=owner._ground_evaluation(body,owner.sim.aux,values,air)
 	if not ground.get("ok",false): return {}
 	for i in ground.loads.size(): external[i]+=ground.loads[i]

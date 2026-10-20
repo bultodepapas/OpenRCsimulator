@@ -97,6 +97,7 @@ def blend(f):
 # justified only by equal rated BMEP (526.7 vs 525.1 kPa). Dossier: docs/research/glow-engines/NITRO-61FX/README.md.
 FX61_URL = 'https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm'
 FX61_SCALE = 9.95/8.93
+WINDMILL_RPM = [24000., 32000.]  # NITRO-61FX-R1 inferred support for full-throttle dives (no indicated work)
 ENGINES = ['os_max_55ax_candidate', 'os_fs_64v_candidate', 'os_max_61fx_candidate']
 
 
@@ -124,6 +125,12 @@ def candidate(engine):
         # numerical support; 17000 rpm stays the manufacturer recommendation that telemetry flags.
         rpm = rpm + [20000.]
         q = [v*k for v in q[:6]] + [q[6], q[7]*k, .45*k]
+        # NITRO-61FX-R1: the faster Extra 300S still left that support in a full-throttle knife-edge dive (19,992 rpm
+        # at 51.5 m/s, where the 12x6 pitch speed is reached). Two further inferred windmill knots produce no indicated
+        # work (brake torque = -(friction + pumping)), so the engine stops accelerating past 24,000 rpm and a dive
+        # windmills inside the support up to the 32,000 rpm pitch speed of 81 m/s. Every knot <= 20,000 is unchanged.
+        rpm = rpm + WINDMILL_RPM
+        q = q + [0.]*len(WINDMILL_RPM)  # placeholders: eta is set to exactly 0 at these knots below
     volume = (9.95 if fx61 else 8.93 if two else 10.46)*1e-6
     p = {
         'displacement_m3': quantity(volume, SPEC['common']['displacement_m3'], 'derived', url+'; cc × 1e-6 -> m3'),
@@ -142,8 +149,8 @@ def candidate(engine):
     p['combustion_efficiency'] = quantity([[0., 0.], [.5, .5], [.8, .90], [1., .98], [1.15, 1.], [1.6, .85], [2.5, .2], [3.,0.], [20.,0.]], SPEC['common']['combustion_efficiency'])
     angle = math.tau if two else 2*math.tau
     if two:
-        delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96] + ([.85] if fx61 else [])
-        trap = [.6, .65, .70, .74, .76, .76, .74, .72] + ([.66] if fx61 else [])
+        delivery = [.45, .55, .66, .8, .95, 1.02, 1.0, .96] + ([.85, .75, .60] if fx61 else [])
+        trap = [.6, .65, .70, .74, .76, .76, .74, .72] + ([.66, .62, .55] if fx61 else [])
         scav = [2000.+.4*r for r in rpm]
         family_values = {'delivery_ratio': list(map(list, zip(rpm, delivery))),
                          'trapping_efficiency': list(map(list, zip(rpm, trap))),
@@ -167,6 +174,8 @@ def candidate(engine):
     # Infer independent cycle-conversion coefficients from candidate brake torque and declared losses.
     eta = [(torque+loss+qp+qv)*angle/(1.225*volume*af/b['stoich_air_fuel_ratio']*b['fuel_lhv_j_kg'])
            for torque,loss,qp,qv,af in zip(q,mech,pump,valve,air_factor)]
+    if fx61:
+        eta[-len(WINDMILL_RPM):] = [0.]*len(WINDMILL_RPM)  # NITRO-61FX-R1 windmill knots: no indicated work
     assert all(0 <= e <= 1 for e in eta)
     p['indicated_efficiency'] = quantity(list(map(list, zip(rpm,eta))), SPEC['common']['indicated_efficiency'],
         'derived', 'build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by '+url
