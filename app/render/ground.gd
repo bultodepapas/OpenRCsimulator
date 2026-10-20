@@ -30,12 +30,58 @@ static func grass_image(seed := 1253) -> Image:
 			grid[k] = rng.randf()
 		octaves.append([cells, grid])
 	var weights := [0.5, 0.3, 0.2]
+	# Coordinate wrapping and easing are fixed for each octave; share them across both pixel axes.
+	var axis_tables := []
+	for octave in octaves:
+		var cells: int = octave[0]
+		var x0_table := PackedInt32Array()
+		var x1_table := PackedInt32Array()
+		var row0_table := PackedInt32Array()
+		var row1_table := PackedInt32Array()
+		var blend_table := PackedFloat64Array() # match _value_noise float64 arithmetic before RGB8 conversion
+		x0_table.resize(SIZE)
+		x1_table.resize(SIZE)
+		row0_table.resize(SIZE)
+		row1_table.resize(SIZE)
+		blend_table.resize(SIZE)
+		for sample in SIZE:
+			var coordinate: float = float(sample) / SIZE
+			var scaled: float = coordinate * cells
+			var cell0: int = int(floor(scaled))
+			var blend: float = scaled - cell0
+			blend = blend * blend * (3.0 - 2.0 * blend)
+			var index0: int = posmod(cell0, cells)
+			var index1: int = posmod(cell0 + 1, cells)
+			x0_table[sample] = index0
+			x1_table[sample] = index1
+			row0_table[sample] = index0 * cells
+			row1_table[sample] = index1 * cells
+			blend_table[sample] = blend
+		axis_tables.append([x0_table, x1_table, row0_table, row1_table, blend_table])
 	var img := Image.create(SIZE, SIZE, true, Image.FORMAT_RGB8)
 	for j in SIZE:
 		for i in SIZE:
 			var n := 0.0
 			for o in octaves.size():
-				n += weights[o] * _value_noise(octaves[o][1], octaves[o][0], float(i) / SIZE, float(j) / SIZE)
+				var octave: Array = octaves[o]
+				var tables: Array = axis_tables[o]
+				var grid: PackedFloat32Array = octave[1]
+				var x0_table: PackedInt32Array = tables[0]
+				var x1_table: PackedInt32Array = tables[1]
+				var row0_table: PackedInt32Array = tables[2]
+				var row1_table: PackedInt32Array = tables[3]
+				var blend_table: PackedFloat64Array = tables[4]
+				var x0: int = x0_table[i]
+				var x1: int = x1_table[i]
+				var row0: int = row0_table[j]
+				var row1: int = row1_table[j]
+				var fx: float = blend_table[i]
+				var fy: float = blend_table[j]
+				var a := grid[row0 + x0]
+				var b := grid[row0 + x1]
+				var c := grid[row1 + x0]
+				var d := grid[row1 + x1]
+				n += weights[o] * lerpf(lerpf(a, b, fx), lerpf(c, d, fx), fy)
 			var shade := lerpf(1.0 - Spec.GROUND.contrast, 1.0 + Spec.GROUND.contrast, n)
 			img.set_pixel(i, j, Color(Spec.GRASS.r * shade, Spec.GRASS.g * shade, Spec.GRASS.b * shade))
 	img.generate_mipmaps()

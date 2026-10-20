@@ -61,6 +61,8 @@ func update_visual(sun_deg: float, exposure: float, telemetry: Dictionary={}, ma
  light_state.update(local_seconds,night_factor(sun_deg))
  var factor: float=light_state.gain
  active_mode=light_state.active_mode
+ if model.get("root") is Node3D:
+  AircraftLights.set_emission_mode(AircraftLights.prepare_emission(model.root),active_mode,factor)
  visible=active_mode!="off"
  var safe_exposure: float=maxf(exposure,.001) if is_finite(exposure) else .6
  if factor!=_last_optic_factor:

@@ -19,7 +19,7 @@ static func validated_rows(raw: Variant) -> Array:
 	var rows: Variant = raw.get("rows", null)
 	if not rows is Array or rows.size() != COUNT:
 		return []
-	var canonical: String = ""
+	var canonical_parts := PackedStringArray()
 	var seen: Dictionary = {}
 	for row: Variant in rows:
 		if not row is Array or row.size() != 4:
@@ -39,8 +39,8 @@ static func validated_rows(raw: Variant) -> Array:
 		if seen.has(key):
 			return []
 		seen[key] = true
-		canonical += "%d,%d,%d,%d\n" % [n, e, int(row[2]), int(row[3])]
-	if canonical.sha256_text() != raw.get("rows_sha256", ""):
+		canonical_parts.append("%d,%d,%d,%d\n" % [n, e, int(row[2]), int(row[3])])
+	if "".join(canonical_parts).sha256_text() != raw.get("rows_sha256", ""):
 		return []
 	return rows
 

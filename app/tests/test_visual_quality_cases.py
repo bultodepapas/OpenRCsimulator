@@ -1,8 +1,12 @@
 """Fixed-inventory, provenance, evidence, and frametime tests for VQ-01b."""
 import hashlib
+from contextlib import redirect_stderr, redirect_stdout
+import errno
+import io
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -35,7 +39,40 @@ def evidence_for(case):
     }
 
 
+def frametime_report(case_id):
+    return {
+        "format": "openrc-frametimes v2", "complete": True,
+        "route": "scripted-fixed", "case_id": case_id,
+        "preset": "current-default", "backend": "gl_compatibility",
+        "warmup_s": 10.0, "sample_s": 60.0, "frames": 60,
+        "frame_deltas_s": [1.0] * 60, "wall_seconds": 60.0,
+    }
+
+
 class VisualQualityCasesTests(unittest.TestCase):
+    def _performance_run_paths(self, root):
+        app_dir = root / "repo" / "app"
+        app_dir.mkdir(parents=True)
+        (app_dir / "main.gd").write_text("# fixture\n", encoding="utf-8")
+        output_dir = root / "captures" / "vq01b"
+        output_dir.mkdir(parents=True)
+        return app_dir, output_dir, output_dir / "performance"
+
+    def _assert_performance_output_rejected(self, app_dir, output_dir):
+        with (patch.object(vq, "_run_guarded_process") as process,
+              patch.object(vq, "code_revision") as revision,
+              patch.object(vq, "input_hashes") as hashes):
+            with self.assertRaisesRegex(RuntimeError, "performance output directory must be empty"):
+                vq.run_performance_cases(app_dir, sys.executable, output_dir,
+                                         xvfb=sys.executable, timeout=90.0)
+            process.assert_not_called()
+            revision.assert_not_called()
+            hashes.assert_not_called()
+
+    def _assert_performance_lock_released(self, performance_dir):
+        with vq._output_lock(performance_dir):
+            pass
+
     def test_fixed_inventory_has_exact_66_case_contract(self):
         cases = vq.capture_cases()
         self.assertEqual(len(cases), 66)
@@ -213,6 +250,223 @@ class VisualQualityCasesTests(unittest.TestCase):
                 with self.assertRaisesRegex(RuntimeError, "another VQ-01b run"):
                     with vq._output_lock(output_dir):
                         pass
+
+    def test_output_lock_propagates_unrelated_lock_errors(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output_dir = Path(temporary)
+            injected = OSError(errno.EIO, "injected lock failure")
+            if os.name == "nt":
+                import msvcrt
+
+                lock_call = patch.object(msvcrt, "locking", side_effect=injected)
+            else:
+                import fcntl
+
+                lock_call = patch.object(fcntl, "flock", side_effect=injected)
+            with lock_call:
+                with self.assertRaises(OSError) as raised:
+                    with vq._output_lock(output_dir):
+                        pass
+            self.assertEqual(raised.exception.errno, errno.EIO)
+            self.assertIn("could not acquire VQ-01b output lock", str(raised.exception))
+
+
+    def test_performance_rerun_preserves_completed_output_and_releases_lock(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            app_dir, output_dir, performance_dir = self._performance_run_paths(Path(temporary))
+            performance_dir.mkdir()
+            evidence = {
+                "performance-run-manifest.json": b'{"complete":true,"previous":true}\n',
+                "frametimes-scripted-fixed-1.json": b'{"report":"previous"}\n',
+                "frametimes-scripted-fixed-1.log": b"previous run log\x00\n",
+            }
+            for name, contents in evidence.items():
+                (performance_dir / name).write_bytes(contents)
+
+            self._assert_performance_output_rejected(app_dir, output_dir)
+            self._assert_performance_lock_released(performance_dir)
+            self.assertEqual({name: (performance_dir / name).read_bytes()
+                              for name in evidence}, evidence)
+
+    def test_performance_rerun_preserves_partial_output_and_releases_lock(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            app_dir, output_dir, performance_dir = self._performance_run_paths(Path(temporary))
+            performance_dir.mkdir()
+            partial_report = performance_dir / "frametimes-scripted-fixed-2.json"
+            partial_report.write_bytes(b'{"complete":')
+            orphan_dir = performance_dir / "orphaned-case"
+            orphan_dir.mkdir()
+            orphan_log = orphan_dir / "capture.log"
+            orphan_log.write_bytes(b"partial process output\n")
+            before = {partial_report: partial_report.read_bytes(),
+                      orphan_log: orphan_log.read_bytes()}
+
+            self._assert_performance_output_rejected(app_dir, output_dir)
+            self._assert_performance_lock_released(performance_dir)
+            self.assertEqual({path: path.read_bytes() for path in before}, before)
+            self.assertTrue(orphan_dir.is_dir())
+
+    def test_performance_rerun_rejects_symlink_without_following_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            app_dir, output_dir, performance_dir = self._performance_run_paths(root)
+            performance_dir.mkdir()
+            target = root / "outside-report.json"
+            target.write_bytes(b"external evidence\x00\n")
+            link = performance_dir / "previous-report.json"
+            try:
+                link.symlink_to(target)
+            except OSError as error:
+                self.skipTest(f"symlink creation is unavailable: {error}")
+
+            self._assert_performance_output_rejected(app_dir, output_dir)
+            self._assert_performance_lock_released(performance_dir)
+            self.assertTrue(link.is_symlink())
+            self.assertEqual(target.read_bytes(), b"external evidence\x00\n")
+
+    def test_performance_output_directory_rejects_symlink(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            app_dir, output_dir, performance_dir = self._performance_run_paths(root)
+            target = root / "previous-performance"
+            target.mkdir()
+            preserved = target / "previous-report.json"
+            preserved.write_bytes(b"previous evidence\n")
+            try:
+                performance_dir.symlink_to(target, target_is_directory=True)
+            except OSError as error:
+                self.skipTest(f"symlink creation is unavailable: {error}")
+
+            with patch.object(vq, "_run_guarded_process") as process:
+                with self.assertRaisesRegex(RuntimeError, "performance output directory must not be a symlink"):
+                    vq.run_performance_cases(app_dir, sys.executable, output_dir,
+                                             xvfb=sys.executable, timeout=90.0)
+            process.assert_not_called()
+            self.assertTrue(performance_dir.is_symlink())
+            self.assertEqual(preserved.read_bytes(), b"previous evidence\n")
+            self.assertFalse((target / ".visual-quality-cases.lock").exists())
+
+    def test_performance_output_directory_rejects_windows_junction(self):
+        if os.name != "nt":
+            self.skipTest("Windows junctions are only available on Windows")
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            app_dir, output_dir, performance_dir = self._performance_run_paths(root)
+            target = root / "previous-performance"
+            target.mkdir()
+            preserved = target / "previous-report.json"
+            preserved.write_bytes(b"previous junction evidence\n")
+            result = subprocess.run(
+                ["cmd.exe", "/c", "mklink", "/J", str(performance_dir), str(target)],
+                capture_output=True, text=True,
+            )
+            if result.returncode != 0:
+                self.skipTest(f"junction creation is unavailable: {result.stderr or result.stdout}")
+            self.assertFalse(performance_dir.is_symlink())
+            self.assertNotEqual(performance_dir.resolve(), performance_dir)
+
+            with patch.object(vq, "_run_guarded_process") as process:
+                with self.assertRaisesRegex(RuntimeError, "must not be a symlink or junction"):
+                    vq.run_performance_cases(app_dir, sys.executable, output_dir,
+                                             xvfb=sys.executable, timeout=90.0)
+            process.assert_not_called()
+            self.assertEqual(preserved.read_bytes(), b"previous junction evidence\n")
+            self.assertFalse((target / ".visual-quality-cases.lock").exists())
+
+    def test_clean_performance_run_writes_three_reports_and_complete_manifest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            app_dir, output_dir, performance_dir = self._performance_run_paths(Path(temporary))
+
+            def fake_run_guarded_process(command, log_path, timeout):
+                case_id = next(argument.split("=", 1)[1] for argument in command
+                               if argument.startswith("--case="))
+                report_path = Path(next(argument.split("=", 1)[1] for argument in command
+                                        if argument.startswith("--frametimes=")))
+                report_path.write_text(json.dumps(frametime_report(case_id)), encoding="utf-8")
+                log_path.write_text(f"mocked {case_id}\n", encoding="utf-8")
+
+            with (patch.object(vq, "_run_guarded_process", side_effect=fake_run_guarded_process) as process,
+                  patch.object(vq, "code_revision", return_value=("fixture-revision", "test")),
+                  patch.object(vq, "input_hashes", side_effect=[{"app/main.gd": "same"}, {"app/main.gd": "same"}])):
+                manifest = vq.run_performance_cases(app_dir, sys.executable, output_dir,
+                                                    xvfb=sys.executable, timeout=90.0)
+
+            self.assertEqual(process.call_count, 3)
+            self.assertTrue(manifest["complete"])
+            self.assertEqual(manifest["process_count"], 3)
+            self.assertEqual([entry["case_id"] for entry in manifest["reports"]],
+                             [f"scripted-fixed-repeat{repeat}" for repeat in range(1, 4)])
+            manifest_path = performance_dir / "performance-run-manifest.json"
+            self.assertEqual(json.loads(manifest_path.read_text(encoding="utf-8")), manifest)
+            self.assertEqual(
+                {path.name for path in performance_dir.iterdir()
+                 if path.name != ".visual-quality-cases.lock"},
+                {"performance-run-manifest.json"}
+                | {f"frametimes-scripted-fixed-{repeat}.{suffix}"
+                   for repeat in range(1, 4) for suffix in ("json", "log")},
+            )
+            self._assert_performance_lock_released(performance_dir)
+
+    def test_failed_new_performance_run_has_no_complete_manifest(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            app_dir, output_dir, performance_dir = self._performance_run_paths(Path(temporary))
+
+            def fake_failed_process(command, log_path, timeout):
+                report_path = Path(next(argument.split("=", 1)[1] for argument in command
+                                        if argument.startswith("--frametimes=")))
+                report_path.write_bytes(b'{"complete":')
+                log_path.write_text("mocked process failed\n", encoding="utf-8")
+                raise RuntimeError("mocked process failure")
+
+            with (patch.object(vq, "_run_guarded_process", side_effect=fake_failed_process),
+                  patch.object(vq, "code_revision", return_value=("fixture-revision", "test")),
+                  patch.object(vq, "input_hashes", return_value={})):
+                with self.assertRaisesRegex(RuntimeError, "repeat 1 failed"):
+                    vq.run_performance_cases(app_dir, sys.executable, output_dir,
+                                             xvfb=sys.executable, timeout=90.0)
+
+            self.assertFalse((performance_dir / "performance-run-manifest.json").exists())
+            self.assertFalse((performance_dir / "frametimes-scripted-fixed-1.json").exists())
+            self.assertEqual((performance_dir / "frametimes-scripted-fixed-1.log").read_text(encoding="utf-8"),
+                             "mocked process failed\n")
+            self._assert_performance_lock_released(performance_dir)
+
+    def test_performance_runner_rejects_nonfinite_api_timeouts(self):
+        for timeout in (float("nan"), float("inf"), float("-inf")):
+            with self.subTest(timeout=timeout), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                with self.assertRaisesRegex(ValueError, "timeout must be finite"):
+                    vq.run_performance_cases(root / "app", sys.executable, root / "captures",
+                                             xvfb=sys.executable, timeout=timeout)
+                self.assertFalse((root / "captures" / "performance").exists())
+
+    def test_performance_cli_rejects_nonfinite_timeouts_before_maximum(self):
+        for timeout in (float("nan"), float("inf"), float("-inf")):
+            with self.subTest(timeout=timeout), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                stderr = io.StringIO()
+                args = ["--app", str(root / "app"), "--godot", sys.executable,
+                        "--out", str(root / "captures"), "--xvfb", sys.executable,
+                        f"--timeout={timeout}", "--performance-only"]
+                with (patch.object(vq, "run_performance_cases") as run,
+                      redirect_stderr(stderr)):
+                    self.assertEqual(vq.main(args), 1)
+                run.assert_not_called()
+                self.assertIn("timeout must be finite", stderr.getvalue())
+                self.assertFalse((root / "captures" / "performance").exists())
+
+    def test_performance_cli_keeps_fixed_minimum_for_finite_timeout(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            args = ["--app", str(root / "app"), "--godot", sys.executable,
+                    "--out", str(root / "captures"), "--xvfb", sys.executable,
+                    "--timeout=-1", "--performance-only"]
+            with (patch.object(vq, "run_performance_cases", return_value={"process_count": 3}) as run,
+                  redirect_stdout(io.StringIO())):
+                self.assertEqual(vq.main(args), 0)
+            run.assert_called_once()
+            self.assertEqual(run.call_args.kwargs["timeout"],
+                             vq.PERFORMANCE_WARMUP_S + vq.PERFORMANCE_SAMPLE_S + 10.0)
 
     def test_complete_manifest_lists_only_fresh_fixed_inventory(self):
         cases = {case.case_id: case for case in vq.capture_cases()}

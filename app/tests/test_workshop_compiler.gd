@@ -210,7 +210,7 @@ func _test_power_and_controls(base: Dictionary) -> void:
 		_check("inertia follows the per-item law (dry × ratio, liquid × s³, positions and boxes × s)",
 			_array_ratio_is(weighted.data.model.inertia, expected, 1.0), "%s vs %s" % [weighted.data.model.inertia, expected])
 		_tank_follows_airframe(base_data.model, weighted.data.model, 1.25, "weighted 125%")
-	var clipped: Dictionary = Compiler.compile(base, {"scale": 2.01})
+	var clipped: Dictionary = Compiler.compile(base, {"scale": preload("res://workshop/parameters.gd").MAX_SCALE + 0.01})
 	_check("scale above the V1 bound is rejected", not clipped.ok and not clipped.errors.is_empty())
 
 

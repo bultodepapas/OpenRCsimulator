@@ -157,7 +157,8 @@ def readability(cap_dir, out_path):
         print(f"{with_name}: {r['pixels']} airplane pixels, Weber contrast {r['weber_contrast']:+.3f}, "
               f"{100 * r['share_low_contrast']:.1f} % with |contrast| < 0.1, mean ΔE {r['delta_e']:.1f}, "
               f"background saturation {r['background_saturation']:.1f}")
-    json.dump(results, open(out_path, "w"), indent=2, sort_keys=True)
+    with open(out_path, "w", encoding="utf-8") as stream:
+        json.dump(results, stream, indent=2, sort_keys=True)
     return results
 
 

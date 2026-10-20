@@ -1,5 +1,10 @@
 # DT-11a — reuse the existing ground image bytes
 
+2026-10-19 follow-up: [prepare noise coordinates once](noise/README.md) reduces
+cache-empty ground-material construction from 172.878 to 111.111 ms across five
+processes, preserving 100 image/mip pairs and 30 native material pairs. This
+targets the first generation; warm/default-world loading gains remain unqualified.
+
 2026-10-14. `Ground.grass_material()` now reuses one lazily computed default RGB8
 image buffer, including all eight mip levels. Every build still receives a new
 Image, ImageTexture and ShaderMaterial. The recipe, seed, shader, filtering,

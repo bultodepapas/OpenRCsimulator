@@ -135,6 +135,10 @@ func _run() -> void:
 		_motion(a, 0.0)
 	_motion(2, -1.0)
 	await _settle()
+	# D6b-R3: both legacy direct flights and shell-managed sessions must stay
+	# paused throughout calibration, even with an armed radio at full throttle.
+	for managed: bool in [false, true]:
+		await _calibration_resume_guard(managed)
 	_key(KEY_K)
 	await _settle()
 	_check("K starts the calibration (paused, step 1)", _panel_has("CALIBRATION 1/5") and _session.sim.paused, (_main._panel as Label).text)
@@ -202,3 +206,43 @@ func _run() -> void:
 
 	print("all e2e radio checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+func _calibration_resume_guard(managed: bool) -> void:
+	var previous_selection: bool = _session.external_controller_selection
+	_session.external_controller_selection = managed
+	var label := "managed calibration" if managed else "direct calibration"
+	_check(label + " starts with an armed, flyable radio", _session.radio.armed and _session.is_flyable())
+	_key(KEY_K)
+	await _settle()
+	var wizard: RefCounted = _session.calibration
+	var tick: int = _session.sim.tick
+	var state: PackedByteArray = _session.sim.state.to_byte_array()
+	var reason: String = _session.pause_reason
+	_motion(2, 1.0)
+	await _settle()
+	_check(label + " advertises resume as unavailable", wizard != null and not _session.can_resume()
+		and _session.radio.armed and _session.radio.throttle_position() == 1.0)
+	_session.resume()
+	await _settle()
+	_check(label + " refuses direct resume without changing the paused flight", _session.sim.paused
+		and _session.sim.tick == tick and _session.sim.state.to_byte_array() == state
+		and _session.commands.throttle == 0.0 and _session.sim.inputs[3] == 0.0
+		and _session.calibration == wizard and _session.pause_reason == reason)
+	_key(KEY_P)
+	await _settle()
+	_check(label + " P cannot advance ticks or restore throttle", _session.sim.paused
+		and _session.sim.tick == tick and _session.sim.state.to_byte_array() == state
+		and _session.commands.throttle == 0.0 and _session.sim.inputs[3] == 0.0
+		and _session.calibration == wizard and _session.pause_reason == reason)
+	_key(KEY_ESCAPE)
+	await _settle()
+	_check(label + " cancelling the wizard does not automatically resume", _session.calibration == null and _session.sim.paused)
+	_motion(2, -1.0)
+	await _settle()
+	var resume_tick: int = _session.sim.tick
+	_key(KEY_P)
+	await _settle()
+	_check(label + " explicit resume works after cancellation", _session.can_resume()
+		and not _session.sim.paused and _session.sim.tick > resume_tick)
+	_session.external_controller_selection = previous_selection

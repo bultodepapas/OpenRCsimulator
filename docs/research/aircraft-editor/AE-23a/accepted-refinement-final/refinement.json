@@ -1,0 +1,5379 @@
+[
+	{
+		"compiled": true,
+		"errors": [],
+		"frozen": true,
+		"policy": "constant_wing_loading",
+		"runs": [
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.823803615104236,
+				"rate": 240,
+				"start_error": "",
+				"state": [
+					67.27121952459312,
+					18.13981253627904,
+					-29.823803615104236,
+					14.799483461724206,
+					-0.2596042924647539,
+					1.0961456384243193,
+					0.8220633463103146,
+					-0.15114073151960233,
+					-0.06456948325079578,
+					0.5451597158278779,
+					-0.04564310712013147,
+					0.051204826321083016,
+					-0.2034162649883387
+				],
+				"tick": 960,
+				"usec_per_tick": 950.4395833333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.824144848399968,
+				"rate": 480,
+				"start_error": "",
+				"state": [
+					67.26589487248172,
+					18.140828577500503,
+					-29.824144848399968,
+					14.799311076704257,
+					-0.25959967777521314,
+					1.0961443815671617,
+					0.8220092794568763,
+					-0.15111063196715435,
+					-0.06455863319097806,
+					0.5452508636158104,
+					-0.045640685429923424,
+					0.051181875606812144,
+					-0.20337727355910035
+				],
+				"tick": 1920,
+				"usec_per_tick": 829.2927083333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.824274438003915,
+				"rate": 960,
+				"start_error": "",
+				"state": [
+					67.26348507156898,
+					18.141282591033193,
+					-29.824274438003915,
+					14.799244992265832,
+					-0.25960343659201557,
+					1.0961434274839974,
+					0.8219858880661967,
+					-0.1510987947622337,
+					-0.06455517808558699,
+					0.5452898156244664,
+					-0.04563599394914235,
+					0.05117295103094016,
+					-0.2033623314749645
+				],
+				"tick": 3840,
+				"usec_per_tick": 906.2622395833333
+			}
+		],
+		"scale": 0.35,
+		"starts": {
+			"airborne": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-6acf9e484a5ca2693a3115197658a7df",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "airborne",
+					"launch_field_id": "",
+					"launch_kind": "trimmed_airborne",
+					"model_sha256": "bb9ee2eb0e26abc01e3072b9f544094e6bed97545736c1fd17b20fa5c92a62d6",
+					"resolved_sha256": "f04cbc961f34f49161f54c6e0a05b171c8f3b51cc6164fccfc4df923ef5d9609",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {},
+					"runway_iterations": 0,
+					"runway_residual": "nan",
+					"runway_scaled_residual": "nan",
+					"runway_status": "not_attempted",
+					"start_choice": "airborne",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 15.423,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "airborne"
+			},
+			"runway": {
+				"available": false,
+				"diagnostics": {
+					"aircraft_id": "workshop-6acf9e484a5ca2693a3115197658a7df",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "failed",
+					"launch_field_id": "",
+					"launch_kind": "failed",
+					"model_sha256": "bb9ee2eb0e26abc01e3072b9f544094e6bed97545736c1fd17b20fa5c92a62d6",
+					"resolved_sha256": "f04cbc961f34f49161f54c6e0a05b171c8f3b51cc6164fccfc4df923ef5d9609",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {
+						"contact_summary": [],
+						"environment": {
+							"error": "",
+							"maximum_rho_kgm3": null,
+							"minimum_rho_kgm3": null,
+							"queries": 0,
+							"source": "scalar_argument"
+						},
+						"feasibility_checks": 178,
+						"format": "openrc-runway-equilibrium-diagnostics-v1",
+						"initial_pose_ned_yaw_pitch_roll": [
+							15.0,
+							-47.0,
+							1.5707963267948966,
+							0.0,
+							0.0
+						],
+						"length_scale_definition": "max_i norm(contact_position_i), floored at 0.1 m",
+						"length_scale_m": 0.12449027358083851,
+						"requested_pose_ned_heading": [
+							15.0,
+							-47.0,
+							1.5707963267948966
+						],
+						"residual_evaluation_budget": 4096,
+						"scaled_residual_target": 1e-09,
+						"stage1": {
+							"accepted_steps": [
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017936067123151482,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.188751033290334
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01787189567788851,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.1844979341387576
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.018558350650256954,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.9664240133820011
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 0.0006054692681773211,
+									"residual_scaled_linf": 0.0004278904939879932,
+									"step_scaled_linf": 0.012517946678455818
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01793965092625114,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.188988557470444
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01785312862285871,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.1832541076128356
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01860509242287266,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.9688580859100593
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 5.944368604307545e-07,
+									"residual_scaled_linf": 5.528693630175021e-07,
+									"step_scaled_linf": 0.0004420118929942884
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017939659721550746,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.18898914039765
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.0178531251893077,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 1.1832538800469325
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.018605121070602488,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.9688595777373534
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 1.963137874778132e-13,
+									"residual_scaled_linf": 1.317536650204448e-13,
+									"step_scaled_linf": 2.1125376884171331e-07
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 40,
+							"evaluations_at_stage_start": 0,
+							"feasibility_checks": 40,
+							"feasibility_checks_at_stage_start": 0,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017939659721550746,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 1.18898914039765
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.0178531251893077,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 1.1832538800469325
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.018605121070602488,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.9688595777373534
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"final_residual": [
+								1.292062079072745e-12,
+								6.512589350183423e-12,
+								-9.434894638021656e-12
+							],
+							"final_scaled_residual": [
+								1.317536650204448e-13,
+								8.267390290506847e-14,
+								-1.1977103441987858e-13
+							],
+							"finite_difference_physical_steps": [
+								1.2449027358083852e-06,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017516610381556018,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 1.1609506447453677
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.0179995814192389,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 1.1929605784812733
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.016873651096500922,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.8786934744582079
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"initial_residual": [
+								0.3184587579485001,
+								0.6613770567111831,
+								-0.673209608517119
+							],
+							"initial_scaled_residual": [
+								0.032473755864489924,
+								0.008395834533715889,
+								-0.008546042567191174
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 1.4021339550486188e-10,
+							"max_pivot": 6.87928121294142,
+							"min_pivot": 0.6273039630300453,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.0911874283973085,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								78.77442725380463,
+								78.77442725380463
+							],
+							"residual_units": [
+								"world_down_m/s^2",
+								"world_north_rad/s^2",
+								"world_east_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "engine_off",
+							"variable_scales": [
+								0.12449027358083851,
+								1.0,
+								1.0
+							]
+						},
+						"stage2": {
+							"accepted_steps": [
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												5.158969765339805e-05,
+												0.0012584644944055867
+											],
+											"anchor_friction_margin_n": 0.6448758548664763,
+											"anchor_stuck": true,
+											"compression_m": 0.016534034885546136,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.002326714866036593,
+											"lateral_friction_limit_n": 0.7013301516217044,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.05640632960988983,
+											"longitudinal_hold_limit_n": 0.1369785452386141,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.0958283619089129
+										},
+										{
+											"anchor_delta_ned_m": [
+												5.83525677857466e-05,
+												0.0012845583516778447
+											],
+											"anchor_friction_margin_n": 0.6037983582361756,
+											"anchor_stuck": true,
+											"compression_m": 0.015593477605189053,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0026295375237487934,
+											"lateral_friction_limit_n": 0.661434192492068,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.057575818906759016,
+											"longitudinal_hold_limit_n": 0.129186365721107,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.033490925768856
+										},
+										{
+											"anchor_delta_ned_m": [
+												7.69315598425635e-06,
+												0.0010937563538675477
+											],
+											"anchor_friction_margin_n": 0.7244363035694492,
+											"anchor_stuck": true,
+											"compression_m": 0.022916446828239977,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0005484646516704575,
+											"lateral_friction_limit_n": 0.763757682861414,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.039317554043307716,
+											"longitudinal_hold_limit_n": 0.15315125056386292,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.193371379470959
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.05016014441682923,
+									"residual_scaled_linf": 0.048676566364071396,
+									"step_scaled_linf": 0.05
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.5,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												8.094447124484816e-05,
+												0.0019104437648280737
+											],
+											"anchor_friction_margin_n": 0.5918998473989527,
+											"anchor_stuck": true,
+											"compression_m": 0.01597474664241655,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.003673859708226205,
+											"lateral_friction_limit_n": 0.6776066194609487,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.08562799502575785,
+											"longitudinal_hold_limit_n": 0.13234504286346652,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.0587603429077321
+										},
+										{
+											"anchor_delta_ned_m": [
+												9.326706958212583e-05,
+												0.0019635158503206185
+											],
+											"anchor_friction_margin_n": 0.5315032314187629,
+											"anchor_stuck": true,
+											"compression_m": 0.014607488747612389,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.004226281043475438,
+											"lateral_friction_limit_n": 0.6196111456817545,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.08800649467122428,
+											"longitudinal_hold_limit_n": 0.12101780189096764,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.9681424151277411
+										},
+										{
+											"anchor_delta_ned_m": [
+												-1.491639659789712e-06,
+												0.0015552168195185345
+											],
+											"anchor_friction_margin_n": 0.7842954368801369,
+											"anchor_stuck": true,
+											"compression_m": 0.025210247795128198,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0003507784377899409,
+											"lateral_friction_limit_n": 0.8402053156269322,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.05590877834445082,
+											"longitudinal_hold_limit_n": 0.16848078612653236,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.3128208056670814
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.026960442852850385,
+									"residual_scaled_linf": 0.02572364057327852,
+									"step_scaled_linf": 0.025
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.25,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												8.910158167907412e-05,
+												0.0020930593432311184
+											],
+											"anchor_friction_margin_n": 0.5778885514859522,
+											"anchor_stuck": true,
+											"compression_m": 0.015837586876438155,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.004052964189666152,
+											"lateral_friction_limit_n": 0.6717886639445904,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.09381260363630349,
+											"longitudinal_hold_limit_n": 0.13120872342667778,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.0496697874134222
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.00010326341951127915,
+												0.002155436548370915
+											],
+											"anchor_friction_margin_n": 0.5119464799324397,
+											"anchor_stuck": true,
+											"compression_m": 0.01434950700200872,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.004688136095690231,
+											"lateral_friction_limit_n": 0.608668240455516,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.09660807594933056,
+											"longitudinal_hold_limit_n": 0.11888051571396795,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.9510441257117436
+										},
+										{
+											"anchor_delta_ned_m": [
+												-6.2774295805922975e-06,
+												0.0016708083004246532
+											],
+											"anchor_friction_margin_n": 0.8024531856489128,
+											"anchor_stuck": true,
+											"compression_m": 0.02587976575495096,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.00021532952555073566,
+											"lateral_friction_limit_n": 0.8625189617807589,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.06006539016369144,
+											"longitudinal_hold_limit_n": 0.17295519324515535,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.3476858777824356
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.02025603372064811,
+									"residual_scaled_linf": 0.019284543258512005,
+									"step_scaled_linf": 0.0070778276308712685
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.25,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												9.522857547672459e-05,
+												0.002230071732000738
+											],
+											"anchor_friction_margin_n": 0.5674709847094952,
+											"anchor_stuck": true,
+											"compression_m": 0.015736914155973433,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.004339259113903196,
+											"lateral_friction_limit_n": 0.6675183926649879,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.09995326242277038,
+											"longitudinal_hold_limit_n": 0.13037468606738042,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.0429974885390434
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0001108498242547995,
+												0.002299961273735107
+											],
+											"anchor_friction_margin_n": 0.4973379375754079,
+											"anchor_stuck": true,
+											"compression_m": 0.014158033484322758,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.005040160219192872,
+											"lateral_friction_limit_n": 0.6005464388432774,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.10308536035211156,
+											"longitudinal_hold_limit_n": 0.1172942263365776,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.9383538106926208
+										},
+										{
+											"anchor_delta_ned_m": [
+												-1.04350834888578e-05,
+												0.0017536631430630223
+											],
+											"anchor_friction_margin_n": 0.8163143346467692,
+											"anchor_stuck": true,
+											"compression_m": 0.0263850615660894,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 9.322226370384489e-05,
+											"lateral_friction_limit_n": 0.879359424037722,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.0630450204688902,
+											"longitudinal_hold_limit_n": 0.1763320991835214,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 1.3739991000589404
+										}
+									],
+									"iteration": 4,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.015212622202673663,
+									"residual_scaled_linf": 0.014458516081447508,
+									"step_scaled_linf": 0.005319894020476591
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 125,
+							"evaluations_at_stage_start": 40,
+							"feasibility_checks": 138,
+							"feasibility_checks_at_stage_start": 40,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											9.522857547672459e-05,
+											0.002230071732000738
+										],
+										"anchor_friction_margin_n": 0.5674709847094952,
+										"anchor_stuck": true,
+										"compression_m": 0.015736914155973433,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.004339259113903196,
+										"lateral_friction_limit_n": 0.6675183926649879,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.09995326242277038,
+										"longitudinal_hold_limit_n": 0.13037468606738042,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 1.0429974885390434
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0001108498242547995,
+											0.002299961273735107
+										],
+										"anchor_friction_margin_n": 0.4973379375754079,
+										"anchor_stuck": true,
+										"compression_m": 0.014158033484322758,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.005040160219192872,
+										"lateral_friction_limit_n": 0.6005464388432774,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.10308536035211156,
+										"longitudinal_hold_limit_n": 0.1172942263365776,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.9383538106926208
+									},
+									{
+										"anchor_delta_ned_m": [
+											-1.04350834888578e-05,
+											0.0017536631430630223
+										],
+										"anchor_friction_margin_n": 0.8163143346467692,
+										"anchor_stuck": true,
+										"compression_m": 0.0263850615660894,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 9.322226370384489e-05,
+										"lateral_friction_limit_n": 0.879359424037722,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.0630450204688902,
+										"longitudinal_hold_limit_n": 0.1763320991835214,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 1.3739991000589404
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0011160309551444098,
+									0.009824166796036312,
+									0.0004977415863961247,
+									0.0010645068714769668
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"final_residual": [
+								0.1417896067301272,
+								-0.004924130485280537,
+								0.03875299055624204,
+								-0.20077439323127336,
+								-0.004974367557272394,
+								0.006636252228557036
+							],
+							"final_scaled_residual": [
+								0.014458516081447508,
+								-0.0005021215690659437,
+								0.003951705277158055,
+								-0.0025487255221087806,
+								-6.314698475998305e-05,
+								8.42437382270719e-05
+							],
+							"finite_difference_physical_steps": [
+								1.2449027358083852e-06,
+								1.2449027358083852e-06,
+								1.2449027358083852e-06,
+								1e-05,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.7609530498544962,
+										"anchor_stuck": true,
+										"compression_m": 0.017939659721550746,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.7609530498544962,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.14862364254970625,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 1.18898914039765
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.757282483230037,
+										"anchor_stuck": true,
+										"compression_m": 0.0178531251893077,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.757282483230037,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.14790673500586657,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 1.1832538800469325
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.6200701297519063,
+										"anchor_stuck": true,
+										"compression_m": 0.018605121070602488,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.6200701297519063,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.12433854079610324,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.9688595777373534
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0,
+									0.0,
+									0.0,
+									2.925822230470665e-05
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"initial_residual": [
+								0.9228705136985336,
+								-0.032299446580533464,
+								1.824386843018999e-05,
+								-1.3031064322640062,
+								-0.03267449817825085,
+								0.039948465654204846
+							],
+							"initial_scaled_residual": [
+								0.0941066025297664,
+								-0.003293626934838448,
+								1.8603568425700919e-06,
+								-0.0165422520695137,
+								-0.0004147856013345085,
+								0.000507124799847725
+							],
+							"iteration_limit": 64,
+							"iterations": 5,
+							"max_derivative_step_relative_difference": 1.898758927865174e-08,
+							"max_pivot": 10.12747108476604,
+							"min_pivot": 0.6185068533775596,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.06107219148795507,
+							"reason": "bounded line search found no feasible descent step",
+							"residual_scales": [
+								9.80665,
+								9.80665,
+								9.80665,
+								78.77442725380463,
+								78.77442725380463,
+								78.77442725380463
+							],
+							"residual_units": [
+								"body_forward_m/s^2",
+								"body_right_m/s^2",
+								"body_down_m/s^2",
+								"body_roll_rad/s^2",
+								"body_pitch_rad/s^2",
+								"body_yaw_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "idle",
+							"variable_scales": [
+								0.12449027358083851,
+								0.12449027358083851,
+								0.12449027358083851,
+								1.0,
+								1.0,
+								1.0
+							]
+						},
+						"total_residual_evaluations": 165,
+						"total_solver_iterations": 8
+					},
+					"runway_iterations": 0,
+					"runway_residual": 0.20077439323127336,
+					"runway_scaled_residual": 0.014458516081447508,
+					"runway_status": "numerical_unresolved",
+					"start_choice": "runway",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 100.092,
+				"field_id": "default",
+				"ok": true,
+				"reason": "runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+				"start_choice": "runway"
+			}
+		}
+	},
+	{
+		"compiled": true,
+		"errors": [],
+		"frozen": true,
+		"policy": "constant_wing_loading",
+		"runs": [
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.96482115217881,
+				"rate": 240,
+				"start_error": "",
+				"state": [
+					62.659535924690864,
+					19.913504582742938,
+					-29.96482115217881,
+					14.981924913668381,
+					-0.2429968921673345,
+					1.0986241582694212,
+					0.7503700778406284,
+					-0.07401637238677074,
+					-0.01661802723784194,
+					0.6566507169499435,
+					-0.02360799544568384,
+					0.008256447642346215,
+					-0.07841942352757651
+				],
+				"tick": 960,
+				"usec_per_tick": 970.2052083333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.964873812960263,
+				"rate": 480,
+				"start_error": "",
+				"state": [
+					62.65757060142798,
+					19.913632173369542,
+					-29.964873812960263,
+					14.981898556880743,
+					-0.2429882005214508,
+					1.0986249458676853,
+					0.7503447694193018,
+					-0.07400350079109891,
+					-0.016608428531867038,
+					0.656681329852965,
+					-0.023604349693040007,
+					0.008252488290967499,
+					-0.0783966840420393
+				],
+				"tick": 1920,
+				"usec_per_tick": 1009.7869791666667
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.964893524387286,
+				"rate": 960,
+				"start_error": "",
+				"state": [
+					62.65668638887559,
+					19.913687354647433,
+					-29.964893524387286,
+					14.98188813062038,
+					-0.2429895318718287,
+					1.098625131103224,
+					0.7503338730520083,
+					-0.0739984996327114,
+					-0.016604856501797802,
+					0.656694434073744,
+					-0.023601779213329965,
+					0.00825090557991418,
+					-0.07838775801095729
+				],
+				"tick": 3840,
+				"usec_per_tick": 1006.9419270833333
+			}
+		],
+		"scale": 1.0,
+		"starts": {
+			"airborne": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "airborne",
+					"launch_field_id": "",
+					"launch_kind": "trimmed_airborne",
+					"model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+					"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {},
+					"runway_iterations": 0,
+					"runway_residual": "nan",
+					"runway_scaled_residual": "nan",
+					"runway_status": "not_attempted",
+					"start_choice": "airborne",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 20.177,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "airborne"
+			},
+			"runway": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "runway",
+					"launch_field_id": "default",
+					"launch_kind": "runway_threshold",
+					"model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+					"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {
+						"achieved_minus_requested": [
+							0.0005119589559061666,
+							0.007803219948584683,
+							0.0003447645139801614,
+							0.0003293700886093376
+						],
+						"contact_summary": [
+							{
+								"anchor_delta_ned_m": [
+									4.470593841077175e-05,
+									0.002571268804146598
+								],
+								"anchor_friction_margin_n": 4.70095221847717,
+								"anchor_stuck": true,
+								"compression_m": 0.015754361778143166,
+								"heading_valid": true,
+								"lateral_anchor_request_n": 0.01676804965771207,
+								"lateral_friction_limit_n": 5.646363261286512,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.9452623299256793,
+								"longitudinal_hold_limit_n": 1.1028053244700216,
+								"max_compression_m": 0.12,
+								"name": "main_left",
+								"next_anchor_stuck": true,
+								"normal_load_n": 8.822442595760172
+							},
+							{
+								"anchor_delta_ned_m": [
+									4.717574985591e-05,
+									0.002505235416947471
+								],
+								"anchor_friction_margin_n": 4.429550820992516,
+								"anchor_stuck": true,
+								"compression_m": 0.014929459477982113,
+								"heading_valid": true,
+								"lateral_anchor_request_n": 0.017561249246508804,
+								"lateral_friction_limit_n": 5.35071827690879,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.9210000458003048,
+								"longitudinal_hold_limit_n": 1.0450621634587478,
+								"max_compression_m": 0.12,
+								"name": "main_right",
+								"next_anchor_stuck": true,
+								"normal_load_n": 8.360497307669982
+							},
+							{
+								"anchor_delta_ned_m": [
+									-5.6363600670295e-05,
+									0.0024072324628505726
+								],
+								"anchor_friction_margin_n": 6.34440632594882,
+								"anchor_stuck": true,
+								"compression_m": 0.025316761680835957,
+								"heading_valid": true,
+								"lateral_anchor_request_n": -0.012929278508500992,
+								"lateral_friction_limit_n": 7.129200089323407,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.784687252852305,
+								"longitudinal_hold_limit_n": 1.4295710978766045,
+								"max_compression_m": 0.12,
+								"name": "nose",
+								"next_anchor_stuck": true,
+								"normal_load_n": 11.139375139567822
+							}
+						],
+						"environment": {
+							"error": "",
+							"maximum_rho_kgm3": null,
+							"minimum_rho_kgm3": null,
+							"queries": 0,
+							"source": "scalar_argument"
+						},
+						"feasibility_checks": 116,
+						"final_pose_ned_yaw_pitch_roll": [
+							15.000511958955906,
+							-46.992196780051415,
+							-0.23363490880613308,
+							1.571125696883506,
+							-0.03728863253156833,
+							-0.004454210903592301
+						],
+						"format": "openrc-runway-equilibrium-diagnostics-v1",
+						"initial_pose_ned_yaw_pitch_roll": [
+							15.0,
+							-47.0,
+							1.5707963267948966,
+							0.0,
+							0.0
+						],
+						"length_scale_definition": "max_i norm(contact_position_i), floored at 0.1 m",
+						"length_scale_m": 0.3505990400478006,
+						"requested_pose_ned_heading": [
+							15.0,
+							-47.0,
+							1.5707963267948966
+						],
+						"residual_evaluation_budget": 4096,
+						"scaled_residual_target": 1e-09,
+						"stage1": {
+							"accepted_steps": [
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017413123114817224,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.751348944297646
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017296029144555015,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.685776320950808
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.019866715634755634,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.741354879292478
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 0.001967113341310819,
+									"residual_scaled_linf": 0.0018326293505000748,
+									"step_scaled_linf": 0.016046595033324323
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017431014010791425,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.761367846043198
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017301751687257796,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.688980944864365
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01995422156950395,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.779857490581737
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 4.52778576772933e-07,
+									"residual_scaled_linf": 3.308353356732211e-07,
+									"step_scaled_linf": 0.00021561300885106376
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01743101381654885,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.761367737267356
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017301746246439202,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.688977898005954
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01995424996760549,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.779869985746416
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 6.187567379850669e-14,
+									"residual_scaled_linf": 5.754902765783657e-14,
+									"step_scaled_linf": 8.891169087386835e-08
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 40,
+							"evaluations_at_stage_start": 0,
+							"feasibility_checks": 40,
+							"feasibility_checks_at_stage_start": 0,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.01743101381654885,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.761367737267356
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017301746246439202,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.688977898005954
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.01995424996760549,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 8.779869985746416
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"final_residual": [
+								5.64363172080723e-13,
+								5.511907662063276e-13,
+								-3.1694335740975466e-13
+							],
+							"final_scaled_residual": [
+								5.754902765783657e-14,
+								1.9705705160799068e-14,
+								-1.1331090317018245e-14
+							],
+							"finite_difference_physical_steps": [
+								3.5059904004780064e-06,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017483916580030318,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.790993284816977
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.018269514522892362,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 10.230928132819722
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.014754943059799073,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 6.492174946311592
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"initial_residual": [
+								0.596149077062238,
+								1.3947050691798721,
+								-0.7580723883459164
+							],
+							"initial_scaled_residual": [
+								0.06079028792321924,
+								0.04986231367533914,
+								-0.027101961591452926
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 2.439021207223391e-10,
+							"max_pivot": 19.373958256230228,
+							"min_pivot": 3.0823124396945785,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.1590956478242321,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								27.971126214900536,
+								27.971126214900536
+							],
+							"residual_units": [
+								"world_down_m/s^2",
+								"world_north_rad/s^2",
+								"world_east_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "engine_off",
+							"variable_scales": [
+								0.3505990400478006,
+								1.0,
+								1.0
+							]
+						},
+						"stage2": {
+							"accepted_steps": [
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.605858862127832e-05,
+												0.0025729241705931827
+											],
+											"anchor_friction_margin_n": 4.66785157133968,
+											"anchor_stuck": true,
+											"compression_m": 0.015663727264252837,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017264051651347836,
+											"lateral_friction_limit_n": 5.6138798515082184,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9458707413802493,
+											"longitudinal_hold_limit_n": 1.0964609084976986,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.771687267981589
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.8523070512729305e-05,
+												0.0025073790280885078
+											],
+											"anchor_friction_margin_n": 4.396695129077512,
+											"anchor_stuck": true,
+											"compression_m": 0.014840011040996373,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.018055354549376547,
+											"lateral_friction_limit_n": 5.318659957093101,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9217880169919282,
+											"longitudinal_hold_limit_n": 1.0388007728697461,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.31040618295797
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.447509922262839e-05,
+												0.0024093212072102688
+											],
+											"anchor_friction_margin_n": 6.316499279346359,
+											"anchor_stuck": true,
+											"compression_m": 0.025220026552823557,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.01231029029178389,
+											"lateral_friction_limit_n": 7.1019594772751145,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.785363724196128,
+											"longitudinal_hold_limit_n": 1.4241087190424029,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.096811683242365
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.00508125578543395,
+									"residual_scaled_linf": 0.005077889061576265,
+									"step_scaled_linf": 0.02224868358490355
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.470638948461669e-05,
+												0.00257127139474278
+											],
+											"anchor_friction_margin_n": 4.700951256146802,
+											"anchor_stuck": true,
+											"compression_m": 0.01575436175800614,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.01676821589453218,
+											"lateral_friction_limit_n": 5.646363254069402,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9452632822403058,
+											"longitudinal_hold_limit_n": 1.1028053230604298,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.822442584483438
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.717620100791464e-05,
+												0.0025052379801024927
+											],
+											"anchor_friction_margin_n": 4.429549868105233,
+											"anchor_stuck": true,
+											"compression_m": 0.014929459456682191,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017561415398909853,
+											"lateral_friction_limit_n": 5.350718269274898,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9210009880573768,
+											"longitudinal_hold_limit_n": 1.0450621619677534,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.360497295742027
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.636317680668412e-05,
+												0.002407235039534328
+											],
+											"anchor_friction_margin_n": 6.344405486180471,
+											"anchor_stuck": true,
+											"compression_m": 0.02531676166867341,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.012929134478539328,
+											"lateral_friction_limit_n": 7.129200085898433,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.7846880916823652,
+											"longitudinal_hold_limit_n": 1.4295710971898172,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.1393751342163
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 1.2660308359301231e-07,
+									"residual_scaled_linf": 9.678407637102885e-08,
+									"step_scaled_linf": 0.000263074119165206
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.470593841077175e-05,
+												0.002571268804146598
+											],
+											"anchor_friction_margin_n": 4.70095221847717,
+											"anchor_stuck": true,
+											"compression_m": 0.015754361778143166,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.01676804965771207,
+											"lateral_friction_limit_n": 5.646363261286512,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9452623299256793,
+											"longitudinal_hold_limit_n": 1.1028053244700216,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.822442595760172
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.717574985591e-05,
+												0.002505235416947471
+											],
+											"anchor_friction_margin_n": 4.429550820992516,
+											"anchor_stuck": true,
+											"compression_m": 0.014929459477982113,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017561249246508804,
+											"lateral_friction_limit_n": 5.35071827690879,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9210000458003048,
+											"longitudinal_hold_limit_n": 1.0450621634587478,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.360497307669982
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.6363600670295e-05,
+												0.0024072324628505726
+											],
+											"anchor_friction_margin_n": 6.34440632594882,
+											"anchor_stuck": true,
+											"compression_m": 0.025316761680835957,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.012929278508500992,
+											"lateral_friction_limit_n": 7.129200089323407,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.784687252852305,
+											"longitudinal_hold_limit_n": 1.4295710978766045,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.139375139567822
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 2.078262670925163e-13,
+									"residual_scaled_linf": 1.698281838589322e-13,
+									"step_scaled_linf": 7.363453332319147e-09
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 76,
+							"evaluations_at_stage_start": 40,
+							"feasibility_checks": 76,
+							"feasibility_checks_at_stage_start": 40,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											4.470593841077175e-05,
+											0.002571268804146598
+										],
+										"anchor_friction_margin_n": 4.70095221847717,
+										"anchor_stuck": true,
+										"compression_m": 0.015754361778143166,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.01676804965771207,
+										"lateral_friction_limit_n": 5.646363261286512,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.9452623299256793,
+										"longitudinal_hold_limit_n": 1.1028053244700216,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.822442595760172
+									},
+									{
+										"anchor_delta_ned_m": [
+											4.717574985591e-05,
+											0.002505235416947471
+										],
+										"anchor_friction_margin_n": 4.429550820992516,
+										"anchor_stuck": true,
+										"compression_m": 0.014929459477982113,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.017561249246508804,
+										"lateral_friction_limit_n": 5.35071827690879,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.9210000458003048,
+										"longitudinal_hold_limit_n": 1.0450621634587478,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.360497307669982
+									},
+									{
+										"anchor_delta_ned_m": [
+											-5.6363600670295e-05,
+											0.0024072324628505726
+										],
+										"anchor_friction_margin_n": 6.34440632594882,
+										"anchor_stuck": true,
+										"compression_m": 0.025316761680835957,
+										"heading_valid": true,
+										"lateral_anchor_request_n": -0.012929278508500992,
+										"lateral_friction_limit_n": 7.129200089323407,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.784687252852305,
+										"longitudinal_hold_limit_n": 1.4295710978766045,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 11.139375139567822
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0005119589559060947,
+									0.007803219948583926,
+									0.00034476451398015966,
+									0.0003293700886093376
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"final_residual": [
+								1.6654455592401973e-12,
+								1.3222062333895224e-13,
+								-8.881784197001252e-14,
+								-5.949312903693483e-13,
+								3.2653161973413744e-12,
+								-6.84635783076612e-14
+							],
+							"final_scaled_residual": [
+								1.698281838589322e-13,
+								1.3482751330877746e-14,
+								-9.056899345853327e-15,
+								-2.1269479312292463e-14,
+								1.1673881745962388e-13,
+								-2.4476518314514586e-15
+							],
+							"finite_difference_physical_steps": [
+								3.5059904004780064e-06,
+								3.5059904004780064e-06,
+								3.5059904004780064e-06,
+								1e-05,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 6.247275351851109,
+										"anchor_stuck": true,
+										"compression_m": 0.01743101381654885,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 6.247275351851109,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.2201709671584196,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 9.761367737267356
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 6.200945854723812,
+										"anchor_stuck": true,
+										"compression_m": 0.017301746246439202,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 6.200945854723812,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.2111222372507442,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 9.688977898005954
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 5.619116790877707,
+										"anchor_stuck": true,
+										"compression_m": 0.01995424996760549,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 5.619116790877707,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.1267641333088558,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.779869985746416
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0,
+									0.0,
+									0.0,
+									2.011430799431224e-05
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"initial_residual": [
+								0.9217390461716586,
+								-0.00644463210594157,
+								-0.00030685521366891066,
+								-0.455419734375184,
+								-0.010390745607819144,
+								0.035451856538156315
+							],
+							"initial_scaled_residual": [
+								0.09399122495160515,
+								-0.0006571695845106709,
+								-3.129052364149946e-05,
+								-0.01628178039297455,
+								-0.0003714811312203752,
+								0.001267444730890768
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 3.082176058821773e-08,
+							"max_pivot": 29.086833758093515,
+							"min_pivot": 3.080827610106587,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.10591828714424222,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								9.80665,
+								9.80665,
+								27.971126214900536,
+								27.971126214900536,
+								27.971126214900536
+							],
+							"residual_units": [
+								"body_forward_m/s^2",
+								"body_right_m/s^2",
+								"body_down_m/s^2",
+								"body_roll_rad/s^2",
+								"body_pitch_rad/s^2",
+								"body_yaw_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "idle",
+							"variable_scales": [
+								0.3505990400478006,
+								0.3505990400478006,
+								0.3505990400478006,
+								1.0,
+								1.0,
+								1.0
+							]
+						},
+						"total_residual_evaluations": 116
+					},
+					"runway_iterations": 6,
+					"runway_residual": 3.2653161973413744e-12,
+					"runway_scaled_residual": 1.698281838589322e-13,
+					"runway_status": "converged",
+					"start_choice": "runway",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 84.036,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "runway"
+			}
+		}
+	},
+	{
+		"compiled": true,
+		"errors": [],
+		"frozen": true,
+		"policy": "constant_wing_loading",
+		"runs": [
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.98160278639623,
+				"rate": 240,
+				"start_error": "",
+				"state": [
+					61.2426094451127,
+					21.92058645978223,
+					-29.98160278639623,
+					15.453570211491593,
+					-0.21617284588586858,
+					1.1383897291591938,
+					0.7243841926130702,
+					-0.05017262639319044,
+					0.0030897015473755345,
+					0.6875614174729906,
+					-0.013999936375148701,
+					0.0019578490067480524,
+					-0.03272667655664379
+				],
+				"tick": 960,
+				"usec_per_tick": 1032.909375
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.981621310462646,
+				"rate": 480,
+				"start_error": "",
+				"state": [
+					61.24172966515874,
+					21.920606243821755,
+					-29.981621310462646,
+					15.45356182594679,
+					-0.21611805576508816,
+					1.1383908752105785,
+					0.7243730943103425,
+					-0.05016578729688866,
+					0.0030957583174049076,
+					0.687573581738408,
+					-0.014003035822361832,
+					0.0019569835058387765,
+					-0.03271628564787352
+				],
+				"tick": 1920,
+				"usec_per_tick": 1879.1661458333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.981628216133064,
+				"rate": 960,
+				"start_error": "",
+				"state": [
+					61.24133715873806,
+					21.920613214906695,
+					-29.981628216133064,
+					15.45355821711153,
+					-0.2160943484653158,
+					1.138391358217417,
+					0.7243683955710968,
+					-0.05016312171885271,
+					0.0030980693574626204,
+					0.6875787159907084,
+					-0.01400448812595576,
+					0.001956636771103484,
+					-0.032712135081293184
+				],
+				"tick": 3840,
+				"usec_per_tick": 1065.2403645833333
+			}
+		],
+		"scale": 2.25,
+		"starts": {
+			"airborne": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-6c379b891c27d650453c1879901968a3",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "airborne",
+					"launch_field_id": "",
+					"launch_kind": "trimmed_airborne",
+					"model_sha256": "15a2c5219b1c28bf2ee337e5d4d34894e2e605f3b0a0fc4d3542c24dbf5cb843",
+					"resolved_sha256": "563bedc1cb23a94d7dfe5ac689a11c5c7f77dc63e899bd8befebcd5cf121a3af",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {},
+					"runway_iterations": 0,
+					"runway_residual": "nan",
+					"runway_scaled_residual": "nan",
+					"runway_status": "not_attempted",
+					"start_choice": "airborne",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 31.768,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "airborne"
+			},
+			"runway": {
+				"available": false,
+				"diagnostics": {
+					"aircraft_id": "workshop-6c379b891c27d650453c1879901968a3",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "failed",
+					"launch_field_id": "",
+					"launch_kind": "failed",
+					"model_sha256": "15a2c5219b1c28bf2ee337e5d4d34894e2e605f3b0a0fc4d3542c24dbf5cb843",
+					"resolved_sha256": "563bedc1cb23a94d7dfe5ac689a11c5c7f77dc63e899bd8befebcd5cf121a3af",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {
+						"contact_summary": [],
+						"environment": {
+							"error": "",
+							"maximum_rho_kgm3": null,
+							"minimum_rho_kgm3": null,
+							"queries": 0,
+							"source": "scalar_argument"
+						},
+						"feasibility_checks": 138,
+						"format": "openrc-runway-equilibrium-diagnostics-v1",
+						"initial_pose_ned_yaw_pitch_roll": [
+							15.0,
+							-47.0,
+							1.5707963267948966,
+							0.0,
+							0.0
+						],
+						"length_scale_definition": "max_i norm(contact_position_i), floored at 0.1 m",
+						"length_scale_m": 0.7693214643659607,
+						"requested_pose_ned_heading": [
+							15.0,
+							-47.0,
+							1.5707963267948966
+						],
+						"residual_evaluation_budget": 4096,
+						"scaled_residual_target": 1e-09,
+						"stage1": {
+							"accepted_steps": [
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.036194501487467,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.57475963824107
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.036271840014027515,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.67855165592512
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.05130431180870512,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 54.09866856855853
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 0.005738101279119337,
+									"residual_scaled_linf": 0.005709095533184779,
+									"step_scaled_linf": 0.028531548855415662
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.03635644755732863,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.79209904325015
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.03643345641835782,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.89544863395532
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.05171655942674539,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 54.533369794835465
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 1.4200252112507737e-06,
+									"residual_scaled_linf": 1.231927631973541e-06,
+									"step_scaled_linf": 0.00032688965726707363
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.03635638423200482,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.79201405762369
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.036433394626680625,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.8953657065563
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.05171681983966917,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 54.533644391491336
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 1.1684010150690147e-12,
+									"residual_scaled_linf": 1.1607989210994573e-12,
+									"step_scaled_linf": 4.0824043977088364e-07
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.036356384232036056,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.79201405766562
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.036433394626712544,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 48.89536570659914
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.051716819839756,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 54.5336443915829
+										}
+									],
+									"iteration": 4,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 2.950451845403136e-15,
+									"residual_scaled_linf": 2.4175976004864867e-15,
+									"step_scaled_linf": 6.98107489187764e-14
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 53,
+							"evaluations_at_stage_start": 0,
+							"feasibility_checks": 53,
+							"feasibility_checks_at_stage_start": 0,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.036356384232036056,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 48.79201405766562
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.036433394626712544,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 48.89536570659914
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.051716819839756,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 54.5336443915829
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"final_residual": [
+								2.3708533508810803e-14,
+								-2.709499156072423e-15,
+								-2.1387893626295673e-14
+							],
+							"final_scaled_residual": [
+								2.4175976004864867e-15,
+								-2.1255738284204814e-16,
+								-1.6778579478502022e-15
+							],
+							"finite_difference_physical_steps": [
+								7.693214643659608e-06,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.040635748664724414,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 54.53512669023643
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.04088083772855414,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 54.864047987014416
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.033253346956295664,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.27,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 35.064534195324356
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"initial_residual": [
+								0.49975622131324293,
+								1.1229913445553341,
+								-0.12073157343393914
+							],
+							"initial_scaled_residual": [
+								0.05096095214096995,
+								0.08809749972351505,
+								-0.009471266015347196
+							],
+							"iteration_limit": 64,
+							"iterations": 4,
+							"max_derivative_step_relative_difference": 1.8353612218109857e-10,
+							"max_pivot": 18.894574465481288,
+							"min_pivot": 3.140019391857474,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.16618629848446764,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								12.74714206509523,
+								12.74714206509523
+							],
+							"residual_units": [
+								"world_down_m/s^2",
+								"world_north_rad/s^2",
+								"world_east_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "engine_off",
+							"variable_scales": [
+								0.7693214643659607,
+								1.0,
+								1.0
+							]
+						},
+						"stage2": {
+							"accepted_steps": [
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.5,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												1.2385271073611648e-05,
+												0.0012033071836654585
+											],
+											"anchor_friction_margin_n": 27.47285648273388,
+											"anchor_stuck": true,
+											"compression_m": 0.03461693066810519,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.023093882627095382,
+											"lateral_friction_limit_n": 29.7328536437347,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -2.2598791649813847,
+											"longitudinal_hold_limit_n": 5.807197977291932,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 46.45758381833546
+										},
+										{
+											"anchor_delta_ned_m": [
+												1.2887606761324832e-05,
+												0.0012146397748935556
+											],
+											"anchor_friction_margin_n": 26.871011288319167,
+											"anchor_stuck": true,
+											"compression_m": 0.03394101180913516,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.024325557309379433,
+											"lateral_friction_limit_n": 29.152299674306303,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -2.281158689635899,
+											"longitudinal_hold_limit_n": 5.693808530137948,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 45.55046824110359
+										},
+										{
+											"anchor_delta_ned_m": [
+												5.336984134629574e-07,
+												0.0010219703339160446
+											],
+											"anchor_friction_margin_n": 36.588837018327,
+											"anchor_stuck": true,
+											"compression_m": 0.05719424862489566,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.014424914247928623,
+											"lateral_friction_limit_n": 38.59802146124914,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -2.0091326605103257,
+											"longitudinal_hold_limit_n": 7.7398046379505345,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 60.30940853320177
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.04370472958306598,
+									"residual_scaled_linf": 0.0429627758309274,
+									"step_scaled_linf": 0.009612167618760447
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.5,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												1.915327381851739e-05,
+												0.0018120115367565859
+											],
+											"anchor_friction_margin_n": 25.61990812103154,
+											"anchor_stuck": true,
+											"compression_m": 0.03379065448624434,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.03572824343277426,
+											"lateral_friction_limit_n": 29.023156154372696,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -3.4030604856601734,
+											"longitudinal_hold_limit_n": 5.668585186400916,
+											"max_compression_m": 0.27,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 45.34868149120733
+										},
+										{
+											"anchor_delta_ned_m": [
+												2.0169392232816108e-05,
+												0.0018321615567487015
+											],
+											"anchor_friction_margin_n": 24.67826625678259,
+											"anchor_stuck": true,
+											"compression_m": 0.032738412790179625,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.03812575068447387,
+											"lateral_friction_limit_n": 28.11937445729251,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -3.440896986942702,
+											"longitudinal_hold_limit_n": 5.492065323689942,
+											"max_compression_m": 0.27,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 43.936522589519534
+										},
+										{
+											"anchor_delta_ned_m": [
+												-7.238705244105859e-07,
+												0.001513995499820453
+											],
+											"anchor_friction_margin_n": 37.50278427495085,
+											"anchor_stuck": true,
+											"compression_m": 0.05998189133681112,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.01843829041884431,
+											"lateral_friction_limit_n": 40.4792856758816,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -2.9764442912961036,
+											"longitudinal_hold_limit_n": 8.117042043972523,
+											"max_compression_m": 0.27,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 63.24888386856498
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.021857432772538123,
+									"residual_scaled_linf": 0.021478050218390977,
+									"step_scaled_linf": 0.004813902194688405
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 75,
+							"evaluations_at_stage_start": 53,
+							"feasibility_checks": 85,
+							"feasibility_checks_at_stage_start": 53,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											1.915327381851739e-05,
+											0.0018120115367565859
+										],
+										"anchor_friction_margin_n": 25.61990812103154,
+										"anchor_stuck": true,
+										"compression_m": 0.03379065448624434,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.03572824343277426,
+										"lateral_friction_limit_n": 29.023156154372696,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -3.4030604856601734,
+										"longitudinal_hold_limit_n": 5.668585186400916,
+										"max_compression_m": 0.27,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 45.34868149120733
+									},
+									{
+										"anchor_delta_ned_m": [
+											2.0169392232816108e-05,
+											0.0018321615567487015
+										],
+										"anchor_friction_margin_n": 24.67826625678259,
+										"anchor_stuck": true,
+										"compression_m": 0.032738412790179625,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.03812575068447387,
+										"lateral_friction_limit_n": 28.11937445729251,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -3.440896986942702,
+										"longitudinal_hold_limit_n": 5.492065323689942,
+										"max_compression_m": 0.27,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 43.936522589519534
+									},
+									{
+										"anchor_delta_ned_m": [
+											-7.238705244105859e-07,
+											0.001513995499820453
+										],
+										"anchor_friction_margin_n": 37.50278427495085,
+										"anchor_stuck": true,
+										"compression_m": 0.05998189133681112,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.01843829041884431,
+										"lateral_friction_limit_n": 40.4792856758816,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -2.9764442912961036,
+										"longitudinal_hold_limit_n": 8.117042043972523,
+										"max_compression_m": 0.27,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 63.24888386856498
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0008049275593884403,
+									0.00990766003188311,
+									0.0010058058398433596,
+									4.1344952513622246e-05
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"final_residual": [
+								0.21062772117418385,
+								-0.001669951450692559,
+								0.007864814913419949,
+								-0.050598862515366945,
+								-0.0005595672397812259,
+								0.001291062006011558
+							],
+							"final_scaled_residual": [
+								0.021478050218390977,
+								-0.0001702876569157214,
+								0.0008019879279284923,
+								-0.003969427990758722,
+								-4.38974663437271e-05,
+								0.00010128246782051634
+							],
+							"finite_difference_physical_steps": [
+								7.693214643659608e-06,
+								7.693214643659608e-06,
+								7.693214643659608e-06,
+								1e-05,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 31.226888996906002,
+										"anchor_stuck": true,
+										"compression_m": 0.036356384232036056,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 31.226888996906002,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 6.099001757208202,
+										"max_compression_m": 0.27,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 48.79201405766562
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 31.293034052223454,
+										"anchor_stuck": true,
+										"compression_m": 0.036433394626712544,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 31.293034052223454,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 6.111920713324892,
+										"max_compression_m": 0.27,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 48.89536570659914
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 34.90153241061306,
+										"anchor_stuck": true,
+										"compression_m": 0.051716819839756,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 34.90153241061306,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 6.998572263462897,
+										"max_compression_m": 0.27,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 54.5336443915829
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0,
+									0.0,
+									0.0,
+									2.9116491300218428e-06
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"initial_residual": [
+								0.8425482013342547,
+								-0.0067594416842054125,
+								0.0001730839719815691,
+								-0.20230932144997943,
+								-0.0037738760482725468,
+								0.005295741018212846
+							],
+							"initial_scaled_residual": [
+								0.08591600611159313,
+								-0.0006892712276063093,
+								1.764965324362235e-05,
+								-0.015870955263293993,
+								-0.0002960566399119639,
+								0.00041544535952995064
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 1.3336554083309693e-08,
+							"max_pivot": 66.27124957887618,
+							"min_pivot": 3.136537791111843,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.047328786027774065,
+							"reason": "bounded line search found no feasible descent step",
+							"residual_scales": [
+								9.80665,
+								9.80665,
+								9.80665,
+								12.74714206509523,
+								12.74714206509523,
+								12.74714206509523
+							],
+							"residual_units": [
+								"body_forward_m/s^2",
+								"body_right_m/s^2",
+								"body_down_m/s^2",
+								"body_roll_rad/s^2",
+								"body_pitch_rad/s^2",
+								"body_yaw_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "idle",
+							"variable_scales": [
+								0.7693214643659607,
+								0.7693214643659607,
+								0.7693214643659607,
+								1.0,
+								1.0,
+								1.0
+							]
+						},
+						"total_residual_evaluations": 128,
+						"total_solver_iterations": 7
+					},
+					"runway_iterations": 0,
+					"runway_residual": 0.21062772117418385,
+					"runway_scaled_residual": 0.021478050218390977,
+					"runway_status": "numerical_unresolved",
+					"start_choice": "runway",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 92.709,
+				"field_id": "default",
+				"ok": true,
+				"reason": "runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+				"start_choice": "runway"
+			}
+		}
+	},
+	{
+		"compiled": true,
+		"errors": [],
+		"frozen": true,
+		"policy": "geometric",
+		"runs": [
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.873512801863885,
+				"rate": 240,
+				"start_error": "",
+				"state": [
+					64.4347148058402,
+					-4.967422282869131,
+					-29.873512801863885,
+					8.952078130055428,
+					-0.1889639992659778,
+					0.644870241409873,
+					0.8267943652706072,
+					-0.10406644555155532,
+					-0.032942867277546785,
+					0.5518115801272867,
+					-0.026656248000096524,
+					0.0344858696891907,
+					-0.20464192483188945
+				],
+				"tick": 960,
+				"usec_per_tick": 1212.6427083333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.873670692985165,
+				"rate": 480,
+				"start_error": "",
+				"state": [
+					64.43144596272852,
+					-4.966823127077286,
+					-29.873670692985165,
+					8.951971032787975,
+					-0.188939370624355,
+					0.6448755276998588,
+					0.8267375101601091,
+					-0.1040463026172114,
+					-0.032936350903496656,
+					0.5519009449123213,
+					-0.02666400029805521,
+					0.034466387917028364,
+					-0.20459798368887694
+				],
+				"tick": 1920,
+				"usec_per_tick": 977.7578125
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.873732102771296,
+				"rate": 960,
+				"start_error": "",
+				"state": [
+					64.42997850486029,
+					-4.966559135430618,
+					-29.873732102771296,
+					8.951929737330843,
+					-0.18893091510584603,
+					0.6448775436119094,
+					0.8267132356716433,
+					-0.10403840233023569,
+					-0.03293435496283567,
+					0.5519389142550796,
+					-0.026666285345232386,
+					0.03445886914758997,
+					-0.20458115626326612
+				],
+				"tick": 3840,
+				"usec_per_tick": 884.3859375
+			}
+		],
+		"scale": 0.35,
+		"starts": {
+			"airborne": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-6ffc4bce006d9180e5e034d51cf3156b",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "airborne",
+					"launch_field_id": "",
+					"launch_kind": "trimmed_airborne",
+					"model_sha256": "8918649859bf256611919b369854cee859f2f9895cc140caf5ca029ccfe106e2",
+					"resolved_sha256": "431646b43a9ef069bc18eddd8fa21036b8201c83add63fff48a5ac2bfc576272",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {},
+					"runway_iterations": 0,
+					"runway_residual": "nan",
+					"runway_scaled_residual": "nan",
+					"runway_status": "not_attempted",
+					"start_choice": "airborne",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 21.927,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "airborne"
+			},
+			"runway": {
+				"available": false,
+				"diagnostics": {
+					"aircraft_id": "workshop-6ffc4bce006d9180e5e034d51cf3156b",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "failed",
+					"launch_field_id": "",
+					"launch_kind": "failed",
+					"model_sha256": "8918649859bf256611919b369854cee859f2f9895cc140caf5ca029ccfe106e2",
+					"resolved_sha256": "431646b43a9ef069bc18eddd8fa21036b8201c83add63fff48a5ac2bfc576272",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {
+						"contact_summary": [],
+						"environment": {
+							"error": "",
+							"maximum_rho_kgm3": null,
+							"minimum_rho_kgm3": null,
+							"queries": 0,
+							"source": "scalar_argument"
+						},
+						"feasibility_checks": 163,
+						"format": "openrc-runway-equilibrium-diagnostics-v1",
+						"initial_pose_ned_yaw_pitch_roll": [
+							15.0,
+							-47.0,
+							1.5707963267948966,
+							0.0,
+							0.0
+						],
+						"length_scale_definition": "max_i norm(contact_position_i), floored at 0.1 m",
+						"length_scale_m": 0.12270966401673022,
+						"requested_pose_ned_heading": [
+							15.0,
+							-47.0,
+							1.5707963267948966
+						],
+						"residual_evaluation_budget": 4096,
+						"scaled_residual_target": 1e-09,
+						"stage1": {
+							"accepted_steps": [
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01679856524956221,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40333355164198853
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01673372869331915,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40177682592659264
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.02118776315535548,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.39970715192578105
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 0.004664277966148293,
+									"residual_scaled_linf": 0.004587600836744753,
+									"step_scaled_linf": 0.043166117585159224
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01683751877527517,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40426882579435675
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01675237644466723,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.4022245584364601
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.021408405776296706,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.4038695749698372
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 7.98727946672066e-06,
+									"residual_scaled_linf": 5.997686831685593e-06,
+									"step_scaled_linf": 0.0015615647827387697
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.016837406075764942,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40426611987911615
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.016752143072200604,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.4022189551635364
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.021409231028159517,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40388514334622916
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 1.6660195566929644e-10,
+									"residual_scaled_linf": 1.6293139490739417e-10,
+									"step_scaled_linf": 8.126238516536974e-06
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.016837406077081618,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.4042661199107296
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01675214307252025,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40221895517121115
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.02140923103653053,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 0.40388514350414834
+										}
+									],
+									"iteration": 4,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 1.030417779002632e-15,
+									"residual_scaled_linf": 8.348759969416954e-16,
+									"step_scaled_linf": 6.148215708696433e-11
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 53,
+							"evaluations_at_stage_start": 0,
+							"feasibility_checks": 53,
+							"feasibility_checks_at_stage_start": 0,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.016837406077081618,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.4042661199107296
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.01675214307252025,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.40221895517121115
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.02140923103653053,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.40388514350414834
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"final_residual": [
+								-5.239298578318952e-15,
+								2.2506302377323095e-14,
+								-6.672120538356308e-14
+							],
+							"final_scaled_residual": [
+								-5.342597704944045e-16,
+								2.8161918728416472e-16,
+								-8.348759969416954e-16
+							],
+							"finite_difference_physical_steps": [
+								1.2270966401673023e-06,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017514107219193532,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.42051371433283663
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017995344564658712,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.43206822299745556
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.016870464318370172,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 0.31826130936605324
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"initial_residual": [
+								0.32025690609491164,
+								2.2288051775062283,
+								-0.8188891803769773
+							],
+							"initial_scaled_residual": [
+								0.03265711594631313,
+								0.027888823858355102,
+								-0.01024668120010345
+							],
+							"iteration_limit": 64,
+							"iterations": 4,
+							"max_derivative_step_relative_difference": 2.1805474093028465e-10,
+							"max_pivot": 6.780885733185068,
+							"min_pivot": 0.6291744095288307,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.09278646393489653,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								79.91750347114439,
+								79.91750347114439
+							],
+							"residual_units": [
+								"world_down_m/s^2",
+								"world_north_rad/s^2",
+								"world_east_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "engine_off",
+							"variable_scales": [
+								0.12270966401673022,
+								1.0,
+								1.0
+							]
+						},
+						"stage2": {
+							"accepted_steps": [
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												5.4990867660364984e-05,
+												0.0013082238477792885
+											],
+											"anchor_friction_margin_n": 0.21696903613806487,
+											"anchor_stuck": true,
+											"compression_m": 0.01546281222221165,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.000871953027792192,
+											"lateral_friction_limit_n": 0.2376077577313931,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.020620294055232014,
+											"longitudinal_hold_limit_n": 0.046407765181912704,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.37126212145530163
+										},
+										{
+											"anchor_delta_ned_m": [
+												6.177315256294946e-05,
+												0.001358184761905079
+											],
+											"anchor_friction_margin_n": 0.20168900986608135,
+											"anchor_stuck": true,
+											"compression_m": 0.0145199350517664,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0009784788860174093,
+											"lateral_friction_limit_n": 0.2231191299794632,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.02140777025156034,
+											"longitudinal_hold_limit_n": 0.0435779550741139,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.3486236405929112
+										},
+										{
+											"anchor_delta_ned_m": [
+												7.75101155348068e-06,
+												0.000960334726102019
+											],
+											"anchor_friction_margin_n": 0.29736654653665195,
+											"anchor_stuck": true,
+											"compression_m": 0.025741018496578248,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.00020165084135397894,
+											"lateral_friction_limit_n": 0.3107867609202871,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.01341869930510811,
+											"longitudinal_hold_limit_n": 0.06232000300842922,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.4856043139379485
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.04720434158828271,
+									"residual_scaled_linf": 0.045694964065682735,
+									"step_scaled_linf": 0.05000000000000001
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.5,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												8.575847106939705e-05,
+												0.0019761054450242455
+											],
+											"anchor_friction_margin_n": 0.1981199778791814,
+											"anchor_stuck": true,
+											"compression_m": 0.014921979378070317,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0013685042329384311,
+											"lateral_friction_limit_n": 0.22929710391517968,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.03114707665301757,
+											"longitudinal_hold_limit_n": 0.044784590608433525,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.3582767248674682
+										},
+										{
+											"anchor_delta_ned_m": [
+												9.81035557678922e-05,
+												0.0020661112329776188
+											],
+											"anchor_friction_margin_n": 0.17566044212259083,
+											"anchor_stuck": true,
+											"compression_m": 0.013553181336641034,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0015628019567239062,
+											"lateral_friction_limit_n": 0.2082636056913608,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.032565686308383385,
+											"longitudinal_hold_limit_n": 0.040676485486593895,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.32541188389275116
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.193620360444129e-07,
+												0.0013469028356567492
+											],
+											"anchor_friction_margin_n": 0.31978984483483597,
+											"anchor_stuck": true,
+											"compression_m": 0.028045616054635635,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.00012979279647761167,
+											"lateral_friction_limit_n": 0.3386115499972488,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.018821257637330707,
+											"longitudinal_hold_limit_n": 0.06789952297848972,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.5290805468707012
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.024216446595882537,
+									"residual_scaled_linf": 0.02297655869291073,
+									"step_scaled_linf": 0.025
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 0.5,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.00010131211709030197,
+												0.0023136348749801527
+											],
+											"anchor_friction_margin_n": 0.18908949164878844,
+											"anchor_stuck": true,
+											"compression_m": 0.014680892061556483,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0016231651359690832,
+											"lateral_friction_limit_n": 0.22559245977470152,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.036466861901496284,
+											"longitudinal_hold_limit_n": 0.04406102729974638,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.35248821839797106
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.00011706780781928217,
+												0.002428137125207286
+											],
+											"anchor_friction_margin_n": 0.1628957159270488,
+											"anchor_stuck": true,
+											"compression_m": 0.013094346910659894,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0018714775875275321,
+											"lateral_friction_limit_n": 0.2012129723679642,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.03827152613625769,
+											"longitudinal_hold_limit_n": 0.039299408665618,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.314395269324944
+										},
+										{
+											"anchor_delta_ned_m": [
+												-8.868318314370072e-06,
+												0.0015125567600051681
+											],
+											"anchor_friction_margin_n": 0.3321420926830065,
+											"anchor_stuck": true,
+											"compression_m": 0.02926045401910248,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 3.429353770787608e-05,
+											"lateral_friction_limit_n": 0.3532790176450357,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.02113689714228948,
+											"longitudinal_hold_limit_n": 0.07084069275428519,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 0.5519984650703682
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.012247550316023046,
+									"residual_scaled_linf": 0.011464986229045845,
+									"step_scaled_linf": 0.012817724250437828
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 100,
+							"evaluations_at_stage_start": 53,
+							"feasibility_checks": 110,
+							"feasibility_checks_at_stage_start": 53,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.00010131211709030197,
+											0.0023136348749801527
+										],
+										"anchor_friction_margin_n": 0.18908949164878844,
+										"anchor_stuck": true,
+										"compression_m": 0.014680892061556483,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0016231651359690832,
+										"lateral_friction_limit_n": 0.22559245977470152,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.036466861901496284,
+										"longitudinal_hold_limit_n": 0.04406102729974638,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.35248821839797106
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.00011706780781928217,
+											0.002428137125207286
+										],
+										"anchor_friction_margin_n": 0.1628957159270488,
+										"anchor_stuck": true,
+										"compression_m": 0.013094346910659894,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0018714775875275321,
+										"lateral_friction_limit_n": 0.2012129723679642,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.03827152613625769,
+										"longitudinal_hold_limit_n": 0.039299408665618,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.314395269324944
+									},
+									{
+										"anchor_delta_ned_m": [
+											-8.868318314370072e-06,
+											0.0015125567600051681
+										],
+										"anchor_friction_margin_n": 0.3321420926830065,
+										"anchor_stuck": true,
+										"compression_m": 0.02926045401910248,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 3.429353770787608e-05,
+										"lateral_friction_limit_n": 0.3532790176450357,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.02113689714228948,
+										"longitudinal_hold_limit_n": 0.07084069275428519,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.5519984650703682
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.001126544032910968,
+									0.009835807111271841,
+									0.0010223022913793073,
+									0.00117837258235709
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"final_residual": [
+								0.11243310720307242,
+								-0.003953328384368238,
+								0.03678269992107097,
+								-0.16612149268529128,
+								-0.0012919373353283236,
+								0.005380549408063007
+							],
+							"final_scaled_residual": [
+								0.011464986229045845,
+								-0.0004031273048766131,
+								0.0037507915466618033,
+								-0.0020786621887565887,
+								-1.6165887061209316e-05,
+								6.732629492118392e-05
+							],
+							"finite_difference_physical_steps": [
+								1.2270966401673023e-06,
+								1.2270966401673023e-06,
+								1.2270966401673023e-06,
+								1e-05,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.258730316742867,
+										"anchor_stuck": true,
+										"compression_m": 0.016837406077081618,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.258730316742867,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0505332649888412,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.4042661199107296
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.2574201313095752,
+										"anchor_stuck": true,
+										"compression_m": 0.01675214307252025,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.2574201313095752,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.05027736939640139,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.40221895517121115
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.258486491842655,
+										"anchor_stuck": true,
+										"compression_m": 0.02140923103653053,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.258486491842655,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.05183257775064717,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 0.40388514350414834
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0,
+									0.0,
+									0.0,
+									0.00010015481021041772
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"initial_residual": [
+								0.8915767350186685,
+								-0.03204474381636614,
+								0.0004060460579022873,
+								-1.3016003260100937,
+								-0.02957938520528766,
+								0.0409659156173035
+							],
+							"initial_scaled_residual": [
+								0.09091552518124625,
+								-0.0032676544810272766,
+								4.14051748458737e-05,
+								-0.01628679913005615,
+								-0.0003701239893707117,
+								0.0005126025443486853
+							],
+							"iteration_limit": 64,
+							"iterations": 4,
+							"max_derivative_step_relative_difference": 2.2455648451824572e-08,
+							"max_pivot": 10.182201670243945,
+							"min_pivot": 0.6177039092486183,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.06066506333829266,
+							"reason": "bounded line search found no feasible descent step",
+							"residual_scales": [
+								9.80665,
+								9.80665,
+								9.80665,
+								79.91750347114439,
+								79.91750347114439,
+								79.91750347114439
+							],
+							"residual_units": [
+								"body_forward_m/s^2",
+								"body_right_m/s^2",
+								"body_down_m/s^2",
+								"body_roll_rad/s^2",
+								"body_pitch_rad/s^2",
+								"body_yaw_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "idle",
+							"variable_scales": [
+								0.12270966401673022,
+								0.12270966401673022,
+								0.12270966401673022,
+								1.0,
+								1.0,
+								1.0
+							]
+						},
+						"total_residual_evaluations": 153,
+						"total_solver_iterations": 8
+					},
+					"runway_iterations": 0,
+					"runway_residual": 0.16612149268529128,
+					"runway_scaled_residual": 0.011464986229045845,
+					"runway_status": "numerical_unresolved",
+					"start_choice": "runway",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 116.229,
+				"field_id": "default",
+				"ok": true,
+				"reason": "runway start: idle support pose unresolved: bounded line search found no feasible descent step",
+				"start_choice": "runway"
+			}
+		}
+	},
+	{
+		"compiled": true,
+		"errors": [],
+		"frozen": true,
+		"policy": "geometric",
+		"runs": [
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.96482115217881,
+				"rate": 240,
+				"start_error": "",
+				"state": [
+					62.659535924690864,
+					19.913504582742938,
+					-29.96482115217881,
+					14.981924913668381,
+					-0.2429968921673345,
+					1.0986241582694212,
+					0.7503700778406284,
+					-0.07401637238677074,
+					-0.01661802723784194,
+					0.6566507169499435,
+					-0.02360799544568384,
+					0.008256447642346215,
+					-0.07841942352757651
+				],
+				"tick": 960,
+				"usec_per_tick": 1337.4833333333333
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.964873812960263,
+				"rate": 480,
+				"start_error": "",
+				"state": [
+					62.65757060142798,
+					19.913632173369542,
+					-29.964873812960263,
+					14.981898556880743,
+					-0.2429882005214508,
+					1.0986249458676853,
+					0.7503447694193018,
+					-0.07400350079109891,
+					-0.016608428531867038,
+					0.656681329852965,
+					-0.023604349693040007,
+					0.008252488290967499,
+					-0.0783966840420393
+				],
+				"tick": 1920,
+				"usec_per_tick": 748.671875
+			},
+			{
+				"fault": "",
+				"flyable": true,
+				"min_altitude_m": 29.964893524387286,
+				"rate": 960,
+				"start_error": "",
+				"state": [
+					62.65668638887559,
+					19.913687354647433,
+					-29.964893524387286,
+					14.98188813062038,
+					-0.2429895318718287,
+					1.098625131103224,
+					0.7503338730520083,
+					-0.0739984996327114,
+					-0.016604856501797802,
+					0.656694434073744,
+					-0.023601779213329965,
+					0.00825090557991418,
+					-0.07838775801095729
+				],
+				"tick": 3840,
+				"usec_per_tick": 1008.4265625
+			}
+		],
+		"scale": 1.0,
+		"starts": {
+			"airborne": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-6bb9b387473235f21f27c2e706bcdd8e",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "airborne",
+					"launch_field_id": "",
+					"launch_kind": "trimmed_airborne",
+					"model_sha256": "ff9b37debf5bcb6c31fbc56bd9d780cf872d0df41d3f7de5ba0b6317599d3f00",
+					"resolved_sha256": "acfcc87cccb844df8f83402c4d28eb4a17e1dd0f593ec1856265ea94afe3682e",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {},
+					"runway_iterations": 0,
+					"runway_residual": "nan",
+					"runway_scaled_residual": "nan",
+					"runway_status": "not_attempted",
+					"start_choice": "airborne",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 23.523,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "airborne"
+			},
+			"runway": {
+				"available": true,
+				"diagnostics": {
+					"aircraft_id": "workshop-6bb9b387473235f21f27c2e706bcdd8e",
+					"field_unchanged": true,
+					"format": "openrc-aircraft-start-qualification-v1",
+					"gear_contact_count": 3,
+					"launch_choice": "runway",
+					"launch_field_id": "default",
+					"launch_kind": "runway_threshold",
+					"model_sha256": "ff9b37debf5bcb6c31fbc56bd9d780cf872d0df41d3f7de5ba0b6317599d3f00",
+					"resolved_sha256": "acfcc87cccb844df8f83402c4d28eb4a17e1dd0f593ec1856265ea94afe3682e",
+					"runtime_budget_usec": 16000000,
+					"runway_diagnostics": {
+						"achieved_minus_requested": [
+							0.0005119589559061666,
+							0.007803219948584683,
+							0.0003447645139801614,
+							0.0003293700886093376
+						],
+						"contact_summary": [
+							{
+								"anchor_delta_ned_m": [
+									4.470593841077175e-05,
+									0.002571268804146598
+								],
+								"anchor_friction_margin_n": 4.70095221847717,
+								"anchor_stuck": true,
+								"compression_m": 0.015754361778143166,
+								"heading_valid": true,
+								"lateral_anchor_request_n": 0.01676804965771207,
+								"lateral_friction_limit_n": 5.646363261286512,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.9452623299256793,
+								"longitudinal_hold_limit_n": 1.1028053244700216,
+								"max_compression_m": 0.12,
+								"name": "main_left",
+								"next_anchor_stuck": true,
+								"normal_load_n": 8.822442595760172
+							},
+							{
+								"anchor_delta_ned_m": [
+									4.717574985591e-05,
+									0.002505235416947471
+								],
+								"anchor_friction_margin_n": 4.429550820992516,
+								"anchor_stuck": true,
+								"compression_m": 0.014929459477982113,
+								"heading_valid": true,
+								"lateral_anchor_request_n": 0.017561249246508804,
+								"lateral_friction_limit_n": 5.35071827690879,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.9210000458003048,
+								"longitudinal_hold_limit_n": 1.0450621634587478,
+								"max_compression_m": 0.12,
+								"name": "main_right",
+								"next_anchor_stuck": true,
+								"normal_load_n": 8.360497307669982
+							},
+							{
+								"anchor_delta_ned_m": [
+									-5.6363600670295e-05,
+									0.0024072324628505726
+								],
+								"anchor_friction_margin_n": 6.34440632594882,
+								"anchor_stuck": true,
+								"compression_m": 0.025316761680835957,
+								"heading_valid": true,
+								"lateral_anchor_request_n": -0.012929278508500992,
+								"lateral_friction_limit_n": 7.129200089323407,
+								"loaded": true,
+								"longitudinal_anchor_request_n": -0.784687252852305,
+								"longitudinal_hold_limit_n": 1.4295710978766045,
+								"max_compression_m": 0.12,
+								"name": "nose",
+								"next_anchor_stuck": true,
+								"normal_load_n": 11.139375139567822
+							}
+						],
+						"environment": {
+							"error": "",
+							"maximum_rho_kgm3": null,
+							"minimum_rho_kgm3": null,
+							"queries": 0,
+							"source": "scalar_argument"
+						},
+						"feasibility_checks": 116,
+						"final_pose_ned_yaw_pitch_roll": [
+							15.000511958955906,
+							-46.992196780051415,
+							-0.23363490880613308,
+							1.571125696883506,
+							-0.03728863253156833,
+							-0.004454210903592301
+						],
+						"format": "openrc-runway-equilibrium-diagnostics-v1",
+						"initial_pose_ned_yaw_pitch_roll": [
+							15.0,
+							-47.0,
+							1.5707963267948966,
+							0.0,
+							0.0
+						],
+						"length_scale_definition": "max_i norm(contact_position_i), floored at 0.1 m",
+						"length_scale_m": 0.3505990400478006,
+						"requested_pose_ned_heading": [
+							15.0,
+							-47.0,
+							1.5707963267948966
+						],
+						"residual_evaluation_budget": 4096,
+						"scaled_residual_target": 1e-09,
+						"stage1": {
+							"accepted_steps": [
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017413123114817224,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.751348944297646
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017296029144555015,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.685776320950808
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.019866715634755634,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.741354879292478
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 0.001967113341310819,
+									"residual_scaled_linf": 0.0018326293505000748,
+									"step_scaled_linf": 0.016046595033324323
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017431014010791425,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.761367846043198
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017301751687257796,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.688980944864365
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01995422156950395,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.779857490581737
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 4.52778576772933e-07,
+									"residual_scaled_linf": 3.308353356732211e-07,
+									"step_scaled_linf": 0.00021561300885106376
+								},
+								{
+									"active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01743101381654885,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.761367737267356
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.017301746246439202,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": false,
+											"normal_load_n": 9.688977898005954
+										},
+										{
+											"anchor_delta_ned_m": [
+												0.0,
+												0.0
+											],
+											"anchor_friction_margin_n": 0.0,
+											"anchor_stuck": false,
+											"compression_m": 0.01995424996760549,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.0,
+											"lateral_friction_limit_n": 0.0,
+											"loaded": true,
+											"longitudinal_anchor_request_n": 0.0,
+											"longitudinal_hold_limit_n": 0.0,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": false,
+											"normal_load_n": 8.779869985746416
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1hs0,0,0;1hs0,0,0;1hs0,0,0;",
+									"residual_scaled_l2": 6.187567379850669e-14,
+									"residual_scaled_linf": 5.754902765783657e-14,
+									"step_scaled_linf": 8.891169087386835e-08
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 40,
+							"evaluations_at_stage_start": 0,
+							"feasibility_checks": 40,
+							"feasibility_checks_at_stage_start": 0,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.01743101381654885,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.761367737267356
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017301746246439202,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.688977898005954
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.01995424996760549,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 8.779869985746416
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"final_residual": [
+								5.64363172080723e-13,
+								5.511907662063276e-13,
+								-3.1694335740975466e-13
+							],
+							"final_scaled_residual": [
+								5.754902765783657e-14,
+								1.9705705160799068e-14,
+								-1.1331090317018245e-14
+							],
+							"finite_difference_physical_steps": [
+								3.5059904004780064e-06,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.017483916580030318,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": false,
+										"normal_load_n": 9.790993284816977
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.018269514522892362,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": false,
+										"normal_load_n": 10.230928132819722
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 0.0,
+										"anchor_stuck": false,
+										"compression_m": 0.014754943059799073,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 0.0,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 0.0,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": false,
+										"normal_load_n": 6.492174946311592
+									}
+								],
+								"ok": true,
+								"reason": "",
+								"signature": "1hs0,0,0;1hs0,0,0;1hs0,0,0;"
+							},
+							"initial_residual": [
+								0.596149077062238,
+								1.3947050691798721,
+								-0.7580723883459164
+							],
+							"initial_scaled_residual": [
+								0.06079028792321924,
+								0.04986231367533914,
+								-0.027101961591452926
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 2.439021207223391e-10,
+							"max_pivot": 19.373958256230228,
+							"min_pivot": 3.0823124396945785,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.1590956478242321,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								27.971126214900536,
+								27.971126214900536
+							],
+							"residual_units": [
+								"world_down_m/s^2",
+								"world_north_rad/s^2",
+								"world_east_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "engine_off",
+							"variable_scales": [
+								0.3505990400478006,
+								1.0,
+								1.0
+							]
+						},
+						"stage2": {
+							"accepted_steps": [
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.605858862127832e-05,
+												0.0025729241705931827
+											],
+											"anchor_friction_margin_n": 4.66785157133968,
+											"anchor_stuck": true,
+											"compression_m": 0.015663727264252837,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017264051651347836,
+											"lateral_friction_limit_n": 5.6138798515082184,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9458707413802493,
+											"longitudinal_hold_limit_n": 1.0964609084976986,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.771687267981589
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.8523070512729305e-05,
+												0.0025073790280885078
+											],
+											"anchor_friction_margin_n": 4.396695129077512,
+											"anchor_stuck": true,
+											"compression_m": 0.014840011040996373,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.018055354549376547,
+											"lateral_friction_limit_n": 5.318659957093101,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9217880169919282,
+											"longitudinal_hold_limit_n": 1.0388007728697461,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.31040618295797
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.447509922262839e-05,
+												0.0024093212072102688
+											],
+											"anchor_friction_margin_n": 6.316499279346359,
+											"anchor_stuck": true,
+											"compression_m": 0.025220026552823557,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.01231029029178389,
+											"lateral_friction_limit_n": 7.1019594772751145,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.785363724196128,
+											"longitudinal_hold_limit_n": 1.4241087190424029,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.096811683242365
+										}
+									],
+									"iteration": 1,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 0.00508125578543395,
+									"residual_scaled_linf": 0.005077889061576265,
+									"step_scaled_linf": 0.02224868358490355
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.470638948461669e-05,
+												0.00257127139474278
+											],
+											"anchor_friction_margin_n": 4.700951256146802,
+											"anchor_stuck": true,
+											"compression_m": 0.01575436175800614,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.01676821589453218,
+											"lateral_friction_limit_n": 5.646363254069402,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9452632822403058,
+											"longitudinal_hold_limit_n": 1.1028053230604298,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.822442584483438
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.717620100791464e-05,
+												0.0025052379801024927
+											],
+											"anchor_friction_margin_n": 4.429549868105233,
+											"anchor_stuck": true,
+											"compression_m": 0.014929459456682191,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017561415398909853,
+											"lateral_friction_limit_n": 5.350718269274898,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9210009880573768,
+											"longitudinal_hold_limit_n": 1.0450621619677534,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.360497295742027
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.636317680668412e-05,
+												0.002407235039534328
+											],
+											"anchor_friction_margin_n": 6.344405486180471,
+											"anchor_stuck": true,
+											"compression_m": 0.02531676166867341,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.012929134478539328,
+											"lateral_friction_limit_n": 7.129200085898433,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.7846880916823652,
+											"longitudinal_hold_limit_n": 1.4295710971898172,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.1393751342163
+										}
+									],
+									"iteration": 2,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 1.2660308359301231e-07,
+									"residual_scaled_linf": 9.678407637102885e-08,
+									"step_scaled_linf": 0.000263074119165206
+								},
+								{
+									"active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"active_set_changed": false,
+									"alpha": 1.0,
+									"contact_state": [
+										{
+											"anchor_delta_ned_m": [
+												4.470593841077175e-05,
+												0.002571268804146598
+											],
+											"anchor_friction_margin_n": 4.70095221847717,
+											"anchor_stuck": true,
+											"compression_m": 0.015754361778143166,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.01676804965771207,
+											"lateral_friction_limit_n": 5.646363261286512,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9452623299256793,
+											"longitudinal_hold_limit_n": 1.1028053244700216,
+											"max_compression_m": 0.12,
+											"name": "main_left",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.822442595760172
+										},
+										{
+											"anchor_delta_ned_m": [
+												4.717574985591e-05,
+												0.002505235416947471
+											],
+											"anchor_friction_margin_n": 4.429550820992516,
+											"anchor_stuck": true,
+											"compression_m": 0.014929459477982113,
+											"heading_valid": true,
+											"lateral_anchor_request_n": 0.017561249246508804,
+											"lateral_friction_limit_n": 5.35071827690879,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.9210000458003048,
+											"longitudinal_hold_limit_n": 1.0450621634587478,
+											"max_compression_m": 0.12,
+											"name": "main_right",
+											"next_anchor_stuck": true,
+											"normal_load_n": 8.360497307669982
+										},
+										{
+											"anchor_delta_ned_m": [
+												-5.6363600670295e-05,
+												0.0024072324628505726
+											],
+											"anchor_friction_margin_n": 6.34440632594882,
+											"anchor_stuck": true,
+											"compression_m": 0.025316761680835957,
+											"heading_valid": true,
+											"lateral_anchor_request_n": -0.012929278508500992,
+											"lateral_friction_limit_n": 7.129200089323407,
+											"loaded": true,
+											"longitudinal_anchor_request_n": -0.784687252852305,
+											"longitudinal_hold_limit_n": 1.4295710978766045,
+											"max_compression_m": 0.12,
+											"name": "nose",
+											"next_anchor_stuck": true,
+											"normal_load_n": 11.139375139567822
+										}
+									],
+									"iteration": 3,
+									"method": "newton",
+									"previous_active_set": "1ha0,0,0;1ha0,0,0;1ha0,0,0;",
+									"residual_scaled_l2": 2.078262670925163e-13,
+									"residual_scaled_linf": 1.698281838589322e-13,
+									"step_scaled_linf": 7.363453332319147e-09
+								}
+							],
+							"active_set_stencil_rejections": 0,
+							"evaluations": 76,
+							"evaluations_at_stage_start": 40,
+							"feasibility_checks": 76,
+							"feasibility_checks_at_stage_start": 40,
+							"final_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											4.470593841077175e-05,
+											0.002571268804146598
+										],
+										"anchor_friction_margin_n": 4.70095221847717,
+										"anchor_stuck": true,
+										"compression_m": 0.015754361778143166,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.01676804965771207,
+										"lateral_friction_limit_n": 5.646363261286512,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.9452623299256793,
+										"longitudinal_hold_limit_n": 1.1028053244700216,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.822442595760172
+									},
+									{
+										"anchor_delta_ned_m": [
+											4.717574985591e-05,
+											0.002505235416947471
+										],
+										"anchor_friction_margin_n": 4.429550820992516,
+										"anchor_stuck": true,
+										"compression_m": 0.014929459477982113,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.017561249246508804,
+										"lateral_friction_limit_n": 5.35071827690879,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.9210000458003048,
+										"longitudinal_hold_limit_n": 1.0450621634587478,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.360497307669982
+									},
+									{
+										"anchor_delta_ned_m": [
+											-5.6363600670295e-05,
+											0.0024072324628505726
+										],
+										"anchor_friction_margin_n": 6.34440632594882,
+										"anchor_stuck": true,
+										"compression_m": 0.025316761680835957,
+										"heading_valid": true,
+										"lateral_anchor_request_n": -0.012929278508500992,
+										"lateral_friction_limit_n": 7.129200089323407,
+										"loaded": true,
+										"longitudinal_anchor_request_n": -0.784687252852305,
+										"longitudinal_hold_limit_n": 1.4295710978766045,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 11.139375139567822
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0005119589559060947,
+									0.007803219948583926,
+									0.00034476451398015966,
+									0.0003293700886093376
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"final_residual": [
+								1.6654455592401973e-12,
+								1.3222062333895224e-13,
+								-8.881784197001252e-14,
+								-5.949312903693483e-13,
+								3.2653161973413744e-12,
+								-6.84635783076612e-14
+							],
+							"final_scaled_residual": [
+								1.698281838589322e-13,
+								1.3482751330877746e-14,
+								-9.056899345853327e-15,
+								-2.1269479312292463e-14,
+								1.1673881745962388e-13,
+								-2.4476518314514586e-15
+							],
+							"finite_difference_physical_steps": [
+								3.5059904004780064e-06,
+								3.5059904004780064e-06,
+								3.5059904004780064e-06,
+								1e-05,
+								1e-05,
+								1e-05
+							],
+							"finite_difference_scaled_step": 1e-05,
+							"finite_difference_steps_used": [
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06,
+								5e-06
+							],
+							"initial_contact_state": {
+								"contacts": [
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 6.247275351851109,
+										"anchor_stuck": true,
+										"compression_m": 0.01743101381654885,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 6.247275351851109,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.2201709671584196,
+										"max_compression_m": 0.12,
+										"name": "main_left",
+										"next_anchor_stuck": true,
+										"normal_load_n": 9.761367737267356
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 6.200945854723812,
+										"anchor_stuck": true,
+										"compression_m": 0.017301746246439202,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 6.200945854723812,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.2111222372507442,
+										"max_compression_m": 0.12,
+										"name": "main_right",
+										"next_anchor_stuck": true,
+										"normal_load_n": 9.688977898005954
+									},
+									{
+										"anchor_delta_ned_m": [
+											0.0,
+											0.0
+										],
+										"anchor_friction_margin_n": 5.619116790877707,
+										"anchor_stuck": true,
+										"compression_m": 0.01995424996760549,
+										"heading_valid": true,
+										"lateral_anchor_request_n": 0.0,
+										"lateral_friction_limit_n": 5.619116790877707,
+										"loaded": true,
+										"longitudinal_anchor_request_n": 0.0,
+										"longitudinal_hold_limit_n": 1.1267641333088558,
+										"max_compression_m": 0.12,
+										"name": "nose",
+										"next_anchor_stuck": true,
+										"normal_load_n": 8.779869985746416
+									}
+								],
+								"ok": true,
+								"pose_delta": [
+									0.0,
+									0.0,
+									0.0,
+									2.011430799431224e-05
+								],
+								"reason": "",
+								"signature": "1ha0,0,0;1ha0,0,0;1ha0,0,0;"
+							},
+							"initial_residual": [
+								0.9217390461716586,
+								-0.00644463210594157,
+								-0.00030685521366891066,
+								-0.455419734375184,
+								-0.010390745607819144,
+								0.035451856538156315
+							],
+							"initial_scaled_residual": [
+								0.09399122495160515,
+								-0.0006571695845106709,
+								-3.129052364149946e-05,
+								-0.01628178039297455,
+								-0.0003714811312203752,
+								0.001267444730890768
+							],
+							"iteration_limit": 64,
+							"iterations": 3,
+							"max_derivative_step_relative_difference": 3.082176058821773e-08,
+							"max_pivot": 29.086833758093515,
+							"min_pivot": 3.080827610106587,
+							"one_sided_columns": 0,
+							"pivot_ratio_proxy": 0.10591828714424222,
+							"reason": "converged",
+							"residual_scales": [
+								9.80665,
+								9.80665,
+								9.80665,
+								27.971126214900536,
+								27.971126214900536,
+								27.971126214900536
+							],
+							"residual_units": [
+								"body_forward_m/s^2",
+								"body_right_m/s^2",
+								"body_down_m/s^2",
+								"body_roll_rad/s^2",
+								"body_pitch_rad/s^2",
+								"body_yaw_rad/s^2"
+							],
+							"scaled_tolerance": 1e-09,
+							"stage": "idle",
+							"variable_scales": [
+								0.3505990400478006,
+								0.3505990400478006,
+								0.3505990400478006,
+								1.0,
+								1.0,
+								1.0
+							]
+						},
+						"total_residual_evaluations": 116
+					},
+					"runway_iterations": 6,
+					"runway_residual": 3.2653161973413744e-12,
+					"runway_scaled_residual": 1.698281838589322e-13,
+					"runway_status": "converged",
+					"start_choice": "runway",
+					"stiction_anchor_count": 3,
+					"tick": 0,
+					"timed_out": false,
+					"wheel_count": 3
+				},
+				"duration_ms": 106.9,
+				"field_id": "default",
+				"ok": true,
+				"reason": "",
+				"start_choice": "runway"
+			}
+		}
+	},
+	{
+		"compiled": false,
+		"errors": [
+			"inventory[0] engine O.S. MAX-61FX.mass: 6.26484375 outside [0.001, 5.0] kg",
+			"inventory[13] wing incl. ailerons.mass: 5.923125 outside [0.001, 5.0] kg"
+		],
+		"policy": "geometric",
+		"runs": [],
+		"scale": 2.25
+	}
+]

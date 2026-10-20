@@ -1,0 +1,482 @@
+[
+  {
+    "path": "app/app_root.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "d7a01b46d48f96561ea31c1d540a833ae2dcdcb55d6988947c9a4fab28b964bc",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/app_state/aircraft_catalog.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "8dd3f80a4a107e9b5c522aca71865ee862f7552dc5d1c9ef89b7fb52a5e06b42",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/helicopter_main.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "4bb1f5b73f4ca1efe1330763f6bde78b760715d595b8e9dc0e158a01f04f6bae",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/main.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "1a5e7a2f527375e41e0bd20989cc2ad75a9341e20b103ba0ab700224ca94db4e",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/render/rotor/heli_night_lights.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "d20ce800f8ff69270949b78ccf848af9a8446b0a65a0cb3fa09fc5861e32dd71",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/render/world/aircraft_lights.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "c7697331f600502e8f9e4bdbdcb71fcc9a6fec83f2eaabc6a617d8948b491221",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/render/world/world.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "89bf00bc22f3e716aa17daf943b5b472aaf9599b4a80cb5002042bbffde468f3",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_rcv_handling.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "f094dd10da607212bd7cf4683a326ee3c29a3dd8006517f73336322bba07a81d",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_bundle.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "348b0a9b8c0e3fd37665c906bb0cda9ab2e4cea91f5f9b7f532ccd03a1876222",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_compiler.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "43982c0522daae032d591432492e41f65e982e14abac30ce0bab2744b7ac9cf2",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_customization.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "371424c5a438d786d89b1b867920390e846ebaa138fec4b3c51eb33d91c60df3",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_descriptor.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "1ac9e8623f385171c27e785794bbff636641cc7cb498ac708f6f8b6b48e1afc7",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_drafts.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "5693f65642f707957447259c75825a1b2a494c5af030f54af38a1e47db73051a",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_experiments.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "62cc6f031dd581fe7a4ed19914a3cfd118cbd581be1125c4f690fb709b4735dd",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_integration.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "4ff3fa119416bf37f03aa3d4c08e2e61a6b96b11a8ca36af877767eaae1ddebe",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_json.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "04dfcc29e8cbf677f87602609e4cfd197b748eb079568ad3f36c16e84abc1ad4",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_library_preferences.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "cfc9a4df02b1c502101fb0c5ed0c39fdafb39d4a06858af8b804b033bff39c92",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_mass_edit.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "6d7ed90c8b5d8685679dea42cd9b95cba60b9275b41efcf7f265bb0fead8f97c",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_mass_recipe.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "44045b87f8a29ae3f16e17731ad47556268d4be396721432703abbe57ce15310",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_mass_ui.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "e1b7cf4eb2db33595ca86a2b93ce2892d8b3936088cfd8f9974815b7a2aa571b",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_parameters.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "885c8ebd83140b0c183105684337e949551b3770436cb4b65e01601da11ac2c9",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_presentation.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "3e870bf06b737f36e089432414f21f244f700313c4469a86600375daf894e256",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_preview.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "1d9c7cd63fc12f7e3fe4e00c87dba9914b05cdc969637ae64973677b3eee3637",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_profile_transfer.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "e70312a026ba9d493b16e4d04db5c03cee34c9479e54f5d51e12722679f7fd95",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_recovery_ui.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "f9b932de447725dafedc5cb8762eb56e81d015cee15b13dc12909edec73be078",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_reuse.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "781f20b3c544c2006868dfd241e93fc5e6a82354d272169699f27dae793858e3",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_smoke.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "472853c259aac0dbb3b63c84b47b338a0fdefe6c3ec69fa6ec927f2451371f47",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_starts.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "b89d83bb0242ba99aee891965f7684875fbe7d1a0c56e02bac4e8c27ba9a0b41",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_store.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "86da2e0d66fe9a02bea3667416204620152378462255d50974630412fdf717ce",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_thumbnails.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "e35764bab9775fca47369bb5eaab3a9749f8ce1fe2e2005694d32be0df8ccb25",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_trial.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "57aff23b97b9c7e4814fbf6dcf94a6808a71a9f0179d2e54d30e93088586a71b",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/tests/test_workshop_ui.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "62a1cd5119194b0b45e5273e5d3e6229e5bf34ea07a4c988fcd4ede26dc8cb8b",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/help_screen.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "adaff451b149cb5753619d2678b932d6f1aa59b6dccaea763d10e10d7ff99470",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/home.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "411b94471f1b9783417b2e3e9a178e58fd3405b0d0cc6f0d6870ea4237b7e3df",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/home_scene.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "aee9a49c726807d77b4f22d336711eb1d4f166a3aba6cff6726807a44490cc16",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/workshop.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "95dfafe0de0dc7c6f91490550bf6b743e1ce20d4b47cf440456e380a76c9f5b4",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/workshop_customization.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "cf2c2d486cc96f7002dfb961b590990bde721e9fc5cba5c0c52db637911093d2",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/workshop_mass.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "89598135b7c3efe5a38f3de2c4cf0b9a2cb43423aa547279945401f4f5ebda5d",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/workshop_preview.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "0526011ea192be0b953d6508428697f3c9514e29f2746ce2b990bf253cb61d81",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/ui/workshop_thumbnail.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "18c66d76f34776339cb09fa710ceeaaeaf66b12ce6651bc722a95d5af13ea90f",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/bundle.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "3e4eca6da30aad933cc6028b99b49ea6d9844a7aeebb915de2d812f22f7d3070",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/compiler.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "12be61b72e68223d53b0e948bf60d89a6d60774352e365506dc0631beaa5597f",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/dependencies.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "8c0997cae9cb88c59012676df1bf4cfc56f98dfd5655bc3f6337dac97fe258ab",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/descriptor.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/draft_store.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "f4603fa608fe4916b089feeb8395a4c15f8c96415302a7de434d4115c1862ca2",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/experiments.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "c5674c091ad975fd363bf673c53a3abdc5a66780b8c8b43e86c336cf06d96d0a",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/launch.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "79e7d265d6152c2c794ff15dd98575c9c6061632518a4564cde82099f91b094e",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/library_preferences.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "401245c1db60fe824a3182d0a54924cc2de7d85c609b1481ec173af9222bdac3",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/mass_edit.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "2803f75236a8101b1988fa6ce942c28526e0ca7e834915d7f2a3713bd3cd68fd",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/parameters.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "ce24afb8f0eff7c0cf49670dabbf68b997d013a9a4355b7f9f469d6a16db9ba9",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/presentation.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "bfb1c11826b68f8f447e57709d025e433a3c8181322717ae6e8d98c29220c121",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/profile_transfer.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "fff64b9a608eb3a5e6cd59c53ccb76e87102123eefba4b6181a013e4cf11c0ea",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/start_qualification.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "bd7a7105b72f65b0e1019eb891dfdaa5db870f816e3f48ec2b9f159f5ef4604c",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/store.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "b33f41ff5d11d6287559d4c3693a825d72313815dba7cbaee6ef2e3bfb28cd8e",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/strict_json.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/thumbnail_cache.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "121c783fe3a5bd4b2413657817875fdda431007cd652f53f87cfc824b2a5b1c0",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "app/workshop/trial.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "d59bf97f99acd8b55fe9cad9773adbbd6de161a1248feea8775f46dffdac740c",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "research/aircraft-editor/capture_mass.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "4408f3314acdb9914e2429d2f949bfca1e3821ac29745336fb8a9e8ea59088d6",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "research/aircraft-editor/capture_recovery.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "c71a9348e143d36d4d8f8ebff8cf65008f00368d62ffccfe01f72e30c523c6d8",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  },
+  {
+    "path": "research/aircraft-editor/capture_thumbnails.gd",
+    "exit_code": 0,
+    "error": false,
+    "unchanged_during_check": true,
+    "raw_sha256": "59bbe794a2a8c804eebc2e0ac1819743e2f066cdf074d937937afd5d8457b6c6",
+    "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+  }
+]

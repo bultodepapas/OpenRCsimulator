@@ -1,0 +1,76 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   stock aircraft fixture parses
+ok   stock baseline compiles
+ok   35% default-policy recipe compiles
+ok   35% reports wingspan scaled from the compiled stock span
+ok   35% scales the derived wheel radius
+aircraft data warning: inertia: Jyy = 0.0055 kg·m2 is 2.07× the scaled UltraStick25e value
+ok   35% passes aircraft and start qualification
+ok   225% default-policy recipe compiles
+ok   225% reports wingspan scaled from the compiled stock span
+ok   225% scales the derived wheel radius
+ok   225% passes aircraft and start qualification
+ok   invalid scale 0.3499 is rejected by shared validation and compile
+ok   invalid scale 2.2501 is rejected by shared validation and compile
+ok   invalid scale nan is rejected by shared validation and compile
+ok   invalid scale true is rejected by shared validation and compile
+ok   225% geometric request is inside the parameter contract
+ok   225% geometric request still fails full aircraft validation
+ok   35% endpoint saves as a variant
+ok   35% endpoint reloads with exact recipe scale
+ok   35% loaded variant preserves the full derived physics model
+ok   35% loaded variant retains its scaled wheel radius
+ok   35% stored variant freezes into the same full physical model
+ok   35% stored trial keeps scaled wheel radius
+ok   35% endpoint exports to a portable bundle
+ok   35% portable endpoint decodes with exact scale
+ok   35% portable endpoint freezes into the same full physical model
+ok   35% portable trial preserves scaled wheel radius
+ok   225% endpoint saves as a variant
+ok   225% endpoint reloads with exact recipe scale
+ok   225% loaded variant preserves the full derived physics model
+ok   225% loaded variant retains its scaled wheel radius
+ok   225% stored variant freezes into the same full physical model
+ok   225% stored trial keeps scaled wheel radius
+ok   225% endpoint exports to a portable bundle
+ok   225% portable endpoint decodes with exact scale
+ok   225% portable endpoint freezes into the same full physical model
+ok   225% portable trial preserves scaled wheel radius
+ok   Workshop displays selector, step controls and actual-size readout
+ok   legacy size selector presets remain available
+ok   named Tiny size shortcut exists
+ok   Tiny shortcut selects its named multiplier
+ok   Tiny shortcut leaves every other recipe setting unchanged
+ok   named Mini size shortcut exists
+ok   Mini shortcut selects its named multiplier
+ok   Mini shortcut leaves every other recipe setting unchanged
+ok   named Original size shortcut exists
+ok   Original shortcut selects its named multiplier
+ok   Original shortcut leaves every other recipe setting unchanged
+ok   named Large size shortcut exists
+ok   Large shortcut selects its named multiplier
+ok   Large shortcut leaves every other recipe setting unchanged
+ok   named Giant size shortcut exists
+ok   Giant shortcut selects its named multiplier
+ok   Giant shortcut leaves every other recipe setting unchanged
+ok   size readout reports the current percentage and accepted wingspan
+ok   Larger steps up by ten percent
+ok   one size click creates one Undo entry
+ok   Undo restores the exact preceding size
+ok   Redo reapplies the exact size step
+ok   opposite size steps restore the starting size
+ok   selecting current size is a no-op for history
+ok   Tiny lands exactly on the shared lower endpoint
+ok   smaller step disables at the lower endpoint
+ok   lower endpoint actions are no-op for history
+ok   Giant lands exactly on the shared upper endpoint
+ok   larger step disables at the upper endpoint
+ok   upper endpoint actions are no-op for history
+ok   selector preserves an exact loaded intermediate scale
+ok   legacy option values coexist with the loaded intermediate
+ok   size edit preserves invalid numeric text and blocking state
+ok   invalid numeric draft shows proposed size rather than claiming acceptance
+ok   unsupported aircraft disables size selector, steps and shortcuts
+ok   unsupported size actions cannot change recipe or history
+Workshop sizes: 72 checks, 0 failures

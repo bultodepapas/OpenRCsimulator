@@ -1112,16 +1112,16 @@ func is_flyable() -> bool:
 	return _flight_ready()
 
 
-## Whether resume() would fly now: flyable, not held, not showing a crash.
+## Whether resume() would fly now: a valid flight with no calibration, menu hold, or crash.
 func can_resume() -> bool:
-	return holds.is_empty() and crash.is_empty() and _flight_ready() and not _controller_lost \
+	return calibration == null and holds.is_empty() and crash.is_empty() and _flight_ready() and not _controller_lost \
 		and (not external_controller_selection or not radio.connected or radio.armed)
 
 
-## The pilot's explicit "continue" (never automatic). Refused while a menu holds the session or a crash is shown
+## The pilot's explicit "continue" (never automatic). Refused during calibration, menu holds, or a crash
 ## (the crash restarts by itself; flying on would pass through the ground).
 func resume() -> void:
-	if not holds.is_empty() or not crash.is_empty():
+	if calibration != null or not holds.is_empty() or not crash.is_empty():
 		return
 	if _controller_lost or (external_controller_selection and radio.connected and not radio.armed):
 		return
@@ -2136,7 +2136,8 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	_append_contact_event(ContactEvents.impact_event(impact, _contact_bindings, _impact_policy(impact)))
 
 
-func reset() -> void:
+## The shell may retain an armed radio when restarting under the same device/profile ownership.
+func reset(preserve_radio_readiness := false) -> void:
 	_fuel_start_fill_known = true
 	if start_choice == START_RUNWAY:
 		var result := _reset_selected_runway_start()
@@ -2147,7 +2148,7 @@ func reset() -> void:
 				_fail_selected_start(start_error)
 		elif external_controller_selection and radio.connected:
 			_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
-			radio.require_neutral(false)
+			radio.require_neutral(preserve_radio_readiness and not radio.is_gamepad())
 			sim.set_paused(true)
 			pause_reason = "Restart ready. Release controls and continue explicitly."
 		return
@@ -2198,7 +2199,7 @@ func reset() -> void:
 		_fail_selected_start("unsupported start choice '%s'" % start_choice)
 	if external_controller_selection and radio.connected:
 		_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
-		radio.require_neutral(false)
+		radio.require_neutral(preserve_radio_readiness and not radio.is_gamepad())
 		sim.set_paused(true)
 		pause_reason = "Restart ready. Release controls and continue explicitly."
 

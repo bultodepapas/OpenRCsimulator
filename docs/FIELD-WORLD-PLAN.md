@@ -18,6 +18,8 @@ Available named presets include dawn, sunrise, morning, noon, afternoon, golden_
 
 ## Night field and campfire
 
+Aircraft controls, the 17:30 local default, manual override lifecycle and reusable bindings are defined in the [aircraft lighting standard](AIRCRAFT-LIGHTING.md) (FW-35c).
+
 Sky, time and aircraft lighting apply to both selectable landscapes. Field-light fixtures and the campfire belong to Club field; Green paradise has neither. [Landscape selection and authoring](LANDSCAPES.md).
 
 The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Airfield uses cooler floods and white edge cues; the red/green threshold direction cues remain visual aids for this RC field, not airport certification.
@@ -56,6 +58,7 @@ This integration targets the airplane route. Natural Random and helicopter fligh
 
 - FW-01/02 use the same World.build/update path for flight, Home, scenery views and the runway scenario. The parity tool covers 89 views plus trace content; two runs match. See [FW-02 evidence](research/field-world/FW-02/README.md).
 - FW-20–24 provide float64 sun/moon ephemeris, an offline sky table, shared sky/ground/grass haze, time-dependent light and exposure, and geometry-based stars. See [FW-20](research/field-world/FW-20/README.md), [FW-23](research/field-world/FW-23/README.md) and [FW-24](research/field-world/FW-24/README.md).
+- FW-24-R1 reuses intrinsic star-catalogue data by source contents while preserving current sky rotation and independent render resources. [Repeated construction and exact native parity](research/visual-quality-implementation/VQ-01c/loading/stars/README.md); cold/full-loading and FPS acceptance remain open.
 - FW-27's saved Home choice is implemented. FW-61's named Evening flow is implemented in the world and has a focused deterministic test; its full clock/checkpoint lifecycle remains under TOD-09c2.
 - FW-31/33/34 provide validated field-light data, lamp sprites, club floods and a lit windsock. Aircraft navigation lights, strobes and landing lights are in the first slice. Wing underside strips are now derived from model triangles (FW-62); a fuselage belly strip still needs model anchors. [FW-35 evidence](research/field-world/FW-35/README.md).
 - A model may publish optional `light_anchors` (lens positions, a node to follow, a gear gate). The kit then lights from them and `update_dynamic()` moves followed lights and gates a gear-mounted lamp; kits without anchors are unchanged. First user: the P-51 ([P51-V13](research/p51-realism/P51-V13/README.md), owner review requested).

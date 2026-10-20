@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/aircraft-editor/capture_workshop.gd",
+    "--",
+    "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\native\\tiny-10-en720.png",
+    "--scale=0.1",
+    "--size-controls"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:50:35.032802+00:00",
+  "label": "tiny-10-en720",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\tiny-10-en720-ls_hewv5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\tiny-10-en720-ls_hewv5\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.813,
+  "log_bytes": 288,
+  "log_sha256": "7f037201f79a6b7237f8f70b02821d6a6d4482b471b289bd6f12c26befa6685a"
+}

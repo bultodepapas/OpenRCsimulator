@@ -27,6 +27,10 @@ $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
 
 Inspect exit status **and** engine errors in logs: Godot can report runtime script errors with exit code zero. WSL results establish Linux behavior, not native Windows GPU or device acceptance. On macOS, open `app/project.godot` with the matching Godot build.
 
+For focused checks, use the [checked Godot runner](../tools/godot/README.md):
+`python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd`
+(PowerShell). It retains bounded logs and JSON verdicts, catches zero-exit engine/script/shader errors, and supports required completion text and strict warning checks. `app/test.sh` uses it for its direct Godot calls; `OPENRC_CHECK_OUT` selects the evidence parent. App CI jobs that reach the test step retain diagnostic artifacts for seven days. Run `python tools/godot/summarize.py <collection> --junit <new.xml>` after capture to validate log integrity and export one JUnit case per invocation; see the runner guide for limits and exit codes.
+
 Node 24 (`.nvmrc`) is used by tree-authoring tools and the frozen three.js prototype; the production app and static project site do not require Node. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
 
 Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.playwright-mcp/` for browser sessions. Retain accepted evidence under `docs/research/` or `docs/media/`. Local cleanup must preserve source deliveries, `references/`, tool binaries/environments and registered worktrees (`git worktree list`), including those nested in scratch directories.
@@ -48,6 +52,7 @@ Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.
 | Flight log and replay | `python3 tools/flight_log/flight_log.py record --godot "$(app/get-godot.sh)" --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |
 | Crash-cost data | `python3 research/crash-economics/build_runtime.py` | Regenerates the accident-cost sidecar after aircraft or price-source edits; `--check` only verifies. Opt-in pre-push check: `git config core.hooksPath tools/hooks`. |
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
+| CPU/GPU frame diagnosis | Add `--frame-diagnostics --frametimes=<new.json>` after the engine's `--`, then run `python research/performance/frame_diagnose.py --report <json> --log <engine.log> --out <new-diagnosis.json>` | Opt-in render timings, memory context, worst frames and budget bursts; [options and measurement limits](../research/performance/README.md#cpu-gpu-and-memory-diagnosis). |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
 For experimental-aircraft evaluation, `app/test.sh` may report two named physical checks as pending: only the Stik's right-first 240 Hz reference-doublet `|β| ≤ 25°` screen, and the R02 yaw-damping comparison. The Stik screen is an estimated boundary check; D10-R2 recovery, yaw-rate, finite-state and timestep-convergence checks remain mandatory ([D10-R2 decision and evidence](research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md#6-decisions-and-adoption-d10-r2-2026-10-18)). The P-51 ground and handling checks are strict again ([P51-22 resolution](research/p51-realism/P51-22/README.md#resolution--2026-10-16)). Standalone scripts default to strict acceptance:
@@ -123,6 +128,10 @@ Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
 
 Inspect each suite's assertions and engine errors as well as exit status. Focused passes do not replace the descriptor check, full app suite or physical/pilot acceptance.
 
+`test_workshop_store_interruptions.gd` runs 35 injected save-boundary cases by default. Add `-- --process-cuts` to terminate disposable writer processes at the same boundaries and inspect their filesystem prefixes from the reader process. This optional run exceeds the ordinary unit timeout; run it separately. It creates and removes only unique `user://workshop_store_cuts_*` fixtures and never uses the player library. [AE-03a](research/aircraft-editor/AE-03a/README.md) records the native Windows proof and remaining filesystem/platform limits.
+
+`test_workshop_staging.gd` checks bounded cleanup of handled first-save failures, readback corruption, retained unknown data, reservation/path guards and directory links. It uses isolated `user://workshop_staging_test_*` fixtures; on Windows its link fixtures fall back to directory junctions through the built-in PowerShell when unprivileged symbolic links are unavailable. The retained-data warning in its negative case is intentional. It never reclaims a player lock or scans older staging directories.
+
 For a native rendered still:
 
 ```powershell
@@ -130,6 +139,8 @@ For a native rendered still:
 ```
 
 Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Review cases: `--page=appearance|smoke|setup|compare`, `--preview`, `--dialog=library|save|guard|bundle-import`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. Customization cases accept `--paint-color=#RRGGBBAA`, `--marking=RC-27`, `--smoke-preset=1..6`, and `--smoke-seconds=0..16`; inscription requires a registered mount. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+
+For a moving preview capture, add `--smoke-motion=pass --smoke-seconds=3 --smoke-preset=2 --page=smoke --scale=1` to the Workshop capture command; use `--smoke-seconds=6` for the paused endpoint. The sidecar records motion, tick, rig position, particle allocation and playback-control bounds. This illustrative pass does not run flight physics or establish a GPU cost result.
 
 The native GPU birth-color/lifecycle probe is `research/aircraft-editor/capture_smoke_profiles.gd`. Run it with the same display command in place of `capture_workshop.gd`; it writes rate captures and `metrics.json` under ignored `tmp/smoke-profile-native/`, returns nonzero when its checks fail, and allocates the production shared 768-particle profile budget. It is renderer evidence, not a portable performance benchmark.
 

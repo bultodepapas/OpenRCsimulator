@@ -4,13 +4,14 @@ const AirplaneBuilder := preload("res://render/airplane.gd")
 const Customization := preload("res://render/aircraft_customization.gd")
 const ProfileSmoke := preload("res://render/smoke/profile_smoke.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const Parameters := preload("res://workshop/parameters.gd")
 
 const BACKGROUND := Color("#263a40")
 const AMBIENT := Color("#c5d3cb")
 const GRID_COLOR := Color(0.54, 0.67, 0.68, 0.52)
 const GRID_SPACING := 0.5
-const MIN_MODEL_SCALE := 0.5
-const MAX_MODEL_SCALE := 2.0
+const MIN_MODEL_SCALE := Parameters.MIN_SCALE
+const MAX_MODEL_SCALE := Parameters.MAX_SCALE
 const MIN_ZOOM := 0.5
 const MAX_ZOOM := 4.0
 const DEFAULT_YAW_DEG := 180.0
@@ -18,6 +19,8 @@ const DEFAULT_PITCH_DEG := 10.0
 const PITCH_LIMIT_DEG := 88.0
 const FIT_FILL := 0.89
 const SAFE_FILL := 0.93
+const PASS_TICKS := 1440 # Six seconds on the isolated 240 Hz preview clock.
+const PASS_SPANS := 4.0
 
 enum CameraMenuAction { FRONT, SIDE, TOP, ORBIT_LEFT, ORBIT_RIGHT, ORBIT_UP, ORBIT_DOWN, ZOOM_OUT, ZOOM_IN, RESET }
 
@@ -41,6 +44,8 @@ var _time_label: Label
 var _source_preview_label: Label
 var _playback_controls: Array[Control] = []
 var _preview_wind := Vector3(0.0, 0.0, 1.5)
+var _motion_mode := "stationary"
+var _motion_selector: OptionButton
 var _requested_id := ""
 var _requested_scale := 1.0
 
@@ -131,11 +136,13 @@ func _ready() -> void:
 ## The preview owns an isolated World3D and an optional visual smoke clock; it has no flight state.
 ## `scale` is the draft display scale; the original comparison member is the same model at 1.0.
 func set_aircraft(id: String, scale: float = 1.0) -> void:
+	var previous_scale := _requested_scale
 	_requested_id = id
 	_requested_scale = clampf(scale, MIN_MODEL_SCALE, MAX_MODEL_SCALE) if is_finite(scale) else 1.0
 	if not is_instance_valid(_rig):
 		return
 	if id == _base_aircraft_id() and is_instance_valid(_airplane_root):
+		if not is_equal_approx(previous_scale, _requested_scale): reset_playback()
 		_refresh_model_presentation()
 		return
 	reset_playback()
@@ -279,6 +286,9 @@ func _fit_model_scale() -> float:
 
 
 func _refresh_model_presentation() -> void:
+	if _view_mode == "compare" and _comparison_original and _playing:
+		toggle_playback()
+	_apply_preview_pose()
 	if is_instance_valid(_grid) and not is_equal_approx(_grid_fit_scale, _fit_model_scale()):
 		_rebuild_grid()
 	if is_instance_valid(_airplane_root):
@@ -293,6 +303,8 @@ func _refresh_model_presentation() -> void:
 	if is_instance_valid(_smoke): _smoke.visible = not (_view_mode == "compare" and _comparison_original)
 	_update_scale_badge()
 	_sync_toolbar()
+	if is_instance_valid(_play_button):
+		_play_button.disabled = _view_mode == "compare" and _comparison_original
 	_refresh_camera()
 
 
@@ -336,6 +348,9 @@ func _distance_for_fill(scale: float, direction: Vector3, right: Vector3, up: Ve
 					_model_bounds.size.z if z_index == 1 else 0.0
 				)
 				var point := (corner - center) * scale
+				# Fit the entire pass, not just the current frame. The camera stays still.
+				if _pass_visible():
+					point.z += _pass_distance() * (0.5 if z_index == 1 else -0.5)
 				var depth_offset := point.dot(direction)
 				var horizontal_distance := absf(point.dot(right)) / maxf(horizontal_tangent * fill, 0.001)
 				var vertical_distance := absf(point.dot(up)) / maxf(vertical_tangent * fill, 0.001)
@@ -953,11 +968,19 @@ func _build_playback() -> void:
 	_time_label.text = "0.0 s"
 	var wind := OptionButton.new()
 	wind.add_theme_font_size_override("font_size", UiTheme._font_size(14))
-	for title: String in ["Light wind", "Still air", "Crosswind"]: wind.add_item(title)
+	wind.name = "PreviewWind"
+	for title: String in ["Light wind", "Still air", "Crosswind"]: wind.add_item(tr(title))
 	wind.item_selected.connect(func(index: int) -> void:
 		_preview_wind = [Vector3(0, 0, 1.5), Vector3.ZERO, Vector3(2.0, 0, 0)][index]
 		reset_playback())
-	for control: Control in [_play_button, reset, _time_label, wind]:
+	_motion_selector = OptionButton.new()
+	_motion_selector.name = "PreviewMotion"
+	_motion_selector.add_item(tr("Stationary"))
+	_motion_selector.add_item(tr("Illustrative pass"))
+	_motion_selector.tooltip_text = tr("Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs.")
+	_motion_selector.item_selected.connect(func(index: int) -> void:
+		set_motion_mode("stationary" if index == 0 else "pass"))
+	for control: Control in [_play_button, reset, _time_label, wind, _motion_selector]:
 		_playback_controls.append(control)
 		_mode_row.add_child(control)
 		control.visible = false
@@ -982,7 +1005,9 @@ func _configure_smoke() -> void:
 		_stage.remove_child(_smoke)
 		_smoke.queue_free()
 		_smoke = null
-	if _profile.get("smoke", []).is_empty(): return
+	if _profile.get("smoke", []).is_empty():
+		_refresh_model_presentation()
+		return
 	var described := Customization.describe(_requested_id)
 	if not described.get("ok", false): return
 	_smoke = ProfileSmoke.new()
@@ -990,11 +1015,15 @@ func _configure_smoke() -> void:
 	if not _smoke.configure(_profile, described.bindings):
 		_smoke.queue_free()
 		_smoke = null
+	_refresh_model_presentation()
 	# Preview intentionally remains still until the user requests playback.
 
 
 func toggle_playback() -> void:
 	if not is_instance_valid(_smoke): return
+	if not _playing and _view_mode == "compare" and _comparison_original: return
+	if not _playing and _pass_visible() and _playhead_tick >= PASS_TICKS:
+		reset_playback()
 	_playing = not _playing
 	set_process(_playing)
 	_play_button.text = tr("Pause smoke" if _playing else "Play smoke")
@@ -1014,6 +1043,7 @@ func reset_playback() -> void:
 	set_process(false)
 	_playhead_tick = 0
 	_playhead_seconds = 0.0
+	_apply_preview_pose()
 	if is_instance_valid(_play_button): _play_button.text = tr("Play smoke")
 	if is_instance_valid(_time_label): _time_label.text = "0.0 s"
 	if is_instance_valid(_smoke): _smoke.reset()
@@ -1027,13 +1057,45 @@ func _exit_tree() -> void:
 func _process(delta: float) -> void:
 	if not _playing or not is_instance_valid(_smoke) or not is_visible_in_tree(): return
 	if _view_mode == "compare" and _comparison_original: return
+	if not is_finite(delta) or delta <= 0.0: return
 	_playhead_seconds += minf(delta, 0.1)
-	var next := int(floor(_playhead_seconds * 240.0))
+	var next := int(floor(_playhead_seconds * 240.0 + 0.0000001))
+	if _pass_visible():
+		next = mini(next, PASS_TICKS)
 	var dt := float(next - _playhead_tick) / 240.0
 	_playhead_tick = next
+	_apply_preview_pose()
 	_smoke.advance(dt, {tick = _playhead_tick, slot_transforms = Customization.smoke_transforms(_airplane)},
 		_preview_wind, 1.0, _preview_source_sample())
 	_time_label.text = "%.1f s" % (float(_playhead_tick) / 240.0)
+	if _pass_visible() and _playhead_tick == PASS_TICKS:
+		toggle_playback()
+
+
+## Local preview choice only: never saved into the build or passed to a trial.
+func set_motion_mode(mode: String) -> void:
+	if mode not in ["stationary", "pass"] or mode == _motion_mode: return
+	_motion_mode = mode
+	_motion_selector.select(0 if mode == "stationary" else 1)
+	reset_playback()
+	if mode == "pass": set_standard_view("side")
+	_refresh_model_presentation()
+
+
+func _pass_visible() -> bool:
+	return _motion_mode == "pass" and not _profile.get("smoke", []).is_empty() \
+		and not (_view_mode == "compare" and _comparison_original)
+
+
+func _pass_distance() -> float:
+	return maxf(_model_bounds.size.x, 0.5) * _visible_model_scale() * PASS_SPANS
+
+
+func _apply_preview_pose() -> void:
+	if not is_instance_valid(_rig): return
+	_rig.position = Vector3.ZERO
+	if _pass_visible():
+		_rig.position.z = (0.5 - float(_playhead_tick) / PASS_TICKS) * _pass_distance()
 
 
 func _preview_source_sample() -> Dictionary:

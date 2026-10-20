@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/aircraft-editor/size_refinement.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-size/accepted-refinement-final"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:28:01.973390+00:00",
+  "label": "accepted-refinement-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\accepted-refinement-final-wuefhbj7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\accepted-refinement-final-wuefhbj7\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 40.031,
+  "log_bytes": 2266,
+  "log_sha256": "1d6ab42eb3e7b25f107bf31dca59ed22d0c7eadd9739e982f33980056c0d98f7"
+}

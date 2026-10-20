@@ -1,0 +1,7 @@
+{
+  "mutation": "replace x1_table[sample] = index1 with index0 in a disposable script",
+  "rejected": true,
+  "script_sha256": "0bb158760c1f16ef8d3324c877562b62c23cdaadeb6edd7f40cc74fc1f37ccfe",
+  "test_sha256": "c6dc9a7a7540580776a2988999d112f319c2b9043f0822c7bcc5890135afbb07",
+  "log": "deliberate-index-mutation.log"
+}

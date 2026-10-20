@@ -1,0 +1,283 @@
+{
+  "source_head": "5e2fbe32da2531928f01164fc9923cde943918f9",
+  "scope": "Native CPU Stars.build construction only; no Home/Fly, first-start or FPS claim.",
+  "runs": [
+    {
+      "file": "verified-0.json",
+      "reference_median_usec": 16618.0,
+      "candidate_median_usec": 8653.5,
+      "reduction_percent": 47.9269466843182,
+      "cold_reference_median_usec": 15075.5,
+      "cold_candidate_median_usec": 20902.5,
+      "first_reference_usec": 28920,
+      "first_candidate_usec": 16934
+    },
+    {
+      "file": "verified-1.json",
+      "reference_median_usec": 13393.5,
+      "candidate_median_usec": 6265.5,
+      "reduction_percent": 53.21984544741852,
+      "cold_reference_median_usec": 21671.5,
+      "cold_candidate_median_usec": 21059.5,
+      "first_reference_usec": 19642,
+      "first_candidate_usec": 28535
+    },
+    {
+      "file": "verified-2.json",
+      "reference_median_usec": 16404.0,
+      "candidate_median_usec": 7503.5,
+      "reduction_percent": 54.25810777859059,
+      "cold_reference_median_usec": 17925.5,
+      "cold_candidate_median_usec": 17456.0,
+      "first_reference_usec": 27241,
+      "first_candidate_usec": 26431
+    },
+    {
+      "file": "verified-3.json",
+      "reference_median_usec": 17808.5,
+      "candidate_median_usec": 8140.0,
+      "reduction_percent": 54.29149001881124,
+      "cold_reference_median_usec": 22152.0,
+      "cold_candidate_median_usec": 20797.0,
+      "first_reference_usec": 23729,
+      "first_candidate_usec": 27900
+    },
+    {
+      "file": "verified-4.json",
+      "reference_median_usec": 20844.0,
+      "candidate_median_usec": 9354.0,
+      "reduction_percent": 55.123776626367295,
+      "cold_reference_median_usec": 22105.5,
+      "cold_candidate_median_usec": 21946.0,
+      "first_reference_usec": 27635,
+      "first_candidate_usec": 26542
+    }
+  ],
+  "source_sha256": {
+    "app/render/world/stars.gd": "50347186d077d4e18e42d3d8cc9b177d8cb65e819461c7d374339d51cc773e1b",
+    "app/tests/test_world_stars.gd": "4f2978be0ffc42ad442463dfd365c62578e64764341f5a7b8a2a364325c67e85",
+    "app/render/world/stars.gdshader": "5200b91bbce6e7baea7960eecb4932cc980bb76190cff95d21123ace92fc931b",
+    "app/render/frames.gd": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9",
+    "app/render/shader_clock.gd": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550",
+    "app/spec.gd": "0b9e3625e60945e04e96533f44ccd22c906957d8eef15baf9ffae5b879aee0bc",
+    "app/render/atmosphere.gd": "6e1b7c3ad694ad684837f565c0c5abc9105568ee64b1515cfd4380a42dbd37e8",
+    "app/data/sky/stars.json": "67f966951d25ca585eda973af4894b78ce8a08da3a2463dacd3a7afa4b91f023",
+    "research/performance/stars_build_probe.gd": "37c9fc632f6a19de3e9929d2c345c0192fb1b6893a88cdbb1668bfcadd01d15a",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "verification": [
+    {
+      "name": "parse-stars",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--check-only",
+        "--script",
+        "res://render/world/stars.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "parse-test_world_stars",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--check-only",
+        "--script",
+        "res://tests/test_world_stars.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "parse-stars_build_probe",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--check-only",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\stars_build_probe.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_world_stars",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_world_stars.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_world_sky",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_world_sky.gd"
+      ],
+      "returncode": 0,
+      "clean": false,
+      "warnings": [
+        "WARNING: Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark, moonrise, moonrise_golden); using the fixed sun",
+        "WARNING: Bad --time '25h' (HH:MM); using the fixed sun"
+      ],
+      "warnings_reproduced_on_reference": true,
+      "passed": true
+    },
+    {
+      "name": "test_world_ephemeris",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_world_ephemeris.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_sky_appearance_config",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_sky_appearance_config.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_world_presentation_context",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_world_presentation_context.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_time_of_day_render_update",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_time_of_day_render_update.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    },
+    {
+      "name": "test_sky_checkpoint",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--headless",
+        "--script",
+        "res://tests/test_sky_checkpoint.gd"
+      ],
+      "returncode": 0,
+      "clean": false,
+      "warnings": [
+        "WARNING: Tree wind is disabled for maple_tree because source material -9223371803584362003 is unsupported (cull mode is not disabled)"
+      ],
+      "warnings_reproduced_on_reference": true,
+      "passed": true
+    },
+    {
+      "name": "native-world-stars",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "64x64",
+        "--position",
+        "4000,4000",
+        "--script",
+        "res://tests/test_world_stars.gd"
+      ],
+      "returncode": 0,
+      "clean": true,
+      "warnings": [],
+      "warnings_reproduced_on_reference": false,
+      "passed": true
+    }
+  ],
+  "reference_median_of_run_medians_usec": 16618.0,
+  "candidate_median_of_run_medians_usec": 8140.0,
+  "reduction_percent": 51.01696955108919
+}

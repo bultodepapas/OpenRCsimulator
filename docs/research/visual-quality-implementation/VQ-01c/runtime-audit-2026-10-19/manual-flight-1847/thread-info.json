@@ -1,0 +1,506 @@
+[
+  {
+    "tid": 46508,
+    "create": 134369272360713326,
+    "kernel_100ns": 17343750,
+    "user_100ns": 91718750,
+    "start": "0x7ff7b8a81470"
+  },
+  {
+    "tid": 63412,
+    "create": 134369272360784116,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 71408,
+    "create": 134369272360784574,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 46740,
+    "create": 134369272360786650,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 45296,
+    "create": 134369272360911911,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 42552,
+    "create": 134369272360920348,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fff996a1d00"
+  },
+  {
+    "tid": 31884,
+    "create": 134369272361006014,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 11416,
+    "create": 134369272361037217,
+    "kernel_100ns": 156250,
+    "user_100ns": 2656250,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 30560,
+    "create": 134369272361037498,
+    "kernel_100ns": 156250,
+    "user_100ns": 2500000,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 59936,
+    "create": 134369272361037661,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 46852,
+    "create": 134369272361037806,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 71564,
+    "create": 134369272361037954,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 47468,
+    "create": 134369272361038129,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 21168,
+    "create": 134369272361038287,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 68792,
+    "create": 134369272361038452,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 35872,
+    "create": 134369272361038622,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 62584,
+    "create": 134369272361038767,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 65648,
+    "create": 134369272361039252,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 56572,
+    "create": 134369272361039462,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 31124,
+    "create": 134369272361039615,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 1884,
+    "create": 134369272361039799,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 28416,
+    "create": 134369272361040091,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 67044,
+    "create": 134369272361040300,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 40368,
+    "create": 134369272361040470,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 1748,
+    "create": 134369272361040610,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 52116,
+    "create": 134369272361040759,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 53988,
+    "create": 134369272361040902,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 35432,
+    "create": 134369272361041079,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 65224,
+    "create": 134369272361041279,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 36020,
+    "create": 134369272361041409,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 44056,
+    "create": 134369272361041572,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 44916,
+    "create": 134369272361662659,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd0f8f180"
+  },
+  {
+    "tid": 67996,
+    "create": 134369272362358009,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fff0dfa0aa0"
+  },
+  {
+    "tid": 29572,
+    "create": 134369272362795879,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fff0df65130"
+  },
+  {
+    "tid": 64712,
+    "create": 134369272362818479,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 38992,
+    "create": 134369272364534599,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd251cd20"
+  },
+  {
+    "tid": 29772,
+    "create": 134369272364536626,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 56096,
+    "create": 134369272364538178,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  },
+  {
+    "tid": 20552,
+    "create": 134369272364541338,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd251cd20"
+  },
+  {
+    "tid": 1972,
+    "create": 134369272364587661,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2219c30"
+  },
+  {
+    "tid": 73012,
+    "create": 134369272364799571,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 66540,
+    "create": 134369272367617085,
+    "kernel_100ns": 312500,
+    "user_100ns": 156250,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 76844,
+    "create": 134369272368994499,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 76444,
+    "create": 134369272368996250,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 48732,
+    "create": 134369272369118334,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 77176,
+    "create": 134369272369240793,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 48800,
+    "create": 134369272369241075,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 14828,
+    "create": 134369272369241222,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 54352,
+    "create": 134369272369241341,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 53792,
+    "create": 134369272369241461,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 31812,
+    "create": 134369272369241582,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 76708,
+    "create": 134369272369241702,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 2744,
+    "create": 134369272369241809,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 44548,
+    "create": 134369272369241920,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 52020,
+    "create": 134369272369242026,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 60648,
+    "create": 134369272369242135,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 54988,
+    "create": 134369272369242240,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 25136,
+    "create": 134369272369242343,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 24348,
+    "create": 134369272369242448,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 67300,
+    "create": 134369272369242551,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 43232,
+    "create": 134369272369242657,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 43852,
+    "create": 134369272369242764,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 26340,
+    "create": 134369272369242871,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 40932,
+    "create": 134369272369242976,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 47240,
+    "create": 134369272369243078,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 32680,
+    "create": 134369272369243182,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 44008,
+    "create": 134369272369243282,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 35888,
+    "create": 134369272369243406,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 30336,
+    "create": 134369272369243514,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 50576,
+    "create": 134369272369326605,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffb7e3d8f0"
+  },
+  {
+    "tid": 77304,
+    "create": 134369272369838750,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd2b6f100"
+  },
+  {
+    "tid": 30112,
+    "create": 134369272369996540,
+    "kernel_100ns": 0,
+    "user_100ns": 0,
+    "start": "0x7fffd36b5bc0"
+  }
+]

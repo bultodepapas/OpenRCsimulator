@@ -2,6 +2,8 @@
 extends SceneTree
 
 const Ground = preload("res://render/ground.gd")
+const Spec = preload("res://spec.gd")
+const REFERENCE_SIZE := 256
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
@@ -16,7 +18,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	ShaderClock.register()
-	var expected := Ground.grass_image()
+	var expected := _reference_image(1253)
 	var cold := Ground._default_grass_image()
 	_check("cold default pixels and every mip equal the original recipe", _same_image(cold, expected))
 	var warm := Ground._default_grass_image()
@@ -29,12 +31,39 @@ func _run() -> void:
 	warm.resize(8, 8)
 	_check("warm image edits do not poison a subsequent image", _same_image(Ground._default_grass_image(), expected))
 	var other := Ground.grass_image(1254)
-	_check("explicit seed still controls the uncached recipe", not _same_image(other, expected) and _same_image(other, Ground.grass_image(1254)))
+	_check("explicit seed still controls the uncached recipe", not _same_image(other, expected)
+		and _same_image(other, Ground.grass_image(1254)) and _same_image(other, _reference_image(1254)))
 	_check("explicit seeds do not replace the default", _same_image(Ground._default_grass_image(), expected))
 	_check("cached bytes stay bounded to one default tile", Ground._default_grass_bytes.size() == expected.get_data_size())
+	for seed: int in [0, -1]:
+		_check("seed %d pixels and every mip equal the scalar recipe" % seed, _same_image(Ground.grass_image(seed), _reference_image(seed)))
 	_test_materials(expected)
 	print("ground image cache: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
+
+
+## Independent scalar recipe retained from before coordinate-table preparation.
+func _reference_image(seed: int) -> Image:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed
+	var octaves := []
+	for cells in [8, 32, 128]: # coarse patches → fine blades
+		var grid := PackedFloat32Array()
+		grid.resize(cells * cells)
+		for k in grid.size():
+			grid[k] = rng.randf()
+		octaves.append([cells, grid])
+	var weights := [0.5, 0.3, 0.2]
+	var img := Image.create(REFERENCE_SIZE, REFERENCE_SIZE, true, Image.FORMAT_RGB8)
+	for j in REFERENCE_SIZE:
+		for i in REFERENCE_SIZE:
+			var n := 0.0
+			for o in octaves.size():
+				n += weights[o] * Ground._value_noise(octaves[o][1], octaves[o][0], float(i) / REFERENCE_SIZE, float(j) / REFERENCE_SIZE)
+			var shade := lerpf(1.0 - Spec.GROUND.contrast, 1.0 + Spec.GROUND.contrast, n)
+			img.set_pixel(i, j, Color(Spec.GRASS.r * shade, Spec.GRASS.g * shade, Spec.GRASS.b * shade))
+	img.generate_mipmaps()
+	return img
 
 
 func _test_materials(expected: Image) -> void:

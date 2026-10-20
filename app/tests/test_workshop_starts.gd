@@ -8,7 +8,7 @@ const Field := preload("res://data/field_loader.gd")
 const Weather := preload("res://physics/wind_config.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
-const STIK_SCALE_VARIANTS := [0.5, 0.75, 1.25, 1.5, 2.0]
+const STIK_SCALE_VARIANTS := [0.1, 0.35, 0.5, 0.75, 1.25, 1.5, 2.0, 2.25, 5.0]
 
 var checks := 0
 var failures := 0
@@ -42,7 +42,7 @@ func _initialize() -> void:
 			var expected: bool = choice != "airborne_half_power"
 			if choice == "runway" and str(variant.id) == STIK_ID:
 				var scale_value: float = float(variant.recipe.get("scale", 1.0))
-				expected = scale_value <= 1.25
+				expected = scale_value == 0.1 or (scale_value >= 0.5 and scale_value <= 1.25)
 			var result: Dictionary = Qualification.qualify(frozen, field, weather, choice)
 			var label: String = "%s %s %s" % [variant.id, variant.recipe, choice]
 			_check(label + " is assessed", result.get("ok", false), str(result.get("reason", "")))

@@ -652,13 +652,26 @@ func start_flight(request: Dictionary = {}) -> void:
 		if controllers != null:
 			controllers.attach_session(flight.session)
 			if controllers.registry.selected_device_id("flight") >= 0:
-				open_pause.call_deferred()
+				_finish_controller_launch.call_deferred(flight.session)
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
 		if has_home and not preferences.get("first_flight_hint_seen", false):
 			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+
+
+## Fly is the explicit launch action; a ready airplane needs no second Continue action.
+func _finish_controller_launch(target: Node) -> void:
+	if not is_instance_valid(target) or flight == null or flight.session != target or screens.top() != null:
+		return # a newer route or an explicit pause takes precedence over this deferred launch
+	if not Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
+		target._poll_controller(false) # readiness only: leave staged launch throttle untouched
+		if target.can_resume():
+			HeldKeys.mask(target, _keyboard_reader)
+			target.resume()
+			return
+	open_pause()
 
 
 func _create_flight(aircraft_id: String = "") -> Node:
@@ -1653,13 +1666,20 @@ func restart_flight() -> void:
 	if not screens.is_top("pause"):
 		return
 	# Keep the menu hold until reset succeeds; rejected starts remain reviewable and frozen.
-	flight.session.reset() # the selected launch; the recorder closes its file on reset
+	var helicopter_route := Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
+	if helicopter_route:
+		flight.session.reset()
+	else:
+		flight.session.reset(true) # same radio ownership; the recorder closes its file on reset
 	var session: Node = flight.session
 	if not session.start_error.is_empty() or not session.is_flyable():
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
 		return
-	if controllers != null and (session.radio.connected or session._controller_lost):
+	if controllers != null and session.radio.connected and not helicopter_route:
+		# Refresh readiness after reset without advancing the flight or incremental throttle.
+		session._poll_controller(false)
+	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
 		pause_menu.continue_button.grab_focus()

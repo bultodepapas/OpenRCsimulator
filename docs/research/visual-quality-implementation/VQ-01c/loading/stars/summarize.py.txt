@@ -1,0 +1,67 @@
+import hashlib
+import json
+import pathlib
+import re
+import shutil
+import statistics
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRATCH = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / 'docs/research/visual-quality-implementation/VQ-01c/loading/stars'
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+reports = [json.loads((OUT / f'verified-{i}.json').read_text()) for i in range(5)]
+summary = dict(source_head=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+               scope='Native CPU Stars.build construction only; no Home/Fly, first-start or FPS claim.',
+               runs=[], source_sha256={}, verification={})
+for i, data in enumerate(reports):
+    assert data['complete'] and data['candidate_sha256'] == sha(ROOT / 'app/render/world/stars.gd')
+    assert data['reference_sha256'] == sha(SCRATCH / 'reference.gd')
+    assert data['catalogue_sha256'] == sha(ROOT / 'app/data/sky/stars.json')
+    assert data['probe_sha256'] == sha(ROOT / 'research/performance/stars_build_probe.gd')
+    reference = statistics.median(v for row in data['results'] for v in row['reference_usec'])
+    candidate = statistics.median(v for row in data['results'] for v in row['candidate_usec'])
+    summary['runs'].append(dict(file=f'verified-{i}.json', reference_median_usec=reference,
+        candidate_median_usec=candidate, reduction_percent=100 * (1 - candidate / reference),
+        cold_reference_median_usec=statistics.median(data['cold_reference_usec']),
+        cold_candidate_median_usec=statistics.median(data['cold_candidate_usec']),
+        first_reference_usec=data['first_reference_usec'], first_candidate_usec=data['first_candidate_usec']))
+    assert all(row['buffer_equal'] and row['material_equal'] and row['placements_equal'] for row in data['results'])
+summary['reference_median_of_run_medians_usec'] = statistics.median(row['reference_median_usec'] for row in summary['runs'])
+summary['candidate_median_of_run_medians_usec'] = statistics.median(row['candidate_median_usec'] for row in summary['runs'])
+summary['reduction_percent'] = 100 * (1 - summary['candidate_median_of_run_medians_usec'] / summary['reference_median_of_run_medians_usec'])
+for name in ['app/render/world/stars.gd', 'app/tests/test_world_stars.gd', 'app/render/world/stars.gdshader',
+             'app/render/frames.gd', 'app/render/shader_clock.gd', 'app/spec.gd', 'app/render/atmosphere.gd',
+             'app/data/sky/stars.json', 'research/performance/stars_build_probe.gd',
+             '.tools/Godot_v4.7.2-stable_win64.exe', '.tools/Godot_v4.7.2-stable_win64_console.exe']:
+    summary['source_sha256'][name] = sha(ROOT / name)
+ledger = json.loads((OUT / 'verification.json').read_text())
+for row in ledger:
+    log = (OUT / f"{row['name']}.log").read_text()
+    warnings = re.findall(r'^WARNING:.*$', log, flags=re.MULTILINE)
+    expected = []
+    if row['name'] == 'test_world_sky':
+        expected = [r"^WARNING: Unknown time of day 'teatime'.*", r"^WARNING: Bad --time '25h'.*"]
+    elif row['name'] == 'test_sky_checkpoint':
+        expected = [r'^WARNING: Tree wind is disabled for maple_tree because source material -?[0-9]+ is unsupported \(cull mode is not disabled\)$']
+    baseline = OUT / f"reference-{row['name']}.log"
+    if expected:
+        baseline_log = baseline.read_text()
+        assert all(re.search(pattern, baseline_log, re.MULTILINE) for pattern in expected)
+        assert len(warnings) == len(expected) and all(any(re.match(pattern, warning) for pattern in expected) for warning in warnings)
+        assert re.search(r'(0 failed|failures=0)', baseline_log)
+    row['warnings'] = warnings
+    row['warnings_reproduced_on_reference'] = bool(expected)
+    row['passed'] = row['returncode'] == 0 and not re.search(r'\b(?:SCRIPT\s+)?ERROR\b|\bFAIL\b', log)
+    assert row['passed']
+summary['verification'] = ledger
+(OUT / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+for name in ['run.py', 'verify.py', 'check_reference.py', 'summarize.py']:
+    shutil.copyfile(SCRATCH / name, OUT / f'{name}.txt')
+print(json.dumps({key: summary[key] for key in ['runs', 'reference_median_of_run_medians_usec',
+                 'candidate_median_of_run_medians_usec', 'reduction_percent']}, indent=2))

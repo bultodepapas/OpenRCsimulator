@@ -35,7 +35,7 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 
 | ID | Work | Status / acceptance |
 | --- | --- | --- |
-| LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | Planned after VQ-01c; same-world collision oracle/state parity and complete-workload gain, otherwise retain baseline. |
+| LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | [Empty hull-envelope repair and oracle/session parity](research/landscape-upgrade/LU-10-R1/README.md) delivered; local query gain demonstrated, full-flight cost acceptance remains open. |
 | L9e-R1 | Compare current turf blending with one Laplacian candidate on retained maps. | Planned after VQ-02a and visibility reference; preserve masks/gradients/cues and pass combined visual/cost gates. |
 | L6b-R1 | Compare existing atlas alpha coverage with native alpha-to-coverage when a motion defect is reproduced. | Planned probe after VQ-02a; MSAA/scissor/edge compatibility, motion and cost proof. Custom mip importer excluded. |
 | LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | Conditional on pilot/overview review after ground work; visual/contact alignment and no new water physics or general authoring system. |

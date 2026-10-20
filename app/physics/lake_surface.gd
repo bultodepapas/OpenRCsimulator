@@ -231,8 +231,63 @@ static func sweep_probe(lake: Dictionary, from_ned: PackedFloat64Array, to_ned: 
 	return _miss_event()
 
 
-## Cheap structural guard for normalized data; loaders own exhaustive polygon/profile validation.
+# LU-25-R1: one detached, bounded successful definition. Never trust the identity
+# string alone: callers may edit nested fields without changing that label.
+static var _definition_cache: Dictionary = {}
+static var _definition_cache_mutex := Mutex.new()
+
+
+## Repeated queries compare the complete value, including Variant types, against
+## the last successful guard. Mutation (including nested arrays) takes the original
+## validation path. The cached copy is private and never returned to callers.
 static func is_valid_definition(lake: Dictionary) -> bool:
+	_definition_cache_mutex.lock()
+	var cached: Dictionary = _definition_cache
+	_definition_cache_mutex.unlock()
+	if not cached.is_empty() and lake == cached:
+		return true
+	if not _definition_is_valid_uncached(lake):
+		return false
+	# Unusual/large metadata remains accepted by the existing guard, without
+	# retaining objects, recursively copying cycles or growing the cache unbounded.
+	var budget: Array[int] = [512]
+	if _definition_cacheable(lake, 0, budget):
+		var detached: Dictionary = lake.duplicate(true)
+		_definition_cache_mutex.lock()
+		_definition_cache = detached
+		_definition_cache_mutex.unlock()
+	return true
+
+
+## Only cache a bounded plain-data tree. This is a retention policy, not validation.
+static func _definition_cacheable(value: Variant, depth: int, budget: Array[int]) -> bool:
+	budget[0] -= 1
+	if budget[0] < 0 or depth > 4:
+		return false
+	match typeof(value):
+		TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_FLOAT:
+			return true
+		TYPE_STRING, TYPE_STRING_NAME:
+			return str(value).length() <= 1024
+		TYPE_PACKED_FLOAT64_ARRAY:
+			budget[0] -= value.size()
+			return budget[0] >= 0
+		TYPE_ARRAY:
+			if value.size() > budget[0]: return false
+			for item: Variant in value:
+				if not _definition_cacheable(item, depth + 1, budget): return false
+			return true
+		TYPE_DICTIONARY:
+			if value.size() * 2 > budget[0]: return false
+			for key: Variant in value:
+				if not _definition_cacheable(key, depth + 1, budget) \
+						or not _definition_cacheable(value[key], depth + 1, budget): return false
+			return true
+	return false
+
+
+## Original structural guard; loaders still own exhaustive polygon/profile validation.
+static func _definition_is_valid_uncached(lake: Dictionary) -> bool:
 	if lake.get("format") != "openrc-lake v1" or typeof(lake.get("id")) != TYPE_STRING \
 		or typeof(lake.get("identity")) != TYPE_STRING or String(lake.identity).is_empty():
 		return false

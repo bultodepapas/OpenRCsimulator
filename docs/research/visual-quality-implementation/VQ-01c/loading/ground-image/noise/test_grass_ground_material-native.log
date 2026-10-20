@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+PASS: ground builds own separate material instances
+PASS: default ground leaves the photo branch disabled
+PASS: default ground does not bind the optional 2K grass maps
+PASS: independent default ground leaves the photo branch disabled
+PASS: independent default ground does not bind the optional 2K grass maps
+PASS: ordinary ground has no RC soil or track coverage
+PASS: ordinary ground retains existing turf detail
+PASS: ordinary ground leaves all dirt samplers unbound
+PASS: grass material retains consolidated coverage and terrain masks
+PASS: terrain mask keeps the renderer runway rectangle
+PASS: cloned default runway material retains disabled photo binding and terrain mask
+PASS: a cloned default surface keeps the source photo binding disabled
+PASS: RC binder still enables its existing surface route
+PASS: RC material leaves the optional grass photo branch disabled
+PASS: RC rc_dirt_albedo binds the retained mipmapped 2K texture
+PASS: RC rc_dirt_normal binds the retained mipmapped 2K texture
+PASS: RC rc_dirt_roughness binds the retained mipmapped 2K texture
+PASS: RC rc_grass_albedo binds the retained mipmapped 2K texture
+PASS: RC rc_grass_normal binds the retained mipmapped 2K texture
+PASS: RC rc_grass_roughness binds the retained mipmapped 2K texture
+PASS: default RC course loads for the existing dirt-mask path
+PASS: RC track clone keeps private dirt coverage and six grass/dirt binders
+PASS: track material clone preserves exact coverage mesh arrays
+PASS: building the track cannot turn the shared RC field into a dirt surface
+PASS: unrecognized-value ground leaves the photo branch disabled
+PASS: unrecognized-value ground does not bind the optional 2K grass maps
+PASS: unrecognized-value ground keeps RC dirt samplers unbound
+PASS: enhanced ground builds private material instances
+PASS: enhanced binder enables the grass photo branch
+PASS: rc_grass_albedo binds the retained mipmapped 2K texture
+PASS: rc_grass_normal binds the retained mipmapped 2K texture
+PASS: rc_grass_roughness binds the retained mipmapped 2K texture
+PASS: enhanced grass still has no RC soil or track coverage
+PASS: enhanced grass leaves all dirt samplers unbound
+PASS: binding an enhanced material does not mutate its peer
+PASS: enhanced material retains consolidated coverage and terrain masks
+PASS: cloned enhanced runway keeps photo maps and terrain masks
+PASS: changing an enhanced surface clone cannot mutate its source
+Grass ground material: 38 checks, 0 failures

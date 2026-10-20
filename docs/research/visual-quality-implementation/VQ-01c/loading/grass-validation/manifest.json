@@ -1,0 +1,21 @@
+{
+  "reference_commit": "abdd9c7e559ceee2cafd2fd583f9413286b344bf",
+  "reference_matches_commit_after_line_ending_normalization": true,
+  "sources": {
+    "app/render/near_grass.gd": "fbcf33dce5aa4300a4e3aaf66349dbc7b8e82df12feaf9a2ac5afcc0110f8d06",
+    "app/tests/test_near_grass.gd": "b556c53cac7b3dce66c6fb02db1dcaa97f5e5fdf0b3baeb15c9ef5b18356f84d",
+    "app/scenery/imported_near_grass.gd": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+    "app/render/field.gd": "7b32bacaf4cee96d290ae6fc9f1609d20df752e715dc7ba59b3546bba77f6342",
+    "app/render/ground.gd": "2c96be9d1844edbf7ddb99dc9ba5244c5bd61a368493831598b6cac8c85f2876",
+    "app/render/shader_clock.gd": "decd507dca3d2783e3cf7a80790e93d1b4772ae6727a67d59611c974e6ee2550",
+    "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
+    "app/render/near_grass.gdshader": "a9e85de25e36f9d131c380af53b4180eaa71db49249c256135e1623789de766b",
+    "app/data/fields/grass.json": "916bb15fefd84da6d354e4ad1f9480f01c0391f1e799f592a53c3ee504161d52",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "research/performance/grass_validation_probe.gd": "ab4066afc3de0789405515389702138712b6c0855bb45a53a9414d07a5efe49f",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "reference_sha256": "0880ba351602621a24ca12016aaee7cb8418558d6096f911d19492f621e13882",
+  "scope": "content-identified builder dependencies in a shared working tree; other track changes not frozen"
+}

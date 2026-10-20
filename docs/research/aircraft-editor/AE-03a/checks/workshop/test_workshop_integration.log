@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371833112262525 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:289)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:295)
+       [12] _ready (res://app_root.gd:235)
+       [13] _run (res://tests/test_workshop_integration.gd:32)
+ok   Home keyboard opens Workshop
+ok   200% trial starts
+ok   trial has distinct physical identity
+ok   catalog visual identity is retained
+ok   trial is airborne
+ok   trial consumes frozen cosmetics and a single smoke budget
+ok   trace stores separate presentation identity
+ok   trial session applies tank-size ratio and reports accepted total mass
+ok   trial trace records exact source
+ok   F5 resolves frozen candidate
+ok   render pose preserves 200% scale
+ok   scaled CG is the simulated world position
+ok   camera extent follows scaled geometry
+ok   wreck geometry follows jensen-das-ugly-stik-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   trial restart keeps frozen identity and experimental mass
+ok   return restores same editor instance
+ok   trial return preserves draft and edit history
+ok   trial return restores page, camera and focused action
+ok   Home is still behind editor
+ok   Extra 50% is blocked while finite-glow transforms remain fixed
+ok   Extra 200% is blocked while finite-glow transforms remain fixed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   original aircraft still starts
+ok   paused original accepts an independent sky
+ok   invalid draft retains original flight and editor
+ok   failed candidate startup preserves old flight and camera
+ok   failed candidate startup preserves old recorder
+ok   failed candidate startup preserves adapted exposure
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.05× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.05× the scaled UltraStick25e value
+ok   50% trial from Pause starts independently
+ok   trial can choose its own sky
+ok   trial return preserves adapted exposure
+ok   return restores previous flight
+ok   original tick and state preserved
+ok   previous flight remains paused
+ok   return restores original sky presentation
+ok   Pause editor draft preserved
+Workshop integration: 0 failed

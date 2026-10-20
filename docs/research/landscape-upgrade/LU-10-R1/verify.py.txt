@@ -1,0 +1,39 @@
+import hashlib
+import json
+import pathlib
+import re
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRATCH = pathlib.Path(__file__).resolve().parent
+EVIDENCE = ROOT / 'docs/research/landscape-upgrade/LU-10-R1'
+EVIDENCE.mkdir(parents=True, exist_ok=True)
+GODOT = ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'
+ledger = []
+
+
+def execute(name, args, timeout=180):
+    cmd = [str(GODOT), '--headless', '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy', *args]
+    process = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+    log = process.stdout + process.stderr
+    (EVIDENCE / f'{name}.log').write_text(log, encoding='utf-8')
+    ok = process.returncode == 0 and not re.search(r'\b(?:SCRIPT\s+)?ERROR\b|\bFAIL\b', log)
+    ledger.append(dict(name=name, command=cmd, returncode=process.returncode, clean=ok))
+    (EVIDENCE / 'verification.json').write_text(json.dumps(ledger, indent=2) + '\n')
+    print(name, 'PASS' if ok else 'FAIL', flush=True)
+    if not ok:
+        print(log[-3500:], flush=True)
+    return ok
+
+
+assert execute('parse-probe', ['--check-only', '--script', str(ROOT / 'research/performance/scenery_empty_probe.gd')])
+assert execute('parse-oracle', ['--check-only', '--script', 'res://tests/test_landscape_collision_oracle.gd'])
+for pair in range(3):
+    assert execute(f'query-{pair}', ['--script', str(ROOT / 'research/performance/scenery_empty_probe.gd'), '--',
+                   f'--reference={SCRATCH / "reference.gd"}', f'--output={EVIDENCE / f"query-{pair}.json"}'])
+for test in ['test_landscape_collision', 'test_landscape_collision_oracle',
+             'test_landscape_collision_session', 'test_landscape_collision_setup',
+             'test_scenery_damage_session', 'test_scenery_destruction',
+             'test_checkpoint', 'test_checkpoint_integrity', 'test_lake_collision',
+             'test_replay_integrity']:
+    execute(test, ['--script', f'res://tests/{test}.gd'])

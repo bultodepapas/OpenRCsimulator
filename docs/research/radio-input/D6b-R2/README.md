@@ -18,6 +18,25 @@ Raw axes and `has_axis_sample()` still retain connection-wide history across cal
 - [Full app suite](suite.log): `app/test.sh` exits 0 with **127 GDScript test programs**; existing goldens, four trimmed aircraft, frame-rate equality, contact and UI checks pass. The immediately preceding [D1-R5 suite](../../aircraft-validation/D1-R5/integration/app.log) supplies the 126-program baseline. Its frozen physics/simulation/data identity was checked before this step; the saved [reader/test hashes](before-source.json) identify the unchanged radio baseline.
 - Static lint retains the same 12 existing warnings and zero errors. The real-scene radio fixture still emits its existing ObjectDB shutdown warning. This is not a warning-free whole-project run. [Manifest](manifest.json) binds source and evidence.
 
+## D6b-R3 — calibration resume interlock, 2026-10-19
+
+An armed radio could resume a fixed-wing flight with P while its calibration wizard
+remained active. A shell-managed session also copied the current throttle into the
+resumed flight. `FlightSession.can_resume()` and `resume()` now reject active
+calibration before changing commands, pause reason, or simulation state.
+
+The expanded [real-scene test](../../../../app/tests/test_e2e_radio.gd) verifies both
+legacy direct and shell-managed controller selection with an armed radio at full
+throttle: direct resume and P leave ticks, rigid-body state and idle throttle unchanged.
+Cancel leaves the flight paused; explicit resume after cancel still works. Existing
+calibration completion and fresh-low-throttle arming checks remain in the same test.
+The regression failed eight assertions before the repair and passes after it;
+[before](calibration-resume-before.log), [after](calibration-resume-after.log).
+Native Windows Godot 4.7.2 also passes controller integration (27 checks), rearming
+(368 checks), and session fault/start guards (32 checks). The scene log includes
+vegetation and ObjectDB shutdown warnings, with no engine/script errors. These are
+synthetic controller events, not physical-radio qualification or a full app run.
+
 ## Cost and limits
 
 The [paired cost probe](cost/README.md) ran three alternating invocations per reader in ARMED and sustained SAFE regimes, each with the existing seven-round F3b benchmark. At 4,000 synthetic events/s, handler medians changed from 0.829 → 0.858 µs/event armed and 0.804 → 1.219 µs/event SAFE: estimated +0.002 and +0.028 ms per 60 Hz frame. Full dispatch medians changed from 4.486 → 4.794 and 4.734 → 5.120 µs/event. All twelve runs verify delivery. Event construction, physics and rendering are excluded; SAFE never polls. Concurrent suite load makes these observations, not performance acceptance or USB/stick-to-photon latency measurements.

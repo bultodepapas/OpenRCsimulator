@@ -1,0 +1,429 @@
+{
+	"candidate_first": true,
+	"candidate_sha256": "da45eec7e2a6c619642870c1d320eaead408bca64efa945d88ac298e1c29e3b1",
+	"cold_material": {
+		"candidate_usec": [
+			116328,
+			98639,
+			108314,
+			99801,
+			99475,
+			98730
+		],
+		"pairs": [
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			},
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			},
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			},
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			},
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			},
+			{
+				"equal": true,
+				"independent": true,
+				"material_sha256": "e45fae7a7e1c972137c8e2cf20489ec836e4ddce9239b7583cc9153806f00ade"
+			}
+		],
+		"reference_usec": [
+			140534,
+			176620,
+			141935,
+			143602,
+			197898,
+			195141
+		]
+	},
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"images": [
+		{
+			"candidate_usec": [
+				95316,
+				138078,
+				117474,
+				109223
+			],
+			"pairs": [
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "a4cdd3fe24e78e4b493f3c9e80cb95e15273c2ce87a5b6708b64091bf7315284",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "a4cdd3fe24e78e4b493f3c9e80cb95e15273c2ce87a5b6708b64091bf7315284",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "a4cdd3fe24e78e4b493f3c9e80cb95e15273c2ce87a5b6708b64091bf7315284",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "a4cdd3fe24e78e4b493f3c9e80cb95e15273c2ce87a5b6708b64091bf7315284",
+						"width": 256
+					},
+					"independent": true
+				}
+			],
+			"reference_usec": [
+				145700,
+				154481,
+				188538,
+				164052
+			],
+			"seed": 1253
+		},
+		{
+			"candidate_usec": [
+				112614,
+				96592,
+				95553,
+				111245
+			],
+			"pairs": [
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "7301635b2ea29492460ba6490a1819f4284cd1881b427dd6361ebd2030fde369",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "7301635b2ea29492460ba6490a1819f4284cd1881b427dd6361ebd2030fde369",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "7301635b2ea29492460ba6490a1819f4284cd1881b427dd6361ebd2030fde369",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "7301635b2ea29492460ba6490a1819f4284cd1881b427dd6361ebd2030fde369",
+						"width": 256
+					},
+					"independent": true
+				}
+			],
+			"reference_usec": [
+				184949,
+				158240,
+				144577,
+				180380
+			],
+			"seed": 1254
+		},
+		{
+			"candidate_usec": [
+				115402,
+				118824,
+				112663,
+				108956
+			],
+			"pairs": [
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "e7a6c4bae62158a2e68985e503e7195a6a446d16f7304d80198cbc47428ec7d4",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "e7a6c4bae62158a2e68985e503e7195a6a446d16f7304d80198cbc47428ec7d4",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "e7a6c4bae62158a2e68985e503e7195a6a446d16f7304d80198cbc47428ec7d4",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "e7a6c4bae62158a2e68985e503e7195a6a446d16f7304d80198cbc47428ec7d4",
+						"width": 256
+					},
+					"independent": true
+				}
+			],
+			"reference_usec": [
+				181803,
+				173915,
+				179856,
+				167055
+			],
+			"seed": 0
+		},
+		{
+			"candidate_usec": [
+				112130,
+				108336,
+				102638,
+				96882
+			],
+			"pairs": [
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "63621177548432b09c48135503a05ab482fcb6e6926bfc6d172ee9a4af9d385f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "63621177548432b09c48135503a05ab482fcb6e6926bfc6d172ee9a4af9d385f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "63621177548432b09c48135503a05ab482fcb6e6926bfc6d172ee9a4af9d385f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "63621177548432b09c48135503a05ab482fcb6e6926bfc6d172ee9a4af9d385f",
+						"width": 256
+					},
+					"independent": true
+				}
+			],
+			"reference_usec": [
+				180969,
+				154040,
+				151644,
+				176896
+			],
+			"seed": -1
+		},
+		{
+			"candidate_usec": [
+				131788,
+				106336,
+				100298,
+				94479
+			],
+			"pairs": [
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "500af3fa715105ae39473d669bd1f1923931e1c4d32a18c19f03765ff4a2605f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "500af3fa715105ae39473d669bd1f1923931e1c4d32a18c19f03765ff4a2605f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "500af3fa715105ae39473d669bd1f1923931e1c4d32a18c19f03765ff4a2605f",
+						"width": 256
+					},
+					"independent": true
+				},
+				{
+					"equal": true,
+					"image": {
+						"bytes": 262143,
+						"format": 4,
+						"height": 256,
+						"mips": 8,
+						"sha256": "500af3fa715105ae39473d669bd1f1923931e1c4d32a18c19f03765ff4a2605f",
+						"width": 256
+					},
+					"independent": true
+				}
+			],
+			"reference_usec": [
+				229714,
+				147344,
+				147876,
+				162870
+			],
+			"seed": 2147483647
+		}
+	],
+	"machine": {
+		"architecture": "x86_64",
+		"debug_build": true,
+		"os": "Windows",
+		"processor": "AMD Ryzen 9 5900X 12-Core Processor"
+	},
+	"probe_sha256": "5160374653cb5c1ac7a07be311e5949e51d1ea7af67a11c6681b8cd918ada17f",
+	"reference_sha256": "2c96be9d1844edbf7ddb99dc9ba5244c5bd61a368493831598b6cac8c85f2876",
+	"renderer": "Windows",
+	"spec_sha256": "0b9e3625e60945e04e96533f44ccd22c906957d8eef15baf9ffae5b879aee0bc",
+	"warm_material_control": {
+		"candidate_usec": [
+			363,
+			377,
+			377,
+			391,
+			362,
+			398,
+			643,
+			389,
+			357,
+			372
+		],
+		"reference_usec": [
+			387,
+			315,
+			389,
+			370,
+			385,
+			324,
+			654,
+			378,
+			367,
+			310
+		]
+	}
+}

@@ -1,0 +1,328 @@
+{
+  "format": "openrc-workshop-virtual-size-summary v1",
+  "date_local": "2026-10-19",
+  "legacy_identities_unchanged": true,
+  "legacy_case_count": 12,
+  "same_tick_control_tape": {
+    "10": {
+      "equal": true,
+      "columns": [
+        "tick",
+        "t_s",
+        "cmd_roll",
+        "cmd_pitch",
+        "cmd_yaw",
+        "cmd_throttle"
+      ],
+      "rows": 481
+    },
+    "100": {
+      "equal": true,
+      "columns": [
+        "tick",
+        "t_s",
+        "cmd_roll",
+        "cmd_pitch",
+        "cmd_yaw",
+        "cmd_throttle"
+      ],
+      "rows": 481
+    },
+    "500": {
+      "equal": true,
+      "columns": [
+        "tick",
+        "t_s",
+        "cmd_roll",
+        "cmd_pitch",
+        "cmd_yaw",
+        "cmd_throttle"
+      ],
+      "rows": 481
+    }
+  },
+  "refinement": [
+    {
+      "scale": 0.1,
+      "policy": "constant_wing_loading",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.01974737460626136,
+      "runway_available": true,
+      "airborne_available": true
+    },
+    {
+      "scale": 1.0,
+      "policy": "constant_wing_loading",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.002856308398641983,
+      "runway_available": true,
+      "airborne_available": true
+    },
+    {
+      "scale": 5.0,
+      "policy": "constant_wing_loading",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.0005823805532482653,
+      "runway_available": false,
+      "airborne_available": true
+    },
+    {
+      "scale": 0.1,
+      "policy": "geometric",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.007584191830361378,
+      "runway_available": false,
+      "airborne_available": true
+    },
+    {
+      "scale": 1.0,
+      "policy": "geometric",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.002856308398641983,
+      "runway_available": true,
+      "airborne_available": true
+    },
+    {
+      "scale": 5.0,
+      "policy": "geometric",
+      "complete_fault_free": true,
+      "position_240_vs_960_m": 0.0011469222608753863,
+      "runway_available": false,
+      "airborne_available": true
+    }
+  ],
+  "checks": [
+    {
+      "label": "aircraft_contract-final",
+      "ok": true,
+      "report": "checks/aircraft_contract-final-xc75sq9g/report.json"
+    },
+    {
+      "label": "aircraft_data-final",
+      "ok": true,
+      "report": "checks/aircraft_data-final-catl05dv/report.json"
+    },
+    {
+      "label": "electric_data-final",
+      "ok": true,
+      "report": "checks/electric_data-final-amvdlwh4/report.json"
+    },
+    {
+      "label": "extreme-compiler-parse",
+      "ok": true,
+      "report": "checks/extreme-compiler-parse-r9m726dp/report.json"
+    },
+    {
+      "label": "extreme-disposable-probe",
+      "ok": true,
+      "report": "checks/extreme-disposable-probe-i3saydz0/report.json"
+    },
+    {
+      "label": "extreme-import",
+      "ok": true,
+      "report": "checks/extreme-import-vb2x46wc/report.json"
+    },
+    {
+      "label": "extreme-loader-parse",
+      "ok": true,
+      "report": "checks/extreme-loader-parse-98079mpg/report.json"
+    },
+    {
+      "label": "extreme-production-probe",
+      "ok": true,
+      "report": "checks/extreme-production-probe-p_8w7xce/report.json"
+    },
+    {
+      "label": "extreme-recordings",
+      "ok": true,
+      "report": "checks/extreme-recordings-1m3qql0w/report.json"
+    },
+    {
+      "label": "extreme-recordings-final",
+      "ok": true,
+      "report": "checks/extreme-recordings-final-dplyqw0w/report.json"
+    },
+    {
+      "label": "extreme-refinement-final",
+      "ok": true,
+      "report": "checks/extreme-refinement-final-t6wprbze/report.json"
+    },
+    {
+      "label": "extreme-refinement",
+      "ok": false,
+      "report": "checks/extreme-refinement-yu5iy8cv/report.json"
+    },
+    {
+      "label": "fuel_system_contract-final",
+      "ok": true,
+      "report": "checks/fuel_system_contract-final-8b7dvuh_/report.json"
+    },
+    {
+      "label": "giant-500-es1080",
+      "ok": true,
+      "report": "checks/giant-500-es1080-omglxq2t/report.json"
+    },
+    {
+      "label": "golden-final",
+      "ok": false,
+      "report": "checks/golden-final-ezkq3_o8/report.json"
+    },
+    {
+      "label": "golden-prechange-loader",
+      "ok": false,
+      "report": "checks/golden-prechange-loader-ggf90f8_/report.json"
+    },
+    {
+      "label": "legacy-after",
+      "ok": true,
+      "report": "checks/legacy-after-vxguqcxo/report.json"
+    },
+    {
+      "label": "legacy-before",
+      "ok": true,
+      "report": "checks/legacy-before-z6k1ijti/report.json"
+    },
+    {
+      "label": "parse-virtual-size",
+      "ok": true,
+      "report": "checks/parse-virtual-size-bci6zy1m/report.json"
+    },
+    {
+      "label": "parse-virtual-size",
+      "ok": false,
+      "report": "checks/parse-virtual-size-qda7fexj/report.json"
+    },
+    {
+      "label": "shaft_data-final",
+      "ok": true,
+      "report": "checks/shaft_data-final-gn3ky70_/report.json"
+    },
+    {
+      "label": "tiny-10-en720",
+      "ok": true,
+      "report": "checks/tiny-10-en720-ls_hewv5/report.json"
+    },
+    {
+      "label": "tiny-10-es720-large-text",
+      "ok": true,
+      "report": "checks/tiny-10-es720-large-text-uy2qobqz/report.json"
+    },
+    {
+      "label": "virtual-size-persistence-draft",
+      "ok": false,
+      "report": "checks/virtual-size-persistence-draft-6li1ettt/report.json"
+    },
+    {
+      "label": "virtual-size-persistence-draft-fixed",
+      "ok": true,
+      "report": "checks/virtual-size-persistence-draft-fixed-qiur390h/report.json"
+    },
+    {
+      "label": "virtual-size-persistence-parse",
+      "ok": true,
+      "report": "checks/virtual-size-persistence-parse-bb7q760r/report.json"
+    },
+    {
+      "label": "workshop-virtual-size-final",
+      "ok": true,
+      "report": "checks/workshop-virtual-size-final-8fl79bpg/report.json"
+    },
+    {
+      "label": "workshop-virtual-size",
+      "ok": false,
+      "report": "checks/workshop-virtual-size-h1yq91cr/report.json"
+    },
+    {
+      "label": "workshop-virtual-size",
+      "ok": true,
+      "report": "checks/workshop-virtual-size-j164t82a/report.json"
+    },
+    {
+      "label": "workshop_bundle-final",
+      "ok": true,
+      "report": "checks/workshop_bundle-final-c02yaicl/report.json"
+    },
+    {
+      "label": "workshop_bundle",
+      "ok": true,
+      "report": "checks/workshop_bundle-wveuuy3g/report.json"
+    },
+    {
+      "label": "workshop_compiler",
+      "ok": true,
+      "report": "checks/workshop_compiler-hfjt6707/report.json"
+    },
+    {
+      "label": "workshop_experiments",
+      "ok": true,
+      "report": "checks/workshop_experiments-erssfqyk/report.json"
+    },
+    {
+      "label": "workshop_parameters",
+      "ok": true,
+      "report": "checks/workshop_parameters-113gokiv/report.json"
+    },
+    {
+      "label": "workshop_preview",
+      "ok": true,
+      "report": "checks/workshop_preview-rtt3iuwn/report.json"
+    },
+    {
+      "label": "workshop_sizes-final",
+      "ok": true,
+      "report": "checks/workshop_sizes-final-1_eut62x/report.json"
+    },
+    {
+      "label": "workshop_sizes",
+      "ok": true,
+      "report": "checks/workshop_sizes-z5fhq8go/report.json"
+    },
+    {
+      "label": "workshop_smoke_preview",
+      "ok": true,
+      "report": "checks/workshop_smoke_preview-iowxhr4p/report.json"
+    },
+    {
+      "label": "workshop_starts",
+      "ok": false,
+      "report": "checks/workshop_starts-0y5kesv2/report.json"
+    },
+    {
+      "label": "workshop_starts-final",
+      "ok": true,
+      "report": "checks/workshop_starts-final-uyvi7zuc/report.json"
+    },
+    {
+      "label": "workshop_store-final",
+      "ok": true,
+      "report": "checks/workshop_store-final-9p4cde1p/report.json"
+    },
+    {
+      "label": "workshop_store",
+      "ok": true,
+      "report": "checks/workshop_store-n2ab8nas/report.json"
+    },
+    {
+      "label": "workshop_trial",
+      "ok": true,
+      "report": "checks/workshop_trial-xoopr03k/report.json"
+    },
+    {
+      "label": "workshop_ui",
+      "ok": true,
+      "report": "checks/workshop_ui-_wcnmzvr/report.json"
+    }
+  ],
+  "control_100_percent_zero_differences": true,
+  "golden_existing_mismatches": {
+    "prechange_loader_commit": "fbfa008c67dd33512e7e329d353286b34cd539b5",
+    "same_failure_lines": true,
+    "count": 4,
+    "failures": [
+      "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+      "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+      "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+      "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+    ]
+  }
+}

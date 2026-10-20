@@ -1,0 +1,37 @@
+import hashlib
+import json
+import pathlib
+import re
+import statistics
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRATCH = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / 'docs/research/visual-quality-implementation/VQ-01c/loading/stars'
+OUT.mkdir(parents=True, exist_ok=True)
+GODOT = ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'
+commands = []
+for repeat in range(5):
+    report = OUT / f'run-{repeat}.json'
+    cmd = [str(GODOT), '--path', str(ROOT / 'app'), '--audio-driver', 'Dummy',
+           '--resolution', '64x64', '--position', '4000,4000', '--script',
+           str(ROOT / 'research/performance/stars_build_probe.gd'), '--',
+           f'--reference={SCRATCH / "reference.gd"}', f'--candidate={SCRATCH / "candidate.gd"}',
+           f'--output={report}']
+    if repeat % 2:
+        cmd.append('--candidate-first')
+    commands.append(cmd)
+    process = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+    log = process.stdout + process.stderr
+    (OUT / f'run-{repeat}.log').write_text(log, encoding='utf-8')
+    if process.returncode or re.search(r'\b(?:SCRIPT\s+)?ERROR\b|WARNING:|\bFAIL\b', log):
+        raise RuntimeError(log)
+    data = json.loads(report.read_text())
+    assert data['complete']
+    assert all(row['buffer_equal'] and row['material_equal'] and row['placements_equal'] for row in data['results'])
+    reference = statistics.median(v for row in data['results'] for v in row['reference_usec'])
+    candidate = statistics.median(v for row in data['results'] for v in row['candidate_usec'])
+    print(repeat, 'warm', reference, candidate,
+          'cold', statistics.median(data['cold_reference_usec']), statistics.median(data['cold_candidate_usec']),
+          'first', data['first_reference_usec'], data['first_candidate_usec'], flush=True)
+(OUT / 'commands.json').write_text(json.dumps(commands, indent=2) + '\n')

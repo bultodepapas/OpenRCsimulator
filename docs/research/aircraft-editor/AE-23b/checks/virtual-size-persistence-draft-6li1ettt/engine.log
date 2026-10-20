@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.08× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 1153.8704 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL explicit virtual size saves at 0.1 ["Recipe contains an unsupported field: size_model.", "Recipe is missing required field: mass_policy.", "Recipe is missing required field: weight_multiplier.", "Recipe is missing required field: power_multiplier.", "Recipe is missing required field: control_multiplier."]
+FAIL explicit virtual size saves at 1.0 ["Recipe contains an unsupported field: size_model.", "Recipe is missing required field: mass_policy.", "Recipe is missing required field: weight_multiplier.", "Recipe is missing required field: power_multiplier.", "Recipe is missing required field: control_multiplier."]
+FAIL explicit virtual size saves at 5.0 ["Recipe contains an unsupported field: size_model.", "Recipe is missing required field: mass_policy.", "Recipe is missing required field: weight_multiplier.", "Recipe is missing required field: power_multiplier.", "Recipe is missing required field: control_multiplier."]
+Workshop virtual size: 64 checks, 3 failures

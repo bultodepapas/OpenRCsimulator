@@ -40,6 +40,24 @@ The first Spanish capture exposed that the new recovery actions had not yet been
 
 Logs: [98-check backend](evidence/backend-test.log), [historical 80-check backend](evidence/backend-test-80.log), [initial 18-check UI run](evidence/recovery-ui-initial-18.log), [historical 22-check UI run](evidence/recovery-ui-22.log), [final 31-check UI run](evidence/recovery-ui-test.log), [English capture run](evidence/recovery-en-1920x1080.log), and [Spanish capture run](evidence/recovery-es-1280x720.log). The initial UI log is retained as an earlier passing run. In the first test attempt, the test treated `Workshop.save_named_variant()` as returning a boolean even though it was `void`; the test was corrected to call it and inspect the resulting saved identity. This was a test-harness error, not a product failure.
 
+## AE-03c-R1 — clean baseline recovery, 2026-10-19
+
+Undo previously restored a clean draft without removing its older recovery snapshot;
+closing before or after the debounce offered the undone edit again on reopening.
+Recovery synchronization now discards that obsolete snapshot through the existing
+digest-checked store operation, and clean navigation synchronizes before proceeding.
+Pending review is preserved. A newer writer's snapshot refuses cleanup and refreshes
+the recovery review instead of being deleted.
+
+The expanded [UI regression](../../../../app/tests/test_workshop_recovery_ui.gd)
+failed seven assertions before the repair and passes **48 checks, 0 failures**
+after it. It exercises the real timer, Undo/Redo, immediate close/reopen, a non-stock
+saved baseline, Later, and competing writers on both cleanup paths. The backend
+suite still passes **98 checks**. Both runs used native Windows Godot 4.7.2 with
+isolated user-data roots; no engine errors were emitted. Logs:
+[before](evidence/clean-baseline-before.log), [after](evidence/clean-baseline-after.log).
+This does not qualify OS power-loss durability or the full app suite.
+
 ## Persistence boundary
 
 The implementation writes a bounded temporary snapshot, reads it back, rotates the prior committed record to a backup, then commits the new record. A lock is never reclaimed based on age. Injected failures exercise those code boundaries and verify restart selection, but they do **not** simulate process termination at the OS level or hardware/filesystem power loss. Godot documents `FileAccess.flush()` as writing its buffer and notes that it can help if the project crashes; the API reference does not state a power-loss durability guarantee. `DirAccess.rename_absolute()` is documented as a move/rename operation, with overwrite behavior when permitted; this evidence does not establish its atomicity across filesystems or platforms. See the [FileAccess reference](https://docs.godotengine.org/en/stable/classes/class_fileaccess.html), [DirAccess reference](https://docs.godotengine.org/en/4.7/classes/class_diraccess.html), and [Godot data-path guide](https://docs.godotengine.org/en/4.7/tutorials/io/data_paths.html). No filesystem power-loss claim is made.

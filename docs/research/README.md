@@ -28,6 +28,7 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ## Whole-project audit
 
+- [Debugging tools investigation, 2026-10-19](debugging-tools-2026-10-19.md) reviews 20 official, GitHub, Reddit and forum sources against local diagnostic gaps; records checked-run summaries, evidence integrity and performance-rerun preservation under PT1h-R2 / VQ-01b.
 - [Godot performance and visual review, 2026-10-14](godot-global-review-2026-10-14.md) compares current source and retained native evidence with Godot 4.7 documentation, repositories and community reports. Its [second round](godot-global-review-2026-10-14.md#9-second-research-round-creative-directions) adds 24 creative experiment ideas; the [execution plan](../plans/global-performance-visual-quality.md) sequences work under existing track owners. No new runtime benchmark or implementation is claimed.
 - [Branch integration, 2026-10-10](branch-integration-2026-10-10.md) records merge decisions and clean-checkout checks.
 - [PT1h release-readiness audit](release-readiness/PT1h/README.md) reconciles code, documents and rc6 evidence; [tool workflows](../TOOLS.md) lists current commands and measurement limits.
@@ -69,6 +70,10 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 [NR initial implementation](natural-random/README.md) records the stock-only scenario generator, menu/lifecycle checks, numerical flight matrix and native captures. [Active plan](../plans/natural-random-flight.md) retains pilot/readability acceptance and future sky, runway and catalog work.
 
 ### Aircraft Workshop
+
+[AE-23b virtual sizes](aircraft-editor/AE-23b/README.md), 2026-10-19, records 10–500% aircraft scaling, saved-build/bundle round trips, strict base/import validation, endpoint flight refinement and exact candidate replay. Native EN/ES captures, unchanged legacy identities, pre-existing golden mismatches and remaining physical/performance limits are retained. [AE-23a](aircraft-editor/AE-23a/README.md) preserves the earlier 35–225% slice.
+
+[AE-03a library save boundaries](aircraft-editor/AE-03a/README.md), 2026-10-19, records 35 injected/native Windows abrupt-writer cases and bounded cleanup of handled first-save failures. It verifies complete records, immutable retries, live-owned cleanup and explicit orphan-lock behavior; partial writes, orphan-stage maintenance and wider filesystem/platform qualification remain open.
 
 [AE-03c recovery](aircraft-editor/AE-03c/README.md), [AE-12/13 measured mass and CG](aircraft-editor/AE-12-13/README.md), and [AE-24d.1 thumbnails](aircraft-editor/AE-24d-1/README.md), 2026-10-19, record detached invalid-draft recovery, fixed-station measured masses and copied-pixel library rendering. Their software/native scopes and remaining physical/platform gates are explicit.
 

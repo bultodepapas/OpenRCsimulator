@@ -1,0 +1,52 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:22)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:29)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:34)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:36)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:40)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:44)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:54)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:65)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:71)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:77)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:79)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "bounded_throws" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:82)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:87)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:90)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:97)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:102)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:116)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:120)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:154)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:167)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:174)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:180)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:188)
+SCRIPT ERROR: Parse Error: Function "_check()" not found in base self.
+   at: GDScript::reload (res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd:192)
+ERROR: Failed to load script "res://../tmp/workshop-extreme/draft/test_workshop_virtual_size.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

@@ -252,6 +252,7 @@ const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
 var _aircraft_lights := World.AircraftLightState.new()
+var _aircraft_lights_hud_dirty := true
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
@@ -263,6 +264,7 @@ var _frametimes_path: String = ""
 var _frametimes_warmup_s: float = 1.0
 var _frametimes_duration: float = 20.0
 var _frametime_samples: RefCounted = null
+var _frame_diagnostics: RefCounted = null
 var _frametimes_elapsed: float = 0.0
 var _frametimes_active: bool = false
 var _frametimes_clock_primed: bool = false
@@ -783,11 +785,14 @@ func _ready() -> void:
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
 		_frametimes_duration = float(frametime_options.sample_s)
 		_frametime_samples = FrameSamples.new()
-		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration):
+		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames)):
 			push_error("Invalid frame-time options: " + _frametime_samples.failure)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		_frametimes_active = true
+		if bool(frametime_options.diagnostics):
+			_frame_diagnostics = load("res://render/frame_diagnostics.gd").new()
+			_frame_diagnostics.start(get_viewport())
 		_frametimes_scripted_fixed = _scripted
 		if _frametimes_scripted_fixed:
 			session.input_enabled = false
@@ -987,8 +992,9 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 		return
 	if _overlays != null and performance_visible:
 		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
-	if not telemetry_visible:
+	if not telemetry_visible and not _aircraft_lights_hud_dirty:
 		return
+	_aircraft_lights_hud_dirty = false
 	var lines := PackedStringArray()
 	if _scripted or not session.aircraft.ok:
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
@@ -1127,6 +1133,7 @@ func _status() -> String:
 	else:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
+	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
 	return line
@@ -1343,7 +1350,7 @@ func _notification(what: int) -> void:
 		_clear_wheel_brake()
 
 
-## The shell owns controller readiness and the visible Continue action after a restart.
+## The shell resumes successful restarts when controls are ready and keeps recovery failures visible.
 func _request_restart() -> void:
 	if restart_requested.has_connections():
 		restart_requested.emit()
@@ -1472,14 +1479,15 @@ func _unhandled_input(event: InputEvent) -> void:
 ## FW-35c: existing keyboard/controller cycle establishes a flight-local manual override.
 func _cycle_night_lights() -> void:
 	_aircraft_lights.cycle_mode()
+	_aircraft_lights_hud_dirty = true
 	_update_aircraft_lights()
-	_note = _aircraft_lights_text()
 
 
 ## Shared selection API for UI/adapters: AUTO clears the override; invalid modes are refused.
 func set_aircraft_lights(mode: String) -> bool:
 	if not _aircraft_lights.set_mode(mode):
 		return false
+	_aircraft_lights_hud_dirty = true
 	_update_aircraft_lights()
 	return true
 
@@ -1495,12 +1503,15 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 	if clock_s < 0.0:
 		clock_s = session.sim.time() if session != null else 0.0
 	var elevation := World.aircraft_sun_elevation(_lighting)
-	_aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
-		1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	if _aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
+			1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0):
+		_aircraft_lights_hud_dirty = true
 	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
 	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != _aircraft_lights.active_mode:
 		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
+	World.AircraftLights.set_emission_mode(World.AircraftLights.prepare_emission(_airplane.root),
+		_aircraft_lights.active_mode, _aircraft_lights.gain)
 
 
 ## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
@@ -2037,6 +2048,8 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if _frame_diagnostics != null:
+		_frame_diagnostics.stop()
 	if _accident_incident != null:
 		_accident_incident.archive()
 	if flight_log != null:
@@ -2046,6 +2059,7 @@ func _exit_tree() -> void:
 ## One file never mixes two flights.
 func _on_resetting() -> void:
 	_aircraft_lights.reset()
+	_aircraft_lights_hud_dirty = true
 	World.flow_to(0.0)
 	_update_aircraft_lights(0.0)
 	if _accident_incident != null and not _accident_checkpoint_restoring:
@@ -2373,15 +2387,28 @@ func _log_frame_time(delta: float) -> void:
 		physics_3d_active_objects = Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
 		physics_3d_collision_pairs = Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
 	}
+	if _frame_diagnostics != null:
+		var poll_start_usec: int = Time.get_ticks_usec()
+		raw_metrics.merge(_frame_diagnostics.sample())
+		raw_metrics.observer_poll_usec = Time.get_ticks_usec() - poll_start_usec
 	if not _frametime_samples.record_frame(delta, wall_delta_usec, now_usec, raw_metrics):
-		_frametimes_active = false
 		push_error("Frame-time measurement failed: " + _frametime_samples.failure)
-		get_tree().quit(1)
+		_finish_frame_time(1)
 		return
 	_frametimes_elapsed = float(_frametime_samples.elapsed_wall_usec) / 1000000.0
 	if not _frametime_samples.finished:
 		return
+	_finish_frame_time()
+
+
+func _finish_frame_time(exit_code: int = OK) -> void:
+	var sim: Node = session.sim
 	var report: Dictionary = _frametime_samples.report()
+	if _frame_diagnostics != null:
+		_frame_diagnostics.stop()
+		report.frame_diagnostics = _frame_diagnostics.metadata()
+	else:
+		report.frame_diagnostics = {enabled = false}
 	var sim_end_s: float = sim.time()
 	var sim_end_tick: int = sim.tick
 	var sample_metrics: Dictionary = report.raw_metrics
@@ -2446,12 +2473,12 @@ func _log_frame_time(delta: float) -> void:
 	var write_result: Dictionary = FrameSamples.write_json(_frametimes_path, report)
 	_frametimes_active = false
 	var frame_stats: Dictionary = report.frame_ms
-	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, _frametimes_path])
+	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames (complete=%s) → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, str(report.complete), _frametimes_path])
 	if not write_result.ok:
 		push_error("Cannot write frame-time report '%s': %s" % [_frametimes_path, error_string(int(write_result.error))])
 		get_tree().quit(1)
 		return
-	get_tree().quit(OK)
+	get_tree().quit(exit_code)
 
 
 ## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.

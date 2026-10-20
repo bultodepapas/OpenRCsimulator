@@ -37,6 +37,14 @@ En un pack exportado no se prometen hashes de fuentes que Godot haya omitido: `s
 
 ## Reproducción
 
+2026-10-19 tooling repair: `--performance-only` now refuses a nonempty
+`<out>/performance/` directory, preserving completed and interrupted runs. Use a
+fresh `--out` for each measurement; the lock file alone does not count as evidence.
+Nonfinite deadlines and linked performance directories are refused before launch.
+The fixed three-process 10 s warmup + 60 s sample protocol is unchanged. See the
+[debugging-tool investigation](../../debugging-tools-2026-10-19.md) for regression
+coverage and research; these checks do not establish GPU performance.
+
 ```bash
 app/test.sh
 app/capture.sh

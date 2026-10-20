@@ -1,0 +1,35 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--editor",
+    "--path",
+    "app",
+    "--quit"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:28:48.794611+00:00",
+  "label": "workshop-sizes-uid-scan",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-sizes-uid-scan-gizrnkrx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-sizes-uid-scan-gizrnkrx\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.828,
+  "log_bytes": 1885,
+  "log_sha256": "be331c21c69f7140af1908d5aa9e6d2fa5ea3b712d767e7564385924783c5b9a"
+}

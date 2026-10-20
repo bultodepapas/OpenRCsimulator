@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/aircraft-editor/capture_workshop.gd",
+    "--",
+    "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\native-final\\invalid-giant-en1080.png",
+    "--scale=2.25",
+    "--size-controls",
+    "--1080p",
+    "--invalid"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:30:32.698875+00:00",
+  "label": "invalid-giant-en1080-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\invalid-giant-en1080-final-ci0k3m2v\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\invalid-giant-en1080-final-ci0k3m2v\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.844,
+  "log_bytes": 298,
+  "log_sha256": "54384fad8511865535f23c683c3500eec0028f90b9e2042cf3411ee989c464b3"
+}

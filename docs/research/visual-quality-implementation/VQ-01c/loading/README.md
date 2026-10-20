@@ -1,5 +1,21 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [ground-noise coordinate preparation](ground-image/noise/README.md)
+preserves 100 image/mip pairs and 30 native material pairs, reducing cache-empty
+ground-material construction by 35.7%. Scalar-oracle and integration checks pass;
+warm material, complete loading and FPS gains are not established.
+
+2026-10-19 construction follow-up: [single-join grass checksum](grass-validation/README.md)
+preserves 90 native build pairs and reduces complete direct grass construction by
+63–72%; validation alone falls from 80.850 to 14.375 ms. Seven headless suites
+pass; existing native test-harness diagnostics reproduce with the original validator.
+Default-world startup, Home/Fly loading and FPS remain separate gates.
+
+2026-10-19 construction follow-up: [content-keyed star-catalogue preparation](stars/README.md)
+preserves all native instance/material bytes in 40 pairs and reduces repeated
+complete star-field construction from 16.618 to 8.140 ms in five processes.
+Cold-construction non-regression and full Home/Fly/FPS acceptance remain open.
+
 2026-10-15 presentation follow-up: [projected-shadow framing reuse](shadow-framing/README.md)
 preserves 5,250 native state pairs and reduces shadow-update CPU time by 20–49%
 across four workloads. Headless/native shadow and Home checks exit cleanly;

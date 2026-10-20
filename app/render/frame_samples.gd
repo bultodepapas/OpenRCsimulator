@@ -6,6 +6,8 @@ const FORMAT := "openrc-frametimes v2"
 const VERSION := 2
 const MAX_WARMUP_SECONDS := 3600.0
 const MAX_SAMPLE_SECONDS := 300.0
+const DEFAULT_MAX_FRAMES := 60000
+const MAX_FRAMES := 120000
 const MICROSECONDS_PER_SECOND := 1000000
 const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
 
@@ -14,6 +16,7 @@ var sample_s: float = 20.0
 var elapsed_wall_usec: int = 0
 var finished: bool = false
 var failure: String = ""
+var max_frames: int = DEFAULT_MAX_FRAMES
 
 var _configured: bool = false
 var _has_clock_origin: bool = false
@@ -34,6 +37,8 @@ var _raw_metrics: Dictionary = {}
 
 static func options(args: Dictionary) -> Dictionary:
 	if not args.has("frametimes"):
+		if args.has("frame-diagnostics") or args.has("frametimes-max-frames"):
+			return { ok = false, error = "--frame-diagnostics and --frametimes-max-frames require --frametimes=<file.json>" }
 		if args.has("warmup"):
 			return { ok = false, error = "--warmup requires --frametimes=<file.json>" }
 		return { ok = true, enabled = false }
@@ -42,6 +47,16 @@ static func options(args: Dictionary) -> Dictionary:
 	var raw_path: Variant = args.get("frametimes")
 	if not raw_path is String or (raw_path as String).strip_edges().is_empty():
 		return { ok = false, error = "--frametimes requires a non-empty file path" }
+	if args.has("frame-diagnostics") and not (typeof(args["frame-diagnostics"]) == TYPE_BOOL and args["frame-diagnostics"] == true):
+		return { ok = false, error = "--frame-diagnostics is a flag without a value" }
+	var frame_limit: int = DEFAULT_MAX_FRAMES
+	if args.has("frametimes-max-frames"):
+		var raw_limit: Variant = args["frametimes-max-frames"]
+		if not raw_limit is String or not raw_limit.is_valid_int():
+			return { ok = false, error = "--frametimes-max-frames requires an integer" }
+		frame_limit = raw_limit.to_int()
+		if frame_limit < 1 or frame_limit > MAX_FRAMES:
+			return { ok = false, error = "--frametimes-max-frames must be between 1 and %d" % MAX_FRAMES }
 	var warmup: Dictionary = _number_option(args, "warmup", 1.0)
 	if not warmup.ok:
 		return warmup
@@ -60,6 +75,8 @@ static func options(args: Dictionary) -> Dictionary:
 		path = (raw_path as String).strip_edges(),
 		warmup_s = warmup_s_value,
 		sample_s = sample_s_value,
+		max_frames = frame_limit,
+		diagnostics = args.has("frame-diagnostics"),
 	}
 
 
@@ -78,7 +95,13 @@ static func _number_option(args: Dictionary, key: String, default_value: float) 
 	return { ok = true, value = value }
 
 
-func configure(warmup_seconds: float, sample_seconds: float) -> bool:
+func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = DEFAULT_MAX_FRAMES) -> bool:
+	if _configured:
+		failure = "logger is already configured; create a fresh collector"
+		return false
+	if frame_limit < 1 or frame_limit > MAX_FRAMES:
+		failure = "frame limit must be between 1 and %d" % MAX_FRAMES
+		return false
 	if not is_finite(warmup_seconds) or warmup_seconds < 0.0 or warmup_seconds > MAX_WARMUP_SECONDS:
 		failure = "warm-up must be finite and between 0 and %.0f seconds" % MAX_WARMUP_SECONDS
 		return false
@@ -87,6 +110,7 @@ func configure(warmup_seconds: float, sample_seconds: float) -> bool:
 		return false
 	warmup_s = warmup_seconds
 	sample_s = sample_seconds
+	max_frames = frame_limit
 	_warmup_usec = roundi(warmup_s * MICROSECONDS_PER_SECOND)
 	_configured = true
 	return true
@@ -123,6 +147,8 @@ func record_frame(engine_delta: float, wall_delta_usec: int, monotonic_end_usec:
 		_actual_sample_start_usec = relative_start_usec
 		_sample_deadline_usec = _actual_sample_start_usec + roundi(sample_s * MICROSECONDS_PER_SECOND)
 	if _actual_sample_start_usec >= 0 and relative_start_usec < _sample_deadline_usec:
+		if _wall_delta_s.size() >= max_frames:
+			return _fail("frame retention limit reached (%d); shorten --t or increase --frametimes-max-frames" % max_frames)
 		_wall_delta_s.append(float(wall_delta_usec) / float(MICROSECONDS_PER_SECOND))
 		_engine_delta_s.append(engine_delta)
 		_wall_delta_usec.append(wall_delta_usec)
@@ -203,6 +229,7 @@ func report() -> Dictionary:
 		actual_sample_start_monotonic_usec = _clock_origin_usec + _actual_sample_start_usec if _actual_sample_start_usec >= 0 else 0,
 		actual_sample_end_monotonic_usec = _clock_origin_usec + _actual_sample_end_usec if _actual_sample_end_usec >= 0 else 0,
 		frames = _wall_delta_s.size(),
+		max_frames = max_frames,
 		seconds = wall_total,
 		fps_mean = float(_wall_delta_s.size()) / maxf(wall_total, 1e-12),
 		frame_ms = _percentiles(_wall_delta_s),

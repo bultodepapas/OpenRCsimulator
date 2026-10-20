@@ -1,0 +1,374 @@
+{
+	"calls_per_batch": 200,
+	"candidate_sha256": "c5750fca165bd3549bdfbfe37ede2c3c20e6439b3682a34488e8904dda67dbcb",
+	"cases": [
+		{
+			"candidate_batch_usec": [
+				8487,
+				7322,
+				4994,
+				4831,
+				6156
+			],
+			"contacts": 0,
+			"current": [
+				1000.33,
+				1000.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "empty_bin",
+			"previous": [
+				1000.0,
+				1000.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				9830,
+				5430,
+				7608,
+				5221,
+				6509
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				7129,
+				12121,
+				10184,
+				7740,
+				7006
+			],
+			"contacts": 0,
+			"current": [
+				4.33,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "occupied_bin_clear",
+			"previous": [
+				4.0,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				42521,
+				43271,
+				42319,
+				44709,
+				45691
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				7211,
+				8055,
+				13774,
+				10174,
+				8285
+			],
+			"contacts": 0,
+			"current": [
+				4.33,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				0.999950000416665,
+				0.0,
+				0.0,
+				0.00999983333416666,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "occupied_bin_small_rotation",
+			"previous": [
+				4.0,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				46118,
+				65902,
+				47490,
+				56044,
+				51488
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				7246,
+				6549,
+				3893,
+				6034,
+				8204
+			],
+			"contacts": 0,
+			"current": [
+				4.33,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				0.0000000000000000612303176911189,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "occupied_bin_rotating_clear",
+			"previous": [
+				4.0,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				2660736,
+				2617016,
+				2631563,
+				3273016,
+				3460892
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				12817,
+				13085,
+				14636,
+				17273,
+				13433
+			],
+			"contacts": 0,
+			"current": [
+				32.2,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				0.997188818112208,
+				0.0,
+				0.0,
+				0.0749297072727423,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "cell_boundary_clear",
+			"previous": [
+				31.9,
+				4.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				181323,
+				189725,
+				212791,
+				232898,
+				256867
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				129626,
+				119540,
+				135246,
+				174943,
+				152044
+			],
+			"contacts": 1,
+			"current": [
+				20.0,
+				16.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "true_contact",
+			"previous": [
+				12.0,
+				16.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				156642,
+				127934,
+				118592,
+				188238,
+				166562
+			]
+		},
+		{
+			"candidate_batch_usec": [
+				598392,
+				518598,
+				546112,
+				621177,
+				629124
+			],
+			"contacts": 1,
+			"current": [
+				20.0,
+				16.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				0.980066577841242,
+				0.0,
+				0.0,
+				0.198669330795061,
+				0.0,
+				0.0,
+				0.0
+			],
+			"identical": true,
+			"label": "rotating_contact",
+			"previous": [
+				12.0,
+				16.0,
+				-4.0,
+				80.0,
+				0.0,
+				0.0,
+				1.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"reference_batch_usec": [
+				610251,
+				630402,
+				637012,
+				579002,
+				603526
+			]
+		}
+	],
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"hull_points": 8,
+	"inputs_unchanged": true,
+	"machine": {
+		"architecture": "x86_64",
+		"debug_build": true,
+		"logical_cpu_count": 24,
+		"os": "Windows",
+		"processor": "AMD Ryzen 9 5900X 12-Core Processor"
+	},
+	"paired_batches": 5,
+	"reference_sha256": "a89a17d9b2e212f713a6208088e1acb8181dd565ef0b6232919091a8d0fe50f0",
+	"warmup_calls": 50,
+	"world_identity": "89565a29ce4a399d0d77dfb20e3a97401c4e7ee677203f9acc085ae5079f8241"
+}

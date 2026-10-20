@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:53)
+       [1] _build_world (res://main.gd:2152)
+       [2] _ready (res://main.gd:495)
+       [3] _run (res://tests/test_sky_checkpoint.gd:28)
+Sky test startup: Aircraft model failed its manifest and scene binding checks: jensen-das-ugly-stik-60

@@ -43,7 +43,7 @@ func _test_static_report(base: Dictionary) -> void:
 			report.get("compiled_build_summary", {}).get("mass_kg", 0.0) > 0.0
 			and (not report.get("available", false) or report.get("metrics", {}).has("static_thrust_n"))
 			and report.get("compiler_version", "") == Compiler.COMPILER_VERSION)
-	var rejected: Dictionary = Experiments.static_report(base, {"scale": 2.01})
+	var rejected: Dictionary = Experiments.static_report(base, {"scale": preload("res://workshop/parameters.gd").MAX_SCALE + 0.01})
 	_check("static report rejects recipes beyond physical bounds", not rejected.get("ok", false)
 		and str(rejected.get("errors", [])).contains("scale"))
 	var visual: Dictionary = Experiments.static_report(base, {"paint": []})
@@ -97,7 +97,7 @@ func _test_sweeps(base: Dictionary) -> void:
 		"seed": true, "candidate_count": 4, "axes": [{"key": "mass_policy", "minimum": 0, "maximum": 1}]}
 	_check("boolean seed and categorical random axis reject", not Experiments.validate_sweep(unsupported).get("ok", false))
 	var out_of_range: Dictionary = grid.duplicate(true)
-	out_of_range.axes[0].values[0] = 0.49
+	out_of_range.axes[0].values[0] = preload("res://workshop/parameters.gd").MIN_SCALE - 0.01
 	_check("sweep candidates cannot exceed shared parameter bounds", not Experiments.validate_sweep(out_of_range).get("ok", false))
 	var malformed: Dictionary = grid.duplicate(true)
 	malformed.unregistered = true

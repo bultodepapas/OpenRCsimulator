@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://sim/session.gd" does not exist.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Session" constant because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "accepted" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:91)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "lower_history" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:271)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "upper_history" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:278)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "unsupported_scale" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:309)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "unsupported_history" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd:310)
+ERROR: Failed to load script "C:/Users/bulto/AppData/Local/Temp/workshop_sizes_draft.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
