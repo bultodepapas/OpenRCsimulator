@@ -1,6 +1,6 @@
-# D6e-R3: the tendency to climb at part throttle, measured across the fleet
+# D6e-R3/R4: the tendency to climb at part throttle, measured across the fleet, and the launch trim
 
-2026-10-19 · **Status: measured on all eight fixed-wing aircraft with a new hands-off throttle-step test (card v5). One shared-engine defect found and corrected: the glow throttle law admitted a constant charge per cycle, so a closed throttle pulled in flight and four aircraft flew level at 1–11 % of the stick ([NITRO-06](../../glow-engines/NITRO-06/README.md)). The remaining climb at mid-stick from the trimmed start is the physics of a fixed trim with a large thrust surplus, confirmed against an instrumented Ultra Stick; its size is set by the start operating point, which stays an owner decision.** Main physics track; follows [D6e-R1](../climb-trim/README.md). Model predictions, not physical validation.
+2026-10-19 · **Status: measured on all eight fixed-wing aircraft with a new hands-off throttle-step test (card v5). One shared-engine defect found and corrected: the glow throttle law admitted a constant charge per cycle, so a closed throttle pulled in flight and four aircraft flew level at 1–11 % of the stick ([NITRO-06](../../glow-engines/NITRO-06/README.md)). The remaining climb at mid-stick from the trimmed start is the physics of a fixed trim with a large thrust surplus, confirmed against an instrumented Ultra Stick; its size is set by the start operating point. [D6e-R4](#d6e-r4-every-launch-trimmed-for-50--throttle) (2026-10-20) makes Home and Quick Flight trim every airplane for level flight at 50 % throttle, in the air and after a runway takeoff.** Main physics track; follows [D6e-R1](../climb-trim/README.md). Model predictions, not physical validation.
 
 ## Question
 
@@ -68,7 +68,7 @@ The glow installations mapped the stick to a constant charge per cycle, so the i
 | Extra, 22 m/s | 22 % | −7 m (peak +24 m) | −2 m after a +64 m phugoid |
 | Ugly Stik, 15 m/s | 28 % | +10 m | +65 m |
 
-The jet at 30 % and the Stik at 50 % climb exactly as the hands-off card predicts; the gusts add a little lift and the phugoids are large, which is what a pilot sees as "it keeps going up". A keyboard-style takeoff (full throttle, up elevator held until airborne plus 3 s, then sticks centred and 50 %) ends in a bunt for the Timber and the Stik: at 55–75° of pitch with the wing unloaded the sudden release pitches past the trim angle into negative lift. That is a crude input, not a pilot's, and is reported as such.
+The jet at 30 % and the Stik at 50 % climb exactly as the hands-off card predicts; the gusts add a little lift and the phugoids are large, which is what a pilot sees as "it keeps going up". The probe's original "runway" case is withdrawn: its runway launch had been refused after the crashed 30 % case in the same process and the session kept the valid airborne state (`is_flyable()` does not read `start_error`), so the reported "takeoff bunt" was an airborne case with 0.35 up elevator held for 3 s, a loop, not a takeoff. The probe now prints the launch it got and skips a runway case that is not on the runway; the flown takeoffs are in [D6e-R4](#d6e-r4-every-launch-trimmed-for-50--throttle).
 
 ## Remedy: the 50 % start for every airplane
 
@@ -96,7 +96,7 @@ The level trims at half throttle, with the elevator a pilot would hold at that s
 | Extra, 33.1 m/s | ground in 11 s | +7 m | +44 m (peak +88 m) |
 | Ugly Stik, 20.6 m/s | ground in 10 s | +1.6 m | +80 m |
 
-Below half the airplane descends, above half it climbs, and the trim stays where it is. This is a start-point choice, not a physics change: the fixed-trim pull-up at full throttle on a 1.5 thrust-to-weight airplane remains, as it does on the real model. Making this start Home's default, and giving the runway start the same cruise trim so a takeoff is flown with up elevator and levels off at half throttle, are the owner's decisions; the data for both is above.
+Below half the airplane descends, above half it climbs, and the trim stays where it is. This is a start-point choice, not a physics change: the fixed-trim pull-up at full throttle on a 1.5 thrust-to-weight airplane remains, as it does on the real model. The owner took both decisions on 2026-10-20 ("proceed and trim all models"): [D6e-R4](#d6e-r4-every-launch-trimmed-for-50--throttle) makes this trim the launch trim of Home and Quick Flight, in the air and on the runway.
 
 ## After NITRO-06
 
@@ -124,9 +124,61 @@ The idle now descends on every glow aircraft, a quarter stick holds roughly leve
 
 The owner asked whether the trim, the throttle for level flight, inverted flight and hands-off flight match real RC and full-scale practice. [trim-practice-comparison.md](trim-practice-comparison.md) sets the simulator's trim curves, power-pitch coupling, inverted pushes and modes against manuals, trimming charts, the FAA handbook, the Cessna 172S manual and the UMN Ultra Stick logs ([research note](trim-practice-research.md), [sources](trim-practice-sources.md)). In short: models are trimmed at a throttle (½ electric trainers, ¾ electric scale and STOL, ¼–⅓ glow trainers) and then climb at full and descend at idle, which is what the 50 % start gives; the simulator's trim slopes (4.5–19° of elevator per unit lift coefficient) bracket the measured Ultra Sticks (6.2–9.8); the inverted pushes equal the linear estimate from those slopes; and the phugoid damping is two to four times the measured 0.1 at matched speed ratio, a propulsion thrust-speed item, not a trim one.
 
-## Verification
+## D6e-R4: every launch trimmed for 50 % throttle
 
-### D6e-R4 release regression correction
+2026-10-20 · **Status: delivered. Home, random flights, the Workshop and `--quick-flight` trim every airplane for level flight at 50 % throttle before it is placed in the air or on the runway; the engine API, tests, golden flights, flight-test baselines and the technical route keep the reference trim (level flight at the slow start speed).** Decision: [DECISIONS 2026-10-20](../../../DECISIONS.md).
+
+### Mechanism
+
+`FlightSession.trim_throttle` (NAN = reference trim, `CRUISE_TRIM_THROTTLE` = 0.5) is read by `_selected_airborne_trim` for both launch choices: the airborne start is the bounded cruise trim of D6e-R3, and the runway start parks the airplane at idle with that trim as its flying trim, so the elevator a pilot releases after the climb-out is the one for level flight at half throttle instead of the one for 1.6 Vs. A selection made after setup refits on reset (airborne and runway); the launch metadata and trace header carry `launch_trim_throttle` ("reference", "0.5", or "unknown" after a checkpoint restore). `START_HALF_POWER` remains the explicit airborne 0.5 on any route. A rotorcraft keeps its reference launch; an out-of-range trim throttle is refused before flight.
+
+| Route | Trim throttle | Where it is set |
+| --- | --- | --- |
+| Home (airplane), random flight, Workshop trial and its qualification | 0.5 | `app_root.gd`, `workshop/start_qualification.gd` |
+| `--quick-flight` (with or without `--start=`) | 0.5 | `main.gd` |
+| Technical launch without `--quick-flight`, tests, golden flights, flight-test card, captures | reference (NAN) | engine default |
+| `--start=airborne_half_power` | 0.5 (airborne) | explicit choice |
+
+Home's start button now cycles **runway ⇄ in the air**; the former third choice, **50% throttle**, was this airborne start and is shown as such. A settings file that still holds `airborne_half_power` is accepted and shown as the airborne start. The runway caption says the airplane is trimmed for level flight at 50 % throttle.
+
+### Evidence
+
+`test_trim_throttle.gd` (45 checks): the reference trim stays the engine default; the cruise airborne start equals the explicit half-power start, state for state; a trim selected after setup refits on reset for the airborne and the runway launch; 1.5, 0, −0.25 and INF are refused before flight; the rotorcraft file is refused by the fixed-wing session; every runway airplane parks at idle with `requested_throttle` 0.5, the elevator at the cruise trim and `launch_trim_throttle` "0.5" (speeds and elevator angles as in the D6e-R3 table above). Two flown comparisons on the Ugly Stik in calm air, 40 s hands-off at half throttle, climb rate averaged over the second half:
+
+| Procedure | Reference trim (1.6 Vs) | Cruise trim (50 %) |
+| --- | ---: | ---: |
+| Airborne hold from the trimmed start | +1.35 m/s | 2 × 10⁻⁸ m/s, 20.60 m/s |
+| Runway takeoff: full throttle, 12° climb-out held with the elevator, sticks released at 40 m | +1.45 m/s (40 → 100 m) | +0.01 m/s (36–53 m), 20.57 m/s |
+
+Full scene (`scene_probe.gd --trim=cruise`, main.tscn with Home's gentle breeze, keyboard sampling, real engine callbacks), airborne start at 30 m then a throttle held hands-off for 40 s:
+
+| Aircraft, 50 % start | 30 % | 50 % | 70 % |
+| --- | ---: | ---: | ---: |
+| Ugly Stik, 18.9 m/s over the ground | ground in 10 s | +1.6 m | +80 m |
+| Timber, 16.2 | ground in 13 s | −0.4 m | +62 m |
+| Extra, 31.3 | ground in 11 s | +7 m | +44 m (peak +88) |
+| Ventage Jet, 53.4 | ground in 11 s | +17 m (fuel burn) | +268 m |
+| P-51D, 44.2 | ground in 14 s | +5 m | +82 m |
+| Stik MAX-61FX, 28.5 | ground in 9 s | +18 m | +147 m |
+| Stik MAX-55AX, 27.4 | ground in 9 s | +13 m | +127 m |
+| Stik FS-64V, 21.2 | ground in 10 s | +8 m | +111 m |
+
+Runway takeoffs in the same scene (`--no-airborne`), flown as above and released hands-off at 40 m with 50 % or 35 %, height after 50 s from the start or the end of the flight:
+
+| Aircraft | Cruise trim, 50 % | Cruise trim, 35 % | Reference trim, 50 % | Reference trim, 35 % |
+| --- | ---: | ---: | ---: | ---: |
+| Ugly Stik | 44.5 m (peak 58.5) | ground in 27 s | 107 m | 73 m |
+| Stik MAX-61FX | 58 m (peak 64) | ground in 24 s | 205 m | 141 m |
+| Stik MAX-55AX | 44 m (peak 58) | ground in 24 s | 166 m | 113 m |
+| Stik FS-64V | 59 m | ground in 28 s | 127 m | 38 m |
+| Timber | lateral departure after the release: heading swings of ±90° in a few seconds, 51 m lost in 40 s, touches down at 16 m/s | ground in 25 s | goes inverted right after the release (bunt) | same, one second later |
+| Extra 300S | spiral dive into the ground 7 s after the release; with a 120 m release it never gets there, rolling off during the climb-out and touching down at 64 s | same | ground after 39 s | lake bank after 30 s |
+| P-51D | dives into the ground 3 s after the release at 50 m/s; released at 120 m the nose drops 27° within 2 s and it dives in at 57 m/s | same | same | same |
+| Ventage Jet | no rotation with the probe's 0.35 elevator before the runway end; with 0.6 it rotates at 9.7 s and, released at 120 m, spirals in after 37 s | same | climbs to 197 m (rotates at 11 s) | 75 m |
+
+Reading: the four Stiks do what a trimmed model does, level at half throttle and a descent below it, where the reference trim climbed 70–200 m in the same time and even 35 % climbed. The other four rows are not trim findings. The Timber and the Extra leave wings-level flight hands-off after the takeoff disturbance and gusts (the Extra's hands-off spiral and the Timber's are the dihedral effect that [D10-R5](../stik-roll-sideslip-2026-10-19/README.md) gave the Stik family only; their airborne holds from the same trim stay level for 40 s). The P-51 pitches down hard when the stick is released at full power: in the climb it holds only 4–8° of pitch with 0.6 of up stick, so at full throttle a large nose-down moment (thrust line 71 mm above the CG, slipstream and propeller loads on the tail) is being held by the elevator, the engine spools down over 4 s after the throttle is brought back, and neither 40 m nor 120 m is enough for a 46 m/s airplane released hands-off; the same happens with either trim and is a P-51 track item (power-pitch coupling at full throttle), not a trim one. The jet needs more up elevator than a trainer to rotate and then leaves wings-level flight hands-off as the Extra does. A pilot keeps the wings level and the nose where it belongs while the power comes back; the probe does not, and the flight-test card's closed-loop pilots fly all eight takeoffs ([FT-05](../../flight-test/FT-05/README.md)).
+
+### Test history
 
 2026-10-19: the new trim-throttle test held 35% up elevator until three seconds after liftoff. At one second after liftoff the reference Stik already reached about 73° pitch; at the next second it was inverted. Both reference and cruise cases crashed before the steady-flight measurement. That open-loop rotation is not a valid assertion that any takeoff must settle into level flight after releasing the elevator.
 
@@ -135,6 +187,18 @@ The owner asked whether the trim, the throttle for level flight, inverted flight
 Native Windows Godot 4.7.2: 39 checks pass. Both 40-second airborne holds complete without crashes; the reference trim climbs at 1.3494 m/s over the second half, while the cruise trim drifts by less than one micrometre and ends at 20.5971 m/s. No physics law, trim solver or tolerance was changed. This does not qualify a pilot's takeoff procedure or physical flight behavior.
 
 2026-10-19 follow-up: the Home-to-Fly custom-atmosphere fixture exposed a cached selected-trim mismatch: the session used the field density, but its selected 50% trim still had the 20.5971 m/s reference-density equilibrium. `_refit_selected_trim()` now refits when the requested throttle, density or engine charge differs from its cache, before the runway-start early return. The UI regression independently solves `CruiseTrim` from the active session density and charge and checks the selected speed, throttle and cache values. Native Windows Godot 4.7.2 `test_ui_atmosphere.gd` passes all atmosphere UI checks. This verifies Home-to-Fly startup consistency, not the atmosphere against measured weather or flight data.
+
+The merged test keeps both contracts: the neutral airborne holds above, and the owner's runway procedure flown with a bounded attitude hold (a 12° climb-out released at 40 m), which is a pilot's input and not the open-loop pull of the first version. Both pass with the same answer.
+
+### Checks run
+
+- `test_trim_throttle.gd` 45/45; `test_half_power_start.gd` 62/62; `test_start_choice.gd` 36/36; `test_runway_checkpoint_metadata.gd` 14/14; `test_trace.gd` 37/37; `test_extra_runway.gd` 18/18; `test_session_guards.gd` 32/32; `test_avanti_keyboard.gd` 39/39; `test_runway_start.gd` 18/18; `test_takeoff_roll.gd` 8/8; `test_e2e_input.gd` all; `test_runway_fleet.gd` 116/116; `test_workshop_starts.gd` 363/363 in 80 s on a quiet VM (under three concurrent full-scene probes the Extra's airborne qualification once took 18.0 s against its 16 s budget: the cruise trim is now solved for every workshop qualification, 2.6–6 s for the glow and electric trials); `test_pilot_trim.gd` 107/110 with the three pre-existing P-51/Avanti live-neutral and jet counterfactual failures.
+- Wall time on the shared VM: `test_trim_throttle.gd` 45–78 s (300 s budget in `app/test.sh`), `test_half_power_start.gd` 219 s quiet and 300 s under load (600 s budget).
+- UI under Xvfb: `test_ui_home_start_layout.gd` 52/52; `test_ui_runway.gd` all; `test_runway_cli.gd` 10/10; `test_landscapes.gd` 49/49; `test_workshop_ui.gd` and `test_workshop_integration.gd` 0 failed; `test_ui_natural_random.gd` 11/12 with a failure that predates this step and is not a trim refusal: the briefing hashes the catalog's `data` file while the flight loads the Timber's default finite-pack file (`battery_data`, BAT-13), so `bind_scenario` reports "Prepared flight does not match the random scenario" for a Timber draw (diagnosed with a temporary print; the session was flyable, aircraft, start, weather, lighting and field all matched); `test_ui_home.gd` keeps its pre-existing rail-overflow layout failures ("flight page fits", "conditions remain bounded"): the rail content measures 392 px in a 344 px body before this step (`tmp/app-test-full.log` of 2026-10-19) and after it, so the longer runway caption did not change the layout.
+- The first commit of this step assigned the trim throttle on the helicopter route too (`helicopter_main.gd` has no such property); the guard `not helicopter_route` repairs it (PT1, `4892abac`).
+- Nothing recorded changed: the engine default is the reference trim, so the golden flights, FT-05 and every technical trace are the same files.
+
+## Verification
 
 - `power_step` is valid on all eight aircraft in [FT-05](../../flight-test/FT-05/README.md) (314 of 320 card tests valid); its constant-speed prediction agrees with the flown end angle in the settled cases (0.1–4° at idle and 25 %); the before/after tables come from the same card and tree except the glow law.
 - NITRO-06 test counts and generator checks: [NITRO-06 § Verification](../../glow-engines/NITRO-06/README.md#verification).

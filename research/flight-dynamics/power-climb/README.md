@@ -15,7 +15,9 @@ python3 research/flight-dynamics/power-climb/fleet_neutral_point.py
 # The owner's procedure in the complete flight scene (main.tscn, keyboard sampling, Home's gentle-breeze weather):
 # airborne start, then a throttle held hands-off, and a keyboard-style runway takeoff; --start=airborne_half_power uses
 # the 50 % level trim; --trim=cruise is Home's launch trim (D6e-R4: every start, runway included, trimmed for 50 %).
-"$GODOT" --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--start=airborne|airborne_half_power] [--trim=reference|cruise] [--throttles=0.5,0.3] [--no-runway] [--seconds=40]
+"$GODOT" --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--start=airborne|airborne_half_power] [--trim=reference|cruise] [--throttles=0.5,0.3] [--no-runway] [--no-airborne] [--level-off=40] [--rotate=0.35] [--seconds=40]
+# Run the runway cases in their own process (--no-airborne): a runway launch refused after a crashed airborne case in the
+# same process is reported and skipped. --level-off raises the hands-off release height, --rotate the ground-roll elevator.
 ```
 
 The flown measurement is the flight-test card's `power_step` test (card v5): `python3 research/flight-test/run.py --out <dir> --only power_step` ([card](../../flight-test/README.md#the-card)). Model predictions, not physical validation.

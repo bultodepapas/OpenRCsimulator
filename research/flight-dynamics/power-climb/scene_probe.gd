@@ -3,7 +3,7 @@
 # as a pilot flies it (full throttle with up elevator until airborne, a 12° climb-out held with the elevator, then at
 # 40 m the sticks released and the throttle brought back).
 # Prints height, speed, pitch and path every 2 s. Read-only research probe; nothing is written to the tree.
-# Run: <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--seconds=40] [--trim=reference|cruise]
+# Run: <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--seconds=40] [--trim=reference|cruise] [--no-airborne] [--level-off=40] [--rotate=0.35]
 # --trim=cruise is Home's launch trim (D6e-R4): every airplane trimmed for level flight at 50 % throttle, in the air
 # and after the runway takeoff. The default keeps the technical route's reference trim.
 extends SceneTree
@@ -20,7 +20,8 @@ var runway_cases := true
 var airborne_cases := true
 var trim_choice := "reference" # or cruise (D6e-R4)
 const CLIMB_PITCH_RAD := 0.2094 # 12°, a trainer's climb-out attitude
-const LEVEL_OFF_HEIGHT_M := 40.0
+var level_off_m := 40.0 # --level-off=<m>: a fast airplane released hands-off needs more height for its phugoid
+var rotate_stick := 0.35 # --rotate=<stick>: up elevator held on the ground roll (the jet needs more than a trainer)
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -40,6 +41,10 @@ func _initialize() -> void:
 			airborne_cases = false
 		elif arg.begins_with("--trim="):
 			trim_choice = arg.substr(7)
+		elif arg.begins_with("--level-off="):
+			level_off_m = float(arg.substr(12))
+		elif arg.begins_with("--rotate="):
+			rotate_stick = float(arg.substr(9))
 	call_deferred("run")
 
 func _euler(s: PackedFloat64Array) -> PackedFloat64Array:
@@ -65,7 +70,7 @@ func run() -> void:
 			for thr in throttles:
 				cases.append(["%s, throttle to %.0f %% at 1 s" % [airborne_start, thr * 100.0], airborne_start, thr])
 		if runway and runway_cases:
-			cases.append(["runway: full throttle, 12° climb-out, released at 40 m with 50 %", "runway", 0.5])
+			cases.append(["runway: full throttle, 12° climb-out, released at %.0f m with 50 %%" % level_off_m, "runway", 0.5])
 			cases.append(["runway: as above, with 35 %", "runway", 0.35])
 		for c in cases:
 			var main = load("res://main.tscn").instantiate()
@@ -108,13 +113,13 @@ func run() -> void:
 					if phase == "ground":
 						s.commands.throttle = 1.0
 						if airborne_t < 0.0:
-							s.commands.pitch = 0.35 # up elevator held, as a thumb on the down-arrow key
+							s.commands.pitch = rotate_stick # up elevator held, as a thumb on the down-arrow key
 							if _airborne(s):
 								airborne_t = t
 						else:
 							# Climb-out: a 12° attitude held with the elevator, then released at 40 m with the throttle brought back.
 							s.commands.pitch = clampf(3.0 * (CLIMB_PITCH_RAD - _euler(s.sim.state)[1]), -0.4, 0.6)
-							if -s.sim.state[RB.POS + 2] - h0 >= LEVEL_OFF_HEIGHT_M:
+							if -s.sim.state[RB.POS + 2] - h0 >= level_off_m:
 								phase = "hold"
 								s.commands.pitch = 0.0
 								s.commands.throttle = throttle
@@ -135,7 +140,7 @@ func run() -> void:
 				if s.sim.tick % 480 == 0:
 					var e := _euler(st)
 					var v := _speed(st)
-					print("  t=%5.1f h=%7.1f m  V=%5.1f m/s  pitch=%6.1f°  path=%6.1f°  thr=%.2f  rpm=%6.0f  %s" % [t, h, v, rad_to_deg(e[1]), rad_to_deg(asin(clampf(_climb(st) / maxf(v, 0.1), -1.0, 1.0))), float(s.sim.inputs[3]), float(s.sim.aux[0]), phase])
+					print("  t=%5.1f h=%7.1f m  V=%5.1f m/s  pitch=%6.1f°  bank=%6.1f°  hdg=%6.1f°  path=%6.1f°  thr=%.2f  rpm=%6.0f  %s" % [t, h, v, rad_to_deg(e[1]), rad_to_deg(e[2]), rad_to_deg(e[0]), rad_to_deg(asin(clampf(_climb(st) / maxf(v, 0.1), -1.0, 1.0))), float(s.sim.inputs[3]), float(s.sim.aux[0]), phase])
 				if not s.crash.is_empty():
 					print("  crash: ", s.pause_reason)
 					break
