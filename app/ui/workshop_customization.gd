@@ -39,14 +39,14 @@ var _shown_marking := 0
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
 	var heading := Label.new()
-	heading.text = "Appearance" if page_kind == "appearance" else "Smoke"
+	heading.text = tr("Appearance" if page_kind == "appearance" else "Smoke")
 	heading.theme_type_variation = "SectionLabel"
 	add_child(heading)
 	_note = label("Paint changes only the selected registered region." if page_kind == "appearance" else "Show smoke is a visual effect. Source exhaust follows the running engine.")
 	if page_kind == "smoke":
 		var presets := OptionButton.new()
 		presets.name = "SmokePreset"
-		for text: String in ["Choose a smoke preset…", "Clear Trainer", "Twin Ribbons", "Tricolor", "Tail Comet", "Rainbow Burst", "Classic Exhaust"]: presets.add_item(text)
+		for text: String in ["Choose a smoke preset…", "Clear Trainer", "Twin Ribbons", "Tricolor", "Tail Comet", "Rainbow Burst", "Classic Exhaust", "Pastel Cloud", "Alternating Tips", "Monochrome Dark"]: presets.add_item(tr(text))
 		presets.item_selected.connect(func(index: int) -> void:
 			if index > 0: apply_preset(index)
 			presets.select(0))
@@ -62,12 +62,12 @@ func _ready() -> void:
 	add_child(_controls)
 	if page_kind == "smoke":
 		_enabled = CheckButton.new()
-		_enabled.text = "Enable this emitter"
+		_enabled.text = tr("Enable this emitter")
 		_enabled.toggled.connect(func(value: bool) -> void: change("enabled", value))
 		_controls.add_child(_enabled)
 	_color = OptionButton.new()
-	for text: String in COLORS: _color.add_item(text)
-	_color.add_item("Custom color")
+	for text: String in COLORS: _color.add_item(tr(text))
+	_color.add_item(tr("Custom color"))
 	if page_kind == "appearance":
 		_color.add_item("Stock")
 		_color.set_item_disabled(COLORS.size() + 1, true)
@@ -80,8 +80,10 @@ func _ready() -> void:
 	_custom_color.placeholder_text = "#RRGGBBAA"
 	_custom_color.max_length = 9
 	_custom_color.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_custom_color.text_changed.connect(func(_text: String) -> void:
-		if not _syncing: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking()))
+	_custom_color.text_changed.connect(func(text: String) -> void:
+		if _syncing: return
+		if page_kind == "smoke": _sync_picker_from_hex(text)
+		validity_changed.emit(page_kind, has_pending_color() or has_pending_marking()))
 	_custom_color.text_submitted.connect(func(_value: String) -> void: apply_color())
 	custom.add_child(_custom_color)
 	if page_kind == "smoke":
@@ -93,7 +95,7 @@ func _ready() -> void:
 		_picker.color_changed.connect(_on_picker_color_changed)
 		custom.add_child(_picker)
 	var apply := Button.new()
-	apply.text = "Apply color"
+	apply.text = tr("Apply color")
 	apply.pressed.connect(apply_color)
 	custom.add_child(apply)
 	if page_kind == "smoke":
@@ -105,7 +107,7 @@ func _ready() -> void:
 	_controls.add_child(custom)
 	if page_kind == "appearance":
 		var reset_region := Button.new()
-		reset_region.text = "Restore selected region"
+		reset_region.text = tr("Restore selected region")
 		reset_region.pressed.connect(reset_paint_region)
 		_controls.add_child(reset_region)
 		build_markings()
@@ -119,7 +121,7 @@ func _ready() -> void:
 			if _syncing: return
 			change("palette_mode", "step" if index == 0 else "smooth"))
 		var palette_actions := HFlowContainer.new()
-		for spec: Array in [["Add color step", 1], ["Remove last step", -1], ["Use single color", 0]]:
+		for spec: Array in [[tr("Add color step"), 1], [tr("Remove last step"), -1], [tr("Use single color"), 0]]:
 			var action := Button.new()
 			action.text = spec[0]
 			action.pressed.connect(edit_palette.bind(spec[1]))
@@ -173,11 +175,11 @@ func _build_advanced_group(color_row: Control) -> void:
 		_advanced.add_child(child)
 	_advanced_button = Button.new()
 	_advanced_button.name = "SmokeMoreOptionsButton"
-	_advanced_button.text = "More options"
+	_advanced_button.text = tr("More options")
 	_advanced_button.toggle_mode = true
 	_advanced_button.toggled.connect(func(expanded: bool) -> void:
 		_advanced.visible = expanded
-		_advanced_button.text = "Fewer options" if expanded else "More options")
+		_advanced_button.text = tr("Fewer options" if expanded else "More options"))
 	_controls.add_child(_advanced_button)
 	_controls.add_child(_advanced)
 
@@ -198,7 +200,7 @@ func _build_copy_controls() -> void:
 
 func label(text: String, parent: Node = self) -> Label:
 	var result := Label.new()
-	result.text = text
+	result.text = tr(text)
 	result.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	parent.add_child(result)
 	return result
@@ -206,7 +208,7 @@ func label(text: String, parent: Node = self) -> Label:
 func options(title: String, values: Array) -> OptionButton:
 	label(title, _controls)
 	var result := OptionButton.new()
-	for value: String in values: result.add_item(value.capitalize())
+	for value: String in values: result.add_item(tr(value.capitalize()))
 	_controls.add_child(result)
 	return result
 
@@ -245,10 +247,10 @@ func configure(bindings: Dictionary, profile: Dictionary) -> void:
 		if slot.id == selected: _slot.select(_slot.item_count - 1)
 	_controls.visible = _slot.item_count > 0
 	_slot.disabled = _slot.item_count == 0
-	_note.text = "Paint changes only the selected registered region." if page_kind == "appearance" else _smoke_version_note()
+	_note.text = tr("Paint changes only the selected registered region.") if page_kind == "appearance" else _smoke_version_note()
 	if _slot.item_count == 0:
 		_slot.add_item("No registered regions" if page_kind == "appearance" else "No registered emitters")
-		_note.text = "This model has no registered customization for this page."
+		_note.text = tr("This model has no registered customization for this page.")
 	_syncing = false
 	sync_fields()
 	if page_kind == "appearance":
@@ -268,7 +270,9 @@ func _smoke_version_note() -> String:
 func _display_smoke_entry(entry: Dictionary) -> Dictionary:
 	var result: Dictionary = Profile.normalize_smoke_entry(entry, int(_profile.get("version", Profile.VERSION)))
 	if bool(result.get("ok", false)):
-		return result.value
+		var normalized: Dictionary = Profile.smoke_v2_defaults()
+		normalized.merge(result.value, true)
+		return normalized
 	# Keep malformed or unsupported source values visible without silently repairing them.
 	var fallback: Dictionary = Profile.smoke_v2_defaults()
 	fallback.merge(entry, true)
@@ -320,7 +324,7 @@ func sync_fields() -> void:
 	if page_kind == "smoke":
 		var selected_index := maxi(_palette_selector.selected, 0)
 		_palette_selector.clear()
-		if entry.palette.is_empty(): _palette_selector.add_item("Single color")
+		if entry.palette.is_empty(): _palette_selector.add_item(tr("Single color"))
 		else:
 			for index in entry.palette.size(): _palette_selector.add_item(tr("Step %d") % (index + 1))
 		_palette_selector.select(mini(selected_index, _palette_selector.item_count - 1))
@@ -352,10 +356,21 @@ func has_pending_color() -> bool:
 	var entry := current_entry()
 	return not entry.is_empty() and _custom_color.text.to_upper() != selected_color(entry)
 
+func _sync_picker_from_hex(text: String) -> void:
+	if not is_instance_valid(_picker): return
+	var value := text.to_upper()
+	if value.length() == 9 and value.begins_with("#") and value.substr(1).is_valid_hex_number():
+		_picker.color = Color.from_string(value, Color.WHITE)
+
+func _on_picker_color_changed(color: Color) -> void:
+	if _syncing or page_kind != "smoke": return
+	_custom_color.text = "#" + color.to_html(true).to_upper()
+	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
+
 func _select_slot(index: int) -> void:
 	_slot.select(_shown_slot)
 	if has_pending_color():
-		_error.text = "Apply or cancel the edited color before changing regions or emitters."
+		_error.text = tr("Apply or cancel the edited color before changing regions or emitters.")
 		_custom_color.grab_focus()
 		return
 	_slot.select(index)
@@ -364,7 +379,7 @@ func _select_slot(index: int) -> void:
 func _select_palette_step(index: int) -> void:
 	_palette_selector.select(_shown_palette)
 	if has_pending_color():
-		_error.text = "Apply or cancel the edited color before changing color steps."
+		_error.text = tr("Apply or cancel the edited color before changing color steps.")
 		_custom_color.grab_focus()
 		return
 	_palette_selector.select(index)
@@ -373,7 +388,7 @@ func _select_palette_step(index: int) -> void:
 func _select_marking_slot(index: int) -> void:
 	_marking_slot.select(_shown_marking)
 	if has_pending_marking():
-		_error.text = "Apply or cancel the edited inscription before changing panels."
+		_error.text = tr("Apply or cancel the edited inscription before changing panels.")
 		_marking_text.grab_focus()
 		return
 	_marking_slot.select(index)
@@ -475,19 +490,86 @@ func edit_palette(operation: int) -> void:
 func apply_color() -> void:
 	var text := _custom_color.text.to_upper()
 	if text.length() != 9 or not text.begins_with("#") or not text.substr(1).is_valid_hex_number():
-		_error.text = "Use #RRGGBBAA, for example #327DE8FF."
+		_error.text = tr("Use #RRGGBBAA, for example #327DE8FF.")
 		return
 	change("color", text)
 
-func commit_entry(entry: Dictionary) -> void:
+func _promote_v1_profile(profile: Dictionary) -> Dictionary:
+	if int(profile.get("version", Profile.VERSION)) != 1:
+		return {"ok": true, "profile": profile.duplicate(true), "report": {}}
+	var migrated: Dictionary = Profile.migrate_v1(profile, _bindings, _bindings)
+	if not bool(migrated.get("ok", false)):
+		return migrated
+	# Run the normal strict validator so the new draft carries the current canonical identity.
+	var checked: Dictionary = Profile.validate(migrated.profile, _bindings)
+	if not bool(checked.get("ok", false)):
+		return {"ok": false, "errors": checked.get("errors", PackedStringArray()), "report": migrated.get("report", {})}
+	return {"ok": true, "profile": checked.profile, "report": migrated.get("report", {})}
+
+func _show_migration_note(report: Variant) -> void:
+	var outlet_count := 0
+	if report is Dictionary:
+		outlet_count = report.get("outlets", []).size()
+	if outlet_count == 0:
+		_note.text = tr("Created a v2 draft from the empty legacy profile. No smoke remains enabled; the saved v1 revision is unchanged.")
+	else:
+		_note.text = tr("Created a v2 draft for %d smoke outlet(s). Outlet IDs and legacy amount were retained; review the new density and motion defaults. The saved v1 revision is unchanged.") % outlet_count
+
+func commit_entry(entry: Dictionary) -> bool:
 	var next := _profile.duplicate(true)
+	var migration_report: Variant = {}
+	if page_kind == "smoke" and int(next.get("version", Profile.VERSION)) == 1:
+		var old_entry: Dictionary = {}
+		for candidate: Dictionary in next.get("smoke", []):
+			if str(candidate.get("slot", "")) == str(entry.get("slot", "")):
+				old_entry = candidate.duplicate(true)
+				break
+		var promotion := _promote_v1_profile(next)
+		if not bool(promotion.get("ok", false)):
+			_error.text = "\n".join(PackedStringArray(promotion.get("errors", PackedStringArray([tr("Legacy smoke migration is unavailable for this model.")]))))
+			return false
+		next = promotion.profile
+		migration_report = promotion.get("report", {})
+		var promoted_entry: Dictionary = {}
+		for candidate: Dictionary in next.get("smoke", []):
+			if str(candidate.get("slot", "")) == str(entry.get("slot", "")):
+				promoted_entry = candidate.duplicate(true)
+				break
+		if promoted_entry.is_empty():
+			promoted_entry = Profile.smoke_v2_defaults()
+			promoted_entry.merge(entry, true)
+		else:
+			# Preserve migration-derived values unless this edit explicitly changed them.
+			for key: Variant in entry.keys():
+				if not old_entry.has(key) or old_entry[key] != entry[key]:
+					promoted_entry[key] = entry[key]
+		entry = promoted_entry
 	var key := "paint" if page_kind == "appearance" else "smoke"
 	var entries: Array = next.get(key, []).duplicate(true)
 	for i in range(entries.size() - 1, -1, -1):
 		if entries[i].slot == entry.slot: entries.remove_at(i)
 	entries.append(entry)
 	next[key] = entries
-	propose(next)
+	if not propose(next): return false
+	if not migration_report.is_empty(): _show_migration_note(migration_report)
+	return true
+
+func copy_settings_to_target() -> bool:
+	if page_kind != "smoke" or not is_instance_valid(_copy_target) or _copy_target.selected < 0:
+		return false
+	var promoting_legacy := int(_profile.get("version", Profile.VERSION)) == 1
+	var source := current_entry()
+	var target_slot := str(_copy_target.get_item_metadata(_copy_target.selected))
+	if source.is_empty() or target_slot.is_empty() or target_slot == str(source.get("slot", "")):
+		return false
+	var copied := _display_smoke_entry(source)
+	copied.slot = target_slot
+	if not commit_entry(copied): return false
+	if promoting_legacy:
+		_note.text += " " + tr("Settings were copied once; later edits remain independent.")
+	else:
+		_note.text = tr("Copied once. The emitters will remain independent.")
+	return true
 
 func reset_paint_region() -> void:
 	var entry := current_entry()
@@ -539,14 +621,14 @@ func build_markings() -> void:
 	_marking_text.text_submitted.connect(func(_text: String) -> void: apply_marking())
 	_marking_box.add_child(_marking_text)
 	_marking_color = OptionButton.new()
-	for text: String in COLORS: _marking_color.add_item(text)
+	for text: String in COLORS: _marking_color.add_item(tr(text))
 	_marking_color.add_item("Custom color")
 	_marking_color.set_item_disabled(COLORS.size(), true)
 	_marking_color.item_selected.connect(func(_index: int) -> void:
 		if not _syncing: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking()))
 	_marking_box.add_child(_marking_color)
 	var apply := Button.new()
-	apply.text = "Apply inscription"
+	apply.text = tr("Apply inscription")
 	apply.pressed.connect(apply_marking)
 	_marking_box.add_child(apply)
 	label("Up to 12 English or Spanish letters, digits, spaces or hyphens. Empty text removes the inscription.", _marking_box)
@@ -597,6 +679,14 @@ func apply_marking() -> void:
 
 func apply_preset(index: int) -> void:
 	var next := _profile.duplicate(true)
+	var migration_report: Variant = {}
+	if int(next.get("version", Profile.VERSION)) == 1:
+		var promotion := _promote_v1_profile(next)
+		if not bool(promotion.get("ok", false)):
+			_error.text = "\n".join(PackedStringArray(promotion.get("errors", PackedStringArray([tr("Legacy smoke migration is unavailable for this model.")]))))
+			return
+		next = promotion.profile
+		migration_report = promotion.get("report", {})
 	next.smoke = []
 	var shows: Array = []
 	var sources: Array = []
@@ -606,31 +696,49 @@ func apply_preset(index: int) -> void:
 		if slot.kind == "show" and slot.get("role", "") in ["wing_tip_left", "wing_tip_right", "tail"]: shows.append(slot)
 		elif slot.kind == "source": sources.append(slot)
 	if index == 1:
-		propose(next)
+		if propose(next) and not migration_report.is_empty(): _show_migration_note(migration_report)
 		return
 	var selected: Array = sources if index == 6 else shows
+	if index == 6 and selected.size() > 1:
+		selected.resize(1)
+	if index == 8:
+		selected = shows.filter(func(slot: Dictionary) -> bool: return str(slot.get("pair", "")) == "wing_tips")
+	elif index == 9:
+		selected = shows.filter(func(slot: Dictionary) -> bool: return str(slot.get("role", "")) == "tail")
+		if selected.size() > 1: selected.resize(1)
+		if selected.is_empty() and not shows.is_empty(): selected = [shows[0]]
 	if selected.is_empty():
-		_error.text = "This preset needs registered emitters that this model does not provide."
+		_error.text = tr("This preset needs registered emitters that this model does not provide.")
 		return
 	var palette := ["#E54646FF", "#FFFFFFFF", "#327DE8FF"]
+	var pastel_palette := ["#F7B7CFEE", "#B8E5D6EE", "#BAD7F7EE", "#F8E4A8EE"]
 	for i in selected.size():
 		var slot: Dictionary = selected[i]
 		var is_tail: bool = slot.get("role", "") == "tail"
 		if index in [4, 5] and not is_tail: continue
 		if index == 2 and str(slot.get("pair", "")) != "wing_tips": continue
-		var entry := {slot = slot.id, enabled = true, color = palette[i % palette.size()], amount = 0.6,
+		var entry: Dictionary = Profile.smoke_v2_defaults()
+		entry.merge({slot = slot.id, enabled = true, color = palette[i % palette.size()], amount = 0.6,
 			width_m = 0.15, lifetime_s = 4.0, shape = "ribbon", mode = "hold", burst_s = 0.0,
-			pulse_period_s = 0.0, pulse_duty = 0.0, palette = [], step_s = 0.0}
+			pulse_period_s = 0.0, pulse_duty = 0.0, palette = [], step_s = 0.0}, true)
 		if index == 2: entry.color = ["#E54646FF", "#327DE8FF"][i % 2]
 		if index in [4, 5]:
 			entry.merge({color = "#F0B739FF", lifetime_s = 8.0, mode = "burst", burst_s = 5.0}, true)
 		if index == 5: entry.merge({palette = palette + ["#40B982FF", "#A871D8FF"], step_s = 0.5, shape = "fan"}, true)
 		if index == 6: entry.merge({color = "#FFFFFFFF", amount = 0.35, lifetime_s = 3.0}, true)
+		if index == 7:
+			entry.merge({color = pastel_palette[i % pastel_palette.size()], density = 0.8,
+				shape = "cloud", palette = pastel_palette, palette_mode = "smooth", step_s = 1.1}, true)
+		if index == 8:
+			entry.merge({color = "#F7B735FF" if i == 0 else "#5EA6F7FF", phase_offset_s = 0.0 if i == 0 else 0.5}, true)
+		if index == 9:
+			entry.merge({color = "#30343AFF", density = 1.15, emission_rate_hz = 36.0, shape = "cloud"}, true)
 		next.smoke.append(entry)
 	if next.smoke.is_empty():
-		_error.text = "This preset needs registered emitters that this model does not provide."
+		_error.text = tr("This preset needs registered emitters that this model does not provide.")
 		return
-	propose(next)
+	if not propose(next): return
+	if not migration_report.is_empty(): _show_migration_note(migration_report)
 	if not _profile.smoke.is_empty():
 		var first_slot := str(_profile.smoke[0].slot)
 		for item in _slot.item_count:

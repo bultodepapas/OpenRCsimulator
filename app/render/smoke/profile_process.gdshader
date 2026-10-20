@@ -32,7 +32,7 @@ uniform float drag_s = 0.4;
 uniform float velocity_inheritance = 1.0;
 uniform vec4 birth_event_next_states[MAX_BIRTH_EVENTS];
 uniform float birth_event_transitions[MAX_BIRTH_EVENTS];
-uniform float birth_event_wash[MAX_BIRTH_EVENTS];
+uniform vec3 birth_event_wash[MAX_BIRTH_EVENTS];
 uniform int birth_event_count = 0;
 uniform float birth_event_times[MAX_BIRTH_EVENTS];
 uniform vec4 birth_event_states[MAX_BIRTH_EVENTS];
@@ -85,7 +85,7 @@ void start() {
 	float born_at_s = clamp(interval_s - DELTA, 0.0, interval_s);
 	vec4 birth_state = vec4(0.0);
 	float birth_level = 0.0;
-	float wash = 0.0;
+	vec3 wash = vec3(0.0);
 	for (int i = 0; i < MAX_BIRTH_EVENTS; i++) {
 		if (i >= birth_event_count) { break; }
 		if (birth_event_times[i] <= born_at_s + 0.0000005) {
@@ -113,7 +113,7 @@ void start() {
 	vec3 up = normalize(cross(right, direction));
 	float disk_angle = random_value(NUMBER + RANDOM_SEED + 17u) * TAU;
 	float disk_radius = sqrt(random_value(NUMBER + RANDOM_SEED + 29u)) * bore_radius_m;
-	position += (right * cos(disk_angle) + up * sin(disk_angle)) * disk_radius;
+	if (!legacy_motion) { position += (right * cos(disk_angle) + up * sin(disk_angle)) * disk_radius; }
 	float spread = (seed * 2.0 - 1.0) * width_m * 0.35;
 	if (legacy_motion && shape_mode == 1) {
 		position += (right * (seed - 0.5) + up * (random_value(NUMBER + RANDOM_SEED + 17u) - 0.5)) * width_m;
@@ -122,7 +122,7 @@ void start() {
 	}
 	TRANSFORM = mat4(1.0);
 	TRANSFORM[3].xyz = position;
-	VELOCITY = carrier_velocity * velocity_inheritance + direction * ((jet_speed + wash) * float(legacy_motion) + (jet_speed_mps + wash) * float(!legacy_motion));
+	VELOCITY = carrier_velocity * velocity_inheritance + direction * (legacy_motion ? jet_speed : jet_speed_mps) + wash;
 	CUSTOM = vec4(seed * TAU, 0.0, seed, opacity * birth_level * birth_state.a);
 	COLOR = vec4(birth_state.rgb, 0.0);
 }
@@ -132,10 +132,12 @@ void process() {
 	float age = CUSTOM.y * LIFETIME;
 	// No shader TIME: this clock is supplied only by accepted presentation ticks.
 	// A midpoint sample is consistent for newborn fractional and residual steps.
-	vec3 detail = coherent_curl(TRANSFORM[3].xyz, presentation_time_s - DELTA * 0.5);
+	vec3 detail = legacy_motion
+		? vec3(sin(age * 2.3 + CUSTOM.x), sin(age * 1.7 + CUSTOM.x * 1.3), cos(age * 2.1 + CUSTOM.x))
+		: coherent_curl(TRANSFORM[3].xyz, presentation_time_s - DELTA * 0.5);
 	float rise = legacy_motion ? buoyancy : buoyancy_mps * exp(-age / max(LIFETIME * 0.6, 0.1));
 	float turbulence = legacy_motion ? 0.22 : turbulence_mps;
-	vec3 target = wind_velocity + vec3(0.0, rise, 0.0) + detail * turbulence * smoothstep(0.0, 0.3, age);
+	vec3 target = wind_velocity + vec3(0.0, rise, 0.0) + detail * turbulence * (legacy_motion ? 1.0 : smoothstep(0.0, 0.3, age));
 	float tau = legacy_motion ? mix(0.12, 0.65, smoothstep(0.0, 0.7, age)) : drag_s;
 	float decay = exp(-DELTA / tau);
 	TRANSFORM[3].xyz += target * DELTA + (VELOCITY - target) * tau * (1.0 - decay);

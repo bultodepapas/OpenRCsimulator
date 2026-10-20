@@ -40,7 +40,7 @@ void fragment() {
  float boundary_noise = (filtered_vnoise(world_pos.xz / 2.8 + 43.0) - 0.5) * 1.2;
  float earth = smoothstep(-5.0, -0.7, UV.x + boundary_noise);
  float wet = smoothstep(-1.8, 0.6, UV.x + boundary_noise * 0.28);
- vec3 soil = mix(vec3(0.48,0.39,0.245), vec3(0.32,0.335,0.225), wet);
+ vec3 soil = mix(vec3(0.40,0.36,0.29), vec3(0.27,0.29,0.25), wet);
  float sediment = 0.55 * filtered_vnoise(world_pos.xz / 3.8 + 71.0)
   + 0.45 * filtered_vnoise(world_pos.xz / 12.0 + 9.0);
  soil *= (0.85 + 0.25 * clamp(turf.g * 3.0, 0.0, 1.0)) * mix(0.82, 1.16, sediment);
@@ -61,8 +61,8 @@ void fragment() {
    photo_color, photo_normal, photo_roughness);
   vec3 mean_color = OUTPUT_IS_SRGB ? vec3(0.38622, 0.32281, 0.24576)
    : vec3(0.12699, 0.08668, 0.04947);
-  soil *= mix(vec3(1.0), clamp(photo_color / mean_color, vec3(0.68), vec3(1.38)),
-   photo_weight * 0.72);
+  soil *= mix(vec3(1.0), clamp(photo_color / mean_color, vec3(0.62), vec3(1.48)),
+   photo_weight * 0.9);
  }
  ALBEDO = mix(turf, soil, earth);
  ROUGHNESS = mix(1.0, mix(0.94, 0.82, wet), earth);

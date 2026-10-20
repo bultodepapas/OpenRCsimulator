@@ -4663,3 +4663,230 @@ msgstr "Los cambios se previsualizan al instante. Conservar cambios los guarda; 
 # UI-34b (HN-3, added for the parallel UI-34 session): caption above FLY on the Aircraft and Practice pages.
 msgid "Next flight: %s"
 msgstr "Próximo vuelo: %s"
+
+# TT-22: Turbo Lumber parts and crash-cost presentation.
+msgid "Affected parts"
+msgstr "Piezas afectadas"
+
+msgid "Show parts and prices"
+msgstr "Ver piezas y precios"
+
+msgid "Hide parts and prices"
+msgstr "Ocultar piezas y precios"
+
+msgid "Part"
+msgstr "Pieza"
+
+msgid "Qty"
+msgstr "Cant."
+
+msgid "Estimate"
+msgstr "Estimación"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Reuse"
+msgstr "Reutilizar"
+
+msgid "Reference: %s"
+msgstr "Referencia: %s"
+
+msgid "No assessed parts yet."
+msgstr "Aún no hay piezas evaluadas."
+
+msgid "Pending inspections and unpriced items are excluded from the subtotal."
+msgstr "El subtotal excluye las inspecciones pendientes y las piezas sin precio."
+
+msgid "Price references"
+msgstr "Referencias de precios"
+
+msgid "Commercial reference parts for this fictional aircraft; fit and installed hardware are unverified."
+msgstr "Repuestos comerciales de referencia para esta aeronave ficticia; el ajuste y los componentes instalados no están verificados."
+
+msgid "Sold package: %s"
+msgstr "Contenido del paquete: %s"
+
+msgid "Listed package price (reference only)"
+msgstr "Precio publicado del paquete (solo referencia)"
+
+msgid "Report assumptions"
+msgstr "Supuestos del informe"
+
+msgid "Some reference parts are excluded until fit and package contents are verified."
+msgstr "Algunos repuestos de referencia se excluyen hasta verificar el ajuste y el contenido del paquete."
+
+msgid "Wing, flaps, ailerons and servos"
+msgstr "Ala, flaps, alerones y servos"
+
+msgid "Fuselage, canopy and fittings"
+msgstr "Fuselaje, cabina y accesorios"
+
+msgid "Horizontal and vertical tail"
+msgstr "Cola horizontal y vertical"
+
+msgid "Main landing gear and wheels"
+msgstr "Tren principal y ruedas"
+
+msgid "Tailwheel and fork"
+msgstr "Rueda de cola y horquilla"
+
+msgid "Three-blade propeller"
+msgstr "Hélice tripala"
+
+msgid "Propeller assembly"
+msgstr "Conjunto de hélice"
+
+msgid "Propeller and spinner"
+msgstr "Hélice y cono"
+
+msgid "Spinner"
+msgstr "Cono de hélice"
+
+msgid "800 Kv motor"
+msgstr "Motor de 800 Kv"
+
+msgid "70 A speed controller"
+msgstr "Controlador de velocidad de 70 A"
+
+msgid "Elevator and rudder servos"
+msgstr "Servos de profundidad y dirección"
+
+msgid "Wiring and navigation lights"
+msgstr "Cableado y luces de navegación"
+
+msgid "4S 3200 mAh battery"
+msgstr "Batería 4S de 3200 mAh"
+
+# SM-22: Workshop smoke controls and isolated preview.
+msgid "Smoke"
+msgstr "Humo"
+
+msgid "Pastel Cloud"
+msgstr "Nube pastel"
+
+msgid "Alternating Tips"
+msgstr "Puntas alternadas"
+
+msgid "Monochrome Dark"
+msgstr "Monocromo oscuro"
+
+msgid "Choose any sRGB color and alpha, then Apply color to keep it."
+msgstr "Elige cualquier color sRGB y alfa; pulsa Aplicar color para conservarlo."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Palette transition"
+msgstr "Transición de paleta"
+
+msgid "Step"
+msgstr "Paso"
+
+msgid "Smooth"
+msgstr "Suave"
+
+msgid "Step duration / palette period"
+msgstr "Duración del paso / período de paleta"
+
+msgid "Legacy amount"
+msgstr "Cantidad heredada"
+
+msgid "Density"
+msgstr "Densidad"
+
+msgid "Emission rate"
+msgstr "Frecuencia de emisión"
+
+msgid "Palette phase offset"
+msgstr "Desfase de fase de paleta"
+
+msgid "Jet speed"
+msgstr "Velocidad del chorro"
+
+msgid "Turbulence"
+msgstr "Turbulencia"
+
+msgid "Dispersion"
+msgstr "Dispersión"
+
+msgid "Buoyancy"
+msgstr "Flotabilidad"
+
+msgid "Drag"
+msgstr "Arrastre"
+
+msgid "Outlet velocity"
+msgstr "Velocidad de salida"
+
+msgid "Copy to another emitter…"
+msgstr "Copiar a otro emisor…"
+
+msgid "Copy settings"
+msgstr "Copiar ajustes"
+
+msgid "Make a one-time copy of this emitter's settings. Later edits stay independent."
+msgstr "Copia los ajustes de este emisor una sola vez. Las ediciones posteriores son independientes."
+
+msgid "More options"
+msgstr "Más opciones"
+
+msgid "Fewer options"
+msgstr "Menos opciones"
+
+msgid "Stop emission"
+msgstr "Detener emisión"
+
+msgid "Stop new smoke births. Existing puffs keep fading while the preview runs."
+msgstr "Detiene las nuevas bocanadas. Las existentes siguen desvaneciéndose mientras se reproduce la vista previa."
+
+msgid "Emission stopped"
+msgstr "Emisión detenida"
+
+msgid "Fit plume"
+msgstr "Ajustar humo"
+
+msgid "Fit the complete bounded smoke plume and aircraft in the preview."
+msgstr "Ajusta la aeronave y la envolvente completa del humo en la vista previa."
+
+msgid "Resolved preview rate is unavailable."
+msgstr "La frecuencia resuelta de la vista previa no está disponible."
+
+msgid "No enabled emitters."
+msgstr "No hay emisores activados."
+
+msgid "Resolved preview rates: "
+msgstr "Frecuencias resueltas de la vista previa: "
+
+msgid "%s: %.1f puffs/s"
+msgstr "%s: %.1f bocanadas/s"
+
+msgid "budget limited"
+msgstr "presupuesto limitado"
+
+msgid "Created a v2 draft from the empty legacy profile. No smoke remains enabled; the saved v1 revision is unchanged."
+msgstr "Se creó un borrador v2 a partir del perfil heredado vacío. No queda humo activado; la revisión guardada v1 no cambia."
+
+msgid "Created a v2 draft for %d smoke outlet(s). Outlet IDs and legacy amount were retained; review the new density and motion defaults. The saved v1 revision is unchanged."
+msgstr "Se creó un borrador v2 para %d emisores de humo. Se conservaron los identificadores de salida y la cantidad heredada; revisa los nuevos valores predeterminados de densidad y movimiento. La revisión guardada v1 no cambia."
+
+msgid "Viewing a legacy smoke profile. New controls use v2 defaults; the first smoke edit creates a v2 draft."
+msgstr "Estás viendo un perfil de humo heredado. Los controles nuevos muestran valores predeterminados de v2; la primera edición del humo crea un borrador v2."
+
+msgid "Copied once. The emitters will remain independent."
+msgstr "Copia única. Los emisores permanecerán independientes."
+
+msgid "Settings were copied once; later edits remain independent."
+msgstr "Se copiaron los ajustes una vez; los cambios posteriores seguirán siendo independientes."
+
+msgid "Apply or cancel the edited color before changing regions or emitters."
+msgstr "Aplica o cancela el color editado antes de cambiar de región o emisor."
+
+msgid "Apply or cancel the edited color before changing color steps."
+msgstr "Aplica o cancela el color editado antes de cambiar de paso de color."
+
+msgid "Apply or cancel the edited inscription before changing panels."
+msgstr "Aplica o cancela la inscripción editada antes de cambiar de panel."
+
+msgid "Legacy smoke migration is unavailable for this model."
+msgstr "La migración del humo heredado no está disponible para este modelo."

@@ -72,10 +72,15 @@ func _test_all_routes_and_baseline() -> void:
 		if typeof(offer_value) == TYPE_DICTIONARY and str(offer_value.get("id", "")) == propeller_offer_id:
 			raw_offer = offer_value
 			break
-	var source_fields: Array[String] = ["source_url", "observed_on", "seller_domain", "availability", "price_kind"]
-	var source_matches: bool = source_descriptor.size() == source_fields.size() and not raw_offer.is_empty()
+	var source_fields: Array[String] = ["source_url", "observed_on", "seller_domain", "availability", "price_kind", "package_description", "sold_package_quantity"]
+	var source_matches: bool = source_descriptor.size() == source_fields.size() + 4 and not raw_offer.is_empty()
 	for field: String in source_fields:
 		source_matches = source_matches and source_descriptor.get(field) == raw_offer.get(field)
+	source_matches = source_matches and source_descriptor.get("offer_amount_minor") == raw_offer.get("amount_minor")
+	for product: Dictionary in _raw_catalog().get("products", []):
+		if product.id == raw_offer.product_id:
+			for field: String in ["name", "brand", "sku"]:
+				source_matches = source_matches and source_descriptor.get("product_" + field) == product.get(field)
 	_check("baseline returns validated offer source details", source_matches, str(source_descriptor))
 	_check("offer source details stay outside the closed dossier", not baseline.has("offer_sources"))
 	_check("three fuselage servos remain one grouped row", by_component.has("fuselage_servos") and int(by_component.get("fuselage_servos", {}).get("quantity", -1)) == 3)

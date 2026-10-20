@@ -16,7 +16,7 @@ static func emissions_family(propulsion: Dictionary) -> String:
 			if str(propulsion.get("liquid_fuel", {}).get("law", "")) == "gasoline_bsfc_v1":
 				return "gasoline_light"
 			var glow: Dictionary = propulsion.get("glow", {})
-			return "glow_four_stroke" if str(glow.get("cycle", "")) == "four_stroke" else "glow_oil"
+			return "glow_four_stroke" if str(glow.get("family", "")) == "glow_4t" else "glow_oil"
 	return "unsupported"
 
 
@@ -46,3 +46,18 @@ static func source_map(observation: Dictionary) -> Dictionary:
 	if not installation.is_empty() and installation != SOURCE_ROLE:
 		result[installation] = observation
 	return result
+
+
+## Empty capability is explicit for an aircraft whose engine/model pairing has no
+## verified outlets. This same record is usable by fixed-wing and rotorcraft hosts.
+static func capabilities(bindings: Dictionary, unavailable_reason: String = "") -> Dictionary:
+	var source_outlets := PackedStringArray()
+	var show_outlets := PackedStringArray()
+	for slot: Dictionary in bindings.get("smoke_slots", []):
+		if str(slot.get("kind", "")) == "source":
+			source_outlets.append(str(slot.id))
+		elif str(slot.get("kind", "")) == "show":
+			show_outlets.append(str(slot.id))
+	return {"contract": "openrc-smoke-capabilities v1", "source_outlets": source_outlets,
+		"show_outlets": show_outlets, "source_available": not source_outlets.is_empty(),
+		"show_available": not show_outlets.is_empty(), "reason": unavailable_reason}

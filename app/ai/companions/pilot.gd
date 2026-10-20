@@ -316,6 +316,8 @@ func _avoidance_velocity(
 		best_severity = severity
 		best_away_north = away_north
 		best_away_east = away_east
+		# Replace the whole response; a weaker threat must not leave a vertical demand.
+		best_vertical_delta = 0.0
 		if absf(closest_down) < minimum_distance * 0.4:
 			best_vertical_delta = 10.0 if closest_down > 0.0 else -10.0
 	var correction_speed: float = 14.0 * best_severity if best_severity > 0.0 else 0.0

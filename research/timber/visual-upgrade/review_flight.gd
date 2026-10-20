@@ -7,6 +7,7 @@ const M := preload("res://physics/math3d.gd")
 var _out := ""
 var _case := "takeoff"
 var _record_frames := false
+var _review_cost_report := false
 var _frames := 660
 var _crash_speed := 22.0
 var _flight: Node3D
@@ -18,6 +19,7 @@ func _initialize() -> void:
 		if arg.begins_with("--review-out="): _out = arg.trim_prefix("--review-out=")
 		if arg.begins_with("--review-case="): _case = arg.trim_prefix("--review-case=")
 		if arg == "--review-record": _record_frames = true
+		if arg == "--review-cost-report": _review_cost_report = true
 		if arg.begins_with("--review-frames="): _frames = int(arg.trim_prefix("--review-frames="))
 		if arg.begins_with("--review-crash-speed="): _crash_speed = float(arg.trim_prefix("--review-crash-speed="))
 	_run.call_deferred()
@@ -134,6 +136,9 @@ func _run() -> void:
 	if _case == "crash" and crash_frame < 0: _failures.append("flown crash did not occur")
 	if _case == "takeoff" and not session.crash.is_empty(): _failures.append("takeoff tape crashed")
 	if _case == "takeoff" and not airborne: _failures.append("takeoff tape did not become airborne")
+	var cost_report_capture := {enabled = _review_cost_report}
+	if _review_cost_report:
+		cost_report_capture = await _capture_cost_report()
 	var report := {case = _case, failures = _failures, records = _records,
 		fixture_crash_initial_speed_mps = _crash_speed if _case == "crash" else 0.0,
 		final_tick = session.sim.tick, final_state = Array(session.sim.state),
@@ -146,6 +151,8 @@ func _run() -> void:
 		visual_lighting_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		adapter = RenderingServer.get_video_adapter_name(), renderer = RenderingServer.get_current_rendering_method(),
 		crash = _flight._crash_director.stats() if crash_frame >= 0 else {}}
+	if _review_cost_report:
+		report["cost_report_capture"] = cost_report_capture
 	# Like the loading probe, observe mixer release outside the review/timing window.
 	# One rendered frame is not necessarily one audio mix callback on a fast host.
 	var playbacks: Array[WeakRef] = []
@@ -166,6 +173,61 @@ func _run() -> void:
 	FileAccess.open(_out.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report, "\t") + "\n")
 	print("TT-20 production review: %s, %d captures, %d failures" % [_case, _records.size(), _failures.size()])
 	quit(0 if _failures.is_empty() else 1)
+
+func _capture_cost_report() -> Dictionary:
+	if _case != "crash" or _flight._accident_incident == null or _flight._accident_report == null:
+		_failures.append("cost-report capture requires the production crash incident and report UI")
+		return {enabled = true, ok = false, reason = "production report unavailable"}
+	var incident: RefCounted = _flight._accident_incident
+	var report_copy: Dictionary = incident.report.duplicate(true)
+	if report_copy.is_empty():
+		_failures.append("cost-report capture has no production incident report")
+		return {enabled = true, ok = false, reason = "incident report empty"}
+	var ledger_before := _ledger_snapshot(incident)
+	var physics_before := _snapshot()
+	var ui: CanvasLayer = _flight._accident_report
+	ui.suspend(false)
+	ui.show_assessment(report_copy, true)
+	if not ui._expanded and not ui.controller_action("details"):
+		_failures.append("cost-report breakdown could not be expanded")
+	for _layout_frame in 3:
+		await process_frame
+	await RenderingServer.frame_post_draw
+	var image: Image = root.get_texture().get_image()
+	var png_path := _out.path_join("crash-cost-report.png")
+	var image_error: Error = image.save_png(png_path)
+	if image_error != OK:
+		_failures.append("cost-report screenshot save failed: %s" % error_string(image_error))
+	var json_path := _out.path_join("incident-report.json")
+	var file := FileAccess.open(json_path, FileAccess.WRITE)
+	var json_error: Error = ERR_CANT_CREATE if file == null else OK
+	if file != null:
+		file.store_string(JSON.stringify(report_copy, "\t", true, true) + "\n")
+		file.flush()
+		json_error = file.get_error()
+		file.close()
+	if json_error != OK:
+		_failures.append("incident report save failed: %s" % error_string(json_error))
+	var ledger_unchanged: bool = ledger_before == _ledger_snapshot(incident)
+	var physics_unchanged: bool = physics_before == _snapshot()
+	var ui_matches_report: bool = ui._report == report_copy
+	if not ledger_unchanged:
+		_failures.append("showing the cost report changed the production incident ledger")
+	if not physics_unchanged:
+		_failures.append("showing the cost report changed the physics snapshot")
+	if not ui_matches_report:
+		_failures.append("cost-report UI did not retain the copied production report")
+	return {enabled = true, ok = image_error == OK and json_error == OK and ledger_unchanged
+		and physics_unchanged and ui_matches_report, screenshot = png_path, incident_report = json_path,
+		ledger_unchanged = ledger_unchanged, physics_unchanged = physics_unchanged,
+		ui_matches_report = ui_matches_report, report_format = report_copy.get("format", ""),
+		known_subtotal_minor = report_copy.get("known_subtotal_minor"), total_minor = report_copy.get("total_minor"),
+		complete = report_copy.get("complete"), line_count = report_copy.get("lines", []).size()}
+
+func _ledger_snapshot(incident: RefCounted) -> Dictionary:
+	return {report = incident.report.duplicate(true), assessment = incident._assessment.duplicate(true),
+		journal = incident.journal.duplicate(true), confirmed_facts = incident._confirmed_facts.duplicate(true),
+		revision = incident._revision, pending = incident._pending}
 
 func _collect_audio_playbacks(node: Node, refs: Array[WeakRef]) -> void:
 	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:

@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.1 m/s (sink 19.7 m/s, airframe contact (hull point 2), point speed 28.9 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.0 m/s (sink 23.5 m/s, airframe contact (hull point 3), point speed 28.9 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-peer.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-ai.orfl (2880 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-player.orfl (2880 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-peer.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+COMPANION ENCOUNTER SURVEY REPORT C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/report.json
+COMPANION ENCOUNTER SURVEY LOGS {"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-ai.orfl","rows_written":2881,"sha256":"efa2c07fff43ccd4815e2d0b137429c275b98ee5ccf017c76e6293c016ed908a","stop_error":0,"verified":true},"peer":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-peer.orfl","rows_written":2881,"sha256":"5548ce1ad581941acfa147013f62413b22e2e41b67d7db84770c94e6ddc0b4e3","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-player.orfl","rows_written":2881,"sha256":"44f4e2f76b4a9643e33486d061536807747ce95588e914ab3b148f92eee470df","stop_error":0,"verified":true}}
+COMPANION ENCOUNTER SURVEY VALID_RUNS false DETERMINISTIC_REPEAT true SEPARATION_GATES false
+Survey is incomplete or invalid; separation misses alone do not fail process success.

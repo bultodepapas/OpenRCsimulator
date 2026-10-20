@@ -405,7 +405,8 @@ def analyze_capture(aircraft: str, output: Path, command_info: dict[str, Any]) -
     godot_log_path = output.with_suffix(".log")
     godot_log = godot_log_path.read_text(encoding="utf-8", errors="replace") if godot_log_path.is_file() else ""
     godot_log_errors = [line.strip() for line in godot_log.splitlines()
-                        if any(marker in line.lower() for marker in ("script error:", "parse error", "failed to load script", "fleet sequence startup refused"))]
+                        if any(marker in line.lower() for marker in ("error:", "script error:", "parse error",
+                                                                      "failed to load script", "fleet sequence startup refused"))]
     useful_signal = pcm["peak_dbfs"] > -70.0 and running_rpm_seen
     premaster_finite = (not bool(premaster.get("invalid_sample_seen"))
                         if "invalid_sample_seen" in premaster else None)

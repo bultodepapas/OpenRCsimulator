@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.1 m/s (sink 19.7 m/s, airframe contact (hull point 2), point speed 28.9 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.0 m/s (sink 23.5 m/s, airframe contact (hull point 3), point speed 28.9 m/s at detected tick) - [R] restart
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-peer.orfl
+CRASH at 28.2 m/s (sink 23.9 m/s, airframe contact (hull point 3), point speed 28.1 m/s at detected tick) - [R] restart
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-ai.orfl (995 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-player.orfl (995 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-peer.orfl (995 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 28.2 m/s (sink 23.9 m/s, airframe contact (hull point 3), point speed 28.1 m/s at detected tick) - [R] restart
+COMPANION ENCOUNTER SURVEY REPORT C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/report.json
+COMPANION ENCOUNTER SURVEY LOGS {"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-ai.orfl","rows_written":996,"sha256":"46ba99d1d41efce6c43e8aeb986d7c506bd830582808bccf77850cc153da44e7","stop_error":0,"verified":true},"peer":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-peer.orfl","rows_written":996,"sha256":"7cd5f5631e340b5d8e6496b623a29989370c3fff402fac07c9426edc7a5b68f9","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-player.orfl","rows_written":996,"sha256":"506e65cdd01b27c6b2b587343386ce3e78b9e8592394b42eb748495a76aabc4f","stop_error":0,"verified":true}}
+COMPANION ENCOUNTER SURVEY VALID_RUNS false DETERMINISTIC_REPEAT false SEPARATION_GATES false
+Survey is incomplete or invalid; separation misses alone do not fail process success.

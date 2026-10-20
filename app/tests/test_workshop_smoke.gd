@@ -70,7 +70,7 @@ func _run() -> void:
 		capture_state.get("smoke_effects", {}).get("mode", "") == "profile"
 		and capture_state.smoke_effects.get("profile_identity", {}).get("sha256", "") == frozen.presentation_identity.get("sha256", "")
 		and bool(capture_state.smoke_effects.get("requested", false))
-		and int(capture_state.smoke_effects.get("allocation", {}).get("capacity", 0)) == 768)
+		and int(capture_state.smoke_effects.get("allocation", {}).get("capacity", 0)) > 0 and int(capture_state.smoke_effects.get("allocation", {}).get("capacity", 0)) <= 768)
 	var session: Node = flight.get("session")
 	session.physics_enabled = false
 	session.set_physics_process(false)

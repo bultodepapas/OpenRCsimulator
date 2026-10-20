@@ -27,10 +27,28 @@ func _run() -> void:
 		return
 	var profile := Presentation.defaults(described.bindings)
 	profile.smoke = []
+	var selected_slots: Array[Dictionary] = []
+	var selected_show_count := 0
+	var selected_source := false
 	for slot: Dictionary in described.bindings.smoke_slots:
-		profile.smoke.append({"slot": slot.id, "enabled": true, "color": "#FF3030FF",
+		if slot.kind == "show" and selected_show_count < 3:
+			selected_slots.append(slot)
+			selected_show_count += 1
+		elif slot.kind == "source" and not selected_source:
+			selected_slots.append(slot)
+			selected_source = true
+	_check("fixture selects no more than three show outlets and one source outlet",
+		selected_show_count == 3 and selected_source and selected_slots.size() == 4)
+	if selected_slots.size() != 4:
+		preview.free()
+		_finish()
+		return
+	for slot: Dictionary in selected_slots:
+		var entry: Dictionary = Presentation.smoke_v2_defaults()
+		entry.merge({"slot": slot.id, "enabled": true, "color": "#FF3030FF",
 			"amount": 0.6, "width_m": 0.15, "lifetime_s": 8.0, "shape": "ribbon", "mode": "hold",
-			"burst_s": 0.0, "pulse_period_s": 0.0, "pulse_duty": 0.0, "palette": [], "step_s": 0.0})
+			"burst_s": 0.0, "pulse_period_s": 0.0, "pulse_duty": 0.0, "palette": [], "step_s": 0.0}, true)
+		profile.smoke.append(entry)
 	preview.set_presentation(profile)
 	await process_frame
 	_check("preview accepted the registered four-emitter profile", is_instance_valid(preview._smoke))
@@ -44,6 +62,11 @@ func _run() -> void:
 		return
 	_check("all four authored show/source emitters share 768 particles", preview._smoke.budget_info().capacity == 768
 		and preview._smoke.budget_info().show_emitters == 3 and preview._smoke.budget_info().source_emitters == 1)
+	var rate_feedback := preview.find_child("SmokeResolvedRates", true, false) as Label
+	var initial_budget: Dictionary = preview._smoke.budget_info()
+	_check("preview reports resolved per-emitter puffs/s and budget limiting",
+		is_instance_valid(rate_feedback) and rate_feedback.visible and rate_feedback.text.contains("puffs/s")
+		and rate_feedback.text.contains("budget limited") == bool(initial_budget.get("saturated", false)))
 	var original_model: Transform3D = preview._airplane_root.transform
 	var original_slots := Customization.smoke_transforms(preview._airplane)
 	_check("stationary and idle by default", preview._rig.position == Vector3.ZERO and not preview.is_processing())
@@ -122,6 +145,45 @@ func _run() -> void:
 	preview.set_motion_mode("stationary")
 	_check("stationary selection clears history and recenters model", preview._playhead_tick == 0
 		and preview._rig.position == Vector3.ZERO and preview._smoke.get("_history").is_empty())
+	preview.toggle_playback()
+	preview.set_process(false)
+	preview._process(1.0 / 30.0)
+	await process_frame
+	var smoke: Node = preview._smoke
+	var before_stop_tick: int = preview._playhead_tick
+	preview.stop_emission()
+	_check("Stop emission leaves the preview running and tells the renderer to cancel new births",
+		preview._playing and preview._emission_stopped and smoke.get("_stopped") and not smoke.get("_paused"))
+	preview._process(1.0 / 30.0)
+	await process_frame
+	_check("stopped residuals keep aging on the isolated preview clock",
+		preview._playhead_tick > before_stop_tick and smoke.get("_stopped") and smoke.get("_last_tick") == preview._playhead_tick)
+	preview.toggle_playback()
+	var stopped_pause_tick: int = preview._playhead_tick
+	preview._process(1.0 / 30.0)
+	_check("pause freezes stopped residuals without resuming emission", preview._playhead_tick == stopped_pause_tick and smoke.get("_stopped"))
+	preview.toggle_playback()
+	preview.set_process(false)
+	preview._process(1.0 / 30.0)
+	_check("resume keeps Stop emission active", preview._playhead_tick > stopped_pause_tick and smoke.get("_stopped"))
+	preview.reset_playback()
+	_check("Restart clears stopped state, playhead and residual history",
+		not preview._emission_stopped and preview._playhead_tick == 0 and smoke.get("_history").is_empty())
+	preview._zoom = 2.0
+	preview.set_fit_plume(true)
+	preview._refresh_camera()
+	_check("explicit plume fit includes the complete bounded stationary envelope",
+		preview._fit_plume and is_equal_approx(preview._zoom, 1.0) and _model_fits(preview) and _plume_fits(preview))
+	preview.set_motion_mode("pass")
+	preview.toggle_playback()
+	preview.set_process(false)
+	preview._process(1.0 / 30.0)
+	await process_frame
+	preview._refresh_camera()
+	_check("plume fit keeps the bounded illustrative-pass envelope visible",
+		preview._fit_plume and _model_fits(preview) and _plume_fits(preview))
+	preview.reset_playback()
+	preview.set_fit_plume(false)
 	preview.set_motion_mode("unknown")
 	_check("unknown motion mode is ignored", preview._motion_mode == "stationary")
 	_check("preview motion never changes the profile or creates flight state", profile == preview._profile
@@ -166,6 +228,21 @@ func _model_fits(preview: Control) -> bool:
 		if camera.is_position_behind(point): return false
 		var pixel := camera.unproject_position(point)
 		if not Rect2(canvas * 0.02, canvas * 0.96).has_point(pixel): return false
+	return true
+
+
+func _plume_fits(preview: Control) -> bool:
+	var camera: Camera3D = preview._camera
+	var canvas: Vector2 = camera.get_viewport().get_visible_rect().size
+	var plume: AABB = preview.call("_plume_bounds")
+	for index in 8:
+		var point := plume.position + Vector3(
+			plume.size.x if (index & 1) != 0 else 0.0,
+			plume.size.y if (index & 2) != 0 else 0.0,
+			plume.size.z if (index & 4) != 0 else 0.0
+		)
+		if camera.is_position_behind(point): return false
+		if not Rect2(canvas * 0.01, canvas * 0.98).has_point(camera.unproject_position(point)): return false
 	return true
 
 

@@ -1,0 +1,32 @@
+{
+  "format": "openrc-audio-validation-snapshot-v1",
+  "created_utc": "2026-10-20T21:39:07.807047+00:00",
+  "worktree": ".tools/audio-aud15-verify",
+  "base_commit": "a6524e3fd517898b8c8adac6210e20a58a989729",
+  "sparse_cones": [
+    "app",
+    "assets",
+    "research",
+    "tools"
+  ],
+  "preparation": [
+    "Detached sparse checkout from a6524e3f to isolate concurrent shared-tree edits.",
+    "Copied app/audio and tools/audio from the shared tree to preserve exact audio source bytes; checker includes ERROR log detection.",
+    "Copied existing ignored native ground-vehicle binaries and build receipt; no rebuild or physics change.",
+    "Regenerated customization registry through its existing build_customization.py because fresh-checkout source bytes differed; check then passed. No shared-tree files changed.",
+    "Fresh Godot 4.7.2 import completed with checked runner; import report retained below."
+  ],
+  "import_report": "tmp/audio-aud15/checks/isolated-import-m8pcb7xy/report.json",
+  "snapshot_sha256": {
+    "app/data/aircraft_customization.json": "565dd6dca6ccdb02fe8a996d3deb0773ad2e23adf02cd3b72a99c96ab91be45c",
+    "assets/aircraft/customization-bindings.json": "01c71997e2731b63b1da2a1e495ae3310cc750215e930af580f7b4216ea4c08a",
+    "research/aircraft-standardization/build_customization.py": "3bd8b0e5f3047febd1b62b8d096a8bd9c4c93038fae6955a851f847b3e139726",
+    "tools/audio/check_fleet_sequence.py": "093489f76fba11d42e58ff632b4bf0e7ab875790d7e79148806c382a54fca592",
+    "tools/audio/fleet_sequence.gd": "77accf7050a9f7ba7bbb90eab18b6f1a866cb50f18864ae802e1b2f3482ff9ba",
+    "tools/audio/straight_flight_pilot.gd": "ea6c118d786a5e4c633dc3ea38cc663880bda21d8f9e8e0a2e39f26b38654187",
+    "tools/audio/helicopter_sequence_pilot.gd": "51478710960880d737063865a021d0b78b3ef2fa3f21c2050063a3840079b7d3",
+    "app/native/ground_vehicle/build-receipt.json": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb"
+  },
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "scope": "Snapshot provenance only. Each native capture retains its own before/after source hashes and PCM/route outcomes; this is not a fleet pass."
+}

@@ -20,6 +20,22 @@ const COMPONENT_LABELS := {
 	"receiver": "Receiver",
 	"receiver_battery": "Receiver battery",
 }
+const TIMBER_COMPONENT_LABELS := {
+	"wing_main": "Wing, flaps, ailerons and servos",
+	"fuselage_main": "Fuselage, canopy and fittings",
+	"tail_surfaces": "Horizontal and vertical tail",
+	"gear_main": "Main landing gear and wheels",
+	"gear_tail": "Tailwheel and fork",
+	"propeller_main": "Propeller assembly",
+	"spinner": "Spinner",
+	"spinner_main": "Spinner",
+	"motor_main": "800 Kv motor",
+	"esc_main": "70 A speed controller",
+	"receiver_radio": "Receiver",
+	"tail_servos": "Elevator and rudder servos",
+	"wiring_lighting": "Wiring and navigation lights",
+	"battery_main": "4S 3200 mAh battery",
+}
 
 var _surface: Control
 var _report_panel: PanelContainer
@@ -82,7 +98,7 @@ func show_assessment(report: Dictionary, terminal: bool = true) -> void:
 	_settled_report = false
 	_auto_settled = false
 	_reopen_only = false
-	_expanded = false
+	_expanded = terminal and _is_timber_report()
 	_minimized = false
 	_content_visible = true
 	_toast_remaining = TOAST_SECONDS if not terminal else 0.0
@@ -90,8 +106,8 @@ func show_assessment(report: Dictionary, terminal: bool = true) -> void:
 	_report_panel.visible = terminal
 	_toast_panel.visible = not terminal
 	_restore_button.visible = false
-	_details_button.button_pressed = false
-	_details_scroll.visible = false
+	_details_button.set_pressed_no_signal(_expanded)
+	_details_scroll.visible = _expanded
 	_details_scroll.custom_minimum_size.y = 0.0
 	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if terminal else Control.MOUSE_FILTER_IGNORE
 	_surface.visible = not _suspended
@@ -392,7 +408,7 @@ func _layout() -> void:
 		for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button]:
 			if compact_timber:
 				button.custom_minimum_size.y = _scaled(48)
-				button.add_theme_font_size_override("font_size", _scaled(28 if button == _inspect_button else 24))
+				button.add_theme_font_size_override("font_size", _scaled(20))
 			else:
 				button.custom_minimum_size.y = _scaled(54)
 				button.remove_theme_font_size_override("font_size")
@@ -419,8 +435,11 @@ func _layout() -> void:
 		card_style.content_margin_bottom = vertical_padding
 	_report_panel.custom_minimum_size.x = width
 	var details_height := float(metrics.details_max_height)
+	if timber and not compact_timber:
+		# The affected parts fit above provenance on ordinary desktop displays.
+		details_height = minf(340.0 * clampf(UiTheme.text_scale, 0.8, 1.5), maxf(180.0, viewport_size.y - 560.0))
 	if compact_timber:
-		details_height = minf(details_height, 96.0)
+		details_height = 180.0
 	_details_scroll.custom_minimum_size.y = details_height if _expanded else 0.0
 	_details_scroll.custom_maximum_size.y = details_height
 	_report_panel.size = _report_panel.get_combined_minimum_size()
@@ -481,6 +500,8 @@ func _render_report() -> void:
 	_amount_label.add_theme_font_size_override("font_size", int(layout_metrics(_surface.size, UiTheme.text_scale).headline_size))
 	_caption_label.text = state.caption
 	_details_button.text = tr("Hide damage breakdown") if _expanded else tr("Show damage breakdown")
+	if timber:
+		_details_button.text = tr("Hide parts and prices") if _expanded else tr("Show parts and prices")
 	_inspect_button.text = tr("Inspect aircraft") if _settled_report else tr("Inspect wreck")
 	_restart_button.text = tr("Restart flight")
 	_hide_archived_button.text = tr("Hide damage report") if _settled_report else tr("Hide accident report")
@@ -590,6 +611,9 @@ func _rebuild_details() -> void:
 		child.queue_free()
 	if not _expanded:
 		return
+	if _is_timber_report():
+		_rebuild_timber_details()
+		return
 	var currency := _currency_code(_report.get("currency", "USD"))
 	var identity_value: Variant = _report.get("identity", {})
 	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
@@ -667,6 +691,148 @@ func _rebuild_details() -> void:
 		_add_detail_section(tr("Assumptions"))
 		for assumption: Variant in assumptions:
 			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _is_timber_report() -> bool:
+	var identity: Variant = _report.get("identity", {})
+	return identity is Dictionary and str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+
+
+func _rebuild_timber_details() -> void:
+	var currency := _currency_code(_report.get("currency", "USD"))
+	_add_detail_section(tr("Affected parts"))
+	var lines: Array[Dictionary] = []
+	var raw_lines: Variant = _report.get("lines", [])
+	if raw_lines is Array:
+		for value: Variant in raw_lines:
+			if value is Dictionary:
+				lines.append(value)
+	# Prioritize known charges, then inspection. Sort only this local list; archived
+	# reports and the incident ledger keep their original ordering and values.
+	lines.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return _timber_line_order(a) < _timber_line_order(b))
+	_add_timber_part_row({}, currency, true)
+	for line: Dictionary in lines:
+		_add_timber_part_row(line, currency)
+	if lines.is_empty():
+		_add_detail_text(tr("No assessed parts yet."), true)
+	_details_content.add_child(HSeparator.new())
+	_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
+	if _report.get("complete") == true:
+		_add_detail_money(tr("Complete estimated total"), _report.get("total_minor"), currency)
+	else:
+		_add_detail_text(tr("Pending inspections and unpriced items are excluded from the subtotal."), true)
+	if str(_report.get("outcome", "")) == "total_loss":
+		_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
+		_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
+	var quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
+	var quote_high: Variant = _valid_minor(_report.get("replacement_quote_high_minor"))
+	if quote_low != null or quote_high != null:
+		_add_detail_section(tr("Complete-build replacement quote comparison (reference only)"))
+		if quote_low != null:
+			_add_detail_money(tr("Low reference"), quote_low, currency)
+		if quote_high != null:
+			_add_detail_money(tr("High reference"), quote_high, currency)
+	_add_repair_details(RepairDetails.normalize(_report), currency)
+	_add_detail_section(tr("Price references"))
+	_add_detail_text(tr("Commercial reference parts for this fictional aircraft; fit and installed hardware are unverified."), true)
+	for line: Dictionary in lines:
+		_add_detail_text(_timber_part_name(line), false)
+		var product_name := str(line.get("product_name", ""))
+		var sku := str(line.get("product_sku", ""))
+		if not product_name.is_empty():
+			_add_detail_text(product_name + (" · " + sku if not sku.is_empty() else ""), true)
+		var price_basis := str(line.get("price_basis", ""))
+		if not price_basis.is_empty():
+			_add_detail_text(tr("Price basis: %s") % _humanize_identifier(price_basis), true)
+		var package := str(line.get("package_description", ""))
+		if not package.is_empty():
+			_add_detail_text(tr("Sold package: %s") % package, true)
+		if _valid_minor(line.get("offer_amount_minor")) != null:
+			_add_detail_money(tr("Listed package price (reference only)"), line.offer_amount_minor, currency)
+		var observed := str(line.get("observed_on", ""))
+		if not observed.is_empty():
+			_add_detail_text(tr("Observed: %s") % observed, true)
+		var availability := str(line.get("availability", ""))
+		if not availability.is_empty():
+			_add_detail_text(tr("Availability when observed: %s") % availability, true)
+		var source_url := str(line.get("source_url", ""))
+		if source_url.begins_with("https://"):
+			_add_detail_source(source_url)
+		var notes := str(line.get("notes", ""))
+		if not notes.is_empty():
+			_add_detail_text(notes, true)
+	_add_replacement_comparison(currency)
+	var unresolved: Variant = _report.get("unresolved", [])
+	if unresolved is Array and not unresolved.is_empty():
+		_add_detail_section(tr("Unresolved items"))
+		for item: Variant in unresolved:
+			if item is String and String(item).begins_with("Candidate offer references are not attached to a component"):
+				_add_detail_text("• " + tr("Some reference parts are excluded until fit and package contents are verified."), true)
+			else:
+				_add_detail_text("• " + _unresolved_text(item), true)
+	_add_detail_section(tr("Report assumptions"))
+	var price_date := str(_report.get("price_date", ""))
+	_add_detail_text(tr("Catalog snapshot: %s") % (price_date if not price_date.is_empty() else tr("unavailable")), true)
+	var identity: Dictionary = _report.get("identity", {})
+	_add_detail_text(tr("Incident: %s") % str(_report.get("incident_id", identity.get("incident_id", ""))), true)
+	var assumptions: Variant = _report.get("assumptions", [])
+	if assumptions is Array:
+		for assumption: Variant in assumptions:
+			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _timber_line_order(line: Dictionary) -> int:
+	var amount: Variant = _valid_minor(line.get("amount_minor"))
+	return 0 if amount != null and int(amount) != 0 else (1 if str(line.get("action", "")) in ["inspection", "inspect"] else 2)
+
+
+func _timber_part_name(line: Dictionary) -> String:
+	if str(line.get("id", "")) == "propeller_main":
+		# Old immutable reports priced a combined assembly under the same ID.
+		# Use the frozen offer identity, never today's catalog, to name blade-only rows.
+		if str(line.get("product_sku", "")) == "EFL5962" \
+			or str(line.get("offer_id", "")).begins_with("timber_evolution_propeller_efl5962_"):
+			return tr("Three-blade propeller")
+		if str(line.get("notes", "")).to_lower().contains("spinner"):
+			return tr("Propeller and spinner")
+	return _humanize_identifier(str(line.get("id", "")))
+
+
+func _add_timber_part_row(line: Dictionary, currency: String, header: bool = false) -> void:
+	var row := HBoxContainer.new()
+	row.name = "PartsTableHeader" if header else "PartLine%d" % _details_content.get_child_count()
+	row.add_theme_constant_override("separation", _scaled(12))
+	_details_content.add_child(row)
+	var item := VBoxContainer.new()
+	item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	item.add_theme_constant_override("separation", _scaled(2))
+	row.add_child(item)
+	var part := _label(tr("Part") if header else _timber_part_name(line), UiTheme.TEXT_2 if header else UiTheme.TEXT, _scaled(14 if header else 17))
+	part.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	item.add_child(part)
+	var sku := str(line.get("product_sku", ""))
+	if not header and not sku.is_empty():
+		var reference := _label(tr("Reference: %s") % sku, UiTheme.TEXT_2, _scaled(13))
+		reference.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		item.add_child(reference)
+	var action := _label(tr("Action") if header else _action_text(line.get("action", "")), UiTheme.TEXT_2 if header else UiTheme.FOCUS, _scaled(14 if header else 15))
+	action.custom_minimum_size.x = _scaled(116)
+	action.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(action)
+	var quantity := _label(tr("Qty") if header else _quantity_text(line.get("quantity")), UiTheme.TEXT_2, _scaled(14 if header else 15))
+	quantity.custom_minimum_size.x = _scaled(36)
+	quantity.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	quantity.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(quantity)
+	var amount: Variant = _valid_minor(line.get("amount_minor"))
+	var amount_text := _format_money(int(amount), currency, true) if amount != null else tr("Not priced")
+	if not header and amount == null and str(line.get("action", "")) in ["inspect", "inspection"]:
+		amount_text = tr("Pending")
+	var price := _label(tr("Estimate") if header else amount_text, UiTheme.TEXT_2 if header else UiTheme.TEXT, _scaled(14 if header else 17))
+	price.custom_minimum_size.x = _scaled(125)
+	price.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	price.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	row.add_child(price)
 
 
 func _add_repair_details(rows: Array[Dictionary], currency: String) -> void:
@@ -845,6 +1011,8 @@ func _set_expanded(expanded: bool) -> void:
 	_rebuild_details()
 	_layout()
 	_details_button.text = tr("Hide damage breakdown") if expanded else tr("Show damage breakdown")
+	if _is_timber_report():
+		_details_button.text = tr("Hide parts and prices") if expanded else tr("Show parts and prices")
 	_layout_retry_frames = 2
 
 
@@ -1087,7 +1255,7 @@ func _valid_minor(value: Variant) -> Variant:
 
 
 func _format_headline_money(minor: int, currency: String) -> String:
-	return _format_money(minor, currency, absi(minor) < 10000)
+	return _format_money(minor, currency, _is_timber_report() or absi(minor) < 10000)
 
 
 func _has_priced_action(report: Dictionary) -> bool:
@@ -1151,6 +1319,7 @@ func _action_text(value: Variant) -> String:
 		"salvage": return tr("Salvage")
 		"credit": return tr("Credit")
 		"salvage_credit": return tr("Salvage credit")
+		"reuse": return tr("Reuse")
 		_: return str(value).strip_edges()
 
 
@@ -1188,6 +1357,8 @@ func _humanize_identifier(value: String) -> String:
 	if identifier.is_empty():
 		return tr("Unresolved item")
 	var display := str(COMPONENT_LABELS.get(identifier, identifier.replace("_", " ").replace("-", " ")))
+	if _is_timber_report():
+		display = str(TIMBER_COMPONENT_LABELS.get(identifier, display))
 	if not display.is_empty():
 		display = display.left(1).to_upper() + display.substr(1)
 	return tr(display)

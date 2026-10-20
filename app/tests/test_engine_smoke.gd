@@ -111,6 +111,7 @@ func _initialize() -> void:
 
 func _integration() -> void:
 	var main: Node = load("res://main.tscn").instantiate()
+	main.set_user_args(PackedStringArray(["--smoke-backend=legacy", "--soundscape=off", "--scenery=off"]))
 	main.crash_effects_enabled = false
 	root.add_child(main)
 	await process_frame

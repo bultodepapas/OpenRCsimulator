@@ -44,6 +44,8 @@ const BINDINGS_V2_KEYS: PackedStringArray = [
 	"format", "version", "visual_family", "model_manifest_sha256", "paint_slots", "marking_slots", "smoke_slots",
 	"presentation_sources", "presentation_engine_version", "slots_sha256",
 ]
+const PresentationSources := preload("res://render/presentation_sources.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
 const PRESENTATION_SOURCE_PATHS: PackedStringArray = [
 	"res://render/aircraft_customization.gd",
 	"res://render/presentation_sources.gd",
@@ -119,10 +121,10 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		errors.append("Presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES)
 		return _result(false, errors, {}, false)
 
-	# Empty dictionaries are the only implicit legacy input. Saving still emits the full v1 object.
+	# Empty dictionaries are historical absence. New edits call defaults() explicitly.
 	var source: Dictionary = value
 	if source.is_empty():
-		source = defaults(bindings)
+		source = defaults(bindings, LEGACY_VERSION)
 	if not _has_exact_keys(source, PROFILE_KEYS):
 		errors.append("Presentation profile has missing or unsupported fields.")
 		return _result(false, errors, {}, false)
@@ -138,6 +140,8 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 	if not errors.is_empty():
 		return _result(false, errors, {}, false)
 	context["profile_version"] = int(source["version"])
+	if bindings.is_empty() and int(source["version"]) == LEGACY_VERSION:
+		context["binding_version"] = 2
 
 	var binding_result: Dictionary = _validate_profile_binding(source["binding"])
 	if not bool(binding_result.get("ok", false)):
@@ -406,9 +410,74 @@ static func _validate_marking_entry(value: Variant, context: Dictionary, availab
 	}}
 
 
+static func smoke_v2_defaults() -> Dictionary:
+	var result: Dictionary = {"palette_mode": "step"}
+	for key: String in SMOKE_V2_BOUNDS:
+		result[key] = float(SMOKE_V2_BOUNDS[key][2])
+	return result
+
+
+## Pure shared renderer/editor normalization. Never mutates a stored profile.
+static func normalize_smoke_entry(value: Variant, version: int = VERSION) -> Dictionary:
+	var tree := _validate_json_tree(value)
+	if not tree.get("ok", false):
+		return tree
+	return _validate_smoke_entry(value, {"profile_version": version}, false)
+
+
+## Produce a new revision proposal only; old records and bindings remain untouched.
+static func migrate_v1(profile: Variant, old_bindings: Dictionary, new_bindings: Dictionary) -> Dictionary:
+	var old: Dictionary = validate(profile, old_bindings)
+	if not old.get("ok", false) or int(old.get("profile", {}).get("version", 0)) != LEGACY_VERSION:
+		return {"ok": false, "errors": ["Migration requires a verified v1 profile and its original companion."]}
+	var target: Dictionary = _validate_bindings(new_bindings)
+	if not target.get("ok", false) or old_bindings.get("visual_family") != new_bindings.get("visual_family") \
+			or old_bindings.get("model_manifest_sha256") != new_bindings.get("model_manifest_sha256"):
+		return {"ok": false, "errors": ["Migration cannot change aircraft family or physical model identity."]}
+	var proposed: Dictionary = old.profile.duplicate(true)
+	proposed.version = VERSION
+	proposed.binding = target.pins.duplicate(true)
+	var changes: Array = []
+	for entry: Dictionary in proposed.smoke:
+		var slot_id := str(entry.slot)
+		if not target.smoke_slots.has(slot_id):
+			return {"ok": false, "errors": ["Migration outlet is unavailable: " + slot_id]}
+		var previous: Dictionary = {}
+		for slot: Dictionary in old_bindings.get("smoke_slots", []):
+			if str(slot.id) == slot_id:
+				previous = slot
+		if previous.get("kind") != target.smoke_slots[slot_id].get("kind"):
+			return {"ok": false, "errors": ["Migration cannot silently change outlet purpose: " + slot_id]}
+		entry.merge(smoke_v2_defaults(), false)
+		changes.append({"slot": slot_id, "old_slot": slot_id, "new_slot": slot_id,
+			"old_preset": str(previous.get("emissions_preset", "legacy_v1")),
+			"new_preset": str(target.smoke_slots[slot_id].get("emissions_preset", "legacy_v1")),
+			"old_activation_policy": str(previous.get("activation_policy", "legacy_v1")),
+			"new_activation_policy": str(target.smoke_slots[slot_id].get("activation_policy", "legacy_v1")),
+			"settings": smoke_v2_defaults(), "legacy_amount": entry.amount})
+	var checked: Dictionary = validate(proposed, new_bindings)
+	if not checked.get("ok", false):
+		return checked
+	return {"ok": true, "errors": [], "profile": checked.profile, "report": {
+		"from_version": LEGACY_VERSION, "to_version": VERSION,
+		"old_binding": old.profile.binding.duplicate(true), "new_binding": checked.profile.binding.duplicate(true),
+		"outlets": changes, "requires_review": true,
+		"empty_smoke_policy": "explicitly_disabled", "legacy_amount_policy": "preserved_history_v2_uses_density_and_rate",
+		"appearance_policy": "v2 motion and density require visual review; no equivalence claimed",
+	}}
+
+
 static func _validate_smoke_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
 	var errors := PackedStringArray()
-	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, SMOKE_ENTRY_KEYS):
+	var version: int = int(context.get("profile_version", LEGACY_VERSION))
+	if version not in [LEGACY_VERSION, VERSION] or typeof(value) != TYPE_DICTIONARY:
+		return {"ok": false, "errors": ["Smoke profile version or object is unsupported."]}
+	var expected := SMOKE_ENTRY_KEYS.duplicate()
+	if version == VERSION:
+		for key: String in smoke_v2_defaults():
+			if value.has(key):
+				expected.append(key)
+	if not _has_exact_keys(value, expected):
 		errors.append("Smoke profile has missing or unsupported fields.")
 		return {"ok": false, "errors": errors}
 	var slot: Variant = value["slot"]
@@ -464,7 +533,7 @@ static func _validate_smoke_entry(value: Variant, context: Dictionary, available
 		errors.append("A multi-color smoke palette requires step_s from 0.05 through 8 seconds.")
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
-	return {"ok": true, "errors": errors, "value": {
+	var normalized: Dictionary = {
 		"slot": str(slot),
 		"enabled": bool(value["enabled"]),
 		"color": color_result["value"],
@@ -478,7 +547,16 @@ static func _validate_smoke_entry(value: Variant, context: Dictionary, available
 		"pulse_duty": pulse_duty,
 		"palette": palette,
 		"step_s": step_s,
-	}}
+	}
+	if version == VERSION:
+		for key: String in SMOKE_V2_BOUNDS:
+			var bounds: Array = SMOKE_V2_BOUNDS[key]
+			normalized[key] = _bounded_number(value.get(key, bounds[2]), float(bounds[0]), float(bounds[1]), key, errors)
+		var palette_mode: Variant = value.get("palette_mode", "step")
+		if typeof(palette_mode) != TYPE_STRING or palette_mode not in ["step", "smooth"]:
+			errors.append("Smoke palette_mode must be step or smooth.")
+		normalized["palette_mode"] = palette_mode
+	return {"ok": errors.is_empty(), "errors": errors, "value": normalized}
 
 
 static func _validate_profile_binding(value: Variant) -> Dictionary:
@@ -516,11 +594,14 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 	var checked: Dictionary = value
 	var version_value: Variant = checked.get("version", null)
 	if checked.get("format", null) != BINDINGS_FORMAT or not _integer_number(version_value) \
-			or int(version_value) not in [LEGACY_BINDINGS_VERSION, BINDINGS_VERSION]:
+			or int(version_value) not in [LEGACY_BINDINGS_VERSION, 2, BINDINGS_VERSION]:
 		errors.append("Customization binding format or version is unsupported.")
 		return {"ok": false, "errors": errors}
 	var binding_version: int = int(version_value)
 	var expected_keys: PackedStringArray = BINDINGS_KEYS if binding_version == LEGACY_BINDINGS_VERSION else BINDINGS_V2_KEYS
+	if binding_version == BINDINGS_VERSION:
+		expected_keys = expected_keys.duplicate()
+		expected_keys.append("source_proof_version")
 	if not _has_exact_keys(checked, expected_keys):
 		errors.append("Customization bindings have missing or unsupported fields.")
 		return {"ok": false, "errors": errors}
@@ -530,20 +611,24 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 		errors.append("Customization binding model manifest hash is invalid.")
 	if typeof(checked["slots_sha256"]) != TYPE_STRING or not _valid_sha256(str(checked["slots_sha256"])):
 		errors.append("Customization slot contract hash is invalid.")
-	if binding_version == BINDINGS_VERSION:
+	if binding_version >= 2:
+		var proof_version: int = 1
+		if binding_version == 3:
+			proof_version = int(checked.source_proof_version) if _integer_number(checked.get("source_proof_version")) else 0
+		var source_paths: Array = PresentationSources.paths_for_version(proof_version)
+		if binding_version == 3 and (not _integer_number(checked.get("source_proof_version")) or proof_version != 2):
+			errors.append("Customization source proof version is unsupported.")
 		if checked["presentation_engine_version"] != PRESENTATION_ENGINE_VERSION:
 			errors.append("Customization presentation engine version is unsupported.")
-		if typeof(checked["presentation_sources"]) != TYPE_ARRAY \
-				or checked["presentation_sources"].size() != PRESENTATION_SOURCE_PATHS.size():
+		if source_paths.is_empty() or typeof(checked["presentation_sources"]) != TYPE_ARRAY or checked["presentation_sources"].size() != source_paths.size():
 			errors.append("Customization presentation source pins are incomplete.")
 		else:
-			for source_index: int in PRESENTATION_SOURCE_PATHS.size():
+			for source_index: int in source_paths.size():
 				var source: Variant = checked["presentation_sources"][source_index]
 				if typeof(source) != TYPE_DICTIONARY or not _has_exact_keys(source, PackedStringArray(["path", "sha256"])):
 					errors.append("Customization presentation source pin has missing or unsupported fields.")
 					break
-				if source["path"] != PRESENTATION_SOURCE_PATHS[source_index] \
-						or typeof(source["sha256"]) != TYPE_STRING or not _valid_sha256(str(source["sha256"])):
+				if source["path"] != source_paths[source_index] or typeof(source["sha256"]) != TYPE_STRING or not _valid_sha256(str(source["sha256"])):
 					errors.append("Customization presentation source pins are unknown, unsorted, or invalid.")
 					break
 	var tree_result: Dictionary = _validate_json_tree(checked, 0, {}, 16, 8192)
@@ -558,7 +643,7 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 		return {"ok": false, "errors": errors}
 	var paint_slots: Dictionary = _slot_map(checked["paint_slots"], PAINT_SLOT_KEYS, PAINT_SLOT_OPTIONAL_KEYS, "paint_slots", errors)
 	var marking_slots: Dictionary = _slot_map(checked["marking_slots"], MARKING_SLOT_KEYS, [], "marking_slots", errors)
-	var smoke_slots: Dictionary = _slot_map(checked["smoke_slots"], SMOKE_SLOT_KEYS, [], "smoke_slots", errors)
+	var smoke_slots: Dictionary = _slot_map(checked["smoke_slots"], SMOKE_SLOT_KEYS, [], "smoke_slots", errors, binding_version)
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
 	if bindings_sha256(checked) != checked["slots_sha256"]:
@@ -575,13 +660,23 @@ static func _validate_bindings(value: Variant) -> Dictionary:
 
 
 static func _slot_map(value: Array, required_keys: PackedStringArray, optional_keys: PackedStringArray,
-		field: String, errors: PackedStringArray) -> Dictionary:
+		field: String, errors: PackedStringArray, binding_version: int = 2) -> Dictionary:
 	var result: Dictionary = {}
+	if field == "smoke_slots" and binding_version == 3 and value.size() > MAX_AUTHORED_SMOKE_SLOTS:
+		errors.append("Customization supports at most eight authored smoke outlets.")
+		return result
 	for slot_value: Variant in value:
 		if typeof(slot_value) != TYPE_DICTIONARY:
 			errors.append("Customization %s contains a non-object slot." % field)
 			return result
 		var slot: Dictionary = slot_value
+		if field == "smoke_slots" and binding_version == 3:
+			var checked_slot: Dictionary = Customization.validate_smoke_slot(slot, 3)
+			if not checked_slot.get("ok", false) or result.has(str(slot.get("id", ""))):
+				errors.append("Customization smoke outlet is invalid or duplicated: " + str(checked_slot.get("errors", [])))
+				return result
+			result[str(slot.id)] = slot
+			continue
 		var expected_keys: PackedStringArray = required_keys.duplicate()
 		var allowed_keys: PackedStringArray = required_keys.duplicate()
 		if field == "smoke_slots":
@@ -948,7 +1043,7 @@ static func _identity_sha256(profile: Dictionary, binding_version: int) -> Strin
 		"format": IDENTITY_FORMAT,
 		"version": IDENTITY_VERSION,
 		"profile_format": FORMAT,
-		"profile_version": VERSION,
+		"profile_version": int(profile.get("version", LEGACY_VERSION)),
 		"binding_format": BINDINGS_FORMAT,
 		"binding_version": binding_version,
 		"binding": profile["binding"],

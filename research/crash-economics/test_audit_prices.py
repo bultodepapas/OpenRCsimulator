@@ -38,7 +38,7 @@ class PriceAuditTests(unittest.TestCase):
         rows = {row["offer_id"]: row for row in result["observations"]}
         self.assertEqual(rows["apc-lp12060"]["review_status"], "review_due")
         self.assertEqual(rows["da_ks3086_canister_desert_aircraft_20261016"]["review_status"], "within_review_window")
-        self.assertEqual(result["catalog_snapshot_date"], "2026-10-16")
+        self.assertEqual(result["catalog_snapshot_date"], "2026-10-20")
 
     def test_unknown_aircraft_total_is_not_zero(self):
         result = audit_prices.build_audit(self.document, self.context, "2026-10-16")

@@ -32,6 +32,7 @@ func _run() -> void:
 	_layout_bounds()
 	await _report_behavior()
 	await _comparison_behavior()
+	await _timber_parts_behavior()
 	print("accident report: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -86,6 +87,62 @@ func _comparison_behavior() -> void:
 		and details.contains("Combinación de menor precio") and details.contains("no se suma al total del accidente"), details)
 	TranslationServer.set_locale("en")
 	report.queue_free()
+	await _ui.settle()
+
+
+func _timber_parts_behavior() -> void:
+	var view := AccidentReport.new()
+	root.add_child(view)
+	await _ui.settle()
+	var surface := view.find_child("AccidentReportSurface", true, false) as Control
+	surface.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	surface.size = Vector2(1280.0, 720.0)
+	var source := {
+		identity = {aircraft_id = "turbo-lumber-evolution", incident_id = "tt22-ui-fixture"},
+		currency = "USD", complete = false, outcome = "inspection", known_subtotal_minor = 11595,
+		low_minor = 11595, high_minor = null, total_minor = null, price_date = "2026-10-20",
+		lines = [
+			{id = "motor_main", action = "inspection", quantity = 1, amount_minor = null,
+				product_sku = "SPM-1012", product_name = "Motor reference", price_basis = "price_proxy",
+				offer_amount_minor = 7499, package_description = "One motor", source_url = "https://example.com/motor"},
+			{id = "wing_main", action = "replacement", quantity = 1, amount_minor = 11595},
+		], unresolved = ["motor_main: condition is pending inspection"], assumptions = [],
+	}
+	var original := JSON.stringify(source)
+	view.show_assessment(source, true)
+	_check("Timber terminal report opens with parts visible", view._expanded)
+	await _ui.settle()
+	var details := _details_text(view)
+	_check("Timber puts affected parts before price references", details.find("Affected parts") == 0
+		and details.find("Wing, flaps, ailerons and servos") < details.find("Price references"), details)
+	_check("Timber keeps cents on headline amounts above one hundred dollars",
+		view.find_child("ReportAmount", true, false).text == "At least US$115.95")
+	_check("Timber displays frozen SKU and package reference price", details.contains("SPM-1012")
+		and details.contains("One motor") and details.contains("US$74.99") and details.contains("Price proxy"), details)
+	_check("Timber distinguishes pending inspection from a zero-dollar charge", details.contains("Pending")
+		and not details.contains("US$0.00") and details.contains("excluded from the subtotal"), details)
+	var rows := view.find_children("PartLine*", "HBoxContainer", true, false)
+	_check("Timber sorts only the displayed rows to put known charges first", rows.size() == 2
+		and (rows[0].get_child(0).get_child(0) as Label).text == "Wing, flaps, ailerons and servos"
+		and JSON.stringify(source) == original and JSON.stringify(view._report) == original)
+	_check_live_panel_bounds(view, "Timber parts report")
+	TranslationServer.set_locale("es")
+	await _ui.settle()
+	details = _details_text(view)
+	_check("Timber parts table and pending state translate to Spanish", details.contains("Piezas afectadas")
+		and details.contains("Pendiente") and details.contains("Ala, flaps, alerones y servos"), details)
+	TranslationServer.set_locale("en")
+	var historical := source.duplicate(true)
+	historical.lines = [{id = "propeller_main", action = "replacement", quantity = 1, amount_minor = 1698,
+		offer_id = null, notes = "Historical composite: three-blade propeller and spinner."}]
+	historical.known_subtotal_minor = 1698
+	historical.low_minor = 1698
+	view.show_archived(historical)
+	view._reopen_report()
+	view.controller_action("details")
+	_check("historical composite keeps its spinner label and frozen charge", _details_text(view).contains("Propeller and spinner")
+		and _details_text(view).contains("US$16.98") and not _details_text(view).contains("Three-blade propeller"))
+	view.queue_free()
 	await _ui.settle()
 
 

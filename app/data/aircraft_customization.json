@@ -4,7 +4,8 @@
   "families": [
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 2,
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "gp-extra-300s-60",
       "model_manifest_sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
       "paint_slots": [
@@ -183,7 +184,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_left",
@@ -201,7 +206,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -219,18 +228,22 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         }
       ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -242,22 +255,35 @@
         },
         {
           "path": "res://render/smoke/profile_process.gdshader",
-          "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+          "sha256": "5dacf1d46795988cd417018cd8ae86459f2c9ca67b81fb526fb90a07641eef1f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
-          "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0727c1023f9501896fa4b37c85eb89bec294c73ca3ea7aea41ab2008ea842e33"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "29d80b5f51123ed00727061643db3952ba71f0f53eb219f21eacd6ba4fb01bf4"
+      "slots_sha256": "4d63ca681b55bc386fe338201566a93b3395407631023b295082c8d167ce5e96"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 2,
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "jensen-das-ugly-stik-60",
       "model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
       "paint_slots": [
@@ -412,6 +438,20 @@
       ],
       "smoke_slots": [
         {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
           "id": "show_tail",
           "label": "Tail",
           "kind": "show",
@@ -427,7 +467,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_left",
@@ -445,7 +489,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -463,7 +511,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "source_exhaust",
@@ -472,20 +524,23 @@
           "pair": "",
           "role": "exhaust",
           "source_kind": "glow_prop",
-          "source_anchor_ref": "exhausts[0]",
-          "physical_source_ref": "propulsion.id",
-          "physical_source_kind_ref": "propulsion.kind"
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
         }
       ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -497,22 +552,35 @@
         },
         {
           "path": "res://render/smoke/profile_process.gdshader",
-          "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+          "sha256": "5dacf1d46795988cd417018cd8ae86459f2c9ca67b81fb526fb90a07641eef1f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
-          "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0727c1023f9501896fa4b37c85eb89bec294c73ca3ea7aea41ab2008ea842e33"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "a0e0229126ad390717bf85cf45ed4ac96e69da69ccf623a739a4b342d94c62fc"
+      "slots_sha256": "ee83b7847344e3a3f55bbfe755a105c70315ab73f78edc3160cc21789ec1b7b4"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 2,
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "p51d-mustang-120",
       "model_manifest_sha256": "7240fa81961b9f4862151d4ba1737696c401783c2a9457bd428bf9fa75d5fd76",
       "paint_slots": [
@@ -687,6 +755,20 @@
       "marking_slots": [],
       "smoke_slots": [
         {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
           "id": "show_tail",
           "label": "Tail",
           "kind": "show",
@@ -702,7 +784,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_left",
@@ -720,7 +806,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -738,7 +828,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "source_exhaust",
@@ -747,20 +841,23 @@
           "pair": "",
           "role": "exhaust",
           "source_kind": "glow_prop",
-          "source_anchor_ref": "exhausts[0]",
-          "physical_source_ref": "propulsion.id",
-          "physical_source_kind_ref": "propulsion.kind"
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
         }
       ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -772,22 +869,35 @@
         },
         {
           "path": "res://render/smoke/profile_process.gdshader",
-          "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+          "sha256": "5dacf1d46795988cd417018cd8ae86459f2c9ca67b81fb526fb90a07641eef1f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
-          "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0727c1023f9501896fa4b37c85eb89bec294c73ca3ea7aea41ab2008ea842e33"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "d7dc703f4bd5339bce000bdd6968d3b4688e748d65a1e779633521a08a168c23"
+      "slots_sha256": "50a1995da8e17d435c1cad96e3f6c7c0a6209817479781b33daa399238241d9d"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 2,
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "sebart-avanti-s-a200-p100rx",
       "model_manifest_sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
       "paint_slots": [
@@ -878,7 +988,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tailpipe",
@@ -896,7 +1010,13 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.025,
+          "emissions_preset": "turbine_show",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "source_kind": "turbine"
         },
         {
           "id": "show_wing_tip_left",
@@ -914,7 +1034,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -932,18 +1056,22 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         }
       ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -955,22 +1083,35 @@
         },
         {
           "path": "res://render/smoke/profile_process.gdshader",
-          "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+          "sha256": "5dacf1d46795988cd417018cd8ae86459f2c9ca67b81fb526fb90a07641eef1f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
-          "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0727c1023f9501896fa4b37c85eb89bec294c73ca3ea7aea41ab2008ea842e33"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "429351b5841d7407fb0905167915cfe590ad4e2f847a515992165a95d68b9047"
+      "slots_sha256": "5a7d1f947ed26054669ad5f234667bf75c55b2525bca08eb9f70b1d9eb65f175"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
-      "version": 2,
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "turbo-lumber-evolution",
       "model_manifest_sha256": "5abbb38e61d45bc9b07018455dd13576dd1478a18bcbe84b47be783c568f0c85",
       "paint_slots": [
@@ -1135,7 +1276,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_left",
@@ -1153,7 +1298,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -1171,18 +1320,22 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         }
       ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
         },
         {
           "path": "res://render/presentation_sources.gd",
-          "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
         },
         {
           "path": "res://render/smoke/exhaust.gd",
@@ -1194,18 +1347,30 @@
         },
         {
           "path": "res://render/smoke/profile_process.gdshader",
-          "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+          "sha256": "5dacf1d46795988cd417018cd8ae86459f2c9ca67b81fb526fb90a07641eef1f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
-          "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0727c1023f9501896fa4b37c85eb89bec294c73ca3ea7aea41ab2008ea842e33"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "238c2af3c75807344e1d20da8bf6fc81aaf700b5c315fb186bdb082389f000c7"
+      "slots_sha256": "c997bc9431440b4fc6a3afd57be3a4838a01cebbc65c9b4ffb7339913634b886"
     }
   ]
 }

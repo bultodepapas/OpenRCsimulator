@@ -202,7 +202,7 @@ func _bindings_fixture(family: String, manifest_digit: String, source_side: bool
 		empty: bool = false) -> Dictionary:
 	var bindings: Dictionary = {
 		"format": Presentation.BINDINGS_FORMAT,
-		"version": Presentation.BINDINGS_VERSION,
+		"version": 2,
 		"visual_family": family,
 		"model_manifest_sha256": manifest_digit.repeat(64),
 		"paint_slots": [],

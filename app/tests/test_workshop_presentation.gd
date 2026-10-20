@@ -25,7 +25,7 @@ func _initialize() -> void:
 		and identity_record.get("binding", {}) == _pins(bindings))
 	var legacy: Dictionary = Profile.validate({}, bindings)
 	_check("omitted legacy profile resolves to explicit bound defaults", legacy.get("ok", false)
-		and legacy.get("profile", {}) == defaults)
+		and legacy.get("profile", {}) == Profile.defaults(bindings, 1))
 	var no_binding_legacy: Dictionary = Profile.validate({})
 	_check("historical empty profile validates without a binding", no_binding_legacy.get("ok", false)
 		and no_binding_legacy.get("available", false))
@@ -85,6 +85,7 @@ func _initialize() -> void:
 	_test_stale_bindings(bindings, first.identity_sha256)
 	_test_future_profile()
 	_test_physical_allowlist()
+	_test_v2_contract(bindings)
 	print("Workshop presentation: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -95,7 +96,7 @@ func _test_bad_profiles(bindings: Dictionary) -> void:
 	bad.unexpected = true
 	_check("unknown profile keys reject", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
-	bad.version = 2
+	bad.version = 3
 	_check("newer profile versions reject for use", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
 	bad.visual_seed = true
@@ -203,7 +204,7 @@ func _test_stale_bindings(bindings: Dictionary, expected_identity: String) -> vo
 
 func _test_future_profile() -> void:
 	var future: Dictionary = Profile.defaults()
-	future.version = 2
+	future.version = 3
 	future["future_preset"] = {"name": "future"}
 	var stored: Dictionary = Profile.validate_stored(future)
 	_check("bounded future profile remains readable as unavailable", stored.get("ok", false)
@@ -217,10 +218,47 @@ func _test_physical_allowlist() -> void:
 	_check("physical recipe compiler rejects visual keys", not result.get("ok", false))
 
 
+func _test_v2_contract(bindings: Dictionary) -> void:
+	_check("unbound v1 identity matches the frozen pre-migration identity",
+		Profile.identity(Profile.defaults({}, 1)) == "06325450205d3117ada6ea76030c6e0fc1a200bdeeed565a0b54a58b2333f1d1")
+	var legacy := Profile.defaults(bindings, 1)
+	legacy.smoke = [_smoke_entry("smoke_left")]
+	var snapshot := JSON.stringify(legacy)
+	var checked := Profile.validate(legacy, bindings)
+	_check("v1 reader retains schema and bytes", checked.get("ok", false) and checked.profile.version == 1
+		and not checked.profile.smoke[0].has("density") and JSON.stringify(legacy) == snapshot)
+	var modern := legacy.duplicate(true)
+	modern.version = 2
+	modern.smoke[0]["palette_mode"] = "smooth"
+	modern.smoke[0]["density"] = 1.7
+	modern.smoke[0]["emission_rate_hz"] = 137.0
+	var result := Profile.validate(modern, bindings)
+	_check("v2 density rate and smooth palette are independent", result.get("ok", false)
+		and result.profile.smoke[0].density == 1.7 and result.profile.smoke[0].emission_rate_hz == 137.0
+		and result.profile.smoke[0].palette_mode == "smooth", str(result.get("errors", [])))
+	_check("v2 defaults normalize finite SI controls", result.get("ok", false)
+		and result.profile.smoke[0].drag_s == 0.4 and result.profile.smoke[0].velocity_inheritance == 1.0)
+	for key: String in Profile.SMOKE_V2_BOUNDS:
+		var bad := modern.duplicate(true)
+		bad.smoke[0][key] = true
+		_check("v2 rejects boolean " + key, not Profile.validate(bad, bindings).get("ok", false))
+		bad.smoke[0][key] = float(Profile.SMOKE_V2_BOUNDS[key][1]) + 0.01
+		_check("v2 enforces upper bound " + key, not Profile.validate(bad, bindings).get("ok", false))
+	var migrated := Profile.migrate_v1(legacy, bindings, bindings)
+	_check("v1 migration creates a review proposal without mutating source", migrated.get("ok", false)
+		and migrated.profile.version == 2 and migrated.report.requires_review and JSON.stringify(legacy) == snapshot)
+	legacy.smoke[0]["density"] = 1.0
+	_check("v1 reader rejects v2 fields", not Profile.validate(legacy, bindings).get("ok", false))
+	var stale := bindings.duplicate(true)
+	stale.model_manifest_sha256 = "b".repeat(64)
+	stale.slots_sha256 = Profile.bindings_sha256(stale)
+	_check("migration refuses physical model substitution", not Profile.migrate_v1(checked.profile, bindings, stale).get("ok", false))
+
+
 func _bindings_fixture() -> Dictionary:
 	var bindings: Dictionary = {
 		"format": Profile.BINDINGS_FORMAT,
-		"version": Profile.BINDINGS_VERSION,
+		"version": 2,
 		"visual_family": "fixture-aircraft",
 		"model_manifest_sha256": "a".repeat(64),
 		"paint_slots": [
@@ -297,3 +335,4 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 	if not condition:
 		_failures += 1
 		printerr("FAIL ", label, " ", detail)
+

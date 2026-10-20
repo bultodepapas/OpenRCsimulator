@@ -67,7 +67,8 @@ func _run() -> void:
 	root.add_child(view)
 	view.show_assessment(report, true)
 	var layout_trace: Array[Dictionary] = [_layout_measure(view, "shown-collapsed")]
-	view.controller_action("details")
+	if not view._expanded:
+		view.controller_action("details")
 	layout_trace.append(_layout_measure(view, "expanded-before-frame"))
 	await process_frame
 	layout_trace.append(_layout_measure(view, "expanded-frame-1"))

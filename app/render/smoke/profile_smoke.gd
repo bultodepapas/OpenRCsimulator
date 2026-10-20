@@ -14,16 +14,14 @@ const MAX_ACTIVE_ENTRIES := 4
 const MAX_BIRTH_EVENTS := 32
 const MAX_HISTORY_SECONDS := 8.3
 const HISTORY_SAMPLE_S := 0.2
-const SMOKE_ENTRY_KEYS: PackedStringArray = [
-	"slot", "enabled", "color", "amount", "width_m", "lifetime_s", "shape", "mode",
-	"burst_s", "pulse_period_s", "pulse_duty", "palette", "step_s",
-]
 
 static var _shared_mask: ImageTexture
 
 var _event_buffers: Dictionary = {}
 var _resolved: Dictionary = {}
 var _last_birth_tick: Dictionary = {}
+var _presentation_time_s := 0.0
+var _maximum_wash := 0.0
 var _lod := 1.0
 var _schedule = Schedule.new()
 var _profile: Dictionary = {}
@@ -38,12 +36,13 @@ var _configuration_reset := false
 var _playing := true
 var _paused := false
 var _stopped := false
+var _last_presented_s := -1.0
 var _last_tick := -1
 var _last_interval_s := 0.0
 var _fault := ""
 
 
-## Bind the validated v1 profile to the full registered companion dictionary.
+## Bind the validated v1/v2 profile to the full registered companion dictionary.
 ## A second configuration requires reset() so amount/lifetime edits cannot erase
 ## residual puffs without an explicit lifecycle action.
 func configure(profile: Dictionary, bindings: Dictionary) -> bool:
@@ -84,6 +83,7 @@ func configure(profile: Dictionary, bindings: Dictionary) -> bool:
 	_paused = false
 	_stopped = false
 	_last_tick = -1
+	_last_presented_s = -1.0
 	_last_interval_s = 0.0
 	_lod = 1.0
 	_last_birth_tick.clear()
@@ -113,10 +113,13 @@ func reset() -> void:
 	_playing = true
 	_stopped = false
 	_last_tick = -1
+	_last_presented_s = -1.0
 	_last_interval_s = 0.0
+	_presentation_time_s = 0.0
 	_fault = ""
 	_history.clear()
 	_last_birth_tick.clear()
+	_maximum_wash = 0.0
 	_last_transforms.clear()
 	_primed_slots.clear()
 	_schedule.reset()
@@ -145,7 +148,8 @@ func reset() -> void:
 	_configuration_reset = true
 
 
-## `pose.tick` is the authoritative integer simulation/preview clock at 240 Hz.
+## `pose.tick` floors the accepted presentation timestamp at 240 Hz.
+## Optional `pose.presentation_time_s` aligns fractional rendered poses and births.
 ## `pose.slot_transforms` is supplied only by the registered model resolver.
 func advance(dt: float, pose: Dictionary, wind: Vector3, request: Variant,
 		source_sample: Variant) -> Dictionary:
@@ -156,32 +160,49 @@ func advance(dt: float, pose: Dictionary, wind: Vector3, request: Variant,
 	if typeof(pose.get("tick")) != TYPE_INT or int(pose.tick) < 0:
 		return _fail_closed("pose requires a nonnegative integer 240 Hz tick")
 	var tick := int(pose.tick)
+	var presented_s := float(tick) / TICKS_PER_SECOND
+	if pose.has("presentation_time_s"):
+		var timestamp: Variant = pose.presentation_time_s
+		if (typeof(timestamp) != TYPE_FLOAT and typeof(timestamp) != TYPE_INT) or not is_finite(float(timestamp)) or float(timestamp) < 0.0:
+			return _fail_closed("presentation timestamp must be finite and nonnegative")
+		presented_s = float(timestamp)
+		if floori(presented_s * TICKS_PER_SECOND + 0.000001) != tick:
+			return _fail_closed("pose tick must floor the matching presentation timestamp")
 	if _paused or not _playing:
-		_schedule.rebase(tick)
+		_schedule.rebase(tick, true)
+		if _last_tick >= 0:
+			for slot: String in _last_birth_tick:
+				_last_birth_tick[slot] = int(_last_birth_tick[slot]) + maxi(0, tick - _last_tick)
 		_last_tick = tick
+		_last_presented_s = presented_s
 		_prime_transforms(pose)
 		return {"ok": true, "paused": true, "interval_ticks": 0}
 	if _last_tick < 0:
 		_last_tick = tick
+		_last_presented_s = presented_s
 		_schedule.rebase(tick)
 		_prime_transforms(pose)
 		return {"ok": true, "primed": true, "interval_ticks": 0}
-	if tick < _last_tick or tick - _last_tick > MAX_INTERVAL_TICKS:
+	if tick < _last_tick or presented_s < _last_presented_s or tick - _last_tick > MAX_INTERVAL_TICKS or bool(pose.get("teleport", false)):
 		reset()
 		_last_tick = tick
+		_last_presented_s = presented_s
 		_schedule.rebase(tick)
 		_prime_transforms(pose)
 		return {"ok": true, "discontinuity_reset": true, "interval_ticks": 0}
 	var interval_ticks := tick - _last_tick
-	if interval_ticks == 0:
+	var interval_s := presented_s - _last_presented_s
+	if interval_s <= 0.000000001:
 		return {"ok": true, "interval_ticks": 0}
-	var interval_s := float(interval_ticks) / TICKS_PER_SECOND
-	if dt > 0.1 + 0.000001 or absf(dt - interval_s) > 1.0 / TICKS_PER_SECOND + 0.000001:
+	var time_tolerance := 0.000001 if pose.has("presentation_time_s") else 1.0 / TICKS_PER_SECOND + 0.000001
+	if dt > 0.1 + 0.000001 or interval_s > 0.1 + 0.000001 or absf(dt - interval_s) > time_tolerance:
 		reset()
 		_last_tick = tick
+		_last_presented_s = presented_s
 		_schedule.rebase(tick)
 		_prime_transforms(pose)
 		return {"ok": true, "discontinuity_reset": true, "interval_ticks": 0}
+	_presentation_time_s += interval_s
 	var safety_stop := bool(pose.get("safety_stop", false))
 	if safety_stop or _stopped:
 		_schedule.cancel_bursts()
@@ -214,10 +235,11 @@ func advance(dt: float, pose: Dictionary, wind: Vector3, request: Variant,
 		for slot: String in _emitters.keys():
 			_update_emitter(slot, [], segment_data.get(slot, {"valid": false}), wind, interval_s, 0.0, tick)
 	_last_tick = tick
+	_last_presented_s = presented_s
 	_last_interval_s = interval_s
 	_update_bounds(tick, segment_data, wind.length())
 	return {"ok": bool(schedule_result.get("ok", false)), "error": _fault,
-		"interval_ticks": interval_ticks, "event_log": schedule_result.get("event_log", [])}
+		"interval_ticks": interval_ticks, "interval_s": interval_s, "event_log": schedule_result.get("event_log", [])}
 
 
 func budget_info() -> Dictionary:
@@ -256,11 +278,11 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 		var kind := str(endpoint.get("kind", ""))
 		if id.is_empty() or (kind != "show" and kind != "source") or endpoints.has(id):
 			return _invalid("smoke slot IDs and kinds must be unique and registered")
-		if kind == "show" and (not endpoint.has("position_m") or not endpoint.has("direction")):
+		var stable := not str(endpoint.get("source_id", "")).is_empty() and not str(endpoint.get("anchor_id", "")).is_empty() and not str(endpoint.get("source_kind", "")).is_empty()
+		if kind == "show" and not stable and (not endpoint.has("position_m") or not endpoint.has("direction")):
 			return _invalid("show endpoint requires its authored local pose")
 		if kind == "source":
 			var legacy := str(endpoint.get("source_anchor_ref", "")) == "exhausts[0]" and str(endpoint.get("source_kind", "")) == "glow_prop"
-			var stable := not str(endpoint.get("source_id", "")).is_empty() and not str(endpoint.get("anchor_id", "")).is_empty() and not str(endpoint.get("source_kind", "")).is_empty()
 			if not legacy and not stable:
 				return _invalid("source endpoint requires stable source and anchor identities")
 		endpoints[id] = endpoint
@@ -286,34 +308,6 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 			active_count += 1
 		if active_count > MAX_ACTIVE_ENTRIES:
 			return _invalid("profile exceeds four active emitters")
-		var amount := _bounded(entry.amount, 0.0, 1.0)
-		var width := _bounded(entry.width_m, 0.01, 2.0)
-		var lifetime := _bounded(entry.lifetime_s, 0.1, 8.0)
-		var burst := _bounded(entry.burst_s, 0.0, 8.0)
-		var period := _bounded(entry.pulse_period_s, 0.0, 8.0)
-		var duty := _bounded(entry.pulse_duty, 0.0, 1.0)
-		var step := _bounded(entry.step_s, 0.0, 8.0)
-		if amount < 0.0 or width < 0.0 or lifetime < 0.0 or burst < 0.0 or period < 0.0 or duty < 0.0 or step < 0.0:
-			return _invalid("smoke profile number is nonfinite or outside its range")
-		if typeof(entry.color) != TYPE_STRING or not _is_rgba(str(entry.color)):
-			return _invalid("smoke color must be canonical #RRGGBBAA")
-		if str(entry.shape) not in ["ribbon", "cloud", "fan"] or str(entry.mode) not in ["hold", "burst", "pulse"]:
-			return _invalid("smoke shape or mode is unsupported")
-		if not entry.palette is Array or entry.palette.size() > 8:
-			return _invalid("palette must contain at most eight swatches")
-		for swatch: Variant in entry.palette:
-			if typeof(swatch) != TYPE_STRING or not _is_rgba(str(swatch)):
-				return _invalid("palette swatches must be canonical #RRGGBBAA")
-		if str(entry.mode) == "hold" and (burst != 0.0 or period != 0.0 or duty != 0.0):
-			return _invalid("hold mode requires canonical zero timing fields")
-		if str(entry.mode) == "burst" and (burst < 0.05 or period != 0.0 or duty != 0.0):
-			return _invalid("burst mode requires burst_s 0.05..8 and canonical zero pulse fields")
-		if str(entry.mode) == "pulse" and (burst != 0.0 or period < 0.05 or duty < 0.01):
-			return _invalid("pulse mode requires pulse_period_s 0.05..8 and duty 0.01..1")
-		if entry.palette.size() < 2 and step != 0.0:
-			return _invalid("zero/one-color palettes require step_s zero")
-		if entry.palette.size() >= 2 and step < 0.05:
-			return _invalid("multiple palette colors require step_s 0.05..8")
 	return {"ok": true, "endpoints": endpoints, "entries": normalized}
 
 
@@ -350,7 +344,7 @@ func _allocate_emitters(active_entries: Array[Dictionary]) -> void:
 		var count := counts[index]
 		var requested := float(entry.get("emission_rate_hz", float(count) / float(entry.lifetime_s)))
 		var resolved := minf(requested, float(count) / float(entry.lifetime_s))
-		_resolved[slot] = {"requested_hz": requested, "resolved_hz": resolved, "capacity": count}
+		_resolved[slot] = {"requested_hz": requested, "resolved_hz": resolved, "capacity": count, "density": float(entry.get("density", 1.0))}
 		var emitter := _make_emitter(slot, count, entry, mask, int(_profile.visual_seed))
 		_emitters[slot] = emitter
 		add_child(emitter)
@@ -393,6 +387,7 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 	process.set_shader_parameter("buoyancy", 0.18 if str(entry.shape) == "ribbon" else 0.27)
 	process.set_shader_parameter("shape_mode", ["ribbon", "cloud", "fan"].find(str(entry.shape)))
 	process.set_shader_parameter("amount", float(entry.amount) if int(_profile.get("version", 1)) == 1 else 1.0)
+	process.set_shader_parameter("density", float(entry.get("density", 1.0)))
 	process.set_shader_parameter("legacy_motion", int(_profile.get("version", 1)) == 1)
 	for parameter: String in ["density", "jet_speed_mps", "dispersion_m2_s", "buoyancy_mps", "turbulence_mps", "drag_s", "velocity_inheritance"]:
 		if entry.has(parameter):
@@ -405,7 +400,8 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 	var states := PackedVector4Array()
 	times.resize(MAX_BIRTH_EVENTS)
 	states.resize(MAX_BIRTH_EVENTS)
-	_event_buffers[slot] = {"times": times, "states": states, "levels": times.duplicate(), "next_states": states.duplicate(), "transitions": times.duplicate(), "wash": times.duplicate()}
+	_event_buffers[slot] = {"times": times, "states": states, "levels": times.duplicate(), "next_states": states.duplicate(), "transitions": times.duplicate(), "wash": PackedVector3Array()}
+	_event_buffers[slot].wash.resize(MAX_BIRTH_EVENTS)
 	emitter.process_material = process
 	var material := StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -429,7 +425,7 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 	var emitter: GPUParticles3D = _emitters[slot]
 	var material := emitter.process_material as ShaderMaterial
 	var valid_pose := bool(segment.get("valid", false))
-	var can_birth := valid_pose and bool(segment.get("primed", false)) and lod > 0.0 and _fault.is_empty()
+	var can_birth := valid_pose and bool(segment.get("primed", false)) and lod > 0.0 and _fault.is_empty() and float(_resolved[slot].density) > 0.0
 	if valid_pose:
 		var previous: Transform3D = segment.previous
 		var current: Transform3D = segment.current
@@ -446,19 +442,13 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 	material.set_shader_parameter("interval_s", interval_s)
 	material.set_shader_parameter("lod", lod if can_birth else 0.0)
 	var buffers: Dictionary = _event_buffers[slot]
-	var time_values: PackedFloat32Array = buffers.times
-	var state_values: PackedVector4Array = buffers.states
-	var level_values: PackedFloat32Array = buffers.levels
-	var next_values: PackedVector4Array = buffers.next_states
-	var transitions: PackedFloat32Array = buffers.transitions
-	var wash_values: PackedFloat32Array = buffers.wash
-	time_values.fill(0.0)
-	state_values.fill(Vector4.ZERO)
-	level_values.fill(0.0)
-	next_values.fill(Vector4.ZERO)
-	transitions.fill(0.0)
-	wash_values.fill(0.0)
-	material.set_shader_parameter("presentation_time_s", float(tick) / TICKS_PER_SECOND)
+	buffers.times.fill(0.0)
+	buffers.states.fill(Vector4.ZERO)
+	buffers.levels.fill(0.0)
+	buffers.next_states.fill(Vector4.ZERO)
+	buffers.transitions.fill(0.0)
+	buffers.wash.fill(Vector3.ZERO)
+	material.set_shader_parameter("presentation_time_s", _presentation_time_s)
 	var event_count := 0
 	var has_active_event := false
 	if can_birth:
@@ -469,21 +459,22 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 				break
 			var color: Color = item.color
 			var level := clampf(float(item.level), 0.0, 1.0)
-			time_values[event_count] = float(item.offset_s)
-			state_values[event_count] = Vector4(color.r, color.g, color.b, color.a)
-			level_values[event_count] = level
+			buffers.times[event_count] = float(item.tick) / TICKS_PER_SECOND - _last_presented_s
+			buffers.states[event_count] = Vector4(color.r, color.g, color.b, color.a)
+			buffers.levels[event_count] = level
 			var next_color: Color = item.get("next_color", color)
-			next_values[event_count] = Vector4(next_color.r, next_color.g, next_color.b, next_color.a)
-			transitions[event_count] = float(item.get("transition_s", 0.0))
-			wash_values[event_count] = float(item.get("wash_mps", 0.0))
+			buffers.next_states[event_count] = Vector4(next_color.r, next_color.g, next_color.b, next_color.a)
+			buffers.transitions[event_count] = float(item.get("transition_s", 0.0))
+			buffers.wash[event_count] = item.get("wash_mps", Vector3.ZERO)
+			_maximum_wash = maxf(_maximum_wash, buffers.wash[event_count].length())
 			event_count += 1
-			has_active_event = has_active_event or level > 0.0
-	material.set_shader_parameter("birth_event_times", time_values)
-	material.set_shader_parameter("birth_event_states", state_values)
-	material.set_shader_parameter("birth_event_levels", level_values)
-	material.set_shader_parameter("birth_event_next_states", next_values)
-	material.set_shader_parameter("birth_event_transitions", transitions)
-	material.set_shader_parameter("birth_event_wash", wash_values)
+			has_active_event = has_active_event or (level > 0.0 and (color.a > 0.0 or next_color.a > 0.0))
+	material.set_shader_parameter("birth_event_times", buffers.times)
+	material.set_shader_parameter("birth_event_states", buffers.states)
+	material.set_shader_parameter("birth_event_levels", buffers.levels)
+	material.set_shader_parameter("birth_event_next_states", buffers.next_states)
+	material.set_shader_parameter("birth_event_transitions", buffers.transitions)
+	material.set_shader_parameter("birth_event_wash", buffers.wash)
 	material.set_shader_parameter("birth_event_count", event_count)
 	if not can_birth:
 		material.set_shader_parameter("birth_event_count", 0)
@@ -542,6 +533,9 @@ func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 	var maximum_particle_extent := 0.0
 	var maximum_spawn_extent := 0.0
 	var maximum_intrinsic_flow_speed := 0.0
+	var maximum_jet := 0.65
+	var maximum_drag := 0.65
+	var v2 := int(_profile.get("version", 1)) >= 2
 	for entry: Dictionary in _profile.smoke:
 		if bool(entry.enabled):
 			var lifetime := float(entry.lifetime_s)
@@ -549,13 +543,17 @@ func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 			var shape := str(entry.shape)
 			var growth := 0.42 if shape == "ribbon" else 0.7
 			var buoyancy := 0.18 if shape == "ribbon" else 0.27
+			if v2:
+				buoyancy = absf(float(entry.buoyancy_mps))
+				maximum_jet = maxf(maximum_jet, float(entry.jet_speed_mps))
+				maximum_drag = maxf(maximum_drag, float(entry.drag_s))
 			active_lifetime = maxf(active_lifetime, lifetime)
 			maximum_particle_extent = maxf(maximum_particle_extent,
-				width * (0.025 + growth * sqrt(lifetime)))
+				(sqrt(width * width * 0.04 + 2.0 * float(entry.get("dispersion_m2_s", 0.1)) * lifetime) * 1.35) if v2 else width * (0.025 + growth * sqrt(lifetime)))
 			if shape == "cloud":
 				maximum_spawn_extent = maxf(maximum_spawn_extent, width * 0.71)
 			maximum_intrinsic_flow_speed = maxf(maximum_intrinsic_flow_speed,
-				buoyancy + sqrt(3.0) * 0.22)
+				buoyancy + (float(entry.get("turbulence_mps", 0.22)) if v2 else sqrt(3.0) * 0.22))
 	while not _history.is_empty() and float(tick - int(_history.front().tick)) / TICKS_PER_SECOND > active_lifetime + 0.3:
 		_history.pop_front()
 	var box := AABB()
@@ -582,8 +580,8 @@ func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 		box = AABB(Vector3.ZERO, Vector3.ONE)
 	var puff_extent := maximum_particle_extent + maximum_spawn_extent
 	var drift_extent := maximum_wind * active_lifetime \
-		+ maximum_intrinsic_flow_speed * active_lifetime + 0.65 * 0.65 \
-		+ maximum_carrier * 0.65
+		+ maximum_intrinsic_flow_speed * active_lifetime + (maximum_jet + _maximum_wash) * minf(maximum_drag, active_lifetime) \
+		+ maximum_carrier * minf(maximum_drag, active_lifetime)
 	box = box.grow(1.0 + puff_extent + drift_extent)
 	for emitter: GPUParticles3D in _emitters.values():
 		emitter.visibility_aabb = box
@@ -596,7 +594,7 @@ func _slot_transform(transforms: Variant, slot: String) -> Variant:
 	if value is Transform3D:
 		var transform: Transform3D = value
 		if transform.origin.is_finite() and transform.basis.x.is_finite() and transform.basis.y.is_finite() \
-				and transform.basis.z.is_finite() and (-transform.basis.z).length_squared() > 0.99:
+				and transform.basis.z.is_finite() and _rigid_basis(transform.basis):
 			return transform
 	return null
 
@@ -648,34 +646,6 @@ func _mask_texture() -> ImageTexture:
 	return _shared_mask
 
 
-func _bounded(value: Variant, minimum: float, maximum: float) -> float:
-	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
-		return -1.0
-	var number := float(value)
-	if not is_finite(number) or number < minimum or number > maximum:
-		return -1.0
-	return number
-
-
-func _has_exact_keys(value: Dictionary, keys: PackedStringArray) -> bool:
-	if value.size() != keys.size() or not value.has_all(keys):
-		return false
-	for key: Variant in value.keys():
-		if typeof(key) != TYPE_STRING or not keys.has(str(key)):
-			return false
-	return true
-
-
-func _is_rgba(text: String) -> bool:
-	if text.length() != 9 or not text.begins_with("#"):
-		return false
-	const HEX_DIGITS := "0123456789abcdefABCDEF"
-	for index in range(1, text.length()):
-		if HEX_DIGITS.find(text.substr(index, 1)) < 0:
-			return false
-	return true
-
-
 func _invalid(message: String) -> Dictionary:
 	return {"ok": false, "error": message, "endpoints": {}}
 
@@ -702,3 +672,15 @@ func _distance_lod(distance: float) -> float:
 	if distance > 700.0:
 		_lod = 0.0
 	return _lod
+
+
+func _rigid_basis(value: Basis) -> bool:
+	var sx := value.x.length()
+	var sy := value.y.length()
+	var sz := value.z.length()
+	if minf(sx, minf(sy, sz)) < 0.00001 or value.determinant() <= 0.0:
+		return false
+	return absf(sx - sy) <= sx * 0.0001 and absf(sx - sz) <= sx * 0.0001 \
+		and absf(value.x.dot(value.y)) <= sx * sy * 0.0001 \
+		and absf(value.x.dot(value.z)) <= sx * sz * 0.0001 \
+		and absf(value.y.dot(value.z)) <= sy * sz * 0.0001

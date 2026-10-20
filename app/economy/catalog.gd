@@ -139,15 +139,27 @@ static func _same_number(left: Variant, right: Variant) -> bool:
 
 static func _offer_sources(doc: Dictionary) -> Dictionary:
 	var sources: Dictionary = {}
+	var products: Dictionary = {}
+	for product: Dictionary in doc.get("products", []):
+		products[str(product.id)] = product
 	var offers: Array = doc.get("offers", [])
 	for offer_value: Variant in offers:
 		var offer: Dictionary = offer_value
+		var product: Dictionary = products.get(str(offer.product_id), {})
 		sources[str(offer["id"])] = {
 			"source_url": offer["source_url"],
 			"observed_on": offer["observed_on"],
 			"seller_domain": offer["seller_domain"],
 			"availability": offer["availability"],
 			"price_kind": offer["price_kind"],
+			# Freeze display provenance with the incident, so an archived report never
+			# resolves its product name or package price against a newer catalog.
+			"product_name": product.get("name", ""),
+			"product_brand": product.get("brand", ""),
+			"product_sku": product.get("sku", ""),
+			"package_description": offer["package_description"],
+			"sold_package_quantity": int(offer["sold_package_quantity"]),
+			"offer_amount_minor": int(offer["amount_minor"]) if offer["amount_minor"] != null else null,
 		}
 	return sources
 

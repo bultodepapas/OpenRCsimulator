@@ -30,7 +30,8 @@ class CustomizationGeneratorTests(unittest.TestCase):
         self.assertEqual({item["visual_family"] for item in registry["families"]}, self.families)
         for companion in registry["families"]:
             family = companion["visual_family"]
-            self.assertEqual(companion["version"], 2)
+            self.assertEqual(companion["version"], 3)
+            self.assertEqual(companion["source_proof_version"], 2)
             self.assertEqual(companion["presentation_engine_version"], generator.PRESENTATION_ENGINE_VERSION)
             self.assertEqual([item["path"] for item in companion["presentation_sources"]],
                              list(generator.PRESENTATION_SOURCE_PATHS))
@@ -64,6 +65,40 @@ class CustomizationGeneratorTests(unittest.TestCase):
     def test_canonical_hash_normalizes_integral_float_numbers(self) -> None:
         self.assertEqual(generator.canonical_bytes({"b": [1.0], "a": 2}),
                          generator.canonical_bytes({"a": 2.0, "b": [1]}))
+
+    def test_source_outlets_share_one_stable_source_without_positional_selectors(self) -> None:
+        slots = generator.validate_source(self.source, self.families)
+        stik = slots["jensen-das-ugly-stik-60"]["smoke_slots"]
+        ordinary = next(slot for slot in stik if slot["id"] == "source_exhaust")
+        pump = next(slot for slot in stik if slot["id"] == "show_exhaust")
+        self.assertEqual(ordinary["source_id"], pump["source_id"])
+        self.assertEqual(ordinary["anchor_id"], "physical_exit")
+        self.assertEqual(pump["activation_policy"], "source_and_request")
+        self.assertNotIn("source_anchor_ref", ordinary)
+        self.assertEqual(slots["gp-extra-300s-60"]["smoke_slots"][0]["kind"], "show")
+
+    def test_v3_rejects_unknown_keys_invalid_source_and_unbounded_mounts(self) -> None:
+        changes = ({"radius_m": True}, {"radius_m": 0.2}, {"anchor_id": "../escape"},
+                   {"source_id": "res://run.gd"}, {"source_kind": "gasoline_guess"},
+                   {"activation_policy": "independent_request"}, {"provenance": "validated"},
+                   {"arbitrary": 1})
+        for change in changes:
+            bad = copy.deepcopy(self.source)
+            slot = next(s for s in bad["families"][0]["smoke_slots"] if s["kind"] == "source")
+            slot.update(change)
+            with self.subTest(change=change), self.assertRaises(generator.CustomizationError):
+                generator.validate_source(bad, self.families)
+
+    def test_two_authored_outlets_can_share_one_engine(self) -> None:
+        candidate = copy.deepcopy(self.source)
+        slots = candidate["families"][0]["smoke_slots"]
+        extra = copy.deepcopy(next(s for s in slots if s["kind"] == "source"))
+        extra.update(id="source_exhaust_right", anchor_id="right_exit")
+        slots.append(extra)
+        validated = generator.validate_source(candidate, self.families)
+        sources = [s for s in validated[candidate["families"][0]["visual_family"]]["smoke_slots"] if s["kind"] == "source"]
+        self.assertEqual(len(sources), 2)
+        self.assertEqual(len({s["source_id"] for s in sources}), 1)
 
     def test_source_rejects_duplicate_target_and_missing_family(self) -> None:
         bad = copy.deepcopy(self.source)

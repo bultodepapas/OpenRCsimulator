@@ -24,22 +24,22 @@ static func for_aircraft(bindings: Dictionary, propulsion: Dictionary) -> Dictio
 	var result := Presentation.defaults(bindings)
 	result.visual_seed = 6103
 	var natural := _entry("source_exhaust", 0.22, 1.25)
-	natural.density = 0.08 if family == "gasoline_light" else 0.28
-	natural.emission_rate_hz = 48.0
-	natural.dispersion_m2_s = 0.018
-	natural.jet_speed_mps = 2.0
-	natural.buoyancy_mps = 0.18
+	natural["density"] = 0.08 if family == "gasoline_light" else 0.28
+	natural["emission_rate_hz"] = 48.0
+	natural["dispersion_m2_s"] = 0.018
+	natural["jet_speed_mps"] = 2.0
+	natural["buoyancy_mps"] = 0.18
 	var show := _entry("show_exhaust", 1.4, 6.0)
-	show.emission_rate_hz = 112.0
-	show.dispersion_m2_s = 0.12
-	show.jet_speed_mps = 3.0
-	show.density = 1.0
+	show["emission_rate_hz"] = 112.0
+	show["dispersion_m2_s"] = 0.12
+	show["jet_speed_mps"] = 3.0
+	show["density"] = 1.0
 	result.smoke = [natural, show]
 	var checked := Presentation.validate(result, bindings)
 	if not bool(checked.get("ok", false)):
 		push_warning("Stock exhaust profile unavailable: " + str(checked.get("errors", [])))
 		return {}
-	return checked.value
+	return checked.profile
 
 
 static func _entry(slot: String, width: float, lifetime: float) -> Dictionary:

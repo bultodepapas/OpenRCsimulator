@@ -22,7 +22,7 @@ SOURCE_FORMAT = "openrc-aircraft-customization-source"
 COMPANION_FORMAT = "openrc-aircraft-customization-bindings"
 REGISTRY_FORMAT = "openrc-aircraft-customization-registry"
 PRESENTATION_ENGINE_VERSION = "4.7.2"
-PRESENTATION_SOURCE_PATHS = (
+LEGACY_PRESENTATION_SOURCE_PATHS = (
     "res://render/aircraft_customization.gd",
     "res://render/presentation_sources.gd",
     "res://render/smoke/exhaust.gd",
@@ -31,6 +31,12 @@ PRESENTATION_SOURCE_PATHS = (
     "res://render/smoke/profile_smoke.gd",
     "res://render/smoke/profile_smoke_schedule.gd",
 )
+PRESENTATION_SOURCE_PATHS = LEGACY_PRESENTATION_SOURCE_PATHS + (
+    "res://render/smoke/smoke_system.gd",
+    "res://render/smoke/stock_profile.gd",
+    "res://workshop/presentation.gd",
+)
+EMISSIONS_PRESETS = {"glow_two_stroke", "glow_four_stroke", "glow_installation", "gasoline_two_stroke", "turbine_show", "independent_show"}
 SLOT_ID_RE = re.compile(r"^[a-z][a-z0-9_]{0,79}$")
 FAMILY_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LABEL_RE = re.compile(r"^[ -~]{1,32}$")
@@ -106,7 +112,7 @@ def _vector(value: Any, label: str, *, unit: bool = False) -> list[float | int]:
 
 def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[str, Any]]:
     _closed(source, {"format", "version", "families"}, "source")
-    if source["format"] != SOURCE_FORMAT or type(source["version"]) is not int or source["version"] != 1:
+    if source["format"] != SOURCE_FORMAT or type(source["version"]) is not int or source["version"] not in (1, 2):
         raise CustomizationError("source format/version is unsupported")
     if not isinstance(source["families"], list):
         raise CustomizationError("source.families must be an array")
@@ -201,12 +207,35 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
         smoke_slots: list[dict[str, Any]] = []
         smoke_ids: set[str] = set()
         smoke_roles: set[str] = set()
+        if len(family["smoke_slots"]) > 8:
+            raise CustomizationError(f"{label} supports at most eight authored smoke outlets")
         for slot_index, slot in enumerate(family["smoke_slots"]):
             slot_label = f"{label}.smoke_slots[{slot_index}]"
             if not isinstance(slot, dict):
                 raise CustomizationError(f"{slot_label} must be an object")
             kind = slot.get("kind")
             common = {"id", "label", "kind", "pair", "role"}
+            if source["version"] == 2:
+                common |= {"radius_m", "emissions_preset", "activation_policy", "provenance"}
+                if kind == "source" or "anchor_id" in slot:
+                    required = common | {"source_id", "source_kind", "anchor_id"}
+                elif kind == "show":
+                    required = common | {"node_path", "position_m", "direction"}
+                    if slot.get("activation_policy") == "source_and_request":
+                        required |= {"source_id", "source_kind"}
+                else:
+                    raise CustomizationError(f"{slot_label}.kind must be show or source")
+                _closed(slot, required, slot_label)
+                validate_smoke_v3(slot, slot_label)
+                slot_id = slot["id"]
+                if slot_id in smoke_ids:
+                    raise CustomizationError(f"{slot_label}.id is duplicated")
+                if slot["role"] in {"wing_tip_left", "wing_tip_right", "tail", "tailpipe"} and slot["role"] in smoke_roles:
+                    raise CustomizationError(f"{slot_label}.role is duplicated")
+                smoke_ids.add(slot_id)
+                smoke_roles.add(slot["role"])
+                smoke_slots.append(dict(slot))
+                continue
             if kind == "show":
                 required = common | {"node_path", "position_m", "direction"}
             elif kind == "source":
@@ -251,9 +280,9 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
             smoke_slots.append(dict(slot))
 
         paired_roles = {role for role in smoke_roles if role in {"wing_tip_left", "wing_tip_right"}}
-        if paired_roles != {"wing_tip_left", "wing_tip_right"}:
+        if source["version"] == 1 and paired_roles != {"wing_tip_left", "wing_tip_right"}:
             raise CustomizationError(f"{label} requires an explicit left/right show endpoint pair")
-        if "tail" not in smoke_roles:
+        if source["version"] == 1 and "tail" not in smoke_roles:
             raise CustomizationError(f"{label} requires an explicit tail show endpoint")
         families[family_id] = {
             "paint_slots": sorted(paint_slots, key=lambda value: value["id"]),
@@ -265,6 +294,45 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
         extra = sorted(set(families) - expected_families)
         raise CustomizationError(f"customization family coverage mismatch (missing={missing}, unknown={extra})")
     return families
+
+
+def validate_smoke_v3(slot: dict[str, Any], label: str) -> None:
+    for key, pattern in (("id", SLOT_ID_RE), ("label", LABEL_RE)):
+        _text(slot[key], pattern, f"{label}.{key}")
+    kind, role, policy = slot["kind"], slot["role"], slot["activation_policy"]
+    if role not in SMOKE_ROLES or not isinstance(slot["pair"], str):
+        raise CustomizationError(f"{label} has an invalid role or pair")
+    if slot["pair"] and SLOT_ID_RE.fullmatch(slot["pair"]) is None:
+        raise CustomizationError(f"{label}.pair is malformed")
+    if slot["emissions_preset"] not in EMISSIONS_PRESETS or slot["provenance"] not in {"estimated", "authored", "measured"}:
+        raise CustomizationError(f"{label} has unsupported preset or provenance")
+    radius = slot["radius_m"]
+    if isinstance(radius, bool) or not isinstance(radius, (int, float)) or not math.isfinite(radius) or not 0.0001 <= radius <= 0.1:
+        raise CustomizationError(f"{label}.radius_m must be in [0.0001, 0.1]")
+    if kind == "source" and (role != "exhaust" or slot["pair"] or policy != "source_running"):
+        raise CustomizationError(f"{label} source must be an unpaired exhaust with source_running policy")
+    if kind == "show" and policy not in {"independent_request", "source_and_request"}:
+        raise CustomizationError(f"{label} has unsupported show activation policy")
+    if kind == "show" and role == "exhaust" and "anchor_id" not in slot:
+        raise CustomizationError(f"{label} exhaust show outlet requires its physical source anchor")
+    if "source_id" in slot:
+        if not isinstance(slot["source_id"], str) or (slot["source_id"] != "$propulsion" and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", slot["source_id"]) is None):
+            raise CustomizationError(f"{label}.source_id is malformed")
+        if slot["source_kind"] not in {"glow_prop", "electric_prop", "turbine"}:
+            raise CustomizationError(f"{label}.source_kind is unsupported")
+    if "anchor_id" in slot:
+        _text(slot["anchor_id"], SLOT_ID_RE, f"{label}.anchor_id")
+        if kind == "show" and policy != "source_and_request":
+            raise CustomizationError(f"{label} source anchor requires source_and_request")
+    else:
+        if slot["node_path"] != ".":
+            _text(slot["node_path"], NODE_PATH_RE, f"{label}.node_path")
+        _vector(slot["position_m"], f"{label}.position_m")
+        _vector(slot["direction"], f"{label}.direction", unit=True)
+    if role in {"wing_tip_left", "wing_tip_right"} and (kind != "show" or slot["pair"] != "wing_tips"):
+        raise CustomizationError(f"{label} requires a paired show wingtip")
+    if role in {"tail", "tailpipe", "exhaust"} and slot["pair"]:
+        raise CustomizationError(f"{label} tail/exhaust endpoint must be unpaired")
 
 
 def presentation_sources(root: Path) -> list[dict[str, str]]:
@@ -288,7 +356,8 @@ def presentation_sources(root: Path) -> list[dict[str, str]]:
 def build_companion(family_id: str, manifest_sha256: str, slots: dict[str, Any], sources: list[dict[str, str]]) -> dict[str, Any]:
     companion: dict[str, Any] = {
         "format": COMPANION_FORMAT,
-        "version": 2,
+        "version": 3,
+        "source_proof_version": 2,
         "visual_family": family_id,
         "model_manifest_sha256": manifest_sha256,
         "paint_slots": slots["paint_slots"],

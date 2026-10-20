@@ -19,6 +19,7 @@ func _initialize() -> void:
 	_test_invalid_quantity_and_fractional_cents()
 	_test_inputs_are_not_mutated()
 	_test_loaded_catalog_contract()
+	_test_timber_spinner_salvage_guard()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -321,6 +322,30 @@ func _test_loaded_catalog_contract() -> void:
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))
+
+
+func _test_timber_spinner_salvage_guard() -> void:
+	var loaded: Dictionary = Catalog.load_for("turbo-lumber-evolution")
+	if not loaded.get("ok", false):
+		_check("Lumber spinner salvage guard loads current dossier", false, str(loaded.get("errors", [])))
+		return
+	var has_unbound_spinner := false
+	for component: Dictionary in loaded.dossier.get("components", []):
+		if component.get("id") == "spinner_main":
+			has_unbound_spinner = (component.get("physical_inventory_ids", []) as Array).is_empty()
+			break
+	var assessment := _assessment(true)
+	assessment["components"] = {"spinner_main": {"disposition": "reuse"}}
+	var result: Dictionary = Calculator.calculate(loaded.dossier, assessment)
+	var spinner_credit := false
+	for line: Dictionary in result.get("lines", []):
+		if line.get("id") == "spinner_main" and line.get("action") == "salvage_credit":
+			spinner_credit = true
+	_check("unbound spinner cannot receive a salvage credit until physical subcomponent binding exists",
+		has_unbound_spinner and result.get("ok", false) and result.get("salvage_minor") == 0
+		and result.get("known_subtotal_minor") == 46587 and result.get("total_minor") == null
+		and result.get("complete") == false and not spinner_credit
+		and result.get("unresolved", []).has("spinner_main: no physical inventory binding; reuse cannot be credited"), str(result))
 
 
 func _assessment(total_loss: bool) -> Dictionary:

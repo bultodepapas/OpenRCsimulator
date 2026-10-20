@@ -50,6 +50,9 @@ func _initialize() -> void:
 	_out_dir = _absolute_path(str(args.get("out", "user://smoke-flight-review")))
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	_main = MainScene.instantiate()
+	var legacy_args := OS.get_cmdline_user_args()
+	legacy_args.append("--smoke-backend=legacy")
+	_main.set_user_args(legacy_args)
 	_main.crash_effects_enabled = false
 	_main.set_process(false)
 	_main.set_process_unhandled_input(false)

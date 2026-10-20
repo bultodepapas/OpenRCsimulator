@@ -1,11 +1,11 @@
 {
   "format": "openrc-price-catalog v1-draft",
   "runtime_supported": false,
-  "observed_on": "2026-10-16",
+  "observed_on": "2026-10-20",
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
     "price-research-components.json": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
-    "price-research-fleet.json": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
+    "price-research-fleet.json": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21"
   },
   "policy": {
     "currency": "USD",
@@ -1608,7 +1608,27 @@
       "source_url": "https://www.horizonhobby.com/product/battery-hatch-turbo-timber-evolution-1.5m/EFL105253.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. It is a candidate fuselage-group constituent, not proof that the fictional fuselage_main group contains this exact hatch or that the remaining canopy and fittings are covered."
+      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. It is a candidate fuselage-group constituent, not proof that the fictional fuselage_main group contains this exact hatch or that the remaining canopy and fittings are covered. Historical observation retained; superseded for current costing by timber_evolution_battery_hatch_efl105253_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_battery_hatch_efl105253_horizon_20261020",
+      "product_id": "e_flite_efl105253",
+      "amount_minor": 999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 battery hatch",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/battery-hatch-turbo-timber-evolution-1.5m/EFL105253.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105253 battery hatch at $9.99, listed in stock and compatible with Turbo Timber Evolution BNF/PNP. It is a named spare part but does not close fuselage_main by itself."
     },
     {
       "id": "timber_evolution_battery_proxy",
@@ -1628,7 +1648,7 @@
       "source_url": "https://www.horizonhobby.com/product/spektrum-accessories-14.8v-3200mah-4s-50c-smart-g2-lipo-battery-ic3/SPMX324S50.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Current 4S 3200mAh IC3 pack falls within the Turbo Timber Evolution's listed 4S 2200–5000mAh range; battery is separate from aircraft and charger is not included."
+      "notes": "Observed 2026-10-15. Current 4S 3200mAh IC3 pack falls within the Turbo Timber Evolution's listed 4S 2200–5000mAh range; battery is separate from aircraft and charger is not included. Historical source record retained; superseded for current review by timber_evolution_battery_proxy_horizon_20261020, rechecked 2026-10-20."
     },
     {
       "id": "timber_evolution_battery_proxy_horizon_20261015",
@@ -1648,7 +1668,27 @@
       "source_url": "https://www.horizonhobby.com/product/14.8v-3200mah-4s-50c-smart-g2-lipo-battery-ic3/SPMX324S50.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. A current 4S 3200mAh IC3 capacity-class price proxy; the page shows Backorder with an October 2026 estimate. Smart G2/50C identity is not established for the fictional build. Battery is separate from the aircraft package and charger is not included."
+      "notes": "Observed 2026-10-15. A current 4S 3200mAh IC3 capacity-class price proxy; the page shows Backorder with an October 2026 estimate. Smart G2/50C identity is not established for the fictional build. Battery is separate from the aircraft package and charger is not included. Historical observation retained; superseded for current costing by timber_evolution_battery_proxy_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_battery_proxy_horizon_20261020",
+      "product_id": "spektrum_spmx324s50",
+      "amount_minor": 6999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "battery_unit_price",
+      "availability": "Backorder; estimated October 2026",
+      "sold_package_quantity": 1,
+      "package_description": "1 battery",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/14.8v-3200mah-4s-50c-smart-g2-lipo-battery-ic3/SPMX324S50.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One SPMX324S50 4S 3200mAh 50C Smart G2 IC3 battery at $69.99, listed on backorder with an October 2026 estimate. It is a capacity/connector-class price proxy, not the recommended exact SPMX32004S30 30C pack, which is discontinued without a current price. Battery and charger are separate from the aircraft packages."
     },
     {
       "id": "timber_evolution_bnf_aircraft",
@@ -1668,7 +1708,7 @@
       "source_url": "https://www.hubhobby.com/e-flite-efl105250b-turbo-timber-evolution-15m-bnf.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Includes the PNP equipment plus installed Spektrum AR637TA receiver; requires a compatible Spektrum DSMX/DSM2 transmitter, battery and charger. BNF Basic is not RTF."
+      "notes": "Observed 2026-10-15. Includes the PNP equipment plus installed Spektrum AR637TA receiver; requires a compatible Spektrum DSMX/DSM2 transmitter, battery and charger. BNF Basic is not RTF. Historical source record retained; superseded for current review by timber_evolution_bnf_aircraft_horizon_20261020, rechecked 2026-10-20."
     },
     {
       "id": "timber_evolution_bnf_aircraft_horizon_20261015",
@@ -1688,7 +1728,27 @@
       "source_url": "https://www.horizonhobby.com/product/e-flite-turbo-timber-evolution-1.5m-bnf-basic-includes-floats/EFL105250B.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Includes the PNP equipment plus one installed AR637TA receiver; compatible transmitter, battery and charger are separate. Alternative package reference only; PNP and BNF are mutually exclusive and neither is added to standalone component values."
+      "notes": "Observed 2026-10-15. Includes the PNP equipment plus one installed AR637TA receiver; compatible transmitter, battery and charger are separate. Alternative package reference only; PNP and BNF are mutually exclusive and neither is added to standalone component values. Historical observation retained; superseded for current costing by timber_evolution_bnf_aircraft_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_bnf_aircraft_horizon_20261020",
+      "product_id": "e_flite_efl105250b",
+      "amount_minor": 34999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "bnf_aircraft_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 aircraft package",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/turbo-timber-evolution-1.5m-bnf-basic-includes-floats/EFL105250B.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One BNF Basic aircraft package, listed in stock at $349.99. It includes the PNP equipment plus an AR637TA receiver; transmitter, battery, and charger are separate. This is an alternative whole-aircraft package, never added to the PNP or standalone components."
     },
     {
       "id": "timber_evolution_cowl_efl105258_horizon_20261016",
@@ -1708,7 +1768,27 @@
       "source_url": "https://www.horizonhobby.com/product/cowl-turbo-timber-evolution-1.5m/EFL105258.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. The replacement catalog lists it separately from the fuselage. It is not attached to fuselage_main because the fictional row's canopy and fitting coverage is unresolved."
+      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. The replacement catalog lists it separately from the fuselage. It is not attached to fuselage_main because the fictional row's canopy and fitting coverage is unresolved. Historical observation retained; superseded for current costing by timber_evolution_cowl_efl105258_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_cowl_efl105258_horizon_20261020",
+      "product_id": "e_flite_efl105258",
+      "amount_minor": 1499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 cowl",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/cowl-turbo-timber-evolution-1.5m/EFL105258.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105258 cowl at $14.99, listed in stock and compatible with Turbo Timber Evolution BNF/PNP. It is a separate named part; do not add it to the fuselage price as a complete-row total without an inventory crosswalk."
     },
     {
       "id": "timber_evolution_esc_spmxae70e_horizon_20261015",
@@ -1728,7 +1808,27 @@
       "source_url": "https://www.horizonhobby.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. One 70 A ESC listing matches the fictional inventory's class and is a current commercial replacement-price proxy only; the exact installed SKU is unverified."
+      "notes": "Observed 2026-10-15. One 70 A ESC listing matches the fictional inventory's class and is a current commercial replacement-price proxy only; the exact installed SKU is unverified. Historical observation retained; superseded for current costing by timber_evolution_esc_spmxae70e_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_esc_spmxae70e_horizon_20261020",
+      "product_id": "spektrum_spmxae70e",
+      "amount_minor": 7499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 ESC",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One SPMXAE70E 70A ESC at $74.99, listed in stock. The current BNF manual names this ESC. The price is a reference-aircraft offer; connector and exact installed revision in the fictional build remain unverified."
     },
     {
       "id": "timber_evolution_fuselage_efl105251_horizon_20261015",
@@ -1748,7 +1848,27 @@
       "source_url": "https://www.horizonhobby.com/product/fuselage-turbo-timber-evolution-1.5m/EFL105251.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Candidate reference only; package contents do not confirm canopy and fittings coverage required by fuselage_main."
+      "notes": "Observed 2026-10-15. Candidate reference only; package contents do not confirm canopy and fittings coverage required by fuselage_main. Historical observation retained; superseded for current costing by timber_evolution_fuselage_efl105251_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_fuselage_efl105251_horizon_20261020",
+      "product_id": "e_flite_efl105251",
+      "amount_minor": 5499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 fuselage",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/fuselage-turbo-timber-evolution-1.5m/EFL105251.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105251 fuselage at $54.99, listed in stock and compatible with Turbo Timber Evolution BNF/PNP. The listing does not confirm all canopy and fittings needed by the modeled fuselage_main group; it remains unallocated."
     },
     {
       "id": "timber_evolution_gear_retainer_efl105255_horizon_20261016",
@@ -1768,7 +1888,27 @@
       "source_url": "https://www.horizonhobby.com/product/landing-gear-retainer-turbo-timber-evolution-1.5m/EFL105255.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Official listing identifies two landing-gear retaining plates and mounting screws. This is a small fitting set, not a complete landing gear or wheel assembly; no economic row is priced from it alone."
+      "notes": "Observed 2026-10-16. Official listing identifies two landing-gear retaining plates and mounting screws. This is a small fitting set, not a complete landing gear or wheel assembly; no economic row is priced from it alone. Historical observation retained; superseded for current costing by timber_evolution_gear_retainer_efl105255_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_gear_retainer_efl105255_horizon_20261020",
+      "product_id": "e_flite_efl105255",
+      "amount_minor": 599,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 retaining plates and 8 mounting screws",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-retainer-turbo-timber-evolution-1.5m/EFL105255.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105255 set at $5.99, listed in stock; the package contains two retaining plates and eight mounting screws and is named in the current manual. It is not a complete gear assembly and remains unallocated."
     },
     {
       "id": "timber_evolution_horizontal_stab_efl5259_horizon_20261015",
@@ -1788,7 +1928,27 @@
       "source_url": "https://www.horizonhobby.com/product/horizontal-stabilizer-with-tube-timber/EFL5259.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Candidate reference only; it does not cover the vertical tail included in tail_surfaces."
+      "notes": "Observed 2026-10-15. Candidate reference only; it does not cover the vertical tail included in tail_surfaces. Historical observation retained; superseded for current costing by timber_evolution_horizontal_stab_efl5259_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_horizontal_stab_efl5259_horizon_20261020",
+      "product_id": "e_flite_efl5259",
+      "amount_minor": 1999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 horizontal stabilizer with tube",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/horizontal-stabilizer-with-tube-timber/EFL5259.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL5259 horizontal stabilizer with tube at $19.99, listed in stock and named in the current manual. This does not include the modeled vertical tail, so tail_surfaces remains unpriced."
     },
     {
       "id": "timber_evolution_landing_gear_efl105254_horizon_20261016",
@@ -1808,7 +1968,27 @@
       "source_url": "https://www.horizonhobby.com/product/landing-gear-turbo-timber-evolution-1.5m/EFL105254.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Horizon Hobby lists this exact Turbo Timber Evolution replacement part and compatibility. The captured page does not enumerate the box contents. Candidate for the main landing-gear group only; do not infer wheel, spring, retainer, or tailwheel coverage."
+      "notes": "Observed 2026-10-16. Horizon Hobby lists this exact Turbo Timber Evolution replacement part and compatibility. The captured page does not enumerate the box contents. Candidate for the main landing-gear group only; do not infer wheel, spring, retainer, or tailwheel coverage. Historical observation retained; superseded for current costing by timber_evolution_landing_gear_efl105254_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_landing_gear_efl105254_horizon_20261020",
+      "product_id": "e_flite_efl105254",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 replacement landing-gear spare",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-turbo-timber-evolution-1.5m/EFL105254.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105254 landing-gear spare at $16.99, listed in stock and named in the older 2021 parts table. The current 2024 BNF manual instead lists EFL-1249; these are different revisions and are not combined or treated as interchangeable. Listing contents remain unspecified, so the offer is unallocated."
     },
     {
       "id": "timber_evolution_landing_springs_efl5268_horizon_20261016",
@@ -1828,7 +2008,27 @@
       "source_url": "https://www.horizonhobby.com/product/landing-gear-springs-pair-timber/EFL5268.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Official parts listing prices a pair of Timber landing-gear springs; the Turbo Timber Evolution manual lists EFL5268. Treat this as a candidate only because the existing EFL-1249 updated gear-set offer may overlap its contents."
+      "notes": "Observed 2026-10-16. Official parts listing prices a pair of Timber landing-gear springs; the Turbo Timber Evolution manual lists EFL5268. Treat this as a candidate only because the existing EFL-1249 updated gear-set offer may overlap its contents. Historical observation retained; superseded for current costing by timber_evolution_landing_springs_efl5268_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_landing_springs_efl5268_horizon_20261020",
+      "product_id": "e_flite_efl5268",
+      "amount_minor": 499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 pair of springs",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-springs-pair-timber/EFL5268.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL5268 spring pair at $4.99, listed in stock and named in the current manual. It may overlap the EFL-1249 updated gear set with heavy springs; no allocation is made without itemized contents."
     },
     {
       "id": "timber_evolution_led_controller_efla521_horizon_20261015",
@@ -1848,7 +2048,27 @@
       "source_url": "https://www.horizonhobby.com/product/led-controller-timber/EFLA521.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Controller alone does not value the wiring and navigation LED hardware in wiring_lighting; candidate reference only."
+      "notes": "Observed 2026-10-15. Controller alone does not value the wiring and navigation LED hardware in wiring_lighting; candidate reference only. Historical observation retained; superseded for current costing by timber_evolution_led_controller_efla521_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_led_controller_efla521_horizon_20261020",
+      "product_id": "e_flite_efla521",
+      "amount_minor": 1399,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 LED controller",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/led-controller-timber/EFLA521.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFLA521 LED controller at $13.99, listed in stock and named in the current manual. This controller does not cover the modeled wiring and navigation LEDs; wiring_lighting remains unpriced."
     },
     {
       "id": "timber_evolution_motor_spm1012_horizon_20261015",
@@ -1868,7 +2088,27 @@
       "source_url": "https://www.horizonhobby.com/product/spektrum-avian-2815-800kv-brushless-outrunner-motor/SPM-1012.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. One 800Kv motor listing matches the fictional inventory's class, not a verified installed SKU. Cinch collet prop adapter is sold separately. Use only as a price proxy."
+      "notes": "Observed 2026-10-15. One 800Kv motor listing matches the fictional inventory's class, not a verified installed SKU. Cinch collet prop adapter is sold separately. Use only as a price proxy. Historical observation retained; superseded for current costing by timber_evolution_motor_spm1012_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_motor_spm1012_horizon_20261020",
+      "product_id": "spektrum_spm_1012",
+      "amount_minor": 7499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 motor",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spektrum-accessories-avian-2815-800kv-brushless-outrunner-motor/SPM-1012.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One SPM-1012 Avian 2815-800Kv motor at $74.99, listed in stock. The current BNF manual identifies this motor; the prop adapter is sold separately. This price references the aircraft product but does not establish the fictional build’s installed condition."
     },
     {
       "id": "timber_evolution_pnp_aircraft",
@@ -1888,7 +2128,7 @@
       "source_url": "https://www.horizonhobby.com/product/e-flite-turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. PNP includes airframe, six installed metal-geared servos, motor, 70A ESC, floats and slats; receiver, transmitter, 3S/4S 2200–5000mAh battery and charger are separate. PNP is not RTF."
+      "notes": "Observed 2026-10-15. PNP includes airframe, six installed metal-geared servos, motor, 70A ESC, floats and slats; receiver, transmitter, 3S/4S 2200–5000mAh battery and charger are separate. PNP is not RTF. Historical source record retained; superseded for current review by timber_evolution_pnp_aircraft_horizon_20261020, rechecked 2026-10-20."
     },
     {
       "id": "timber_evolution_pnp_aircraft_horizon_20261015",
@@ -1908,7 +2148,27 @@
       "source_url": "https://www.horizonhobby.com/product/e-flite-turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Package includes the aircraft, six installed metal-geared servos, one brushless motor, one 70 A ESC, slats and floats. Receiver, transmitter, 3S/4S battery and charger are separate. Alternative package reference only; do not add to standalone component values."
+      "notes": "Observed 2026-10-15. Package includes the aircraft, six installed metal-geared servos, one brushless motor, one 70 A ESC, slats and floats. Receiver, transmitter, 3S/4S battery and charger are separate. Alternative package reference only; do not add to standalone component values. Historical observation retained; superseded for current costing by timber_evolution_pnp_aircraft_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_pnp_aircraft_horizon_20261020",
+      "product_id": "e_flite_efl105275b",
+      "amount_minor": 29999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "pnp_aircraft_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 aircraft package",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One PNP aircraft package, listed in stock at $299.99. The package includes six servos, motor, 70A ESC, slats, and floats; receiver, transmitter, battery, and charger are separate. This is a whole-aircraft alternative, not a parts offer or complete fictional-build valuation."
     },
     {
       "id": "timber_evolution_propeller_efl5962_horizon_20261015",
@@ -1928,7 +2188,27 @@
       "source_url": "https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. One propeller only. Separate spinner is required for the modeled propeller_main group, so this offer does not price that group."
+      "notes": "Observed 2026-10-15. One propeller only. The physical inventory row combines propeller and spinner; this offer prices the blade subcomponent only, separate from EFL17553 spinner_main. Rechecked 2026-10-20; use the new dated observation for current costing."
+    },
+    {
+      "id": "timber_evolution_propeller_efl5962_horizon_20261020",
+      "product_id": "e_flite_efl5962",
+      "amount_minor": 799,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL5962 three-blade 11 x 7.3 propeller at $7.99, listed in stock. The current BNF manual lists this exact replacement part. This offer prices only the blade component; the physical inventory’s combined propeller_main assembly also includes a separately priced spinner."
     },
     {
       "id": "timber_evolution_receiver_spm1032_horizon_20261015",
@@ -1948,7 +2228,27 @@
       "source_url": "https://www.horizonhobby.com/product/ar637t-dsmx-6-channel-as3x-and-safe-telemetry-receiver/SPM-1032.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Current AR637T+ listing used as a generic receiver price proxy. PNP excludes a receiver; BNF includes the older AR637TA. Neither package establishes this SKU as the fictional build's installed receiver."
+      "notes": "Observed 2026-10-15. Current AR637T+ listing used as a generic receiver price proxy. PNP excludes a receiver; BNF includes the older AR637TA. Neither package establishes this SKU as the fictional build's installed receiver. Historical observation retained; superseded for current costing by timber_evolution_receiver_spm1032_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_receiver_spm1032_horizon_20261020",
+      "product_id": "spektrum_spm_1032",
+      "amount_minor": 8499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/ar637t-dsmx-6-channel-as3x-and-safe-telemetry-receiver/SPM-1032.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Official Horizon product/category listing; rechecked 2026-10-20. Direct detail-page retrieval timed out.",
+      "notes": "Observed 2026-10-20. One AR637T+ receiver (SPM-1032) at $84.99, listed in stock; current product/category results showed the offer, while the detail page timed out during review. This is a receiver price proxy only: the BNF package includes an older AR637TA/SPMAR637T, and the fictional installed receiver is unverified."
     },
     {
       "id": "timber_evolution_replacement_landing_gear",
@@ -1968,7 +2268,7 @@
       "source_url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Manufacturer lists compatibility with Turbo Timber Evolution 1.5m PNP EFL105275B and BNF EFL105250B."
+      "notes": "Observed 2026-10-15. Manufacturer lists compatibility with Turbo Timber Evolution 1.5m PNP EFL105275B and BNF EFL105250B. Historical source record retained; superseded for current review by timber_evolution_replacement_landing_gear_horizon_20261020, rechecked 2026-10-20."
     },
     {
       "id": "timber_evolution_replacement_landing_gear_horizon_20261015",
@@ -1988,7 +2288,27 @@
       "source_url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. Page lists compatibility with Turbo Timber Evolution 1.5m PNP and BNF. Contents do not establish coverage of both main gear and wheels, and do not cover the separate tailwheel and fork; left unbound."
+      "notes": "Observed 2026-10-15. Page lists compatibility with Turbo Timber Evolution 1.5m PNP and BNF. Contents do not establish coverage of both main gear and wheels, and do not cover the separate tailwheel and fork; left unbound. Historical observation retained; superseded for current costing by timber_evolution_replacement_landing_gear_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_replacement_landing_gear_horizon_20261020",
+      "product_id": "e_flite_efl_1249",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "replacement_landing_gear_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 updated landing gear set",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL-1249 updated gear set with heavy-duty springs at $16.99, listed in stock. The current 2024 BNF manual lists this SKU and the page names PNP/BNF compatibility. The listing does not enumerate all contents, so it remains unallocated to gear_main/gear_tail."
     },
     {
       "id": "timber_evolution_replacement_wing",
@@ -2008,7 +2328,7 @@
       "source_url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Manufacturer notes servos are not included; verify the wing assembly contents and reuse or replace servos separately."
+      "notes": "Observed 2026-10-15. Manufacturer notes servos are not included; verify the wing assembly contents and reuse or replace servos separately. Historical source record retained; superseded for current review by timber_evolution_replacement_wing_horizon_20261020, rechecked 2026-10-20."
     },
     {
       "id": "timber_evolution_replacement_wing_horizon_20261015",
@@ -2028,7 +2348,27 @@
       "source_url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. The page says servos are not included. Candidate reference only: it does not cover the full wing_main group, which also includes flaps, ailerons and wing servos."
+      "notes": "Observed 2026-10-15. The page says servos are not included. Candidate reference only: it does not cover the full wing_main group, which also includes flaps, ailerons and wing servos. Historical observation retained; superseded for current costing by timber_evolution_replacement_wing_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_replacement_wing_horizon_20261020",
+      "product_id": "e_flite_efl105252",
+      "amount_minor": 5999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "replacement_wing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 wing assembly",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105252 wing assembly at $59.99, listed in stock. The listing explicitly excludes servos; the current BNF manual names six SPMSA370 servo positions, four allocated to this wing row and two to tail_servos without overlap."
     },
     {
       "id": "timber_evolution_servo_spmsa370_horizon_20261015",
@@ -2048,7 +2388,27 @@
       "source_url": "https://www.horizonhobby.com/product/a370-digital-9g-metal-gear-aircraft-servo/SPMSA370.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. One 9g metal-gear servo is a generic class proxy for the two modeled tail servos. Page shows Backorder with an October 2026 estimate. Exact installed servos are unverified; do not use this offer to value the wing group."
+      "notes": "Observed 2026-10-15. One 9g metal-gear servo is a generic class proxy for the two modeled tail servos. Page shows Backorder with an October 2026 estimate. Exact installed servos are unverified; do not use this offer to value the wing group. Historical observation retained; superseded for current costing by timber_evolution_servo_spmsa370_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_servo_spmsa370_horizon_20261020",
+      "product_id": "spektrum_spmsa370",
+      "amount_minor": 1399,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Backorder; estimated October 2026",
+      "sold_package_quantity": 1,
+      "package_description": "1 servo",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/a370-digital-9g-metal-gear-aircraft-servo/SPMSA370.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One SPMSA370 9g metal-gear servo per package at $13.99, listed on backorder with an October 2026 estimate. The current BNF manual and package list six installed servos; four wing units plus two tail units are allocated once."
     },
     {
       "id": "timber_evolution_spinner_efl17553_horizon_20261015",
@@ -2068,7 +2428,27 @@
       "source_url": "https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
-      "notes": "Observed 2026-10-15. One spinner only. This is not a combined propeller-and-spinner offer and is not attached to propeller_main."
+      "notes": "Observed 2026-10-15. One spinner only; not a propeller/spinner kit. The current dossier records it as a separate spinner_main economic line with no duplicate physical inventory ID. Rechecked 2026-10-20; use the new dated observation for current costing."
+    },
+    {
+      "id": "timber_evolution_spinner_efl17553_horizon_20261020",
+      "product_id": "e_flite_efl17553",
+      "amount_minor": 899,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 spinner",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL17553 Turbo Timber spinner at $8.99, listed in stock; the listing names Evolution BNF/PNP compatibility and the current BNF manual lists this part. It is a separate spinner-only offer, not a propeller/spinner kit."
     },
     {
       "id": "timber_evolution_wheel_set_efl5258_horizon_20261016",
@@ -2088,7 +2468,27 @@
       "source_url": "https://www.horizonhobby.com/product/wheel-set-timber/EFL5258.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. The Turbo Timber Evolution manufacturer manual lists EFL5258 as a replacement part, and the current product page confirms two 108 mm main wheels plus one tailwheel. The pack spans main- and tail-wheel subparts; keep it unallocated until it can be counted once without implying the missing tail fork or duplicating the set across rows."
+      "notes": "Observed 2026-10-16. The Turbo Timber Evolution manufacturer manual lists EFL5258 as a replacement part, and the current product page confirms two 108 mm main wheels plus one tailwheel. The pack spans main- and tail-wheel subparts; keep it unallocated until it can be counted once without implying the missing tail fork or duplicating the set across rows. Historical observation retained; superseded for current costing by timber_evolution_wheel_set_efl5258_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_wheel_set_efl5258_horizon_20261020",
+      "product_id": "e_flite_efl5258",
+      "amount_minor": 1999,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 main wheels (108 mm) and 1 tailwheel",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wheel-set-timber/EFL5258.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL5258 wheel set at $19.99, listed in stock; contents are two 108mm main wheels and one tailwheel. This single package spans both gear_main and gear_tail, so it remains unallocated and cannot be counted twice."
     },
     {
       "id": "timber_evolution_wing_plugs_efl105257_horizon_20261016",
@@ -2108,7 +2508,27 @@
       "source_url": "https://www.horizonhobby.com/product/wing-plug-set-turbo-timber-evolution-1.5m/EFL105257.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-16. Horizon Hobby describes two wing plugs. The physical inventory does not identify a wing-plug or connector line, so this remains unassigned and is excluded from every row subtotal."
+      "notes": "Observed 2026-10-16. Horizon Hobby describes two wing plugs. The physical inventory does not identify a wing-plug or connector line, so this remains unassigned and is excluded from every row subtotal. Historical observation retained; superseded for current costing by timber_evolution_wing_plugs_efl105257_horizon_20261020, rechecked 2026-10-20."
+    },
+    {
+      "id": "timber_evolution_wing_plugs_efl105257_horizon_20261020",
+      "product_id": "e_flite_efl105257",
+      "amount_minor": 1499,
+      "currency": "USD",
+      "observed_on": "2026-10-20",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "Backorder; estimated January 2027",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 wing plugs",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wing-plug-set-turbo-timber-evolution-1.5m/EFL105257.html",
+      "source_file": "price-research-fleet.json",
+      "evidence_quality": "Direct official US retailer product page; rechecked 2026-10-20.",
+      "notes": "Observed 2026-10-20. One EFL105257 set of two wing plugs at $14.99, on backorder with January 2027 estimate and named in the current manual. The fictional physical inventory has no separate connector row, so this offer remains unallocated."
     },
     {
       "id": "topflite-monokote-roll-topq0208",

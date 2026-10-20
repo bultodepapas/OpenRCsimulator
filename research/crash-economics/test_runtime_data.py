@@ -160,17 +160,37 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertEqual(set(bound + excluded), source_ids)
             self.assertTrue(any(row["unit_minor"] is None for row in parts))
         electric = self.dossiers["turbo-lumber-evolution"]
-        # CR-39d: the priced electric propeller is bound to the strike event.
+        # The physical inventory combines blade and spinner, while economics separates
+        # the automatic blade replacement from the separately inspected spinner value.
         self.assertEqual(electric["propeller_component_id"], "propeller_main")
         self.assertEqual(electric["contact_components"]["propeller/propulsion_main"], ["propeller_main"])
-        self.assertEqual(electric["propeller_inspection_ids"], ["motor_main", "fuselage_main"])
+        self.assertEqual(electric["contact_components"]["probe_spinner_tip"], ["spinner_main", "motor_main", "fuselage_main"])
+        self.assertEqual(electric["propeller_inspection_ids"], ["spinner_main", "motor_main", "fuselage_main"])
         prop = next(row for row in electric["components"] if row["id"] == "propeller_main")
-        self.assertEqual(prop["unit_minor"], 1698)
-        self.assertIsNone(prop["offer_id"])  # Composite estimate, not a fabricated retail SKU.
-        self.assertEqual(prop["price_basis"], "estimated")
+        self.assertEqual(prop["unit_minor"], 799)
+        self.assertEqual(prop["offer_id"], "timber_evolution_propeller_efl5962_horizon_20261020")
+        self.assertEqual(prop["price_basis"], "price_proxy")
+        self.assertEqual(prop["physical_inventory_ids"], ["propeller_main"])
+        spinner = next(row for row in electric["components"] if row["id"] == "spinner_main")
+        self.assertEqual(spinner["quantity"], 1)
+        self.assertEqual(spinner["unit_minor"], 899)
+        self.assertEqual(spinner["offer_id"], "timber_evolution_spinner_efl17553_horizon_20261020")
+        self.assertEqual(spinner["price_basis"], "price_proxy")
+        self.assertEqual(spinner["physical_inventory_ids"], [])
+        battery = next(row for row in electric["components"] if row["id"] == "battery_main")
+        self.assertEqual(battery["offer_id"], "timber_evolution_battery_proxy_horizon_20261020")
+        self.assertEqual(battery["unit_minor"], 6999)
+        self.assertEqual(self.context["offer_by_id"][battery["offer_id"]]["availability"], "Backorder; estimated October 2026")
         selected = {row["offer_id"] for row in electric["components"]}
-        self.assertNotIn("timber_evolution_pnp_aircraft_horizon_20261015", selected)
-        self.assertNotIn("timber_evolution_bnf_aircraft_horizon_20261015", selected)
+        self.assertNotIn("timber_evolution_pnp_aircraft_horizon_20261020", selected)
+        self.assertNotIn("timber_evolution_bnf_aircraft_horizon_20261020", selected)
+        current_timber_offers = [
+            offer for offer_id, offer in self.context["offer_by_id"].items()
+            if offer_id.startswith("timber_evolution_") and offer_id.endswith("_horizon_20261020")
+        ]
+        self.assertEqual(len(current_timber_offers), 21)
+        self.assertTrue(all(offer["observed_on"] == "2026-10-20" for offer in current_timber_offers))
+        self.assertEqual(self.context["price_date"], "2026-10-20")
         self.assertEqual(self.dossiers["xcell-60-research"]["components"], [])
 
     def test_p51_canister_count_and_selected_variant_do_not_close_exhaust_scope(self) -> None:
@@ -218,7 +238,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
         offers = copy.deepcopy(self.context["offer_by_id"])
         result = build_runtime._baseline_components({"lines": [wing]}, offers)[0]
         self.assertEqual(result["unit_minor"], 11595)
-        self.assertIn("4 x timber_evolution_servo_spmsa370_horizon_20261015", result["notes"])
+        self.assertIn("4 x timber_evolution_servo_spmsa370_horizon_20261020", result["notes"])
         self.assertIn("Backorder", result["notes"])
         self.assertIn("https://", result["notes"])
         offers[wing["price_constituents"][1]["offer_id"]]["amount_minor"] += 1
@@ -227,7 +247,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_composite_references_counts_and_overrides_fail_closed(self) -> None:
         source = build_catalog.read(build_catalog.HERE / "aircraft-costing.json")
         fleet = next(row for row in source["fleet"] if row["aircraft_id"] == "turbo-lumber-evolution")
-        line = next(row for row in fleet["dossier"]["lines"] if row["id"] == "propeller_main")
+        line = next(row for row in fleet["dossier"]["lines"] if row["id"] == "wing_main")
         variants = []
         for quantity in [0, -1, True, 1.5, 1000001]:
             candidate = copy.deepcopy(line)
@@ -250,9 +270,12 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_mixed_observation_dates_preserve_history(self) -> None:
         catalog = build_catalog.build()["catalog.json"]
         offers = {row["id"]: row for row in catalog["observations"]}
-        self.assertEqual(catalog["observed_on"], "2026-10-16")
+        self.assertEqual(catalog["observed_on"], "2026-10-20")
         self.assertEqual(offers["apc-lp12060"]["observed_on"], "2026-10-15")
         self.assertEqual(offers["timber_evolution_wheel_set_efl5258_horizon_20261016"]["observed_on"], "2026-10-16")
+        self.assertEqual(offers["timber_evolution_battery_proxy_horizon_20261020"]["observed_on"], "2026-10-20")
+        self.assertEqual(offers["timber_evolution_battery_proxy_horizon_20261020"]["availability"], "Backorder; estimated October 2026")
+        self.assertIn("superseded", offers["timber_evolution_battery_proxy"]["notes"].lower())
 
     def test_new_offer_date_requires_matching_dated_evidence(self) -> None:
         original = build_catalog.read

@@ -790,7 +790,8 @@ static func _load_from_manifest_source(
 		"updated_at_unix": int(record["updated_at_unix"]),
 		"recovered_from_manifest_backup": recovered,
 	}
-	var stored_profile: Dictionary = PresentationProfile.defaults()
+	# A record predating appearance profiles retains historical absence semantics.
+	var stored_profile: Dictionary = PresentationProfile.defaults({}, PresentationProfile.LEGACY_VERSION)
 	var stored_profile_available: bool = true
 	if record.has("presentation_profile"):
 		var profile_result: Dictionary = PresentationProfile.validate_stored(record["presentation_profile"])

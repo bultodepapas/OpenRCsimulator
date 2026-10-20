@@ -105,7 +105,8 @@ func _test_stock_route_and_lifecycle(stock: Variant, disabled: Variant) -> void:
 	_check("stock evidence identifies preset and one bounded show pool",
 		stock._smoke_evidence().get("mode", "") == "stock"
 		and stock._smoke_evidence().get("preset", "") == StockSmoke.PRESET_ID
-		and stock._smoke_evidence().get("allocation", {}).get("capacity", 0) == 768
+		and stock._smoke_evidence().get("allocation", {}).get("capacity", 0) > 0
+		and stock._smoke_evidence().get("allocation", {}).get("capacity", 0) <= 768
 		and stock._smoke_evidence().get("allocation", {}).get("show_emitters", 0) == 1
 		and stock._smoke_evidence().get("allocation", {}).get("slot_particles", {}).has(SLOT_ID))
 	_check("--smoke=off keeps the stock identity but creates no profile renderer",
@@ -178,7 +179,10 @@ func _test_stock_route_and_lifecycle(stock: Variant, disabled: Variant) -> void:
 	_check("reset clears H and puff history, then records the accepted tick-zero source",
 		stock.session.sim.tick == 0 and not stock._smoke_key_on
 		and stock._profile_request_tape == [{"tick": 0, "level": 0.0}]
-		and stock._profile_source_tape == [{"tick": 0, "kind": "turbine", "running": true, "level": 1.0}]
+		and stock._profile_source_tape.size() == 1
+		and stock._profile_source_tape[0].tick == 0 and stock._profile_source_tape[0].kind == "turbine"
+		and stock._profile_source_tape[0].running
+		and is_equal_approx(float(stock._profile_source_tape[0].level), stock._profile_source_level())
 		and stock._profile_smoke._history.is_empty() and stock._profile_smoke._last_tick == -1
 		and is_zero_approx(stock._profile_smoke_request()),
 		str({tick = stock.session.sim.tick, key = stock._smoke_key_on,

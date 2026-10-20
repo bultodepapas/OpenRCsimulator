@@ -54,6 +54,12 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 		push_error("lake: cannot build matching physical ground surfaces")
 		return null
 	var node := Terrain.build(lake, ground_material, surfaces.rects, lighting)
+	# Bind the already licensed soil maps after building the basin. The geometry
+	# source stays byte-identical to the pinned, verified lake bake.
+	var bank_material := (node.get_node("Basin") as MeshInstance3D).material_override as ShaderMaterial
+	bank_material.set_shader_parameter("rc_dirt_albedo", load("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
+	bank_material.set_shader_parameter("rc_dirt_normal", load("res://assets/landscape/rc-ground/dirt-normal.jpg"))
+	bank_material.set_shader_parameter("rc_dirt_roughness", load("res://assets/landscape/rc-ground/dirt-roughness.jpg"))
 	Terrain.mask_parameters(ground_material, lake)
 	ground_material.set_shader_parameter("lake_mask_mode", 1)
 	field_node.add_child(node)
