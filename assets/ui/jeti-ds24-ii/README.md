@@ -1,0 +1,5 @@
+# JETI DS-24 II Carbon Line Orange photo
+
+`front-original.jpg` is the frontal product photograph of the Duplex DS-24 II Carbon Line Orange anodized, downloaded from [JETI's product page](https://www.jetimodel.com/katalog/duplex-ds-24-ii-carbon-line-orange-anodized.htm) on 2026-10-20. Original image: `https://www.jetimodel.com/data/products/40176320_3927_ds24ii-cloa-002-kopie-jpg.jpg` (1200 × 1273 pixels). Copyright JETI model s.r.o. The project owner states that JETI has granted permission to use its website photographs and resources for this simulator. This is a source asset, not a general-purpose license grant.
+
+Install `tools/ui/requirements.txt`, then run `python tools/ui/build_jeti_ds24_overlay.py` from the repository root to reproduce the cropped transparent runtime asset at `app/assets/ui/jeti_ds24_ii_orange.png`. The script preserves the transmitter and removes the connected white studio background; the flight overlay replaces the photographed LCD and stick caps with live simulation indications.

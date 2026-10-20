@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "49fbc2e1-9c38-40ab-83cb-acede73eec06",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--editor",
+    "--import",
+    "--quit"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T15:18:58.560009+00:00",
+  "label": "radio-import",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lights\\checks\\radio-import-5slhxuut\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lights\\checks\\radio-import-5slhxuut\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.016,
+  "log_bytes": 2687,
+  "log_sha256": "765a21f1173593c00034fcd8c6452c9583630d6f1b8b0793bbbd5f5f0785f0d7"
+}

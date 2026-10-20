@@ -27,6 +27,8 @@ const IDS := Settings.IDS
 ## Numbers refresh at 10 Hz (readable, less churn); sticks and the visibility of warnings follow every frame.
 const TEXT_PERIOD_S := 0.1
 const MARGIN := 12.0
+## Reserve space beneath O5 for the taller, photographed DS-24 II in O2 at 720p.
+const TELEMETRY_RISE := 64.0
 const FLIGHT_LAYER := 1
 ## While the Overlays dialog is open: above the pause menu (10), below the dialog (≥ 12), so every switch shows at once.
 const PREVIEW_LAYER := 11
@@ -97,6 +99,8 @@ func _build() -> void:
 	_place(WindOverlay.new(), Control.PRESET_TOP_RIGHT)
 	var telemetry := TelemetryPanel.new()
 	_place(telemetry, Control.PRESET_CENTER_RIGHT)
+	telemetry.offset_top -= TELEMETRY_RISE
+	telemetry.offset_bottom -= TELEMETRY_RISE
 	_place(WarningsBar.new(), Control.PRESET_CENTER_TOP)
 	var controls := ControlsGuide.new()
 	_place(controls, Control.PRESET_TOP_LEFT)

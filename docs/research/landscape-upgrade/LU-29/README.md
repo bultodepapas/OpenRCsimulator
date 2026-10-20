@@ -25,6 +25,17 @@ Twelve reused village houses form three small hillside clusters. Their generated
 placements refer to the current SRTM-derived **visual** mountain mesh and its
 source hash. Warm rooms use stable seeded occupancy, not random flickering.
 Exact geometry samples the ridge's actual triangles rather than bilinear heights.
+Buildings remain vertical. Two-tier foundations cover the local slope; the
+maximum terrain variation under a house is 0.714 m and the maximum foundation
+height is 0.814 m. The houses and foundations total 2,376 triangles.
+
+The installed lattice mast is [Radio tower by Poly by Google](https://poly.pizza/m/d1zYJG7rJGY),
+CC BY 3.0, uniformly scaled to 65 m. The original GLB and embedded texture are
+unchanged. [Runtime attribution](../../../../app/assets/landscape/regional-lighting/LICENSES.md)
+and [source provenance](../../../../assets/landscape/regional-lighting/RADIO_TOWER_PROVENANCE.json)
+retain its exact identity. A Quaternius roof-style TV antenna was downloaded and
+rejected after native review: enlarging it produced implausibly large panels.
+Its source/license record remains outside the runtime application.
 
 Beyond turbines, antennas and hillside houses, the following additional details
 are installed:
@@ -53,7 +64,10 @@ rail crossing. Power pylons are not mislabeled as communications antennas.
 `regional_lighting.gd` batches optics in 600 m cells, sharing three materials.
 [Godot MultiMesh guidance](https://docs.godotengine.org/en/stable/classes/class_multimesh.html)
 motivates spatial grouping so distant instances do not force the whole region to
-render. Hardware is merged by cell. There are **zero new dynamic Light3D nodes**,
+render. Hardware is merged by cell. The nearby shed uses the retained Innerscene
+CC0 lamp head; distant heads use a ten-triangle envelope derived from that
+asset's measured bounds. This keeps fixture geometry at 3,418 triangles instead
+of 119,338. There are **zero new dynamic Light3D nodes**,
 shadow maps or per-object frame callbacks.
 
 The existing airfield dusk controller updates the three shared materials.
@@ -80,3 +94,43 @@ Native captures use `capture_landscape_upgrade.gd`, `--time_of_day=night` or
 `--botanical_clock=1.0` samples the off phase.
 `--regional_lighting=off` hides only the new region for matched timing captures;
 the canonical lake, vegetation, scenery and camera remain identical.
+
+Accepted [night](night/), [dusk](dusk/), [noon](noon/) and [flash-off](flash-off/)
+captures retain their native reports. The [pixel check](flash-check.json) finds
+all four turbine flashes: peak red values fall from 93–219 in the on phase to
+11–32 in the off phase. The visible antenna top falls from 201 to 0.
+Rotor geometry and view-dependent occlusion can partially hide a beacon.
+
+The installed addition contains **157 optical instances in 39 spatial/material
+batches** and **9,492 triangles** including optics, two towers, houses and
+fixtures. Not all batches are visible from each camera.
+
+Three alternating matched pairs, 60 warm-up plus 360 measured frames per view,
+RTX 3090 / Compatibility / 1280×720 / 4×MSAA:
+
+| Night view | Median p95, hidden → visible | Draws, hidden → visible |
+| --- | --- | --- |
+| Pilot north | 1.717 → 2.039 ms | 97 → 119 |
+| Farm | 1.436 → 1.551 ms | 40 → 71 |
+| Turbines | 1.211 → 1.237 ms | 12 → 21 |
+| Raised north horizon | 1.226 → 1.553 ms | 51 → 72 |
+
+[Measurements](performance.json) and [raw per-frame reports](bench/) retain
+the spread between runs. These are wall-clock frame intervals, not isolated GPU
+timings; they do not qualify a slower GPU. Matching checks retain identical
+canonical lake identity/geometry and existing plant/population counts.
+
+Checked results:
+
+- Regional lighting: 182 headless checks; 251 native checks, including custom
+  instance buffers that the dummy headless renderer does not retain.
+- Existing airfield lighting: 54 checks; marker optics: 33 checks.
+- Landscape scenery eligibility: 7 checks; landscape/Home/flight switching:
+  49 checks.
+- Hillside helper: 57 checks; generator `--check` matches retained JSON.
+- Native import, shader compilation and the accepted captures pass the checked
+  runner. The pre-existing unsupported-maple-wind warning remains.
+
+Logs/verdicts are retained under [checks](checks/); [source identities](source-identity.json)
+record the implementation used for capture. These focused checks do not replace
+the complete physics/export suite.

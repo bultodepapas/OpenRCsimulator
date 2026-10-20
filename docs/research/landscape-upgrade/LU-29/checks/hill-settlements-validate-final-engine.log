@@ -1,0 +1,60 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok twelve metadata entries
+ok three clusters and twelve houses
+ok ridge source SHA is retained
+ok generated layout matches ridge source
+ok one static batched mesh
+ok one prefab-color surface
+ok distant batch does not cast shadows
+ok triangle metadata matches batched geometry
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok house IDs are unique
+ok house lies inside the authored hill region
+ok house basis is normalized
+ok house basis remains right-handed
+ok build is deterministic
+hill settlements: 57 checks, 0 failed; stats={ "clusters": 3, "houses": 12, "triangles": 2376, "house_triangles": 2136, "foundation_triangles": 240, "batches": 1, "max_slope_deg": 2.91376457027934, "max_footing_range_m": 0.71439022498049, "max_foundation_height_m": 0.81439023437551, "profile_sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8" }

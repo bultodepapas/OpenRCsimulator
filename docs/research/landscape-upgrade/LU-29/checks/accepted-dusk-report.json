@@ -1,0 +1,57 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "70404e29-6f1d-4de6-be40-5503d6643fc2",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--script",
+    "res://tests/capture_landscape_upgrade.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/lights/accepted-dusk",
+    "--cases=plain_village,plain_farm,regional_turbines,regional_antenna,regional_hills,regional_hill_close,regional_church",
+    "--frames=180",
+    "--time-of-day=18:15",
+    "--botanical_clock=0.25"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T15:25:24.123923+00:00",
+  "label": "accepted-dusk",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lights\\checks\\accepted-dusk-lz8o1mf_\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\lights\\checks\\accepted-dusk-lz8o1mf_\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371911881291845 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.89,
+  "log_bytes": 981,
+  "log_sha256": "08e1795a71a515b56a69ea363d5da984fb242445c366080d28d8a0b629d867c8"
+}

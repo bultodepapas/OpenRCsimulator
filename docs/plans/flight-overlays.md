@@ -1,9 +1,9 @@
 # Flight overlays plan
 
-**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
+**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-05-R1 adds the photographed JETI DS-24 II; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
 **Owns:** `app/render/overlays/`, `app/ui/overlays_dialog.gd`, `app/tests/test_overlay_*.gd`, `docs/research/flight-overlays/`.
 **Coordinated, not owned:** the seams in `app/main.gd` (main line), `app/app_root.gd`, `app/ui/pause_menu.gd`, `app/ui/controls_reference.gd`, `app/app_state/preferences.gd`, `app/i18n/es.po` (menu track). `render/hud.gd` and `render/panel.gd` are unchanged and still build the diagnostic text.
-**Evidence:** [HUD-01…10](../research/flight-overlays/HUD-01-10/README.md).
+**Evidence:** [HUD-01…10](../research/flight-overlays/HUD-01-10/README.md), [HUD-05-R1](../research/flight-overlays/HUD-05-R1/README.md).
 
 ## 1. What exists
 
@@ -12,7 +12,7 @@ Home flights show eight independent overlays on one `CanvasLayer` (`render/overl
 | ID | Overlay | Anchor | Content |
 | --- | --- | --- | --- |
 | O1 | Flight data | bottom left | airspeed, ground speed, height above ground, vertical speed, throttle, slant distance from the pilot's eye, flight time |
-| O2 | Transmitter | bottom right | both gimbals (Mode 1/2), trim marks, input device, ARMED/SAFE, rate profile |
+| O2 | JETI DS-24 II transmitter | bottom right | official Carbon Line Orange frontal photo, simulated LCD and live gimbals (Mode 1/2), trim marks, input device, radio state and rate profile |
 | O3 | Warnings | top centre | FAILSAFE, RADIO SAFE, STALL, LOW, FAR, BATTERY LOW, EXPERIMENTAL; chips wrap within 640 px; hidden when empty |
 | O4 | Wind | top right | downwind arrow relative to the view; speed, "from" bearing and updraft on fixed lines |
 | O5 | Telemetry | right | α, β, pitch/bank angle, heading, load factor, engine rpm |
@@ -56,6 +56,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-03 | ×, presets, F2/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |
 | HUD-04 | O1 Flight data | unit-formatted values in a live flight scene / done |
 | HUD-05 | O2 Transmitter | Mode 1/2 stick and trim layout checks / done |
+| HUD-05-R1 | JETI DS-24 II Carbon Line Orange visual with live controls and LCD | [source, captures and layout verification](../research/flight-overlays/HUD-05-R1/README.md) / done |
 | HUD-06 | `[hud]` preferences, Pause → Flight overlays dialog | round trip and per-key fallback / done; no UI-driver capture of the dialog yet |
 | HUD-07 | O4 Wind | arrow angle for view headings; calm hides the arrow / done |
 | HUD-08 | Height above ground and load factor | from existing public state; level n = 1, 60° turn n = 2, terrain AGL / done, no seam needed |

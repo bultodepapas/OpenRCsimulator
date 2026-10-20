@@ -1,0 +1,17 @@
+{
+  "app/render/landscape_upgrade/regional_lighting.gd": "aeaba1b1304259881bde6c172079727026af9f88e2a9d541e2341c4c447a11a4",
+  "app/render/landscape_upgrade/regional_beacon.gdshader": "a4acbe6152bf4e59925358bece49d28a8abbe779ddda95be6c1e3e1f18bd56fe",
+  "app/render/landscape_upgrade/regional_window.gdshader": "c6f8a54ef70122e921d4ec204738657a184b2aa73eba1ba7cb110ecd9e230de0",
+  "app/render/landscape_upgrade/regional_pool.gdshader": "111211814c739b33442615f4d3dfdc927bf17857cdb763e431bafff157b454e9",
+  "app/render/landscape_upgrade/hill_settlements.gd": "d7d6b59aa984e8ace28f28f8157f277026587673e9726b1fea8f5f7162d97420",
+  "app/render/landscape_upgrade/airfield_lighting.gd": "30d308f1baebc5799ad7dff31df56f9b8b89b4b2388a84415bc08e286d60d5c2",
+  "app/render/world/world.gd": "5505fac51abf12ffce891bda3618dd0636a0f476b39f3a25155a9e352b3f1143",
+  "app/tests/capture_landscape_upgrade.gd": "bd9ec70d27e9ea4aa176447174cae752507be0bd4a71122319ec86deff7f3aae",
+  "app/tests/test_regional_lighting.gd": "e51417e281a4d2ddfa743e188841db26b4b22711fa383edd49a691d9a2411c58",
+  "tools/scenery/bake_hill_settlements.py": "e1f07dae111d8c670376ffe90eaed90e511ac631a8736b2d8e510aab43335858",
+  "app/data/scenery/hill_settlements.json": "6c973ef75f63aac64a3a3ca1fe7f5343630b29a188feb22c51c7c9603bfaf128",
+  "app/data/scenery/default.json": "053acc415552b47f3e8e321928f646af6fb67a074a43406568ad23783c722bc5",
+  "app/data/fields/mountains.json": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+  "app/assets/landscape/regional-lighting/radio_tower.glb": "5dde0011e2545c9ff86b02c0401ea091ac1bd0efea6bac9ac32da68179d5776d",
+  "app/assets/landscape/night-lighting/lamp-head.glb": "41a34094abcb1d28a7e7873191c0828d8bee26a8035f9a33cb10c036306b7d4a"
+}

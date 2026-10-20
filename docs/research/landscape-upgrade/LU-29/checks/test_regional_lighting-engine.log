@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+LU-29 counts: { "shed_worklight": 1, "barn_loading": 2, "silo_access": 2, "occupied_house_windows": 45, "farm_upper_windows": 2, "house_porches": 20, "church_entrance": 1, "church_windows": 8, "turbine_beacons": 4, "turbine_service": 4, "rural_junctions": 3, "village_street_ends": 2, "farm_gate_bollards": 4, "hill_window_optics": 18, "antenna_top_beacons": 2, "antenna_mid_lights": 4, "antenna_service": 2, "antenna_towers": 2 }; optical batches: 39; optical instances: 157
+LU-29 regional lighting: 182 checks, 0 failures

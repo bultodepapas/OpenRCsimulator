@@ -1,0 +1,46 @@
+{
+  "regional_turbines": [
+    {
+      "pixel": [
+        290.161987304688,
+        361.272277832031
+      ],
+      "on_red_peak": 219,
+      "off_red_peak": 13
+    },
+    {
+      "pixel": [
+        537.853637695313,
+        359.154724121094
+      ],
+      "on_red_peak": 93,
+      "off_red_peak": 11
+    },
+    {
+      "pixel": [
+        734.722534179688,
+        357.785308837891
+      ],
+      "on_red_peak": 108,
+      "off_red_peak": 11
+    },
+    {
+      "pixel": [
+        906.589904785156,
+        356.869171142578
+      ],
+      "on_red_peak": 211,
+      "off_red_peak": 32
+    }
+  ],
+  "regional_antenna": [
+    {
+      "pixel": [
+        640.0,
+        269.951507568359
+      ],
+      "on_red_peak": 201,
+      "off_red_peak": 0
+    }
+  ]
+}

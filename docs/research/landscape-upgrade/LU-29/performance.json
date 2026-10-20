@@ -1,0 +1,125 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "width": 1280,
+  "height": 720,
+  "note": "Three alternating matched pairs; median of per-run p95 frame intervals, not isolated GPU timing.",
+  "cases": {
+    "horizon_raised120": {
+      "off": {
+        "p95_ms": [
+          1.141,
+          1.226,
+          1.396
+        ],
+        "median_p95_ms": 1.226,
+        "draws": [
+          51.0,
+          51.0,
+          51.0
+        ]
+      },
+      "on": {
+        "p95_ms": [
+          1.841,
+          1.265,
+          1.553
+        ],
+        "median_p95_ms": 1.553,
+        "draws": [
+          72.0,
+          72.0,
+          72.0
+        ]
+      },
+      "difference_ms": 0.32699999999999996
+    },
+    "pilot_north": {
+      "off": {
+        "p95_ms": [
+          1.857,
+          1.675,
+          1.717
+        ],
+        "median_p95_ms": 1.717,
+        "draws": [
+          97.0,
+          97.0,
+          97.0
+        ]
+      },
+      "on": {
+        "p95_ms": [
+          1.489,
+          2.174,
+          2.039
+        ],
+        "median_p95_ms": 2.039,
+        "draws": [
+          119.0,
+          119.0,
+          119.0
+        ]
+      },
+      "difference_ms": 0.32200000000000006
+    },
+    "plain_farm": {
+      "off": {
+        "p95_ms": [
+          1.436,
+          1.481,
+          1.321
+        ],
+        "median_p95_ms": 1.436,
+        "draws": [
+          40.0,
+          40.0,
+          40.0
+        ]
+      },
+      "on": {
+        "p95_ms": [
+          1.426,
+          1.551,
+          1.567
+        ],
+        "median_p95_ms": 1.551,
+        "draws": [
+          71.0,
+          71.0,
+          71.0
+        ]
+      },
+      "difference_ms": 0.11499999999999999
+    },
+    "regional_turbines": {
+      "off": {
+        "p95_ms": [
+          0.997,
+          1.28,
+          1.211
+        ],
+        "median_p95_ms": 1.211,
+        "draws": [
+          12.0,
+          12.0,
+          12.0
+        ]
+      },
+      "on": {
+        "p95_ms": [
+          1.237,
+          1.13,
+          1.371
+        ],
+        "median_p95_ms": 1.237,
+        "draws": [
+          21.0,
+          21.0,
+          21.0
+        ]
+      },
+      "difference_ms": 0.026000000000000023
+    }
+  }
+}
