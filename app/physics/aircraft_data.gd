@@ -146,8 +146,65 @@ static func _q(errors: PackedStringArray, path: String, node: Variant, unit: Str
 
 
 static func validate_and_derive(raw: Dictionary) -> Dictionary:
+	return _validate_with_domain(raw, {})
+
+
+## Compiler-generated virtual quantities only. File import never supplies a domain.
+## Bounds follow the exact dimensional transforms; all consistency/numerical gates
+## still evaluate the actual SI candidate. The Workshop validates its source first.
+static func validate_virtual_scale(raw: Dictionary, domain: Dictionary) -> Dictionary:
+	if raw.get("format") != FORMAT:
+		return _fail("Virtual scale requires a validated v2 source.")
+	var structural := Contract.validate(raw)
+	if not structural.is_empty(): return {ok = false, errors = structural, warnings = PackedStringArray(), model = {}}
+	var allowed := _virtual_domain_paths(raw)
+	for path: Variant in domain:
+		var factor: Variant = domain[path]
+		if not path is String or not allowed.has(path) or typeof(factor) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(factor)) or float(factor) < 1.0e-9 or float(factor) > 1.0e9:
+			return _fail("Invalid virtual quantity domain.")
+	return _validate_with_domain(raw, domain)
+
+
+## Only quantities transformed by the prescribed-RPM virtual compiler can have a
+## dimensional domain. Coefficients, controls, material data and source evidence cannot.
+static func _virtual_domain_paths(raw: Dictionary) -> Dictionary:
+	var allowed := {}
+	for path: String in ["reference.wing_area", "reference.wing_span", "reference.mean_chord",
+		"reference.root_chord", "reference.tip_chord", "reference.aero_reference_point",
+		"balance.plan_cg", "balance.firewall", "balance.cg_tolerance", "balance.cg_range.forward",
+		"balance.cg_range.aft", "start.level_speed", "plausibility.mass_range", "crash_hull",
+		"propulsion.engine.max_rpm_static", "propulsion.engine.idle_rpm", "propulsion.propeller.diameter",
+		"propulsion.propeller.thrust_line_offset", "propulsion.propeller.rotating_inertia",
+		"propulsion.propeller.slipstream.hub"]:
+		allowed[path] = true
+	for name: String in ["horizontal", "vertical"]:
+		for field: String in ["area", "position"]: allowed["aero.surfaces." + name + "." + field] = true
+	for i: int in raw.inventory.size():
+		for field: String in ["mass", "position", "size"]:
+			allowed["inventory[%d] %s.%s" % [i, raw.inventory[i].name, field]] = true
+	for i: int in raw.get("landing_gear", {}).get("contacts", []).size():
+		for field: String in ["position", "stiffness", "damping", "max_compression"]:
+			allowed["landing_gear.contacts[%d].%s" % [i, field]] = true
+	for i: int in raw.get("fuel_system", {}).get("tanks", []).size():
+		for field: String in ["capacity", "unusable", "reserve"]:
+			allowed["fuel_system.tanks[%d].%s" % [i, field]] = true
+	for i: int in raw.get("propulsion", {}).get("propeller", {}).get("slipstream", {}).get("pieces", []).size():
+		for field: String in ["area", "root", "span", "chords", "profile"]:
+			allowed["propulsion.propeller.slipstream.pieces[%d].%s" % [i, field]] = true
+	return allowed
+
+
+static func _dq(domain: Dictionary, errors: PackedStringArray, path: String, node: Variant,
+		unit: String, lo: float, hi: float, size := 0) -> Variant:
+	if not domain.has(path): return _q(errors, path, node, unit, lo, hi, size)
+	var factor: float = float(domain[path])
+	return _q(errors, path, node, unit, lo * factor, hi * factor, size)
+
+
+static func _validate_with_domain(raw: Dictionary, domain: Dictionary) -> Dictionary:
 	if raw.get("format") == LEGACY_FORMAT:
-		var legacy: Dictionary = _validate_legacy(raw)
+		var legacy: Dictionary = _validate_legacy(raw, domain)
 		if legacy.get("ok", false) and legacy.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
 			return _fail("propulsion.battery: pack_ecm requires openrc-aircraft v2 (inventory ids name the pack mount)")
 		return legacy
@@ -156,7 +213,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	var structural: PackedStringArray = Contract.validate(raw)
 	if not structural.is_empty():
 		return {ok = false, errors = structural, warnings = PackedStringArray(), model = {}}
-	var result: Dictionary = _validate_legacy(legacy_v1_input(raw))
+	var result: Dictionary = _validate_legacy(legacy_v1_input(raw), domain)
 	if result.ok:
 		# Identity describes authored v2, never the internal compatibility representation.
 		result.model.data_sha256 = JSON.stringify(raw, "", true).sha256_text()
@@ -170,7 +227,7 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			result.model.flaps = flap_model
 		if raw.has("fuel_system") or raw.balance.has("fuel_state") or raw.balance.has("cg_range"):
 			var fuel_errors := PackedStringArray()
-			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw)
+			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw, domain)
 			if not fuel_errors.is_empty():
 				return {ok=false,errors=fuel_errors,warnings=result.warnings,model={}}
 			if not fuel_system.is_empty():
@@ -341,7 +398,7 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	return out
 
 
-static func _validate_legacy(raw: Dictionary) -> Dictionary:
+static func _validate_legacy(raw: Dictionary, domain: Dictionary = {}) -> Dictionary:
 	var errors := PackedStringArray()
 	var warnings := PackedStringArray()
 	if raw.get("format") != LEGACY_FORMAT:
@@ -349,10 +406,10 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		return { ok = false, errors = errors, warnings = warnings, model = {} }
 
 	var ref := _dictionary(errors, "reference", raw.get("reference", {}))
-	var area = _q(errors, "reference.wing_area", ref.get("wing_area"), "m2", 0.05, 3.0)
-	var span = _q(errors, "reference.wing_span", ref.get("wing_span"), "m", 0.3, 4.0)
-	var chord = _q(errors, "reference.mean_chord", ref.get("mean_chord"), "m", 0.05, 1.0)
-	var arp = _q(errors, "reference.aero_reference_point", ref.get("aero_reference_point"), "m", -2.0, 2.0, 3)
+	var area = _dq(domain, errors, "reference.wing_area", ref.get("wing_area"), "m2", 0.05, 3.0)
+	var span = _dq(domain, errors, "reference.wing_span", ref.get("wing_span"), "m", 0.3, 4.0)
+	var chord = _dq(domain, errors, "reference.mean_chord", ref.get("mean_chord"), "m", 0.05, 1.0)
+	var arp = _dq(domain, errors, "reference.aero_reference_point", ref.get("aero_reference_point"), "m", -2.0, 2.0, 3)
 	# mean_chord is the coefficient reference length S/b for every planform (v1 contract); a tapered wing declares its
 	# MAC separately in the evidence, never in this field.
 	if area != null and span != null and chord != null and absf(span * chord - area) / area > 0.01:
@@ -360,8 +417,8 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 	var planform: Variant = ref.get("planform", "rectangular")
 	var chords := PackedFloat64Array() # [root, tip] for a tapered wing; empty = rectangular
 	if planform == "tapered":
-		var root = _q(errors, "reference.root_chord", ref.get("root_chord"), "m", 0.05, 1.0)
-		var tip = _q(errors, "reference.tip_chord", ref.get("tip_chord"), "m", 0.02, 1.0)
+		var root = _dq(domain, errors, "reference.root_chord", ref.get("root_chord"), "m", 0.05, 1.0)
+		var tip = _dq(domain, errors, "reference.tip_chord", ref.get("tip_chord"), "m", 0.02, 1.0)
 		if root != null and tip != null:
 			if tip > root:
 				errors.append("reference: tip_chord %s must not exceed root_chord %s" % [tip, root])
@@ -373,13 +430,13 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 	var start_speed := 15.0 # the Stik's validated start (D5); other aircraft declare theirs
 	if raw.has("start"):
 		var start_node := _dictionary(errors, "start", raw.get("start"))
-		var v = _q(errors, "start.level_speed", start_node.get("level_speed"), "m/s", 5.0, 60.0)
+		var v = _dq(domain, errors, "start.level_speed", start_node.get("level_speed"), "m/s", 5.0, 60.0)
 		if v != null:
 			start_speed = v
 	var bal := _dictionary(errors, "balance", raw.get("balance", {}))
-	var plan_cg = _q(errors, "balance.plan_cg", bal.get("plan_cg"), "m", -2.0, 2.0, 3)
-	_q(errors, "balance.firewall", bal.get("firewall"), "m", -2.0, 2.0, 3)
-	var cg_tolerance = _q(errors, "balance.cg_tolerance", bal.get("cg_tolerance"), "m", 0.000001, 0.005)
+	var plan_cg = _dq(domain, errors, "balance.plan_cg", bal.get("plan_cg"), "m", -2.0, 2.0, 3)
+	_dq(domain, errors, "balance.firewall", bal.get("firewall"), "m", -2.0, 2.0, 3)
+	var cg_tolerance = _dq(domain, errors, "balance.cg_tolerance", bal.get("cg_tolerance"), "m", 0.000001, 0.005)
 
 	var inventory := _array(errors, "inventory", raw.get("inventory", []))
 	if inventory.is_empty():
@@ -390,14 +447,14 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		var label := "inventory[%d] %s" % [i, c.get("name", "?")]
 		if typeof(c.get("name")) != TYPE_STRING or c.name == "":
 			errors.append("inventory[%d]: missing name" % i)
-		var m = _q(errors, label + ".mass", c.get("mass"), "kg", 0.001, 5.0)
-		var p = _q(errors, label + ".position", c.get("position"), "m", -2.0, 2.0, 3)
-		var s = _q(errors, label + ".size", c.get("size"), "m", 0.0, 4.0, 3) if c.has("size") else PackedFloat64Array([0.0, 0.0, 0.0])
+		var m = _dq(domain, errors, label + ".mass", c.get("mass"), "kg", 0.001, 5.0)
+		var p = _dq(domain, errors, label + ".position", c.get("position"), "m", -2.0, 2.0, 3)
+		var s = _dq(domain, errors, label + ".size", c.get("size"), "m", 0.0, 4.0, 3) if c.has("size") else PackedFloat64Array([0.0, 0.0, 0.0])
 		parts.append([m, p, s])
 
 	var plaus := _dictionary(errors, "plausibility", raw.get("plausibility", {}))
-	var mass_range = _q(errors, "plausibility.mass_range", plaus.get("mass_range"), "kg", 0.01, 100.0, 2)
-	var inertia_ref = _q(errors, "plausibility.inertia_reference", plaus.get("inertia_reference"), "kg·m2", 0.0, 100.0, 3)
+	var mass_range = _dq(domain, errors, "plausibility.mass_range", plaus.get("mass_range"), "kg", 0.01, 100.0, 2)
+	var inertia_ref = _dq(domain, errors, "plausibility.inertia_reference", plaus.get("inertia_reference"), "kg·m2", 0.0, 100.0, 3)
 
 	var aero := {}
 	var aero_node := _dictionary(errors, "aero", raw.get("aero", {}))
@@ -405,7 +462,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 	var coeffs := _dictionary(errors, "aero.coefficients", aero_node.get("coefficients", {}))
 	for name in COEFFICIENTS:
 		var spec: Array = COEFFICIENTS[name]
-		var x = _q(errors, "aero.coefficients." + name, coeffs.get(name), spec[0], -100.0, 100.0)
+		var x = _dq(domain, errors, "aero.coefficients." + name, coeffs.get(name), spec[0], -100.0, 100.0)
 		if x != null:
 			aero[name] = x
 			if spec[1] != 0 and signf(x) != float(spec[1]):
@@ -417,7 +474,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 	var envelope := _envelope(errors, aero_node.get("envelope"), aero) if errors.is_empty() else {}
 	if not envelope.is_empty():
 		envelope.station_ys = station_ys(span, chords)
-	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope)
+	var surfaces := _surfaces(errors, aero_node.get("surfaces"), aero, area, span, arp, envelope, domain)
 	if errors.is_empty() and not envelope.is_empty() and not surfaces.is_empty():
 		if not _induced_map(envelope, surfaces, aero, area, span, chords):
 			errors.append("aero.surfaces: induced wing calibration cannot reproduce CLa with a finite positive section slope in [0.1, 50] 1/rad")
@@ -430,8 +487,8 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		var ground_effect := _ground_effect(errors, aero_node.ground_effect, envelope, surfaces)
 		if not ground_effect.is_empty():
 			envelope.ground_effect = ground_effect
-	var prop := _propulsion(errors, raw.get("propulsion"))
-	var hull := _crash_hull(errors, raw.get("crash_hull"))
+	var prop := _propulsion(errors, raw.get("propulsion"), domain)
+	var hull := _crash_hull(errors, raw.get("crash_hull"), float(domain.get("crash_hull", 1.0)))
 	var hull_components := _crash_hull_components(errors, raw.get("crash_hull_components"), hull.size() / 3)
 	var controls := _controls(errors, raw.get("controls"))
 
@@ -462,7 +519,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 		if ratio < 0.5 or ratio > 2.0:
 			warnings.append("inertia: %s = %.4f kg·m2 is %.2f× the scaled UltraStick25e value" % [names[k], j[k], ratio])
 
-	var gear := _landing_gear(errors, raw.get("landing_gear"), cg_inv, mass)
+	var gear := _landing_gear(errors, raw.get("landing_gear"), cg_inv, mass, domain)
 
 	var model := {
 		id = raw.get("id", ""),
@@ -500,7 +557,7 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 ## The side force's low-speed damping rate must satisfy μ·g·dt / (tan α_peak · SLIP_FLOOR) ≤ SIDE_LAMBDA_DT_MAX.
 ## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression, max_steering
 ## (rad) }], reach, heave_omega, static_sag, rolling_resistance, side_friction, tan_peak_slip, substeps } or {} when absent.
-static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFloat64Array, mass: float) -> Dictionary:
+static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFloat64Array, mass: float, domain: Dictionary = {}) -> Dictionary:
 	if node == null:
 		return {}
 	var gear := _dictionary(errors, "landing_gear", node)
@@ -516,11 +573,11 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	for i in raw_contacts.size():
 		var label := "landing_gear.contacts[%d]" % i
 		var c := _dictionary(errors, label, raw_contacts[i])
-		var position = _q(errors, label + ".position", c.get("position"), "m", -3.0, 3.0, 3)
-		var k = _q(errors, label + ".stiffness", c.get("stiffness"), "N/m", 1.0, 1.0e6)
-		var damping = _q(errors, label + ".damping", c.get("damping"), "N·s/m", 0.0, 1.0e4)
-		var travel = _q(errors, label + ".max_compression", c.get("max_compression"), "m", 0.005, 0.5)
-		var steering = 0.0 if c.get("max_steering") == null else _q(errors, label + ".max_steering", c.get("max_steering"), "deg", -45.0, 45.0)
+		var position = _dq(domain, errors, label + ".position", c.get("position"), "m", -3.0, 3.0, 3)
+		var k = _dq(domain, errors, label + ".stiffness", c.get("stiffness"), "N/m", 1.0, 1.0e6)
+		var damping = _dq(domain, errors, label + ".damping", c.get("damping"), "N·s/m", 0.0, 1.0e4)
+		var travel = _dq(domain, errors, label + ".max_compression", c.get("max_compression"), "m", 0.005, 0.5)
+		var steering = 0.0 if c.get("max_steering") == null else _dq(domain, errors, label + ".max_steering", c.get("max_steering"), "deg", -45.0, 45.0)
 		if position == null or k == null or damping == null or travel == null or steering == null:
 			continue
 		if typeof(c.get("name")) != TYPE_STRING or str(c.name).strip_edges().is_empty():
@@ -557,13 +614,13 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 		substeps = int(floor(omega * dt / 0.1)) + 1
 	if substeps > Ground.MAX_SUBSTEPS:
 		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) needs %d substeps per tick, above the %d allowed; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt, substeps, Ground.MAX_SUBSTEPS])
-	var c_rr = _q(errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
-	var mu = _q(errors, "landing_gear.side_friction", gear.get("side_friction"), "1", 0.1, 1.5)
-	var peak = _q(errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
+	var c_rr = _dq(domain, errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
+	var mu = _dq(domain, errors, "landing_gear.side_friction", gear.get("side_friction"), "1", 0.1, 1.5)
+	var peak = _dq(domain, errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
 	# E3b1 (optional): static ÷ rolling resistance of a wheel at rest; present = per-wheel stiction anchors.
 	var breakaway = null
 	if gear.get("breakaway_factor") != null:
-		breakaway = _q(errors, "landing_gear.breakaway_factor", gear.get("breakaway_factor"), "1", 1.0, 2.0)
+		breakaway = _dq(domain, errors, "landing_gear.breakaway_factor", gear.get("breakaway_factor"), "1", 1.0, 2.0)
 	if not errors.is_empty():
 		return {}
 	var tan_peak := M.tan_(deg_to_rad(peak))
@@ -1007,7 +1064,7 @@ static func _table(errors: PackedStringArray, path: String, node: Variant, lo: f
 	return out
 
 
-static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
+static func _propulsion(errors: PackedStringArray, node: Variant, domain: Dictionary = {}) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("propulsion: missing")
 		return {}
@@ -1022,14 +1079,14 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 		return {}
 	var e := _dictionary(errors, "propulsion.engine", node.get("engine", {}))
 	var pr := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
-	var max_rpm = _q(errors, "propulsion.engine.max_rpm_static", e.get("max_rpm_static"), "rpm", 1000.0, 50000.0)
-	var idle = _q(errors, "propulsion.engine.idle_rpm", e.get("idle_rpm"), "rpm", 0.0, 20000.0)
-	var lag = _q(errors, "propulsion.engine.lag_time_constant", e.get("lag_time_constant"), "s", 0.01, 5.0)
-	_q(errors, "propulsion.engine.peak_power", e.get("peak_power"), "W", 10.0, 20000.0)
-	_q(errors, "propulsion.engine.peak_power_rpm", e.get("peak_power_rpm"), "rpm", 1000.0, 50000.0)
-	var diameter = _q(errors, "propulsion.propeller.diameter", pr.get("diameter"), "m", 0.05, 2.0)
-	var offset = _q(errors, "propulsion.propeller.thrust_line_offset", pr.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
-	var rotor = _q(errors, "propulsion.propeller.rotating_inertia", pr.get("rotating_inertia"), "kg·m2", 0.0, 0.1)
+	var max_rpm = _dq(domain, errors, "propulsion.engine.max_rpm_static", e.get("max_rpm_static"), "rpm", 1000.0, 50000.0)
+	var idle = _dq(domain, errors, "propulsion.engine.idle_rpm", e.get("idle_rpm"), "rpm", 0.0, 20000.0)
+	var lag = _dq(domain, errors, "propulsion.engine.lag_time_constant", e.get("lag_time_constant"), "s", 0.01, 5.0)
+	_dq(domain, errors, "propulsion.engine.peak_power", e.get("peak_power"), "W", 10.0, 20000.0)
+	_dq(domain, errors, "propulsion.engine.peak_power_rpm", e.get("peak_power_rpm"), "rpm", 1000.0, 50000.0)
+	var diameter = _dq(domain, errors, "propulsion.propeller.diameter", pr.get("diameter"), "m", 0.05, 2.0)
+	var offset = _dq(domain, errors, "propulsion.propeller.thrust_line_offset", pr.get("thrust_line_offset"), "m", -1.0, 1.0, 3)
+	var rotor = _dq(domain, errors, "propulsion.propeller.rotating_inertia", pr.get("rotating_inertia"), "kg·m2", 0.0, 0.1)
 	var ct := _table(errors, "propulsion.propeller.ct_table", pr.get("ct_table"), -0.5, 0.5)
 	# Cp below 0 = the windmilling branch (the air drives the propeller); only a shaft model may use it.
 	var cp := _table(errors, "propulsion.propeller.cp_table", pr.get("cp_table"), -0.3 if e.has("shaft") else 0.0, 0.5)
@@ -1048,7 +1105,7 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 			cp_min = minf(cp_min, cp[i])
 		out.cp_min = cp_min
 	if pr.has("thrust_angles"):
-		var angles = _q(errors, "propulsion.propeller.thrust_angles", pr.get("thrust_angles"), "deg", -10.0, 10.0, 2)
+		var angles = _dq(domain, errors, "propulsion.propeller.thrust_angles", pr.get("thrust_angles"), "deg", -10.0, 10.0, 2)
 		if angles != null:
 			var down := deg_to_rad(angles[0])
 			var right := deg_to_rad(angles[1])
@@ -1064,7 +1121,7 @@ static func _propulsion(errors: PackedStringArray, node: Variant) -> Dictionary:
 	if pr.has("slipstream"):
 		if not out.has("axis"):
 			errors.append("propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)")
-		out.slipstream = _slipstream(errors, pr.get("slipstream"))
+		out.slipstream = _slipstream(errors, pr.get("slipstream"), domain)
 		if out.slipstream.has("edge_fraction") and out.get("axis") != PackedFloat64Array([1.0, 0.0, 0.0]):
 			errors.append("propulsion.propeller.slipstream: smooth profile currently requires an axial shaft")
 	return out
@@ -1357,7 +1414,7 @@ const FUEL_FAMILY_FEED := {glow = "suction_muffler", gasoline = "pumped_diaphrag
 const LIQUID_FUEL_SOURCES := ["glow_fuel", "gasoline", "kerosene"]
 const FUEL_ENERGY := ["prescribed_fuel", "finite_glow_fuel", "finite_liquid_fuel"]
 
-static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictionary:
+static func _fuel_system(errors: PackedStringArray, raw: Dictionary, domain: Dictionary = {}) -> Dictionary:
 	var balance: Dictionary = raw.balance
 	var plan: Array = balance.plan_cg.value
 	var tolerance: float = float(balance.cg_tolerance.value)
@@ -1408,8 +1465,8 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 				errors.append("%s.liquid_inventory_id: item '%s' must declare energy_source '%s'" % [path, tank.liquid_inventory_id, FUEL_FAMILY_SOURCE[family]])
 			if shell.has("energy_source"):
 				errors.append("%s.shell_inventory_id: the empty tank shell '%s' carries no energy" % [path, tank.shell_inventory_id])
-			var capacity = _q(errors, path + ".capacity", tank.capacity, "l", 0.0, 50.0)
-			var unusable = _q(errors, path + ".unusable", tank.unusable, "l", 0.0, 50.0)
+			var capacity = _dq(domain, errors, path + ".capacity", tank.capacity, "l", 0.0, 50.0)
+			var unusable = _dq(domain, errors, path + ".unusable", tank.unusable, "l", 0.0, 50.0)
 			if capacity == null or unusable == null:
 				continue
 			if capacity <= 0.0 or unusable >= capacity:
@@ -1419,7 +1476,7 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 			var capacity_kg: float = capacity * 0.001 * density
 			var reserve: float = minf(float(capacity), float(unusable) + 0.1 * float(capacity))
 			if tank.has("reserve"):
-				var authored_reserve: Variant = _q(errors, path + ".reserve", tank.reserve, "l", 0.0, 50.0)
+				var authored_reserve: Variant = _dq(domain, errors, path + ".reserve", tank.reserve, "l", 0.0, 50.0)
 				if authored_reserve == null:
 					continue
 				reserve = float(authored_reserve)
@@ -1434,7 +1491,7 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 				errors.append("%s: liquid '%s' box %.3f l cannot hold the %s l capacity" % [path, tank.liquid_inventory_id, float(size[0]) * float(size[1]) * float(size[2]) * 1000.0, capacity])
 			var pickup_position: Variant = null
 			if tank.has("pickup_position"):
-				pickup_position = _q(errors, path + ".pickup_position", tank.pickup_position, "m", -3.0, 3.0, 3)
+				pickup_position = _dq(domain, errors, path + ".pickup_position", tank.pickup_position, "m", -3.0, 3.0, 3)
 			var normalized_line: Dictionary = {}
 			if tank.has("feed_line"):
 				var line: Dictionary = tank.feed_line
@@ -1452,7 +1509,7 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 				else:
 					if line_item.get("energy_source") != FUEL_FAMILY_SOURCE[family]:
 						errors.append("%s.feed_line.liquid_inventory_id: item '%s' must declare energy_source '%s'" % [path, line_liquid_id, FUEL_FAMILY_SOURCE[family]])
-					var line_capacity = _q(errors, path + ".feed_line.capacity", line.capacity, "l", 0.0, 50.0)
+					var line_capacity = _dq(domain, errors, path + ".feed_line.capacity", line.capacity, "l", 0.0, 50.0)
 					if line_capacity != null:
 						var line_capacity_kg: float = float(line_capacity) * 0.001 * density
 						var line_mass_kg: float = float(line_item.mass.value)
@@ -1510,8 +1567,8 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 					if absf(dry[axis] - float(plan[axis])) > tolerance:
 						errors.append("balance: CG with empty tanks disagrees with plan_cg on axis %d by %.4f m (tolerance %.4f m)" % [axis, absf(dry[axis] - float(plan[axis])), tolerance])
 	if balance.has("cg_range"):
-		var forward = _q(errors, "balance.cg_range.forward", balance.cg_range.forward, "m", -2.0, 2.0)
-		var aft = _q(errors, "balance.cg_range.aft", balance.cg_range.aft, "m", -2.0, 2.0)
+		var forward = _dq(domain, errors, "balance.cg_range.forward", balance.cg_range.forward, "m", -2.0, 2.0)
+		var aft = _dq(domain, errors, "balance.cg_range.aft", balance.cg_range.aft, "m", -2.0, 2.0)
 		if forward != null and aft != null:
 			if forward >= aft:
 				errors.append("balance.cg_range: forward %s m must lie ahead of aft %s m" % [forward, aft])
@@ -1745,31 +1802,31 @@ static func _shaft(errors: PackedStringArray, node: Variant, rotor: Variant) -> 
 ## ("horizontal"/"vertical"), area (m2), root (le), span_dir (le unit vector), span (m), chords [root, tip] (m) }] }.
 ## E0b3b opt-in: edge_fraction + reverse_fade replace each piece's chords with a provenanced profile table.
 ## Only axial shafts/transverse spans are supported; profile occupancy is distinct from a radial velocity law.
-static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
+static func _slipstream(errors: PackedStringArray, node: Variant, domain: Dictionary = {}) -> Dictionary:
 	var ss := _dictionary(errors, "propulsion.propeller.slipstream", node)
 	var out := {
-		hub = _q(errors, "propulsion.propeller.slipstream.hub", ss.get("hub"), "m", -2.0, 2.0, 3),
-		wash_factor = _q(errors, "propulsion.propeller.slipstream.wash_factor", ss.get("wash_factor"), "1", 0.0, 2.0, 2),
-		swirl_factor = _q(errors, "propulsion.propeller.slipstream.swirl_factor", ss.get("swirl_factor"), "1", 0.0, 1.0),
-		vertical_drift = _q(errors, "propulsion.propeller.slipstream.vertical_drift", ss.get("vertical_drift"), "1", 0.0, 1.0),
+		hub = _dq(domain, errors, "propulsion.propeller.slipstream.hub", ss.get("hub"), "m", -2.0, 2.0, 3),
+		wash_factor = _dq(domain, errors, "propulsion.propeller.slipstream.wash_factor", ss.get("wash_factor"), "1", 0.0, 2.0, 2),
+		swirl_factor = _dq(domain, errors, "propulsion.propeller.slipstream.swirl_factor", ss.get("swirl_factor"), "1", 0.0, 1.0),
+		vertical_drift = _dq(domain, errors, "propulsion.propeller.slipstream.vertical_drift", ss.get("vertical_drift"), "1", 0.0, 1.0),
 		pieces = [],
 	}
 	# E0b3b: explicit opt-in; legacy pieces and arithmetic remain unchanged.
 	var smooth: bool = ss.has("edge_fraction")
 	if smooth:
-		out.edge_fraction = _q(errors, "slipstream.edge_fraction", ss.get("edge_fraction"), "1", 0.01, 0.5)
-		out.reverse_fade = _q(errors, "slipstream.reverse_fade", ss.get("reverse_fade"), "1", 0.01, 0.5, 2)
+		out.edge_fraction = _dq(domain, errors, "slipstream.edge_fraction", ss.get("edge_fraction"), "1", 0.01, 0.5)
+		out.reverse_fade = _dq(domain, errors, "slipstream.reverse_fade", ss.get("reverse_fade"), "1", 0.01, 0.5, 2)
 		if out.reverse_fade != null and out.reverse_fade[0] >= out.reverse_fade[1]:
 			errors.append("slipstream.reverse_fade: positive onset must be below cutoff")
 	elif ss.has("reverse_fade"):
 		errors.append("slipstream.reverse_fade: requires edge_fraction")
 	if ss.has("transport_speed_floor"):
-		out.transport_speed_floor = _q(errors, "slipstream.transport_speed_floor", ss.get("transport_speed_floor"), "m/s", 0.1, 5.0)
+		out.transport_speed_floor = _dq(domain, errors, "slipstream.transport_speed_floor", ss.get("transport_speed_floor"), "m/s", 0.1, 5.0)
 		if not smooth or out.swirl_factor != 0.0:
 			errors.append("slipstream.transport_speed_floor: axial transport requires smooth profiles and zero swirl (E0b5)")
 	# P51-26 opt-in: piecewise swirl quadrature and Ribner's sidewash on the legacy pieces (1 = the published relation).
 	if ss.has("propeller_sidewash"):
-		out.propeller_sidewash = _q(errors, "slipstream.propeller_sidewash", ss.get("propeller_sidewash"), "1", 0.0, 1.0)
+		out.propeller_sidewash = _dq(domain, errors, "slipstream.propeller_sidewash", ss.get("propeller_sidewash"), "1", 0.0, 1.0)
 		if smooth or ss.has("transport_speed_floor"):
 			errors.append("slipstream.propeller_sidewash: requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
 	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
@@ -1783,10 +1840,10 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 			errors.append("%s.surface: '%s' is not 'horizontal' or 'vertical'" % [label, surface])
 		var piece := {
 			surface = str(surface),
-			area = _q(errors, label + ".area", pc.get("area"), "m2", 0.001, 1.0),
-			root = _q(errors, label + ".root", pc.get("root"), "m", -3.0, 3.0, 3),
-			span_dir = _q(errors, label + ".span_dir", pc.get("span_dir"), "1", -1.0, 1.0, 3),
-			span = _q(errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
+			area = _dq(domain, errors, label + ".area", pc.get("area"), "m2", 0.001, 1.0),
+			root = _dq(domain, errors, label + ".root", pc.get("root"), "m", -3.0, 3.0, 3),
+			span_dir = _dq(domain, errors, label + ".span_dir", pc.get("span_dir"), "1", -1.0, 1.0, 3),
+			span = _dq(domain, errors, label + ".span", pc.get("span"), "m", 0.01, 2.0),
 		}
 		if piece.span_dir != null and absf(M.sqrt_(piece.span_dir[0] ** 2 + piece.span_dir[1] ** 2 + piece.span_dir[2] ** 2) - 1.0) > 1e-6:
 			errors.append("%s.span_dir: must be a unit vector" % label)
@@ -1802,7 +1859,7 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 			if piece.root != null and out.hub != null and piece.root[0] <= out.hub[0]:
 				errors.append(label + ".root: must be behind hub")
 		else:
-			piece.chords = _q(errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2)
+			piece.chords = _dq(domain, errors, label + ".chords", pc.get("chords"), "m", 0.005, 1.0, 2)
 			if pc.has("profile"):
 				errors.append(label + ".profile: requires edge_fraction")
 		out.pieces.append(piece)
@@ -2229,7 +2286,7 @@ static func _blend_extreme(aero: Dictionary, cd90: float, width: float, start: f
 	return best
 
 ## Crash hull (D9d): points [x_aft, y_right, z_up] (le frame) that touch the ground first. Returns them flattened.
-static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat64Array:
+static func _crash_hull(errors: PackedStringArray, node: Variant, length_ratio := 1.0) -> PackedFloat64Array:
 	var out := PackedFloat64Array()
 	if typeof(node) != TYPE_DICTIONARY or typeof(node.get("value")) != TYPE_ARRAY or (node.value as Array).size() < 4:
 		errors.append("crash_hull: missing or fewer than 4 points")
@@ -2250,7 +2307,7 @@ static func _crash_hull(errors: PackedStringArray, node: Variant) -> PackedFloat
 				errors.append("crash_hull: %s is not a numeric point within 3 m" % [p])
 				return PackedFloat64Array()
 			var coordinate := float(x)
-			if not is_finite(coordinate) or absf(coordinate) > 3.0:
+			if not is_finite(coordinate) or absf(coordinate) > 3.0 * length_ratio:
 				errors.append("crash_hull: %s is not a finite point within 3 m" % [p])
 				return PackedFloat64Array()
 			out.append(coordinate)
@@ -2290,7 +2347,7 @@ static func _hull_body(hull: PackedFloat64Array, cg: Variant) -> PackedFloat64Ar
 ## Local-surface data has explicit evidence like the reference derivatives. Linked rudder
 ## derivatives are about ARP, not CG; the final load transfer supplies the remaining arm.
 static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary,
-		area: Variant, span: Variant, arp: Variant, env: Dictionary) -> Dictionary:
+		area: Variant, span: Variant, arp: Variant, env: Dictionary, domain: Dictionary = {}) -> Dictionary:
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("aero.surfaces: expected an object")
 		return {}
@@ -2308,14 +2365,14 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 	}
 	for key in specs:
 		var spec: Array = specs[key]
-		var value = _q(errors, "aero.surfaces." + key, node.get(key), spec[0], spec[1], spec[2])
+		var value = _dq(domain, errors, "aero.surfaces." + key, node.get(key), spec[0], spec[1], spec[2])
 		if value != null:
 			out[key] = deg_to_rad(value) if spec[0] == "deg" else value
 	# Optional (P51-12): per-strip angle offsets root → tip (rad, equal-area strips, zero mean so the attached lift and
 	# the linear oracle are unchanged): washout and the spanwise stall margin decide which strip stalls first.
 	if node.has("wing_station_incidence"):
 		var n: int = Aero.WING_STATIONS_PER_SIDE
-		var inc = _q(errors, "aero.surfaces.wing_station_incidence", node.get("wing_station_incidence"), "rad", -0.2, 0.2, n)
+		var inc = _dq(domain, errors, "aero.surfaces.wing_station_incidence", node.get("wing_station_incidence"), "rad", -0.2, 0.2, n)
 		if inc != null:
 			var mean := 0.0
 			for x in inc:
@@ -2332,38 +2389,38 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 	# the local wing (Aero._local_loads). The oracle's Cm0 carries the same camber moment, so with it the two regimes
 	# agree statically; absent = 0 = no couple (symmetric sections, or a Cm0 folded into the tail incidence).
 	if node.has("wing_section_cm_ac"):
-		var cm_ac = _q(errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
+		var cm_ac = _dq(domain, errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
 		if cm_ac != null:
 			out.wing_cm_ac = float(cm_ac)
 	# Optional (P51-25): the fuselage's destabilizing yaw derivative about the ARP, a Munk-type pure couple in the local
 	# model (Aero._local_loads). The oracle's Cnb then carries fin + body; absent = 0 = no couple, byte-identical.
 	if node.has("body_cn_beta"):
-		var body_cn = _q(errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
+		var body_cn = _dq(domain, errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
 		if body_cn != null:
 			out.body_cn_beta = float(body_cn)
 	# Optional (D10-R5): the wing-body dihedral effect (geometric dihedral, wing-fuselage interference) that the flat
 	# strips do not resolve, a pure rolling couple in the local model (Aero._local_loads). The oracle's Clb then carries
 	# fin + wing-body; absent = no couple and no rule, byte-identical.
 	if node.has("wing_body_cl_beta"):
-		var wing_body_cl = _q(errors, "aero.surfaces.wing_body_cl_beta", node.get("wing_body_cl_beta"), "1/rad", -0.3, 0.1)
+		var wing_body_cl = _dq(domain, errors, "aero.surfaces.wing_body_cl_beta", node.get("wing_body_cl_beta"), "1/rad", -0.3, 0.1)
 		if wing_body_cl != null:
 			out.wing_body_cl_beta = float(wing_body_cl)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
 		out[name] = {
-			area = _q(errors, label + ".area", tail.get("area"), "m2", 0.001, 1.0),
-			position = _q(errors, label + ".position", tail.get("position"), "m", -2.0, 2.0, 3),
-			lift_slope = _q(errors, label + ".lift_slope", tail.get("lift_slope"), "1/rad", 0.1, 6.3),
-			control_effectiveness = _q(errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", 0.01, 1.5),
-			incidence = _q(errors, label + ".incidence", tail.get("incidence"), "rad", -0.2, 0.2),
+			area = _dq(domain, errors, label + ".area", tail.get("area"), "m2", 0.001, 1.0),
+			position = _dq(domain, errors, label + ".position", tail.get("position"), "m", -2.0, 2.0, 3),
+			lift_slope = _dq(domain, errors, label + ".lift_slope", tail.get("lift_slope"), "1/rad", 0.1, 6.3),
+			control_effectiveness = _dq(domain, errors, label + ".control_effectiveness", tail.get("control_effectiveness"), "1", 0.01, 1.5),
+			incidence = _dq(domain, errors, label + ".incidence", tail.get("incidence"), "rad", -0.2, 0.2),
 		}
 	# E0a2 (optional): the wing's downwash gradient at the horizontal tail. With it, lift_slope, control_effectiveness
 	# and incidence keep their meaning (the effective, downwash-reduced static values the oracle was matched with) and
 	# _induced_map derives the free tail law: downwash follows the wing's lift, pitch rate and elevator do not.
 	var horizontal_raw := _dictionary(errors, "aero.surfaces.horizontal", node.get("horizontal", {}))
 	if horizontal_raw.get("downwash_gradient") != null:
-		var gradient = _q(errors, "aero.surfaces.horizontal.downwash_gradient", horizontal_raw.get("downwash_gradient"), "1", 0.0, 0.9)
+		var gradient = _dq(domain, errors, "aero.surfaces.horizontal.downwash_gradient", horizontal_raw.get("downwash_gradient"), "1", 0.0, 0.9)
 		if gradient != null:
 			out.horizontal.downwash_gradient = float(gradient)
 	if not errors.is_empty():

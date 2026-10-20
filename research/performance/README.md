@@ -4,6 +4,12 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`grass_validation_probe.gd` compares complete grass validation and direct grass
+construction against an explicit reference source. Its [DT-11a / L11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/grass-validation/README.md)
+retains native buffer/mesh/material parity, malformed-input comparisons, paired
+timings and existing native test diagnostics. It requires a native renderer and
+does not measure full default-world loading or FPS.
+
 `stars_build_probe.gd` compares complete star-field construction with an explicit
 reference source. Its [DT-11a / FW-24-R1 report and command](../../docs/research/visual-quality-implementation/VQ-01c/loading/stars/README.md)
 cover native placement/buffer/material parity, warm and cache-empty timings, and
@@ -142,6 +148,79 @@ nearest-rank percentiles and keeps aircraft/case distributions separate. Stop on
 never bypass a pause/crash, weaken numerical guards or re-record goldens to finish a run.
 
 ## Native frame evidence
+
+### CPU, GPU and memory diagnosis
+
+Add `--frame-diagnostics` after Godot's `--` to the existing `--frametimes` command
+to retain root-viewport render CPU/GPU timings, global render setup CPU time,
+Godot-tracked memory/resource/orphan-node counters and observer polling cost.
+The mode is off by default and does not modify simulation state. Example from
+the repository root, with a new output directory and the Windows console engine:
+
+```powershell
+$run = Join-Path $PWD ('tmp/frame-diagnostics-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $run | Out-Null
+$godot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
+$captureExit = $LASTEXITCODE
+$log = (Get-ChildItem "$run/checks" -Directory | Select-Object -First 1).FullName + '/engine.log'
+python research/performance/frame_diagnose.py --report "$run/run-1.json" --log $log --out "$run/diagnosis.json" --budget-ms 16.667 --top 10
+if ($captureExit -ne 0 -or $LASTEXITCODE -ne 0) { throw "Capture or diagnosis failed; retained evidence: $run" }
+```
+
+`--scripted` is a repeatable rendering workload, not active flight or an exact
+physics replay. Omit it to investigate a controlled physical flight. Use the
+matching native engine on Linux/macOS. Headless runs retain counters but explicitly
+report render timing unavailable. macOS Compatibility timing is conservatively
+disabled. Observer timing is disabled when collection ends or the scene exits;
+do not run this observer together with another owner of viewport timing.
+
+`--frametimes-max-frames` bounds retained samples: default 60,000, range 1–120,000.
+It requires `--frametimes`, as does `--frame-diagnostics`. Warm-up frames do not
+consume the limit. Hitting the limit writes an incomplete prefix and exits nonzero;
+shorten `--t` or choose a larger limit. Exact completion on the last allowed frame
+succeeds. The existing duration bound remains 300 seconds. Use a fresh frame JSON
+path: the underlying frame writer still accepts replacement of an existing path.
+
+The offline diagnosis reuses the native report validator, requires the matching
+process log, and reports budget overruns, contiguous bursts, worst-frame indices
+and timestamps, accompanying counters, and memory start/end/peak changes. It
+preserves errors and warnings with log context. `--budget-ms` is an explicit
+investigation threshold, not an automatic performance acceptance gate.
+
+Reducer limits: `--top` defaults to 10 (1–1,000); `--max-input-bytes` defaults to
+`64MiB` combined JSON/log input (maximum `1GiB`, plus one overflow-detection byte).
+It refuses an existing diagnosis destination. Exit 0 means valid source data,
+1 means invalid/missing/incomplete data, engine errors or invalid observer readings,
+and 2 means invalid options or output failure. Warnings remain visible without
+failing. Budget overruns are observations even with exit 0. The caller must supply
+the matching log; hashes identify those files but do not prove their association
+or process exit status. Preserve the checked runner's exit status separately.
+
+Interpretation matters:
+
+- Render CPU time excludes scripts and physics; global setup time is separate.
+  Root-viewport GPU time excludes other viewports. These channels must not be
+  summed with wall-frame or broad process CPU time.
+- Render timer queries refer to previously available rendering work; GPU results
+  may lag. Same-index counters are context, not proof of a hitch's cause. Zero GPU
+  readings mean unavailable-or-zero, never a demonstrated free GPU frame.
+- Memory figures are engine-tracked allocations/estimates, not process RSS or
+  available VRAM. Growth and orphan counts suggest a repeatable lifecycle probe;
+  they do not establish a leak.
+- `observer_poll_usec` measures diagnostic polling/merge work only. It excludes
+  retention, report writing and driver instrumentation cost. Measure performance
+  separately with the observer off before accepting an optimization.
+
+For deep attribution, use Godot's existing [Profiler and Visual Profiler](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/debugger_panel.html),
+or its `--gpu-profile` engine flag (before `--`, confirmed in the pinned engine's
+`--help`). Keep GPU/API validation in a separate debugging session. The
+[RenderingServer timing reference](https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#class-renderingserver-method-viewport-get-measured-render-time-gpu)
+and [Performance monitors](https://docs.godotengine.org/en/stable/classes/class_performance.html)
+define measurement scope and platform/build limitations. No new profiler or
+plotting dependency is required.
+
+### Capture without the additional observer
 
 Use the existing app logger, with one foreground flight at a time:
 

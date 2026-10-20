@@ -25,6 +25,7 @@ const RECIPE_KEYS: PackedStringArray = [
 	"control_multiplier",
 	"tank_capacity_multiplier",
 	"mass_edits",
+	"size_model",
 	"id",
 	"name",
 ]
@@ -955,7 +956,7 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	var tree_result: Dictionary = _validate_json_tree(recipe)
 	if not bool(tree_result["ok"]):
 		errors.append_array(tree_result["errors"])
-	if recipe.has("mass_edits"):
+	if recipe.has("mass_edits") or recipe.has("size_model"):
 		var extended: Dictionary = WorkshopParameters.validate(recipe)
 		if not extended.ok: errors.append_array(extended.errors)
 	return _result(errors.is_empty(), errors)

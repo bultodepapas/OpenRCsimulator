@@ -1,0 +1,109 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\ground_noise_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app\\render\\ground.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\ground-image\\noise\\run-0.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 8.814182043075562
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\ground_noise_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app\\render\\ground.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\ground-image\\noise\\run-1.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 8.352290153503418
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\ground_noise_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app\\render\\ground.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\ground-image\\noise\\run-2.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 8.499573230743408
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\ground_noise_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app\\render\\ground.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\ground-image\\noise\\run-3.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 8.537802457809448
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\ground_noise_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app\\render\\ground.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\ground-image\\noise\\run-4.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 8.916340589523315
+  }
+]

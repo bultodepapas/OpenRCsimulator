@@ -7,6 +7,8 @@ const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-2"
 const MEASURED_MASS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-measured-mass-1"
+const VIRTUAL_SIZE_COMPILER_VERSION := "openrc-aircraft-workshop-v1-virtual-size-1"
+const DOMAIN_TAG := "_workshop_quantity_domain"
 const REFERENCE_DENSITY_KG_M3 := 1.225
 ## FUEL-11a: tank volume follows airframe scale and an independent estimated capacity ratio;
 ## fill and density stay fixed while weight policy acts on dry inventory only.
@@ -40,6 +42,7 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 			"summary": {},
 		}
 	var scale: float = float(values.scale)
+	var virtual_size := uses_virtual_size(values)
 	var weight_multiplier: float = float(values.weight_multiplier)
 	var power_multiplier: float = float(values.power_multiplier)
 	var control_multiplier: float = float(values.control_multiplier)
@@ -71,11 +74,16 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0 \
 			or tank_capacity_multiplier != 1.0:
 		_transform_candidate(candidate_raw, base_id, scale, mass_ratio, power_multiplier,
-			control_multiplier, tank_capacity_multiplier, str(values.mass_policy))
+			control_multiplier, tank_capacity_multiplier, str(values.mass_policy), virtual_size)
 	if values.has("id"):
 		candidate_raw.id = effective_id
 
-	var candidate_data: Dictionary = AircraftData.validate_and_derive(candidate_raw)
+	# Transform-emitted domains are private compiler metadata, removed before the
+	# v2 contract or serialization. Ordinary imports keep their stock numeric bounds.
+	var domain := {}
+	_collect_domains(candidate_raw, "", domain)
+	var candidate_data: Dictionary = AircraftData.validate_virtual_scale(candidate_raw, domain) \
+		if virtual_size else AircraftData.validate_and_derive(candidate_raw)
 	if not candidate_data.ok:
 		return {"ok": false, "errors": candidate_data.errors, "raw": {}, "data": candidate_data, "summary": {}}
 	var profiled_base: Dictionary = WheelProfiles.apply_to_model(base_data.model)
@@ -123,7 +131,13 @@ static func defaults() -> Dictionary:
 ## Extensions select their own evaluator identity; legacy recipes retain compiler-2.
 static func version_for_recipe(recipe: Dictionary) -> String:
 	var edits: Variant = recipe.get("mass_edits", [])
-	return MEASURED_MASS_COMPILER_VERSION if edits is Array and not edits.is_empty() else COMPILER_VERSION
+	if edits is Array and not edits.is_empty(): return MEASURED_MASS_COMPILER_VERSION
+	return VIRTUAL_SIZE_COMPILER_VERSION if uses_virtual_size(recipe) else COMPILER_VERSION
+
+
+static func uses_virtual_size(recipe: Dictionary) -> bool:
+	var scale: float = float(recipe.get("scale", 1.0))
+	return recipe.get("size_model", "") == Parameters.VIRTUAL_SIZE_MODEL or scale < 0.35 or scale > 2.25
 
 
 static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
@@ -170,7 +184,7 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 
 static func _transform_candidate(raw: Dictionary, base_id: String, scale: float, mass_ratio: float,
 		power_multiplier: float, control_multiplier: float, tank_capacity_multiplier: float,
-		mass_policy: String) -> void:
+		mass_policy: String, virtual_size := false) -> void:
 	var geometry_policy := "uniform " + mass_policy + " virtual scale s=" + str(scale)
 	_transform_q(raw.reference, "wing_area", scale * scale, base_id, geometry_policy + ": area × s²")
 	_transform_q(raw.reference, "wing_span", scale, base_id, geometry_policy + ": length × s")
@@ -212,8 +226,9 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 			_transform_q(tank_variant, "capacity", tank_ratio, base_id, TANK_POLICY + ": capacity × s³ × capacity ratio")
 			_transform_q(tank_variant, "unusable", tank_ratio, base_id, TANK_POLICY + ": unusable volume × s³ × capacity ratio")
 			_transform_q(tank_variant, "reserve", tank_ratio, base_id, TANK_POLICY + ": reserve volume × s³ × capacity ratio")
-	_transform_q(raw.plausibility, "mass_range", mass_ratio, base_id,
-		"virtual consistency band × target mass ratio " + str(mass_ratio) + "; original range retained in base evidence")
+	var plausibility_ratio := total_ratio if virtual_size else mass_ratio
+	_transform_q(raw.plausibility, "mass_range", plausibility_ratio, base_id,
+		"virtual consistency band × target mass ratio " + str(plausibility_ratio) + "; original range retained in base evidence")
 	# inertia_reference is donor evidence used by AircraftData's plausibility comparison.
 	# The loader derives its expected scale from the compiled model, so mutating this
 	# source quantity would scale the comparison twice and misrepresent the donor.
@@ -264,6 +279,7 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 		var offset: Dictionary = propeller.thrust_line_offset
 		offset.value = [scale * hub_le[0] - datum[0], scale * hub_le[1] - datum[1], scale * hub_le[2] - datum[2]]
 		offset.kind = "derived"
+		offset[DOMAIN_TAG] = scale
 		offset.source = "%s; Workshop compiler v2: %s: structural hub × s about the compiled inventory CG from %s" % [
 			str(offset.get("source", "unspecified base evidence")), TANK_POLICY, base_id]
 	_transform_q(propeller, "rotating_inertia", rotor_factor, base_id,
@@ -374,8 +390,27 @@ static func _transform_q(parent: Dictionary, key: String, factor: float, base_id
 	var original_source := str(quantity.get("source", "unspecified base evidence"))
 	quantity.value = _multiply_tree(quantity.value, factor)
 	quantity.kind = "derived"
+	quantity[DOMAIN_TAG] = factor
 	quantity.source = "%s; Workshop compiler v2: %s from %s" % [original_source, operation, base_id]
 	parent[key] = quantity
+
+
+## Keep the dimensional domain emitted by each actual transform; never infer a
+## wider bound from an arbitrary imported value. Dimensionless/control limits stay fixed.
+static func _collect_domains(node: Variant, path: String, domain: Dictionary) -> void:
+	if node is Dictionary:
+		if node.has(DOMAIN_TAG):
+			if str(node.get("unit", "")) in ["m", "m2", "kg", "kg·m2", "l", "N/m", "N·s/m", "rpm", "m/s"]:
+				domain[path] = float(node[DOMAIN_TAG])
+			node.erase(DOMAIN_TAG)
+		for key: String in node:
+			_collect_domains(node[key], key if path.is_empty() else path + "." + key, domain)
+	elif node is Array:
+		for index: int in node.size():
+			var child_path := "%s[%d]" % [path, index]
+			if path == "inventory" and node[index] is Dictionary:
+				child_path += " " + str(node[index].get("name", "?"))
+			_collect_domains(node[index], child_path, domain)
 
 
 static func _multiply_tree(value: Variant, factor: float) -> Variant:

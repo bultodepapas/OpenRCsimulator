@@ -1,0 +1,122 @@
+[
+	{
+		"data": "69778de054b8b7cd94b053aefd042282eba70bb1666650d8128a07583f6177f0",
+		"ok": true,
+		"raw": "676b1496565a0e9cafd91b0b7821bb26df5cb3379e20d8a7131bab13188b7245",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 0.35
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "a8cbf002b7797c7cc81c8c6fbdfe9f392af406017cfbafffa5f6ed29cd8d46b9",
+		"ok": true,
+		"raw": "38ae723a6e08df80821be4645c803c140112f102d3d8898d79c8dcd0bb92a5ee",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 0.35
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "91a589fb25b5814a5962737e28607784b172068741838a8af8c5687953c111dc",
+		"ok": true,
+		"raw": "dec1141d913e1261971b083115b0eb8eb2a76682df52c5901caa30cad13e6f99",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 0.5
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "9271a4b291643a85e722ccbda38f794453c0dfb803d4969cdb9efed12ed0079c",
+		"ok": true,
+		"raw": "4f91d11b2590172f168a3e0d4d179e87bd9171c4bddf8e59bc895fc00660853b",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 0.5
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "8aa9ecdc3b20bcb1060379c08ae4dbf3853514fc6ff549f86566c909b76ce127",
+		"ok": true,
+		"raw": "6ea06f61019bcaea899471277e90393f489cb5fae70a412a1fcdb35441fb31c4",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 1.0
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "8aa9ecdc3b20bcb1060379c08ae4dbf3853514fc6ff549f86566c909b76ce127",
+		"ok": true,
+		"raw": "6ea06f61019bcaea899471277e90393f489cb5fae70a412a1fcdb35441fb31c4",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 1.0
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "795287b1be5df97bc28a8732d8469107c21de3e9dbec66f381372f30cc0beacb",
+		"ok": true,
+		"raw": "831a847a6a32a2624b4801a04cb0488550b5e9dfd8de77a1da45d9ffd620c9cb",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 1.5
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "32703e25d251800e7d0db86d044afbde1f7e6e5b66e393179663c7310fe7bb17",
+		"ok": true,
+		"raw": "19e8f6b43dbe7aeba9e6e1643b72aa8f2f04366525decd5288e994bab179f274",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 1.5
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "2037b8f1c7848a60579ccf85c29c5c9299f8b3d2bf795ecae8215c7b7e0b67a8",
+		"ok": true,
+		"raw": "d94200a1d63795cadfd3c0ec8415705cd00624705644b128a3408e965624819c",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 2.0
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "800da4de496a11dca98e82b4667c45b6ef0c50be5f9ee5ffdab93145a8bcd51f",
+		"ok": true,
+		"raw": "5769346720fdd9068224531936a22ab9c63d28a837ac411aa13ad2856cb67bf4",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 2.0
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "f2778220692494cb750736e30d172175dedea4ee37f53773cf476c5eac9d2003",
+		"ok": true,
+		"raw": "fde3b1fe3c6d9e91a89c380f670b7b99454b3d27c391365f3e339f137743dfe8",
+		"recipe": {
+			"mass_policy": "constant_wing_loading",
+			"scale": 2.25
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	},
+	{
+		"data": "392b9ed3b06c2700d0f59e1f32a2d8ac4963e63ad1a3ae9d6813b7711778dc1f",
+		"ok": false,
+		"raw": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+		"recipe": {
+			"mass_policy": "geometric",
+			"scale": 2.25
+		},
+		"version": "openrc-aircraft-workshop-v1-generic-compiler-2"
+	}
+]

@@ -62,9 +62,23 @@ Six fresh-process Stik runs alternated the actual unmodified before/after lake
 scripts, with no benchmark switch. All completed and had identical trajectory
 hashes. Unrestricted scheduling was too variable to confirm a gain: median
 baseline ticks were 969/1,013/976 microseconds, versus 1,295/859/1,318 for the
-candidate. These unfavorable results are retained, not discarded. A follow-up
-pins only the child engine to logical CPU 4; its measurements are recorded in
-`summary.json` and the affinity ledger under `raw/`.
+candidate. These unfavorable results are retained, not discarded.
+
+A follow-up pinned only the child engine to logical CPU 4, kept normal process
+priority, and alternated process order. The actual before/after scripts and
+existing session probe remained uninstrumented:
+
+| Repeat | Before median tick, microseconds | After median tick, microseconds | Reduction |
+| --- | ---: | ---: | ---: |
+| 1 | 967 | 1,052 | -8.79% |
+| 2 | 964 | 870 | 9.75% |
+| 3 | 955 | 817 | 14.45% |
+
+The median paired reduction was **9.75%**, with one unfavorable pair. All six
+trajectory hashes matched. Affinity did not isolate the host from other jobs;
+this supports the direction of the paired result but is not a low-noise
+qualification or a guarantee for another machine. Exact commands and source
+hashes are in the affinity ledger under `raw/`.
 
 ## Behavior and regression checks
 
@@ -74,6 +88,9 @@ array edits, nested profile/bounds/wave mutations with unchanged identity,
 restoration, type changes, NaN/infinity, signed zero, missing fields, multiple
 lake definitions, bounded retention, object lifetime and concurrent callers
 with separately owned input dictionaries.
+
+A deliberate identity-only cache defect in a disposable copy was rejected by
+70 assertions, without engine errors. The production source was not mutated.
 
 The cache admits only a bounded plain-data tree: at most 512 counted values or
 packed scalars, nesting depth four, and strings at most 1,024 characters. Unusual

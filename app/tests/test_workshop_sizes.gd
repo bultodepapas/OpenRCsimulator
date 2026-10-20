@@ -120,11 +120,11 @@ func _test_rejections(base: Dictionary) -> void:
 		_check("invalid scale %s is rejected by shared validation and compile" % str(invalid_scale),
 			not bool(checked.get("ok", false)) and not bool(compiled.get("ok", false)),
 			"parameters=%s compiler=%s" % [checked.get("errors", []), compiled.get("errors", [])])
-	var geometric_recipe := {"scale": Parameters.MAX_SCALE, "mass_policy": "geometric"}
-	_check("225% geometric request is inside the parameter contract",
+	var geometric_recipe := {"scale": 2.25, "mass_policy": "geometric"}
+	_check("legacy 225% geometric request is inside the parameter contract",
 		bool(Parameters.validate(geometric_recipe).get("ok", false)))
 	var geometric: Dictionary = Compiler.compile(base, geometric_recipe)
-	_check("225% geometric request still fails full aircraft validation",
+	_check("legacy 225% geometric request still fails full aircraft validation",
 		not bool(geometric.get("ok", false))
 			and (str(geometric.get("errors", [])).contains("inventory")
 				or str(geometric.get("errors", [])).contains("mass_range")),
@@ -233,7 +233,7 @@ func _test_workshop_ui() -> void:
 	var readout: Label = _find(workshop, "ScaleReadout") as Label
 	var shortcut_ids: Array[String] = ["Tiny", "Mini", "Original", "Large", "Giant"]
 	var shortcut_values: Array[float] = [
-		Parameters.MIN_SCALE, 0.5, 1.0, 1.5, Parameters.MAX_SCALE,
+		Parameters.MIN_SCALE, 0.5, 1.0, 2.0, Parameters.MAX_SCALE,
 	]
 	_check("Workshop displays selector, step controls and actual-size readout",
 		scale_selector != null and smaller != null and larger != null and readout != null)
@@ -264,6 +264,7 @@ func _test_workshop_ui() -> void:
 		_check("%s shortcut selects its named multiplier" % shortcut_ids[index],
 			float(current.scale) == shortcut_values[index], str(current.scale))
 		current.erase("scale")
+		current.erase("size_model")
 		_check("%s shortcut leaves every other recipe setting unchanged" % shortcut_ids[index],
 			current == non_scale_before, str(current))
 	var giant_span := float(workshop.get_compiled().summary.wing_span_m)

@@ -264,6 +264,7 @@ var _frametimes_path: String = ""
 var _frametimes_warmup_s: float = 1.0
 var _frametimes_duration: float = 20.0
 var _frametime_samples: RefCounted = null
+var _frame_diagnostics: RefCounted = null
 var _frametimes_elapsed: float = 0.0
 var _frametimes_active: bool = false
 var _frametimes_clock_primed: bool = false
@@ -784,11 +785,14 @@ func _ready() -> void:
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
 		_frametimes_duration = float(frametime_options.sample_s)
 		_frametime_samples = FrameSamples.new()
-		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration):
+		if not _frametime_samples.configure(_frametimes_warmup_s, _frametimes_duration, int(frametime_options.max_frames)):
 			push_error("Invalid frame-time options: " + _frametime_samples.failure)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		_frametimes_active = true
+		if bool(frametime_options.diagnostics):
+			_frame_diagnostics = load("res://render/frame_diagnostics.gd").new()
+			_frame_diagnostics.start(get_viewport())
 		_frametimes_scripted_fixed = _scripted
 		if _frametimes_scripted_fixed:
 			session.input_enabled = false
@@ -2044,6 +2048,8 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if _frame_diagnostics != null:
+		_frame_diagnostics.stop()
 	if _accident_incident != null:
 		_accident_incident.archive()
 	if flight_log != null:
@@ -2381,15 +2387,28 @@ func _log_frame_time(delta: float) -> void:
 		physics_3d_active_objects = Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
 		physics_3d_collision_pairs = Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
 	}
+	if _frame_diagnostics != null:
+		var poll_start_usec: int = Time.get_ticks_usec()
+		raw_metrics.merge(_frame_diagnostics.sample())
+		raw_metrics.observer_poll_usec = Time.get_ticks_usec() - poll_start_usec
 	if not _frametime_samples.record_frame(delta, wall_delta_usec, now_usec, raw_metrics):
-		_frametimes_active = false
 		push_error("Frame-time measurement failed: " + _frametime_samples.failure)
-		get_tree().quit(1)
+		_finish_frame_time(1)
 		return
 	_frametimes_elapsed = float(_frametime_samples.elapsed_wall_usec) / 1000000.0
 	if not _frametime_samples.finished:
 		return
+	_finish_frame_time()
+
+
+func _finish_frame_time(exit_code: int = OK) -> void:
+	var sim: Node = session.sim
 	var report: Dictionary = _frametime_samples.report()
+	if _frame_diagnostics != null:
+		_frame_diagnostics.stop()
+		report.frame_diagnostics = _frame_diagnostics.metadata()
+	else:
+		report.frame_diagnostics = {enabled = false}
 	var sim_end_s: float = sim.time()
 	var sim_end_tick: int = sim.tick
 	var sample_metrics: Dictionary = report.raw_metrics
@@ -2454,12 +2473,12 @@ func _log_frame_time(delta: float) -> void:
 	var write_result: Dictionary = FrameSamples.write_json(_frametimes_path, report)
 	_frametimes_active = false
 	var frame_stats: Dictionary = report.frame_ms
-	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, _frametimes_path])
+	print("frame times: p50 %.2f ms, p95 %.2f ms, p99 %.2f ms over %d frames (complete=%s) → %s" % [frame_stats.p50, frame_stats.p95, frame_stats.p99, report.frames, str(report.complete), _frametimes_path])
 	if not write_result.ok:
 		push_error("Cannot write frame-time report '%s': %s" % [_frametimes_path, error_string(int(write_result.error))])
 		get_tree().quit(1)
 		return
-	get_tree().quit(OK)
+	get_tree().quit(exit_code)
 
 
 ## Actual rendered state, not just the requested CLI flags. Shared with the UI transition fixture.

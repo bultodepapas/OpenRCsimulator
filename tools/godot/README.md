@@ -177,3 +177,10 @@ are refused. The existing three-process measurement contract is unchanged.
 Input reports still replace an existing requested destination; choose a distinct
 path when preserving a baseline. Flight-log report write completion is handled in
 the [flight logging tool](../../docs/FLIGHT-LOGGING.md).
+
+For opt-in CPU/GPU counters, bounded frame capture and offline hitch/log diagnosis,
+see the [performance tool guide](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis).
+After importing the project, `OPENRC_TEST_GODOT=<engine>` also enables the three
+production frame-capture regressions in `test_frame_capture.py`; the integration
+partition runs them automatically. They test diagnostics off/on and incomplete
+retained prefixes, not performance speed.

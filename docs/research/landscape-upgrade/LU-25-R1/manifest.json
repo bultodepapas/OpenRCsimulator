@@ -3,6 +3,7 @@
   "candidate_lake_sha256": "3a4e6649e2744bf98f256bf35b2bb7f31c29043bf48ef9661143f563aee9c0b5",
   "paired_instrumented_leaf_sha256": "e8011d8990c28580872df666f60a421a9e6ad0fa007d1cad683ea5dd0eecc305",
   "measured_tool_sha256": {
+    "check_mutation.py": "341e593367fc60ecac9832bcb273db018e150b0f9a20e1929156c88ee30fb135",
     "instrument.py": "1595f6fc2109ef709abb524eaa7220efef0083522fe6bc604330ecedac90b2a9",
     "paired_lake.gd": "9aa8c60f86321b5b2bf690da6b69a5fd65d8bf544d1876cb90af407eec149d79",
     "perf_clock.gd": "0e5309b04d2991c4da80898721a0f5fb3b143695ffacbdaf5f68d4ca4c2d2fe3",
@@ -10,6 +11,7 @@
     "run_affinity.py": "408a3ff4ccea88136f59ff81d628f2961b0f48e138f4fe2ee8912cf8a7ecaf6b",
     "run_confirmation.py": "fc8c30ee1db92a495a8344ecae988e993836755dc1ca4c29ae3e09d53534e366",
     "run_pairs.py": "fb0c518009ea8db6feffdf734865e7a05cfb6e6711afbf88cf673d2ce00da986",
+    "run_regressions.py": "9cc87cacf0cab6f6f249acd5f4232480d8fba057d8dee1176f6fa94b932e28df",
     "session_probe.gd": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
   },
   "runtime_delta": "Only physics/lake_surface.gd changed in the frozen app; original guard body retained.",

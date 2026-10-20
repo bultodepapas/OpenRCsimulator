@@ -56,6 +56,10 @@ func run() -> void:
 	check("recovery review cannot accidentally start a trial", requests[0] == 0 and second.get_recipe() == before)
 	second.call("dismiss_modal_for_exit")
 	check("Later preserves stored recovery and restores normal editing actions", not dialog.visible and DraftStore.load_snapshot(second.recovery_root).exists and not second.get("_trial_button").disabled and second.get_recipe() == before)
+	var clean_navigation := [false]
+	second.request_navigation("Back to Home", func() -> void: clean_navigation[0] = true)
+	check("clean navigation after Later preserves recovery awaiting a decision", clean_navigation[0]
+		and DraftStore.load_snapshot(second.recovery_root).digest == recovered.digest)
 	second.set_recipe({"control_multiplier": 1.1})
 	check("editing after Later cannot overwrite the pending recovered draft", not second.call("_autosave_draft") and DraftStore.load_snapshot(second.recovery_root).payload.recipe == accepted)
 	second.call("_show_recovery")
@@ -133,9 +137,78 @@ func run() -> void:
 	reviewer.free()
 	restore_reviewer.free()
 	await settle()
+	await test_clean_recovery()
 	_remove_tree(ProjectSettings.globalize_path(scratch))
 	print("Workshop recovery UI: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
+
+func test_clean_recovery() -> void:
+	# AE-03c-R1: exercise the real debounce, not only explicit autosave calls.
+	var editor := make_editor()
+	await settle()
+	editor.set_recipe({"control_multiplier": 1.1})
+	await create_timer(1.0).timeout
+	check("edit reaches automatic recovery before Undo", DraftStore.load_snapshot(editor.recovery_root).exists)
+	editor.call("_undo")
+	await create_timer(1.0).timeout
+	check("Undo to the baseline automatically removes obsolete recovery", not editor.has_unsaved_changes()
+		and not DraftStore.load_snapshot(editor.recovery_root).exists)
+	editor.call("_redo")
+	await create_timer(1.0).timeout
+	var redone: Dictionary = DraftStore.load_snapshot(editor.recovery_root)
+	check("Redo republishes the same edit after clean recovery removal", redone.exists
+		and redone.payload.recipe.control_multiplier == 1.1)
+	editor.call("_undo")
+	# Closing before the next timeout must perform the same cleanup synchronously.
+	var closed := [false]
+	editor.closed.connect(func() -> void: closed[0] = true)
+	editor.call("_request_close")
+	check("immediate clean close clears recovery without an unsaved prompt", closed[0]
+		and not is_instance_valid(editor.get("_guard_dialog"))
+		and not DraftStore.load_snapshot(editor.recovery_root).exists)
+	editor.free()
+	await settle()
+	editor = make_editor()
+	await settle()
+	check("reopening after Undo and clean close has no recovery prompt", not editor.get("_recovery_pending")
+		and not is_instance_valid(editor.get("_recovery_dialog")))
+	if editor.get("_recovery_pending"): editor.call("_discard_pending_recovery")
+	# A saved baseline can differ from stock; cleanup must not delete the library record.
+	editor.set_recipe({"control_multiplier": 1.05})
+	editor.set_variant_name("Recovery baseline")
+	editor.save_named_variant()
+	var saved_id: String = editor.get("_saved_variant_id")
+	check("non-stock baseline saves", not saved_id.is_empty())
+	editor.set_recipe({"control_multiplier": 1.15})
+	check("later edit records recovery", editor.call("_autosave_draft"))
+	editor.call("_undo")
+	check("clean synchronization clears recovery against a saved baseline", not editor.has_unsaved_changes()
+		and editor.call("_autosave_draft") and not DraftStore.load_snapshot(editor.recovery_root).exists
+		and Store.load_variant(saved_id, editor.variants_root).variant.recipe.control_multiplier == 1.05)
+	# A newer writer's digest must survive both delayed cleanup and immediate navigation.
+	for navigate: bool in [false, true]:
+		editor.set_recipe({"control_multiplier": 1.15})
+		check("owner records a snapshot for concurrent cleanup", editor.call("_autosave_draft"))
+		var owned: Dictionary = DraftStore.load_snapshot(editor.recovery_root)
+		var replacement: Dictionary = owned.editor.duplicate(true)
+		replacement.name = "Another editor's draft"
+		var written: Dictionary = DraftStore.save_snapshot(editor.recovery_root, owned.payload, replacement, "", owned.digest)
+		check("concurrent writer replaces the owner's recovery", written.ok)
+		editor.call("_undo")
+		if navigate:
+			var continued := [false]
+			editor.request_navigation("Back to Home", func() -> void: continued[0] = true)
+			check("clean navigation can finish without discarding another writer", continued[0])
+		else:
+			check("clean synchronization detects a replaced recovery", not editor.call("_autosave_draft"))
+		check("cleanup preserves the newer snapshot for explicit review", DraftStore.load_snapshot(editor.recovery_root).digest == written.digest
+			and editor.get("_recovery_pending"))
+		if not editor.get("_recovery_pending"): editor.call("_refresh_recovery_after_conflict")
+		editor.call("_show_recovery")
+		editor.call("_discard_pending_recovery")
+	editor.free()
+	await settle()
+
 func _remove_tree(path: String) -> void:
 	var directory := DirAccess.open(path)
 	if directory == null: return

@@ -94,3 +94,26 @@ Commands and final local results are recorded in the checked runner guide. These
 are focused software regressions, not a full CI run, a physical validation gate or
 a hardware performance acceptance result. Deliberate failures use disposable
 directories; no golden flights or production simulation state are changed.
+
+## PT1h-R3 / VQ-01c: opt-in CPU/GPU and frame diagnosis
+
+The follow-up adds `--frame-diagnostics` to the existing frame logger, a finite
+sample-retention budget, and `research/performance/frame_diagnose.py`. Current
+commands, limits, exit codes and interpretation live in the
+[performance tool guide](../../research/performance/README.md#cpu-gpu-and-memory-diagnosis).
+This extends the existing logger/reducer rather than replacing Godot's free
+Profiler, Visual Profiler, monitors or GPU-profile CLI.
+
+Official [viewport timing APIs](https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#class-renderingserver-method-viewport-get-measured-render-time-gpu),
+[performance monitors](https://docs.godotengine.org/en/stable/classes/class_performance.html)
+and [debugger panel](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/debugger_panel.html)
+were rechecked before implementation. Rendering CPU excludes scripts/physics;
+root-viewport GPU timing is not whole-frame wall time, and zero/delayed values
+need explicit interpretation. The macOS Compatibility exclusion is conservative,
+based on the documented Visual Profiler limitation, rather than a locally tested
+claim about that platform's low-level timing API.
+
+The parent reviewed both delegated components, requested fixes to byte accounting
+and unavailable/invalid-measurement handling, and ran the resulting tools against
+synthetic failures and the production app. Retained native data, source hashes,
+results and limitations are in [VQ-01c diagnostic evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md).

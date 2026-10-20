@@ -1,0 +1,150 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "script": "test_ground_image_cache.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_ground_image_cache-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "ground image cache: 18 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_grass_ground_material.gd"
+    ],
+    "script": "test_grass_ground_material.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_grass_ground_material-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "Grass ground material: 38 checks, 0 failures"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "script": "test_field_surfaces.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_field_surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "19 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "script": "test_world_presentation_context.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_world_presentation_context-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "world presentation context checks=17 failures=0"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_surfaces.gd"
+    ],
+    "script": "test_ground_surfaces.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_ground_surfaces-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "29 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "script": "test_ground_image_cache.gd",
+    "mode": "native",
+    "exit_code": 0,
+    "log": "test_ground_image_cache-native.log",
+    "diagnostics": [],
+    "summaries": [
+      "ground image cache: 18 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_grass_ground_material.gd"
+    ],
+    "script": "test_grass_ground_material.gd",
+    "mode": "native",
+    "exit_code": 0,
+    "log": "test_grass_ground_material-native.log",
+    "diagnostics": [],
+    "summaries": [
+      "Grass ground material: 38 checks, 0 failures"
+    ]
+  }
+]

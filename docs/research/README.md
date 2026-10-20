@@ -71,6 +71,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Aircraft Workshop
 
+[AE-23b virtual sizes](aircraft-editor/AE-23b/README.md), 2026-10-19, records 10–500% aircraft scaling, saved-build/bundle round trips, strict base/import validation, endpoint flight refinement and exact candidate replay. Native EN/ES captures, unchanged legacy identities, pre-existing golden mismatches and remaining physical/performance limits are retained. [AE-23a](aircraft-editor/AE-23a/README.md) preserves the earlier 35–225% slice.
+
 [AE-03a library save boundaries](aircraft-editor/AE-03a/README.md), 2026-10-19, records 35 injected/native Windows abrupt-writer cases and bounded cleanup of handled first-save failures. It verifies complete records, immutable retries, live-owned cleanup and explicit orphan-lock behavior; partial writes, orphan-stage maintenance and wider filesystem/platform qualification remain open.
 
 [AE-03c recovery](aircraft-editor/AE-03c/README.md), [AE-12/13 measured mass and CG](aircraft-editor/AE-12-13/README.md), and [AE-24d.1 thumbnails](aircraft-editor/AE-24d-1/README.md), 2026-10-19, record detached invalid-draft recovery, fixed-station measured masses and copied-pixel library rendering. Their software/native scopes and remaining physical/platform gates are explicit.

@@ -1112,16 +1112,16 @@ func is_flyable() -> bool:
 	return _flight_ready()
 
 
-## Whether resume() would fly now: flyable, not held, not showing a crash.
+## Whether resume() would fly now: a valid flight with no calibration, menu hold, or crash.
 func can_resume() -> bool:
-	return holds.is_empty() and crash.is_empty() and _flight_ready() and not _controller_lost \
+	return calibration == null and holds.is_empty() and crash.is_empty() and _flight_ready() and not _controller_lost \
 		and (not external_controller_selection or not radio.connected or radio.armed)
 
 
-## The pilot's explicit "continue" (never automatic). Refused while a menu holds the session or a crash is shown
+## The pilot's explicit "continue" (never automatic). Refused during calibration, menu holds, or a crash
 ## (the crash restarts by itself; flying on would pass through the ground).
 func resume() -> void:
-	if not holds.is_empty() or not crash.is_empty():
+	if calibration != null or not holds.is_empty() or not crash.is_empty():
 		return
 	if _controller_lost or (external_controller_selection and radio.connected and not radio.armed):
 		return

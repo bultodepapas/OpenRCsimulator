@@ -4543,3 +4543,6 @@ msgstr "Tamaño: %s%% · envergadura: %s m"
 
 msgid "Proposed size: %s%% · wingspan pending validation."
 msgstr "Tamaño propuesto: %s%% · envergadura pendiente de validación."
+
+msgid "Each virtual size is simulated with scaled geometry; aerodynamic similarity is an estimate, especially at the smallest and largest sizes."
+msgstr "Cada tamaño virtual se simula con geometría escalada; la similitud aerodinámica es una estimación, sobre todo en los tamaños más pequeños y más grandes."

@@ -26,7 +26,7 @@ const VARIANT_ROOT := "user://aircraft_variants"
 const FACTOR_STEP := 0.05
 const SCALE_STEP_RATIO := 1.1
 const HISTORY_LIMIT := 32
-const SCALE_OPTIONS := [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+const SCALE_OPTIONS := [0.1, 0.25, 0.35, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0, 2.25, 3.0, 4.0, 5.0]
 var _factor_capabilities: Dictionary = {}
 
 const PRESETS := {
@@ -685,6 +685,9 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	for scale: float in _scale_option_values():
 		_scale_selector.add_item(String.num(scale * 100.0, 4) + "%")
 		_scale_selector.set_item_metadata(_scale_selector.item_count - 1, scale)
+	_scale_selector.tooltip_text = tr(
+		"Each virtual size is simulated with scaled geometry; aerodynamic similarity is an estimate, especially at the smallest and largest sizes."
+	)
 	_scale_selector.item_selected.connect(_on_scale_selected)
 	selector_grid.add_child(_scale_selector)
 	selector_grid.add_child(_label("Mass scaling", "SecondaryLabel"))
@@ -1295,15 +1298,18 @@ func _apply_scale(requested_scale: float) -> void:
 	var bounded_scale := clampf(requested_scale, Parameters.MIN_SCALE, Parameters.MAX_SCALE)
 	var proposed_recipe := _recipe.duplicate(true)
 	proposed_recipe["scale"] = bounded_scale
+	proposed_recipe["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
 	var checked: Dictionary = Parameters.validate(proposed_recipe)
 	if not bool(checked.get("ok", false)):
 		set_note(_messages(checked.get("errors", []), "The requested size could not be applied."))
 		return
 	var accepted_scale := float(checked.values.get("scale", bounded_scale))
-	if float(_recipe.get("scale", 1.0)) == accepted_scale:
+	if float(_recipe.get("scale", 1.0)) == accepted_scale \
+			and _recipe.get("size_model", "") == Parameters.VIRTUAL_SIZE_MODEL:
 		return
 	_capture_undo()
 	_recipe["scale"] = accepted_scale
+	_recipe["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
 	_sync_scale_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
@@ -1329,28 +1335,11 @@ func _within_scale_bounds(scale: float) -> bool:
 
 
 func _scale_shortcut_specs() -> Array[Dictionary]:
-	var mini_scale := 0.5
-	if not _within_scale_bounds(mini_scale) or mini_scale <= Parameters.MIN_SCALE:
-		mini_scale = -1.0
-		for candidate: float in SCALE_OPTIONS:
-			if _within_scale_bounds(candidate) and candidate > Parameters.MIN_SCALE and candidate < 1.0:
-				mini_scale = candidate
-				break
-		if mini_scale < 0.0:
-			mini_scale = (Parameters.MIN_SCALE + 1.0) * 0.5
-	var large_scale := 1.5
-	if not _within_scale_bounds(large_scale) or large_scale >= Parameters.MAX_SCALE:
-		large_scale = -1.0
-		for candidate: float in SCALE_OPTIONS:
-			if _within_scale_bounds(candidate) and candidate > 1.0 and candidate < Parameters.MAX_SCALE:
-				large_scale = candidate
-		if large_scale < 0.0:
-			large_scale = (1.0 + Parameters.MAX_SCALE) * 0.5
 	return [
 		{"key": "Tiny", "label": "Tiny", "scale": Parameters.MIN_SCALE},
-		{"key": "Mini", "label": "Mini", "scale": mini_scale},
+		{"key": "Mini", "label": "Mini", "scale": 0.5},
 		{"key": "Original", "label": "Original", "scale": 1.0},
-		{"key": "Large", "label": "Large", "scale": large_scale},
+		{"key": "Large", "label": "Large", "scale": 2.0},
 		{"key": "Giant", "label": "Giant", "scale": Parameters.MAX_SCALE},
 	]
 
@@ -1445,6 +1434,10 @@ func _apply_preset(preset_id: String) -> void:
 	for key: String in _factor_capabilities:
 		var capability := str(_factor_capabilities[key])
 		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
+	if float(next.get("scale", 1.0)) != float(_recipe.get("scale", 1.0)):
+		next["size_model"] = Parameters.VIRTUAL_SIZE_MODEL
+	elif _recipe.has("size_model"):
+		next["size_model"] = _recipe["size_model"]
 	_set_recipe(next, true)
 	for index in _preset_selector.item_count:
 		if _preset_selector.get_item_metadata(index) == preset_id: _preset_selector.select(index)
@@ -2118,6 +2111,9 @@ func _finish_close() -> void:
 func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null) -> void:
 	if is_instance_valid(_guard_dialog): return
 	if not has_unsaved_changes():
+		# Undo may have restored the baseline just before closing, ahead of the debounce.
+		# Synchronize only this editor's recovery; pending review and newer writers stay protected.
+		if recovery_enabled: _autosave_draft()
 		proceed.call()
 		return
 	_navigation_proceed = proceed
@@ -2549,13 +2545,14 @@ func _schedule_recovery() -> void:
 	_recovery_timer.start()
 
 
+## Synchronizes recovery, removing an obsolete snapshot when the draft is clean.
 ## Explicitly callable for teardown/tests. Does not create a named library revision.
 func _autosave_draft() -> bool:
 	if not recovery_enabled or _recovery_pending or _recovery_restoring or _base_bytes.is_empty(): return false
 	if _recovery_digest.is_empty():
 		set_note("Recovery data cannot be safely replaced. Review the recovery files before retrying.")
 		return false
-	if not has_unsaved_changes(): return true
+	if not has_unsaved_changes(): return _discard_current_recovery()
 	var build := _draft_payload()
 	var state := _recovery_editor_state()
 	var snapshot := {"build": build, "editor": state}

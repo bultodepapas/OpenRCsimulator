@@ -12,7 +12,9 @@ func _initialize() -> void:
 func _run() -> void:
 	var baseline := ""
 	var out := ""
+	var extreme := false
 	for arg: String in OS.get_cmdline_user_args():
+		if arg == "--extreme": extreme = true
 		if arg.begins_with("--baseline="): baseline = arg.trim_prefix("--baseline=")
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 	if baseline.is_empty() or out.is_empty():
@@ -38,8 +40,10 @@ func _run() -> void:
 		"method": "Open-loop, baseline body/internal initial state and exact post-conditioning tape; authentic frozen Workshop mass/inertia/configuration. Not physical validation or equivalence.",
 		"candidates": []}
 	var passed := true
-	for scale: float in [0.35, 2.25]:
-		var frozen := Trial.freeze({"base_id": "jensen-das-ugly-stik-60", "base_bytes": bytes, "recipe": {"scale": scale}})
+	for scale: float in ([0.1, 1.0, 5.0] if extreme else [0.35, 2.25]):
+		var recipe := {"scale": scale}
+		if extreme: recipe.size_model = "virtual_similarity_v1"
+		var frozen := Trial.freeze({"base_id": "jensen-das-ugly-stik-60", "base_bytes": bytes, "recipe": recipe})
 		var result := {"scale": scale, "ok": false, "complete": false, "errors": Array(frozen.errors)}
 		if frozen.ok:
 			result.identity = frozen.identity

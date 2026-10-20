@@ -11,7 +11,9 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var out := ""
+	var extreme := false
 	for arg: String in OS.get_cmdline_user_args():
+		if arg == "--extreme": extreme = true
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 	if out.is_empty() or DirAccess.dir_exists_absolute(out):
 		push_error("Required --out=<new-directory>")
@@ -25,11 +27,12 @@ func _run() -> void:
 	var rows := []
 	var passed := true
 	for policy: String in ["constant_wing_loading", "geometric"]:
-		for scale: float in [0.35, 1.0, 2.25]:
+		for scale: float in ([0.1, 1.0, 5.0] if extreme else [0.35, 1.0, 2.25]):
 			var recipe := {"scale": scale, "mass_policy": policy}
+			if extreme: recipe.size_model = "virtual_similarity_v1"
 			var compiled: Dictionary = compiler.compile(base, recipe)
 			var row := {"scale": scale, "policy": policy, "compiled": compiled.ok, "errors": Array(compiled.errors), "runs": []}
-			passed = passed and (bool(compiled.ok) == not (policy == "geometric" and scale == 2.25))
+			passed = passed and (bool(compiled.ok) == not (not extreme and policy == "geometric" and scale == 2.25))
 			if compiled.ok:
 				var frozen: Dictionary = trial.freeze({"base_id": str(base.id), "base_bytes": bytes, "recipe": recipe})
 				row.frozen = frozen.ok
@@ -63,8 +66,9 @@ func _run() -> void:
 					row.starts = {}
 					for choice: String in ["airborne", "runway"]:
 						row.starts[choice] = Qualification.qualify(frozen, Field.load_from().field, Weather.defaults(), choice)
+					var expected_runway := scale == 1.0 or (extreme and scale == 0.1 and policy == "constant_wing_loading")
 					passed = passed and bool(row.starts.airborne.ok) and bool(row.starts.runway.ok) \
-						and bool(row.starts.airborne.available) and (bool(row.starts.runway.available) == (scale == 1.0))
+						and bool(row.starts.airborne.available) and (bool(row.starts.runway.available) == expected_runway)
 			rows.append(row)
 			print("Scale ", scale, " ", policy, ": compiled=", compiled.ok)
 	var report := FileAccess.open(out.path_join("refinement.json"), FileAccess.WRITE)

@@ -1,0 +1,111 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validation-reference-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "script": "test_near_grass.gd",
+    "mode": "native",
+    "exit_code": 1,
+    "log": "reference-test_near_grass-native.log",
+    "diagnostics": [
+      "ERROR: This function should never be used outside the editor, it can severely damage performance.",
+      "ERROR: This function should never be used outside the editor, it can severely damage performance.",
+      "FAIL standalone grass build registers sim_clock and wind_vec once ",
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371928943720570 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validation-reference-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_imported_near_grass.gd"
+    ],
+    "script": "test_imported_near_grass.gd",
+    "mode": "native",
+    "exit_code": 0,
+    "log": "reference-test_imported_near_grass-native.log",
+    "diagnostics": [
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly."
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validation-reference-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "script": "test_near_grass.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "reference-test_near_grass-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371928809502811 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validation-reference-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_landscape_scenery_grass_mask.gd"
+    ],
+    "script": "test_landscape_scenery_grass_mask.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "reference-test_landscape_scenery_grass_mask-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371930671773787 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validation-reference-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "script": "test_field_surfaces.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "reference-test_field_surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ]
+  }
+]

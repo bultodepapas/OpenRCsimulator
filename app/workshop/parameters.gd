@@ -3,8 +3,9 @@ class_name WorkshopParameters
 
 ## AE-23a: bounded virtual scale. The complete aircraft validator and selected
 ## start qualification still decide which parameter combinations can fly.
-const MIN_SCALE := 0.35
-const MAX_SCALE := 2.25
+const MIN_SCALE := 0.1
+const MAX_SCALE := 5.0
+const VIRTUAL_SIZE_MODEL := "virtual_similarity_v1"
 const MIN_WEIGHT_MULTIPLIER := 0.5
 const MAX_WEIGHT_MULTIPLIER := 2.0
 const MIN_POWER_MULTIPLIER := 0.5
@@ -20,6 +21,7 @@ const ALLOWED_KEYS := [
 	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
 	"tank_capacity_multiplier", "id", "name",
 	"mass_edits",
+	"size_model",
 ]
 
 
@@ -128,6 +130,12 @@ static func validate(recipe: Dictionary) -> Dictionary:
 		errors.append("recipe.mass_policy: expected one of %s" % str(MASS_POLICIES))
 	else:
 		values.mass_policy = mass_policy
+	# Optional: old saved recipes retain their exact normalized bytes and evaluator.
+	if recipe.has("size_model"):
+		if typeof(recipe.size_model) != TYPE_STRING or recipe.size_model != VIRTUAL_SIZE_MODEL:
+			errors.append("recipe.size_model: unsupported virtual size model")
+		else:
+			values.size_model = VIRTUAL_SIZE_MODEL
 	for key: String in ["id", "name"]:
 		if not recipe.has(key):
 			continue

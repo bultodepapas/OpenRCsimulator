@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL 10% constant_wing_loading derives actual geometry and inventory mass at the requested scale derived span/area/mass=0.1524/0.00464515/0.0274369723839
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.08× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL 500% constant_wing_loading derives actual geometry and inventory mass at the requested scale derived span/area/mass=7.62/11.612875/86.9626534597449
+aircraft data warning: inertia: Jyy = 1153.8704 kg·m2 is 2.02× the scaled UltraStick25e value
+Workshop virtual size: 61 checks, 2 failures

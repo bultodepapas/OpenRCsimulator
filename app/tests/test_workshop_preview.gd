@@ -86,7 +86,7 @@ func _run() -> void:
 	preview._on_theme_changed()
 	await _settle()
 	_check("grid uses the declared half-meter world spacing", _grid_spacing_is_world_units(grid))
-	for extreme_scale: float in [0.35, 0.5, 2.0, 2.25]:
+	for extreme_scale: float in [0.1, 0.35, 0.5, 2.0, 2.25, 5.0]:
 		preview.set_aircraft(AIRCRAFT_ID, extreme_scale)
 		await _settle()
 		_check("qualified %.0f%% scale retains all model bounds" % (extreme_scale * 100.0),

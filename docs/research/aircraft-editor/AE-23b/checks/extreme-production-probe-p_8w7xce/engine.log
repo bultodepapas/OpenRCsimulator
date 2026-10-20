@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.08× the scaled UltraStick25e value
+Scale 0.1 constant_wing_loading: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.0006 kg·m2 is 2.08× the scaled UltraStick25e value
+Scale 0.2 constant_wing_loading: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.0055 kg·m2 is 2.07× the scaled UltraStick25e value
+Scale 0.35 constant_wing_loading: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 1.0 constant_wing_loading: compile=true start=true errors=[]
+Scale 2.25 constant_wing_loading: compile=true start=true errors=[]
+Scale 5.0 constant_wing_loading: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.0000 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 0.1 geometric: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.0001 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 0.2 geometric: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.0019 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 0.35 geometric: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 1.0 geometric: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 21.2922 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 2.25 geometric: compile=true start=true errors=[]
+aircraft data warning: inertia: Jyy = 1153.8704 kg·m2 is 2.02× the scaled UltraStick25e value
+Scale 5.0 geometric: compile=true start=true errors=[]

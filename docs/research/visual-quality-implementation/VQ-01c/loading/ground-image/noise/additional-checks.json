@@ -1,0 +1,52 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-ground-image-headless.log",
+    "diagnostics": []
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-field-surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "shared-ground-image-headless.log",
+    "diagnostics": []
+  }
+]
