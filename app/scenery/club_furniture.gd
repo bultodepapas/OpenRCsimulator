@@ -69,6 +69,8 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
 	k.xf = saved*Transform3D(Basis(Vector3.RIGHT,angle),centre)
 	var bevel := 0.003
 	var rings: Array[PackedVector3Array] = []
+	# Adjacent side triangles share ring vertices; sample their grain once per plank.
+	var colors: Array[PackedColorArray] = []
 	for r in range(segments+3):
 		var end := r == 0 or r == segments+2
 		var x := lerpf(-length_m*0.5+bevel,length_m*0.5-bevel,float(r-1)/segments)
@@ -77,13 +79,18 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
 		var h := thickness*0.5 - (bevel if end else 0.0)
 		var w := width*0.5 - (bevel if end else 0.0)
 		var ring := PackedVector3Array()
+		var color_ring := PackedColorArray()
 		for p: Vector2 in [Vector2(h-bevel,-w),Vector2(h,-w+bevel),Vector2(h,w-bevel),Vector2(h-bevel,w),Vector2(-h+bevel,w),Vector2(-h,w-bevel),Vector2(-h,-w+bevel),Vector2(-h+bevel,-w)]:
-			ring.append(Vector3(x,p.x,p.y))
+			var point := Vector3(x,p.x,p.y)
+			ring.append(point)
+			color_ring.append(_wood_color(point,tone,seed))
 		rings.append(ring)
+		colors.append(color_ring)
 	for r in rings.size()-1:
 		for j in 8:
 			var next := (j+1)%8
-			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,seed)
+			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,
+				colors[r][next],colors[r+1][next],colors[r+1][j],colors[r][j])
 	# Cross-section faces positive X; reverse only the negative-X cap.
 	var cap := rings[0]
 	cap.reverse()
@@ -92,23 +99,30 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
 	k.xf = saved
 
 
-static func _face(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, d: Vector3, tone: Color, seed: int) -> void:
+static func _face(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, d: Vector3, tone: Color,
+		ca: Color, cb: Color, cc: Color, cd: Color) -> void:
+	var first := k.cols.size()
+	k.quad(a,b,c,d,tone)
+	k.cols[first] = ca
+	k.cols[first+1] = cc
+	k.cols[first+2] = cb
+	k.cols[first+3] = ca
+	k.cols[first+4] = cd
+	k.cols[first+5] = cc
+
+
+static func _wood_color(p: Vector3, tone: Color, seed: int) -> Color:
 	if _wood == null:
 		_wood = Wood.get_image()
 		# Filter before vertex sampling: no glittering single-texel grain or extra draw.
 		_wood.resize(96,64,Image.INTERPOLATE_LANCZOS)
-	var first := k.cols.size()
-	k.quad(a,b,c,d,tone)
-	var points := [a,c,b,a,d,c]
-	for i in 6:
-		var p: Vector3 = points[i]
-		var u := fposmod(p.x/0.8+float(seed)*0.173,1.0)
-		var v := fposmod((p.z+p.y*2.0)/0.8+float(seed)*0.319,1.0)
-		var sample := _wood.get_pixel(int(u*95),int(v*63))
-		var light := (sample.r+sample.g+sample.b)/3.0
-		var shade := clampf(1.0+(light-0.39)*3.0,0.78,1.18)
-		shade *= 0.91+0.13*float(seed%5)/4.0
-		k.cols[first+i] = Color(tone.r*shade,tone.g*shade,tone.b*shade,1.0)
+	var u := fposmod(p.x/0.8+float(seed)*0.173,1.0)
+	var v := fposmod((p.z+p.y*2.0)/0.8+float(seed)*0.319,1.0)
+	var sample := _wood.get_pixel(int(u*95),int(v*63))
+	var light := (sample.r+sample.g+sample.b)/3.0
+	var shade := clampf(1.0+(light-0.39)*3.0,0.78,1.18)
+	shade *= 0.91+0.13*float(seed%5)/4.0
+	return Color(tone.r*shade,tone.g*shade,tone.b*shade,1.0)
 
 
 static func _bolt(k: MeshKit, origin: Vector3, normal: Vector3, radius: float) -> void:

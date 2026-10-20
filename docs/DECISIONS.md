@@ -544,3 +544,12 @@ Three P-51 trim repeats measured a modest 0.90–1.66% lower paired CPU callback
 cost, with exact trajectories and checkpoints; the unchanged Stik path was flat.
 Keep the original-method oracle and report existing failures separately from
 the passing parity tests. [Measurements and regression limits](research/simulation-state/H17/README.md).
+
+### 2026-10-19 — Reuse wood colors within one plank construction (DT-11a)
+
+Sample the existing filtered wood image once per ring vertex and reuse its color
+in adjacent triangles. Keep the temporary arrays local to the plank; seeds, tones,
+dimensions and transforms require no persistent invalidation policy. Exact field
+and prefab comparisons support the change, with 27.1% lower placed-object build
+time across five processes. Generic box/quad optimizations were inconclusive or
+slower and were rejected. [Evidence and limits](research/visual-quality-implementation/VQ-01c/loading/timber-colors/README.md).

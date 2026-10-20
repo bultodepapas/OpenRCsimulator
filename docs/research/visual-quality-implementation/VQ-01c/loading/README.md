@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [shared plank vertex colors](timber-colors/README.md)
+reduces placed-object construction by 27.1%, preserving 30 whole-field and 60 prefab
+pairs. Scalar color, transform and damage regressions pass; three Home/Fly cycles
+close cleanly. Whole-field timings remain mixed, with no FPS gain claimed.
+
 2026-10-19 construction follow-up: [shoreline spacing rejection before terrain sampling](botanical-spacing/README.md)
 reduces complete botanical construction by 25.1%, preserving 30 whole-field geometry
 pairs and 18 layout cases. Default shoreline queries fall from 141 to 56; candidate
