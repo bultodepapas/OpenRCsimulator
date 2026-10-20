@@ -1,5 +1,5 @@
 # Pause-menu flight overlays panel (HUD-06, docs/plans/flight-overlays.md §7): preset, one switch per overlay, units
-# and transmitter mode. Changes apply at once through the flight's overlay manager, which reports them for saving.
+# transmitter appearance and stick mode. Changes apply at once through the flight's overlay manager, which saves them.
 extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
@@ -17,12 +17,14 @@ const NAMES := {
 }
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
+const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
 
 var manager: CanvasLayer
 var dialog_panel: PanelContainer
 var preset_picker: OptionButton
 var units_picker: OptionButton
 var mode_picker: OptionButton
+var radio_picker: OptionButton
 var switches := {}
 var done_button: Button
 var _syncing := false
@@ -98,7 +100,14 @@ func _init(overlay_manager: CanvasLayer) -> void:
 		if not _syncing:
 			manager.set_units(Settings.Units.SYSTEMS[index]))
 
-	mode_picker = _picker(column, tr("Transmitter"), "StickMode")
+	radio_picker = _picker(column, tr("Radio appearance"), "RadioAppearance")
+	for model: String in Settings.RADIO_MODELS:
+		radio_picker.add_item(RADIO_NAMES[model])
+	radio_picker.item_selected.connect(func(index: int) -> void:
+		if not _syncing:
+			manager.set_radio_model(Settings.RADIO_MODELS[index]))
+
+	mode_picker = _picker(column, tr("Stick mode"), "StickMode")
 	mode_picker.add_item(tr("Mode 1 (throttle right)"))
 	mode_picker.add_item(tr("Mode 2 (throttle left)"))
 	mode_picker.item_selected.connect(func(index: int) -> void:
@@ -119,7 +128,7 @@ func _init(overlay_manager: CanvasLayer) -> void:
 func _ready() -> void:
 	_resize_layout()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
-		for picker: OptionButton in [preset_picker, units_picker, mode_picker]:
+		for picker: OptionButton in [preset_picker, units_picker, radio_picker, mode_picker]:
 			picker.get_popup().force_native = true # as the time-of-day dialog: avoids embedded-popup teardown errors
 	preset_picker.grab_focus.call_deferred()
 
@@ -143,6 +152,7 @@ func _sync() -> void:
 	for id: String in Settings.IDS:
 		switches[id].button_pressed = settings.visible.has(id)
 	units_picker.select(Settings.Units.SYSTEMS.find(settings.units))
+	radio_picker.select(Settings.RADIO_MODELS.find(settings.radio_model))
 	mode_picker.select(int(settings.stick_mode) - 1)
 	_syncing = false
 

@@ -132,6 +132,7 @@ func _place(overlay: Control, preset: Control.LayoutPreset) -> void:
 ## Replaces the settings (validated); `announce` emits settings_changed.
 func apply(value: Variant, announce := true) -> void:
 	settings = Settings.validate(value)
+	frames.transmitter.set_radio_model(settings.radio_model)
 	for id: String in IDS:
 		var on: bool = settings.visible.has(id)
 		if id == "warnings":
@@ -201,6 +202,12 @@ func set_units(system: String) -> void:
 func set_stick_mode(mode: int) -> void:
 	var next := settings.duplicate(true)
 	next.stick_mode = mode
+	apply(next)
+
+
+func set_radio_model(model: String) -> void:
+	var next := settings.duplicate(true)
+	next.radio_model = model
 	apply(next)
 
 

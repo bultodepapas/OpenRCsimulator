@@ -1,5 +1,5 @@
 # Flight overlay settings (HUD-03/06): the overlay IDs, presets and validation shared by the overlay manager and the
-# preferences file. Pure; no nodes. A settings dictionary: { preset, visible: [ids], units, stick_mode }.
+# preferences file. Pure; no nodes. A settings dictionary: { preset, visible: [ids], units, stick_mode, radio_model }.
 extends RefCounted
 
 const Units := preload("res://render/overlays/units.gd")
@@ -14,11 +14,12 @@ const PRESETS := {
 	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
+const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]
 ## BAT-15: the Battery overlay is detailed while this overlay is shown (Full, Developer), compact otherwise (Pilot).
 ## Derived from the visible set, so the saved [hud] keys carry it without a new preference.
 const BATTERY_DETAIL_WITH := "telemetry"
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2 }
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii" }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.
@@ -36,6 +37,9 @@ static func validate(value: Variant) -> Dictionary:
 	var mode: Variant = value.get("stick_mode")
 	if typeof(mode) == TYPE_INT and (mode == 1 or mode == 2):
 		out.stick_mode = mode
+	var radio_model: Variant = value.get("radio_model")
+	if typeof(radio_model) == TYPE_STRING and RADIO_MODELS.has(radio_model):
+		out.radio_model = radio_model
 	if out.preset != "custom":
 		out.visible = PRESETS[out.preset].duplicate()
 		return out

@@ -126,7 +126,7 @@ static func load_from(path: String) -> Dictionary:
 		prefs.weather_config = checked_weather.config.duplicate(true)
 	if cfg.has_section("hud"):
 		var hud := {}
-		for key: String in ["preset", "visible", "units", "stick_mode"]:
+		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model"]:
 			if cfg.has_section_key("hud", key):
 				hud[key] = cfg.get_value("hud", key)
 		prefs.hud = OverlaySettings.validate(hud)
@@ -230,6 +230,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("hud", "visible", hud.visible)
 	cfg.set_value("hud", "units", hud.units)
 	cfg.set_value("hud", "stick_mode", hud.stick_mode)
+	cfg.set_value("hud", "radio_model", hud.radio_model)
 	return cfg.save(path)
 
 
