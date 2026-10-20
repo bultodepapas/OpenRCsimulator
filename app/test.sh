@@ -34,6 +34,7 @@ if [[ "$TEST_PART" != units ]]; then
 echo "== PT1h-R1: real-engine diagnostic failure matrix"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_run_checked.py" NativeGodotTests
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_frame_capture.py"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_lifecycle_probe.py" LifecycleProbeFixtureTests
 
 echo "== HELI-03a/04: independent mean-inflow reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"

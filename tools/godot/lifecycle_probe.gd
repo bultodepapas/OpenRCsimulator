@@ -182,6 +182,8 @@ func _cycle() -> Dictionary:
 		_watch(watches, _app.flight.session, "retired flight session")
 		if _app.flight.session != null:
 			_watch(watches, _app.flight.session.sim, "retired simulation")
+			if _app.flight.session.sim != null and "model" in _app.flight.session.sim:
+				_watch(watches, _app.flight.session.sim.model, "retired vehicle model")
 		_app.open_pause()
 		_watch(watches, _app.pause_menu, "retired pause menu")
 		await _settle()

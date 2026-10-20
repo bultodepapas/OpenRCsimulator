@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -59,7 +60,7 @@ def make_report(*, node_counts=None, orphan_counts=None, object_counts=None,
         "complete": True,
         "failure": "",
         "config": config,
-        "debug_build": False,
+        "debug_build": True,
         "samples": samples,
         "cleanup": {
             "retired_objects_checked": 3,
@@ -75,7 +76,10 @@ class LifecycleAnalysisTests(unittest.TestCase):
         return checker.analyze_report(report, CAPTURE_ID, CONFIG, **options)
 
     def test_flat_counts_pass(self):
-        result = self.analyze(make_report())
+        report = make_report()
+        report["godot"] = "4.5.stable"
+        report["scope"] = "settled checkpoints"
+        result = self.analyze(report)
         self.assertTrue(result["complete"])
         self.assertTrue(result["ok"])
         self.assertEqual(result["findings"], [])
@@ -93,6 +97,32 @@ class LifecycleAnalysisTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertTrue(any(item.startswith("node_growth:") for item in result["findings"]))
         self.assertEqual(result["metrics"]["max_node_growth"], 3)
+
+    def test_orphan_growth_uses_its_own_baseline_limit(self):
+        report = make_report(orphan_counts=[2, 3, 4, 5])
+        result = self.analyze(report, max_orphan_growth=2)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item.startswith("orphan_growth:") for item in result["findings"]))
+        self.assertEqual(result["metrics"]["max_orphan_growth"], 3)
+
+    def test_orphans_can_outnumber_tree_nodes_and_retired_details_must_sum_within_total(self):
+        orphan_report = make_report()
+        orphan_report["samples"][1]["orphan_node_count"] = 101
+        orphan_result = self.analyze(orphan_report)
+        self.assertFalse(orphan_result["ok"])
+        self.assertTrue(orphan_result["complete"])
+        self.assertTrue(any(item.startswith("orphan_growth:") for item in orphan_result["findings"]))
+        self.assertFalse(any(item.startswith("invalid_report:") for item in orphan_result["findings"]))
+
+        alive_report = make_report()
+        for sample in alive_report["samples"]:
+            sample["retired_objects_alive"] = [copy.deepcopy(IDENTITY)]
+        alive_report["cleanup"]["retired_objects_alive"] = [copy.deepcopy(IDENTITY)]
+        alive_report["total_retired_alive"] = 4
+        alive_result = self.analyze(alive_report)
+        self.assertFalse(alive_result["ok"])
+        self.assertTrue(any("smaller than retained alive-object details" in item
+                            for item in alive_result["findings"]))
 
     def test_retired_alive_object_fails_when_global_counts_are_flat(self):
         report = make_report()
@@ -132,6 +162,25 @@ class LifecycleAnalysisTests(unittest.TestCase):
         self.assertFalse(any(item.startswith("invalid_report:") for item in result["findings"]))
         self.assertTrue(any(item.startswith("probe_incomplete:") for item in result["findings"]))
 
+    def test_empty_interrupted_prefix_is_incomplete_not_zero_growth(self):
+        report = make_report()
+        report["samples"] = []
+        report["complete"] = False
+        report["failure"] = ""
+        result = self.analyze(report)
+        self.assertFalse(result["complete"])
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["metrics"], {})
+        self.assertTrue(any("no lifecycle samples" in item for item in result["findings"]))
+
+    def test_release_report_cannot_pass_debug_only_monitors(self):
+        report = make_report()
+        report["debug_build"] = False
+        result = self.analyze(report)
+        self.assertTrue(result["complete"])
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item.startswith("debug_build_required:") for item in result["findings"]))
+
     def test_invalid_identity_schema_is_rejected(self):
         report = make_report()
         report["samples"][1]["orphan_details"] = [{"id": "missing other identity fields"}]
@@ -162,11 +211,21 @@ class LifecycleAnalysisTests(unittest.TestCase):
     def test_json_loader_rejects_duplicate_keys_and_nonfinite_literals(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "lifecycle.json"
-            for content in ('{"format":"one","format":"two"}', '{"value":NaN}'):
+            for content in ('{"format":"one","format":"two"}', '{"value":NaN}',
+                            '{"value":1e309}', '[' * 5000 + '0' + ']' * 5000):
                 with self.subTest(content=content):
                     path.write_text(content, encoding="utf-8")
                     with self.assertRaises(ValueError):
                         checker.load_report(path)
+
+    def test_json_loader_rejects_oversized_and_non_regular_reports(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "lifecycle.json"
+            path.write_bytes(b" " * (checker.MAX_REPORT_BYTES + 1))
+            with self.assertRaisesRegex(ValueError, "exceeds"):
+                checker.load_report(path)
+            with self.assertRaises(ValueError):
+                checker.load_report(Path(directory))
 
 
 class LifecycleCliTests(unittest.TestCase):
@@ -176,6 +235,7 @@ class LifecycleCliTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.godot = self.root / "godot.exe"
         self.godot.write_bytes(b"fake executable")
+        self.godot.chmod(0o700)  # Satisfy the launch preflight on POSIX too.
         self.probe = self.root / "lifecycle_probe.gd"
         self.probe.write_text("# command construction fixture\n", encoding="utf-8")
         self.probe_patch = mock.patch.object(checker, "PROBE_SCRIPT", self.probe)
@@ -200,8 +260,13 @@ class LifecycleCliTests(unittest.TestCase):
         values.update(overrides)
         return checker.argparse.Namespace(**values)
 
+    def test_default_output_and_external_path_fallback_are_stable(self):
+        self.assertEqual(checker.DEFAULT_OUT, checker.ROOT / "tmp" / "godot-lifecycle")
+        external = self.root.parent / "outside log.txt"
+        self.assertEqual(checker._relative_path(self.root, external), str(external)[:2048])
+
     @staticmethod
-    def runner_with_report(*, ok=True, reason="passed"):
+    def runner_with_report(*, ok=True, reason="passed", log_text="phase: settled\n"):
         def run(command, *, out_dir, timeout, label, resources):
             output_arg = next(item for item in command if item.startswith("--out-dir="))
             probe_dir = Path(output_arg.split("=", 1)[1])
@@ -223,7 +288,8 @@ class LifecycleCliTests(unittest.TestCase):
             checked_dir = Path(out_dir) / "fake-run"
             checked_dir.mkdir(parents=True)
             log = checked_dir / "engine.log"
-            log.write_text("phase: settled\n", encoding="utf-8")
+            if log_text is not None:
+                log.write_text(log_text, encoding="utf-8")
             runner_report = checked_dir / "report.json"
             runner_report.write_text("{}", encoding="utf-8")
             return {
@@ -246,8 +312,90 @@ class LifecycleCliTests(unittest.TestCase):
         self.assertTrue(any(item.startswith("engine_check_failed:") for item in summary["findings"]))
         summary_path = next((self.root / "runs").glob("run-*/summary.json"))
         saved = json.loads(summary_path.read_text(encoding="utf-8"))
-        self.assertEqual(saved["probe_report"], "probe/lifecycle.json")
+        self.assertEqual(saved["raw_samples"], "probe/lifecycle.json")
         self.assertEqual(saved["engine"]["log"], "checked/fake-run/engine.log")
+        self.assertEqual(len(saved["provenance"]["source_sha256"]["lifecycle_check.py"]), 64)
+        self.assertEqual(len(saved["provenance"]["source_sha256"]["lifecycle_probe.gd"]), 64)
+        raw_path = summary_path.parent / saved["raw_samples"]
+        self.assertEqual(saved["provenance"]["raw_report_sha256"],
+                         hashlib.sha256(raw_path.read_bytes()).hexdigest())
+
+    def test_shutdown_warning_after_many_nonfatal_warnings_fails_and_is_retained(self):
+        log = "".join(f"WARNING: ordinary warning {index}\n" for index in range(25))
+        log += "some text mentions WARNING: ObjectDB instances leaked at exit\n"
+        log += "\x1b[31mWARNING: ObjectDB instances leaked at exit\x1b[0m\n"
+        log += "WARNING: 2 resources still in use at exit\n"
+        code, summary = checker.run_lifecycle(
+            self.args(), runner=self.runner_with_report(log_text=log))
+        self.assertEqual(code, 1)
+        self.assertTrue(summary["complete"])
+        self.assertFalse(summary["ok"])
+        self.assertEqual(summary["engine_warning_count"], 27)
+        self.assertEqual(summary["counts"]["engine_warning_count"], 27)
+        self.assertEqual(summary["shutdown_leak_warning_count"], 2)
+        self.assertLessEqual(len(summary["engine_warning_details"]), 10)
+        self.assertTrue(summary["engine_warning_details_truncated"])
+        self.assertTrue(any(item["shutdown_leak_warning"]
+                            and "ObjectDB instances leaked" in item["message"]
+                            for item in summary["engine_warning_details"]))
+        self.assertTrue(any(item.startswith("shutdown_leak_warning:")
+                            for item in summary["findings"]))
+
+    def test_unanchored_user_text_is_not_counted_as_an_engine_warning(self):
+        log = "example text: WARNING: ObjectDB instances leaked at exit\n"
+        code, summary = checker.run_lifecycle(
+            self.args(), runner=self.runner_with_report(log_text=log))
+        self.assertEqual(code, 0, summary)
+        self.assertEqual(summary["engine_warning_count"], 0)
+        self.assertEqual(summary["shutdown_leak_warning_count"], 0)
+
+    def test_unrelated_engine_warning_is_reported_but_not_fatal(self):
+        code, summary = checker.run_lifecycle(
+            self.args(), runner=self.runner_with_report(log_text="WARNING: maple wind preset omitted\n"))
+        self.assertEqual(code, 0, summary)
+        self.assertEqual(summary["engine_warning_count"], 1)
+        self.assertEqual(summary["shutdown_leak_warning_count"], 0)
+
+    def test_unreadable_engine_log_makes_capture_incomplete(self):
+        code, summary = checker.run_lifecycle(
+            self.args(), runner=self.runner_with_report(log_text=None))
+        self.assertEqual(code, 1)
+        self.assertFalse(summary["complete"])
+        self.assertIsNone(summary["engine_warning_count"])
+        self.assertTrue(any(item.startswith("engine_log_scan_incomplete:")
+                            for item in summary["findings"]))
+
+    def test_failed_summary_write_removes_its_own_partial_file(self):
+        target = self.root / "summary.json"
+        real_open = Path.open
+
+        class PartialFailure:
+            def __init__(self, stream):
+                self.stream = stream
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_unused):
+                self.stream.close()
+
+            def write(self, payload):
+                self.stream.write(payload[:16])
+                raise OSError("injected disk full")
+
+            def flush(self):
+                self.stream.flush()
+
+        def failing_open(path, *args, **kwargs):
+            stream = real_open(path, *args, **kwargs)
+            if path == target:
+                return PartialFailure(stream)
+            return stream
+
+        with mock.patch.object(Path, "open", failing_open):
+            with self.assertRaisesRegex(OSError, "disk full"):
+                checker._write_summary(target, {"ok": True})
+        self.assertFalse(target.exists())
 
     def test_command_uses_headless_dummy_audio_direct_exe_and_fresh_probe_path(self):
         observed = {}

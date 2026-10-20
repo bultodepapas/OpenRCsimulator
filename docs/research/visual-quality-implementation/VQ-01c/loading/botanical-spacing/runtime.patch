@@ -1,0 +1,123 @@
+--- a/app/scenery/botanical_habitats.gd
++++ b/app/scenery/botanical_habitats.gd
+@@ -379,15 +379,16 @@
+ 		var point: Vector2 = anchor.point + anchor.tangent * tangent_offset + anchor.outward * normal_offset
+ 		var north := point.x
+ 		var east := point.y
+-		var bank_sample := _shore_sample(lake, north, east, field, exclusions)
+-		if bank_sample.is_empty():
+-			continue
+ 		var spaced := true
+ 		for other: Dictionary in selected:
+ 			if Vector2(north, east).distance_to(Vector2(float(other.north), float(other.east))) < minimum_spacing:
+ 				spaced = false
+ 				break
+ 		if not spaced:
++			continue
++		# Reject crowded candidates before the more expensive terrain and footprint queries.
++		var bank_sample := _shore_sample(lake, north, east, field, exclusions)
++		if bank_sample.is_empty():
+ 			continue
+ 		var plant := _plant_record(asset_id, "shore", north, east, plant_seed, surface_rects, lake)
+ 		if plant.is_empty():
+--- a/app/tests/test_downloaded_habitats.gd
++++ b/app/tests/test_downloaded_habitats.gd
+@@ -23,6 +23,9 @@
+ 	"wheat_4": true,
+ 	"reed_aredon": true,
+ 	"bush_common_flowers": true,
++	"grass_lolipop_small": true,
++	"grass_lolipop_tall": true,
++	"forest_leafy_shrub": true,
+ }
+ const FLOWER_ASSETS := ["clover_1", "flower_3_group", "flower_4_group"]
+ const GRASS_ASSETS := ["grass_common_short", "grass_common_tall", "grass_wispy_tall", "fern_1"]
+@@ -45,6 +48,7 @@
+ 	var scenery: Dictionary = scenery_result.scenery
+ 	var lake: Dictionary = lake_result.lake
+ 	_test_default_guard(field, scenery, lake)
++	_test_shore_retry(field, scenery, lake)
+ 	var high := Habitats.layout(field, scenery, "high", lake)
+ 	_test_layout(field, scenery, lake, high)
+ 	_test_quality_subsets(field, scenery, lake, high)
+@@ -77,6 +81,8 @@
+ 	var triangle_total := 0
+ 	var flower_count := 0
+ 	var crop_count := 0
++	var farm_accent_count := 0
++	var accent_triangles := 0
+ 	var corn_count := 0
+ 	var wheat_count := 0
+ 	var reed_count := 0
+@@ -99,6 +105,9 @@
+ 		assets_seen[asset_id] = true
+ 		zone_counts[zone] = int(zone_counts.get(zone, 0)) + 1
+ 		triangle_total += source_triangles
++		if int(plant.seed) >= Habitats.DOWNLOADED_GRASS_SEED_START:
++			accent_triangles += source_triangles
++			if zone == "farm": farm_accent_count += 1
+ 		_check("placement uses a catalogued download", ALLOWED_ASSETS.has(asset_id) and source_triangles > 0)
+ 		var ground_sample := GroundTerrain.sample_validated(float(plant.north), float(plant.east), surface_table, lake)
+ 		all_roots_match_physical_ground = all_roots_match_physical_ground and ground_sample.size() == 3 \
+@@ -145,7 +154,8 @@
+ 				wheat_count += 1 if asset_id == "wheat_4" else 0
+ 	_check("field, club and meadow use only downloaded grass, fern, clover and flower groups", grasses_seen.size() == 4 and flowers_seen.size() == 3)
+ 	_check("downloaded flower clusters replace the removed synthetic meadow", flower_count >= 45 and flower_count <= 60)
+-	_check("two modest downloaded crop plots are populated", crop_count >= 70 and zone_counts.get("farm", 0) == crop_count)
++	_check("two downloaded crop plots coexist with 24 farm-margin accents",
++		crop_count >= 70 and farm_accent_count == 24 and zone_counts.get("farm", 0) == crop_count + farm_accent_count)
+ 	_check("budget trim preserves separate 22-plant corn and 62-plant wheat plots",
+ 		corn_count == 22 and wheat_count == 62 and crop_count == 84,
+ 		"corn=%d wheat=%d" % [corn_count, wheat_count])
+@@ -164,8 +174,10 @@
+ 	_check("uniform target heights stay in natural ranges", heights_valid)
+ 	_check("imported plants stay below the 90k provisional triangle budget", triangle_total <= 90000,
+ 		"%d triangles" % triangle_total)
+-	_check("habitat crop and flower trim keeps the total at 83,650 triangles",
+-		triangle_total == 83650, "%d triangles" % triangle_total)
++	_check("original habitat recipe retains 83,650 triangles",
++		triangle_total - accent_triangles == 83650, "%d original triangles" % (triangle_total - accent_triangles))
++	_check("downloaded grass and shrub accents add exactly 1,986 triangles",
++		accent_triangles == 1986 and triangle_total == 85636, "%d accent triangles; %d total" % [accent_triangles, triangle_total])
+ 	_check("zone metadata can distinguish club, edge, meadow, farm and shore", ["club", "edge", "meadow", "farm", "shore"].all(func(zone: String) -> bool: return zone_counts.has(zone)))
+ 	_check("recipe has all expected zones", zone_counts.get("club", 0) > 0 and zone_counts.get("edge", 0) > 0 \
+ 		and zone_counts.get("meadow", 0) > 0 and zone_counts.get("farm", 0) > 0 and zone_counts.get("shore", 0) > 0)
+@@ -261,3 +273,38 @@
+ 		return
+ 	_failures += 1
+ 	printerr("FAIL: %s %s" % [label, detail])
++
++
++## DT-11a: rejecting a crowded candidate must preserve the deterministic seed tape.
++func _test_shore_retry(field: Dictionary, scenery: Dictionary, lake: Dictionary) -> void:
++	var exclusions := Habitats.exclusions_for(scenery) # Shore plants must not exclude the bank itself.
++	var surfaces := _surface_rects(field)
++	var anchor: Dictionary = Habitats._shore_cluster_anchors(lake)[0]
++	var selected: Array[Dictionary] = []
++	var sequence := {next = 1}
++	var first := Habitats._append_shore_plant(selected, field, exclusions, surfaces, lake,
++		sequence, anchor, "reed_aredon", 0, 0, "reed", 0.85)
++	_check("shore retry fixture accepts a seed-1 search", not first.is_empty())
++	if first.is_empty(): return
++	_check("accepted search consumes through its seed without appending selected",
++		sequence.next == int(first.seed) + 1 and selected.is_empty())
++	selected.append(first.duplicate(true))
++	var selected_bytes := var_to_bytes(selected)
++	sequence.next = int(first.seed)
++	var next := Habitats._append_shore_plant(selected, field, exclusions, surfaces, lake,
++		sequence, anchor, "reed_aredon", 0, 0, "reed", 0.85)
++	_check("retry rejects the occupied seed and finds another shore point", not next.is_empty())
++	if next.is_empty(): return
++	_check("retry keeps the exact spacing and seed progression",
++		int(next.seed) > int(first.seed) and sequence.next == int(next.seed) + 1
++		and Vector2(next.north, next.east).distance_to(Vector2(first.north, first.east)) >= 0.85)
++	var bank := LakeSurface.sample_terrain_validated(lake, next.north, next.east)
++	_check("retry still satisfies dry-bank and exclusion constraints",
++		bank.covered and bank.region == "bank" and bank.signed_shore_distance_m <= -0.75
++		and bank.signed_shore_distance_m >= -4.5 and bank.ground_down_m > 0.0
++		and bank.signed_bank_distance_m > 0.0 and Grass.accepts(next.north, next.east, field, exclusions))
++	sequence.next = 900001
++	var exhausted := Habitats._append_shore_plant(selected, field, exclusions, surfaces, lake,
++		sequence, anchor, "reed_aredon", 0, 0, "reed", 1000000000.0)
++	_check("crowded search consumes exactly 64 candidates and preserves selected",
++		exhausted.is_empty() and sequence.next == 900065 and var_to_bytes(selected) == selected_bytes)

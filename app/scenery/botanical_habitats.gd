@@ -379,15 +379,16 @@ static func _append_shore_plant(selected: Array[Dictionary], field: Dictionary, 
 		var point: Vector2 = anchor.point + anchor.tangent * tangent_offset + anchor.outward * normal_offset
 		var north := point.x
 		var east := point.y
-		var bank_sample := _shore_sample(lake, north, east, field, exclusions)
-		if bank_sample.is_empty():
-			continue
 		var spaced := true
 		for other: Dictionary in selected:
 			if Vector2(north, east).distance_to(Vector2(float(other.north), float(other.east))) < minimum_spacing:
 				spaced = false
 				break
 		if not spaced:
+			continue
+		# Reject crowded candidates before the more expensive terrain and footprint queries.
+		var bank_sample := _shore_sample(lake, north, east, field, exclusions)
+		if bank_sample.is_empty():
 			continue
 		var plant := _plant_record(asset_id, "shore", north, east, plant_seed, surface_rects, lake)
 		if plant.is_empty():

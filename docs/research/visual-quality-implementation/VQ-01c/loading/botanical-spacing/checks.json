@@ -1,0 +1,946 @@
+[
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "07bd5eb4-4aa8-4527-babb-e2a5d8bf9a14",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/candidate.gd",
+      "--check-only"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:18:51.824740+00:00",
+    "label": "candidate-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\candidate-parse-62z5av95\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\candidate-parse-62z5av95\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.75,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "candidate-parse-62z5av95.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "64f233d5-0263-42be-bc2f-1f665cf58997",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/test_downloaded_reference.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:00.138352+00:00",
+    "label": "downloaded-reference-control",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\downloaded-reference-control-ph9iuwii\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\downloaded-reference-control-ph9iuwii\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "process_exit",
+    "detail": "",
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 1.25,
+    "log_bytes": 3313,
+    "log_sha256": "957083ca3b0143df0d2cfe6a78a5d6bcf3b5f6932c4bce07c566d6efb816a559",
+    "retained_log": "downloaded-reference-control-ph9iuwii.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "72f102a6-033a-49c0-956e-0a29ab30d0bd",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/field_compare.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/explore-field.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:19:12.560220+00:00",
+    "label": "explore-field",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\explore-field-42b9o_lm\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\explore-field-42b9o_lm\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371922987808884 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 19.0,
+    "log_bytes": 1094,
+    "log_sha256": "d20ede1f509f75cdf59e6f07cfada039bf6060d4e5f377bb7e3e3f59e4cdae15",
+    "retained_log": "explore-field-42b9o_lm.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "a8496186-c1cb-477b-8a39-7fd71a0af7d8",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field-1.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:20:08.416447+00:00",
+    "label": "field-1",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-1-hksmrgkj\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-1-hksmrgkj\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371922987808884 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 18.25,
+    "log_bytes": 1094,
+    "log_sha256": "d20ede1f509f75cdf59e6f07cfada039bf6060d4e5f377bb7e3e3f59e4cdae15",
+    "retained_log": "field-1-hksmrgkj.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "96d52c42-ffd2-443f-b94c-9e4331d824ea",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field-2.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:20:27.044421+00:00",
+    "label": "field-2",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-2-kb77a0_z\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-2-kb77a0_z\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371922987808884 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 19.719,
+    "log_bytes": 1094,
+    "log_sha256": "f98d6094f9bf51abce54ba47d717be50fa9470ee542ad6361828768f29b131e3",
+    "retained_log": "field-2-kb77a0_z.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "bba1bd81-ec60-46a0-8483-2012ba3675e3",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field-3.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:20:47.598172+00:00",
+    "label": "field-3",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-3-17rh7uy3\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-3-17rh7uy3\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371922987808884 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 19.578,
+    "log_bytes": 1094,
+    "log_sha256": "d20ede1f509f75cdf59e6f07cfada039bf6060d4e5f377bb7e3e3f59e4cdae15",
+    "retained_log": "field-3-17rh7uy3.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0e0bfd8b-0a1d-49ed-a68f-55d938d73007",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field-4.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:21:07.486994+00:00",
+    "label": "field-4",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-4-ihv0x7t3\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-4-ihv0x7t3\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371923004586101 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 17.438,
+    "log_bytes": 1094,
+    "log_sha256": "1098d17e4be1ce3c7c7f0d85cd89336496340bbf8ae98d6480a4e605067a4a60",
+    "retained_log": "field-4-ihv0x7t3.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "4ba3a06d-2437-42eb-97c5-cb3db0f30766",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\field-5.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:21:25.262152+00:00",
+    "label": "field-5",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-5-e14nnxlz\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\field-5-e14nnxlz\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371922987808884 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 13.453,
+    "log_bytes": 1094,
+    "log_sha256": "d20ede1f509f75cdf59e6f07cfada039bf6060d4e5f377bb7e3e3f59e4cdae15",
+    "retained_log": "field-5-e14nnxlz.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "80d78c7a-daf7-434f-b616-8de54d6c9a09",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/layout_compare.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/layout-parity.json",
+      "--trace"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:22:02.758211+00:00",
+    "label": "layout-parity",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\layout-parity-x3j03vzc\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\layout-parity-x3j03vzc\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "18 cases complete=true"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 4.375,
+    "log_bytes": 124,
+    "log_sha256": "ebac9dbf4d00ef9c1287fb83a53d16c1a645dd98a0a6676b60c2fab3b0b26e9a",
+    "retained_log": "layout-parity-x3j03vzc.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "94d4c117-75f7-427b-bb7b-d4d7cc8dcbee",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/production-loading.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:25:03.346730+00:00",
+    "label": "production-home-fly",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\production-home-fly-q_gtsrow\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\production-home-fly-q_gtsrow\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 16.359,
+    "log_bytes": 1824,
+    "log_sha256": "e6ebe0badc0c8dd270e78543da52b4acffd572ef76921ac06a3f1a981a04c059",
+    "retained_log": "production-home-fly-q_gtsrow.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "03657220-c994-463a-ae25-4d1437478fde",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "res://tests/test_downloaded_habitats.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:24:53.330307+00:00",
+    "label": "production-shore-regression",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\production-shore-regression-xy1nuzd1\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\production-shore-regression-xy1nuzd1\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "329 checks, 0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.235,
+    "log_bytes": 289,
+    "log_sha256": "6a9a3769ae76cebdc52f03ad6d2f400372b41990624e140e9d8406dac3e83350",
+    "retained_log": "production-shore-regression-xy1nuzd1.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "d1ca6ffa-f464-4a3c-a357-7580ba9493b5",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/test_downloaded_repaired_reference.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:24:51.011837+00:00",
+    "label": "repaired-test-reference",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\repaired-test-reference-12_8qso1\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\repaired-test-reference-12_8qso1\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "329 checks, 0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.422,
+    "log_bytes": 289,
+    "log_sha256": "6a9a3769ae76cebdc52f03ad6d2f400372b41990624e140e9d8406dac3e83350",
+    "retained_log": "repaired-test-reference-12_8qso1.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "272f2048-2d01-4d21-91de-8ddc7ddf7bd3",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/botanical-spacing-20261019/test_downloaded_candidate.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:24:33.534409+00:00",
+    "label": "seed-regression-draft",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\seed-regression-draft-kg4djrne\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\seed-regression-draft-kg4djrne\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "329 checks, 0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.235,
+    "log_bytes": 289,
+    "log_sha256": "6a9a3769ae76cebdc52f03ad6d2f400372b41990624e140e9d8406dac3e83350",
+    "retained_log": "seed-regression-draft-kg4djrne.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "3ca22a67-9a3d-4072-a3e5-1c1515d161e8",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_botanical_habitats.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:27.519745+00:00",
+    "label": "test_botanical_habitats",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_botanical_habitats-dzud1dfi\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_botanical_habitats-dzud1dfi\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 3,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371967413876993 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.875,
+    "log_bytes": 715,
+    "log_sha256": "a491ebc9a3a5fc869a799d42d216ab6141cacd736ac4a8b5c2da29b415fdbe3c",
+    "retained_log": "test_botanical_habitats-dzud1dfi.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0b8c6e7c-484c-4b0e-aec0-1e69a4dcc343",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_botanical_habitats.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:22:42.688128+00:00",
+    "label": "test_botanical_habitats",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_botanical_habitats-pop0_voq\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_botanical_habitats-pop0_voq\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 3,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371967413876993 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.968,
+    "log_bytes": 715,
+    "log_sha256": "a491ebc9a3a5fc869a799d42d216ab6141cacd736ac4a8b5c2da29b415fdbe3c",
+    "retained_log": "test_botanical_habitats-pop0_voq.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "2dc63f68-5eb3-4ec0-8224-77a871870bad",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_downloaded_habitats.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:29.499925+00:00",
+    "label": "test_downloaded_habitats",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_downloaded_habitats-eon7lcmz\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_downloaded_habitats-eon7lcmz\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.125,
+    "log_bytes": 289,
+    "log_sha256": "7a1382590b1883ee348040db1ecff2218dfef4d1efb74970a0c883051825970a",
+    "retained_log": "test_downloaded_habitats-eon7lcmz.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "f2df27ac-c555-4ab8-9447-1dd393801b18",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_downloaded_habitats.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:22:44.756057+00:00",
+    "label": "test_downloaded_habitats",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_downloaded_habitats-hxtptm8k\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_downloaded_habitats-hxtptm8k\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [
+      "0 failures"
+    ],
+    "reason": "process_exit",
+    "detail": "",
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 1.234,
+    "log_bytes": 3313,
+    "log_sha256": "957083ca3b0143df0d2cfe6a78a5d6bcf3b5f6932c4bce07c566d6efb816a559",
+    "retained_log": "test_downloaded_habitats-hxtptm8k.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "4fd5bc3e-41d5-457b-9307-81cbdaec1462",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:31.783978+00:00",
+    "label": "test_field_integration",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_field_integration-siqowqc1\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_field_integration-siqowqc1\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "all field integration checks passed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 7.235,
+    "log_bytes": 2393,
+    "log_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5",
+    "retained_log": "test_field_integration-siqowqc1.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "78af4fea-0b0c-4275-a6fe-16197477aabe",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_scenery_build.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:39.123596+00:00",
+    "label": "test_scenery_build",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_scenery_build-6cwpvgmk\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_scenery_build-6cwpvgmk\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "all scenery build checks passed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 5,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371933255465118 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 4.094,
+    "log_bytes": 8726,
+    "log_sha256": "7a57e2b6297f63e776d7374036650944d5befa8589b436465e7aa3a4a40f611d",
+    "retained_log": "test_scenery_build-6cwpvgmk.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "3d48955f-c7d8-4eba-bdf6-ccb8f8f420c4",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_woodland_edge_habitat.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:23:30.733999+00:00",
+    "label": "test_woodland_edge_habitat",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_woodland_edge_habitat-z0nzhm1x\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\botanical-spacing-20261019\\checks\\test_woodland_edge_habitat-z0nzhm1x\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.954,
+    "log_bytes": 1638,
+    "log_sha256": "08799fcafb7a297a27056c9b2d61bb8ecd6a432fce1ddc0ff0c68e7e9d9904dc",
+    "retained_log": "test_woodland_edge_habitat-z0nzhm1x.log.gz"
+  }
+]
