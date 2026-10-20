@@ -233,9 +233,7 @@ func _run() -> void:
 			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire),
 				str(built.night_options.field_activation))
 		if lighting_helper != null:
-			lighting_helper.set_process(not case.begins_with("marker_") and str(args.get("ground_spill", "on")) != "off")
-		if ground_spill != null and str(args.get("ground_spill", "on")) == "off":
-			ground_spill.visible = false
+			lighting_helper.set_process(not case.begins_with("marker_"))
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0
@@ -354,6 +352,12 @@ func _run() -> void:
 				# Hold sky/exposure fixed to isolate the lamp fade and real opaque-depth occlusion.
 				var elevation := 3.0 if case == "marker_off" else -0.5 if case == "marker_half" else -4.0
 				lighting_helper.apply_lighting({sun_elevation_deg = elevation})
+			await process_frame
+			await RenderingServer.frame_post_draw
+		# Diagnostic control: let the sky and floods settle first, then remove only this batched turf pool.
+		if ground_spill != null and str(args.get("ground_spill", "on")) == "off" and lighting_helper != null:
+			lighting_helper.set_process(false)
+			ground_spill.visible = false
 			await process_frame
 			await RenderingServer.frame_post_draw
 		if args.has("horizon_diagnostic"):
