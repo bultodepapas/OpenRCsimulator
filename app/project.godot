@@ -6,7 +6,7 @@ config_version=5
 config/name="OpenRC Simulator"
 ; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
 ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
-config/version="0.1.3"
+config/version="0.1.4"
 ; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
 run/main_scene="res://app_root.tscn"
 config/features=PackedStringArray("4.7")
