@@ -11,4 +11,10 @@ GODOT="$(app/get-godot.sh)"
 python3 research/flight-dynamics/power-climb/fleet_neutral_point.py
 ```
 
+```sh
+# The owner's procedure in the complete flight scene (main.tscn, keyboard sampling, Home's gentle-breeze weather):
+# airborne start, then a throttle held hands-off; --start=airborne_half_power uses the 50 % level trim.
+"$GODOT" --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--start=airborne|airborne_half_power] [--throttles=0.5,0.3] [--no-runway] [--seconds=40]
+```
+
 The flown measurement is the flight-test card's `power_step` test (card v5): `python3 research/flight-test/run.py --out <dir> --only power_step` ([card](../../flight-test/README.md#the-card)). Model predictions, not physical validation.

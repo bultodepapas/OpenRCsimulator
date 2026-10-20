@@ -66,7 +66,9 @@ static func _residual(x: PackedFloat64Array, mode: String, V: float, model: Dict
 ## Returns { ok, message, mode, V, alpha, beta, gamma, throttle, thrust, rpm, elevator, aileron, rudder,
 ##           pitch_command, roll_command, yaw_command, state, residual, iterations }.
 ## Requires a structurally valid loader model. Numerical failures keep these keys, with unavailable values NaN.
-static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, rho: float = Air.RHO_SEA_LEVEL, engine_charge_ratio: float = 1.0) -> Dictionary:
+## `initial` (D6e-R3): an optional six-value warm start [alpha, elevator, X, beta, aileron, rudder], tried before the
+## standard guesses; a nearby converged trim (the previous speed of a sweep) saves most Newton iterations.
+static func solve(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, rho: float = Air.RHO_SEA_LEVEL, engine_charge_ratio: float = 1.0, initial: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
 	if mode != "level" and mode != "glide":
 		return _numerical_failure("unsupported trim mode", mode, V, 0)
 	if not is_finite(V) or V <= 0.0 or not is_finite(g) or g < 0.0:
@@ -79,8 +81,13 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 		var limit: Variant = throws.get(axis)
 		if (typeof(limit) != TYPE_FLOAT and typeof(limit) != TYPE_INT) or not is_finite(limit) or limit <= 0.0:
 			return _numerical_failure("trim needs a finite positive " + axis + " throw", mode, V, 0)
+	var warm: bool = initial.size() == N and _all_finite(initial) and (mode != "level" or (initial[2] >= 0.0 and initial[2] <= 1.0))
 	if Propulsion.is_electric(model.propulsion):
 		var electric_result: Dictionary = {}
+		if warm:
+			electric_result = _solve_electric_from(mode, V, model, g, throws, initial[2], rho, initial)
+			if electric_result.ok:
+				return electric_result
 		for guess in [0.2, 0.5, 0.8]:
 			electric_result = _solve_electric_from(mode, V, model, g, throws, guess, rho)
 			if electric_result.ok:
@@ -90,6 +97,10 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 	# with rpm and Newton walks the throttle below zero (P-51 1/4, 26x12 four-blade at 27 m/s). Retrying from higher
 	# throttle guesses only after a failure keeps every previously converging trim bit-identical.
 	var result := {}
+	if warm:
+		result = _solve_from(mode, V, model, g, throws, initial[2], rho, engine_charge_ratio, initial)
+		if result.ok:
+			return result
 	for guess in ([0.4, 0.75, 0.95] if mode == "level" else [-0.1]):
 		result = _solve_from(mode, V, model, g, throws, guess, rho, engine_charge_ratio)
 		if result.ok:
@@ -97,8 +108,8 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 	return result
 
 
-static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float) -> Dictionary:
-	var x := PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
+static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float, x0: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
+	var x := x0.duplicate() if x0.size() == N else PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
 	var bounded_glow_level: bool = mode == "level" and Propulsion.is_glow(model.propulsion)
 	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio)
 	var iterations := 0
@@ -174,8 +185,8 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 ## Electric trim uses the same six-axis equations, with structured source failures and bounded duty probes.
 ## Non-electric trim continues through the source propulsion's steady-RPM path.
 static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary,
-		duty_guess: float, rho: float) -> Dictionary:
-	var x := PackedFloat64Array([0.05, -0.05, duty_guess, 0.0, 0.0, 0.0])
+		duty_guess: float, rho: float, x0: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
+	var x := x0.duplicate() if x0.size() == N else PackedFloat64Array([0.05, -0.05, duty_guess, 0.0, 0.0, 0.0])
 	var evaluation: Dictionary = _evaluate_electric(x, mode, V, model, g, rho)
 	if not evaluation.get("ok", false):
 		return _numerical_failure("electric trim source equilibrium: " + str(evaluation.get("message", "failed")), mode, V, 0)
