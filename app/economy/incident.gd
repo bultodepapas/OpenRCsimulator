@@ -16,6 +16,7 @@ const ARCHIVE_PATH := "user://last_accident.json"
 const ARCHIVE_MAX_BYTES := 262144
 const MAX_INSPECTIONS := 16
 const BINDING_NOTE := "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
+const REGISTERED_VARIANT_NOTE := "This registered battery configuration preserves the priced inventory and contact bindings."
 
 var dossier: Dictionary = {}
 var report: Dictionary = {}
@@ -383,6 +384,8 @@ func _recalculate() -> void:
 	report["assumptions"] = ["USD prices exclude tax, shipping and transmitter/field equipment."]
 	if _binding == "physical_signature" and not dossier.is_empty():
 		report.assumptions.append(BINDING_NOTE)
+	elif _binding == "registered_variant" and not dossier.is_empty():
+		report.assumptions.append(REGISTERED_VARIANT_NOTE)
 	for receipt: Dictionary in _inspections:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)

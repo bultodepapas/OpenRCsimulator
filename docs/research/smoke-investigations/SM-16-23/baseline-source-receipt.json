@@ -1,0 +1,161 @@
+{
+  "captured_utc": "2026-10-20T21:28:22.531060+00:00",
+  "head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "gl_compatibility",
+  "files": [
+    {
+      "path": "app/data/aircraft_customization.json",
+      "sha256": "531c1c128b34dbc1a8d960f968af7e6b83ba1347b0cc54003ec52fa03a9461ff"
+    },
+    {
+      "path": "app/helicopter_main.gd",
+      "sha256": "ff3b68f861342315e4b7650d4c317d80bd78c4e82fc4b1401a4d5060cff4f532"
+    },
+    {
+      "path": "app/main.gd",
+      "sha256": "df161fd1d185956c4a89b96b7982c94626d2e78e8e29847d717b0456fbf4c5f1"
+    },
+    {
+      "path": "app/project.godot",
+      "sha256": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
+    },
+    {
+      "path": "app/render/presentation_sources.gd",
+      "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+    },
+    {
+      "path": "app/render/smoke/exhaust.gd",
+      "sha256": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57"
+    },
+    {
+      "path": "app/render/smoke/exhaust.gd.uid",
+      "sha256": "cf18f2a620b55108207adc2ad7684df3c5c1cda0b4f1933fa0af9ca2d326148f"
+    },
+    {
+      "path": "app/render/smoke/process.gdshader",
+      "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+    },
+    {
+      "path": "app/render/smoke/process.gdshader.uid",
+      "sha256": "9f928e23b9ecad94931fcc46620fcbbedd455e6ffd2aee2aa6c6d7076e3d3ce7"
+    },
+    {
+      "path": "app/render/smoke/profile_process.gdshader",
+      "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+    },
+    {
+      "path": "app/render/smoke/profile_process.gdshader.uid",
+      "sha256": "24571b0910173161329c78af77146942bb6a1d5b5e45f4f45604ef5322c72fd9"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke.gd",
+      "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke.gd.uid",
+      "sha256": "2ecd8922114bb1654299ba04fbaaeaf2e14c379cfedc71e7fd39740b1daef143"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke_schedule.gd",
+      "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke_schedule.gd.uid",
+      "sha256": "337d4a287a029ad84881f0c93090aa1112236563802ba0ef6f4c18f664ba59c0"
+    },
+    {
+      "path": "app/render/smoke/stock_profile.gd",
+      "sha256": "ce44e62ab7b3bdb457b9d978c605f3428d7bdb296126942e4fefa35b4c7c395d"
+    },
+    {
+      "path": "app/render/smoke/stock_profile.gd.uid",
+      "sha256": "956b85db3d4ccb7f2da7d34684e4c0e112960cf8c5586aac83a717ee3f29f155"
+    },
+    {
+      "path": "app/tests/capture_engine_smoke.gd",
+      "sha256": "e76538da7603afee9a492a30307f9b9dc8e72e04d07fec09f0f3586ff366de59"
+    },
+    {
+      "path": "app/tests/capture_engine_smoke.gd.uid",
+      "sha256": "1b6fabd2bbb2dc614d5879211a5714816b4594009c5441e1b14e5bd75af10a44"
+    },
+    {
+      "path": "app/tests/test_avanti_smoke.gd",
+      "sha256": "b2f107e64c38e4cf6c8c5e261cf2d327bcc68e6e40c5eae19b6a1d985425d995"
+    },
+    {
+      "path": "app/tests/test_avanti_smoke.gd.uid",
+      "sha256": "b5dcfbced57cbf31e5b02cf91c65aaa75765c73a43f9598ff1ad890b08054b76"
+    },
+    {
+      "path": "app/tests/test_engine_smoke.gd",
+      "sha256": "ec0acc3d4e41705160a74a8e1a390ee7bbfd6f4d46712eb5778c3bd89cc221de"
+    },
+    {
+      "path": "app/tests/test_engine_smoke.gd.uid",
+      "sha256": "a23ce0bb23a7ba2d58cc473bf1da5aa2f76780fc94f9955cbde93b10644299f6"
+    },
+    {
+      "path": "app/tests/test_smoke_aux.gd",
+      "sha256": "7df90c31dab21cec48a6fc5f4ad296c820fd37858f12257bb2b1b4cb695ccbf0"
+    },
+    {
+      "path": "app/tests/test_smoke_aux.gd.uid",
+      "sha256": "7ba27df11e3fd3d76160038e2497fa2609e19d5b0ea047286935721c7ff32d4f"
+    },
+    {
+      "path": "app/tests/test_smoke_profiles.gd",
+      "sha256": "73fe8e5ba7a062b8d64075d7f1cc1f9c29013e1d03c7c5a0b1eeb0c3dd699d1c"
+    },
+    {
+      "path": "app/tests/test_smoke_profiles.gd.uid",
+      "sha256": "d1c6963460ba1ac2b14a1547a47d83128efca11a6ecf64ae21251b3cc063b254"
+    },
+    {
+      "path": "app/tests/test_workshop_smoke.gd",
+      "sha256": "472853c259aac0dbb3b63c84b47b338a0fdefe6c3ec69fa6ec927f2451371f47"
+    },
+    {
+      "path": "app/tests/test_workshop_smoke.gd.uid",
+      "sha256": "bfc1caea875ff1f86d755535e1aaa428f21d18ccacc9a2a674ce878edd379133"
+    },
+    {
+      "path": "app/tests/test_workshop_smoke_preview.gd",
+      "sha256": "9ed91f2ad294eece69c8d304c71058cefef4c84f837c5d11661094870573ccda"
+    },
+    {
+      "path": "app/tests/test_workshop_smoke_preview.gd.uid",
+      "sha256": "ba940df283cfa00eabf9bc44d2eefb01c83626af539d76905dd5edde55d9e009"
+    },
+    {
+      "path": "app/ui/workshop_customization.gd",
+      "sha256": "c9292e4e2181ce97d0b72602b46fc72a1b55e9fe986e17e9a6f20aa953bf2dd0"
+    },
+    {
+      "path": "app/ui/workshop_preview.gd",
+      "sha256": "a0618fb45d685dcb6dae4a61f177f67f8f5619c926071e38e65650326275d752"
+    },
+    {
+      "path": "app/workshop/presentation.gd",
+      "sha256": "238d16ea1a0bd5d44bdfd56bc0d4d247ccee91a67851bb33e95a75bb2f455510"
+    },
+    {
+      "path": "assets/aircraft/customization-bindings.json",
+      "sha256": "01c71997e2731b63b1da2a1e495ae3310cc750215e930af580f7b4216ea4c08a"
+    },
+    {
+      "path": "research/aircraft-standardization/build_customization.py",
+      "sha256": "a89edfba235d621968626ed2096e38371e46078f03f73ca3d41cf5663d8572b6"
+    },
+    {
+      "path": "research/aircraft-standardization/test_customization.py",
+      "sha256": "c965ab362ebc3232b7cc5e6e1e5db6acfa861ba40044f5dfbdf1d9395ecee6b3"
+    }
+  ],
+  "scope": "Pre-implementation working tree (not clean HEAD); baseline source copies in ignored tmp/smoke-overhaul-baseline"
+}

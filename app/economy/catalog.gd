@@ -39,6 +39,19 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 	var doc: Dictionary = catalog_json.data
 	errors.append_array(_validate_document(doc, aircraft_id))
 	var aircraft_bytes: PackedByteArray = FileAccess.get_file_as_bytes(data_path)
+	var registered_variant := false
+	# BAT-13's default pack has a separate replay identity. Only accept the exact
+	# bytes of the route's declared variant, then verify its priced physical facts
+	# below. Arbitrary Workshop/experimental sources still cannot borrow prices.
+	if _valid_hash(physical_source_hash) and not aircraft_bytes.is_empty() \
+		and physical_source_hash != _sha256(aircraft_bytes):
+		var variant_path := str(entry.get("battery_data", ""))
+		if _is_aircraft_data_path(variant_path):
+			var variant_bytes := FileAccess.get_file_as_bytes(variant_path)
+			if not variant_bytes.is_empty() and _sha256(variant_bytes) == physical_source_hash:
+				aircraft_bytes = variant_bytes
+				data_path = variant_path
+				registered_variant = true
 	if aircraft_bytes.is_empty():
 		errors.append("cannot read aircraft source: " + data_path)
 	else:
@@ -56,9 +69,9 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 			if str(physical.get("id", "")) != aircraft_id:
 				errors.append("aircraft source ID does not match requested route")
 			var dossier: Dictionary = _find_dossier(doc, aircraft_id)
-			if not dossier.is_empty() and str(dossier.get("source_sha256", "")) != actual_hash:
+			if not dossier.is_empty() and (registered_variant or str(dossier.get("source_sha256", "")) != actual_hash):
 				if _physical_signature_matches(dossier.get("physical_signature"), physical):
-					binding = "physical_signature"
+					binding = "registered_variant" if registered_variant else "physical_signature"
 					bound_hash = actual_hash
 				else:
 					errors.append("economics dossier is stale for current aircraft source")
@@ -66,7 +79,7 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 		return _failure(errors, catalog_hash)
 	var dossier: Dictionary = _find_dossier(doc, aircraft_id).duplicate(true)
 	_normalize_dossier_integer_fields(dossier)
-	if binding == "physical_signature":
+	if binding in ["physical_signature", "registered_variant"]:
 		# Receipts and reports identify the aircraft actually flown, not the authored revision.
 		dossier["source_sha256"] = bound_hash
 	return {

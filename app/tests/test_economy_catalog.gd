@@ -13,6 +13,7 @@ func _initialize() -> void:
 	_test_all_routes_and_baseline()
 	_test_missing_prices_do_not_gate_routes()
 	_test_rejects_unknown_or_stale_sources()
+	_test_registered_battery_variant()
 	_test_document_integrity_checks()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -150,6 +151,36 @@ func _test_rejects_unknown_or_stale_sources() -> void:
 		component["quantity"] = 999
 		var reread: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
 		_check("caller mutation cannot change stored sidecar", int(reread["dossier"]["components"][0]["quantity"]) != 999)
+
+
+func _test_registered_battery_variant() -> void:
+	var entry: Dictionary = AircraftCatalog.entry("turbo-lumber-evolution")
+	var pack_path: String = entry.battery_data
+	var pack_hash := FileAccess.get_sha256(pack_path)
+	var loaded: Dictionary = Catalog.load_for("turbo-lumber-evolution", pack_hash)
+	_check("default finite-pack mode binds the declared aircraft source", loaded.get("ok", false)
+		and loaded.get("binding") == "registered_variant", str(loaded.get("errors")))
+	if not loaded.get("ok", false):
+		return
+	_check("pack report preserves the flown source hash", loaded.dossier.source_sha256 == pack_hash)
+	var ideal: Dictionary = Catalog.load_for("turbo-lumber-evolution", FileAccess.get_sha256(entry.data))
+	_check("pack and ideal modes price the same installed parts", ideal.get("ok", false)
+		and loaded.dossier.components == ideal.dossier.components
+		and loaded.dossier.contact_components == ideal.dossier.contact_components)
+	var pack: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(pack_path))
+	var signature: Dictionary = loaded.dossier.physical_signature
+	_check("registered pack still proves the complete priced physical signature", Catalog._physical_signature_matches(signature, pack))
+	var modified := pack.duplicate(true)
+	modified.inventory[0].mass.value += 0.01
+	_check("registered-variant signature rejects a changed installed mass", not Catalog._physical_signature_matches(signature, modified))
+	modified = pack.duplicate(true)
+	modified.inventory[0].name = "Different installed hardware"
+	_check("registered-variant signature rejects a changed product identity", not Catalog._physical_signature_matches(signature, modified))
+	modified = pack.duplicate(true)
+	modified.crash_hull_ids.append("unsupported_contact")
+	_check("registered-variant signature rejects changed contact mappings", not Catalog._physical_signature_matches(signature, modified))
+	_check("arbitrary source hash cannot use the pack fallback", not Catalog.load_for("turbo-lumber-evolution", "1".repeat(64)).get("ok", false))
+	_check("another aircraft cannot borrow the registered pack hash", not Catalog.load_for("jensen-das-ugly-stik-60", pack_hash).get("ok", false))
 
 
 func _test_document_integrity_checks() -> void:

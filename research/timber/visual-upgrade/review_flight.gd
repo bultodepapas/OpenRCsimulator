@@ -180,6 +180,11 @@ func _capture_cost_report() -> Dictionary:
 		return {enabled = true, ok = false, reason = "production report unavailable"}
 	var incident: RefCounted = _flight._accident_incident
 	var report_copy: Dictionary = incident.report.duplicate(true)
+	if str(_flight.aircraft_id) == "turbo-lumber-evolution" \
+		and (incident.dossier.is_empty() or not report_copy.get("ok", false)):
+		_failures.append("Turbo Lumber cost-report capture requires a successful incident report and nonempty validated dossier")
+		return {enabled = true, ok = false, reason = "Turbo Lumber valuation unavailable or dossier empty",
+			dossier_nonempty = not incident.dossier.is_empty(), report_ok = report_copy.get("ok", false)}
 	if report_copy.is_empty():
 		_failures.append("cost-report capture has no production incident report")
 		return {enabled = true, ok = false, reason = "incident report empty"}

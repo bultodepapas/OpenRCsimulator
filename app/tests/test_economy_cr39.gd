@@ -25,6 +25,7 @@ func _initialize() -> void:
 	_test_physical_signature()
 	_test_fleet_contact_bindings()
 	_test_timber_propeller_parts_report()
+	_test_timber_registered_pack_binding()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ARCHIVE))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(TIMBER_ARCHIVE))
 	print("CR-39 economics: %d checks, %d failed" % [checks, failures])
@@ -243,3 +244,19 @@ func _test_timber_propeller_parts_report() -> void:
 		and loaded_propeller.get("product_sku") == "EFL5962"
 		and loaded_propeller.get("offer_amount_minor") == 799
 		and loaded_propeller.get("package_description") == propeller_line.get("package_description"), str(loaded_propeller))
+
+
+func _test_timber_registered_pack_binding() -> void:
+	const PACK_SOURCE := "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"
+	var pack_hash := FileAccess.get_sha256(PACK_SOURCE)
+	var ledger := Incident.new()
+	ledger.begin("turbo-lumber-evolution", pack_hash)
+	check("registered Turbo Lumber pack bytes bind only through the validated variant path",
+		pack_hash.length() == 64 and not ledger.dossier.is_empty() and ledger._binding == "registered_variant"
+		and ledger.dossier.get("source_sha256") == pack_hash, str(ledger._catalog_errors))
+	ledger.observe({tick = 1, events = []}, {}, true)
+	ledger.evaluate_pending()
+	check("registered pack valuation preserves its distinct binding assumption",
+		ledger.report.get("ok", false) and ledger.report.get("identity", {}).get("source_sha256") == pack_hash
+		and ledger.report.get("assumptions", []).has("This registered battery configuration preserves the priced inventory and contact bindings."),
+		str(ledger.report.get("assumptions", [])))

@@ -1,0 +1,7 @@
+{
+  "captured_utc": "2026-10-20T21:55:16.904843+00:00",
+  "status": "Native timing unqualified: concurrent Godot processes and stalled direct-route timing launch; no idle-host delta or release-budget claim.",
+  "attempted_command": "Godot --path app --rendering-driver opengl3 --audio-driver Dummy -- --aircraft=sebart-avanti-s-a200-p100rx --start=airborne_half_power --view=chase --frametimes=tmp/smoke-perf-probe.json --warmup=2 --t=4 --smoke=on --smoke-pump=on --soundscape=off --scenery=off --birds=off --crash-effects=off --companions=0",
+  "other_processes_present": true,
+  "not_run": "Three alternating 10s warmup/60s matched pairs; full visual combined budget; 30min wall-time soak; supported desktop hardware qualification."
+}

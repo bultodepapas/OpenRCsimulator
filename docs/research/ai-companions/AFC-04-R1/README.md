@@ -27,6 +27,39 @@ Afterward all 191 passed, as did the existing 24 pilot checks. The baseline and
 first candidate receipts reference the draft's former research path; its contents
 were then moved unchanged into the normal automatically discovered test suite.
 
+## Circuit qualification and integration
+
+The corrected source passed all **148** checks in the six 120-second calm/gentle
+scenarios (one, two and three companions), plus two three-aircraft calm repeats.
+Both [scenario metrics](circuit-matrix/scenario_metrics.csv) and
+[one-second flight samples](circuit-matrix/flight_samples_1hz.csv) are byte-identical
+to the [original matrix](../pilot/README.md). These are sampled trace comparisons;
+the full every-tick replay proof below applies to the recorded two-threat fixture.
+The matrix uses a stationary player reference and field surfaces, not the full
+scenery/lake inventory. Its 423.891 s wall time is not a performance qualification.
+
+The aircraft profile now pins the corrected controller hash and keeps its existing
+circuits-only scope. Its fixed evidence reference still points to the original
+pilot qualification page, which links this requalification. An attempted new
+reference was rejected by the strict loader; the first profile/manager test
+receipts retain that integration failure. The final checks use the supported
+reference. No admission rule was relaxed.
+
+Final checked-runner receipts, source identities and comparison assertions are
+indexed by [verification.json](verification.json); raw logs remain in [checks](checks/).
+Failed survey receipts remain failed and are not included in the passing check
+total. Expected baseline regression failures and output-directory refusal are
+also identified separately.
+
+The final total is **500 focused checks** (encounters 191, pilot 24, profile 30,
+manager 53, recording 156, shell 46), plus the 148 circuit checks. Recording and
+shell processes exited zero but their initial runner invocations supplied the
+wrong completion text. `verification.json` records reinspection of their retained
+logs through the existing checked-runner scanner with the actual completion
+markers; the original receipts are unchanged. Shell reported one scenery warning
+about unsupported maple-tree wind material and no engine errors. This increment
+does not qualify that renderer behavior.
+
 ## Moving-flight results
 
 `research/ai-companions/encounter_probe.gd` advances real external-driver
@@ -112,6 +145,8 @@ Both surveys used probe SHA-256
 After the captures, the probe gained one early `return` after refusing an existing
 output directory; flight logic is unchanged. The retained expected-refusal check
 exits 2 before session setup. Do not overwrite or relabel the failed captures.
+Removing that single return reconstructs the executed probe bytes exactly;
+`verification.json` checks the resulting hash against both captures.
 
 From the repository root, with a **new** absolute output directory:
 

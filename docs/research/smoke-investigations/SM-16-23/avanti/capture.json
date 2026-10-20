@@ -1,0 +1,86 @@
+{
+	"captures_sha256": {
+		"flight-trail.png": "5d2cf652933d1558bd36c5f5bf4f9acebbaabf744c3d5775c4d0f4ddaa6f368f",
+		"off-expired.png": "c9b4f19388df0e434782d322e08e51f8f0c1981b4f7918505df9908b357a4b1c",
+		"off-residual.png": "1d8baf6374870d46a851c6980f1a4523690d76e3f3b4a187d43495208f1fb752",
+		"tailpipe-close.png": "789ade0c2e74b93191abd093eab0dde14509cf327df2d76da33ec7ae335d9112"
+	},
+	"crash": {},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fault": "",
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"scope": "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted.",
+	"smoke": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 720,
+			"configured": true,
+			"fault": "",
+			"resolved_rates_hz": {
+				"show_tailpipe": {
+					"capacity": 720,
+					"density": 0.4,
+					"requested_hz": 240.0,
+					"resolved_hz": 240.0
+				}
+			},
+			"saturated": false,
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_tailpipe": 720
+			},
+			"source_emitters": 0
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v1",
+		"requested": false,
+		"source_running": true
+	},
+	"smoke_on": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 720,
+			"configured": true,
+			"fault": "",
+			"resolved_rates_hz": {
+				"show_tailpipe": {
+					"capacity": 720,
+					"density": 0.4,
+					"requested_hz": 240.0,
+					"resolved_hz": 240.0
+				}
+			},
+			"saturated": false,
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_tailpipe": 720
+			},
+			"source_emitters": 0
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v1",
+		"requested": true,
+		"source_running": true
+	},
+	"source_sha256": {
+		"C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd": "e361fe9a1ba559b1b4061575382d0f0ac4e2a4cfc9f97f1f70d64bb6aaf75dea",
+		"res://data/aircraft_customization.json": "9b98ced2660cf2089647d57cc02933d8ac803b69163f06748666fc354b83f0e5",
+		"res://main.gd": "050d4a16b160cbe853f11cacab3990f58b8d7ef63bd76d3d231968fb919abb96",
+		"res://render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
+		"res://render/smoke/profile_smoke.gd": "7e25a69e06e8aa7fcd2a8d35abd6a8733eddf0174a12ac37d72a5410c9c7c314",
+		"res://render/smoke/stock_profile.gd": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+	},
+	"tick": 1800
+}
