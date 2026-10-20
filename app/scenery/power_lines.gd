@@ -1,10 +1,12 @@
-## LU-30: imported CC0 transmission tower. Source meshes remain unmodified;
-## only centering and uniform metre scaling happen at the rendering boundary.
+## LU-30: downloaded tower, insulator and sagging conductor geometry.
+## Original source files remain intact; fitted derivatives retain source topology.
 extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const TOWER_SCENE: PackedScene = preload("res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb")
 const HEIGHT_M := 30.0
 const CABLE_DATA := "res://data/scenery/power_cable.json"
+const INSULATOR_DATA := "res://data/scenery/power_insulator.json"
+const INSULATOR_HEIGHT_M := 1.1
 const SAG_RATIO := 0.023
 # Measured crossarm tips of the downloaded, uniformly scaled source.
 const ATTACHMENTS: Array[Vector3] = [
@@ -15,6 +17,7 @@ const ATTACHMENTS: Array[Vector3] = [
 ]
 static var _tower := {}
 static var _cable := {}
+static var _insulator := {}
 
 static func tower_arrays() -> Dictionary:
 	if not _tower.is_empty():
@@ -31,13 +34,30 @@ static func tower_arrays() -> Dictionary:
 	for i in raw.col.size():
 		# The supplier supplies an untextured white material. Fit its finish to
 		# galvanized steel; retain pale concrete on the imported footing geometry.
-		raw.col[i] = Color("aeb8bc") if raw.pos[i].y > 0.55 else Color("bbbcb5")
+		raw.col[i] = Color("879294") if raw.pos[i].y > 0.55 else Color("bbbcb5")
 	_tower = raw
 	return _tower
 
 static func append_tower(kit: MeshKit) -> void:
 	var a := tower_arrays()
 	kit.append_arrays(a.pos, a.nrm, a.col, Transform3D.IDENTITY)
+	var insulator := insulator_arrays()
+	for i in 6:
+		kit.append_arrays(insulator.pos, insulator.nrm, insulator.col,
+			Transform3D(Basis.IDENTITY, ATTACHMENTS[i]))
+
+static func insulator_arrays() -> Dictionary:
+	if not _insulator.is_empty():
+		return _insulator
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(INSULATOR_DATA))
+	var result := {pos = PackedVector3Array(), nrm = PackedVector3Array(), col = PackedColorArray()}
+	for index: int in data.triangles:
+		var offset := index * 3
+		result.pos.append(Vector3(data.positions[offset], data.positions[offset + 1], data.positions[offset + 2]))
+		result.nrm.append(Vector3(data.normals[offset], data.normals[offset + 1], data.normals[offset + 2]))
+		result.col.append(Color("738d83"))
+	_insulator = result
+	return _insulator
 
 ## Place the downloaded rope-span topology between the measured sockets.
 ## No curve is synthesized: normalized centers retain the supplier's sag profile.
@@ -45,7 +65,10 @@ static func append_tower(kit: MeshKit) -> void:
 static func append_span(kit: MeshKit, from: Transform3D, to: Transform3D) -> void:
 	if _cable.is_empty():
 		_cable = JSON.parse_string(FileAccess.get_file_as_string(CABLE_DATA))
-	for socket: Vector3 in ATTACHMENTS:
+	for socket_index in ATTACHMENTS.size():
+		var socket: Vector3 = ATTACHMENTS[socket_index]
+		if socket_index < 6:
+			socket.y -= INSULATOR_HEIGHT_M
 		var a := from * socket
 		var b := to * socket
 		var delta := b - a

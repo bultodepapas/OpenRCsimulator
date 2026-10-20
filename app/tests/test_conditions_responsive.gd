@@ -95,7 +95,9 @@ func _check_time_and_sky(locale: String, text_scale: float) -> void:
 			dialog.controls.visible = true
 			dialog.sky_controls.visible = false
 			await _settle()
-			for picker: OptionButton in [dialog.controls.mode_picker, dialog.controls.preset_picker, dialog.controls.field_lighting_picker, dialog.controls.campfire_picker]:
+			for picker: OptionButton in [dialog.controls.mode_picker, dialog.controls.preset_picker,
+					dialog.controls.field_lighting_picker, dialog.controls.field_activation_picker,
+					dialog.controls.campfire_picker]:
 				await _check_popup(picker, viewport, "time-of-day option", _case(locale, text_scale, pixels))
 			dialog.visual_tabs.current_tab = 1
 			dialog.controls.visible = false

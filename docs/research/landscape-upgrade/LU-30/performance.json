@@ -1,0 +1,47 @@
+{
+  "hardware": "NVIDIA RTX 3090 / Godot 4.7.2 Compatibility / 1280x720 / 4x MSAA",
+  "method": "240 native frame intervals after warmup; same cameras and frozen sim clock. Shared desktop load, unpaired timings; not isolated GPU costs.",
+  "cases": {
+    "power_close": {
+      "before": {
+        "frames": 240,
+        "p50_ms": 0.95,
+        "p95_ms": 1.348,
+        "draw_calls": 18.0,
+        "rendered_primitives": 107208.0
+      },
+      "after": {
+        "frames": 240,
+        "p50_ms": 0.9235,
+        "p95_ms": 1.329,
+        "draw_calls": 18.0,
+        "rendered_primitives": 164740.0
+      }
+    },
+    "power_overview": {
+      "before": {
+        "frames": 240,
+        "p50_ms": 1.0515,
+        "p95_ms": 2.694,
+        "draw_calls": 23.0,
+        "rendered_primitives": 107648.0
+      },
+      "after": {
+        "frames": 240,
+        "p50_ms": 0.814,
+        "p95_ms": 1.227,
+        "draw_calls": 24.0,
+        "rendered_primitives": 179787.0
+      }
+    },
+    "power_insulators": {
+      "after": {
+        "frames": 240,
+        "p50_ms": 0.725,
+        "p95_ms": 1.188,
+        "draw_calls": 10.0,
+        "rendered_primitives": 162127.0
+      }
+    }
+  }
+}

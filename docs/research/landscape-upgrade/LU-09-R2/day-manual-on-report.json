@@ -1,0 +1,165 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "arguments": {
+    "cases": "runway_marker_close",
+    "field-activation": "on",
+    "frames": "4",
+    "height": "720",
+    "out": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/night-switch-day-manual-final",
+    "width": "1280"
+  },
+  "botanical_stats": {
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 4156.606,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 167,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 719.735,
+      "fence": 39.538,
+      "fleet": 61.864,
+      "hedge": 62.257,
+      "instances": 233.381,
+      "meshes": 36.67,
+      "patch": 47.768,
+      "population": 966.462,
+      "track": 0.674,
+      "vegetation": 1618.928,
+      "woodland_edges": 366.497
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "cases": {
+    "runway_marker_close": {
+      "draws": 171.0,
+      "exposure": 0.600000023841858,
+      "frame_ms_raw": [
+        205.565,
+        196.589,
+        189.233,
+        182.663
+      ],
+      "glare_afterimage": 0.0,
+      "glare_aureole_coeff": 0.000000126776937900502,
+      "glare_background_scale": 7.24765098967616,
+      "glare_optics": "eye",
+      "glare_solar_uv": "(-1.0, -1.0)",
+      "glare_strength": 7.24765098967616,
+      "glare_visible": false,
+      "lamp_factor": 1.0,
+      "marker_center_px": "(1077.474, 96.38692)",
+      "median_ms": 196.589,
+      "motion": [],
+      "night_options": {
+        "campfire": false,
+        "field_activation": "on",
+        "field_lighting": "club"
+      },
+      "p95_ms": 205.565,
+      "p99_ms": 205.565,
+      "primitives": 340947.0,
+      "regional_flashes_px": [
+        [
+          862.332153320312,
+          66.9125289916992
+        ],
+        [
+          934.449401855469,
+          67.6919631958008
+        ],
+        [
+          1009.65100097656,
+          68.2799835205078
+        ],
+        [
+          1089.00341796875,
+          68.6918029785156
+        ],
+        [
+          596.270874023438,
+          62.2481498718262
+        ]
+      ],
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 450755802.0,
+      "visible_draws": 171
+    }
+  },
+  "driver": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.4",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_build_ms": 5407.03,
+  "height": 720,
+  "lake": {
+    "bank_shader": "res://render/lake/bank.gdshader",
+    "bounds": "[P: (73.25, -5.45, -145.75), S: (103.5, 5.456786, 70.5)]",
+    "first_cross": "(0.004758, -0.5625, 0.008294)",
+    "first_normal": "(0.012433, 0.999763, 0.017871)",
+    "grass_texture": "():<ImageTexture#-9223371921645631807>",
+    "identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "mask_count": 20,
+    "mask_mode": 1,
+    "triangles": 44952,
+    "vertices": 13205
+  },
+  "night_options": {
+    "campfire": false,
+    "field_activation": "on",
+    "field_lighting": "club"
+  },
+  "reflection_slots": 2,
+  "regional": {
+    "batches": 39,
+    "counts": {
+      "antenna_mid_lights": 4,
+      "antenna_service": 2,
+      "antenna_top_beacons": 2,
+      "antenna_towers": 2,
+      "barn_loading": 2,
+      "church_entrance": 1,
+      "church_windows": 8,
+      "farm_gate_bollards": 4,
+      "farm_upper_windows": 2,
+      "hill_window_optics": 18,
+      "house_porches": 20,
+      "occupied_house_windows": 45,
+      "rural_junctions": 3,
+      "shed_worklight": 1,
+      "silo_access": 2,
+      "turbine_beacons": 4,
+      "turbine_service": 4,
+      "village_street_ends": 2
+    },
+    "dynamic_lights": 0,
+    "hardware_triangles": 3418,
+    "houses": 12,
+    "visible": true
+  },
+  "renderer": "gl_compatibility",
+  "width": 1280
+}

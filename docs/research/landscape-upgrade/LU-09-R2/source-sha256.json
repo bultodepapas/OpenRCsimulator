@@ -1,0 +1,24 @@
+{
+  "format": "openrc-evidence-sha256 v1",
+  "date": "2026-10-20",
+  "files": {
+    "app/data/fields/lights.json": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+    "app/app_state/preferences.gd": "960799c028fc4cf1dc722e8bdd91a2a07c45e8c6281c38ede881c578fda9a3ac",
+    "app/ui/time_of_day_controls.gd": "3200117b1754165153b8da69b31f1b321a06653d8187b10c76aa19f21a38e02d",
+    "app/app_root.gd": "026c0de93bbdb9630526096c6df49995d30ebfe243dc17837e2d2be38f3f4822",
+    "app/main.gd": "608987f68e0eb74ff0fa15ad4bfa409e99ea8d264bd0531e59ecb67fcede5807",
+    "app/helicopter_main.gd": "afd36d0cc9ce565bc3cd7529c1e2c5b0bc6091bbe5829b7e9d2ab83eedfbd0e0",
+    "app/render/world/world.gd": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
+    "app/render/landscape_upgrade/airfield_lighting.gd": "48c6328fca0e65e7c2b42222ae25bbbc17fc83d66fe6f350f88be9b3f352d5f8",
+    "app/render/landscape_upgrade/runway_ground_spill.gdshader": "fa92f65ab980ad18211b6bb6d72e40b0e965070e3914bcd1fc35ff7a970fbb81",
+    "app/render/near_grass.gd": "6086f71dcecd27eb2d7d58d01445acab7e4d7f0337e55e79a8082bd20a8f7976",
+    "app/render/field.gd": "4bc253c6567be5e13afc804bd19c7055132d0b02cc387e1fbddd376dba1b1b5b",
+    "app/tests/capture_landscape_upgrade.gd": "0b9df6ff9657fb39b3bec33051d15a579f7d2dfd08763d68c5efac52823276dc",
+    "app/tests/test_landscape_lighting.gd": "73b2c24ba191b8b433ef3e67c0175f12caf5d2dfec5c07ea9132e1f7aa3b0b8a",
+    "app/tests/test_near_grass.gd": "ec4069008327cafd31fc1e68f1e917ec994c25096abdcb1a4cdf0184f2207d9b",
+    "docs/research/landscape-upgrade/LU-09-R2/day-auto.png": "9092be219a8280ee3b47bf70b2b8013748ec124337ec8da932c278a711a530a6",
+    "docs/research/landscape-upgrade/LU-09-R2/day-manual-on.png": "a80cbe9c19d157665c065c6343211fb95ca774b3737aea1e7e8372e264c67a6d",
+    "docs/research/landscape-upgrade/LU-09-R2/night-spill-on.png": "d107284c42947eca854b8a48c5856e8785a1570a5920ee7e6e9509b423750c51",
+    "docs/research/landscape-upgrade/LU-09-R2/night-spill-off.png": "6994a3f9ac4013f18d7fd530fb4cafc9d571dc31a1f097789cafaa2461c5bb9d"
+  }
+}

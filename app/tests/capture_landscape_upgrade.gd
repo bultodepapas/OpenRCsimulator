@@ -18,6 +18,7 @@ const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
 	"power_overview": {eye = [-230.0, 980.0, -70.0], at = [50.0, 1450.0, -15.0], fov = 55.0},
 	"power_close": {eye = [70.0, 1210.0, -10.0], at = [109.0, 1245.25, -16.0], fov = 50.0},
+	"power_insulators": {eye = [122.0, 1210.0, -20.0], at = [109.0, 1245.25, -22.0], fov = 35.0},
 	"regional_turbines": {eye = [300.0, 2950.0, -100.0], at = [730.0, 4150.0, -80.0], fov = 50.0},
 	"regional_antenna": {eye = [770.0, -1630.0, -55.0], at = [1000.0, -1400.0, -32.5], fov = 44.0},
 	"regional_hills": {eye = [1850.0, -750.0, -260.0], at = [2350.0, -560.0, -205.0], fov = 50.0},
@@ -69,6 +70,7 @@ const FLEET_VIEWS := {
 	"runway_west": {eye = [15.0, -72.0, -2.2], at = [15.0, 51.0, -0.35], fov = 40.0},
 	"runway_east_far": {eye = [15.0, 180.0, -6.0], at = [15.0, 0.0, -0.35], fov = 32.0},
 	"runway_inside": {eye = [15.0, 15.0, -1.5], at = [15.0, 51.0, -0.35], fov = 40.0},
+	"runway_marker_close": {eye = [7.3, -52.4, -0.85], at = [8.6, -50.0, -0.06], fov = 42.0},
 	"pit_service": {eye = [-15.0, -36.0, -1.8], at = [-19.9, -38.0, -1.02], fov = 30.0},
 }
 var args := {}
@@ -207,6 +209,7 @@ func _run() -> void:
 	blocker.visible = false
 	var sky: ShaderMaterial = built.environment.sky.sky_material
 	var lighting_helper := parent.get_node_or_null("AirfieldLighting")
+	var ground_spill := parent.get_node_or_null("AirfieldLighting/RunwayEdgeGroundSpill") as MultiMeshInstance3D
 	var sun: Vector3 = sky.get_shader_parameter("disc_dir")
 	var original_disc: float = sky.get_shader_parameter("sun_disc")
 	var original_cloud: float = sky.get_shader_parameter("cloud_coverage")
@@ -230,7 +233,9 @@ func _run() -> void:
 			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire),
 				str(built.night_options.field_activation))
 		if lighting_helper != null:
-			lighting_helper.set_process(not case.begins_with("marker_"))
+			lighting_helper.set_process(not case.begins_with("marker_") and str(args.get("ground_spill", "on")) != "off")
+		if ground_spill != null and str(args.get("ground_spill", "on")) == "off":
+			ground_spill.visible = false
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0

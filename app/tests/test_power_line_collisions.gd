@@ -56,7 +56,7 @@ func _run() -> void:
 	_check("lowest arm matches source width, depth, and height", not arm.is_empty()
 		and is_equal_approx(float(arm.half_x), 4.4)
 		and is_equal_approx(float(arm.half_z), 1.7)
-		and is_equal_approx(float(arm.half_down), 0.7))
+		and is_equal_approx(float(arm.half_down), 0.75))
 	_check("crossarm X axis follows the tower placement heading", not arm.is_empty()
 		and is_equal_approx(float(arm.sin_heading), 0.0)
 		and is_equal_approx(float(arm.cos_heading), 1.0))

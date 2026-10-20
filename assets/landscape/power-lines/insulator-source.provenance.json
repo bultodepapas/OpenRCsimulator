@@ -1,0 +1,28 @@
+{
+  "asset": "insulator-source.glb",
+  "source_asset": "power-pole.glb",
+  "source_page": "https://grab3d.com/models/city/power-pole/",
+  "download_url": "https://grab3d.com/dl/power-pole/power-pole.glb",
+  "license": "CC0 1.0 Universal (public domain dedication)",
+  "license_url": "https://grab3d.com/dl/power-pole/LICENSE.txt",
+  "license_text_file": "insulator-source-license.txt",
+  "manifest_url": "https://grab3d.com/dl/power-pole/manifest.json",
+  "author": "Grab3D / Cozy Construction Kit",
+  "retrieved_utc": "2026-10-20",
+  "bytes": 922200,
+  "sha256": "4bea57ed1194b14ed629b89a3db82782174dc2c29b2bb62143ae4ac2c1e8ef84",
+  "format": "GLB (glTF 2.0 binary)",
+  "dimensions_m": [2.4, 2.52, 8.996],
+  "triangles": 14760,
+  "mesh_names": ["power-pole_body"],
+  "node_names": ["power-pole_body", "power-pole"],
+  "primitive_count": 1,
+  "material_count": 1,
+  "model_contents": "Full 9 m wooden utility pole with crossarm, transformer and other hardware; three glassy mint pin insulators (two on the crossarm, one on the pole top), with short cable stubs in both line directions.",
+  "origin": {
+    "method": "procedural",
+    "ai_generated_geometry_or_textures": false,
+    "ai_assisted_code": true
+  },
+  "notes": "Unaltered source download. The source is a single merged mesh; asset page and manifest state CC0 1.0."
+}

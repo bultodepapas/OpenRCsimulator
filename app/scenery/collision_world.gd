@@ -406,9 +406,9 @@ static func _add_pylon(proxies: Array[Dictionary], group_id: String, index: int,
 				float(geometry.radius), float(geometry.half_length))
 	# The source arms are horizontal in the tower's local X axis. In the N/E collision frame that axis is also the
 	# _placement_point X axis, so use the placement heading directly (not heading + 90 degrees).
-	var arm_centers_up: Array[float] = [17.6, 23.1, 28.65]
+	var arm_centers_up: Array[float] = [17.5, 22.9, 28.4]
 	var arm_half_widths: Array[float] = [4.4, 4.05, 3.85]
-	var arm_half_heights: Array[float] = [0.7, 0.55, 0.5]
+	var arm_half_heights: Array[float] = [0.75, 0.8, 0.75]
 	var arm_half_depths: Array[float] = [1.7, 1.05, 0.65]
 	for arm: int in arm_centers_up.size():
 		_add_box_at_down(proxies, "landmark:%s:%02d:pylon_arm:%d" % [group_id, index, arm], "landmark", "pylon_arm",

@@ -447,11 +447,11 @@ func _cycle_night_lights() -> void:
 func apply_lighting_config(_raw: Variant) -> Dictionary:
  return {ok=false,errors=["End the helicopter flight to select different lighting on Home."]}
 
-func set_night_options(profile: String, campfire: bool) -> bool:
- var checked: Dictionary=Preferences.validate_night_options({"field_lighting":profile,"campfire":campfire})
+func set_night_options(profile: String, campfire: bool, activation: String = "auto") -> bool:
+ var checked: Dictionary=Preferences.validate_night_options({"field_lighting":profile,"field_activation":activation,"campfire":campfire})
  if not checked.get("ok",false): return false
  night_options=checked.options.duplicate(true)
- return World.set_night_options(profile,campfire)
+ return World.set_night_options(profile,campfire,activation)
 
 func _user_args() -> Dictionary:
  var args: Dictionary={}

@@ -2,7 +2,7 @@
 
 2026-10-20 · Revision 12 · Step prefix: **L**
 
-**Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…28 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
+**Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…30 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
 **Owns:** field data, landscape rendering and tools listed in the [track registry](README.md#tracks-plans-and-step-ids). Field-world composition is coordinated in [FIELD-WORLD-PLAN](FIELD-WORLD-PLAN.md); selectable time is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md). Scenery assets remain in [SCENERY-PLAN](SCENERY-PLAN.md).
 
@@ -64,7 +64,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 
 ## Landscape integration
 
-LU-00…28 adds licensed field assets, night lighting, imported vegetation, a finite lake and agricultural surroundings. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
+LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
 
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |

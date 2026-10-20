@@ -5,6 +5,8 @@ extends SceneTree
 const NearGrass = preload("res://render/near_grass.gd")
 const Population = preload("res://scenery/population.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const FieldLightData = preload("res://render/world/field_lights.gd")
+const CollisionWorld = preload("res://scenery/collision_world.gd")
 const FieldBuilder = preload("res://render/field.gd")
 const Ground = preload("res://render/ground.gd")
 const Frames = preload("res://render/frames.gd")
@@ -21,6 +23,8 @@ var _checks: int = 0
 var _raw_grass: Dictionary
 var _rows: Array
 var _field: Dictionary
+var _field_light_exclusions: Array[Dictionary] = []
+var _field_light_proxies: Array[Dictionary] = []
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:
@@ -34,16 +38,22 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _initialize() -> void:
 	_test_committed_data_and_validation()
-	_test_blade_mesh()
+	var field_lights_only := OS.get_cmdline_user_args().has("--only=field-lights")
+	if not field_lights_only:
+		_test_blade_mesh()
 	var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
 	_check("default field loads for grass checks", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
 	if bool(loaded.get("ok", false)):
 		_field = loaded.field
-		_test_standalone_build()
-		_test_default_chunks_and_clearance()
-		_test_deterministic_placements()
-		_test_translated_pilot_and_small_field()
-		_test_field_builder_and_scenery_hook()
+		_test_field_light_clearance()
+		if field_lights_only:
+			_test_field_light_builder_integration()
+		else:
+			_test_standalone_build()
+			_test_default_chunks_and_clearance()
+			_test_deterministic_placements()
+			_test_translated_pilot_and_small_field()
+			_test_field_builder_and_scenery_hook()
 	print("%d near-grass checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -175,6 +185,59 @@ func _test_default_chunks_and_clearance() -> void:
 	grass.free()
 
 
+func _test_field_light_clearance() -> void:
+	var loaded: Dictionary = FieldLightData.load_from()
+	_check("default field-light data validates before becoming grass masks", bool(loaded.get("ok", false)),
+		str(loaded.get("errors", [])))
+	if not bool(loaded.get("ok", false)):
+		return
+	_field_light_exclusions = NearGrass.light_exclusions(loaded.lights)
+	var world_result: Dictionary = CollisionWorld.build(_field, {groups = []}, loaded.lights)
+	_check("default collision world builds for physical light-footprint comparison",
+		bool(world_result.get("ok", false)), str(world_result.get("errors", [])))
+	if not bool(world_result.get("ok", false)):
+		return
+	for proxy: Dictionary in world_result.world.proxies:
+		if str(proxy.get("part", "")) in ["flood_pole", "campfire_base", "stake"]:
+			_field_light_proxies.append(proxy)
+	_check("every collidable field-light installation and stake has one matching grass mask",
+		_field_light_exclusions.size() == 22 and _field_light_proxies.size() == _field_light_exclusions.size(),
+			"masks=%d proxies=%d" % [_field_light_exclusions.size(), _field_light_proxies.size()])
+	var baseline_count := _layout_count(NearGrass.clipped_chunks(_field, _rows))
+	var light_layout := NearGrass.clipped_chunks(_field, _rows, _field_light_exclusions)
+	var light_count := _layout_count(light_layout)
+	var scalar_layout := _brute_clipped_chunks(_field, _rows, _field_light_exclusions)
+	var minimum_gap := _minimum_light_proxy_clearance(light_layout, _field_light_proxies)
+	_check("light exclusions remove only the accepted rows within light clearance bounds",
+		light_count < baseline_count and light_count == 4516,
+		"baseline=%d with_lights=%d removed=%d" % [baseline_count, light_count, baseline_count - light_count])
+	_check("every accepted grass center clears the authoritative light collision footprint by 0.4 m",
+		minimum_gap >= NearGrass.CLEARANCE_M - 0.00001,
+		"minimum horizontal gap %.6f m" % minimum_gap)
+	_check("bounded exclusion grid exactly preserves the scalar field-light layout",
+		JSON.stringify(light_layout) == JSON.stringify(scalar_layout))
+	var baseline_ms := _median_layout_time_ms([])
+	var masked_ms := _median_layout_time_ms(_field_light_exclusions)
+	print("field-light grass clearance: %d -> %d placements; min physical gap %.6f m; masks %d; layout median %.3f -> %.3f ms" % [
+		baseline_count, light_count, minimum_gap, _field_light_exclusions.size(), baseline_ms, masked_ms,
+	])
+
+
+func _test_field_light_builder_integration() -> void:
+	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
+	var previous_audio := OS.get_environment("OPENRC_SCENERY_AUDIO")
+	OS.set_environment("OPENRC_SCENERY", "off")
+	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
+	var built: Node3D = FieldBuilder.build(_field)
+	var grass := built.get_node_or_null("NearGrass") as Node3D
+	_check("default field applies light clearance in its procedural grass build",
+		grass != null and int(grass.get_meta("clumps", -1)) == 4516,
+		"actual=%d" % [int(grass.get_meta("clumps", -1)) if grass != null else -1])
+	built.free()
+	OS.set_environment("OPENRC_SCENERY", previous_scenery)
+	OS.set_environment("OPENRC_SCENERY_AUDIO", previous_audio)
+
+
 func _test_deterministic_placements() -> void:
 	var first: Node3D = NearGrass.build(_field, Ground.grass_material())
 	var second: Node3D = NearGrass.build(_field, Ground.grass_material())
@@ -230,8 +293,14 @@ func _test_field_builder_and_scenery_hook() -> void:
 	OS.set_environment("OPENRC_SCENERY", "off")
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	var plain: Node3D = FieldBuilder.build(_field)
+	var plain_grass := plain.get_node_or_null("NearGrass") as Node3D
+	var expected_light_clumps := _layout_count(NearGrass.clipped_chunks(_field, _rows, _field_light_exclusions))
 	_check("field builder attaches exactly one near-grass system when scenery is off",
 		_count_named(plain, "NearGrass") == 1 and plain.get_node_or_null("Scenery") == null)
+	_check("default field builder applies validated light exclusions to deterministic grass rows",
+		plain_grass != null and int(plain_grass.get_meta("clumps", -1)) == expected_light_clumps
+		and _build_matches_field(plain_grass, _field, _field_light_exclusions),
+		"expected=%d actual=%d" % [expected_light_clumps, int(plain_grass.get_meta("clumps", -1)) if plain_grass != null else -1])
 	_check("field and default grass tree contain no physical colliders", _count_colliders(plain) == 0)
 	plain.free()
 
@@ -256,6 +325,12 @@ func _test_field_builder_and_scenery_hook() -> void:
 		and int(imported_grass.get_meta("clumps", 0)) > 0
 		and int(imported_grass.get_meta("triangles", 0)) <= int(imported_grass.get_meta("triangle_budget", -1))
 		and int(imported_grass.get_meta("batches", 99)) <= 3)
+	var imported_placements: Array = imported_grass.get_meta("placements", []) if imported_grass != null else []
+	var imported_minimum_gap := _minimum_placement_light_clearance(imported_placements, _field_light_proxies)
+	_check("opt-in imported grass placements clear every physical field-light footprint",
+		imported_grass != null and _field_light_proxies.size() == 22 and not imported_placements.is_empty()
+		and imported_minimum_gap >= NearGrass.CLEARANCE_M - 0.00001,
+		"placements=%d minimum gap=%.6f m" % [imported_placements.size(), imported_minimum_gap])
 	_check("opt-in scenery attaches downloaded habitat plants within its source budget",
 		downloaded_habitats != null and int(scenery_stats.get("botanical_plants", 0)) > 0
 		and int(scenery_stats.get("botanical_triangles", 0)) <= 90000
@@ -338,8 +413,8 @@ func _shadows_off(chunks: Array[MultiMeshInstance3D]) -> bool:
 	return true
 
 
-func _build_matches_field(grass: Node3D, field: Dictionary) -> bool:
-	var layout: Array = NearGrass.clipped_chunks(field, _rows)
+func _build_matches_field(grass: Node3D, field: Dictionary, exclusions: Array = []) -> bool:
+	var layout: Array = NearGrass.clipped_chunks(field, _rows, exclusions)
 	var expected_nonempty: int = 0
 	var total: int = 0
 	for index: int in 4:
@@ -376,6 +451,75 @@ func _build_has_surface_clearance(grass: Node3D, field: Dictionary, mesh: ArrayM
 			if dn * dn + de * de > (NearGrass.RADIUS_M + 0.001) * (NearGrass.RADIUS_M + 0.001):
 				return false
 	return true
+
+
+func _layout_count(layout: Array) -> int:
+	var total := 0
+	for chunk: Array in layout:
+		total += chunk.size()
+	return total
+
+
+func _brute_clipped_chunks(field: Dictionary, rows: Array, exclusions: Array) -> Array:
+	var chunks: Array = [[], [], [], []]
+	for row: Array in rows:
+		var north := float(field.pilot.north) + float(row[0]) * 0.001
+		var east := float(field.pilot.east) + float(row[1]) * 0.001
+		if not NearGrass.accepts(north, east, field, exclusions):
+			continue
+		var chunk := (0 if row[0] < 0 else 2) + (0 if row[1] < 0 else 1)
+		chunks[chunk].append([north, east, int(row[2]), int(row[3])])
+	return chunks
+
+
+func _median_layout_time_ms(exclusions: Array) -> float:
+	var samples: Array[float] = []
+	for _sample: int in 5:
+		var started := Time.get_ticks_usec()
+		NearGrass.clipped_chunks(_field, _rows, exclusions)
+		samples.append(float(Time.get_ticks_usec() - started) / 1000.0)
+	samples.sort()
+	return samples[samples.size() / 2]
+
+
+func _minimum_light_proxy_clearance(layout: Array, proxies: Array[Dictionary]) -> float:
+	var minimum_gap := INF
+	for chunk: Array in layout:
+		for point: Array in chunk:
+			for proxy: Dictionary in proxies:
+				minimum_gap = minf(minimum_gap,
+					_light_proxy_clearance(float(point[0]), float(point[1]), proxy))
+	return minimum_gap
+
+
+func _minimum_placement_light_clearance(placements: Array, proxies: Array[Dictionary]) -> float:
+	var minimum_gap := INF
+	for placement_value: Variant in placements:
+		if typeof(placement_value) != TYPE_DICTIONARY:
+			return -INF
+		var placement: Dictionary = placement_value
+		if not placement.get("north") is float and not placement.get("north") is int:
+			return -INF
+		if not placement.get("east") is float and not placement.get("east") is int:
+			return -INF
+		for proxy: Dictionary in proxies:
+			minimum_gap = minf(minimum_gap,
+				_light_proxy_clearance(float(placement.north), float(placement.east), proxy))
+	return minimum_gap
+
+
+func _light_proxy_clearance(north: float, east: float, proxy: Dictionary) -> float:
+	var dn := north - float(proxy.north)
+	var de := east - float(proxy.east)
+	if str(proxy.shape) == "capsule":
+		return maxf(Vector2(dn, de).length() - float(proxy.radius), 0.0)
+	if str(proxy.shape) == "box":
+		var local_x := -float(proxy.sin_heading) * dn + float(proxy.cos_heading) * de
+		var local_z := -float(proxy.cos_heading) * dn - float(proxy.sin_heading) * de
+		var dx := maxf(absf(local_x) - float(proxy.half_x), 0.0)
+		var dz := maxf(absf(local_z) - float(proxy.half_z), 0.0)
+		return Vector2(dx, dz).length()
+	return INF
 
 
 func _inside_rough_clearance(north: float, east: float, field: Dictionary) -> bool:

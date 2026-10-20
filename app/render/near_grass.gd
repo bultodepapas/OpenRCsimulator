@@ -8,6 +8,10 @@ const SHADER: Shader = preload("res://render/near_grass.gdshader")
 const DATA_PATH: String = "res://data/fields/grass.json"
 const RADIUS_M: float = 30.0
 const CLEARANCE_M: float = 0.4 # estimated; exceeds the widest clump at maximum scale plus shader sway
+const EXCLUSION_GRID_CELL_M := 4.0
+const MAX_EXCLUSION_GRID_REFERENCES := 8192
+const LIGHT_CIRCLE_SEGMENTS := 16
+const STAKE_COLLISION_RADIUS_M := 0.035 # app/scenery/collision_world.gd::_add_lights
 const COUNT: int = 6000
 const BLADES: int = 7
 
@@ -46,8 +50,12 @@ static func validated_rows(raw: Variant) -> Array:
 
 
 ## Rectangles come from the validated field; any mown/runway surface excludes the full clump footprint.
-static func accepts(north: float, east: float, field: Dictionary, exclusions: Array = []) -> bool:
-	if GrassMask.excludes(north, east, exclusions):
+static func accepts(north: float, east: float, field: Dictionary, exclusions: Array = [],
+		exclusion_grid: Dictionary = {}) -> bool:
+	var nearby_exclusions: Array = exclusions
+	if not exclusion_grid.is_empty():
+		nearby_exclusions = exclusion_grid.get(_exclusion_cell(north, east), [])
+	if GrassMask.excludes(north, east, nearby_exclusions):
 		return false
 	var on_rough: bool = false
 	for surface: Dictionary in field.surfaces:
@@ -64,6 +72,77 @@ static func accepts(north: float, east: float, field: Dictionary, exclusions: Ar
 			and absf(east - float(cue.east)) <= float(cue.width) * 0.5 + CLEARANCE_M:
 			return false
 	return on_rough
+
+
+## Ground footprints for the validated default field lights, expanded by GrassMask's 0.4 m margin.
+## Poles and stakes follow CollisionWorld's horizontal capsule radii; the hearth follows its box proxy.
+static func light_exclusions(lights: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for installation_value: Variant in lights.get("installations", []):
+		if typeof(installation_value) != TYPE_DICTIONARY:
+			continue
+		var installation: Dictionary = installation_value
+		var id := str(installation.get("id", "field_light"))
+		var kind := str(installation.get("type", ""))
+		var north: Variant = installation.get("north", null)
+		var east: Variant = installation.get("east", null)
+		if not _finite_number(north) or not _finite_number(east):
+			continue
+		if kind in ["mast", "low_light_mount"]:
+			var radius: Variant = installation.get("collision_radius", NAN)
+			if _finite_number(radius) and float(radius) > 0.0:
+				result.append(_circle_exclusion("field-light:%s" % id, float(north), float(east), float(radius)))
+		elif kind == "campfire_base":
+			var width: Variant = installation.get("width", NAN)
+			var depth: Variant = installation.get("depth", NAN)
+			var heading: Variant = installation.get("heading", 0.0)
+			if not _finite_positive(width) or not _finite_positive(depth) or not _finite_number(heading):
+				continue
+			var points := GrassMask._rectangle(float(north), float(east), float(heading),
+				0.0, 0.0, float(width), float(depth))
+			var footprint := GrassMask._record("field-light:%s" % id, "field_light", points)
+			if not footprint.is_empty():
+				result.append(footprint)
+	for fixture_value: Variant in lights.get("fixtures", []):
+		if typeof(fixture_value) != TYPE_DICTIONARY:
+			continue
+		var fixture: Dictionary = fixture_value
+		if str(fixture.get("type", "")) != "stake_row":
+			continue
+		var raw_points: Variant = fixture.get("points", [])
+		var size: Variant = fixture.get("size", 0.0)
+		if not raw_points is Array or not _finite_number(size):
+			continue
+		var radius := maxf(float(size) * 0.5, STAKE_COLLISION_RADIUS_M)
+		var fixture_id := str(fixture.get("id", "stake_row"))
+		for index: int in (raw_points as Array).size():
+			var point_value: Variant = raw_points[index]
+			if not point_value is Array or (point_value as Array).size() != 2:
+				continue
+			var point: Array = point_value
+			if not _finite_number(point[0]) or not _finite_number(point[1]):
+				continue
+			result.append(_circle_exclusion("field-light:%s:%d" % [fixture_id, index],
+				float(point[0]), float(point[1]), radius))
+	return result
+
+
+static func _circle_exclusion(id: String, north: float, east: float, radius: float) -> Dictionary:
+	var points := PackedVector2Array()
+	var circumscribed_radius := radius / cos(PI / float(LIGHT_CIRCLE_SEGMENTS))
+	for index: int in LIGHT_CIRCLE_SEGMENTS:
+		var angle := TAU * float(index) / float(LIGHT_CIRCLE_SEGMENTS)
+		points.append(Vector2(north + cos(angle) * circumscribed_radius,
+			east + sin(angle) * circumscribed_radius))
+	return GrassMask._record(id, "field_light", points)
+
+
+static func _finite_positive(value: Variant) -> bool:
+	return _finite_number(value) and float(value) > 0.0
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value))
 
 
 ## Seven separate opaque triangles. Roots are y=0; heights 0.10–0.18 m and footprint <0.2 m are artistic estimates.
@@ -95,14 +174,55 @@ static func clump_mesh() -> ArrayMesh:
 ## Pure placement boundary, inspectable with the dummy renderer (MultiMesh transform readback is unavailable there).
 static func clipped_chunks(field: Dictionary, rows: Array, exclusions: Array = []) -> Array:
 	var chunks: Array = [[], [], [], []]
+	var exclusion_grid := _build_exclusion_grid(exclusions)
 	for row: Array in rows:
 		var north: float = float(field.pilot.north) + float(row[0]) * 0.001
 		var east: float = float(field.pilot.east) + float(row[1]) * 0.001
-		if not accepts(north, east, field, exclusions):
+		if not accepts(north, east, field, exclusions, exclusion_grid):
 			continue
 		var chunk: int = (0 if row[0] < 0 else 2) + (0 if row[1] < 0 else 1)
 		chunks[chunk].append([north, east, int(row[2]), int(row[3])])
 	return chunks
+
+
+## Index ordinary footprints once per layout. Oversized or malformed inputs retain the scalar scan.
+static func _build_exclusion_grid(exclusions: Array) -> Dictionary:
+	if exclusions.is_empty():
+		return {}
+	var grid: Dictionary = {}
+	var references := 0
+	for footprint_value: Variant in exclusions:
+		if typeof(footprint_value) != TYPE_DICTIONARY:
+			return {}
+		var footprint: Dictionary = footprint_value
+		var points_value: Variant = footprint.get("points", PackedVector2Array())
+		if not points_value is PackedVector2Array or (points_value as PackedVector2Array).size() < 3:
+			return {}
+		var raw_bounds: Array = [footprint.get("north_min", INF), footprint.get("north_max", -INF),
+			footprint.get("east_min", INF), footprint.get("east_max", -INF)]
+		for bound: Variant in raw_bounds:
+			if not _finite_number(bound):
+				return {}
+		var min_north := floori((float(raw_bounds[0]) - GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var max_north := floori((float(raw_bounds[1]) + GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var min_east := floori((float(raw_bounds[2]) - GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var max_east := floori((float(raw_bounds[3]) + GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var item_references := (max_north - min_north + 1) * (max_east - min_east + 1)
+		if item_references <= 0 or item_references > MAX_EXCLUSION_GRID_REFERENCES \
+			or references + item_references > MAX_EXCLUSION_GRID_REFERENCES:
+			return {}
+		references += item_references
+		for north_cell: int in range(min_north, max_north + 1):
+			for east_cell: int in range(min_east, max_east + 1):
+				var key := Vector2i(north_cell, east_cell)
+				var bucket: Array = grid.get(key, [])
+				bucket.append(footprint)
+				grid[key] = bucket
+	return grid
+
+
+static func _exclusion_cell(north: float, east: float) -> Vector2i:
+	return Vector2i(floori(north / EXCLUSION_GRID_CELL_M), floori(east / EXCLUSION_GRID_CELL_M))
 
 
 static func build(field: Dictionary, ground: ShaderMaterial, exclusions: Array = []) -> Node3D:

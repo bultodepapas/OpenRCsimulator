@@ -142,6 +142,10 @@ Roads reuse **Aerial Asphalt 01** by **Rob Tuytel / Poly Haven**, CC0-1.0:
 Fields reuse the retained CC0 grass/dirt photographs. Houses, farms, fences,
 trees and cattle reuse the existing scenery library and its attribution records.
 
+## Track barriers (2026-10-20)
+
+[Concrete Road Barrier by Amal Kumar / Poly Haven](https://polyhaven.com/a/concrete_road_barrier), [CC0](https://polyhaven.com/license). The track uses the author's LOD2 mesh and original 1K diffuse, OpenGL normal and ARM maps, packaged in a GLB. Its scale is fitted to the existing barrier footprints. The [source manifest](../../../assets/source-deliveries/concrete-road-barrier-polyhaven/source-manifest.json) records official URLs, source hashes, derivative hash and the reproducible export script.
+
 ## Regional lighting (LU-29, 2026-10-20)
 
 [Radio tower by Poly by Google](https://poly.pizza/m/d1zYJG7rJGY), via Poly Pizza,
@@ -149,3 +153,21 @@ CC BY 3.0. Unmodified source mesh/texture; runtime scale and separate light
 markers are described in [regional-lighting/LICENSES.md](regional-lighting/LICENSES.md).
 Fixture heads reuse the retained Innerscene CC0 model; hillside houses reuse
 the existing village-house prefab.
+
+## Transmission line (LU-30, 2026-10-20)
+
+[Transmission Tower by iPoly3D](https://poly.pizza/m/TYK3rPu7E5), CC0-1.0.
+The original lattice and footing topology is retained, uniformly scaled to 30 m,
+centered, and tinted galvanized grey.
+
+[Rope bridge by Jeremy Eyring](https://poly.pizza/m/88e4zjTShuY),
+[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+One supplied handrail component is extracted for the conductors. Its original
+128-triangle topology and sampled sag profile are retained; axes, span, sag,
+cross-section radius and colour are adapted. Bridge wood and other ropes are
+not included in the runtime asset.
+
+[Power Pole by Grab3D](https://grab3d.com/models/city/power-pole/), CC0-1.0.
+An existing insulator is extracted from the source utility pole, scaled and
+reoriented beneath the lattice crossarms. Source files, license text and hashes
+are retained in the repository's `assets/landscape/power-lines/` directory.

@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "682421ec-4104-4aaa-b88f-c8450eb243f6",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_power_lines.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T16:09:21.135010+00:00",
+  "label": "final-power-lines",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\landscape-upgrade\\LU-30\\checks\\final-power-lines-3atuqkwj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\landscape-upgrade\\LU-30\\checks\\final-power-lines-3atuqkwj\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.031,
+  "log_bytes": 885,
+  "log_sha256": "896efe2771c0b1d34fdfc4ebeed39826523c7111155dafb7a9888d0e7ff55292"
+}

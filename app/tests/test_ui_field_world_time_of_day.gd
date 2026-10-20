@@ -97,7 +97,7 @@ func _home_and_flight() -> void:
 	var button: Button = home.get("time_button")
 	_check("Home shows the saved compact choice", button.text == "Time of day\nNew moon", button.text)
 	_check("Home backdrop receives the saved field-lighting profile and campfire",
-		app.home_scene.night_options == {"field_lighting": "airfield", "campfire": true})
+		app.home_scene.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "auto"})
 	_check("the backdrop is night: stars and field lights", app.home_scene.get_node_or_null("Stars") != null
 		and app.home_scene.get_node_or_null("FieldLights") != null)
 
@@ -131,7 +131,7 @@ func _home_and_flight() -> void:
 		str(Atmosphere.state.get("sun_elevation_deg")))
 	_check("the flight has the dusk field lights", app.flight.get_node_or_null("FieldLights") != null)
 	_check("Fly uses the same night settings as the Home backdrop",
-		app.flight.night_options == {"field_lighting": "airfield", "campfire": true})
+		app.flight.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "auto"})
 	app.open_pause()
 	await ui.settle()
 	_check("field-world flights expose a Sky and lighting action", app.pause_menu.time_of_day_button.text == "Sky and lighting")
@@ -145,10 +145,12 @@ func _home_and_flight() -> void:
 	var field_dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = field_dialog.get("controls") as VBoxContainer
 	var field_picker: OptionButton = controls.find_child("FieldLighting", true, false) as OptionButton
+	var activation_picker: OptionButton = controls.find_child("FieldActivation", true, false) as OptionButton
 	var campfire_picker: OptionButton = controls.find_child("Campfire", true, false) as OptionButton
 	var numeric_time: LineEdit = controls.find_child("ExactTime", true, false) as LineEdit
-	_check("Field lighting opens a compact selector without numeric time controls",
-		field_dialog.night_only and field_picker.is_visible_in_tree() and campfire_picker.is_visible_in_tree()
+	_check("Field lighting opens compact profile and activation selectors without numeric time controls",
+		field_dialog.night_only and field_picker.is_visible_in_tree() and activation_picker.is_visible_in_tree()
+		and campfire_picker.is_visible_in_tree()
 		and not numeric_time.is_visible_in_tree()
 		and ui.focus_name() == "FieldLighting")
 	var paused_state: PackedFloat64Array = app.flight.session.sim.state.duplicate()
@@ -158,10 +160,11 @@ func _home_and_flight() -> void:
 	field_dialog.apply_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
-	_check("paused field selection updates the flight and saves both choices",
+	_check("paused field selection updates the flight and saves all three options",
 		app.time_of_day_dialog == null and app.flight.night_options == Preferences.NIGHT_DEFAULTS
 		and Preferences.load_from(PREFS).night_field_lighting == "club"
-		and Preferences.load_from(PREFS).night_campfire == false)
+		and Preferences.load_from(PREFS).night_campfire == false
+		and Preferences.load_from(PREFS).night_field_activation == "auto")
 	_check("field-lighting Apply leaves the paused simulation untouched",
 		app.flight.session.sim.paused and app.flight.session.sim.tick == paused_tick
 		and app.flight.session.sim.state == paused_state)
