@@ -57,9 +57,9 @@
       },
       "CLq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
-        "value": 2.003
+        "value": 2.357
       },
       "CYb": {
         "kind": "borrowed",
@@ -147,9 +147,9 @@
       },
       "Cmq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
-        "value": -8.009
+        "value": -8.082
       },
       "Cnb": {
         "kind": "derived",
@@ -183,9 +183,9 @@
       },
       "Cnr": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated.",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated.",
         "unit": "1/rad",
-        "value": -0.1335
+        "value": -0.136
       },
       "k_induced": {
         "kind": "borrowed",
@@ -519,7 +519,7 @@
       "unit": "m",
       "value": 0.001
     },
-    "configuration": "virtual-balanced-reference-v1",
+    "configuration": "virtual-balanced-reference-v2-empty-tank",
     "firewall": {
       "kind": "manual",
       "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE",
@@ -530,9 +530,10 @@
         0.0
       ]
     },
+    "fuel_state": "empty_tanks",
     "plan_cg": {
       "kind": "manual",
-      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line",
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line; FUEL-05f: taken with the tank empty, as RC manuals balance",
       "unit": "m",
       "value": [
         0.1209,
@@ -696,6 +697,30 @@
   "frames": {
     "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
     "le_frame": "positions in metres from the wing leading edge at the fuselage centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line"
+  },
+  "fuel_system": {
+    "tanks": [
+      {
+        "capacity": {
+          "kind": "manual",
+          "source": "O.S. 40-91FX manual (os-engines.co.jp 50sx_40-91fx.pdf): 61FX \"approx 350cc\", \"12-13 minute flights\"",
+          "unit": "l",
+          "value": 0.35
+        },
+        "feed": "suction_muffler",
+        "fuel": "glow_10n_18castor",
+        "id": "main_tank",
+        "liquid_inventory_id": "item_fuel_main",
+        "pickup": "clunk",
+        "shell_inventory_id": "item_fuel_tank",
+        "unusable": {
+          "kind": "estimated",
+          "source": "FUEL-05f: clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)",
+          "unit": "l",
+          "value": 0.005
+        }
+      }
+    ]
   },
   "id": "jensen-das-ugly-stik-60",
   "inventory": [
@@ -883,30 +908,30 @@
       "energy_source": "glow_fuel",
       "id": "item_fuel_main",
       "mass": {
-        "kind": "estimated",
-        "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank",
+        "kind": "derived",
+        "source": "FUEL-05f: fixed half of the 0.35 l tank (prescribed fuel, no burn) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K)",
         "unit": "kg",
-        "value": 0.12
+        "value": 0.149961
       },
       "name": "fuel (half tank)",
       "position": {
         "kind": "estimated",
-        "source": "same as tank",
+        "source": "FUEL-05f: plan fuel-tank compartment F1-F2 (x); FX manual height: tank top 5-10 mm above the needle (7.5 mm used) with the NITRO-05 2T carburetor estimate",
         "unit": "m",
         "value": [
           -0.1,
           0.0,
-          0.0
+          0.004
         ]
       },
       "size": {
-        "kind": "derived",
-        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior",
+        "kind": "estimated",
+        "source": "FUEL-05f: uniform liquid box holding the 0.35 l capacity; no measured tank interior",
         "unit": "m",
         "value": [
-          0.0,
-          0.0,
-          0.0
+          0.115,
+          0.065,
+          0.047
         ]
       }
     },
@@ -1274,19 +1299,19 @@
       "id": "item_balance_mass_virtual",
       "mass": {
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.; FUEL-05f: recomputed for the empty-tank (dry) inventory",
         "unit": "kg",
-        "value": 0.2840582910437526
+        "value": 0.24770113838979568
       },
       "name": "virtual reference-build balancing mass",
       "position": {
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.",
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.; FUEL-05f: recomputed for the empty-tank (dry) inventory",
         "unit": "m",
         "value": [
           0.85,
-          -0.03168363777353627,
-          -0.07058410415104471
+          -0.03633410834728228,
+          -0.08094431915144557
         ]
       },
       "size": {
@@ -1610,12 +1635,12 @@
       "rotation": "clockwise_from_rear",
       "thrust_line_offset": {
         "kind": "derived",
-        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE",
+        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus the authored inventory CG (the fixed body datum, FUEL-05f) in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE",
         "unit": "m",
         "value": [
-          -0.414176,
+          -0.402668437352,
           0.0,
-          0.0
+          -0.000208375965
         ]
       }
     }
