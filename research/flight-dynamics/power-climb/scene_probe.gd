@@ -2,7 +2,9 @@
 # weather, real engine callbacks). Airborne start then a throttle setting held hands-off, and a keyboard-style
 # runway takeoff (full throttle, up elevator held until airborne, then sticks centred and the throttle brought back).
 # Prints height, speed, pitch and path every 2 s. Read-only research probe; nothing is written to the tree.
-# Run: <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--seconds=40]
+# Run: <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--seconds=40] [--trim=reference|cruise]
+# --trim=cruise is Home's launch trim (D6e-R4): every airplane trimmed for level flight at 50 % throttle, in the air
+# and after the runway takeoff. The default keeps the technical route's reference trim.
 extends SceneTree
 const Weather = preload("res://physics/wind_config.gd")
 const RB = preload("res://physics/rigid_body.gd")
@@ -14,6 +16,7 @@ var seconds := 40.0
 var airborne_start := "airborne" # or airborne_half_power (D6e-R3: the 50 % level trim for every airplane)
 var throttles: PackedFloat64Array = [0.5, 0.3]
 var runway_cases := true
+var trim_choice := "reference" # or cruise (D6e-R4)
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -29,6 +32,8 @@ func _initialize() -> void:
 				throttles.append(float(item))
 		elif arg == "--no-runway":
 			runway_cases = false
+		elif arg.begins_with("--trim="):
+			trim_choice = arg.substr(7)
 	call_deferred("run")
 
 func _euler(s: PackedFloat64Array) -> PackedFloat64Array:
@@ -60,6 +65,8 @@ func run() -> void:
 			main.aircraft_id = id
 			main.weather_config = Weather.GENTLE_PRACTICE.duplicate(true)
 			main.start_choice = str(c[1])
+			if trim_choice == "cruise":
+				main.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE
 			root.add_child(main)
 			await process_frame
 			var s = main.session
@@ -72,7 +79,7 @@ func run() -> void:
 			var throttle: float = float(c[2])
 			var h0: float = -s.sim.state[RB.POS + 2]
 			var trim_throttle: float = float(s.start.get("throttle", NAN))
-			print("SCENE ", id, " [", c[0], "] start ", c[1], " V=%.1f m/s, trim throttle %.3f, elevator trim %.3f, h0 %.1f m" % [_speed(s.sim.state), trim_throttle, float(s.trims.pitch), h0])
+			print("SCENE ", id, " [", c[0], "] start ", c[1], " (launch trim %s) V=%.1f m/s, trim throttle %.3f, elevator trim %.3f, h0 %.1f m" % [str(s.trace_meta().get("launch_trim_throttle", "?")), _speed(s.sim.state), trim_throttle, float(s.trims.pitch), h0])
 			var phase := "ground" if c[1] == "runway" else "hold"
 			var airborne_t := -1.0
 			var max_h := h0

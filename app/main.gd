@@ -99,6 +99,9 @@ var battery_mode: String = ""
 var fuel_start_fill: float = 1.0
 ## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
+## D6e-R4: Home and Quick Flight trim every airplane for level flight at this throttle, in the air or as the runway
+## start's flying trim; technical routes keep the reference trim (NAN) unless they select airborne_half_power.
+var trim_throttle: float = NAN
 var weather_config: Dictionary = {}
 ## Resolved only when this flight is created. Session reset retains its draw and onset.
 var failure_config: Dictionary = FailureConfig.defaults()
@@ -312,6 +315,8 @@ func _ready() -> void:
 			start_choice = str(args.start)
 		elif args.has("quick-flight"):
 			start_choice = FlightSession.START_RUNWAY
+		if args.has("quick-flight"):
+			trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: the player's shortcut launches trimmed like Home
 		if start_choice not in [FlightSession.START_RUNWAY, FlightSession.START_AIRBORNE, FlightSession.START_HALF_POWER]:
 			printerr("--start must be runway, airborne or airborne_half_power")
 			set_process(false)
@@ -522,6 +527,7 @@ func _ready() -> void:
 	session.physics_enabled = not _scripted
 	# This explicit airborne operating point must be selected before setup solves trim.
 	# Runway selection still waits for field/contact configuration below.
+	session.trim_throttle = trim_throttle # D6e-R4: setup() solves it for airborne and runway launches alike
 	if start_choice == FlightSession.START_HALF_POWER:
 		session.start_choice = start_choice
 	if args.has("shaft-integrator") and (not session.setup_shaft_integrator(args["shaft-integrator"]) or _scripted):
@@ -2097,7 +2103,8 @@ func _on_resetting() -> void:
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
-## --quick-flight (runway default), --start=runway|airborne|airborne_half_power (explicit launch override),
+## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
+## --start=runway|airborne|airborne_half_power (explicit launch override; without --quick-flight the reference trim),
 ## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
 ## --field-lighting=club|airfield|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)

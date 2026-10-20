@@ -433,8 +433,8 @@ func set_aircraft(id: String) -> void:
 		home.set_start_choice("runway")
 	elif not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
-	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
-		preferences.start_choice = home.start_choice
+	if preferences.start_choice == FlightSession.START_HALF_POWER:
+		preferences.start_choice = home.start_choice # D6e-R4: the former explicit choice is Home's airborne start
 	if home_scene != null:
 		home_scene.request_aircraft(id)
 	var err := Preferences.save_to(preferences_path, preferences)
@@ -576,6 +576,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
+	if has_home or is_random:
+		flight.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: Home's launches fly trimmed for 50 % throttle
 	if "battery_mode" in flight: # BAT-13: Home's battery choice; random and direct routes use the aircraft default or --battery=
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""
 	if "fuel_start_fill" in flight: # FUEL-07: Home's fuel choice; random and direct routes start full or use --fuel=
@@ -988,6 +990,7 @@ func _prepare_random_briefing(scenario: Dictionary) -> void:
 	candidate.input_enabled = false
 	candidate.physics_enabled = false
 	candidate.start_choice = scenario.start_choice
+	candidate.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: qualify the trim the flight will use
 	var error: String = ""
 	if not candidate.setup_weather(scenario.weather_config):
 		error = candidate.weather_error
@@ -1222,6 +1225,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
 	candidate.start_choice = chosen_start
+	candidate.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: workshop flights launch with Home's trim
 	candidate.interactive_start = true
 	candidate.external_controller_selection = controllers != null
 	candidate.weather_config = selected_weather.duplicate(true)

@@ -486,6 +486,9 @@ msgstr "Inicio: pista (experimental)"
 msgid "Starts on the runway. Experimental ground handling."
 msgstr "Empieza en pista. Rodaje experimental."
 
+msgid "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling."
+msgstr "Empieza en pista, con el trim ajustado para vuelo nivelado al 50 % de acelerador. Rodaje experimental."
+
 msgid "Could not start flight: %s"
 msgstr "No se pudo iniciar el vuelo: %s"
 

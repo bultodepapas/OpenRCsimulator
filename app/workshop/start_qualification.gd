@@ -41,6 +41,7 @@ static func qualify(frozen_trial: Dictionary, normalized_field: Dictionary, weat
 	session.input_enabled = false
 	session.crash_auto_restart = false
 	session.start_choice = start_choice
+	session.trim_throttle = Session.CRUISE_TRIM_THROTTLE # D6e-R4: assess the trim the workshop flight launches with
 	session.setup("workshop://" + aircraft_id, aircraft_id, trial_data)
 	if not session.aircraft.get("ok", false):
 		var load_reason: String = str(session.aircraft.get("errors", ["frozen aircraft could not be prepared"])[0])

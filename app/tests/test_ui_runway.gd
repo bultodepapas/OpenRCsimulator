@@ -45,7 +45,7 @@ func _initialize() -> void:
 func _run() -> void:
 	_preferences_cases()
 	await _home_fly_roundtrip_and_radio()
-	await _half_power_roundtrip()
+	await _trimmed_airborne_roundtrip()
 	await _rejected_launch_and_retry()
 	await _future_preferences_save_failure()
 	await _alternate_field_and_aircraft_sanitization()
@@ -108,9 +108,8 @@ func _home_fly_roundtrip_and_radio() -> void:
 	await ui.tap(KEY_UP)
 	_check("Up from Fly focuses the start selector", ui.focus_name() == "StartChoice", ui.focus_name())
 	await ui.tap(KEY_ENTER)
-	_check("airborne cycles to half power", home.get("start_choice") == "airborne_half_power")
-	await ui.tap(KEY_ENTER)
 	_check("a real Enter event selects runway", home.get("start_choice") == RUNWAY)
+	_check("runway caption names the 50 % trim (D6e-R4)", home.get("limits_label").text.contains("50% throttle"))
 	_check("changing start choice does not save it", FileAccess.get_file_as_string(PREFS) == before_choice)
 
 	# Joypad axes are flight inputs only; they cannot navigate or change Home.
@@ -132,7 +131,8 @@ func _home_fly_roundtrip_and_radio() -> void:
 	start_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("runway cycles to the secondary airborne choice", home.get("start_choice") == AIRBORNE)
-	await ui.tap(KEY_ENTER)
+	_check("airborne caption describes the trimmed level start", home.get("start_button").text == "Start: in the air"
+		and home.get("limits_label").text.contains("Trim stays fixed"))
 	await ui.tap(KEY_ENTER)
 	_check("runway can be selected again on the supported Stik", home.get("start_choice") == RUNWAY)
 	_check("selection is still not persisted before Fly", Preferences.load_from(PREFS).start_choice == AIRBORNE
@@ -151,6 +151,10 @@ func _home_fly_roundtrip_and_radio() -> void:
 		and flight.get("session").get("start_choice") == RUNWAY)
 	var session: Node = flight.get("session") as Node
 	_check("runway launch succeeded without fallback", session.get("start_error") == "" and session.call("is_flyable"))
+	_check("D6e-R4: the Home runway launch carries the 50 % cruise trim", flight.get("trim_throttle") == 0.5
+		and session.get("trim_throttle") == 0.5 and absf(float(session.get("start").get("requested_throttle", NAN)) - 0.5) < 1e-12
+		and session.get("trims").pitch == session.get("start").pitch_command
+		and session.call("trace_meta").get("launch_trim_throttle") == "0.5")
 	_check("trace metadata identifies the launch choice", session.call("trace_meta").get("selected_start_choice") == RUNWAY
 		and session.call("trace_meta").get("launch_choice") == RUNWAY)
 
@@ -213,7 +217,8 @@ func _home_fly_roundtrip_and_radio() -> void:
 	await _close_app(app)
 
 
-func _half_power_roundtrip() -> void:
+func _trimmed_airborne_roundtrip() -> void:
+	# D6e-R4: the former explicit "50% throttle" choice is Home's airborne start, and every Home launch is trimmed for it.
 	_cleanup()
 	TranslationServer.set_locale("en")
 	_write_preferences(PREFS, 1, "en", STIK, RUNWAY)
@@ -221,34 +226,52 @@ func _half_power_roundtrip() -> void:
 	var home: Control = app.home
 	home.start_button.grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("runway cycles to airborne first", home.start_choice == AIRBORNE)
+	_check("runway cycles to airborne", home.start_choice == AIRBORNE)
+	_check("airborne label explains the fixed 50 % trim", home.start_button.text == "Start: in the air"
+		and home.limits_label.text.contains("50% throttle") and home.limits_label.text.contains("Trim stays fixed"))
 	await ui.tap(KEY_ENTER)
-	_check("airborne cycles to explicit half-power airborne start", home.start_choice == "airborne_half_power")
-	_check("half-power label explains fixed trim", home.start_button.text == "Start: 50% throttle"
-		and home.limits_label.text.contains("Trim stays fixed"))
-	_check("new choice is not saved before Fly", Preferences.load_from(PREFS).start_choice == RUNWAY)
+	_check("the airplane cycle has two choices", home.start_choice == RUNWAY)
+	await ui.tap(KEY_ENTER)
+	_check("new choice is not saved before Fly", home.start_choice == AIRBORNE and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	app.start_flight()
 	await ui.settle()
-	_check("half-power Home launch succeeds", app.flight != null and app.flight.startup_error.is_empty())
+	_check("airborne Home launch succeeds", app.flight != null and app.flight.startup_error.is_empty())
 	if app.flight != null:
 		var s: Node = app.flight.session
-		_check("main installs the selected equilibrium before flight", s.start_choice == "airborne_half_power"
-			and absf(s.start.throttle - 0.5) < 1e-7 and s.start.V > 15.0)
-		_check("new choice persists after successful Fly", Preferences.load_from(PREFS).start_choice == "airborne_half_power")
-		_check("trace distinguishes selected half-power profile and actual airborne launch",
-			s.trace_meta().selected_start_choice == "airborne_half_power" and s.trace_meta().launch_choice == "airborne")
+		_check("main installs the 50 % equilibrium before flight", s.start_choice == AIRBORNE and s.trim_throttle == 0.5
+			and absf(s.start.throttle - 0.5) < 1e-7 and s.start.V > 15.0 and absf(s.commands.throttle - 0.5) < 1e-7)
+		_check("new choice persists after successful Fly", Preferences.load_from(PREFS).start_choice == AIRBORNE)
+		_check("trace records the airborne launch and its trim throttle",
+			s.trace_meta().selected_start_choice == AIRBORNE and s.trace_meta().launch_choice == "airborne"
+			and s.trace_meta().launch_trim_throttle == "0.5")
 		await ui.tap(KEY_R)
-		_check("restart retains selected half-power trim", s.is_flyable() and absf(s.start.throttle - 0.5) < 1e-7)
+		_check("restart retains the 50 % trim", s.is_flyable() and absf(s.start.throttle - 0.5) < 1e-7)
 		app.open_pause()
 		await ui.settle()
 		app.end_flight()
 		await ui.settle()
-		_check("return to Home preserves half-power profile", app.home.start_choice == "airborne_half_power")
+		_check("return to Home preserves the airborne choice", app.home.start_choice == AIRBORNE)
 		app.set_aircraft(TIMBER)
 		await ui.settle()
-		_check("unsupported half-power choice returns to runway in UI and preferences", app.home.start_choice == RUNWAY
-			and Preferences.load_from(PREFS).start_choice == RUNWAY)
+		_check("changing airplane keeps the airborne choice", app.home.start_choice == AIRBORNE
+			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 	await _close_app(app)
+	# A settings file from before D6e-R4 may still hold the explicit half-power choice: it is the same launch.
+	_cleanup()
+	_write_preferences(PREFS, 1, "en", STIK, "airborne_half_power")
+	var legacy_app: Node = await _new_app(PREFS)
+	_check("a saved half-power preference is shown as the airborne start", legacy_app.home.start_choice == AIRBORNE
+		and legacy_app.home.start_button.text == "Start: in the air")
+	legacy_app.start_flight()
+	await ui.settle()
+	if legacy_app.flight != null:
+		var legacy_session: Node = legacy_app.flight.session
+		_check("the legacy preference flies the trimmed airborne start and is saved as airborne",
+			legacy_session.start_choice == AIRBORNE and absf(legacy_session.start.throttle - 0.5) < 1e-7
+			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
+	else:
+		_check("legacy half-power preference launches", false, legacy_app.flight_error if "flight_error" in legacy_app else "")
+	await _close_app(legacy_app)
 
 
 func _fly_with_fake_radio(flight: Node) -> void:
@@ -376,11 +399,8 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	var home: Control = app.get("home") as Control
 	_check("runway is disabled outside the existing default field", home.get("runway_available") == false
 		and home.get("start_choice") == AIRBORNE)
-	home.get("start_button").grab_focus()
-	await ui.tap(KEY_ENTER)
-	_check("alternate field can select airborne half power without offering runway", home.get("start_choice") == "airborne_half_power")
-	await ui.tap(KEY_ENTER)
-	_check("alternate field start cycle returns to legacy airborne", home.get("start_choice") == AIRBORNE)
+	_check("alternate field offers the airborne start only, trimmed like every launch (D6e-R4)",
+		home.get("start_button").disabled and home.get("start_button").text == "Start: in the air")
 	await _close_app(app)
 
 	_cleanup()

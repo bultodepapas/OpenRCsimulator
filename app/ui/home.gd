@@ -962,18 +962,15 @@ func set_start_choice(choice: String) -> void:
 		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
 		return
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
-	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
-	start_choice = "runway" if supported and choice != "airborne" else "airborne"
-	if half_power and choice == FlightSession.START_HALF_POWER:
-		start_choice = FlightSession.START_HALF_POWER
-	start_button.disabled = not supported and not half_power
+	# D6e-R4: every airplane launches trimmed for level flight at 50 % throttle, in the air or after the runway
+	# takeoff, so the former explicit "50% throttle" choice is this airborne start and is shown as such.
+	var airborne: bool = choice == "airborne" or choice == FlightSession.START_HALF_POWER
+	start_choice = "runway" if supported and not airborne else "airborne"
+	start_button.disabled = not supported
 	start_button.text = tr("Start: runway") if start_choice == "runway" else tr("Start: in the air")
-	limits_label.text = "Starts on the runway. Experimental ground handling." if start_choice == "runway" else "Starts in the air. A crash restarts the flight."
+	limits_label.text = "Starts on the runway, trimmed for level flight at 50% throttle. Experimental ground handling." if start_choice == "runway" \
+		else "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 	start_button.tooltip_text = tr(limits_label.text)
-	if start_choice == FlightSession.START_HALF_POWER:
-		start_button.text = tr("Start: 50% throttle")
-		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
-		start_button.tooltip_text = tr(limits_label.text)
 
 
 func set_landscape(id: String) -> void:
@@ -1029,8 +1026,6 @@ func _cycle_start_choice() -> void:
 	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
 		choices.append("runway")
 	choices.append("airborne")
-	if FlightSession.half_power_start_supported(aircraft_id):
-		choices.append(FlightSession.START_HALF_POWER)
 	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])
 
 

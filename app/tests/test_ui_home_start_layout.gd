@@ -37,14 +37,20 @@ func _run() -> void:
 		await driver.tap(KEY_ENTER)
 		for frame in range(6): await process_frame
 		_check("%s Enter returns to pad" % lang, home.start_choice == "runway")
-	# The same wrapping policy covers the longer half-power airplane launch caption.
+	# The same wrapping policy covers both airplane launch captions; the former half-power choice is the airborne
+	# start (D6e-R4: every launch is trimmed for 50 % throttle).
 	for lang in ["en", "es"]:
 		TranslationServer.set_locale(lang)
 		home.set_aircraft("jensen-das-ugly-stik-60")
 		home.set_start_choice("airborne_half_power")
 		for frame in range(6): await process_frame
-		_check("%s half-power choice remains selected" % lang, home.start_choice == "airborne_half_power")
+		_check("%s former half-power choice is the trimmed airborne start" % lang, home.start_choice == "airborne"
+			and home.start_button.text == TranslationServer.translate("Start: in the air"))
 		_check_layout(home, lang + " airplane")
+		home.set_start_choice("runway")
+		for frame in range(6): await process_frame
+		_check("%s runway choice is restored" % lang, home.start_choice == "runway")
+		_check_layout(home, lang + " airplane runway")
 	home.free()
 	TranslationServer.set_locale(locale)
 	print("Home launch layout: %d checks, %d failed" % [_checks, _failures])

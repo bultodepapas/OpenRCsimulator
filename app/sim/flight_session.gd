@@ -507,6 +507,10 @@ const LakeCollision := preload("res://sim/lake_collision.gd")
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
+## D6e-R4: the throttle Home and Quick Flight trim every airplane for before placing it in the air or on the runway
+## (level flight at this throttle: below it the airplane descends, above it climbs, and the trim stays until the pilot
+## moves it). Tests, golden flights and the technical route keep the reference trim (trim_throttle NAN).
+const CRUISE_TRIM_THROTTLE := 0.5
 const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
@@ -547,17 +551,59 @@ func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictio
 	var charge: float = _weather.engine_charge_ratio(down_m)
 	if not is_finite(density) or not is_finite(charge):
 		return {ok = false, message = "starting altitude is outside the atmosphere's supported domain"}
-	if start_choice != START_HALF_POWER:
+	var target: float = selected_trim_throttle()
+	if is_nan(target):
 		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, density, charge)
 	if not half_power_start_supported(str(model.get("id", ""))):
-		return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
+		if start_choice == START_HALF_POWER:
+			return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
+		# D6e-R4: a rotorcraft keeps its reference launch under the product's trim throttle.
+		return Scenarios.trimmed_level_across_view(model, sim.gravity, model.controls.throw_rad, speed, density, charge)
+	if not is_finite(target) or target <= 0.0 or target > 1.0:
+		return {ok = false, message = "trim throttle must be within 0..1 (got %s)" % str(target)}
 	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
 	# D6e-R3: the level speed at half throttle lies between 1.3 and 2.0 times the slow start speed across the fleet
 	# (Timber 1.25, Ventage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
-	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, 0.5, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
+	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, target, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
 	if t.ok:
 		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
 	return t
+
+
+## D6e-R4: the throttle the selected launch is trimmed for; NAN names the reference trim.
+func selected_trim_throttle() -> float:
+	return CRUISE_TRIM_THROTTLE if start_choice == START_HALF_POWER else trim_throttle
+
+
+## D6e-R4: true while the committed airplane launches trimmed for a throttle (START_HALF_POWER, or a finite
+## trim_throttle on an airplane that offers the cruise trim); false for the reference trim and for rotorcraft.
+func cruise_trim_active() -> bool:
+	if is_nan(selected_trim_throttle()) or not aircraft.get("ok", false):
+		return false
+	return half_power_start_supported(str(aircraft.get("model", {}).get("id", "")))
+
+
+## D6e-R4: re-solves the start when the selected trim throttle differs from the one the committed start was solved
+## for (a selection made after setup). The reference trim never refits here; its density refit lives in reset().
+## Failure leaves an invalid start, as the atmosphere refit does. Returns {ok, changed[, message]}.
+func _refit_selected_trim() -> Dictionary:
+	if not cruise_trim_active() or start.get("requested_throttle", NAN) == selected_trim_throttle():
+		return {ok = true, changed = false}
+	var old_start: Dictionary = start
+	var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_start.get("state", PackedFloat64Array())))
+	if not refit.ok:
+		start = refit
+		_trim_density = NAN
+		_trim_charge = NAN
+		return {ok = false, changed = true, message = "trim: " + str(refit.get("message", "trim failed"))}
+	if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
+		for axis: int in 3:
+			refit.state[RB.POS + axis] = old_start.state[RB.POS + axis]
+	start = refit
+	_trim_density = air_density(start.state)
+	_trim_charge = engine_charge_ratio(start.state)
+	trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
+	return {ok = true, changed = true}
 
 
 ## Detached static query only. The normalized aircraft and fixed datum never change.
@@ -617,6 +663,11 @@ var aircraft := {} # AircraftData result: { ok, errors, warnings, model }
 var start := {} # trimmed starting condition (Trim result); empty without valid data
 ## Persistent product start selection. Set before setup(), or before reset(); explicit runway failures stay stopped.
 var start_choice: String = START_AIRBORNE
+## D6e-R4: the throttle the launch is trimmed for. NAN selects the reference trim (level flight at the aircraft's slow
+## start speed, the kernel's fixture); a value in (0, 1] trims every airplane that offers the cruise trim at that
+## throttle, in the air (START_AIRBORNE) and as the runway start's flying trim (START_RUNWAY). START_HALF_POWER is
+## the explicit airborne 0.5. Select it before setup(); reset() refits a later selection.
+var trim_throttle: float = NAN
 ## Empty after a successful reset; otherwise the explicit reason the requested start was refused.
 var start_error: String = ""
 var _runway_field: Dictionary = {}
@@ -2154,7 +2205,9 @@ func reset(preserve_radio_readiness := false) -> void:
 		return
 	_fuel_start_fill_known = true
 	if start_choice == START_RUNWAY:
-		var result := _reset_selected_runway_start()
+		# D6e-R4: the runway launch carries the selected trim; a cruise trim chosen after setup is solved here.
+		var selection_refit: Dictionary = _refit_selected_trim()
+		var result: Dictionary = _reset_selected_runway_start() if selection_refit.ok else {ok = false, message = str(selection_refit.message)}
 		runway_start_outcome = result.duplicate(true)
 		if not result.ok:
 			start_error = str(result.message)
@@ -2178,22 +2231,27 @@ func reset(preserve_radio_readiness := false) -> void:
 	if pause_reason.begins_with("CRASH"):
 		pause_reason = ""
 	start_error = ""
-	var half_power_refit: bool = start_choice == START_HALF_POWER and start.get("requested_throttle", -1.0) != 0.5
+	# D6e-R4: a trim throttle selected after setup (or an explicit START_HALF_POWER) is solved before the launch.
+	var selection_refit: Dictionary = _refit_selected_trim()
+	if not selection_refit.ok:
+		_fail_selected_start(str(selection_refit.message))
+		return
 	var start_density: float = air_density(start.get("state", PackedFloat64Array()))
 	var start_charge: float = engine_charge_ratio(start.get("state", PackedFloat64Array()))
-	if aircraft.get("ok", false) and (_trim_density != start_density or _trim_charge != start_charge or half_power_refit):
+	if aircraft.get("ok", false) and (_trim_density != start_density or _trim_charge != start_charge):
 		var old_start: Dictionary = start
 		var speed: float = float(old_start.get("V", aircraft.model.get("start_speed", 15.0)))
 		if not is_finite(speed) or speed <= 0.0:
 			speed = float(aircraft.model.get("start_speed", 15.0))
-		var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_start.get("state", PackedFloat64Array()))) if start_choice == START_HALF_POWER else trim_at(speed, str(old_start.get("mode", "level")))
+		var cruise: bool = cruise_trim_active()
+		var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_start.get("state", PackedFloat64Array()))) if cruise else trim_at(speed, str(old_start.get("mode", "level")))
 		if not refit.ok:
 			start = refit
 			_trim_density = NAN
 			_trim_charge = NAN
 			_fail_selected_start("atmosphere trim refused: " + str(refit.message))
 			return
-		if start_choice == START_HALF_POWER:
+		if cruise:
 			start = refit
 			_trim_density = start_density
 			_trim_charge = start_charge
@@ -2445,8 +2503,15 @@ func _capture_launch(actual_choice: String, launch_kind: String, field_id: Strin
 		"launch_continuous": JSON.stringify(Array(continuous_snapshot), "", true, true),
 		"launch_ground_anchors": JSON.stringify(Array(anchor_snapshot), "", true, true),
 		"launch_engine_running": JSON.stringify(engine_running),
+		"launch_trim_throttle": _launch_trim_label(),
 		"launch_error": error_text,
 	}
+
+
+## D6e-R4: the throttle the launched start was solved for ("reference" for the slow level trim).
+func _launch_trim_label() -> String:
+	var requested: float = float(start.get("requested_throttle", NAN)) if _has_valid_start() else NAN
+	return String.num(requested, 4) if is_finite(requested) else "reference"
 
 
 func _has_valid_start() -> bool:
@@ -3533,6 +3598,7 @@ func trace_meta() -> Dictionary:
 		launch_choice = _launch_metadata.get("launch_choice", "unknown"),
 		launch_kind = _launch_metadata.get("launch_kind", "unknown"),
 		launch_field_id = _launch_metadata.get("launch_field_id", ""),
+		launch_trim_throttle = _launch_metadata.get("launch_trim_throttle", "unknown"),
 		launch_state = _launch_metadata.get("launch_state", "[]"),
 		launch_aux = _launch_metadata.get("launch_aux", "[]"),
 		launch_ground_anchors = _launch_metadata.get("launch_ground_anchors", "[]"),
@@ -4146,7 +4212,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_launch_metadata = {
 		selected_start_choice = "unknown", launch_choice = "unknown", launch_kind = "checkpoint_restore",
 		launch_field_id = "", launch_state = "[]", launch_aux = "[]", launch_ground_anchors = "[]",
-		launch_engine_running = "unknown", launch_error = "",
+		launch_engine_running = "unknown", launch_trim_throttle = "unknown", launch_error = "",
 	}
 	input_enabled = false
 	crash = {}
