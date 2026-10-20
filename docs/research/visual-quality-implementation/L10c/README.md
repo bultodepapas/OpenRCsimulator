@@ -8,7 +8,7 @@ Unmodified CC0 [ambientCG Wood060](https://ambientcg.com/view?id=Wood060) suppli
 
 [Previous detail](assembly-2026-10-20/before-detail.png) · [Finished close view](assembly-2026-10-20/detail.png) · [Post base and hardware](assembly-2026-10-20/foot.png) · [Rear](assembly-2026-10-20/rear.png) · [Flightline](assembly-2026-10-20/flightline.png) · [Pilot view](assembly-2026-10-20/pilot.png). The [native RTX 3090 capture](assembly-2026-10-20/capture.json) records **38,120 fence triangles** and one opaque fence surface. The 80 m boundary variant uses 71,816 triangles, within the revised 75,000 ceiling. The full cue, including existing plants and soil, adds five draws in the [native ablation](assembly-2026-10-20/ablation-summary.json). Independent first/repeat captures match; all five views pass projected bounds, clipping and visible-cue controls. Both pilot directions preserve **22,740 protected runway pixels**. The WSL software renderer timed out before its first image on this revision, so this ablation was run with native Godot 4.7.2 Compatibility instead.
 
-All **511 focused checks pass**: 210 barrier mesh/material, 144 field data, 20 cue shadows, 78 destruction/reset and 59 projected shadows. These establish source, geometry and rendered sightline behavior, not measured structural strength or low-end frame-time acceptance.
+All **517 focused checks pass**: 216 barrier mesh/material, 144 field data, 20 cue shadows, 78 destruction/reset and 59 projected shadows. These establish source, geometry and rendered sightline behavior, not measured structural strength or low-end frame-time acceptance.
 
 ## 2026-10-20 — L10c-R3 fitted rail and post assembly
 
