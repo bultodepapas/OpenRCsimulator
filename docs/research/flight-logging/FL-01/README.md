@@ -116,6 +116,22 @@ Focused reruns also passed the existing flight-log suite (3,247 checks, zero fai
 and all 14 Python tool tests. No solver, recorded baseline or aircraft data changed.
 Usage and the partial-report boundary live in the [manual](../../../FLIGHT-LOGGING.md).
 
+## FL-04-R2 — bounded CSV column indices (2026-10-19)
+
+A malformed CSV header containing `aux_` followed by 5,000 digits escaped the
+Python CLI's validation handler with `ValueError` and exit 1. Indexed-family
+validation now bounds numeric conversion by the family's actual column count,
+rejecting unreachable indices without constructing an arbitrarily large integer.
+Existing decimal names, leading zeros and Unicode decimal digits remain accepted.
+
+All 16 [Python tool tests](../../../../tools/flight_log/test_flight_log.py) pass,
+including the oversized suffix, contiguous/gapped indices and a valid index with
+5,000 leading zeros. An independent subprocess comparison against the pre-fix
+source confirms a controlled `error:` diagnostic and exit 2, with no traceback:
+[before/after evidence](csv-index-before-after.json). No solver, aircraft data or
+recorded baseline changed. This is malformed-input verification, not physical
+flight validation.
+
 ## References
 
 Primary documentation and project sources checked on 2026-10-14:

@@ -157,6 +157,10 @@ never bypass a pause/crash, weaken numerical guards or re-record goldens to fini
 
 ### CPU, GPU and memory diagnosis
 
+For OS process RAM, system memory pressure, process I/O and project disk usage,
+use the [resource and storage tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
+These complement the engine allocation counters below.
+
 Add `--frame-diagnostics` after Godot's `--` to the existing `--frametimes` command
 to retain root-viewport render CPU/GPU timings, global render setup CPU time,
 Godot-tracked memory/resource/orphan-node counters and observer polling cost.
@@ -388,3 +392,27 @@ timeout owns the engine rather than its console launcher.
 [Measured results, retained unfavorable runs and regression limits](../../docs/research/landscape-upgrade/LU-25-R1/README.md)
 describe the CPU-only scope. The runner rejects engine errors, incomplete runs,
 sample-count discrepancies and unequal trajectories.
+
+## Ground-stage layout queries (H16)
+
+`session_pair_probe.gd` compares two complete flight-session implementations through
+production input and simulation callbacks. It alternates 120-tick batches, hashes
+all measured numeric states and compares complete checkpoints after every batch.
+For the H16 method change, the original-method oracle can be compared with the
+current session:
+
+```powershell
+$probe = (Resolve-Path research/performance/session_pair_probe.gd).Path
+.tools/Godot_v4.7.2-stable_win64.exe --headless --path app --audio-driver Dummy --script $probe -- --reference=res://tests/ground_stage_reference.gd --candidate=res://sim/flight_session.gd --aircraft=jensen-das-ugly-stik-60 --case=trim --warmup=2400 --samples=14400 --output="$PWD/tmp/h16-pair-new.json"
+```
+
+Use a new output file. Run timing alone when possible and retain stdout/stderr
+through native engine exit; reject nonzero exit, engine errors, incomplete results
+or unequal fingerprints. The probe does not enforce CPU affinity; the retained
+Windows campaign runner did. The current-dependency oracle command is a repeatable
+method comparison, not a recreation of the dated working tree. Defaults measure
+10 warmup + 60 sampled simulation seconds. The result is CPU callback cost, with
+rendering and GPU work excluded.
+
+[H16 results, complete before/after scripts, commands and regression evidence](../../docs/research/simulation-state/H16/README.md)
+retain all three airborne repeats per aircraft and the flat runway result.

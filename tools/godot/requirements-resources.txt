@@ -1,0 +1,2 @@
+# Optional external process telemetry only; the default runner stays stdlib-only.
+psutil==7.2.2

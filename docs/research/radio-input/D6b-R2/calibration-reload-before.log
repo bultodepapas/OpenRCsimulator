@@ -1,0 +1,100 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371817576560384 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2215)
+       [9] build (res://render/world/world.gd:289)
+       [10] _build_world (res://main.gd:2171)
+       [11] _ready (res://main.gd:496)
+ok   direct radio test loads Timber electric physics
+ok   starts on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   radio connected with its device key
+ok   untouched throttle (reads mid-stick) keeps the engine at idle
+ok   panel says SAFE
+ok   throttle moved to 60 %: still SAFE
+ok   throttle low: ARMED
+ok   armed: full throttle
+ok   roll stick full right → +1 at once (radio positions are not rate-limited)
+ok   the simulation flies it (stick + trim, clamped)
+ok   elevator stick forward → pitch −1 (nose down)
+ok   rudder stick commands the Timber yaw channel
+failsafe: radio disconnected
+ok   unplug: simulation paused
+ok   unplug: engine idle, sticks centred
+ok   unplug: panel says why
+ok   unplug: stays paused (no automatic resume)
+ok   P resumes on the keyboard
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   replug with the throttle stick high: SAFE, idle
+ok   direct calibration starts with an armed, flyable radio
+failsafe: calibrating radio
+ok   direct calibration advertises resume as unavailable
+ok   direct calibration refuses direct resume without changing the paused flight
+ok   direct calibration P cannot advance ticks or restore throttle
+FAIL direct calibration reload explains the refusal aircraft reloaded: trimmed at 13 m/s, throttle 37 %
+FAIL direct calibration reload preserves the entire paused flight 
+FAIL direct calibration reset preserves the entire paused flight 
+FAIL direct calibration reset_preserving_radio preserves the entire paused flight 
+aircraft reloaded: trimmed at 13 m/s, throttle 37 %
+FAIL direct calibration F5 preserves the entire paused flight 
+FAIL direct calibration R preserves the entire paused flight 
+FAIL direct calibration cancelling the wizard does not automatically resume 
+ok   direct calibration explicit resume works after cancellation
+ok   managed calibration starts with an armed, flyable radio
+failsafe: calibrating radio
+ok   managed calibration advertises resume as unavailable
+ok   managed calibration refuses direct resume without changing the paused flight
+ok   managed calibration P cannot advance ticks or restore throttle
+FAIL managed calibration reload explains the refusal aircraft reloaded: trimmed at 13 m/s, throttle 37 %
+FAIL managed calibration reload preserves the entire paused flight 
+FAIL managed calibration reset preserves the entire paused flight 
+FAIL managed calibration reset_preserving_radio preserves the entire paused flight 
+aircraft reloaded: trimmed at 13 m/s, throttle 37 %
+FAIL managed calibration F5 preserves the entire paused flight 
+FAIL managed calibration R preserves the entire paused flight 
+ok   managed calibration cancelling the wizard does not automatically resume
+ok   managed calibration explicit resume works after cancellation
+failsafe: calibrating radio
+ok   K starts the calibration (paused, step 1)
+radio calibrated: fake|1209:4f54|Fake EdgeTX
+ok   calibrated: aileron axis 3, rudder axis 0, elevator inverted
+ok   calibration saved for this device
+ok   completed calibration is SAFE despite the old low throttle
+ok   after calibration: aileron works while stale throttle stays SAFE
+ok   after calibration: new high throttle still SAFE
+ok   after calibration: fresh low throttle arms
+failsafe: radio disconnected
+radio connected: fake|1209:4f54|Fake EdgeTX (calibrated profile)
+ok   replug loads the saved calibration
+ok   valid saved replug still requires a fresh throttle event
+failsafe: calibrating radio
+ok   Esc cancels; the calibration stays
+failsafe: radio disconnected
+ok   writes malformed fixture duplicate_axis
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back to the complete V2 radio default duplicate_axis
+ok   rejected profile remains safe at high throttle duplicate_axis
+ok   fallback profile can rearm at low throttle duplicate_axis
+failsafe: radio disconnected
+ok   writes malformed fixture nan_endpoint
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back to the complete V2 radio default nan_endpoint
+ok   rejected profile remains safe at high throttle nan_endpoint
+ok   fallback profile can rearm at low throttle nan_endpoint
+failsafe: radio disconnected
+ok   writes malformed fixture wrong_identity
+radio connected: fake|1209:4f54|Fake EdgeTX (default profile)
+ok   invalid profile falls back to the complete V2 radio default wrong_identity
+ok   rejected profile remains safe at high throttle wrong_identity
+ok   fallback profile can rearm at low throttle wrong_identity
+13 failed

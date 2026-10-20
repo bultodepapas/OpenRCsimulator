@@ -510,3 +510,13 @@ Nine repeated structural guards per physics tick made unchanged lake validation 
 ### 2026-10-19 — Scope extreme virtual size bounds to compiler transforms (AE-23b)
 
 Support 10–500% Workshop aircraft as similarity experiments through the existing simulation. Validate the source with ordinary aircraft bounds first; then pass explicit dimensional factors emitted by the compiler to an allowlisted validation context. Keep control/coefficient bounds, provenance and physical consistency checks unchanged, strip private context before serialization, and distribute source-plus-recipe bundles. Globally widening stock import bounds would admit unrelated malformed aircraft. Explicit size actions select a versioned model; legacy recipes within 35–225% preserve their compiler and exact outputs. Scale the virtual plausibility band by total dry-plus-liquid mass. Short endpoint refinement and replay qualify this game-size slice only; Reynolds effects, actual hardware, sustained flights and isolated performance remain open. [Evidence](research/aircraft-editor/AE-23b/README.md).
+
+
+### 2026-10-19 — Reuse layout queries only within a ground-stage invocation (H16)
+
+Read gear/glow capability, wheel count and wheel offset once inside the existing
+stage. Keep those values local so resets and layout changes require no cache
+invalidation policy. Three repeated airborne callback comparisons support the
+small change; the runway measurement was flat. Preserve force arithmetic, guards,
+240 Hz stepping and data, with exact state/checkpoint comparisons and the original
+method oracle. [Measurements and regression limits](research/simulation-state/H16/README.md).

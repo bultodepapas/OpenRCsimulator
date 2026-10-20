@@ -103,6 +103,8 @@ class FlightLogCsvTests(unittest.TestCase):
             ("aux_4", "aux_5"),
             ("aux_0004", "aux_0005"),
             ("aux_٤", "aux_٥"),
+            ("aux_" + "0" * 5000 + "4",),
+            ("continuous_0", "continuous_1", "mode_0", "mode_1"),
         ):
             with self.subTest(indexed_names=indexed_names):
                 header = (*flight_log.REQUIRED_COLUMNS, *indexed_names)

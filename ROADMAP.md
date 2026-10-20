@@ -64,9 +64,9 @@ D11a comparison is regenerated; D11b characterization, D11d strip consistency an
 
 ### Phase H — State contract and measured headroom
 
-H1…H9, H8a/R1, H9-R1 and H11…H15 delivered profiling, float64/transcendental guards, bounded state ownership, atomic RK updates, replay/refinement policy and measured allocation reductions. H10 found no justified contributor-interface extraction. [State evidence](docs/research/README.md#flight-model-and-simulation) retains exact refactor/parity records.
+H1…H9, H8a/R1, H9-R1 and H11…H16 delivered profiling, float64/transcendental guards, bounded state ownership, atomic RK updates, replay/refinement policy and measured allocation reductions. H10 found no justified contributor-interface extraction. [State evidence](docs/research/README.md#flight-model-and-simulation) retains exact refactor/parity records.
 
-H15's shipped benchmark fixtures met the median budget on the measured host. Active smooth-wake, ground and electric-event workloads have separate cost limits. [Prepared-wake evidence](docs/research/propwash/E0b6p/prepared-model/README.md) is research, not an adopted runtime native backend. Gate P remains open.
+H15's shipped benchmark fixtures met the median budget on the measured host. [H16](docs/research/simulation-state/H16/README.md) later removed repeated ground-stage layout queries: three airborne repeats measured median paired CPU reductions of 5.20% Stik, 5.06% Lumber and 2.34% P-51; the runway result was flat. Active smooth-wake, ground and electric-event workloads have separate cost limits. [Prepared-wake evidence](docs/research/propwash/E0b6p/prepared-model/README.md) is research, not an adopted runtime native backend. Gate P remains open.
 
 ### M2 — Takeoff and landing
 

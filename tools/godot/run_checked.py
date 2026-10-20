@@ -1,6 +1,7 @@
 """Run Godot with bounded diagnostics, retained logs and a machine-readable verdict.
 
-Uses only Python's standard library; arguments after -- are passed without a shell.
+Default operation uses Python's standard library. Optional OS resource sampling
+uses pinned psutil; arguments after -- are passed without a shell.
 """
 from __future__ import annotations
 
@@ -101,13 +102,32 @@ def stop_process(process: subprocess.Popen) -> str:
 
 def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: float = 60,
                 max_log_bytes: int = 8 * 1024 * 1024, warnings_as_errors: bool = False,
-                required: list[str] | None = None, label: str = "godot") -> dict:
+                required: list[str] | None = None, label: str = "godot",
+                resources: bool = False, resource_interval: float = 1.0,
+                resource_max_samples: int = 600, resource_disk_paths=()) -> dict:
     required = required or []
+    if type(resources) is not bool:
+        raise ValueError("resources must be a boolean")
     if (not command or type(timeout) not in (int, float) or not math.isfinite(timeout)
             or timeout <= 0 or type(max_log_bytes) is not int or max_log_bytes <= 0):
         raise ValueError("command, finite positive timeout and positive integer log limit required")
     if any(not s or len(s) > 4096 or "\n" in s or "\r" in s for s in required):
         raise ValueError("required text must be a nonempty single-line literal of at most 4096 characters")
+    resource_backend = None
+    if resources:
+        # Validate configuration/dependency before launching anything. Import only
+        # on demand, leaving ordinary test runs free of polling/dependencies.
+        if __package__:
+            from .resource_samples import ResourceSampler, load_backend, validate_options
+        else:
+            from resource_samples import ResourceSampler, load_backend, validate_options
+        validate_options(interval=resource_interval, max_samples=resource_max_samples,
+                         disk_paths=resource_disk_paths)
+        if Path(command[0]).name.lower().endswith("_console.exe"):
+            raise ValueError("resource sampling needs the direct Godot .exe, not its _console.exe launcher")
+        resource_backend = load_backend()
+    elif resource_interval != 1.0 or resource_max_samples != 600 or resource_disk_paths:
+        raise ValueError("resource options require --resources")
     out_dir = Path(out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     prefix = re.sub(r"[^a-zA-Z0-9_.-]", "_", label)[:60].strip(".") or "godot"
@@ -126,6 +146,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     read_errors = []
     process = None
     reader = None
+    sampler = None
+    resource_failure = ""
 
     def collect(source, destination):
         remaining = max_log_bytes
@@ -159,6 +181,13 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             if process is not None:
                 reader = threading.Thread(target=collect, args=(process.stdout, destination), daemon=True)
                 reader.start()
+                if resources:
+                    try:
+                        sampler = ResourceSampler(process.pid, interval=resource_interval,
+                                                  max_samples=resource_max_samples,
+                                                  disk_paths=resource_disk_paths, backend=resource_backend)
+                    except Exception as error:
+                        resource_failure = f"{type(error).__name__}: {error}"[:1000]
                 while process.poll() is None or reader.is_alive():
                     if overflow.is_set():
                         reason = "log_limit"
@@ -169,6 +198,12 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                     if time.monotonic() - started >= timeout:
                         reason = "timeout"
                         break
+                    if sampler is not None and not resource_failure and process.poll() is None:
+                        try:
+                            sampler.poll()
+                        except Exception as error:
+                            # A telemetry failure does not terminate a healthy game.
+                            resource_failure = f"{type(error).__name__}: {error}"[:1000]
                     time.sleep(0.02)
                 if reason:
                     detail = stop_process(process) or detail
@@ -219,6 +254,35 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         while block := stream.read(65536):
             digest.update(block)
     report["log_sha256"] = digest.hexdigest()
+    if resources:
+        resource_path = directory / "resources.json"
+        try:
+            resource_report = sampler.finish() if sampler is not None else {
+                "format": "openrc-resource-samples v1", "coverage": "no_samples", "samples": []}
+            if resource_failure:
+                resource_report["coverage"] = "partial"
+                resource_report["runner_sampler_error"] = resource_failure
+            resource_report["invocation"] = {
+                "command": command, "cwd": report["cwd"], "started_utc": report["started_utc"],
+                "process_exit": report["process_exit"], "reason": reason,
+                "log_sha256": report["log_sha256"], "elapsed_seconds": report["elapsed_seconds"]}
+            resource_report["tool_source_sha256"] = {
+                name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+                for name in ("run_checked.py", "resource_samples.py")}
+            resource_bytes = (json.dumps(resource_report, indent=2, allow_nan=False) + "\n").encode("utf-8")
+            with resource_path.open("xb") as stream:
+                stream.write(resource_bytes)
+            report["resources"] = {"file": "resources.json", "coverage": resource_report["coverage"],
+                                   "bytes": len(resource_bytes),
+                                   "sha256": hashlib.sha256(resource_bytes).hexdigest(),
+                                   "sample_count": resource_report.get("sample_count", 0),
+                                   "measurement_status": resource_report.get("measurement_status", "unavailable"),
+                                   "summary": resource_report.get("summary", {})}
+            if resource_failure:
+                report["resources"]["error"] = resource_failure
+        except Exception as error:
+            report["resources"] = {"file": "resources.json", "coverage": "unavailable",
+                                   "error": f"{type(error).__name__}: {error}"[:1000]}
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     return report
 
@@ -237,13 +301,21 @@ def main() -> int:
     parser.add_argument("--warnings-as-errors", action="store_true", help="also fail on engine WARNING records")
     parser.add_argument("--require-text", action="append", default=[],
                         help="require this literal completion text; repeat for multiple markers")
+    parser.add_argument("--resources", action="store_true", help="sample direct-process RAM/CPU/I/O with optional psutil")
+    parser.add_argument("--resource-interval", type=float, default=1.0, help="sample interval, 0.1–60 seconds")
+    parser.add_argument("--resource-max-samples", type=int, default=600, help="bounded sample count, 1–10000")
+    parser.add_argument("--resource-disk-path", action="append", default=[], type=Path,
+                        help="sample volume capacity for this existing directory; repeat up to eight times")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
     try:
         result = run_checked(command, args.out_dir, timeout=args.timeout,
                              max_log_bytes=args.max_log_bytes, warnings_as_errors=args.warnings_as_errors,
-                             required=args.require_text, label=args.label)
+                             required=args.require_text, label=args.label, resources=args.resources,
+                             resource_interval=args.resource_interval,
+                             resource_max_samples=args.resource_max_samples,
+                             resource_disk_paths=args.resource_disk_path)
     except (OSError, ValueError) as error:
         print(f"Godot check configuration/output error: {error}", file=sys.stderr)
         return 2
@@ -263,6 +335,23 @@ def main() -> int:
                 print(context, file=sys.stderr)
         if result["missing_required_text"]:
             print(f"Missing completion text: {result['missing_required_text']}", file=sys.stderr)
+    if "resources" in result:
+        status = result["resources"]
+        print(f"Resource capture: {status['coverage']}; {Path(result['report']).parent / status['file']}",
+              file=sys.stderr)
+        if "error" in status:
+            print(status["error"], file=sys.stderr)
+        summary = status.get("summary", {})
+        peak_rss = summary.get("peaks", {}).get("rss_bytes")
+        available = summary.get("minima", {}).get("virtual_memory_available_bytes")
+        if peak_rss is not None:
+            print(f"  Peak sampled process RAM: {peak_rss / 1048576:.1f} MiB RSS "
+                  f"({status['sample_count']} samples); measurement status: {status['measurement_status']}", file=sys.stderr)
+        if available is not None:
+            print(f"  Lowest sampled system available RAM: {available / 1073741824:.2f} GiB", file=sys.stderr)
+        for path, volume in summary.get("volume_free_capacity_minima", {}).items():
+            if volume.get("free_bytes") is not None:
+                print(f"  Lowest sampled volume free space ({path}): {volume['free_bytes'] / 1073741824:.2f} GiB", file=sys.stderr)
     return result["exit_code"]
 
 
