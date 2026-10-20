@@ -1,0 +1,41 @@
+{
+  "scope": "Complete native horizon mesh construction; not total loading or FPS",
+  "runs": [
+    {
+      "run": 1,
+      "reference": 45321,
+      "candidate": 39582,
+      "reduction_percent": 12.66300390547428
+    },
+    {
+      "run": 2,
+      "reference": 45648,
+      "candidate": 40259,
+      "reduction_percent": 11.805555555555557
+    },
+    {
+      "run": 3,
+      "reference": 45507,
+      "candidate": 39899,
+      "reduction_percent": 12.323378820840746
+    },
+    {
+      "run": 4,
+      "reference": 47248,
+      "candidate": 43394,
+      "reduction_percent": 8.156959024720623
+    },
+    {
+      "run": 5,
+      "reference": 45444,
+      "candidate": 39192,
+      "reduction_percent": 13.757591761288623
+    }
+  ],
+  "exact_pairs": 40,
+  "median_of_run_medians_usec": {
+    "reference": 45507,
+    "candidate": 39899
+  },
+  "reduction_percent": 12.323378820840746
+}

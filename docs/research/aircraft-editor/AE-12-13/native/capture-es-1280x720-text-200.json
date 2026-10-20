@@ -1,0 +1,202 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"applied_new_build": true,
+	"cancel_focus": true,
+	"cancel_preserved_recipe": true,
+	"checks": {
+		"count": 28,
+		"failures": []
+	},
+	"comparison": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-editor/AE-12-13/native/measured-build-comparison-es.json",
+	"dialog": {
+		"content_actions_reachable": true,
+		"content_buttons": [
+			{
+				"reachable_by_scroll": true,
+				"rect": [
+					8.0,
+					386.0,
+					979.0,
+					76.0
+				],
+				"scroll_rect": [
+					8.0,
+					8.0,
+					987.0,
+					454.0
+				],
+				"text": "Agregar o actualizar medición",
+				"visible_intersection": [
+					8.0,
+					386.0,
+					979.0,
+					76.0
+				]
+			},
+			{
+				"reachable_by_scroll": true,
+				"rect": [
+					8.0,
+					387.0,
+					498.0,
+					75.4000015258789
+				],
+				"scroll_rect": [
+					8.0,
+					8.0,
+					987.0,
+					454.0
+				],
+				"text": "Comprobar masa y CG",
+				"visible_intersection": [
+					8.0,
+					387.0,
+					498.0,
+					75.0
+				]
+			},
+			{
+				"reachable_by_scroll": true,
+				"rect": [
+					8.0,
+					387.0,
+					681.0,
+					75.4000015258789
+				],
+				"scroll_rect": [
+					8.0,
+					8.0,
+					987.0,
+					454.0
+				],
+				"text": "Proponer masa en estación fija",
+				"visible_intersection": [
+					8.0,
+					387.0,
+					681.0,
+					75.0
+				]
+			}
+		],
+		"dialog_inside_main": true,
+		"dialog_rect": [
+			138.0,
+			80.0,
+			1003.0,
+			560.0
+		],
+		"dialog_size": [
+			1003,
+			560
+		],
+		"dialog_viewport": [
+			1003.0,
+			560.0
+		],
+		"embedded_subwindows": true,
+		"footer_actions_fit": true,
+		"footer_buttons": [
+			{
+				"enabled": true,
+				"focus_mode": 2,
+				"inside_dialog_viewport": true,
+				"rect": [
+					49.0,
+					472.0,
+					209.0,
+					80.0
+				],
+				"text": "Cancelar",
+				"visible": true
+			},
+			{
+				"enabled": true,
+				"focus_mode": 2,
+				"inside_dialog_viewport": true,
+				"rect": [
+					304.0,
+					472.0,
+					649.0,
+					80.0
+				],
+				"text": "Aplicar a una nueva versión",
+				"visible": true
+			}
+		],
+		"scroll_enabled": true,
+		"window_rect": [
+			0.0,
+			0.0,
+			1280.0,
+			720.0
+		]
+	},
+	"dirty_fields_preserved": true,
+	"display_server": "Windows",
+	"engine_version": "4.7.2-stable (official)",
+	"format": "openrc-aircraft-mass-native-capture v1",
+	"full_model": {
+		"height_fraction": 0.5311955015372742,
+		"rect": [
+			305.7366638183594,
+			83.44147491455078,
+			539.5476379394531,
+			207.69744110107422
+		],
+		"vertex_count": 143770,
+		"viewport": [
+			1180.0,
+			391.0
+		],
+		"width_fraction": 0.45724376096563824
+	},
+	"isolated_from_player_library": true,
+	"language": "es",
+	"localization": {
+		"actual": {
+			"apply": "Aplicar a una nueva versión",
+			"cancel": "Cancelar",
+			"stage": "Agregar o actualizar medición",
+			"title": "Masa medida de componentes"
+		},
+		"expected": {
+			"apply": "Aplicar a una nueva versión",
+			"cancel": "Cancelar",
+			"stage": "Agregar o actualizar medición",
+			"title": "Masa medida de componentes"
+		},
+		"language": "es",
+		"ok": true
+	},
+	"output_dir": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-editor/AE-12-13/native",
+	"physical_validation_claim": false,
+	"redo": true,
+	"renderer": "gl_compatibility",
+	"requested_size": [
+		1280,
+		720
+	],
+	"scratch_root": "user://ae12_13_mass_capture_es_720_200_uxfinal",
+	"screenshots": {
+		"measured_components": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-editor/AE-12-13/native/measured-components-es-1280x720-text-200.png",
+		"workshop": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/aircraft-editor/AE-12-13/native/workshop-es-1280x720.png"
+	},
+	"source_sha256": {
+		"i18n/es.po": "ba9cad99c905e126690b8592e5d1c65013d6d0f2ca1ae1d08fbe81eef31ac3e2",
+		"physics/aircraft_data.gd": "c5a1990df1823637fafa1c7ffaeb8f6d524a66ba3469e0bd845c1b8511a66a40",
+		"physics/physical_identity.gd": "c3c7c92ac18b3d20f79c3faaad455d9e04f46524fa284fc6a0ba9e3198d64cb6",
+		"research/aircraft-editor/capture_mass.gd": "4408f3314acdb9914e2429d2f949bfca1e3821ac29745336fb8a9e8ea59088d6",
+		"tests/test_workshop_mass_edit.gd": "6d7ed90c8b5d8685679dea42cd9b95cba60b9275b41efcf7f265bb0fead8f97c",
+		"tests/test_workshop_mass_recipe.gd": "44045b87f8a29ae3f16e17731ad47556268d4be396721432703abbe57ce15310",
+		"tests/test_workshop_mass_ui.gd": "e1b7cf4eb2db33595ca86a2b93ce2892d8b3936088cfd8f9974815b7a2aa571b",
+		"ui/ui_scale.gd": "8c9c344af8f38099a0f31874fa61b01aadb954aede40c85391ad61100223ae9b",
+		"ui/ui_theme.gd": "0b8ac50b3ffb702dce7bb14424374cf1992ed5c6f4d220daf50affb7a0563779",
+		"ui/workshop_mass.gd": "89598135b7c3efe5a38f3de2c4cf0b9a2cb43423aa547279945401f4f5ebda5d",
+		"ui/workshop_preview.gd": "0526011ea192be0b953d6508428697f3c9514e29f2746ce2b990bf253cb61d81",
+		"workshop/compiler.gd": "12be61b72e68223d53b0e948bf60d89a6d60774352e365506dc0631beaa5597f",
+		"workshop/mass_edit.gd": "2803f75236a8101b1988fa6ce942c28526e0ca7e834915d7f2a3713bd3cd68fd",
+		"workshop/trial.gd": "d59bf97f99acd8b55fe9cad9773adbbd6de161a1248feea8775f46dffdac740c"
+	},
+	"text_scale": 2.0,
+	"undo": true
+}

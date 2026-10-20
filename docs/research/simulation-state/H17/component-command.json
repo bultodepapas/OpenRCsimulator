@@ -1,0 +1,41 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\base\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\component.gd",
+    "--",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\component.json"
+  ],
+  "affinity_mask": 16,
+  "summary": [
+    {
+      "label": "powered",
+      "before_usec_per_call": 86.98225,
+      "after_usec_per_call": 82.94325,
+      "paired_reduction_percent": 5.177940220295795
+    },
+    {
+      "label": "static",
+      "before_usec_per_call": 89.9725,
+      "after_usec_per_call": 85.15275,
+      "paired_reduction_percent": 5.320196208332972
+    },
+    {
+      "label": "wide sideslip",
+      "before_usec_per_call": 19.3715,
+      "after_usec_per_call": 19.5865,
+      "paired_reduction_percent": -0.3635911926041513
+    },
+    {
+      "label": "stopped",
+      "before_usec_per_call": 0.6745,
+      "after_usec_per_call": 0.6745,
+      "paired_reduction_percent": 0.44058207296776564
+    }
+  ]
+}

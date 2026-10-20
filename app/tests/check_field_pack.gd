@@ -27,6 +27,20 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack field validated, SHA-256 ", args[1])
+	# L24: field JSON is loaded by path, so every registered landscape must survive export filtering.
+	var landscapes: Script = load("res://landscapes/catalog.gd")
+	if landscapes == null or not landscapes.has(landscapes.DEFAULT_ID):
+		printerr("Pack has no landscape catalog/default")
+		quit(1)
+		return
+	for id: String in landscapes.ids():
+		var definition: Dictionary = landscapes.entry(id)
+		var landscape_field: Dictionary = loader.load_from(str(definition.field_path))
+		if not landscape_field.ok:
+			printerr("Pack landscape field rejected: ", id, " ", landscape_field.errors)
+			quit(1)
+			return
+		print("Pack landscape validated: ", id)
 	# DT-11a: procedural fallback must not hide a missing/stale packaged geometry bake.
 	var lake_loader: Script = load("res://data/lake_loader.gd")
 	var ground_surfaces: Script = load("res://physics/ground_surfaces.gd")

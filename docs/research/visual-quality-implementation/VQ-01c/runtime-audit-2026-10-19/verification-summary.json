@@ -1,0 +1,983 @@
+{
+  "date": "2026-10-19",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "all_release_checks_passed": false,
+  "source_sha256_final_owned_files": {
+    "app/app_root.gd": "37a24b3080e7df56b28c1879f4ef3a603d5736e4de6af23dfe1d715043ead462",
+    "app/tests/test_ui_quit.gd": "bdb1946fdc76ab053ee0f1e57fffd76c0a2171738cdf195ececf3a402a972cbe",
+    "app/tests/test_runway_transaction.gd": "ed0051f4885eb67036919522684c3816906a693ae2d7058fc17f986d47cd0821",
+    "app/tests/test_workshop_trial.gd": "902c67243f24b9b58134a96c6fcb8d5f61ad69109c12273784b8877465760087"
+  },
+  "scope_notes": [
+    "Frozen results apply to retained snapshots; live-tree follow-ups are point-in-time results on a concurrently edited tree, not a complete immutable current-tree qualification.",
+    "No golden re-recording, staging, commit or push was performed by this audit.",
+    "Current-tree follow-up results supersede individual initial failures only; they do not erase the retained failing campaign.",
+    "Current checkpoint/atmosphere/runway/RC-menu improvements came from parallel tracks and were not isolated as part of this repair."
+  ],
+  "campaigns": {
+    "verification-jobs-results.json": [
+      {
+        "name": "verify-test_ui_pause",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_pause.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 36.32799999999952,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371823431808884 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "verify-test_ui_screen_stack",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_screen_stack.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 21.70300000000134,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839655376783 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "verify-test_ui_runway",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_runway.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 54.65699999999924,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839001065357 is unsupported (cull mode is not disabled)",
+          "FAIL gp-extra-300s-60 Home Fly starts on the runway ",
+          "WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+          "ERROR: 7 resources still in use at exit (run with --verbose for details)."
+        ]
+      },
+      {
+        "name": "verify-test_rcv_menu",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rcv_menu.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 8.625,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371827223459690 is unsupported (cull mode is not disabled)",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.",
+          "ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'."
+        ]
+      },
+      {
+        "name": "verify-test_workshop_trial",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_trial.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 2.32799999999952,
+        "issues": [
+          "WARNING: Aircraft presentation changed after the Workshop trial was frozen.",
+          "FAIL v1 saved descriptor can still launch through its explicit adapter",
+          "FAIL legacy descriptor trial hash binds the resolved model manifest"
+        ]
+      },
+      {
+        "name": "verify-test_controller_pause_recovery",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_controller_pause_recovery.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 16.343000000000757,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371841685419917 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "verify-test_ui_language",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_language.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 15.640999999999622,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839269500814 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "verify-test_frame_samples",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_frame_samples.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 2.6409999999996217,
+        "issues": []
+      },
+      {
+        "name": "verify-test_simulation",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_simulation.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 0.43699999999989814,
+        "issues": []
+      },
+      {
+        "name": "verify-test_checkpoint",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_checkpoint.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 6.29700000000048,
+        "issues": [
+          "FAIL gp-extra-300s-60 complete boundary captured",
+          "FAIL gp-extra-300s-60 reset restores initial state and engine mode",
+          "FAIL gp-extra-300s-60 restore after reset",
+          "SCRIPT ERROR: Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+          "FAIL gp-extra-300s-60 midflight replay exact",
+          "SCRIPT ERROR: Invalid access to property or key 'simulation' on a base object of type 'Dictionary'.",
+          "WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+          "ERROR: 7 resources still in use at exit (run with --verbose for details)."
+        ]
+      },
+      {
+        "name": "verify-test_rk_stage_time",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_rk_stage_time.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 0.5940000000009604,
+        "issues": []
+      },
+      {
+        "name": "verify-test_air_data",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_air_data.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 0.31199999999989814,
+        "issues": []
+      },
+      {
+        "name": "verify-test_atmosphere_flight",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_atmosphere_flight.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 14.859999999998763,
+        "issues": [
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL hot/high 1s level hold res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL reference session adopts custom field checkpoint",
+          "FAIL custom replay exactly reproduces state/aux/modes/wake/loads",
+          "FAIL reference reset bytes unchanged res://data/aircraft/p51d_mustang_120.json",
+          "FAIL reference flight/state/checkpoint bytes unchanged res://data/aircraft/p51d_mustang_120.json",
+          "FAIL custom-air reset solves all six equilibrium accelerations",
+          "FAIL hot/high 1s level hold res://data/aircraft/p51d_mustang_120.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL custom-air reset solves all six equilibrium accelerations",
+          "FAIL hot/high 1s level hold res://data/aircraft/sebart_avanti_s_a200.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL session shaft pre-step uses density and dry charge"
+        ]
+      },
+      {
+        "name": "verify-test_replay_integrity",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_replay_integrity.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 18.67200000000048,
+        "issues": []
+      },
+      {
+        "name": "verify-test_golden",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_golden.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 6.514999999999418,
+        "issues": [
+          "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+        ]
+      }
+    ],
+    "baseline-verification-jobs-results.json": [
+      {
+        "name": "baseline-test_workshop_trial",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_trial.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 7.04700000000048,
+        "issues": [
+          "WARNING: Aircraft presentation changed after the Workshop trial was frozen.",
+          "FAIL v1 saved descriptor can still launch through its explicit adapter",
+          "FAIL legacy descriptor trial hash binds the resolved model manifest"
+        ]
+      },
+      {
+        "name": "baseline-test_checkpoint",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_checkpoint.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 12.875,
+        "issues": [
+          "FAIL gp-extra-300s-60 complete boundary captured",
+          "FAIL gp-extra-300s-60 reset restores initial state and engine mode",
+          "FAIL gp-extra-300s-60 restore after reset",
+          "SCRIPT ERROR: Invalid access to property or key 'state' on a base object of type 'Dictionary'.",
+          "FAIL gp-extra-300s-60 midflight replay exact",
+          "SCRIPT ERROR: Invalid access to property or key 'simulation' on a base object of type 'Dictionary'.",
+          "WARNING: 18 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+          "ERROR: 7 resources still in use at exit (run with --verbose for details)."
+        ]
+      },
+      {
+        "name": "baseline-test_atmosphere_flight",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_atmosphere_flight.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 15.438000000000102,
+        "issues": [
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL hot/high 1s level hold res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL initial condition valid res://data/aircraft/gp_extra_300s_60.json",
+          "FAIL reference session adopts custom field checkpoint",
+          "FAIL custom replay exactly reproduces state/aux/modes/wake/loads",
+          "FAIL reference reset bytes unchanged res://data/aircraft/p51d_mustang_120.json",
+          "FAIL reference flight/state/checkpoint bytes unchanged res://data/aircraft/p51d_mustang_120.json",
+          "FAIL custom-air reset solves all six equilibrium accelerations",
+          "FAIL hot/high 1s level hold res://data/aircraft/p51d_mustang_120.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL custom-air reset solves all six equilibrium accelerations",
+          "FAIL hot/high 1s level hold res://data/aircraft/sebart_avanti_s_a200.json",
+          "FAIL versioned trace keeps constant field density and EAS",
+          "FAIL atmosphere checkpoint identifies the active physics law",
+          "FAIL session shaft pre-step uses density and dry charge"
+        ]
+      },
+      {
+        "name": "baseline-test_golden",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_golden.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 6.014999999999418,
+        "issues": [
+          "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+        ]
+      },
+      {
+        "name": "quit-test-baseline-final",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_ui_quit.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 22.5,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371836618700683 is unsupported (cull mode is not disabled)",
+          "FAIL AppRoot disables automatic close while Home is active ",
+          "FAIL Home Quit is wired to the AppRoot quit policy ",
+          "FAIL same-frame Window close requests coalesce on Home 0",
+          "FAIL Window close saves a real manual Recorder trace ",
+          "FAIL saved trace contains the versioned CSV header and samples CSV lines=0",
+          "FAIL successful close reaches the final quit seam once 0",
+          "FAIL duplicate failed Window close saves only once stop_calls=0",
+          "FAIL failed Window close keeps the app open and reports the error on direct flight no Pause menu",
+          "FAIL second explicit Quit discards the failed recording without stopping again stops=0 quits=0",
+          "FAIL failed close appears on the active Workshop screen above Pause ",
+          "FAIL failed save of the suspended flight blocks Window close once stops=0 quits=0",
+          "FAIL suspended-flight failure is visible over the Workshop trial no Pause menu",
+          "FAIL second explicit Quit discards the suspended failed trace "
+        ]
+      }
+    ],
+    "current-verification-jobs-results.json": [
+      {
+        "name": "current-test_ui_runway",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_runway.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 59.65599999999904,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371838480971660 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "current-test_workshop_trial",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_trial.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 1.9530000000013388,
+        "issues": [
+          "WARNING: Aircraft presentation changed after the Workshop trial was frozen.",
+          "FAIL v1 saved descriptor can still launch through its explicit adapter",
+          "FAIL legacy descriptor trial hash binds the resolved model manifest"
+        ]
+      },
+      {
+        "name": "current-test_atmosphere_flight",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_atmosphere_flight.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 11.671999999998661,
+        "issues": []
+      },
+      {
+        "name": "current-test_golden",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_golden.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 4.531000000000859,
+        "issues": [
+          "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+          "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+        ]
+      },
+      {
+        "name": "current-test_ui_pause",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_pause.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 33.76599999999962,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371822911715187 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "current-test_ui_screen_stack",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_screen_stack.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 21.70299999999952,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839135283086 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "current-quit-jobs-results.json": [
+      {
+        "name": "quit-test-current",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_ui_quit.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 13.26600000000144,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371836098606986 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "candidate-workshop-jobs-results.json": [
+      {
+        "name": "candidate-workshop-corrected",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\candidate\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_trial.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 14.375,
+        "issues": [
+          "WARNING: Aircraft presentation changed after the Workshop trial was frozen."
+        ]
+      }
+    ],
+    "transaction-jobs-results.json": [
+      {
+        "name": "current-runway-transaction",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_runway_transaction.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 2.8909999999996217,
+        "issues": []
+      },
+      {
+        "name": "runway-transaction-before-parse",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--check-only",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-20261019\\test_runway_transaction_before.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 0.5780000000013388,
+        "issues": [
+          "SCRIPT ERROR: Parse Error: The function signature doesn't match the parent. Parent signature is \"_turbine_evaluate(PackedFloat64Array, PackedFloat64Array, float, Dictionary = <default>, bool = <default>) -> Dictionary\".",
+          "ERROR: Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-20261019/test_runway_transaction_before.gd\" with error \"Parse error\"."
+        ]
+      }
+    ]
+  },
+  "final_followups": {
+    "quit-test-current.log": {
+      "log": "quit-test-current.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "ok   duplicate failed Window close saves only once",
+        "ok   failed Window close keeps the app open and reports the error on direct flight",
+        "ok   second explicit Quit discards the failed recording without stopping again",
+        "ok   failed close appears on the active Workshop screen above Pause",
+        "ok   failed save of the suspended flight blocks Window close once",
+        "ok   second explicit Quit discards the suspended failed trace",
+        "UI quit: 0 failed"
+      ]
+    },
+    "quit-test-candidate-r2.log": {
+      "log": "quit-test-candidate-r2.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "ok   duplicate failed Window close saves only once",
+        "ok   failed Window close keeps the app open and reports the error on direct flight",
+        "ok   second explicit Quit discards the failed recording without stopping again",
+        "ok   failed close appears on the active Workshop screen above Pause",
+        "ok   failed save of the suspended flight blocks Window close once",
+        "ok   second explicit Quit discards the suspended failed trace",
+        "UI quit: 0 failed"
+      ]
+    },
+    "current-runway-transaction.log": {
+      "log": "current-runway-transaction.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "VAL-AUD-R04 launch transaction: 32 checks, 0 failed"
+      ]
+    },
+    "lifecycle/test_workshop_trial_corrected.log": {
+      "log": "lifecycle/test_workshop_trial_corrected.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "Workshop trial: 38 checks, 0 failed"
+      ]
+    },
+    "candidate-workshop-corrected.log": {
+      "log": "candidate-workshop-corrected.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "Workshop trial: 38 checks, 0 failed"
+      ]
+    },
+    "simulation/current-checkpoint.log": {
+      "log": "simulation/current-checkpoint.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "H8 checkpoints: 92 checks, 0 failed"
+      ]
+    },
+    "lifecycle/test_rcv_menu_current.log": {
+      "log": "lifecycle/test_rcv_menu_current.log",
+      "engine_error_lines": [],
+      "retention_warnings": [],
+      "result_lines": [
+        "RCV menu: 27 checks, 0 failures"
+      ]
+    }
+  },
+  "parse": {
+    "result": "complete",
+    "candidate_root": "C:/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-20261019/candidate",
+    "linux_candidate_copy": "/home/bulto/openrc-godot-audit-20261019.C5UJZM/candidate",
+    "candidate_state": "Corrected snapshot with sibling tools/audio/make_bus_layout.gd and the fixed test_runway_transaction.gd turbine override; captured before root's separate Workshop fixture .erase() update.",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "protocol": "Per-file Godot --headless --path <app> --audio-driver Dummy --check-only --script res://<path>, matching app/test.sh.",
+    "worker_count": 8,
+    "elapsed_seconds": 277,
+    "included_gdscript_count": 1043,
+    "completed_gdscript_count": 1043,
+    "process_exit_errors": 0,
+    "parser_error_lines": 0,
+    "warning_lines": 0,
+    "timeouts": 0,
+    "per_file_log_count": 1043,
+    "error_lines_log_bytes": 0,
+    "gdscript_sha256_comparisons": 1043,
+    "gdscript_sha256_mismatches": 0,
+    "aircraft_sibling_files_compared": 22,
+    "aircraft_sibling_hash_mismatches": 0,
+    "godot_binary_sha256_match": true,
+    "supplemental_helper": {
+      "source": "C:/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-20261019/candidate/tools/audio/make_bus_layout.gd",
+      "sha256": "a12edb1d1e97513688e3be7c80905144d01e7af2a285d033ef853448c83091d6",
+      "copy_hash_match": true,
+      "reason": "Required by tests/test_audio_bus_freshness.gd at res://../tools/audio/make_bus_layout.gd; outside the app GDScript enumeration."
+    },
+    "excluded_paths": {
+      ".godot": [
+        "./.godot/fw83_texture_probe.gd"
+      ],
+      "captures": "directory absent in frozen candidate",
+      ".tools": "directory absent in frozen candidate",
+      "tmp": "directory absent in frozen candidate",
+      "app_tmp_drafts": "excluded from the candidate snapshot"
+    },
+    "affected_source_status": {
+      "res://tests/test_runway_transaction.gd": {
+        "exit_code": 0,
+        "parser_error_lines": 0,
+        "sha256": "ed0051f4885eb67036919522684c3816906a693ae2d7058fc17f986d47cd0821"
+      },
+      "workshop_fixture_followup": "The later .erase() edit is outside this captured candidate and is delegated to root for a targeted check."
+    },
+    "retained_artifacts": {
+      "complete_marker": "linux-pass/parse-output/COMPLETE",
+      "status_table": "linux-pass/parse-output/status.tsv",
+      "error_lines_log": "linux-pass/parse-output/error-lines.log",
+      "all_per_file_logs": "linux-pass/parse-output/logs/",
+      "copy_manifest": "linux-pass/copy-manifest.json",
+      "gdscript_hash_table": "linux-pass/code-hash-equality.tsv",
+      "aircraft_hash_table": "linux-pass/aircraft-json-hash-equality.tsv",
+      "excluded_paths": "linux-pass/excluded-paths.txt"
+    },
+    "incomplete_attempt_records": [
+      "attempt-4-partial/",
+      "attempt-missing-helper-incomplete/",
+      "attempt-pre-final-copy.txt"
+    ]
+  },
+  "parse_followup": "The final Workshop fixture changed after the 1043-script parse copy; its corrected current and frozen-candidate scripts were separately compiled and executed: 38 checks, zero failures.",
+  "native_short": {
+    "scope": "15-second native live-input diagnostic; not a before/after performance comparison or full-session acceptance",
+    "complete": true,
+    "failure": "",
+    "frames": 878,
+    "sample_seconds": 15.021871,
+    "wall_frame_ms_nearest_rank": {
+      "p50": 15.937,
+      "p95": 30.439,
+      "p99": 36.531
+    },
+    "measured_simulation": {
+      "end_tick": 4036,
+      "end_time_s": 16.8166666666667,
+      "scope": "first sampled frame end through last sampled frame end; excludes the first sampled interval",
+      "start_tick": 454,
+      "start_time_s": 1.89166666666667,
+      "ticks": 3582
+    },
+    "end_paused": false,
+    "end_fault": "",
+    "pause_events": [],
+    "raw_metrics_nearest_rank": {
+      "draw_calls": {
+        "p50": 169.0,
+        "p95": 181.0,
+        "p99": 182.0
+      },
+      "fps_monitor": {
+        "p50": 60.0,
+        "p95": 61.0,
+        "p99": 61.0
+      },
+      "node_count": {
+        "p50": 815.0,
+        "p95": 815.0,
+        "p99": 815.0
+      },
+      "object_count": {
+        "p50": 4169.0,
+        "p95": 4170.0,
+        "p99": 4170.0
+      },
+      "physics_3d_active_objects": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "physics_3d_collision_pairs": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "physics_process_time_s": {
+        "p50": 0.003405,
+        "p95": 0.005682,
+        "p99": 0.005682
+      },
+      "physics_step_usec": {
+        "p50": 1534.27247976638,
+        "p95": 1832.07159310547,
+        "p99": 1921.3601775733
+      },
+      "primitives": {
+        "p50": 230703.0,
+        "p95": 241813.0,
+        "p99": 242533.0
+      },
+      "process_time_s": {
+        "p50": 0.010249,
+        "p95": 0.120049,
+        "p99": 0.120049
+      },
+      "sim_tick": {
+        "p50": 2212.0,
+        "p95": 3859.0,
+        "p99": 4002.0
+      },
+      "sim_time_s": {
+        "p50": 9.21666666666667,
+        "p95": 16.0791666666667,
+        "p99": 16.675
+      }
+    },
+    "observer_metrics_nearest_rank": {
+      "render_cpu_ms": {
+        "p50": 2.01200008392334,
+        "p95": 3.05999994277954,
+        "p99": 4.55700016021729
+      },
+      "render_gpu_ms": {
+        "p50": 3.3050000667572,
+        "p95": 4.72100019454956,
+        "p99": 7.97300004959106
+      },
+      "static_memory": {
+        "p50": 212902537.0,
+        "p95": 213459761.0,
+        "p99": 213498901.0
+      },
+      "video_memory": {
+        "p50": 428061732.0,
+        "p95": 428061732.0,
+        "p99": 428061732.0
+      },
+      "resources": {
+        "p50": 579.0,
+        "p95": 579.0,
+        "p99": 579.0
+      },
+      "nodes": {
+        "p50": 815.0,
+        "p95": 815.0,
+        "p99": 815.0
+      },
+      "orphans": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      }
+    },
+    "observer_metrics_scope": "984 read-only observations covering warm-up and sample; not synchronized one-to-one with the 878 measured frame intervals",
+    "limits": [
+      "Shared workstation; foreground and cache temperatures uncontrolled.",
+      "Process and physics engine monitors are aggregate; no independent per-method GDScript profiler capture.",
+      "Render CPU/GPU timers exclude scripting and physics."
+    ]
+  },
+  "performance_candidate": {
+    "integrated": false,
+    "diagnostic_gain_percent": 3.9445628997867805,
+    "adoption_gate_percent": 5,
+    "exact_executed_probe_source_preserved": false,
+    "decision": "Reject. Variable gain below gate, plus missing exact executed source."
+  },
+  "remaining": [
+    {
+      "priority": "P1",
+      "finding": "Four existing golden replay mismatches remain identical on baseline, initial candidate and current tree.",
+      "acceptance": "Owning physics track explains source/reference divergence and restores intended replay acceptance without unreviewed golden replacement."
+    },
+    {
+      "priority": "P2",
+      "finding": "Measured Home and Fly first draws exceed existing loading goals.",
+      "acceptance": "Repeat the existing loading protocol with controlled source/cache state, isolate the expensive stage and meet its documented targets without transition regressions."
+    },
+    {
+      "priority": "P2",
+      "finding": "Full uninterrupted native frame/CPU qualification is incomplete; short unpaused sample still has poor p95 pacing.",
+      "acceptance": "Controlled uninterrupted representative session with source identities, adequate simulation progress, no faults, and the existing frame/CPU gates."
+    },
+    {
+      "priority": "P3",
+      "finding": "Long-duration memory, physical-device, export and platform acceptance remain open.",
+      "acceptance": "Complete existing 50-cycle/30-minute soak and relevant device/export/platform checks."
+    }
+  ],
+  "not_run": [
+    "Complete app/test.sh suite and generators",
+    "Full capture/export matrix",
+    "Independent pilot flight and physical input devices",
+    "Gameplay on non-Windows operating systems",
+    "50-cycle/30-minute memory soak",
+    "Per-method GDScript profiler trace"
+  ]
+}

@@ -1144,6 +1144,14 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+# FUEL-08: finite turbine consumption uses the existing JetCat fuel-flow table and the
+# declared 3.2 l main tank only. The hopper/UAT remains represented by dry accessory
+# hardware; its separate liquid volume and main-to-hopper transfer are not quantified.
+data["capabilities"]["energy"] = "finite_liquid_fuel"
+data["propulsion"]["fuel_consumption"] = {
+    "law": "turbine_map_v1",
+    "tank_id": "main_tank",
+}
 data["controls"]["keyboard"] = {
     "pitch_press_time": qi("controls.keyboard_pitch_press_time", "s"),
     "pitch_release_time": qi("controls.keyboard_pitch_release_time", "s"),
@@ -1218,6 +1226,10 @@ The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer
 preserving the historical AS-02 migration policy. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves
 preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit
 compatibility-default leaves added, {parity['numeric_differences']} differences.
+
+Fuel uses the finite `turbine_map_v1` flow table bound to the documented 3.2 l main tank. This is a single-main-tank adapter;
+the hopper/UAT remains dry accessory hardware because its independent liquid capacity and transfer path are not quantified.
+No hopper volume or transfer behavior is invented, and this simplified installation does not establish hopper starvation fidelity.
 
 Flight mass {mass:.3f} kg (fuel {fuel_kg:.2f} kg), CG {cg[0] * 1000:.0f} mm aft of the root LE = {100 * (cg[0] - mac_le) / mac:.1f} % MAC, static margin {sm:.1f} % MAC; the manual's {cg_z * 1000:.0f} mm point is taken with a full hopper and an empty main tank (FUEL-05e).
 Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = {", ".join(f"{x:.6g}" for x in J)} kg·m²; principal moments = {", ".join(f"{x:.6g}" for x in I_principal)} kg·m².
@@ -1338,8 +1350,9 @@ The section basis is the Glauert extension of thin-airfoil theory summarized in 
   elevator mix; section lift/drag, hinge moments and transit timing are not measured for this aircraft. Gear paths and wheel radii follow
   imported visual geometry; spring/damper behavior, rolling friction, steering limit, brake torque, actuator time and
   incremental gear drag remain estimates pending aircraft-specific physical data.
-- Fuel mass fixed at the declared state (no burn, AV-10). The session has a discrete on/off state; it does not model ECU
-  ignition/autostart, a physical spool-down transient, restart behavior or flameout dynamics.
+- The finite turbine-flow adapter consumes the declared main-tank store only. Hopper/UAT liquid quantity and transfer remain
+  unresolved; the session does not model ECU ignition/autostart, a measured hot-cut spool-down transient, restart behavior
+  or flameout dynamics.
 - Fuselage directional destabilization omitted (v1 contract: Cnb equals the fin term), as for every aircraft.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;

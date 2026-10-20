@@ -1,6 +1,6 @@
 # P51-26 slipstream quadrature and sidewash tools
 
-2026-10-16 · **Status: research tools; the law is implemented in the runtime (`propeller_sidewash`, `app/physics/slipstream.gd`). The patches below are the 2026-10-15 candidates it was built from.** [Plan](../../../docs/P51-REALISM-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-26/README.md)
+2026-10-16 · **Status: research tools; the law is implemented in the runtime (`propeller_sidewash`, `app/physics/slipstream.gd`). The patches below are the 2026-10-15 candidates it was built from.** [Plan](../../../docs/P51-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-26/README.md)
 
 | File | Purpose |
 | --- | --- |

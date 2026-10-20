@@ -1,5 +1,6 @@
 # AV-19/20: explicit turbine integration, independent impulse/governor oracles and real-session lifecycle.
-# Synthetic force/lag fixtures verify software; they do not calibrate a P100 or its fuel-cut response.
+# Synthetic force/lag fixtures keep prescribed mass to isolate the governor oracle.
+# Production finite stores/cutoff are verified by test_liquid_fuel_session.gd.
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
@@ -24,7 +25,20 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _flight() -> Node:
 	var f: Node = Flight.new()
-	f.setup(DATA, ID)
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA))
+	raw.propulsion.erase("fuel_consumption")
+	raw.capabilities.energy = "prescribed_fuel"
+	var fixture: Dictionary = AD.validate_and_derive(raw)
+	# File loading resolves the independent wheel-profile asset. Keep that resolved
+	# binding in this prescribed governor fixture, rather than downgrading contact.
+	var file_data: Dictionary = AD.load_file(DATA)
+	fixture.model.wheel_profile = file_data.model.wheel_profile.duplicate(true)
+	var bytes: PackedByteArray = JSON.stringify(raw, "", true, true).to_utf8_buffer()
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(bytes)
+	fixture.input_identity = {format = AD.FORMAT, sha256 = hash.finish().hex_encode()}
+	f.setup("synthetic://prescribed-turbine-governor", ID, fixture)
 	f.input_enabled = false
 	return f
 
@@ -54,6 +68,8 @@ func _schema() -> void:
 	_check("authored aircraft explicitly selects RK4", raw.propulsion.engine.spool_integrator == "rk4")
 	var absent: Dictionary = raw.duplicate(true)
 	absent.propulsion.engine.erase("spool_integrator")
+	absent.propulsion.erase("fuel_consumption")
+	absent.capabilities.energy = "prescribed_fuel"
 	var historical: Dictionary = AD.validate_and_derive(absent)
 	_check("absent integration preserves historical sampled branch", historical.ok
 		and not historical.model.propulsion.has("spool_integrator") and not Turbine.is_continuous(historical.model.propulsion))

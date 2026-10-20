@@ -219,7 +219,7 @@ flowchart LR
 | Aircraft catalog | Native-model thumbnails, bounded list/grid and one main preview. Generate thumbnails from accepted models, not stock photos. Show current catalog without empty categories; filters only when useful. Selection/name/focus update immediately, loading separately. Preserve latest-request-wins/cache; preview failure and flight validity stay distinct. Keep experimental/surrogate limits and supported starts accessible. |
 | Practice | Natural Random and failure practice with existing briefing/reroll/repeat/availability. No invented career or achievements. |
 | Conditions | Presets/summary first; Wind, Atmosphere, Time/Sky, Advanced with units. Home edits mean next flight; paused lighting retains explicit current-session semantics. Physical-weather staging remains owner-coordinated work. Cancel preserves accepted state; edits cannot silently reroll active failures. |
-| Workshop | Preview, stock/variant identity, undo/redo, pinned trial action and return. Two columns only when useful; AE owns validation. No overwriting stock data. |
+| Workshop | AE's [interface contract and delivery gates](plans/aircraft-editor.md#59-menus-workflow-and-visual-design) own library-on-demand, large Inspect/Compare preview, one page inspector, draft-loss guards, save/trial logic and direct trial return. AE/UI reuse this shell, theme, scale and input ownership; appearance/smoke pages require their implemented capability. The physical-editor slice is implemented in [AE-08b/09 evidence](research/aircraft-editor/AE-08b-09/README.md); later appearance/smoke and user acceptance remain open. No overwriting stock data. |
 | RC garage | Clear activity identity and accepted vehicle selection; preserve its dedicated session/controls. Do not imply airplane actions apply to cars. |
 | Help | First flight, input, recovery, limits, About; launch-aware instructions from shared references. Pinned header and readable body. |
 | Overlays | Preserve live preview/autosave semantics and avoid obscuring the edited overlay. HUD owns behavior. |
@@ -263,7 +263,7 @@ Download only identified missing free assets. Pin exact version/commit/hash, ret
 
 ### Delivered review · UI-29-R3 · visual and navigation checks
 
-The final source-tree review corrects clipped keyboard focus, logical-Escape handling and Spanish menu copy. Eight native resolution/language/text cases, 158 captures, fourteen functional scripts and warmed 1080p/4K navigation frame intervals are retained in [UI-29-R3](research/menu-investigations/UI-29-R3/README.md). Workshop model inspection remains visually too small; the attempted camera adjustment was rejected after measuring only a 6% gain. Export, mixed-monitor and human acceptance gates remain open.
+The final source-tree review corrects clipped keyboard focus, logical-Escape handling and Spanish menu copy. Eight native resolution/language/text cases, 158 captures, fourteen functional scripts and warmed 1080p/4K navigation frame intervals are retained in [UI-29-R3](research/menu-investigations/UI-29-R3/README.md). That dated review found Workshop inspection too small and rejected its attempted 6% camera gain. The later [AE-08b/09 delivery](research/aircraft-editor/AE-08b-09/README.md) replaces the inspection layout; UI-29's original evidence remains unchanged. Export, mixed-monitor and human acceptance gates remain open.
 
 ### Delivered refinement · UI-23-R5 · measured menu cost
 

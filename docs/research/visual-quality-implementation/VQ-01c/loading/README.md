@@ -1,5 +1,37 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [shoreline spacing rejection before terrain sampling](botanical-spacing/README.md)
+reduces complete botanical construction by 25.1%, preserving 30 whole-field geometry
+pairs and 18 layout cases. Default shoreline queries fall from 141 to 56; candidate
+seeds, accepted plants and resource ownership remain unchanged.
+
+2026-10-19 construction follow-up: [bounded ground-patch buffer reuse](ground-patch-cache/README.md)
+preserves 30 native whole-field geometry pairs and reduces repeated field construction
+by 8.5%. Three paired Home/Fly processes complete 18 transitions with active simulation,
+zero orphan nodes and clean audio teardown; repeated Fly first draw improves by 2.6%.
+
+2026-10-19 construction follow-up: [treeline validation allocations](field-validation/README.md)
+preserves complete normalized data and diagnostics in 55 fixture pairs, reducing
+default field validation by 18.3% and complete file loading by 15.9% in five processes.
+Six regression invocations pass; reproduced renderer warnings and no-tree controls
+remain explicit. Full startup and FPS are not measured.
+
+2026-10-19 construction follow-up: [ground-noise coordinate preparation](ground-image/noise/README.md)
+preserves 100 image/mip pairs and 30 native material pairs, reducing cache-empty
+ground-material construction by 35.7%. Scalar-oracle and integration checks pass;
+warm material, complete loading and FPS gains are not established.
+
+2026-10-19 construction follow-up: [single-join grass checksum](grass-validation/README.md)
+preserves 90 native build pairs and reduces complete direct grass construction by
+63–72%; validation alone falls from 80.850 to 14.375 ms. Seven headless suites
+pass; existing native test-harness diagnostics reproduce with the original validator.
+Default-world startup, Home/Fly loading and FPS remain separate gates.
+
+2026-10-19 construction follow-up: [content-keyed star-catalogue preparation](stars/README.md)
+preserves all native instance/material bytes in 40 pairs and reduces repeated
+complete star-field construction from 16.618 to 8.140 ms in five processes.
+Cold-construction non-regression and full Home/Fly/FPS acceptance remain open.
+
 2026-10-15 presentation follow-up: [projected-shadow framing reuse](shadow-framing/README.md)
 preserves 5,250 native state pairs and reduces shadow-update CPU time by 20–49%
 across four workloads. Headless/native shadow and Home checks exit cleanly;

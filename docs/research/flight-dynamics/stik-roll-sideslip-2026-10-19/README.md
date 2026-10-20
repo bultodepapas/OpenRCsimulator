@@ -88,7 +88,9 @@ The strips compute their angle from the chordwise and normal velocity only. A fl
 - `test_modes.gd`: only the three 10 m/s lateral centres move: Dutch roll 0.447 → 0.515 Hz, ζ 0.366 → 0.302, spiral 0.423 → 0.244 1/s. All other centres stay within 3 %.
 - Goldens: `roll_15`, `pull_throttle` and `rudder_doublet` enter the local regime and move by at most 1.2 m, 4.1 m and 0.5 m over their 2.5–3 s. `glide_15` is unchanged.
 - The goldens were recorded on a frozen copy of the tree and replay exactly on the integrated tree.
-- On the frozen copy, the unit tests showed no other failures, apart from wall-clock checks: scuff build time and audio queue. Those also failed on the unchanged copy under the same machine load.
+- Full suite on the frozen copy, under a machine load of 17–30 on 12 cores:
+  - Unit tests: all 531 ran. The only other failures are wall-clock budgets: scuff build time, scenery build time and the audio queue. They fail the same way on the unchanged copy. A UI pause-recovery test passed on rerun.
+  - Integration partition: passes. The pull-up CLI matrix and the E5a/E5b ground-contact sessions exceeded their subprocess timeouts under that load; they pass on a quiet machine or with a longer timeout.
 
 ## 6. Limits and open items
 

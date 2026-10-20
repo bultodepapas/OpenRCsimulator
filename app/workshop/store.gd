@@ -5,9 +5,12 @@ extends RefCounted
 const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
 const WorkshopDependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
+const WorkshopParameters = preload("res://workshop/parameters.gd")
+const PresentationProfile = preload("res://workshop/presentation.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
-const VARIANT_VERSION: int = 1
+const LEGACY_VARIANT_VERSION: int = 1
+const VARIANT_VERSION: int = 2
 const INDEX_FORMAT: String = "openrc-aircraft-variant-index"
 const INDEX_VERSION: int = 1
 const MAX_BASE_BYTES: int = 16 * 1024 * 1024
@@ -20,6 +23,9 @@ const RECIPE_KEYS: PackedStringArray = [
 	"weight_multiplier",
 	"power_multiplier",
 	"control_multiplier",
+	"tank_capacity_multiplier",
+	"mass_edits",
+	"size_model",
 	"id",
 	"name",
 ]
@@ -39,10 +45,15 @@ const VARIANT_KEYS: PackedStringArray = [
 	"updated_at_unix",
 	"workshop_descriptor",
 	"dependencies",
+	"presentation_profile",
+]
+const LEGACY_VARIANT_REQUIRED_KEYS: PackedStringArray = [
+	"format",
+	"version", "id", "revision", "name", "compiler_version", "base_id", "recipe",
+	"base_sha256", "recipe_sha256", "base_bytes_base64", "created_at_unix", "updated_at_unix",
 ]
 const VARIANT_REQUIRED_KEYS: PackedStringArray = [
-	"format",
-	"version",
+	"format", "version",
 	"id",
 	"revision",
 	"name",
@@ -54,8 +65,10 @@ const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"base_bytes_base64",
 	"created_at_unix",
 	"updated_at_unix",
+	"presentation_profile",
 ]
 const INDEX_KEYS: PackedStringArray = ["format", "version", "id", "revision"]
+const MAX_FIRST_SAVE_STAGE_ENTRIES: int = 8
 
 
 class VariantWriteGuard extends RefCounted:
@@ -73,6 +86,23 @@ class VariantWriteGuard extends RefCounted:
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE and acquired:
 			DirAccess.remove_absolute(directory)
+
+
+class FirstSaveStagingGuard extends RefCounted:
+	var cleanup: Callable
+
+	func _init(operation: Callable) -> void:
+		# The bound operation retains the write reservation until cleanup completes.
+		cleanup = operation
+
+	func release() -> void:
+		cleanup = Callable()
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and cleanup.is_valid():
+			var result: Dictionary = cleanup.call()
+			if not result.ok:
+				push_warning("First-save temporary data was retained: " + "; ".join(result.errors))
 
 
 static func list_variants(root: String = DEFAULT_ROOT) -> Array:
@@ -102,7 +132,28 @@ static func save_variant(
 		root: String = DEFAULT_ROOT,
 		workshop_descriptor: Dictionary = {},
 		dependencies: Dictionary = {},
-		expected_revision: int = -1
+		expected_revision: int = -1,
+		presentation_profile: Dictionary = {}
+) -> Dictionary:
+	return _save_variant(name, base_id, base_bytes, recipe, id, root,
+		workshop_descriptor, dependencies, expected_revision, presentation_profile)
+
+
+## Private transaction seam for interruption tests. Production saves have no observer,
+## global failpoint or persisted setting. Ordinary failure cleans its owned first-save
+## staging; abrupt process termination preserves the prefix and reservation.
+static func _save_variant(
+		name: String,
+		base_id: String,
+		base_bytes: PackedByteArray,
+		recipe: Dictionary,
+		id: String,
+		root: String,
+		workshop_descriptor: Dictionary,
+		dependencies: Dictionary,
+		expected_revision: int,
+		presentation_profile: Dictionary,
+		checkpoint: Callable = Callable()
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	if expected_revision < -1:
@@ -130,6 +181,9 @@ static func save_variant(
 	var recipe_result: Dictionary = _validate_recipe(recipe)
 	if not bool(recipe_result["ok"]):
 		errors.append_array(recipe_result["errors"])
+	if errors.is_empty() and recipe.has("mass_edits") and not recipe.mass_edits.is_empty():
+		var measured_candidate: Dictionary = WorkshopCompiler.compile(base_parsed, recipe)
+		if not measured_candidate.ok: errors.append_array(measured_candidate.errors)
 	var safe_id: String = id
 	if safe_id.is_empty() and recipe.has("id") and typeof(recipe["id"]) == TYPE_STRING:
 		safe_id = str(recipe["id"])
@@ -158,12 +212,13 @@ static func save_variant(
 	var existing_variant: Dictionary = {}
 	var stored_descriptor: Dictionary = {}
 	var stored_dependencies: Dictionary = {}
-	var stored_compiler_version: String = WorkshopCompiler.COMPILER_VERSION
+	var stored_compiler_version: String = WorkshopCompiler.version_for_recipe(recipe)
 	var revision: int = 1
 	var previous_revision: int = 0
 	var is_existing_variant: bool = false
 	var created_at: int = int(Time.get_unix_time_from_system())
 	var directory_exists: bool = DirAccess.dir_exists_absolute(variant_dir)
+	var file_exists: bool = FileAccess.file_exists(variant_dir)
 	if directory_exists:
 		var existing_result: Dictionary = _load_from_directory(variant_dir, safe_id)
 		if not bool(existing_result["ok"]):
@@ -179,8 +234,8 @@ static func save_variant(
 			errors.append("Saved variant changed from expected revision %d to revision %d; reload before saving." % [expected_revision, previous_revision])
 			return _result(false, errors)
 		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
-		if pinned_compiler_version != WorkshopCompiler.COMPILER_VERSION:
-			errors.append("This variant is pinned to compiler %s; create a new variant to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.COMPILER_VERSION])
+		if pinned_compiler_version != WorkshopCompiler.version_for_recipe(recipe):
+			errors.append("This variant is pinned to compiler %s; create a new variant with Save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for_recipe(recipe)])
 			return _result(false, errors)
 		stored_compiler_version = pinned_compiler_version
 		if str(existing_variant["base_id"]) != base_id or str(existing_variant["base_sha256"]) != base_hash:
@@ -209,7 +264,7 @@ static func save_variant(
 		stored_dependencies = pinned_dependencies.duplicate(true)
 		created_at = int(existing_variant["created_at_unix"])
 		revision = maxi(int(existing_variant["revision"]) + 1, _next_revision(variant_dir))
-	elif FileAccess.file_exists(variant_dir):
+	elif file_exists:
 		errors.append("Variant ID collides with a file in the local store.")
 		return _result(false, errors)
 	elif expected_revision > 0:
@@ -227,17 +282,87 @@ static func save_variant(
 			errors.append_array(dependencies_result["errors"])
 			return _result(false, errors)
 		stored_dependencies = dependencies_result["manifest"]
-	var revisions_dir: String = variant_dir.path_join("revisions")
+	var profile_for_save: Dictionary = {}
+	if is_existing_variant and presentation_profile.is_empty():
+		profile_for_save = (existing_variant.get("presentation_profile", PresentationProfile.defaults()) as Dictionary).duplicate(true)
+	else:
+		var companion_result: Dictionary = _resolve_customization_bindings(base_id, stored_descriptor)
+		if bool(companion_result.get("ok", false)):
+			var profile_result: Dictionary = PresentationProfile.validate(presentation_profile, companion_result["bindings"])
+			if not bool(profile_result.get("ok", false)):
+				errors.append_array(profile_result.get("errors", PackedStringArray()))
+				return _result(false, errors)
+			profile_for_save = profile_result["profile"]
+			if is_existing_variant:
+				var existing_profile: Dictionary = existing_variant.get("presentation_profile", PresentationProfile.defaults())
+				var existing_checked: Dictionary = PresentationProfile.validate_stored(existing_profile)
+				if not bool(existing_checked.get("ok", false)):
+					errors.append_array(existing_checked.get("errors", PackedStringArray()))
+					return _result(false, errors)
+				if bool(existing_checked.get("newer_version", false)):
+					errors.append("This variant uses a newer presentation profile version; this app cannot edit or replace it.")
+					return _result(false, errors)
+				var old_profile: Dictionary = existing_checked.get("profile", PresentationProfile.defaults())
+				var old_pins: Dictionary = old_profile.get("binding", {})
+				var new_pins: Dictionary = profile_for_save.get("binding", {})
+				if (not _presentation_is_empty(old_profile) or not _presentation_pins_are_empty(old_pins)) \
+						and old_pins != new_pins:
+					errors.append("A customized presentation cannot be rebound to a different model or slot contract; save a copy instead.")
+					return _result(false, errors)
+		else:
+			if not bool(companion_result.get("missing", false)):
+				errors.append_array(companion_result.get("errors", PackedStringArray()))
+				return _result(false, errors)
+			var profile_result: Dictionary = PresentationProfile.validate(presentation_profile)
+			if not bool(profile_result.get("ok", false)) or not bool(profile_result.get("available", false)):
+				errors.append_array(profile_result.get("errors", PackedStringArray()))
+				if errors.is_empty():
+					errors.append("The registered customization companion is unavailable; only the legacy empty appearance can be saved.")
+				return _result(false, errors)
+			profile_for_save = profile_result["profile"]
+	var write_dir: String = variant_dir
+	var staging_scope: FirstSaveStagingGuard = null
+	if not is_existing_variant:
+		var staging_root: String = root_path.path_join("_staging")
+		root_error = _make_directory(staging_root)
+		if root_error != OK:
+			errors.append("Could not create the first-save staging directory (%s)." % error_string(root_error))
+			return _result(false, errors)
+		var staging_dir: String = ""
+		for attempt: int in range(4):
+			var staging_nonce: String = _new_uuid()
+			if staging_nonce.is_empty():
+				break
+			var candidate: String = staging_root.path_join(safe_id + "-" + staging_nonce)
+			if DirAccess.make_dir_absolute(candidate) == OK:
+				staging_dir = candidate
+				break
+		if staging_dir.is_empty():
+			errors.append("Could not reserve a unique first-save staging directory.")
+			return _result(false, errors)
+		write_dir = staging_dir
+		staging_scope = FirstSaveStagingGuard.new(
+			_discard_first_save_stage.bind(root_path, staging_dir, safe_id, write_guard))
+		if not _continue_save(checkpoint, "after_staging_create"):
+			return _interrupted_save("after_staging_create")
+	var revisions_dir: String = write_dir.path_join("revisions")
 	root_error = _make_directory(revisions_dir)
 	if root_error != OK:
 		errors.append("Could not create the variant revisions directory (%s)." % error_string(root_error))
 		return _result(false, errors)
+	if not _continue_save(checkpoint, "after_revisions_create"):
+		return _interrupted_save("after_revisions_create")
 	var now: int = maxi(created_at, int(Time.get_unix_time_from_system()))
 	var stored_recipe: Dictionary = recipe.duplicate(true)
 	# JSON parses every number as float. Hash the representation that will be
 	# read back, while retaining optional metadata and historical recipe ranges.
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
-		stored_recipe[key] = float(stored_recipe[key])
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+		if stored_recipe.has(key):
+			stored_recipe[key] = float(stored_recipe[key])
+	if stored_recipe.has("mass_edits"):
+		var normalized: Dictionary = WorkshopParameters.validate(stored_recipe)
+		if normalized.values.has("mass_edits"): stored_recipe["mass_edits"] = normalized.values.mass_edits.duplicate(true)
+		else: stored_recipe.erase("mass_edits")
 	var recipe_json: String = JSON.stringify(stored_recipe, "", true, true)
 	var recipe_hash: String = _sha256(recipe_json.to_utf8_buffer())
 	var record: Dictionary = {
@@ -254,6 +379,7 @@ static func save_variant(
 		"base_bytes_base64": Marshalls.raw_to_base64(base_bytes),
 		"created_at_unix": created_at,
 		"updated_at_unix": now,
+		"presentation_profile": profile_for_save.duplicate(true),
 	}
 	if not stored_descriptor.is_empty():
 		record["workshop_descriptor"] = stored_descriptor.duplicate(true)
@@ -266,7 +392,7 @@ static func save_variant(
 	var revision_name: String = "%08d.json" % revision
 	var revision_path: String = revisions_dir.path_join(revision_name)
 	var record_bytes: PackedByteArray = (JSON.stringify(record, "\t", true, true) + "\n").to_utf8_buffer()
-	var write_result: Dictionary = _write_new_file_atomic(revision_path, record_bytes)
+	var write_result: Dictionary = _write_new_file_atomic(revision_path, record_bytes, checkpoint)
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return _result(false, errors)
@@ -277,15 +403,167 @@ static func save_variant(
 		"revision": revision,
 	}
 	var index_bytes: PackedByteArray = (JSON.stringify(index, "\t", true, true) + "\n").to_utf8_buffer()
-	var index_result: Dictionary = _write_index_atomic(variant_dir, index_bytes, safe_id, previous_revision)
+	var index_result: Dictionary = _write_index_atomic(write_dir, index_bytes, safe_id, previous_revision, checkpoint)
 	if not bool(index_result["ok"]):
 		errors.append_array(index_result["errors"])
 		return _result(false, errors)
-	var loaded: Dictionary = _load_from_directory(variant_dir, safe_id)
+	var loaded: Dictionary = _load_from_directory(write_dir, safe_id)
 	if not bool(loaded["ok"]):
 		errors.append_array(loaded["errors"])
 		return _result(false, errors)
+	if int(loaded.variant.get("revision", 0)) != revision or str(loaded.variant.get("recipe_sha256", "")) != recipe_hash \
+			or bool(loaded.variant.get("recovered_from_manifest_backup", false)):
+		return _result(false, PackedStringArray(["New variant revision failed exact readback; the previous record remains recoverable."]))
+	if not is_existing_variant:
+		if not _continue_save(checkpoint, "before_first_publish"):
+			return _interrupted_save("before_first_publish")
+		var publication: Dictionary = _publish_staged_variant(write_dir, variant_dir, safe_id)
+		if not bool(publication["ok"]):
+			errors.append_array(publication["errors"])
+			return _result(false, errors)
+		loaded = publication
+		staging_scope.release()
+		if not _continue_save(checkpoint, "after_first_publish"):
+			return _interrupted_save("after_first_publish")
 	return _result(true, PackedStringArray(), loaded["variant"])
+
+
+## Delete only the known, bounded layout of this transaction's first-save directory.
+## Preflight every entry before any removal; never recurse or scan other stages.
+static func _discard_first_save_stage(
+		root_path: String, staging_dir: String, id: String, reservation: VariantWriteGuard
+) -> Dictionary:
+	if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+		return _result(false, PackedStringArray(["Staging path or write reservation is unavailable or unsafe."]))
+	if not DirAccess.dir_exists_absolute(staging_dir):
+		if FileAccess.file_exists(staging_dir):
+			return _result(false, PackedStringArray(["Staging path became a file."]))
+		return _result(true, PackedStringArray())
+	var revisions_dir: String = staging_dir.path_join("revisions")
+	var containers: Array[String] = [staging_dir]
+	if DirAccess.dir_exists_absolute(revisions_dir): containers.append(revisions_dir)
+	var files: Array[String] = []
+	var entries: int = 0
+	for container: String in containers:
+		var directory: DirAccess = DirAccess.open(container)
+		if directory == null:
+			return _result(false, PackedStringArray(["Could not inspect the first-save staging directory."]))
+		directory.include_hidden = true
+		if directory.list_dir_begin() != OK:
+			return _result(false, PackedStringArray(["Could not inspect the first-save staging directory."]))
+		var errors := PackedStringArray()
+		while true:
+			var entry: String = directory.get_next()
+			if entry.is_empty(): break
+			if entry == "." or entry == "..": continue
+			entries += 1
+			var child: String = container.path_join(entry)
+			if entries > MAX_FIRST_SAVE_STAGE_ENTRIES or directory.is_link(child):
+				errors.append("Staging contains a link or exceeds the bounded first-save layout.")
+				break
+			if directory.current_is_dir():
+				if container != staging_dir or entry != "revisions":
+					errors.append("Staging contains an unexpected directory.")
+					break
+			elif not _first_save_stage_filename(entry, "manifest.json" if container == staging_dir else "00000001.json"):
+				errors.append("Staging contains an unexpected file.")
+				break
+			else:
+				files.append(child)
+		directory.list_dir_end()
+		if not errors.is_empty(): return _result(false, errors)
+	# The reservation excludes cooperating writers. Recheck links before each removal.
+	for file_path: String in files:
+		if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		var parent: DirAccess = DirAccess.open(file_path.get_base_dir())
+		if parent == null or parent.is_link(file_path):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		var remove_error: Error = DirAccess.remove_absolute(file_path)
+		if remove_error != OK:
+			return _result(false, PackedStringArray(["Could not remove a first-save temporary file (%s)." % error_string(remove_error)]))
+	for directory_path: String in [revisions_dir, staging_dir]:
+		if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		if DirAccess.dir_exists_absolute(directory_path):
+			var remove_error: Error = DirAccess.remove_absolute(directory_path)
+			if remove_error != OK:
+				return _result(false, PackedStringArray(["Could not remove the first-save temporary directory (%s)." % error_string(remove_error)]))
+	return _result(true, PackedStringArray())
+
+
+static func _first_save_stage_paths_safe(
+		root_path: String, staging_dir: String, id: String, reservation: VariantWriteGuard
+) -> bool:
+	var user_path: String = ProjectSettings.globalize_path("user://").replace("\\", "/").trim_suffix("/")
+	if not root_path.is_absolute_path() or root_path != root_path.simplify_path() \
+			or not root_path.begins_with(user_path + "/") or not _valid_uuid(id): return false
+	var checked_root: Dictionary = _resolve_root("user://" + root_path.trim_prefix(user_path + "/"))
+	if not checked_root.ok or checked_root.path != root_path: return false
+	if staging_dir.get_base_dir() != root_path.path_join("_staging") \
+			or not staging_dir.get_file().begins_with(id + "-") \
+			or not _valid_uuid(staging_dir.get_file().trim_prefix(id + "-")): return false
+	if reservation == null or not reservation.acquired \
+			or reservation.directory != root_path.path_join("_locks").path_join(id) \
+			or not DirAccess.dir_exists_absolute(reservation.directory): return false
+	var paths: Array[String] = [root_path.path_join("_staging"), staging_dir,
+		staging_dir.path_join("revisions"), root_path.path_join("_locks"), reservation.directory]
+	var ancestor: String = root_path
+	while ancestor != user_path:
+		paths.append(ancestor)
+		ancestor = ancestor.get_base_dir()
+	for path: String in paths:
+		var parent: DirAccess = DirAccess.open(path.get_base_dir())
+		# Missing revisions/staging after a successful removal are expected.
+		if parent == null:
+			if not DirAccess.dir_exists_absolute(staging_dir) and path == staging_dir.path_join("revisions"): continue
+			return false
+		if parent.is_link(path): return false
+	return true
+
+
+static func _first_save_stage_filename(filename: String, committed_name: String) -> bool:
+	return filename == committed_name or (filename.begins_with(committed_name + ".tmp-")
+		and _valid_uuid(filename.trim_prefix(committed_name + ".tmp-")))
+
+
+static func _publish_staged_variant(
+		staging_dir: String,
+		variant_dir: String,
+		expected_id: String,
+		before_publish: Callable = Callable()
+) -> Dictionary:
+	var errors := PackedStringArray()
+	if not DirAccess.dir_exists_absolute(staging_dir):
+		errors.append("The complete first-save staging directory is unavailable.")
+		return _result(false, errors)
+	var staged: Dictionary = _load_from_directory(staging_dir, expected_id)
+	if not bool(staged["ok"]):
+		errors.append("First-save staging failed validation: " + "; ".join(staged["errors"]))
+		return _result(false, errors)
+	if DirAccess.dir_exists_absolute(variant_dir) or FileAccess.file_exists(variant_dir):
+		errors.append("Variant ID became occupied before first-save publication; staged data was not promoted.")
+		return _result(false, errors)
+	# Tests can inject a one-shot interruption at the publication boundary without
+	# mutating a global failpoint or exposing a switch on the public save API.
+	if before_publish.is_valid() and not bool(before_publish.call()):
+		errors.append("First-save publication was interrupted before the directory rename.")
+		return _result(false, errors)
+	if DirAccess.dir_exists_absolute(variant_dir) or FileAccess.file_exists(variant_dir):
+		errors.append("Variant ID became occupied before first-save publication; staged data was not promoted.")
+		return _result(false, errors)
+	var rename_error: Error = DirAccess.rename_absolute(staging_dir, variant_dir)
+	if rename_error != OK:
+		errors.append("Could not publish the complete first-save directory (%s)." % error_string(rename_error))
+		return _result(false, errors)
+	var published: Dictionary = _load_from_directory(variant_dir, expected_id)
+	if not bool(published["ok"]):
+		var rollback_error: Error = DirAccess.rename_absolute(variant_dir, staging_dir)
+		if rollback_error != OK:
+			errors.append("Published directory failed readback and could not return to staging (%s)." % error_string(rollback_error))
+		errors.append_array(published["errors"])
+		return _result(false, errors)
+	return published
 
 
 static func load_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
@@ -304,8 +582,11 @@ static func load_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
 	return _load_from_directory(variant_dir, id)
 
 
-static func delete_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
+static func delete_variant(id: String, root: String = DEFAULT_ROOT, expected_revision: int = -1) -> Dictionary:
 	var errors := PackedStringArray()
+	if expected_revision < -1:
+		errors.append("Expected revision must be -1 or a non-negative integer.")
+		return _result(false, errors)
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
 		errors.append_array(root_result["errors"])
@@ -322,21 +603,36 @@ static func delete_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionar
 	if not bool(loaded["ok"]):
 		errors.append_array(loaded["errors"])
 		return _result(false, errors)
+	var current_revision: int = int(loaded["variant"]["revision"])
+	if expected_revision >= 0 and current_revision != expected_revision:
+		errors.append("Saved variant changed from expected revision %d to revision %d; reload before deleting." % [expected_revision, current_revision])
+		return _result(false, errors)
 	var trash_root: String = root_path.path_join("_trash")
 	var err: Error = _make_directory(trash_root)
 	if err != OK:
 		errors.append("Could not create the local trash directory (%s)." % error_string(err))
 		return _result(false, errors)
-	var trash_name: String = "%s-%010d-%s" % [id, int(Time.get_unix_time_from_system()), _new_uuid().substr(0, 8)]
-	var trash_path: String = trash_root.path_join(trash_name)
+	var generation: String = ""
+	var trash_path: String = ""
+	for attempt: int in range(4):
+		generation = _new_uuid()
+		if generation.is_empty():
+			break
+		trash_path = trash_root.path_join(id + "-" + generation)
+		if not DirAccess.dir_exists_absolute(trash_path) and not FileAccess.file_exists(trash_path):
+			break
+		trash_path = ""
+	if generation.is_empty() or trash_path.is_empty():
+		errors.append("Could not reserve a unique local trash generation.")
+		return _result(false, errors)
 	err = DirAccess.rename_absolute(variant_dir, trash_path)
 	if err != OK:
 		errors.append("Could not move the variant to local trash (%s)." % error_string(err))
 		return _result(false, errors)
-	return _result(true, PackedStringArray(), loaded["variant"])
+	return _result(true, PackedStringArray(), loaded["variant"], generation)
 
 
-static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
+static func restore_variant(id: String, root: String = DEFAULT_ROOT, generation: String = "") -> Dictionary:
 	var errors := PackedStringArray()
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
@@ -344,6 +640,9 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 		return _result(false, errors)
 	if not _valid_uuid(id):
 		errors.append("Variant ID must be a lowercase UUID.")
+		return _result(false, errors)
+	if not generation.is_empty() and not _valid_uuid(generation):
+		errors.append("Trash generation must be a lowercase UUID returned by delete.")
 		return _result(false, errors)
 	var root_path: String = root_result["path"]
 	var write_guard := VariantWriteGuard.new(root_path, id)
@@ -354,24 +653,56 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 		errors.append("A live variant with this ID already exists.")
 		return _result(false, errors)
 	var trash_root: String = root_path.path_join("_trash")
-	var candidates: Array[String] = []
-	for entry: String in _directory_names(trash_root, true):
-		if entry == id or entry.begins_with(id + "-"):
-			candidates.append(entry)
-	candidates.sort()
-	candidates.reverse()
-	for entry: String in candidates:
-		var candidate: String = trash_root.path_join(entry)
-		var loaded: Dictionary = _load_from_directory(candidate, id)
-		if not bool(loaded["ok"]):
-			continue
-		var err: Error = DirAccess.rename_absolute(candidate, live_path)
-		if err != OK:
-			errors.append("Could not restore the variant from local trash (%s)." % error_string(err))
+	var candidate_name: String = ""
+	if not generation.is_empty():
+		candidate_name = id + "-" + generation
+		if not DirAccess.dir_exists_absolute(trash_root.path_join(candidate_name)):
+			errors.append("The requested trash generation does not exist.")
 			return _result(false, errors)
-		return _load_from_directory(live_path, id)
-	errors.append("No valid trashed variant with this ID was found.")
-	return _result(false, errors)
+	else:
+		var candidates: Array[String] = []
+		for entry: String in _directory_names(trash_root, true):
+			if _is_trash_generation_entry(entry, id):
+				candidates.append(entry)
+		if candidates.is_empty():
+			errors.append("No trash generation with this ID was found.")
+			return _result(false, errors)
+		if candidates.size() != 1:
+			errors.append("Multiple trash generations exist for this ID; supply the exact generation returned by delete.")
+			return _result(false, errors)
+		candidate_name = candidates[0]
+	var candidate: String = trash_root.path_join(candidate_name)
+	var loaded: Dictionary = _load_from_directory(candidate, id)
+	if not bool(loaded["ok"]):
+		errors.append_array(loaded["errors"])
+		return _result(false, errors)
+	var err: Error = DirAccess.rename_absolute(candidate, live_path)
+	if err != OK:
+		errors.append("Could not restore the variant from local trash (%s)." % error_string(err))
+		return _result(false, errors)
+	return _load_from_directory(live_path, id)
+
+
+static func _is_trash_generation_entry(entry: String, id: String) -> bool:
+	if entry == id:
+		return true
+	if not entry.begins_with(id + "-"):
+		return false
+	var suffix: String = entry.substr(id.length() + 1)
+	if _valid_uuid(suffix):
+		return true
+	# Retain compatibility with generation folders written by variant store v1.
+	if suffix.length() != 19 or suffix[10] != "-":
+		return false
+	for index: int in range(10):
+		var code: int = suffix.unicode_at(index)
+		if code < 48 or code > 57:
+			return false
+	for index: int in range(11, 19):
+		var code: int = suffix.unicode_at(index)
+		if not ((code >= 48 and code <= 57) or (code >= 97 and code <= 102)):
+			return false
+	return true
 
 
 static func _load_from_directory(variant_dir: String, expected_id: String) -> Dictionary:
@@ -459,6 +790,17 @@ static func _load_from_manifest_source(
 		"updated_at_unix": int(record["updated_at_unix"]),
 		"recovered_from_manifest_backup": recovered,
 	}
+	var stored_profile: Dictionary = PresentationProfile.defaults()
+	var stored_profile_available: bool = true
+	if record.has("presentation_profile"):
+		var profile_result: Dictionary = PresentationProfile.validate_stored(record["presentation_profile"])
+		if not bool(profile_result.get("ok", false)):
+			errors.append_array(profile_result.get("errors", PackedStringArray()))
+			return _result(false, errors)
+		stored_profile = profile_result.get("profile", {}).duplicate(true)
+		stored_profile_available = bool(profile_result.get("available", false))
+	variant["presentation_profile"] = stored_profile
+	variant["presentation_profile_available"] = stored_profile_available
 	if record.has("workshop_descriptor"):
 		variant["workshop_descriptor"] = (record["workshop_descriptor"] as Dictionary).duplicate(true)
 	if record.has("dependencies"):
@@ -492,18 +834,27 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		errors.append("Variant revision must be a JSON object.")
 		return _result(false, errors)
 	var record: Dictionary = value
+	var version_value: Variant = record.get("version", null)
+	var version: int = int(version_value) if _integer_number(version_value) else -1
+	var is_legacy: bool = version == LEGACY_VARIANT_VERSION
+	var required_keys: PackedStringArray = LEGACY_VARIANT_REQUIRED_KEYS if is_legacy else VARIANT_REQUIRED_KEYS
 	var has_descriptor: bool = record.has("workshop_descriptor")
 	var has_dependencies: bool = record.has("dependencies")
-	var allowed_record_size: int = VARIANT_REQUIRED_KEYS.size() + (1 if has_descriptor else 0) + (1 if has_dependencies else 0)
-	if record.size() != allowed_record_size or not record.has_all(VARIANT_REQUIRED_KEYS):
+	var allowed_record_size: int = required_keys.size() + (1 if has_descriptor else 0) + (1 if has_dependencies else 0)
+	if record.size() != allowed_record_size or not record.has_all(required_keys):
 		errors.append("Variant revision has missing or unknown fields.")
 		return _result(false, errors)
 	for key: Variant in record.keys():
 		if typeof(key) != TYPE_STRING or not VARIANT_KEYS.has(str(key)):
 			errors.append("Variant revision has missing or unknown fields.")
 			return _result(false, errors)
-	if record["format"] != VARIANT_FORMAT or not _integer_number(record["version"]) or int(record["version"]) != VARIANT_VERSION:
+	if record["format"] != VARIANT_FORMAT or not _integer_number(record["version"]) \
+			or version not in [LEGACY_VARIANT_VERSION, VARIANT_VERSION]:
 		errors.append("Variant format or version is unsupported.")
+	if not is_legacy and record.has("presentation_profile"):
+		var profile_result: Dictionary = PresentationProfile.validate_stored(record["presentation_profile"])
+		if not bool(profile_result.get("ok", false)):
+			errors.append_array(profile_result.get("errors", PackedStringArray()))
 	if record["id"] != expected_id or not _valid_uuid(str(record["id"])):
 		errors.append("Variant revision ID does not match its directory.")
 	if not _integer_number(record["revision"]) or int(record["revision"]) < 1:
@@ -590,6 +941,14 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	for key: String in ["weight_multiplier", "power_multiplier", "control_multiplier"]:
 		if recipe.has(key) and not _positive_number(recipe[key]):
 			errors.append("Recipe %s must be a finite positive number." % key)
+	if recipe.has("tank_capacity_multiplier"):
+		var tank_capacity_multiplier: Variant = recipe["tank_capacity_multiplier"]
+		if typeof(tank_capacity_multiplier) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(tank_capacity_multiplier)):
+			errors.append("Recipe tank_capacity_multiplier must be a finite number.")
+		elif float(tank_capacity_multiplier) < WorkshopParameters.MIN_TANK_CAPACITY_MULTIPLIER \
+				or float(tank_capacity_multiplier) > WorkshopParameters.MAX_TANK_CAPACITY_MULTIPLIER:
+			errors.append("Recipe tank_capacity_multiplier must be between %.2f and %.2f." % [
+				WorkshopParameters.MIN_TANK_CAPACITY_MULTIPLIER, WorkshopParameters.MAX_TANK_CAPACITY_MULTIPLIER])
 	if recipe.has("id") and (typeof(recipe["id"]) != TYPE_STRING or not _valid_uuid(str(recipe["id"]))):
 		errors.append("Optional recipe ID must be a lowercase UUID.")
 	if recipe.has("name") and not _valid_name(str(recipe["name"])):
@@ -597,6 +956,9 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	var tree_result: Dictionary = _validate_json_tree(recipe)
 	if not bool(tree_result["ok"]):
 		errors.append_array(tree_result["errors"])
+	if recipe.has("mass_edits") or recipe.has("size_model"):
+		var extended: Dictionary = WorkshopParameters.validate(recipe)
+		if not extended.ok: errors.append_array(extended.errors)
 	return _result(errors.is_empty(), errors)
 
 
@@ -617,6 +979,43 @@ static func _resolve_workshop_descriptor(
 	if not bool(loaded["ok"]):
 		return loaded
 	return {"ok": true, "errors": PackedStringArray(), "descriptor": loaded["descriptor"]}
+
+
+static func _resolve_customization_bindings(base_id: String, descriptor: Dictionary) -> Dictionary:
+	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
+		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
+	var customization_script: Script = load("res://render/aircraft_customization.gd")
+	if customization_script == null:
+		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
+	var described: Dictionary = customization_script.describe(base_id)
+	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
+		return {"ok": false, "missing": true,
+			"errors": described.get("errors", PackedStringArray(["Customization companion could not describe this aircraft."]))}
+	var bindings: Dictionary = described["bindings"]
+	if not descriptor.is_empty() and typeof(descriptor.get("presentation", null)) == TYPE_DICTIONARY:
+		var physical_presentation: Dictionary = descriptor["presentation"]
+		if physical_presentation.has("visual_family") \
+				and physical_presentation["visual_family"] != bindings.get("visual_family", ""):
+			return {"ok": false, "missing": false,
+				"errors": PackedStringArray(["Customization bindings do not match the pinned Workshop visual family."])}
+		if physical_presentation.has("model_manifest_sha256") \
+				and physical_presentation["model_manifest_sha256"] != bindings.get("model_manifest_sha256", ""):
+			return {"ok": false, "missing": false,
+				"errors": PackedStringArray(["Customization bindings do not match the pinned Workshop model manifest."])}
+	return {"ok": true, "errors": PackedStringArray(), "bindings": bindings}
+
+
+static func _presentation_is_empty(profile: Dictionary) -> bool:
+	return profile.get("paint", []) is Array and (profile.get("paint", []) as Array).is_empty() \
+		and profile.get("markings", []) is Array and (profile.get("markings", []) as Array).is_empty() \
+		and profile.get("smoke", []) is Array and (profile.get("smoke", []) as Array).is_empty() \
+		and profile.get("visual_seed", 0) == 0
+
+
+static func _presentation_pins_are_empty(pins: Dictionary) -> bool:
+	return str(pins.get("visual_family", "")).is_empty() \
+		and str(pins.get("model_manifest_sha256", "")).is_empty() \
+		and str(pins.get("slots_sha256", "")).is_empty()
 
 
 static func _resolve_workshop_dependencies(base: Dictionary, provided: Dictionary) -> Dictionary:
@@ -732,7 +1131,7 @@ static func _read_bytes(path: String, max_bytes: int) -> Dictionary:
 	return {"ok": true, "errors": errors, "bytes": bytes}
 
 
-static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dictionary:
+static func _write_new_file_atomic(path: String, bytes: PackedByteArray, checkpoint: Callable = Callable()) -> Dictionary:
 	var errors := PackedStringArray()
 	if FileAccess.file_exists(path) or DirAccess.dir_exists_absolute(path):
 		errors.append("Refusing to overwrite an existing immutable revision file.")
@@ -746,16 +1145,22 @@ static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dict
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_temp_write"):
+		return _interrupted_save("after_revision_temp_write")
 	var readback: Dictionary = _read_bytes(temporary, MAX_VARIANT_BYTES)
 	if not bool(readback["ok"]) or (readback.get("bytes", PackedByteArray()) as PackedByteArray) != bytes:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Temporary revision failed its exact-byte readback check.")
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_temp_readback"):
+		return _interrupted_save("after_revision_temp_readback")
 	var rename_error: Error = DirAccess.rename_absolute(temporary, path)
 	if rename_error != OK:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Could not commit immutable revision file (%s)." % error_string(rename_error))
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_commit"):
+		return _interrupted_save("after_revision_commit")
 	return {"ok": true, "errors": errors}
 
 
@@ -763,7 +1168,8 @@ static func _write_index_atomic(
 		variant_dir: String,
 		bytes: PackedByteArray,
 		expected_id: String,
-		expected_previous_revision: int
+		expected_previous_revision: int,
+		checkpoint: Callable = Callable()
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	var index_path: String = variant_dir.path_join("manifest.json")
@@ -777,11 +1183,15 @@ static func _write_index_atomic(
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_temp_write"):
+		return _interrupted_save("after_manifest_temp_write")
 	var readback: Dictionary = _read_bytes(temporary, MAX_VARIANT_BYTES)
 	if not bool(readback["ok"]) or (readback.get("bytes", PackedByteArray()) as PackedByteArray) != bytes:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Temporary manifest failed its exact-byte readback check.")
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_temp_readback"):
+		return _interrupted_save("after_manifest_temp_readback")
 	var moved_current: bool = false
 	var current_result: Dictionary = _load_from_manifest_source(variant_dir, expected_id, index_path, false)
 	var backup_result: Dictionary = {}
@@ -802,12 +1212,16 @@ static func _write_index_atomic(
 				DirAccess.remove_absolute(temporary)
 				errors.append("Could not rotate the prior manifest backup.")
 				return {"ok": false, "errors": errors}
+			if not _continue_save(checkpoint, "after_backup_remove"):
+				return _interrupted_save("after_backup_remove")
 		var backup_error: Error = DirAccess.rename_absolute(index_path, backup_path)
 		if backup_error != OK:
 			DirAccess.remove_absolute(temporary)
 			errors.append("Could not preserve the previous manifest (%s)." % error_string(backup_error))
 			return {"ok": false, "errors": errors}
 		moved_current = true
+		if not _continue_save(checkpoint, "after_backup_rotate"):
+			return _interrupted_save("after_backup_rotate")
 	elif not bool(current_result["ok"]) and backup_matches:
 		if DirAccess.dir_exists_absolute(index_path):
 			DirAccess.remove_absolute(temporary)
@@ -819,6 +1233,8 @@ static func _write_index_atomic(
 				DirAccess.remove_absolute(temporary)
 				errors.append("Could not replace the invalid current manifest (%s)." % error_string(remove_current_error))
 				return {"ok": false, "errors": errors}
+			if not _continue_save(checkpoint, "after_invalid_manifest_remove"):
+				return _interrupted_save("after_invalid_manifest_remove")
 		preserve_backup = true
 	else:
 		DirAccess.remove_absolute(temporary)
@@ -831,7 +1247,17 @@ static func _write_index_atomic(
 		DirAccess.remove_absolute(temporary)
 		errors.append("Could not atomically commit the manifest (%s)." % error_string(commit_error))
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_commit"):
+		return _interrupted_save("after_manifest_commit")
 	return {"ok": true, "errors": errors}
+
+
+static func _continue_save(checkpoint: Callable, stage: String) -> bool:
+	return not checkpoint.is_valid() or bool(checkpoint.call(stage))
+
+
+static func _interrupted_save(stage: String) -> Dictionary:
+	return _result(false, PackedStringArray(["Variant save interrupted at %s; reload before retrying." % stage]))
 
 
 static func _write_bytes(path: String, bytes: PackedByteArray) -> Dictionary:
@@ -993,5 +1419,15 @@ static func _new_uuid() -> String:
 	return "%s-%s-%s-%s-%s" % [hex.substr(0, 8), hex.substr(8, 4), hex.substr(12, 4), hex.substr(16, 4), hex.substr(20, 12)]
 
 
-static func _result(ok: bool, errors: PackedStringArray, variant: Dictionary = {}) -> Dictionary:
-	return {"ok": ok, "errors": errors, "variant": variant}
+static func _result(
+		ok: bool,
+		errors: PackedStringArray,
+		variant: Dictionary = {},
+		trash_generation: String = ""
+) -> Dictionary:
+	return {
+		"ok": ok,
+		"errors": errors,
+		"variant": variant,
+		"trash_generation": trash_generation,
+	}

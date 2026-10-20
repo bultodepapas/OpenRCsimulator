@@ -35,6 +35,7 @@ func _initialize() -> void:
 	_test_warmup_boundary_and_stall()
 	_test_aggregation_and_write()
 	_test_invalid_samples()
+	_test_frame_limit()
 	_test_effective_grass_state()
 	_test_production_grass_profile_snapshot()
 	print("%d checks, %d failed" % [_checks, _failures])
@@ -47,6 +48,8 @@ func _test_options() -> void:
 	var custom: Dictionary = FrameSamples.options({"frametimes": "/tmp/custom.json", "warmup": "10", "t": "60"})
 	_check("custom finite warm-up and duration parse", custom.ok and custom.warmup_s == 10.0 and custom.sample_s == 60.0, str(custom))
 	var absent: Dictionary = FrameSamples.options({})
+	var diagnostic: Dictionary = FrameSamples.options({"frametimes": "/tmp/diag.json", "frame-diagnostics": true, "frametimes-max-frames": "10"})
+	_check("diagnostic flag and frame limit parse", diagnostic.ok and diagnostic.diagnostics and diagnostic.max_frames == 10)
 	_check("logger stays disabled without its path", absent.ok and not absent.enabled, str(absent))
 	var invalid: Array[Dictionary] = [
 		{"frametimes": true},
@@ -61,6 +64,13 @@ func _test_options() -> void:
 		{"frametimes": "/tmp/a.json", "trace": true},
 		{"frametimes": "/tmp/a.json", "capture": true},
 		{"warmup": "1"},
+		{"frame-diagnostics": true},
+		{"frametimes-max-frames": "10"},
+		{"frametimes": "/tmp/a.json", "frame-diagnostics": "false"},
+		{"frametimes": "/tmp/a.json", "frametimes-max-frames": true},
+		{"frametimes": "/tmp/a.json", "frametimes-max-frames": "0"},
+		{"frametimes": "/tmp/a.json", "frametimes-max-frames": "120001"},
+		{"frametimes": "/tmp/a.json", "frametimes-max-frames": "2.5"},
 	]
 	for case in invalid:
 		var result: Dictionary = FrameSamples.options(case)
@@ -122,6 +132,30 @@ func _test_invalid_samples() -> void:
 	_check("metric schema config accepted", metric_logger.configure(0.0, 1.0))
 	_check("first metric shape accepted", metric_logger.record_frame(0.01, 10000, 10000, {sim_tick = 1.0}))
 	_check("changing raw metric shape rejected", not metric_logger.record_frame(0.01, 10000, 20000, {sim_tick = 2.0, draw_calls = 4.0}), metric_logger.failure)
+
+
+func _test_frame_limit() -> void:
+	var logger := FrameSamples.new()
+	_check("bounded collector configured", logger.configure(0.0, 1.0, 2))
+	_check("first retained frame", logger.record_frame(0.01, 10000, 10000))
+	_check("last allowed frame", logger.record_frame(0.01, 10000, 20000))
+	_check("overflow fails without another append", not logger.record_frame(0.01, 10000, 30000))
+	var report: Dictionary = logger.report()
+	_check("bounded prefix is incomplete and actionable", report.frames == 2 and not report.complete and report.failure.contains("frame retention") and report.max_frames == 2)
+	var exact := FrameSamples.new()
+	_check("exact limit configured", exact.configure(0.0, 0.02, 2))
+	exact.record_frame(0.01, 10000, 10000)
+	exact.record_frame(0.01, 10000, 20000)
+	_check("completion at limit succeeds", exact.report().complete and exact.report().frames == 2)
+	_check("reconfiguration cannot mix samples", not exact.configure(0.0, 1.0, 10))
+	var invalid := FrameSamples.new()
+	_check("invalid API frame limits rejected", not invalid.configure(0.0, 1.0, 0) and not invalid.configure(0.0, 1.0, FrameSamples.MAX_FRAMES + 1))
+	var warmup := FrameSamples.new()
+	warmup.configure(0.02, 0.01, 1)
+	warmup.record_frame(0.01, 10000, 10000)
+	warmup.record_frame(0.01, 10000, 20000)
+	warmup.record_frame(0.01, 10000, 30000)
+	_check("warmup frames do not consume retention", warmup.report().complete and warmup.report().frames == 1)
 
 
 func _test_effective_grass_state() -> void:

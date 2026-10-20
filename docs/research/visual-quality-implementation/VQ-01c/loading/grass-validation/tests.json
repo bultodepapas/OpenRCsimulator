@@ -1,0 +1,223 @@
+[
+  {
+    "script": "test_near_grass.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 4.627921104431152,
+    "log": "test_near_grass-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371928809502811 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "40 near-grass checks, 0 failed"
+    ]
+  },
+  {
+    "script": "test_imported_near_grass.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_imported_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.6430089473724365,
+    "log": "test_imported_near_grass-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "59 downloaded near-grass checks, 0 failed"
+    ]
+  },
+  {
+    "script": "test_landscape_scenery_grass_mask.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_landscape_scenery_grass_mask.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 3.8850109577178955,
+    "log": "test_landscape_scenery_grass_mask-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371930671773787 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "LU-18 scenery grass mask: 34 checks, 0 failures"
+    ]
+  },
+  {
+    "script": "test_grass_mask_bounds.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_grass_mask_bounds.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.5524241924285889,
+    "log": "test_grass_mask_bounds-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "grass mask bounds: 23 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "test_imported_grass_wind.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_imported_grass_wind.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.6462814807891846,
+    "log": "test_imported_grass_wind-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "ok   both independent source builds pass adapter validation",
+      "ok   adapter rejects unsupported next pass instead of silently dropping it",
+      "204 imported-grass wind checks, 0 failed"
+    ]
+  },
+  {
+    "script": "test_grass_ground_material.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_grass_ground_material.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 6.5615973472595215,
+    "log": "test_grass_ground_material-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "PASS: binding an enhanced material does not mutate its peer",
+      "PASS: enhanced material retains consolidated coverage and terrain masks",
+      "PASS: cloned enhanced runway keeps photo maps and terrain masks",
+      "PASS: changing an enhanced surface clone cannot mutate its source",
+      "Grass ground material: 38 checks, 0 failures"
+    ]
+  },
+  {
+    "script": "test_field_surfaces.gd",
+    "mode": "headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 3.336634397506714,
+    "log": "test_field_surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "ok   default field uses one ground pass  consolidated=true children=[\"rough\", \"treeline\", \"windsock\", \"pilot_station\", \"flightline_barrier\", \"FlightCueShadows\", \"Scenery\", \"Lake\", \"NearGrass\", \"DistantRidges\", \"ProjectedFieldShadows\"]",
+      "19 checks, 0 failed"
+    ]
+  },
+  {
+    "script": "test_near_grass.gd",
+    "mode": "native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_near_grass.gd"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 5.469414234161377,
+    "log": "test_near_grass-native.log",
+    "diagnostics": [
+      "ERROR: This function should never be used outside the editor, it can severely damage performance.",
+      "ERROR: This function should never be used outside the editor, it can severely damage performance.",
+      "FAIL standalone grass build registers sim_clock and wind_vec once ",
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371928943720570 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "40 near-grass checks, 1 failed",
+      "FAIL standalone grass build registers sim_clock and wind_vec once "
+    ]
+  },
+  {
+    "script": "test_imported_near_grass.gd",
+    "mode": "native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_imported_near_grass.gd"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.2411301136016846,
+    "log": "test_imported_near_grass-native.log",
+    "diagnostics": [
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.",
+      "WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly."
+    ],
+    "summaries": [
+      "59 downloaded near-grass checks, 0 failed"
+    ]
+  }
+]

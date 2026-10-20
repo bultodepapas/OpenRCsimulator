@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   aircraft source fixture loads
+ok   mass editor inspection succeeds
+ok   source contains a second eligible component
+ok   native confirmation modal starts with Cancel focus
+ok   panel and vertical scroll are present at 720p
+ok   inventory disclosure starts collapsed beside the measurement form
+ok   source details reveal stable IDs, LE positions, provenance and refusal reasons
+ok   unavailable finite-fuel reason is visible
+ok   source-declared empty-tanks state is explicit
+ok   component picker shows source names while IDs stay in metadata and primary details stay concise
+ok   changing selection preserves a pending measurement
+ok   staging validates and preserves the existing measured entry
+ok   staging does not mutate the source record
+ok   read-only target report presents residuals
+ok   fixed-station action is a derived proposal only
+ok   Cancel dismisses without proposing a recipe
+ok   Apply emits only a fully compiled new-build recipe
+ok   proposed recipe retains the earlier component measurement
+ok   compiler failure is visible and emits nothing
+ok   Spanish title, action and Cancel are localized
+ok   200 percent text remains inside the 720p viewport with vertical scrolling
+Workshop mass dialog: 21 checks, 0 failures

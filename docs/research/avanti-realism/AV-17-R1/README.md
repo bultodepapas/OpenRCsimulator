@@ -51,7 +51,7 @@ Raw records: [baseline 240 Hz](baseline-240.json), [revised 240 Hz](candidate-24
 
 ## Integration and verification
 
-Source of the two policy quantities: [AV-06 inputs](../../../../research/avanti-s/av06/inputs.json), through [derive_physics.py](../../../../research/avanti-s/av06/derive_physics.py). The optional closed `controls.keyboard` object requires both seconds-valued quantities in [0.05, 5.0], and a declared normal-rate profile. It is covered by the runtime loader, v2 contract, generated JSON Schema, parameter register and regenerated Workshop descriptor. Existing v1 historical migration is unchanged. See [AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md) and [keyboard usage](../../../FIRST-LAUNCH.md).
+Source of the two policy quantities: [AV-06 inputs](../../../../research/avanti-s/av06/inputs.json), through [derive_physics.py](../../../../research/avanti-s/av06/derive_physics.py). The optional closed `controls.keyboard` object requires both seconds-valued quantities in [0.05, 5.0], and a declared normal-rate profile. It is covered by the runtime loader, v2 contract, generated JSON Schema, parameter register and regenerated Workshop descriptor. Existing v1 historical migration is unchanged. See [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md) and [keyboard usage](../../../FIRST-LAUNCH.md).
 
 Implementation: [commands.gd](../../../../app/input/commands.gd), [flight_session.gd](../../../../app/sim/flight_session.gd), [aircraft_data.gd](../../../../app/physics/aircraft_data.gd). Virtual-stick position remains in the existing session command state, preserving reset/checkpoint representation. No additional simulation state or golden-flight rerecording is introduced.
 

@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: real Glow session is flyable and dynamic-mass joint hook is installed
+PASS: deterministic obstacle installs
+PASS: interior-sweep collision start resets
+PASS: Glow contact fixture has a restorable pre-impact checkpoint
+Provisional Glow impact sample: { &"tick": 1, &"obstacle_id": "lamp:r05b-contact:pole", &"fraction": 0.50083578500611, &"properties": { &"ok": true, &"mass_kg": 2.76646368176775, &"cg_body_m": [-0.00000001724625, 0.0, 0.00000000156145], &"inertia": [0.11659669555374, 0.31035225683833, 0.40614197380802, -0.0076956, 0.0090357006696, 0.00077112443071], &"inverse": [8.60555595630728, 3.2274751555061, 2.46648227158805, 0.21386299729214, -0.19185936870324, -0.01088581642594], &"inertia_origin": [0.11659669555374, 0.31035225683833, 0.40614197380802, -0.0076956, 0.0090357006696, 0.00077112443071] } }
+PASS: real mass-aware filter staged one interior-fraction contact with an event-time sample
+PASS: post-contact projection failure faults before the flight tick commits
+PASS: Glow body, fuel tail, auxiliary and contact history roll back byte-exactly
+PASS: pending impact, crash, scenery damage and accepted event publication are cleared
+CRASH at 119.8 m/s (sink -0.3 m/s, lamp impact (lamp:r05b-contact:pole), normal speed 119.8 m/s) - restarting
+PASS: same Glow state retries and commits exactly one impact
+PASS: accepted retry reuses identical deterministic TOI and sampled properties
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: Glow checkpoint records the separate mass-contact law
+PASS: Glow restore refuses a checkpoint missing the mass-contact marker
+PASS: Glow restore refuses a different mass-contact marker atomically
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PASS: non-Glow checkpoint does not claim the Glow mass-contact law
+PASS: non-Glow restore refuses an unexpected mass-contact marker atomically
+R05-B FlightSession integration review: 15 checks, 0 failures

@@ -21,7 +21,7 @@ Evidence levels:
 
 | Evidence inspected | Observation and planning consequence |
 | --- | --- |
-| [STACK](../../../../STACK.md), [project settings](../../../../app/project.godot), [engine pin](../../../../app/get-godot.sh) | Production uses 4.7.2 Compatibility, 4× MSAA and 240 Hz custom float64 simulation. Preserve these boundaries for the first sky release. |
+| [STACK](../../../STACK.md), [project settings](../../../../app/project.godot), [engine pin](../../../../app/get-godot.sh) | Production uses 4.7.2 Compatibility, 4× MSAA and 240 Hz custom float64 simulation. Preserve these boundaries for the first sky release. |
 | [Atmosphere](../../../../app/render/atmosphere.gd), [sky](../../../../app/render/sky.gdshader), [noise](../../../../app/render/cloud_field.gdshaderinc), [relief](../../../../app/render/cloud_relief.gdshaderinc) | Existing clouds are procedural projected layers with fixed drift, directional relief and shared ground shadows. No world-space cloud traversal. Cirrus currently depends on the low-cloud branch. |
 | [World](../../../../app/render/world/world.gd), [sky state](../../../../app/render/world/sky_state.gd) | Time flow updates sky colors/lighting independently of cloud transport. Resolved appearance must survive both FW and TOD update routes. |
 | `World.view_exposure()` / `adapt()`, [exposure global](../../../../app/render/world/exposure.gd) | Night exposure is already adapted and shared with emitters. The lightning proposal adds a transient contribution while retaining baseline adaptation; changing exposure globally per strike would disturb accepted night lighting. |

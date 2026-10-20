@@ -1,0 +1,2 @@
+FAIL same-clock pause leaves rendered pixels unchanged
+FAIL reset clears live color state

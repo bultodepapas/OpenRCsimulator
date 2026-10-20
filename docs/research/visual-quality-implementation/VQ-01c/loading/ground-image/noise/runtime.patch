@@ -1,0 +1,129 @@
+diff --git a/app/render/ground.gd b/app/render/ground.gd
+index 645d2bdfd..0a82822c4 100644
+--- a/app/render/ground.gd
++++ b/app/render/ground.gd
+@@ -30,12 +30,58 @@ static func grass_image(seed := 1253) -> Image:
+ 			grid[k] = rng.randf()
+ 		octaves.append([cells, grid])
+ 	var weights := [0.5, 0.3, 0.2]
++	# Coordinate wrapping and easing are fixed for each octave; share them across both pixel axes.
++	var axis_tables := []
++	for octave in octaves:
++		var cells: int = octave[0]
++		var x0_table := PackedInt32Array()
++		var x1_table := PackedInt32Array()
++		var row0_table := PackedInt32Array()
++		var row1_table := PackedInt32Array()
++		var blend_table := PackedFloat64Array() # match _value_noise float64 arithmetic before RGB8 conversion
++		x0_table.resize(SIZE)
++		x1_table.resize(SIZE)
++		row0_table.resize(SIZE)
++		row1_table.resize(SIZE)
++		blend_table.resize(SIZE)
++		for sample in SIZE:
++			var coordinate: float = float(sample) / SIZE
++			var scaled: float = coordinate * cells
++			var cell0: int = int(floor(scaled))
++			var blend: float = scaled - cell0
++			blend = blend * blend * (3.0 - 2.0 * blend)
++			var index0: int = posmod(cell0, cells)
++			var index1: int = posmod(cell0 + 1, cells)
++			x0_table[sample] = index0
++			x1_table[sample] = index1
++			row0_table[sample] = index0 * cells
++			row1_table[sample] = index1 * cells
++			blend_table[sample] = blend
++		axis_tables.append([x0_table, x1_table, row0_table, row1_table, blend_table])
+ 	var img := Image.create(SIZE, SIZE, true, Image.FORMAT_RGB8)
+ 	for j in SIZE:
+ 		for i in SIZE:
+ 			var n := 0.0
+ 			for o in octaves.size():
+-				n += weights[o] * _value_noise(octaves[o][1], octaves[o][0], float(i) / SIZE, float(j) / SIZE)
++				var octave: Array = octaves[o]
++				var tables: Array = axis_tables[o]
++				var grid: PackedFloat32Array = octave[1]
++				var x0_table: PackedInt32Array = tables[0]
++				var x1_table: PackedInt32Array = tables[1]
++				var row0_table: PackedInt32Array = tables[2]
++				var row1_table: PackedInt32Array = tables[3]
++				var blend_table: PackedFloat64Array = tables[4]
++				var x0: int = x0_table[i]
++				var x1: int = x1_table[i]
++				var row0: int = row0_table[j]
++				var row1: int = row1_table[j]
++				var fx: float = blend_table[i]
++				var fy: float = blend_table[j]
++				var a := grid[row0 + x0]
++				var b := grid[row0 + x1]
++				var c := grid[row1 + x0]
++				var d := grid[row1 + x1]
++				n += weights[o] * lerpf(lerpf(a, b, fx), lerpf(c, d, fx), fy)
+ 			var shade := lerpf(1.0 - Spec.GROUND.contrast, 1.0 + Spec.GROUND.contrast, n)
+ 			img.set_pixel(i, j, Color(Spec.GRASS.r * shade, Spec.GRASS.g * shade, Spec.GRASS.b * shade))
+ 	img.generate_mipmaps()
+diff --git a/app/tests/test_ground_image_cache.gd b/app/tests/test_ground_image_cache.gd
+index 970314984..153e27160 100644
+--- a/app/tests/test_ground_image_cache.gd
++++ b/app/tests/test_ground_image_cache.gd
+@@ -2,6 +2,8 @@
+ extends SceneTree
+ 
+ const Ground = preload("res://render/ground.gd")
++const Spec = preload("res://spec.gd")
++const REFERENCE_SIZE := 256
+ const ShaderClock = preload("res://render/shader_clock.gd")
+ const Lighting = preload("res://render/time_of_day_lighting.gd")
+ const LightingConfig = preload("res://environment/time_of_day_config.gd")
+@@ -16,7 +18,7 @@ func _initialize() -> void:
+ 
+ func _run() -> void:
+ 	ShaderClock.register()
+-	var expected := Ground.grass_image()
++	var expected := _reference_image(1253)
+ 	var cold := Ground._default_grass_image()
+ 	_check("cold default pixels and every mip equal the original recipe", _same_image(cold, expected))
+ 	var warm := Ground._default_grass_image()
+@@ -29,14 +31,41 @@ func _run() -> void:
+ 	warm.resize(8, 8)
+ 	_check("warm image edits do not poison a subsequent image", _same_image(Ground._default_grass_image(), expected))
+ 	var other := Ground.grass_image(1254)
+-	_check("explicit seed still controls the uncached recipe", not _same_image(other, expected) and _same_image(other, Ground.grass_image(1254)))
++	_check("explicit seed still controls the uncached recipe", not _same_image(other, expected)
++		and _same_image(other, Ground.grass_image(1254)) and _same_image(other, _reference_image(1254)))
+ 	_check("explicit seeds do not replace the default", _same_image(Ground._default_grass_image(), expected))
+ 	_check("cached bytes stay bounded to one default tile", Ground._default_grass_bytes.size() == expected.get_data_size())
++	for seed: int in [0, -1]:
++		_check("seed %d pixels and every mip equal the scalar recipe" % seed, _same_image(Ground.grass_image(seed), _reference_image(seed)))
+ 	_test_materials(expected)
+ 	print("ground image cache: %d checks, %d failed" % [_checks, _failures])
+ 	quit(1 if _failures else 0)
+ 
+ 
++## Independent scalar recipe retained from before coordinate-table preparation.
++func _reference_image(seed: int) -> Image:
++	var rng := RandomNumberGenerator.new()
++	rng.seed = seed
++	var octaves := []
++	for cells in [8, 32, 128]: # coarse patches → fine blades
++		var grid := PackedFloat32Array()
++		grid.resize(cells * cells)
++		for k in grid.size():
++			grid[k] = rng.randf()
++		octaves.append([cells, grid])
++	var weights := [0.5, 0.3, 0.2]
++	var img := Image.create(REFERENCE_SIZE, REFERENCE_SIZE, true, Image.FORMAT_RGB8)
++	for j in REFERENCE_SIZE:
++		for i in REFERENCE_SIZE:
++			var n := 0.0
++			for o in octaves.size():
++				n += weights[o] * Ground._value_noise(octaves[o][1], octaves[o][0], float(i) / REFERENCE_SIZE, float(j) / REFERENCE_SIZE)
++			var shade := lerpf(1.0 - Spec.GROUND.contrast, 1.0 + Spec.GROUND.contrast, n)
++			img.set_pixel(i, j, Color(Spec.GRASS.r * shade, Spec.GRASS.g * shade, Spec.GRASS.b * shade))
++	img.generate_mipmaps()
++	return img
++
++
+ func _test_materials(expected: Image) -> void:
+ 	var first := Ground.grass_material()
+ 	var second := Ground.grass_material()

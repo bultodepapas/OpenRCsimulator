@@ -1,6 +1,6 @@
 # P51-20: planform-specific ground effect for the P-51
 
-2026-10-14 · Revision 1 · **Status: implemented and software-verified; flare/liftoff acceptance against a pilot or video remains open.** Prefix: P51-20. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-20/README.md)
+2026-10-14 · Revision 1 · **Status: implemented and software-verified; flare/liftoff acceptance against a pilot or video remains open.** Prefix: P51-20. [Plan](../../../P51-PLAN.md) · [Tools](../../../../research/p51/p51-20/README.md)
 
 ## Finding
 

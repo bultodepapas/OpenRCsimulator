@@ -956,6 +956,7 @@ static func _validate_tree_positions(
 	if positions.is_empty() or positions.size() > MAX_TREELINE_POSITIONS:
 		errors.append("%s: expected 1..%d positions, got %d" % [path, MAX_TREELINE_POSITIONS, positions.size()])
 		return normalized
+	var axis_names: Array[String] = ["north", "east", "down"]
 	var seen_positions: Dictionary = {}
 	for index: int in range(positions.size()):
 		var point_path: String = "%s[%d]" % [path, index]
@@ -970,7 +971,7 @@ static func _validate_tree_positions(
 		var coordinates: Array[float] = []
 		var valid_numbers: bool = true
 		for axis_index: int in range(3):
-			var axis_name: String = ["north", "east", "down"][axis_index]
+			var axis_name: String = axis_names[axis_index]
 			var raw_coordinate: Variant = point[axis_index]
 			if typeof(raw_coordinate) != TYPE_FLOAT and typeof(raw_coordinate) != TYPE_INT:
 				errors.append("%s.%s: expected a number" % [point_path, axis_name])
@@ -999,11 +1000,11 @@ static func _validate_tree_positions(
 			if radius < TREE_MIN_RADIUS_M or radius > TREE_MAX_RADIUS_M:
 				errors.append("%s: horizontal radius must be %.0f..%.0f m" % [point_path, TREE_MIN_RADIUS_M, TREE_MAX_RADIUS_M])
 		if absf(north_offset) <= TREE_MAX_RADIUS_M and absf(east_offset) <= TREE_MAX_RADIUS_M and down_offset == 0.0:
-			var duplicate_key: String = "%d,%d,%d" % [
+			# Down is zero here; bounded quarter-metre coordinates fit exact int32 keys.
+			var duplicate_key := Vector2i(
 				roundi(north_offset / TREE_POSITION_GRID_M),
-				roundi(east_offset / TREE_POSITION_GRID_M),
-				roundi(down_offset / TREE_POSITION_GRID_M),
-			]
+				roundi(east_offset / TREE_POSITION_GRID_M)
+			)
 			if seen_positions.has(duplicate_key):
 				errors.append("%s: duplicate position (same 0.25 m grid cell as index %d)" % [point_path, int(seen_positions[duplicate_key])])
 			else:

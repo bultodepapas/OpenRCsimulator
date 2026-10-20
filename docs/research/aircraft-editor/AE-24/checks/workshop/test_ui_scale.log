@@ -1,0 +1,74 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   factor (1280, 720) -> 1.000
+ok   logical size (1280, 720) -> (1280, 720)
+ok   viewport follows scale at (1280, 720)
+ok   compact breakpoint (1280, 720)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (1280, 720) logical=(1280.0, 720.0) factor=1.0
+ok   factor (1920, 1080) -> 1.000
+ok   logical size (1920, 1080) -> (1920, 1080)
+ok   viewport follows scale at (1920, 1080)
+ok   compact breakpoint (1920, 1080)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (1920, 1080) logical=(1920.0, 1080.0) factor=1.0
+ok   factor (2560, 1440) -> 1.333
+ok   logical size (2560, 1440) -> (1920, 1080)
+ok   viewport follows scale at (2560, 1440)
+ok   compact breakpoint (2560, 1440)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (2560, 1440) logical=(1920.0, 1080.0) factor=1.33333333333333
+ok   factor (3840, 2160) -> 2.000
+ok   logical size (3840, 2160) -> (1920, 1080)
+ok   viewport follows scale at (3840, 2160)
+ok   compact breakpoint (3840, 2160)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (3840, 2160) logical=(1920.0, 1080.0) factor=2.0
+ok   factor (1920, 1200) -> 1.000
+ok   logical size (1920, 1200) -> (1920, 1200)
+ok   viewport follows scale at (1920, 1200)
+ok   compact breakpoint (1920, 1200)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (1920, 1200) logical=(1920.0, 1200.0) factor=1.0
+ok   factor (3440, 1440) -> 1.333
+ok   logical size (3440, 1440) -> (2580, 1080)
+ok   viewport follows scale at (3440, 1440)
+ok   compact breakpoint (3440, 1440)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (3440, 1440) logical=(2580.0, 1080.0) factor=1.33333333333333
+ok   factor (1024, 576) -> 1.000
+ok   logical size (1024, 576) -> (1024, 576)
+ok   viewport follows scale at (1024, 576)
+ok   compact breakpoint (1024, 576)
+ok   CanvasItems scaling preserves native 3D resolution mode
+ok   (1024, 576) logical=(1024.0, 576.0) factor=1.0
+ok   zero-sized window uses a finite factor
+ok   zero-sized window does not invent a logical canvas
+ok   text contrast on charcoal meets 4.5:1
+ok   secondary text on translucent navigation surface meets 4.5:1
+ok   amber focus on charcoal meets 3:1
+ok   OptionButton popup opens in the logical canvas
+ok   resized popup stays aligned with its OptionButton
+ok   compact body remains 22 logical pixels
+ok   desktop body is 26 logical pixels
+ok   200% body scaling remains available
+ok   PrimaryButton normal state uses readable dark text on amber
+ok   PrimaryButton normal state keeps the amber primary palette
+ok   PrimaryButton hover state uses readable dark text on amber
+ok   PrimaryButton hover state keeps the amber primary palette
+ok   PrimaryButton pressed state uses readable dark text on amber
+ok   PrimaryButton pressed state keeps the amber primary palette
+ok   CompactPrimaryButton normal state uses readable dark text on amber
+ok   CompactPrimaryButton normal state keeps the amber primary palette
+ok   CompactPrimaryButton hover state uses readable dark text on amber
+ok   CompactPrimaryButton hover state keeps the amber primary palette
+ok   CompactPrimaryButton pressed state uses readable dark text on amber
+ok   CompactPrimaryButton pressed state keeps the amber primary palette
+ok   SettingsAction normal state uses readable dark text on amber
+ok   SettingsAction normal state keeps the amber primary palette
+ok   SettingsAction hover state uses readable dark text on amber
+ok   SettingsAction hover state keeps the amber primary palette
+ok   SettingsAction pressed state uses readable dark text on amber
+ok   SettingsAction pressed state keeps the amber primary palette
+ok   destructive action uses readable text on red
+ok   danger announcement chip uses readable text on red

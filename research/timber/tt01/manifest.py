@@ -2,7 +2,7 @@
 """TT-01: freeze the identity of the Turbo Timber Evolution r2 delivery.
 
 Hashes every file of the author's exact nested r2 game delivery
-`Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/`
+`assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2/`
 and writes assets/aircraft/turbo-lumber-evolution/source-manifest.json: the SHA-256 and size of each file, the
 key files by role, the visual revision string (r2 plus the first 12 hex digits of the GLB hash) and the git commit
 that last touched the delivery. Downstream generators (build_geometry.py, check_asset.py, compile_geometry.py)
@@ -21,7 +21,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-DELIVERY = ROOT / "Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2"
+DELIVERY = ROOT / "assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2"
 TARGET = ROOT / "assets/aircraft/turbo-lumber-evolution/source-manifest.json"
 KEY_FILES = {
     "glb": "export/aircraft.glb",

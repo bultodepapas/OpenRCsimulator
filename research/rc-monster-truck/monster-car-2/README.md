@@ -14,13 +14,20 @@ The garage provides **Stop engine**, **Start engine**, **Refuel nitro tank**, an
 
 ## Source and reproduction
 
-The immutable delivery is [`monster car 2/`](../../../monster%20car%202/): editable Blender source, exported GLB/FBX, collision proxies, simulation metadata and author scripts. No substitute truck geometry was created. The asset manifest and [asset guide](../../../assets/vehicles/monster-car-2/README.md) identify the source bytes and runtime copies. The delivery is user supplied; local integration does not establish a third-party redistribution license.
+The immutable delivery is [`assets/source-deliveries/monster-car-2/`](../../../assets/source-deliveries/monster-car-2/): editable Blender source, exported GLB/FBX, collision proxies, simulation metadata and author scripts. No substitute truck geometry was created. The asset manifest and [asset guide](../../../assets/vehicles/monster-car-2/README.md) identify the source bytes and runtime copies. The delivery is user supplied; local integration does not establish a third-party redistribution license.
 
 `build_vehicle_data.py` generates [`monster_car_2.json`](../../../app/data/vehicles/ground/monster_car_2.json) from the delivered simulation metadata, visible GLB and collision GLB. Edit the generator or source inputs, then regenerate; do not hand-edit runtime physics data.
 
 ```powershell
 python research/rc-monster-truck/monster-car-2/build_vehicle_data.py
 python research/rc-monster-truck/monster-car-2/build_vehicle_data.py --check
+```
+
+`build_source_manifest.py` records hashes and byte sizes for the delivered source and both asset manifests. Regenerate the pair after an intentional source change, then use `--check` to confirm both copies match without writing:
+
+```powershell
+python research/rc-monster-truck/monster-car-2/build_source_manifest.py
+python research/rc-monster-truck/monster-car-2/build_source_manifest.py --check
 ```
 
 `visual_bake.py` evaluates the original Blender drivers and writes compact transform samples for Godot. The runtime adapter restores the flattened GLB's suspension, steering, wheel and engine movement. Blender +X forward, +Y left, +Z up maps to Godot -Z forward, +X right, +Y up. The source chassis datum is 0.087 m above the Blender ground plane. The rendered root accounts for all three CG coordinates; the visual adapter never feeds transforms into physics.

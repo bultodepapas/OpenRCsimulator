@@ -8,6 +8,7 @@ const Builder := preload("res://render/airplane.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Wreck := preload("res://render/crash/wreck.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 var failures := 0
@@ -15,10 +16,10 @@ var failures := 0
 func _initialize() -> void:
 	_run.call_deferred()
 
-func check(label: String, condition: bool) -> void:
+func check(label: String, condition: bool, detail := "") -> void:
 	if not condition:
 		failures += 1
-		printerr("FAIL ", label)
+		printerr("FAIL ", label, " ", detail)
 	else:
 		print("ok   ", label)
 
@@ -36,11 +37,25 @@ func _run() -> void:
 	check("Home keyboard opens Workshop", host.screens.is_top("workshop"))
 	var editor: Node = host.screens.top()
 	editor.set_recipe({scale = 0.5})
-	editor.set_recipe({scale = 2.0})
+	editor.set_recipe({scale = 2.0, tank_capacity_multiplier = 1.25})
+	var custom: Dictionary = editor.get_presentation()
+	var slots: Dictionary = Customization.describe(Catalog.DEFAULT_ID).bindings
+	custom.paint = [{"slot": slots.paint_slots[0].id, "color": "#327DE8FF", "pattern": "solid", "accent": "none"}]
+	editor.set_presentation(custom)
+	editor.get("_page_nodes").smoke.call("apply_preset", 2)
+	var frozen_visual: Dictionary = editor.get_presentation()
 	var editor_history_size: int = editor.get("_undo_history").size()
 	var source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
-	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source, recipe = {scale = 2.0}}
-	host._start_workshop_trial(payload)
+	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source,
+		recipe = {scale = 2.0, tank_capacity_multiplier = 1.25}}
+	editor.call("_set_page", "compare")
+	var preview: Control = editor.get("_preview")
+	preview.call("set_standard_view", "side")
+	preview.call("zoom_by", 1.2)
+	var preview_state: Dictionary = preview.call("get_view_state")
+	var trial_button := editor.find_child("TestFly", true, false) as Button
+	trial_button.grab_focus()
+	await ui.tap(KEY_ENTER)
 	check("200% trial starts", host.flight != null and host.flight.startup_error.is_empty())
 	if host.flight != null:
 		var flight: Node = host.flight
@@ -50,6 +65,21 @@ func _run() -> void:
 		check("trial has distinct physical identity", session.aircraft.model.id != Catalog.DEFAULT_ID)
 		check("catalog visual identity is retained", flight.aircraft_id == Catalog.DEFAULT_ID)
 		check("trial is airborne", session.start_choice == "airborne")
+		check("trial consumes frozen cosmetics and a single smoke budget", flight.workshop_trial.presentation_profile == frozen_visual
+			and flight.get("_profile_smoke") != null and flight.get("_smoke") == null
+			and flight.get("_profile_smoke").budget_info().capacity == 768)
+		check("trace stores separate presentation identity", session.trace_meta().workshop_presentation.sha256 == flight.workshop_trial.presentation_identity.sha256)
+		var base_raw: Dictionary = JSON.parse_string(source.get_string_from_utf8())
+		var base_capacity_m3: float = float(base_raw.fuel_system.tanks[0].capacity.value) * 0.001
+		var trial_tank: Dictionary = session.aircraft.model.fuel_system.tanks[0]
+		var fuel_sample: Dictionary = session.mass_properties()
+		check("trial session applies tank-size ratio and reports accepted total mass",
+			is_equal_approx(trial_tank.capacity_m3, base_capacity_m3 * 8.0 * 1.25)
+			and fuel_sample.get("ok", false) and not fuel_sample.get("finite_fuel", false)
+			and fuel_sample.get("stores", []).is_empty()
+			and is_equal_approx(float(fuel_sample.mass_kg), session.sim.mass)
+			and is_equal_approx(float(fuel_sample.mass_kg), float(session.aircraft.model.mass_kg)),
+			str({tank = trial_tank, fuel_sample = fuel_sample, start_fill = session.fuel_start_fill}))
 		var hashing := HashingContext.new()
 		hashing.start(HashingContext.HASH_SHA256)
 		hashing.update(source)
@@ -76,24 +106,24 @@ func _run() -> void:
 		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
 		check("trial return preserves draft and edit history", editor.get_recipe().scale == 2.0
+			and editor.get_recipe().tank_capacity_multiplier == 1.25
+			and editor.get_presentation() == frozen_visual
 			and editor.get("_undo_history").size() == editor_history_size)
+		check("trial return restores page, camera and focused action",
+			editor.get("_active_page") == "compare" and preview.call("get_view_state") == preview_state
+			and root.gui_get_focus_owner() == trial_button and not editor.get("_trial_pending"))
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
 	for scale_value: float in [0.5, 2.0]:
-		editor.set_aircraft("gp-extra-300s-60")
+		editor.set_aircraft("gp-extra-300s-60", true)
 		editor.set_recipe({scale = scale_value})
-		(editor.find_child("TestFly", true, false) as Button).pressed.emit()
-		check("Extra %.0f%% starts through the same Workshop action" % (scale_value * 100.0),
-			host.flight != null and host.flight.startup_error.is_empty())
-		if host.flight != null:
-			host.flight.session.physics_enabled = false
-			host.flight.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
-			host.flight._render_pose(host.flight._current_pose(), host.flight.session.surfaces(), 0.3)
-			_check_wreck_scale(host.flight._airplane.root, "gp-extra-300s-60", scale_value)
-			host.open_pause()
-			host.end_flight()
-			await ui.settle()
-			check("Extra returns to the same draft", host.screens.top() == editor
-				and is_equal_approx(editor.get_recipe().scale, scale_value))
+		var scale_control := editor.find_child("Scale", true, false) as OptionButton
+		var trial_control := editor.find_child("TestFly", true, false) as Button
+		var scale_reason := editor.find_child("ScaleSupport", true, false) as Label
+		check("Extra %.0f%% is blocked while finite-glow transforms remain fixed" % (scale_value * 100.0),
+			scale_control != null and scale_control.disabled
+			and trial_control != null and trial_control.disabled
+			and scale_reason != null and scale_reason.text.contains("finite-glow installation data must remain fixed")
+			and host.flight == null)
 	host.close_workshop()
 	host.home.set_start_choice("airborne")
 	host.start_flight()

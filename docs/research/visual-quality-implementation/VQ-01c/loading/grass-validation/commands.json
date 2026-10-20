@@ -1,0 +1,109 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\grass_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validate-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\near_grass.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\grass-validation\\run-0.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 6.0321619510650635
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\grass_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validate-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\near_grass.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\grass-validation\\run-1.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 5.930405378341675
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\grass_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validate-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\near_grass.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\grass-validation\\run-2.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.975152492523193
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\grass_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validate-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\near_grass.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\grass-validation\\run-3.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 6.752322435379028
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\grass_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-validate-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\near_grass.gd",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\grass-validation\\run-4.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 6.042713165283203
+  }
+]

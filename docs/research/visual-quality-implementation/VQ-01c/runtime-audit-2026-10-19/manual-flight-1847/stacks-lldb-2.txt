@@ -1,0 +1,772 @@
+(lldb) target create ".tools/Godot_v4.7.2-stable_win64.exe" --core "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-recordings\\20261019-184715-v2\\stall-1.dmp"
+Core file 'C:\DEVELOPMENT\OpenRCsimulator\tmp\manual-flight-recordings\20261019-184715-v2\stall-1.dmp' (x86_64) was loaded.
+(lldb) thread list
+Process 72104 stopped
+* thread #1: tid = 0xb5ac, 0x00007fffd365d700 ntdll.dll`RtlAllocateHeap + 5424
+  thread #2: tid = 0xf7b4, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #3: tid = 0x116f0, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #4: tid = 0xb694, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #5: tid = 0xb0f0, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #6: tid = 0xa638, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #7: tid = 0x7c8c, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #8: tid = 0x2c98, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #9: tid = 0x7760, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #10: tid = 0xea20, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #11: tid = 0xb704, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #12: tid = 0x1178c, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #13: tid = 0xb96c, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #14: tid = 0x52b0, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #15: tid = 0x10cb8, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #16: tid = 0x8c20, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #17: tid = 0xf478, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #18: tid = 0x10070, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #19: tid = 0xdcfc, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #20: tid = 0x7994, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #21: tid = 0x075c, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #22: tid = 0x6f00, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #23: tid = 0x105e4, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #24: tid = 0x9db0, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #25: tid = 0x06d4, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #26: tid = 0xcb94, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #27: tid = 0xd2e4, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #28: tid = 0x8a68, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #29: tid = 0xfec8, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #30: tid = 0x8cb4, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #31: tid = 0xac18, 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+  thread #32: tid = 0xaf74, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #33: tid = 0x1099c, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #34: tid = 0x7384, 0x00007fffd133ad04 win32u.dll`NtUserMsgWaitForMultipleObjectsEx + 20
+  thread #35: tid = 0xfcc8, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #36: tid = 0x9850, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #37: tid = 0x744c, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #38: tid = 0xdb20, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+  thread #39: tid = 0x5048, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #40: tid = 0x07b4, 0x00007fffd133ad04 win32u.dll`NtUserMsgWaitForMultipleObjectsEx + 20
+  thread #41: tid = 0x11d34, 0x00007fffd1331324 win32u.dll`NtUserGetMessage + 20
+  thread #42: tid = 0x103ec, 0x00007fffd37a2354 ntdll.dll`NtDelayExecution + 20
+  thread #43: tid = 0x12c2c, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #44: tid = 0x12a9c, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #45: tid = 0xbe5c, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #46: tid = 0x12d78, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #47: tid = 0xbea0, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #48: tid = 0x39ec, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #49: tid = 0xd450, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #50: tid = 0xd220, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #51: tid = 0x7c44, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #52: tid = 0x12ba4, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #53: tid = 0x0ab8, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #54: tid = 0xae04, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #55: tid = 0xcb34, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #56: tid = 0xece8, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #57: tid = 0xd6cc, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #58: tid = 0x6230, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #59: tid = 0x5f1c, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #60: tid = 0x106e4, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #61: tid = 0xa8e0, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #62: tid = 0xab4c, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #63: tid = 0x66e4, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #64: tid = 0x9fe4, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #65: tid = 0xb888, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #66: tid = 0x7fa8, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #67: tid = 0xabe8, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #68: tid = 0x8c30, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #69: tid = 0x7680, 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+  thread #70: tid = 0xc590, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #71: tid = 0x12df8, 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+  thread #72: tid = 0x75a0, 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+(lldb) thread backtrace all
+* thread #1
+  * frame #0: 0x00007fffd365d700 ntdll.dll`RtlAllocateHeap + 5424
+    frame #1: 0x00007fffd365cde4 ntdll.dll`RtlAllocateHeap + 3092
+    frame #2: 0x00007fffd365cca4 ntdll.dll`RtlAllocateHeap + 2772
+    frame #3: 0x00007fffd2b4d6b0 msvcrt.dll`malloc + 112
+    frame #4: 0x00007ff7bdb8cda1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 84975985
+    frame #5: 0x00007ff7bde96e6d Godot_v4.7.2-stable_win64.exe`NoHotPatch + 88162877
+    frame #6: 0x00007ff7bc4116d4 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 60353188
+    frame #7: 0x00007ff7bc41224b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 60356123
+    frame #8: 0x00007ff7be5a5e66 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 95564342
+    frame #9: 0x00007ff7b90dfb6e Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6672190
+    frame #10: 0x00007ff7b8fb613a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5453066
+    frame #11: 0x00007ff7bc61c472 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62494786
+    frame #12: 0x00007ff7b90d3b26 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6622966
+    frame #13: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #14: 0x00007ff7bc89803f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65098767
+    frame #15: 0x00007ff7bc61c472 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62494786
+    frame #16: 0x00007ff7b90f07b1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6740865
+    frame #17: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #18: 0x00007ff7bc89803f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65098767
+    frame #19: 0x00007ff7bc61c472 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62494786
+    frame #20: 0x00007ff7b90f07b1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6740865
+    frame #21: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #22: 0x00007ff7bc89803f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65098767
+    frame #23: 0x00007ff7bc61c472 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62494786
+    frame #24: 0x00007ff7b90f07b1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6740865
+    frame #25: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #26: 0x00007ff7baee168a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38136410
+    frame #27: 0x00007ff7bdb8da65 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 84979253
+    frame #28: 0x00007ff7bc8962c1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65091217
+    frame #29: 0x00007ff7baecbe06 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38048214
+    frame #30: 0x00007ff7baed3160 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38077744
+    frame #31: 0x00007ff7baed4e5b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38085163
+    frame #32: 0x00007ff7be0376b4 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 89868932
+    frame #33: 0x00007ff7b90d3db6 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6623622
+    frame #34: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #35: 0x00007ff7bc89803f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65098767
+    frame #36: 0x00007ff7bc5ad0de Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62039214
+    frame #37: 0x00007ff7bc8a519b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65152363
+    frame #38: 0x00007ff7b90f07b1 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 6740865
+    frame #39: 0x00007ff7b8fb4798 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 5446504
+    frame #40: 0x00007ff7bc89803f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65098767
+    frame #41: 0x00007ff7bc5ad0de Godot_v4.7.2-stable_win64.exe`NoHotPatch + 62039214
+    frame #42: 0x00007ff7bc8a519b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65152363
+    frame #43: 0x00007ff7baf9c7a5 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38902645
+    frame #44: 0x00007ff7baf9ce7b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38904395
+    frame #45: 0x00007ff7baf9e6f0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38910656
+    frame #46: 0x00007ff7baf5c51d Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38639853
+    frame #47: 0x00007ff7baf63a5b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 38669867
+    frame #48: 0x00007ff7bed7757b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 103762251
+    frame #49: 0x00007ff7b8a943d3 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 71587
+    frame #50: 0x00007ff7b8abfa46 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 249366
+    frame #51: 0x00007ff7bc57008a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 61789274
+    frame #52: 0x00007ff7bc571f70 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 61797184
+    frame #53: 0x00007ff7b8aa8e25 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 156149
+    frame #54: 0x00007ff7b8a82eec Godot_v4.7.2-stable_win64.exe`NoHotPatch + 700
+    frame #55: 0x00007ff7b8ad2b42 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 327442
+    frame #56: 0x00007ff7b8ad2b7e Godot_v4.7.2-stable_win64.exe`NoHotPatch + 327502
+    frame #57: 0x00007ff7b8a810c9 Godot_v4.7.2-stable_win64.exe`
+    frame #58: 0x00007ff7b8a813f6 Godot_v4.7.2-stable_win64.exe`
+    frame #59: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #60: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #2
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #3
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #4
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #5
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #6
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffcb6663c8 CoreMessaging.dll`CoreUICallSend + 90728
+    frame #3: 0x00007fffcb6660a3 CoreMessaging.dll`CoreUICallSend + 89923
+    frame #4: 0x00007fffcb665cfe CoreMessaging.dll`CoreUICallSend + 88990
+    frame #5: 0x00007fffcb6593bc CoreMessaging.dll`CoreUICallSend + 37468
+    frame #6: 0x00007fffcb658947 CoreMessaging.dll`CoreUICallSend + 34791
+    frame #7: 0x00007fffcb656f74 CoreMessaging.dll`CoreUICallSend + 28180
+    frame #8: 0x00007fffcb656b0d CoreMessaging.dll`CoreUICallSend + 27053
+    frame #9: 0x00007fffcb659e38 CoreMessaging.dll`CoreUICallSend + 40152
+    frame #10: 0x00007fffcb6cd5ea CoreMessaging.dll`CoreUICallCreateEndpointHost + 9482
+    frame #11: 0x00007fffcb6c76df CoreMessaging.dll`CoreUICreate + 27167
+    frame #12: 0x00007fffcb691f0b CoreMessaging.dll`CoreUICallSend + 269739
+    frame #13: 0x00007fff996aaefd inputhost.dll`SetInputFocus + 25773
+    frame #14: 0x00007fff996a1d09 inputhost.dll`CreateInputDeviceWatcher + 5273
+    frame #15: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #16: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #7
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bd818d15 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 81354981
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #8
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #9
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #10
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #11
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #12
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #13
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #14
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #15
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #16
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #17
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #18
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #19
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #20
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #21
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #22
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #23
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #24
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #25
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #26
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #27
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #28
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #29
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #30
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #31
+    frame #0: 0x00007fffd37a5924 ntdll.dll`NtWaitForAlertByThreadId + 20
+    frame #1: 0x00007fffd36d4d4e ntdll.dll`RtlSleepConditionVariableSRW + 478
+    frame #2: 0x00007fffd0809618 KERNELBASE.dll`SleepConditionVariableSRW + 56
+    frame #3: 0x00007ff7bc8d75b0 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 65358208
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #32
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd0f8f1b7 crypt32.dll`I_CryptWalkAllLruCacheEntries + 327
+    frame #3: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #4: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #33
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd0809201 KERNELBASE.dll`WaitForMultipleObjects + 17
+    frame #3: 0x00007fff0dfa1577 nvoglv64.dll`DrvPresentBuffers + 61047
+    frame #4: 0x00007fff0dfa0af8 nvoglv64.dll`DrvPresentBuffers + 58360
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #34
+    frame #0: 0x00007fffd133ad04 win32u.dll`NtUserMsgWaitForMultipleObjectsEx + 20
+    frame #1: 0x00007fff0df6526f nvoglv64.dll`DrvValidateVersion + 17887
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #35
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #36
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd24dd5be combase.dll`CoLockObjectExternal + 12206
+    frame #3: 0x00007fffd251ce91 combase.dll`RoParameterizedTypeExtraGetTypeSignature + 561
+    frame #4: 0x00007fffd251cd49 combase.dll`RoParameterizedTypeExtraGetTypeSignature + 233
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #37
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #38
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #39
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd251d11e combase.dll`RoParameterizedTypeExtraGetTypeSignature + 1214
+    frame #3: 0x00007fffd251cf56 combase.dll`RoParameterizedTypeExtraGetTypeSignature + 758
+    frame #4: 0x00007fffd251cd49 combase.dll`RoParameterizedTypeExtraGetTypeSignature + 233
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #40
+    frame #0: 0x00007fffd133ad04 win32u.dll`NtUserMsgWaitForMultipleObjectsEx + 20
+    frame #1: 0x00007fffd221b476 SHCore.dll`
+    frame #2: 0x00007fffd221a88e SHCore.dll`
+    frame #3: 0x00007fffd2219c47 SHCore.dll`
+    frame #4: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #5: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #41
+    frame #0: 0x00007fffd1331324 win32u.dll`NtUserGetMessage + 20
+    frame #1: 0x00007fffd204f622 user32.dll`GetMessageW + 34
+    frame #2: 0x00007ff7b9f2af57 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 21660455
+    frame #3: 0x00007ff7b9fe7d38 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 22434056
+    frame #4: 0x00007ff7ba00841e Godot_v4.7.2-stable_win64.exe`NoHotPatch + 22566894
+    frame #5: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #6: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #7: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #8: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #42
+    frame #0: 0x00007fffd37a2354 ntdll.dll`NtDelayExecution + 20
+    frame #1: 0x00007fffd3711a04 ntdll.dll`RtlDelayExecution + 52
+    frame #2: 0x00007fffd080e7a1 KERNELBASE.dll`SleepEx + 145
+    frame #3: 0x00007ff7b9dd458d Godot_v4.7.2-stable_win64.exe`NoHotPatch + 20257117
+    frame #4: 0x00007ff7bc3a8abd Godot_v4.7.2-stable_win64.exe`NoHotPatch + 59924109
+    frame #5: 0x00007ff7bd774b1a Godot_v4.7.2-stable_win64.exe`NoHotPatch + 80682730
+    frame #6: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #7: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #8: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #9: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #43
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78ca521 nvwgf2umx.dll`NVDEV_Thunk + 144609
+    frame #3: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #4: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #5: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #44
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd0809201 KERNELBASE.dll`WaitForMultipleObjects + 17
+    frame #3: 0x00007fffb70bc546 nvwgf2umx.dll`NVAPI_DirectMethods + 152582
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #45
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb791574f nvwgf2umx.dll`NVDEV_Thunk + 452367
+    frame #3: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #4: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #5: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #46
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #47
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #48
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #49
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #50
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #51
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #52
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #53
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #54
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #55
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #56
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #57
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #58
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #59
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #60
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #61
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #62
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #63
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #64
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #65
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #66
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #67
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #68
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #69
+    frame #0: 0x00007fffd37a1d54 ntdll.dll`NtWaitForSingleObject + 20
+    frame #1: 0x00007fffd0802a5f KERNELBASE.dll`WaitForSingleObjectEx + 175
+    frame #2: 0x00007fffb78a6b58 nvwgf2umx.dll`getDiskCacheFunctionTable + 30664
+    frame #3: 0x00007fffb78a6a7f nvwgf2umx.dll`getDiskCacheFunctionTable + 30447
+    frame #4: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #5: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #6: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #70
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd0809201 KERNELBASE.dll`WaitForMultipleObjects + 17
+    frame #3: 0x00007fffb7910e17 nvwgf2umx.dll`NVDEV_Thunk + 433623
+    frame #4: 0x00007fffb7a08a1a nvwgf2umx.dll`NVDEV_Thunk + 1448410
+    frame #5: 0x00007fffb7e3d94a nvwgf2umx.dll`NVDEV_Thunk + 5859594
+    frame #6: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #7: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #71
+    frame #0: 0x00007fffd37a2824 ntdll.dll`NtWaitForMultipleObjects + 20
+    frame #1: 0x00007fffd0809333 KERNELBASE.dll`WaitForMultipleObjectsEx + 291
+    frame #2: 0x00007fffd0809201 KERNELBASE.dll`WaitForMultipleObjects + 17
+    frame #3: 0x00007ff7bd38feb9 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 76599945
+    frame #4: 0x00007ff7bd39015d Godot_v4.7.2-stable_win64.exe`NoHotPatch + 76600621
+    frame #5: 0x00007ff7bd390806 Godot_v4.7.2-stable_win64.exe`NoHotPatch + 76602326
+    frame #6: 0x00007ff7bdb10c8b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 84467803
+    frame #7: 0x00007ff7bf06c67f Godot_v4.7.2-stable_win64.exe`NoHotPatch + 106863183
+    frame #8: 0x00007ff7bd39357b Godot_v4.7.2-stable_win64.exe`NoHotPatch + 76613963
+    frame #9: 0x00007fffd2b6f0ad msvcrt.dll`_beginthreadex + 301
+    frame #10: 0x00007fffd2b6f17c msvcrt.dll`_endthreadex + 172
+    frame #11: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #12: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44
+  thread #72
+    frame #0: 0x00007fffd37a5984 ntdll.dll`NtWaitForWorkViaWorkerFactory + 20
+    frame #1: 0x00007fffd36b5f3e ntdll.dll`RtlSetThreadSubProcessTag + 6894
+    frame #2: 0x00007fffd2cce8d7 kernel32.dll`BaseThreadInitThunk + 23
+    frame #3: 0x00007fffd36cc53c ntdll.dll`RtlUserThreadStart + 44

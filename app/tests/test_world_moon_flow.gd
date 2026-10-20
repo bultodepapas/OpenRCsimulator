@@ -2,7 +2,7 @@
 # 30 s sky steps instead of jumping 0.12° per step. The per-frame values are a pure function of the simulation clock,
 # meet the stepped state at every step, reuse the next step's state exactly, and are written only while the
 # environment does not use the sky's radiance; frozen sessions, pauses and "no moon" leave the uniforms alone; the
-# disc stays out of the radiance cubemap pass.
+# disc stays out of the radiance cubemap pass. FW-MOON-06d: in twilight the slow sky terms follow per frame too.
 # Run: godot --headless --path . --script res://tests/test_world_moon_flow.gd
 extends SceneTree
 
@@ -50,6 +50,75 @@ func _play(mat: ShaderMaterial, stars: Node3D, start_s: float, seconds: float) -
 		frames.append({t = t, moon = mat.get_shader_parameter("moon_dir"), body = mat.get_shader_parameter("moon_render_to_body"),
 			stars = stars.basis, step = int(t * 20.0 / World.FLOW_STEP_SKY_S)})
 	return frames
+
+
+static func _lum(v: Vector3) -> float:
+	return 0.2126 * v.x + 0.7152 * v.y + 0.0722 * v.z
+
+
+## FW-MOON-06d: the slow sky between the steps, in the Moonrise evening's nautical twilight (sun about −6°), where
+## one 30 s step darkens the sky by ~14 %: per frame it falls smoothly, meets the stepped sky at each step, leaves
+## Atmosphere.state and the lake's water at the step, feeds the eye's adaptation, and replays exactly.
+func _twilight(field: Dictionary) -> void:
+	var holder := Node3D.new()
+	var built := World.build(holder, field, Callable(), Conditions.resolve(PackedStringArray(["--date=2026-09-26", "--time=19:00",
+		"--time_scale=20"])))
+	var env: Environment = built.environment
+	var mat := env.sky.sky_material as ShaderMaterial
+	var water: ShaderMaterial = null
+	for probe: Node in holder.find_children("*", "ReflectionProbe", true, false):
+		water = probe.get("water_material")
+	var start := 270.0 # 90 min of sky after 19:00 at ×20
+	var rows := []
+	var worst_frame := 0.0
+	var worst_ambient := 0.0
+	var state_kept := true
+	var water_steps := true
+	var previous := {}
+	for i in int(3.0 * FPS) + 1:
+		var t := start + float(i) / FPS
+		var stepped := World.flow_to(t)
+		var before := str(Atmosphere.state)
+		var water_before: Variant = water.get_shader_parameter("haze_lin") if water != null else null
+		World.flow_frame(t)
+		state_kept = state_kept and str(Atmosphere.state) == before
+		if water != null and not stepped:
+			water_steps = water_steps and water.get_shader_parameter("haze_lin") == water_before
+		var row := {z = _lum(mat.get_shader_parameter("zenith_lin")), a = _lum(Vector3(env.ambient_light_color.r,
+			env.ambient_light_color.g, env.ambient_light_color.b)), x = World.view_exposure(Vector3(0.0, 30.0, -100.0))}
+		if not previous.is_empty():
+			worst_frame = maxf(worst_frame, absf(log(row.z / previous.z)))
+			worst_ambient = maxf(worst_ambient, absf(log(maxf(row.a, 1e-30) / maxf(previous.a, 1e-30))))
+		rows.append(row)
+		previous = row
+	_check("twilight: the sky changes per step by more than 5 %", absf(log(rows[90].z / rows[0].z)) > 0.05,
+		"%.4f" % absf(log(rows[90].z / rows[0].z)))
+	_check("twilight: no frame changes the zenith by more than 0.5 %", worst_frame < 0.005, "%.5f" % worst_frame)
+	_check("twilight: no frame changes the ambient colour by more than 2 %", worst_ambient < 0.02, "%.5f" % worst_ambient)
+	_check("twilight: Atmosphere.state stays the stepped state", state_kept)
+	_check("twilight: the lake's water keeps the step cadence (its probe re-renders on change)", water != null and water_steps)
+	var steady := true
+	for i in range(1, rows.size()):
+		steady = steady and rows[i].x > rows[i - 1].x * 0.995 # night falls: the eye opens, never jumps back
+	_check("twilight: the eye's adaptation goal rises smoothly with the frame sky", steady)
+	# At a step instant the frame sky is the step's own (fraction 0: flow_frame leaves the stepped uniforms).
+	World.flow_to(start + 1.5)
+	var z_step: float = _lum(mat.get_shader_parameter("zenith_lin"))
+	World.flow_frame(start + 1.5)
+	_check("twilight: at a step the frame sky is the stepped sky", absf(_lum(mat.get_shader_parameter("zenith_lin")) / z_step - 1.0) < 1e-6)
+	# Replays: the same clock gives the same frame sky.
+	World.flow_to(0.0)
+	var again := []
+	for i in int(3.0 * FPS) + 1:
+		var t := start + float(i) / FPS
+		World.flow_to(t)
+		World.flow_frame(t)
+		again.append(_lum(mat.get_shader_parameter("zenith_lin")))
+	var same := true
+	for i in again.size():
+		same = same and again[i] == rows[i].z
+	_check("twilight: replaying the clock gives the same frame sky", same)
+	holder.free()
 
 
 func _initialize() -> void:
@@ -153,18 +222,21 @@ func _initialize() -> void:
 		and mat.get_shader_parameter("moon_dir") == before)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 
-	# No moon: the disc uniform is left alone; the stars still turn.
+	# No moon: the disc stays invisible between the steps (FW-MOON-06d writes the whole frame sky); the stars still turn.
 	var off := MoonConfig.defaults()
 	off.moon = "off"
 	World.set_moon_config(off)
 	before = mat.get_shader_parameter("moon_dir")
+	var stars_before := stars.basis
 	var turned := World.flow_frame(5.2)
-	_check("no moon: the disc uniform is untouched, the stars still turn", turned and mat.get_shader_parameter("moon_dir") == before
-		and Atmosphere.state.moon_lin == Vector3.ZERO)
+	_check("no moon: the disc stays invisible, the stars still turn", turned and mat.get_shader_parameter("moon_lin") == Vector3.ZERO
+		and Atmosphere.state.moon_lin == Vector3.ZERO and not stars.basis.is_equal_approx(stars_before))
 	World.set_moon_config(MoonConfig.defaults())
 	_check("the moon returns and moves on the next frame", World.flow_frame(5.3) and Atmosphere.state.moon_lin != Vector3.ZERO
 		and mat.get_shader_parameter("moon_dir") != before)
 	holder.free()
+
+	_twilight(field)
 
 	# Frozen sessions never move.
 	var frozen := Node3D.new()

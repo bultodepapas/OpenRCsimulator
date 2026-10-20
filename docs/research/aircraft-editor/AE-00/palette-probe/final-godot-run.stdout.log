@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+RED_ONLY red_pixels=956 blue_pixels=0
+PASS red birth colors visible before palette switch
+RED_BLUE red_pixels=2637 blue_pixels=366
+PASS old red and new blue births coexist
+RESET red_pixels=3080 blue_pixels=661
+RESULT failures=2

@@ -3,6 +3,7 @@
 extends Node
 
 const Projected = preload("res://render/projected_shadow.gd")
+const WindsockProjected = preload("res://render/windsock_projected_shadow.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Scenery = preload("res://scenery/scenery.gd")
 const MAX_SCENERY_RANGE := 100.0 # artistic near-field budget, metres from pilot
@@ -26,7 +27,14 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) 
 	var cues_complete := true
 	for cue: Dictionary in field.get("flight_cues", []):
 		var model := field_node.get_node_or_null(NodePath(str(cue.id))) as Node3D
-		if model == null or not manager.add_caster(model):
+		# The windsock keeps its static pole, and shares the visible GPU deformation
+		# for the moving sleeve and swivelling hardware in the same coverage map.
+		var shape: Dictionary = {}
+		if model != null and cue.type == "windsock":
+			var support := model.get_node_or_null("Support") as Node3D
+			if support != null:
+				shape = Projected.collect(support, 0.04)
+		if model == null or not manager.add_caster(model, shape):
 			cues_complete = false
 	# Legacy cues share one mesh. Keep the complete old set if any new cue fails,
 	# avoiding both missing contacts and overlapping old/new receivers.
@@ -79,10 +87,11 @@ func add_caster(model: Node3D, collected_shape: Dictionary = {}) -> bool:
 	var longest := maxf(shape.bounds.size.x, shape.bounds.size.z)
 	# At most 1024² per static batch, without an MSAA depth/color target. Small cues
 	# use 256². This preserves the narrow fence slats within the bounded memory cap.
-	var resolution := 256 if longest < 8.0 else (512 if longest < 20.0 else 1024)
+	var moving_sock := model.has_meta("windsock_motion")
+	var resolution := 512 if moving_sock else (256 if longest < 8.0 else (512 if longest < 20.0 else 1024))
 	if target_pixels + resolution * resolution > MAX_TARGET_PIXELS:
 		return false
-	var projector := Projected.new()
+	var projector: Node = WindsockProjected.new() if moving_sock else Projected.new()
 	projector.name = "Caster_" + str(model.name)
 	add_child(projector)
 	projector.setup(model, shape, resolution, Viewport.MSAA_DISABLED)
@@ -228,7 +237,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	# FW flowing time changes its shared visual state; read it, never advance it.
-	var signature := [Atmosphere.shadow_direction(), Atmosphere.light_energy()]
+	var signature := [Atmosphere.shadow_direction(), Atmosphere.light_energy(), Atmosphere.shadow_strength()]
 	if signature != _light_signature:
 		apply(snapshot)
 
@@ -241,7 +250,7 @@ func apply(lighting: Dictionary) -> void:
 	set_process(flowing)
 	if flowing:
 		strength *= clampf(Atmosphere.light_energy() / float(Atmosphere.Spec.ATMOSPHERE.sun_energy), 0.0, 1.0)
-	_light_signature = [direction, Atmosphere.light_energy(lighting)]
+	_light_signature = [direction, Atmosphere.light_energy(lighting), Atmosphere.shadow_strength(lighting)]
 	for projector in projectors:
 		projector.refresh(float(projector.get_meta("soft_height")), direction,
 			OPACITY * strength, strength > 0.0)

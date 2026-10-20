@@ -5,6 +5,17 @@ extends SceneTree
 const Sound := preload("res://render/engine_sound.gd")
 const FlightAudio := preload("res://audio/flight_audio.gd")
 
+class LegacySessionStub extends Node:
+	var engine_running: bool = true
+
+
+class AcceptedSourceStub extends Node:
+	var engine_running: bool = true
+	var accepted_running: bool = false
+
+	func propulsion_source_running() -> bool:
+		return accepted_running
+
 var _failures := 0
 var _count := 0
 
@@ -51,6 +62,17 @@ func _initialize() -> void:
 		Sound.reference_rpm({"kind": "electric_prop"}) == 0.0)
 	_check("Timber audio uses its three-blade propeller", FlightAudio.propeller_blade_count("turbo-lumber-evolution") == 3)
 	_check("other aircraft keep the two-blade default", FlightAudio.propeller_blade_count("jensen-ugly-stik-60") == 2)
+	var accepted_source := AcceptedSourceStub.new()
+	_check("accepted stopped source silences audio while ignition remains on",
+		FlightAudio.propulsion_source_running(accepted_source) == false and accepted_source.engine_running)
+	accepted_source.accepted_running = true
+	_check("accepted active source restores audio",
+		FlightAudio.propulsion_source_running(accepted_source) and accepted_source.engine_running)
+	var legacy_session := LegacySessionStub.new()
+	_check("audio compatibility falls back to engine_running without source API",
+		FlightAudio.propulsion_source_running(legacy_session))
+	accepted_source.free()
+	legacy_session.free()
 
 	# The buzz has its fundamental at rpm/60, not in between harmonics.
 	for rpm in [2800.0, 5139.0, 11149.0]:

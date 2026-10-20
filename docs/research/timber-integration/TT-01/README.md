@@ -4,7 +4,7 @@
 
 ## What was done
 
-- `research/timber/tt01/manifest.py` hashes every file of the tracked delivery `Timber turbo evolution/turbo_timber_evolution/r1/` and writes `assets/aircraft/turbo-lumber-evolution/source-manifest.json`: 38 files, 12,301,268 bytes, key files by role (GLB, demo GLB, metadata, export map, verification, Blender scene, licence, readme, changelog), the visual revision `r1-fb7586f19029` and the informational git commit `28cd5c6`.
+- `research/timber/tt01/manifest.py` hashes every file of the tracked delivery `assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1/` and writes `assets/aircraft/turbo-lumber-evolution/source-manifest.json`: 38 files, 12,301,268 bytes, key files by role (GLB, demo GLB, metadata, export map, verification, Blender scene, licence, readme, changelog), the visual revision `r1-fb7586f19029` and the informational git commit `28cd5c6`.
 - The 38 hashes are identical to the independent [TT-00-R1 binary audit](../TT-00-R1/glb-audit.json) (checked with a one-off Python comparison of both tables).
 - The asset README records origin, author, hardware revision, loadout, catalog ID and source alias, the terms status and the r2 request list.
 

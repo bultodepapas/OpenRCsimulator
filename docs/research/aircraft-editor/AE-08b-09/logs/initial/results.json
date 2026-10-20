@@ -1,0 +1,143 @@
+[
+  {
+    "suite": "test_workshop_compiler",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Workshop compiler: 314 checks, 0 failures"
+  },
+  {
+    "suite": "test_workshop_descriptor",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "102 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_integration",
+    "exit_code": 0,
+    "assertions": 34,
+    "errors": [],
+    "summary": "Workshop integration: 0 failed"
+  },
+  {
+    "suite": "test_workshop_preview",
+    "exit_code": 1,
+    "assertions": 32,
+    "errors": [
+      "FAIL default inspection uses the target width while retaining margin projected width fraction=0.800\r"
+    ],
+    "summary": "workshop preview checks: 1 failures"
+  },
+  {
+    "suite": "test_workshop_store",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "137 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_trial",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Workshop trial: 38 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_ui",
+    "exit_code": 0,
+    "assertions": 112,
+    "errors": [],
+    "summary": "Workshop UI: 0 failed"
+  },
+  {
+    "suite": "test_ui_quit",
+    "exit_code": 0,
+    "assertions": 42,
+    "errors": [],
+    "summary": "UI quit: 0 failed"
+  },
+  {
+    "suite": "test_ui_pause",
+    "exit_code": 1,
+    "assertions": 67,
+    "errors": [
+      "FAIL failed save: still in the flight, the menu explains \r",
+      "FAIL End again: Home, without the trace \r",
+      "FAIL 5 cycles: no session, engine sound or pause menu left \r"
+    ],
+    "summary": "3 failed"
+  },
+  {
+    "suite": "test_ui_pause_responsive",
+    "exit_code": 0,
+    "assertions": 422,
+    "errors": [],
+    "summary": "all responsive Pause checks passed (422)"
+  },
+  {
+    "suite": "test_ui_screen_stack",
+    "exit_code": 0,
+    "assertions": 38,
+    "errors": [],
+    "summary": "all UI screen stack checks passed"
+  },
+  {
+    "suite": "test_ui_input",
+    "exit_code": 0,
+    "assertions": 17,
+    "errors": [],
+    "summary": "all UI input checks passed"
+  },
+  {
+    "suite": "test_controller_menu",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Controller menu: 48/48 checks passed"
+  },
+  {
+    "suite": "test_ui_language",
+    "exit_code": 0,
+    "assertions": 26,
+    "errors": [],
+    "summary": "all UI language checks passed"
+  },
+  {
+    "suite": "test_ui_scale",
+    "exit_code": 0,
+    "assertions": 72,
+    "errors": [],
+    "summary": "ok   danger announcement chip uses readable text on red"
+  },
+  {
+    "suite": "test_ui_modal_responsive",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [
+      "SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.\r",
+      "SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.\r",
+      "SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.\r",
+      "SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.\r",
+      "ERROR: 4 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.\r",
+      "ERROR: 39 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.\r",
+      "ERROR: 4 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.\r",
+      "ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.\r"
+    ],
+    "summary": "   at: cleanup (core/object/object.cpp:2536)"
+  },
+  {
+    "suite": "test_menu_audio",
+    "exit_code": 0,
+    "assertions": 26,
+    "errors": [],
+    "summary": "ok   muting stops an already playing cue"
+  },
+  {
+    "suite": "test_ui_settings_integration",
+    "exit_code": 0,
+    "assertions": 27,
+    "errors": [],
+    "summary": "all Settings integration checks passed"
+  }
+]

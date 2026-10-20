@@ -4,6 +4,7 @@
 extends RefCounted
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Landscapes := preload("res://landscapes/catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
@@ -30,6 +31,7 @@ const DEFAULTS := {
 	# UI-16: Home may ask GitHub once a day whether a newer release is published ([updates] check in the file).
 	check_updates = true,
 	aircraft = Catalog.DEFAULT_ID,
+	landscape = Landscapes.DEFAULT_ID,
 	start_choice = "runway",
 	# The FW Home preset remains an additive schema-1 field; selecting astronomical lighting clears it to "day".
 	time_of_day = "evening",
@@ -86,6 +88,9 @@ static func load_from(path: String) -> Dictionary:
 	var aircraft: Variant = cfg.get_value("flight", "aircraft", DEFAULTS.aircraft)
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = aircraft
+	var landscape: Variant = cfg.get_value("flight", "landscape", DEFAULTS.landscape)
+	if typeof(landscape) == TYPE_STRING and Landscapes.has(landscape):
+		prefs.landscape = landscape
 	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
 	# Missing or invalid choices use the product default; explicit airborne choices remain valid.
 	prefs.start_choice = "runway" if FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft) else "airborne"
@@ -185,6 +190,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))
 	cfg.set_value("updates", "check", prefs.get("check_updates", DEFAULTS.check_updates))
 	cfg.set_value("flight", "aircraft", prefs.get("aircraft", DEFAULTS.aircraft))
+	cfg.set_value("flight", "landscape", prefs.get("landscape", DEFAULTS.landscape))
 	cfg.set_value("flight", "start_choice", prefs.get("start_choice", DEFAULTS.start_choice))
 	cfg.set_value("flight", "time_of_day", time_of_day)
 	cfg.set_value("flight", "latency_marker", prefs.get("latency_marker", DEFAULTS.latency_marker))

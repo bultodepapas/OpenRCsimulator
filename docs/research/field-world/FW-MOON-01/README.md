@@ -1,6 +1,6 @@
 # FW-MOON-01: moon render-path spike (sky-shader disc or mesh disc)
 
-**Status:** research record, 2026-10-19. No runtime change. It answers the render-path question of the [moon plan](../../../plans/moon.md) (§4 "Render-path choice", §7 FW-MOON-01). **Result: candidate A, the sky-shader disc, updated every frame** (§4), recorded in [DECISIONS](../../../../DECISIONS.md). Scripts and the bench project: [research/field-world/fw-moon-01/](../../../../research/field-world/fw-moon-01/). Engine sources: the gitignored `references/moon/code/*-4.7.2.*` (hashes in §7).
+**Status:** research record, 2026-10-19. No runtime change. It answers the render-path question of the [moon plan](../../../plans/moon.md) (§4 "Render-path choice", §7 FW-MOON-01). **Result: candidate A, the sky-shader disc, updated every frame** (§4), recorded in [DECISIONS](../../../DECISIONS.md). Scripts and the bench project: [research/field-world/fw-moon-01/](../../../../research/field-world/fw-moon-01/). Engine sources: the gitignored `references/moon/code/*-4.7.2.*` (hashes in §7).
 
 All timings come from Mesa llvmpipe (software rendering) under Xvfb on a shared VM with load average 10–50 on 12 cores. They are **relative only**: they show what work runs and how it scales, never what the target GPU will cost.
 

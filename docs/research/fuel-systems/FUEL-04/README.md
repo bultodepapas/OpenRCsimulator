@@ -1,5 +1,7 @@
 # FUEL-04 — One fixed-datum resource kernel (2026-10-19)
 
+**Later clarification 2026-10-19:** this evidence describes the original FUEL-04 snapshot. The prediction below that empty-tank balancing would make the solver datum dry was not implemented. The datum remains the authored reference inventory CG; `plan_cg` is a separate balance target. See the [unified standard](../../../plans/fuel-mass-balance.md#32-frames-mass-and-balance) and [FUEL-00-R1 review](../FUEL-00-R1/README.md).
+
 Evidence for step FUEL-04 of the [fuel, mass and balance plan](../../../plans/fuel-mass-balance.md). This closes F07 (two mass kernels for one law) and sets the datum rule of D2. Every existing trajectory is bit-identical.
 
 ## Change

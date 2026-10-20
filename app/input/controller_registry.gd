@@ -6,6 +6,8 @@ signal devices_changed
 
 const ROLES := ["flight", "ui"]
 const IDENTITY_FIELDS := ["guid", "vendor_id", "product_id", "serial_number", "raw_name", "backend", "transport"]
+const JETI_IDENTITY_FIELDS := ["name", "manufacturer", "emulated", "is_emulated", "virtual", "is_virtual"]
+const JetiRadio := preload("res://input/jeti_radio.gd")
 
 var _devices: Dictionary = {} # current connection handle -> copied device record
 var _selections: Dictionary = {"flight": -1, "ui": -1}
@@ -52,6 +54,10 @@ func update_devices(observations: Array) -> Dictionary:
 		var record := _normalize_observation(observed, id)
 		var was_connected: bool = previous.get("connected", false)
 		var identity_changed := was_connected and not _same_identity(previous, record)
+		if was_connected and not identity_changed:
+			# _normalize_observation starts a fresh candidate record; preserve the
+			# prior derived ambiguity until the current snapshot recomputes it.
+			record["ambiguous"] = bool(previous.get("ambiguous", false))
 		var reconnected := not previous.is_empty() and not was_connected
 		var generation := int(previous.get("generation", 0))
 		if previous.is_empty():
@@ -70,6 +76,13 @@ func update_devices(observations: Array) -> Dictionary:
 		_devices[id] = record
 
 	changed = _apply_ambiguity_flags() or changed
+	for id in _devices:
+		var device: Dictionary = _devices[id]
+		var display_name := JetiRadio.display_name(device)
+		if str(device.get("display_name", "")) != display_name:
+			device["display_name"] = display_name
+			_devices[id] = device
+			changed = true
 	for role in lost_selections:
 		selection_changed.emit(role, -1)
 	if changed:
@@ -138,32 +151,54 @@ func connection_generation(id: int) -> int:
 
 
 func _normalize_observation(info: Dictionary, id: int) -> Dictionary:
+	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
 	var name := _string_field(info, "name", "joystick %d" % id)
 	var raw_name := _string_field(info, "raw_name", name)
+	if jeti_claim:
+		name = _identity_string_field(info, "name", "joystick %d" % id)
+		raw_name = _identity_string_field(info, "raw_name", name)
+	var backend := _string_field(info, "backend")
+	var transport := _string_field(info, "transport")
+	if jeti_claim:
+		backend = _identity_string_field(info, "backend")
+		transport = _identity_string_field(info, "transport")
 	var kind_value: Variant = info.get("kind", "")
 	var kind := str(kind_value) if typeof(kind_value) == TYPE_STRING and kind_value in ["gamepad", "radio", "joystick"] else ("gamepad" if info.get("known", false) else "joystick")
-	return {
+	if JetiRadio.matches(info):
+		kind = "radio"
+	elif JetiRadio.has_jeti_identity_claim(info):
+		# A JETI claim with incomplete or conflicting evidence remains an unknown stick.
+		# Do not let SDL's generic gamepad classification supply flight or menu defaults.
+		kind = "joystick"
+	var record := {
 		"id": id,
 		"guid": _string_field(info, "guid"),
 		"name": name,
 		"raw_name": raw_name,
+		"display_name": JetiRadio.display_name(info),
 		"known": bool(info.get("known", false)) if typeof(info.get("known", false)) == TYPE_BOOL else false,
 		"vendor_id": _uint_field(info, "vendor_id"),
 		"product_id": _uint_field(info, "product_id"),
 		"serial_number": _string_field(info, "serial_number"),
 		"platform": _string_field(info, "platform"),
-		"backend": _string_field(info, "backend"),
-		"transport": _string_field(info, "transport"),
+		"backend": backend,
+		"transport": transport,
 		"profile_id": _string_field(info, "profile_id"),
 		"kind": kind,
 		"connected": true,
 		"generation": 0,
 		"ambiguous": false,
 	}
+	for field in ["manufacturer", "emulated", "is_emulated", "virtual", "is_virtual"]:
+		if info.has(field):
+			var value: Variant = info[field]
+			record[field] = value if jeti_claim or typeof(value) != TYPE_STRING else value.substr(0, 256)
+	return record
 
 
 func _apply_ambiguity_flags() -> bool:
 	var changed := false
+	var lost_selections: Array[String] = []
 	var fingerprints: Dictionary = {}
 	for id in _devices:
 		var device: Dictionary = _devices[id]
@@ -176,10 +211,21 @@ func _apply_ambiguity_flags() -> bool:
 	for id in _devices:
 		var device: Dictionary = _devices[id]
 		var ambiguous := bool(device.get("connected", false)) and not _fingerprint(device).is_empty() and int(fingerprints.get(_fingerprint(device), 0)) > 1
-		if bool(device.get("ambiguous", false)) != ambiguous:
+		var ambiguity_changed := bool(device.get("ambiguous", false)) != ambiguous
+		if ambiguity_changed:
 			device["ambiguous"] = ambiguous
+			# Ambiguity participates in strict JETI matching. Invalidate its cached
+			# profile generation and release automatic ownership when that evidence changes.
+			if bool(device.get("connected", false)) and JetiRadio.has_jeti_identity_claim(device):
+				device["generation"] = int(device.get("generation", 0)) + 1
+				for role in ROLES:
+					if int(_selections[role]) == int(id):
+						_selections[role] = -1
+						lost_selections.append(role)
 			_devices[id] = device
 			changed = true
+	for role in lost_selections:
+		selection_changed.emit(role, -1)
 	return changed
 
 
@@ -197,9 +243,26 @@ func _fingerprint(device: Dictionary) -> String:
 
 func _same_identity(left: Dictionary, right: Dictionary) -> bool:
 	for field in IDENTITY_FIELDS:
-		if left.get(field, "") != right.get(field, ""):
+		if not _same_field_value(left, right, field):
 			return false
+	# Extra metadata matters only for JETI ownership. Changes to manufacturer or
+	# emulation evidence must invalidate a cached starter without changing unrelated
+	# controller generations.
+	if JetiRadio.has_jeti_identity_claim(left) or JetiRadio.has_jeti_identity_claim(right):
+		for field in JETI_IDENTITY_FIELDS:
+			if not _same_field_value(left, right, field):
+				return false
 	return true
+
+
+func _same_field_value(left: Dictionary, right: Dictionary, field: String) -> bool:
+	if left.has(field) != right.has(field):
+		return false
+	if not left.has(field):
+		return true
+	var left_value: Variant = left[field]
+	var right_value: Variant = right[field]
+	return typeof(left_value) == typeof(right_value) and left_value == right_value
 
 
 func _string_field(info: Dictionary, field: String, fallback: String = "") -> String:
@@ -207,13 +270,13 @@ func _string_field(info: Dictionary, field: String, fallback: String = "") -> St
 	return value.substr(0, 256) if typeof(value) == TYPE_STRING else fallback
 
 
+func _identity_string_field(info: Dictionary, field: String, fallback: String = "") -> String:
+	var value: Variant = info.get(field, fallback)
+	return value if typeof(value) == TYPE_STRING else fallback
+
+
 func _uint_field(info: Dictionary, field: String) -> int:
-	var value: Variant = info.get(field, 0)
-	var normalized := -1
-	if typeof(value) == TYPE_INT:
-		normalized = int(value)
-	elif typeof(value) == TYPE_STRING and value.strip_edges().is_valid_int():
-		normalized = value.strip_edges().to_int()
+	var normalized := JetiRadio.normalize_usb_id(info.get(field, null))
 	if normalized < 0 or normalized > 65535:
 		return 0
 	return normalized

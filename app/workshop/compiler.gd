@@ -5,8 +5,14 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const AircraftModules := preload("res://physics/aircraft_modules.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
-const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-1"
+const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-2"
+const MEASURED_MASS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-measured-mass-1"
+const VIRTUAL_SIZE_COMPILER_VERSION := "openrc-aircraft-workshop-v1-virtual-size-1"
+const DOMAIN_TAG := "_workshop_quantity_domain"
 const REFERENCE_DENSITY_KG_M3 := 1.225
+## FUEL-11a: tank volume follows airframe scale and an independent estimated capacity ratio;
+## fill and density stay fixed while weight policy acts on dry inventory only.
+const TANK_POLICY := "FUEL-11a dry-only mass and independent tank-capacity policy"
 
 
 ## Compiles a detached v2 candidate from the pinned base on every call.
@@ -36,9 +42,11 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 			"summary": {},
 		}
 	var scale: float = float(values.scale)
+	var virtual_size := uses_virtual_size(values)
 	var weight_multiplier: float = float(values.weight_multiplier)
 	var power_multiplier: float = float(values.power_multiplier)
 	var control_multiplier: float = float(values.control_multiplier)
+	var tank_capacity_multiplier: float = float(values.tank_capacity_multiplier)
 	var scale_power: float = 2.0 if values.mass_policy == "constant_wing_loading" else 3.0
 	var mass_ratio: float = pow(scale, scale_power) * weight_multiplier
 	if scale != 1.0 and not support.scale:
@@ -49,17 +57,33 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		parsed.errors.append("power_multiplier: unsupported; only the validated prescribed-RPM propeller adapter is available. " + str(support.note))
 	if control_multiplier != 1.0 and not support.controls:
 		parsed.errors.append("control_multiplier: unsupported because the aircraft has no declared conventional surface controls")
+	if tank_capacity_multiplier != 1.0 and not support.tank_capacity:
+		parsed.errors.append("tank_capacity_multiplier: unsupported because this aircraft has no declared fuel tanks")
+	var mass_edits: Array = values.get("mass_edits", [])
+	if not mass_edits.is_empty() and (scale != 1.0 or weight_multiplier != 1.0 or tank_capacity_multiplier != 1.0):
+		parsed.errors.append("mass_edits: measured components require original scale, weight and tank capacity")
 	if not parsed.errors.is_empty():
 		return _failure(parsed.errors)
 
 	var candidate_raw: Dictionary = base_raw.duplicate(true)
-	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0:
+	if not mass_edits.is_empty():
+		var measured: Dictionary = load("res://workshop/mass_edit.gd").apply_to_validated_base(base_raw, mass_edits)
+		if not measured.ok: return _failure(measured.errors)
+		candidate_raw = measured.raw.duplicate(true)
+	var mass_source: Dictionary = candidate_raw.duplicate(true) if not mass_edits.is_empty() else base_raw
+	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0 \
+			or tank_capacity_multiplier != 1.0:
 		_transform_candidate(candidate_raw, base_id, scale, mass_ratio, power_multiplier,
-			control_multiplier, str(values.mass_policy))
+			control_multiplier, tank_capacity_multiplier, str(values.mass_policy), virtual_size)
 	if values.has("id"):
 		candidate_raw.id = effective_id
 
-	var candidate_data: Dictionary = AircraftData.validate_and_derive(candidate_raw)
+	# Transform-emitted domains are private compiler metadata, removed before the
+	# v2 contract or serialization. Ordinary imports keep their stock numeric bounds.
+	var domain := {}
+	_collect_domains(candidate_raw, "", domain)
+	var candidate_data: Dictionary = AircraftData.validate_virtual_scale(candidate_raw, domain) \
+		if virtual_size else AircraftData.validate_and_derive(candidate_raw)
 	if not candidate_data.ok:
 		return {"ok": false, "errors": candidate_data.errors, "raw": {}, "data": candidate_data, "summary": {}}
 	var profiled_base: Dictionary = WheelProfiles.apply_to_model(base_data.model)
@@ -71,7 +95,7 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	if not wheel_errors.is_empty():
 		return {"ok": false, "errors": wheel_errors, "raw": {}, "data": _invalid_data(wheel_errors), "summary": {}}
 	var actual_mass: float = float(candidate_data.model.mass_kg)
-	var expected_mass: float = float(base_data.model.mass_kg) * mass_ratio
+	var expected_mass: float = _expected_mass(mass_source, mass_ratio, scale, tank_capacity_multiplier)
 	if absf(actual_mass - expected_mass) > maxf(1.0, expected_mass) * 1.0e-10:
 		var mass_error := PackedStringArray([
 			"inventory: compiled mass " + str(actual_mass) + " kg does not match target " + str(expected_mass) + " kg"
@@ -79,6 +103,9 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		return {"ok": false, "errors": mass_error, "raw": {}, "data": _invalid_data(mass_error), "summary": {}}
 
 	var summary := _summary(base_data.model, candidate_data.model, values, mass_ratio, support)
+	if not mass_edits.is_empty():
+		summary.mass_ratio = actual_mass / float(base_data.model.mass_kg)
+		summary.measured_components = mass_edits.size()
 	return {"ok": true, "errors": PackedStringArray(), "raw": candidate_raw, "data": candidate_data, "summary": summary}
 
 
@@ -91,6 +118,7 @@ static func capabilities(base: Dictionary) -> Dictionary:
 			"weight": false,
 			"power": false,
 			"controls": false,
+			"tank_capacity": false,
 			"note": "Base data fails openrc-aircraft v2 validation: %s" % "; ".join(checked.errors),
 		}
 	return _capabilities_for(base, checked.model)
@@ -98,6 +126,18 @@ static func capabilities(base: Dictionary) -> Dictionary:
 
 static func defaults() -> Dictionary:
 	return Parameters.defaults()
+
+
+## Extensions select their own evaluator identity; legacy recipes retain compiler-2.
+static func version_for_recipe(recipe: Dictionary) -> String:
+	var edits: Variant = recipe.get("mass_edits", [])
+	if edits is Array and not edits.is_empty(): return MEASURED_MASS_COMPILER_VERSION
+	return VIRTUAL_SIZE_COMPILER_VERSION if uses_virtual_size(recipe) else COMPILER_VERSION
+
+
+static func uses_virtual_size(recipe: Dictionary) -> bool:
+	var scale: float = float(recipe.get("scale", 1.0))
+	return recipe.get("size_model", "") == Parameters.VIRTUAL_SIZE_MODEL or scale < 0.35 or scale > 2.25
 
 
 static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
@@ -108,6 +148,7 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 			"weight": false,
 			"power": false,
 			"controls": false,
+			"tank_capacity": false,
 			"note": "Aircraft modules could not be classified: %s" % "; ".join(classification.errors),
 			"classification": classification,
 		}
@@ -119,6 +160,9 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 	var control_shape_ok: bool = raw_controls.get("max_throw", {}) is Dictionary
 	var controls_supported: bool = bool(transform_support.get("controls", false)) \
 		and control_shape_ok and model.get("controls", {}).has("throw_deg")
+	var fuel_system: Variant = raw.get("fuel_system", {})
+	var tank_capacity_supported: bool = fuel_system is Dictionary and fuel_system.get("tanks") is Array \
+		and not fuel_system.tanks.is_empty() and model.get("fuel_system", {}).get("tanks", []).size() == fuel_system.tanks.size()
 	var reasons := PackedStringArray()
 	for reason_variant: Variant in classification.compiler_transform_reasons:
 		reasons.append(str(reason_variant))
@@ -132,13 +176,15 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 		"weight": weight_supported,
 		"power": power_supported,
 		"controls": controls_supported,
+		"tank_capacity": tank_capacity_supported,
 		"note": note,
 		"classification": classification,
 	}
 
 
 static func _transform_candidate(raw: Dictionary, base_id: String, scale: float, mass_ratio: float,
-		power_multiplier: float, control_multiplier: float, mass_policy: String) -> void:
+		power_multiplier: float, control_multiplier: float, tank_capacity_multiplier: float,
+		mass_policy: String, virtual_size := false) -> void:
 	var geometry_policy := "uniform " + mass_policy + " virtual scale s=" + str(scale)
 	_transform_q(raw.reference, "wing_area", scale * scale, base_id, geometry_policy + ": area × s²")
 	_transform_q(raw.reference, "wing_span", scale, base_id, geometry_policy + ": length × s")
@@ -149,21 +195,46 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	_transform_q(raw.balance, "plan_cg", scale, base_id, geometry_policy + ": CG position × s")
 	_transform_q(raw.balance, "firewall", scale, base_id, geometry_policy + ": firewall position × s")
 	_transform_q(raw.balance, "cg_tolerance", scale, base_id, geometry_policy + ": CG tolerance × s")
+	if raw.balance.get("cg_range") is Dictionary:
+		_transform_q(raw.balance.cg_range, "forward", scale, base_id, geometry_policy + ": CG range × s")
+		_transform_q(raw.balance.cg_range, "aft", scale, base_id, geometry_policy + ": CG range × s")
+	var liquid := _tank_liquid_ids(raw)
+	var tank_inventory := _tank_inventory_ids(raw)
+	var tank_ratio: float = pow(scale, 3.0) * tank_capacity_multiplier
+	var tank_dimension_ratio: float = scale * pow(tank_capacity_multiplier, 1.0 / 3.0)
+	var hub_le: Variant = _hub_le(raw)
+	# The gear and the flight speed carry the whole airplane, the dry build and its tank liquid.
+	var total_ratio: float = mass_ratio
+	if not liquid.is_empty() and tank_ratio != mass_ratio:
+		total_ratio = _expected_mass(raw, mass_ratio, scale, tank_capacity_multiplier) / _expected_mass(raw, 1.0, 1.0, 1.0)
 	for component_variant: Variant in raw.inventory:
 		if not component_variant is Dictionary:
 			continue
 		var component: Dictionary = component_variant
-		_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × " + str(mass_ratio))
+		if liquid.has(str(component.get("id", ""))):
+			_transform_q(component, "mass", tank_ratio, base_id,
+				TANK_POLICY + ": tank liquid mass follows volume × s³ × capacity ratio at fixed fill and density")
+		else:
+			_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × " + str(mass_ratio))
 		_transform_q(component, "position", scale, base_id, geometry_policy + ": inventory position × s")
-		_transform_q(component, "size", scale, base_id, geometry_policy + ": inventory box dimensions × s")
-	_transform_q(raw.plausibility, "mass_range", mass_ratio, base_id,
-		"virtual consistency band × target mass ratio " + str(mass_ratio) + "; original range retained in base evidence")
+		var dimension_ratio: float = tank_dimension_ratio if tank_inventory.has(str(component.get("id", ""))) else scale
+		var size_policy: String = TANK_POLICY + ": tank box dimensions × s × cbrt(capacity ratio)" \
+			if dimension_ratio != scale else geometry_policy + ": inventory box dimensions × s"
+		_transform_q(component, "size", dimension_ratio, base_id, size_policy)
+	for tank_variant: Variant in raw.get("fuel_system", {}).get("tanks", []):
+		if tank_variant is Dictionary:
+			_transform_q(tank_variant, "capacity", tank_ratio, base_id, TANK_POLICY + ": capacity × s³ × capacity ratio")
+			_transform_q(tank_variant, "unusable", tank_ratio, base_id, TANK_POLICY + ": unusable volume × s³ × capacity ratio")
+			_transform_q(tank_variant, "reserve", tank_ratio, base_id, TANK_POLICY + ": reserve volume × s³ × capacity ratio")
+	var plausibility_ratio := total_ratio if virtual_size else mass_ratio
+	_transform_q(raw.plausibility, "mass_range", plausibility_ratio, base_id,
+		"virtual consistency band × target mass ratio " + str(plausibility_ratio) + "; original range retained in base evidence")
 	# inertia_reference is donor evidence used by AircraftData's plausibility comparison.
 	# The loader derives its expected scale from the compiled model, so mutating this
 	# source quantity would scale the comparison twice and misrepresent the donor.
 	if raw.has("start") and raw.start is Dictionary:
-		_transform_q(raw.start, "level_speed", sqrt(mass_ratio) / scale, base_id,
-			"similarity reference speed × sqrt(mass_ratio)/s")
+		_transform_q(raw.start, "level_speed", sqrt(total_ratio) / scale, base_id,
+			"similarity reference speed × sqrt(mass_ratio)/s, with the total mass ratio including tank liquid")
 
 	var aero: Dictionary = raw.get("aero", {})
 	var surfaces: Dictionary = aero.get("surfaces", {})
@@ -180,8 +251,8 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	if raw.has("landing_gear"):
 		var gear: Dictionary = raw.landing_gear
 		var small_scale_anchor: float = maxf(scale, 1.0)
-		var spring_factor: float = mass_ratio / small_scale_anchor
-		var damping_factor: float = mass_ratio / sqrt(small_scale_anchor)
+		var spring_factor: float = total_ratio / small_scale_anchor
+		var damping_factor: float = total_ratio / sqrt(small_scale_anchor)
 		for contact_variant: Variant in gear.contacts:
 			if not contact_variant is Dictionary:
 				continue
@@ -199,7 +270,18 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	var propeller: Dictionary = propulsion.get("propeller", {})
 	var rotor_factor: float = mass_ratio * scale * scale
 	_transform_q(propeller, "diameter", scale, base_id, geometry_policy + ": virtual propeller diameter × s")
-	_transform_q(propeller, "thrust_line_offset", scale, base_id, geometry_policy + ": fixed structural hub transformed with CG")
+	if liquid.is_empty() or tank_ratio == mass_ratio or not hub_le is PackedFloat64Array:
+		_transform_q(propeller, "thrust_line_offset", scale, base_id, geometry_policy + ": fixed structural hub transformed with CG")
+	else:
+		# The liquid and the dry build scale differently, so the datum (inventory CG) no longer scales with s:
+		# keep the structural hub and re-reference it to the compiled datum.
+		var datum: Variant = _inventory_cg(raw.inventory)
+		var offset: Dictionary = propeller.thrust_line_offset
+		offset.value = [scale * hub_le[0] - datum[0], scale * hub_le[1] - datum[1], scale * hub_le[2] - datum[2]]
+		offset.kind = "derived"
+		offset[DOMAIN_TAG] = scale
+		offset.source = "%s; Workshop compiler v2: %s: structural hub × s about the compiled inventory CG from %s" % [
+			str(offset.get("source", "unspecified base evidence")), TANK_POLICY, base_id]
 	_transform_q(propeller, "rotating_inertia", rotor_factor, base_id,
 		"virtual rotor distribution: J × mass_ratio × s²; no manufacturer hardware claim")
 	_transform_slipstream(propeller.get("slipstream"), base_id, scale)
@@ -214,6 +296,72 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	for throw_key: Variant in throws.keys():
 		_transform_q(throws, str(throw_key), control_multiplier, base_id,
 			"virtual surface travel × " + str(control_multiplier) + "; normalized servo timing retained")
+
+
+## FUEL-11a: liquid inventory ids of the declared tanks.
+static func _tank_inventory_ids(raw: Dictionary) -> Dictionary:
+	var ids := {}
+	var system: Variant = raw.get("fuel_system")
+	if system is Dictionary and system.get("tanks") is Array:
+		for tank: Variant in system.tanks:
+			if not tank is Dictionary:
+				continue
+			for key: String in ["liquid_inventory_id", "shell_inventory_id"]:
+				if tank.has(key):
+					ids[str(tank[key])] = true
+	return ids
+
+
+## FUEL-11a: liquid inventory ids of the declared tanks.
+static func _tank_liquid_ids(raw: Dictionary) -> Dictionary:
+	var ids := {}
+	var system: Variant = raw.get("fuel_system")
+	if system is Dictionary and system.get("tanks") is Array:
+		for tank: Variant in system.tanks:
+			if tank is Dictionary and tank.has("liquid_inventory_id"):
+				ids[str(tank.liquid_inventory_id)] = true
+	return ids
+
+
+## Inventory CG, the body datum, summed left to right as AircraftData does; null without mass.
+static func _inventory_cg(inventory: Array) -> Variant:
+	var mass := 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Variant in inventory:
+		if not item is Dictionary:
+			return null
+		var m: float = float(item.mass.value)
+		mass += m
+		for k in 3:
+			first[k] += m * float(item.position.value[k])
+	if mass <= 0.0:
+		return null
+	return PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass])
+
+
+## The propeller hub in LE coordinates (datum + datum-relative offset), or null when it is not declared.
+static func _hub_le(raw: Dictionary) -> Variant:
+	var offset: Variant = raw.get("propulsion", {}).get("propeller", {}).get("thrust_line_offset")
+	var datum: Variant = _inventory_cg(raw.get("inventory", []))
+	if not offset is Dictionary or not offset.get("value") is Array or offset.value.size() != 3 or datum == null:
+		return null
+	return PackedFloat64Array([datum[0] + float(offset.value[0]), datum[1] + float(offset.value[1]),
+		datum[2] + float(offset.value[2])])
+
+
+## Target mass: the dry build × mass_ratio plus tank liquid × s³ × the independent capacity ratio (FUEL-11a).
+static func _expected_mass(base_raw: Dictionary, mass_ratio: float, scale: float,
+		tank_capacity_multiplier: float) -> float:
+	var liquid := _tank_liquid_ids(base_raw)
+	var dry := 0.0
+	var fuel := 0.0
+	for item: Variant in base_raw.get("inventory", []):
+		if item is Dictionary:
+			if liquid.has(str(item.get("id", ""))):
+				fuel += float(item.mass.value)
+			else:
+				dry += float(item.mass.value)
+	return dry * mass_ratio + fuel * pow(scale, 3.0) * tank_capacity_multiplier
 
 
 static func _transform_slipstream(node: Variant, base_id: String, scale: float) -> void:
@@ -242,8 +390,27 @@ static func _transform_q(parent: Dictionary, key: String, factor: float, base_id
 	var original_source := str(quantity.get("source", "unspecified base evidence"))
 	quantity.value = _multiply_tree(quantity.value, factor)
 	quantity.kind = "derived"
-	quantity.source = "%s; Workshop compiler v1: %s from %s" % [original_source, operation, base_id]
+	quantity[DOMAIN_TAG] = factor
+	quantity.source = "%s; Workshop compiler v2: %s from %s" % [original_source, operation, base_id]
 	parent[key] = quantity
+
+
+## Keep the dimensional domain emitted by each actual transform; never infer a
+## wider bound from an arbitrary imported value. Dimensionless/control limits stay fixed.
+static func _collect_domains(node: Variant, path: String, domain: Dictionary) -> void:
+	if node is Dictionary:
+		if node.has(DOMAIN_TAG):
+			if str(node.get("unit", "")) in ["m", "m2", "kg", "kg·m2", "l", "N/m", "N·s/m", "rpm", "m/s"]:
+				domain[path] = float(node[DOMAIN_TAG])
+			node.erase(DOMAIN_TAG)
+		for key: String in node:
+			_collect_domains(node[key], key if path.is_empty() else path + "." + key, domain)
+	elif node is Array:
+		for index: int in node.size():
+			var child_path := "%s[%d]" % [path, index]
+			if path == "inventory" and node[index] is Dictionary:
+				child_path += " " + str(node[index].get("name", "?"))
+			_collect_domains(node[index], child_path, domain)
 
 
 static func _multiply_tree(value: Variant, factor: float) -> Variant:
@@ -305,7 +472,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 					quantity.value = new_value
 					quantity.kind = "derived"
 					quantity.source = str(quantity.get("source", "base wheel profile evidence")) \
-						+ "; Workshop compiler v1 wheel transform from " + base_id + " (factor " + str(factor) + ")"
+						+ "; Workshop compiler v2 wheel transform from " + base_id + " (factor " + str(factor) + ")"
 					source_provenance[field] = quantity
 			target_contact.wheel_provenance = source_provenance
 			var radius := float(target_contact.get("wheel_radius", 0.0))
@@ -329,7 +496,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 				"value": largest_radius,
 				"unit": "m",
 				"kind": "derived",
-				"source": "maximum inherited wheel radius transformed from base %s by Workshop compiler v1" % base_id,
+				"source": "maximum inherited wheel radius transformed from base %s by Workshop compiler v2" % base_id,
 			}
 			candidate_model.landing_gear = candidate_gear
 	var inherited_identity: Dictionary = source_identity.duplicate(true)
@@ -359,8 +526,9 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		"wing_loading_kg_m2": float(model.mass_kg) / float(model.reference.S),
 		"power_multiplier": float(values.power_multiplier),
 		"control_multiplier": float(values.control_multiplier),
+		"tank_capacity_multiplier": float(values.tank_capacity_multiplier),
 		"capabilities": support.duplicate(true),
-		"compiler_version": COMPILER_VERSION,
+		"compiler_version": version_for_recipe(values),
 	}
 	var propulsion: Dictionary = model.get("propulsion", {})
 	if support.power and propulsion.has("max_rpm") and propulsion.has("idle_rpm") and propulsion.has("diameter") \
@@ -380,6 +548,12 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		summary["power_reference_note"] = "Static coefficient-law estimate at 1.225 kg/m³; virtual RPM/propeller proposal, not a measured engine rating."
 	else:
 		summary["propulsion_family"] = str(propulsion.get("kind", "unknown"))
+	var tank_capacity_l := 0.0
+	for tank: Variant in model.get("fuel_system", {}).get("tanks", []):
+		if tank is Dictionary:
+			tank_capacity_l += maxf(0.0, float(tank.get("capacity_m3", 0.0))) * 1000.0
+	if tank_capacity_l > 0.0:
+		summary["fuel_capacity_l"] = tank_capacity_l
 	return summary
 
 

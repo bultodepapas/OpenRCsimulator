@@ -33,7 +33,7 @@ Captures reviewed: the chase at t = 1.5 s shows the Stik centred, slightly below
 
 ## Findings
 
-- **A spring that chases a moving point lags by 2v/ω.** The first chase design sprang the camera's world position. At 20 m/s with a 0.25 s half-life the steady lag is ≈ 7 m, so the camera would drift to its lag cap at any speed. The spring now acts on the offset from the airplane: straight flight has no lag, and only heading, height and zoom changes are smoothed. [LEARNINGS](../../../../LEARNINGS.md).
+- **A spring that chases a moving point lags by 2v/ω.** The first chase design sprang the camera's world position. At 20 m/s with a 0.25 s half-life the steady lag is ≈ 7 m, so the camera would drift to its lag cap at any speed. The spring now acts on the offset from the airplane: straight flight has no lag, and only heading, height and zoom changes are smoothed. [LEARNINGS](../../../LEARNINGS.md).
 - **Help had 2 px of height left at 720p.** Any extra row overflows. A wide key cap ("Retroceso") widened the cap column and wrapped other rows; Spanish uses "Borrar". The camera keys share the existing C and Z rows, and the numpad +/− are not bound.
 - **Tolerances must respect 32-bit render types.** `Vector3` results agree to about 1e-6, not to 1e-9.
 

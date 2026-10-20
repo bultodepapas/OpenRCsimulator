@@ -1,0 +1,13 @@
+{
+  "before": {
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 931, in <module>\n    raise SystemExit(main())\n                     ^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 921, in main\n    return args.handler(args)\n           ^^^^^^^^^^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 900, in _summarize_command\n    document = summarize_csv(args.csv)\n               ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 345, in summarize_csv\n    with FlightCsvReader(source) as reader:\n         ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 175, in __init__\n    self.header = _validate_header(header, self.path)\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\flight_log_before.py\", line 140, in _validate_header\n    indices.append(int(suffix))\n                   ^^^^^^^^^^^\nValueError: Exceeds the limit (4300 digits) for integer string conversion: value has 5000 digits; use sys.set_int_max_str_digits() to increase the limit\n"
+  },
+  "after": {
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "error: C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\audit2-fixes-2026-10-19\\oversized-index.csv: aux_ columns must be contiguous from 4\n"
+  },
+  "verified": true
+}

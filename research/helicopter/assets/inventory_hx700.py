@@ -2,7 +2,7 @@
 
 Run with Blender 5.2+ from the repository root:
 
-    blender -b "Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend" \
+    blender -b "assets/source-deliveries/hx-700-original/HX-700_Helicoptero_RC.blend" \
       --python research/helicopter/assets/inventory_hx700.py -- \
       --out .tools/heli25
 
@@ -27,8 +27,8 @@ from mathutils import Vector
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_BLEND = REPO_ROOT / "Helicopter 3d acrobatic" / "HX-700_Helicoptero_RC.blend"
-DEFAULT_PDF = REPO_ROOT / "Helicopter 3d acrobatic" / "UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf"
+DEFAULT_BLEND = REPO_ROOT / "assets" / "source-deliveries" / "hx-700-original" / "HX-700_Helicoptero_RC.blend"
+DEFAULT_PDF = REPO_ROOT / "assets" / "source-deliveries" / "hx-700-original" / "UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf"
 
 
 def sha256_file(path: Path) -> str:

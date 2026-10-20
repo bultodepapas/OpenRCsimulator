@@ -1,0 +1,43 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   unpainted material is shown as Stock without a fabricated flat color
+ok   paint edits mark full draft dirty
+ok   shared undo restores physical recipe while retaining paint
+ok   second undo restores exact stock profile and baseline
+ok   redo restores appearance
+ok   selected paint region restores its authored material
+ok   region restore participates in shared Undo
+ok   unapplied inscription blocks save and trial
+ok   unchanged color cannot clear a pending inscription
+ok   review focuses the pending inscription
+ok   English and Spanish registration applies as one validated edit
+ok   unsupported registration cannot replace accepted text
+ok   Back cancels the active text buffer before navigation
+ok   Appearance reset restores paint and inscriptions together
+ok   Appearance reset is undoable
+ok   Rainbow Burst selects a fan and a timed palette
+ok   palette color edits only the selected step
+ok   single color preserves the selected palette color
+ok   Undo restores the full timed palette
+ok   Twin Ribbons uses exactly the registered pair
+ok   show-only preview does not advertise a running source
+ok   source preview labels its illustrative sample and keeps the authored kind
+ok   custom preview owns a separate World3D
+ok   preview starts still
+ok   preview playhead uses integer 240 Hz ticks (tick=8, playing=true, visible=true)
+ok   paused preview retains its playhead
+ok   restart clears the preview clock
+ok   hiding preview pauses its independent clock and rendering
+ok   customization preserves exact physical model and input identity
+ok   customization has its own identity
+ok   one revision round trips complete physical and visual build
+ok   technical launch freezes complete build without importing it
+ok   technical launch refuses conflicting aircraft
+ok   technical launch refuses conflicting battery
+ok   technical launch refuses conflicting electric-demo
+ok   technical launch refuses conflicting experimental-aircraft-data
+ok   technical launch refuses conflicting scripted
+ok   library restores frozen presentation
+ok   file selection remains nested inside the library
+ok   window close dismisses file selection before the library
+Workshop customization integration: 0 failures

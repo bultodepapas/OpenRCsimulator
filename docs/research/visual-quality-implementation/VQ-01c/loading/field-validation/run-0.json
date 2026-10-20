@@ -1,0 +1,469 @@
+{
+	"candidate_first": false,
+	"candidate_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+	"complete": true,
+	"data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"machine": {
+		"architecture": "x86_64",
+		"debug_build": true,
+		"os": "Windows",
+		"processor": "AMD Ryzen 9 5900X 12-Core Processor"
+	},
+	"no_trees_sha256": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+	"parity": [
+		{
+			"equal": true,
+			"errors": [],
+			"id": "default-1680",
+			"ok": true,
+			"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [],
+			"id": "no-trees",
+			"ok": true,
+			"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [],
+			"id": "mixed-numeric-signs",
+			"ok": true,
+			"result_sha256": "5c0c3855a44db145508914f028cd87a03dfbba1495d9e29efa26f4c8e4dd49c6",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)",
+				"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 0)"
+			],
+			"id": "same-cell-tolerance",
+			"ok": false,
+			"result_sha256": "08edcb46648da8b4d7fd8a48493dc94d82a70df70c6dbe22c0302230ae7ce6b9",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[0].north: must be quantized to 0.25 m",
+				"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)"
+			],
+			"id": "off-grid-before-valid-duplicate",
+			"ok": false,
+			"result_sha256": "4c97959c6f2565b5d824d30b66dc803ebae0fc28a056473b0470d112c04bda67",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[0].down: treeline positions must be flat at 0 m",
+				"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 1)"
+			],
+			"id": "nonflat-does-not-enter-key-set",
+			"ok": false,
+			"result_sha256": "1341ba658ae140b89346d4a0fd4a758d8bbfa9bfbe023441c2dc42648db87cdc",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[0]: horizontal radius must be 250..1500 m",
+				"objects[0].positions.value[0]: tree center +/- 15 m envelope must be fully contained by a rough surface",
+				"objects[0].positions.value[1]: horizontal radius must be 250..1500 m",
+				"objects[0].positions.value[1]: tree center +/- 15 m envelope must be fully contained by a rough surface"
+			],
+			"id": "large-finite-radius",
+			"ok": false,
+			"result_sha256": "a44593db69ed55fc8c1d2c2d4510078398ba13e8046d8dbb88f4494aa0adb42a",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[2]: horizontal radius must be 250..1500 m",
+				"objects[0].positions.value[3]: horizontal radius must be 250..1500 m"
+			],
+			"id": "radius-and-grid-boundaries",
+			"ok": false,
+			"result_sha256": "a358fd768fcb186525a019907ef1ffba8478efbd4354fe4d0df2cda7b0e7707c",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[0]: expected an array of 3 numbers [north, east, down]",
+				"objects[0].positions.value[1]: expected exactly 3 numbers [north, east, down]",
+				"objects[0].positions.value[2].north: expected a number",
+				"objects[0].positions.value[3].north: must be finite",
+				"objects[0].positions.value[4].north: must be finite",
+				"objects[0].positions.value[5].east: must be quantized to 0.25 m",
+				"objects[0].positions.value[5].down: treeline positions must be flat at 0 m"
+			],
+			"id": "malformed-and-nonfinite",
+			"ok": false,
+			"result_sha256": "d376fe0df31ce85becbc6c332c3a341e355e89fe2a8c2ec580643b75ec0e937d",
+			"source_unchanged": true
+		},
+		{
+			"equal": true,
+			"errors": [
+				"objects[0].positions.value[1679]: duplicate position (same 0.25 m grid cell as index 0)"
+			],
+			"id": "duplicate-final-default-row",
+			"ok": false,
+			"result_sha256": "861901b8f69b369fca28aa15211277cf7280ca8f601fe92c8f6658181225fbb4",
+			"source_unchanged": true
+		}
+	],
+	"probe_sha256": "38abdfdd65dd616d9b4cd541627ec0367de4b16c8929fc35f39d38b77d66ff17",
+	"reference_sha256": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+	"workloads": [
+		{
+			"batch": 8,
+			"candidate_batch_usec": [
+				75642,
+				72815,
+				87846,
+				88441,
+				77557,
+				76705,
+				74107,
+				73195,
+				77677,
+				73879,
+				74336,
+				73609
+			],
+			"id": "default:validate",
+			"pairs": [
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				}
+			],
+			"reference_batch_usec": [
+				95628,
+				89843,
+				98477,
+				92295,
+				94503,
+				98715,
+				103135,
+				89801,
+				92093,
+				92783,
+				96253,
+				89389
+			],
+			"source_unchanged": true
+		},
+		{
+			"batch": 8,
+			"candidate_batch_usec": [
+				84213,
+				81805,
+				81742,
+				87523,
+				83044,
+				81859,
+				84132,
+				84196,
+				82393,
+				86373,
+				85693,
+				86742
+			],
+			"id": "default:load_from",
+			"pairs": [
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				},
+				{
+					"equal": true,
+					"result_sha256": "5efbc351c0e472ff2482c41250686e76b4bdbacef2c4334314aecac17d1c127e"
+				}
+			],
+			"reference_batch_usec": [
+				109304,
+				99472,
+				107593,
+				100845,
+				98997,
+				98197,
+				99631,
+				105206,
+				100763,
+				99409,
+				103049,
+				103777
+			],
+			"source_unchanged": true
+		},
+		{
+			"batch": 32,
+			"candidate_batch_usec": [
+				11439,
+				12555,
+				10593,
+				10639,
+				10929,
+				10785,
+				10890,
+				10701,
+				12299,
+				10753,
+				11024,
+				10678
+			],
+			"id": "no-trees-control:validate",
+			"pairs": [
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				}
+			],
+			"reference_batch_usec": [
+				11106,
+				10825,
+				10715,
+				10729,
+				10714,
+				10666,
+				10685,
+				10753,
+				10952,
+				11807,
+				11495,
+				10876
+			],
+			"source_unchanged": true
+		},
+		{
+			"batch": 32,
+			"candidate_batch_usec": [
+				23330,
+				24348,
+				23231,
+				23561,
+				23092,
+				22983,
+				30987,
+				25725,
+				25872,
+				24802,
+				24782,
+				24236
+			],
+			"id": "no-trees-control:load_from",
+			"pairs": [
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				},
+				{
+					"equal": true,
+					"result_sha256": "d4bd82fa0982883aafaa62dc3ce35cc4bfbbc564d728a66a934218c388a9d899"
+				}
+			],
+			"reference_batch_usec": [
+				25306,
+				24217,
+				23460,
+				25511,
+				24315,
+				23574,
+				24263,
+				29696,
+				32564,
+				27073,
+				23897,
+				24628
+			],
+			"source_unchanged": true
+		}
+	]
+}

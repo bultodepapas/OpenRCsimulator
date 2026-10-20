@@ -1,0 +1,15 @@
+{
+  "scope": "Coarse correlation using nearest host endpoint sample within 0.75 seconds; system CPU averages its own sampling interval. Different manual flight phases; no causal attribution.",
+  "cpu_below_30_percent": {
+    "frames": 3438,
+    "p50_ms": 13.421,
+    "p95_ms": 21.930749999999954,
+    "over_50ms": 104
+  },
+  "cpu_at_least_90_percent": {
+    "frames": 150,
+    "p50_ms": 50.3635,
+    "p95_ms": 60.89805,
+    "over_50ms": 78
+  }
+}

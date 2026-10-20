@@ -1,0 +1,343 @@
+{
+	"analysis": {
+		"errors": [],
+		"ok": true,
+		"result": {
+			"accepted_start": {
+				"engine_running": false,
+				"propulsion_source_running": false
+			},
+			"completed": true,
+			"domain": {
+				"state": "fixed-wing 64-bit float simulation",
+				"step_policy": "project fixed 240 Hz FlightSession/Simulation"
+			},
+			"dt_s": 0.004166666666666667,
+			"environment": {
+				"configuration": {
+					"gravity_mps2": 9.80665,
+					"weather": {
+						"format": "openrc-weather v1",
+						"from_deg": 0.0,
+						"gust_delay_s": 2.0,
+						"gust_duration_s": 4.0,
+						"gust_mps": 0.0,
+						"gust_period_s": 12.0,
+						"gust_up_mps": 0.0,
+						"speed_mps": 0.0
+					}
+				},
+				"identity": {
+					"course": false,
+					"gravity": 9.80665,
+					"lake": "",
+					"surfaces_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+					"turbulence": true,
+					"weather": {
+						"format": "openrc-weather v1",
+						"from_deg": 0.0,
+						"gust_delay_s": 2.0,
+						"gust_duration_s": 4.0,
+						"gust_mps": 0.0,
+						"gust_period_s": 12.0,
+						"gust_up_mps": 0.0,
+						"speed_mps": 0.0
+					}
+				}
+			},
+			"failure_reason": "",
+			"format": "openrc-aircraft-workshop-experiment-result",
+			"fuel_start_fill": 1.0,
+			"held_registered_inputs": [],
+			"identity_report": {
+				"build": {
+					"commit": "",
+					"commit_date": "",
+					"describe": "",
+					"dirty": false,
+					"godot": "4.7.2-stable (official)",
+					"label": "",
+					"parsed": {
+						"after": 0,
+						"base": "0.1.3",
+						"dirty": false,
+						"prerelease": "",
+						"semver": "0.1.3",
+						"sha": "",
+						"tag": ""
+					},
+					"source": "development",
+					"version": "0.1.3"
+				},
+				"dt_s": 0.004166666666666667,
+				"environment": {
+					"course": false,
+					"gravity": 9.80665,
+					"lake": "",
+					"surfaces_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+					"turbulence": true,
+					"weather": {
+						"format": "openrc-weather v1",
+						"from_deg": 0.0,
+						"gust_delay_s": 2.0,
+						"gust_duration_s": 4.0,
+						"gust_mps": 0.0,
+						"gust_period_s": 12.0,
+						"gust_up_mps": 0.0,
+						"speed_mps": 0.0
+					}
+				},
+				"initial_checkpoint_sha256": "45d66fa3659f4076f3d22c2063afcc19270e3531415dd4721f6e3a47f263549d",
+				"input_tape_sha256": "1408728f4f4db583bb8494c2af19eea09f03ab92f75ef1129048a239fb5e47c0",
+				"physical_trial": {
+					"ancestor_revision": 0,
+					"ancestor_variant_id": "",
+					"base_id": "jensen-das-ugly-stik-60",
+					"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+					"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"dependencies": {
+						"files": {
+							"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+						},
+						"format": "openrc-aircraft-workshop-dependencies v1"
+					},
+					"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+					"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+					"experimental": true,
+					"format": "openrc-aircraft-trial v1",
+					"presentation": {
+						"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+						"visual_family": "jensen-das-ugly-stik-60"
+					},
+					"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+					"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+					"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+					"trial_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce"
+				},
+				"presentation": {
+					"binding": {
+						"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+						"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+						"visual_family": "jensen-das-ugly-stik-60"
+					},
+					"format": "openrc-aircraft-presentation-identity",
+					"schedule_policy": "ticks-240-v1",
+					"sha256": "13506d4cb9c727c305c186aee964ef931b06981f82ba7590166e805a8a0b6a12",
+					"version": 1,
+					"visual_seed": 0
+				},
+				"solver_sha256": "315971752e38c1dac56eb0f741d862a54cfec04b06ea548df9eefa44a149ebdb",
+				"tick_rate_hz": 240
+			},
+			"initial_checkpoint": "{\"format\":\"openrc-checkpoint-json v1\",\"payload_base64\":\"GwAAAAkAAAAVAAAABgAAAGZvcm1hdAAABAAAABsAAABvcGVucmMtZmxpZ2h0LWNoZWNrcG9pbnQgdjEAFQAAAA0AAABjb25maWd1cmF0aW9uAAAABAAAAEAAAAA5YTU4ZWJkZmI2MzM2MTVkMzg4Mzk4NGY2YmZmNjA1OGI4MDI0OGM1MjViNDE1OGZmZWZhODM1NjBlY2Q5NGRiFQAAAAoAAABzaW11bGF0aW9uAAAbAAAADgAAABUAAAAGAAAAZm9ybWF0AAAEAAAAHwAAAG9wZW5yYy1zaW11bGF0aW9uLWNoZWNrcG9pbnQgdjEAFQAAAAQAAAB0aWNrAgAAAAAAAAAVAAAAAgAAAGR0AAADAAEAERERERERcT8VAAAABQAAAHN0YXRlAAAAIQAAAA0AAAAAAAAAAABOQAAAAAAAAETAAAAAAAAAPsDmVKBtS+stQAAAAAAAAAAAut1eRoWc8T9hcW1Hv5/mPyln8T/THok/KmfxP9Meib9gcW1Hv5/mPwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABUAAAAIAAAAcHJldmlvdXMhAAAADQAAAAAAAAAAAE5AAAAAAAAARMAAAAAAAAA+wOZUoG1L6y1AAAAAAAAAAAC63V5GhZzxP2FxbUe/n+Y/KWfxP9MeiT8qZ/E/0x6Jv2BxbUe/n+Y/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFQAAAAMAAABhdXgAIQAAAA4AAAAAAAAAAAAAALClr45Zrh87FSCY5WrTwT9gyRjSXFX7OgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP9XJZkNhxhAFQAAAAYAAABpbnB1dHMAACEAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVAAAABQAAAG1vZGVzAAAAHwAAAAEAAAAAAAAAAAAAABUAAAAKAAAAbGFzdF9sb2FkcwAAIQAAAAYAAAAwdvzF6FXvv/UjoGZ4QBq71dJQ/4k2PMAPsfLs8PNFOwAAAABA5Ju9uyg9waIZJbsVAAAABAAAAG1hc3MDAAEA2fDkA4AHB0AVAAAABwAAAGluZXJ0aWEAIQAAAAYAAAABN8pA06C9P7YVOZKaodc/MeXaqd7U3T9E3QcgtYmDv6JuVLreKn4/hBn+WyT5QT8VAAAABwAAAGdyYXZpdHkAAwABAAWjkjoBnSNAFQAAAAwAAABzdG9wX2F0X3RpY2sCAAAAPAAAABUAAAAKAAAAY29udGludW91cwAAIQAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVAAAADgAAAGFlcm9fbG9hZHNfbGF3AAAEAAAALgAAAHNlY3Rpb24tcGxhbmUtc291cmNlLXdlaWdodGVkLXdha2UtdmVsb2NpdHktdjIAABUAAAAPAAAAd2FrZV9zdGF0ZV91bml0AAQAAAAmAAAAbS9zIChlcXVhbC1hcmVhIG1lYW4gb2Ygc2VjdGlvbiBWcCpDTCkAABUAAAASAAAAd2hlZWxfc3RhdGVfbGF5b3V0AAAEAAAAqAAAAFt7ImNvbnRhY3QiOiJtYWluX2xlZnQiLCJpbmRleCI6MCwidW5pdCI6Im0vcyByaW0gc3BlZWQifSx7ImNvbnRhY3QiOiJtYWluX3JpZ2h0IiwiaW5kZXgiOjEsInVuaXQiOiJtL3MgcmltIHNwZWVkIn0seyJjb250YWN0Ijoibm9zZSIsImluZGV4IjoyLCJ1bml0IjoibS9zIHJpbSBzcGVlZCJ9XRUAAAAUAAAAd2hlZWxfcHJvZmlsZV9zaGEyNTYEAAAAQAAAADgyZGY3ODFiM2Y4YzE5OGJjNGM1YTliMjA5NDFlMzU3OTQwOWViNjNmZWYwZGM5NTJlYTEwOTNlMGVmOTE5YTQVAAAAGgAAAHdoZWVsX3Byb2ZpbGVfaW5wdXRfc2hhMjU2AAAEAAAAQAAAADllOGRlODMyZmRjYWE1OWZmNWI5ZGEyYjk0ZDdjMjQ0MzY2YWZiZjM4OWZmMTFlNTFhNTFjZGI3ZDhmZjgyMGIVAAAADQAAAGNvbnRhY3Rfc3RhdGUAAAAbAAAABQAAABUAAAAGAAAAZm9ybWF0AAAEAAAAIAAAAG9wZW5yYy1haXJjcmFmdC1jb250YWN0LXN0YXRlIHYxFQAAAAQAAAB0aWNrAgAAAAAAAAAVAAAADwAAAGFjdGl2ZV9odWxsX2lkcwAiAAAAAAAAABUAAAAGAAAAZXZlbnRzAAAcAAEAGwAAAAAAAAAVAAAACwAAAHByb3Bfc3RyaWtlABsAAAAAAAAA\",\"sha256\":\"d51a64984f2a3a7a7d4b9e089ccf4f6c5ecd46cf9e40fe5d91c9b20eadff6a91\"}",
+			"initial_checkpoint_sha256": "45d66fa3659f4076f3d22c2063afcc19270e3531415dd4721f6e3a47f263549d",
+			"input_domain": "post-control-shaping solver inputs [roll, pitch, yaw, throttle]; optional registered channels held at their exact launch values",
+			"input_layout": [
+				"roll",
+				"pitch",
+				"yaw",
+				"throttle"
+			],
+			"input_tape": [
+				{
+					"inputs": [
+						0.0,
+						0.0,
+						0.0,
+						0.0
+					],
+					"ticks": 60
+				}
+			],
+			"input_tape_sha256": "1408728f4f4db583bb8494c2af19eea09f03ab92f75ef1129048a239fb5e47c0",
+			"limits": [
+				"These are model simulation outputs, not physical measurements or qualification evidence.",
+				"Static thrust/RPM estimates remain separate Compiler evaluator outputs.",
+				"This bounded run does not establish full-flight stability, endurance, target-aircraft accuracy, or pilot acceptance."
+			],
+			"metrics": {
+				"altitude_change_m": -0.4224028589874962,
+				"average_altitude_change_mps": -1.6896114359499848,
+				"final_altitude_m": 29.577597141012504,
+				"final_body_speed_mps": 15.02130912310296,
+				"initial_altitude_m": 30.0,
+				"initial_body_speed_mps": 14.999999999999998,
+				"maximum_abs_roll_deg": 0.055472224633323214,
+				"maximum_body_speed_mps": 15.02130912310296,
+				"minimum_altitude_m": 29.577597141012504,
+				"minimum_body_speed_mps": 14.999999999999998,
+				"peak_altitude_m": 30.0
+			},
+			"post_control_axis_tape": [
+				{
+					"inputs": [
+						0.0,
+						0.0,
+						0.0,
+						0.0
+					],
+					"ticks": 60
+				}
+			],
+			"presentation_identity": {
+				"binding": {
+					"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+					"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+					"visual_family": "jensen-das-ugly-stik-60"
+				},
+				"format": "openrc-aircraft-presentation-identity",
+				"schedule_policy": "ticks-240-v1",
+				"sha256": "13506d4cb9c727c305c186aee964ef931b06981f82ba7590166e805a8a0b6a12",
+				"version": 1,
+				"visual_seed": 0
+			},
+			"scope": "fixed_tick_software_simulation",
+			"source_identity": {
+				"build": {
+					"commit": "",
+					"commit_date": "",
+					"describe": "",
+					"dirty": false,
+					"godot": "4.7.2-stable (official)",
+					"label": "",
+					"parsed": {
+						"after": 0,
+						"base": "0.1.3",
+						"dirty": false,
+						"prerelease": "",
+						"semver": "0.1.3",
+						"sha": "",
+						"tag": ""
+					},
+					"source": "development",
+					"version": "0.1.3"
+				},
+				"solver_sha256": "315971752e38c1dac56eb0f741d862a54cfec04b06ea548df9eefa44a149ebdb"
+			},
+			"start": {
+				"altitude_m": 30.0,
+				"mode": "glide",
+				"speed_mps": 15.0
+			},
+			"termination": {
+				"actual_ticks": 60,
+				"actual_time_s": 0.25,
+				"reason": "tick_limit",
+				"requested_kind": "tick_limit",
+				"requested_ticks": 60
+			},
+			"tick_rate_hz": 240,
+			"trial_identity": {
+				"ancestor_revision": 0,
+				"ancestor_variant_id": "",
+				"base_id": "jensen-das-ugly-stik-60",
+				"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+				"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+				"dependencies": {
+					"files": {
+						"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+					},
+					"format": "openrc-aircraft-workshop-dependencies v1"
+				},
+				"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+				"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+				"experimental": true,
+				"format": "openrc-aircraft-trial v1",
+				"presentation": {
+					"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+					"visual_family": "jensen-das-ugly-stik-60"
+				},
+				"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+				"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+				"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+				"trial_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce"
+			},
+			"version": 1
+		}
+	},
+	"analysis_kind": "fixed_tape",
+	"format": "openrc-aircraft-workshop-analysis",
+	"frozen_trial": {
+		"compiler_version": "openrc-aircraft-workshop-v1-generic-compiler-2",
+		"physical_identity": {
+			"ancestor_revision": 0,
+			"ancestor_variant_id": "",
+			"base_id": "jensen-das-ugly-stik-60",
+			"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+			"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+			"dependencies": {
+				"files": {
+					"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+				},
+				"format": "openrc-aircraft-workshop-dependencies v1"
+			},
+			"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+			"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+			"experimental": true,
+			"format": "openrc-aircraft-trial v1",
+			"presentation": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+			"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+			"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+			"trial_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce"
+		},
+		"presentation_identity": {
+			"binding": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"format": "openrc-aircraft-presentation-identity",
+			"schedule_policy": "ticks-240-v1",
+			"sha256": "13506d4cb9c727c305c186aee964ef931b06981f82ba7590166e805a8a0b6a12",
+			"version": 1,
+			"visual_seed": 0
+		},
+		"presentation_profile": {
+			"binding": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"format": "openrc-aircraft-presentation",
+			"markings": [],
+			"paint": [],
+			"schedule_policy": "ticks-240-v1",
+			"smoke": [],
+			"version": 1,
+			"visual_seed": 0
+		},
+		"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758"
+	},
+	"source": {
+		"aircraft_id": "jensen-das-ugly-stik-60",
+		"kind": "catalog"
+	},
+	"source_identity": {
+		"build": {
+			"commit": "",
+			"commit_date": "",
+			"describe": "",
+			"dirty": false,
+			"godot": "4.7.2-stable (official)",
+			"label": "",
+			"parsed": {
+				"after": 0,
+				"base": "0.1.3",
+				"dirty": false,
+				"prerelease": "",
+				"semver": "0.1.3",
+				"sha": "",
+				"tag": ""
+			},
+			"source": "development",
+			"version": "0.1.3"
+		},
+		"solver_sha256": "315971752e38c1dac56eb0f741d862a54cfec04b06ea548df9eefa44a149ebdb"
+	},
+	"status": "ok",
+	"version": 1
+}

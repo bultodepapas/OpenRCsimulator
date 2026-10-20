@@ -8,6 +8,7 @@ const SurfaceContract := preload("res://physics/control_surfaces.gd")
 const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
+const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -84,6 +85,18 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	airplane.model_manifest_sha256 = resolved.manifest_sha256
 	airplane._model_builder = builder
 	airplane._finite_glow_visual = not glow.is_empty()
+	var customization: Dictionary = AircraftCustomization.describe_for_model(id, str(resolved.manifest_sha256))
+	if not customization.get("ok", false):
+		airplane.root.free()
+		push_error("Aircraft customization bindings: " + str(customization.get("errors", [])))
+		return {}
+	airplane.customization_bindings = customization.bindings
+	airplane.customization_slots_sha256 = str(customization.slots_sha256)
+	var propulsion: Dictionary = model.get("propulsion", {})
+	airplane.physical_propulsion_id = str(propulsion.get("id", ""))
+	# AircraftData's validated v2 contract defaults an omitted historical kind to glow_prop;
+	# newer turbine/electric normalized branches retain their explicit kind.
+	airplane.physical_propulsion_kind = str(propulsion.get("kind", "glow_prop")) if not propulsion.is_empty() else ""
 	if not glow.is_empty():
 		airplane.propeller_spin_sign = -1.0
 		var selected_diameter: float = float(propeller_diameter_m)
@@ -131,7 +144,7 @@ static func datum(id: String) -> Vector2:
 
 
 ## Existing conventional commands keep their signs and physical throws.
-static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
+static func apply_surfaces(airplane: Dictionary, rotations: Dictionary, refresh_linkages: bool = true) -> void:
 	var manifest: Dictionary = airplane.model_manifest
 	if str(manifest.builder.adapter) != "euler_hinges":
 		var builder: Script = airplane._model_builder
@@ -142,8 +155,20 @@ static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
 		var binding: Dictionary = manifest.bindings.controls[surface_name]
 		for hinge: Dictionary in binding.hinges:
 			airplane.hinges[str(hinge.key)].rotation = Vector3(r.x, r.y, 0)
-	if airplane.has("controls"):
+	if refresh_linkages and airplane.has("controls"):
 		Controls.update(airplane.controls)
+
+
+## One presented control pose. The legacy Stik throttle setter solves every linkage,
+## so defer the preceding surface solve until the throttle hinge is also positioned.
+## Independent surface/throttle callers retain their immediate-update behavior.
+static func apply_controls(airplane: Dictionary, rotations: Dictionary, throttle: float) -> void:
+	var controls: Dictionary = airplane.get("controls", {})
+	var throttle_solves_linkages: bool = str(airplane.model_manifest.builder.adapter) == "euler_hinges" \
+		and not airplane.get("_finite_glow_visual", false) and controls.get("ok", false) \
+		and controls.get("mechanisms", {}).has("throttle")
+	apply_surfaces(airplane, rotations, not throttle_solves_linkages)
+	apply_throttle(airplane, throttle)
 
 
 ## Optional legacy throttle linkage. Finite glow visuals retain their existing shaft behavior.

@@ -8,6 +8,8 @@
 
 ## Current implementation
 
+Home selects Club field or Green paradise through the explicit landscape catalog. The scenery, lake and vegetation work below describes Club field; Green uses one flat grass mesh without those layers. [Contributor guide](LANDSCAPES.md), [selection plan and remaining gates](plans/landscape-selection.md), [L21–L24 verification](research/landscape-upgrade/L21-24/README.md).
+
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
 - L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1/R2](research/visual-quality-implementation/L10c/README.md) add bevelled rails, two-sided hardware, downloaded wood/metal textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
@@ -33,12 +35,12 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 
 | ID | Work | Status / acceptance |
 | --- | --- | --- |
-| LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | Planned after VQ-01c; same-world collision oracle/state parity and complete-workload gain, otherwise retain baseline. |
+| LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | [Empty hull-envelope repair and oracle/session parity](research/landscape-upgrade/LU-10-R1/README.md) delivered; local query gain demonstrated, full-flight cost acceptance remains open. |
 | L9e-R1 | Compare current turf blending with one Laplacian candidate on retained maps. | Planned after VQ-02a and visibility reference; preserve masks/gradients/cues and pass combined visual/cost gates. |
 | L6b-R1 | Compare existing atlas alpha coverage with native alpha-to-coverage when a motion defect is reproduced. | Planned probe after VQ-02a; MSAA/scissor/edge compatibility, motion and cost proof. Custom mip importer excluded. |
 | LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | Conditional on pilot/overview review after ground work; visual/contact alignment and no new water physics or general authoring system. |
 
-For L15a/c, compare the currently static windsock against already wind-driven vegetation on the same supported gust before changing it. A source-shader wind input is not independent calibration of the visual response. This delivery does not reopen completed foliage/audio work.
+The L15a windsock now consumes committed M5 wind with a swiveling basket and damped fabric response; [sources and software/visual evidence](research/wind-implementation/M5-W04b-R1/README.md). Independent physical cue calibration remains open. This delivery does not reopen completed foliage/audio work.
 
 The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, placement and motion work under the existing global budgets, with [44 dated source investigations](research/grass-quality-2026-10-17.md), including 24 additional technical, asset, tool and community investigations. It owns the pending details for the following reserved follow-ups; existing VQ-02a, L9e-R1, L15c and L9d-05/06 retain their original owners. Default imported near grass remains static. The implemented `OPENRC_GRASS_QUALITY=enhanced` preview adds shared photographic turf, a 100/30/20 species allocation and bounded imported wind; [native comparisons, tests and unresolved full-session gates](research/visual-quality-implementation/grass-quality/README.md). The scenery-off fallback's wind/fade proof does not establish imported-route acceptance.
 

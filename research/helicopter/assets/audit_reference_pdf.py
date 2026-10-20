@@ -21,7 +21,7 @@ import pypdf
 
 
 ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_PDF = ROOT / "Helicopter 3d acrobatic" / "UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf"
+DEFAULT_PDF = ROOT / "assets/source-deliveries/hx-700-original" / "UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf"
 
 
 def sha256_file(path: Path) -> str:

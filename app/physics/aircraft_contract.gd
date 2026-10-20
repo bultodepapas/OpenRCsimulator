@@ -149,8 +149,32 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 	if capabilities.get("propulsion_layout", "") != layout_expected:
 		_issue(issues, "/capabilities/propulsion_layout", "does not match propulsion.kind")
 	var energy_expected := "prescribed_fuel"
+	var fuel_consumption: Variant = propulsion.get("fuel_consumption", null)
+	var has_liquid_adapter: bool = fuel_consumption is Dictionary
+	if has_liquid_adapter:
+		energy_expected = "finite_liquid_fuel"
+		var law := String(fuel_consumption.get("law", ""))
+		if not root.has("fuel_system"):
+			_issue(issues, "/propulsion/fuel_consumption", "requires fuel_system tank bindings")
+		if law == "gasoline_bsfc_v1":
+			var gasoline_engine: Variant = propulsion.get("engine", {})
+			if propulsion_kind != "glow_prop":
+				_issue(issues, "/propulsion/fuel_consumption/law", "gasoline_bsfc_v1 requires glow_prop propulsion")
+			if gasoline_engine is Dictionary:
+				if not gasoline_engine.has("shaft"):
+					_issue(issues, "/propulsion/fuel_consumption/law", "gasoline_bsfc_v1 requires the legacy shaft power model")
+				if gasoline_engine.has("glow_installation"):
+					_issue(issues, "/propulsion/fuel_consumption/law", "cannot be combined with glow_installation")
+		elif law == "turbine_map_v1":
+			if propulsion_kind != "turbine":
+				_issue(issues, "/propulsion/fuel_consumption/law", "turbine_map_v1 requires turbine propulsion")
+		else:
+			_issue(issues, "/propulsion/fuel_consumption/law", "has no supported finite-liquid law")
 	if propulsion_kind == "glow_prop" and propulsion.get("engine", {}).has("glow_installation"):
-		energy_expected = "finite_glow_fuel"
+		if has_liquid_adapter:
+			_issue(issues, "/propulsion/fuel_consumption", "cannot be combined with glow_installation")
+		else:
+			energy_expected = "finite_glow_fuel"
 		if propulsion.engine.has("shaft"):
 			_issue(issues, "/propulsion/engine", "glow_installation and legacy shaft are mutually exclusive")
 	if propulsion_kind == "electric_prop":
@@ -159,8 +183,8 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 			energy_expected = String(battery.get("kind", ""))
 	if capabilities.get("energy", "") != energy_expected:
 		_issue(issues, "/capabilities/energy", "does not match the propulsion energy model")
-	if propulsion_kind == "turbine" and energy_expected != "prescribed_fuel":
-		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel")
+	if propulsion_kind == "turbine" and energy_expected not in ["prescribed_fuel", "finite_liquid_fuel"]:
+		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel or a supported finite-liquid consumer")
 
 	_validate_gear_relations(root, gear_kind, issues)
 

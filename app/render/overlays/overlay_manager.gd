@@ -17,9 +17,11 @@ const Settings := preload("res://render/overlays/overlay_settings.gd")
 const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
 const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
+const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
 signal settings_changed(settings: Dictionary)
+signal fuel_reserve_warning_requested(sample: Dictionary)
 
 const IDS := Settings.IDS
 ## Numbers refresh at 10 Hz (readable, less churn); sticks and the visibility of warnings follow every frame.
@@ -47,6 +49,9 @@ var _last_telemetry := {}
 var _warning_codes := PackedStringArray()
 var _has_battery := false
 var _battery_dock := Vector3(-1.0, -1.0, -1.0)
+var _fuel_warning_player: AudioStreamPlayer
+var _fuel_state_known := false
+var _last_fuel_low := false
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -59,6 +64,12 @@ func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> 
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
+	_fuel_warning_player = AudioStreamPlayer.new()
+	_fuel_warning_player.name = "FuelReserveWarning"
+	_fuel_warning_player.stream = FUEL_RESERVE_WARNING_STREAM
+	_fuel_warning_player.bus = &"Master"
+	_fuel_warning_player.volume_db = -12.0
+	add_child(_fuel_warning_player)
 	_build()
 	apply(initial, false)
 
@@ -204,10 +215,12 @@ func tick(delta: float) -> bool:
 func refresh_numbers(snap: Dictionary) -> void:
 	_since_text = 0.0
 	_last_telemetry = snap.get("telemetry", {})
+	var mass_sample: Dictionary = snap.get("mass_sample", {})
+	_update_fuel_warning(mass_sample, bool(snap.get("paused", false)))
 	var system := unit_system()
 	# Hidden overlays skip their text: a changed label costs a relayout. apply() forces a refresh when one reappears.
 	if frames.flight.visible:
-		frames.flight.refresh(_last_telemetry, system)
+		frames.flight.refresh(_last_telemetry, system, mass_sample)
 	if frames.wind.visible:
 		frames.wind.refresh(_last_telemetry, float(snap.get("view_heading_deg", 0.0)), system)
 	if frames.telemetry.visible:
@@ -259,7 +272,7 @@ func _dock_battery() -> void:
 
 ## Every frame: sticks() output ({} = nothing to show).
 func refresh_sticks(controls: Dictionary) -> void:
-	if controls.has("sticks"):
+	if visible and frames.transmitter.visible and controls.has("sticks"):
 		frames.transmitter.refresh(controls.sticks, controls.get("trims", {}), settings.stick_mode)
 
 
@@ -298,16 +311,33 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 		controller_kind = radio.profile.get("kind", "radio"), controller_lost = bool(session.get("_controller_lost")),
 		stall_pos_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else NAN,
 		stall_neg_deg = rad_to_deg(float(envelope.n1)) if envelope.has("n1") else NAN,
-		span = span, battery = battery, experimental = experimental,
+		span = span, battery = battery, mass_sample = live, experimental = experimental,
 	})
 	return {
 		telemetry = t, warnings = warnings, view_heading_deg = view_heading_deg, rpm = sim.aux[0], battery = battery,
+		mass_sample = live, paused = sim.paused,
 		radio_status = radio_status(session),
 		control_guide = {
 			connected = radio.connected, profile = radio.profile,
 			device_name = radio.device_name, device_info = { name = radio.device_name },
 		},
 	}
+
+
+## One audible cue per above-to-reserve crossing. Initial low fuel is shown but silent; refuelling above the
+## threshold rearms the next crossing. The sample is accepted flight state, and Master carries user mute/volume.
+func _update_fuel_warning(mass_sample: Dictionary, paused: bool) -> void:
+	if not mass_sample.get("ok", false) or not mass_sample.get("finite_fuel", false):
+		_fuel_state_known = false
+		_last_fuel_low = false
+		return
+	var low := bool(mass_sample.get("low_fuel", false))
+	if _fuel_state_known and not _last_fuel_low and low and not paused:
+		var accepted := mass_sample.duplicate(true)
+		fuel_reserve_warning_requested.emit(accepted)
+		_fuel_warning_player.play()
+	_fuel_state_known = true
+	_last_fuel_low = low
 
 
 ## The stick positions as the pilot holds them, and the trims; {} without a session. The throttle is the stick, not

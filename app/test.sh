@@ -16,20 +16,26 @@ GODOT="$("$HERE/get-godot.sh")"
 run_with_timeout() {
   local timeout_seconds="$1"
   shift
-  timeout "$timeout_seconds" "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
+  python3 "$HERE/../tools/godot/run_checked.py" --timeout "$timeout_seconds" \
+    --out-dir "${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}" \
+    -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
 }
 run() { run_with_timeout 60 "$@"; }
 
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
 echo "== import resource dependencies"
-if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
-  || grep -qE "^(SCRIPT |SHADER )?ERROR:" "$IMPORT_LOG"; then
+if ! run_with_timeout 180 --import > "$IMPORT_LOG" 2>&1; then
   cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
 fi
 rm -f "$IMPORT_LOG"
 
 if [[ "$TEST_PART" != units ]]; then
+echo "== PT1h-R1: real-engine diagnostic failure matrix"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_run_checked.py" NativeGodotTests
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_frame_capture.py"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_lifecycle_probe.py" LifecycleProbeFixtureTests
+
 echo "== HELI-03a/04: independent mean-inflow reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
 python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
@@ -88,6 +94,10 @@ echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
 
+echo "== AE-24: generated presentation bindings and source pins stay current"
+python3 "$HERE/../research/aircraft-standardization/build_customization.py" --check
+python3 "$HERE/../research/aircraft-standardization/test_customization.py"
+
 echo "== AUD-12: generated Master safety-limiter bus layout stays current"
 run --script "$HERE/../tools/audio/make_bus_layout.gd" -- --check
 
@@ -107,13 +117,14 @@ python3 "$HERE/../research/glow-engines/test_profiles.py"
 python3 "$HERE/../research/glow-engines/test_calibration_report.py"
 python3 "$HERE/../research/glow-engines/test_cycle_oracle.py"
 python3 "$HERE/../research/glow-engines/test_installation_schema.py"
+python3 "$HERE/../research/glow-engines/test_carburetor.py"
 python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
 python3 "$HERE/../research/glow-engines/test_build_installations.py"
 python3 "$HERE/../research/glow-engines/test_refinement_report.py"
 python3 "$HERE/../research/glow-engines/test_pilot_review.py"
 python3 "$HERE/../research/fuel-systems/test_fuel_registry.py"
 python3 "$HERE/../research/fuel-systems/test_mass_balance_report.py"
-python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json"
+python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json" --fail-on-drift
 python3 "$HERE/../research/glow-engines/reference/test_reference.py"
 
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
@@ -227,6 +238,7 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_crash_wreck.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
+    test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_p51_envelope.gd) test_timeout=180 ;; # Segmented slipstream full-flight checks measured 61 s on the native editor.
     test_rcv_powertrain.gd) test_timeout=180 ;; # Nine complete powertrain checks; measured 64 s at 240/480 Hz.
     # Full scene transitions and subprocess startup can exceed 60 s; benchmark tools own timing gates.
@@ -235,7 +247,7 @@ for t in "$HERE"/tests/test_*.gd; do
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
     test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd|test_rcv_nitro_activity.gd|test_rcv_nitro_session.gd|test_nitro_dynamics.gd) test_timeout=300 ;;
-    test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_runway_cli.gd|test_runway_fleet.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
+    test_aircraft_catalog.gd|test_aircraft_light_control.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_landscapes.gd|test_runway_cli.gd|test_runway_fleet.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   test_args=()
   # Only these two named physical gates are pending for explicitly experimental aircraft behavior.
@@ -246,8 +258,8 @@ for t in "$HERE"/tests/test_*.gd; do
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
-  # Godot reports runtime script errors without failing the run; treat any as a failure.
-  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
+  # run_with_timeout checks every invocation for engine/script/shader errors,
+  # including errors printed with a successful process exit.
 done
 
 echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"
@@ -353,10 +365,10 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --battery=ideal --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "turbo-lumber-evolution" "$TRACE" || { echo "the Timber trace does not name the Timber"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/turbo_lumber_evolution.json"; rm -f "$TRACE"
-# BAT-13: the default Timber flies its finite pack (trace v13); the checker allows only the sag-explained RPM drift.
+# BAT-13: v14 carries live mass; the base format still identifies the finite pack.
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --trace="$TRACE" --t=3 > /dev/null 2>&1
-grep -q "openrc-trace v13" "$TRACE" || { echo "the default Timber trace is not a finite-pack trace"; exit 1; }
+grep -q "openrc-trace v14" "$TRACE" && grep -q "mass_base_trace_format.*openrc-trace v13" "$TRACE" || { echo "the default Timber trace is not a finite-pack mass trace"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"; rm -f "$TRACE"
 echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1

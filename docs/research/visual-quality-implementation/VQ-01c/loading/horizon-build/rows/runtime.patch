@@ -1,0 +1,35 @@
+diff --git a/app/render/horizon.gd b/app/render/horizon.gd
+index 3d844bced..1a92a126d 100644
+--- a/app/render/horizon.gd
++++ b/app/render/horizon.gd
+@@ -70,17 +70,25 @@ static func mesh() -> ArrayMesh:
+ 		east[col] = sin(angle)
+ 		south[col] = -cos(angle)
+ 	for row: int in radii.size():
++		# Radius, profile row and destination offset are shared by the whole ring.
++		var ring_radius: float = radii[row]
++		var outer_ring: bool = row == radii.size() - 1
++		var height_row: Array = []
++		if row >= INNER_RADII.size() and row < INNER_RADII.size() + ROWS:
++			height_row = data.heights_q[row - INNER_RADII.size()]
++		var has_heights: bool = not height_row.is_empty()
++		var vertex_offset: int = 1 + row * SAMPLES
+ 		for col: int in SAMPLES:
+ 			var x: float = east[col]
+ 			var z: float = south[col]
+-			var radius: float = radii[row]
++			var radius: float = ring_radius
+ 			# Last row reaches the original square boundary; all other rows are circular.
+-			if row == radii.size() - 1:
++			if outer_ring:
+ 				radius /= maxf(absf(x), absf(z))
+ 			var h: float = 0.0
+-			if row >= INNER_RADII.size() and row < INNER_RADII.size() + ROWS:
+-				h = float(data.heights_q[row - INNER_RADII.size()][col]) / 256.0
+-			vertices[1 + row * SAMPLES + col] = Vector3(radius * x, h, radius * z)
++			if has_heights:
++				h = float(height_row[col]) / 256.0
++			vertices[vertex_offset + col] = Vector3(radius * x, h, radius * z)
+ 	# Allocate the fan and ring triangles once, preserving winding and accumulation order.
+ 	indices.resize(SAMPLES * (3 + (radii.size() - 1) * 6))
+ 	var cursor: int = 0

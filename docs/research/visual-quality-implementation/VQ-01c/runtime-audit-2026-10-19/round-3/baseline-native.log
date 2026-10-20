@@ -1,0 +1,33 @@
+ERROR: Error loading GDExtension configuration file: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: parse_gdextension_file (core/extension/gdextension_library_loader.cpp:282)
+ERROR: GDExtension dynamic library not found: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: open_library (core/extension/gdextension.cpp:810)
+ERROR: Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: load_extensions (core/extension/gdextension_manager.cpp:333)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371782411515421 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2111)
+       [9] build (res://render/world/world.gd:286)
+       [10] _build_world (res://main.gd:2067)
+       [11] _ready (res://main.gd:472)
+       [12] start_flight (res://app_root.gd:587)
+       [13] _ready (res://app_root.gd:181)
+       [14] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-r3-20261019/probes/native_observer.gd:19)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+PROP STRIKE at 2800 rpm, 16.7 m/s: engine stopped
+CRASH at 16.0 m/s (sink 0.7 m/s, landing gear travel limit (nose)) - [R] restart
+CRASH CAUSE: Hard landing: landing gear collapsed sink 3.0 m/s, 17.5 m/s (throttle closed, after a prop strike)
+frame times: p50 16.66 ms, p95 17.19 ms, p99 20.87 ms over 2666 frames → C:\DEVELOPMENT\OpenRCsimulator\tmp\godot-audit-r3-20261019\baseline-native.json

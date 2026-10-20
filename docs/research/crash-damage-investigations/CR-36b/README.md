@@ -18,7 +18,7 @@ These observed unit prices give a **known parts subtotal of $175.34** (five serv
 
 `research/crash-economics/aircraft-costing.json` owns the independent authoring dossier. Its exact physical-source hash prevents regeneration from silently accepting changed hardware. Independent authoring cannot also inherit the baseline. The generator reuses existing integer-cent lines, validates contacts/coverage/offers, derives missing reasons for unpriced rows and preserves unresolved candidate packages. Python and Godot reject a complete dossier containing null prices, including a tampered dossier whose missing list was cleared.
 
-This extends the [aircraft contract](../../../../AIRCRAFT_CONTRACT.md#damage-and-cost-authoring-dossier) without changing the physical aircraft, simulation kernel, price offers or runtime schema. The existing accepted-contact observer, frame-boundary calculator, large report and archive consume the generated dossier. No manual edits to generated data are required.
+This extends the [aircraft contract](../../../AIRCRAFT_CONTRACT.md#damage-and-cost-authoring-dossier) without changing the physical aircraft, simulation kernel, price offers or runtime schema. The existing accepted-contact observer, frame-boundary calculator, large report and archive consume the generated dossier. No manual edits to generated data are required.
 
 ## Verification
 

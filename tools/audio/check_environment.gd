@@ -24,6 +24,20 @@ func _run() -> void:
 			var snapshot: Dictionary = scene._soundscape_audio.snapshot()
 			report.sun_elevation = snapshot.sun_elevation
 			report.wind_speed = snapshot.wind_speed
+			var accepted_wind: PackedFloat64Array = scene.session.wind_at(scene.session.sim.time())
+			var expected_speed: float = sqrt(accepted_wind[0] * accepted_wind[0] + accepted_wind[1] * accepted_wind[1] + accepted_wind[2] * accepted_wind[2])
+			okay = okay and is_equal_approx(float(snapshot.wind_speed), expected_speed)
+			var cues: Array = scene._field_node.get_meta("wind_cues", [])
+			report.fabric_sources = 0 if scene._soundscape_audio.soundscape.fabric_audio == null else 1
+			if not cues.is_empty():
+				var sock: Node3D = cues[0]
+				var centres: PackedVector3Array = sock.get_node("Fabric").get_meta("centreline")
+				var expected_source: Vector3 = sock.global_transform * centres[8]
+				okay = okay and report.fabric_sources == 1 and snapshot.has("fabric_source")
+				if snapshot.has("fabric_source"):
+					okay = okay and (snapshot.fabric_source as Vector3).is_equal_approx(expected_source)
+					okay = okay and is_equal_approx(float(snapshot.windsock_inflation), float(sock.get_meta("windsock_motion").inflation))
+				report.fabric_tracks_visual = okay
 			if args.has("--time-of-day=23:00"):
 				okay = okay and float(snapshot.sun_elevation) < 0.0
 			if args.has("--weather=gusty"):

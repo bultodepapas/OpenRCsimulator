@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+59 downloaded near-grass checks, 0 failed
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)
+WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)
+WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)
+WARNING: Shader uses global parameter 'wind_vec', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _test_batched_source_build (res://tests/test_imported_near_grass.gd:134)
+       [1] _test_mode (res://tests/test_imported_near_grass.gd:38)
+       [2] _initialize (res://tests/test_imported_near_grass.gd:28)

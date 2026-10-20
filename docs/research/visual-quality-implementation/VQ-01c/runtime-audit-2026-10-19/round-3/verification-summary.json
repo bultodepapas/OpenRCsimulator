@@ -1,0 +1,100 @@
+{
+  "source_commit": "122889b8e846b501dc17ffd610e60bf340bd4786",
+  "native_live_input_run": "Excluded: uncontrolled controller inputs, crash at tick2412 after10.05simulationseconds, then paused; missing ignored native installation caused startup errors",
+  "ignored_install_correction": "Both installed binary hashes and native source digest matched receipts; corrected copy not timed before cleanup",
+  "prepared_fixed_trim_probe": "Observer and three injected scripts passed check-only; no native timing run",
+  "full_suite": "BLOCKED before app/test.sh: WSL timeout/coreutils/engine read EIO; wrapper exit126. No unit/parse/integration app tests started",
+  "unused_shell_harness": "Not executed; worker path mapping and aggregate failure propagation defects found by independent review; not a suite result",
+  "runtime_optimization": "No new performance patch accepted; duplicate vegetation spec work below impact gate",
+  "documentation": "docs/TOOLS.md corrected to current D10-R2 sideslip-only pending gate and flag; recovery remains mandatory",
+  "cleanup": "User requested disk cleanup. New clean r3 baseline checkout removed; Git commit and all runtime file hashes retained here. Older r1/r2 snapshots retained with NTFS storage compression. Unique probes/evidence retained.",
+  "worktree_verification": "All24 remaining registered worktrees exist and resolveHEAD; three older snapshot source files match recorded hashes",
+  "git_actions": "No staging, commits or pushes by this audit; shared tree advanced independently",
+  "artifacts": [
+    {
+      "path": "baseline-manifest.json",
+      "bytes": 529491,
+      "sha256": "9653947819a9a0687561b8df2816f0f1ef1e404fa15e2b01e6465282b0fbdc5d"
+    },
+    {
+      "path": "native-jobs.json",
+      "bytes": 538,
+      "sha256": "5110a729748163273f7a4e4e7c539cc1f19eb4d8352e8665d4ef07ca7ed00679"
+    },
+    {
+      "path": "native-probe-manifest.json",
+      "bytes": 685,
+      "sha256": "e10d36105ce56cc9ebc190a705832d82e9926d7978edc8cbf1223800c9ab9356"
+    },
+    {
+      "path": "baseline-native.log",
+      "bytes": 2414,
+      "sha256": "a42c1b322cfe88a822eca5a4070f562ff31d7075e83932cb2a7eac64a2d8fcdc"
+    },
+    {
+      "path": "baseline-native.json",
+      "bytes": 691531,
+      "sha256": "f6994697bc9e3b4648993abc91742f6e1dc4a9f34e9a88a4c7021fce02570937"
+    },
+    {
+      "path": "baseline-native.json.monitors.json",
+      "bytes": 562171,
+      "sha256": "9f75bfb3335c3bee52bbbfde51443b2b3e107d692d9ca12e9b383841c1bfe269"
+    },
+    {
+      "path": "baseline-native-summary.json",
+      "bytes": 1114,
+      "sha256": "a389f1474f3baf3e4d560b606753e18a0f0a53989aa637e3f78d00bad5d44eaa"
+    },
+    {
+      "path": "native-environment-correction.json",
+      "bytes": 652,
+      "sha256": "69acd55c39b84bc197ba16a16751f35b269edd135fe4f2b27c845c40df70c3c1"
+    },
+    {
+      "path": "probes/native_observer.gd",
+      "bytes": 2125,
+      "sha256": "269dd45bb67c3f82109f18e859a44f164badeddd412769f394b744d1e27e35af"
+    },
+    {
+      "path": "frame/source-freeze.json",
+      "bytes": 5620,
+      "sha256": "81d0f2e9a44fafa4b1750a5d35bb83bec4c4e9987646aad943c52ff97a92aa32"
+    },
+    {
+      "path": "frame/freeze_sources.py",
+      "bytes": 10435,
+      "sha256": "36b0908450836883140b7539a50d283d430bd159cb303139f7c0c30166adca61"
+    },
+    {
+      "path": "frame/native_frame_probe.gd",
+      "bytes": 12248,
+      "sha256": "f8b631284e8fcfa1be886dec4596ba56dc8f0e7bac25f9693164b97dbb5c58d6"
+    },
+    {
+      "path": "frame/reduce_frame_trace.py",
+      "bytes": 13134,
+      "sha256": "0f68f79a0651c9abadcae90338b4e350cce0800ef0e193426d38e1138275b27f"
+    },
+    {
+      "path": "frame/run_native_probe.ps1",
+      "bytes": 1499,
+      "sha256": "9a143d415f6d6292584595e3a4dbdf3c58c5b9f29cbbc137c4ca2c82ad9137d6"
+    },
+    {
+      "path": "construction/README.md",
+      "bytes": 8959,
+      "sha256": "f5fd28783c3cd3f92e830281678083c6325479f9268d03bbcfd832de0ad7060e"
+    },
+    {
+      "path": "suite/logs/integration.log",
+      "bytes": 733,
+      "sha256": "01fc3e3910427fc2fbd4b381c120b6f301018845a6380a611a87c5a2bf3dd445"
+    },
+    {
+      "path": "suite/logs/integration.status",
+      "bytes": 199,
+      "sha256": "6eb42681a9ad85ea1dd97c14e2683fcd62c2996f60d33064acf9c46165ea0bb4"
+    }
+  ]
+}

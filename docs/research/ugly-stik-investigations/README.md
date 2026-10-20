@@ -30,7 +30,7 @@ La documentación no acredita un modelo de vuelo, una masa/inercia medida, una m
 
 ## Lecciones de esta ronda
 
-Registro para incorporar a `LEARNINGS.md` cuando el desarrollador cierre su edición concurrente:
+Registro para incorporar a `docs/LEARNINGS.md` cuando el desarrollador cierre su edición concurrente:
 
 1. **La fuente de mayor resolución cambió un dato de trabajo.** El conflicto del área se pudo resolver para el plano firmado; una miniatura con otro cartucho no era una transcripción fiable de esa misma hoja.
 2. **Abrir una descarga puede requerir la navegación prevista por su sitio.** La sesión HTTP pública con la ficha como referencia recuperó los PDFs que el navegador de investigación no había obtenido. Se guardaron archivos y hashes, no solo enlaces.

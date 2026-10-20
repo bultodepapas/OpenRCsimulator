@@ -1,0 +1,83 @@
+{
+	"artifacts": {
+		"baseline_csv": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/baseline.csv",
+		"baseline_orfl": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/stik-61fx-glow-v2-baseline.orfl",
+		"candidate_csv": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/candidate.csv",
+		"candidate_orfl": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/stik-61fx-glow-v2-to-v3-candidate.orfl",
+		"comparison_csv": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/comparison.csv",
+		"report_json": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/report.json"
+	},
+	"candidate": {
+		"complete": true,
+		"continuous_slots": 22,
+		"exact_replay": true,
+		"exact_replay_comparison": "all recorded state/load/input/aux/continuous/mode/air/mass samples byte-exact",
+		"exact_replay_rows": 261,
+		"final_tick": 260,
+		"first_tick": 0,
+		"law": "glow-mean-cycle-finite-tank-line-pickup-v3",
+		"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/fuel-systems/FUEL-12/evidence/glow-v2-v3-61fx-20261019-r1/stik-61fx-glow-v2-to-v3-candidate.orfl",
+		"rows": 261,
+		"sha256": "791a810bafc0bb8e63d1fa7d4b6340132b5a3d429826f91af74451242446a03a",
+		"solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8"
+	},
+	"counterfactual_mapping": {
+		"candidate_slot_17": "feed-line liquid mass = 0 kg; no line inventory exists in this aircraft",
+		"candidate_slot_18": "source mode = 1 (main tank) because all source rows remain strictly above unusable residue",
+		"checkpoint": "same body, controls, aux/modes and environment; candidate configuration is current, with aircraft/tank/wheel identity plus mass/inertia/gravity checked before restore",
+		"production_compatibility_bypass": false,
+		"source_core_slots_0_to_16": "copied byte-for-byte from Glow v2",
+		"start_fill": "tick-zero main mass divided by current main capacity; selection_known=false because the v2 checkpoint had no fill-selection provenance",
+		"wheel_slots": "old indices 17..19 copied to current indices 19..21 after the two inserted Glow slots"
+	},
+	"created_utc": "2026-10-19T16:55:38",
+	"equivalence": {
+		"exact_equivalence_claimed": false,
+		"first_body_state_divergence_tick": 1,
+		"first_main_fuel_divergence_tick": 1,
+		"max_abs_live_mass_difference_kg": 3.476454502049364e-08,
+		"max_abs_main_fuel_difference_kg": 3.476454490947134e-08,
+		"max_abs_state_difference_by_channel": {
+			"down_m": 3.782139337715762e-06,
+			"east_m": 0.00026143219315244437,
+			"north_m": 4.884419286810271e-05,
+			"p_radps": 0.00013258975496877046,
+			"q_radps": 6.555351313913826e-06,
+			"qw": 2.3171058195492478e-06,
+			"qx": 1.1213821321163359e-05,
+			"qy": 7.83787929026225e-06,
+			"qz": 2.807138201332826e-06,
+			"r_radps": 2.6860302735368102e-05,
+			"u_mps": 0.0004645680221671,
+			"v_mps": 6.464168499392686e-05,
+			"w_mps": 1.593585566758704e-05
+		},
+		"reason": "The solver fingerprint and Glow law changed. This is an open-loop numerical counterfactual with an explicit state-layout mapping, not an equivalence result or physical validation."
+	},
+	"format": "openrc-fuel-v2-v3-counterfactual v1",
+	"physical_validation": "not established",
+	"same_absolute_tick_and_input_tape": true,
+	"same_aircraft_bytes_geometry_and_initial_body": true,
+	"scope": "Single protected, line-free Stik MAX-61FX recording; research-only v2-to-v3 layout map.",
+	"solver_changed": true,
+	"source": {
+		"aircraft_input_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
+		"aircraft_path": "res://data/aircraft/stik_glow_61fx_2t.json",
+		"complete": true,
+		"continuous_slots": 20,
+		"final_tick": 260,
+		"first_tick": 0,
+		"fuel_registry_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1",
+		"installation_sha256": "e3157d77fe82a02dcac2dfc17faad3bd40b2e099fcecbda21c07c306b3ef7233",
+		"law": "glow-mean-cycle-finite-tank-hub-inflow-v2",
+		"line_free": true,
+		"main_fuel_above_unusable_on_every_sample": true,
+		"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/fuel-completion/baseline-logs/stik_glow_61fx_2t.orfl",
+		"pickup_geometry_absent": true,
+		"profile_sha256": "f3a8fcd246e45bd37d586f5ef90fc978a2ead9fda1a2936d4177344e9987ca54",
+		"rows": 261,
+		"sha256": "9d4204c0f2919e48b2e2cb0ff34725744935febb345be7cac0434a9b8c824cf8",
+		"solver_sha256": "dc05854341fa4e8a5a29e06c0e855ce6c76ac259694c659b6e0c08a255cad66f"
+	},
+	"status": "complete"
+}

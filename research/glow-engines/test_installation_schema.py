@@ -26,10 +26,17 @@ class GlowInstallationSchemaTests(unittest.TestCase):
         self.assertEqual(self.schema, installation_schema.schema_document())
 
     def test_all_generated_installations_validate(self) -> None:
-        self.assertEqual(len(self.installations), 5)  # 55AX, FS-64V, their APC 13x6 alternatives, MAX-61FX
+        self.assertEqual(len(self.installations), 6)  # Stik variants plus the Extra's dedicated MAX-61FX install
         for value in self.installations:
             with self.subTest(family=value["family"], profile=value["profile"]):
                 self.assertEqual(installation_schema.validate_instance(value, self.schema), [])
+
+    def test_extra_install_reuses_61fx_profile_without_stik_feed_location(self) -> None:
+        value = json.loads((ROOT / "app" / "data" / "glow" / "extra_61fx_2t.json").read_text(encoding="utf-8"))
+        self.assertEqual(value["family"], "glow_2t")
+        self.assertEqual(value["profile"], "res://data/glow/os_max_61fx_candidate.json")
+        self.assertNotIn("fuel_feed", value, "the Stik carburetor point is not an Extra source")
+        self.assertAlmostEqual(value["propeller"]["diameter_m"]["value"], 0.3048, delta=1e-12)
 
     def test_schema_rejects_missing_starter_prime_quantity(self) -> None:
         value = copy.deepcopy(self.installations[0])

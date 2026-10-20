@@ -4,6 +4,8 @@
 
 The audit targets the Great Planes GPMA0236 64 in Extra 300S with an O.S. .61FX. Three evidence-backed inconsistencies were corrected: balancing the fuel-loaded inventory against an empty-tank datum, omitting the installed thrust angles from physics, and showing 12×8 blade pitch while selecting 12×6 in physics. Aerodynamic estimates were not fitted to make a scripted maneuver pass. The aircraft remains experimental.
 
+2026-10-19 scope note: the original audit below predates the [installed finite-glow Extra](../../GLOW-ENGINES.md) and [current fuel system](../../FUEL-SYSTEM.md). Its prescribed-fuel masses, missing-shaft statements, yaw results and baseline failures describe those source snapshots. Current implemented scope and remaining work live in the [aircraft guide](../../EXTRA-300-PLAN.md).
+
 ## Sources and decisions
 
 The [primary-source audit](EX-06/primary-sources.md) records the Great Planes manual and original plan, O.S. engine and propeller guidance, UIUC measured propeller data, and APC's propeller-type distinctions. The [implementation audit](EX-06/implementation-audit.md) follows generation, loading, forces, controls and conditional modules. The [generated derivation](../../../research/extra-300/ex05/derivation.md) is the current parameter calculation.
@@ -90,7 +92,18 @@ The paired report has `complete: true` and `solver_changed: true`: changing the 
 Reproduce the paired comparison into a new output directory (never overwrite retained evidence):
 
 ```powershell
-& $GodotWindows --headless --path app --script ../research/extra-300/ex05/compare_runway_candidate.gd -- --out=res://../tmp/extra-paired-review
+& $GodotWindows --headless --path app --script "$PWD/research/extra-300/ex05/compare_runway_candidate.gd" -- --out=res://../tmp/extra-paired-review
 ```
 
 The [comparison script](../../../research/extra-300/ex05/compare_runway_candidate.gd) refuses existing outputs, incomplete recordings and auxiliary interventions that need another layout projection. Its integrated rerun reproduced all 261 zero-difference rows with the recorded source/configuration identities.
+
+## 2026-10-19 documentation recheck
+
+Checks ran in a concurrently edited tree, not a frozen qualification baseline. Geometry, appearance and aircraft-generator `--check` commands pass; the native model verifier passes 123 checks. Original EX-08 envelope results above do not establish current verification.
+
+- `test_extra_installation.gd` cannot parse at line 149 (unexpected backslash).
+- `test_extra_handling.gd` passes initial 22 m/s trim/hold/roll checks, then aborts on a failed maneuver trim and times out at 90 s; it is not a passing suite.
+- `test_extra_runway.gd` fails two of 16 checks, the takeoff assertion at both 240/480 Hz. This fixture raises throttle without requesting the installed glow starter; runway support itself remains implemented.
+- The actual CLI produces 721 finite rows over three seconds with finite-glow combustion and consumption. The existing glow trace inspector passes and the aircraft-input bytes match. The conventional `check_trimmed_flight.py` rejects this glow base format, including in the current Extra `app/test.sh` route; that acceptance path remains pending.
+
+The local CLI observation is neither package qualification nor physical validation. Close the current test/runner gaps before renewing software-envelope or full-suite acceptance. Source-PDF metrology and rendered capture review were not repeated; the ignored original PDFs are absent here.

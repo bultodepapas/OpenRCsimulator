@@ -21,7 +21,7 @@ const ENTRIES := [
 	{
 		id = "jensen-das-ugly-stik-60",
 		visual_family = "jensen-das-ugly-stik-60",
-		name = "Jensen Das Ugly Stik 60",
+		name = "Ugly Stick",
 		summary = "High-wing sport trainer · 1.52 m · .61 glow",
 		status = FLYABLE,
 		status_note = "Full-rudder sideslip and R02 yaw damping acceptance remain pending.",
@@ -31,7 +31,7 @@ const ENTRIES := [
 		# NITRO-61FX: the default Stik's own O.S. MAX-61FX on its APC 12x6, flown by the glow engine model.
 		id = "stik-glow-61fx-2t",
 		visual_family = "jensen-das-ugly-stik-60",
-		name = "Jensen Das Ugly Stik 60 · MAX-61FX",
+		name = "Ugly Stick · MAX-61FX",
 		summary = "High-wing sport trainer · 1.52 m · .61 2-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: the Stik's own O.S. MAX-61FX on the glow engine model; profile scaled from the MAX-55AX, not flight-validated.",
@@ -40,7 +40,7 @@ const ENTRIES := [
 	{
 		id = "stik-glow-55ax-2t",
 		visual_family = "jensen-das-ugly-stik-60",
-		name = "Jensen Das Ugly Stik 60 · MAX-55AX",
+		name = "Ugly Stick · MAX-55AX",
 		summary = "High-wing sport trainer · 1.52 m · .55 2-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: inferred O.S. MAX-55AX 2-stroke installation and engine profile; not flight-validated.",
@@ -49,7 +49,7 @@ const ENTRIES := [
 	{
 		id = "stik-glow-fs64v-4t",
 		visual_family = "jensen-das-ugly-stik-60",
-		name = "Jensen Das Ugly Stik 60 · FS-64V",
+		name = "Ugly Stick · FS-64V",
 		summary = "High-wing sport trainer · 1.52 m · .64 4-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: inferred O.S. FS-64V 4-stroke installation and engine profile; not flight-validated.",
@@ -61,7 +61,7 @@ const ENTRIES := [
 		name = "Great Planes Extra 300S .60",
 		summary = "Low-wing aerobat · 1.63 m · .61 glow",
 		status = EXPERIMENTAL,
-		status_note = "Experimental: first physics estimate from the plans, not yet flight-tested.",
+		status_note = "Experimental finite MAX-61FX glow installation from the NITRO candidate profile; Extra-specific fuel-feed calibration is unavailable, and physical validation is pending.",
 		data = "res://data/aircraft/gp_extra_300s_60.json",
 	},
 	{
@@ -181,7 +181,7 @@ static func battery_data(id: String) -> String:
 	return str(entry(id).get("battery_data", ""))
 
 
-## FUEL-07: whether the aircraft burns a finite fuel tank (its data declares finite_glow_fuel), so a start fill applies.
+## Whether the aircraft declares a finite fuel consumer, so a finite-store start fill applies.
 static func has_finite_fuel(id: String) -> bool:
 	if not can_fly(id) or is_rotorcraft(id):
 		return false
@@ -189,7 +189,9 @@ static func has_finite_fuel(id: String) -> bool:
 	if path.is_empty() or not FileAccess.file_exists(path):
 		return false
 	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
-	return raw is Dictionary and raw.get("capabilities") is Dictionary and raw.capabilities.get("energy") == "finite_glow_fuel"
+	if not (raw is Dictionary and raw.get("capabilities") is Dictionary):
+		return false
+	return str(raw.capabilities.get("energy", "")) in ["finite_glow_fuel", "finite_liquid_fuel"]
 
 
 static func default_battery_mode(id: String) -> String:

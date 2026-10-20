@@ -1,0 +1,25 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   missing recovery does not create a record or interrupt editing
+ok   automatic recovery is bounded and debounced
+ok   dirty invalid draft can be snapshotted independently of named saves
+ok   snapshot stores accepted build separately from both raw text buffers
+ok   autosave does not publish library variants
+ok   reopening presents explicit recovery with Later initially focused
+ok   recovery review cannot accidentally start a trial
+ok   Later preserves stored recovery and restores normal editing actions
+ok   editing after Later cannot overwrite the pending recovered draft
+ok   restoring over another dirty draft requires its existing loss guard
+ok   Cancel during restore returns to a usable editor without altering recovery
+ok   restore preserves full accepted physical and presentation data
+ok   restore retains invalid text, page, camera and blocked launch
+ok   recovery has detached ancestry and requires a new named save
+ok   correcting the restored buffers enables save and trial
+ok   explicit named save succeeds
+ok   saving clears recovery only after a complete named record exists
+ok   a later edit creates a new recovery snapshot
+ok   explicit discard leaves the named library unchanged
+ok   unavailable selection fixture remains readable recovery data
+ok   unavailable recovered fields refuse before changing the active draft
+ok   failed restore cannot replace stored text with fallback UI values
+Workshop recovery UI: 22 checks, 0 failures

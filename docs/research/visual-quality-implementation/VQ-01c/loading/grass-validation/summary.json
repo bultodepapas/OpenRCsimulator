@@ -1,0 +1,206 @@
+{
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "machine": {
+    "architecture": "x86_64",
+    "debug_build": true,
+    "os": "Windows",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+  },
+  "renderer": "Windows",
+  "aggregation": "median of five process medians; paired complete CPU intervals in microseconds",
+  "processes": [
+    {
+      "process": 0,
+      "candidate_first": false,
+      "timings": {
+        "validation": {
+          "reference_median_usec": 78198.5,
+          "candidate_median_usec": 14107.0,
+          "reduction_percent": 81.96001202069093
+        },
+        "default-direct": {
+          "reference_median_usec": 103977.0,
+          "candidate_median_usec": 38047.0,
+          "reduction_percent": 63.40825374842514
+        },
+        "translated-pilot": {
+          "reference_median_usec": 101977.5,
+          "candidate_median_usec": 34657.0,
+          "reduction_percent": 66.01505233997696
+        },
+        "gravel-mask": {
+          "reference_median_usec": 100120.5,
+          "candidate_median_usec": 28898.5,
+          "reduction_percent": 71.1362807816581
+        }
+      }
+    },
+    {
+      "process": 1,
+      "candidate_first": true,
+      "timings": {
+        "validation": {
+          "reference_median_usec": 77376.0,
+          "candidate_median_usec": 13907.0,
+          "reduction_percent": 82.02672663358148
+        },
+        "default-direct": {
+          "reference_median_usec": 106842.0,
+          "candidate_median_usec": 39204.0,
+          "reduction_percent": 63.30656483405402
+        },
+        "translated-pilot": {
+          "reference_median_usec": 100470.0,
+          "candidate_median_usec": 35348.5,
+          "reduction_percent": 64.81686075445407
+        },
+        "gravel-mask": {
+          "reference_median_usec": 109577.5,
+          "candidate_median_usec": 30653.5,
+          "reduction_percent": 72.02573521023933
+        }
+      }
+    },
+    {
+      "process": 2,
+      "candidate_first": false,
+      "timings": {
+        "validation": {
+          "reference_median_usec": 117137.0,
+          "candidate_median_usec": 22942.0,
+          "reduction_percent": 80.41438657298718
+        },
+        "default-direct": {
+          "reference_median_usec": 150249.0,
+          "candidate_median_usec": 61340.5,
+          "reduction_percent": 59.17410432016186
+        },
+        "translated-pilot": {
+          "reference_median_usec": 141916.0,
+          "candidate_median_usec": 53974.0,
+          "reduction_percent": 61.967642830970426
+        },
+        "gravel-mask": {
+          "reference_median_usec": 138801.0,
+          "candidate_median_usec": 42688.0,
+          "reduction_percent": 69.24517834885916
+        }
+      }
+    },
+    {
+      "process": 3,
+      "candidate_first": true,
+      "timings": {
+        "validation": {
+          "reference_median_usec": 104094.5,
+          "candidate_median_usec": 15315.0,
+          "reduction_percent": 85.28740711564973
+        },
+        "default-direct": {
+          "reference_median_usec": 106551.0,
+          "candidate_median_usec": 40224.5,
+          "reduction_percent": 62.24859456973656
+        },
+        "translated-pilot": {
+          "reference_median_usec": 108349.0,
+          "candidate_median_usec": 36979.0,
+          "reduction_percent": 65.87047411605091
+        },
+        "gravel-mask": {
+          "reference_median_usec": 94960.0,
+          "candidate_median_usec": 28714.0,
+          "reduction_percent": 69.7620050547599
+        }
+      }
+    },
+    {
+      "process": 4,
+      "candidate_first": false,
+      "timings": {
+        "validation": {
+          "reference_median_usec": 80850.0,
+          "candidate_median_usec": 14375.0,
+          "reduction_percent": 82.22016079158936
+        },
+        "default-direct": {
+          "reference_median_usec": 111985.0,
+          "candidate_median_usec": 38572.0,
+          "reduction_percent": 65.55610126356208
+        },
+        "translated-pilot": {
+          "reference_median_usec": 105162.5,
+          "candidate_median_usec": 35935.5,
+          "reduction_percent": 65.82859859740877
+        },
+        "gravel-mask": {
+          "reference_median_usec": 109583.5,
+          "candidate_median_usec": 31853.0,
+          "reduction_percent": 70.93266778301478
+        }
+      }
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "validation",
+      "reference_usec": 80850.0,
+      "candidate_usec": 14375.0,
+      "reduction_percent": 82.22016079158936,
+      "process_reduction_range_percent": [
+        80.41438657298718,
+        85.28740711564973
+      ]
+    },
+    {
+      "workload": "default-direct",
+      "reference_usec": 106842.0,
+      "candidate_usec": 39204.0,
+      "reduction_percent": 63.30656483405402,
+      "process_reduction_range_percent": [
+        59.17410432016186,
+        65.55610126356208
+      ],
+      "clumps": 4533,
+      "buffer_floats": 54396,
+      "state_sha256": "007bf4ff449c8322c89637fc592c74da2d37938eaff3d47a80be14e60a79ddfa"
+    },
+    {
+      "workload": "translated-pilot",
+      "reference_usec": 105162.5,
+      "candidate_usec": 35935.5,
+      "reduction_percent": 65.82859859740877,
+      "process_reduction_range_percent": [
+        61.967642830970426,
+        66.01505233997696
+      ],
+      "clumps": 3732,
+      "buffer_floats": 44784,
+      "state_sha256": "5ec807165b04bb59d80b191fd34253d37b3d716353266993aa5cfbc19c19d7c1"
+    },
+    {
+      "workload": "gravel-mask",
+      "reference_usec": 109577.5,
+      "candidate_usec": 30653.5,
+      "reduction_percent": 72.02573521023933,
+      "process_reduction_range_percent": [
+        69.24517834885916,
+        72.02573521023933
+      ],
+      "clumps": 791,
+      "buffer_floats": 9492,
+      "state_sha256": "932712e4d6f98fb94bd5faf36faa00c8c7ca46e60ff9a1ffafd23b45c31268f7"
+    }
+  ],
+  "native_pairs": 90,
+  "validation_cases_per_process": 9
+}

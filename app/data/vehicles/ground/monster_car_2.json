@@ -299,7 +299,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived nine hull probe centers from supplied collision GLB `monster car 2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
+      "source": "Derived nine hull probe centers from supplied collision GLB `assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
     },
     "hull_probe_radii_m": {
       "value": [
@@ -315,7 +315,7 @@
       ],
       "unit": "m",
       "kind": "estimated",
-      "source": "Derived nine hull probe centers from supplied collision GLB `monster car 2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
+      "source": "Derived nine hull probe centers from supplied collision GLB `assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
     },
     "hull_contact_stiffness_n_per_m": {
       "value": 15000.0,

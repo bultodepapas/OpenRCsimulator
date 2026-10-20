@@ -45,6 +45,9 @@
 /docs/research/visual-quality-implementation/grass-quality/evidence/pack-2026-10-18/** -text whitespace=cr-at-eol
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
+/app/data/aircraft/battery/*.json text eol=crlf
+# Pack records hash exact generated cell bytes; checkout conversion cannot change them.
+/app/data/batteries/**/*.json text eol=lf
 /app/data/rotorcraft/*.json text eol=crlf
 /app/data/workshop/*.json text eol=lf
 /app/data/ground/wheel_profiles.json text eol=lf
@@ -55,7 +58,7 @@
 /research/glow-engines/flight-480.json text eol=lf
 /research/glow-engines/flight-960.json text eol=lf
 
-# These generated Stik installation and aircraft records intentionally retain CRLF.
+# These generated glow installation and aircraft records intentionally retain CRLF.
 /app/data/glow/stik_55ax_2t.json text eol=crlf
 /app/data/glow/stik_55ax_2t_apc_13x6.json text eol=crlf
 /app/data/glow/stik_fs64v_4t.json text eol=crlf
@@ -65,7 +68,12 @@
 /app/data/aircraft/stik_glow_fs64v_4t.json text eol=crlf
 /app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json text eol=crlf
 /app/data/glow/stik_61fx_2t.json text eol=crlf
+/app/data/glow/extra_61fx_2t.json text eol=crlf
 /app/data/aircraft/stik_glow_61fx_2t.json text eol=crlf
+
+# Fuel replay and export receipts preserve the bytes used by their recorded hashes.
+/research/fuel-systems/FUEL-12/** -text whitespace=cr-at-eol
+/docs/research/fuel-systems/FUEL-12/evidence/** -text whitespace=cr-at-eol
 
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf
@@ -79,12 +87,19 @@
 /research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf
 
+# Author deliveries retain reviewed bytes and original whitespace; do not reformat them.
+/assets/source-deliveries/** -text -whitespace
+/assets/source-deliveries/README.md text !whitespace
+# Historical Timber text uses CRLF checkouts and LF Git blobs; preserve both identities.
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.py text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.json text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.md text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.txt text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.step text eol=crlf
 # RCV-14a pins the author's delivery bytes, including the supplied visual rig.
-"RC CARS/**" -text
 /docs/research/rc-monster-truck/RCV-14a/intake.json text eol=lf
 
 # Timber r2 is an immutable author delivery; manifests hash its original bytes.
-"Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/**" -text
 /app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt -text
 /assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
 /assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
@@ -110,7 +125,6 @@
 /research/helicopter/reference/hx700_motion_oracle.json text eol=lf
 
 # RCV-35: supplied MONSTER CAR 2 Blender delivery is an immutable byte source.
-"monster car 2/**" -text
 /app/assets/vehicles/monster-car-2/*.json -text
 /app/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
 /assets/vehicles/monster-car-2/*.json -text
@@ -137,3 +151,8 @@
 /docs/research/visual-quality-implementation/L6c/tree-completion/** -text whitespace=cr-at-eol
 /docs/research/visual-quality-implementation/L8b/2026-10-18/** -text whitespace=cr-at-eol
 /docs/research/visual-quality-implementation/grass-quality/evidence/raw/audit-2026-10-18/** -text whitespace=cr-at-eol
+
+# JETI supplier attachments and dated receipts retain their recorded byte hashes.
+/docs/research/radio-input/D6-JETI-00/** -text -whitespace
+/docs/research/radio-input/D6-JETI-01/** -text whitespace=cr-at-eol
+/docs/research/radio-input/D6-JETI-01/**/*.log -whitespace

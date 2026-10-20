@@ -10,6 +10,8 @@ Follow-up: [actual Home/Fly loading and the DT-11a lake geometry reuse repair](l
 
 ## Delivered and verified
 
+Later evidence: [2026-10-19 runtime audit](runtime-audit-2026-10-19/README.md) records window-close trace preservation, current loading/resource observations and a rejected CPU experiment. Its source and verification limits are separate from this historical baseline.
+
 - Complete session/input callback followed by the guarded simulation callback, with
   production field, lake and 4,980 scenery proxies; bounded per-tick raw measurements.
 - Alternating observer-on/off processes, numeric trajectory fingerprints, strict report

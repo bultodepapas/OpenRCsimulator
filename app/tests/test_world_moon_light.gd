@@ -111,12 +111,14 @@ func _initialize() -> void:
 	# The day sky gets nothing from the moon's second light.
 	var noon := SkyState.state(Ephemeris.sky(Conditions.resolve(PackedStringArray(["--date=2026-09-26", "--time=14:00"])).when))
 	_check("day: full sun shadows, clouds shaded by the sun alone, exactly", float(noon.shadow_strength) == 1.0
-		and float(noon.cloud_light1_weight) == 1.0 and float(noon.cloud_light2_weight) == 0.0, "%s %s" % [noon.cloud_light1_weight, noon.cloud_light2_weight])
+		and float(noon.cloud_light1_weight) == 1.0 and float(noon.cloud_light2_weight) == 0.0 and noon.sky_lobe2_lin == Vector3.ZERO,
+		"%s %s %s" % [noon.cloud_light1_weight, noon.cloud_light2_weight, noon.sky_lobe2_lin])
 	for hm: String in ["06:00", "19:30", "20:00"]: # high summer noon, golden hour and sunset (the disc still up) on 2026-06-21
 		var st := SkyState.state(Ephemeris.sky(Conditions.resolve(PackedStringArray(["--date=2026-06-21", "--time=" + hm])).when))
 		if float(st.sun_elevation_deg) >= SkyState.SUN_SHADOW_FULL_DEG:
-			_check("sun up at %s: clouds and shadows exactly as before" % hm, float(st.cloud_light1_weight) == 1.0
-				and float(st.cloud_light2_weight) == 0.0 and float(st.shadow_strength) == 1.0, str(st.sun_elevation_deg))
+			_check("sun up at %s: clouds, lobe and shadows exactly as before" % hm, float(st.cloud_light1_weight) == 1.0
+				and float(st.cloud_light2_weight) == 0.0 and float(st.shadow_strength) == 1.0 and st.sky_lobe2_lin == Vector3.ZERO,
+				str(st.sun_elevation_deg))
 
 	# Engine shadows: flow steps apply the switch and the opacity; the calibrated day and snapshots keep full opacity.
 	var engine := Atmosphere.engine_shadows

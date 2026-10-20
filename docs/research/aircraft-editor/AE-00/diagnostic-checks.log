@@ -1,0 +1,248 @@
+===== import.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (32 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   3% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   6% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[   9% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  12% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  15% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  18% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  21% ] [90m[1mupdate_scripts_classes[22m | WindsockMotion[39m[0m
+[  24% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  27% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  30% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  33% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  36% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  39% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  42% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  45% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  48% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  51% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  54% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  57% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  63% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  66% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  69% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  72% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  75% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  78% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  81% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  84% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  87% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  90% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  93% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+
+===== test_workshop_compiler.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL finite-glow tank capacity-only estimate remains independent of engine scaling ["Glow dry fuel carrier mass properties are invalid"]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.06× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.1163 kg·m2 is 2.04× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.9055 kg·m2 is 2.00× the scaled UltraStick25e value
+Workshop compiler: 313 checks, 1 failures
+
+
+===== test_workshop_descriptor.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+102 checks, 0 failed
+
+
+===== test_workshop_integration.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371840242579341 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:384)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:275)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:282)
+       [12] _ready (res://app_root.gd:222)
+       [13] _run (res://tests/test_workshop_integration.gd:31)
+ok   Home keyboard opens Workshop
+ok   200% trial starts
+ok   trial has distinct physical identity
+ok   catalog visual identity is retained
+ok   trial is airborne
+ok   trial session applies tank-size ratio and reports accepted total mass
+ok   trial trace records exact source
+ok   F5 resolves frozen candidate
+ok   render pose preserves 200% scale
+ok   scaled CG is the simulated world position
+ok   camera extent follows scaled geometry
+ok   wreck geometry follows jensen-das-ugly-stik-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   trial restart keeps frozen identity and experimental mass
+ok   return restores same editor instance
+ok   trial return preserves draft and edit history
+ok   Home is still behind editor
+ok   Extra 50% is blocked while finite-glow transforms remain fixed
+ok   Extra 200% is blocked while finite-glow transforms remain fixed
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   original aircraft still starts
+ok   paused original accepts an independent sky
+ok   invalid draft retains original flight and editor
+ok   failed candidate startup preserves old flight and camera
+ok   failed candidate startup preserves old recorder
+ok   failed candidate startup preserves adapted exposure
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.05× the scaled UltraStick25e value
+ok   50% trial from Pause starts independently
+ok   trial can choose its own sky
+ok   trial return preserves adapted exposure
+ok   return restores previous flight
+ok   original tick and state preserved
+ok   previous flight remains paused
+ok   return restores original sky presentation
+ok   Pause editor draft preserved
+Workshop integration: 0 failed
+
+
+===== test_workshop_store.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+108 checks, 0 failed
+
+
+===== test_workshop_trial.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Aircraft presentation changed after the Workshop trial was frozen.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:56)
+       [1] _initialize (res://tests/test_workshop_trial.gd:36)
+FAIL v1 saved descriptor can still launch through its explicit adapter
+FAIL legacy descriptor trial hash binds the resolved model manifest
+Workshop trial: 37 checks, 2 failed
+
+
+===== test_workshop_ui.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   screen renders its title, preview and test action
+ok   airplane selector discovers every fixed-wing flyable aircraft
+ok   initial keyboard focus enters the aircraft selector
+ok   Workshop is a still editor with no flight session
+ok   layout fits 720p height
+ok   layout fits 1080p height
+ok   opening starts at the top of the editor
+ok   Spanish locale translates the Workshop title
+ok   Tab advances focus inside the editor
+ok   fixed-wing selection remains aligned: jensen-das-ugly-stik-60
+ok   no-op build validates: jensen-das-ugly-stik-60
+ok   unsupported controls stay visible and inactive: jensen-das-ugly-stik-60
+ok   fixed-wing selection remains aligned: stik-glow-61fx-2t
+ok   no-op build validates: stik-glow-61fx-2t
+ok   unsupported controls stay visible and inactive: stik-glow-61fx-2t
+ok   fixed-wing selection remains aligned: stik-glow-55ax-2t
+ok   no-op build validates: stik-glow-55ax-2t
+ok   unsupported controls stay visible and inactive: stik-glow-55ax-2t
+ok   fixed-wing selection remains aligned: stik-glow-fs64v-4t
+ok   no-op build validates: stik-glow-fs64v-4t
+ok   unsupported controls stay visible and inactive: stik-glow-fs64v-4t
+ok   fixed-wing selection remains aligned: gp-extra-300s-60
+ok   no-op build validates: gp-extra-300s-60
+ok   unsupported controls stay visible and inactive: gp-extra-300s-60
+ok   fixed-wing selection remains aligned: p51d-mustang-120
+ok   no-op build validates: p51d-mustang-120
+ok   unsupported controls stay visible and inactive: p51d-mustang-120
+ok   fixed-wing selection remains aligned: sebart-avanti-s-a200-p100rx
+ok   no-op build validates: sebart-avanti-s-a200-p100rx
+ok   unsupported controls stay visible and inactive: sebart-avanti-s-a200-p100rx
+ok   fixed-wing selection remains aligned: turbo-lumber-evolution
+ok   no-op build validates: turbo-lumber-evolution
+ok   unsupported controls stay visible and inactive: turbo-lumber-evolution
+ok   tank-size control explains the absence of a declared finite tank: turbo-lumber-evolution
+ok   catalog includes aircraft with restricted Workshop adjustments
+ok   finite-glow engine scaling stays disabled with its qualified limitation
+ok   finite-glow aircraft still exposes independent finite-tank sizing
+ok   direct rotorcraft requests return to the fixed-wing default
+ok   direct rotorcraft requests explain the Workshop limit
+ok   declared tank exposes a separate estimated-capacity control
+ok   tank-size edit compiles and is called out as an estimate
+ok   intermediate recipe values are never silently rounded
+ok   slider displays the exact saved multiplier
+ok   scale selector includes the exact intermediate size
+ok   malformed recipe is refused before changing the draft
+ok   scale 50% compiles
+ok   scale 200% compiles
+ok   Mini preset produces a valid recipe
+ok   Giant preset produces a valid recipe
+ok   Light preset produces a valid recipe
+ok   Heavy preset produces a valid recipe
+ok   Fast preset produces a valid recipe
+ok   Agile preset produces a valid recipe
+ok   Slow preset produces a valid recipe
+ok   Undo restores the prior recipe
+ok   Reset returns every value to compiler defaults
+ok   first Undo restores the preceding edit
+ok   second Undo restores the original
+ok   Redo restores both edits
+ok   new edit clears the redo branch
+ok   slider drag contributes one history entry
+ok   undoing a slider drag restores its starting value
+ok   a drag without changes preserves redo
+ok   history is bounded
+ok   changing source clears both history branches
+ok   Save creates one local revision
+ok   Save updates the same variant as revision two
+ok   saved provenance pins exact source, compiler and dependencies
+ok   Test Fly emits the exact pinned snapshot and variant revision
+ok   Load restores the saved recipe and original source bytes
+ok   loading a saved variant clears unrelated undo state
+ok   Delete removes the saved variant and disables its actions
+ok   deleting the current variant leaves an unsaved draft
+ok   Undo delete restores the original revision
+ok   saving the retained draft creates a separate variant
+ok   concurrent save fixture advances the revision
+ok   stale editor save preserves the newer revision and current draft
+ok   conflicting draft can be saved as its own copy
+ok   precise saved recipe round-trips without quantization
+ok   removed catalog fixture is stored independently
+ok   unavailable source load preserves the entire current draft
+ok   backup recovery visibly identifies the earlier revision
+ok   saving a recovered draft advances past existing immutable revisions
+ok   historical metadata fixture saves
+ok   loaded draft separates recipe physics from record metadata
+ok   historical recipe can be renamed
+ok   historical recipe copy receives a separate identity
+ok   copy leaves the source history untouched
+Workshop UI: 0 failed

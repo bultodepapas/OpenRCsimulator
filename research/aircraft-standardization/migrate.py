@@ -56,17 +56,17 @@ POLICIES: dict[str, dict[str, Any]] = {
     },
     "gp-extra-300s-60": {
         "kind": "glow_prop", "planform": "tapered", "gear": "fixed_taildragger",
-        "layout": "single_tractor", "energy": "prescribed_fuel", "rotation": LEGACY_ROTATION,
+        "layout": "single_tractor", "energy": "finite_glow_fuel", "rotation": LEGACY_ROTATION,
         "gear_contacts": 3,
     },
     "p51d-mustang-120": {
         "kind": "glow_prop", "planform": "tapered", "gear": "locked_down_taildragger",
-        "layout": "single_tractor", "energy": "prescribed_fuel", "rotation": LEGACY_ROTATION,
+        "layout": "single_tractor", "energy": "finite_liquid_fuel", "rotation": LEGACY_ROTATION,
         "gear_contacts": 3,
     },
     "sebart-avanti-s-a200-p100rx": {
         "kind": "turbine", "planform": "tapered", "gear": "locked_up",
-        "layout": "single_centerline_jet", "energy": "prescribed_fuel", "start_if_missing": None,
+        "layout": "single_centerline_jet", "energy": "finite_liquid_fuel", "start_if_missing": None,
         "gear_contacts": 0,
     },
     "synthetic_stik_electric_4s": {

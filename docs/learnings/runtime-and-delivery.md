@@ -1,6 +1,6 @@
 # Runtime, input and delivery lessons
 
-**Status:** curated reference. Evidence comes from the 2026-10-05–13 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Evidence comes from the 2026-10-05–13 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
 ## Godot execution and test isolation
 
@@ -63,6 +63,12 @@
 - **Local CI is not a fresh checkout.** `act` copied ignored/untracked folders, hiding a missing capture directory that failed on GitHub. System Pillow also masked a missing CI dependency. Create output directories explicitly, use the pinned isolated visual environment, and verify generated/imported assets from a fresh checkout. [VQ-01a](../research/visual-quality-implementation/VQ-01a/README.md), [capture runner](../../app/capture.sh). A disposable validation snapshot also needs a valid Git HEAD for build-identity tests; freeze generators and their inputs together with generated app data, or a mixed snapshot can falsely report stale artifacts. [CR-22a](../research/crash-damage-investigations/CR-22a/README.md).
 
 - **Generated media can silently become imported assets.** Capture PNGs accumulated a second copy under `.godot/`. Create `.gdignore` in output directories before import, keep manifests and compact comparisons, and bound full-frame/log retention. A local clone can also retain Git alternates despite `--no-hardlinks`; use `--dissociate` if its parent snapshot will be removed. [L4b](../research/visual-quality-implementation/L4b/README.md), [SC-25](../research/scenery-implementation/SC-25/README.md).
+
+- **Build cheap verification copies as a mirror root, and unlink before mutating.**
+  - A hard-linked `app/` copy (`cp -al`, with a real copy of `.godot`) costs about 170 MB. But the app reads authoring sources through `res://..`, so the copy must sit in a mirror root whose other top-level entries link to the repository. Without them, model contracts fail for reasons unrelated to the change.
+  - Never link `.git` into a copy: a test running git there would act on the real index.
+  - Hard links share inodes. An in-place write (Python `open(path, "w")`) changes both trees, so remove the link before writing a mutation.
+  - The copy also lets you verify against a fixed upstream file when the shared tree's `HEAD` does not compile (here `field.gd` called a `Windsock` API that only `origin/main` had). The owner merges; you don't pull into a tree that others are using. ([FW-MOON-06](../research/field-world/FW-MOON-06/README.md#4-fw-moon-06d-the-slow-sky-between-the-steps))
 
 - **Run the exported program to test resource packaging.** The early claim that JSON required an include filter was contradicted by a real 4.7.2 `all_resources` export. Verify the final binary with its data, and use a deliberate exclusion to prove the missing-data check. First-import and standalone-builder tests must also recreate globals and resources normally supplied by the app shell. Mounting a pack in an empty project does not apply its project settings: a physics probe must set the app tick rate in both Engine and ProjectSettings before loading aircraft data. [UI-06c-R1](../research/menu-investigations/UI-06c-R1/README.md). [Export runner](../../app/export.sh), [L15b](../research/visual-quality-implementation/L15b/README.md).
 

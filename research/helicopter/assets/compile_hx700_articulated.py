@@ -11,10 +11,10 @@ import struct
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
-SOURCE = REPO / "NEW HELI/HX-700_Helicoptero_RC_1.blend"
+SOURCE = REPO / "assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend"
 SOURCE_SHA = "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f"
 EXPECTED_GLB_SHA = "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47"
-EXPECTED_PROFILE_SHA = "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2"
+EXPECTED_PROFILE_SHA = "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
 AUTHORED = REPO / "assets/aircraft/hx-700/articulated"
 RUNTIME = REPO / "app/assets/aircraft/hx-700/articulated"
 

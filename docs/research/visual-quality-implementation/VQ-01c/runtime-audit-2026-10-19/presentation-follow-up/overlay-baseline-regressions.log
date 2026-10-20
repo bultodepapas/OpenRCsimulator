@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL hidden transmitter retains its last drawing 
+FAIL menu-hidden transmitter skips drawing updates 
+WARNING: Tree wind is disabled for maple_tree because source material -9223371677822350537 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:2111)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:2067)
+       [11] _ready (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:472)
+       [12] _flight_scene (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/test_overlay_before.gd:470)
+       [13] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/test_overlay_before.gd:55)
+       [14] _controls_guide (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/test_overlay_before.gd:454)
+       [15] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL hidden diagnostic labels skip formatting 
+FAIL hidden performance skips percentile formatting 
+FAIL performance can refresh independently of diagnostics 
+FAIL menu-hidden diagnostics skip formatting 
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+overlay manager: 127 checks, 6 failed

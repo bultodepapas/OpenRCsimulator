@@ -35,7 +35,7 @@ Evidence for step FUEL-03 of the [fuel, mass and balance plan](../../../plans/fu
 - `research/aircraft-standardization/build_schema.py` and the regenerated `openrc-aircraft-v2.schema.json`;
 - `parameter_register.py` and the regenerated AS-01 register (203 quantity paths);
 - `app/physics/aircraft_data.gd` (additions only);
-- [AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md) (three optional-input rows and the binding rules);
+- [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md) (three optional-input rows and the binding rules);
 - the authoring template, which now carries a complete tank example;
 - `research/fuel-systems/mass_balance_report.py`, which adds a full state from the declared capacity and compares only the physical content when it checks drift;
 - tests `app/tests/test_fuel_system_contract.gd` and `research/fuel-systems/test_mass_balance_report.py`.

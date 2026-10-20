@@ -163,24 +163,29 @@ func advance(clock_s: float, model_transform: Transform3D, kind: String, rpm: fl
 	for emitter: GPUParticles3D in [exhaust, pump]:
 		var dense := emitter == pump
 		var level: float = levels.pump if dense else levels.exhaust
-		var mat := emitter.process_material as ShaderMaterial
-		mat.set_shader_parameter("segment_begin", _last_position)
-		mat.set_shader_parameter("segment_end", position)
-		mat.set_shader_parameter("direction_begin", _last_direction)
-		mat.set_shader_parameter("direction_end", direction)
-		mat.set_shader_parameter("carrier_velocity", carrier)
-		mat.set_shader_parameter("wind_velocity", wind)
-		mat.set_shader_parameter("interval_s", dt)
-		mat.set_shader_parameter("jet_speed", lerpf(0.5, 4.0, speed_ratio))
-		mat.set_shader_parameter("wash_velocity", wash_velocity)
-		mat.set_shader_parameter("density", level * lod)
-		mat.set_shader_parameter("opacity", 0.62 * level if dense else 0.16 * level)
-		emitter.emitting = level * lod > 0.001
-		if emitter.emitting:
+		var emitting := level * lod > 0.001
+		emitter.emitting = emitting
+		if emitting:
 			emitter.set_meta("last_birth_s", clock_s)
-		# Even when culled, residual puffs must age and react to the shared changing wind.
-		if emitter.emitting or clock_s - float(emitter.get_meta("last_birth_s")) <= emitter.lifetime + MAX_INTERVAL:
-			emitter.request_particles_process(dt if emitter.emitting else 0.0, 0.0 if emitter.emitting else dt)
+		# Birth uniforms are only read by start(). Existing particles still need the live wind in
+		# process(), and must keep the exact same bounded aging request until their lifetime ends.
+		var has_residual_particles := clock_s - float(emitter.get_meta("last_birth_s")) <= emitter.lifetime + MAX_INTERVAL
+		if emitting or has_residual_particles:
+			var mat := emitter.process_material as ShaderMaterial
+			if emitting:
+				mat.set_shader_parameter("segment_begin", _last_position)
+				mat.set_shader_parameter("segment_end", position)
+				mat.set_shader_parameter("direction_begin", _last_direction)
+				mat.set_shader_parameter("direction_end", direction)
+				mat.set_shader_parameter("carrier_velocity", carrier)
+				mat.set_shader_parameter("interval_s", dt)
+				mat.set_shader_parameter("jet_speed", lerpf(0.5, 4.0, speed_ratio))
+				mat.set_shader_parameter("wash_velocity", wash_velocity)
+				mat.set_shader_parameter("density", level * lod)
+				mat.set_shader_parameter("opacity", 0.62 * level if dense else 0.16 * level)
+			# Even when culled, residual puffs must age and react to the shared changing wind.
+			mat.set_shader_parameter("wind_velocity", wind)
+			emitter.request_particles_process(dt if emitting else 0.0, 0.0 if emitting else dt)
 			RenderingServer.particles_request_process(emitter.get_base())
 	_update_bounds(clock_s, position, wind.length(), carrier.length() + wash_velocity.length() + 4.0)
 	_last_position = position

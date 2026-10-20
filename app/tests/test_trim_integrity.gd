@@ -3,8 +3,11 @@ extends SceneTree
 
 const AD = preload("res://physics/aircraft_data.gd")
 const Trim = preload("res://physics/trim.gd")
+const MassInventory = preload("res://physics/mass_inventory.gd")
 const Scenarios = preload("res://sim/scenarios.gd")
 const Modes = preload("res://physics/flight_modes.gd")
+const WindField = preload("res://physics/wind_field.gd")
+const WindConfig = preload("res://physics/wind_config.gd")
 const G: float = 9.80665
 const RESULT_KEYS: Array[String] = ["ok", "message", "mode", "V", "alpha", "beta", "gamma", "throttle",
 	"thrust", "rpm", "elevator", "aileron", "rudder", "pitch_command", "roll_command", "yaw_command",
@@ -71,6 +74,39 @@ func trim_contract() -> void:
 	check("valid result repeats exactly after failures", var_to_bytes(Trim.solve("level", 15.0, model, G, throws)) == var_to_bytes(control))
 
 
+func glow_bounded_trim_contract() -> void:
+	var loaded: Dictionary = AD.load_file("res://data/aircraft/gp_extra_300s_60.json")
+	check("Extra finite-glow fixture loads", loaded.get("ok", false))
+	if not loaded.get("ok", false):
+		return
+	var source_model: Dictionary = loaded.model
+	var glow: Dictionary = source_model.propulsion.glow
+	var capacity: float = float(glow.capacity_fuel_kg)
+	var hot_field: Variant = WindField.build(WindConfig.preset("hot-high")).field
+	var conditions: Array[Dictionary] = [
+		{"name": "reference", "rho": 1.225, "charge": 1.0},
+		{"name": "hot-high", "rho": hot_field.air_density(-30.0), "charge": hot_field.engine_charge_ratio(-30.0)},
+	]
+	for fill in [1.0, 0.1]:
+		var properties: Dictionary = MassInventory.evaluate_reference(glow.mass_reference, PackedFloat64Array([capacity * fill]))
+		var model: Dictionary = source_model.duplicate(true)
+		model.mass_kg = properties.mass_kg
+		model.inertia = properties.inertia
+		model.trim_mass_properties = properties
+		for condition in conditions:
+			for seed in [0.4, 0.75, 0.95]:
+				var solved: Dictionary = Trim._solve_from("level", 22.0, model, G, model.controls.throw_rad,
+					float(seed), float(condition.rho), float(condition.charge))
+				check("Extra 22 m/s six-axis root: %s fill=%s seed=%s" % [condition.name, fill, seed],
+					solved.ok and finite_result(solved) and solved.residual < 1e-8 and solved.throttle >= 0.0 and solved.throttle <= 1.0)
+			for seed in [0.4, 0.75, 0.95]:
+				var refused_result: Dictionary = Trim._solve_from("level", 17.0, model, G, model.controls.throw_rad,
+					float(seed), 1.225, 1.0)
+				check("Extra idle-limited 17 m/s refuses cleanly fill=%s seed=%s" % [fill, seed],
+					not refused_result.ok and "stalled" in refused_result.message and finite_result(refused_result) and
+					refused_result.throttle >= 0.0 and refused_result.throttle <= 1.0 and refused_result.residual > 1e-8)
+
+
 func linear_contract() -> void:
 	var matrix: Array = [PackedFloat64Array([0.0, 2.0]), PackedFloat64Array([3.0, 1.0])]
 	var rhs: PackedFloat64Array = PackedFloat64Array([4.0, 5.0])
@@ -108,6 +144,7 @@ func _initialize() -> void:
 		check("NaN linear RHS", Trim.solve_linear([PackedFloat64Array([1.0])], PackedFloat64Array([NAN])).is_empty())
 	else:
 		trim_contract()
+		glow_bounded_trim_contract()
 		linear_contract()
 	print("D4-R2 trim integrity: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

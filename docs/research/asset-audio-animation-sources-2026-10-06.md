@@ -1,39 +1,52 @@
-# Fuentes de audio y animación — 2026-10-06
+<a id="fuentes-de-audio-y-animación--2026-10-06"></a>
+<a id="fuentes-de-audio-y-animación-2026-10-06"></a>
 
-Consulta acotada a páginas oficiales. No se descargaron recursos ni se integraron assets.
+# Audio and animation sources — 2026-10-06
 
-## Freesound — efectos de audio
+**Historical source review: 2026-10-06.** This was a limited review of official pages. No resources were downloaded or integrated. The notes below distinguish claims confirmed in page text from details seen only in search-result snippets. They are not a fresh verification or a statement of current runtime status.
 
-Fuente: [FAQ oficial de Freesound](https://freesound.org/help/faq/)
+Current work belongs to the [audio guide](../AUDIO-PLAN.md) and [scenery guide](../SCENERY-PLAN.md). For provenance of existing population assets, see the [source manifest](../../assets/scenery/population/SOURCE_MANIFEST.json) and [human asset license record](../../assets/scenery/population/HUMAN_LICENSES.md); the [source-delivery index](../../assets/source-deliveries/README.md) links other supplied packages.
 
-**Confirmado:** cada grabación tiene una licencia elegida por quien la subió. La FAQ enumera CC0, CC BY y CC BY-NC: CC BY requiere atribución; CC BY-NC impide usos comerciales según el resumen de Freesound; CC0 permite usos amplios, sin atribuirse la autoría. La FAQ también explica cómo acreditar y enlazar los sonidos.
+<a id="freesound--efectos-de-audio"></a>
 
-**Límite:** “gratis” no describe una licencia común para todo el catálogo. Revisar la licencia de cada grabación y conservar autor, título y URL para atribución. La búsqueda y los campos de descripción/tags no documentan una medida fiable de escala física del motor; no deducir tamaño de motor o clase del avión solo por metadata.
+## Freesound — sound effects
 
-**Destino:** dejar audio fuera del hito visual actual. Si se agenda después, seleccionar sonidos uno por uno según licencia y verificar manualmente qué representan.
+Source: [official Freesound FAQ](https://freesound.org/help/faq/).
 
-## CMU Graphics Lab Motion Capture Database — mocap humano
+**Confirmed in the FAQ:** Each recording has a license selected by its uploader. The FAQ lists CC0, CC BY and CC BY-NC. CC BY requires attribution; CC BY-NC bars commercial use according to Freesound's summary; CC0 permits broad use without making the user the recording's author. The FAQ also explains how to credit and link sounds.
 
-Fuentes: [página de la base](https://mocap.cs.cmu.edu/) y [FAQ oficial](https://mocap.cs.cmu.edu/faqs.php).
+**Limit:** “Free” does not describe one license shared by the entire catalog. Review each recording's license and retain the author, title and URL for attribution. Search results and description/tag fields do not document a reliable physical engine size; do not infer engine size or aircraft class from metadata alone.
 
-**Indicios en resultados de búsqueda:** el snippet de la portada mostraba “free for all uses”; el de la FAQ mostraba que se puede pedir una copia completa de la base y pedía no rastrear el sitio para obtener todos los movimientos. No leí los cuerpos completos: `open` devolvió un error interno para la FAQ y no tuve el texto completo de la portada.
+**Proposed destination:** Keep audio outside the visual milestone. If audio is scheduled later, select sounds one at a time according to license and verify manually what each recording represents.
 
-**Límite:** esos snippets no permiten confirmar ni excluir una condición adicional sobre reventa o redistribución raw. Tampoco pude verificar si la página incluye un aviso sobre uso de humanos virtuales. No interpretar “free for all uses” como permiso confirmado para republicar los archivos originales; aclarar las condiciones completas antes de incluirlos en una distribución.
+<a id="cmu-graphics-lab-motion-capture-database--mocap-humano"></a>
 
-**Destino:** animaciones de personas solo si aparece una necesidad futura en L10; no es requisito del hito visual actual del avión.
+## CMU Graphics Lab Motion Capture Database — human motion capture
 
-## Mixamo — personajes y animaciones humanoides
+Sources: [database page](https://mocap.cs.cmu.edu/) and [official FAQ](https://mocap.cs.cmu.edu/faqs.php).
 
-Fuente: [FAQ oficial de Adobe Mixamo](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html) (actualizada el 14-09-2021).
+**Search-result snippets only:** The database homepage snippet said “free for all uses.” The FAQ snippet said a full copy of the database could be requested and asked people not to crawl the site to obtain all movements. The page bodies were not fully inspected: opening the FAQ returned an internal error, and the homepage's complete text was not available.
 
-**Confirmado:** se ofrece gratis con Adobe ID; la FAQ permite usar personajes y animaciones libres de regalías en proyectos personales, comerciales y sin fines de lucro, incluidos videojuegos. El auto-rig y la biblioteca de animación están limitados a humanoides bípedos.
+**Limit:** Those snippets do not confirm or rule out additional terms on resale or raw-file redistribution. The review also could not verify whether the site included a notice about virtual humans. Do not treat “free for all uses” as confirmed permission to republish original files; clarify the complete terms before including them in a distribution.
 
-**Límite:** la FAQ no establece permiso para redistribuir por separado los archivos fuente de personajes o animaciones. El permiso de incorporarlos a un videojuego no debe tratarse como autorización para publicar los assets raw. También queda pendiente comprobar que la FAQ siga siendo la condición vigente al seleccionar un recurso.
+**Proposed destination:** Consider human animation only if a future L10 task needs it. It was not a requirement of the aircraft's visual milestone.
 
-**Destino:** considerar junto con CMU solo para animar personas si L10 lo necesita en el futuro; no añadirlo al hito visual actual.
+<a id="mixamo--personajes-y-animaciones-humanoides"></a>
 
-## Aplicación al catálogo
+## Mixamo — humanoid characters and animation
 
-- Audio: catalogar como candidato posterior, con licencia y atribución por grabación; no inferir escala del motor por tags o descripción.
-- Personas: registrar CMU y Mixamo como opciones futuras condicionadas a L10 y a aclarar la redistribución raw cuando corresponda.
-- Esta nota documenta alcance y límites de las fuentes; no autoriza redistribuir ningún archivo.
+Source: [official Adobe Mixamo FAQ](https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html), updated 2021-09-14.
+
+**Confirmed in the FAQ:** Mixamo is offered free with an Adobe ID. The FAQ permits royalty-free use of characters and animations in personal, commercial and nonprofit projects, including video games. Auto-rigging and the animation library are limited to bipedal humanoids.
+
+**Limit:** The FAQ does not establish permission to redistribute the original character or animation files separately. Permission to incorporate them into a game should not be treated as permission to publish raw assets. The FAQ's terms would also need to be checked again when selecting a resource.
+
+**Proposed destination:** Consider alongside CMU only if L10 later needs animated people; neither was part of the visual milestone at the time.
+
+<a id="aplicación-al-catálogo"></a>
+
+## Application to the submitted catalog
+
+- **Audio:** Record as a later candidate, with license and attribution checked per recording. Do not infer engine scale from tags or descriptions.
+- **People:** Record CMU and Mixamo as future options conditional on L10 and on clarifying raw-file redistribution where applicable.
+- This note records the scope and limits of the source review; it does not authorize redistribution of any file.

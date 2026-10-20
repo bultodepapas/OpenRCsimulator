@@ -34,6 +34,14 @@ def _by_id(raw: dict) -> dict:
 
 
 class InventoryIdentityTests(unittest.TestCase):
+    def test_extra_install_uses_existing_61fx_candidate_without_stik_feed_geometry(self) -> None:
+        path = build_installations.ROOT / "app/data/glow/extra_61fx_2t.json"
+        generated = build_installations.outputs()[path]
+        self.assertEqual(generated["profile"], "res://data/glow/os_max_61fx_candidate.json")
+        self.assertEqual(generated["family"], "glow_2t")
+        self.assertAlmostEqual(generated["propeller"]["diameter_m"]["value"], 0.3048, delta=1e-12)
+        self.assertNotIn("fuel_feed", generated)
+
     def test_reordered_donor_inventory_edits_the_same_records(self) -> None:
         for two, fx61 in ((True, False), (False, False), (True, True)):
             with self.subTest(two=two, fx61=fx61):
@@ -54,6 +62,28 @@ class InventoryIdentityTests(unittest.TestCase):
                     vb = b["item_balance_mass_virtual"][key]["value"]
                     for x, y in zip(va if isinstance(va, list) else [va], vb if isinstance(vb, list) else [vb]):
                         self.assertAlmostEqual(x, y, delta=1e-12 * max(1.0, abs(x)))
+
+
+def _inventory_cg(raw: dict) -> list[float]:
+    mass = sum(i["mass"]["value"] for i in raw["inventory"])
+    return [sum(i["mass"]["value"] * i["position"]["value"][k] for i in raw["inventory"]) / mass for k in range(3)]
+
+
+class DatumTests(unittest.TestCase):
+    def test_every_variant_keeps_the_base_hub_about_its_own_datum(self) -> None:
+        """thrust_line_offset is datum-relative: the tank and engine move the datum, never the hub."""
+        base = json.loads((build_installations.ROOT / "app/data/aircraft/jensen_ugly_stik_60.json")
+                          .read_text(encoding="utf-8-sig"))
+        hub = [c + o for c, o in zip(_inventory_cg(base), base["propulsion"]["propeller"]["thrust_line_offset"]["value"])]
+        variants = [raw for path, raw in build_installations.outputs().items() if path.parent.name == "aircraft"]
+        self.assertEqual(len(variants), 5)
+        for raw in variants:
+            with self.subTest(aircraft=raw["id"]):
+                offset = raw["propulsion"]["propeller"]["thrust_line_offset"]["value"]
+                for k, (c, o) in enumerate(zip(_inventory_cg(raw), offset)):
+                    self.assertAlmostEqual(c + o, hub[k], delta=1e-11)
+                # The full tank sits ahead of the dry balance point, so the datum is ahead of the plan CG.
+                self.assertLess(_inventory_cg(raw)[0], raw["balance"]["plan_cg"]["value"][0])
 
 
 if __name__ == "__main__":

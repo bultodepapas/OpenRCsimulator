@@ -4,6 +4,33 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`field_validation_probe.gd` compares complete field validation and file loading
+with explicit source/data snapshots and a no-tree control. Its [DT-11a / L6b report](../../docs/research/visual-quality-implementation/VQ-01c/loading/field-validation/README.md)
+retains normalized-data/diagnostic parity, paired CPU batches, immutable-input
+guards and regression results. It runs headless and does not measure full startup or FPS.
+
+`ground_noise_probe.gd` compares complete seeded image generation and cache-empty
+ground-material creation with an explicit reference source. Its [DT-11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/noise/README.md)
+retains exact native image/mip/material checks, paired timings and a separate warm
+control. It requires a native renderer and measures CPU construction/submission,
+not GPU completion, full loading or FPS.
+
+`grass_validation_probe.gd` compares complete grass validation and direct grass
+construction against an explicit reference source. Its [DT-11a / L11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/grass-validation/README.md)
+retains native buffer/mesh/material parity, malformed-input comparisons, paired
+timings and existing native test diagnostics. It requires a native renderer and
+does not measure full default-world loading or FPS.
+
+`stars_build_probe.gd` compares complete star-field construction with an explicit
+reference source. Its [DT-11a / FW-24-R1 report and command](../../docs/research/visual-quality-implementation/VQ-01c/loading/stars/README.md)
+cover native placement/buffer/material parity, warm and cache-empty timings, and
+separate startup/full-loading limits. It requires a native renderer.
+
+`scenery_empty_probe.gd` compares complete scenery-contact queries against an explicit
+reference source, including occupied bins with an empty hull envelope and real-hit
+controls. [LU-10-R1 evidence and commands](../../docs/research/landscape-upgrade/LU-10-R1/README.md)
+define its paired batches, exact-parity checks and separate full-session limits.
+
 `woodland_build_probe.gd` compares the current woodland builder with an explicit reference
 using native-renderer scene snapshots and alternating construction timings. Its
 [measurement report and commands](../../docs/research/visual-quality-implementation/L6c/tree-completion/optimization/woodland/README.md)
@@ -132,6 +159,83 @@ nearest-rank percentiles and keeps aircraft/case distributions separate. Stop on
 never bypass a pause/crash, weaken numerical guards or re-record goldens to finish a run.
 
 ## Native frame evidence
+
+### CPU, GPU and memory diagnosis
+
+For OS process RAM, system memory pressure, process I/O and project disk usage,
+use the [resource and storage tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
+These complement the engine allocation counters below.
+
+Add `--frame-diagnostics` after Godot's `--` to the existing `--frametimes` command
+to retain root-viewport render CPU/GPU timings, global render setup CPU time,
+Godot-tracked memory/resource/orphan-node counters and observer polling cost.
+The mode is off by default and does not modify simulation state. Example from
+the repository root, with a new output directory and the Windows console engine:
+
+```powershell
+$run = Join-Path $PWD ('tmp/frame-diagnostics-' + [guid]::NewGuid().ToString('N'))
+New-Item -ItemType Directory -Path $run | Out-Null
+$godot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+python tools/godot/run_checked.py --out-dir "$run/checks" --timeout 100 -- $godot --path app --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- --scripted --frametimes="$run/run-1.json" --warmup=10 --t=60 --frame-diagnostics --frametimes-max-frames=60000
+$captureExit = $LASTEXITCODE
+$log = (Get-ChildItem "$run/checks" -Directory | Select-Object -First 1).FullName + '/engine.log'
+python research/performance/frame_diagnose.py --report "$run/run-1.json" --log $log --out "$run/diagnosis.json" --budget-ms 16.667 --top 10
+if ($captureExit -ne 0 -or $LASTEXITCODE -ne 0) { throw "Capture or diagnosis failed; retained evidence: $run" }
+```
+
+`--scripted` is a repeatable rendering workload, not active flight or an exact
+physics replay. Omit it to investigate a controlled physical flight. Use the
+matching native engine on Linux/macOS. Headless runs retain counters but explicitly
+report render timing unavailable. macOS Compatibility timing is conservatively
+disabled. Observer timing is disabled when collection ends or the scene exits;
+do not run this observer together with another owner of viewport timing.
+
+`--frametimes-max-frames` bounds retained samples: default 60,000, range 1–120,000.
+It requires `--frametimes`, as does `--frame-diagnostics`. Warm-up frames do not
+consume the limit. Hitting the limit writes an incomplete prefix and exits nonzero;
+shorten `--t` or choose a larger limit. Exact completion on the last allowed frame
+succeeds. The existing duration bound remains 300 seconds. Use a fresh frame JSON
+path: the underlying frame writer still accepts replacement of an existing path.
+
+The offline diagnosis reuses the native report validator, requires the matching
+process log, and reports budget overruns, contiguous bursts, worst-frame indices
+and timestamps, accompanying counters, and memory start/end/peak changes. It
+preserves errors and warnings with log context. `--budget-ms` is an explicit
+investigation threshold, not an automatic performance acceptance gate.
+
+Reducer limits: `--top` defaults to 10 (1–1,000); `--max-input-bytes` defaults to
+`64MiB` combined JSON/log input (maximum `1GiB`, plus one overflow-detection byte).
+It refuses an existing diagnosis destination. Exit 0 means valid source data,
+1 means invalid/missing/incomplete data, engine errors or invalid observer readings,
+and 2 means invalid options or output failure. Warnings remain visible without
+failing. Budget overruns are observations even with exit 0. The caller must supply
+the matching log; hashes identify those files but do not prove their association
+or process exit status. Preserve the checked runner's exit status separately.
+
+Interpretation matters:
+
+- Render CPU time excludes scripts and physics; global setup time is separate.
+  Root-viewport GPU time excludes other viewports. These channels must not be
+  summed with wall-frame or broad process CPU time.
+- Render timer queries refer to previously available rendering work; GPU results
+  may lag. Same-index counters are context, not proof of a hitch's cause. Zero GPU
+  readings mean unavailable-or-zero, never a demonstrated free GPU frame.
+- Memory figures are engine-tracked allocations/estimates, not process RSS or
+  available VRAM. Growth and orphan counts suggest a repeatable lifecycle probe;
+  they do not establish a leak.
+- `observer_poll_usec` measures diagnostic polling/merge work only. It excludes
+  retention, report writing and driver instrumentation cost. Measure performance
+  separately with the observer off before accepting an optimization.
+
+For deep attribution, use Godot's existing [Profiler and Visual Profiler](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/debugger_panel.html),
+or its `--gpu-profile` engine flag (before `--`, confirmed in the pinned engine's
+`--help`). Keep GPU/API validation in a separate debugging session. The
+[RenderingServer timing reference](https://docs.godotengine.org/en/stable/classes/class_renderingserver.html#class-renderingserver-method-viewport-get-measured-render-time-gpu)
+and [Performance monitors](https://docs.godotengine.org/en/stable/classes/class_performance.html)
+define measurement scope and platform/build limitations. No new profiler or
+plotting dependency is required.
+
+### Capture without the additional observer
 
 Use the existing app logger, with one foreground flight at a time:
 
@@ -271,3 +375,87 @@ The packager holds the clip's decoded frames in memory; use bounded case sizes.
 retain the initial four-clip subset, repeat/minimization parity, guards and a
 rejected partial collection. Human orientation, controlled reaction time, other
 aircraft/views/weather and the full acceptance matrix remain open.
+
+## Lake validation reuse (LU-25-R1)
+
+`lake_validation_benchmark.py` creates a disposable imported app copy and compares
+the original structural guard with bounded successful-definition reuse through
+two production sessions. It alternates 120-tick batches, compares complete
+checkpoints and hashes every measured numeric state. No benchmark switch is
+installed in the production application.
+
+```powershell
+python research/performance/lake_validation_benchmark.py --godot .tools/Godot_v4.7.2-stable_win64.exe --work tmp/lake-validation-new
+```
+
+Use a new work directory on the repository volume; assets/imports are hard-linked
+as read-only inputs. Do not import the disposable copy. Run timing alone on the
+host when possible. Defaults are 2,400 warmup and 14,400 sample ticks; `--aircraft`
+and `--case` select the workload. The native Windows executable is required so a
+timeout owns the engine rather than its console launcher.
+
+[Measured results, retained unfavorable runs and regression limits](../../docs/research/landscape-upgrade/LU-25-R1/README.md)
+describe the CPU-only scope. The runner rejects engine errors, incomplete runs,
+sample-count discrepancies and unequal trajectories.
+
+## Ground-stage layout queries (H16)
+
+`session_pair_probe.gd` compares two complete flight-session implementations through
+production input and simulation callbacks. It alternates 120-tick batches, hashes
+all measured numeric states and compares complete checkpoints after every batch.
+For the H16 method change, the original-method oracle can be compared with the
+current session:
+
+```powershell
+$probe = (Resolve-Path research/performance/session_pair_probe.gd).Path
+.tools/Godot_v4.7.2-stable_win64.exe --headless --path app --audio-driver Dummy --script $probe -- --reference=res://tests/ground_stage_reference.gd --candidate=res://sim/flight_session.gd --aircraft=jensen-das-ugly-stik-60 --case=trim --warmup=2400 --samples=14400 --output="$PWD/tmp/h16-pair-new.json"
+```
+
+Use a new output file. Run timing alone when possible and retain stdout/stderr
+through native engine exit; reject nonzero exit, engine errors, incomplete results
+or unequal fingerprints. The probe does not enforce CPU affinity; the retained
+Windows campaign runner did. The current-dependency oracle command is a repeatable
+method comparison, not a recreation of the dated working tree. Defaults measure
+10 warmup + 60 sampled simulation seconds. The result is CPU callback cost, with
+rendering and GPU work excluded.
+
+[H16 results, complete before/after scripts, commands and regression evidence](../../docs/research/simulation-state/H16/README.md)
+retain all three airborne repeats per aircraft and the flat runway result.
+
+## Contact-only lake bounds (LU-25-R2)
+
+The same complete-session probe measures conservative lake bounds rejection at
+the ground-terrain and prop-disc callers. The [LU-25-R2 record](../../docs/research/landscape-upgrade/LU-25-R2/README.md)
+retains the recoverable baseline commit, candidate dependency generator, exact
+commands, three runway repeats, airborne controls, unfavorable component timings
+and boundary/oracle regressions. Follow its reproduction steps for a frozen
+before/after comparison; the H16 oracle above isolates a different change.
+
+## Ground-patch construction cache (DT-11a)
+
+The [botanical spacing follow-up](../../docs/research/visual-quality-implementation/VQ-01c/loading/botanical-spacing/README.md)
+retains a separate field/metadata comparison and traced layout probe for moving
+cheap spacing rejection ahead of shoreline sampling. Its report includes original
+scripts, reconstruction commands, unfavorable whole-field results and the repaired
+habitat regression. It introduces no additional cache.
+
+`ground_patch_cache/prepare.py --work <new-directory> --reference <original-ground_features.gd>`
+copies the current field/scenery callers outside `app/` and redirects only their
+ground-patch dependency. Run the emitted `field_compare.gd` with the native engine,
+`--path app --script <absolute-probe> -- --output=<new.json>`; `--reverse` changes
+the initial order. It checks six whole-field geometry pairs, input immutability
+and cache retention. Pair zero includes first-use caches and is excluded from warm
+medians. Run serially and retain checked logs. This measures detached construction;
+use `loading_probe.gd` separately for the real Home/Fly route.
+
+[Dated measurements, exact baseline, commands and limitations](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md).
+The permanent regression is `res://tests/test_ground_patch_cache.gd`.
+
+## Segmented slipstream invariants (H17)
+
+[H17](../../docs/research/simulation-state/H17/README.md) uses the same full-session
+probe to compare local geometry/interval reuse in segmented slipstream evaluation.
+It retains three P-51 trim repeats, a maneuver case, an unchanged Stik control,
+component measurements and exact parity tests. Its frozen baseline includes
+LU-25-R2 and H16. Follow the report's candidate generator and campaign commands;
+the original-method regression fixture checks the changed law directly.

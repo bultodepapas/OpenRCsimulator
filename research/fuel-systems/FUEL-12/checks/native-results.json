@@ -1,0 +1,673 @@
+{
+  "format": "openrc-fuel-verification v1",
+  "scripts": 48,
+  "failed": 0,
+  "results": [
+    {
+      "test": "test_accident_integration",
+      "ok": true,
+      "exit": 0,
+      "seconds": 25.968,
+      "errors": [],
+      "summary": [
+        "       [13] _run (res://tests/test_accident_integration.gd:42)"
+      ],
+      "log": "test_accident_integration.log",
+      "summaries": [
+        "CR-30/32: 77 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_aircraft_propulsion_runtime",
+      "ok": true,
+      "exit": 0,
+      "seconds": 12.093,
+      "errors": [],
+      "summary": [
+        "aircraft propulsion runtime: 215 checks, 0 failed"
+      ],
+      "log": "test_aircraft_propulsion_runtime.log",
+      "summaries": [
+        "aircraft propulsion runtime: 215 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_atmosphere_column_session",
+      "ok": true,
+      "exit": 0,
+      "seconds": 11.859,
+      "errors": [],
+      "summary": [
+        "M5-ATM-4 session: 114 checks, 0 failed"
+      ],
+      "log": "test_atmosphere_column_session.log",
+      "summaries": [
+        "M5-ATM-4 session: 114 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_atmosphere_flight",
+      "ok": true,
+      "exit": 0,
+      "seconds": 13.907,
+      "errors": [],
+      "summary": [
+        "M5-ATM flight: 142 checks, 0 failed"
+      ],
+      "log": "test_atmosphere_flight.log",
+      "summaries": [
+        "M5-ATM flight: 142 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_avanti_handling",
+      "ok": true,
+      "exit": 0,
+      "seconds": 29.015,
+      "errors": [],
+      "summary": [
+        "47 checks, 0 failed"
+      ],
+      "log": "test_avanti_handling.log",
+      "summaries": [
+        "47 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_checkpoint",
+      "ok": true,
+      "exit": 0,
+      "seconds": 5.125,
+      "errors": [],
+      "summary": [
+        "H8 checkpoints: 92 checks, 0 failed"
+      ],
+      "log": "test_checkpoint.log",
+      "summaries": [
+        "H8 checkpoints: 92 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_checkpoint_integrity",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.297,
+      "errors": [],
+      "summary": [
+        "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+      ],
+      "log": "test_checkpoint_integrity.log",
+      "summaries": [
+        "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_crash_integration",
+      "ok": true,
+      "exit": 0,
+      "seconds": 52.219,
+      "errors": [],
+      "summary": [
+        "       [14] _run (res://tests/test_crash_integration.gd:28)"
+      ],
+      "log": "test_crash_integration.log",
+      "summaries": [
+        "180 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_crash_masses",
+      "ok": true,
+      "exit": 0,
+      "seconds": 11.891,
+      "errors": [],
+      "summary": [
+        "       [14] _aircraft (res://tests/test_crash_masses.gd:263)"
+      ],
+      "log": "test_crash_masses.log",
+      "summaries": [
+        "34 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_crash_pose",
+      "ok": true,
+      "exit": 0,
+      "seconds": 32.234,
+      "errors": [],
+      "summary": [
+        "       [12] _run (res://tests/test_crash_pose.gd:92)"
+      ],
+      "log": "test_crash_pose.log",
+      "summaries": [
+        "226 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_dynamic_mass_contact_boundary",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.422,
+      "errors": [],
+      "summary": [
+        "R05-B independent review fixture: 12 checks, 0 failures"
+      ],
+      "log": "test_dynamic_mass_contact_boundary.log",
+      "summaries": [
+        "R05-B independent review fixture: 12 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "test_dynamic_mass_contact_session",
+      "ok": true,
+      "exit": 0,
+      "seconds": 5.156,
+      "errors": [],
+      "summary": [
+        "R05-B FlightSession integration review: 38 checks, 0 failures"
+      ],
+      "log": "test_dynamic_mass_contact_session.log",
+      "summaries": [
+        "R05-B FlightSession integration review: 38 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "test_extra_installation",
+      "ok": true,
+      "exit": 0,
+      "log": "test_extra_installation.log",
+      "summary": [
+        "17 checks, 0 failed"
+      ],
+      "summaries": [
+        "17 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_flight_log",
+      "ok": true,
+      "exit": 0,
+      "seconds": 15.5,
+      "errors": [],
+      "summary": [
+        "Flight log byte limit exceeded; file is incomplete."
+      ],
+      "log": "test_flight_log.log",
+      "summaries": [
+        "FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/tmp/fuel-completion/final-snapshot/app/../tmp/flight-log-2285743"
+      ]
+    },
+    {
+      "test": "test_fuel_live_mass",
+      "ok": true,
+      "exit": 0,
+      "seconds": 6.812,
+      "errors": [],
+      "summary": [
+        "FUEL-06 live mass: 13 checks, 0 failed"
+      ],
+      "log": "test_fuel_live_mass.log",
+      "summaries": [
+        "FUEL-06 live mass: 13 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_fuel_mass_reference",
+      "ok": true,
+      "exit": 0,
+      "seconds": 7.187,
+      "errors": [],
+      "summary": [
+        "FUEL-04 fixed-datum resources: 26 checks, 0 failed"
+      ],
+      "log": "test_fuel_mass_reference.log",
+      "summaries": [
+        "FUEL-04 fixed-datum resources: 26 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_fuel_properties",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.329,
+      "errors": [],
+      "summary": [
+        "FUEL-02 fuel registry: 30 checks, 0 failed"
+      ],
+      "log": "test_fuel_properties.log",
+      "summaries": [
+        "FUEL-02 fuel registry: 30 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_fuel_sample",
+      "ok": true,
+      "exit": 0,
+      "seconds": 4.187,
+      "errors": [],
+      "summary": [
+        "FUEL sample: 19 checks, 0 failed"
+      ],
+      "log": "test_fuel_sample.log",
+      "summaries": [
+        "FUEL sample: 19 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_fuel_start_fill",
+      "ok": true,
+      "exit": 0,
+      "seconds": 15.782,
+      "errors": [],
+      "summary": [
+        "FUEL-07 start fill: 56 checks, 0 failed"
+      ],
+      "log": "test_fuel_start_fill.log",
+      "summaries": [
+        "FUEL-07 start fill: 56 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_fuel_system_contract",
+      "ok": true,
+      "exit": 0,
+      "seconds": 2.453,
+      "errors": [],
+      "summary": [
+        "FUEL-03 fuel system contract: 44 checks, 0 failed"
+      ],
+      "log": "test_fuel_system_contract.log",
+      "summaries": [
+        "FUEL-03 fuel system contract: 44 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_audio",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.687,
+      "errors": [],
+      "summary": [
+        "42 checks, 0 failed"
+      ],
+      "log": "test_glow_audio.log",
+      "summaries": [
+        "42 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_coupling",
+      "ok": true,
+      "exit": 0,
+      "seconds": 6.391,
+      "errors": [],
+      "summary": [
+        "glow shaft/prop coupling: 65 checks, 0 failed"
+      ],
+      "log": "test_glow_coupling.log",
+      "summaries": [
+        "glow shaft/prop coupling: 65 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_flight_physics",
+      "ok": true,
+      "exit": 0,
+      "seconds": 1.437,
+      "errors": [],
+      "summary": [
+        "glow flight physics: 110 checks, 0 failed"
+      ],
+      "log": "test_glow_flight_physics.log",
+      "summaries": [
+        "glow flight physics: 110 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_fuel_feed",
+      "ok": true,
+      "exit": 0,
+      "seconds": 10.578,
+      "errors": [],
+      "summary": [
+        "NITRO-05 fuel feed: 38 checks, 0 failed"
+      ],
+      "log": "test_glow_fuel_feed.log",
+      "summaries": [
+        "NITRO-05 fuel feed: 38 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_installation",
+      "ok": true,
+      "exit": 0,
+      "seconds": 2.125,
+      "errors": [],
+      "summary": [
+        "glow installation contract: 335 checks, 0 failed"
+      ],
+      "log": "test_glow_installation.log",
+      "summaries": [
+        "glow installation contract: 335 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_lifecycle",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.594,
+      "errors": [],
+      "summary": [
+        "NITRO lifecycle: 52 checks, 0 failed"
+      ],
+      "log": "test_glow_lifecycle.log",
+      "summaries": [
+        "NITRO lifecycle: 52 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_session",
+      "ok": true,
+      "exit": 0,
+      "seconds": 60.844,
+      "errors": [],
+      "summary": [
+        "Glow session: 140 checks, 0 failed"
+      ],
+      "log": "test_glow_session.log",
+      "summaries": [
+        "Glow session: 140 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_glow_stage_reuse",
+      "ok": true,
+      "exit": 0,
+      "seconds": 6.406,
+      "errors": [],
+      "summary": [
+        "Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)"
+      ],
+      "log": "test_glow_stage_reuse.log",
+      "summaries": [
+        "Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)"
+      ]
+    },
+    {
+      "test": "test_glow_trace",
+      "ok": true,
+      "exit": 0,
+      "seconds": 8.516,
+      "errors": [],
+      "summary": [
+        "NITRO-TRACE: 286 checks, 0 failed"
+      ],
+      "log": "test_glow_trace.log",
+      "summaries": [
+        "NITRO-TRACE: 286 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_landing_maneuver",
+      "ok": true,
+      "exit": 0,
+      "seconds": 116.391,
+      "errors": [],
+      "summary": [
+        "28 checks, 0 failed"
+      ],
+      "log": "test_landing_maneuver.log",
+      "summaries": [
+        "28 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_liquid_fuel",
+      "ok": true,
+      "exit": 0,
+      "seconds": 1.344,
+      "errors": [],
+      "summary": [
+        "FUEL-08 liquid adapter: 24 checks, 0 failed"
+      ],
+      "log": "test_liquid_fuel.log",
+      "summaries": [
+        "FUEL-08 liquid adapter: 24 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_liquid_fuel_session",
+      "ok": true,
+      "exit": 0,
+      "seconds": 16.734,
+      "errors": [],
+      "summary": [
+        "FUEL-08 session: 29 checks, 0 failed"
+      ],
+      "log": "test_liquid_fuel_session.log",
+      "summaries": [
+        "FUEL-08 session: 29 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_mass_inventory",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.312,
+      "errors": [],
+      "summary": [
+        "R05-A mass inventory geometry: 65 checks, 0 failed"
+      ],
+      "log": "test_mass_inventory.log",
+      "summaries": [
+        "R05-A mass inventory geometry: 65 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_mass_trace",
+      "ok": true,
+      "exit": 0,
+      "seconds": 2.687,
+      "errors": [],
+      "summary": [
+        "mass trace: 8 checks, 0 failed"
+      ],
+      "log": "test_mass_trace.log",
+      "summaries": [
+        "mass trace: 8 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_overlay_fuel_flight",
+      "ok": true,
+      "exit": 0,
+      "seconds": 3.922,
+      "errors": [],
+      "summary": [
+        "overlay fuel flight: 8 checks, 0 failed"
+      ],
+      "log": "test_overlay_fuel_flight.log",
+      "summaries": [
+        "overlay fuel flight: 8 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_resource_event_step",
+      "ok": true,
+      "exit": 0,
+      "seconds": 0.313,
+      "errors": [],
+      "summary": [
+        "resource event step: 17 checks, 0 failed"
+      ],
+      "log": "test_resource_event_step.log",
+      "summaries": [
+        "resource event step: 17 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_retractable_gear_trace",
+      "ok": true,
+      "exit": 0,
+      "seconds": 3.062,
+      "errors": [],
+      "summary": [
+        "AV-09 retractable gear trace: 21 checks, 0 failed"
+      ],
+      "log": "test_retractable_gear_trace.log",
+      "summaries": [
+        "AV-09 retractable gear trace: 21 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_sf_event_protocol",
+      "ok": true,
+      "exit": 0,
+      "seconds": 6.39,
+      "errors": [],
+      "summary": [
+        "38 checks, 0 failed"
+      ],
+      "log": "test_sf_event_protocol.log",
+      "summaries": [
+        "38 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_trace_metadata",
+      "ok": true,
+      "exit": 0,
+      "seconds": 4.954,
+      "errors": [],
+      "summary": [
+        "C7-R2 / DATA-3: 372 checks, 0 failed"
+      ],
+      "log": "test_trace_metadata.log",
+      "summaries": [
+        "C7-R2 / DATA-3: 372 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_trim_density",
+      "ok": true,
+      "exit": 0,
+      "seconds": 2.438,
+      "errors": [],
+      "summary": [
+        "M5-ATM-2 trim density: 35 checks, 0 failed"
+      ],
+      "log": "test_trim_density.log",
+      "summaries": [
+        "M5-ATM-2 trim density: 35 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_trim_integrity",
+      "ok": true,
+      "exit": 0,
+      "seconds": 11.218,
+      "errors": [],
+      "summary": [
+        "D4-R2 trim integrity: 725 checks, 0 failed"
+      ],
+      "log": "test_trim_integrity.log",
+      "summaries": [
+        "D4-R2 trim integrity: 725 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_turbine_continuous",
+      "ok": true,
+      "exit": 0,
+      "seconds": 4.547,
+      "errors": [],
+      "summary": [
+        "46 checks, 0 failed"
+      ],
+      "log": "test_turbine_continuous.log",
+      "summaries": [
+        "46 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_workshop_compiler",
+      "ok": true,
+      "exit": 0,
+      "seconds": 15.906,
+      "errors": [],
+      "summary": [
+        "Workshop compiler: 314 checks, 0 failures"
+      ],
+      "log": "test_workshop_compiler.log",
+      "summaries": [
+        "Workshop compiler: 314 checks, 0 failures"
+      ]
+    },
+    {
+      "test": "test_workshop_descriptor",
+      "ok": true,
+      "exit": 0,
+      "seconds": 1.703,
+      "errors": [],
+      "summary": [
+        "102 checks, 0 failed"
+      ],
+      "log": "test_workshop_descriptor.log",
+      "summaries": [
+        "102 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_workshop_integration",
+      "ok": true,
+      "exit": 0,
+      "seconds": 15.688,
+      "errors": [],
+      "summary": [
+        "       [13] _run (res://tests/test_workshop_integration.gd:31)"
+      ],
+      "log": "test_workshop_integration.log",
+      "summaries": []
+    },
+    {
+      "test": "test_workshop_store",
+      "ok": true,
+      "exit": 0,
+      "seconds": 2.719,
+      "errors": [],
+      "summary": [
+        "108 checks, 0 failed"
+      ],
+      "log": "test_workshop_store.log",
+      "summaries": [
+        "108 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_workshop_trial",
+      "ok": true,
+      "exit": 0,
+      "seconds": 4.953,
+      "errors": [],
+      "summary": [
+        "       [1] _initialize (res://tests/test_workshop_trial.gd:37)"
+      ],
+      "log": "test_workshop_trial.log",
+      "summaries": [
+        "Workshop trial: 38 checks, 0 failed"
+      ]
+    },
+    {
+      "test": "test_workshop_ui",
+      "ok": true,
+      "exit": 0,
+      "seconds": 10.688,
+      "errors": [],
+      "summary": [
+        "Workshop UI: 0 failed"
+      ],
+      "log": "test_workshop_ui.log",
+      "summaries": []
+    }
+  ]
+}

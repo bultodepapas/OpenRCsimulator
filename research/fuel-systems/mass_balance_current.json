@@ -1,15 +1,76 @@
 {
  "aircraft": [
   {
+   "balance_fuel_state": "as_inventory",
+   "catalog_ids": [
+    "turbo-lumber-evolution"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.06,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "pack_ecm",
+   "file": "battery/turbo_lumber_evolution_4s_pack.json",
+   "flags": [
+    "cg_range_not_declared"
+   ],
+   "fuel_items": [],
+   "id": "turbo-lumber-evolution",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
+   "mac_m": 0.210294,
+   "neutral_donor_items": [],
+   "neutral_point": {
+    "kind": "derived",
+    "np_x_m": 0.11474047993431823,
+    "register_key": "turbo-lumber-evolution"
+   },
+   "plan_cg_m": [
+    0.06,
+    0.0,
+    -0.002176
+   ],
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.06,
+      0.0,
+      -0.002176
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.19,
+     "static_margin_pct_mac": 26.03
+    }
+   },
+   "variant_kind": "catalog"
+  },
+  {
    "balance_fuel_state": "empty_tanks",
-   "energy": "prescribed_fuel",
+   "catalog_ids": [
+    "gp-extra-300s-60"
+   ],
+   "cg_range_check": {
+    "aft_x_m": 0.118325,
+    "forward_x_m": 0.099275,
+    "plan_cg_x_m": 0.1088,
+    "plan_state": "empty",
+    "status": "within"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "finite_glow_fuel",
    "file": "gp_extra_300s_60.json",
    "flags": [],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
      "id": "fuel_flight",
-     "mass_kg": 0.152103,
+     "mass_kg": 0.30420660000000005,
      "position_m": [
       -0.035,
       0.0,
@@ -23,8 +84,14 @@
     }
    ],
    "id": "gp-extra-300s-60",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.305597,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "derived",
     "np_x_m": 0.147033,
     "register_key": "gp-extra-300s-60"
    },
@@ -33,17 +100,18 @@
     0.0,
     -0.025021
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
-      0.102415,
+      0.096573,
       0.0,
-      -0.02391
+      -0.022893
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.425572,
-     "static_margin_pct_mac": 14.6
+     "mass_kg": 3.577676,
+     "static_margin_pct_mac": 16.512
     },
     "empty": {
      "cg_m": [
@@ -51,7 +119,7 @@
       0.0,
       -0.025021
      ],
-     "cg_shift_from_declared_mm": 6.385,
+     "cg_shift_from_declared_mm": 12.227,
      "mass_kg": 3.273469,
      "static_margin_pct_mac": 12.511
     },
@@ -61,17 +129,29 @@
       0.0,
       -0.022893
      ],
-     "cg_shift_from_declared_mm": -5.842,
+     "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 3.577676,
      "static_margin_pct_mac": 16.512
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [
+    "jensen-das-ugly-stik-60"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "prescribed_fuel",
    "file": "jensen_ugly_stik_60.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -90,8 +170,14 @@
     }
    ],
    "id": "jensen-das-ugly-stik-60",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -100,7 +186,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -132,13 +219,25 @@
      "mass_kg": 3.028623,
      "static_margin_pct_mac": 11.012
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
-   "energy": "prescribed_fuel",
+   "catalog_ids": [
+    "p51d-mustang-120"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.177763,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "finite_liquid_fuel",
    "file": "p51d_mustang_120.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "gasoline",
@@ -157,8 +256,14 @@
     }
    ],
    "id": "p51d-mustang-120",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.508816,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "derived",
     "np_x_m": 0.214398,
     "register_key": "p51d-mustang-120"
    },
@@ -167,7 +272,8 @@
     0.0,
     -0.071675
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -199,13 +305,25 @@
      "mass_kg": 21.873926,
      "static_margin_pct_mac": 9.394
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
-   "energy": "prescribed_fuel",
+   "catalog_ids": [
+    "sebart-avanti-s-a200-p100rx"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.24,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "finite_liquid_fuel",
    "file": "sebart_avanti_s_a200.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "kerosene",
@@ -224,8 +342,14 @@
     }
    ],
    "id": "sebart-avanti-s-a200-p100rx",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.362193,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "derived",
     "np_x_m": 0.270866,
     "register_key": "sebart-avanti-s-a200-p100rx"
    },
@@ -234,7 +358,8 @@
     0.0,
     0.009733
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -266,13 +391,25 @@
      "mass_kg": 12.734858,
      "static_margin_pct_mac": 13.3
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [
+    "stik-glow-55ax-2t"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "finite_glow_fuel",
    "file": "stik_glow_55ax_2t.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -291,8 +428,14 @@
     }
    ],
    "id": "stik-glow-55ax-2t",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -301,7 +444,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -333,13 +477,23 @@
      "mass_kg": 2.766464,
      "static_margin_pct_mac": 11.692
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "finite_glow_fuel",
    "file": "stik_glow_55ax_2t_apc_13x6.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -358,8 +512,14 @@
     }
    ],
    "id": "stik-glow-55ax-2t",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -368,7 +528,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -400,13 +561,25 @@
      "mass_kg": 2.777228,
      "static_margin_pct_mac": 11.661
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [
+    "stik-glow-61fx-2t"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "finite_glow_fuel",
    "file": "stik_glow_61fx_2t.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -425,8 +598,14 @@
     }
    ],
    "id": "stik-glow-61fx-2t",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -435,7 +614,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -467,13 +647,25 @@
      "mass_kg": 3.028623,
      "static_margin_pct_mac": 11.012
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [
+    "stik-glow-fs64v-4t"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "finite_glow_fuel",
    "file": "stik_glow_fs64v_4t.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -492,8 +684,14 @@
     }
    ],
    "id": "stik-glow-fs64v-4t",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -502,7 +700,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -534,13 +733,23 @@
      "mass_kg": 2.625543,
      "static_margin_pct_mac": 9.038
     }
-   }
+   },
+   "variant_kind": "catalog"
   },
   {
    "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "finite_glow_fuel",
    "file": "stik_glow_fs64v_4t_apc_13x6.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
@@ -559,8 +768,14 @@
     }
    ],
    "id": "stik-glow-fs64v-4t",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [],
    "neutral_point": {
+    "kind": "estimated",
     "np_x_m": 0.132588,
     "register_key": "jensen-das-ugly-stik-60"
    },
@@ -569,7 +784,8 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": false,
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
@@ -601,24 +817,77 @@
      "mass_kg": 2.609963,
      "static_margin_pct_mac": 9.07
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "as_inventory",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "fixed_voltage",
    "file": "synthetic_stik_electric_4s.json",
    "flags": [
-    "missing_id:20_items"
+    "missing_neutral_point",
+    "cg_range_not_declared"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_4s",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [
+    {
+     "id": "donor_engine_station",
+     "mass_kg": 0.55,
+     "position_m": [
+      -0.226,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_muffler_station",
+     "mass_kg": 0.15,
+     "position_m": [
+      -0.21,
+      0.06,
+      -0.02
+     ]
+    },
+    {
+     "id": "donor_tank_station",
+     "mass_kg": 0.055,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_fuel_station",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "neutral_point": null,
    "plan_cg_m": [
     0.1209,
     0.0,
     0.0
    ],
    "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
    "states": {
     "declared": {
      "cg_m": [
@@ -629,24 +898,77 @@
      "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 2.885058
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "as_inventory",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "ocv_resistance",
    "file": "synthetic_stik_electric_4s_battery.json",
    "flags": [
-    "missing_id:20_items"
+    "missing_neutral_point",
+    "cg_range_not_declared"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_4s_battery",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [
+    {
+     "id": "donor_engine_station",
+     "mass_kg": 0.55,
+     "position_m": [
+      -0.226,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_muffler_station",
+     "mass_kg": 0.15,
+     "position_m": [
+      -0.21,
+      0.06,
+      -0.02
+     ]
+    },
+    {
+     "id": "donor_tank_station",
+     "mass_kg": 0.055,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_fuel_station",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "neutral_point": null,
    "plan_cg_m": [
     0.1209,
     0.0,
     0.0
    ],
    "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
    "states": {
     "declared": {
      "cg_m": [
@@ -657,24 +979,77 @@
      "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 2.885058
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "as_inventory",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "fixed_voltage",
    "file": "synthetic_stik_electric_6s.json",
    "flags": [
-    "missing_id:20_items"
+    "missing_neutral_point",
+    "cg_range_not_declared"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_6s",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [
+    {
+     "id": "donor_engine_station",
+     "mass_kg": 0.55,
+     "position_m": [
+      -0.226,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_muffler_station",
+     "mass_kg": 0.15,
+     "position_m": [
+      -0.21,
+      0.06,
+      -0.02
+     ]
+    },
+    {
+     "id": "donor_tank_station",
+     "mass_kg": 0.055,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_fuel_station",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "neutral_point": null,
    "plan_cg_m": [
     0.1209,
     0.0,
     0.0
    ],
    "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
    "states": {
     "declared": {
      "cg_m": [
@@ -685,24 +1060,77 @@
      "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 2.885058
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "as_inventory",
+   "catalog_ids": [],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.1209,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "ocv_resistance",
    "file": "synthetic_stik_electric_6s_battery.json",
    "flags": [
-    "missing_id:20_items"
+    "missing_neutral_point",
+    "cg_range_not_declared"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_6s_battery",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.3048,
+   "neutral_donor_items": [
+    {
+     "id": "donor_engine_station",
+     "mass_kg": 0.55,
+     "position_m": [
+      -0.226,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_muffler_station",
+     "mass_kg": 0.15,
+     "position_m": [
+      -0.21,
+      0.06,
+      -0.02
+     ]
+    },
+    {
+     "id": "donor_tank_station",
+     "mass_kg": 0.055,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    },
+    {
+     "id": "donor_fuel_station",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ]
+    }
+   ],
+   "neutral_point": null,
    "plan_cg_m": [
     0.1209,
     0.0,
     0.0
    ],
    "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
    "states": {
     "declared": {
      "cg_m": [
@@ -713,22 +1141,45 @@
      "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 2.885058
     }
-   }
+   },
+   "variant_kind": "data_variant"
   },
   {
    "balance_fuel_state": "as_inventory",
+   "catalog_ids": [
+    "turbo-lumber-evolution"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.06,
+    "plan_state": "declared",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
    "energy": "fixed_voltage",
    "file": "turbo_lumber_evolution.json",
-   "flags": [],
+   "flags": [
+    "cg_range_not_declared"
+   ],
    "fuel_items": [],
    "id": "turbo-lumber-evolution",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
    "mac_m": 0.210294,
+   "neutral_donor_items": [],
+   "neutral_point": {
+    "kind": "derived",
+    "np_x_m": 0.11474047993431823,
+    "register_key": "turbo-lumber-evolution"
+   },
    "plan_cg_m": [
     0.06,
     0.0,
     -0.002176
    ],
    "plan_cg_matches_inventory": true,
+   "plan_cg_state": "declared",
    "states": {
     "declared": {
      "cg_m": [
@@ -737,12 +1188,75 @@
       -0.002176
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 2.19
+     "mass_kg": 2.19,
+     "static_margin_pct_mac": 26.03
     }
-   }
+   },
+   "variant_kind": "catalog"
   }
  ],
- "format": "openrc-mass-balance-report v1",
+ "coverage": {
+  "catalog_aircraft_ids": [
+   "gp-extra-300s-60",
+   "jensen-das-ugly-stik-60",
+   "p51d-mustang-120",
+   "sebart-avanti-s-a200-p100rx",
+   "stik-glow-55ax-2t",
+   "stik-glow-61fx-2t",
+   "stik-glow-fs64v-4t",
+   "turbo-lumber-evolution"
+  ],
+  "catalog_covered_files": [
+   "battery/turbo_lumber_evolution_4s_pack.json",
+   "gp_extra_300s_60.json",
+   "jensen_ugly_stik_60.json",
+   "p51d_mustang_120.json",
+   "sebart_avanti_s_a200.json",
+   "stik_glow_55ax_2t.json",
+   "stik_glow_61fx_2t.json",
+   "stik_glow_fs64v_4t.json",
+   "turbo_lumber_evolution.json"
+  ],
+  "catalog_data_files": [
+   "battery/turbo_lumber_evolution_4s_pack.json",
+   "gp_extra_300s_60.json",
+   "jensen_ugly_stik_60.json",
+   "p51d_mustang_120.json",
+   "sebart_avanti_s_a200.json",
+   "stik_glow_55ax_2t.json",
+   "stik_glow_61fx_2t.json",
+   "stik_glow_fs64v_4t.json",
+   "turbo_lumber_evolution.json"
+  ],
+  "catalog_missing_files": [],
+  "errors": [],
+  "reported_airplane_files": [
+   "battery/turbo_lumber_evolution_4s_pack.json",
+   "gp_extra_300s_60.json",
+   "jensen_ugly_stik_60.json",
+   "p51d_mustang_120.json",
+   "sebart_avanti_s_a200.json",
+   "stik_glow_55ax_2t.json",
+   "stik_glow_55ax_2t_apc_13x6.json",
+   "stik_glow_61fx_2t.json",
+   "stik_glow_fs64v_4t.json",
+   "stik_glow_fs64v_4t_apc_13x6.json",
+   "synthetic_stik_electric_4s.json",
+   "synthetic_stik_electric_4s_battery.json",
+   "synthetic_stik_electric_6s.json",
+   "synthetic_stik_electric_6s_battery.json",
+   "turbo_lumber_evolution.json"
+  ],
+  "supported_data_variants": [
+   "stik_glow_55ax_2t_apc_13x6.json",
+   "stik_glow_fs64v_4t_apc_13x6.json",
+   "synthetic_stik_electric_4s.json",
+   "synthetic_stik_electric_4s_battery.json",
+   "synthetic_stik_electric_6s.json",
+   "synthetic_stik_electric_6s_battery.json"
+  ]
+ },
+ "format": "openrc-mass-balance-report v2",
  "liquid_fuels": [
   "glow_fuel",
   "gasoline",

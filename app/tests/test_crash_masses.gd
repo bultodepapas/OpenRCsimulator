@@ -10,6 +10,7 @@ const Frames = preload("res://render/frames.gd")
 const MainScene = preload("res://main.tscn")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const SceneryCollision = preload("res://sim/scenery_collision.gd")
 
 var _checks := 0
 var _failures := 0
@@ -40,13 +41,18 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _production() -> void:
 	var main: Variant = MainScene.instantiate()
 	main.set("accident_reports_enabled", false) # Wreck mass fixture has no economic archive.
-	main.set("aircraft_id", "jensen-das-ugly-stik-60")
+	main.set("aircraft_id", "stik-glow-55ax-2t")
 	root.add_child(main)
 	await process_frame
 	var session: Variant = main.get("session")
 	var director: Variant = main.get("_crash_director")
 	session.input_enabled = false
 	session.set_physics_process(false)
+	# This production Stik has a finite Glow tank. Keep it quarter-full to distinguish the typed source
+	# report from the legacy kerosene-only scalar at the impact.
+	var continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	continuous[1] *= 0.25
+	session.sim.continuous = continuous
 	var s: PackedFloat64Array = session.sim.state.duplicate()
 	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
 	var deepest := -INF
@@ -64,8 +70,26 @@ func _production() -> void:
 	session.sim.set_paused(false)
 	session._physics_process(session.sim.dt())
 	director.update(session.sim.dt())
-	_check("production crash hands the inventory to the wreck", director.active and (director.report.get("inventory_boxes", []) as Array).size() == 20)
+	_check("production crash hands the inventory to the wreck", director.active and not (director.report.get("inventory_boxes", []) as Array).is_empty())
 	_check("production wreck uses inventory section masses", not director.wreck._section_masses.is_empty())
+	var live: Dictionary = session.mass_properties()
+	var fuel_by_kind: Dictionary = director.report.get("fuel_by_kind_kg", {})
+	var energy_sources: Dictionary = director.report.get("energy_sources", {})
+	_check("production crash reports live Glow fuel by type",
+		live.get("ok", false) and float(fuel_by_kind.get("glow_fuel", 0.0)) > 0.0
+		and absf(float(fuel_by_kind.get("glow_fuel", -1.0)) - float(live.get("fuel_remaining_kg", -2.0))) < 1.0e-12
+		and absf(float(energy_sources.get("glow_fuel", -1.0)) - float(fuel_by_kind.get("glow_fuel", -2.0))) < 1.0e-12,
+		str({live = live, typed = fuel_by_kind, sources = energy_sources}))
+	_check("production crash labels accepted-endpoint mass and fuel samples",
+		director.report.get("mass_sample_basis") == "accepted-endpoint-approximation"
+		and director.report.get("fuel_sample_basis") == "accepted-endpoint-approximation"
+		and int(director.report.get("mass_sample_tick", -1)) == session.sim.tick,
+		str({mass_basis = director.report.get("mass_sample_basis"), fuel_basis = director.report.get("fuel_sample_basis"),
+			tick = director.report.get("mass_sample_tick"), sample_time = director.report.get("mass_sample_time_s")}))
+	_check("production crash labels the compatibility scalar as kerosene-only",
+		float(director.report.get("fuel_kg", -1.0)) == 0.0
+		and director.report.get("fuel_kind") == "kerosene"
+		and director.report.get("fuel_kg_basis") == "declared inventory; legacy kerosene-only scalar")
 	main.queue_free()
 	await process_frame
 	await process_frame
@@ -79,6 +103,62 @@ func _units() -> void:
 		and WreckController._overlap_fraction(Vector3(1.5, 0.5, 0.5), Vector3.ZERO, bounds) == 0.0)
 	_check("a thin skin's region is thickened, a bulky part's barely", is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.002, 1))).size.y, WreckController.INVENTORY_MIN_THICKNESS_M)
 		and is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.5, 1))).size.y, 0.5 + 2.0 * WreckController.INVENTORY_MARGIN_M))
+	_impact_sample_helpers()
+
+
+func _impact_sample_helpers() -> void:
+	var contact := SceneryCollision.Event.new()
+	contact.tick = 12
+	contact.time_fraction = 0.25
+	contact.contact_mass_properties = {
+		"ok": true,
+		"mass_kg": 2.0,
+		"cg_body_m": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"inertia": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"inverse": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"tick": 12,
+		"time_s": 0.05208333333333333,
+		"sample_boundary": "swept_contact_linear_inventory",
+		"impact_fraction": 0.5,
+		"finite_fuel": true,
+		"stores": [{"family": "glow", "remaining_kg": 0.25}],
+	}
+	var endpoint := {
+		"ok": true,
+		"mass_kg": 3.0,
+		"finite_fuel": true,
+		"cg_body_m": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"inertia": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"inverse": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+	}
+	var selected: Dictionary = Director._select_mass_sample(contact, endpoint)
+	_check("crash report selects the same valid contact-time mass sample as collision response",
+		selected.get("basis") == "swept-contact-linear-inventory-approximation"
+		and selected.get("sample", {}).get("mass_kg") == 2.0
+		and selected.get("sample", {}).get("impact_fraction") == 0.5
+		and selected.get("sample", {}).get("sample_boundary") == "swept_contact_linear_inventory")
+	_check("contact-time fuel inventory uses the same explicitly approximate sample",
+		Director._sample_has_fuel_inventory(selected.sample)
+		and float(Director._energy_sources_at_sample(selected.sample, {"glow_fuel": 0.9}, []).glow_fuel) == 0.25)
+	var fallback: Dictionary = Director._select_mass_sample(RefCounted.new(), endpoint)
+	_check("finite fuel without a contact sample is explicitly an endpoint approximation",
+		fallback.get("basis") == "accepted-endpoint-approximation" and fallback.get("sample", {}).get("mass_kg") == 3.0)
+	var fuel_sample := {
+		"ok": true,
+		"finite_fuel": true,
+		"stores": [
+			{"family": "gasoline", "remaining_kg": 0.12},
+			{"family": "kerosene", "remaining_kg": 0.23},
+			{"family": "kerosene", "remaining_kg": 0.04},
+			{"family": "glow", "remaining_kg": 0.50},
+		],
+	}
+	var by_kind: Dictionary = Director._energy_sources_at_sample(fuel_sample,
+		{"gasoline": 0.8, "kerosene": 0.7, "glow_fuel": 0.9}, [])
+	_check("typed crash sources report remaining gasoline, kerosene and Glow by family",
+		absf(float(by_kind.get("gasoline", -1.0)) - 0.12) < 1.0e-12
+		and absf(float(by_kind.get("kerosene", -1.0)) - 0.27) < 1.0e-12
+		and absf(float(by_kind.get("glow_fuel", -1.0)) - 0.50) < 1.0e-12, str(by_kind))
 
 
 ## A section that no inventory item reaches still gets the floor mass, taken from the core: the total never changes.

@@ -2,7 +2,7 @@
 
 2026-10-13. This continuation moves Timber r2 from an aircraft-specific constructor to the shared `imported_model.gd` builder. Model manifest v2 supplies explicit rotor frames, gear pivots, geometry references and per-instance material adjustments. Procedural model manifests remain v1. The physical aircraft format, equations, calibration, GLB and generated geometry are unchanged.
 
-The [aircraft contract](../../../../AIRCRAFT_CONTRACT.md#model-and-package-contract) owns authoring instructions. The [active plan](../../../plans/aircraft-standardization.md) retains the remaining gates.
+The [aircraft contract](../../../AIRCRAFT_CONTRACT.md#model-and-package-contract) owns authoring instructions. The [active plan](../../../plans/aircraft-standardization.md) retains the remaining gates.
 
 ## Compatibility proof
 

@@ -24,6 +24,22 @@ func _raw() -> Dictionary:
 	return AD.legacy_v1_input(JSON.parse_string(FileAccess.get_file_as_string(PATH)))
 
 
+## Inventory CG without the declared tanks' liquid, summed left to right as the loader does.
+func _dry_cg(raw: Dictionary) -> PackedFloat64Array:
+	var liquid := {}
+	for tank: Dictionary in raw.get("fuel_system", {}).get("tanks", []):
+		liquid[tank.liquid_inventory_id] = true
+	var mass := 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Dictionary in raw.inventory:
+		if liquid.has(item.id):
+			continue
+		mass += float(item.mass.value)
+		for k in 3:
+			first[k] += float(item.mass.value) * float(item.position.value[k])
+	return PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass])
+
+
 ## Expect the mutated data to fail with an error containing `needle`.
 func _rejects(label: String, mutate: Callable, needle: String) -> void:
 	var raw := _raw()
@@ -49,8 +65,17 @@ func _initialize() -> void:
 	_check("principal moments positive", j[0] > 0 and j[1] > 0 and j[2] > 0, str(j))
 	_check("triangle inequalities (a real body)", j[0] + j[1] >= j[2] and j[1] + j[2] >= j[0] and j[0] + j[2] >= j[1], str(j))
 	_check("airplane-like ordering Jzz > Jyy > Jxx", j[2] > j[1] and j[1] > j[0], str(j))
-	_check("plan CG 4.76 in aft of LE (39 % chord)", absf(m.cg_le[0] - 0.1209) < 1e-9 and absf(m.cg_le[0] / m.reference.c - 0.397) < 0.01)
-	_check("flight CG and inertia share inventory centre", m.cg_le == m.cg_inventory_le and absf(m.cg_le[1]) < 1e-12 and absf(m.cg_le[2]) < 1e-12)
+	# FUEL-05f: the Jensen plan CG arrow is the empty-tank balance. The flown (prescribed) half tank sits ahead of it
+	# and just above the thrust line; that inventory CG is the fixed body datum.
+	var v2: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
+	var plan: Array = v2.balance.plan_cg.value
+	var dry := _dry_cg(v2)
+	_check("plan CG 4.76 in aft of LE (39 % chord), taken with the tank empty", v2.balance.fuel_state == "empty_tanks"
+		and absf(float(plan[0]) - 0.1209) < 1e-9 and absf(float(plan[0]) / m.reference.c - 0.397) < 0.01
+		and absf(dry[0] - float(plan[0])) < 1e-12 and absf(dry[1]) < 1e-12 and absf(dry[2]) < 1e-12, str(dry))
+	_check("flight CG and inertia share inventory centre (half tank: ahead of and just above the plan CG)",
+		m.cg_le == m.cg_inventory_le and absf(m.cg_le[1]) < 1e-12 and m.cg_le[0] < float(plan[0]) - 0.01
+			and m.cg_le[2] > 0.0 and m.cg_le[2] < 0.001, str(m.cg_le))
 
 	# Inertia of a known shape: a 1 kg box 0.3 × 1.5 × 0.04 m about its centre (body axes).
 	var box := AD.inertia_about([[1.0, PackedFloat64Array([0, 0, 0]), PackedFloat64Array([0.3, 1.5, 0.04])]], PackedFloat64Array([0, 0, 0]))
@@ -74,8 +99,9 @@ func _initialize() -> void:
 		absf(m.propulsion.diameter - Geometry.DATA.equipment.prop_diameter) < 1e-12)
 	_check("E0b2 hub is explicitly ahead of the CG", m.propulsion.offset[0] < -0.4)
 	# Moving a force along its own axial line leaves r x F unchanged, including windmill drag.
+	# The half-tank datum sits 0.2 mm above the thrust line, so only the axial component moves (FUEL-05f).
 	var previous_prop: Dictionary = m.propulsion.duplicate(true)
-	previous_prop.offset = PackedFloat64Array([0.0, 0.0, 0.0])
+	previous_prop.offset = PackedFloat64Array([0.0, 0.0, m.propulsion.offset[2]])
 	var identical_loads: bool = true
 	var signed_zero_changes: int = 0
 	for speed: float in [-10.0, 0.0, 5.0, 15.0, 50.0]:
@@ -132,17 +158,17 @@ func _initialize() -> void:
 	var gear: Dictionary = m.landing_gear
 	_check("landing gear: 3 contacts; the hull keeps 8 points without the wheels", gear.get("contacts", []).size() == 3 and m.crash_hull.size() == 8 * 3, str(gear))
 	var eq: Dictionary = Geometry.DATA.equipment
-	# GP-06b: model y is measured from the model origin; the LE/body datum is the thrust line (shaft_y). The CG lies on
-	# it (z 0), so a wheel bottom sits (shaft_y − wheel_y) + r below the CG in body axes.
+	# GP-06b: model y is measured from the model origin; the LE vertical datum is the thrust line (shaft_y). A wheel
+	# bottom sits (shaft_y − wheel_y) + r below the thrust line, plus the body datum's height above it (FUEL-05f).
 	var mains_ok := true
 	for i in 2:
 		var p: PackedFloat64Array = gear.contacts[i].position
 		mains_ok = mains_ok and absf(absf(p[1]) - eq.main_track / 2.0) < 1e-9 \
-			and absf(p[2] - (eq.shaft_y - eq.wheel_y + eq.main_wheel_diameter / 2.0)) < 1e-9
+			and absf(p[2] - m.cg_le[2] - (eq.shaft_y - eq.wheel_y + eq.main_wheel_diameter / 2.0)) < 1e-9
 	var nose: PackedFloat64Array = gear.contacts[2].position
 	_check("gear track and wheel bottoms match the visual model's equipment table (thrust-line datum)",
-		absf(m.cg_le[2]) < 1e-12 and mains_ok
-			and absf(nose[2] - (eq.shaft_y - eq.wheel_y + eq.nose_wheel_diameter / 2.0)) < 1e-9, str(gear.contacts))
+		mains_ok and absf(nose[2] - m.cg_le[2] - (eq.shaft_y - eq.wheel_y + eq.nose_wheel_diameter / 2.0)) < 1e-9,
+		str(gear.contacts))
 	_check("mains aft of the CG, nose ahead (a tricycle stands on its wheels)", gear.contacts[0].position[0] < 0.0 and gear.contacts[2].position[0] > 0.0)
 	_check("heave rule ω·dt < 0.1 at 240 Hz, not absurdly soft", gear.heave_omega / 240.0 < 0.1 and gear.heave_omega > 15.0, "ω %.1f rad/s" % gear.heave_omega)
 	_check("static sag 1–3 cm", gear.static_sag > 0.01 and gear.static_sag < 0.03, "%.4f m" % gear.static_sag)

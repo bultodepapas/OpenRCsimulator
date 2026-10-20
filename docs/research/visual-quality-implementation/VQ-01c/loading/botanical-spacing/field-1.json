@@ -1,0 +1,104 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 6,
+	"failures": [],
+	"samples": [
+		{
+			"botanical_ms": 122.892,
+			"pair": 0,
+			"scenery_ms": 1032.792,
+			"usec": 1921996,
+			"variant": "reference"
+		},
+		{
+			"botanical_ms": 56.389,
+			"pair": 0,
+			"scenery_ms": 285.898,
+			"usec": 865705,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 52.247,
+			"pair": 1,
+			"scenery_ms": 280.273,
+			"usec": 806335,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 67.39,
+			"pair": 1,
+			"scenery_ms": 310.973,
+			"usec": 865333,
+			"variant": "reference"
+		},
+		{
+			"botanical_ms": 73.157,
+			"pair": 2,
+			"scenery_ms": 327.945,
+			"usec": 838668,
+			"variant": "reference"
+		},
+		{
+			"botanical_ms": 61.163,
+			"pair": 2,
+			"scenery_ms": 346.818,
+			"usec": 962004,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 51.686,
+			"pair": 3,
+			"scenery_ms": 283.875,
+			"usec": 843973,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 68.745,
+			"pair": 3,
+			"scenery_ms": 295.162,
+			"usec": 853512,
+			"variant": "reference"
+		},
+		{
+			"botanical_ms": 60.446,
+			"pair": 4,
+			"scenery_ms": 263.264,
+			"usec": 791870,
+			"variant": "reference"
+		},
+		{
+			"botanical_ms": 34.636,
+			"pair": 4,
+			"scenery_ms": 241.49,
+			"usec": 697105,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 39.734,
+			"pair": 5,
+			"scenery_ms": 241.97,
+			"usec": 694481,
+			"variant": "candidate"
+		},
+		{
+			"botanical_ms": 54.029,
+			"pair": 5,
+			"scenery_ms": 251.869,
+			"usec": 676173,
+			"variant": "reference"
+		}
+	],
+	"scope": "native complete detached default field CPU construction; all node transforms, mesh arrays/bounds and MultiMesh buffers; not first draw or FPS"
+}

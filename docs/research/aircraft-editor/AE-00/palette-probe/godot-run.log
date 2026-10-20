@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ERROR: Node not inside tree. Use look_at_from_position() instead.
+   at: look_at (scene/3d/node_3d.cpp:1253)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://probe.gd:29)
+RED_ONLY red_pixels=0 blue_pixels=0
+FAIL red birth colors visible before palette switch
+RED_BLUE red_pixels=0 blue_pixels=0
+FAIL old red and new blue births coexist
+PASS same-clock pause leaves rendered pixels unchanged
+RESET red_pixels=0 blue_pixels=0
+PASS reset clears live color state
+RESULT failures=2

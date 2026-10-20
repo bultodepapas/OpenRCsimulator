@@ -17,7 +17,7 @@ import argparse
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
-import fcntl
+import errno
 import hashlib
 import json
 import math
@@ -442,15 +442,40 @@ def _write_json_atomic(path: Path, data: dict[str, Any]) -> None:
 @contextmanager
 def _output_lock(output_dir: Path):
     lock_path = output_dir / ".visual-quality-cases.lock"
-    with lock_path.open("a", encoding="utf-8") as stream:
+    if lock_path.is_symlink() or (lock_path.exists() and not lock_path.is_file()):
+        raise RuntimeError(f"VQ-01b output lock must be a regular file: {lock_path}")
+    with lock_path.open("a+b") as stream:
+        if os.name == "nt":
+            import msvcrt
+
+            stream.seek(0, os.SEEK_END)
+            if stream.tell() == 0:
+                stream.write(b"\0")
+                stream.flush()
+            stream.seek(0)
         try:
-            fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError as error:
-            raise RuntimeError(f"another VQ-01b run owns {output_dir}") from error
+            if os.name == "nt":
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            if error.errno in (errno.EACCES, errno.EAGAIN):
+                raise RuntimeError(f"another VQ-01b run owns {output_dir}") from error
+            raise OSError(
+                error.errno,
+                f"could not acquire VQ-01b output lock {lock_path}: {error.strerror or error}",
+                str(lock_path),
+            ) from error
         try:
             yield
         finally:
-            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+            if os.name == "nt":
+                stream.seek(0)
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
 
 
 def run_visual_quality_cases(app_dir: Path, godot: str, output_dir: Path,
@@ -692,12 +717,16 @@ def run_performance_cases(app_dir: Path, godot: str, output_dir: Path,
     output_dir = Path(output_dir).resolve() / "performance"
     if repeats != 3 or warmup_s != 10.0 or sample_s != 60.0:
         raise ValueError("VQ-01b performance contract is fixed at 3 × (10 s warmup + 60 s sample)")
+    if not math.isfinite(timeout):
+        raise ValueError("frametime timeout must be finite")
     if timeout <= warmup_s + sample_s:
         raise ValueError("frametime timeout must exceed the 10 s warmup + 60 s sample")
     if not Path(godot).is_file() and shutil.which(godot) is None:
         raise ValueError(f"Godot executable not found: {godot}")
     if shutil.which(xvfb) is None and not Path(xvfb).is_file():
         raise ValueError(f"display runner not found: {xvfb}")
+    if output_dir.is_symlink() or output_dir.resolve() != output_dir:
+        raise RuntimeError(f"performance output directory must not be a symlink or junction: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
     with _output_lock(output_dir):
         return _run_performance_cases_locked(app_dir, repo_root, godot, output_dir,
@@ -707,8 +736,14 @@ def run_performance_cases(app_dir: Path, godot: str, output_dir: Path,
 def _run_performance_cases_locked(app_dir: Path, repo_root: Path, godot: str,
                                   output_dir: Path, xvfb: str, timeout: float,
                                   repeats: int, warmup_s: float, sample_s: float) -> dict[str, Any]:
+    lock_path = output_dir / ".visual-quality-cases.lock"
+    existing = sorted(path.name for path in output_dir.iterdir() if path != lock_path)
+    if existing:
+        raise RuntimeError(
+            "performance output directory must be empty before a run; refusing to overwrite: "
+            + ", ".join(existing)
+        )
     complete_path = output_dir / "performance-run-manifest.json"
-    complete_path.unlink(missing_ok=True)
     os.environ.setdefault("LP_NUM_THREADS", "1")
     revision, revision_source = code_revision(repo_root)
     if revision != "unavailable":
@@ -721,7 +756,6 @@ def _run_performance_cases_locked(app_dir: Path, repo_root: Path, godot: str,
             name = f"frametimes-{route}-{repeat}.json"
             case_id = f"{route}-repeat{repeat}"
             report_path = output_dir / name
-            report_path.unlink(missing_ok=True)
             log_path = report_path.with_suffix(".log")
             command = build_frametime_command(app_dir, godot, xvfb, report_path, route,
                                               warmup_s, sample_s, case_id)
@@ -770,6 +804,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.performance_only:
+            if not math.isfinite(args.timeout):
+                raise ValueError("frametime timeout must be finite")
             manifest = run_performance_cases(args.app, args.godot, args.out, args.xvfb,
                                              timeout=max(args.timeout, PERFORMANCE_WARMUP_S + PERFORMANCE_SAMPLE_S + 10.0))
             print(f"complete: {manifest['process_count']} frametime reports at {args.out / 'performance'}")

@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   each image has independent identity
+ok   one complete 256-square RGB8 mip chain
+ok   cached bytes stay bounded to one default tile
+ok   scene materials and textures remain independent
+ok   pilot-specific uniforms remain independent
+ok   lighting and all existing ground uniforms remain unchanged
+ok   turf detail binding and strength remain unchanged
+ground image cache: 18 checks, 11 failed
+FAIL cold default pixels and every mip equal the original recipe
+FAIL warm default pixels and every mip equal the original recipe
+FAIL cold image edits do not mutate a live warm image
+FAIL warm image edits do not poison a subsequent image
+FAIL explicit seed still controls the uncached recipe
+FAIL explicit seeds do not replace the default
+FAIL seed 0 pixels and every mip equal the scalar recipe
+FAIL seed -1 pixels and every mip equal the scalar recipe
+FAIL both uploaded textures preserve all image bytes
+FAIL texture update preserves another live scene
+FAIL texture update preserves future scenes

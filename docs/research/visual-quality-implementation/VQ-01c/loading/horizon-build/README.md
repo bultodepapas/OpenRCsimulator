@@ -1,5 +1,9 @@
 # DT-11a — reuse azimuths and preallocate horizon indices
 
+Follow-up, 2026-10-19: [ring invariant hoisting](rows/README.md) reduces complete
+native construction by a further 12.3% on its own baseline, with 40 exact mesh
+comparisons and 103 regression checks. Campaigns are separate; do not add gains.
+
 2026-10-14. `Horizon.mesh()` evaluates the 1,440 azimuth directions once per build
 instead of repeating them for 30 rings, and fills one preallocated index array
 instead of constructing 43,200 small packed arrays. Temporary direction tables

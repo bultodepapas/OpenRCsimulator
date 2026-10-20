@@ -4,6 +4,8 @@
 extends SceneTree
 
 const AD := preload("res://physics/aircraft_data.gd")
+const FuelProperties := preload("res://physics/fuel_properties.gd")
+const GlowProp := preload("res://physics/glow/propeller.gd")
 const P := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Model := preload("res://aircraft/extra_300s_model.gd")
@@ -42,12 +44,15 @@ func _balance(raw: Dictionary, model: Dictionary) -> void:
 	var total := 0.0
 	var dry := 0.0
 	var fuel := 0.0
+	var tank: Dictionary = raw.fuel_system.tanks[0]
+	var fuel_inventory_id: String = str(tank.liquid_inventory_id)
 	var moment := [0.0, 0.0, 0.0]
 	var dry_moment := [0.0, 0.0, 0.0]
 	for component: Dictionary in raw.inventory:
 		var mass: float = component.mass.value
 		var position: Array = component.position.value
-		var is_fuel: bool = component.name == "fuel (half tank)"
+		# Inventory roles bind by stable ID; display names are descriptive only.
+		var is_fuel: bool = str(component.get("id", "")) == fuel_inventory_id
 		total += mass
 		if is_fuel:
 			fuel += mass
@@ -61,7 +66,13 @@ func _balance(raw: Dictionary, model: Dictionary) -> void:
 	# Deliberately independent of the generator's ballast solution and declared loaded CG.
 	check("dry tank balance at manual/plan station within 1 micrometre",
 		absf(dry_moment[0] / dry - 0.1088) < 1e-6, "x=%.9f m" % (dry_moment[0] / dry))
-	check("prescribed half tank unchanged", absf(fuel - 0.146) < 1e-12)
+	# FUEL-08: the full authored reference liquid amount is distinct from the tank's capacity.
+	var registry: Dictionary = FuelProperties.load_file()
+	var density: Dictionary = FuelProperties.blend_density(registry, tank.fuel) if registry.get("ok", false) else {}
+	check("full finite-glow reference mass matches tank capacity and registry density",
+		tank.capacity.value == 0.355 and fuel_inventory_id == "fuel_flight" and density.get("ok", false)
+		and absf(fuel - 0.355e-3 * float(density.density_kg_m3)) <= 1e-9,
+		"%s kg" % fuel)
 	check("loaded mass equals complete component inventory", absf(total - model.mass_kg) < 1e-6)
 	var cg_ok := true
 	for i in 3:
@@ -102,14 +113,13 @@ func _installation(model: Dictionary) -> void:
 	built.root.free()
 	var arm := [-prop.offset[0], prop.offset[1], -prop.offset[2]]
 	for velocity in [[0.0, 0.0, 0.0], [17.0, 1.0, -2.0]]:
-		var rpm: float = prop.max_rpm
-		var n := rpm / 60.0
-		var diameter: float = prop.diameter
+		var rpm: float = prop.glow.propeller.max_rpm
 		var along: float = velocity[0] * axis[0] + velocity[1] * axis[1] + velocity[2] * axis[2]
-		var advance := maxf(along, 0.0) / (n * diameter)
-		# Independent table interpolation over this in-table range, no calls to thrust_torque/coefficient.
-		var thrust := _table(prop.ct, advance) * 1.225 * n * n * pow(diameter, 4)
-		var torque := _table(prop.cp, advance) * 1.225 * n * n * pow(diameter, 5) / TAU
+		# The finite-glow propeller uses its declared annular model, not the legacy Ct/Cp tables.
+		# Keep the shaft-axis force and r-cross-F/reaction-torque oracle independent of P.loads().
+		var propeller_result: Dictionary = GlowProp.evaluate(rpm, along, 1.225, prop.glow.propeller)
+		var thrust: float = float(propeller_result.thrust_n)
+		var torque: float = float(propeller_result.torque_nm)
 		var force := [axis[0] * thrust, axis[1] * thrust, axis[2] * thrust]
 		var expected := [force[0], force[1], force[2],
 			arm[1] * force[2] - arm[2] * force[1] - torque * axis[0],
@@ -119,7 +129,7 @@ func _installation(model: Dictionary) -> void:
 		var ok := true
 		for i in 6:
 			ok = ok and absf(actual[i] - expected[i]) <= 1e-9 * maxf(1.0, absf(expected[i]))
-		check("independent thrust and r-cross-F minus shaft torque at " + str(velocity), ok)
+		check("shaft-frame propeller wrench and r-cross-F minus shaft torque at " + str(velocity), ok)
 		check("power produces right/down force and left torque reaction", actual[1] > 0.0 and actual[2] > 0.0 and actual[3] < 0.0)
 	var momentum := Dynamics.rotor_momentum(model, prop.max_rpm)
 	var h: float = prop.rotor_inertia * prop.max_rpm * TAU / 60.0
@@ -127,14 +137,10 @@ func _installation(model: Dictionary) -> void:
 	for i in 3:
 		aligned = aligned and absf(momentum[i] - h * axis[i]) < 1e-12
 	check("rotor angular momentum follows the installed shaft", aligned)
-	check("stopped engine has zero shaft loads and momentum",
-		P.loads(PackedFloat64Array([17.0, 0.0, 0.0]), 0.0, prop, 1.225) == PackedFloat64Array([0, 0, 0, 0, 0, 0])
+	var stopped_loads: PackedFloat64Array = P.loads(PackedFloat64Array([17.0, 0.0, 0.0]), 0.0, prop, 1.225)
+	var stopped_finite: bool = true
+	for value in stopped_loads:
+		stopped_finite = stopped_finite and is_finite(value)
+	check("stopped propeller retains finite flow loads and zero rotor momentum",
+		stopped_finite and stopped_loads != PackedFloat64Array([0, 0, 0, 0, 0, 0])
 		and Dynamics.rotor_momentum(model, 0.0) == PackedFloat64Array([0, 0, 0]))
-
-
-func _table(values: PackedFloat64Array, x: float) -> float:
-	for i in range(2, values.size(), 2):
-		if x <= values[i]:
-			var t := (x - values[i - 2]) / (values[i] - values[i - 2])
-			return values[i - 1] + t * (values[i + 1] - values[i - 1])
-	return NAN # The test fixtures deliberately stay inside measured/proxy table knots.

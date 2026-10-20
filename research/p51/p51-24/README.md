@@ -1,6 +1,6 @@
 # P51-24 sideslip tool
 
-2026-10-15 · **Status: reusable tool.** [Plan](../../../docs/P51-REALISM-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-24/README.md)
+2026-10-15 · **Status: reusable tool.** [Plan](../../../docs/P51-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-24/README.md)
 
 `sideslip_probe.gd` solves steady straight sideslips with the runtime `Dynamics.evaluate`. The sideslip is imposed. The unknowns are α, elevator, throttle (level) or flight-path angle (glide), bank, aileron and rudder, and all six accelerations are driven to zero. It prints rudder, aileron and bank per degree of sideslip at ±1° and ±2°. Compare these at equal CL with full-size steady-sideslip data such as NACA RM L6J25 Table I and MR L-566 Figure 39.
 

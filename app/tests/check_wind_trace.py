@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify weather traces v4/v5/v10 using independent scalar wind, OU, and quaternion equations."""
 from flap_trace_contract import project as project_flaps
+from mass_trace_contract import project as project_mass_trace
 import argparse
 import csv
 import json
@@ -243,6 +244,9 @@ def _start_turbulence(metadata, config, dt, first_tick):
 
 
 def check(path, duration=None):
+    handled, projected = project_mass_trace(path, check, duration)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check, duration)
     if handled:
         return projected

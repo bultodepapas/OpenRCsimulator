@@ -1,0 +1,64 @@
+WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+Loading resource: res://default_bus_layout.tres remapped: res://default_bus_layout.tres
+Completed load for: 'res://default_bus_layout.tres' remapped 'res://default_bus_layout.tres' at thread -1
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_overlay_fuel_flight.gd remapped: res://tests/test_overlay_fuel_flight.gd
+Loading resource: res://render/treeline.gdshader remapped: res://render/treeline.gdshader
+Loading resource: res://render/tree_identity.gdshaderinc remapped: res://render/tree_identity.gdshaderinc
+Completed load for: 'res://render/tree_identity.gdshaderinc' remapped 'res://render/tree_identity.gdshaderinc' at thread -1
+Loading resource: res://render/tree_wind.gdshaderinc remapped: res://render/tree_wind.gdshaderinc
+Completed load for: 'res://render/tree_wind.gdshaderinc' remapped 'res://render/tree_wind.gdshaderinc' at thread -1
+Completed load for: 'res://render/treeline.gdshader' remapped 'res://render/treeline.gdshader' at thread -1
+Loading resource: res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg remapped: res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg
+Loading resource: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex remapped: res://.godot/imported/Wood049_1K-JPG_Color.jpg-85e556b28184729930eadd6d42da5226.ctex
+Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' at thread -1
+Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg
+Loading resource: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex remapped: res://.godot/imported/Fabric001_1K-JPG_Color.jpg-4b7c58c9ae9e3dfba3832985684dd974.ctex
+Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' at thread -1
+Loading resource: res://render/flightline_barrier.gdshader remapped: res://render/flightline_barrier.gdshader
+Completed load for: 'res://render/flightline_barrier.gdshader' remapped 'res://render/flightline_barrier.gdshader' at thread -1
+Loading resource: res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg
+Loading resource: res://.godot/imported/Wood049_1K-JPG_NormalGL.jpg-b1e6e91c67983d2973a800bd8854785e.ctex remapped: res://.godot/imported/Wood049_1K-JPG_NormalGL.jpg-b1e6e91c67983d2973a800bd8854785e.ctex
+Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg' at thread -1
+Loading resource: res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg
+Loading resource: res://.godot/imported/Wood049_1K-JPG_Roughness.jpg-c895531974af19a37087dd40e63b9cda.ctex remapped: res://.godot/imported/Wood049_1K-JPG_Roughness.jpg-c895531974af19a37087dd40e63b9cda.ctex
+Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg' at thread -1
+Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg
+Loading resource: res://.godot/imported/Metal026_1K-JPG_Color.jpg-3da003e7bb0147a0f423c298404a2231.ctex remapped: res://.godot/imported/Metal026_1K-JPG_Color.jpg-3da003e7bb0147a0f423c298404a2231.ctex
+Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' at thread -1
+Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg
+Loading resource: res://.godot/imported/Metal026_1K-JPG_NormalGL.jpg-6133f4b6076195a89feeefd1d257980c.ctex remapped: res://.godot/imported/Metal026_1K-JPG_NormalGL.jpg-6133f4b6076195a89feeefd1d257980c.ctex
+Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' at thread -1
+Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg
+Loading resource: res://.godot/imported/Metal026_1K-JPG_Roughness.jpg-3542788d1e8eae9cb66916c58544c84c.ctex remapped: res://.godot/imported/Metal026_1K-JPG_Roughness.jpg-3542788d1e8eae9cb66916c58544c84c.ctex
+Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg' at thread -1
+Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg
+Loading resource: res://.godot/imported/Metal026_1K-JPG_Metalness.jpg-b08b1dde794c2305f1dacecaf1c06ac1.ctex remapped: res://.godot/imported/Metal026_1K-JPG_Metalness.jpg-b08b1dde794c2305f1dacecaf1c06ac1.ctex
+Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg' at thread -1
+Loading resource: res://render/flightline_barrier_soil.gdshader remapped: res://render/flightline_barrier_soil.gdshader
+Completed load for: 'res://render/flightline_barrier_soil.gdshader' remapped 'res://render/flightline_barrier_soil.gdshader' at thread -1
+Loading resource: res://render/flightline_barrier_foliage.gdshader remapped: res://render/flightline_barrier_foliage.gdshader
+Completed load for: 'res://render/flightline_barrier_foliage.gdshader' remapped 'res://render/flightline_barrier_foliage.gdshader' at thread -1
+Loading resource: res://assets/landscape/rc-ground/dirt-albedo.jpg remapped: res://assets/landscape/rc-ground/dirt-albedo.jpg
+Loading resource: res://.godot/imported/dirt-albedo.jpg-039cf773cbc5597c6553339ddfce1d13.s3tc.ctex remapped: res://.godot/imported/dirt-albedo.jpg-039cf773cbc5597c6553339ddfce1d13.s3tc.ctex
+Completed load for: 'res://assets/landscape/rc-ground/dirt-albedo.jpg' remapped 'res://assets/landscape/rc-ground/dirt-albedo.jpg' at thread -1
+Loading resource: res://assets/ui/audio/reject.ogg remapped: res://assets/ui/audio/reject.ogg
+Loading resource: res://.godot/imported/reject.ogg-9c97d4edee7b6dbb72c64113277a35e4.oggvorbisstr remapped: res://.godot/imported/reject.ogg-9c97d4edee7b6dbb72c64113277a35e4.oggvorbisstr
+Completed load for: 'res://assets/ui/audio/reject.ogg' remapped 'res://assets/ui/audio/reject.ogg' at thread -1
+Completed load for: 'res://tests/test_overlay_fuel_flight.gd' remapped 'res://tests/test_overlay_fuel_flight.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+overlay fuel flight: 9 checks, 0 failed
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

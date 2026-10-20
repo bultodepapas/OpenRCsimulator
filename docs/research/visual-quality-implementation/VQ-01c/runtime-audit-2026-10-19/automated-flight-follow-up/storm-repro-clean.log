@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Cannot call method 'get_camera_3d' on a null value.
+   at: update_visual (res://render/weather/storm_bank.gd:123)
+   GDScript backtrace (most recent call first):
+       [0] update_visual (res://render/weather/storm_bank.gd:123)
+       [1] _update_weather_presentation (res://render/world/world.gd:489)
+       [2] refresh_weather_appearance (res://render/world/world.gd:483)
+       [3] build (res://render/world/world.gd:304)
+       [4] _build_empty_world (res://tests/test_storm_bank.gd:296)
+       [5] _test_detached_world_lifecycle (res://tests/test_storm_bank.gd:51)
+       [6] _run_tests (res://tests/test_storm_bank.gd:20)
+FAIL detached World initializes all storm colors before attachment
+FAIL detached World initializes storm fog before attachment
+SCRIPT ERROR: Cannot call method 'get_camera_3d' on a null value.
+   at: update_visual (res://render/weather/storm_bank.gd:123)
+   GDScript backtrace (most recent call first):
+       [0] update_visual (res://render/weather/storm_bank.gd:123)
+       [1] _update_weather_presentation (res://render/world/world.gd:489)
+       [2] refresh_weather_appearance (res://render/world/world.gd:483)
+       [3] _test_detached_world_lifecycle (res://tests/test_storm_bank.gd:71)
+       [4] _run_tests (res://tests/test_storm_bank.gd:20)
+FAIL detaching a retained World restores the camera-free copy
+storm bank: 45 checks, 3 failed

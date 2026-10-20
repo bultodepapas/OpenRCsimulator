@@ -1,0 +1,49 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_electric_data.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:50:09.652516+00:00",
+  "label": "electric_data-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\electric_data-final-amvdlwh4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\electric_data-final-amvdlwh4\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Exponent too high",
+      "context": [
+        "   at: built_in_strtod (core/string/ustring.cpp:2553)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] load_file (res://physics/aircraft_data.gd:63)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.469,
+  "log_bytes": 454,
+  "log_sha256": "157dc083795422eca982ff24738de4aee0548490a995df20240ebd4789b4a7b1"
+}

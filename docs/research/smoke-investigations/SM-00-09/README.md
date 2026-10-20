@@ -1,8 +1,8 @@
 # SM-00…09 implementation and verification
 
-2026-10-12, America/Bogota. The existing [smoke plan](../../../SMOKE-PLAN.md) was resumed from research-only status; no integrated runtime feature existed. The implementation was included by a concurrent commit, `c5a00d0`, together with other tracks. The subsequent focused smoke commit owns the final surface refinement, runway review and this evidence. Other contributors' work was preserved.
+2026-10-12, America/Bogota: dated delivery record. This work began from research-only status and delivered the runtime feature. The implementation was included by a concurrent commit, `c5a00d0`, together with other tracks. The subsequent focused smoke commit owns the final surface refinement, runway review and this evidence. Other contributors' work was preserved.
 
-The authoritative feature/limits are in [SMOKE-PLAN](../../../SMOKE-PLAN.md); repeatable commands are in [tools/smoke](../../../../tools/smoke/README.md). This report establishes implementation and rendered behavior, not measured RC emissions or pilot acceptance.
+Current behavior/limits live in [SMOKE](../../../SMOKE.md), pending work in [SMOKE-PLAN](../../../SMOKE-PLAN.md), and commands in [tools/smoke](../../../../tools/smoke/README.md). Original counts, aircraft scope, synthetic RPM fixtures and failures below retain their source snapshot. Later finite combustion/fuel implementation does not turn those fixtures into source-state acceptance. This report records software/rendered evidence, not measured RC emissions or pilot acceptance.
 
 ## Implementation
 
@@ -38,12 +38,32 @@ Reports retain hashes for every generated capture; only the selected images abov
 
 [Checkpoint parity](parity.json) is exact with smoke on/off at 30, 60 and 144 FPS: complete checkpoints agree, and body-state SHA-256 remains `8e5d99f5e218b9f5608cfe0d2ca936cf697f3db4ff55b8d553260cdb1bd407dc`. No golden flight or aircraft physics data was changed for smoke.
 
-On the isolated `bb7e89caed14` snapshot, all 459 scripts parsed. The 230-test first pass had 13 failures; eight copy/UI issues were corrected and passed on retest. The other five reproduced on pristine HEAD: downwash-lag declarations, P-51 static Cm, shaft-refinement ratios, P-51 scalar slipstream and a Windows `/tmp` trace path. The final focused set passed 13/13 with no runtime errors, including **54 engine/main-scene checks**, **60 AUX/storage checks**, and the existing RC input/calibration/profile suites. [Regression record](regression.json) preserves this distinction. The original `app/test.sh` attempt stopped on a stale generated schema; a concurrent commit corrected it, and the final full-entrypoint result is recorded in [current checks](current-checks.json).
+On the isolated `bb7e89caed14` snapshot, all 459 scripts parsed. The 230-test first pass had 13 failures; eight copy/UI issues were corrected and passed on retest. The other five reproduced on pristine HEAD: downwash-lag declarations, P-51 static Cm, shaft-refinement ratios, P-51 scalar slipstream and a Windows `/tmp` trace path. The final focused set passed 13/13 with no runtime errors, including **54 engine/main-scene checks**, **60 AUX/storage checks**, and the existing RC input/calibration/profile suites. [Regression record](regression.json) preserves this distinction and the `app/test.sh` attempt blocked by a stale schema. The previously linked `current-checks.json` is not retained; no final full-entrypoint pass is established by this record.
 
 [Native timing](timing.json) used six alternating 4 s samples after 2 s warm-up. Two focus-paused runs are explicitly excluded. The remaining observations were near the 120 FPS cap: off p50/p95 8.32/9.05 ms; pump 8.33/9.16 ms; exhaust 8.31–8.32/9.07–9.16 ms. These shared-desktop, capped samples precede the small depth-fade refinement and do not isolate its GPU cost or close target-hardware acceptance. Allocation is bounded at 96+768 particles; 100 resets created no additional nodes or unbounded history. Occasional shutdown ObjectDB warnings occurred in earlier runs; the final verbose native/pack runs had no warning. A long native memory soak remains open.
 
 ## Remaining acceptance
 
+These are the original campaign's gates. The [remaining plan](../../../SMOKE-PLAN.md) owns current qualification and customization work.
+
 Other installed RC exhaust geometry, real radio/SDL mappings, other GPU/OS exports, further night/intersection review and target-display/performance acceptance remain open. Entrainment, expansion, opacity, jet speed and pump gates are visual estimates. Fuel/temperature/mixture, smoke-oil depletion and emissions calibration require new measured source state; no failure or continuous turbine/electric smoke is inferred.
 
 The clock/birth implementation was checked against pinned [GLES3 particle processing](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/particles_storage.cpp) and [fractional shader DELTA](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/shaders/particles.glsl), then exercised by the rendered probe. It uses the existing engine, not a new dependency.
+
+## 2026-10-19 documentation recheck
+
+Godot 4.7.2 official, native Windows; focused headless runs with temporary user-data roots. Before/after hashes of main, smoke renderer/shader, AUX/assignment and authored outlet sources were unchanged during these checks.
+
+| Check | Observed result |
+| --- | --- |
+| `test_smoke_aux.gd` | 60 checks pass. |
+| `test_engine_smoke.gd -- --soundscape=off` | 56 checks pass, including the P-51 outlet and real main-scene assignment/reset routing. |
+| `test_controller_aux_runtime.gd` | 38/38 pass; the calibration-overlap warning is an intentional conflict case. |
+| `test_controller_aux_setup.gd` | All setup assertions pass. |
+| `capture_engine_smoke.gd -- --parse-only` | Pass; no capture/GPU campaign is implied. |
+
+All five processes exit 0 without script errors. Source review confirms a remaining integration gap: `main.gd::_update_smoke()` passes crash/fault validity to `advance()`, not accepted combustion or finite-source state. RPM/load still gate the visual output. The smoke tests do not close cut/depletion/windmilling coherence; that remains SM-02 work despite combustion/fuel support elsewhere.
+
+Local links/anchors, literal guide paths and shell-example syntax pass, including inbound links to the retained future-plan anchors. The missing full-entrypoint artifact above was not replaced with an inferred result.
+
+Rendered probe/flight/package checks, frame timing, long soak, other backends, physical emissions and real-radio review were not rerun. The current [guide](../../../SMOKE.md) and plan separate those gates from integrated behavior and from the proposed AE/SM customization API.

@@ -10,8 +10,9 @@ class RejectingFlight extends "res://sim/flight_session.gd":
 	var reject_candidate := false
 	func _wheel_evaluate(s: PackedFloat64Array, x: PackedFloat64Array, t: float) -> Dictionary:
 		return {} if reject_candidate else super._wheel_evaluate(s, x, t)
-	func _turbine_evaluate(s: PackedFloat64Array, x: PackedFloat64Array, t: float) -> Dictionary:
-		return {} if reject_candidate else super._turbine_evaluate(s, x, t)
+	func _turbine_evaluate(s: PackedFloat64Array, x: PackedFloat64Array, t: float,
+			properties: Dictionary = {}, source_enabled: bool = true) -> Dictionary:
+		return {} if reject_candidate else super._turbine_evaluate(s, x, t, properties, source_enabled)
 
 
 func check(label: String, ok: bool) -> void:

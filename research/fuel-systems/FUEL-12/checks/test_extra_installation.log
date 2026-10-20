@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Extra v2 file, wheel profile and model validate []
+ok   dry tank balance at manual/plan station within 1 micrometre x=0.108800098 m
+ok   full finite-glow reference mass matches tank capacity and registry density 0.3042066 kg
+ok   loaded mass equals complete component inventory 
+ok   loaded CG equals inventory on all axes 
+ok   fuel forward of dry CG moves loaded balance forward 
+ok   loaded balance is explicitly derived 
+ok   plan right/down thrust is active in body FRD 
+ok   actual visual shaft matches physical shaft max error 2.011632349585568e-08
+ok   actual visual hub matches physical CG-relative arm max error 4.0733347181229557e-07 m
+ok   selected 12x6 visual installation 
+ok   shaft-frame propeller wrench and r-cross-F minus shaft torque at [0.0, 0.0, 0.0] 
+ok   power produces right/down force and left torque reaction 
+ok   shaft-frame propeller wrench and r-cross-F minus shaft torque at [17.0, 1.0, -2.0] 
+ok   power produces right/down force and left torque reaction 
+ok   rotor angular momentum follows the installed shaft 
+ok   stopped propeller retains finite flow loads and zero rotor momentum 
+17 checks, 0 failed

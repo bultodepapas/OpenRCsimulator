@@ -1,0 +1,494 @@
+[
+  {
+    "test": "test_fuel_event_boundaries",
+    "ok": true,
+    "exit": 0,
+    "seconds": 5.109,
+    "errors": [],
+    "summary": [
+      "Fuel tiny boundaries: 46 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_live_mass",
+    "ok": true,
+    "exit": 0,
+    "seconds": 5.406,
+    "errors": [],
+    "summary": [
+      "FUEL-06 live mass: 13 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_mass_reference",
+    "ok": true,
+    "exit": 0,
+    "seconds": 5.813,
+    "errors": [],
+    "summary": [
+      "FUEL-04 fixed-datum resources: 26 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_properties",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.281,
+    "errors": [],
+    "summary": [
+      "FUEL-02 fuel registry: 30 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_sample",
+    "ok": true,
+    "exit": 0,
+    "seconds": 3.36,
+    "errors": [],
+    "summary": [
+      "FUEL sample: 38 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_start_fill",
+    "ok": true,
+    "exit": 0,
+    "seconds": 15.859,
+    "errors": [],
+    "summary": [
+      "FUEL-07 start fill: 67 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_fuel_system_contract",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.0,
+    "errors": [],
+    "summary": [
+      "FUEL-03 fuel system contract: 44 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_liquid_fuel",
+    "ok": true,
+    "exit": 0,
+    "seconds": 1.062,
+    "errors": [],
+    "summary": [
+      "FUEL-08 liquid adapter: 34 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_liquid_fuel_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 14.344,
+    "errors": [],
+    "summary": [
+      "FUEL-08 session: 48 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_mass_inventory",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.281,
+    "errors": [],
+    "summary": [
+      "R05-A mass inventory geometry: 65 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_resource_event_step",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.297,
+    "errors": [],
+    "summary": [
+      "resource event step: 54 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_dynamic_mass_contact_boundary",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.282,
+    "errors": [],
+    "summary": [
+      "R05-B independent review fixture: 12 checks, 0 failures"
+    ]
+  },
+  {
+    "test": "test_dynamic_mass_contact_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.109,
+    "errors": [],
+    "summary": [
+      "R05-B FlightSession integration review: 38 checks, 0 failures"
+    ]
+  },
+  {
+    "test": "test_glow_flight_physics",
+    "ok": true,
+    "exit": 0,
+    "seconds": 1.344,
+    "errors": [],
+    "summary": [
+      "glow flight physics: 110 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_fuel_feed",
+    "ok": true,
+    "exit": 0,
+    "seconds": 7.234,
+    "errors": [],
+    "summary": [
+      "NITRO-05 fuel feed: 38 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_installation",
+    "ok": true,
+    "exit": 0,
+    "seconds": 1.812,
+    "errors": [],
+    "summary": [
+      "glow installation contract: 335 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_lifecycle",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.391,
+    "errors": [],
+    "summary": [
+      "NITRO lifecycle: 52 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_coupling",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.359,
+    "errors": [],
+    "summary": [
+      "glow shaft/prop coupling: 65 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_stage_reuse",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.469,
+    "errors": [],
+    "summary": [
+      "Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)"
+    ]
+  },
+  {
+    "test": "test_glow_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 54.469,
+    "errors": [],
+    "summary": [
+      "Glow session: 140 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_glow_trace",
+    "ok": true,
+    "exit": 0,
+    "seconds": 5.188,
+    "errors": [],
+    "summary": [
+      "NITRO-TRACE: 286 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_aircraft_propulsion_runtime",
+    "ok": true,
+    "exit": 0,
+    "seconds": 10.531,
+    "errors": [],
+    "summary": [
+      "aircraft propulsion runtime: 215 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_extra_installation",
+    "ok": true,
+    "exit": 0,
+    "seconds": 1.406,
+    "errors": [],
+    "summary": [
+      "17 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_trim_integrity",
+    "ok": true,
+    "exit": 0,
+    "seconds": 12.594,
+    "errors": [],
+    "summary": [
+      "D4-R2 trim integrity: 725 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_trim_density",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.672,
+    "errors": [],
+    "summary": [
+      "M5-ATM-2 trim density: 35 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_turbine_continuous",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.578,
+    "errors": [],
+    "summary": [
+      "46 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_sf_event_protocol",
+    "ok": true,
+    "exit": 0,
+    "seconds": 5.969,
+    "errors": [],
+    "summary": [
+      "38 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_trace_metadata",
+    "ok": true,
+    "exit": 0,
+    "seconds": 6.172,
+    "errors": [],
+    "summary": [
+      "C7-R2 / DATA-3: 372 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_mass_trace",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.765,
+    "errors": [],
+    "summary": [
+      "mass trace: 8 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_overlay_fuel_flight",
+    "ok": false,
+    "exit": 0,
+    "seconds": 3.734,
+    "errors": [
+      "ERROR: 2 resources still in use at exit (run with --verbose for details).\r"
+    ],
+    "summary": [
+      "   at: clear (core/io/resource.cpp:822)"
+    ]
+  },
+  {
+    "test": "test_crash_masses",
+    "ok": true,
+    "exit": 0,
+    "seconds": 11.297,
+    "errors": [],
+    "summary": [
+      "       [14] _aircraft (res://tests/test_crash_masses.gd:263)"
+    ]
+  },
+  {
+    "test": "test_glow_audio",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.782,
+    "errors": [],
+    "summary": [
+      "42 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_workshop_compiler",
+    "ok": true,
+    "exit": 0,
+    "seconds": 10.906,
+    "errors": [],
+    "summary": [
+      "Workshop compiler: 314 checks, 0 failures"
+    ]
+  },
+  {
+    "test": "test_workshop_descriptor",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.781,
+    "errors": [],
+    "summary": [
+      "102 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_workshop_store",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.766,
+    "errors": [],
+    "summary": [
+      "108 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_workshop_trial",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.547,
+    "errors": [],
+    "summary": [
+      "       [1] _initialize (res://tests/test_workshop_trial.gd:37)"
+    ]
+  },
+  {
+    "test": "test_workshop_integration",
+    "ok": true,
+    "exit": 0,
+    "seconds": 16.797,
+    "errors": [],
+    "summary": [
+      "       [13] _run (res://tests/test_workshop_integration.gd:31)"
+    ]
+  },
+  {
+    "test": "test_workshop_ui",
+    "ok": true,
+    "exit": 0,
+    "seconds": 11.484,
+    "errors": [],
+    "summary": [
+      "Workshop UI: 0 failed"
+    ]
+  },
+  {
+    "test": "test_atmosphere_flight",
+    "ok": true,
+    "exit": 0,
+    "seconds": 15.078,
+    "errors": [],
+    "summary": [
+      "M5-ATM flight: 142 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_atmosphere_column_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 12.531,
+    "errors": [],
+    "summary": [
+      "M5-ATM-4 session: 114 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_checkpoint",
+    "ok": true,
+    "exit": 0,
+    "seconds": 6.375,
+    "errors": [],
+    "summary": [
+      "H8 checkpoints: 92 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_checkpoint_integrity",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.391,
+    "errors": [],
+    "summary": [
+      "H8-R1 checkpoint integrity: 149 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_flight_log",
+    "ok": true,
+    "exit": 0,
+    "seconds": 18.375,
+    "errors": [],
+    "summary": [
+      "Flight log byte limit exceeded; file is incomplete."
+    ]
+  },
+  {
+    "test": "test_accident_integration",
+    "ok": true,
+    "exit": 0,
+    "seconds": 27.063,
+    "errors": [],
+    "summary": [
+      "       [13] _run (res://tests/test_accident_integration.gd:42)"
+    ]
+  },
+  {
+    "test": "test_crash_pose",
+    "ok": true,
+    "exit": 0,
+    "seconds": 32.672,
+    "errors": [],
+    "summary": [
+      "       [12] _run (res://tests/test_crash_pose.gd:92)"
+    ]
+  },
+  {
+    "test": "test_crash_integration",
+    "ok": true,
+    "exit": 0,
+    "seconds": 62.453,
+    "errors": [],
+    "summary": [
+      "       [14] _run (res://tests/test_crash_integration.gd:28)"
+    ]
+  },
+  {
+    "test": "test_avanti_handling",
+    "ok": true,
+    "exit": 0,
+    "seconds": 34.812,
+    "errors": [],
+    "summary": [
+      "47 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_retractable_gear_trace",
+    "ok": true,
+    "exit": 0,
+    "seconds": 3.422,
+    "errors": [],
+    "summary": [
+      "AV-09 retractable gear trace: 21 checks, 0 failed"
+    ]
+  },
+  {
+    "test": "test_landing_maneuver",
+    "ok": true,
+    "exit": 0,
+    "seconds": 143.969,
+    "errors": [],
+    "summary": [
+      "28 checks, 0 failed"
+    ]
+  }
+]

@@ -42,7 +42,9 @@ func _attach(node: Node) -> void:
 	if not is_instance_valid(node): return
 	_finish()
 	session = node
-	recorder = Recorder.new(session.sim, session.electrical_state if session.has_method("electrical_state") else Callable())
+	var electrical: Callable = session.electrical_state if session.has_method("electrical_state") else Callable()
+	var mass_sample: Callable = Callable(session, "mass_properties") if session.has_method("mass_properties") else Callable()
+	recorder = Recorder.new(session.sim, electrical, mass_sample)
 	session.resetting.connect(_finish)
 	session.tree_exiting.connect(_detach)
 	session.sim.stepped.connect(_sample)

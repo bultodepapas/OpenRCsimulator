@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: The variable type is being inferred from a Variant value, so it will be typed as Variant. (Warning treated as error.)
+   at: GDScript::reload (res://tests/test_ui_quit.gd:125)
+ERROR: Failed to load script "res://tests/test_ui_quit.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

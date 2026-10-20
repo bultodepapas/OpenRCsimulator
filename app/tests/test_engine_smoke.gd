@@ -62,8 +62,42 @@ func _initialize() -> void:
 		var elapsed := smoke.presented_s
 		smoke.advance(elapsed, pose, "glow_prop", 7000, 2000, 12000, 0.5, Vector3.ZERO, 0)
 		check("equal clock cannot advance particle age", smoke.presented_s == elapsed and smoke.last_interval_s == 1.0 / 30.0)
-		smoke.advance(elapsed + 0.01, pose, "glow_prop", 7000, 2000, 12000, 0.5, Vector3.ZERO, 0)
+		var pump_mat := smoke.pump.process_material as ShaderMaterial
+		var birth_segment_end: Vector3 = pump_mat.get_shader_parameter("segment_end")
+		var birth_carrier: Vector3 = pump_mat.get_shader_parameter("carrier_velocity")
+		var residual_pose := pose.translated(Vector3(0.5, 0.25, -0.75))
+		smoke.advance(elapsed + 0.01, residual_pose, "glow_prop", 7000, 2000, 12000, 0.5, Vector3(4, 1, -2), 0)
 		check("pump off stops births without restart", not smoke.pump.emitting and smoke.pump.get_meta("last_birth_s") == elapsed)
+		check("residual pump puffs keep aging with updated wind and birth-only uniforms unchanged",
+			pump_mat.get_shader_parameter("wind_velocity") == Vector3(4, 1, -2)
+			and pump_mat.get_shader_parameter("segment_end") == birth_segment_end
+			and pump_mat.get_shader_parameter("carrier_velocity") == birth_carrier)
+	# Fully off emitters skip all shader uploads after the last residual lifetime, then wake from
+	# the most recently presented pose rather than bridging from stale birth state.
+	smoke.reset()
+	var dormant_pose := Transform3D(Basis.IDENTITY, Vector3(3, 4, 5))
+	smoke.advance(0.0, dormant_pose, "electric_prop", 0, 2000, 12000, 0.0, Vector3.ZERO, 0,
+		false, 700.0)
+	var dormant_mat := smoke.pump.process_material as ShaderMaterial
+	var sentinel_end := Vector3(123, 456, 789)
+	var sentinel_wind := Vector3(-9, -8, -7)
+	dormant_mat.set_shader_parameter("segment_end", sentinel_end)
+	dormant_mat.set_shader_parameter("wind_velocity", sentinel_wind)
+	var fully_off_pose := Transform3D(Basis.IDENTITY, Vector3(6, 5, 4))
+	smoke.advance(1.0 / 30.0, fully_off_pose, "electric_prop", 0, 2000, 12000, 0.0, Vector3(2, 0, 0), 0,
+		false, 700.0)
+	check("fully dormant pump leaves birth and process shader inputs untouched",
+		not smoke.pump.emitting and dormant_mat.get_shader_parameter("segment_end") == sentinel_end
+		and dormant_mat.get_shader_parameter("wind_velocity") == sentinel_wind)
+	var resume_pose := Transform3D(Basis.IDENTITY, Vector3(9, 7, 2))
+	smoke.advance(2.0 / 30.0, resume_pose, "glow_prop", 7000, 2000, 12000, 0.5, Vector3(1, 2, 3), 1,
+		true, 0.0, Vector3(0.25, 0.0, 0.0))
+	check("resumed pump births use the current interval pose and wind",
+		smoke.pump.emitting
+		and dormant_mat.get_shader_parameter("segment_begin") == fully_off_pose * anchor.position
+		and dormant_mat.get_shader_parameter("segment_end") == resume_pose * anchor.position
+		and dormant_mat.get_shader_parameter("wind_velocity") == Vector3(1, 2, 3)
+		and smoke.pump.get_meta("last_birth_s") == 2.0 / 30.0)
 	for i in 100:
 		smoke.reset()
 	check("100 resets allocate no nodes and clear history", smoke.get_child_count() == count and smoke._bounds.is_empty())

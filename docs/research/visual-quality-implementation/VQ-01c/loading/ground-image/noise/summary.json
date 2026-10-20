@@ -1,0 +1,303 @@
+{
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "machine": {
+    "architecture": "x86_64",
+    "debug_build": true,
+    "os": "Windows",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+  },
+  "renderer": "Windows",
+  "aggregation": "median of five process medians; CPU construction intervals, not draw/GPU completion",
+  "processes": [
+    {
+      "process": 0,
+      "candidate_first": false,
+      "timings": {
+        "image-seed-1253": {
+          "reference_median_usec": 172237.5,
+          "candidate_median_usec": 109961.0,
+          "reduction_percent": 36.15734088105087
+        },
+        "image-seed-1254": {
+          "reference_median_usec": 164179.5,
+          "candidate_median_usec": 114177.0,
+          "reduction_percent": 30.45599481055795
+        },
+        "image-seed-0": {
+          "reference_median_usec": 173903.5,
+          "candidate_median_usec": 113871.5,
+          "reduction_percent": 34.520294301149775
+        },
+        "image-seed--1": {
+          "reference_median_usec": 174953.0,
+          "candidate_median_usec": 101899.5,
+          "reduction_percent": 41.756071630666526
+        },
+        "image-seed-2147483647": {
+          "reference_median_usec": 166698.0,
+          "candidate_median_usec": 109878.5,
+          "reduction_percent": 34.085291965110564
+        },
+        "cold_material": {
+          "reference_median_usec": 178216.0,
+          "candidate_median_usec": 123906.0,
+          "reduction_percent": 30.474255959060915
+        },
+        "warm_material_control": {
+          "reference_median_usec": 260.0,
+          "candidate_median_usec": 259.0,
+          "reduction_percent": 0.38461538461538325
+        }
+      }
+    },
+    {
+      "process": 1,
+      "candidate_first": true,
+      "timings": {
+        "image-seed-1253": {
+          "reference_median_usec": 162376.0,
+          "candidate_median_usec": 106242.5,
+          "reduction_percent": 34.570071931812585
+        },
+        "image-seed-1254": {
+          "reference_median_usec": 147317.0,
+          "candidate_median_usec": 108527.5,
+          "reduction_percent": 26.33063393905659
+        },
+        "image-seed-0": {
+          "reference_median_usec": 154776.5,
+          "candidate_median_usec": 97156.5,
+          "reduction_percent": 37.22787374052262
+        },
+        "image-seed--1": {
+          "reference_median_usec": 151607.5,
+          "candidate_median_usec": 102071.0,
+          "reduction_percent": 32.674175090282475
+        },
+        "image-seed-2147483647": {
+          "reference_median_usec": 180715.5,
+          "candidate_median_usec": 119821.5,
+          "reduction_percent": 33.69605816877911
+        },
+        "cold_material": {
+          "reference_median_usec": 163132.5,
+          "candidate_median_usec": 108916.0,
+          "reduction_percent": 33.234640552924766
+        },
+        "warm_material_control": {
+          "reference_median_usec": 287.5,
+          "candidate_median_usec": 290.0,
+          "reduction_percent": -0.8695652173912993
+        }
+      }
+    },
+    {
+      "process": 2,
+      "candidate_first": false,
+      "timings": {
+        "image-seed-1253": {
+          "reference_median_usec": 152057.5,
+          "candidate_median_usec": 111428.5,
+          "reduction_percent": 26.71949755848939
+        },
+        "image-seed-1254": {
+          "reference_median_usec": 151935.5,
+          "candidate_median_usec": 98892.0,
+          "reduction_percent": 34.911854043327594
+        },
+        "image-seed-0": {
+          "reference_median_usec": 163471.0,
+          "candidate_median_usec": 104250.5,
+          "reduction_percent": 36.22691486563367
+        },
+        "image-seed--1": {
+          "reference_median_usec": 154643.5,
+          "candidate_median_usec": 108049.5,
+          "reduction_percent": 30.129944032565227
+        },
+        "image-seed-2147483647": {
+          "reference_median_usec": 156123.5,
+          "candidate_median_usec": 110091.0,
+          "reduction_percent": 29.484670789471156
+        },
+        "cold_material": {
+          "reference_median_usec": 185498.0,
+          "candidate_median_usec": 127751.0,
+          "reduction_percent": 31.130793863006613
+        },
+        "warm_material_control": {
+          "reference_median_usec": 309.5,
+          "candidate_median_usec": 288.0,
+          "reduction_percent": 6.946688206785135
+        }
+      }
+    },
+    {
+      "process": 3,
+      "candidate_first": true,
+      "timings": {
+        "image-seed-1253": {
+          "reference_median_usec": 159266.5,
+          "candidate_median_usec": 113348.5,
+          "reduction_percent": 28.830921756929428
+        },
+        "image-seed-1254": {
+          "reference_median_usec": 169310.0,
+          "candidate_median_usec": 103918.5,
+          "reduction_percent": 38.62234953635344
+        },
+        "image-seed-0": {
+          "reference_median_usec": 176885.5,
+          "candidate_median_usec": 114032.5,
+          "reduction_percent": 35.533155628923794
+        },
+        "image-seed--1": {
+          "reference_median_usec": 165468.0,
+          "candidate_median_usec": 105487.0,
+          "reduction_percent": 36.249305001571294
+        },
+        "image-seed-2147483647": {
+          "reference_median_usec": 155373.0,
+          "candidate_median_usec": 103317.0,
+          "reduction_percent": 33.50389063736942
+        },
+        "cold_material": {
+          "reference_median_usec": 160111.0,
+          "candidate_median_usec": 99638.0,
+          "reduction_percent": 37.76942246316618
+        },
+        "warm_material_control": {
+          "reference_median_usec": 374.0,
+          "candidate_median_usec": 377.0,
+          "reduction_percent": -0.8021390374331583
+        }
+      }
+    },
+    {
+      "process": 4,
+      "candidate_first": false,
+      "timings": {
+        "image-seed-1253": {
+          "reference_median_usec": 207224.0,
+          "candidate_median_usec": 126796.0,
+          "reduction_percent": 38.812106705786974
+        },
+        "image-seed-1254": {
+          "reference_median_usec": 180593.5,
+          "candidate_median_usec": 117268.0,
+          "reduction_percent": 35.06521552547572
+        },
+        "image-seed-0": {
+          "reference_median_usec": 169311.0,
+          "candidate_median_usec": 108464.0,
+          "reduction_percent": 35.938007571864794
+        },
+        "image-seed--1": {
+          "reference_median_usec": 168172.0,
+          "candidate_median_usec": 117063.0,
+          "reduction_percent": 30.390909307137925
+        },
+        "image-seed-2147483647": {
+          "reference_median_usec": 163930.5,
+          "candidate_median_usec": 111337.0,
+          "reduction_percent": 32.08280338314103
+        },
+        "cold_material": {
+          "reference_median_usec": 172878.0,
+          "candidate_median_usec": 111111.0,
+          "reduction_percent": 35.72866414465693
+        },
+        "warm_material_control": {
+          "reference_median_usec": 363.5,
+          "candidate_median_usec": 290.5,
+          "reduction_percent": 20.082530949105916
+        }
+      }
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "image-seed-1253",
+      "reference_usec": 162376.0,
+      "candidate_usec": 111428.5,
+      "reduction_percent": 31.376250184756373,
+      "process_reduction_range_percent": [
+        26.71949755848939,
+        38.812106705786974
+      ]
+    },
+    {
+      "workload": "image-seed-1254",
+      "reference_usec": 164179.5,
+      "candidate_usec": 108527.5,
+      "reduction_percent": 33.89704561166285,
+      "process_reduction_range_percent": [
+        26.33063393905659,
+        38.62234953635344
+      ]
+    },
+    {
+      "workload": "image-seed-0",
+      "reference_usec": 169311.0,
+      "candidate_usec": 108464.0,
+      "reduction_percent": 35.938007571864794,
+      "process_reduction_range_percent": [
+        34.520294301149775,
+        37.22787374052262
+      ]
+    },
+    {
+      "workload": "image-seed--1",
+      "reference_usec": 165468.0,
+      "candidate_usec": 105487.0,
+      "reduction_percent": 36.249305001571294,
+      "process_reduction_range_percent": [
+        30.129944032565227,
+        41.756071630666526
+      ]
+    },
+    {
+      "workload": "image-seed-2147483647",
+      "reference_usec": 163930.5,
+      "candidate_usec": 110091.0,
+      "reduction_percent": 32.842881587014006,
+      "process_reduction_range_percent": [
+        29.484670789471156,
+        34.085291965110564
+      ]
+    },
+    {
+      "workload": "cold_material",
+      "reference_usec": 172878.0,
+      "candidate_usec": 111111.0,
+      "reduction_percent": 35.72866414465693,
+      "process_reduction_range_percent": [
+        30.474255959060915,
+        37.76942246316618
+      ]
+    },
+    {
+      "workload": "warm_material_control",
+      "reference_usec": 309.5,
+      "candidate_usec": 290.0,
+      "reduction_percent": 6.300484652665594,
+      "process_reduction_range_percent": [
+        -0.8695652173912993,
+        20.082530949105916
+      ]
+    }
+  ],
+  "image_pairs": 100,
+  "cold_material_pairs": 30,
+  "warm_material_samples_per_variant": 50
+}

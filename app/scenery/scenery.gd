@@ -381,6 +381,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 				# The downloaded habitat library owns default meadow flowers; the rejected procedural cushions are retired.
 				pass
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
+	var vegetation_started := Time.get_ticks_usec()
 	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
 		tree_wind = bool(opts.get("tree_wind", true)),
 		tree_cell_size_m = opts.get("tree_cell_size_m", 0),
@@ -388,11 +389,14 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	root.add_child(vegetation)
 	stats.vegetation_triangles = vegetation_triangles
 	stats.vegetation_instances = vegetation_batches.values().reduce(func(total: int, list: Array) -> int: return total + list.size(), 0)
+	timing["vegetation"] = float(Time.get_ticks_usec() - vegetation_started) / 1000.0
+	var population_started := Time.get_ticks_usec()
 	var population := Population.build(population_batches)
 	root.add_child(population)
 	stats.population = population.get_meta("instances", 0)
 	stats.population_triangles = population.get_meta("triangles", 0)
 	stats.moving_people = population.get_meta("moving_people", 0)
+	timing["population"] = float(Time.get_ticks_usec() - population_started) / 1000.0
 	var botanical_started := Time.get_ticks_usec()
 	var habitats := BotanicalHabitats.build(field, scenery, theme, quality, lake)
 	root.add_child(habitats)

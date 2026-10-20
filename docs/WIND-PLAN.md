@@ -46,7 +46,7 @@ Weather metadata accompanies recorded rows. v4/v5 readers independently check wi
 | M5-W03a | Smooth mean direction/speed changes, including 359°→1° and the 180° tie rule. | Planned |
 | M5-W03b | Draft weather editor and persistence. [EN/ES and precision evidence](research/wind-implementation/M5-W03b/README.md) | Implemented |
 | M5-W04a | OU kernel, fleet replay, v5 reader, FPS and UI evidence. [Proof](research/wind-implementation/M5-W04a/README.md) | Implemented; physical/spectral acceptance open |
-| M5-W04b | Local visual wind cues and HUD are present; windsock calibration and human readability remain. | Partial |
+| M5-W04b | Wind-driven swiveling windsock, inflation, gravity sag and damped fabric response. [Construction sources and verification](research/wind-implementation/M5-W04b-R1/README.md). | Implemented presentation; physical calibration and human readability remain open |
 | Gate W-B | Owner variable-wind handling and conditions. | Open |
 | M5-W05a/b/c | AGL shear, analytic spatial field, then distributed wing/tail/prop response. | Planned |
 | M5-W06a/b | Compare a Dryden reference; adopt another spectral backend only if evidence justifies it. | Conditional |

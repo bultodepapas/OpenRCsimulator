@@ -118,6 +118,9 @@ static func contacts(previous: PackedFloat64Array, current: PackedFloat64Array, 
 		if _aabb_overlap(world.proxies[proxy_index], broad_min_n, broad_max_n, broad_min_e, broad_max_e,
 			broad_min_d, broad_max_d):
 			overlapping_candidates.append(proxy_index)
+	# No probe can hit a proxy outside the padded whole-hull envelope.
+	if overlapping_candidates.is_empty():
+		return result
 	var best_by_obstacle: Dictionary = {}
 	var p0: PackedFloat64Array = previous.slice(RB.POS, RB.POS + 3)
 	var p1: PackedFloat64Array = current.slice(RB.POS, RB.POS + 3)

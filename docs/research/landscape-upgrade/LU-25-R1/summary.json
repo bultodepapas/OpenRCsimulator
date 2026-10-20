@@ -1,0 +1,205 @@
+{
+  "paired": [
+    {
+      "file": "lake-final-jensen-das-ugly-stik-60-runway.json",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "runway",
+      "baseline_median_tick_usec": 4525.0,
+      "candidate_median_tick_usec": 4162.0,
+      "paired_batch_median_reduction_percent": 7.02338182221286,
+      "winning_pairs": 105,
+      "pairs": 120,
+      "ten_pair_block_median_reductions_percent": [
+        -0.6113859943942479,
+        8.198972864549841,
+        6.848443046619779,
+        8.808988303965986,
+        11.727295109130615,
+        2.3050261416264872,
+        8.631137357788155,
+        11.709023623836329,
+        5.536129541141172,
+        4.924559709731935,
+        8.663720404317736,
+        6.829900295647768
+      ],
+      "fingerprint": "7f3123db29b44abbf12862eae4c00d49f804e57be3e308d141ffca7939b3438e"
+    },
+    {
+      "file": "lake-final-p51d-mustang-120-maneuver.json",
+      "aircraft": "p51d-mustang-120",
+      "case": "maneuver",
+      "baseline_median_tick_usec": 2569.0,
+      "candidate_median_tick_usec": 2378.0,
+      "paired_batch_median_reduction_percent": 7.344438808896814,
+      "winning_pairs": 101,
+      "pairs": 120,
+      "ten_pair_block_median_reductions_percent": [
+        7.78835016033444,
+        11.474073041040157,
+        8.801419458668075,
+        13.919879640125421,
+        5.559248366181485,
+        3.4429795774919505,
+        4.705762070180908,
+        8.460026880437855,
+        7.3566700006041374,
+        5.953151980831012,
+        5.436963571937375,
+        6.7557661790200845
+      ],
+      "fingerprint": "3dd6edbc23f3fbee74d46f87f42363ddc1fcaa0e48b7a04cbcccb90e1a7fadd5"
+    },
+    {
+      "file": "lake-final-p51d-mustang-120-trim.json",
+      "aircraft": "p51d-mustang-120",
+      "case": "trim",
+      "baseline_median_tick_usec": 2302.0,
+      "candidate_median_tick_usec": 2145.0,
+      "paired_batch_median_reduction_percent": 7.054753207749787,
+      "winning_pairs": 106,
+      "pairs": 120,
+      "ten_pair_block_median_reductions_percent": [
+        6.431064058276348,
+        7.939223538951584,
+        1.2095997607661613,
+        7.192226716850997,
+        8.290732428171498,
+        7.0438086905049655,
+        6.1093715425338875,
+        6.587861966931524,
+        7.371804580590141,
+        6.986777047922854,
+        9.030274146311069,
+        8.306101368520363
+      ],
+      "fingerprint": "4357d10169b01eb35986cdb26b2eff677feea3a73066f8da63161ea7c5a00f67"
+    },
+    {
+      "file": "lake-final-stik.json",
+      "aircraft": "jensen-das-ugly-stik-60",
+      "case": "trim",
+      "baseline_median_tick_usec": 1077.0,
+      "candidate_median_tick_usec": 932.0,
+      "paired_batch_median_reduction_percent": 14.133704604804764,
+      "winning_pairs": 111,
+      "pairs": 120,
+      "ten_pair_block_median_reductions_percent": [
+        13.886516328010362,
+        12.949394533199177,
+        12.84928233994231,
+        14.990198115178277,
+        9.86641177562337,
+        12.463968886844468,
+        14.120658706819544,
+        12.66971103834978,
+        14.910973795223963,
+        18.868451591216783,
+        14.790459991821926,
+        15.05656165467537
+      ],
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "lake-final-turbo-lumber-evolution-trim.json",
+      "aircraft": "turbo-lumber-evolution",
+      "case": "trim",
+      "baseline_median_tick_usec": 1288.0,
+      "candidate_median_tick_usec": 1151.0,
+      "paired_batch_median_reduction_percent": 10.423670666656399,
+      "winning_pairs": 106,
+      "pairs": 120,
+      "ten_pair_block_median_reductions_percent": [
+        9.834490630382199,
+        9.867065475052751,
+        8.64170587807866,
+        10.20995339728421,
+        10.905568347761246,
+        9.275757042906964,
+        12.400259009244735,
+        13.526888771223689,
+        7.881798365728076,
+        13.08339845796222,
+        13.473440998030778,
+        7.002177930293241
+      ],
+      "fingerprint": "b3297ae7d113a974d0fea28ec9d9ac2582b1c61dc741ef20dc492ba2af93ddf4"
+    }
+  ],
+  "confirmation": [
+    {
+      "file": "confirmation-stik-1-baseline.json",
+      "median_tick_usec": 969.0,
+      "mean_tick_usec": 1040.8588194444444,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "confirmation-stik-1-candidate.json",
+      "median_tick_usec": 1295.0,
+      "mean_tick_usec": 1220.001736111111,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "confirmation-stik-2-baseline.json",
+      "median_tick_usec": 1013.0,
+      "mean_tick_usec": 1154.6492361111111,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "confirmation-stik-2-candidate.json",
+      "median_tick_usec": 859.0,
+      "mean_tick_usec": 1019.3929166666667,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "confirmation-stik-3-baseline.json",
+      "median_tick_usec": 976.0,
+      "mean_tick_usec": 1124.5478472222221,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "confirmation-stik-3-candidate.json",
+      "median_tick_usec": 1318.0,
+      "mean_tick_usec": 1242.6776388888889,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    }
+  ],
+  "affinity": [
+    {
+      "file": "affinity-stik-1-baseline.json",
+      "median_tick_usec": 967.0,
+      "mean_tick_usec": 1044.6563888888888,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "affinity-stik-1-candidate.json",
+      "median_tick_usec": 1052.0,
+      "mean_tick_usec": 1558.78875,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "affinity-stik-2-baseline.json",
+      "median_tick_usec": 964.0,
+      "mean_tick_usec": 1018.2734027777777,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "affinity-stik-2-candidate.json",
+      "median_tick_usec": 870.0,
+      "mean_tick_usec": 979.0146527777778,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "affinity-stik-3-baseline.json",
+      "median_tick_usec": 955.0,
+      "mean_tick_usec": 997.1908333333333,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    },
+    {
+      "file": "affinity-stik-3-candidate.json",
+      "median_tick_usec": 817.0,
+      "mean_tick_usec": 843.905,
+      "fingerprint": "5d3bd10eaf939da34dd69e2e691ec9dc4a5c730226bd028aa62c9accaac750d7"
+    }
+  ]
+}

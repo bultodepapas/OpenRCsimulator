@@ -3,11 +3,17 @@
 extends RefCounted
 const Source := preload("res://physics/glow/source.gd")
 const Prop := preload("res://physics/glow/propeller.gd")
+const Carb := preload("res://physics/glow/carburetor.gd")
 
+## Steady source at a transmitter throttle: the barrel at its settled opening, the charge per cycle from the
+## carburettor's flow restriction at this speed (NITRO-06).
 static func source(prop: Dictionary, rpm: float, throttle: float, dry_density: float) -> Dictionary:
 	var install: Dictionary = prop.glow
-	var idle: float = install.settings.idle_admission
-	return Source.evaluate(install.profile, rpm, idle + (1.0-idle)*throttle,
+	var opening: float = Carb.opening(throttle, float(install.throttle_idle_offset), float(install.throttle_travel_exponent))
+	var admission: float = Carb.admission(opening, rpm, Source.breathing(install.profile, rpm),
+		float(install.profile.parameters.displacement_m3), float(install.profile.identity.cycle_revolutions),
+		float(install.throttle_capacity_m3_s))
+	return Source.evaluate(install.profile, rpm, admission,
 		install.profile.operation.nominal_mixture, dry_density)
 
 static func residual(prop: Dictionary, rpm: float, throttle: float, u: float, rho: float, dry_density: float) -> float:

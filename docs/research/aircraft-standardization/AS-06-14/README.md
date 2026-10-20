@@ -1,6 +1,6 @@
 # AS-06–14 authoring foundation
 
-**Date:** 2026-10-13. **Scope:** shared interfaces for the current seven physical configurations and five visual families. This is a software compatibility delivery, not completion of every AS-06–14 acceptance gate. The [active plan](../../../plans/aircraft-standardization.md#implementation-sequence) lists remaining work; the [aircraft contract](../../../../AIRCRAFT_CONTRACT.md) is the operating guide.
+**Date:** 2026-10-13. **Scope:** shared interfaces for the current seven physical configurations and five visual families. This is a software compatibility delivery, not completion of every AS-06–14 acceptance gate. The [active plan](../../../plans/aircraft-standardization.md#implementation-sequence) lists remaining work; the [aircraft contract](../../../AIRCRAFT_CONTRACT.md) is the operating guide.
 
 ## Implemented
 

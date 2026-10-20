@@ -214,10 +214,7 @@ func _test_variant_strikes() -> void:
 		var session: Variant = main.session
 		session.start_choice = Session.START_RUNWAY
 		session.reset()
-		if spec[0] == "gp-extra-300s-60":
-			check("Extra prescribed propulsion is running at runway start", session.engine_running)
-		else:
-			check("variant glow start accepts the configured runway state: " + spec[0], session.glow_start())
+		check("variant glow start accepts the configured runway state: " + spec[0], session.glow_start())
 		session.sim.state = _nose_over(session)
 		# Controlled endpoint fixture: just penetrate the disc, retaining the initialized
 		# glow continuous state. This tests contact-to-report plumbing, not a flight trajectory.

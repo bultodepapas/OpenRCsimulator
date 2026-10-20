@@ -18,6 +18,50 @@ Raw axes and `has_axis_sample()` still retain connection-wide history across cal
 - [Full app suite](suite.log): `app/test.sh` exits 0 with **127 GDScript test programs**; existing goldens, four trimmed aircraft, frame-rate equality, contact and UI checks pass. The immediately preceding [D1-R5 suite](../../aircraft-validation/D1-R5/integration/app.log) supplies the 126-program baseline. Its frozen physics/simulation/data identity was checked before this step; the saved [reader/test hashes](before-source.json) identify the unchanged radio baseline.
 - Static lint retains the same 12 existing warnings and zero errors. The real-scene radio fixture still emits its existing ObjectDB shutdown warning. This is not a warning-free whole-project run. [Manifest](manifest.json) binds source and evidence.
 
+## D6b-R3 — calibration resume interlock, 2026-10-19
+
+An armed radio could resume a fixed-wing flight with P while its calibration wizard
+remained active. A shell-managed session also copied the current throttle into the
+resumed flight. `FlightSession.can_resume()` and `resume()` now reject active
+calibration before changing commands, pause reason, or simulation state.
+
+The expanded [real-scene test](../../../../app/tests/test_e2e_radio.gd) verifies both
+legacy direct and shell-managed controller selection with an armed radio at full
+throttle: direct resume and P leave ticks, rigid-body state and idle throttle unchanged.
+Cancel leaves the flight paused; explicit resume after cancel still works. Existing
+calibration completion and fresh-low-throttle arming checks remain in the same test.
+The regression failed eight assertions before the repair and passes after it;
+[before](calibration-resume-before.log), [after](calibration-resume-after.log).
+Native Windows Godot 4.7.2 also passes controller integration (27 checks), rearming
+(368 checks), and session fault/start guards (32 checks). The scene log includes
+vegetation and ObjectDB shutdown warnings, with no engine/script errors. These are
+synthetic controller events, not physical-radio qualification or a full app run.
+
+## D6b-R4 — calibration reload/restart interlock, 2026-10-19
+
+F5 bypassed the resume guard through `reload()` and `reset()`. The documented
+Quick Flight airborne route resumed physics at trimmed throttle while the wizard
+remained active. Reload now refuses before preparing or committing aircraft data;
+reset refuses before any mutation or `resetting` signal. Shell restart still
+explicitly cancels calibration before resetting.
+
+The expanded [real-scene regression](../../../../app/tests/test_e2e_radio.gd)
+covers direct and managed radio selection, direct reload/reset (including retained
+radio readiness), F5 and R. Each refusal preserves the simulation checkpoint,
+model, idle throttle, wizard and pause reason, and emits no recorder reset signal.
+Reload, restart and resume remain usable after cancellation; normal calibration
+completion and fresh-low-throttle rearming still pass. The regression produced
+13 failures before the fix and passes afterward:
+[before](calibration-reload-before.log), [after](calibration-reload-after.log).
+
+An independent [Quick Flight reproduction](calibration-quickflight-after.log)
+with real K/F5 events now keeps tick 28
+unchanged and throttle at zero throughout calibration. Native Windows Godot 4.7.2
+also passes session guards (32 checks), controller integration (27), rearming
+(368), and UI pause/restart checks. Scene runs retain the vegetation warning;
+the checked runs report no engine/script errors. These are headless software
+checks with synthetic radio input, not hardware or whole-suite qualification.
+
 ## Cost and limits
 
 The [paired cost probe](cost/README.md) ran three alternating invocations per reader in ARMED and sustained SAFE regimes, each with the existing seven-round F3b benchmark. At 4,000 synthetic events/s, handler medians changed from 0.829 → 0.858 µs/event armed and 0.804 → 1.219 µs/event SAFE: estimated +0.002 and +0.028 ms per 60 Hz frame. Full dispatch medians changed from 4.486 → 4.794 and 4.734 → 5.120 µs/event. All twelve runs verify delivery. Event construction, physics and rendering are excluded; SAFE never polls. Concurrent suite load makes these observations, not performance acceptance or USB/stick-to-photon latency measurements.

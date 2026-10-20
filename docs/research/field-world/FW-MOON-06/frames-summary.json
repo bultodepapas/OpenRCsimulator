@@ -1,0 +1,74 @@
+[
+ {
+  "window": "nautical_west",
+  "mode": "stepped",
+  "region": "sky",
+  "mean_level": 58.818570793634954,
+  "max_level_change": 1.5170238848866617,
+  "max_relative": 0.05049342407268809,
+  "over_2pct": 2
+ },
+ {
+  "window": "nautical_west",
+  "mode": "stepped",
+  "region": "ground",
+  "mean_level": 0.0007272642803926972,
+  "max_level_change": 0.0006200832983125789,
+  "max_relative": null,
+  "over_2pct": null
+ },
+ {
+  "window": "nautical_west",
+  "mode": "per_frame",
+  "region": "sky",
+  "mean_level": 58.07201568839036,
+  "max_level_change": 0.02067313508864288,
+  "max_relative": 0.0006876761356000717,
+  "over_2pct": 0
+ },
+ {
+  "window": "nautical_west",
+  "mode": "per_frame",
+  "region": "ground",
+  "mean_level": 0.00046126956969529386,
+  "max_level_change": 4.4291694263165634e-05,
+  "max_relative": null,
+  "over_2pct": null
+ },
+ {
+  "window": "low_sun_east",
+  "mode": "stepped",
+  "region": "sky",
+  "mean_level": 123.1147014830417,
+  "max_level_change": 0.4945842685337425,
+  "max_relative": 0.008642477739010798,
+  "over_2pct": 0
+ },
+ {
+  "window": "low_sun_east",
+  "mode": "stepped",
+  "region": "ground",
+  "mean_level": 32.29612556978298,
+  "max_level_change": 3.764968758976785,
+  "max_relative": 0.19089685521296126,
+  "over_2pct": 1
+ },
+ {
+  "window": "low_sun_east",
+  "mode": "per_frame",
+  "region": "sky",
+  "mean_level": 122.9175100089039,
+  "max_level_change": 0.008484285365170763,
+  "max_relative": 0.00014829489901336233,
+  "over_2pct": 0
+ },
+ {
+  "window": "low_sun_east",
+  "mode": "per_frame",
+  "region": "ground",
+  "mean_level": 31.281447661603156,
+  "max_level_change": 0.031172434937566607,
+  "max_relative": 0.0016292399760622423,
+  "over_2pct": 0
+ }
+]

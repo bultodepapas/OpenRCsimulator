@@ -1,6 +1,6 @@
 # P51-19: pitch trim calibrated to the full-size XP-51 trim curves
 
-2026-10-14 · Revision 1 · **Status: data correction implemented and software-verified; RC flight acceptance remains open.** Prefix: P51-19. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-19/README.md)
+2026-10-14 · Revision 1 · **Status: data correction implemented and software-verified; RC flight acceptance remains open.** Prefix: P51-19. [Plan](../../../P51-PLAN.md) · [Tools](../../../../research/p51/p51-19/README.md)
 
 ## Finding
 

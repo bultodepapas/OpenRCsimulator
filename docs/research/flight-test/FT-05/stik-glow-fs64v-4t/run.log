@@ -1,0 +1,60 @@
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT stik-glow-fs64v-4t: 2.63 kg, S 0.465 m2, start 20.0 m/s, CL_max 1.10 -> Vs estimate 9.1 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.368,"first_untrimmable_mps":28.0,"points":18,"slowest_trim_mps":10.0}
+FT stall_power_off          valid {"altitude_lost_m":32.6,"bank_in_first_second_deg":-87.5,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.25,"max_bank_in_recovery_deg":87.5,"ratio_to_cl_max_estimate":1.026,"recovery_time_s":3.33,"stall_alpha_deg":18.4,"stall_speed_mps":9.3,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.04,"height_error_run_m":0.22,"initial_acceleration_mps2":2.81,"max_level_speed_kmh":99.4,"max_level_speed_mps":27.61,"rpm_at_max":11955,"time_plus_10_mps_s":null,"time_plus_5_mps_s":1.78,"time_to_90_percent_s":3.24}
+FT modes                    valid {}
+   note: start: longitudinal roots do not separate into short period and phugoid; phugoid not reported
+   note: 0.8Vmax: longitudinal roots do not separate into short period and phugoid; phugoid not reported
+FT aero_sweep               valid {"cy_at_beta20":-0.0553,"cy_max_beta_le_30":0.0678,"cy_oracle_at_beta20":-0.1736,"knife_edge_cy_needed_at_0_8vmax":0.1855,"knife_edge_side_force_margin":0.365,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":1.51}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.186)
+FT stall_power_on           valid {"altitude_lost_m":0.0,"bank_in_first_second_deg":-86.1,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.47,"max_bank_in_recovery_deg":86.1,"ratio_to_cl_max_estimate":0.691,"recovery_time_s":2.5,"stall_alpha_deg":13.4,"stall_speed_mps":6.26,"wing_drop":"left"}
+FT throttle_response        valid {"rpm_full":11937,"rpm_idle_end":5613,"rpm_trimmed":8656,"speed_gain_in_6_s_mps":7.44,"spool_down_90_10_s":3.529,"spool_up_10_90_s":2.087}
+FT hands_off                valid {"bank_10_s_deg":3.3,"bank_30_s_deg":9.6,"bank_after_aileron_pulse_deg":14.6,"heading_change_10_s_deg":25.4,"heading_change_30_s_deg":86.3,"height_change_10_s_m":7.13,"height_change_30_s_m":-7.55,"phugoid_period_s":null,"reached_floor_s":null,"speed_change_10_s_mps":0.57,"speed_change_30_s_mps":0.8}
+FT climb                    valid {"best":{"case":"1.6Vs","path_angle_deg":71.7,"pitch_deg":69.0,"rpm":9583,"speed_mps":15.19,"vertical_speed_mps":14.13,"vs_factor":1.6}}
+   note: 1.3 Vs: thrust exceeds the climb need; at 74° pitch it holds 14.42 m/s, not 12.09
+   note: 1.6 Vs: thrust exceeds the climb need; at 69° pitch it holds 15.19 m/s, not 14.88
+FT glide                    valid {"best":{"case":"1.3Vs","glide_ratio":9.03,"path_angle_deg":-6.3,"pitch_deg":0.2,"rpm":4623,"speed_mps":12.09,"vertical_speed_mps":-1.33,"vs_factor":1.3}}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT loop                     valid {"alpha_target_deg":10.1,"entry_speed_mps":22.09,"heading_change_deg":-6.4,"height_change_m":10.3,"loop_height_m":32.5,"loop_time_s":4.12,"max_load_factor_g":7.86,"max_sideslip_deg":7.5,"min_speed_mps":18.96}
+FT turn_60                  valid {}
+FT rudder_step              valid {}
+FT knife_edge               valid {}
+FT knife_edge_full_rudder   valid {}
+FT inverted                 valid {"alpha_deg":-4.1,"elevator_servo":-0.066,"elevator_stick":-0.066,"speed_mps":20.02,"throttle":0.428,"upright_throttle":0.368,"vertical_speed_mps":0.03}
+FT spin                     valid {}
+FT takeoff                  valid {"ground_roll_m":16.4,"liftoff_speed_mps":14.84,"liftoff_speed_vs":1.59,"max_heading_error_deg":0.4,"max_rudder_stick":0.05,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":2.8,"time_to_liftoff_s":3.17}
+FT landing                  valid {"approach_speed_mps":12.09,"bounced":false,"flare_height_m":0.845646476081525,"max_heading_error_deg":0.6,"rollout_m":87.8,"rollout_time_s":13.36,"touchdown_past_threshold_m":13.3,"touchdown_pitch_deg":4.2,"touchdown_sink_mps":0.46,"touchdown_speed_mps":11.7,"touchdown_speed_vs":1.26}
+FT inverted_speeds          valid {}
+FT inverted_turn            valid {}
+FT immelmann                valid {"alpha_target_deg":10.1,"entry_speed_mps":22.09,"exit_bank_deg":-0.1,"exit_speed_mps":27.29,"half_loop_time_s":2.71,"half_roll_time_s":0.87,"heading_error_deg":-11.8,"height_gain_m":27.7,"max_load_factor_g":3.23,"max_sideslip_deg":8.9,"top_speed_mps":20.04,"top_speed_vs":2.15}
+FT split_s                  valid {"alpha_target_deg":10.1,"entry_speed_mps":20.0,"exit_bank_deg":-0.3,"exit_speed_mps":20.95,"half_roll_time_s":1.25,"heading_error_deg":-7.3,"height_lost_m":31.5,"height_lost_to_level_m":30.9,"max_load_factor_g":4.13,"max_sideslip_deg":9.7,"max_speed_mps":21.61,"time_to_level_s":3.97}
+FT outside_loop             valid {"alpha_target_deg":-8.9,"entry_speed_mps":20.0,"heading_change_deg":7.8,"height_change_m":-10.1,"loop_depth_m":42.4,"loop_time_s":6.33,"max_sideslip_deg":9.4,"max_speed_mps":22.97,"min_load_factor_g":-3.23,"min_speed_mps":16.47}
+FT slow_roll                valid {}
+FT point_roll               valid {}
+FT snap_roll                valid {}
+FT stall_turn               INVALID {}
+   note: right_0.35Vs: no up-line, not recovered 
+   note: left_0.35Vs: no up-line, not recovered 
+   note: right_0.6Vs: no up-line, not recovered 
+   note: left_0.6Vs: no up-line, not recovered 
+FT engine_cut_climb         valid {}
+FT glide_turn               valid {"least_height_lost_180_m":18.7,"least_height_per_180_bank_deg":45.0}
+FT stall_turning            valid {}
+FT stall_cross_controlled   valid {}
+FT stall_held               valid {}
+FT stall_inverted           valid {"altitude_lost_m":20.5,"break_kind":"wing drop or sink","ratio_to_upright_vs":1.13,"recovery_time_s":2.48,"roll_off_in_1_s_deg":-107.1,"stall_alpha_deg":-14.6,"stall_speed_mps":10.51}
+FT spin_inverted            valid {}
+FT dead_stick_landing       valid {"approach_max_speed_mps":13.02,"approach_min_speed_mps":11.4,"bounced":false,"engine_out":"glow cut","flare_height_m":3.0,"glide_path_deg":13.5,"glide_ratio":4.17,"glide_sink_mps":3.03,"glide_speed_mps":12.99,"rollout_m":40.6,"start_distance_to_threshold_m":115.0,"touchdown_past_aim_m":24.8,"touchdown_past_threshold_m":34.8,"touchdown_pitch_deg":3.4,"touchdown_sink_mps":0.74,"touchdown_speed_mps":11.4,"touchdown_speed_vs":1.23}
+FT go_around                valid {}
+FT power_step               valid {"height_change_10_s_100pct_m":92.7,"height_change_10_s_50pct_m":27.0,"inverted_at_100pct_s":15.35,"inverted_at_50pct_s":null,"path_angle_end_100pct_deg":73.6,"path_angle_end_50pct_deg":12.6}
+   note: 100pct: past inverted at 15.35 s with the elevator at its trim
+FT report: tmp/ft-05-baseline-final/stik-glow-fs64v-4t/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:180)
+         [1] _initialize (research/flight-test/flight_test.gd:110)

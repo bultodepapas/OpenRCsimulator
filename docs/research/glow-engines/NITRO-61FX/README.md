@@ -41,7 +41,7 @@ Downloaded 2026-10-14 into a scratch directory and treated as untrusted data; te
 | O.S. JP catalog page 17750 (HTML, Shift-JIS, as retrieved) | [JP 17750](https://www.os-engines.co.jp/line_up/engine/air/aircraft/catalog/17750.htm) | `b47e92fd15cefb886187dd1ea6cd96b90d1fac7c711f29014dd5d5f88d1b787a` |
 | Motion RC LP12060 page (HTML, as retrieved) | [Motion RC](https://motionrc.com/products/apc-12x6-gas-propeller-lp12060) | `0d4e39ceba40ef7a98ff9b1e3b6c4095ae136e21970acf8965cc585eb6b9e1c7` |
 
-HTML hashes identify the retrieved bytes only; dynamic pages change. Not retrievable on 2026-10-14: apcprop.com (HTTP 403, Cloudflare, as already recorded in [DECISIONS](../../../../DECISIONS.md)), rcuniverse.com threads (HTTP 403), journals.sagepub.com (HTTP 403), web.archive.org (blocked/429).
+HTML hashes identify the retrieved bytes only; dynamic pages change. Not retrievable on 2026-10-14: apcprop.com (HTTP 403, Cloudflare, as already recorded in [DECISIONS](../../../DECISIONS.md)), rcuniverse.com threads (HTTP 403), journals.sagepub.com (HTTP 403), web.archive.org (blocked/429).
 
 ### Recorded conflicts (not averaged)
 

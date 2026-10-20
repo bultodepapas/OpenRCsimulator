@@ -270,7 +270,7 @@ func _run_flight_case(session: Node, case_id: String, mode: String, speed: float
 			"mode": mode, "speed_mps": speed, "trim": _trim_snapshot(trim) } }
 	session.crash_auto_restart = false
 	session.sim.set_paused(false)
-	var recorder := Recorder.new(session.sim, session.electrical_state)
+	var recorder := Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	recorder.start(session.trace_meta())
 	var requested_ticks := roundi(duration / session.sim.dt())
 	var steps := 0
@@ -353,7 +353,7 @@ func _run_inverted_hands_off(session: Node, trim: Dictionary, duration: float, a
 			"reason": str(session.pause_reason if not session.pause_reason.is_empty() else session.sim.fault_reason) } }
 	session.crash_auto_restart = false
 	session.sim.set_paused(false)
-	var recorder := Recorder.new(session.sim, session.electrical_state)
+	var recorder := Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	recorder.start(session.trace_meta())
 	var requested_ticks := roundi(duration / session.sim.dt())
 	var steps := 0

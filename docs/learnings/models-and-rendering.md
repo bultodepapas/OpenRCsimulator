@@ -1,6 +1,6 @@
 # Models and rendering
 
-**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
 ## Normalize texture data in the renderer's actual color space
 
@@ -102,4 +102,13 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 - **Dump time-driven visual state per step before blaming the obvious event.** A 26 % twilight brightness pop sat exactly where the light passed from sun to moon, but the cause was a piecewise formula: refraction was cut to zero below a true elevation of −1°, where it is 0.65°, so the sun dropped 0.73° in one step. Make every input of a time-flowing picture continuous (taper cut-offs), then check each candidate event (light swap, lobe swap, table ends) separately; deterministic state dumps and step-bound tests found the defects in seconds, renders only confirm them. ([FW-MOON-06](../research/field-world/FW-MOON-06/README.md#1-audit-what-jumped-at-twilight))
 
+- **Reject a measured pixel when any channel clips, and calibrate the display scale on the same frame setup.** A rendered aureole measured 0.1× its model near the horizon. The bluish night sky, at a raised exposure, clipped its blue channel while its luminance stayed below the luminance-only clip test. Rejecting any channel at 250/255 gave 1.01. A uniform-sky frame of known radiance measures the actual radiance-to-display scale (here 0.996 of the tonemap exposure); if its level is not scaled with the exposure, it saturates too. ([FW-MOON-08](../research/field-world/FW-MOON-08/README.md#2-verification))
+
 - **Measure small rotations from the quaternion's vector part.** `Quaternion.get_angle()` is 2·acos(w); in float32 it returns 0 below about 0.04°, so a "no jump" bound on per-frame rotations passed while the rotation was missing. Use 2·asin(|xyz|), or `angle_to` between basis columns, and give every bound a positive control. ([FW-MOON-03b](../research/field-world/FW-MOON-03b/README.md))
+
+- **Hide detail under an overlay with blur or the local mean, never with darkening alone.** A dark masking patch over a dark model left it 32 % of its Weber contrast, because darkening scales the model and its background alike. Blurring the image over the patch (screen-texture mipmaps on a canvas layer) left 10 % ([SUN-01…05](../research/sun/SUN-01-05/README.md)).
+
+- **Do not mix a dark and a bright colour in one Compatibility overlay pass.** The renderer multiplies an unshaded ALBEDO by the exposure and tonemaps it per material ([FW-84](../research/field-world/FW-84/README.md)), so a weighted pre-exposure mix is not the display mix: a dark afterimage under a bright veil came out as a warm ring. Draw them as separate passes, or put display-space screen effects on a canvas layer that reads the finished image (SUN-03).
+
+- **Read MultiMesh instances through `buffer`, and only with a real renderer.** The headless dummy renderer keeps no instance data, so every `get_instance_transform()` returns the origin and headless checks silently lose all trees. On GLES3 each call reads back from the renderer (~0.8 ms), so 2,810 trees cost 2.3 s. One `buffer` read per MultiMesh (12 floats per instance, row-major 3×4) fixed both the cost and the clarity; run tree-dependent checks under `--rendering-driver opengl3` ([SUN-09](../research/sun/SUN-02b-06-09/README.md)).
+

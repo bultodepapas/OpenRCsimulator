@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/aircraft-editor/size_flight_comparison.gd",
+    "--",
+    "--extreme",
+    "--baseline=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-extreme/baseline.orfl",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-extreme/recordings-final"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:50:44.878883+00:00",
+  "label": "extreme-recordings-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\extreme-recordings-final-dplyqw0w\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\extreme-recordings-final-dplyqw0w\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.031,
+  "log_bytes": 948,
+  "log_sha256": "1c6a0d136ea862ffbfb714c36ff4815354db83c71d2ec1d4c99907b76e0aba5a"
+}

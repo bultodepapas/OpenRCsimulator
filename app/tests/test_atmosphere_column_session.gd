@@ -144,13 +144,58 @@ func _climb_trace_restore() -> void:
 	s.free()
 
 func _runway_and_domain() -> void:
+	# The source-off glow installation is the stationary oracle. Its turbine counterpart burns at idle; fuel-mass
+	# changes legitimately settle a compliant suspension by a few micrometres during the same interval.
+	var parked := flight(PATHS[4], column())
+	var parked_start: Dictionary = parked.try_runway_start(0.0, 0.0, PI / 2.0)
+	check("column parked runway solves with source off", parked_start.get("ok", false) and not parked.engine_running)
+	if parked_start.get("ok", false):
+		var parked_origin: PackedFloat64Array = parked.sim.state.slice(0, 3)
+		var parked_fuel: float = parked.mass_properties().fuel_remaining_kg
+		for _tick in 480: parked.sim.step()
+		var parked_end_fuel: float = parked.mass_properties().fuel_remaining_kg
+		check("column parked runway holds still for two seconds", parked.sim.fault_reason.is_empty() and
+			M.norm(M.sub(parked_origin, parked.sim.state.slice(0, 3))) < 1e-7)
+		check("column parked source-off fuel remains unchanged", parked_fuel == parked_end_fuel)
+	parked.free()
+
+	# Compare a running finite turbine in the column against a uniform dry-ISA atmosphere matched at its runway start.
+	# The 1e-4 m absolute drift bound is a numerical comparison guard for compliant gear, not physical validation.
+	var running_column := flight(PATHS[1], column())
+	var column_start: Dictionary = running_column.try_runway_start(0.0, 0.0, PI / 2.0)
+	check("column finite turbine runway solves", column_start.get("ok", false) and running_column.liquid_fuel_is_active())
+	var matched_sample: Dictionary = running_column.environment_at(running_column.sim.state)
+	var matched_uniform := Config.upgrade_atmosphere(Config.defaults(), {
+		atmosphere_mode = "custom",
+		field_elevation_m = -running_column.sim.state[2],
+		temperature_c = float(matched_sample.temperature_k) - 273.15,
+		qnh_hpa = 1013.25,
+		relative_humidity_pct = 0.0,
+	})
+	var running_uniform := flight(PATHS[1], matched_uniform)
+	var uniform_start: Dictionary = running_uniform.try_runway_start(0.0, 0.0, PI / 2.0)
+	check("matched uniform finite turbine runway solves", uniform_start.get("ok", false) and running_uniform.liquid_fuel_is_active())
+	if column_start.get("ok", false) and uniform_start.get("ok", false):
+		check("column and uniform start densities match", absf(running_column.air_density() - running_uniform.air_density()) < 1e-9)
+		var column_origin: PackedFloat64Array = running_column.sim.state.slice(0, 3)
+		var uniform_origin: PackedFloat64Array = running_uniform.sim.state.slice(0, 3)
+		var column_fuel_before: float = running_column.mass_properties().fuel_remaining_kg
+		var uniform_fuel_before: float = running_uniform.mass_properties().fuel_remaining_kg
+		for _tick in 480:
+			running_column.sim.step()
+			running_uniform.sim.step()
+		var column_drift: PackedFloat64Array = M.sub(running_column.sim.state.slice(0, 3), column_origin)
+		var uniform_drift: PackedFloat64Array = M.sub(running_uniform.sim.state.slice(0, 3), uniform_origin)
+		var column_burn: float = column_fuel_before - running_column.mass_properties().fuel_remaining_kg
+		var uniform_burn: float = uniform_fuel_before - running_uniform.mass_properties().fuel_remaining_kg
+		check("running column and uniform sessions complete without faults", running_column.sim.fault_reason.is_empty() and running_uniform.sim.fault_reason.is_empty())
+		check("running finite stores burn at idle", column_burn > 0.0 and uniform_burn > 0.0)
+		check("matched finite stores burn equivalently", absf(column_burn - uniform_burn) < 1e-8)
+		check("matched column and uniform runway drift agree", M.norm(M.sub(column_drift, uniform_drift)) < 1e-7)
+		check("finite-fuel compliant-gear drift stays within numerical bound", M.norm(column_drift) < 1e-4 and M.norm(uniform_drift) < 1e-4)
+	running_uniform.free()
+	running_column.free()
 	var s := flight(PATHS[1], column())
-	var started: Dictionary = s.try_runway_start(0.0, 0.0, PI / 2.0)
-	check("column runway solves", started.get("ok", false))
-	if started.get("ok", false):
-		var origin: PackedFloat64Array = s.sim.state.slice(0, 3)
-		for tick in 480: s.sim.step()
-		check("column runway remains stationary for two seconds", s.sim.fault_reason.is_empty() and M.norm(M.sub(origin, s.sim.state.slice(0, 3))) < 1e-7)
 	var sample: PackedFloat64Array = s.sim.state.duplicate()
 	sample[2] = -11001.0
 	check("out-of-domain stage density fails explicitly", is_nan(s.air_density(sample)) and not s.environment_at(sample).ok)

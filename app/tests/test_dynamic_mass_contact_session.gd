@@ -10,7 +10,9 @@ var failures: int = 0
 
 
 func _initialize() -> void:
-	_test_glow_contact_rollback()
+	for path: String in ["res://data/aircraft/stik_glow_55ax_2t.json", "res://data/aircraft/p51d_mustang_120.json", "res://data/aircraft/sebart_avanti_s_a200.json"]:
+		print("Finite contact fixture: ", path)
+		_test_glow_contact_rollback(path)
 	_test_mass_contact_checkpoint_marker()
 	print("R05-B FlightSession integration review: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -25,9 +27,9 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 		print("PASS: %s" % label)
 
 
-func _glow_session() -> Node:
+func _glow_session(path: String = "res://data/aircraft/stik_glow_55ax_2t.json") -> Node:
 	var session: Node = Flight.new()
-	session.setup("res://data/aircraft/stik_glow_55ax_2t.json")
+	session.setup(path)
 	session.input_enabled = false
 	return session
 
@@ -52,10 +54,10 @@ func _collision_state() -> PackedFloat64Array:
 		M.q_identity(), PackedFloat64Array([0.0, 0.0, 0.0]))
 
 
-func _test_glow_contact_rollback() -> void:
-	var session: Node = _glow_session()
-	_check("real Glow session is flyable and dynamic-mass joint hook is installed",
-		session.is_flyable() and session.glow_is_active() and session.sim.model.post_tick_joint.is_valid()
+func _test_glow_contact_rollback(path: String) -> void:
+	var session: Node = _glow_session(path)
+	_check("finite session is flyable and dynamic-mass joint hook is installed",
+		session.is_flyable() and session.finite_fuel_is_active() and session.sim.model.post_tick_joint.is_valid()
 		and not session.sim.model.post_tick.is_valid())
 	if not session.is_flyable():
 		session.free()
@@ -107,6 +109,12 @@ func _test_glow_contact_rollback() -> void:
 		and float(staged[0].fraction) < 1.0 and staged[0].properties is Dictionary
 		and float(staged[0].properties.mass_kg) > 0.0,
 		str("staged=", staged, " filter_calls=", filter_calls, " fault=", session.sim.fault_reason))
+	if staged.size() == 1 and staged[0].has("properties"):
+		var sample: Dictionary = staged[0].properties
+		_check("impact mass and typed fuel share one interpolated inventory and time",
+			sample.get("format") == "openrc-mass-sample v1" and sample.stores.size() > 0
+			and sample.tick == 1 and sample.time_s == float(staged[0].fraction) * session.sim.dt()
+			and sample.sample_boundary == "swept_contact_linear_inventory" and sample.fuel_remaining_kg > 0.0)
 	_check("post-contact projection failure faults before the flight tick commits",
 		not session.sim.fault_reason.is_empty() and session.sim.tick == 0 and session.sim.paused,
 		str(session.sim.fault_reason))

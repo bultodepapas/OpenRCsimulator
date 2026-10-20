@@ -13,7 +13,8 @@ const DEFAULT_MAX_ALPHA_RAD := 0.13962634015954636 # 8 degrees
 const THROTTLE_TOLERANCE := 1.0e-8
 const MONOTONIC_TOLERANCE := 2.0e-3
 const BRACKET_STEP_MPS := 2.0
-const MAX_BISECTION_STEPS := 32
+## Cap on the bracketed false-position (Illinois) steps; it converges in about six from a 2 m/s bracket.
+const MAX_SEARCH_STEPS := 32
 
 
 static func solve_level_at_throttle(reference_speed_mps: float, target_throttle: float,
@@ -53,7 +54,7 @@ static func solve_level_at_throttle(reference_speed_mps: float, target_throttle:
 	var speed := reference_speed_mps
 	while speed < max_speed_mps:
 		var next_speed := minf(max_speed_mps, speed + BRACKET_STEP_MPS)
-		var candidate := _solve_candidate(next_speed, model, g, throws, rho, engine_charge_ratio, max_alpha_rad)
+		var candidate := _solve_candidate(next_speed, model, g, throws, rho, engine_charge_ratio, max_alpha_rad, _guess(low))
 		search_iterations += 1
 		if not candidate.ok:
 			return _failure(candidate.message, reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
@@ -69,9 +70,19 @@ static func solve_level_at_throttle(reference_speed_mps: float, target_throttle:
 	if high.is_empty():
 		return _failure("requested throttle was not bracketed by the maximum speed %.2f m/s" % max_speed_mps, reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
 
-	for _i in MAX_BISECTION_STEPS:
-		var mid_speed: float = 0.5 * (low.V + high.V)
-		var candidate := _solve_candidate(mid_speed, model, g, throws, rho, engine_charge_ratio, max_alpha_rad)
+	# D6e-R3: Illinois false position on the throttle-against-speed curve inside the bracket (the curve is smooth and
+	# monotone there), each solve warm-started from the nearer bracket end; a bisection step guards a degenerate secant.
+	var f_low: float = low.throttle - target_throttle
+	var f_high: float = high.throttle - target_throttle
+	var side := 0
+	for _i in MAX_SEARCH_STEPS:
+		var span: float = float(high.V) - float(low.V)
+		var mid_speed: float = (f_high * float(low.V) - f_low * float(high.V)) / (f_high - f_low) if f_high != f_low else NAN
+		if not is_finite(mid_speed) or mid_speed <= float(low.V) or mid_speed >= float(high.V):
+			mid_speed = 0.5 * (float(low.V) + float(high.V))
+		mid_speed = clampf(mid_speed, float(low.V) + 0.01 * span, float(high.V) - 0.01 * span)
+		var nearer: Dictionary = low if mid_speed - float(low.V) <= float(high.V) - mid_speed else high
+		var candidate := _solve_candidate(mid_speed, model, g, throws, rho, engine_charge_ratio, max_alpha_rad, _guess(nearer))
 		search_iterations += 1
 		if not candidate.ok:
 			return _failure(candidate.message, reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
@@ -79,17 +90,33 @@ static func solve_level_at_throttle(reference_speed_mps: float, target_throttle:
 			return _failure("trim throttle is not monotonic inside the requested bracket", reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
 		if absf(candidate.throttle - target_throttle) <= THROTTLE_TOLERANCE:
 			return _success(candidate, reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
-		if candidate.throttle < target_throttle:
+		var f_mid: float = candidate.throttle - target_throttle
+		if f_mid < 0.0:
 			low = candidate
+			f_low = f_mid
+			if side == -1:
+				f_high *= 0.5
+			side = -1
 		else:
 			high = candidate
+			f_high = f_mid
+			if side == 1:
+				f_low *= 0.5
+			side = 1
 
-	return _failure("bisection did not reach the requested throttle tolerance", reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
+	return _failure("the bracketed search did not reach the requested throttle tolerance", reference_speed_mps, target_throttle, max_speed_mps, search_iterations)
+
+
+## A converged trim as the next solve's warm start (Trim.solve's unknown order); empty when there is none.
+static func _guess(trim: Dictionary) -> PackedFloat64Array:
+	if trim.is_empty() or not trim.get("ok", false):
+		return PackedFloat64Array()
+	return PackedFloat64Array([float(trim.alpha), float(trim.elevator), float(trim.throttle), float(trim.beta), float(trim.aileron), float(trim.rudder)])
 
 
 static func _solve_candidate(speed_mps: float, model: Dictionary, g: float, throws: Dictionary,
-		rho: float, engine_charge_ratio: float, max_alpha_rad: float) -> Dictionary:
-	var result := Trim.solve("level", speed_mps, model, g, throws, rho, engine_charge_ratio)
+		rho: float, engine_charge_ratio: float, max_alpha_rad: float, initial: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
+	var result := Trim.solve("level", speed_mps, model, g, throws, rho, engine_charge_ratio, initial)
 	if not result.get("ok", false):
 		return { ok = false, message = "level trim failed at %.2f m/s: %s" % [speed_mps, str(result.get("message", "no trim result"))] }
 	if not _finite_trim(result):

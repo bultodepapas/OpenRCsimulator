@@ -18,4 +18,4 @@ The production runway-start route still refuses the P-51: it is currently restri
 
 The [ground results](ground-results.md) link all baseline/candidate outputs, logs and identities at both rates. All five cases completed without faults or unintended crashes; checkpoint and crash/restart checks passed exactly. A guided takeoff demonstrates only the specified feedback pilot, while the rudder-free case preserves the model's own yaw response. Contact-only path length is rate-sensitive during a landing rebound; gross rollout displacement is reported separately.
 
-See the [P-51 realism plan](../../../P51-REALISM-PLAN.md), [`p51_envelope_base.gd`](../../../../app/tests/p51_envelope_base.gd), and [`test_p51_ground.gd`](../../../../app/tests/test_p51_ground.gd).
+See the [P-51 guide](../../../P51-PLAN.md), [`p51_envelope_base.gd`](../../../../app/tests/p51_envelope_base.gd), and [`test_p51_ground.gd`](../../../../app/tests/test_p51_ground.gd).

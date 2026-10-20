@@ -4,7 +4,7 @@
 
 ## Source and inspection
 
-Source: `NEW HELI/HX-700_Helicoptero_RC_1.blend`, 4,044,205 bytes, SHA-256 `1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f`. Blender 5.2.2 LTS opened it in a separate factory-startup background process with automatic Python execution disabled. The embedded generator was extracted and inspected, not executed. Simple-expression drivers evaluated. Every probe confirmed the source hash unchanged. The user's live Corsair scene was inspected read-only and left untouched.
+Source: `assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend`, 4,044,205 bytes, SHA-256 `1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f`. Blender 5.2.2 LTS opened it in a separate factory-startup background process with automatic Python execution disabled. The embedded generator was extracted and inspected, not executed. Simple-expression drivers evaluated. Every probe confirmed the source hash unchanged. The user's live Corsair scene was inspected read-only and left untouched.
 
 The scene contains 182 objects: 82 meshes, 79 empties, 16 cameras, four lights and one curve; no armature. The aircraft subtree contains 145 objects and 81 meshes, with 675,534 evaluated triangles, versus 217,892 in the earlier source audit. Scene totals include study geometry. The largest aircraft contributors include the 163,880-triangle canopy, 60,000-triangle cyclic-servo mesh and 28,184-triangle landing gear. This is a detailed master, not a qualified runtime budget.
 
@@ -48,9 +48,9 @@ From the repository root (use fresh output directories for exports):
 
 ```powershell
 $Blender = 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe'
-& $Blender --background --factory-startup --disable-autoexec 'NEW HELI/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/audit_hx700_revision.py -- --out .tools/heli25b-audit
-& $Blender --background --factory-startup --disable-autoexec 'NEW HELI/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/probe_hx700_revision.py -- --out .tools/heli25b-poses
-& $Blender --background --factory-startup --disable-autoexec 'NEW HELI/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/preview_hx700_revision.py -- --out .tools/heli25b-preview
+& $Blender --background --factory-startup --disable-autoexec 'assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/audit_hx700_revision.py -- --out .tools/heli25b-audit
+& $Blender --background --factory-startup --disable-autoexec 'assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/probe_hx700_revision.py -- --out .tools/heli25b-poses
+& $Blender --background --factory-startup --disable-autoexec 'assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/preview_hx700_revision.py -- --out .tools/heli25b-preview
 ```
 
 Reference: [Blender glTF animation/custom-property export](https://docs.blender.org/manual/en/5.1/addons/import_export/scene_gltf2.html) describes transform/shape animation and extras; [Godot's import documentation](https://docs.godotengine.org/en/stable/tutorials/assets_pipeline/importing_3d_scenes/available_formats.html) confirms that `.blend` import also passes through glTF. A baked demonstration can document poses; it does not replace live control logic. Source-specific export behavior above was measured with installed Blender 5.2.2.

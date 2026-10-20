@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+source_fill=0.5 source_fuel_kg=0.149961
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+destination_before_restore_fill=1.0
+restore_accepted=true restored_fuel_kg=0.149961 destination_fill=1.0 trace_meta_fill=<absent>
+after_reset_fuel_kg=0.299922 destination_fill=1.0

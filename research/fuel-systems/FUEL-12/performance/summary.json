@@ -1,0 +1,33 @@
+{
+  "qualification": "Headless simulation only; shared Windows host with unrelated active Godot jobs. Setup/import/recorder excluded; not GPU/frame-time or release qualification.",
+  "fills": [
+    {
+      "fill": 1.0,
+      "baseline": {
+        "median_usec_per_tick": 1750.9933333333333,
+        "min_usec_per_tick": 1652.285,
+        "max_usec_per_tick": 1949.9166666666667
+      },
+      "candidate": {
+        "median_usec_per_tick": 4126.115,
+        "min_usec_per_tick": 3426.5816666666665,
+        "max_usec_per_tick": 5906.173333333333
+      },
+      "median_ratio": 2.3564424383873535
+    },
+    {
+      "fill": 0.1,
+      "baseline": {
+        "median_usec_per_tick": 2313.195,
+        "min_usec_per_tick": 1960.5766666666666,
+        "max_usec_per_tick": 3015.141666666667
+      },
+      "candidate": {
+        "median_usec_per_tick": 4057.175,
+        "min_usec_per_tick": 3265.42,
+        "max_usec_per_tick": 4560.32
+      },
+      "median_ratio": 1.7539269279070722
+    }
+  ]
+}

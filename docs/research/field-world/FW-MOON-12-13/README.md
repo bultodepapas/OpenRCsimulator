@@ -17,7 +17,8 @@
   - `large` doubles the disc (cinematic, labelled "not real");
   - `bright` triples the moonlight (assist, labelled).
   - The state records the choices.
-- **Not yet used:** `night_look` and `halo` are validated and stored but change nothing until FW-MOON-07 and FW-MOON-08. The controls keep their current values.
+- **Not yet used:** `night_look` is validated and stored but changes nothing until FW-MOON-07. The controls keep their current values.
+- **`halo`** (FW-MOON-08, 2026-10-19): `off` removes the moon's aureole (`SkyState`) and its glare (`MoonGlare`); `auto` keeps both. It has no control yet (FW-MOON-13).
 - **Preferences:** `[moon] config` is an additive section (no schema bump, the `[hud]` precedent). An older file without it loads the real moon. A broken section loads the real moon with a note. `save_to` refuses an invalid choice.
 - **Visual only:** the choices never enter physical weather, aircraft state, flight-model checkpoints or traces.
 

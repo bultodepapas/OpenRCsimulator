@@ -1,0 +1,47 @@
+COMMAND python -X utf8 -I research/glow-engines/build_installations.py --check
+EXIT 0
+Glow installations current
+
+
+COMMAND python -X utf8 -I research/fuel-systems/FUEL-05/stik_tank.py --check
+EXIT 0
+base Stik tank current
+
+
+COMMAND python -X utf8 -I research/fuel-systems/FUEL-05/relabel_synthetic.py --check
+EXIT 0
+synthetic fixtures current
+
+
+COMMAND python -X utf8 -I research/extra-300/ex05/derive_physics.py --check
+EXIT 0
+gp_extra_300s_60.json and derivation.md are up to date
+
+
+COMMAND python -X utf8 -I research/p51/p51-05/derive_physics.py --check
+EXIT 0
+p51d_mustang_120.json and derivation.md are up to date
+
+
+COMMAND python -X utf8 -I research/avanti-s/av06/derive_physics.py --check
+EXIT 0
+sebart_avanti_s_a200.json and derivation.md are up to date
+
+
+COMMAND python -X utf8 -I research/timber/tt07/derive_physics.py --check
+EXIT 1
+Timber physics data stale: regenerate with research/timber/tt07/derive_physics.py
+
+
+COMMAND python -X utf8 -I research/fuel-systems/test_mass_balance_report.py
+EXIT 0
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.030s
+
+OK
+
+
+COMMAND python -X utf8 -I research/fuel-systems/mass_balance_report.py --check research/fuel-systems/mass_balance_current.json
+EXIT 0
+mass/balance: 14 aircraft, every registered static margin positive

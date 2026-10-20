@@ -1,6 +1,6 @@
 # AS-08: stable physical identities
 
-Date: 2026-10-13. Scope: authored physical identity metadata, contact/event adapters and Workshop inventory bindings. The authoritative authoring rules are in [AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md#stable-physical-identities); editor behavior is in the [Workshop guide](../../../AIRCRAFT-WORKSHOP.md). This slice does not complete the [remaining standardization plan](../../../plans/aircraft-standardization.md).
+Date: 2026-10-13. Scope: authored physical identity metadata, contact/event adapters and Workshop inventory bindings. The authoritative authoring rules are in [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md#stable-physical-identities); editor behavior is in the [Workshop guide](../../../AIRCRAFT-WORKSHOP.md). This slice does not complete the [remaining standardization plan](../../../plans/aircraft-standardization.md).
 
 ## Delivered behavior
 

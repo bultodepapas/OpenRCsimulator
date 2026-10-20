@@ -1,0 +1,25 @@
+{
+  "probe_sha256": "269dd45bb67c3f82109f18e859a44f164badeddd412769f394b744d1e27e35af",
+  "config": [
+    {
+      "name": "baseline-native",
+      "app": "baseline/app",
+      "args": [
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--max-fps",
+        "60",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\probes\\native_observer.gd",
+        "--",
+        "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline-native.json",
+        "--warmup=5",
+        "--t=45",
+        "--start=airborne"
+      ],
+      "timeout": 150
+    }
+  ]
+}

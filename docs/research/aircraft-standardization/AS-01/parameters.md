@@ -8,8 +8,8 @@ Every quantity is listed, including reference-only evidence. Bounds are structur
 alternatives belong to different conditional branches. The versioned schema selects the branch.
 CG/area/tensor/table/support/timestep/trim constraints remain additional runtime checks.
 Meanings, sign conventions, dependencies, default policy and physical justification are in
-[AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md). The [audit](../AS-00/config-audit.md)
-explains the original consumers. Metadata/capability enums are specified in the root contract and schema.
+[AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md). The [audit](../AS-00/config-audit.md)
+explains the original consumers. Metadata/capability enums are specified in the contract and schema.
 
 | Quantity | Unit | Structural domain | Consumer / defined effect |
 | --- | --- | --- | --- |
@@ -117,6 +117,9 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `flaps.stall_shift_fraction` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.takeoff_angle_deg` | deg | ≥0, ≤60 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `fuel_system.tanks[].capacity` | l | >0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
+| `fuel_system.tanks[].feed_line.capacity` | l | >0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
+| `fuel_system.tanks[].pickup_position` | m | length 3…3, each(≥-3, ≤3) | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
+| `fuel_system.tanks[].reserve` | l | ≥0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
 | `fuel_system.tanks[].unusable` | l | ≥0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].position` | m | length 3…3, each(≥-2, ≤2) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -150,7 +153,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `propulsion.battery.weak_cell.soc_offset` | 1 | ≥0, <0.5 | AircraftData._pack_ecm_battery → PackEcm weakest-cell capacity/resistance/charge offset; exhaustion event state |
 | `propulsion.engine.accel_limit` | rpm, rpm/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
 | `propulsion.engine.decel_limit` | rpm, rpm/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
-| `propulsion.engine.fuel_flow` | rpm, kg/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)) | Turbine.fuel_flow / session telemetry; no mass depletion |
+| `propulsion.engine.fuel_flow` | rpm, kg/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)) | AircraftData._turbine / _liquid_fuel → Turbine.fuel_flow; turbine_map_v1 converts the authored RPM map to finite-store depletion and telemetry |
 | `propulsion.engine.governor_tau` | s | ≥0.02, ≤2 | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
 | `propulsion.engine.idle_rpm` | rpm | ≥0, ≤20000 OR ≥1000, ≤300000 | AircraftData._propulsion/_turbine → Propulsion target/lag or Turbine spool (branch-specific) |
 | `propulsion.engine.installed_factor` | 1 | ≥0.5, ≤1 | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
@@ -178,6 +181,8 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `propulsion.esc.low_voltage_cutoff.soft_limit` | 1 | ≥0, <1 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
 | `propulsion.esc.low_voltage_cutoff.soft_ramp_s` | s | >0, ≤60 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
 | `propulsion.esc.low_voltage_cutoff.voltage_filter_s` | s | ≥0.02, ≤10 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.fuel_consumption.bsfc` | kg/kWh | >0.05, ≤2 | AircraftData._liquid_fuel → LiquidFuel.flow_rate_kg_s: gasoline_bsfc_v1 consumption above the idle-power reference |
+| `propulsion.fuel_consumption.idle_flow` | kg/s | ≥0, ≤0.01 | AircraftData._liquid_fuel → LiquidFuel.flow_rate_kg_s: gasoline_bsfc_v1 estimated running idle flow |
 | `propulsion.intake_offset` | m | length 3…3, each(≥-1, ≤1) | AircraftData._turbine → Turbine force application and rotor axis |
 | `propulsion.motor.kv_rpm_per_volt` | rpm/V | ≥1, >0, ≤10000 | AircraftData._electric_propulsion → electric_motor/electric_supply shaft and bus law |
 | `propulsion.motor.no_load_context.rpm` | rpm | ≥1, >0, ≤1e+07 | AircraftData._electric_propulsion: Kv/test-voltage consistency |
@@ -217,4 +222,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 203 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 208 distinct quantity paths. Shared paths retain branch-dependent ranges.

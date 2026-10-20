@@ -1,0 +1,91 @@
+{
+	"engine": "4.7.2-stable (official)",
+	"failed": false,
+	"format": "openrc-fuel-cost v1",
+	"initial_warmup_runs": 1,
+	"repeats": 5,
+	"runs": [
+		{
+			"elapsed_usec": 3543704,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 5906.173333333333
+		},
+		{
+			"elapsed_usec": 2581565,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 4302.608333333334
+		},
+		{
+			"elapsed_usec": 2475669,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 4126.115
+		},
+		{
+			"elapsed_usec": 2260774,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 3767.9566666666665
+		},
+		{
+			"elapsed_usec": 2055949,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 3426.5816666666665
+		},
+		{
+			"elapsed_usec": 2316440,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 3860.733333333333
+		},
+		{
+			"elapsed_usec": 2736192,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 4560.32
+		},
+		{
+			"elapsed_usec": 2615088,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 4358.48
+		},
+		{
+			"elapsed_usec": 2434305,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 4057.175
+		},
+		{
+			"elapsed_usec": 1959252,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 3265.42
+		}
+	],
+	"scope": "headless physics only; setup/import/recording excluded; same absolute tape; not target GPU qualification",
+	"ticks": 600
+}

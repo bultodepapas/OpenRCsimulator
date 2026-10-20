@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PROP STRIKE at 5159 rpm, 10.4 m/s: engine stopped
+CRASH at 10.0 m/s (sink 9.7 m/s, airframe contact (hull point 3), point speed 9.1 m/s at detected tick) - [R] restart
+session probe: jensen-das-ugly-stik-60 / lake / 1407 samples / tick/input did not advance exactly once: CRASH at 10.0 m/s (sink 9.7 m/s, airframe contact (hull point 3), point speed 9.1 m/s at detected tick) - [R] restart

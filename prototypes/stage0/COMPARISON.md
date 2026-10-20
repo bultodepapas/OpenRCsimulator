@@ -1,6 +1,6 @@
 # Stage 0/1 bake-off: three.js vs Godot
 
-Both builds implement the same [SPEC.md](SPEC.md). **The criteria and weights below were fixed before the Godot build started**, so results cannot reshape them. Context and options are in [STACK.md](../../STACK.md).
+Both builds implement the same [SPEC.md](SPEC.md). **The criteria and weights below were fixed before the Godot build started**, so results cannot reshape them. Context and options are in [STACK.md](../../docs/STACK.md).
 
 ## Criteria (fixed 2026-10-05, before Godot results)
 

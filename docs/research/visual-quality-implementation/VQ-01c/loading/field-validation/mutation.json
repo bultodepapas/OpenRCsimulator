@@ -1,0 +1,6 @@
+{
+  "mutation": "overwrite the first-seen index after duplicate detection in a disposable script",
+  "rejected": true,
+  "script_sha256": "f28c4ea3b989ba5a730ca5e2a2e28cb0e9d416fa40fe6e31b56f8ab23644895e",
+  "test_sha256": "f0427981e29e7b83d52116fca71fe9c4a41e4ea64390602a8ba4674a0e7c94b7"
+}

@@ -4,7 +4,7 @@
   "profile_id": "hx-700-articulated-r1",
   "purpose": "neutral-mechanical-preview",
   "source": {
-    "path": "NEW HELI/HX-700_Helicoptero_RC_1.blend",
+    "path": "assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend",
     "sha256": "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f",
     "blender_version": "5.2.2 LTS"
   },

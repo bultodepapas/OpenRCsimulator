@@ -1,0 +1,10 @@
+{
+  "render/atmosphere.gd": {
+    "reference_sha256": "cf922c24ec5b7de731d316cc5e824e55690ca767511c7167c9103f8cd8c6f2b6",
+    "candidate_sha256": "6e1b7c3ad694ad684837f565c0c5abc9105568ee64b1515cfd4380a42dbd37e8"
+  },
+  "render/weather/storm_bank.gd": {
+    "reference_sha256": "6db7c4678efd8950bd529a144da588b7c1809d48518729fc7831c288cff126a5",
+    "candidate_sha256": "d099042c21564879ef0994a8d303c71789c0f55686aca4bf8a2979154926b698"
+  }
+}

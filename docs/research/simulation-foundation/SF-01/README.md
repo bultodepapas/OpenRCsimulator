@@ -13,7 +13,7 @@
 | [`app/tests/test_sf_vehicle_model.gd`](../../../../app/tests/test_sf_vehicle_model.gd) (new) | 27 checks (25 since the alias cleanup replaced the three forwarding checks with one retirement check): contract rejections, `set_model` refusal leaves the model untouched, alias forwarding including `Object.set`, five inputs accepted, free fall at g·t as the kernel's known answer, declared layout enforced at reset and restore, -1 keeps the H8 rule. |
 | [`app/tests/fingerprint_vehicles.gd`](../../../../app/tests/fingerprint_vehicles.gd) (new) | Proof tool, not a test: SHA-256 over state, continuous, aux, modes and k1 loads after reset and after every tick of a fixed input schedule, for every flyable airplane (960 ticks) and the helicopter in hover and from the pad (1200 ticks). Writes JSON with `--output=`. |
 | [`app/test.sh`](../../../../app/test.sh) | The parse step no longer descends into `./captures/` (gitignored local outputs that can hold stale app copies; a fresh clone has none). |
-| Documents | [DECISIONS](../../../../DECISIONS.md) charter row; [AGENTS](../../../../AGENTS.md) reconciliation sentence and kernel rule; [STACK](../../../../STACK.md) boundary; [ROADMAP](../../../../ROADMAP.md) track line; [documentation map](../../../README.md) registry row; [LEARNINGS](../../../../LEARNINGS.md) per-start layout lesson; plan status. |
+| Documents | [DECISIONS](../../../DECISIONS.md) charter row; [AGENTS](../../../../AGENTS.md) reconciliation sentence and kernel rule; [STACK](../../../STACK.md) boundary; [ROADMAP](../../../../ROADMAP.md) track line; [documentation map](../../../README.md) registry row; [LEARNINGS](../../../LEARNINGS.md) per-start layout lesson; plan status. |
 
 ## Proof
 
@@ -25,7 +25,7 @@
 | Focused suites on this tree: integrator, rigid body, H8 checkpoints (92), session guards (32), continuous state (42), RK stage time (22), retractable gear (68), propulsion runtime (214), coupled shaft (43), continuous turbine (46), glow coupling (65), wash transport (42), goldens, H8-R1 checkpoint integrity (149), H9-R1 replay integrity (153), failure shutdown (206), touchdown (12), ground contact (22), helicopter hover session (42), helicopter ground session (56) | all pass | [log](results/focused-tests.log) |
 | Full test loop on a HEAD copy and on a copy of this tree | 466/466 programs with identical status and check-count summary; the 7 failures are the same pre-existing set; `test_sf_vehicle_model.gd` passes 27 checks | [HEAD table](results/suite-head-results.txt), [SF-01 table](results/suite-sf01-results.txt), [sections](results/suite-sections.txt) |
 
-The first declared helicopter layout (six continuous values for every start) refused every pad start; the HEAD copy passed the same test. The per-start declaration above fixed it without changing any trajectory, which is the [LEARNINGS](../../../../LEARNINGS.md) entry for SF-02.
+The first declared helicopter layout (six continuous values for every start) refused every pad start; the HEAD copy passed the same test. The per-start declaration above fixed it without changing any trajectory, which is the [LEARNINGS](../../../LEARNINGS.md) entry for SF-02.
 
 ### Full suite
 

@@ -1,0 +1,306 @@
+[
+  {
+    "script": "res://tests/test_controller_actions.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.289,
+    "errors": [],
+    "log": "native/test_controller_actions.log"
+  },
+  {
+    "script": "res://tests/test_controller_auto_defaults.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.662,
+    "errors": [],
+    "log": "native/test_controller_auto_defaults.log"
+  },
+  {
+    "script": "res://tests/test_controller_aux_runtime.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.386,
+    "errors": [],
+    "log": "native/test_controller_aux_runtime.log"
+  },
+  {
+    "script": "res://tests/test_controller_aux_setup.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.76,
+    "errors": [],
+    "log": "native/test_controller_aux_setup.log"
+  },
+  {
+    "script": "res://tests/test_controller_binding_audit.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.286,
+    "errors": [],
+    "log": "native/test_controller_binding_audit.log"
+  },
+  {
+    "script": "res://tests/test_controller_conditioning.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.375,
+    "errors": [],
+    "log": "native/test_controller_conditioning.log"
+  },
+  {
+    "script": "res://tests/test_controller_extended_actions.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.29,
+    "errors": [],
+    "log": "native/test_controller_extended_actions.log"
+  },
+  {
+    "script": "res://tests/test_controller_flight_actions.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 6.417,
+    "errors": [],
+    "log": "native/test_controller_flight_actions.log"
+  },
+  {
+    "script": "res://tests/test_controller_ground.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 3.078,
+    "errors": [],
+    "log": "native/test_controller_ground.log"
+  },
+  {
+    "script": "res://tests/test_controller_integration.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 2.686,
+    "errors": [],
+    "log": "native/test_controller_integration.log"
+  },
+  {
+    "script": "res://tests/test_controller_menu.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 22.011,
+    "errors": [],
+    "log": "native/test_controller_menu.log"
+  },
+  {
+    "script": "res://tests/test_controller_pause_recovery.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 15.967,
+    "errors": [],
+    "log": "native/test_controller_pause_recovery.log"
+  },
+  {
+    "script": "res://tests/test_controller_persistence.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 2.695,
+    "errors": [],
+    "log": "native/test_controller_persistence.log"
+  },
+  {
+    "script": "res://tests/test_controller_profile.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.376,
+    "errors": [],
+    "log": "native/test_controller_profile.log"
+  },
+  {
+    "script": "res://tests/test_controller_profile_hardening.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.658,
+    "errors": [],
+    "log": "native/test_controller_profile_hardening.log"
+  },
+  {
+    "script": "res://tests/test_controller_prompts.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.394,
+    "errors": [],
+    "log": "native/test_controller_prompts.log"
+  },
+  {
+    "script": "res://tests/test_controller_registry.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.286,
+    "errors": [],
+    "log": "native/test_controller_registry.log"
+  },
+  {
+    "script": "res://tests/test_controller_responsive.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 6.389,
+    "errors": [],
+    "log": "native/test_controller_responsive.log"
+  },
+  {
+    "script": "res://tests/test_controller_routing_audit.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 9.684,
+    "errors": [],
+    "log": "native/test_controller_routing_audit.log"
+  },
+  {
+    "script": "res://tests/test_controller_sections.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 2.161,
+    "errors": [],
+    "log": "native/test_controller_sections.log"
+  },
+  {
+    "script": "res://tests/test_controller_settings_save.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.744,
+    "errors": [],
+    "log": "native/test_controller_settings_save.log"
+  },
+  {
+    "script": "res://tests/test_controller_setup.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 4.825,
+    "errors": [],
+    "log": "native/test_controller_setup.log"
+  },
+  {
+    "script": "res://tests/test_controller_setup_safety.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.857,
+    "errors": [],
+    "log": "native/test_controller_setup_safety.log"
+  },
+  {
+    "script": "res://tests/test_controller_store.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.468,
+    "errors": [],
+    "log": "native/test_controller_store.log"
+  },
+  {
+    "script": "res://tests/test_e2e_input.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 26.127,
+    "errors": [],
+    "log": "native/test_e2e_input.log"
+  },
+  {
+    "script": "res://tests/test_flight_log.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 13.603,
+    "errors": [],
+    "log": "native/test_flight_log.log"
+  },
+  {
+    "script": "res://tests/test_heli_3d_controller.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 2.138,
+    "errors": [],
+    "log": "native/test_heli_3d_controller.log"
+  },
+  {
+    "script": "res://tests/test_input_report.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.188,
+    "errors": [],
+    "log": "native/test_input_report.log"
+  },
+  {
+    "script": "res://tests/test_input_report_buttons.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.181,
+    "errors": [],
+    "log": "native/test_input_report_buttons.log"
+  },
+  {
+    "script": "res://tests/test_input_report_e2e.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 3.98,
+    "errors": [],
+    "log": "native/test_input_report_e2e.log"
+  },
+  {
+    "script": "res://tests/test_jeti_identity.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.487,
+    "errors": [],
+    "log": "native/test_jeti_identity.log"
+  },
+  {
+    "script": "res://tests/test_jeti_runtime.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.467,
+    "errors": [],
+    "log": "native/test_jeti_runtime.log"
+  },
+  {
+    "script": "res://tests/test_jeti_setup.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 1.21,
+    "errors": [],
+    "log": "native/test_jeti_setup.log"
+  },
+  {
+    "script": "res://tests/test_overlay_manager.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 15.965,
+    "errors": [],
+    "log": "native/test_overlay_manager.log"
+  },
+  {
+    "script": "res://tests/test_rc_input.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.391,
+    "errors": [],
+    "log": "native/test_rc_input.log"
+  },
+  {
+    "script": "res://tests/test_rc_profile_validation.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 1.771,
+    "errors": [],
+    "log": "native/test_rc_profile_validation.log"
+  },
+  {
+    "script": "res://tests/test_smoke_aux.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.476,
+    "errors": [],
+    "log": "native/test_smoke_aux.log"
+  },
+  {
+    "script": "res://tests/test_switch_aux.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.193,
+    "errors": [],
+    "log": "native/test_switch_aux.log"
+  }
+]

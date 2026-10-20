@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok mass sample carries exact accepted tick and time
+ok different blend densities are converted per store
+ok volume fill and weighted reserve use capacities
+ok unusable residue remains onboard and is excluded from usable fuel
+ok estimated reserve provenance is explicit
+ok an empty delivery line cannot mislabel healthy main tanks as low fuel
+ok main reserve still warns with a primed line
+ok observation is detached from owner and store definitions
+ok constant-mass aircraft does not invent fuel state
+ok invalid resource amount refused -0.1
+ok invalid resource amount refused 0.41
+ok invalid resource amount refused nan
+ok invalid resource amount refused inf
+ok missing store refused
+ok unrecognized store refused
+ok nonfinite CG refused
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok live full tank reports capacity volume
+ok mass queries cannot advance or mutate physics
+ok sample clock matches committed tick
+FUEL sample: 19 checks, 0 failed

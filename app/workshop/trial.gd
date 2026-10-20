@@ -38,6 +38,49 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var presentation: Dictionary = descriptor_loader.verify_presentation(descriptor_result.descriptor)
 	if not presentation.get("ok", false):
 		return presentation
+	var visual_family: String = str(presentation.manifest.family_id)
+	var model_manifest_sha: String = str(presentation.manifest_sha256)
+	var profile_script: Script = load("res://workshop/presentation.gd")
+	var profile_value: Variant = payload.get("presentation_profile", {})
+	if typeof(profile_value) != TYPE_DICTIONARY:
+		return {ok = false, errors = PackedStringArray(["Workshop presentation profile must be an object."])}
+	var customization_script: Script = load("res://render/aircraft_customization.gd") \
+		if ResourceLoader.exists("res://render/aircraft_customization.gd") else null
+	var customization: Dictionary = {}
+	var presentation_bindings: Dictionary = {}
+	if customization_script != null:
+		customization = customization_script.describe(base_id)
+	var checked_profile: Dictionary
+	if bool(customization.get("ok", false)) and typeof(customization.get("bindings", null)) == TYPE_DICTIONARY:
+		var bindings: Dictionary = customization["bindings"]
+		presentation_bindings = bindings
+		if str(bindings.get("visual_family", "")) != visual_family \
+				or str(bindings.get("model_manifest_sha256", "")) != model_manifest_sha:
+			return {ok = false, errors = PackedStringArray(["Customization companion is stale relative to the frozen physical model manifest."])}
+		checked_profile = profile_script.validate(profile_value, bindings)
+		if bool(checked_profile.get("ok", false)) and not bool(checked_profile.get("available", false)):
+			return {ok = false, errors = PackedStringArray(["Presentation profile is unavailable for the current aircraft binding."])}
+	else:
+		checked_profile = profile_script.validate(profile_value)
+		if bool(checked_profile.get("ok", false)):
+			var normalized_profile: Dictionary = checked_profile.get("profile", {})
+			var profile_binding: Dictionary = normalized_profile.get("binding", {})
+			var is_unbound_legacy: bool = profile_binding.get("visual_family", "") == "" \
+				and profile_binding.get("model_manifest_sha256", "") == "" \
+				and profile_binding.get("slots_sha256", "") == "" \
+				and (normalized_profile.get("paint", []) as Array).is_empty() \
+				and (normalized_profile.get("markings", []) as Array).is_empty() \
+				and (normalized_profile.get("smoke", []) as Array).is_empty() \
+				and int(normalized_profile.get("visual_seed", 0)) == 0
+			if not is_unbound_legacy:
+				return {ok = false, errors = PackedStringArray(["The current customization companion is required to resolve this pinned presentation profile."])}
+	if not bool(checked_profile.get("ok", false)):
+		return checked_profile
+	var normalized_profile: Dictionary = checked_profile["profile"]
+	var presentation_identity: Dictionary = profile_script.identity_record(normalized_profile, presentation_bindings)
+	if presentation_identity.is_empty():
+		return {ok = false, errors = PackedStringArray(["Presentation identity could not be constructed from the frozen profile."])}
+	presentation_identity["sha256"] = str(checked_profile.get("identity_sha256", ""))
 	var descriptor_sha: String = _sha(JSON.stringify(descriptor_result.descriptor, "", true, true).to_utf8_buffer())
 	var dependency_loader: Script = load("res://workshop/dependencies.gd")
 	var supplied_dependencies: Variant = payload.get("dependencies", {})
@@ -55,7 +98,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if typeof(pinned_compiler_value) != TYPE_STRING:
 		return {ok = false, errors = PackedStringArray(["Saved variant compiler version must be a string."])}
 	var pinned_compiler: String = pinned_compiler_value
-	if not pinned_compiler.is_empty() and pinned_compiler != compiler.COMPILER_VERSION:
+	if not pinned_compiler.is_empty() and pinned_compiler != compiler.version_for_recipe(checked_recipe.values):
 		return {ok = false, errors = PackedStringArray(["This saved variant requires a different Workshop compiler version; the saved variant remains unchanged."])}
 	# Hash the same normalized numeric values the compiler consumes (1 == 1.0).
 	var recipe: Dictionary = checked_recipe.values
@@ -76,9 +119,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	recipe.erase("name")
 	var base_sha: String = _sha(base_bytes)
 	var recipe_sha: String = _sha(JSON.stringify(recipe, "", true, true).to_utf8_buffer())
-	var compiler_version: String = compiler.COMPILER_VERSION
-	var visual_family: String = presentation.manifest.family_id
-	var model_manifest_sha: String = presentation.manifest_sha256
+	var compiler_version: String = compiler.version_for_recipe(recipe)
 	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha \
 		+ ":" + visual_family + ":" + model_manifest_sha + ":" + dependency_sha + ":" + compiler_version).to_utf8_buffer()).substr(0, 32)
 	recipe.id = trial_id
@@ -102,6 +143,8 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var model_sha: String = _sha(var_to_bytes(result.data.model))
 	return {ok = true, errors = PackedStringArray(), data = result.data.duplicate(true),
 		scale = float(recipe.get("scale", 1.0)), raw_bytes = resolved_bytes, presentation = presentation_binding.duplicate(true),
+		presentation_profile = normalized_profile.duplicate(true),
+		presentation_identity = presentation_identity.duplicate(true),
 		identity = {format = "openrc-aircraft-trial v1", trial_id = trial_id, base_id = base_id,
 			base_sha256 = base_sha, recipe_sha256 = recipe_sha, resolved_sha256 = resolved_sha,
 			resolved_model_sha256 = model_sha,

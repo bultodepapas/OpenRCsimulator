@@ -48,6 +48,7 @@ func _run() -> void:
 	_contrast()
 	_preferences()
 	await _manager()
+	await _fuel()
 	await _dialog()
 	await _spanish_layout()
 	await _controls_guide()
@@ -131,6 +132,7 @@ func _manager() -> void:
 	_check("Pilot preset shows its five overlays", _shown(manager) == ["flight", "transmitter", "warnings", "wind", "controls"], str(_shown(manager)))
 	_check("imperial for English: 20 m/s = 45 mph", manager.frames.flight.values.airspeed.text == "45 mph", manager.frames.flight.values.airspeed.text)
 	_check("height above ground in ft", manager.frames.flight.values.height.text == "98 ft", manager.frames.flight.values.height.text)
+	_check("nonfinite aircraft hide the fuel reading row", not manager.frames.flight.values.fuel.visible)
 	_check("two warning chips", manager.frames.warnings.chips.get_child_count() == 2)
 	_check("pilot layout at 1920×1080: no overlap, all on screen", _layout_ok(manager, false, Vector2(1920, 1080)), _rects(manager))
 	root.size = Vector2i(1280, 720)
@@ -195,9 +197,109 @@ func _manager() -> void:
 	_check("metric: 72 km/h, 30 m", manager.frames.flight.values.airspeed.text == "72 km/h" and manager.frames.flight.values.height.text == "30 m")
 	manager.update({}, 1.0)
 	_check("no flight: placeholders, not stale numbers", manager.frames.flight.values.airspeed.text == "–")
+	var first_controls := { sticks = {roll = 0.1, pitch = 0.2, yaw = 0.3, throttle = 0.4} }
+	var next_controls := { sticks = {roll = -0.4, pitch = -0.3, yaw = -0.2, throttle = 0.1} }
+	manager.refresh_sticks(first_controls)
+	var first_layout: Array = manager.frames.transmitter.get("_layout").duplicate()
+	manager.set_overlay_visible("transmitter", false)
+	manager.refresh_sticks(next_controls)
+	_check("hidden transmitter retains its last drawing", manager.frames.transmitter.get("_layout") == first_layout)
+	manager.set_overlay_visible("transmitter", true)
+	manager.refresh_sticks(next_controls)
+	_check("revealed transmitter immediately takes current controls", manager.frames.transmitter.get("_layout") == Transmitter.stick_layout(2, next_controls.sticks))
+	manager.visible = false
+	manager.refresh_sticks(first_controls)
+	_check("menu-hidden transmitter skips drawing updates", manager.frames.transmitter.get("_layout") == Transmitter.stick_layout(2, next_controls.sticks))
+	manager.visible = true
+	manager.refresh_sticks(first_controls)
+	_check("closing the menu restores current sticks", manager.frames.transmitter.get("_layout") == first_layout)
 	manager.queue_free()
 	probe.queue_free()
 	await process_frame
+
+
+func _fuel() -> void:
+	var manager: CanvasLayer = Manager.new({}, "en")
+	root.add_child(manager)
+	await process_frame
+	var requests: Array = []
+	manager.fuel_reserve_warning_requested.connect(func(sample: Dictionary) -> void: requests.append(sample))
+	var snap: Dictionary = _snapshot(PackedStringArray())
+	snap.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(snap)
+	_check("initial low-fuel state shows the meter without an audible crossing", manager.frames.flight.values.fuel.visible and requests.is_empty())
+	_check("fuel meter reports accepted millilitres and capacity percent",
+		manager.frames.flight.values.fuel.text == "1235 mL · 42 %", manager.frames.flight.values.fuel.text)
+	_check("reserve provenance is visible in the fuel row tooltip",
+		manager.frames.flight.values.fuel.get_parent().get_child(manager.frames.flight.values.fuel.get_index() - 1).tooltip_text
+			== "Reserve: 12% (estimated reserve)")
+	var above: Dictionary = _snapshot(PackedStringArray())
+	above.mass_sample = _fuel_sample(false, false)
+	manager.refresh_numbers(above)
+	var crossing: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	crossing.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(crossing)
+	_check("crossing estimated reserve requests one warning and shows the chip",
+		requests.size() == 1 and requests[0].low_fuel and manager.get("_fuel_warning_player").playing and manager.frames.warnings.visible
+		and WarningsBar.text_for(manager.frames.warnings.codes[0]) == "FUEL RESERVE · ESTIMATED")
+	manager.refresh_numbers(crossing)
+	_check("held-low samples do not repeat the audible warning", requests.size() == 1)
+	above.mass_sample = _fuel_sample(false, false) # refuel above the threshold; rearm the next crossing
+	manager.refresh_numbers(above)
+	manager.refresh_numbers(crossing)
+	_check("refuel above reserve rearms one later crossing", requests.size() == 2)
+	var paused_high: Dictionary = _snapshot(PackedStringArray())
+	paused_high.mass_sample = _fuel_sample(false, false)
+	paused_high.paused = true
+	manager.refresh_numbers(paused_high)
+	var paused_low: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	paused_low.mass_sample = _fuel_sample(true, true)
+	paused_low.paused = true
+	manager.refresh_numbers(paused_low)
+	_check("crossing while paused is silent", requests.size() == 2)
+	paused_low.paused = false
+	manager.refresh_numbers(paused_low)
+	_check("unpausing while still below reserve does not replay a missed crossing", requests.size() == 2)
+	var invalid: Dictionary = _snapshot(PackedStringArray())
+	invalid.mass_sample = { ok = false, finite_fuel = false }
+	manager.refresh_numbers(invalid)
+	_check("invalid sample hides the fuel row", not manager.frames.flight.values.fuel.visible)
+	invalid.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(invalid)
+	_check("a low sample after a nonfinite interval establishes state without a false crossing", requests.size() == 2)
+	invalid.mass_sample = _fuel_sample(false, false)
+	manager.refresh_numbers(invalid)
+	invalid.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(invalid)
+	_check("a later crossing after finite-state reinitialization still cues once", requests.size() == 3)
+	_check("alert uses existing reject cue on Master and follows global game volume",
+		manager.get("_fuel_warning_player").stream == Manager.FUEL_RESERVE_WARNING_STREAM
+		and manager.get("_fuel_warning_player").bus == &"Master")
+	manager.queue_free()
+	await process_frame
+	TranslationServer.set_locale("es")
+	var spanish: CanvasLayer = Manager.new({}, "es")
+	root.add_child(spanish)
+	await process_frame
+	var localized: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	localized.mass_sample = _fuel_sample(true, true)
+	spanish.refresh_numbers(localized)
+	_check("Spanish fuel label, reserve provenance and warning chip are translated",
+		spanish.frames.flight.get("_fuel_name").text == "Combustible"
+		and spanish.frames.flight.values.fuel.get_parent().get_child(spanish.frames.flight.values.fuel.get_index() - 1).tooltip_text
+			== "Reserva: 12% (reserva estimada)"
+		and spanish.frames.warnings.chips.get_child_count() == 1
+		and spanish.frames.warnings.chips.get_child(0).get_child(0).text == "RESERVA DE COMBUSTIBLE · ESTIMADA")
+	spanish.queue_free()
+	TranslationServer.set_locale("en")
+	await process_frame
+
+
+func _fuel_sample(low: bool, estimated: bool) -> Dictionary:
+	return { ok = true, finite_fuel = true, volume_ml = 1234.6 if low else 2345.6,
+		fill_fraction = 0.42 if low else 0.8, reserve_fraction = 0.12,
+		reserve_estimated = estimated, reserve_basis = "estimated reserve" if estimated else "authored reserve",
+		low_fuel = low, tick = 1, time_s = 0.01 }
 
 
 func _dialog() -> void:
@@ -233,14 +335,14 @@ func _spanish_layout() -> void:
 	await process_frame
 	_check("Spanish: metric by language", manager.frames.flight.values.airspeed.text == "72 km/h")
 	_check("Spanish pilot layout with three long warnings: no overlap at 1280×720", _layout_ok(manager, false), _rects(manager))
-	var every := PackedStringArray(["failsafe", "safe", "stall", "low", "far", "battery", "experimental"])
+	var every := PackedStringArray(["failsafe", "safe", "stall", "low", "far", "battery", "fuel_reserve_estimated", "experimental"])
 	var calm := _snapshot(every)
 	calm.telemetry.wind_up = 0.0
 	manager.refresh_numbers(calm)
 	await process_frame
 	await process_frame
 	var wind_calm_up: Vector2 = manager.frames.wind.size
-	_check("all seven Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
+	_check("all eight Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
 		and manager.frames.warnings.chips.size.y > 40.0, str(manager.frames.warnings.chips.size))
 	_check("seven warnings still overlap nothing at 1280×720", _layout_ok(manager, false), _rects(manager))
 	var gust := _snapshot(every)
@@ -305,6 +407,34 @@ func _controls_guide() -> void:
 	profile.actions.smoke_toggle = {type = "unbound"}
 	guide.refresh(context)
 	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controller settings") and not _guide_text(guide).contains("R1"))
+	var radio := Profile.defaults("radio", "jeti_mode2")
+	radio.aux = {
+		smoke = {type = "switch", buttons = [81, 82, 83], invert = false, label = "Sa"},
+		flaps = {type = "switch", buttons = [90, 91, 92], invert = true, label = "Sb"},
+		gear = {type = "switch", buttons = [100, 101], invert = false, label = "Sc"},
+	}
+	var radio_before := radio.duplicate(true)
+	context = {connected = true, device_name = "JETI DC/DS Radio", device_info = {kind = "radio"},
+		profile = radio, capabilities = {gear = true, smoke = true, flaps = true},
+		equipment_state = {gear = "extending", smoke = "on"}}
+	guide.refresh(context)
+	_check("maintained switch AUX appears as assigned equipment in the guide",
+		guide._equipment_labels.has("smoke") and guide._equipment_labels.has("flaps") and guide._equipment_labels.has("gear")
+		and not _guide_text(guide).contains("Assign in Controller settings"))
+	_check("guide shows physical switch names and observed indices without gamepad labels",
+		_guide_text(guide).contains("Sa") and _guide_text(guide).contains("Sb") and _guide_text(guide).contains("Sc")
+		and _guide_text(guide).contains("81") and _guide_text(guide).contains("101")
+		and not _guide_text(guide).contains("Circle"))
+	_check("switch equipment retains live state and leaves the profile unchanged",
+		_guide_text(guide).contains("Extending") and radio == radio_before)
+	context.capabilities.gear = false
+	guide.refresh(context)
+	_check("switch assignment does not enable unsupported aircraft equipment",
+		_guide_text(guide).contains("Not available") and not guide._equipment_labels.has("gear"))
+	context.erase("capabilities")
+	guide.refresh(context)
+	_check("guide without capability context still describes maintained switch AUX",
+		_guide_text(guide).contains("Sa") and _guide_text(guide).contains("Sb") and _guide_text(guide).contains("Sc"))
 	guide.refresh({})
 	_check("disconnect returns to keyboard and disables stale device tab", guide.keyboard_button.button_pressed and guide.controller_button.disabled)
 	var ui := UiDriver.new(self)
@@ -350,6 +480,8 @@ func _flight_scene() -> void:
 	_check("live telemetry from the session", overlays.frames.telemetry.values.load.text.ends_with(" g"), overlays.frames.telemetry.values.load.text)
 	_check("legacy diagnostics still written (capture evidence reads _hud)", (flight.get("_hud") as Label).text.begins_with("airspeed"), (flight.get("_hud") as Label).text)
 	_check("transmitter footer names the keyboard", overlays.frames.transmitter.footer.text.begins_with("Keyboard"), overlays.frames.transmitter.footer.text)
+	await _diagnostics_visibility(flight, overlays)
+	saved.clear()
 	var ui := UiDriver.new(self)
 	_check("Stik flight has the smoke installation", flight.get("_smoke") != null)
 	var pump_before: bool = flight.get("_smoke_key_on")
@@ -367,6 +499,41 @@ func _flight_scene() -> void:
 	_check("closing it shows them again", overlays.visible)
 	flight.queue_free()
 	await process_frame
+
+
+func _diagnostics_visibility(flight: Node, overlays: CanvasLayer) -> void:
+	var panel: Label = flight.get("_panel")
+	var hud: Label = flight.get("_hud")
+	overlays.set_preset("pilot")
+	panel.text = "hidden input sentinel"
+	hud.text = "hidden telemetry sentinel"
+	overlays.performance_label.text = "hidden performance sentinel"
+	for i in 3:
+		await process_frame
+	_check("hidden diagnostic labels skip formatting", panel.text == "hidden input sentinel" and hud.text == "hidden telemetry sentinel")
+	_check("hidden performance skips percentile formatting", overlays.performance_label.text == "hidden performance sentinel")
+	overlays.set_overlay_visible("performance", true)
+	await process_frame
+	await process_frame
+	_check("performance can refresh independently of diagnostics", overlays.performance_label.text.contains("fps") and hud.text == "hidden telemetry sentinel")
+	overlays.set_preset("developer")
+	await process_frame
+	await process_frame
+	_check("revealed diagnostics immediately show current data", panel.text.begins_with("channel") and hud.text.begins_with("airspeed"))
+	flight.set_overlays_visible(false)
+	panel.text = "menu input sentinel"
+	hud.text = "menu telemetry sentinel"
+	await process_frame
+	await process_frame
+	_check("menu-hidden diagnostics skip formatting", panel.text == "menu input sentinel" and hud.text == "menu telemetry sentinel")
+	flight.set_overlays_visible(true)
+	await process_frame
+	await process_frame
+	_check("closing menu refreshes diagnostics", panel.text.begins_with("channel") and hud.text.begins_with("airspeed"))
+	overlays.set_preset("pilot")
+	flight._update_hud()
+	_check("explicit evidence refresh still writes a hidden HUD", hud.text.begins_with("airspeed"))
+	overlays.set_preset("full")
 
 
 func _snapshot(codes: PackedStringArray) -> Dictionary:

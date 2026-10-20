@@ -1,6 +1,6 @@
 # P51-23: CI freshness checks and fresh-clone Linux verification
 
-2026-10-15 · Revision 1 · **Status: implemented and run; the full suite is not green, and every failure is attributed below.** Prefix: P51-23. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-15 · Revision 1 · **Status: implemented and run; the full suite is not green, and every failure is attributed below.** Prefix: P51-23. [Plan](../../../P51-PLAN.md)
 
 ## Change
 

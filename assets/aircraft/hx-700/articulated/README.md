@@ -48,7 +48,7 @@ This is a reduced load-response experiment, **not coupled landing dynamics or ca
 
 ## Source and outputs
 
-The immutable source is `NEW HELI/HX-700_Helicoptero_RC_1.blend`, SHA-256 `1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f`. [HELI-25b](../../../../docs/research/helicopter/HELI-25b/README.md) records its rig audit. `export-report.json` owns output identity and geometry counts; `neutral-reference.json` samples evaluated source-world frames independently of the glTF local-transform serialization. Provenance/distribution clearance remains separate from local software qualification.
+The immutable source is `assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend`, SHA-256 `1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f`. [HELI-25b](../../../../docs/research/helicopter/HELI-25b/README.md) records its rig audit. `export-report.json` owns output identity and geometry counts; `neutral-reference.json` samples evaluated source-world frames independently of the glTF local-transform serialization. Provenance/distribution clearance remains separate from local software qualification.
 
 The export retains 108 nodes, including four servo outputs, fixed/rotating swash roles, blade/grip pairs, tail slider/yoke/bellcrank and nine linkage endpoint pairs. Controller/telemetry empties, force arrows, cameras, lights, the deformation guide and demonstration animation are excluded. Original local hierarchies remain intact. The generator freezes evaluated neutral transforms and functional mesh deformation/thickness, omitting decorative bevel/weighted-normal modifiers. Its 345,236 triangles and 208 material surfaces are an inspection tier, not a qualified flight budget.
 
@@ -75,7 +75,7 @@ The construction profile remains a neutral-rest contract. The separate motion ad
 From the repository root, use fresh `.tools` output directories:
 
 ```powershell
-& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --disable-autoexec 'NEW HELI/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/export_hx700_articulated.py -- --out .tools/heli25c-export
+& 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe' --background --factory-startup --disable-autoexec 'assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend' --python research/helicopter/assets/export_hx700_articulated.py -- --out .tools/heli25c-export
 python research/helicopter/assets/compile_hx700_articulated.py --generated .tools/heli25c-export --install
 & .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --editor --import
 python research/helicopter/assets/verify_hx700_articulated.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out .tools/heli25c-proof --capture

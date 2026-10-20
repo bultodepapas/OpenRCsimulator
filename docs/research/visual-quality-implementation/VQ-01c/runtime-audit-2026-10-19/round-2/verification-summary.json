@@ -1,0 +1,661 @@
+{
+  "date": "2026-10-19",
+  "timezone": "America/Bogota",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "all_release_checks_passed": false,
+  "owned_production_change": {
+    "path": "app/scenery/scenery.gd",
+    "inserted_lines": 4,
+    "sha256": "d39ddfc864a9b594c94071369524052adf688ee8a2e05ac0e960bd8eef77440c",
+    "behavior": "Additional vegetation/population construction timings in existing scenery stats.",
+    "performance_speedup_claimed": false
+  },
+  "profiling_coverage": {
+    "cold_build_ms": 1047.639,
+    "newly_reported_ms": 474.263,
+    "previous_reported_percent": 54.506943708662995,
+    "now_reported_percent": 99.77664061761732
+  },
+  "scenery_checks": {
+    "baseline": {
+      "log": "verify-scenery-baseline.log",
+      "passed_assertions": 125,
+      "failures": [
+        "FAIL build time under 800 ms on this CPU 2671.082"
+      ],
+      "engine_errors": [],
+      "retention_warnings": []
+    },
+    "candidate": {
+      "log": "verify-scenery-candidate.log",
+      "passed_assertions": 125,
+      "failures": [
+        "FAIL build time under 800 ms on this CPU 863.248"
+      ],
+      "engine_errors": [],
+      "retention_warnings": []
+    },
+    "current": {
+      "log": "verify-scenery-current.log",
+      "passed_assertions": 126,
+      "failures": [],
+      "engine_errors": [],
+      "retention_warnings": []
+    }
+  },
+  "native_baseline": {
+    "scope": "Native30s baseline, wholeprobeobserverincludes5swarmup, no before/after candidate",
+    "complete": true,
+    "simulation": {
+      "elapsed_time_s": 34.625,
+      "end_tick": 8313,
+      "end_time_s": 34.6375,
+      "fault": "",
+      "paused": false,
+      "physics_enabled": true,
+      "physics_ticks_per_second": 240,
+      "scope": "first _process clock prime through sample completion; includes warm-up",
+      "start_tick": 3,
+      "start_time_s": 0.0125,
+      "step_usec_smoothed": 1499.32863671498,
+      "ticks": 8310
+    },
+    "measured_simulation": {
+      "end_tick": 8313,
+      "end_time_s": 34.6375,
+      "scope": "first sampled frame end through last sampled frame end; excludes the first sampled interval",
+      "start_tick": 1181,
+      "start_time_s": 4.92083333333333,
+      "ticks": 7132
+    },
+    "wall_frame_ms": {
+      "max": 345.523,
+      "p50": 16.669,
+      "p95": 18.713,
+      "p99": 20.066
+    },
+    "frames": 1778,
+    "seconds": 30.0009879999999,
+    "pause_events": [],
+    "metrics": {
+      "draw_calls": {
+        "p50": 159.0,
+        "p95": 179.0,
+        "p99": 182.0,
+        "p100": 182.0
+      },
+      "fps_monitor": {
+        "p50": 60.0,
+        "p95": 60.0,
+        "p99": 60.0,
+        "p100": 60.0
+      },
+      "node_count": {
+        "p50": 818.0,
+        "p95": 818.0,
+        "p99": 818.0,
+        "p100": 818.0
+      },
+      "object_count": {
+        "p50": 4187.0,
+        "p95": 4188.0,
+        "p99": 4188.0,
+        "p100": 4188.0
+      },
+      "physics_3d_active_objects": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p100": 0.0
+      },
+      "physics_3d_collision_pairs": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p100": 0.0
+      },
+      "physics_process_time_s": {
+        "p50": 0.002961,
+        "p95": 0.004663,
+        "p99": 0.004702,
+        "p100": 0.004702
+      },
+      "physics_step_usec": {
+        "p50": 1549.74304849021,
+        "p95": 1787.07940185809,
+        "p99": 1870.06516952563,
+        "p100": 2002.71789763075
+      },
+      "primitives": {
+        "p50": 213409.0,
+        "p95": 240812.0,
+        "p99": 242533.0,
+        "p100": 242533.0
+      },
+      "process_time_s": {
+        "p50": 0.008074,
+        "p95": 0.023746,
+        "p99": 0.323921,
+        "p100": 0.323921
+      }
+    },
+    "observer": {
+      "nodes": {
+        "p50": 818.0,
+        "p95": 818.0,
+        "p99": 818.0,
+        "p100": 818.0
+      },
+      "orphans": {
+        "p50": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p100": 0.0
+      },
+      "render_cpu_ms": {
+        "p50": 1.70200002193451,
+        "p95": 2.39000010490417,
+        "p99": 4.1560001373291,
+        "p100": 924.606994628906
+      },
+      "render_gpu_ms": {
+        "p50": 3.6340000629425,
+        "p95": 5.39099979400635,
+        "p99": 9.6540002822876,
+        "p100": 164.996994018555
+      },
+      "resources": {
+        "p50": 585.0,
+        "p95": 585.0,
+        "p99": 585.0,
+        "p100": 585.0
+      },
+      "static_memory": {
+        "p50": 215655100.0,
+        "p95": 216722108.0,
+        "p99": 216803080.0,
+        "p100": 216826492.0
+      },
+      "video_memory": {
+        "p50": 438155364.0,
+        "p95": 438155364.0,
+        "p99": 438155364.0,
+        "p100": 438155364.0
+      }
+    }
+  },
+  "paused_presentation_diagnostic": {
+    "scope": "Inclusive measured Main._process segments; script instrumentation is diagnostic, not adoption timing",
+    "sample_count": 1801,
+    "frame_count": 1801,
+    "simulation": {
+      "elapsed_time_s": 0.1375,
+      "end_tick": 35,
+      "end_time_s": 0.145833333333333,
+      "fault": "",
+      "paused": true,
+      "physics_enabled": true,
+      "physics_ticks_per_second": 240,
+      "scope": "first _process clock prime through sample completion; includes warm-up",
+      "start_tick": 2,
+      "start_time_s": 0.00833333333333333,
+      "step_usec_smoothed": 943.525605393881,
+      "ticks": 33
+    },
+    "wall_frame_ms": {
+      "max": 31.321,
+      "p50": 15.791,
+      "p95": 29.952,
+      "p99": 30.653
+    },
+    "segments_usec": {
+      "history_audio_usec": {
+        "50": 7,
+        "95": 12,
+        "99": 15,
+        "100": 24
+      },
+      "hud_usec": {
+        "50": 69,
+        "95": 116,
+        "99": 157,
+        "100": 228
+      },
+      "overlays_usec": {
+        "50": 0,
+        "95": 1,
+        "99": 1,
+        "100": 2
+      },
+      "panel_usec": {
+        "50": 93,
+        "95": 144,
+        "99": 175,
+        "100": 320
+      },
+      "pose_usec": {
+        "50": 397,
+        "95": 637,
+        "99": 748,
+        "100": 985
+      },
+      "pre_usec": {
+        "50": 50,
+        "95": 75,
+        "99": 91,
+        "100": 236
+      },
+      "storm_smoke_crash_usec": {
+        "50": 13,
+        "95": 20,
+        "99": 28,
+        "100": 121
+      },
+      "total_usec": {
+        "50": 957,
+        "95": 1461,
+        "99": 1669,
+        "100": 2128
+      },
+      "world_usec": {
+        "50": 315,
+        "95": 478,
+        "99": 543,
+        "100": 758
+      }
+    }
+  },
+  "final_current_smoke": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "app_load_and_instantiate_usec": 1399625,
+    "cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+    "complete": true,
+    "cycles": [
+      {
+        "cycle": 1,
+        "fly_first_draw_usec": 2674902,
+        "fly_sync_usec": 2586940,
+        "nodes_at_home": 619,
+        "nodes_in_flight": 1102,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 952539,
+        "return_sync_usec": 903722,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 2,
+        "fly_first_draw_usec": 1805415,
+        "fly_sync_usec": 1738378,
+        "nodes_at_home": 619,
+        "nodes_in_flight": 1102,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 942120,
+        "return_sync_usec": 885820,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 3,
+        "fly_first_draw_usec": 1646591,
+        "fly_sync_usec": 1576692,
+        "nodes_at_home": 619,
+        "nodes_in_flight": 1102,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 988784,
+        "return_sync_usec": 939974,
+        "tick_at_first_draw": 12
+      }
+    ],
+    "display_server": "Windows",
+    "engine": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "format": "openrc-loading-probe v1",
+    "home_first_draw_engine_elapsed_usec": 8033621,
+    "home_first_draw_from_load_usec": 4336143,
+    "home_sync_usec": 2346071,
+    "max_fps": 60,
+    "renderer": "gl_compatibility",
+    "scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+    "shutdown": {
+      "audio_released": true,
+      "elapsed_usec": 292374,
+      "remaining_playbacks": 0,
+      "settings_removed": true,
+      "timeout_usec": 1000000,
+      "tracked_playbacks": 1
+    },
+    "viewport_size": [
+      1280,
+      720
+    ],
+    "vsync_mode": 1
+  },
+  "campaigns": {
+    "current-verification-jobs-results.json": [
+      {
+        "name": "verify-scenery-current",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_scenery_build.gd"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 6.031999999999925,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371934161434785 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      {
+        "name": "current-loading-smoke",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\probes\\loading_probe_final.gd",
+          "--",
+          "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\current-loading-smoke.json",
+          "--cycles=3"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 17.687000000000126,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839789594542 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "loading-jobs-results.json": [
+      {
+        "name": "loading-attribution",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\instrumented-app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attributed_loading_probe.gd",
+          "--",
+          "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attribution-native.json",
+          "--cycles=3"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 20.718999999999937,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839017842605 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "loading-v2-jobs-results.json": [
+      {
+        "name": "loading-attribution-v2",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\instrumented-app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attributed_loading_probe.gd",
+          "--",
+          "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attribution-native-v2.json",
+          "--cycles=3"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 5.125,
+        "issues": [
+          "SCRIPT ERROR: Parse Error: Could not preload resource script \"res://render/field.gd\".",
+          "SCRIPT ERROR: Parse Error: Could not resolve script \"res://render/field.gd\".",
+          "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+          "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+          "ERROR: Failed to load script \"res://app_state/preferences.gd\" with error \"Compilation failed\".",
+          "SCRIPT ERROR: Parse Error: Could not resolve script \"res://render/field.gd\".",
+          "SCRIPT ERROR: Parse Error: Cannot infer the type of \"FieldBuilder\" constant because the value doesn't have a set type.",
+          "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+          "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+          "ERROR: Failed to load script \"res://app_root.gd\" with error \"Compilation failed\".",
+          "SCRIPT ERROR: Invalid access to property or key 'ID' on a base object of type 'GDScript'.",
+          "SCRIPT ERROR: Invalid access to property or key 'ID' on a base object of type 'GDScript'.",
+          "SCRIPT ERROR: Invalid access to property or key 'field_path' on a base object of type 'Dictionary'.",
+          "ERROR: Home did not become visible"
+        ]
+      }
+    ],
+    "loading-v3-jobs-results.json": [
+      {
+        "name": "loading-attribution-v3",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\instrumented-app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attributed_loading_probe.gd",
+          "--",
+          "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attribution-native-v3.json",
+          "--cycles=3"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 22.187000000000126,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839017842605 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "loading-v4-jobs-results.json": [
+      {
+        "name": "loading-attribution-v4",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\instrumented-app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attributed_loading_probe.gd",
+          "--",
+          "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\attribution-native-v4.json",
+          "--cycles=3"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 29.28099999999995,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371839017842605 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "native-jobs-results.json": [
+      {
+        "name": "baseline-native",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\baseline\\app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\probes\\native_observer.gd",
+          "--",
+          "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\baseline-native.json",
+          "--warmup=5",
+          "--t=30",
+          "--start=airborne"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 48.843999999999994,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371782377960990 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "profile-jobs-results.json": [
+      {
+        "name": "profile-native",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\baseline\\app",
+          "--audio-driver",
+          "Dummy",
+          "--resolution",
+          "1280x720",
+          "--max-fps",
+          "60",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\probes\\profile_observer.gd",
+          "--",
+          "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\profile-native.json",
+          "--warmup=5",
+          "--t=30",
+          "--start=airborne"
+        ],
+        "exit_code": 0,
+        "timeout": false,
+        "elapsed_s": 45.531999999999925,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371775365084702 is unsupported (cull mode is not disabled)"
+        ]
+      }
+    ],
+    "scenery-verification-jobs-results.json": [
+      {
+        "name": "verify-scenery-baseline",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\baseline\\app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_scenery_build.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 59.327999999999975,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371934161434785 is unsupported (cull mode is not disabled)",
+          "FAIL build time under 800 ms on this CPU 2671.082"
+        ]
+      },
+      {
+        "name": "verify-scenery-candidate",
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r2-20261019\\loading\\instrumented-app",
+          "--headless",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_scenery_build.gd"
+        ],
+        "exit_code": 1,
+        "timeout": false,
+        "elapsed_s": 6.155999999999949,
+        "issues": [
+          "WARNING: Tree wind is disabled for maple_tree because source material -9223371933758781600 is unsupported (cull mode is not disabled)",
+          "FAIL build time under 800 ms on this CPU 863.248"
+        ]
+      }
+    ]
+  },
+  "replay_findings": {
+    "stored_goldens_failed": 4,
+    "fresh_scratch_self_replays_exact": 4,
+    "same_transition_ticks_and_modes": true,
+    "same_command_values": false,
+    "first_trim_command_body_velocity_attitude_difference_tick": 0,
+    "conclusion": "Different initial trim and subsequent source/data history support reference drift; no replay algorithm defect confirmed.",
+    "limits": "Dirty historical source is not reconstructible from its commit label; glide stamp object is unavailable. No goldens changed."
+  },
+  "rejected_scene_cache": {
+    "decision": "Do not integrate.",
+    "reason": "Native split warm load 0.529/0.545 ms and instantiate 0.055/0.063 ms leave little repeat cost to remove; earlier 0.23-second warm creation did not reproduce.",
+    "corrected_microprobe": "loading/resource_cache_probe_v3.gd"
+  },
+  "excluded_attempts": [
+    {
+      "run": "profile-native",
+      "reason": "Paused at tick35, menu hold; excluded from active-flight qualification."
+    },
+    {
+      "run": "loading-attribution-v2",
+      "reason": "Duplicate scratch local prevented parsing; never reached valid gameplay."
+    },
+    {
+      "run": "loading/resource-cache-probe-native.json",
+      "reason": "Flawed strong-reference sequencing; exact v2 probe source unavailable. Corrected v3 is retained."
+    }
+  ],
+  "remaining": [
+    {
+      "priority": "P1",
+      "finding": "Stored golden/source reconciliation remains a release-validation gate."
+    },
+    {
+      "priority": "P2",
+      "finding": "Cold script/scenery construction and loading budget remain open; variable host/cache history prevents a speedup claim."
+    },
+    {
+      "priority": "P2",
+      "finding": "345.523ms native frame stall cause and full-session CPU/frame qualification remain open."
+    },
+    {
+      "priority": "P3",
+      "finding": "Full app/test.sh, exports, physical devices, independent pilot, other-OS gameplay and long soak were not completed."
+    }
+  ],
+  "scope": "Frozen-source diagnostic measurements plus point-in-time current-tree verification. Concurrent WIP, nonreserved workstation and uncontrolled caches; no immutable whole-current-tree or target-hardware qualification."
+}

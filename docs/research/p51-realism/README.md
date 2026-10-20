@@ -1,6 +1,8 @@
 # P-51D RC realism audit
 
-2026-10-12 · **Status: P51-15…18 audit, correction and verification complete; aircraft physical acceptance remains experimental.** [Plan](../../P51-REALISM-PLAN.md) · [Reproduction tools](../../../research/p51/p51-15/README.md)
+2026-10-12 · **P51-15…18 dated audit, correction and verification evidence.** [Current guide/remaining plan](../../P51-PLAN.md) · [Reproduction tools](../../../research/p51/p51-15/README.md)
+
+Scope checked 2026-10-19: the original snapshot below predates flaps/retracts, product runway start, later trim/directional corrections and finite gasoline fuel. Its masses, auxiliary-slot count, proposed features and passing/failing counts describe that snapshot. Current implementation and pending acceptance have one home in the linked aircraft guide. Historical manifests and hashes remain unchanged.
 
 Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md) · [P51-21 runway start](P51-21/README.md) · [P51-22 slipstream downwash regression](P51-22/README.md) · [P51-23 CI and Linux verification](P51-23/README.md) · [P51-24 lateral-directional audit](P51-24/README.md) · [P51-25 fuselage directional term](P51-25/README.md) · [P51-26 slipstream quadrature and sidewash](P51-26/README.md) · [P51-11a flaps and engine smoke](P51-11a/README.md) · [P51-11b retractable gear and P51-11c brakes](P51-11b/README.md) · [P51-V13 scale lights](P51-V13/README.md) · [P51-V14 rudder on the aerodynamic hinge](P51-V14/README.md) · [P51-V15 control-surface audit](P51-V15/README.md).
 
@@ -19,7 +21,7 @@ The quarter-scale P-51 inventory treated separated pairs of servos and main land
 
 For a separated pair, the lateral parallel-axis term is `M y²`; a continuous box uses `M width²/12`. The [independent oracle](../../../research/p51/p51-15/test_inventory.py) checks the resulting +0.449604 kg·m² roll/yaw change, retained mass/CG, full tensor, positive definiteness and principal-moment inequalities. It runs in `app/test.sh`. More roll inertia changes angular acceleration, not the steady roll-rate equilibrium by the same percentage.
 
-The generator also fixes stale descriptions of camber, CLmax, induced drag, throws and servo response. Full-size neutral-point scaling is explicitly an unvalidated hypothesis; the static-RPM anchor is a secondary report without a retained instrumented test. Solved rudder trim no longer claims to implement fixed fin incidence. No aerodynamic or propulsion numerical coefficient was retuned. The P-51 test fixture preserves the complete installed continuous-state layout and rejects invalid resets/faults; the current P-51 still uses four auxiliary slots.
+The generator also fixed stale descriptions of camber, CLmax, induced drag, throws and servo response. Full-size neutral-point scaling was explicitly an unvalidated hypothesis; the static-RPM anchor was a secondary report without a retained instrumented test. Solved rudder trim did not implement fixed fin incidence. This correction retuned no aerodynamic or propulsion coefficient. The fixture preserved the complete installed continuous-state layout and rejected invalid resets/faults; this snapshot used four auxiliary slots.
 
 ## Consumer and behavior audit
 
@@ -36,6 +38,8 @@ The generator also fixes stale descriptions of camber, CLmax, induced drag, thro
 Detailed reviews: [physics and configuration](P51-15/physics-audit.md), [ground/lifecycle method](P51-15/ground-audit.md), [primary sources and limits](P51-15/sources.md).
 
 ## In-engine evidence
+
+The P51-15 comparison predeclared 1% bands for steady metrics and 5% for smooth transients. Contact events, nonlinear stalls/spins and stochastic weather were reported individually. Those comparison bands are not physical acceptance tolerances.
 
 Godot **4.7.2 official** on native Windows and an isolated LF Linux checkout. Thirty-four airborne and five ground scenarios were run on both baseline and candidate at 240 and 480 Hz: **156 scenario executions**, plus reset/checkpoint/crash checks. All saved cases completed with finite, continuous states and no unintended crash or simulation fault. These are numerical/model predictions, not real-aircraft validation.
 
@@ -57,11 +61,19 @@ The [integration report](P51-15/integration.md) records 206/208 unit scripts and
 
 ## Remaining physical acceptance
 
-1. Obtain actual reference-build mass, CG and component stations, then measured pendulum inertia. Current inventory dimensions and mounting stations are estimates.
-2. Identify the installed engine/propeller thrust, torque, RPM and transient maps. Manufacturer two/three-blade simulations do not validate the selected four-blade extrapolation.
-3. Measure model-scale rigging, trim and control response. Full-size neutral-point/airfoil sources and another RC kit's throws do not establish this build's behavior; trim currently requires about 6.12° up elevator at 25 m/s.
-4. Validate low-Re stall and spin response against recorded flights. The current three-strip static stall model omits important dynamic effects; a direction-dependent scripted recovery is not physical acceptance.
-5. Future supported work: retracts/flaps, fuel burn/CG movement, fixed fin incidence, fuselage yaw contribution, richer propwash, calibrated tires/oleos and P-51 product runway start. These remain explicit gaps, not partially active modules.
-6. Real-radio/pilot evaluation, rendered handling review and slowest-target-hardware performance remain open. Headless numerical coverage cannot establish the RC pilot experience alone.
+The [current acceptance plan](../../P51-PLAN.md#limits-and-next-evidence) owns build measurements, installed propulsion, model-scale stability/stall and pilot/target-hardware gates. Features proposed in this audit were subsequently delivered where recorded in the later-step reports above. The 6.12° trim and fixed-gear/prescribed-fuel observations belong to the original snapshot, not today's configuration.
 
-Standardization remains the shared foundation; this bounded pass corrects a demonstrated physical bookkeeping error and strengthens evidence before adding aircraft features. No parallel developer's model, scenery or UI work was reverted.
+## 2026-10-19 documentation recheck
+
+Godot 4.7.2 official, native Windows; current working tree, not a frozen qualification baseline. A before/after source comparison detected concurrent shared glow-flight edits. The focused results below do not establish an uninterrupted full suite, package acceptance or physical validation.
+
+| Check | Observed result |
+| --- | --- |
+| Geometry source/compiler, appearance, VLM and P51-05 generators (`--check`) | All five pass without regeneration. |
+| Independent P51-15 inventory oracle | Pass; reference inventory 21.499999 kg, paired roll/yaw correction +0.449604 kg·m² retained. |
+| `verify_p51.gd` / `verify_p51_clearance.gd` | 251 / 72 checks pass, without engine errors. |
+| `test_p51_envelope.gd` / `test_p51_ground.gd` | 17 / 14 checks pass, without engine errors. |
+| `test_p51_handling.gd` | 17 of 18 pass. Full-up power-off maneuver reaches 9.3° α against the 11.9° stall-start assertion; exit 1. Other handling assertions, including loop and spin recovery, pass. |
+| Three-second actual P-51 CLI flight / `check_trimmed_flight.py` | Both exit 0; the reader checks the complete finite trace against the requested duration and exact aircraft-input bytes. |
+
+Commands and generators live in the [asset guide](../../../assets/aircraft/p51d-mustang-120/README.md) and [audit tools](../../../research/p51/p51-15/README.md). Retain the handling failure for diagnosis against identified sources; do not widen its band to claim acceptance. Drawing/photo metrology and rendered captures were not repeated: the ignored `references/p51-mustang/` cache is absent here. Target-hardware timing, fresh packages and the broader suite were not rerun.

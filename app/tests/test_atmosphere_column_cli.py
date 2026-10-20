@@ -20,8 +20,9 @@ FAMILIES = (
     ('stik', 'jensen-das-ugly-stik-60', (), 'openrc-flight-meta v6', 'rpm-lag'),
     ('jet', 'sebart-avanti-s-a200-p100rx', (), 'openrc-flight-meta v9', 'retractable-gear'),
     ('p51-shaft', 'p51d-mustang-120', ('--shaft-integrator=coupled-rk4',), 'openrc-flight-meta v9', 'shaft'),
-    ('timber-electric', 'turbo-lumber-evolution', (), 'openrc-flight-meta v6', 'electric'),
-    ('glow', 'stik-glow-61fx-2t', (), 'openrc-flight-meta v7', 'glow'),
+    # BAT-13: the Timber defaults to its finite pack (trace v13); this family checks the fixed-bus column trace.
+    ('timber-electric', 'turbo-lumber-evolution', ('--battery=ideal',), 'openrc-flight-meta v6', 'electric'),
+    ('glow', 'stik-glow-61fx-2t', (), 'openrc-flight-meta v10', 'glow'),
 )
 
 
@@ -140,7 +141,11 @@ class AtmosphereColumnCLI(unittest.TestCase):
             with self.subTest(family=family):
                 result = self.reader_results[family]
                 has_flaps = family in ('jet', 'p51-shaft')
-                self.assertEqual(result['format'], 'openrc-trace v12' if has_flaps else 'openrc-trace v11')
+                finite_liquid = family in ('jet', 'p51-shaft')
+                self.assertEqual(result['format'], 'openrc-trace v15' if finite_liquid else 'openrc-trace v14')
+                self.assertEqual(result['mass_trace_schema'], 'openrc-mass-sample v1')
+                self.assertEqual(result['mass_base_trace_format'],
+                                 'openrc-trace v12' if has_flaps else 'openrc-trace v11')
                 self.assertEqual(result['metadata_schema'], schema)
                 self.assertEqual((result['rows'], result['first_tick'], result['last_tick']), (25, 0, 24))
                 self.assertAlmostEqual(result['elapsed_s'], 0.1, places=8)
@@ -159,7 +164,10 @@ class AtmosphereColumnCLI(unittest.TestCase):
                                      'electric motor constants independent of density; propeller loads use stage density')
                 elif kind == 'glow':
                     self.assertIn('glow_fuel_kg', header)
-                    self.assertEqual(metadata['glow_trace_schema'], 'openrc-glow-trace v1')
+                    self.assertIn('glow_line_fuel_kg', header)
+                    self.assertIn('glow_fuel_source_mode', header)
+                    self.assertEqual(metadata['glow_trace_schema'], 'openrc-glow-trace v2')
+                    self.assertRegex(metadata['glow_fuel_registry_sha256'], r'^[0-9a-f]{64}$')
                 elif kind == 'retractable-gear':
                     self.assertIn('gear_extension', header)
                     self.assertEqual(metadata['gear_trace_schema'], 'openrc-gear-trace v1')
@@ -174,8 +182,27 @@ class AtmosphereColumnCLI(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         result = json.loads(process.stdout)
-        self.assertEqual(result['format'], 'openrc-trace v11')
+        self.assertEqual(result['format'], 'openrc-trace v14')
+        self.assertEqual(result['mass_base_trace_format'], 'openrc-trace v11')
         self.assertEqual(result['rows'], 25)
+
+    def test_reader_rejects_glow_v3_schema_identity_and_source_mutations(self):
+        source = self.traces['glow']
+        mutations = (
+            ('old metadata version', {'metadata_schema': 'openrc-flight-meta v7'}, None, None),
+            ('old trace schema with v3 law', {'glow_trace_schema': 'openrc-glow-trace v1'}, None, None),
+            ('missing selected tank identity', {'glow_fuel_tank_id': ''}, None, None),
+            ('invalid registry digest', {'glow_fuel_registry_sha256': 'bad'}, None, None),
+            ('line source without inventory', {}, ('glow_fuel_source_mode', '2'), None),
+        )
+        for index, (label, metadata_changes, row_change, header_change) in enumerate(mutations):
+            with self.subTest(mutation=label):
+                target = self.directory / f'mutated-glow-v3-{index}.csv'
+                _rewrite(source, target, metadata_changes=metadata_changes,
+                         header_change=header_change,
+                         row_change=(1, row_change[0], row_change[1]) if row_change else None)
+                with self.assertRaises(ValueError):
+                    check_column(target, 0.1)
 
     def test_evidence_output_refuses_an_existing_directory(self):
         existing = self.directory / 'existing-evidence'

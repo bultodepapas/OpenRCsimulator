@@ -15,6 +15,7 @@ const SkyState := preload("res://render/world/sky_state.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
 const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
+const AircraftLightState := preload("res://render/world/aircraft_light_state.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
@@ -61,6 +62,18 @@ const STARS_BELOW_SUN_DEG := 2.0
 ## throughout, so the tonemapper never switches mid-flight (FW-26).
 const FLOW_STEP_SKY_S := 30.0
 const FLOW_AGX_BELOW_SUN_DEG := 10.0
+## FW-MOON-06d frame_state: the slow sky terms interpolated between steps. Colours and exposure terms geometrically,
+## shape terms linearly; the lobes only while the brighter lobe stays on the same side (dot of the two steps' lobe
+## directions above LOBE_SWAP_DOT; one step moves it ~0.1°).
+const FRAME_COLOUR_KEYS := ["zenith_lin", "haze_lin", "cloud_lin", "ambient_lin", "moon_lin", "moon_earthshine", "moon_aureole_lin",
+	"moon_eclipse_factor"]
+const FRAME_SCALAR_KEYS := ["exposure", "gain", "adapt_y", "adapt_y_anchor", "moon_display_scale"]
+const FRAME_LINEAR_KEYS := ["moon_radius", "moon_squash", "moon_display_gamma", "moon_phase_l", "moon_phase_k", "moon_umbra_radius",
+	"moon_penumbra_radius"]
+const LOBE_SWAP_DOT := 0.99
+## frame_sky_needed thresholds (estimates; see FW-MOON-06d evidence).
+const FRAME_SKY_MIN_LOG := 0.004
+const FRAME_SKY_LOW_LIGHT_DEG := 20.0
 
 ## Time-flow session: {} when frozen. Keys: when, time_scale, step, environment, sun, stars, lights_node, materials,
 ## tonemapper, start_lst, latitude.
@@ -171,6 +184,7 @@ static func _capture_flow_context() -> Dictionary:
 	if _flow.is_empty():
 		return {}
 	var captured: Dictionary = _flow.duplicate(true)
+	captured.erase("frame_materials") # FW-MOON-06d: rebuilt on demand; no strong material references in a context
 	for key: String in ["environment", "sun", "stars", "lights_node", "airfield_lighting"]:
 		captured[key] = _weak_context_ref(_flow.get(key))
 	var materials: Array = []
@@ -245,7 +259,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	# FW-31…34: at dusk the club lights come on (with time flowing they are built at once and switched by the sun).
 	var lights := {}
 	var upgraded_lights: bool = LandscapeOptions.enabled() and field.get("id", "") == "default"
-	if upgraded_lights or (not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
+	if upgraded_lights or (field.get("id", "") == "default" and not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights
@@ -278,6 +292,10 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	var field_build_ms := (Time.get_ticks_usec() - t0) / 1000.0
 	if field_node != null:
 		parent.add_child(field_node)
+	# A custom field builder attaches its own Field node (the production flight seam).
+	var wind_field: Node3D = field_node if field_node != null else parent.get_node_or_null("Field") as Node3D
+	if wind_field != null:
+		environment.set_meta("fw_wind_field", weakref(wind_field))
 
 	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
 	var storm_bank := StormBank.new()
@@ -389,10 +407,35 @@ static func set_night_options(profile: String, campfire: bool) -> bool:
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
 ## the model (Shadow.model_extent) so the kit never changes the pilot-aid shadow. Returns the kit or null.
-static func dress_aircraft(root: Node3D) -> Node3D:
-	if Atmosphere.state.is_empty() or (_flow.is_empty() and float(Atmosphere.state.sun_elevation_deg) >= NIGHT_KIT_BELOW_SUN_DEG):
-		return null
-	return AircraftLights.attach(root)
+static func dress_aircraft(root: Node3D, config: Dictionary = {}, snapshot: Dictionary = {}, clock_s: float = 0.0) -> Node3D:
+	var state := AircraftLightState.new()
+	state.update(aircraft_local_seconds(config, clock_s),
+		1.0 if aircraft_sun_elevation(snapshot) < NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	var kit := root.get_node_or_null("NightKit") as Node3D
+	if kit == null and state.active_mode != "off":
+		kit = AircraftLights.attach(root)
+	if kit != null and str(kit.get_meta("mode", "")) != state.active_mode:
+		AircraftLights.set_mode(kit, state.active_mode)
+	AircraftLights.set_emission_mode(AircraftLights.prepare_emission(root), state.active_mode, state.gain)
+	return kit
+
+
+## FW-35c: use the accepted fixed TOD selection, or the field world's civil clock.
+## Flow is sampled at the exact simulation time, independently of the 30-second sky cadence.
+## NAN means the legacy fixed sun has no civil clock; never substitute the OS clock.
+static func aircraft_local_seconds(config: Dictionary = {}, clock_s: float = 0.0) -> float:
+	if config.get("mode", "legacy") != "legacy":
+		return float(config.local_seconds)
+	if not _flow.is_empty():
+		return fposmod(float(_flow.when.hour) * 3600.0 + maxf(clock_s, 0.0) * float(_flow.time_scale), 86400.0)
+	var when: Dictionary = _live.get("when", {})
+	return fposmod(float(when.hour) * 3600.0, 86400.0) if not when.is_empty() else NAN
+
+
+static func aircraft_sun_elevation(snapshot: Dictionary = {}) -> float:
+	if snapshot.get("solar") is Dictionary:
+		return float(snapshot.solar.elevation_deg)
+	return float(Atmosphere.state.get("sun_elevation_deg", 45.0))
 
 
 ## The exposure an eye adapted to `target` (render space) would use: the hour's sky and light, the floods' light on
@@ -412,7 +455,7 @@ static func view_exposure(target: Vector3, ground_share := 0.0) -> float:
 			extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
 			if upgraded_lights:
 				extra *= light_gain
-	return float(SkyState.adapt(Atmosphere.state, extra).exposure)
+	return float(SkyState.adapt(visual_state(), extra).exposure) # FW-MOON-06d: the eye follows the frame's sky
 
 
 ## Share of a camera's picture below the horizon (0 looking well above it, 1 looking well below), from its pitch and
@@ -433,6 +476,11 @@ static func ground_share(camera: Camera3D) -> float:
 static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
 		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
+	var field_ref: Variant = environment.get_meta("fw_wind_field") if environment.has_meta("fw_wind_field") else null
+	if field_ref is WeakRef:
+		var wind_field: Node3D = field_ref.get_ref() as Node3D
+		if is_instance_valid(wind_field):
+			FieldBuilder.update_wind(wind_field, clock_s, wind)
 	if not _flow.is_empty():
 		flow_to(clock_s)
 		flow_frame(clock_s)
@@ -555,6 +603,7 @@ static func flow_to(clock_s: float) -> bool:
 		return false
 	_flow.step = step
 	_flow.erase("frame_position") # the stepped sky below rewrites the moon; flow_frame must move it again
+	_flow.erase("frame_state")
 	var when := _flow_when(step)
 	var state := _flow_state(step)
 	if not _live.is_empty():
@@ -610,7 +659,131 @@ static func flow_frame(clock_s: float) -> bool:
 		moved = true
 	var lst_now := float(now.lst_deg)
 	moved = _turn_stars(lst_now + (fposmod(float(next.lst_deg) - lst_now + 180.0, 360.0) - 180.0) * f) or moved
+	# FW-MOON-06d: the slow sky terms between the steps too (sky, haze, ambient, light, exposure), so twilight falls
+	# smoothly instead of ~10 % per step at ×20 and the ground's cloud shadows follow the sun instead of hopping.
+	if f > 0.0 and frame_sky_needed(now, next):
+		_apply_frame_sky(frame_state(now, next, f))
+		moved = true
+	elif _flow.has("frame_state"):
+		_flow.erase("frame_state")
 	return moved
+
+
+## FW-MOON-06d: whether a step needs the per-frame sky: its sky or light luminance changes by more than
+## FRAME_SKY_MIN_LOG (twilight), or the light is up but below FRAME_SKY_LOW_LIGHT_DEG, where one step moves the ground's
+## cloud shadows tens of metres. A day or a moonlit night high up changes ~0.2 % per step and stays stepped (no cost).
+static func frame_sky_needed(now: Dictionary, next: Dictionary) -> bool:
+	var light_el := minf(float(now.light_elevation_deg), float(next.light_elevation_deg))
+	if light_el > 0.0 and light_el < FRAME_SKY_LOW_LIGHT_DEG and float(now.light_energy) > 0.0:
+		return true
+	for key: String in ["zenith_lin", "haze_lin", "ambient_lin"]:
+		if absf(log(maxf(SkyState._lum(next[key]), 1e-30) / maxf(SkyState._lum(now[key]), 1e-30))) > FRAME_SKY_MIN_LOG:
+			return true
+	return absf(log(maxf(float(next.light_energy), 1e-30) / maxf(float(now.light_energy), 1e-30))) > FRAME_SKY_MIN_LOG
+
+
+## FW-MOON-06d: the visual sky at fraction `f` between two step states. Light-like colours and the exposure terms
+## interpolate geometrically per channel (twilight falls exponentially; linearly where one end is zero), directions
+## by slerp, the moon as in FW-MOON-03b. Terms whose source changes inside the step (the light passing between sun and
+## moon, the brighter lobe swapping) keep the step's value for that one step, so nothing sweeps across the sky.
+## Discrete and signature-read terms (shadow strength, light source, tonemapper) keep the step's value.
+static func frame_state(now: Dictionary, next: Dictionary, f: float) -> Dictionary:
+	var out := now.duplicate()
+	for key: String in FRAME_COLOUR_KEYS:
+		if now.has(key) and next.has(key):
+			out[key] = _geometric3(now[key], next[key], f)
+	for key: String in FRAME_SCALAR_KEYS:
+		if now.has(key) and next.has(key):
+			out[key] = _geometric(float(now[key]), float(next[key]), f)
+	for key: String in FRAME_LINEAR_KEYS:
+		if now.has(key) and next.has(key):
+			out[key] = lerpf(float(now[key]), float(next[key]), f)
+	for key: String in ["sun_dir", "moon_sun_dir"]:
+		if now.has(key) and next.has(key):
+			out[key] = (now[key] as Vector3).slerp(next[key] as Vector3, f)
+	var a := _ned(float(now.moon_azimuth_deg), float(now.moon_elevation_deg))
+	var b := _ned(float(next.moon_azimuth_deg), float(next.moon_elevation_deg))
+	out.moon_dir = Frames.ned_to_render([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]).normalized()
+	if now.get("moon_textured", false) and next.get("moon_textured", false):
+		out.moon_render_to_body = (now.moon_render_to_body as Basis).slerp(next.moon_render_to_body as Basis, f)
+	var lst := float(now.lst_deg)
+	out.lst_deg = lst + (fposmod(float(next.lst_deg) - lst + 180.0, 360.0) - 180.0) * f
+	if now.get("moon_eclipse", false) and next.get("moon_eclipse", false): # FW-MOON-10: the shadow edge moves smoothly
+		out.moon_shadow_offset = (now.moon_shadow_offset as Vector3).lerp(next.moon_shadow_offset, f)
+		out.moon_shadow_axis = (now.moon_shadow_axis as Vector3).slerp(next.moon_shadow_axis, f)
+	if now.light_source == next.light_source:
+		var c0: Color = (now.light_color as Color).srgb_to_linear()
+		var c1: Color = (next.light_color as Color).srgb_to_linear()
+		var rgb := _geometric3(Vector3(c0.r, c0.g, c0.b) * float(now.light_energy), Vector3(c1.r, c1.g, c1.b) * float(next.light_energy), f)
+		var energy := maxf(maxf(rgb.x, rgb.y), rgb.z)
+		out.light_energy = energy
+		if energy > 0.0:
+			var c := rgb / energy
+			out.light_color = Color(c.x, c.y, c.z).linear_to_srgb()
+		out.light_dir = (now.light_dir as Vector3).slerp(next.light_dir as Vector3, f)
+		out.light_elevation_deg = lerpf(float(now.light_elevation_deg), float(next.light_elevation_deg), f)
+		out.cloud_light1_weight = lerpf(float(now.cloud_light1_weight), float(next.cloud_light1_weight), f)
+		out.cloud_light2_weight = lerpf(float(now.cloud_light2_weight), float(next.cloud_light2_weight), f)
+		out.cloud_light2_dir = (now.cloud_light2_dir as Vector3).slerp(next.cloud_light2_dir as Vector3, f)
+	if (now.lobe_dir as Vector3).dot(next.lobe_dir) > LOBE_SWAP_DOT:
+		out.lobe_lin = _geometric3(now.lobe_lin, next.lobe_lin, f)
+		out.sky_lobe2_lin = _geometric3(now.sky_lobe2_lin, next.sky_lobe2_lin, f)
+		for key: String in ["lobe_k", "lobe_height", "sky_lobe2_k", "sky_lobe2_height"]:
+			out[key] = lerpf(float(now[key]), float(next[key]), f)
+		out.lobe_dir = (now.lobe_dir as Vector3).slerp(next.lobe_dir as Vector3, f)
+		out.sky_lobe2_dir = (now.sky_lobe2_dir as Vector3).slerp(next.sky_lobe2_dir as Vector3, f)
+	return out
+
+
+## Writes a frame state through the step's own code paths (profiles and all), then restores the stepped state, so
+## everything that reads Atmosphere.state or watches a signature (projected shadows, the lake probe) keeps the step
+## cadence. The lake's water material is left at the step: its reflection probe re-renders when it changes.
+static func _apply_frame_sky(vis: Dictionary) -> void:
+	var stepped: Dictionary = Atmosphere.state
+	var env: Environment = _flow.environment
+	Atmosphere.state = vis
+	Atmosphere.apply_state_to_sky(env.sky.sky_material)
+	Atmosphere.apply_state_to_environment(env)
+	Atmosphere.apply_light(_flow.sun)
+	for m: ShaderMaterial in _frame_materials():
+		Atmosphere._set_haze_uniforms(m)
+	Atmosphere.state = stepped
+	if _adapt_clock < 0.0 and not is_equal_approx(env.tonemap_exposure, float(vis.exposure)):
+		env.tonemap_exposure = float(vis.exposure) # no view target adapts it (e.g. evidence views)
+		Exposure.set_value(env.tonemap_exposure)
+	_flow.frame_state = vis
+
+
+## The flow's haze materials without those a reflection probe watches (computed once per flow).
+static func _frame_materials() -> Array:
+	if _flow.has("frame_materials"):
+		return _flow.frame_materials
+	var watched := []
+	var parent: Variant = (_live.parent as WeakRef).get_ref() if _live.get("parent") is WeakRef else null
+	if parent is Node:
+		for probe: Node in (parent as Node).find_children("*", "ReflectionProbe", true, false):
+			var water: Variant = probe.get("water_material")
+			if water is ShaderMaterial:
+				watched.append(water)
+	var out := []
+	for m: ShaderMaterial in _flow.materials:
+		if not watched.has(m):
+			out.append(m)
+	_flow.frame_materials = out
+	return out
+
+
+## The visual state this frame: the interpolated frame state with time flowing, else the stepped state.
+static func visual_state() -> Dictionary:
+	return _flow.get("frame_state", Atmosphere.state) if not _flow.is_empty() else Atmosphere.state
+
+
+static func _geometric(a: float, b: float, f: float) -> float:
+	return a * pow(b / a, f) if a > 0.0 and b > 0.0 else lerpf(a, b, f)
+
+
+static func _geometric3(a: Vector3, b: Vector3, f: float) -> Vector3:
+	return Vector3(_geometric(a.x, b.x, f), _geometric(a.y, b.y, f), _geometric(a.z, b.z, f))
 
 
 ## FW-MOON-01: Godot 4.7.2 Compatibility re-renders the sky's radiance cubemap after a sky uniform change only when the

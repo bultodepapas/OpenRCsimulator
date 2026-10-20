@@ -4,6 +4,7 @@ Defaults match the three-second, 240 Hz smoke flight. Capture/export callers pas
 --duration explicitly. The initial tick is a sample, not evidence of a flown tick.
 """
 from flap_trace_contract import project as project_flaps
+from mass_trace_contract import project as project_mass_trace
 import argparse
 import csv
 import hashlib
@@ -49,6 +50,10 @@ BATTERY_LAYOUT = ('axial wash increment m/s, slipstream.pieces order, then prope
                   'remaining charge C, terminal energy J, pack heat J; RK4 coupled')
 WASH_ONLY_LAYOUT = 'axial wash increment m/s, slipstream.pieces order; RK4 coupled; checkpoint only'
 TURBINE_LAYOUT = 'turbine shaft rpm; RK4 coupled; prescribed fuel mass'
+LIQUID_MODEL = 'single-store-finite-liquid-fixed-datum-v1'
+LIQUID_SCHEMA = 'openrc-liquid-fuel v1'
+LIQUID_LAYOUT = 'base propulsion/wheels; usable fuel kg; source latch 0/1'
+LIQUID_LAWS = {'gasoline_bsfc_v1', 'turbine_map_v1'}
 GEAR_LAW = 'retractable-point-gear-v1'
 GEAR_TRACE_SCHEMA = 'openrc-gear-trace v1'
 GEAR_INPUT_LAYOUT = ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake']
@@ -284,8 +289,55 @@ def check_gear_sample(sample: dict) -> None:
         raise ValueError('invalid retractable gear state or command')
 
 
+def _check_liquid_metadata(metadata: dict) -> dict | None:
+    keys = ('liquid_fuel_model', 'liquid_fuel_schema', 'fuel_consumption_law', 'fuel_store_id',
+            'fuel_capacity_kg', 'fuel_unusable_kg', 'fuel_state_index')
+    if not any(key in metadata for key in keys):
+        return None
+    if (metadata.get('liquid_fuel_model') != LIQUID_MODEL
+            or metadata.get('liquid_fuel_schema') != LIQUID_SCHEMA
+            or metadata.get('fuel_consumption_law') not in LIQUID_LAWS
+            or not metadata.get('fuel_store_id')):
+        raise ValueError('missing or unsupported finite-liquid store identity')
+    try:
+        capacity = float(metadata['fuel_capacity_kg'])
+        unusable = float(metadata['fuel_unusable_kg'])
+        state_index = int(metadata['fuel_state_index'])
+        fill = float(metadata['fuel_start_fill'])
+        continuous = json.loads(metadata['recording_start_continuous'])
+        start_tick = int(metadata['recording_start_tick'])
+    except (KeyError, TypeError, ValueError, OverflowError) as error:
+        raise ValueError('invalid finite-liquid start metadata') from error
+    if (not math.isfinite(capacity) or capacity <= 0.0 or not math.isfinite(unusable)
+            or unusable < 0.0 or unusable >= capacity or state_index < 0
+            or str(state_index) != metadata['fuel_state_index']
+            or str(start_tick) != metadata.get('recording_start_tick')
+            or not math.isfinite(fill) or fill < 0.0 or fill > 1.0
+            or metadata.get('fuel_start_fill_known') not in ('true', 'false')):
+        raise ValueError('finite-liquid store range or continuous index is invalid')
+    if metadata.get('propulsion_model') not in ('propeller-shaft-coupled-rk4-v1', 'turbine-rpm-governor-rk4-v1'):
+        raise ValueError('finite-liquid trace has an unsupported propulsion model')
+    if not isinstance(metadata.get('continuous_layout'), str) \
+            or not metadata['continuous_layout'].endswith('; ' + LIQUID_LAYOUT):
+        raise ValueError('finite-liquid trace layout suffix is missing')
+    if (type(continuous) is not list or len(continuous) != state_index + 2
+            or state_index != len(continuous) - 2
+            or any(type(value) not in (int, float) or not math.isfinite(float(value)) for value in continuous)):
+        raise ValueError('finite-liquid continuous tail does not match its declared index')
+    usable, source_latch = continuous[state_index:state_index + 2]
+    if (usable < 0.0 or usable > capacity - unusable or source_latch not in (0.0, 1.0)
+            or (usable == 0.0 and source_latch != 0.0)):
+        raise ValueError('finite-liquid start tail is outside its declared domain')
+    if metadata['fuel_start_fill_known'] == 'true' \
+            and abs(usable + unusable - fill * capacity) > max(1e-10, capacity * 1e-10):
+        raise ValueError('finite-liquid start fill disagrees with its continuous state')
+    return {'capacity': capacity, 'unusable': unusable, 'state_index': state_index,
+            'usable_start': usable, 'source_start': source_latch}
+
+
 def check_coupled_metadata(metadata: dict) -> None:
     """Optional model extension shared by calm, wind and atmosphere readers."""
+    liquid = _check_liquid_metadata(metadata)
     gear = check_gear_metadata(metadata) if _has_gear_metadata(metadata) else None
     turbine = metadata.get('propulsion_model') == 'turbine-rpm-governor-rk4-v1'
     if turbine or 'turbine_integrator' in metadata:
@@ -300,7 +352,8 @@ def check_coupled_metadata(metadata: dict) -> None:
                 or (has_wheel_metadata and gear is None)
                 or (gear is not None and not has_wheel_metadata)
                 or metadata.get('continuous_layout') != TURBINE_LAYOUT + (
-                    '; ' + WHEEL_LAYOUT_SUFFIX if has_wheel_metadata else '')
+                    '; ' + WHEEL_LAYOUT_SUFFIX if has_wheel_metadata else '') + (
+                    '; ' + LIQUID_LAYOUT if liquid is not None else '')
                 or any(key in metadata for key in ('shaft_integrator', 'rotor_coupling',
                                                   'electric_configuration'))):
             raise ValueError('missing or unsupported continuous turbine semantics')
@@ -309,14 +362,15 @@ def check_coupled_metadata(metadata: dict) -> None:
             aux = json.loads(metadata['recording_start_aux'])
         except (KeyError, ValueError) as error:
             raise ValueError('missing continuous turbine recording state') from error
-        wheel = _check_wheel_metadata(metadata, gear=gear is not None) if has_wheel_metadata else None
-        if (not isinstance(continuous, list) or len(continuous) != (1 + (len(wheel['entries']) if has_wheel_metadata else 0))
+        wheel = _check_wheel_metadata(metadata, gear=gear is not None, liquid=liquid) if has_wheel_metadata else None
+        if (not isinstance(continuous, list) or len(continuous) != (1 + (len(wheel['entries']) if has_wheel_metadata else 0)
+                                                                       + (2 if liquid is not None else 0))
                 or not _finite_number(continuous[0]) or continuous[0] < 0
                 or not isinstance(aux, list) or len(aux) != 4
                 or any(not _finite_number(value) for value in aux) or continuous[0] != aux[0]):
             raise ValueError('continuous turbine RPM does not match its endpoint mirror')
         if has_wheel_metadata:
-            _check_wheel_continuous(metadata, wheel, shaft=False, turbine=True)
+            _check_wheel_continuous(metadata, wheel, shaft=False, turbine=True, liquid=liquid)
         return
     wheel_keys = {
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
@@ -325,7 +379,7 @@ def check_coupled_metadata(metadata: dict) -> None:
     }
     has_wheel_metadata = any(key in metadata for key in wheel_keys)
     if has_wheel_metadata:
-        wheel = _check_wheel_metadata(metadata, gear=gear is not None)
+        wheel = _check_wheel_metadata(metadata, gear=gear is not None, liquid=liquid)
     else:
         if metadata.get('metadata_schema') == 'openrc-flight-meta v6':
             raise ValueError('metadata v6 is missing wheel-state metadata')
@@ -359,10 +413,12 @@ def check_coupled_metadata(metadata: dict) -> None:
     pack = propulsion_model == PACK_LAW
     slots = pack_slots(metadata) if pack else (3 if battery else 0)
     expected_base = PACK_LAYOUT if pack else BATTERY_LAYOUT if battery else SHAFT_LAYOUT
+    expected_tail = ('; ' + WHEEL_LAYOUT_SUFFIX if wheel is not None else '') + (
+        '; ' + LIQUID_LAYOUT if liquid is not None else '')
     if wheel is not None:
-        expected_layout = expected_base + '; ' + WHEEL_LAYOUT_SUFFIX
+        expected_layout = expected_base + expected_tail
     else:
-        expected_layout = expected_base
+        expected_layout = expected_base + ('; ' + LIQUID_LAYOUT if liquid is not None else '')
     if layout != expected_layout:
         raise ValueError('missing or unsupported coupled shaft semantics')
     if (not isinstance(continuous, list) or not continuous or any(not _finite_number(value) for value in continuous)
@@ -372,7 +428,7 @@ def check_coupled_metadata(metadata: dict) -> None:
 
     if wheel is None:
         # Legacy shaft traces placed RPM at the end, immediately after any wash states.
-        shaft_index = len(continuous) - 1 - slots
+        shaft_index = len(continuous) - 1 - slots - (2 if liquid is not None else 0)
     else:
         # The wheel tail is last; shaft RPM precedes optional battery states.
         shaft_index = wheel['first_index'] - slots - 1
@@ -383,10 +439,10 @@ def check_coupled_metadata(metadata: dict) -> None:
         raise ValueError('continuous layout disagrees with transported-wash model')
     if wheel is not None:
         _check_wheel_continuous(metadata, wheel, shaft=True, battery=battery, wash_count=wash_count,
-                                pack_slots=slots if pack else 0)
+                                pack_slots=slots if pack else 0, liquid=liquid)
 
 
-def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
+def _check_wheel_metadata(metadata: dict, *, gear: bool = False, liquid: dict | None = None) -> dict:
     """Validate v6 wheel provenance, contact ordering, and the declared continuous tail."""
     required = {
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
@@ -435,15 +491,17 @@ def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
                 or (brake['max_torque_nm'] > 0 and brake['availability'] != 'available')):
             raise ValueError('invalid wheel brake metadata')
     layout = metadata.get('continuous_layout')
+    expected_suffix = '; ' + WHEEL_LAYOUT_SUFFIX + ('; ' + LIQUID_LAYOUT if liquid is not None else '')
     if (not isinstance(layout, str)
-            or (layout != WHEEL_LAYOUT_SUFFIX and not layout.endswith('; ' + WHEEL_LAYOUT_SUFFIX))):
+            or (layout != WHEEL_LAYOUT_SUFFIX and not layout.endswith(expected_suffix))):
         raise ValueError('continuous layout is missing the wheel-state tail')
     return {'entries': entries, 'first_index': indices[0], 'contacts': contacts}
 
 
 def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
                             battery: bool = False, wash_count: int | None = None,
-                            turbine: bool = False, pack_slots: int = 0) -> None:
+                            turbine: bool = False, pack_slots: int = 0,
+                            liquid: dict | None = None) -> None:
     """Check wheel state arrays and ensure all declared wheel slots are the final slots."""
     try:
         continuous = json.loads(metadata['recording_start_continuous'])
@@ -460,14 +518,16 @@ def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
         raise ValueError('invalid wheel continuous state')
     entries = wheel['entries']
     first_index = wheel['first_index']
-    if first_index + len(entries) != len(continuous):
+    liquid_slots = 2 if liquid is not None else 0
+    if first_index + len(entries) != len(continuous) - liquid_slots:
         raise ValueError('wheel states are not a contiguous continuous-state tail')
     if turbine:
         try:
             aux = json.loads(metadata['recording_start_aux'])
         except (KeyError, ValueError) as error:
             raise ValueError('missing continuous turbine AUX state') from error
-        if (metadata.get('continuous_layout') != TURBINE_LAYOUT + '; ' + WHEEL_LAYOUT_SUFFIX
+        if (metadata.get('continuous_layout') != TURBINE_LAYOUT + '; ' + WHEEL_LAYOUT_SUFFIX + (
+                    '; ' + LIQUID_LAYOUT if liquid is not None else '')
                 or first_index != 1 or continuous[0] < 0
                 or type(aux) is not list or len(aux) != 4
                 or any(not _finite_number(value) for value in aux)
@@ -475,7 +535,8 @@ def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
             raise ValueError('turbine RPM/wheel state tail disagrees with its declared layout')
     elif shaft:
         prefix = PACK_LAYOUT if pack_slots else BATTERY_LAYOUT if battery else SHAFT_LAYOUT
-        if metadata.get('continuous_layout') != prefix + '; ' + WHEEL_LAYOUT_SUFFIX:
+        if metadata.get('continuous_layout') != prefix + '; ' + WHEEL_LAYOUT_SUFFIX + (
+                '; ' + LIQUID_LAYOUT if liquid is not None else ''):
             raise ValueError('unsupported wheel continuous-state prefix')
         if wash_count is None or first_index != wash_count + 1 + (pack_slots or (3 if battery else 0)):
             raise ValueError('wheel state tail disagrees with shaft prefix')
@@ -498,6 +559,9 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
           aircraft_input: Path | None = None) -> str:
     if not math.isfinite(duration) or duration <= 0 or hz <= 0:
         raise ValueError("duration and tick rate must be finite and positive")
+    handled, projected = project_mass_trace(path, check, duration, hz, allow_legacy=allow_legacy, aircraft_input=aircraft_input)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check, duration, hz, allow_legacy=allow_legacy, aircraft_input=aircraft_input)
     if handled:
         return projected

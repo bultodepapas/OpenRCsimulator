@@ -1,0 +1,55 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok res://data/aircraft/p51d_mustang_120.json finite aircraft admits
+ok full capacity distinct from reference
+ok half fill selects
+ok sample is detached and read only
+ok finite flight burns fuel and total mass
+ok v11 JSON checkpoint restores selection and bits
+ok restored continuation exact
+ok legacy liquid checkpoint retains destination selection as unknown
+ok malformed unknown liquid selection refuses native restore transactionally
+ok chained native liquid checkpoint preserves receiving selection and exact state
+ok native unknown liquid selection resets to receiving preference
+ok chained JSON liquid checkpoint preserves receiving selection and exact state
+ok malformed unknown liquid selection refuses JSON restore transactionally
+ok JSON unknown liquid selection resets to receiving preference
+ok negative fuel restore refuses transactionally
+ok unsupported finite-source latch refuses transactionally
+ok wrong finite-fuel continuous layout refuses transactionally
+ok exhaustion located and source latches off
+ok unusable residue remains onboard
+ok ten second exhaustion coast retains nonnegative fuel and accepted stopped source
+ok reset restores selected fuel and source
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok res://data/aircraft/sebart_avanti_s_a200.json finite aircraft admits
+ok full capacity distinct from reference
+ok half fill selects
+ok sample is detached and read only
+ok finite flight burns fuel and total mass
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok v11 JSON checkpoint restores selection and bits
+ok restored continuation exact
+ok legacy liquid checkpoint retains destination selection as unknown
+ok malformed unknown liquid selection refuses native restore transactionally
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok chained native liquid checkpoint preserves receiving selection and exact state
+ok native unknown liquid selection resets to receiving preference
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok chained JSON liquid checkpoint preserves receiving selection and exact state
+ok malformed unknown liquid selection refuses JSON restore transactionally
+ok JSON unknown liquid selection resets to receiving preference
+ok negative fuel restore refuses transactionally
+ok unsupported finite-source latch refuses transactionally
+ok wrong finite-fuel continuous layout refuses transactionally
+ok exhaustion located and source latches off
+ok unusable residue remains onboard
+ok ten second exhaustion coast retains nonnegative fuel and accepted stopped source
+ok reset restores selected fuel and source
+ok positive unusable volume normalizes
+ok positive-residue full launch admits
+ok launch below unusable amount is refused without preference mutation
+ok restored impossible launch fill is refused transactionally
+ok impossible serialized fill is rejected even when its provenance is unknown
+ok positive residue survives located exhaustion as onboard mass
+FUEL-08 session: 48 checks, 0 failed

@@ -1,0 +1,12 @@
+error: unable to find 'python311.dll'.
+PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace.
+Stack dump:
+0.	Program arguments: C:\\Users\\bulto\\scoop\\apps\\llvm\\current\\bin\\lldb.exe --no-lldbinit --batch --core C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-recordings\\20261019-184715-v2\\stall-1.dmp .tools/Godot_v4.7.2-stable_win64.exe -o "thread list" -o "thread backtrace all"
+Exception Code: 0xC06D007E
+#0 0x00007fffd089804a (C:\WINDOWS\System32\KERNELBASE.dll+0xc804a)
+#1 0x00007ff60fa08dcb (C:\Users\bulto\scoop\apps\llvm\current\bin\lldb.exe+0x38dcb)
+#2 0x00007ff60fa3f2ad (C:\Users\bulto\scoop\apps\llvm\current\bin\lldb.exe+0x6f2ad)
+#3 0x00007ff60f9ee753 (C:\Users\bulto\scoop\apps\llvm\current\bin\lldb.exe+0x1e753)
+#4 0x00007ff60fa08768 (C:\Users\bulto\scoop\apps\llvm\current\bin\lldb.exe+0x38768)
+#5 0x00007fffd2cce8d7 (C:\WINDOWS\System32\KERNEL32.DLL+0x2e8d7)
+#6 0x00007fffd36cc53c (C:\WINDOWS\SYSTEM32\ntdll.dll+0x8c53c)

@@ -50,6 +50,7 @@ func _test_law_selection() -> void:
 	_check("P-51 normal-force law remains explicit", p51.ok and p51.laws.has("propeller.normal_force.v1"))
 	_check("P-51 keeps the legacy shaft module ID", p51.ok and p51.modules.has("propulsion.shaft.v1"))
 	_check("shaft law leaves virtual transforms unsupported", p51.ok and not p51.compiler_transforms.scale and not p51.compiler_transforms.power)
+	_check("P-51 selects the registered finite-liquid energy law", p51.ok and p51.laws.has("energy.finite_liquid_fuel.v1"))
 
 	var glow_2t: Dictionary = _classify_path("res://data/aircraft/stik_glow_55ax_2t.json")
 	var glow_4t: Dictionary = _classify_path("res://data/aircraft/stik_glow_fs64v_4t.json")
@@ -69,6 +70,7 @@ func _test_law_selection() -> void:
 	var turbine_base: Dictionary = _read("res://data/aircraft/sebart_avanti_s_a200.json")
 	var turbine: Dictionary = AircraftModules.classify(turbine_base)
 	_check("turbine selects RK4 spool law", turbine.ok and turbine.laws.has("propulsion.turbine.spool.rk4.v1"))
+	_check("finite-liquid turbine selects its energy adapter", turbine.ok and turbine.laws.has("energy.finite_liquid_fuel.v1"))
 	var sampled_base: Dictionary = turbine_base.duplicate(true)
 	sampled_base.propulsion.engine.erase("spool_integrator")
 	var sampled: Dictionary = AircraftModules.classify(sampled_base)
@@ -102,6 +104,22 @@ func _test_rejections() -> void:
 	unknown_module_field.propulsion.engine.future_module = {}
 	_assert_rejected(unknown_module_field, "unknown propulsion module field", "module.field.unknown")
 	_record_parity("invalid:module_field", unknown_module_field)
+	var unknown_liquid_field: Dictionary = _read("res://data/aircraft/p51d_mustang_120.json")
+	unknown_liquid_field.propulsion.fuel_consumption.future_field = true
+	_assert_rejected(unknown_liquid_field, "unknown finite-liquid law field", "module.field.unknown")
+	_record_parity("invalid:liquid_consumption_field", unknown_liquid_field)
+	var unknown_liquid_law: Dictionary = _read("res://data/aircraft/p51d_mustang_120.json")
+	unknown_liquid_law.propulsion.fuel_consumption.law = "unknown_liquid_law"
+	_assert_rejected(unknown_liquid_law, "unknown finite-liquid law selector", "module.section.selector.unknown")
+	_record_parity("invalid:liquid_consumption_law", unknown_liquid_law)
+	var missing_liquid_field: Dictionary = _read("res://data/aircraft/p51d_mustang_120.json")
+	missing_liquid_field.propulsion.fuel_consumption.erase("tank_id")
+	_assert_rejected(missing_liquid_field, "finite-liquid law requires stable tank binding", "module.section.field.missing")
+	_record_parity("invalid:liquid_consumption_missing_tank", missing_liquid_field)
+	var missing_liquid_block: Dictionary = _read("res://data/aircraft/p51d_mustang_120.json")
+	missing_liquid_block.propulsion.erase("fuel_consumption")
+	_assert_rejected(missing_liquid_block, "finite-liquid energy requires a consumption block", "module.capability.relation")
+	_record_parity("invalid:missing_liquid_consumption", missing_liquid_block)
 
 	var glow_energy_mismatch: Dictionary = valid.duplicate(true)
 	glow_energy_mismatch.capabilities.energy = "finite_glow_fuel"

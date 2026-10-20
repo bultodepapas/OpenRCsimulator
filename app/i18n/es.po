@@ -420,8 +420,8 @@ msgstr "OpenRC Simulator %s, versión de desarrollo (ejecutada desde el código 
 msgid "MIT licence"
 msgstr "licencia MIT"
 
-msgid "Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"
-msgstr "Jensen Das Ugly Stik diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
+msgid "Ugly Stick designed by Phil Kraft · font Open Sans (SIL OFL)"
+msgstr "Ugly Stick diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
 
 msgid "Aircraft %d of %d"
 msgstr "Avión %d de %d"
@@ -769,6 +769,21 @@ msgstr "Distancia"
 msgid "Flight time"
 msgstr "Tiempo de vuelo"
 
+msgid "Fuel"
+msgstr "Combustible"
+
+msgid "%d mL · %d %%"
+msgstr "%d mL · %d %%"
+
+msgid "Reserve: %d%% (%s)"
+msgstr "Reserva: %d%% (%s)"
+
+msgid "estimated reserve"
+msgstr "reserva estimada"
+
+msgid "authored reserve"
+msgstr "reserva definida"
+
 msgid "Angle of attack"
 msgstr "Ángulo de ataque"
 
@@ -816,6 +831,12 @@ msgstr "BAJO · descendiendo"
 
 msgid "FAR · come closer"
 msgstr "LEJOS · acércate"
+
+msgid "FUEL RESERVE"
+msgstr "RESERVA DE COMBUSTIBLE"
+
+msgid "FUEL RESERVE · ESTIMATED"
+msgstr "RESERVA DE COMBUSTIBLE · ESTIMADA"
 
 msgid "BATTERY LOW"
 msgstr "BATERÍA BAJA"
@@ -1081,14 +1102,23 @@ msgstr "Multiplicador de potencia"
 msgid "Control travel"
 msgstr "Recorrido de mandos"
 
+msgid "Tank capacity"
+msgstr "Capacidad del depósito"
+
 msgid "Range %.2f×–%.2f× · experimental adjustment."
 msgstr "Rango %.2f×–%.2f× · ajuste experimental."
 
 msgid "Not available for this engine type."
 msgstr "Aún no disponible para este tipo de motor."
 
-msgid "Try different sizes, weights and power levels. Values are estimates for experimentation."
-msgstr "Prueba tamaños, pesos y potencias diferentes. Los valores son estimaciones para experimentar."
+msgid "Estimated sizing proposal; tank dimensions scale uniformly. Fill fraction and blend density are preserved."
+msgstr "Propuesta estimada de tamaño; las dimensiones del depósito se escalan uniformemente. Se conservan la fracción de llenado y la densidad de la mezcla."
+
+msgid "No declared finite tank."
+msgstr "No hay un depósito finito declarado."
+
+msgid "Try different sizes, weights, tank capacities and power levels. Values are estimates for experimentation."
+msgstr "Prueba distintos tamaños, pesos, capacidades de depósito y niveles de potencia. Los valores son estimaciones para experimentar."
 
 msgid "scale"
 msgstr "escala"
@@ -1101,6 +1131,9 @@ msgstr "potencia"
 
 msgid "control travel"
 msgstr "recorrido de mandos"
+
+msgid "tank capacity"
+msgstr "capacidad del depósito"
 
 msgid "Unsupported adjustments: %s. Those values stay unchanged."
 msgstr "Ajustes aún no disponibles: %s. Se conservan sus valores originales."
@@ -1122,6 +1155,9 @@ msgstr "No hay valores disponibles para esta variante."
 
 msgid "Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
 msgstr "Escala %s%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
+
+msgid "Tank capacity ×%.2f · estimated sizing; fill and density are preserved."
+msgstr "Capacidad del depósito ×%.2f · tamaño estimado; se conservan el llenado y la densidad."
 
 msgid "Base → proposed"
 msgstr "Original → variante"
@@ -1209,6 +1245,247 @@ msgstr "No se pudo recuperar la variante."
 
 msgid "Saved build restored. Load it to continue editing that revision."
 msgstr "Variante recuperada. Cárgala para seguir editando esa revisión."
+
+# Workshop editor navigation, saved variants, and comparison controls.
+msgid "Aircraft library"
+msgstr "Biblioteca de aviones"
+
+msgid "All values"
+msgstr "Todos los valores"
+
+msgid "Back to editor"
+msgstr "Volver al editor"
+
+msgid "Back to Home"
+msgstr "Volver al inicio"
+
+msgid "Back to Pause"
+msgstr "Volver a Pausa"
+
+msgid "Build name"
+msgstr "Nombre de la variante"
+
+msgid "Compare"
+msgstr "Comparar"
+
+msgid "Current"
+msgstr "Actual"
+
+msgid "Custom settings"
+msgstr "Ajustes personalizados"
+
+msgid "Delete %s · revision %d?"
+msgstr "¿Mover %s · revisión %d a la papelera local?"
+
+msgid "Difference"
+msgstr "Diferencia"
+
+msgid "Discard changes"
+msgstr "Descartar cambios"
+
+msgid "Draft"
+msgstr "Borrador"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Enter a value from %.2f to %.2f."
+msgstr "Introduce un valor entre %.2f y %.2f."
+
+msgid "Experimental values · static estimates, not measured flight performance."
+msgstr "Valores experimentales · estimaciones estáticas, no mediciones del rendimiento en vuelo."
+
+msgid "Flight setup"
+msgstr "Ajustes de vuelo"
+
+msgid "Front"
+msgstr "Frontal"
+
+msgid "Grid spacing: %.2f m between adjacent lines."
+msgstr "Separación de la cuadrícula: %.2f m entre líneas consecutivas."
+
+msgid "Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-to-tip extent."
+msgstr "Separación de la cuadrícula: %.2f m entre líneas consecutivas. La envergadura es la distancia de punta a punta en el eje X del modelo."
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Lower the camera."
+msgstr "Bajar la cámara."
+
+msgid "Mass (kg)"
+msgstr "Masa (kg)"
+
+msgid "Name or rename this build"
+msgstr "Nombrar o renombrar variante"
+
+msgid "Name this build before saving."
+msgstr "Asigna un nombre a la variante antes de guardarla."
+
+msgid "New build"
+msgstr "Nueva variante"
+
+msgid "New build from selected aircraft"
+msgstr "Crear variante a partir del avión seleccionado"
+
+msgid "No changes from the original."
+msgstr "Sin cambios respecto al original."
+
+msgid "Open another aircraft"
+msgstr "Abrir otro avión"
+
+msgid "Open saved build"
+msgstr "Abrir variante guardada"
+
+msgid "Original"
+msgstr "Original"
+
+msgid "Original and draft"
+msgstr "Original y borrador"
+
+msgid "Orbit left."
+msgstr "Girar a la izquierda."
+
+msgid "Orbit right."
+msgstr "Girar a la derecha."
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Raise the camera."
+msgstr "Subir la cámara."
+
+msgid "Range %.2f×–%.2f×"
+msgstr "Rango %.2f×–%.2f×"
+
+msgid "Reset this page"
+msgstr "Restablecer esta página"
+
+msgid "Reset the camera to its default fit."
+msgstr "Restablecer el encuadre inicial de la cámara."
+
+msgid "Resume trial"
+msgstr "Reanudar prueba"
+
+msgid "Restart trial"
+msgstr "Reiniciar prueba"
+
+msgid "Retry save"
+msgstr "Reintentar guardado"
+
+msgid "revision %d"
+msgstr "revisión %d"
+
+msgid "Save and continue"
+msgstr "Guardar y continuar"
+
+msgid "Save this build before continuing?"
+msgstr "¿Guardar esta variante antes de continuar?"
+
+msgid "Saved"
+msgstr "Guardada"
+
+msgid "Saved build deleted. Its open draft is still available as a copy."
+msgstr "Variante movida a la papelera local. El borrador abierto sigue disponible como copia."
+
+msgid "Show the %s standard view."
+msgstr "Mostrar la vista estándar: %s."
+
+msgid "Show the current draft in Compare mode."
+msgstr "Mostrar el borrador actual en modo Comparar."
+
+msgid "Show the unmodified 100% aircraft in Compare mode."
+msgstr "Mostrar el avión original al 100 % en modo Comparar."
+
+msgid "Side"
+msgstr "Lateral"
+
+msgid "Starting preset"
+msgstr "Preajuste inicial"
+
+msgid "Static power (W)"
+msgstr "Potencia estática (W)"
+
+msgid "Static thrust (N)"
+msgstr "Empuje estático (N)"
+
+msgid "Stock aircraft"
+msgstr "Aviones del catálogo"
+
+msgid "Tank capacity (l)"
+msgstr "Capacidad del depósito (l)"
+
+msgid "Technical details"
+msgstr "Datos técnicos"
+
+msgid "The saved build could not be loaded."
+msgstr "No se pudo cargar la variante guardada."
+
+msgid "This build cannot be saved until its errors are resolved."
+msgstr "Corrige los errores antes de guardar esta variante."
+
+msgid "Top"
+msgstr "Superior"
+
+msgid "Trace not saved"
+msgstr "No se guardó la traza"
+
+msgid "The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay."
+msgstr "La grabación se detuvo, pero no se pudo guardar la traza manual de vuelo (error %d). Elige «Reintentar guardado», «Descartar traza y continuar» o «Quedarse»."
+
+msgid "Stay"
+msgstr "Quedarse"
+
+msgid "Discard trace and continue"
+msgstr "Descartar traza y continuar"
+
+msgid "Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause"
+msgstr "Prueba experimental del Taller · Esc abre Pausa · Desde Pausa puedes volver al taller"
+
+msgid "Unavailable aircraft"
+msgstr "Avión no disponible"
+
+msgid "Unsaved build"
+msgstr "Variante sin guardar"
+
+msgid "Unsaved changes"
+msgstr "Cambios sin guardar"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "View the draft at its fitted size."
+msgstr "Ver el borrador ajustado al tamaño de la vista."
+
+msgid "View"
+msgstr "Ver"
+
+msgid "Wing area (m²)"
+msgstr "Superficie alar (m²)"
+
+msgid "Wing loading (kg/m²)"
+msgstr "Carga alar (kg/m²)"
+
+msgid "Wing span (m)"
+msgstr "Envergadura (m)"
+
+msgid "Zoom in."
+msgstr "Acercar."
+
+msgid "Zoom out."
+msgstr "Alejar."
+
+msgid "Compare original and draft at the same world scale."
+msgstr "Comparar el original y el borrador en la misma escala."
+
+msgid "%s  ·  %s%%  ·  span %.2f m"
+msgstr "%s  ·  %s%%  ·  envergadura %.2f m"
+
+msgid "100% · span 0.00 m"
+msgstr "100 % · envergadura 0.00 m"
+
+msgid "%s · %s%s · %s"
+msgstr "%s · %s%s · %s"
 
 msgid "More power"
 msgstr "Más potencia"
@@ -3467,3 +3744,805 @@ msgstr "Combustible: %d %% del depósito"
 
 msgid "Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties."
 msgstr "Llenado inicial del depósito del motor. El combustible se consume en vuelo: el avión se aligera y su centro de gravedad se desplaza hacia atrás a medida que el depósito se vacía."
+
+# L23: landscape selection.
+msgid "Landscape: %s"
+msgstr "Paisaje: %s"
+
+msgid "Choose the landscape for your next flight."
+msgstr "Elige el paisaje para tu próximo vuelo."
+
+msgid "This landscape supports airborne starts only."
+msgstr "Este paisaje solo permite comenzar en el aire."
+
+msgid "Natural Random requires Club field."
+msgstr "Vuelo aleatorio natural requiere Club field."
+
+msgid "JETI radio family"
+msgstr "Familia de radios JETI"
+
+msgid "Device name: %s"
+msgstr "Nombre del dispositivo: %s"
+
+msgid "Manufacturer: %s"
+msgstr "Fabricante: %s"
+
+msgid "Backspace returns to the menu and Escape pauses. This action map changes only this draft until Save."
+msgstr "Retroceso vuelve al menú y Escape pausa. Este mapa solo cambia el borrador hasta que lo guardes."
+
+msgid "Use safe radio actions in draft"
+msgstr "Usar acciones seguras de radio en el borrador"
+
+msgid "Use Backspace for Back and Escape for Pause; all button and switch actions will be cleared in this draft."
+msgstr "Usa Retroceso para volver y Escape para pausar; este borrador quitará las acciones de botones e interruptores."
+
+msgid "Could not prepare the safe radio action map. The current draft is unchanged."
+msgstr "No se pudo preparar el mapa seguro de radio. El borrador actual no cambió."
+
+msgid "Could not prepare the safe radio action map: %s"
+msgstr "No se pudo preparar el mapa seguro de radio: %s"
+
+msgid "Safe radio actions are in the draft. Save keeps them; Cancel discards them."
+msgstr "Las acciones seguras de radio están en el borrador. Guardar las conserva; Cancelar las descarta."
+
+msgid "Radio custom"
+msgstr "Radio personalizada"
+
+msgid "JETI Mode 2"
+msgstr "JETI Modo 2"
+
+msgid "JETI Mode 2: roll axis 0, inverted pitch axis 1, absolute throttle axis 2, yaw axis 3. Confirm your own stick and switch installation before flight."
+msgstr "JETI Modo 2: alabeo en el eje 0, profundidad invertida en el eje 1, acelerador absoluto en el eje 2 y timón en el eje 3. Confirma la instalación de tus mandos e interruptores antes de volar."
+
+msgid "Custom radio mapping. Axis assignments and calibration stay in this profile."
+msgstr "Asignación de radio personalizada. Los ejes y su calibración se conservan en este perfil."
+
+msgid "Could not restore the selected radio profile."
+msgstr "No se pudo restaurar el perfil de radio seleccionado."
+
+msgid "Custom radio mapping restored. Save keeps this draft."
+msgstr "Se restauró la asignación personalizada de radio. Guarda para conservar este borrador."
+
+msgid "Could not restore the JETI Mode 2 preset."
+msgstr "No se pudo restaurar el ajuste JETI Modo 2."
+
+msgid "JETI Mode 2 is available only for a recognized JETI radio."
+msgstr "JETI Modo 2 solo está disponible para una radio JETI reconocida."
+
+msgid "JETI Mode 2 mapping is in the draft. Confirm your own switch installation, then Save to keep it."
+msgstr "La asignación JETI Modo 2 está en el borrador. Confirma la instalación de tus interruptores y guarda para conservarla."
+
+msgid "Switch positions"
+msgstr "Posiciones del interruptor"
+
+msgid "2 positions"
+msgstr "2 posiciones"
+
+msgid "3 positions"
+msgstr "3 posiciones"
+
+msgid "Switch name (optional)"
+msgstr "Nombre del interruptor (opcional)"
+
+msgid "Reverse request"
+msgstr "Invertir solicitud"
+
+msgid "Middle"
+msgstr "Centro"
+
+msgid "Capture"
+msgstr "Capturar"
+
+msgid "No conflict-free switch buttons are available for this channel."
+msgstr "No hay botones de interruptor libres de conflictos para este canal."
+
+msgid "Switch positions could not be changed without a conflict."
+msgstr "No se pudieron cambiar las posiciones del interruptor sin crear un conflicto."
+
+msgid "Switch mapping was not changed: %s"
+msgstr "No se cambió la asignación del interruptor: %s"
+
+msgid "Move the selected radio switch to this position. The next button press is captured; no other switch needs to be released."
+msgstr "Mueve el interruptor de radio seleccionado a esta posición. Se capturará la siguiente pulsación; no hace falta soltar los demás interruptores."
+
+msgid "That switch position is no longer available. Capture was cancelled."
+msgstr "Esa posición del interruptor ya no está disponible. Se canceló la captura."
+
+msgid "Button %d captured for this switch position. Save the profile to keep it."
+msgstr "Se capturó el botón %d para esta posición del interruptor. Guarda el perfil para conservarlo."
+
+msgid "Invalid switch group."
+msgstr "El grupo de interruptor no es válido."
+
+msgid "%s · multiple positions active"
+msgstr "%s · hay varias posiciones activas"
+
+msgid "%s · no position active"
+msgstr "%s · ninguna posición activa"
+
+msgid "%s · %s · Button %d · request %.0f%%"
+msgstr "%s · %s · Botón %d · solicitud %.0f%%"
+
+msgid "%s %s · Button %d"
+msgstr "%s %s · Botón %d"
+
+msgid "Switch"
+msgstr "Interruptor"
+
+msgid "Review issues"
+msgstr "Revisar problemas"
+
+msgid "Open camera controls."
+msgstr "Abrir los controles de cámara."
+
+msgid "Expand the preview for comfortable inspection."
+msgstr "Ampliar la vista previa para inspeccionarla cómodamente."
+
+msgid "Appearance"
+msgstr "Apariencia"
+
+msgid "Paint changes only the selected registered region."
+msgstr "La pintura cambia solo la región seleccionada."
+
+msgid "Show smoke is a visual effect. Source exhaust follows the running engine."
+msgstr "El humo de exhibición es un efecto visual. El escape sigue al motor en marcha."
+
+msgid "Choose a smoke preset…"
+msgstr "Elegir un preset de humo…"
+
+msgid "Clear Trainer"
+msgstr "Entrenador limpio"
+
+msgid "Twin Ribbons"
+msgstr "Estelas gemelas"
+
+msgid "Tricolor"
+msgstr "Tricolor"
+
+msgid "Tail Comet"
+msgstr "Cometa de cola"
+
+msgid "Rainbow Burst"
+msgstr "Ráfaga arcoíris"
+
+msgid "Classic Exhaust"
+msgstr "Escape clásico"
+
+msgid "No registered regions"
+msgstr "Sin regiones registradas"
+
+msgid "No registered emitters"
+msgstr "Sin emisores registrados"
+
+msgid "This model has no registered customization for this page."
+msgstr "Este modelo no tiene personalización registrada para esta página."
+
+msgid "Enable this emitter"
+msgstr "Activar este emisor"
+
+msgid "White"
+msgstr "Blanco"
+
+msgid "Red"
+msgstr "Rojo"
+
+msgid "Blue"
+msgstr "Azul"
+
+msgid "Gold"
+msgstr "Dorado"
+
+msgid "Green"
+msgstr "Verde"
+
+msgid "Purple"
+msgstr "Morado"
+
+msgid "Black"
+msgstr "Negro"
+
+msgid "Custom color"
+msgstr "Color personalizado"
+
+msgid "Apply color"
+msgstr "Aplicar color"
+
+msgid "Amount"
+msgstr "Cantidad"
+
+msgid "Width"
+msgstr "Anchura"
+
+msgid "Puff lifetime"
+msgstr "Duración de cada nube"
+
+msgid "Shape"
+msgstr "Forma"
+
+msgid "Ribbon"
+msgstr "Estela"
+
+msgid "Cloud"
+msgstr "Nube"
+
+msgid "Fan"
+msgstr "Abanico"
+
+msgid "Emission"
+msgstr "Emisión"
+
+msgid "Hold"
+msgstr "Continua"
+
+msgid "Burst"
+msgstr "Ráfaga"
+
+msgid "Pulse"
+msgstr "Pulsos"
+
+msgid "Burst duration"
+msgstr "Duración de la ráfaga"
+
+msgid "Pulse period"
+msgstr "Período de pulso"
+
+msgid "Pulse on fraction"
+msgstr "Fracción activa del pulso"
+
+msgid "Duration controls new emission; existing puffs fade for their full lifetime."
+msgstr "La duración controla la emisión nueva; las nubes existentes se desvanecen durante su vida útil."
+
+msgid "Use #RRGGBBAA, for example #327DE8FF."
+msgstr "Usa #RRGGBBAA, por ejemplo #327DE8FF."
+
+msgid "This preset needs registered emitters that this model does not provide."
+msgstr "Este preset requiere emisores que el modelo no tiene registrados."
+
+msgid "Apply or cancel the edited color before saving or starting a trial."
+msgstr "Aplica o cancela el color editado antes de guardar o probar el avión."
+
+msgid "Visual preview · no flight simulation"
+msgstr "Vista previa visual · sin simulación de vuelo"
+
+msgid "Play smoke"
+msgstr "Reproducir humo"
+
+msgid "Stationary"
+msgstr "Estático"
+
+msgid "Illustrative pass"
+msgstr "Pasada ilustrativa"
+
+msgid "Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs."
+msgstr "Pasada visual de seis segundos y pausa. Sin simulación de vuelo. Cambiar el movimiento borra el humo."
+
+msgid "Pause smoke"
+msgstr "Pausar humo"
+
+msgid "Restart smoke"
+msgstr "Reiniciar humo"
+
+msgid "Light wind"
+msgstr "Viento suave"
+
+msgid "Still air"
+msgstr "Sin viento"
+
+msgid "Play the visual smoke preview."
+msgstr "Reproducir la vista previa del humo."
+
+msgid "Clear puffs and restart the preview clock."
+msgstr "Borrar las nubes y reiniciar el reloj de vista previa."
+
+msgid "Trial start"
+msgstr "Inicio de la prueba"
+
+msgid "In the air"
+msgstr "En el aire"
+
+msgid "On the runway"
+msgstr "En la pista"
+
+msgid "Trial field: %s"
+msgstr "Campo de prueba: %s"
+
+msgid "Wind: %s"
+msgstr "Viento: %s"
+
+msgid "Light: %s"
+msgstr "Luz: %s"
+
+msgid "Full fuel · normal control rates · current controller"
+msgstr "Depósito lleno · recorridos normales · control actual"
+
+msgid "Choose an airborne or runway trial start."
+msgstr "Elige el inicio de la prueba en el aire o en la pista."
+
+msgid "Import build…"
+msgstr "Importar avión…"
+
+msgid "Export selected…"
+msgstr "Exportar seleccionado…"
+
+msgid "Import aircraft build"
+msgstr "Importar configuración de avión"
+
+msgid "Export aircraft build"
+msgstr "Exportar configuración de avión"
+
+msgid "Aircraft build"
+msgstr "Configuración de avión"
+
+msgid "The build could not be exported."
+msgstr "No se pudo exportar la configuración."
+
+msgid "The build could not be imported."
+msgstr "No se pudo importar la configuración."
+
+msgid "The exported file failed its readback check."
+msgstr "El archivo exportado no superó la comprobación de lectura."
+
+msgid "Aircraft build exported."
+msgstr "Configuración de avión exportada."
+
+msgid "Aircraft build imported as a new local copy."
+msgstr "Configuración importada como una nueva copia local."
+
+msgid "Fuselage"
+msgstr "Fuselaje"
+
+msgid "Wing"
+msgstr "Ala"
+
+msgid "Wing tips"
+msgstr "Puntas de las alas"
+
+msgid "Tail"
+msgstr "Cola"
+
+msgid "Left wingtip"
+msgstr "Punta del ala izquierda"
+
+msgid "Right wingtip"
+msgstr "Punta del ala derecha"
+
+msgid "Engine exhaust"
+msgstr "Escape del motor"
+
+msgid "Visual only"
+msgstr "Solo visual"
+
+msgid "Stock"
+msgstr "Original"
+
+msgid "Paint"
+msgstr "Pintura"
+
+msgid "Markings"
+msgstr "Inscripciones"
+
+msgid "Color steps"
+msgstr "Pasos de color"
+
+msgid "Add color step"
+msgstr "Añadir color"
+
+msgid "Remove last step"
+msgstr "Quitar último color"
+
+msgid "Use single color"
+msgstr "Usar un solo color"
+
+msgid "Color step duration"
+msgstr "Duración de cada color"
+
+msgid "Single color"
+msgstr "Un solo color"
+
+msgid "Step %d"
+msgstr "Paso %d"
+
+msgid "Registration"
+msgstr "Matrícula"
+
+msgid "Registration panels"
+msgstr "Paneles de matrícula"
+
+msgid "Apply inscription"
+msgstr "Aplicar inscripción"
+
+msgid "Up to 12 English or Spanish letters, digits, spaces or hyphens. Empty text removes the inscription."
+msgstr "Hasta 12 letras en español o inglés, dígitos, espacios o guiones. El texto vacío elimina la inscripción."
+
+msgid "Apply or cancel the edited color or inscription before saving or starting a trial."
+msgstr "Aplica o cancela el color o la inscripción antes de guardar o iniciar una prueba."
+
+msgid "Ready for a trial · runway qualification required"
+msgstr "Listo para probar · se comprobará el inicio en pista"
+
+msgid "Control travel multiplier"
+msgstr "Multiplicador del recorrido de mandos"
+
+msgid "Tank capacity multiplier"
+msgstr "Multiplicador de capacidad del depósito"
+
+msgid "[H] show smoke %s  [J] assign radio AUX"
+msgstr "[H] humo de exhibición %s  [J] asignar AUX de la radio"
+
+msgid "Path:"
+msgstr "Ruta:"
+
+msgid "File:"
+msgstr "Archivo:"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Directories & Files:"
+msgstr "Carpetas y archivos:"
+
+msgid "Illustrative running engine"
+msgstr "Motor en marcha ilustrativo"
+
+msgid "Restore selected region"
+msgstr "Restaurar región seleccionada"
+
+msgid "Search saved builds"
+msgstr "Buscar configuraciones guardadas"
+
+msgid "Favorites only"
+msgstr "Solo favoritos"
+
+msgid "Add favorite"
+msgstr "Añadir favorito"
+
+msgid "Remove favorite"
+msgstr "Quitar favorito"
+
+msgid "Favorite"
+msgstr "Favorito"
+
+msgid "Copy appearance and smoke…"
+msgstr "Copiar apariencia y humo…"
+
+msgid "Favorites could not be read; existing metadata was preserved."
+msgstr "No se pudieron leer los favoritos; se conservaron los datos existentes."
+
+msgid "Favorites could not be saved."
+msgstr "No se pudieron guardar los favoritos."
+
+msgid "Review compatible settings"
+msgstr "Revisar ajustes compatibles"
+
+msgid "Apply settings"
+msgstr "Aplicar ajustes"
+
+msgid "From %s · revision %d"
+msgstr "De %s · revisión %d"
+
+msgid "Only listed compatible settings will change. Physical adjustments stay unchanged."
+msgstr "Solo cambiarán los ajustes compatibles indicados. Los ajustes físicos se conservan."
+
+msgid "Settings to apply"
+msgstr "Ajustes que se aplicarán"
+
+msgid "Settings skipped"
+msgstr "Ajustes que se omiten"
+
+msgid "The source build has no current presentation bindings."
+msgstr "La configuración de origen no tiene vínculos visuales vigentes."
+
+msgid "These presentation settings cannot be copied."
+msgstr "No se pueden copiar estos ajustes visuales."
+
+msgid "The draft changed. Review the settings again before applying them."
+msgstr "El borrador cambió. Revisa de nuevo los ajustes antes de aplicarlos."
+
+msgid "Compatible appearance and smoke settings copied. Undo restores the previous presentation."
+msgstr "Se copiaron la apariencia y el humo compatibles. Deshacer restaura el estado anterior."
+
+msgid "Compatible"
+msgstr "Compatible"
+
+msgid "Source setting is unavailable."
+msgstr "El ajuste de origen no está disponible."
+
+msgid "No matching region or emitter on this aircraft."
+msgstr "Este avión no tiene una región o un emisor equivalente."
+
+msgid "This pattern is unavailable."
+msgstr "Este patrón no está disponible."
+
+msgid "This region uses a different material."
+msgstr "Esta región utiliza un material diferente."
+
+msgid "This accent is unavailable."
+msgstr "Este detalle no está disponible."
+
+msgid "This accent uses a different material."
+msgstr "Este detalle utiliza un material diferente."
+
+msgid "These inscription characters cannot be verified."
+msgstr "No se pueden verificar estos caracteres."
+
+msgid "The inscription exceeds this panel's limit."
+msgstr "La inscripción supera el límite de este panel."
+
+msgid "The emitter has a different purpose or source."
+msgstr "El emisor tiene otra función o fuente."
+
+msgid "This setting is unavailable."
+msgstr "Este ajuste no está disponible."
+
+msgid "Unavailable favorites remain listed under Favorites only and can be removed."
+msgstr "Los favoritos no disponibles aparecen en Solo favoritos y se pueden quitar."
+
+msgid "Unavailable favorite %d"
+msgstr "Favorito no disponible %d"
+
+msgid "Restore this saved build or remove its favorite."
+msgstr "Restaura esta configuración o quita su favorito."
+
+msgid "More options"
+msgstr "Más opciones"
+
+msgid "Fewer options"
+msgstr "Menos opciones"
+
+msgid "Apply or cancel the edited color before changing regions or emitters."
+msgstr "Aplica o cancela el color editado antes de cambiar de región o emisor."
+
+msgid "Apply or cancel the edited color before changing color steps."
+msgstr "Aplica o cancela el color editado antes de cambiar de paso de color."
+
+msgid "Apply or cancel the edited inscription before changing panels."
+msgstr "Aplica o cancela la inscripción editada antes de cambiar de panel."
+
+msgid "Preparing thumbnail…"
+msgstr "Preparando miniatura…"
+
+msgid "Thumbnail unavailable. Build details and actions are still available."
+msgstr "Miniatura no disponible. Puedes consultar y usar la configuración."
+
+msgid "Recovered draft…"
+msgstr "Borrador recuperado…"
+
+msgid "Recovered draft"
+msgstr "Borrador recuperado"
+
+msgid "Restore as a new build"
+msgstr "Restaurar como configuración nueva"
+
+msgid "Later"
+msgstr "Más tarde"
+
+msgid "Discard recovered draft"
+msgstr "Descartar borrador recuperado"
+
+msgid "Restore keeps the saved library unchanged. Review all values and save a new build."
+msgstr "Restaurar conserva la biblioteca guardada. Revisa los valores y guarda una configuración nueva."
+
+msgid "This draft is unavailable with the current dependencies. Its stored data remains unchanged."
+msgstr "Este borrador no está disponible con las dependencias actuales. Se conservan sus datos guardados."
+
+msgid "Restore recovered draft"
+msgstr "Restaurar borrador recuperado"
+
+msgid "The recovered draft changed or is unavailable. Review it again."
+msgstr "El borrador recuperado cambió o no está disponible. Revísalo de nuevo."
+
+msgid "A recovered numeric field is unavailable. The stored draft remains unchanged."
+msgstr "Un campo numérico recuperado no está disponible. Se conserva el borrador guardado."
+
+msgid "A recovered text field is unavailable. The stored draft remains unchanged."
+msgstr "Un campo de texto recuperado no está disponible. Se conserva el borrador guardado."
+
+msgid "Draft restored. Review the values and save a new build."
+msgstr "Borrador restaurado. Revisa los valores y guarda una configuración nueva."
+
+msgid "Measured components…"
+msgstr "Componentes medidos…"
+
+msgid "Apply or cancel pending fields before editing measured components."
+msgstr "Aplica o cancela los campos pendientes antes de editar componentes medidos."
+
+msgid "The draft changed while measurements were open. Review the measurements again."
+msgstr "El borrador cambió mientras las mediciones estaban abiertas. Revísalas de nuevo."
+
+msgid "Measured components applied to the draft. The saved build is unchanged."
+msgstr "Componentes medidos aplicados al borrador. Se conserva la configuración guardada."
+
+msgid "Automatic draft recovery is paused until you restore or discard the recovered draft."
+msgstr "La recuperación automática se pausa hasta que restaures o descartes el borrador recuperado."
+
+msgid "Accepted settings"
+msgstr "Ajustes aceptados"
+
+msgid "Pending input"
+msgstr "Texto pendiente"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Mass policy"
+msgstr "Criterio de masa"
+
+msgid "Weight"
+msgstr "Peso"
+
+msgid "Power"
+msgstr "Potencia"
+
+msgid "Setting"
+msgstr "Ajuste"
+
+msgid "Recovery data cannot be safely replaced. Review the recovery files before retrying."
+msgstr "No se pueden reemplazar los datos de recuperación de forma segura. Revisa los archivos antes de reintentar."
+
+msgid "Another session changed the recovered draft. Review it in Library before automatic recovery resumes."
+msgstr "Otra sesión cambió el borrador recuperado. Revísalo en Biblioteca antes de reanudar la recuperación automática."
+
+msgid "Measured component mass"
+msgstr "Masa medida de componentes"
+
+msgid "The recipe mass_edits value must be an array."
+msgstr "El valor mass_edits de la receta debe ser una lista."
+
+msgid "Apply to a new build"
+msgstr "Aplicar a una nueva versión"
+
+msgid "Record measured masses for existing source inventory components. Positions and geometry stay fixed; applying creates a new build."
+msgstr "Registra las masas medidas de componentes existentes del inventario. Las posiciones y la geometría permanecen fijas; al aplicar se crea una nueva versión."
+
+msgid "Measured component"
+msgstr "Componente medido"
+
+msgid "Measurement source"
+msgstr "Fuente de medición"
+
+msgid "Scale and component identification"
+msgstr "Báscula e identificación del componente"
+
+msgid "Add or update measurement"
+msgstr "Agregar o actualizar medición"
+
+msgid "No measured components staged."
+msgstr "No hay componentes medidos preparados."
+
+msgid "Weighing comparison and fixed-station proposal"
+msgstr "Comparación de pesaje y propuesta en estación fija"
+
+msgid "Weighing state: source declaration"
+msgstr "Estado de pesaje: declaración de la fuente"
+
+msgid "Observed total mass (kg)"
+msgstr "Masa total observada (kg)"
+
+msgid "x aft (m)"
+msgstr "x atrás (m)"
+
+msgid "y right (m)"
+msgstr "y derecha (m)"
+
+msgid "z up (m)"
+msgstr "z arriba (m)"
+
+msgid "Check mass and CG"
+msgstr "Comprobar masa y CG"
+
+msgid "Propose fixed-station mass"
+msgstr "Proponer masa en estación fija"
+
+msgid "Unavailable: "
+msgstr "No disponible: "
+
+msgid "Show source inventory details"
+msgstr "Mostrar detalles del inventario de origen"
+
+msgid "Hide source inventory details"
+msgstr "Ocultar detalles del inventario de origen"
+
+msgid "Weighing state (fixed to source declaration)"
+msgstr "Estado de pesaje (declarado por la fuente)"
+
+msgid "Stage or correct the current measurement before changing components."
+msgstr "Prepara o corrige la medición actual antes de cambiar de componente."
+
+msgid "Aircraft source is unavailable."
+msgstr "La fuente del avión no está disponible."
+
+msgid "No source inventory components are available for measurement."
+msgstr "No hay componentes del inventario disponibles para medir."
+
+msgid "Enter a finite component mass in kilograms within the source bounds."
+msgstr "Introduce una masa de componente finita en kilogramos dentro de los límites de la fuente."
+
+msgid "The 32 component-measurement limit has been reached."
+msgstr "Se alcanzó el límite de 32 mediciones de componentes."
+
+msgid "Staged measurements"
+msgstr "Mediciones preparadas"
+
+msgid "Enter a positive finite mass and three finite CG coordinates."
+msgstr "Introduce una masa positiva finita y tres coordenadas CG finitas."
+
+msgid "within tolerance"
+msgstr "dentro de la tolerancia"
+
+msgid "outside tolerance"
+msgstr "fuera de la tolerancia"
+
+msgid "inside source range"
+msgstr "dentro del rango de la fuente"
+
+msgid "outside source range"
+msgstr "fuera del rango de la fuente"
+
+msgid "Reference"
+msgstr "Referencia"
+
+msgid "state"
+msgstr "estado"
+
+msgid "Select an available source component first."
+msgstr "Selecciona primero un componente disponible de la fuente."
+
+msgid "Proposal only"
+msgstr "Solo propuesta"
+
+msgid "Predicted CG x/y/z"
+msgstr "CG prevista x/y/z"
+
+msgid "This derived value is not applied or labelled as a measurement."
+msgstr "Este valor derivado no se aplica ni se etiqueta como medición."
+
+msgid "Stage at least one measured component before applying."
+msgstr "Prepara al menos un componente medido antes de aplicar."
+
+msgid "The candidate did not pass validation. Review source inventory details for the reason."
+msgstr "La propuesta no superó la validación. Consulta los detalles del inventario de origen para ver el motivo."
+
+msgid "Record a measured component mass. Geometry stays fixed."
+msgstr "Registra la masa medida del componente. Se conserva la geometría."
+
+msgid "Source mass: %.4f kg"
+msgstr "Masa de origen: %.4f kg"
+
+msgid "Another session cleared the recovered draft. Automatic recovery will resume on your next edit."
+msgstr "Otra sesión eliminó el borrador recuperado. La recuperación automática continuará con tu próxima edición."
+
+msgid "Smaller"
+msgstr "Más pequeño"
+
+msgid "Larger"
+msgstr "Más grande"
+
+msgid "Tiny"
+msgstr "Diminuto"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Reduce aircraft size one step."
+msgstr "Reduce el tamaño del avión un paso."
+
+msgid "Increase aircraft size one step."
+msgstr "Aumenta el tamaño del avión un paso."
+
+msgid "Set the aircraft to %s%% of its original size."
+msgstr "Ajusta el avión al %s%% de su tamaño original."
+
+msgid "The requested size is not a finite number."
+msgstr "El tamaño solicitado no es un número finito."
+
+msgid "The requested size could not be applied."
+msgstr "No se pudo aplicar el tamaño solicitado."
+
+msgid "Size: %s%% · wingspan: %s m"
+msgstr "Tamaño: %s%% · envergadura: %s m"
+
+msgid "Proposed size: %s%% · wingspan pending validation."
+msgstr "Tamaño propuesto: %s%% · envergadura pendiente de validación."
+
+msgid "Each virtual size is simulated with scaled geometry; aerodynamic similarity is an estimate, especially at the smallest and largest sizes."
+msgstr "Cada tamaño virtual se simula con geometría escalada; la similitud aerodinámica es una estimación, sobre todo en los tamaños más pequeños y más grandes."

@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL stik_glow_61fx_2t rejects lost residue in native checkpoint transactionally
+FAIL stik_glow_61fx_2t rejects lost residue in JSON checkpoint transactionally
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL stik_glow_fs64v_4t rejects lost residue in native checkpoint transactionally
+FAIL stik_glow_fs64v_4t rejects lost residue in JSON checkpoint transactionally
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL gp_extra_300s_60 rejects lost residue in native checkpoint transactionally
+FAIL gp_extra_300s_60 rejects lost residue in JSON checkpoint transactionally
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Fuel tiny boundaries: 46 checks, 6 failed

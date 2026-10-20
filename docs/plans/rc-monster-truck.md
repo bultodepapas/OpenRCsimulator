@@ -461,7 +461,7 @@ Parallel work, when requested, uses clear boundaries: physics kernels, source/me
 
 ## 12. Decision log to settle during implementation
 
-The following are recommendations and open choices, not adopted runtime decisions. Record each accepted outcome in [DECISIONS](../../DECISIONS.md) with its RCV evidence link when implementation is authorized.
+The following are recommendations and open choices, not adopted runtime decisions. Record each accepted outcome in [DECISIONS](../DECISIONS.md) with its RCV evidence link when implementation is authorized.
 
 | Decision | Recommendation | Evidence/trigger to revisit |
 | --- | --- | --- |

@@ -2,7 +2,7 @@
 
 2026-10-08 · **Status: complete static contract review.** Step: TT-00-R1. Owning plan: [Turbo Timber Evolution integration](../../../TIMBER-INTEGRATION-PLAN.md). Compared the incoming R1 package with the [Blender handoff](../../../TIMBER-INTEGRATION-PLAN.md) and [TT-00 source assessment](../TT-00/README.md).
 
-Incoming package: `Timber turbo evolution/turbo_timber_evolution/r1/` (called R1 below).
+Incoming package: `assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1/` (called R1 below).
 
 ## Result
 

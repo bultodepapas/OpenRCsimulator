@@ -1,6 +1,6 @@
 # P51-15: Primary-source audit
 
-2026-10-12 · **Status: source audit complete; no physical model validation.** This note separates primary RC evidence from full-size historical data and internal simulation assumptions. Scope: the estimated 2.82 m, 120 cc-class P-51D reference build in [P51-REALISM-PLAN](../../../P51-REALISM-PLAN.md), configured in [source.json](../../../../assets/aircraft/p51d-mustang-120/source.json).
+2026-10-12 · **Status: source audit complete; no physical model validation.** This note separates primary RC evidence from full-size historical data and internal simulation assumptions. Scope: the estimated 2.82 m, 120 cc-class P-51D reference build in [P-51 guide](../../../P51-PLAN.md), configured in [source.json](../../../../assets/aircraft/p51d-mustang-120/source.json).
 
 ## RC aircraft and engine evidence
 

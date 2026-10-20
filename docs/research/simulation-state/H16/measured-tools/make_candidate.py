@@ -1,0 +1,20 @@
+from pathlib import Path
+import shutil
+w = Path('tmp/perf-pass2-20261019')
+s = (w/'base/app/sim/flight_session.gd').read_text()
+a = s.index('func _ground_evaluation(')
+b = s.index('\n\n## Sums two optional', a)
+original = s[a:b]
+candidate = original.replace('-> Dictionary:\n', '-> Dictionary:\n\t# Stage-local queries: the normalized model/layout does not change during this evaluation.\n\tvar retractable: bool = gear_is_retractable()\n', 1)
+body_at = candidate.index('\n\tif gear_is_retractable()')
+candidate = candidate[:body_at] + candidate[body_at:].replace('gear_is_retractable()', 'retractable')
+candidate = candidate.replace('\tif soft_hull_contacts:\n', '\tif soft_hull_contacts:\n\t\tvar glow: bool = glow_is_active()\n', 1)
+body_at = candidate.index('\n\t\tif glow_is_active()')
+candidate = candidate[:body_at] + candidate[body_at:].replace('glow_is_active()', 'glow')
+candidate = candidate.replace('\tif wheel_count() == 0:', '\tvar wheel_total: int = wheel_count()\n\tif wheel_total == 0:', 1)
+candidate = candidate.replace('\tif values.size() != wheel_index() + wheel_count():', '\tvar first_wheel: int = wheel_index()\n\tif values.size() != first_wheel + wheel_total:', 1)
+candidate = candidate.replace('values.slice(wheel_index(), wheel_index() + wheel_count())', 'values.slice(first_wheel, first_wheel + wheel_total)')
+candidate = candidate.replace('rates.size() != wheel_count()', 'rates.size() != wheel_total')
+(w/'flight_session_candidate.gd').write_text(s[:a]+candidate+s[b:])
+shutil.copyfile('tmp/perf-20261019-work/paired_session.gd', w/'paired_session.gd')
+print('Candidate limited to _ground_evaluation')

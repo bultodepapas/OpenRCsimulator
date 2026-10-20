@@ -330,7 +330,7 @@
         "value": 0.373927,
         "unit": "kg",
         "kind": "derived",
-        "source": "FUEL-05c: half of the 1 l tank x app/data/fuels/openrc-fuel-registry.json blend gasoline_premix_40_1 (747.85 kg/m3 at 288.15 K); prescribed flight state (no consumption)"
+        "source": "FUEL-05c: half of the 1 l tank x app/data/fuels/openrc-fuel-registry.json blend gasoline_premix_40_1 (747.85 kg/m3 at 288.15 K); authored reference fuel for finite gasoline_bsfc_v1 consumption"
       },
       "position": {
         "value": [
@@ -2450,7 +2450,23 @@
         ]
       }
     },
-    "kind": "glow_prop"
+    "kind": "glow_prop",
+    "fuel_consumption": {
+      "law": "gasoline_bsfc_v1",
+      "tank_id": "main_tank",
+      "bsfc": {
+        "value": 0.5,
+        "unit": "kg/kWh",
+        "kind": "estimated",
+        "source": "FUEL-08: 500 g/kWh proxy within the documented 406-580 g/kWh small gasoline-engine evidence band (FUEL-00; Moulton 2007 and Horn 2015); not measured on the DA-120"
+      },
+      "idle_flow": {
+        "value": 8e-05,
+        "unit": "kg/s",
+        "kind": "estimated",
+        "source": "FUEL-08: explicit 4.8 g/min idle baseline; no published DA-120/gasoline idle flow found in FUEL-00"
+      }
+    }
   },
   "landing_gear": {
     "description": "P51-11b: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Pneumatic RC retracts with sequenced air-cylinder doors (CARF 1:4.3 manual); kinematics, timing and drag are estimates, not measured on a built model.",
@@ -3812,7 +3828,7 @@
     "controls": "conventional",
     "gear": "retractable_taildragger",
     "propulsion_layout": "single_tractor",
-    "energy": "prescribed_fuel",
+    "energy": "finite_liquid_fuel",
     "damage": "terminal_hull",
     "flaps": "simulated"
   },

@@ -24,6 +24,10 @@ const DISPLAY_GAIN := 25.0
 ## Mean of the quad's profile exp(−4r²) over [−1, 1]² ((∫e^(−4x²)dx)²/4).
 const PROFILE_MEAN := 0.1945
 
+# One content-keyed catalogue; placements and render resources remain detached.
+static var _catalogue_source := ""
+static var _catalogue_stars: Array = []
+
 
 ## Unit vector in render axes for an (azimuth from north clockwise, elevation) in degrees.
 static func _local(azimuth_deg: float, elevation_deg: float) -> Vector3:
@@ -69,11 +73,38 @@ static func rows() -> Array:
 	var f := FileAccess.open(DATA_PATH, FileAccess.READ)
 	if f == null:
 		return []
-	var data: Variant = JSON.parse_string(f.get_as_text())
+	return _rows_from_source(f.get_as_text())
+
+
+static func _rows_from_source(source: String) -> Array:
+	var data: Variant = JSON.parse_string(source)
 	if not (data is Dictionary) or data.get("format", "") != "openrc-stars v1":
 		push_warning("star list missing or invalid; the night sky stays empty")
 		return []
 	return data.rows
+
+
+static func _placements_for_source(source: String, to_render: Basis) -> Array:
+	var out := []
+	if source == _catalogue_source and not _catalogue_stars.is_empty():
+		for star: Array in _catalogue_stars:
+			out.append({dir = to_render * star[0], colour = star[1], flux = star[2]})
+		return out
+	var prepared := _rows_from_source(source)
+	for row: Array in prepared:
+		var direction := equatorial(float(row[0]) / 1000.0, float(row[1]) / 1000.0)
+		var star_colour := colour(float(row[3]) / 100.0)
+		var flux := pow(10.0, -0.4 * float(row[2]) / 100.0)
+		out.append({dir = to_render * direction, colour = star_colour, flux = flux})
+		# Reuse this private parsed row rather than allocate another per-star container.
+		row[0] = direction
+		row[1] = star_colour
+		row[2] = flux
+		row.resize(3)
+	# Empty or rejected source retires the previous prepared catalogue.
+	_catalogue_source = source if not prepared.is_empty() else ""
+	_catalogue_stars = prepared
+	return out
 
 
 ## Peak quad radiance of a V = 0 star in scene units (sun irradiance = 1), display compensation included.
@@ -86,11 +117,12 @@ static func radiance_scale() -> float:
 ## (the headless renderer keeps no MultiMesh instance data).
 static func placements(state: Dictionary, latitude_deg: float) -> Array:
 	var out := []
-	var to_render := equatorial_basis(state.lst_deg, latitude_deg)
-	for row: Array in rows():
-		out.append({dir = to_render * equatorial(float(row[0]) / 1000.0, float(row[1]) / 1000.0),
-			colour = colour(float(row[3]) / 100.0), flux = pow(10.0, -0.4 * float(row[2]) / 100.0)})
-	return out
+	var file := FileAccess.open(DATA_PATH, FileAccess.READ)
+	if file == null:
+		_catalogue_source = ""
+		_catalogue_stars = []
+		return out
+	return _placements_for_source(file.get_as_text(), equatorial_basis(state.lst_deg, latitude_deg))
 
 
 ## The star field for a time-of-day state (render/world/sky_state.gd) at a latitude. Uses the sky material's cloud

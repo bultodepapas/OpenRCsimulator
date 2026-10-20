@@ -1,0 +1,94 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\run-0.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.674406290054321
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\run-1.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.674113988876343
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\run-2.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.581007480621338
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\run-3.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.484867334365845
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\run-4.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.131093502044678
+  }
+]

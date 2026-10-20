@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "OpenRC aircraft v2 runtime structural contract",
   "description": "Small runtime vocabulary for closed object shapes, quantities, selectors and supported capability relations. Numeric ranges remain in the generated schema and AircraftData physical derivation. Runtime-coupled invariants are implemented in AircraftContract; static counterparts are mirrored in the generated schema where possible.",
-  "spec_version": 1,
+  "spec_version": 2,
   "format": "openrc-aircraft v2",
   "convention_id": "openrc-le-frd-v1",
   "capabilities": {
@@ -26,6 +26,7 @@
       "fixed_voltage",
       "ocv_resistance",
       "finite_glow_fuel",
+      "finite_liquid_fuel",
       "pack_ecm"
     ],
     "damage": [
@@ -575,6 +576,7 @@
         "description",
         "engine",
         "propeller",
+        "fuel_consumption",
         "id"
       ]
     },
@@ -597,6 +599,7 @@
         "thrust_line_offset",
         "intake_offset",
         "thrust_angles",
+        "fuel_consumption",
         "id"
       ]
     },
@@ -1073,7 +1076,57 @@
         "capacity",
         "unusable",
         "pickup",
-        "feed"
+        "feed",
+        "reserve",
+        "pickup_position",
+        "feed_line"
+      ]
+    },
+    {
+      "path": "/fuel_system/tanks/*/feed_line",
+      "required": [
+        "id",
+        "liquid_inventory_id",
+        "capacity"
+      ],
+      "allowed": [
+        "id",
+        "liquid_inventory_id",
+        "capacity"
+      ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption",
+      "when": {
+        "path": "/propulsion/fuel_consumption/law",
+        "equals": "gasoline_bsfc_v1"
+      },
+      "required": [
+        "law",
+        "tank_id",
+        "bsfc",
+        "idle_flow"
+      ],
+      "allowed": [
+        "law",
+        "tank_id",
+        "bsfc",
+        "idle_flow"
+      ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption",
+      "when": {
+        "path": "/propulsion/fuel_consumption/law",
+        "equals": "turbine_map_v1"
+      },
+      "required": [
+        "law",
+        "tank_id"
+      ],
+      "allowed": [
+        "law",
+        "tank_id"
       ]
     }
   ],
@@ -1131,7 +1184,12 @@
     "/flaps/*",
     "/balance/cg_range/*",
     "/fuel_system/tanks/*/capacity",
-    "/fuel_system/tanks/*/unusable"
+    "/fuel_system/tanks/*/unusable",
+    "/fuel_system/tanks/*/reserve",
+    "/fuel_system/tanks/*/pickup_position",
+    "/fuel_system/tanks/*/feed_line/capacity",
+    "/propulsion/fuel_consumption/bsfc",
+    "/propulsion/fuel_consumption/idle_flow"
   ],
   "array_rules": [
     {
@@ -1271,6 +1329,18 @@
     {
       "path": "/fuel_system/tanks/*/shell_inventory_id",
       "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/feed_line/id",
+      "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/feed_line/liquid_inventory_id",
+      "nonempty": true
+    },
+    {
+      "path": "/propulsion/fuel_consumption/tank_id",
+      "nonempty": true
     }
   ],
   "enum_paths": [
@@ -1306,6 +1376,13 @@
         "glow_prop",
         "turbine",
         "electric_prop"
+      ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption/law",
+      "values": [
+        "gasoline_bsfc_v1",
+        "turbine_map_v1"
       ]
     },
     {
@@ -1369,6 +1446,7 @@
         "fixed_voltage",
         "ocv_resistance",
         "finite_glow_fuel",
+        "finite_liquid_fuel",
         "pack_ecm"
       ]
     },

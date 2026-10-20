@@ -1,0 +1,127 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok jensen-das-ugly-stik-60-e0.6-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d30-f50-a30 underside cue hidden from above: 
+ok jensen-das-ugly-stik-60-e0.6-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d200-f6-a30 underside cue hidden from above: 
+ok jensen-das-ugly-stik-60-e0.6-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e0.6-d600-f1-a30 underside cue hidden from above: 
+ok jensen-das-ugly-stik-60-e30.0-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d30-f50-a-30 underside light remains visible: 26 brightened pixels
+ok jensen-das-ugly-stik-60-e30.0-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d30-f50-a30 underside cue hidden from above: 
+ok jensen-das-ugly-stik-60-e30.0-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d200-f6-a-30 underside light remains visible: 35 brightened pixels
+ok jensen-das-ugly-stik-60-e30.0-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d200-f6-a30 underside cue hidden from above: 
+ok jensen-das-ugly-stik-60-e30.0-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d600-f1-a-30 underside light remains visible: 66 brightened pixels
+ok jensen-das-ugly-stik-60-e30.0-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok jensen-das-ugly-stik-60-e30.0-d600-f1-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e0.6-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d30-f50-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e0.6-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d200-f6-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e0.6-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e0.6-d600-f1-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e30.0-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d30-f50-a-30 underside light remains visible: 27 brightened pixels
+ok gp-extra-300s-60-e30.0-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d30-f50-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e30.0-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d200-f6-a-30 underside light remains visible: 33 brightened pixels
+ok gp-extra-300s-60-e30.0-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d200-f6-a30 underside cue hidden from above: 
+ok gp-extra-300s-60-e30.0-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d600-f1-a-30 underside light remains visible: 61 brightened pixels
+ok gp-extra-300s-60-e30.0-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok gp-extra-300s-60-e30.0-d600-f1-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d30-f50-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d200-f6-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e0.6-d600-f1-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a-30 underside light remains visible: 33 brightened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d30-f50-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a-30 underside light remains visible: 41 brightened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d200-f6-a30 underside cue hidden from above: 
+ok sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a-30 underside light remains visible: 83 brightened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok sebart-avanti-s-a200-p100rx-e30.0-d600-f1-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e0.6-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d30-f50-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e0.6-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d200-f6-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e0.6-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e0.6-d600-f1-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e30.0-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d30-f50-a-30 underside light remains visible: 43 brightened pixels
+ok p51d-mustang-120-e30.0-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d30-f50-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e30.0-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d200-f6-a-30 underside light remains visible: 59 brightened pixels
+ok p51d-mustang-120-e30.0-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d200-f6-a30 underside cue hidden from above: 
+ok p51d-mustang-120-e30.0-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d600-f1-a-30 underside light remains visible: 112 brightened pixels
+ok p51d-mustang-120-e30.0-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok p51d-mustang-120-e30.0-d600-f1-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e0.6-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d30-f50-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e0.6-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d200-f6-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e0.6-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e0.6-d600-f1-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e30.0-d30-f50-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d30-f50-a-30 underside light remains visible: 24 brightened pixels
+ok turbo-lumber-evolution-e30.0-d30-f50-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d30-f50-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e30.0-d200-f6-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d200-f6-a-30 underside light remains visible: 32 brightened pixels
+ok turbo-lumber-evolution-e30.0-d200-f6-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d200-f6-a30 underside cue hidden from above: 
+ok turbo-lumber-evolution-e30.0-d600-f1-a-30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d600-f1-a-30 underside light remains visible: 62 brightened pixels
+ok turbo-lumber-evolution-e30.0-d600-f1-a30 adds light without dark blocks: 0 darkened pixels
+ok turbo-lumber-evolution-e30.0-d600-f1-a30 underside cue hidden from above: 
+ok strip-720p-f50 respects pixel size under zoom: 2 lit rows
+ok sprite-720p-f50 respects pixel size under zoom: 4 lit rows
+ok strip-720p-f6 respects pixel size under zoom: 2 lit rows
+ok sprite-720p-f6 respects pixel size under zoom: 4 lit rows
+ok strip-720p-f1 respects pixel size under zoom: 2 lit rows
+ok sprite-720p-f1 respects pixel size under zoom: 4 lit rows
+ok strip-1080p-f50 respects pixel size under zoom: 2 lit rows
+ok sprite-1080p-f50 respects pixel size under zoom: 4 lit rows
+ok strip-1080p-f6 respects pixel size under zoom: 2 lit rows
+ok sprite-1080p-f6 respects pixel size under zoom: 4 lit rows
+ok strip-1080p-f1 respects pixel size under zoom: 2 lit rows
+ok sprite-1080p-f1 respects pixel size under zoom: 4 lit rows
+ok orthographic aspect 1 strip remains pixel-sized: 2 lit rows
+ok orthographic aspect 1 sprite remains pixel-sized: 4 lit rows
+ok orthographic aspect 0 strip remains pixel-sized: 2 lit rows
+ok orthographic aspect 0 sprite remains pixel-sized: 4 lit rows
+ok opaque foreground hides strip: 
+ok opaque foreground hides sprite: 
+123 GPU checks; passed

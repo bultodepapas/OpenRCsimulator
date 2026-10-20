@@ -97,6 +97,41 @@ class FlightLogCsvTests(unittest.TestCase):
         with self.assertRaisesRegex(flight_log.FlightLogError, "missing required columns: Fx_N"):
             flight_log.summarize_csv(source)
 
+    def test_indexed_header_bounds_preserve_decimal_column_names(self) -> None:
+        path = Path("indexed.csv")
+        for indexed_names in (
+            ("aux_4", "aux_5"),
+            ("aux_0004", "aux_0005"),
+            ("aux_٤", "aux_٥"),
+            ("aux_" + "0" * 5000 + "4",),
+            ("continuous_0", "continuous_1", "mode_0", "mode_1"),
+        ):
+            with self.subTest(indexed_names=indexed_names):
+                header = (*flight_log.REQUIRED_COLUMNS, *indexed_names)
+                self.assertEqual(flight_log._validate_header(header, path), header)
+
+        with self.assertRaisesRegex(
+            flight_log.FlightLogError, "aux_ columns must be contiguous from 4"
+        ):
+            flight_log._validate_header(
+                (*flight_log.REQUIRED_COLUMNS, "aux_4", "aux_6"), path
+            )
+
+    def test_oversized_indexed_suffix_is_a_controlled_cli_error(self) -> None:
+        source = self.directory / "oversized-indexed-header.csv"
+        fields = (*flight_log.REQUIRED_COLUMNS, "aux_" + ("9" * 5000))
+        with source.open("w", encoding="utf-8", newline="") as stream:
+            csv.writer(stream, lineterminator="\n").writerow(fields)
+
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = flight_log.main(["summarize", str(source)])
+
+        self.assertEqual(result, 2)
+        self.assertIn("error:", stderr.getvalue())
+        self.assertIn("aux_ columns must be contiguous from 4", stderr.getvalue())
+        self.assertNotIn("Traceback", stderr.getvalue())
+
     def test_duplicate_headers_nonfinite_values_and_truncated_rows_fail(self) -> None:
         duplicate = self.directory / "duplicate.csv"
         duplicate.write_text(",".join(HEADER + ["tick"]) + "\n", encoding="utf-8")

@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_workshop_virtual_size.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:50:55.561349+00:00",
+  "label": "workshop-virtual-size",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\workshop-virtual-size-j164t82a\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-extreme\\checks\\workshop-virtual-size-j164t82a\\report.json",
+  "timeout_seconds": 60,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Workshop virtual size:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.078,
+  "log_bytes": 406,
+  "log_sha256": "14c52f60a54854663748b692462618847123b16de7553309f3f443f440dd2224"
+}

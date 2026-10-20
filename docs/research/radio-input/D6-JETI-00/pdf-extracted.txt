@@ -1,0 +1,40 @@
+--- Page 1 / 4 ---
+JETI Transmitters in OpenRCsimulator by bultodepapas 
+JETI transmitters uses USB HID mode when connected with USB cable to the PC. Transmitter 
+is detected correctly in the simulator. Description is little bit longer, so the initial ‘J’ is missing. 
+ 
+All control axes work out-of-box. No further config needed here. Default settings, as shown 
+on the screenshot, corresponds to the ‘Mode 2’ on our transmitters. I am not a RC pilot, but I 
+was able to take off and control the airplane. So far so good. 
+ 
+This is a little bit problematic, as should expected. Binding labels are from a controller and it 
+is hard to link the description with physical switch on the transmitter. However, button 
+
+
+--- Page 2 / 4 ---
+remapping works as it should. Since you can’t identify the switch on the transmitter from the 
+description, you may get a lot of conflicts at first. So, it is better to clear all assignments first 
+and to do it again from scratch. Ideally a custom profile with real names corresponding to the 
+transmitter should be available. 
+ 
+Below I will try to explain, how transmitter controls are mapped to the default windows 
+controller testing tool. As an example, a DC-16II transmitter is given. There are 4 main axes 
+and 4 potentiometers. These are mapped to the axes/rotation/sliders on the PC. On the 
+transmitter there are several buttons/switches with prefix ‚S‘, for instance Sa…Sj. With our 
+transmitter you have freedom to choose any type of switch on any position, therefore every 
+switch is represented with 3 buttons on the HID protocol. In this ideology some of the 
+buttons may end up unused when you use for example 2pos switch instead of 3pos. I hope it 
+will be clearer from a screenshot below (from windows controller test tool). Switch ‘Sa’ is 
+represented by 3 buttons on the controller, button 1-3. Button 1 is activated when ‘Sa’ is in 
+‘up’ state, button 2 when ‘Sa’ is in ‘middle’ state and button 3 when ‘Sa’ is in ‘bottom’ state. 
+That means that buttons in each triplet are exclusive – only 1 of them will be active at a time. 
+
+
+--- Page 3 / 4 ---
+If switch ‘Sa’ is 2pos switch, then only positions ‘up’ and ‘down’ will be available and position 
+‘middle’ (button 2) will be left unused. I hope the description will help you a little bit. 
+ 
+
+
+--- Page 4 / 4 ---
+ 

@@ -42,6 +42,20 @@ const SVS_CASES := {
 	svs_south_full = {frame = 52, args = ["--date=2026-01-03", "--time=03:00", "--utc_offset=0", "--lat=-34.6037", "--lon=-58.3816"]},
 }
 
+## FW-MOON-10 (--cases=eclipse): the total lunar eclipse of 2028-12-31 (greatest 16:52 UT, umbral magnitude 1.246).
+## Phases seen from 30° N 90° E, where the moon is high; the moonrise over the reference field at dusk.
+const ECLIPSE_CASES := {
+	eclipse_a_penumbral = ["--date=2028-12-31", "--time=14:40", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_b_partial = ["--date=2028-12-31", "--time=15:30", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_c_deep_partial = ["--date=2028-12-31", "--time=16:05", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_d_total_start = ["--date=2028-12-31", "--time=16:20", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_e_greatest = ["--date=2028-12-31", "--time=16:52", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_f_partial_out = ["--date=2028-12-31", "--time=17:50", "--utc_offset=0", "--lat=30", "--lon=90"],
+	eclipse_moonrise = ["--date=2028-12-31", "--time=17:20", "--utc_offset=0"],
+	# The next total eclipse in front of the pilot in full darkness at the reference field (FW-MOON-10 scan).
+	eclipse_field_2032 = ["--date=2032-10-18", "--time=19:00", "--utc_offset=0"],
+}
+
 var _args: Dictionary = {}
 var _viewport: SubViewport
 var _field: Dictionary
@@ -79,8 +93,11 @@ func _run() -> void:
 	if names.has("svs"):
 		names.erase("svs")
 		names.append_array(SVS_CASES.keys())
+	if names.has("eclipse"):
+		names.erase("eclipse")
+		names.append_array(ECLIPSE_CASES.keys())
 	for case_id: String in names:
-		if not CASES.has(case_id) and not SVS_CASES.has(case_id):
+		if not CASES.has(case_id) and not SVS_CASES.has(case_id) and not ECLIPSE_CASES.has(case_id):
 			printerr("unknown case " + case_id)
 			_failures += 1
 			continue
@@ -94,7 +111,7 @@ func _run() -> void:
 
 func _capture_case(case_id: String, out: String) -> void:
 	var svs: Dictionary = SVS_CASES.get(case_id, {})
-	var arguments: Array = svs.args if not svs.is_empty() else CASES[case_id]
+	var arguments: Array = svs.args if not svs.is_empty() else (ECLIPSE_CASES[case_id] if ECLIPSE_CASES.has(case_id) else CASES[case_id])
 	var conditions := Conditions.resolve(PackedStringArray(arguments))
 	if not conditions.get("time_of_day", false):
 		printerr("conditions did not resolve for " + case_id)

@@ -4,7 +4,7 @@
 
 **Status: Complete. Bounded read-only audit of the current working tree.** No runtime files were changed and no tests were run.
 
-This is the pre-migration audit. AS-03 subsequently added the selected-ID/version guard and actual authored-throw hinge checks. The concurrent ground team added wheel profiles and live wheel presentation after this snapshot; see the [current contract](../../../../AIRCRAFT_CONTRACT.md) and [module supplement](../AS-01/module-semantics.md#concurrent-ground-profile-interface). The findings below retain the observed baseline, rather than attributing those later changes to AS.
+This is the pre-migration audit. AS-03 subsequently added the selected-ID/version guard and actual authored-throw hinge checks. The concurrent ground team added wheel profiles and live wheel presentation after this snapshot; see the [current contract](../../../AIRCRAFT_CONTRACT.md) and [module supplement](../AS-01/module-semantics.md#concurrent-ground-profile-interface). The findings below retain the observed baseline, rather than attributing those later changes to AS.
 
 ## Route through the app
 

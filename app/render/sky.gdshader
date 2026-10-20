@@ -39,7 +39,19 @@ uniform float lobe2_height = 1.5708;
 uniform vec3 light2_dir = vec3(0.0, 1.0, 0.0);
 uniform float light1_weight = 1.0;
 uniform float light2_weight = 0.0;
+// FW-MOON-08a: the moon's aureole (SkyState.moon_aureole × Atmosphere.aureole_aerosol_factor; zero = none) and the
+// V extinction per airmass of its path term (the stars' value).
+uniform vec3 moon_aureole_lin = vec3(0.0);
+uniform float moon_aureole_k = 0.2;
 uniform float sun_disc = 1.0;                      // 0 when the light is the moon (FW-23)
+// SUN-01 (docs/plans/sun.md; numbers in render/sun/sun_optics.gd). Defaults draw the L1a disc exactly: no limb
+// darkening (0), no refraction flattening (1), no aerosol aureole (zero).
+uniform float sun_limb = 0.0;
+uniform float sun_squash = 1.0;                    // apparent / true vertical size of a low disc
+uniform vec3 sun_aureole_lin = vec3(0.0);          // SunOptics.aureole_lin: sun_lin · 10^6.15 · nL/fc→sr⁻¹ · aerosols
+uniform float sun_aureole_k = 0.2;                 // V extinction per airmass in the aureole's path term
+const float SUN_LIMB_U = 0.93;                     // SunOptics.LIMB_U / LIMB_V (quadratic law near 550 nm)
+const float SUN_LIMB_V = -0.23;
 // FW-24 moon, photometric since FW-MOON-03: uniforms and disc in moon_disc.gdshaderinc; zero moon_lin = no moon.
 #include "res://render/world/moon_disc.gdshaderinc"
 
@@ -85,6 +97,82 @@ float relief_directionality() {
 	return abs(light1_weight - light2_weight);
 }
 
+// FW-MOON-08a: Krisciunas & Schaefer's (1991) aerosol scattering around the moon: 6.2·10⁷·ρ⁻² near the moon (eq. 19),
+// 10^(6.15 − ρ/40) farther out (eq. 21). The larger of the two within 30° joins them continuously at 8.4° (KS91 switch at
+// 10° with a 28 % step); beyond 30° only eq. 21. The table's moonlit sky and horizon lobe already carry the moon's
+// diffuse scattering, so only the forward peak is added: the term above its value at 45° (zero from 45° on, and at the
+// zenith anchor whenever the moon is lower than 45°). Times the path term (1 − 10^(−0.4·k·X)) / (1 − 10^(−0.4·k))
+// with X = (1 − 0.96·sin²Z)^−½ (eq. 3). Shown as the eye adapted to the moon sees it: the same local adaptation as the
+// disc (moon_display_gamma; 1 = physical, by day), applied to the brightening over the sky behind it.
+vec3 moon_aureole(vec3 d, vec3 background) {
+	if (dot(moon_aureole_lin, vec3(1.0)) <= 0.0) {
+		return vec3(0.0);
+	}
+	float rho = max(degrees(acos(clamp(dot(d, moon_dir), -1.0, 1.0))), degrees(moon_radius));
+	if (rho >= 45.0) {
+		return vec3(0.0);
+	}
+	float far_shape = pow(10.0, -rho / 40.0);
+	float shape = (rho < 30.0 ? max(43.80 / (rho * rho), far_shape) : far_shape) - 0.07499; // 6.2e7 / 10^6.15 = 43.80; 10^(−45/40)
+	float sin_z = min(length(d.xz), 1.0);
+	float airmass = inversesqrt(1.0 - 0.96 * sin_z * sin_z);
+	float path = (1.0 - pow(10.0, -0.4 * moon_aureole_k * airmass)) / (1.0 - pow(10.0, -0.4 * moon_aureole_k));
+	vec3 a = moon_aureole_lin * shape * path;
+	float la = dot(a, vec3(0.2126, 0.7152, 0.0722));
+	float lb = max(dot(background, vec3(0.2126, 0.7152, 0.0722)), 1e-12);
+	float shown = lb * (pow(1.0 + la / lb, moon_display_gamma) - 1.0);
+	// A soft knee keeps the glow below the disc as shown. At the limb KS91 puts it at ~0.5 % of the disc's radiance;
+	// shown with the disc's own γ that is 0.005^γ of the displayed disc (5 % at night), so the limb never washes out.
+	// The bright core people see around the moon is mostly the eye's own straylight (the glare veil), not this.
+	// FW-MOON-10: in an eclipse the disc as shown is the eclipsed one (moon_eclipse_dim; 1 otherwise, exact).
+	float knee = pow(0.005, moon_display_gamma) * dot(moon_lin, vec3(0.2126, 0.7152, 0.0722)) * moon_display_scale * moon_eclipse_dim;
+	shown = knee > 0.0 ? shown * knee / (knee + shown) : shown;
+	return la > 0.0 ? a * (shown / la) : vec3(0.0);
+}
+
+// SUN-01: KS91's aerosol aureole around the sun (the moon_aureole law above), anchored to the sun's own illuminance
+// rather than the zenith, flat inside 1° (the LDR disc cannot carry the ρ⁻² peak) and only above its 45° value (the
+// sky table's lobe already holds the diffuse part). Compressed below 0.4 of the disc's mean radiance, under its
+// limb-darkened edge, so a low, reddened disc stays distinct inside its glow; the eye's veil adds the rest.
+vec3 sun_aureole(vec3 d, vec3 dir) {
+	if (dot(sun_aureole_lin, vec3(1.0)) <= 0.0) {
+		return vec3(0.0);
+	}
+	float rho = max(degrees(acos(clamp(dot(d, dir), -1.0, 1.0))), 1.0);
+	if (rho >= 45.0) {
+		return vec3(0.0);
+	}
+	float far_shape = pow(10.0, -rho / 40.0);
+	float shape = (rho < 30.0 ? max(43.80 / (rho * rho), far_shape) : far_shape) - 0.07499;
+	float sin_z = min(length(d.xz), 1.0);
+	float airmass = inversesqrt(1.0 - 0.96 * sin_z * sin_z);
+	vec3 a = sun_aureole_lin * shape * (1.0 - pow(10.0, -0.4 * sun_aureole_k * airmass));
+	float la = dot(a, vec3(0.2126, 0.7152, 0.0722));
+	float disc = 0.4 * (4.0 / PI) * dot(sun_lin, vec3(0.2126, 0.7152, 0.0722)); // SunOptics.AUREOLE_DISC_SHARE
+	return a / (1.0 + la / max(disc, 1e-12));
+}
+
+// SUN-01: the disc's profile (0 outside, the L1a edge ramp) with refraction flattening along the local vertical and
+// the photosphere's limb darkening, divided by its disc mean (1 − u/3 − v/2) so the calibrated brightness stays.
+float sun_disc_profile(vec3 d, vec3 dir) {
+	float c = dot(d, dir);
+	vec3 o = d - dir * c;
+	vec3 up_sky = vec3(0.0, 1.0, 0.0) - dir * dir.y;
+	float up_len = length(up_sky);
+	if (up_len > 1e-4) {
+		up_sky /= up_len;
+		o += up_sky * (dot(o, up_sky) * (1.0 / max(sun_squash, 0.1) - 1.0));
+	}
+	float ang = asin(clamp(length(o), 0.0, 1.0));
+	if (c <= 0.0) {
+		return 0.0;
+	}
+	float rr = min(ang / max(sun_radius, 1e-6), 1.0);
+	float mu = sqrt(max(1.0 - rr * rr, 0.0));
+	float law = (1.0 - SUN_LIMB_U * (1.0 - mu) - SUN_LIMB_V * (1.0 - mu * mu)) / (1.0 - SUN_LIMB_U / 3.0 - SUN_LIMB_V / 2.0);
+	return (1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang)) * mix(1.0, law, clamp(sun_limb, 0.0, 1.0));
+}
+
 vec3 haze(vec3 d) {
 	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(d);
 }
@@ -107,7 +195,13 @@ void sky() {
 	// FW-MOON-01/03b: the disc stays out of the radiance cubemap (a sub-texel highlight in ambient and reflections);
 	// reflection probes draw the background pass, so the lake still sees it.
 	if (!AT_CUBEMAP_PASS) {
+		col += moon_aureole(EYEDIR, col); // FW-MOON-08a: over the sky behind it, before the disc
 		col += moon_disc(EYEDIR); // before the clouds, which hide it
+	}
+	if (!AT_CUBEMAP_PASS && sun_disc > 0.0) {
+		// SUN-01, under the clouds. Faded out over the last 2° above the horizon, which must stay the engine's fog colour
+		// (the ground and ridges fog toward haze() without it).
+		col += sun_aureole(EYEDIR, disc_cloud_occlusion ? disc_dir : sun_dir) * smoothstep(0.0, 0.035, EYEDIR.y);
 	}
 	float density = 0.0;
 	float cirrus_amount = 0.0;
@@ -208,7 +302,11 @@ void sky() {
 	}
 	vec3 disc_direction = disc_cloud_occlusion ? disc_dir : sun_dir;
 	float ang = acos(clamp(dot(EYEDIR, disc_direction), -1.0, 1.0));
-	vec3 solar = (sun_lin / PI) * (exp(-ang * 18.0) * 0.35 + 4.0 * (1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang)));
+	float disc_shape = 1.0 - smoothstep(0.9 * sun_radius, 1.1 * sun_radius, ang);
+	if (!AT_CUBEMAP_PASS && (sun_limb > 0.0 || sun_squash != 1.0)) {
+		disc_shape = sun_disc_profile(EYEDIR, disc_direction); // SUN-01; the radiance cubemap keeps the L1a disc
+	}
+	vec3 solar = (sun_lin / PI) * (exp(-ang * 18.0) * 0.35 + 4.0 * disc_shape);
 	if (disc_cloud_occlusion) {
 		// Estimated optical thickness; use the same density as the visible deck.
 		solar *= exp(-8.0 * (density + cirrus_amount)) * step(0.0, EYEDIR.y);

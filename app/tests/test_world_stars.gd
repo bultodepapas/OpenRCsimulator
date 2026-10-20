@@ -7,6 +7,7 @@ const Ephemeris := preload("res://render/world/ephemeris.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const Stars := preload("res://render/world/stars.gd")
+const CacheShaderClock := preload("res://render/shader_clock.gd")
 const World := preload("res://render/world/world.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
@@ -30,6 +31,7 @@ func _az_el(d: Vector3) -> Vector2:
 
 
 func _initialize() -> void:
+	CacheShaderClock.register()
 	var c := Conditions.resolve(PackedStringArray(["--time_of_day=night_dark"]))
 	var sky := Ephemeris.sky(c.when)
 	var basis := Stars.equatorial_basis(sky.lst_deg, c.when.latitude_deg)
@@ -97,5 +99,121 @@ func _initialize() -> void:
 		int(storm_material.get_shader_parameter("appearance_layer_count")) == 0
 		and float(storm_material.get_shader_parameter("appearance_cloud_density")) == 0.0)
 	storm_stars.free()
+	_test_cached_catalogue()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_cached_catalogue() -> void:
+	var data_path := "user://stars_cache_regression_%d_%d.json" % [OS.get_process_id(), Time.get_ticks_usec()]
+	if FileAccess.file_exists(data_path):
+		_check("cache test refuses an existing user file", false, data_path)
+		return
+	var api := _star_cache_api(data_path)
+	if api == null:
+		return
+	var state := {lst_deg = 137.25}
+	var clouds := {profile_id = "classic", seed = 1253, offset = Vector2.ZERO}
+	var first_text := _star_cache_text(101287)
+	if not _star_cache_write(data_path, first_text):
+		_check("owned JSON writes", false, data_path)
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path))
+		return
+	_check("owned JSON writes", true)
+	var first_rows: Array = api.rows()
+	var first: Array = api.placements(state, 4.7)
+	var repeat: Array = api.placements(state, 4.7)
+	_check("unchanged source repeats placements", first == repeat)
+	var expected: Dictionary = first[0].duplicate(true)
+	first[0].dir = Vector3.ZERO
+	first[0].colour = Color.BLACK
+	first[0].flux = -1.0
+	first_rows[0][0] = -1
+	var fresh_rows: Array = api.rows()
+	var fresh: Array = api.placements(state, 4.7)
+	_check("row mutation is detached", fresh_rows[0][0] == 101287)
+	_check("placement and dictionary mutation are detached", fresh[0] == expected)
+	_check("owned catalogue can be removed", DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path)) == OK)
+	var missing: Array = api.placements(state, 4.7)
+	_check("missing catalogue never returns cached stars", missing.is_empty())
+	if not _star_cache_write(data_path, first_text):
+		_check("catalogue recovers after missing file", false)
+		return
+	_check("catalogue recovers after missing file", api.placements(state, 4.7)[0] == expected)
+	var turned: Array = api.placements({lst_deg = 151.0}, 4.7)
+	_check("basis still follows current sky state", turned[0].dir != expected.dir)
+	var changed_text := _star_cache_text(101288)
+	_check("same-length source fixture", changed_text.length() == first_text.length())
+	if not _star_cache_write(data_path, changed_text):
+		_check("same-length source rewrite", false)
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path))
+		return
+	_check("same-length source rewrite", true)
+	var changed_rows: Array = api.rows()
+	var changed: Array = api.placements(state, 4.7)
+	_check("public rows see same-length edit", changed_rows[0][0] == 101288)
+	_check("content key refreshes prepared catalogue", changed[0].dir != expected.dir)
+	var empty_text := JSON.stringify({"format": "openrc-stars v1", "rows": []})
+	if not _star_cache_write(data_path, empty_text):
+		_check("valid empty source writes", false)
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path))
+		return
+	_check("valid empty source writes", true)
+	var empty_rows: Array = api.rows()
+	var empty: Array = api.placements(state, 4.7)
+	var empty_tree: Node3D = api.build(state, 4.7, clouds) as Node3D
+	_check("valid empty catalogue clears placements", empty_rows.is_empty() and empty.is_empty())
+	_check("empty build has no stale star field", empty_tree.get_node_or_null("StarField") == null)
+	if not _star_cache_write(data_path, changed_text):
+		_check("catalogue recovers after empty source", false)
+		empty_tree.free()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path))
+		return
+	_check("catalogue recovers after empty source", true)
+	var recovered: Array = api.placements(state, 4.7)
+	_check("recovered catalogue is current", recovered.size() == 1 and recovered[0].dir == changed[0].dir)
+	var tree_a: Node3D = api.build(state, 4.7, clouds) as Node3D
+	var tree_b: Node3D = api.build(state, 4.7, clouds) as Node3D
+	var field_a := tree_a.get_node_or_null("StarField") as MultiMeshInstance3D
+	var field_b := tree_b.get_node_or_null("StarField") as MultiMeshInstance3D
+	_check("builds create independent trees", tree_a.get_instance_id() != tree_b.get_instance_id())
+	if field_a != null and field_b != null:
+		var quad_a := field_a.multimesh.mesh as QuadMesh
+		var quad_b := field_b.multimesh.mesh as QuadMesh
+		_check("builds own independent MultiMeshes", field_a.multimesh.get_instance_id() != field_b.multimesh.get_instance_id())
+		_check("builds own independent meshes", quad_a.get_instance_id() != quad_b.get_instance_id())
+		_check("builds own independent materials", quad_a.material.get_instance_id() != quad_b.material.get_instance_id())
+	else:
+		_check("both fresh builds contain a star field", false)
+	empty_tree.free()
+	tree_a.free()
+	tree_b.free()
+	_check("test removes only its owned JSON", DirAccess.remove_absolute(ProjectSettings.globalize_path(data_path)) == OK)
+
+
+func _star_cache_text(ra_milli: int) -> String:
+	return JSON.stringify({"format": "openrc-stars v1", "rows": [[ra_milli, -16716, 146, 65]]})
+
+
+func _star_cache_write(path: String, source: String) -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return false
+	file.store_string(source)
+	file.close()
+	return FileAccess.get_file_as_string(path) == source
+
+
+func _star_cache_api(data_path: String) -> GDScript:
+	var candidate_path := "res://render/world/stars.gd"
+	var source := FileAccess.get_file_as_string(candidate_path)
+	var old_path := 'const DATA_PATH := "res://data/sky/stars.json"'
+	if source.is_empty() or not source.contains(old_path):
+		_check("candidate source has expected data path", false, candidate_path)
+		return null
+	source = source.replace(old_path, 'const DATA_PATH := "' + data_path + '"')
+	var script := GDScript.new()
+	script.source_code = source
+	var err := script.reload()
+	_check("in-memory candidate parses", err == OK, error_string(err))
+	return script if err == OK else null

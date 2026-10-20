@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL stik_glow_61fx_2t near-zero fuel advances without fault
+FAIL stik_glow_61fx_2t exhausted source retains floor and stops
+FAIL stik_glow_61fx_2t coast retains nonnegative floor
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL stik_glow_fs64v_4t near-zero fuel advances without fault
+FAIL stik_glow_fs64v_4t exhausted source retains floor and stops
+FAIL stik_glow_fs64v_4t coast retains nonnegative floor
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FAIL gp_extra_300s_60 near-zero fuel advances without fault
+FAIL gp_extra_300s_60 exhausted source retains floor and stops
+FAIL gp_extra_300s_60 coast retains nonnegative floor
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Fuel tiny boundaries: 40 checks, 9 failed

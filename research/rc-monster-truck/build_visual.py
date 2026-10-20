@@ -5,7 +5,7 @@ import hashlib
 import json
 
 ROOT = Path(__file__).resolve().parents[2]
-DELIVERY = ROOT / 'RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte'
+DELIVERY = ROOT / 'assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte'
 FILES = {
     'out/MT8_Bisonte.glb': ('app/assets/vehicles/mt8-bisonte/MT8_Bisonte.glb', '7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6'),
     'out/mt8_spec.json': ('app/assets/vehicles/mt8-bisonte/mt8_spec.json', '8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef'),
@@ -31,7 +31,7 @@ def outputs():
         'Bisonte MT8, original model and rig delivered by the project owner.\n'
         'On 2026-10-13 the owner confirmed original authorship and authorized inclusion\n'
         'and modification in OpenRC. No third-party brand affiliation is claimed.\n'
-        'Source: RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte in the source repository.\n'
+        'Source: assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte in the source repository.\n'
         'Generated runtime copies: research/rc-monster-truck/build_visual.py.\n'
         'This authorization does not invent a separate general-purpose asset license.\n'
     ).encode()

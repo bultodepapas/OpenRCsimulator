@@ -21,8 +21,8 @@ from typing import Any
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PACKAGE = REPO_ROOT / "RC CARS" / "MT8_Bisonte_entrega1_1" / "MT8_Bisonte"
-DEFAULT_DELIVERY_GLB = REPO_ROOT / "RC CARS" / "MT8_Bisonte_1.glb"
+DEFAULT_PACKAGE = REPO_ROOT / "assets" / "source-deliveries" / "mt8-bisonte" / "MT8_Bisonte_entrega1_1" / "MT8_Bisonte"
+DEFAULT_DELIVERY_GLB = REPO_ROOT / "assets" / "source-deliveries" / "mt8-bisonte" / "MT8_Bisonte_1.glb"
 DEFAULT_OUTPUT = REPO_ROOT / "docs" / "research" / "rc-monster-truck" / "RCV-14a" / "intake.json"
 FORMAT = "openrc-rcv-asset-intake v1"
 CORNERS = ("FL", "FR", "RL", "RR")

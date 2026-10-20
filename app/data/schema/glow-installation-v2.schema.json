@@ -1,0 +1,1293 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:openrc:glow-installation:v2",
+  "title": "OpenRC glow installation v2",
+  "description": "Closed structural schema for the optional finite-tank glow installation. Cross-field temperature/mixture ordering, profile-family matching, tank membership, aircraft propeller agreement and dry-carrier inertia remain runtime semantic checks.",
+  "type": "object",
+  "required": [
+    "format",
+    "family",
+    "profile",
+    "fuel_inventory",
+    "settings",
+    "initial_temperature_k",
+    "propeller"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "openrc-glow-installation v2"
+    },
+    "family": {
+      "enum": [
+        "glow_2t",
+        "glow_4t"
+      ]
+    },
+    "profile": {
+      "type": "string",
+      "pattern": "^res://data/glow/[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*\\.json$"
+    },
+    "fuel_inventory": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "settings": {
+      "type": "object",
+      "required": [
+        "throttle_effective_area_m2",
+        "idle_opening",
+        "throttle_travel_exponent",
+        "servo_time_constant_s",
+        "air_time_constant_s",
+        "fuel_transport_time_constant_s",
+        "stall_rpm",
+        "minimum_start_rpm",
+        "starter_prime_kg",
+        "temperature_firing_min_k",
+        "temperature_firing_full_k",
+        "temperature_firing_hot_full_k",
+        "temperature_firing_hot_zero_k",
+        "lean_misfire_zero_ratio",
+        "lean_misfire_start_ratio",
+        "rich_misfire_start_ratio",
+        "rich_misfire_zero_ratio",
+        "thermal"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "throttle_effective_area_m2": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 0.01
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "idle_opening": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "exclusiveMaximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "throttle_travel_exponent": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 10.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "servo_time_constant_s": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.02,
+              "maximum": 5.0
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "air_time_constant_s": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.02,
+              "maximum": 5.0
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "fuel_transport_time_constant_s": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.02,
+              "maximum": 5.0
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "stall_rpm": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "minimum_start_rpm": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "starter_prime_kg": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 0.001
+            },
+            "unit": {
+              "const": "kg"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "temperature_firing_min_k": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 200.0,
+              "maximum": 1000.0
+            },
+            "unit": {
+              "const": "K"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "temperature_firing_full_k": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 200.0,
+              "maximum": 1000.0
+            },
+            "unit": {
+              "const": "K"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "temperature_firing_hot_full_k": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 200.0,
+              "maximum": 1000.0
+            },
+            "unit": {
+              "const": "K"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "temperature_firing_hot_zero_k": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 200.0,
+              "maximum": 1000.0
+            },
+            "unit": {
+              "const": "K"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "lean_misfire_zero_ratio": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "lean_misfire_start_ratio": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "exclusiveMaximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "rich_misfire_start_ratio": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 1.0,
+              "exclusiveMaximum": 4.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "rich_misfire_zero_ratio": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 1.0,
+              "maximum": 4.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "thermal": {
+          "type": "object",
+          "required": [
+            "heat_capacity_j_k",
+            "head_heat_fraction",
+            "cooling_base_w_k",
+            "cooling_airflow_w_s_m_k",
+            "premix_evaporation_j_kg",
+            "evaporation_head_fraction"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "heat_capacity_j_k": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "exclusiveMinimum": 0.0,
+                  "maximum": 10000.0
+                },
+                "unit": {
+                  "const": "J/K"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "head_heat_fraction": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "cooling_base_w_k": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "W/K"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "cooling_airflow_w_s_m_k": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1000.0
+                },
+                "unit": {
+                  "const": "W/(K m/s)"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "premix_evaporation_j_kg": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 10000000.0
+                },
+                "unit": {
+                  "const": "J/kg"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            },
+            "evaporation_head_fraction": {
+              "type": "object",
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "initial_temperature_k": {
+      "type": "object",
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "type": "number",
+          "minimum": 200.0,
+          "maximum": 600.0
+        },
+        "unit": {
+          "const": "K"
+        },
+        "kind": {
+          "enum": [
+            "manual",
+            "measured",
+            "borrowed",
+            "estimated",
+            "derived"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "propeller": {
+      "type": "object",
+      "required": [
+        "max_rpm",
+        "diameter_m",
+        "pitch_m",
+        "chord_m",
+        "blades",
+        "lift_slope",
+        "cd0",
+        "induced_drag"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "max_rpm": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "rpm"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "diameter_m": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "pitch_m": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "chord_m": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "blades": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 2.0,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "lift_slope": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 20.0
+            },
+            "unit": {
+              "const": "1/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "cd0": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "induced_drag": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 10.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "fuel_feed": {
+      "type": "object",
+      "required": [
+        "carburetor_position",
+        "idle_drive_pressure_pa",
+        "wot_drive_pressure_pa"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "carburetor_position": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "array",
+              "minItems": 3,
+              "maxItems": 3,
+              "items": {
+                "type": "number"
+              }
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "idle_drive_pressure_pa": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 100000.0
+            },
+            "unit": {
+              "const": "Pa"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "wot_drive_pressure_pa": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 100000.0
+            },
+            "unit": {
+              "const": "Pa"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    }
+  }
+}

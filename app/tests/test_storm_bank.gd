@@ -17,6 +17,7 @@ func _initialize() -> void:
 
 func _run_tests() -> void:
 	_test_catalog_bounds()
+	await _test_detached_world_lifecycle()
 	await _test_scene_isolation_and_reconfiguration()
 	await _test_seeded_geometry_and_rng()
 	await _test_advection_and_rebase()
@@ -40,6 +41,39 @@ func _test_catalog_bounds() -> void:
 	exposed_wrap.renderer.cloud_layers[0].scale_m = 500.0
 	_check("cloud periods that could expose the far-plane wrap are rejected",
 		not SkyConfig._validate_profile(exposed_wrap).is_empty())
+
+
+func _test_detached_world_lifecycle() -> void:
+	# HomeScene builds its World in _init, before it has a viewport or a camera.
+	var selection: Dictionary = SkyConfig.for_preset("distant_storm")
+	_check("detached storm appearance installs", Atmosphere.configure_appearance(selection, [0.0, 0.0, 0.0], 0.0))
+	var owner := Node3D.new()
+	var world: Dictionary = _build_empty_world(owner)
+	var bank := owner.get_node("StormBank") as StormBank
+	var environment: Environment = world.environment
+	_check("detached World initializes all storm colors before attachment", _material_colors_match(bank, environment))
+	var fog: Variant = bank._rain_material.get_shader_parameter("haze_density")
+	_check("detached World initializes storm fog before attachment",
+		(fog is float or fog is int) and is_equal_approx(float(fog), environment.fog_density * 0.35))
+	var detached_position := bank.position
+	var viewport := SubViewport.new()
+	root.add_child(viewport)
+	viewport.add_child(owner)
+	var camera := Camera3D.new()
+	owner.add_child(camera)
+	camera.position = Vector3(100000.0, 300.0, -100000.0)
+	camera.make_current()
+	WorldBuilder.update(environment, 0.0)
+	var attached_position := bank.position
+	_check("attached storm selects the new viewport camera's periodic copy", attached_position != detached_position)
+	_check("attachment preserves initialized storm colors", _material_colors_match(bank, environment))
+	viewport.remove_child(owner)
+	WorldBuilder.refresh_weather_appearance(environment, 1.0)
+	_check("detaching a retained World restores the camera-free copy", bank.position == detached_position)
+	_check("detached retained World still updates materials", _material_colors_match(bank, environment))
+	owner.free()
+	viewport.queue_free()
+	await process_frame
 
 
 func _test_scene_isolation_and_reconfiguration() -> void:
@@ -234,8 +268,10 @@ func _material_colors_match(bank: StormBank, environment: Environment) -> bool:
 	var cloud_expected: Vector3 = sky.get_shader_parameter("cloud_lin")
 	var haze_expected: Vector3 = sky.get_shader_parameter("haze_lin")
 	for material: ShaderMaterial in bank._materials:
-		var cloud_actual: Vector3 = material.get_shader_parameter("cloud_lin")
-		var haze_actual: Vector3 = material.get_shader_parameter("haze_lin")
+		var cloud_actual: Variant = material.get_shader_parameter("cloud_lin")
+		var haze_actual: Variant = material.get_shader_parameter("haze_lin")
+		if not cloud_actual is Vector3 or not haze_actual is Vector3:
+			return false
 		if not cloud_actual.is_equal_approx(cloud_expected) or not haze_actual.is_equal_approx(haze_expected):
 			return false
 	var rain_cloud: Vector3 = bank._rain_material.get_shader_parameter("rain_lin")

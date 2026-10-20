@@ -113,7 +113,7 @@ The rotational term at the tank (0.221 m from the CG) is not modelled. It reache
 
 ## 5. Findings
 
-The plan's [§3](../../../plans/fuel-mass-balance.md#3-audit-findings) assigns each finding to a step.
+The [current fuel work packages](../../../plans/fuel-mass-balance.md#4-work-packages-and-execution-order) own remaining work; these findings retain their original audit scope.
 
 | ID | Kind | Evidence | Suggested fix |
 | --- | --- | --- | --- |

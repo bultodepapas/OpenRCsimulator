@@ -18,6 +18,10 @@ Available named presets include dawn, sunrise, morning, noon, afternoon, golden_
 
 ## Night field and campfire
 
+Aircraft controls, the 17:30 local default, manual override lifecycle and reusable bindings are defined in the [aircraft lighting standard](AIRCRAFT-LIGHTING.md) (FW-35c).
+
+Sky, time and aircraft lighting apply to both selectable landscapes. Field-light fixtures and the campfire belong to Club field; Green paradise has neither. [Landscape selection and authoring](LANDSCAPES.md).
+
 The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Airfield uses cooler floods and white edge cues; the red/green threshold direction cues remain visual aids for this RC field, not airport certification.
 
 Technical launch options use explicit defaults independently of saved Home preferences:
@@ -54,6 +58,7 @@ This integration targets the airplane route. Natural Random and helicopter fligh
 
 - FW-01/02 use the same World.build/update path for flight, Home, scenery views and the runway scenario. The parity tool covers 89 views plus trace content; two runs match. See [FW-02 evidence](research/field-world/FW-02/README.md).
 - FW-20–24 provide float64 sun/moon ephemeris, an offline sky table, shared sky/ground/grass haze, time-dependent light and exposure, and geometry-based stars. See [FW-20](research/field-world/FW-20/README.md), [FW-23](research/field-world/FW-23/README.md) and [FW-24](research/field-world/FW-24/README.md).
+- FW-24-R1 reuses intrinsic star-catalogue data by source contents while preserving current sky rotation and independent render resources. [Repeated construction and exact native parity](research/visual-quality-implementation/VQ-01c/loading/stars/README.md); cold/full-loading and FPS acceptance remain open.
 - FW-27's saved Home choice is implemented. FW-61's named Evening flow is implemented in the world and has a focused deterministic test; its full clock/checkpoint lifecycle remains under TOD-09c2.
 - FW-31/33/34 provide validated field-light data, lamp sprites, club floods and a lit windsock. Aircraft navigation lights, strobes and landing lights are in the first slice. Wing underside strips are now derived from model triangles (FW-62); a fuselage belly strip still needs model anchors. [FW-35 evidence](research/field-world/FW-35/README.md).
 - A model may publish optional `light_anchors` (lens positions, a node to follow, a gear gate). The kit then lights from them and `update_dynamic()` moves followed lights and gates a gear-mounted lamp; kits without anchors are unchanged. First user: the P-51 ([P51-V13](research/p51-realism/P51-V13/README.md), owner review requested).
@@ -70,8 +75,8 @@ This integration targets the airplane route. Natural Random and helicopter fligh
 | FW-30 | Measure local-light cost on the supported target GPU. | Open; llvmpipe proves repeatability, not hardware performance. |
 | FW-35 | Complete and review the aircraft night kit. | Partial; wing underside strips under FW-62; FW-35b (2026-10-13) adds white top strips, the fuselage belly strip, a landing light clear of the propeller, [L] ALL/NAV/OFF modes and crash-wreck mounting ([evidence](research/field-world/FW-35b/README.md)); radio AUX switch and owner night-flight review remain. |
 | FW-36 | Blinded readability review at dusk, moonlight and dark night, with and without the kit. | Open; Gate FW-N evidence. |
-| FW-MOON | Realistic, configurable moon: correct disc and light on every route, NASA SVS texture, phases/earthshine/eclipses, halo and night look, menu options and in-view night presets. | FW-MOON-00…06, -03b and -12 delivered 2026-10-19, -11 and -13 partly; remaining steps and decisions in the [moon plan](plans/moon.md). |
-| FW-61 | Complete the evening time-flow step record and lifecycle review. | Runtime flow and focused test exist; the full anchored TOD-09c2 contract remains open. Found by FW-MOON-06 (2026-10-19, [evidence](research/field-world/FW-MOON-06/README.md#findings-for-other-steps)): the 30 s sky steps show as ~10 % brightness steps in nautical twilight at ×20 (per-frame interpolation as FW-MOON-03b would remove them), and scenery directional shadows keep their build-time direction and opacity for the whole flow (a full update costs 9–23 ms, so it needs a thresholded or incremental refresh with SC). |
+| FW-MOON | Realistic, configurable moon: correct disc and light on every route, NASA SVS texture, phases/earthshine/eclipses, halo and night look, menu options and in-view night presets. | FW-MOON-00…06, -03b, -10 and -12 delivered 2026-10-19, -08, -11 and -13 partly; remaining steps and decisions in the [moon plan](plans/moon.md). |
+| FW-61 | Complete the evening time-flow step record and lifecycle review. | Runtime flow and focused test exist; the full anchored TOD-09c2 contract remains open. Found by FW-MOON-06 (2026-10-19, [evidence](research/field-world/FW-MOON-06/README.md#findings-for-other-steps)): the 30 s sky steps showed as ~10 % brightness steps in nautical twilight at ×20 and shifted the ground's cloud shadows ~90 m per step at a 10° sun (resolved by FW-MOON-06d's per-frame sky), and scenery directional shadows keep their build-time direction and opacity for the whole flow (a full update costs 9–23 ms, so it needs a thresholded or incremental refresh with SC). |
 
 FW-32 light pools were not needed for the first slice. Additional village, traffic, wind-turbine and club lighting is parked behind Gate FW-N; it is not required to review the current night kit.
 

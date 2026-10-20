@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Finite contact fixture: res://data/aircraft/stik_glow_55ax_2t.json
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: finite session is flyable and dynamic-mass joint hook is installed
+PASS: deterministic obstacle installs
+PASS: interior-sweep collision start resets
+PASS: Glow contact fixture has a restorable pre-impact checkpoint
+Provisional Glow impact sample: { &"tick": 1, &"obstacle_id": "lamp:r05b-contact:pole", &"fraction": 0.50083578500611, &"properties": { &"ok": true, &"mass_kg": 2.76646368176775, &"cg_body_m": [-0.00000001724625, 0.0, 0.00000000156145], &"inertia": [0.11659669555374, 0.31035225683833, 0.40614197380802, -0.0076956, 0.0090357006696, 0.00077112443071], &"inverse": [8.60555595630728, 3.2274751555061, 2.46648227158805, 0.21386299729214, -0.19185936870324, -0.01088581642594], &"inertia_origin": [0.11659669555374, 0.31035225683833, 0.40614197380802, -0.0076956, 0.0090357006696, 0.00077112443071], &"format": "openrc-mass-sample v1", &"tick": 1, &"time_s": 0.00208681577086, &"finite_fuel": true, &"stores": [{ &"id": "main_tank", &"kind": "tank", &"blend": "glow_10n_18castor", &"family": "glow", &"density_kg_m3": 856.92, &"capacity_kg": 0.299922, &"unusable_kg": 0.0042846, &"remaining_kg": 0.29992175775184, &"usable_kg": 0.29563715775184, &"fill_fraction": 0.99999919229612, &"volume_ml": 349.999717303643, &"reserve_fraction": 0.11428571428571, &"reserve_estimated": true, &"low_fuel": false }], &"fuel_remaining_kg": 0.29992175775184, &"fuel_capacity_kg": 0.299922, &"fuel_usable_kg": 0.29563715775184, &"volume_ml": 349.999717303643, &"fill_fraction": 0.99999919229612, &"reserve_fraction": 0.11428571428571, &"low_fuel": false, &"reserve_estimated": true, &"reserve_basis": "estimated reserve", &"sample_boundary": "swept_contact_linear_inventory", &"impact_fraction": 0.50083578500611, &"law": "glow-mean-cycle-finite-tank-line-pickup-v3", &"registry_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1" } }
+PASS: real mass-aware filter staged one interior-fraction contact with an event-time sample
+PASS: impact mass and typed fuel share one interpolated inventory and time
+PASS: post-contact projection failure faults before the flight tick commits
+PASS: Glow body, fuel tail, auxiliary and contact history roll back byte-exactly
+PASS: pending impact, crash, scenery damage and accepted event publication are cleared
+CRASH at 119.8 m/s (sink -0.3 m/s, lamp impact (lamp:r05b-contact:pole), normal speed 119.8 m/s) - restarting
+PASS: same Glow state retries and commits exactly one impact
+PASS: accepted retry reuses identical deterministic TOI and sampled properties
+Finite contact fixture: res://data/aircraft/p51d_mustang_120.json
+PASS: finite session is flyable and dynamic-mass joint hook is installed
+PASS: deterministic obstacle installs
+PASS: interior-sweep collision start resets
+PASS: Glow contact fixture has a restorable pre-impact checkpoint
+Provisional Glow impact sample: { &"tick": 1, &"obstacle_id": "lamp:r05b-contact:pole", &"fraction": 0.50018905934459, &"properties": { &"ok": true, &"mass_kg": 21.8739253603537, &"cg_body_m": [0.00548369472689, 0.0, -0.00086799634526], &"inertia": [3.83303105362252, 6.87607623823022, 9.97595583126127, 0.0, -0.25358660184078, 0.0], &"inverse": [0.26132962320184, 0.14543177901957, 0.10040988331416, 0.0, 0.00664294151147, 0.0], &"inertia_origin": [3.83304753382408, 6.87675048722577, 9.97661360005527, 0.0, -0.25348248574065, 0.0], &"store_amounts_by_id": { "main_tank": { &"requested_onboard_kg": 0.74785336035369, &"onboard_kg": 0.74785336035369, &"usable_kg": 0.74037482376832, &"unusable_kg": 0.00747853658537, &"capacity_kg": 0.74785365853659, &"below_unusable": false } }, &"format": "openrc-mass-sample v1", &"tick": 1, &"time_s": 0.0020841210806, &"finite_fuel": true, &"stores": [{ &"id": "main_tank", &"kind": "tank", &"blend": "gasoline_premix_40_1", &"family": "gasoline", &"density_kg_m3": 747.853658536585, &"capacity_kg": 0.74785365853659, &"unusable_kg": 0.00747853658537, &"remaining_kg": 0.74785336035369, &"usable_kg": 0.74037482376832, &"fill_fraction": 0.99999960128176, &"volume_ml": 999.999601281755, &"reserve_fraction": 0.11, &"reserve_estimated": true, &"low_fuel": false }], &"fuel_remaining_kg": 0.74785336035369, &"fuel_capacity_kg": 0.74785365853659, &"fuel_usable_kg": 0.74037482376832, &"volume_ml": 999.999601281755, &"fill_fraction": 0.99999960128176, &"reserve_fraction": 0.11, &"low_fuel": false, &"reserve_estimated": true, &"reserve_basis": "estimated reserve", &"sample_boundary": "swept_contact_linear_inventory", &"impact_fraction": 0.50018905934459, &"law": "single-store-finite-liquid-fixed-datum-v1", &"consumption_law": "gasoline_bsfc_v1", &"registry_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1" } }
+PASS: real mass-aware filter staged one interior-fraction contact with an event-time sample
+PASS: impact mass and typed fuel share one interpolated inventory and time
+PASS: post-contact projection failure faults before the flight tick commits
+PASS: Glow body, fuel tail, auxiliary and contact history roll back byte-exactly
+PASS: pending impact, crash, scenery damage and accepted event publication are cleared
+CRASH at 120.0 m/s (sink -0.1 m/s, lamp impact (lamp:r05b-contact:pole), normal speed 120.0 m/s) - restarting
+PASS: same Glow state retries and commits exactly one impact
+PASS: accepted retry reuses identical deterministic TOI and sampled properties
+Finite contact fixture: res://data/aircraft/sebart_avanti_s_a200.json
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+PASS: finite session is flyable and dynamic-mass joint hook is installed
+PASS: deterministic obstacle installs
+PASS: interior-sweep collision start resets
+PASS: Glow contact fixture has a restorable pre-impact checkpoint
+Provisional Glow impact sample: { &"tick": 1, &"obstacle_id": "lamp:r05b-contact:pole", &"fraction": 0.50013384109898, &"properties": { &"ok": true, &"mass_kg": 12.7348541038978, &"cg_body_m": [0.0076716124226, 0.0, 0.00358605350769], &"inertia": [0.69135670325489, 2.23306586836359, 2.82670416905747, 0.0, -0.02944375412642, 0.0], &"inverse": [1.44707327595557, 0.44781482452768, 0.35392589729914, 0.0, 0.01507312657849, 0.0], &"inertia_origin": [0.69152047067394, 2.23397912826539, 2.82745366154022, 0.0, -0.02979410031164, 0.0], &"store_amounts_by_id": { "main_tank": { &"requested_onboard_kg": 2.59255610389778, &"onboard_kg": 2.59255610389778, &"usable_kg": 2.57635260389778, &"unusable_kg": 0.0162035, &"capacity_kg": 2.59256, &"below_unusable": false } }, &"format": "openrc-mass-sample v1", &"tick": 1, &"time_s": 0.00208389100458, &"finite_fuel": true, &"stores": [{ &"id": "main_tank", &"kind": "tank", &"blend": "kerosene_5pct_turbine_oil", &"family": "kerosene", &"density_kg_m3": 810.175, &"capacity_kg": 2.59256, &"unusable_kg": 0.0162035, &"remaining_kg": 2.59255610389778, &"usable_kg": 2.57635260389778, &"fill_fraction": 0.99999849719882, &"volume_ml": 3199.99519103623, &"reserve_fraction": 0.10625, &"reserve_estimated": true, &"low_fuel": false }], &"fuel_remaining_kg": 2.59255610389778, &"fuel_capacity_kg": 2.59256, &"fuel_usable_kg": 2.57635260389778, &"volume_ml": 3199.99519103623, &"fill_fraction": 0.99999849719882, &"reserve_fraction": 0.10625, &"low_fuel": false, &"reserve_estimated": true, &"reserve_basis": "estimated reserve", &"sample_boundary": "swept_contact_linear_inventory", &"impact_fraction": 0.50013384109898, &"law": "single-store-finite-liquid-fixed-datum-v1", &"consumption_law": "turbine_map_v1", &"registry_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1" } }
+PASS: real mass-aware filter staged one interior-fraction contact with an event-time sample
+PASS: impact mass and typed fuel share one interpolated inventory and time
+PASS: post-contact projection failure faults before the flight tick commits
+PASS: Glow body, fuel tail, auxiliary and contact history roll back byte-exactly
+PASS: pending impact, crash, scenery damage and accepted event publication are cleared
+CRASH at 120.0 m/s (sink 0.0 m/s, lamp impact (lamp:r05b-contact:pole), normal speed 120.0 m/s) - restarting
+PASS: same Glow state retries and commits exactly one impact
+PASS: accepted retry reuses identical deterministic TOI and sampled properties
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: Glow checkpoint records the separate mass-contact law
+PASS: Glow restore refuses a checkpoint missing the mass-contact marker
+PASS: Glow restore refuses a different mass-contact marker atomically
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+PASS: non-Glow checkpoint does not claim the Glow mass-contact law
+PASS: non-Glow restore refuses an unexpected mass-contact marker atomically
+R05-B FlightSession integration review: 38 checks, 0 failures

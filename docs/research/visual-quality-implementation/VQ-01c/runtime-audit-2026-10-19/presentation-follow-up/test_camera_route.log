@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371810261693994 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2119)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (res://main.gd:2075)
+       [11] _ready (res://main.gd:472)
+       [12] _run (res://tests/test_camera_route.gd:46)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   a direct flight starts in the pilot view
+ok   C: chase
+ok   chase camera is a few metres from the airplane
+ok   Shift+C: back to pilot
+ok   5: orbit
+ok   right-button drag turns the orbit
+ok   a plain mouse move does not turn it
+ok   wheel up moves the orbit in
+ok   Backspace resets the orbit
+ok   2: chase
+ok   = brings the chase closer
+ok   − moves it back
+ok   1 then Z: pilot view, auto-zoom off
+ok   Z again: on
+ok   the historical close-up switch still works
+ok   simulation untouched by camera input
+ok   restart: chase settled next to the airplane
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   --view=chase starts in chase
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   --inspect still starts in the close-up
+camera route: 19 checks, 0 failed

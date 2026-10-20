@@ -5,6 +5,7 @@ extends RefCounted
 
 const SmokeAux := preload("res://input/smoke_aux.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
+const JetiRadio := preload("res://input/jeti_radio.gd")
 const AXES := 10
 const ARM_THROTTLE := 0.05
 
@@ -80,11 +81,14 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	_focus_rearm_pending = false
 	_pressed_buttons.clear()
 	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(saved) if not saved.is_empty() else {}
+	var jeti_claim := JetiRadio.has_jeti_identity_claim(info)
 	if not upgraded.is_empty():
 		_activate_profile(upgraded, "calibrated", false)
-	elif bool(info.get("known", false)) and not looks_like_radio(device_name):
+	elif saved.is_empty() and JetiRadio.matches(info):
+		_activate_profile(ControllerProfile.defaults("radio", "jeti_mode2"), "default", false)
+	elif bool(info.get("known", false)) and not looks_like_radio(device_name) and not jeti_claim:
 		_activate_profile(ControllerProfile.defaults("gamepad", "mode2"), "gamepad", false)
-	elif looks_like_radio(device_name):
+	elif looks_like_radio(device_name) and not jeti_claim:
 		_activate_profile(ControllerProfile.defaults("radio", "radio_custom"), "default", false)
 	else:
 		profile = ControllerProfile.unconfigured()
@@ -293,6 +297,13 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 				channel.sample_axis(axes[int(binding.axis)])
 			elif binding.get("type", "") == "button" and read_button.is_valid():
 				channel.sample_button(bool(read_button.call(device_id, int(binding.button))))
+			elif binding.get("type", "") == "switch":
+				# Evaluate one coherent snapshot, never transient per-button event order.
+				var positions: Array = []
+				if read_button.is_valid():
+					for button in binding.buttons:
+						positions.append(bool(read_button.call(device_id, int(button))))
+				channel.sample_switch(positions)
 	if is_gamepad():
 		if live_gamepad:
 			armed = true
@@ -377,7 +388,7 @@ func smoke_amount() -> float:
 
 
 ## Normalized requests: flaps 0=retracted/1=full, gear 0=down/1=up.
-## No aircraft consumes flap/gear requests until its physical capability is implemented.
+## Activity adapters apply requests only to supported vehicle equipment.
 func auxiliary_amount(channel_name: String) -> float:
 	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return 0.0
 	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)

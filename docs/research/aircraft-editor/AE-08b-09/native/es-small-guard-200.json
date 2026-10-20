@@ -1,0 +1,147 @@
+{
+	"actual_pixels": [
+		960,
+		540
+	],
+	"compact": true,
+	"controls": {
+		"AircraftPreview": {
+			"rect": [
+				50.0,
+				274.0,
+				0.0,
+				0.0
+			],
+			"visible": false
+		},
+		"CloseWorkshop": {
+			"rect": [
+				710.0,
+				48.0,
+				200.0,
+				75.4000015258789
+			],
+			"visible": true
+		},
+		"OpenLibrary": {
+			"rect": [
+				50.0,
+				186.0,
+				234.0,
+				76.0
+			],
+			"visible": true
+		},
+		"SaveVariant": {
+			"rect": [
+				50.0,
+				418.0,
+				200.0,
+				80.0
+			],
+			"visible": true
+		},
+		"TestFly": {
+			"rect": [
+				258.0,
+				418.0,
+				384.0,
+				80.0
+			],
+			"visible": true
+		},
+		"WorkshopColumns": {
+			"rect": [
+				50.0,
+				274.0,
+				860.0,
+				132.0
+			],
+			"visible": true
+		},
+		"WorkshopPanel": {
+			"rect": [
+				24.0,
+				18.0,
+				912.0,
+				504.0
+			],
+			"visible": true
+		},
+		"WorkshopScroll": {
+			"rect": [
+				50.0,
+				274.0,
+				860.0,
+				132.0
+			],
+			"visible": true
+		}
+	},
+	"dialog": "guard",
+	"dpi": 144,
+	"language": "es",
+	"logical_canvas": [
+		960.0,
+		540.0
+	],
+	"overflow": [],
+	"page": "setup",
+	"popup": {
+		"buttons": [
+			{
+				"combined": "(266.0, 136.4)",
+				"min": "(266.0, 0.0)",
+				"size": "(266.0, 137.0)",
+				"text": "Descartar cambios"
+			},
+			{
+				"combined": "(266.0, 136.4)",
+				"min": "(266.0, 0.0)",
+				"size": "(266.0, 137.0)",
+				"text": "Guardar y continuar"
+			},
+			{
+				"combined": "(266.0, 75.4)",
+				"min": "(266.0, 0.0)",
+				"size": "(266.0, 137.0)",
+				"text": "Cancelar"
+			}
+		],
+		"minimum": "(838.0, 263.0)",
+		"position": "(48, 50)",
+		"size": "(864, 440)"
+	},
+	"preview": {
+		"comparison_original": false,
+		"geometry": {
+			"height_fraction": 0.425425350666046,
+			"rect": [
+				-0.14482045173645,
+				0.659060835838318,
+				2.2896409034729,
+				0.850850701332092
+			],
+			"vertex_count": 143770,
+			"viewport": [
+				2.0,
+				2.0
+			],
+			"width_fraction": 1.14482045173645
+		},
+		"mode": "inspect",
+		"pitch_deg": 10.0,
+		"standard_view": "default",
+		"yaw_deg": 180.0,
+		"zoom": 1.0
+	},
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"requested_pixels": [
+		960,
+		540
+	],
+	"scale": 1.0,
+	"screen_pixels": "(3840, 2160)",
+	"text_scale": 2.0,
+	"window_mode": 0
+}

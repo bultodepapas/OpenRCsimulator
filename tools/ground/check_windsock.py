@@ -131,7 +131,7 @@ def load(folder, cue_type='windsock'):
         metric['added_draws'] = on['draws'] - off['draws']
         metric['added_primitives'] = on['primitives'] - off['primitives']
         triangle_budget = 8000 if station else 6000 if cue_type == 'windsock' else 65000 if barrier else 1500
-        draw_budget = 2 if cue_type == 'windsock' else 5 if barrier else 1
+        draw_budget = 3 if cue_type == 'windsock' else 5 if barrier else 1
         if metric['added_draws'] != draw_budget or not 0 < metric['added_primitives'] < triangle_budget:
             raise RuntimeError(f'{view}: cue exceeds its draw or triangle budget')
         if metric['clipped_white_pixels']:
@@ -180,6 +180,7 @@ def main():
     sources = {"app/" + relative: sha256(app / relative) for relative in (
         'data/field_loader.gd', 'data/fields/default.json', 'render/field.gd',
         'render/windsock.gd', 'render/windsock_fabric.gdshader', 'render/windsock_support.gdshader',
+        'render/windsock_motion.gd',
         'assets/landscape/windsock/PROVENANCE.json',
         'render/pilot_station.gd', 'render/pilot_station_detail.gd',
         'render/pilot_station.gdshader', 'assets/landscape/pilot-station/PROVENANCE.json',

@@ -129,6 +129,46 @@ func _test_flowing_lighting(manager: Node, projectors: Array, lighting: Dictiona
 	FieldShadows.apply_lighting(manager.get_parent() as Node3D, lighting)
 
 
+func _test_flowing_strength_only(field: Dictionary) -> void:
+	var saved_state := Atmosphere.state.duplicate(true)
+	var light_dir := Vector3(0.20, 0.96, -0.18).normalized()
+	Atmosphere.state = {
+		light_dir = light_dir,
+		light_energy = float(Spec.ATMOSPHERE.sun_energy) * 0.5,
+		shadow_strength = 0.8,
+	}
+	var field_node := FieldBuilder.build(field, Spec.ATMOSPHERE.duplicate(true))
+	root.add_child(field_node)
+	await process_frame
+	Atmosphere.state = {
+		light_dir = light_dir,
+		light_energy = float(Spec.ATMOSPHERE.sun_energy) * 0.5,
+		shadow_strength = 0.8,
+	}
+	FieldShadows.apply_lighting(field_node, {})
+	var manager := field_node.get_node_or_null("ProjectedFieldShadows") as Node
+	var projectors: Array = manager.get("projectors") if manager != null else []
+	var receiver: MeshInstance3D = projectors[0].get("receiver") as MeshInstance3D if not projectors.is_empty() else null
+	var receiver_mat := receiver.material_override as ShaderMaterial if receiver != null else null
+	var initial_opacity := float(receiver_mat.get_shader_parameter("opacity")) if receiver_mat != null else -1.0
+	var flow_scale := clampf(Atmosphere.light_energy() / float(Spec.ATMOSPHERE.sun_energy), 0.0, 1.0)
+	var changed_state := Atmosphere.state.duplicate(true)
+	changed_state.shadow_strength = 0.35
+	Atmosphere.state = changed_state
+	if manager != null:
+		manager.call("_process", 0.016)
+	var changed_opacity := float(receiver_mat.get_shader_parameter("opacity")) if receiver_mat != null else -1.0
+	var expected_opacity := 0.40 * 0.35 * flow_scale
+	_check("flowing field shadow manager processes a shadow-strength-only lighting change",
+		manager != null and receiver_mat != null
+			and is_equal_approx(initial_opacity, 0.40 * 0.8 * flow_scale)
+			and is_equal_approx(changed_opacity, expected_opacity),
+		"before=%.3f after=%.3f expected=%.3f" % [initial_opacity, changed_opacity, expected_opacity])
+	field_node.free()
+	await process_frame
+	Atmosphere.state = saved_state
+
+
 func _test_field_integration() -> void:
 	var loaded := FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
 	_check("default field loads", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
@@ -139,6 +179,7 @@ func _test_field_integration() -> void:
 	daylight.shadow_strength = 1.0
 	daylight.sun_azimuth_deg = 230.0
 	_test_incomplete_cue_fallback(field, daylight)
+	await _test_flowing_strength_only(field)
 	var field_node := FieldBuilder.build(field, daylight)
 	# FieldBuilder attaches cues before optional scenery. Rebuild its manager after
 	# inserting the deterministic default scenery so one manager sees both sources.
@@ -172,6 +213,28 @@ func _test_field_integration() -> void:
 		cue_projectors += 1 if source != null and projected else 0
 	_check("all three default field cues have projected maps", field.flight_cues.size() == 3 and cue_projectors == 3,
 		"cues=%d projected=%d" % [field.flight_cues.size(), cue_projectors])
+	var sock := field_node.get_node_or_null("windsock") as Node3D
+	var mast_shape: Dictionary = Projected.collect(sock.get_node("Support"), 0.04)
+	var sock_projector: Node
+	for projector: Node in projectors:
+		if projector.get("source") == sock:
+			sock_projector = projector
+	var sock_viewport := sock_projector.get("viewport") as SubViewport if sock_projector != null else null
+	var sock_mesh_parts: Array[MeshInstance3D] = []
+	if sock_viewport != null:
+		for child: Node in sock_viewport.get_children():
+			if child is MeshInstance3D:
+				sock_mesh_parts.append(child as MeshInstance3D)
+	var sock_fabric := sock.get_node("Fabric") as MeshInstance3D
+	var sock_basket := sock.get_node("Basket") as MeshInstance3D
+	var sock_triangles := int(mast_shape.triangles) + sock_fabric.mesh.get_faces().size() / 3 \
+		+ sock_basket.mesh.get_faces().size() / 3
+	_check("windsock projects support, deformed fabric and yawing basket in three draws on one 512 map",
+		sock_projector != null and sock_projector.get_script().resource_path.ends_with("windsock_projected_shadow.gd")
+		and sock_viewport.size == Vector2i(512, 512) and sock_mesh_parts.size() == 3
+		and int(sock_projector.get("triangle_count")) == sock_triangles,
+		"parts=%d triangles=%d/%d size=%s" % [sock_mesh_parts.size(), int(sock_projector.get("triangle_count")) if sock_projector != null else -1,
+			sock_triangles, str(sock_viewport.size) if sock_viewport != null else "missing"])
 	var legacy_cues := field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
 	_check("matching legacy cue contact mesh is hidden", legacy_cues != null and not legacy_cues.visible)
 

@@ -78,8 +78,9 @@ static func far_distance(span: float) -> float:
 
 
 ## Active warning codes, most urgent first (plan §5). t: compute() output. ctx: { radio_connected, armed,
-## pause_reason, stall_pos_deg, stall_neg_deg (NAN = unknown: no STALL), span (m), battery: {} or
-## electrical_state(), battery_alarms: BatterySensors alarm names (pack_ecm; none = no battery chip), experimental }.
+	## pause_reason, stall_pos_deg, stall_neg_deg (NAN = unknown: no STALL), span (m), battery: {} or
+	## electrical_state(), battery_alarms: BatterySensors alarm names (pack_ecm; none = no battery chip),
+	## mass_sample: accepted mass_properties() including finite-fuel reserve, experimental }.
 static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
 	if ctx.get("controller_lost", false):
@@ -102,6 +103,10 @@ static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 	if span > 0.0 and float(t.distance_pilot) > far_distance(span):
 		out.append("far")
 	out.append_array(battery_warnings(ctx.get("battery", {}), ctx.get("battery_alarms", [])))
+	var mass_sample: Variant = ctx.get("mass_sample", {})
+	if mass_sample is Dictionary and mass_sample.get("ok", false) and mass_sample.get("finite_fuel", false) \
+			and mass_sample.get("low_fuel", false):
+		out.append("fuel_reserve_estimated" if mass_sample.get("reserve_estimated", false) else "fuel_reserve")
 	if ctx.get("experimental", false):
 		out.append("experimental")
 	return out

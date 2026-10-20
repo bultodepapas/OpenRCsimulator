@@ -8,7 +8,7 @@ The first delivery standardizes the existing fleet without changing its flight e
 
 ## Ownership and authoritative sources
 
-The [aircraft contract](../../AIRCRAFT_CONTRACT.md) remains the current physical authority. This plan owns pending cross-system standardization, not the detailed implementation status of other tracks. [AS-00–05 evidence](../research/aircraft-standardization/README.md) remains a historical record.
+The [aircraft contract](../AIRCRAFT_CONTRACT.md) remains the current physical authority. This plan owns pending cross-system standardization, not the detailed implementation status of other tracks. [AS-00–05 evidence](../research/aircraft-standardization/README.md) remains a historical record.
 
 | Owner | Responsibility in this plan |
 | --- | --- |
@@ -23,7 +23,7 @@ Integrate shared loader/session/render files serially. Use the [ownership regist
 
 ## Findings in the current source
 
-These findings describe the preimplementation audit. Current implemented behavior is documented in the [aircraft contract](../../AIRCRAFT_CONTRACT.md); delivery status below distinguishes implemented interfaces from remaining acceptance.
+These findings describe the preimplementation audit. Current implemented behavior is documented in the [aircraft contract](../AIRCRAFT_CONTRACT.md); delivery status below distinguishes implemented interfaces from remaining acceptance.
 
 | Boundary | What exists | Standardization gap |
 | --- | --- | --- |
@@ -77,6 +77,25 @@ An ID migration must preserve numeric values, array order and reduction order in
 
 A visual section can contain several components and moving nodes. A physical component can have no visible mesh. A contact references its physical role and optional visual section separately. Do not derive mass from mesh volume/material names or fracture strength from `openrc_section`.
 
+<a id="workbench-customization-bindings-proposed"></a>
+
+### Workbench customization bindings
+
+[AE-24 customization](../AIRCRAFT-WORKSHOP.md#supported-adjustments) now uses the separate generated `aircraft_customization.json` companion v2, sourced from `assets/aircraft/customization-bindings.json`. It registers solid paint targets, bounded EN/ES marking mounts and typed source/show emitters for five visual families. Seven presentation-source pins and engine 4.7.2 have a separate exported proof package. Physical manifests and Workshop v3 descriptors retain their existing contracts. [AE-24 evidence](../research/aircraft-editor/AE-24/README.md) records generation, runtime and package fixtures; broader material/decal and platform conformance remain open.
+
+| Binding or planned extension | Author supplies | Conformance gate |
+| --- | --- | --- |
+| Paint/decal region | Stable slot ID, target material/node or bounded panel, supported colors/patterns/text and optional authored left/right pair | Instance-owned edits; no material bleed; decals remain inside the approved panel; hinges/rotors animate correctly |
+| Source exhaust outlet | Stable binding to the authored outlet, propulsion instance/source kind, owning node and local position/direction; optional explicit show-pump capability at the same outlet | Preserve engine-running/source-kind gates and declared placement evidence; an estimated outlet stays labeled; UI cannot invent an exhaust nozzle |
+| Show-effect mount | Stable slot ID, role (wingtip/rear-fuselage/tail surface or explicitly show-capable exhaust outlet), owning node, local position/direction, optional paired slot and profile limits | Separate show/source semantics; datum/CG/scale and moving-surface transforms agree; reject duplicate/dangling/unsupported slots; no fallback to the origin |
+| Optional light/camera/thumbnail slot | Declared presentation role, supported controls and owner interface | Coordinate FW/CAM; bounded cost and lifecycle; UI exposes only bindings with real consumers |
+
+A colored wingtip panel is cosmetic. A new winglet or tail shape is an AE-21b physical/model package: geometry, inventory, aero, hinges and contact/hull changes must agree. Keep physics quantities in their owning data; model slots reference them rather than duplicating values. Reuse existing free authoring/import tools and suitably licensed assets.
+
+Per-build colors, markings and show profiles have a separate presentation identity and preserve physical results. Authored slot/presentation-source changes alter the companion slot hash; they do not rewrite physical model-manifest identity. Physical model changes retain their own manifest/dependency gates. Old builds need an explicit compatible reader/migration or clear refusal. Instance isolation, missing slots, generation and separate proof packages have focused coverage; broader reordered bindings, platform and onboarding gates remain open. Decals, patterns, lights and camera slots are still extensions.
+
+Future binding extensions require schema/versioned readers and generator output, procedural/imported fixtures, then runtime and package conformance. AE coordinates these in the [ordered Workbench packages](aircraft-editor.md#56-implementation-packages-and-order). Keep material selectors distinct from physical component IDs. A moving-surface slot follows its authored hinge; propeller accents also need blur-representation checks. Instance edits must preserve shared source resources. The [AE presentation contract](aircraft-editor.md#55-accepted-presentation-contract-and-remaining-work) owns saved values/identity; this section owns authoring requirements. New fields need generation and historical-reader tests before exposure.
+
 ### Share semantics without replacing the numerical validators
 
 Extend the existing structural spec/parameter register into a versioned shared description of supported module IDs, law versions, fields, units, defaults, requirements, exclusions and consumers. AS and AE must choose one classification implementation/source, with generated or checked projections for Python tooling and GDScript. Descriptor module lists remain assertions checked against the validated physical model.
@@ -94,7 +113,7 @@ Return structured diagnostics containing a stable code, aircraft/module/componen
 5. A migration generates a reviewed candidate; it never silently overwrites source data. Keep v2 input support after adopting v3. Unknown versions/laws fail with a clear upgrade requirement. Export to v2 is allowed only when lossless; otherwise refuse it.
 6. Model format, module law, descriptor and checkpoint/trace layout versions are separate. Changed byte/configuration identities may intentionally invalidate old checkpoints even when trajectories match. Preserve existing historical checkpoint rejection rules; never reinterpret an old state array by guessing its layout.
 
-The AS-08 identity slice fits v2 as optional complete metadata (`physical_identity_version: 1`), with explicit legacy behavior and unchanged physical fields. Workshop independently advances to v3 for ID bindings. AS-07 records this direction in [DECISIONS](../../DECISIONS.md) after the current interfaces are reconciled. The exact successor schema is an AS-15 deliverable, not a format accepted by today's runtime.
+The AS-08 identity slice fits v2 as optional complete metadata (`physical_identity_version: 1`), with explicit legacy behavior and unchanged physical fields. Workshop independently advances to v3 for ID bindings. AS-07 records this direction in [DECISIONS](../DECISIONS.md) after the current interfaces are reconciled. The exact successor schema is an AS-15 deliverable, not a format accepted by today's runtime.
 
 ## Blender authoring and import
 

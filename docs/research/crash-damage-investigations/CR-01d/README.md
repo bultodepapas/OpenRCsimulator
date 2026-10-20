@@ -8,7 +8,7 @@
 
   `left_wing_tip`, `right_wing_tip`, `spinner`, `propeller`, `nose`, `tail_end`, `left_stab_tip`, `right_stab_tip`, `fin_top`, `canopy`, `belly`.
 
-  [build_schema.py](../../../../research/aircraft-standardization/build_schema.py) types the field from that rule, and the [schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json) is regenerated. The field is not a quantity (`{value, unit, kind, source}`); its source is the hull's own source. [AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects) documents it.
+  [build_schema.py](../../../../research/aircraft-standardization/build_schema.py) types the field from that rule, and the [schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json) is regenerated. The field is not a quantity (`{value, unit, kind, source}`); its source is the hull's own source. [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects) documents it.
 - **Loader.** [aircraft_data.gd](../../../../app/physics/aircraft_data.gd) returns `model.crash_hull_components`. It is empty when the field is absent, and refused when the length differs from the hull or a name is unknown, on both the v2 and legacy paths. No force, detector or trim reads it.
 - **Data.** Every aircraft names every point: 93 points over nine files, none unnamed ([table](../../../../research/crash-damage/cr-01d/labels.md)).
   - Extra, P-51, Avanti and Timber gain the list from their `derive_physics.py` generators.

@@ -14,6 +14,7 @@ const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
 const ControllerSetup := preload("res://ui/controller_setup.gd")
@@ -21,6 +22,7 @@ const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
+const TraceRecovery := preload("res://ui/trace_recovery.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
@@ -63,12 +65,28 @@ var _windowed_size := Vector2i(1280, 720)
 var _windowed_position := Vector2i.ZERO
 var _windowed_borderless := false
 var _windowed_mode := DisplayServer.WINDOW_MODE_WINDOWED
+var _auto_accept_quit_tree: SceneTree
+var _auto_accept_quit_before_root := true
+var _wm_close_pending := false
+var _exit_request_active := false
+var _exit_request_kind := ""
+var _exit_request_commit := Callable()
+var _exit_request_recorders: Array[RefCounted] = []
+var _exit_request_recorder_index := 0
+var _exit_request_editors: Array[Node] = []
+var _exit_authorized_editors: Array[Node] = []
+var _exit_request_holds: Array[Dictionary] = []
+var _trace_recovery := TraceRecovery.new()
+var _trace_recovery_dialog: ConfirmationDialog
+var _trace_retry_button: Button
+var _trace_discard_button: Button
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
 ## Test seam; both routes always use the same file, including after Home → Fly.
 var field_path: String = FieldLoader.DEFAULT_PATH
+var landscape_id: String = Landscapes.DEFAULT_ID
 var preferences := {}
 var screens: ScreenStack = ScreenStack.new(self)
 # Compatibility views for the UI driver/capture contracts. All membership lives in the stack.
@@ -127,6 +145,14 @@ var _workshop_previous_keyboard: Callable
 var _workshop_previous_sky_transport: Dictionary = {}
 var _workshop_previous_world_context: Dictionary = {}
 var _workshop_home_detached := false
+
+
+func _enter_tree() -> void:
+	_auto_accept_quit_tree = get_tree()
+	if not is_instance_valid(_auto_accept_quit_tree):
+		return
+	_auto_accept_quit_before_root = _auto_accept_quit_tree.auto_accept_quit
+	_auto_accept_quit_tree.set_auto_accept_quit(false)
 
 
 func _ready() -> void:
@@ -198,6 +224,9 @@ func _ready() -> void:
 		open_pause.call_deferred())
 	add_child(controllers)
 	preferences = Preferences.load_from(preferences_path)
+	landscape_id = preferences.landscape
+	if field_path == FieldLoader.DEFAULT_PATH:
+		field_path = Landscapes.entry(landscape_id).field_path
 	if preferences.note != "":
 		print("settings: ", preferences.note)
 	TranslationServer.set_locale(preferences.language)
@@ -263,7 +292,7 @@ func show_home() -> void:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults())) # still backdrop
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults()), landscape_id) # still backdrop
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
@@ -271,6 +300,8 @@ func show_home() -> void:
 	var home := Home.new()
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.runway_available = home_scene.field.get("id", "") == "default"
+	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
+	home.set_landscape(landscape_id)
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", Preferences.DEFAULTS.start_choice))
 	home.set_weather_config(home_weather)
@@ -283,8 +314,9 @@ func show_home() -> void:
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
+	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
-	home.quit_requested.connect(func() -> void: get_tree().quit())
+	home.quit_requested.connect(quit_app)
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
 	home.controls_requested.connect(open_controls)
@@ -538,6 +570,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = _create_flight(route_aircraft_id)
 	flight.field_path = field_path
+	flight.landscape_id = landscape_id
 	if flight.has_method("set_user_args"):
 		flight.call("set_user_args", user_args)
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
@@ -619,13 +652,26 @@ func start_flight(request: Dictionary = {}) -> void:
 		if controllers != null:
 			controllers.attach_session(flight.session)
 			if controllers.registry.selected_device_id("flight") >= 0:
-				open_pause.call_deferred()
+				_finish_controller_launch.call_deferred(flight.session)
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
 		if has_home and not preferences.get("first_flight_hint_seen", false):
 			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+
+
+## Fly is the explicit launch action; a ready airplane needs no second Continue action.
+func _finish_controller_launch(target: Node) -> void:
+	if not is_instance_valid(target) or flight == null or flight.session != target or screens.top() != null:
+		return # a newer route or an explicit pause takes precedence over this deferred launch
+	if not Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
+		target._poll_controller(false) # readiness only: leave staged launch throttle untouched
+		if target.can_resume():
+			HeldKeys.mask(target, _keyboard_reader)
+			target.resume()
+			return
+	open_pause()
 
 
 func _create_flight(aircraft_id: String = "") -> Node:
@@ -892,7 +938,7 @@ func _route_controller_restart(event: InputEvent) -> bool:
 func open_natural_random(from: Control = null) -> void:
 	if not screens.is_top("home") or flight != null:
 		return
-	if Catalog.is_rotorcraft(home.aircraft_id):
+	if Catalog.is_rotorcraft(home.aircraft_id) or not home.runway_available:
 		return
 	var briefing := NaturalRandomScreen.new()
 	briefing.fly_requested.connect(start_flight)
@@ -1027,6 +1073,12 @@ func _on_update_download(url: String) -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		# Defer mutations until this notification has finished propagating through the tree.
+		if not _wm_close_pending:
+			_wm_close_pending = true
+			_handle_wm_close_deferred.call_deferred()
+		return
 	# Losing focus already pauses the simulation (simulation.gd); show the menu so continuing is one visible action.
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
@@ -1036,6 +1088,13 @@ func _notification(what: int) -> void:
 		open_pause.call_deferred()
 
 
+func _handle_wm_close_deferred() -> void:
+	_wm_close_pending = false
+	if not is_inside_tree():
+		return
+	quit_app()
+
+
 ## Freezes the flight under the pause menu. A running calibration is cancelled first (Esc already does that).
 func open_pause() -> void:
 	if flight == null or pause_menu != null:
@@ -1043,18 +1102,16 @@ func open_pause() -> void:
 	_release_controller_holds()
 	var session: Node = flight.session
 	session.cancel_calibration()
-	var pause_menu := PauseMenu.new(has_home)
+	var trial_pause := not _workshop_screens.is_empty()
+	var pause_menu := PauseMenu.new(has_home, trial_pause)
 	var helicopter_route: bool = Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
 	pause_menu.collective_control = helicopter_route
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.workshop_requested.connect(open_workshop)
-	pause_menu.workshop_button.visible = not helicopter_route
+	pause_menu.workshop_button.visible = not helicopter_route and not trial_pause
 	pause_menu.failure_settings_requested.connect(open_failures_settings)
 	pause_menu.failure_settings_button.visible = has_home and not helicopter_route
-	if not _workshop_screens.is_empty():
-		pause_menu.workshop_button.text = "Return to Workshop"
-		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
@@ -1104,7 +1161,16 @@ func open_workshop(from: Control = null) -> void:
 	if not (screens.is_top("home") or screens.is_top("pause")):
 		return
 	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
+	# Test/tool hosts use custom preference files and must not touch player recovery.
+	editor.set("recovery_enabled", preferences_path == Preferences.DEFAULT_PATH)
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
+	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
+	var weather: Dictionary = flight.weather_config if flight != null else preferences.get("weather_config", WeatherSettings.defaults())
+	var lighting: Dictionary = flight.lighting_config if flight != null else preferences.get("lighting_config", TimeOfDay.defaults())
+	var field_name := str(Landscapes.entry(landscape_id).get("name", landscape_id))
+	editor.set("trial_conditions", tr("Trial field: %s") % field_name + "\n" + tr("Wind: %s") % WeatherSettings.summary(weather)
+		+ "\n" + tr("Light: %s") % TimeOfDay.format_time(int(lighting.get("local_seconds", 43200)))
+		+ "\n" + tr("Full fuel · normal control rates · current controller"))
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -1119,6 +1185,10 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if not screens.is_top("workshop") or not _workshop_screens.is_empty():
 		return
 	var editor: Node = screens.top()
+	var chosen_start: Variant = payload.get("start_choice", "airborne")
+	if typeof(chosen_start) != TYPE_STRING or chosen_start not in ["airborne", "runway"]:
+		editor.set_note(tr("Choose an airborne or runway trial start."))
+		return
 	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
 	if not trial.get("ok", false):
 		editor.set_note("; ".join(trial.get("errors", [])))
@@ -1126,6 +1196,16 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	var base_id: String = str(payload.get("base_id", ""))
 	if not Catalog.can_fly(base_id):
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
+		return
+	var selected_field: Dictionary = FieldLoader.load_from(field_path)
+	if not selected_field.get("ok", false):
+		editor.set_note("; ".join(PackedStringArray(selected_field.get("errors", []))))
+		return
+	var selected_weather: Dictionary = flight.weather_config.duplicate(true) if flight != null \
+		else preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
+	var qualified: Dictionary = preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
+	if not qualified.get("ok", false) or not qualified.get("available", false):
+		editor.set_note(str(qualified.get("reason", "The selected trial start is unavailable.")))
 		return
 	# Suspend, but retain the old world and recorder until the complete new flight passes startup.
 	var previous: Node = flight
@@ -1138,12 +1218,13 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_workshop_home_detached = true
 	var candidate: Node = load(FLIGHT_SCENE).instantiate()
 	candidate.field_path = field_path
+	candidate.landscape_id = landscape_id
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
-	candidate.start_choice = "airborne"
+	candidate.start_choice = chosen_start
 	candidate.interactive_start = true
 	candidate.external_controller_selection = controllers != null
-	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
+	candidate.weather_config = selected_weather.duplicate(true)
 	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 	candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
 	if previous != null:
@@ -1187,14 +1268,16 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	flight.pause_requested.connect(open_pause)
 	flight.restart_requested.connect(_request_flight_restart)
 	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
-	flight._note = tr("Experimental Workshop trial · Esc to return")
+	flight._note = tr("Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause")
 
 
 func _return_to_workshop() -> void:
 	if _workshop_screens.is_empty() or flight == null:
 		return
-	if not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
-		return
+	_begin_exit_request("return_workshop", [_flight_recorder(flight)], Callable(self, "_commit_return_to_workshop"))
+
+
+func _commit_return_to_workshop() -> void:
 	screens.clear()
 	screens.set_session(null)
 	if flight.recorder != null:
@@ -1234,6 +1317,9 @@ func _exit_tree() -> void:
 		_workshop_previous_flight.free()
 	if _workshop_home_detached and is_instance_valid(home_scene):
 		home_scene.free()
+	if is_instance_valid(_auto_accept_quit_tree):
+		_auto_accept_quit_tree.set_auto_accept_quit(_auto_accept_quit_before_root)
+		_auto_accept_quit_tree = null
 
 
 ## HUD-06: the flight overlays panel over the pause menu; changes apply and save at once.
@@ -1501,26 +1587,53 @@ func _on_weather_applied(raw: Dictionary) -> void:
 
 
 ## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.
-func _rebuild_home_scene() -> void:
+func _rebuild_home_scene() -> bool:
 	if home_scene == null:
-		return
+		return false
 	var previous: Node3D = home_scene
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()))
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id)
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
 		previous.camera.make_current()
 		if home != null:
 			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
-		return
+		return false
 	home_scene = replacement
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	move_child(home_scene, 0) # keep the backdrop beneath the Home controls
 	previous.queue_free()
 	home_scene.camera.make_current()
+	return true
+
+
+## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
+func set_landscape(id: String) -> void:
+	if not screens.is_top("home") or flight != null or not Landscapes.has(id) or id == landscape_id:
+		return
+	var path: String = Landscapes.entry(id).field_path
+	var checked: Dictionary = FieldLoader.load_from(path)
+	if not checked.ok:
+		home.set_note("; ".join(checked.errors))
+		return
+	var old_id: String = landscape_id
+	var old_path: String = field_path
+	landscape_id = id
+	field_path = path
+	if not _rebuild_home_scene():
+		landscape_id = old_id
+		field_path = old_path
+		return
+	home.runway_available = home_scene.field.get("id", "") == "default"
+	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
+	home.set_landscape(id)
+	home.set_start_choice(home.start_choice)
+	preferences.landscape = id
+	var err: Error = Preferences.save_to(preferences_path, preferences)
+	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
 
 func close_weather() -> void:
@@ -1553,13 +1666,20 @@ func restart_flight() -> void:
 	if not screens.is_top("pause"):
 		return
 	# Keep the menu hold until reset succeeds; rejected starts remain reviewable and frozen.
-	flight.session.reset() # the selected launch; the recorder closes its file on reset
+	var helicopter_route := Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
+	if helicopter_route:
+		flight.session.reset()
+	else:
+		flight.session.reset(true) # same radio ownership; the recorder closes its file on reset
 	var session: Node = flight.session
 	if not session.start_error.is_empty() or not session.is_flyable():
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
 		return
-	if controllers != null and (session.radio.connected or session._controller_lost):
+	if controllers != null and session.radio.connected and not helicopter_route:
+		# Refresh readiness after reset without advancing the flight or incremental throttle.
+		session._poll_controller(false)
+	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
 		pause_menu.continue_button.grab_focus()
@@ -1568,15 +1688,17 @@ func restart_flight() -> void:
 		session.resume()
 
 
-## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
-## ends without it (an explicit discard).
+## End a flight or return from a trial only after a trace is saved or explicitly resolved.
 func end_flight() -> void:
 	if not _workshop_screens.is_empty():
 		_return_to_workshop()
 		return
-	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
-		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
+	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")):
 		return
+	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_end_flight"))
+
+
+func _commit_end_flight() -> void:
 	_menu_feedback(&"back")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
@@ -1597,15 +1719,12 @@ func end_flight() -> void:
 
 
 func quit_app() -> void:
-	if flight != null and not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press Quit again to quit without it."):
+	if not is_inside_tree():
 		return
-	if is_instance_valid(_workshop_previous_flight) and _workshop_previous_flight.recorder != null \
-		and _workshop_previous_flight.recorder.recording:
-		var err: Error = _workshop_previous_flight.recorder.stop()
-		if err != OK:
-			if pause_menu != null:
-				pause_menu.set_note(tr("Could not save the flight trace (error %d). Press Quit again to quit without it.") % err)
-			return
+	_begin_exit_request("quit", _quit_recorders(), Callable(self, "_request_app_quit"), true)
+
+
+func _request_app_quit() -> void:
 	get_tree().quit()
 
 
@@ -1616,18 +1735,251 @@ func _close_pause() -> void:
 	HeldKeys.mask(session, _keyboard_reader)
 
 
-## True when no trace is recording, or it was just saved. A failed save shows `message` and returns false once;
-## the recorder has stopped, so the next press goes through.
-func _trace_saved_or_discarded(message: String) -> bool:
-	var recorder: RefCounted = flight.recorder
-	if not recorder.recording:
-		return true
-	var err: Error = recorder.stop()
-	if err == OK:
-		return true
-	if pause_menu != null:
-		pause_menu.set_note(tr(message) % err)
-	return false
+func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
+	if _exit_request_active:
+		return
+	if kind == "quit":
+		for editor: Node in _workshop_editors():
+			if is_instance_valid(editor) and editor.has_method("dismiss_modal_for_exit") \
+				and bool(editor.call("dismiss_modal_for_exit")):
+				return
+	_exit_request_active = true
+	_exit_request_kind = kind
+	_exit_request_commit = commit
+	_exit_request_recorders.clear()
+	for recorder: Variant in recorders:
+		if recorder is RefCounted and not _exit_request_recorders.has(recorder):
+			_exit_request_recorders.append(recorder)
+	_exit_request_recorder_index = 0
+	_exit_authorized_editors.clear()
+	_hold_exit_sessions()
+	if guard_workshop:
+		_request_quit_draft_guard(0)
+	else:
+		_advance_trace_exit()
+
+
+func _request_quit_draft_guard(start_index: int) -> void:
+	if not _exit_request_active or _exit_request_kind != "quit":
+		return
+	_exit_request_editors = _workshop_editors()
+	for index in range(start_index, _exit_request_editors.size()):
+		var editor: Node = _exit_request_editors[index]
+		if _exit_authorized_editors.has(editor):
+			continue
+		if not is_instance_valid(editor) or not editor.has_method("has_unsaved_changes") \
+			or not bool(editor.call("has_unsaved_changes")):
+			continue
+		var next_index := index + 1
+		var proceed := func() -> void:
+			if not _exit_request_active:
+				return
+			if not _exit_authorized_editors.has(editor):
+				_exit_authorized_editors.append(editor)
+			_request_quit_draft_guard(next_index)
+		editor.call("request_navigation", "Quit", proceed, Callable(self, "_cancel_exit_request"), self)
+		return
+	_advance_trace_exit()
+
+
+func _workshop_editors() -> Array[Node]:
+	var editors: Array[Node] = []
+	var live_editor: Node = screens.get_screen("workshop")
+	if is_instance_valid(live_editor):
+		editors.append(live_editor)
+	for entry: Dictionary in _workshop_screens:
+		var editor: Variant = entry.get("node")
+		if editor is Node and is_instance_valid(editor) and not editors.has(editor):
+			editors.append(editor)
+	return editors
+
+
+func _quit_recorders() -> Array[RefCounted]:
+	var recorders: Array[RefCounted] = []
+	for owner: Node in [flight, _workshop_previous_flight]:
+		var recorder := _flight_recorder(owner)
+		if recorder != null and not recorders.has(recorder):
+			recorders.append(recorder)
+	return recorders
+
+
+func _flight_recorder(flight_node: Node) -> RefCounted:
+	if not is_instance_valid(flight_node) or not _has_property(flight_node, "recorder"):
+		return null
+	var recorder: Variant = flight_node.get("recorder")
+	return recorder as RefCounted if recorder is RefCounted else null
+
+
+func _hold_exit_sessions() -> void:
+	_exit_request_holds.clear()
+	for owner: Node in [flight, _workshop_previous_flight]:
+		if not is_instance_valid(owner) or not _has_property(owner, "session"):
+			continue
+		var session: Variant = owner.get("session")
+		if not session is Node or not session.has_method("hold"):
+			continue
+		if _exit_request_holds.any(func(entry: Dictionary) -> bool: return entry.session == session):
+			continue
+		var simulation: Variant = session.get("sim") if _has_property(session, "sim") else null
+		var holds_before: Variant = session.get("holds") if _has_property(session, "holds") else {}
+		_exit_request_holds.append({
+			session = session,
+			was_paused = bool(simulation.get("paused")) if simulation != null else false,
+			had_holds = holds_before is Dictionary and not holds_before.is_empty(),
+		})
+		session.call("hold", "exit_guard")
+		var reader := _keyboard_reader_for(session)
+		if reader.is_valid():
+			HeldKeys.mask(session, reader)
+
+
+func _keyboard_reader_for(session: Node) -> Callable:
+	if is_instance_valid(flight) and _has_property(flight, "session") and flight.session == session:
+		return _keyboard_reader
+	if is_instance_valid(_workshop_previous_flight) and _has_property(_workshop_previous_flight, "session") \
+		and _workshop_previous_flight.session == session:
+		return _workshop_previous_keyboard
+	return Callable()
+
+
+func _release_exit_sessions() -> void:
+	for entry: Dictionary in _exit_request_holds:
+		var session: Variant = entry.session
+		if not is_instance_valid(session):
+			continue
+		session.call("release", "exit_guard")
+		var holds: Variant = session.get("holds") if _has_property(session, "holds") else {}
+		if not bool(entry.was_paused) and not bool(entry.had_holds) \
+			and holds is Dictionary and holds.is_empty() and session.has_method("resume"):
+			session.call("resume")
+	_exit_request_holds.clear()
+
+
+func _advance_trace_exit() -> void:
+	if not _exit_request_active or _trace_recovery_dialog != null:
+		return
+	while _exit_request_recorder_index < _exit_request_recorders.size():
+		var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
+		var result: Dictionary = _trace_recovery.save_if_recording(recorder)
+		if not bool(result.get("ok", false)):
+			var error_code := int(result.get("error", ERR_CANT_CREATE))
+			# A dirty-editor decision can have just closed its own native exclusive dialog.
+			# Let Window release that child before presenting the next exclusive decision.
+			await get_tree().process_frame
+			if not _exit_request_active or _trace_recovery_dialog != null:
+				return
+			_show_trace_recovery_dialog(error_code)
+			return
+		_exit_request_recorder_index += 1
+	_finish_exit_request()
+
+
+func _show_trace_recovery_dialog(error_code: int) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = tr("Trace not saved")
+	var recovery_message := tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	# Keep the native AcceptDialog label empty: its full translated minimum height can
+	# outgrow the clamped Window at enlarged text. Put the message in a bounded scroller.
+	dialog.dialog_text = ""
+	dialog.theme = UiTheme.build()
+	dialog.exclusive = true
+	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
+	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
+	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
+	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
+	var text_scale := clampf(UiTheme.text_scale, 1.0, 2.0)
+	var scroll := ScrollContainer.new()
+	scroll.name = "TraceRecoveryMessageScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300.0, 100.0)
+	dialog.add_child(scroll)
+	var message := Label.new()
+	message.name = "TraceRecoveryMessage"
+	message.theme_type_variation = "SecondaryLabel"
+	message.text = recovery_message
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(message)
+	for button: Button in [dialog.get_ok_button(), _trace_retry_button, _trace_discard_button]:
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var visible_size: Vector2i = get_tree().root.size
+	var desired_size := Vector2i(roundi(560.0 * text_scale), roundi(220.0 * text_scale))
+	var viewport_limit := Vector2i(maxi(1, roundi(visible_size.x * 0.9)), maxi(1, roundi(visible_size.y * 0.9)))
+	var dialog_minimum := Vector2i(mini(desired_size.x, viewport_limit.x), mini(desired_size.y, viewport_limit.y))
+	dialog.add_theme_constant_override("buttons_min_width", maxi(1, roundi((dialog_minimum.x - 64.0) / 3.0)))
+	dialog.add_theme_constant_override("buttons_min_height", roundi(44.0 * text_scale))
+	dialog.min_size = dialog_minimum
+	dialog.size = dialog_minimum
+	dialog.custom_action.connect(_on_trace_recovery_action)
+	dialog.confirmed.connect(_cancel_exit_request)
+	dialog.canceled.connect(_cancel_exit_request)
+	dialog.close_requested.connect(_cancel_exit_request)
+	_trace_recovery_dialog = dialog
+	add_child(dialog)
+	dialog.popup_centered_clamped(dialog_minimum, 0.9)
+	dialog.get_ok_button().grab_focus.call_deferred()
+
+
+func _on_trace_recovery_action(action: StringName) -> void:
+	if not _exit_request_active or _trace_recovery_dialog == null \
+		or _exit_request_recorder_index >= _exit_request_recorders.size():
+		return
+	var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
+	var dialog := _trace_recovery_dialog
+	_trace_recovery_dialog = null
+	_trace_retry_button = null
+	_trace_discard_button = null
+	dialog.queue_free()
+	if action == "retry":
+		var result: Dictionary = _trace_recovery.retry(recorder)
+		if not bool(result.get("ok", false)):
+			var error_code := int(result.get("error", ERR_CANT_CREATE))
+			await get_tree().process_frame
+			if _exit_request_active and _trace_recovery_dialog == null:
+				_show_trace_recovery_dialog(error_code)
+			return
+	elif action == "discard":
+		_trace_recovery.discard(recorder)
+	else:
+		_cancel_exit_request()
+		return
+	_exit_request_recorder_index += 1
+	_advance_trace_exit()
+
+
+func _finish_exit_request() -> void:
+	var commit := _exit_request_commit
+	# Quit tears down the recovery owner with the tree; its discard markers are weak
+	# and can still protect a later route if a host overrides the quit seam.
+	if _exit_request_kind != "quit":
+		for recorder: RefCounted in _exit_request_recorders:
+			_trace_recovery.forget_completed(recorder)
+	_clear_exit_request()
+	if commit.is_valid():
+		commit.call()
+
+
+func _cancel_exit_request() -> void:
+	_clear_exit_request()
+
+
+func _clear_exit_request() -> void:
+	var dialog := _trace_recovery_dialog
+	_trace_recovery_dialog = null
+	_trace_retry_button = null
+	_trace_discard_button = null
+	if is_instance_valid(dialog):
+		dialog.queue_free()
+	_release_exit_sessions()
+	_exit_request_active = false
+	_exit_request_kind = ""
+	_exit_request_commit = Callable()
+	_exit_request_recorders.clear()
+	_exit_request_recorder_index = 0
+	_exit_request_editors.clear()
+	_exit_authorized_editors.clear()
 
 
 func _has_property(object: Object, property_name: String) -> bool:

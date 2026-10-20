@@ -26,6 +26,43 @@ uniform sampler2D moon_normal : filter_linear_mipmap, repeat_enable;
 uniform mat3 moon_render_to_body = mat3(1.0);    // render-frame direction -> Moon-fixed (x: 0° E, z: north)
 uniform float moon_albedo_scale = 1.0;           // 1 / near-side mean linear luminance of the albedo map
 uniform float moon_squash = 1.0;                 // apparent / true vertical size (refraction; 1 above ~10°)
+// FW-MOON-10: Earth's shadow (Lunar.eclipse_transmission, the same law per pixel): the anti-solar axis and the moon
+// centre's offset from it (render axes, moon radii), the umbra and penumbra radii (moon radii); off = no eclipse.
+uniform bool moon_eclipse = false;
+uniform vec3 moon_shadow_axis = vec3(0.0, -1.0, 0.0);
+uniform vec3 moon_shadow_offset = vec3(0.0);
+uniform float moon_umbra_radius = 0.0;
+uniform float moon_penumbra_radius = 0.0;
+uniform float moon_eclipse_dim = 1.0;            // the disc's mean luminance transmission (SkyState moon_eclipse_factor)
+
+const float MOON_UMBRA_U[9] = float[9](0.0, 0.18, 0.25, 0.41, 0.52, 0.62, 0.79, 0.9, 1.0);
+const float MOON_UMBRA_677[9] = float[9](-3.74, -3.74, -3.80, -3.52, -3.40, -3.26, -2.82, -2.6, -2.0);
+const float MOON_UMBRA_503[9] = float[9](-6.0, -5.6, -5.45, -5.1, -4.8, -4.3, -3.52, -2.9, -2.0);
+
+// Sunlight reaching the point `position` (unit sphere, render axes, from the moon's centre), relative to the
+// uneclipsed moon, per channel: the solar disc's visible fraction in the penumbra, the umbra's refracted light
+// (Ugolnikov et al. 2011) inside, the larger of the two.
+vec3 moon_eclipse_transmission(vec3 position) {
+	vec3 across = moon_shadow_offset + position - dot(position, moon_shadow_axis) * moon_shadow_axis;
+	float d = length(across);
+	if (d >= moon_penumbra_radius) {
+		return vec3(1.0);
+	}
+	float t = clamp(2.0 * (d - moon_umbra_radius) / (moon_penumbra_radius - moon_umbra_radius) - 1.0, -1.0, 1.0);
+	float visible = (3.14159265 - acos(t) + t * sqrt(max(1.0 - t * t, 0.0))) / 3.14159265;
+	float u = clamp(d / max(moon_umbra_radius, 1e-6), 0.0, 1.0);
+	int i = 0;
+	for (int j = 0; j < 7; j++) {
+		if (u > MOON_UMBRA_U[j + 1]) {
+			i = j + 1;
+		}
+	}
+	float k = (u - MOON_UMBRA_U[i]) / (MOON_UMBRA_U[i + 1] - MOON_UMBRA_U[i]);
+	float l677 = mix(MOON_UMBRA_677[i], MOON_UMBRA_677[i + 1], k);
+	float l503 = mix(MOON_UMBRA_503[i], MOON_UMBRA_503[i + 1], k);
+	vec3 w = vec3(0.63, 0.27, -0.22); // (λ − 503)/(677 − 503) for R, G, B at ~612, 550, 465 nm
+	return max(vec3(visible), pow(vec3(10.0), vec3(l503) + w * (l677 - l503)));
+}
 
 vec3 moon_disc(vec3 d) {
 	float c = dot(d, moon_dir);
@@ -48,6 +85,7 @@ vec3 moon_disc(vec3 d) {
 	float r = min(rr, 1.0);
 	float mu = sqrt(max(1.0 - r * r, 0.0));                // cos(emission): the normal against the view
 	vec3 normal = offset / max(rr, 1e-6) * r - moon_dir * mu; // the sphere's normal on the side facing the observer
+	vec3 eclipse = moon_eclipse ? moon_eclipse_transmission(normal) : vec3(1.0); // where on the moon, not the relief
 	vec3 albedo = vec3(1.0);
 	if (moon_textured) {
 		vec3 p = moon_render_to_body * normal;
@@ -67,7 +105,7 @@ vec3 moon_disc(vec3 d) {
 	}
 	float mu0 = max(dot(normal, moon_sun_dir), 0.0);       // cos(incidence)
 	float lit = 2.0 * moon_phase_l * mu0 / max(mu0 + mu, 1e-4) + (1.0 - moon_phase_l) * mu0;
-	vec3 light = vec3(moon_phase_k * lit) + moon_earthshine; // relative to the flat full moon
+	vec3 light = vec3(moon_phase_k * lit) * eclipse + moon_earthshine; // relative to the flat full moon
 	float level = max(dot(light, vec3(0.2126, 0.7152, 0.0722)), 1e-12);
 	vec3 seen = light / level * pow(level, moon_display_gamma) * moon_display_scale; // hue kept, level compressed
 	return moon_lin * edge * seen * albedo;

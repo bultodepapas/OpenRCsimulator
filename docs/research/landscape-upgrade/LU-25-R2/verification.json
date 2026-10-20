@@ -1,0 +1,38 @@
+{
+  "baseline_golden_command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass3-20261019\\base\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_golden.gd"
+  ],
+  "baseline_golden_failures": [
+    "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+  ],
+  "mutation_command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass3-20261019\\base\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass3-20261019\\mutation\\test.gd"
+  ],
+  "mutation_rejected": true,
+  "mutation_failures": 312,
+  "production_matches_measured_intended_source": {
+    "app/physics/lake_surface.gd": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224",
+    "app/physics/ground_terrain.gd": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a",
+    "app/physics/hull_contact.gd": "6723a744b82f2ae171a299671df61be0f32615896cc146b514fe9c9b73a659f5"
+  },
+  "oracle_methods_match_baseline": true,
+  "integrated_golden_matches_baseline": true,
+  "passing_targeted_suites": 14
+}

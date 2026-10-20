@@ -1,0 +1,37 @@
+[
+  {
+    "command": [
+      "python",
+      "research/aircraft-standardization/build_models.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "build_models.log"
+  },
+  {
+    "command": [
+      "python",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "build_descriptors.log"
+  },
+  {
+    "command": [
+      "python",
+      "research/aircraft-standardization/build_customization.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "build_customization.log"
+  },
+  {
+    "command": [
+      "python",
+      "research/aircraft-standardization/test_customization.py"
+    ],
+    "exit_code": 0,
+    "log": "test_customization.log"
+  }
+]

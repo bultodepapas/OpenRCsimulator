@@ -131,6 +131,8 @@ func reset() -> void:
 ## Places the camera for this frame. target: the airplane's CG (render); airplane: its root transform (close-up
 ## offset); dt: frame time (s); paused: the simulation is frozen; ground_y: Callable(x, z) → terrain height.
 func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable) -> void:
+	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
+	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
 	if not is_nan(look.x):
 		PilotCamera.look(camera, look.x, look.y, look_height)
 		return

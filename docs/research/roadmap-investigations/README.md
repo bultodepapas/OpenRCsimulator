@@ -1,16 +1,18 @@
 # Roadmap investigations: the physics knowledge base
 
-**Status:** research knowledge base, 2026-10-06 (plan review #4). **Serves:** ROADMAP M1 follow-ups (D11), Phase H, M2 (E), M3 (F), M4 (G, EL), M5, and the parallel programs VAL, DATA and PERC. **Read with:** [ROADMAP.md](../../../ROADMAP.md) (plan review #4 at the end), [docs/README.md](../../README.md) (step-ID registry).
+**Status:** historical research knowledge base, 2026-10-06 (plan review #4). **Serves:** ROADMAP M1 follow-ups (D11), Phase H, M2 (E), M3 (F), M4 (G, EL), M5, and the parallel programs VAL, DATA and PERC. **Read with:** [ROADMAP.md](../../../ROADMAP.md) (current execution order), [docs/README.md](../../README.md) (step-ID registry and current topic homes).
+
+The implementation counts, defects, proposed contracts and timings below describe that dated tree. Later v2 aircraft, coupled shafts, shared-kernel and vehicle work do not retroactively change these observations. Use [STACK](../../STACK.md), the [aircraft contract](../../AIRCRAFT_CONTRACT.md) and the owning guide before treating any proposal here as remaining work.
 
 Ten documents that do the research in advance for each roadmap phase: theory and equations, implementation options for this repository, Godot notes, reusable tools and data, parameters with their evidence kind, validation tests, pitfalls, proposed steps, and the decisions that would limit later work. ROADMAP keeps the actionable steps; these documents keep the knowledge behind them.
 
 **How to use:**
-- Before starting a step, read its document and section.
-- If building the step proves the document wrong, fix the document in the same change and record the lesson in LEARNINGS.
+- Before starting a step, read its current guide/plan, then the relevant dated research section.
+- Correct an interpretation with a dated note and evidence; preserve the original measurement and source identity. Current behavior belongs in the owning guide; reusable lessons follow [LEARNINGS criteria](../../LEARNINGS.md#keeping-this-useful).
 
 ## The ten documents
 
-| # | Document | Serves | What a developer must know first |
+| # | Document | Serves | Findings and proposals at the recorded snapshot |
 | --- | --- | --- | --- |
 | 01 | [Numerics, architecture and performance](01-numerics-architecture-performance.md) | Phase H, E1b, G2, M5 wind numerics, Gate P | **Integration:** RK4 at 240 Hz remains suitable for the rigid-body kernel, but current P-51 full-session shaft stepping converges at first order because auxiliary rpm is frozen over those stages. H8 should define only the needed continuous, sampled and discrete state semantics, stage time, trace/reset behavior and rollback before wheel anchors or coupled shaft work. **Performance:** use the four-aircraft audit measurements in doc 01 as an exploratory reference; P-51 is materially more expensive. |
 | 02 | [Aerodynamics at RC scale](02-aerodynamics-rc-scale.md) | D11, E0a, M5 stall / ground effect / spin, every derive_physics | **Roll gap:** the 2.1× roll time-constant gap against both flight-identified UMN Sticks is mostly roll inertia (×1.62), then Clp (×1.15). **Pitch:** the 1.45× gap is obsolete since D1-R1. **Damping by regime (new defect, re-measured by the lead):** Clp −0.45 → −0.77 and Cmq −13.6 → −4.4 between α 6° and 10°, where an approach flies. **Ground effect:** on its wheels the Stik gets +16 % lift and −34 % induced drag |

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Validate custom-atmosphere v6/v10 traces or calm standard-column v11 traces."""
 from flap_trace_contract import project as project_flaps
+from mass_trace_contract import project as project_mass_trace
 import argparse
 import csv
 import io
 import json
 import math
 from pathlib import Path
+import re
 import tempfile
 
 from check_trimmed_flight import (
@@ -55,6 +57,25 @@ GLOW_COLUMNS = [
     'glow_opportunity_count', 'glow_fire_count', 'glow_fire_events', 'glow_firing_accumulator',
     'glow_shaft_work_j', 'glow_propeller_work_j', 'glow_thrust_work_j', 'glow_chemical_work_j',
 ]
+GLOW_COLUMNS_V2 = GLOW_COLUMNS
+GLOW_COLUMNS_V3 = GLOW_COLUMNS + ['glow_line_fuel_kg', 'glow_fuel_source_mode']
+GLOW_LAW_V2 = 'glow-mean-cycle-finite-tank-hub-inflow-v2'
+GLOW_LAW_V3 = 'glow-mean-cycle-finite-tank-line-pickup-v3'
+GLOW_TRACE_SCHEMA_V1 = 'openrc-glow-trace v1'
+GLOW_TRACE_SCHEMA_V2 = 'openrc-glow-trace v2'
+GLOW_LAYOUT_V2 = ('rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; '
+                  'running, reason, opportunities, fires, firing accumulator; mixture; '
+                  'shaft/prop/thrust/chemical work J')
+GLOW_LAYOUT_V3 = (GLOW_LAYOUT_V2 + '; feed-line liquid mass kg; '
+                  'fuel source mode (0 starved, 1 main tank, 2 pre-primed line)')
+GLOW_REASON_CODES_V2 = ['', 'not_started', 'cut', 'stall', 'fuel_exhausted', 'overheat']
+GLOW_REASON_CODES_V3 = GLOW_REASON_CODES_V2 + ['fuel_starved']
+GLOW_SUPPLY_SEMANTICS = ('glow_fuel_source_mode: 0 starved, 1 main tank, 2 pre-primed line; '
+                         'glow_line_fuel_kg is liquid mass remaining in the feed line')
+WHEEL_LAYOUT_SUFFIX = 'wheel rim speeds in m/s, landing-gear contact order, appended continuous tail'
+WHEEL_PROFILE_HASH_CONVENTION = (
+    'profile_sha256 is canonical JSON for the selected aircraft profile; '
+    'input_sha256 is SHA-256 of exact wheel_profiles.json bytes')
 
 # The constants and equations mirror the documented model, not the GDScript implementation.
 SEA_LEVEL_PRESSURE_PA = 101325.0
@@ -215,6 +236,9 @@ def _json_metadata_value(metadata, key):
 
 
 def check(path, duration=None):
+    handled, projected = project_mass_trace(path, check, duration)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check, duration)
     if handled:
         return projected
@@ -468,12 +492,239 @@ def _column_trace_parts(path):
     return metadata, data_lines
 
 
+def _glow_start_contract(metadata, wheel_claim):
+    """Bind v1/v2 Glow trace versions to their exact continuous law and install identity."""
+    schema = metadata.get('glow_trace_schema')
+    if schema == GLOW_TRACE_SCHEMA_V1:
+        state_size, law, flight_schema = 17, GLOW_LAW_V2, 'openrc-flight-meta v7'
+        layout = GLOW_LAYOUT_V2
+        reason_codes = GLOW_REASON_CODES_V2
+        columns = GLOW_COLUMNS_V2
+        line_layout = False
+    elif schema == GLOW_TRACE_SCHEMA_V2:
+        state_size, law, flight_schema = 19, GLOW_LAW_V3, 'openrc-flight-meta v10'
+        layout = GLOW_LAYOUT_V3
+        reason_codes = GLOW_REASON_CODES_V3
+        columns = GLOW_COLUMNS_V3
+        line_layout = True
+    else:
+        raise ValueError('missing or unsupported Glow trace schema')
+
+    if metadata.get('metadata_schema') != flight_schema or metadata.get('propulsion_model') != law:
+        raise ValueError('Glow trace schema disagrees with its law or flight metadata version')
+    expected_layout = layout + ('; ' + WHEEL_LAYOUT_SUFFIX if wheel_claim else '')
+    if metadata.get('continuous_layout') != expected_layout:
+        raise ValueError('Glow continuous layout disagrees with its versioned state')
+    try:
+        identity = _json_metadata_value(metadata, 'glow_identity')
+        start = _json_metadata_value(metadata, 'glow_recording_start')
+        continuous = _json_metadata_value(metadata, 'recording_start_continuous')
+        aux = _json_metadata_value(metadata, 'recording_start_aux')
+        stop_reasons = _json_metadata_value(metadata, 'glow_stop_reason_codes')
+    except (KeyError, ValueError) as error:
+        raise ValueError('missing or invalid Glow identity/start metadata') from error
+    profile_identity = start.get('profile_identity') if type(start) is dict else None
+    if (type(identity) is not dict or type(identity.get('profile')) is not dict
+            or not re.fullmatch(r'[0-9a-f]{64}', identity['profile'].get('sha256', ''))
+            or not re.fullmatch(r'[0-9a-f]{64}', identity.get('sha256', ''))
+            or type(start) is not dict or start.get('ok') is not True
+            or start.get('family') not in ('glow_2t', 'glow_4t')
+            or type(profile_identity) is not dict
+            or profile_identity.get('input_sha256') != identity['profile']['sha256']
+            or stop_reasons != reason_codes):
+        raise ValueError('invalid Glow installation identity, start summary, or reason-code table')
+    cycle = 1.0 if start['family'] == 'glow_2t' else 2.0
+    if start.get('cycle_revolutions') != cycle:
+        raise ValueError('Glow cycle family disagrees with cycle_revolutions')
+    if metadata.get('glow_event_semantics') != (
+            'glow_fire_events is the per-row delta of successful accepted fires; '
+            'counts are cumulative within this trace'):
+        raise ValueError('unsupported Glow event semantics')
+    if metadata.get('glow_mode_semantics') != (
+            'glow_running: 0 stopped, 1 running; stop reason is a separate enumerated code'):
+        raise ValueError('unsupported Glow running-mode semantics')
+
+    wheel_count = 0
+    if wheel_claim:
+        try:
+            wheel_layout = _json_metadata_value(metadata, 'wheel_state_layout')
+            launch = _json_metadata_value(metadata, 'launch_continuous')
+            brakes = _json_metadata_value(metadata, 'wheel_brakes')
+        except (KeyError, ValueError) as error:
+            raise ValueError('missing or invalid Glow wheel-state metadata') from error
+        if (metadata.get('wheel_state_model') != 'relative-wheel-rim-speed-rk4-v1'
+                or metadata.get('wheel_profile_status') != 'applied'
+                or not re.fullmatch(r'[0-9a-f]{64}', metadata.get('wheel_profile_sha256', ''))
+                or not re.fullmatch(r'[0-9a-f]{64}', metadata.get('wheel_profile_input_sha256', ''))
+                or metadata.get('wheel_profile_hash_convention') != WHEEL_PROFILE_HASH_CONVENTION
+                or type(wheel_layout) is not list or not wheel_layout
+                or type(launch) is not list or len(launch) != state_size + len(wheel_layout)
+                or type(brakes) is not list or len(brakes) != len(wheel_layout)):
+            raise ValueError('invalid Glow wheel-state metadata')
+        contacts = set()
+        for index, (entry, brake) in enumerate(zip(wheel_layout, brakes)):
+            if (type(entry) is not dict or entry.get('index') != state_size + index
+                    or entry.get('unit') != 'm/s rim speed' or not entry.get('contact')
+                    or entry['contact'] in contacts):
+                raise ValueError('invalid Glow wheel state index/layout')
+            contacts.add(entry['contact'])
+            torque = brake.get('max_torque_nm') if type(brake) is dict else None
+            if (type(brake) is not dict or brake.get('contact') != entry['contact']
+                    or brake.get('availability') not in ('available', 'none', 'unspecified')
+                    or not _finite_number(torque) or torque < 0
+                    or (torque > 0 and brake['availability'] != 'available')):
+                raise ValueError('invalid Glow wheel brake metadata')
+        if any(not _finite_number(value) for value in launch):
+            raise ValueError('nonfinite Glow wheel launch state')
+        wheel_count = len(wheel_layout)
+    elif any(key in metadata for key in (
+            'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+            'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes', 'launch_continuous')):
+        raise ValueError('Glow wheel-state metadata is incomplete')
+
+    if (type(continuous) is not list or len(continuous) != state_size + wheel_count
+            or any(not _finite_number(value) for value in continuous)
+            or type(aux) is not list or len(aux) != 4 or any(not _finite_number(value) for value in aux)
+            or abs(float(aux[0]) - float(continuous[0])) > 1e-9
+            or type(start.get('running')) is not bool
+            or metadata.get('recording_start_engine_running') != ('true' if start['running'] else 'false')):
+        raise ValueError('Glow recording-start state does not match its declared slots')
+    if any(not _finite_number(start.get(key)) for key in (
+            'rpm', 'fuel_kg', 'temperature_k', 'phase_revolutions', 'mixture_command',
+            'opportunity_count', 'fire_count', 'firing_accumulator')):
+        raise ValueError('Glow start summary is missing finite state values')
+    if (continuous[0] < 0 or continuous[1] < 0 or continuous[2] <= 0
+            or continuous[6] < 0 or continuous[6] >= cycle
+            or continuous[7] not in (0.0, 1.0)
+            or continuous[8] != reason_codes.index(start.get('stop_reason', 'unknown'))
+            or continuous[9] < 0 or continuous[9] != int(continuous[9])
+            or continuous[10] < 0 or continuous[10] > continuous[9] or continuous[10] != int(continuous[10])
+            or continuous[11] < 0 or continuous[11] >= 1
+            or continuous[12] < 0 or continuous[12] > 2.8
+            or any(value < 0 for value in continuous[13:17])):
+        raise ValueError('Glow recording-start state is outside its physical trace domain')
+    start_slots = ((0, 'rpm'), (1, 'fuel_kg'), (2, 'temperature_k'), (5, 'fuel_transport_kg_s'),
+                   (6, 'phase_revolutions'), (9, 'opportunity_count'), (10, 'fire_count'),
+                   (11, 'firing_accumulator'), (12, 'mixture_command'), (13, 'shaft_work_j'),
+                   (14, 'propeller_work_j'), (15, 'thrust_work_j'))
+    for index, key in start_slots:
+        if not _finite_number(start.get(key)) or abs(float(start[key]) - float(continuous[index])) > max(
+                1e-10, abs(float(continuous[index])) * 2e-12):
+            raise ValueError('Glow start summary disagrees with continuous slot: ' + key)
+
+    if line_layout:
+        tank_id = metadata.get('glow_fuel_tank_id', '')
+        line_id = metadata.get('glow_feed_line_inventory_id', '')
+        if (not isinstance(tank_id, str) or not tank_id or not isinstance(line_id, str)
+                or (line_id and line_id == tank_id)
+                or not re.fullmatch(r'[0-9a-f]{64}', metadata.get('glow_fuel_registry_sha256', ''))
+                or metadata.get('glow_supply_mode_semantics') != GLOW_SUPPLY_SEMANTICS
+                or not _finite_number(start.get('main_fuel_kg'))
+                or not _finite_number(start.get('feed_line_fuel_kg'))
+                or not _finite_number(start.get('fuel_source_mode'))):
+            raise ValueError('missing or invalid finite Glow store identity/start mode')
+        line_fuel = float(continuous[17])
+        source_mode = float(continuous[18])
+        main_fuel = float(continuous[1]) - line_fuel
+        if (line_fuel < 0 or line_fuel > continuous[1]
+                or source_mode not in (0.0, 1.0, 2.0)
+                or abs(float(start['main_fuel_kg']) - main_fuel) > max(1e-10, continuous[1] * 1e-9)
+                or abs(float(start['feed_line_fuel_kg']) - line_fuel) > max(1e-10, continuous[1] * 1e-9)
+                or float(start['fuel_source_mode']) != source_mode
+                or (not line_id and (line_fuel != 0.0 or source_mode == 2.0))
+                or (source_mode == 1.0 and main_fuel <= 0.0)
+                or (source_mode == 2.0 and line_fuel <= 0.0)):
+            raise ValueError('Glow start store totals or selected fuel source disagree')
+    elif any(key in metadata for key in ('glow_fuel_tank_id', 'glow_feed_line_inventory_id', 'glow_fuel_registry_sha256')) \
+            or any(key in start for key in ('main_fuel_kg', 'feed_line_fuel_kg', 'fuel_source_mode')):
+        raise ValueError('legacy Glow trace cannot claim line-fuel state')
+    return {'state_size': state_size, 'wheel_count': wheel_count, 'columns': columns,
+            'line_layout': line_layout, 'continuous': continuous, 'start': start,
+            'reason_codes': reason_codes}
+
+
+def _check_glow_rows(metadata, rows, contract):
+    """Check the accepted Glow columns against the start state and monotonic event/fuel semantics."""
+    if not rows:
+        raise ValueError('Glow trace has no accepted rows')
+    start_tick = int(metadata['recording_start_tick'])
+    start = contract['start']
+    continuous = contract['continuous']
+    line_layout = contract['line_layout']
+    reason_codes = contract['reason_codes']
+    state_columns = (
+        ('glow_fuel_kg', 1), ('glow_temperature_k', 2), ('glow_running', 7),
+        ('glow_stop_reason_code', 8), ('glow_phase_revolutions', 6),
+        ('glow_mixture_command_phi', 12), ('glow_fuel_transport_kg_s', 5),
+        ('glow_opportunity_count', 9), ('glow_fire_count', 10),
+        ('glow_firing_accumulator', 11), ('glow_shaft_work_j', 13),
+        ('glow_propeller_work_j', 14), ('glow_thrust_work_j', 15), ('glow_chemical_work_j', 16),
+    )
+    for column, slot in state_columns:
+        if abs(rows[0][column] - float(continuous[slot])) > max(6e-9, abs(float(continuous[slot])) * 2e-9):
+            raise ValueError('Glow first row disagrees with start continuous state: ' + column)
+    if rows[0]['tick'] != start_tick or rows[0]['glow_fire_events'] != 0.0:
+        raise ValueError('Glow first row origin or per-recording event delta is invalid')
+    if line_layout:
+        if (abs(rows[0]['glow_line_fuel_kg'] - float(continuous[17])) > 6e-9
+                or rows[0]['glow_fuel_source_mode'] != float(continuous[18])):
+            raise ValueError('Glow first-row feed-line/source state disagrees with recording start')
+    previous = None
+    for row in rows:
+        fuel = row['glow_fuel_kg']
+        temperature = row['glow_temperature_k']
+        running = row['glow_running']
+        reason = row['glow_stop_reason_code']
+        phase = row['glow_phase_revolutions']
+        opportunities = row['glow_opportunity_count']
+        fires = row['glow_fire_count']
+        events = row['glow_fire_events']
+        flow = row['glow_fuel_transport_kg_s']
+        if (fuel < 0 or fuel > float(start['fuel_kg']) + 2e-8 or temperature <= 0
+                or running not in (0.0, 1.0) or reason != int(reason) or not 0 <= int(reason) < len(reason_codes)
+                or phase < 0 or phase >= (1.0 if start['family'] == 'glow_2t' else 2.0)
+                or row['glow_mixture_command_phi'] < 0 or row['glow_mixture_command_phi'] > 2.8
+                or flow < 0 or opportunities < 0 or opportunities != int(opportunities)
+                or fires < 0 or fires != int(fires) or fires > opportunities
+                or events < 0 or events != int(events) or row['glow_firing_accumulator'] < 0
+                or row['glow_firing_accumulator'] >= 1
+                or any(row[column] < -1e-8 for column in (
+                    'glow_shaft_work_j', 'glow_propeller_work_j', 'glow_thrust_work_j', 'glow_chemical_work_j'))):
+            raise ValueError('Glow row is outside the accepted-state domain')
+        if line_layout:
+            line_fuel = row['glow_line_fuel_kg']
+            source_mode = row['glow_fuel_source_mode']
+            main_fuel = fuel - line_fuel
+            if (line_fuel < 0 or line_fuel > fuel + 1e-8 or source_mode not in (0.0, 1.0, 2.0)
+                    or (not metadata['glow_feed_line_inventory_id'] and (line_fuel != 0.0 or source_mode == 2.0))
+                    or (source_mode == 1.0 and main_fuel <= 0.0)
+                    or (source_mode == 2.0 and line_fuel <= 0.0)
+                    or (source_mode == 0.0 and flow > 1e-12)):
+                raise ValueError('Glow row has invalid main/line fuel or source mode')
+        if previous is not None:
+            opportunity_delta = opportunities - previous['glow_opportunity_count']
+            fire_delta = fires - previous['glow_fire_count']
+            if (fuel > previous['glow_fuel_kg'] + 2e-8
+                    or opportunities < previous['glow_opportunity_count']
+                    or fires < previous['glow_fire_count'] or fire_delta != events
+                    or fire_delta > opportunity_delta):
+                raise ValueError('Glow fuel/event counters increased or per-row fire delta disagrees')
+            if line_layout and (row['glow_line_fuel_kg'] > previous['glow_line_fuel_kg'] + 2e-8
+                                or fuel - row['glow_line_fuel_kg']
+                                > previous['glow_fuel_kg'] - previous['glow_line_fuel_kg'] + 2e-8):
+                raise ValueError('Glow main or feed-line inventory increased without reset')
+        previous = row
+
+
 def check_column(path, duration=None):
     """Validate calm standard-column v11 traces, including endpoint and k1 samples.
 
     This specialized lane rejects nonzero wind, gust, or turbulence settings; it does
     not validate arbitrary weather-v4 traces.
     """
+    handled, projected = project_mass_trace(path, check_column, duration)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check_column, duration)
     if handled:
         return projected
@@ -490,7 +741,9 @@ def check_column(path, duration=None):
     if metadata.get('weather_model') != COSINE_MODEL:
         raise ValueError('calm standard-column preset requires the deterministic cosine weather identity')
 
-    glow = metadata.get('glow_trace_schema') == 'openrc-glow-trace v1'
+    glow_schema = metadata.get('glow_trace_schema')
+    glow = glow_schema in (GLOW_TRACE_SCHEMA_V1, GLOW_TRACE_SCHEMA_V2)
+    glow_line_layout = glow_schema == GLOW_TRACE_SCHEMA_V2
     gear = _has_gear_metadata(metadata)
     wheel_claim = any(key in metadata for key in (
         'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
@@ -500,6 +753,7 @@ def check_column(path, duration=None):
     coupled = 'shaft_integrator' in metadata or 'turbine_integrator' in metadata or electric or glow
     expected_schema = (
         'openrc-flight-meta v8' if gear else
+        'openrc-flight-meta v10' if glow_line_layout else
         'openrc-flight-meta v7' if glow else
         'openrc-flight-meta v6' if wheel_claim or coupled else
         'openrc-flight-meta v5'
@@ -510,10 +764,11 @@ def check_column(path, duration=None):
         check_gear_metadata(metadata)
     elif expected_schema == 'openrc-flight-meta v8':
         raise ValueError('v8 column trace is missing retractable-gear identity')
-    if expected_schema == 'openrc-flight-meta v6':
+    glow_contract = None
+    if glow:
+        glow_contract = _glow_start_contract(metadata, wheel_claim)
+    elif expected_schema == 'openrc-flight-meta v6':
         check_coupled_metadata(metadata)
-    if glow and metadata.get('propulsion_model') != 'glow-mean-cycle-finite-tank-hub-inflow-v2':
-        raise ValueError('glow trace schema disagrees with propulsion identity')
     if metadata.get('engine_atmosphere') != (
         'electric motor constants independent of density; propeller loads use stage density'
         if electric else ENGINE_ATMOSPHERE
@@ -560,7 +815,7 @@ def check_column(path, duration=None):
     propulsion_model = metadata.get('propulsion_model')
     battery = 'electric_configuration' in metadata and metadata.get('battery_model') == 'balanced-pack-ocv-resistance-no-regeneration-v1'
     electric_columns = list(ELECTRIC_COLUMNS) + (BATTERY_COLUMNS if battery else []) if electric else []
-    glow_columns = GLOW_COLUMNS if glow else []
+    glow_columns = (GLOW_COLUMNS_V3 if glow_line_layout else GLOW_COLUMNS_V2) if glow else []
     has_turbulence = any(float(value) > 0.0 for value in config['turbulence_rms_mps'])
     expected_columns = (
         list(COLUMNS) + electric_columns + glow_columns + WEATHER_COLUMNS
@@ -681,6 +936,8 @@ def check_column(path, duration=None):
 
     if gear:
         check_gear_metadata(metadata, parsed_rows[0])
+    if glow:
+        _check_glow_rows(metadata, parsed_rows, glow_contract)
     elapsed = parsed_rows[-1]['t_s'] - parsed_rows[0]['t_s']
     if duration is not None:
         if not math.isfinite(duration) or duration <= 0.0 or abs(elapsed - duration) > 1e-8:

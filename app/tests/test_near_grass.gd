@@ -80,6 +80,22 @@ func _test_committed_data_and_validation() -> void:
 		and not centers.values().has(false))
 	_check("yaw and size bytes fit their renderer ranges", encoded)
 
+	var mixed: Dictionary = _raw_grass.duplicate(true)
+	var mixed_rows: Array = mixed["rows"]
+	mixed_rows[0][0] = int(mixed_rows[0][0])
+	var accepted_mixed: Array = NearGrass.validated_rows(mixed)
+	_check("integral int/float rows keep their checksum, types and array identity",
+		accepted_mixed.size() == GRASS_COUNT and is_same(accepted_mixed, mixed_rows)
+		and typeof(mixed_rows[0][0]) == TYPE_INT and typeof(mixed_rows[0][1]) == TYPE_FLOAT
+		and mixed["rows_sha256"] == _raw_grass["rows_sha256"])
+
+	var late_fractional: Dictionary = _raw_grass.duplicate(true)
+	var late_rows: Array = late_fractional["rows"]
+	late_rows[-1][2] = float(late_rows[-1][2]) + 0.5
+	_check("fractional final yaw rejects the whole valid prefix despite unchanged canonical digest",
+		_canonical_digest(late_rows) == _raw_grass["rows_sha256"]
+		and NearGrass.validated_rows(late_fractional).is_empty())
+
 	var damaged: Dictionary = _raw_grass.duplicate(true)
 	var damaged_rows: Array = damaged["rows"]
 	var damaged_first: Array = damaged_rows[0]

@@ -23,6 +23,15 @@ const PATCH_SHOULDER_M := 0.9
 const PATCH_FIELD_GRASS_COLOR := Color("#657545") # matches Spec.GRASS for a feathered shoulder edge
 
 
+# DT-11a: reuse exact patch buffers across Home/Fly builds, never scene resources.
+# FIFO bounds include serialized keys and geometry; container overhead is count-bounded.
+# Called by synchronous scene builders on the main thread.
+const PATCH_CACHE_MAX_ENTRIES := 8
+const PATCH_CACHE_MAX_BYTES := 4 * 1024 * 1024
+static var _patch_cache: Array[Dictionary] = []
+static var _patch_cache_bytes: int = 0
+
+
 # ---------------- tracks and patches ----------------
 
 ## A dirt track along a polyline (render XZ points): two wheel ruts, a grassy crown, mitred joints (no overlaps).
@@ -118,6 +127,29 @@ static func _flat_quad(k: MeshKit, a: Vector2, b: Vector2, c: Vector2, d: Vector
 
 ## A gravel / dirt / worn patch (render XZ polygon) with a worn-grass ring, so it does not end in a hard line.
 static func patch(k: MeshKit, poly: PackedVector2Array, surface: String, theme: String, seed: int) -> void:
+	# Preserve transformed normals and gravel-mask coordinates, including mirrored kits.
+	var key := var_to_bytes([poly, surface, theme, seed, k.xf])
+	for entry: Dictionary in _patch_cache:
+		if entry.key == key:
+			var arrays: Array = bytes_to_var(entry.payload)
+			k.verts.append_array(arrays[0])
+			k.norms.append_array(arrays[1])
+			k.cols.append_array(arrays[2])
+			return
+	var first_vertex := k.verts.size()
+	_patch_uncached(k, poly, surface, theme, seed)
+	var payload := var_to_bytes([k.verts.slice(first_vertex), k.norms.slice(first_vertex), k.cols.slice(first_vertex)])
+	var entry_bytes := key.size() + payload.size()
+	if entry_bytes > PATCH_CACHE_MAX_BYTES:
+		return
+	while _patch_cache.size() >= PATCH_CACHE_MAX_ENTRIES or _patch_cache_bytes + entry_bytes > PATCH_CACHE_MAX_BYTES:
+		var oldest: Dictionary = _patch_cache.pop_front()
+		_patch_cache_bytes -= oldest.key.size() + oldest.payload.size()
+	_patch_cache.append({key = key, payload = payload})
+	_patch_cache_bytes += entry_bytes
+
+
+static func _patch_uncached(k: MeshKit, poly: PackedVector2Array, surface: String, theme: String, seed: int) -> void:
 	var first_vertex := k.verts.size()
 	var worn := Palette.vegetation(Palette.col("worn_grass"), theme)
 	var base: Color = {"gravel": Palette.col("gravel"), "dirt": Palette.col("dirt"), "worn": worn}[surface]

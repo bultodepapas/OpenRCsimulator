@@ -133,10 +133,70 @@ def build_cases(app: Path) -> list[Case]:
         cases.append(Case(name, data, schema_ok, loader_ok, classification))
         return data
 
+    # Optional feed-line and pickup data retain stable resource/inventory IDs,
+    # authored geometry and source quantities. The line fluid is a second liquid
+    # resource, not a dry accessory or a display-name binding.
+    feed_line = deepcopy(stik)
+    feed_tank = feed_line["fuel_system"]["tanks"][0]
+    feed_tank["pickup_position"] = {
+        "value": [-0.015, 0.004, 0.008], "unit": "m", "kind": "estimated",
+        "source": "synthetic AS-08 pickup-position fixture",
+    }
+    feed_tank["feed_line"] = {
+        "id": "line_main", "liquid_inventory_id": "item_fuel_line",
+        "capacity": {"value": 0.005, "unit": "l", "kind": "estimated",
+                     "source": "synthetic AS-08 preprimed line fixture"},
+    }
+    feed_line["inventory"].append({
+        "id": "item_fuel_line", "name": "preprimed glow line", "energy_source": "glow_fuel",
+        "mass": {"value": 0.002, "unit": "kg", "kind": "estimated",
+                 "source": "synthetic AS-08 preprimed line fixture"},
+        "position": {"value": [0.07, 0.01, -0.02], "unit": "m", "kind": "estimated",
+                     "source": "synthetic AS-08 inventory-frame line placement"},
+        "size": {"value": [0.04, 0.02, 0.02], "unit": "m", "kind": "estimated",
+                 "source": "synthetic AS-08 line-liquid capacity envelope"},
+    })
+    cases.append(Case("fuel-feed-line:optional-pickup-and-primed-line", feed_line,
+                      True, True, "fuel-feed-line"))
+    line_over_capacity = deepcopy(feed_line)
+    line_over_capacity["fuel_system"]["tanks"][0]["feed_line"]["capacity"]["value"] = 0.3
+    cases.append(Case("fuel-feed-line:capacity-exceeds-main-tank", line_over_capacity,
+                      True, False, "coupled-runtime-only"))
+    line_family_mismatch = deepcopy(feed_line)
+    next(item for item in line_family_mismatch["inventory"] if item["id"] == "item_fuel_line")["energy_source"] = "gasoline"
+    cases.append(Case("fuel-feed-line:blend-family-mismatch", line_family_mismatch,
+                      True, False, "coupled-runtime-only"))
+    line_reuses_tank_fluid = deepcopy(feed_line)
+    line_reuses_tank_fluid["fuel_system"]["tanks"][0]["feed_line"]["liquid_inventory_id"] = "item_fuel_main"
+    cases.append(Case("fuel-feed-line:reuses-tank-liquid", line_reuses_tank_fluid,
+                      True, False, "coupled-runtime-only"))
+    pickup_wrong_arity = deepcopy(feed_line)
+    pickup_wrong_arity["fuel_system"]["tanks"][0]["pickup_position"]["value"] = [0.0, 0.0]
+    cases.append(Case("fuel-feed-line:pickup-wrong-arity", pickup_wrong_arity,
+                      False, False, "fuel-feed-line"))
+    line_empty_id = deepcopy(feed_line)
+    line_empty_id["fuel_system"]["tanks"][0]["feed_line"]["id"] = ""
+    cases.append(Case("fuel-feed-line:empty-resource-id", line_empty_id,
+                      False, False, "fuel-feed-line"))
+    pickup_missing_source = deepcopy(feed_line)
+    pickup_missing_source["fuel_system"]["tanks"][0]["pickup_position"].pop("source")
+    cases.append(Case("fuel-feed-line:pickup-missing-provenance", pickup_missing_source,
+                      False, False, "fuel-feed-line"))
+    capacity_missing_source = deepcopy(feed_line)
+    capacity_missing_source["fuel_system"]["tanks"][0]["feed_line"]["capacity"].pop("source")
+    cases.append(Case("fuel-feed-line:capacity-missing-provenance", capacity_missing_source,
+                      False, False, "fuel-feed-line"))
+    line_geometry_empty_source = deepcopy(feed_line)
+    next(item for item in line_geometry_empty_source["inventory"] if item["id"] == "item_fuel_line")["position"]["source"] = " "
+    cases.append(Case("fuel-feed-line:geometry-empty-provenance", line_geometry_empty_source,
+                      False, False, "fuel-feed-line"))
+
     # AS-08: complete optional identities preserve old v2, and fail closed when partial.
     if stik.get("physical_identity_version") != 1:
         raise AssertionError("catalog Stik must carry authored physical identities")
-    idless = add("identity:legacy-v2", stik, schema_ok=True, loader_ok=True)
+    # Use the identity-free compatible electric branch here: the Stik fixture now
+    # has v2 tank references that correctly require the referenced inventory IDs.
+    idless = add("identity:legacy-v2", electric, schema_ok=True, loader_ok=True)
     idless.pop("physical_identity_version")
     idless.pop("crash_hull_ids")
     for item in idless["inventory"] + idless["landing_gear"]["contacts"]:

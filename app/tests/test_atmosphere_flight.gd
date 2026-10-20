@@ -51,21 +51,31 @@ func _initialize() -> void:
 		var loads: PackedFloat64Array = s.sim.last_loads
 		var derivative: PackedFloat64Array = RB.derivative(s.sim.state,s.sim.mass,s.sim.inertia,RB.inertia_inverse(s.sim.inertia),
 			M.v3(loads[0],loads[1],loads[2]),M.v3(loads[3],loads[4],loads[5]),s.sim.gravity,s.rotor_momentum(s.sim.aux))
+		if s.sim.model.stage.is_valid():
+			var stage: Dictionary = s.sim.model.stage.call(s.sim.state, s.sim.continuous, s.sim.time())
+			if stage.has("body_derivative"):
+				derivative = stage.body_derivative
 		var equilibrium := true
 		for index: int in [RB.VEL,RB.VEL+1,RB.VEL+2,RB.RATE,RB.RATE+1,RB.RATE+2]:
 			equilibrium = equilibrium and is_finite(derivative[index]) and absf(derivative[index])<1e-8
 		check("custom-air reset solves all six equilibrium accelerations", equilibrium)
-		var r: Recorder = Recorder.new(s.sim)
+		var initial_mass: Dictionary = s.mass_properties()
+		var r: Recorder = Recorder.new(s.sim, s.electrical_state, s.mass_properties)
 		r.start(s.trace_meta())
 		for tick: int in 240:
 			s.sim.step()
-		check("hot/high 1s level hold "+path, s.sim.tick==240 and s.is_flyable() and absf(s.sim.state[RB.POS+2]+30.0)<1e-6 and absf(s.air_data(s.sim.state).V-s.start.V)<1e-6)
-		var trace_version: String = "v12" if s.flaps_available() else ("v10" if s.gear_is_retractable() else "v6")
+		if s.finite_fuel_is_active():
+			check("hot/high finite flight advances and burns from its trimmed initial state "+path,
+				s.sim.tick == 240 and s.is_flyable() and s.mass_properties().mass_kg < initial_mass.mass_kg
+				and s.mass_properties().fuel_remaining_kg < initial_mass.fuel_remaining_kg)
+		else:
+			check("hot/high 1s level hold "+path, s.sim.tick==240 and s.is_flyable() and absf(s.sim.state[RB.POS+2]+30.0)<1e-6 and absf(s.air_data(s.sim.state).V-s.start.V)<1e-6)
+		var trace_version: String = "v15" if s.liquid_fuel_is_active() else "v14"
 		check("versioned trace keeps constant field density and EAS",r.trace.to_csv().begins_with("# format: openrc-trace " + trace_version + "\n") and r.trace.value(240,"rho_kgm3")==s.air_density() and absf(r.trace.value(240,"equivalent_airspeed_mps")-s.air_data(s.sim.state).V*M.sqrt_(s.air_density()/1.225))<1e-12)
 		check("golden v1 refuses changed atmosphere",Golden.record(s,"roll_15").is_empty() and not Golden.replay(s,{}).ok)
 		r.detach()
 		var saved: Dictionary = s.checkpoint()
-		var expected_format: String = "openrc-flight-checkpoint v8" if s.turbine_is_continuous() else "openrc-flight-checkpoint v3"
+		var expected_format: String = "openrc-flight-checkpoint v11" if s.liquid_fuel_is_active() else ("openrc-flight-checkpoint v9" if s.glow_is_active() else "openrc-flight-checkpoint v3")
 		check("atmosphere checkpoint identifies the active physics law",saved.format==expected_format and saved.weather_config==config)
 		for tick: int in 100:
 			s.sim.step()
@@ -107,9 +117,11 @@ func _shaft_and_propulsor_checks(config: Dictionary) -> void:
 	check("dry charge scales indicated torque while friction stays fixed",absf(Propulsion.engine_torque(rpm,throttle,prop,s.engine_charge_ratio())-expected)<1e-12)
 	check("humidity correction differs from moist total density scaling",s.engine_charge_ratio()<s.air_density()/1.225 and absf(Propulsion.engine_torque(rpm,throttle,prop,s.engine_charge_ratio())-Propulsion.engine_torque(rpm,throttle,prop,s.air_density()/1.225))>1e-3)
 	var u: float = M.dot(s.air_data(s.sim.state).v_air,Propulsion.axis(prop))
-	var predicted: float = Propulsion.shaft_step(s.sim.aux[0],s.sim.inputs[3],u,s.sim.dt(),prop,s.air_density(),s.engine_charge_ratio())
-	s.sim.step()
-	check("session shaft pre-step uses density and dry charge",s.sim.aux[0]==predicted)
+	var predicted: float = Propulsion.shaft_rate(s.sim.aux[0],s.sim.inputs[3],u,prop,s.air_density(),s.engine_charge_ratio())
+	var stage: Dictionary = s.sim.model.stage.call(s.sim.state, s.sim.continuous, s.sim.time())
+	var absolute_rate: float = stage.derivative[s._rotor_index()] + M.dot(Propulsion.axis(prop),
+		stage.body_derivative.slice(RB.RATE, RB.RATE + 3)) * 60.0 / TAU
+	check("coupled shaft absolute acceleration uses density and dry charge",absf(absolute_rate-predicted)<1e-8)
 	var thin: PackedFloat64Array = Propulsion.thrust_torque(M.v3(10,0,0),rpm,prop,s.air_density())
 	var dense: PackedFloat64Array = Propulsion.thrust_torque(M.v3(10,0,0),rpm,prop,1.225)
 	check("fixed-rpm prop thrust and load scale with total density",absf(thin[0]/dense[0]-s.air_density()/1.225)<1e-12 and absf(thin[1]/dense[1]-s.air_density()/1.225)<1e-12)

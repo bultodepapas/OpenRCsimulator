@@ -3,6 +3,7 @@ extends SceneTree
 const Store = preload("res://workshop/store.gd")
 const Dependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
+const PresentationProfile = preload("res://workshop/presentation.gd")
 const BASE_PATH: String = "res://data/aircraft/jensen_ugly_stik_60.json"
 
 var _checks: int = 0
@@ -17,8 +18,10 @@ func _initialize() -> void:
 	var recipe: Dictionary = _recipe()
 	_check("base fixture read", not base_bytes.is_empty())
 	_test_dependency_manifests()
+	_test_first_publication_recovery(base_bytes)
+	_test_interrupted_first_save_retry(base_bytes)
 	var integer_recipe: Dictionary = _recipe()
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		integer_recipe[key] = 1
 	var integer_saved: Dictionary = Store.save_variant("Integer recipe", "jensen-das-ugly-stik-60", base_bytes, integer_recipe, "", _root)
 	_check("integer-valued recipes survive their own disk round-trip", bool(integer_saved["ok"]), str(integer_saved["errors"]))
@@ -39,6 +42,33 @@ func _initialize() -> void:
 		return
 	var first: Dictionary = saved["variant"]
 	var id: String = str(first["id"])
+	var revision_one_path: String = ProjectSettings.globalize_path(_root + "/" + id + "/revisions/00000001.json")
+	var revision_one_record: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(revision_one_path))
+	var revision_profile: Dictionary = PresentationProfile.validate(revision_one_record.get("presentation_profile", {}))
+	_check("new variant uses version 2 with an explicit presentation profile", int(revision_one_record.get("version", 0)) == 2
+		and typeof(revision_one_record.get("presentation_profile", null)) == TYPE_DICTIONARY
+		and revision_profile.get("ok", false)
+		and first.get("presentation_profile", {}) == revision_profile.get("profile", {}))
+	var legacy_record: Dictionary = revision_one_record.duplicate(true)
+	legacy_record["version"] = 1
+	legacy_record.erase("presentation_profile")
+	_check("legacy v1 record fixture writes", _write_file(revision_one_path,
+		(JSON.stringify(legacy_record, "\t", true, true) + "\n").to_utf8_buffer()))
+	var legacy_profile_load: Dictionary = Store.load_variant(id, _root)
+	_check("legacy v1 variant remains readable as explicit stock appearance",
+		legacy_profile_load.get("ok", false)
+		and legacy_profile_load.variant.base_bytes == base_bytes
+		and legacy_profile_load.variant.presentation_profile == PresentationProfile.defaults())
+	var legacy_recipe: Dictionary = _recipe()
+	legacy_recipe.erase("tank_capacity_multiplier")
+	var legacy_saved: Dictionary = Store.save_variant("Optional tank capacity compatibility", "jensen-das-ugly-stik-60",
+		base_bytes, legacy_recipe, "", _root)
+	_check("historical recipe may omit the new optional tank-size field", legacy_saved.get("ok", false), str(legacy_saved.get("errors", [])))
+	if legacy_saved.get("ok", false):
+		var legacy_loaded: Dictionary = Store.load_variant(legacy_saved.variant.id, _root)
+		_check("omitted tank-size field survives variant load without rewriting history",
+			legacy_loaded.get("ok", false) and not legacy_loaded.variant.recipe.has("tank_capacity_multiplier"))
+		Store.delete_variant(legacy_saved.variant.id, _root)
 	_check("generated ID is a lowercase UUID", id.length() == 36 and id[14] == "4")
 	_check("revision starts at one", int(first["revision"]) == 1)
 	_check("new variants pin the current compiler version", str(first.get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION)
@@ -62,6 +92,9 @@ func _initialize() -> void:
 		_check("revision still pins original base bytes", renamed["variant"]["base_bytes"] == base_bytes)
 		_check("later revisions retain the original Workshop descriptor", renamed["variant"].get("workshop_descriptor", {}) == first.get("workshop_descriptor", {}))
 		_check("later revisions retain the original dependency manifest", renamed["variant"].get("dependencies", {}) == first.get("dependencies", {}))
+		_check("updating a v1 record writes v2 and carries its legacy empty appearance forward",
+			int(renamed["variant"].get("revision", 0)) == 2
+			and renamed["variant"].get("presentation_profile", {}) == PresentationProfile.defaults())
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 		var unversioned_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"])
 		_check("same-ID save requires an expected revision", not bool(unversioned_save["ok"]) and _has_error(unversioned_save["errors"], "Expected revision is required"), str(unversioned_save["errors"]))
@@ -90,6 +123,13 @@ func _initialize() -> void:
 	bad_recipe["power_multiplier"] = INF
 	var bad_recipe_save: Dictionary = Store.save_variant("Bad recipe", "jensen-das-ugly-stik-60", base_bytes, bad_recipe, "", _root)
 	_check("non-finite recipe numbers are rejected", not bool(bad_recipe_save["ok"]) and _has_error(bad_recipe_save["errors"], "finite"), str(bad_recipe_save["errors"]))
+	var oversized_tank_recipe: Dictionary = _recipe()
+	oversized_tank_recipe["tank_capacity_multiplier"] = 2.01
+	var oversized_tank: Dictionary = Store.save_variant("Bad tank capacity", "jensen-das-ugly-stik-60",
+		base_bytes, oversized_tank_recipe, "", _root)
+	_check("variant store enforces the bounded independent tank-size ratio",
+		not oversized_tank.get("ok", false) and _has_error(oversized_tank.get("errors", []), "tank_capacity_multiplier"),
+		str(oversized_tank.get("errors", [])))
 	var malformed_base: Dictionary = Store.save_variant("Bad base", "jensen-das-ugly-stik-60", "{".to_utf8_buffer(), _recipe(), "", _root)
 	_check("malformed base JSON is rejected", not bool(malformed_base["ok"]), str(malformed_base["errors"]))
 	var wrong_schema_bytes: PackedByteArray = "{\"format\":\"other\",\"version\":1,\"id\":\"jensen-das-ugly-stik-60\"}".to_utf8_buffer()
@@ -104,14 +144,48 @@ func _initialize() -> void:
 
 	_test_manifest_recovery(id)
 	_test_persisted_integrity(id)
-	var deleted: Dictionary = Store.delete_variant(id, _root)
+	var stale_delete: Dictionary = Store.delete_variant(id, _root, 1)
+	_check("delete refuses a stale confirmation revision", not bool(stale_delete["ok"]) and _has_error(stale_delete["errors"], "expected revision"), str(stale_delete["errors"]))
+	_check("stale delete keeps the current variant in the library", int(Store.load_variant(id, _root).get("variant", {}).get("revision", 0)) == 2)
+	var deleted: Dictionary = Store.delete_variant(id, _root, 2)
 	_check("delete moves a valid item to local trash", bool(deleted["ok"]), str(deleted["errors"]))
+	var first_generation: String = str(deleted.get("trash_generation", ""))
+	_check("delete returns an exact UUID trash generation", first_generation.length() == 36 and first_generation[14] == "4")
 	_check("trashed variant leaves the active library", Store.list_variants(_root).is_empty())
+	var trash_root: String = ProjectSettings.globalize_path(_root + "/_trash")
+	var modern_trash_path: String = trash_root.path_join(id + "-" + first_generation)
+	var legacy_trash_path: String = trash_root.path_join(id + "-0000000001-deadbeef")
+	var legacy_move: Error = DirAccess.rename_absolute(modern_trash_path, legacy_trash_path)
+	_check("legacy v1 trash-generation fixture moves", legacy_move == OK)
 	var restored: Dictionary = Store.restore_variant(id, _root)
-	_check("trashed item can be restored", bool(restored["ok"]), str(restored["errors"]))
+	_check("single legacy trash generation remains restorable by old callers", bool(restored["ok"]), str(restored["errors"]))
 	if bool(restored["ok"]):
 		_check("restored item retains its latest revision", int(restored["variant"]["revision"]) == 2)
 		_check("restored item retains exact base bytes", restored["variant"]["base_bytes"] == base_bytes)
+	var original_deleted: Dictionary = Store.delete_variant(id, _root, 2)
+	var original_generation: String = str(original_deleted.get("trash_generation", ""))
+	_check("second delete creates another exact generation", bool(original_deleted["ok"]) and original_generation != first_generation, str(original_deleted["errors"]))
+	var reused: Dictionary = Store.save_variant("Reused store ID", "jensen-das-ugly-stik-60", base_bytes, _recipe(), id, _root, first["workshop_descriptor"], first["dependencies"], 0)
+	_check("deleted UUID can be reused for a new build", bool(reused["ok"]) and int(reused.get("variant", {}).get("revision", 0)) == 1, str(reused["errors"]))
+	var reused_deleted: Dictionary = Store.delete_variant(id, _root, 1)
+	var reused_generation: String = str(reused_deleted.get("trash_generation", ""))
+	_check("reused UUID deletion gets a distinct generation", bool(reused_deleted["ok"]) and reused_generation != original_generation and reused_generation != first_generation, str(reused_deleted["errors"]))
+	var corrupt_generation: String = Store._new_uuid()
+	var corrupt_path: String = trash_root.path_join(id + "-" + corrupt_generation)
+	_check("corrupt generation fixture directory is created", DirAccess.make_dir_recursive_absolute(corrupt_path) == OK)
+	_check("tokenless restore refuses multiple generations, including corrupt trash", not bool(Store.restore_variant(id, _root)["ok"]))
+	var exact_original: Dictionary = Store.restore_variant(id, _root, original_generation)
+	_check("exact generation restores the requested older build", bool(exact_original["ok"]) and int(exact_original["variant"]["revision"]) == 2 and str(exact_original["variant"]["name"]) == "Renamed Stik", str(exact_original["errors"]))
+	var blocked_reuse_restore: Dictionary = Store.restore_variant(id, _root, reused_generation)
+	_check("UUID reuse cannot replace a live build from another trash generation", not bool(blocked_reuse_restore["ok"]) and int(Store.load_variant(id, _root).get("variant", {}).get("revision", 0)) == 2)
+	var old_deleted_again: Dictionary = Store.delete_variant(id, _root, 2)
+	_check("restored old build can be deleted again", bool(old_deleted_again["ok"]), str(old_deleted_again["errors"]))
+	var exact_reused: Dictionary = Store.restore_variant(id, _root, reused_generation)
+	_check("exact reused-ID generation restores its own revision", bool(exact_reused["ok"]) and int(exact_reused["variant"]["revision"]) == 1 and str(exact_reused["variant"]["name"]) == "Reused store ID", str(exact_reused["errors"]))
+	var reused_live_deleted: Dictionary = Store.delete_variant(id, _root, 1)
+	_check("reused build cleanup succeeds", bool(reused_live_deleted["ok"]), str(reused_live_deleted["errors"]))
+	var corrupt_restore: Dictionary = Store.restore_variant(id, _root, corrupt_generation)
+	_check("exact corrupt generation fails closed without selecting another build", not bool(corrupt_restore["ok"]) and not DirAccess.dir_exists_absolute(ProjectSettings.globalize_path(_root + "/" + id)))
 	_finish()
 
 
@@ -132,6 +206,52 @@ func _test_exclusive_lock(id: String, saved: Dictionary, base_bytes: PackedByteA
 	var lock_path: String = guard.directory
 	guard = null
 	_check("scope exit releases the exclusive reservation", not DirAccess.dir_exists_absolute(lock_path))
+
+
+func _test_first_publication_recovery(base_bytes: PackedByteArray) -> void:
+	var saved: Dictionary = Store.save_variant("Publication cut Stik", "jensen-das-ugly-stik-60", base_bytes, _recipe(), "", _root)
+	_check("publication-cut fixture saves", bool(saved["ok"]), str(saved["errors"]))
+	if not bool(saved["ok"]):
+		return
+	var id: String = str(saved["variant"]["id"])
+	var root_path: String = ProjectSettings.globalize_path(_root)
+	var live_path: String = root_path.path_join(id)
+	var staging_root: String = root_path.path_join("_staging")
+	var staging_path: String = staging_root.path_join(id + "-publication-cut")
+	_check("publication staging root exists", DirAccess.make_dir_recursive_absolute(staging_root) == OK)
+	var move_error: Error = DirAccess.rename_absolute(live_path, staging_path)
+	_check("simulate complete first-save staging before publication", move_error == OK)
+	if move_error != OK:
+		Store.delete_variant(id, _root, 1)
+		return
+	var interrupted: Dictionary = Store._publish_staged_variant(staging_path, live_path, id, Callable(self, "_deny_publication"))
+	_check("publication cut leaves no visible UUID", not bool(interrupted["ok"]) and not DirAccess.dir_exists_absolute(live_path), str(interrupted["errors"]))
+	_check("publication cut retains the complete validated staging directory", DirAccess.dir_exists_absolute(staging_path) and FileAccess.file_exists(staging_path.path_join("manifest.json")))
+	var retried: Dictionary = Store._publish_staged_variant(staging_path, live_path, id)
+	_check("retry atomically publishes the complete staged UUID", bool(retried["ok"]) and int(retried.get("variant", {}).get("revision", 0)) == 1, str(retried["errors"]))
+	_check("published first save passes full readback", bool(Store.load_variant(id, _root)["ok"]))
+	var deleted: Dictionary = Store.delete_variant(id, _root, 1)
+	_check("publication-cut fixture cleans up", bool(deleted["ok"]), str(deleted["errors"]))
+
+
+func _test_interrupted_first_save_retry(base_bytes: PackedByteArray) -> void:
+	var id: String = Store._new_uuid()
+	var root_path: String = ProjectSettings.globalize_path(_root)
+	var orphan_path: String = root_path.path_join("_staging").path_join(id + "-interrupted-before-manifest")
+	var revisions_path: String = orphan_path.path_join("revisions")
+	_check("interrupted-save revision fixture directory is created", DirAccess.make_dir_recursive_absolute(revisions_path) == OK)
+	_check("uncommitted revision bytes are retained for the fixture", _write_file(revisions_path.path_join("00000001.json"), "uncommitted revision".to_utf8_buffer()))
+	var retry: Dictionary = Store.save_variant("Retry after first save", "jensen-das-ugly-stik-60", base_bytes, _recipe(), id, _root, {}, {}, 0)
+	_check("retry creates a complete committed build beside uncommitted staging", bool(retry["ok"]) and int(retry.get("variant", {}).get("revision", 0)) == 1, str(retry["errors"]))
+	var loaded: Dictionary = Store.load_variant(id, _root)
+	_check("retry does not promote the uncommitted staged record", bool(loaded["ok"]) and str(loaded.get("variant", {}).get("name", "")) == "Retry after first save")
+	_check("retry publishes only one visible UUID record", _contains_variant(Store.list_variants(_root), id))
+	var deleted: Dictionary = Store.delete_variant(id, _root, 1)
+	_check("interrupted-save retry fixture cleans up", bool(deleted["ok"]), str(deleted["errors"]))
+
+
+func _deny_publication() -> bool:
+	return false
 
 
 func _test_root_guard() -> void:
@@ -323,6 +443,7 @@ func _recipe() -> Dictionary:
 		"weight_multiplier": 1.0,
 		"power_multiplier": 1.0,
 		"control_multiplier": 1.0,
+		"tank_capacity_multiplier": 1.0,
 	}
 
 

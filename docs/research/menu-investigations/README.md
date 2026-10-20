@@ -1,5 +1,26 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.
+
+## UI-01-R1 — Fly directly into flight, 2026-10-19
+
+Home's airplane Fly action now resumes the accepted session directly when controller readiness is verified. The deferred handoff samples without advancing incremental throttle, preserves the selected launch power, and yields to an explicit pause or a newer flight route. Unverified or unavailable controllers still show recovery; helicopter startup retains its existing flow.
+
+Native Windows Godot 4.7.2 headless checks passed `test_controller_pause_recovery.gd` (59/59, now including direct Fly, runway idle and advancing ticks without Continue), `test_controller_menu.gd` (48/48) and `test_ui_input.gd`. All three changed scripts passed `--check-only`. `test_ui_home.gd` passed its launch assertions but retained 37 layout failures, also reproduced with the pre-change `app_root.gd` (blob `b6f2d8937`) in the isolated imported baseline. No Home layout, physics or aircraft data changed in this follow-up.
+
+## UI-02-R2 — restart directly into flight, 2026-10-19
+
+Airplane restarts from R, the mapped controller, Pause and the accident report now resume as soon as the accepted start and controls are ready. The shell samples controller readiness without advancing simulation or incremental throttle. An already armed radio retains readiness under unchanged device/profile ownership; low-throttle gates still apply to device/profile and focus recovery. Rate throttle uses the selected launch power, including runway idle. Unready, invalid or disconnected controls and rejected starts retain the visible recovery menu. Helicopter restart behavior is unchanged.
+
+Native Windows Godot 4.7.2 headless verification passed:
+
+- `test_controller_pause_recovery.gd`: 59/59, including repeated R restarts, menu Restart, accident restart, armed radio absolute throttle, zero runway rate throttle, frozen unverified input, invalid input, focus loss, rejected runway reset and explicit keyboard recovery.
+- `test_controller_menu.gd`: 48/48, including separate flight/menu devices, held restart suppression and helicopter recovery.
+- `test_controller_integration.gd`: 27/27; `test_controller_routing_audit.gd`: 21/21; `test_session_guards.gd`: 32/32; `test_accident_integration.gd`: 77/77.
+- `test_ui_pause.gd` and `test_ui_screen_stack.gd`: all checks passed. The five changed GDScript files also passed `--check-only`.
+
+`test_golden.gd` fails all four existing recordings. The same numerical errors were reproduced in an isolated imported app using the pre-change `flight_session.gd` from `bceb3bd40` (blob `1760f5b28fa8d038b5521fb21bba31418d892103`); physics and aircraft data match that baseline. No golden recordings were regenerated. These are software checks with synthetic devices, not physical-controller qualification.
+
 ## UI-02-R1 — pause and restart recovery, 2026-10-17
 
 Native Windows Godot 4.7.2 probes reproduced four defects against `1ef60b44`: R and the accident report reset the selected controller's session into a pause with no visible Continue action; restarting after controller loss resumed simulation without explicit device recovery; rejected keyboard runway restarts closed Pause; and the runway reset installed idle simulation inputs but left pilot commands at the generic 50% throttle default. The next keyboard sample or staged gamepad resume reapplied that power. The shell now owns these interactive restart routes and holds the menu through reset validation. Failed starts retain their error, successful controller restarts focus Continue, and runway commands match their solved zero-throttle inputs.

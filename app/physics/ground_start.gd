@@ -2,6 +2,7 @@
 # Stage 1 solves the engine-off support pose. Stage 2 solves all six idle accelerations while retaining the exact
 # support anchors. Uniform wind is part of both residual functions, so zero body speed does not imply zero airspeed.
 extends RefCounted
+const FixedDatum := preload("res://physics/fixed_datum_body.gd")
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -315,6 +316,12 @@ static func _accelerations(s: PackedFloat64Array, model: Dictionary, inv: Packed
 		loads[i] += ground[i]
 	var derivative := RB.derivative(s, model.mass_kg, model.inertia, inv, M.v3(loads[0], loads[1], loads[2]),
 		M.v3(loads[3], loads[4], loads[5]), g, Dynamics.rotor_momentum(model, rpm) if engine else PackedFloat64Array())
+	if model.has("trim_mass_properties"):
+		var properties: Dictionary = model.trim_mass_properties
+		var force: PackedFloat64Array = loads.slice(0, 3)
+		var moment: PackedFloat64Array = M.sub(loads.slice(3, 6), M.cross(properties.cg_body_m, force))
+		derivative = FixedDatum.derivative(s, properties, force, moment, g,
+			Dynamics.rotor_momentum(model, rpm) if engine else PackedFloat64Array())
 	return PackedFloat64Array([derivative[RB.VEL], derivative[RB.VEL + 1], derivative[RB.VEL + 2],
 		derivative[RB.RATE], derivative[RB.RATE + 1], derivative[RB.RATE + 2]])
 

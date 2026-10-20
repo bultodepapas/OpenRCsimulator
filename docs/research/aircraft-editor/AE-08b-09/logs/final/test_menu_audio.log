@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   menu surface observes eligible controls once
+ok   re-observing a surface does not add duplicate signal connections
+ok   flight-only controls are outside the observed menu input set
+ok   two non-positional voices are allocated
+ok   programmatic initial focus and range values stay silent
+ok   direct user range adjustment requests one change cue
+ok   programmatic range changes outside input remain silent
+ok   hover duplicates on the same target are debounced
+ok   user navigation can request focus audio
+ok   OptionButton selection requests a selection cue
+ok   semantic accept cue is callable
+ok   semantic accept suppresses its same-frame automatic press duplicate
+ok   cue request signal exposes deterministic observations
+ok   controls below the active ScreenStack surface cannot sound
+ok   disabled and hidden controls cannot request press audio
+ok   an eligible active button requests press audio
+ok   a detached and reattached menu surface can be observed again
+ok   reattached controls retain one press connection
+ok   semantic back cue is callable while a route is closing
+ok   host-owned audio service survives the source screen closing
+ok   semantic cues remain observable after route closure
+ok   semantic cue counters reflect logical requests
+ok   one transition produces one acceptance cue
+ok   normalized volume is clamped to its public range
+ok   negative normalized volume is clamped to mute
+ok   muting stops an already playing cue

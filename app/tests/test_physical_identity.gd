@@ -22,12 +22,24 @@ func legacy(raw: Dictionary) -> Dictionary:
 		contact.erase("id")
 	out.propulsion.erase("id")
 	out.controls.erase("surface_ids")
+	# FUEL-03 tanks bind inventory ids, so an id-free file predates them: it balances as authored (the datum).
+	if out.erase("fuel_system"):
+		out.balance.erase("fuel_state")
+		out.balance.erase("cg_range")
+		var mass := 0.0
+		var first := [0.0, 0.0, 0.0]
+		for part in out.inventory:
+			mass += float(part.mass.value)
+			for k in 3:
+				first[k] += float(part.mass.value) * float(part.position.value[k])
+		out.balance.plan_cg.value = [first[0] / mass, first[1] / mass, first[2] / mass]
 	return out
 
 func physical_model(model: Dictionary) -> Dictionary:
 	var out := model.duplicate(true)
 	out.erase("physical_identity")
 	out.erase("data_sha256")
+	out.erase("fuel_system")
 	out.propulsion.erase("id")
 	out.controls.erase("surface_ids")
 	for contact in out.landing_gear.get("contacts", []):

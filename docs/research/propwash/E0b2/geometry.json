@@ -16,13 +16,13 @@
   },
   "thrust_line_offset": {
     "value": [
-      -0.414176,
+      -0.402668437352,
       0.0,
-      0.0
+      -0.000208375965
     ],
     "unit": "m",
     "kind": "derived",
-    "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
+    "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus the authored inventory CG (the fixed body datum, FUEL-05f) in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
   },
   "pieces": [
     {

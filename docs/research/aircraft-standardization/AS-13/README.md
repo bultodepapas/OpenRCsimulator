@@ -1,6 +1,6 @@
 # AS-13 accepted contact observations
 
-**Date:** 2026-10-13. **Scope:** a common contact observation and checkpoint boundary for the existing aircraft. Physical laws, numerical operation order and calibration remain unchanged. The [aircraft contract](../../../../AIRCRAFT_CONTRACT.md#contact-observations-and-checkpoints) defines the public API; the [active plan](../../../plans/aircraft-standardization.md) retains the remaining identity/section and capability gates.
+**Date:** 2026-10-13. **Scope:** a common contact observation and checkpoint boundary for the existing aircraft. Physical laws, numerical operation order and calibration remain unchanged. The [aircraft contract](../../../AIRCRAFT_CONTRACT.md#contact-observations-and-checkpoints) defines the public API; the [active plan](../../../plans/aircraft-standardization.md) retains the remaining identity/section and capability gates.
 
 ## Delivered
 

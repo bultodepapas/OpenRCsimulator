@@ -1,0 +1,10 @@
+Retained console output from the initial draft test, transcribed from the tool output.
+The paint fixture was missing required pattern/accent fields; this was corrected before integration.
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL first/after_first_publish complete physical and visual payload
+FAIL update/after_manifest_commit complete physical and visual payload
+FAIL rotate/after_manifest_commit complete physical and visual payload
+FAIL recovered/after_manifest_commit complete physical and visual payload
+Workshop store interruptions: 35 cases, 494 checks, 4 failed (process_cuts=false)

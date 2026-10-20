@@ -1,0 +1,52 @@
+{
+  "format": "openrc-aircraft-light-verification v1",
+  "date": "2026-10-19",
+  "engine": "Godot 4.7.2-stable",
+  "renderer": "Compatibility",
+  "gpu": "NVIDIA GeForce RTX 3090; OpenGL 3.3; driver 617.42",
+  "git_head": "21ad34754447dd5c66e95ae926de80134059b17e",
+  "source_sha256": {
+    "app/main.gd": "9b70889d76625d4f390e4aa0c973527c9e8503d40dd931e9c63806073ad48e11",
+    "app/helicopter_main.gd": "4bb1f5b73f4ca1efe1330763f6bde78b760715d595b8e9dc0e158a01f04f6bae",
+    "app/render/world/aircraft_light_state.gd": "fb36c123dc7fce796fe7d35fe92f3fb5536f560783283cc102e063d01eac47ec",
+    "app/render/world/aircraft_lights.gd": "9d3b75416b781ed2a9ac7affd8dd6b28ff0c1197df5e364b9b2c6572d53db824",
+    "app/render/world/world.gd": "2423c715c91b595d4270b6730d841355603080dc25b674a2d3b548c9e88f9e55",
+    "app/render/rotor/heli_night_lights.gd": "9fb5d33017f6f1b99205c0bf79f10ec32174eb9d0227ade0bd16937678f6ebfc",
+    "app/ui/home_scene.gd": "aee9a49c726807d77b4f22d336711eb1d4f166a3aba6cff6726807a44490cc16",
+    "app/tests/test_aircraft_light_control.gd": "428a7ce83e73c4926652e9f3c4481b54a180b8e3bee9e23659c4580ba2debeb1",
+    "app/test.sh": "c7488a42f049f109cb773ca4c56655e6ed90cd97994f235e7b0b17e845505e52"
+  },
+  "capture_sha256": {
+    "gp-extra-300s-60-off.png": "b01d0c02fa458c71a8ab5c38b408edac520db5b9b9a2e8e0e9b9be54bce3d6f1",
+    "gp-extra-300s-60-on.png": "dc93411ca412a05b33a539c045126d4ce1c19b8a89e4ba124dc3a996c24ebe73",
+    "helicopter-on.png": "b500bade6fd5ad816f1d83020f99b1c20833485e1d9589add7437cbb4c7fe844",
+    "jensen-das-ugly-stik-60-off.png": "9ddb1a1c1e9f6de2c6c38d1c35ca84c1891e89919ce67bc4e2553c660600d28d",
+    "jensen-das-ugly-stik-60-on.png": "8e59b49923da3c703397e1d2f54bf1abdab769cc30ca5626001e4cc0f3aadaf9",
+    "p51d-mustang-120-off.png": "5b09317d279e7ea3eb47e2149c12a25de8485e6930f4e44a0d90ada8d3c273ce",
+    "p51d-mustang-120-on.png": "ef019bbfa83cbde9a3d38e54d69aa08b21fa8ec6244f18843764de79c0e989ff",
+    "sebart-avanti-s-a200-p100rx-off.png": "42a5ca540a93fa9c71abb13b694b3fd914f5569829dbcea5942f849bcc779322",
+    "sebart-avanti-s-a200-p100rx-on.png": "5634ca347cdb89e1df4b87c064e202cc49225cd05ca7637865c599d94067021d",
+    "turbo-lumber-evolution-off.png": "db48dc3b20fcad9f9878f86a0cbe2022bcb98583fd48993f47466d8862a06299",
+    "turbo-lumber-evolution-on.png": "ca883744f0fb409183c76ef194a8adbe27435824e544a66f22185a4c64aa156f"
+  },
+  "checks": {
+    "control_headless": 151,
+    "control_native": 162,
+    "gpu": 123,
+    "night_kit": 34,
+    "helicopter_kit": 47,
+    "world_field": 86
+  },
+  "limits": [
+    "Existing P-51 coupled-shaft checkpoint test receives an empty checkpoint, also reproduced with pre-change main.gd and current dependencies.",
+    "No physical validation or uncontended whole-frame performance qualification."
+  ],
+  "native_acceptance": {
+    "log": "native-acceptance.log",
+    "checks": 162,
+    "script_shader_renderer_errors": 0
+  },
+  "diagnostics": [
+    "The initial native harness produced two texture shutdown leaks; pre-change Home reproduced both. Letting previews render before disposal removed these from the final run."
+  ]
+}

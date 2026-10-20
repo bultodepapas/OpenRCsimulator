@@ -4,7 +4,7 @@
 
 ## Ownership and coordination
 
-At the start the shared tree carried another track's uncommitted ground-effect work (`ROADMAP.md`, `app/physics/aero.gd`, a new `ground_effect.gd`); during this delivery that track grew to physics, data, schema, session and research files. This delivery touches none of them. It owns the new `app/render/propeller_blur.gd`, `app/tests/test_propeller_blur.gd`, `app/tests/capture_propeller_blur.gd` and this folder, and integrates through two lines in `app/main.gd` (a preload and one attach call beside the existing gear observer). Shared documents (`DECISIONS.md`, `docs/research/README.md`) received one row and one link each; the other track's hunks in those files were left unstaged.
+At the start the shared tree carried another track's uncommitted ground-effect work (`ROADMAP.md`, `app/physics/aero.gd`, a new `ground_effect.gd`); during this delivery that track grew to physics, data, schema, session and research files. This delivery touches none of them. It owns the new `app/render/propeller_blur.gd`, `app/tests/test_propeller_blur.gd`, `app/tests/capture_propeller_blur.gd` and this folder, and integrates through two lines in `app/main.gd` (a preload and one attach call beside the existing gear observer). Shared documents (`docs/DECISIONS.md`, `docs/research/README.md`) received one row and one link each; the other track's hunks in those files were left unstaged.
 
 ## Why this improvement
 
@@ -20,7 +20,7 @@ A solid propeller drawn once per frame strobes: at flying speed the blades pass 
 
 ## Renderer probes (Godot 4.7.2, Compatibility, llvmpipe)
 
-A scratch scene rendered three questions before the design was fixed; the script is retained as [research/visual-quality/vq-05/compat_probe.gd](../../../../research/propeller-blur/compat_probe.gd) and its frame as [evidence/compat-probe.png](evidence/compat-probe.png):
+A scratch scene rendered three questions before the design was fixed; the script is retained as [research/visual-quality/vq-05/compat_probe.gd](../../../../research/visual-quality/vq-05/compat_probe.gd) and its frame as [evidence/compat-probe.png](evidence/compat-probe.png):
 
 | Question | Result | Consequence |
 | --- | --- | --- |

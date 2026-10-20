@@ -82,11 +82,12 @@ static func fly(session: Node, m: Dictionary) -> RefCounted:
 		session.set_start_altitude(m.altitude) # optional start height (m): room for loops and spins
 	session.reset()
 	var sim: Node = session.sim
-	var rec := Recorder.new(sim, session.electrical_state)
+	var rec := Recorder.new(sim, session.electrical_state, Callable(session, "mass_properties"))
 	var metadata: Dictionary = { maneuver = m }
 	# Electric, flap and retractable-gear sessions record extra inputs/aux; their trace accepts rows only with the
 	# session metadata that declares that layout (P51-11a). Other aircraft keep the bare maneuver metadata.
-	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable():
+	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable() \
+			or session.finite_fuel_is_active():
 		metadata = session.trace_meta()
 		metadata.maneuver = m
 	rec.start(metadata)

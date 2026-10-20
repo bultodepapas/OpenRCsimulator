@@ -51,7 +51,7 @@ All results come from the [bench output](sweep-production-law.md) on the product
 
 ## Spanwise stall progression (implemented, opt-in)
 
-`aero.wing_polar.spanwise_progression` is an evidence quantity g ∈ [0, 1] in the [aircraft contract](../../../../../AIRCRAFT_CONTRACT.md).
+`aero.wing_polar.spanwise_progression` is an evidence quantity g ∈ [0, 1] in the [aircraft contract](../../../../AIRCRAFT_CONTRACT.md).
 - **Law:** strip i reads the tabulated polar at its angle times fᵢ = 1 + g·(λᵢ − 1). λᵢ is the strip's induced-map row sum over the mean, computed once at load from the calibrated map. A rectangular wing's root therefore separates first, and a tapered wing's tip.
   - Stik: root 1.11, tip 0.84.
   - Timber: root 1.08, tip 0.88.

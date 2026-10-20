@@ -18,8 +18,8 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SPEC = ROOT / "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json"
-DEFAULT_GLB = ROOT / "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb"
+DEFAULT_SPEC = ROOT / "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json"
+DEFAULT_GLB = ROOT / "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb"
 DEFAULT_OUT = ROOT / "app/data/vehicles/ground/mt8_bisonte.json"
 FORMAT = "openrc-ground-vehicle"
 VERSION = 1

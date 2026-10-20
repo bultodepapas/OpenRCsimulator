@@ -12,17 +12,23 @@
     "gp-extra-300s-60": {
       "np_x_m": 0.147033,
       "kind": "derived",
-      "source": "42.5 % MAC with the loaded half-tank CG at 27.98 % MAC (research/extra-300/ex05/derivation.md): plan_cg x 0.10266 + 0.1452 x MAC 0.305597 (taper formula)"
+      "source": "42.5 % MAC derived from the Extra aerodynamic model (research/extra-300/ex05/derivation.md, model z 0.0381 m; aircraft-data x uses the aft-positive conversion). Current loaded full-tank CG is 25.99 % MAC, giving 16.47 % MAC static margin; the estimate is not a flight measurement."
     },
     "p51d-mustang-120": {
       "np_x_m": 0.214398,
       "kind": "derived",
-      "source": "34.2 % MAC glide neutral point (docs/P51-REALISM-PLAN.md) with plan CG 27 % MAC: plan_cg x 0.177763 + 0.072 x MAC 0.508816 (taper formula)"
+      "source": "34.2 % MAC glide neutral point (research/p51/p51-05/derivation.md) with plan CG 27 % MAC: plan_cg x 0.177763 + 0.072 x MAC 0.508816 (taper formula)"
     },
     "sebart-avanti-s-a200-p100rx": {
       "np_x_m": 0.270866,
       "kind": "derived",
       "source": "manual aft CG 260 mm taken as 3 % MAC stable (research/avanti-s/av06/inputs.json): 0.260 + 0.03 x MAC 0.362193 (taper formula)"
+    },
+    "turbo-lumber-evolution": {
+      "np_x_m": 0.11474047993431823,
+      "kind": "derived",
+      "source": "TT-07 derive_physics.py: generated static_margin=(xnp-cg_x)/c; current estimate 0.260304661 MAC at CG x=0.060 m and c=0.210293891 m gives xnp=0.114740480 m. Estimated aerodynamic neutral point, not flight identified.",
+      "applies_to": ["turbo-lumber-evolution"]
     }
   }
 }

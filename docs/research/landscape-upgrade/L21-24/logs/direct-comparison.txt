@@ -1,0 +1,4 @@
+Default and explicit --landscape=club_field traces: identical except created_utc.
+61 simulation samples each; all header fields except creation time and all simulation rows match.
+Both --landscape=green_paradise and --landscape=club_field direct runs exit 0.
+Unknown ID exits 31 without producing a trace.

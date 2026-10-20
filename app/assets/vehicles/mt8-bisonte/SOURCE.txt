@@ -1,6 +1,6 @@
 Bisonte MT8, original model and rig delivered by the project owner.
 On 2026-10-13 the owner confirmed original authorship and authorized inclusion
 and modification in OpenRC. No third-party brand affiliation is claimed.
-Source: RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte in the source repository.
+Source: assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte in the source repository.
 Generated runtime copies: research/rc-monster-truck/build_visual.py.
 This authorization does not invent a separate general-purpose asset license.

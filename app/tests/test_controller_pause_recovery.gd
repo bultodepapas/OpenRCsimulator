@@ -82,8 +82,8 @@ func _run() -> void:
 	root.add_child(app)
 	var ui := UiDriver.new(self)
 	await ui.settle()
-	app.controllers.enumerate_devices = func() -> Array:
-		return [{"id": 15, "name": "Synthetic Xbox", "known": true, "guid": "pause-test-pad"}]
+	var devices: Array = [{"id": 15, "name": "Synthetic Xbox", "known": true, "guid": "pause-test-pad"}]
+	app.controllers.enumerate_devices = func() -> Array: return devices
 	app.controllers.refresh()
 	app.start_flight()
 	var session: Node = app.flight.session
@@ -92,12 +92,15 @@ func _run() -> void:
 	session.read_button = func(_id: int, _button: int) -> bool: return false
 	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
 	await create_timer(0.35).timeout
-	check("automatic controller launch is ready at rest but never auto-resumes", session.radio.armed and session.sim.paused and app.pause_menu != null)
+	check("Fly starts a ready controller flight without Pause or Continue", session.radio.armed
+		and not session.sim.paused and app.pause_menu == null and session.holds.is_empty())
 	check("controller recovery test starts on the selected runway", session.start_choice == "runway" and session.trace_meta().launch_choice == "runway")
-	check("pause reports ready instead of asking for more motion", app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
-	app.pause_menu.continue_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	check("Continue works without any synthetic axis events", app.pause_menu == null and not session.sim.paused)
+	check("Fly stages runway idle without retaining airborne throttle", session.commands.throttle == 0.0
+		and session.sim.inputs[3] == 0.0 and session._pending_controller_start < 0.0)
+	var launch_tick: int = session.sim.tick
+	await create_timer(0.1).timeout
+	check("Fly advances without another input action", app.pause_menu == null and not session.sim.paused
+		and session.sim.tick > launch_tick)
 	for cycle in 3:
 		if session.glow_is_active() and not session.glow_state().get("running", false):
 			await ui.tap(KEY_F7)
@@ -112,33 +115,21 @@ func _run() -> void:
 		check("cycle %d throttle raises actual engine RPM" % (cycle + 1), float(session.sim.aux[0]) > idle_rpm)
 		fake_axes[1] = 0.03084 # centered gamepad drift remains inside the configured dead zone.
 		await ui.tap(KEY_R)
-		check("real R requests a shell restart and leaves the controller ready to Continue",
-			app.pause_menu != null and session.sim.paused
-			and session.start_choice == "runway"
-			and app.pause_menu.note_label.text == tr("Flight restarted. Select Continue when the controls are ready.")
-			and is_equal_approx(session._pending_controller_start, 0.0))
-		var frozen_state: PackedByteArray = _simulation_snapshot(session)
-		var frozen_tick: int = session.sim.tick
-		await create_timer(0.15).timeout
-		check("cycle %d pause holds the exact simulation state" % (cycle + 1),
-			session.sim.paused and session.sim.tick == frozen_tick and _simulation_snapshot(session) == frozen_state)
-		await create_timer(0.35).timeout
-		check("cycle %d is ready without stick movement" % (cycle + 1),
-			session.radio.armed and app.pause_menu.continue_button.is_visible_in_tree()
-			and app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
-		app.pause_menu.continue_button.grab_focus()
-		await ui.tap(KEY_ENTER)
-		var tick_after_continue: int = session.sim.tick
+		check("real R restarts directly into flight with the controller ready",
+			app.pause_menu == null and not session.sim.paused and session.holds.is_empty()
+			and session.start_choice == "runway" and session.radio.armed
+			and session._pending_controller_start < 0.0)
+		var tick_after_restart: int = session.sim.tick
 		await create_timer(0.1).timeout
-		check("cycle %d Continue resumes simulation ticks" % (cycle + 1),
-			app.pause_menu == null and not session.sim.paused and session.sim.tick > tick_after_continue)
-		check("cycle %d runway Continue starts at zero throttle" % (cycle + 1),
+		check("cycle %d restart advances without Continue" % (cycle + 1),
+			app.pause_menu == null and not session.sim.paused and session.sim.tick > tick_after_restart)
+		check("cycle %d runway restart starts at zero throttle" % (cycle + 1),
 			is_equal_approx(session.radio.throttle_position(), 0.0)
 			and is_equal_approx(session.commands.throttle, 0.0)
 			and is_equal_approx(session.sim.inputs[3], 0.0))
 
 	# The menu Restart action is independently exercised through keyboard focus and Enter. Raw roll
-	# input is deliberately held: its presence must not revoke readiness or hide the recovery menu.
+	# input is deliberately held: a verified live controller remains ready through the restart.
 	fake_axes[2] = 0.75
 	await ui.tap(KEY_ESCAPE)
 	await create_timer(0.15).timeout
@@ -148,18 +139,12 @@ func _run() -> void:
 	await ui.tap(KEY_DOWN)
 	check("focused menu navigation selects Restart", ui.focus_name() == "Restart")
 	await ui.tap(KEY_ENTER)
-	check("focused Restart plus Enter preserves Pause while restarting", app.pause_menu != null
-		and session.sim.paused and session.start_choice == "runway"
-		and is_equal_approx(session._pending_controller_start, 0.0)
-		and app.pause_menu.note_label.text == tr("Flight restarted. Select Continue when the controls are ready."))
-	check("held roll does not revoke Continue readiness after menu Restart",
-		session.radio.armed and app.pause_menu.continue_button.is_visible_in_tree()
-		and app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
+	check("focused Restart plus Enter closes Pause and resumes flight", app.pause_menu == null
+		and not session.sim.paused and session.start_choice == "runway" and session.holds.is_empty()
+		and session._pending_controller_start < 0.0)
+	check("held roll stays available after menu Restart",
+		session.radio.armed and session.commands.roll > 0.5)
 	fake_axes[2] = 0.0
-	await create_timer(0.15).timeout
-	app.pause_menu.continue_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	check("focused menu Restart can Continue and resume simulation", app.pause_menu == null and not session.sim.paused)
 
 	# A rejected selected-runway reset must leave the visible menu and its error note in place.
 	app.open_pause()
@@ -174,30 +159,36 @@ func _run() -> void:
 		and not app.pause_menu.note_label.text.contains("Flight restarted"))
 	session.surface_error = previous_surface_error
 	app.restart_flight()
-	check("retry after restoring runway data succeeds and resets pending throttle",
-		app.pause_menu != null and session.sim.paused and session.start_error.is_empty()
-		and session.start_choice == "runway" and is_equal_approx(session._pending_controller_start, 0.0)
-		and app.pause_menu.note_label.text == tr("Flight restarted. Select Continue when the controls are ready."))
-	await create_timer(0.35).timeout
-	check("runway retry becomes ready to Continue", session.radio.armed
-		and app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
-	app.pause_menu.continue_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	check("Continue after a rejected reset resumes the valid runway flight", app.pause_menu == null and not session.sim.paused)
+	check("retry after restoring runway data resumes the valid runway flight",
+		app.pause_menu == null and not session.sim.paused and session.start_error.is_empty()
+		and session.start_choice == "runway" and is_equal_approx(session.commands.throttle, 0.0)
+		and session._pending_controller_start < 0.0)
 
 	# The accident report uses the same shell restart path as keyboard and menu actions.
 	var report: Node = app.flight.get("_accident_report") as Node
 	if report != null and report.has_signal("restart_requested"):
 		report.restart_requested.emit()
-		check("accident-report restart enters the controller-ready Pause shell",
-			app.pause_menu != null and session.sim.paused and session.start_choice == "runway"
-			and is_equal_approx(session._pending_controller_start, 0.0))
-		await create_timer(0.35).timeout
-		app.pause_menu.continue_button.grab_focus()
-		await ui.tap(KEY_ENTER)
-		check("accident-report restart can Continue through the shell", app.pause_menu == null and not session.sim.paused)
+		check("accident-report restart resumes flight without Pause",
+			app.pause_menu == null and not session.sim.paused and session.start_choice == "runway"
+			and is_equal_approx(session.commands.throttle, 0.0) and session._pending_controller_start < 0.0)
 	else:
 		check("flight exposes the accident-report restart signal", false)
+
+	# Without verified samples a restart must retain the menu and its exact frozen state.
+	session.radio.confirmed_gamepad_connection = func(_id: int) -> bool: return false
+	app.open_pause()
+	app.restart_flight()
+	check("unverified controller restart retains visible recovery", app.pause_menu != null
+		and session.sim.paused and not session.radio.armed and session.holds.has("menu"))
+	var frozen_state: PackedByteArray = _simulation_snapshot(session)
+	await create_timer(0.15).timeout
+	check("unverified restart preserves the frozen simulation", _simulation_snapshot(session) == frozen_state)
+	app.continue_flight()
+	check("unverified restart cannot Continue", app.pause_menu != null and session.sim.paused)
+	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
+	await create_timer(0.1).timeout
+	app.continue_flight()
+	check("verified recovery can Continue", app.pause_menu == null and not session.sim.paused)
 	session.radio.confirmed_gamepad_connection = func(_id: int) -> bool: return false
 	app._notification(Node.NOTIFICATION_APPLICATION_FOCUS_OUT)
 	await ui.settle()
@@ -209,9 +200,36 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("verified neutral focus recovery can Continue without moving sticks", app.pause_menu == null and not session.sim.paused)
 
-	# A selected controller that disconnects requires explicit controller recovery before Continue.
-	session.controller_disconnected()
+	# A restart retains an already armed radio under unchanged ownership; absolute throttle stays live.
+	devices.append({"id": 14, "name": "Synthetic EdgeTX Radio", "kind": "radio", "known": false, "guid": "pause-test-radio"})
+	app.controllers.refresh()
 	app.open_pause()
+	check("radio can be explicitly selected", app.controllers.select_devices(14, 15))
+	fake_axes[2] = -1.0
+	session.radio.on_motion(14, 2, -1.0)
+	await create_timer(0.1).timeout
+	app.continue_flight()
+	check("radio arms from low-throttle evidence", session.radio.armed and app.pause_menu == null and not session.sim.paused)
+	fake_axes[2] = 0.4
+	app.open_pause()
+	app.restart_flight()
+	check("armed radio restart resumes without Pause or another low-throttle gesture",
+		app.pause_menu == null and not session.sim.paused and session.radio.armed
+		and is_equal_approx(session.commands.throttle, 0.7))
+	app.open_pause()
+	check("return to gamepad is explicit", app.controllers.select_devices(15, 15))
+	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
+	fake_axes[2] = 0.0
+	await create_timer(0.1).timeout
+	app.continue_flight()
+
+	# A selected controller that disconnects requires explicit controller recovery before Continue.
+	fake_axes[0] = NAN
+	app.open_pause()
+	app.restart_flight()
+	check("invalid input discovered during restart keeps recovery visible", app.pause_menu != null
+		and session.sim.paused and session._controller_lost and not session.radio.connected)
+	fake_axes[0] = 0.0
 	await ui.settle()
 	app.restart_flight()
 	check("restart after controller loss keeps the recovery menu visible",

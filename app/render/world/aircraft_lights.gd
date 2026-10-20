@@ -37,6 +37,9 @@ const BELLY_STEP_M := 0.03
 ## Landing light: in the left wing's leading edge at this share of the semispan (the RC kit position).
 const LANDING_SPAN := 0.36 # its 16° beam then clears a propeller disc of up to ~40 % of the span
 const MODES := ["all", "nav", "off"]
+const GROUPS := ["navigation", "strobe", "landing", "orientation"]
+## Existing imported RC lens material names; models can publish light_material_groups to extend/replace this map.
+const MATERIAL_GROUPS := {light_red = "navigation", light_green = "navigation"}
 ## A diffuse LED strip's radiance in scene units (estimate: ~1,000–3,000 cd/m², a tenth of a bare LED).
 const STRIP_RADIANCE := 0.25
 const STRIP_WIDTH_M := 0.015
@@ -398,14 +401,85 @@ static func wing_piece(tris: PackedVector3Array, x: float) -> Array:
 
 ## FW-35b: ALL shows every light, NAV only the navigation lights and strobes, OFF none.
 static func set_mode(kit: Node3D, mode: String) -> void:
-	if kit == null:
+	if kit == null or mode not in MODES:
 		return
 	kit.visible = mode != "off"
-	for child in kit.get_children():
-		var name := String(child.name)
-		var nav := name.begins_with("nav_") or name.begins_with("strobe_")
-		(child as Node3D).visible = (mode == "all" or nav) and bool(child.get_meta("gate_open", true))
+	var groups: Dictionary = kit.get_meta("light_bindings", {})
+	var supported: Array = kit.get_meta("supported_light_groups", GROUPS)
+	for group: String in groups:
+		var enabled := mode != "off" and group in supported and (mode == "all" or group in ["navigation", "strobe"])
+		for light: Node3D in groups[group]:
+			if is_instance_valid(light):
+				light.visible = enabled and bool(light.get_meta("gate_open", true))
 	kit.set_meta("mode", mode)
+
+
+## Bind luminous presentation nodes (including emissive effects) once, relative to the kit or by reference.
+## Unsupported groups stay dark. Reject invalid/duplicate references before changing accepted bindings.
+static func bind_groups(kit: Node3D, bindings: Dictionary, supported: Array = GROUPS) -> bool:
+	if kit == null or supported.any(func(group: Variant) -> bool: return group not in GROUPS):
+		return false
+	var resolved := {}
+	var seen: Array[Node3D] = []
+	for group: String in bindings:
+		if group not in GROUPS or not bindings[group] is Array:
+			return false
+		var lights: Array[Node3D] = []
+		for reference: Variant in bindings[group]:
+			var light: Node3D = reference as Node3D if reference is Node3D else kit.get_node_or_null(NodePath(str(reference))) as Node3D
+			if light == null or light == kit or light in seen:
+				return false
+			lights.append(light)
+			seen.append(light)
+		resolved[group] = lights
+	set_mode(kit, "off")
+	kit.set_meta("light_bindings", resolved)
+	kit.set_meta("supported_light_groups", supported.duplicate())
+	set_mode(kit, "off")
+	return true
+
+
+## Own only emission overrides, never the imported mesh or its shared material. Prepare before the first frame,
+## even when no kit is fitted yet: an imported emissive lens must also be dark in automatic daylight/OFF.
+static func prepare_emission(root: Node3D) -> Dictionary:
+	if root.has_meta("aircraft_light_emission"):
+		return root.get_meta("aircraft_light_emission")
+	var names: Dictionary = root.get_meta("light_material_groups", MATERIAL_GROUPS)
+	var private_materials := {}
+	var bindings := {materials = [], mode = "", gain = -1.0, supported = root.get_meta("light_groups", GROUPS)}
+	for node: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
+		if node.mesh == null:
+			continue
+		for surface: int in (1 if node.material_override != null else node.mesh.get_surface_count()):
+			var source := node.get_active_material(surface) as BaseMaterial3D
+			if source == null or not source.emission_enabled or not names.has(source.resource_name):
+				continue
+			var group := str(names[source.resource_name])
+			if group not in GROUPS:
+				continue
+			var id := source.get_instance_id()
+			if not private_materials.has(id):
+				var material := source.duplicate() as BaseMaterial3D
+				private_materials[id] = material
+				bindings.materials.append({material = material, group = group, energy = source.emission_energy_multiplier})
+			if node.material_override != null:
+				node.material_override = private_materials[id]
+			else:
+				node.set_surface_override_material(surface, private_materials[id])
+	root.set_meta("aircraft_light_emission", bindings)
+	return bindings
+
+
+static func set_emission_mode(bindings: Dictionary, mode: String, gain: float = 1.0) -> void:
+	if mode not in MODES or (bindings.mode == mode and bindings.gain == gain):
+		return
+	for binding: Dictionary in bindings.materials:
+		var enabled: bool = mode != "off" and binding.group in bindings.supported and (mode == "all" or binding.group in ["navigation", "strobe"])
+		var material: BaseMaterial3D = binding.material
+		material.emission_enabled = enabled
+		material.emission_energy_multiplier = float(binding.energy) * gain if enabled else 0.0
+	bindings.mode = mode
+	bindings.gain = gain
 
 
 ## P51-V13: the anchored position of one kit light, or the bounds-derived fallback.
@@ -515,6 +589,9 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 
 ## Adds the kit under the airplane's root (a child named "NightKit") and returns it.
 static func attach(root: Node3D) -> Node3D:
+	var existing := root.get_node_or_null("NightKit") as Node3D
+	if existing != null:
+		return existing
 	var kit := Node3D.new()
 	kit.name = "NightKit"
 	var all: AABB = bounds(root).all
@@ -572,6 +649,12 @@ static func attach(root: Node3D) -> Node3D:
 	if not anchors.is_empty():
 		kit.set_meta("dynamic", true) # update_dynamic() has following or gated lights to serve
 	root.add_child(kit)
+	var bindings := {navigation = [], strobe = [], landing = [], orientation = []}
+	for child: Node3D in kit.get_children():
+		var label := str(child.name)
+		var group := "navigation" if label.begins_with("nav_") else "strobe" if label.begins_with("strobe_") else "landing" if label.begins_with("landing_") else "orientation"
+		bindings[group].append(child)
+	bind_groups(kit, bindings, root.get_meta("light_groups", GROUPS))
 	set_mode(kit, "all")
 	return kit
 

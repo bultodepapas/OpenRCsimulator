@@ -1,5 +1,5 @@
 # E3b2: runway start in static equilibrium. The threshold spot from the field; the two-stage solve converges; after
-# 1 s (and 10 s) at idle the airplane has not moved (|v| < 1e-6 m/s), ΣN = m·g within 0.1 %, attitude within 0.1° of
+# 1 s (and 10 s) at idle the airplane has not moved (|v| < 1e-6 m/s), ΣN = m·g + the idle thrust's downward part within 0.1 %, attitude within 0.1° of
 # the solve, every wheel still stuck. Independent checks: anchors balance the thrust, the nose load matches a
 # quasi-static moment balance with thrust, the lean onto the anchors is T/Σk. Aircraft without stiction are refused.
 # Run: godot --headless --path . --script res://tests/test_runway_start.gd
@@ -76,9 +76,12 @@ func _initialize() -> void:
 			_check("after 1 s: |v| < 1e-6 m/s", worst_v < 1e-6, "max %s m/s" % String.num_scientific(worst_v))
 			var n_sum := _normal_sum(one_second, gear, session.ground_surfaces)
 			var weight: float = model.mass_kg * G
-			var t_down: float = n_sum - weight
-			_check("after 1 s: ΣN = m·g within 0.3 %% (the idle thrust, tilted by the nose-down lean, adds %.4f N)" % t_down,
-				absf(n_sum - weight) < 0.003 * weight, "%.5f N vs %.5f N" % [n_sum, weight])
+			# The idle thrust, tilted by the nose-down lean, presses down too (FUEL-05f's forward CG leans the nose further).
+			var idle_thrust: float = Propulsion.thrust_torque(PackedFloat64Array([0.0, 0.0, 0.0]), session.sim.aux[0],
+				model.propulsion, Air.RHO_SEA_LEVEL)[0]
+			var t_down: float = _rows(one_second)[2][0] * idle_thrust
+			_check("after 1 s: ΣN = m·g + the idle thrust's downward component %.4f N within 0.1 %%" % t_down,
+				absf(n_sum - weight - t_down) < 0.001 * weight, "%.5f N vs %.5f N" % [n_sum, weight + t_down])
 			_check("after 1 s: attitude within 0.1° of the solve", _angle(one_second, solved) < deg_to_rad(0.1),
 				"%s°" % String.num_scientific(rad_to_deg(_angle(one_second, solved))))
 	var s10: PackedFloat64Array = session.sim.state

@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-SOURCE_BLEND = REPO_ROOT / "Helicopter 3d acrobatic" / "HX-700_Helicoptero_RC.blend"
+SOURCE_BLEND = REPO_ROOT / "assets" / "source-deliveries" / "hx-700-original" / "HX-700_Helicoptero_RC.blend"
 DEFAULT_PREVIEW = REPO_ROOT / ".tools" / "heli25" / "hx700-preview.glb"
 DEFAULT_PROFILES = REPO_ROOT / ".tools" / "heli25" / "hx700-rotor-profiles.json"
 MANIFEST = REPO_ROOT / "assets" / "aircraft" / "hx-700" / "source-manifest.json"

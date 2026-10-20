@@ -10,6 +10,7 @@ const PropBreak = preload("res://render/crash/prop_break.gd")
 const AirframeScuffs = preload("res://render/crash/airframe_scuffs.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const EffectiveMass = preload("res://physics/effective_mass.gd")
+const SceneryCollision = preload("res://sim/scenery_collision.gd")
 const M = preload("res://physics/math3d.gd")
 const SceneryBodies = preload("res://render/landscape_upgrade/scenery_bodies.gd")
 const CrashCause = preload("res://render/crash/cause.gd")
@@ -20,6 +21,8 @@ const WaterEffects = preload("res://render/lake/water_effects.gd")
 const WATER_CHECKPOINT_VERSION := 1
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["version", "age_s", "event_count", "impact_point_world", "report", "effects"]
 const WATER_REPORT_FIELDS: Array[String] = ["trigger", "surface", "component", "speed_mps", "impact_depth_m", "water_level_down_m", "tick", "contact_point_world", "lake_id", "water_effects_started", "water_audio_enabled"]
+const FUEL_SOURCE_KINDS: Array[String] = ["glow_fuel", "gasoline", "kerosene"]
+const FUEL_FAMILY_SOURCES := {"glow": "glow_fuel", "gasoline": "gasoline", "kerosene": "kerosene"}
 
 var flight: Node3D
 var wreck: Wreck
@@ -32,7 +35,8 @@ var report: Dictionary = {}
 var last_update_usec := 0
 var impact_usec := 0
 var shader_warmup: Dictionary = {}
-var _fuel_kg := 0.0
+## Legacy scalar kept for the kerosene fire path; report fuel quantities use `fuel_by_kind_kg`.
+var _kerosene_fuel_kg := 0.0
 ## CR-22b: tagged energy per kind (inventory energy_source), kg.
 var energy_sources: Dictionary = {}
 ## CR-09d1: inventory items as model-frame boxes {mass, center, size} for the wreck's section masses.
@@ -92,7 +96,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 			var kind := str(item.get("energy_source",""))
 			if not kind.is_empty():
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
-	_fuel_kg = float(energy_sources.get("kerosene", 0.0))
+	_kerosene_fuel_kg = float(energy_sources.get("kerosene", 0.0))
 	flight.session.resetting.connect(reset)
 	shader_warmup = ShaderWarmup.prepare(self, effects, wreck._shadows[0], flight.get("_sun") as DirectionalLight3D)
 
@@ -170,15 +174,21 @@ func _start() -> void:
 		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
 	var component: String = named.component
 	var surface := surface_at(flight.field,point[0],point[1])
-	# FUEL-06: one live mass sample at the impact (fuel burned), not the initial wet build.
-	var live: Dictionary = flight.session.mass_properties() if flight.session.has_method("mass_properties") else {}
+	# Prefer the swept-contact sample used by a dynamic scenery/water response. Its
+	# within-step inventory is linearly interpolated and remains an approximation.
+	# Static hull/gear snapshots have no sample, so finite-fuel reports use the accepted endpoint.
+	var endpoint_live: Dictionary = flight.session.mass_properties() if flight.session.has_method("mass_properties") else {}
+	var selected_mass: Dictionary = _select_mass_sample(impact, endpoint_live)
+	var live: Dictionary = selected_mass.get("sample", {})
+	var mass_sample_basis := str(selected_mass.get("basis", "unavailable"))
+	var mass_is_dynamic := bool(selected_mass.get("dynamic", false))
 	var live_ok: bool = live.get("ok", false)
 	var mass := float(live.mass_kg) if live_ok else float(flight.session.sim.mass)
 	# CR-08b: the struck point engages only its effective mass; a gear-limit snapshot has no
 	# contact point, so it keeps the whole mass (reported by the estimator's mass_basis).
 	var effective_mass := -1.0
 	if not impact.body_point.is_empty():
-		if live_ok and bool(live.finite_fuel):
+		if live_ok and (mass_is_dynamic or bool(live.get("finite_fuel", false))):
 			# The contact arm is measured from the live CG, not the fixed datum (R05-B).
 			effective_mass = float(EffectiveMass.at_point_properties(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), live).effective_mass_kg)
 		else:
@@ -212,12 +222,42 @@ func _start() -> void:
 	report["mass_kg"] = mass
 	report["cg_model"] = flight._cg_model
 	report["cg_offset_body_m"] = live.cg_body_m.duplicate() if live_ok else PackedFloat64Array([0.0, 0.0, 0.0])
-	# FUEL-06: finite glow fuel reports what remains at impact; prescribed fuel stays the declared inventory.
-	var sources: Dictionary = energy_sources.duplicate()
-	if live_ok and bool(live.finite_fuel) and sources.has("glow_fuel"):
-		sources["glow_fuel"] = float(live.fuel_remaining_kg)
-	report["fuel_kg"] = _fuel_kg
-	report["fuel_kind"] = "remaining at impact (finite glow fuel)" if live_ok and bool(live.finite_fuel) else "declared inventory; no flight consumption"
+	report["mass_sample_basis"] = mass_sample_basis
+	if live.has("sample_boundary"):
+		report["mass_sample_boundary"] = str(live.sample_boundary)
+	if live.has("impact_fraction") and typeof(live.impact_fraction) in [TYPE_FLOAT, TYPE_INT] \
+			and is_finite(float(live.impact_fraction)):
+		report["mass_sample_impact_fraction"] = float(live.impact_fraction)
+	if live.has("tick"):
+		report["mass_sample_tick"] = int(live.tick)
+	else:
+		report["mass_sample_tick"] = int(impact.tick)
+	if live.has("time_s") and typeof(live.time_s) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(live.time_s)):
+		report["mass_sample_time_s"] = float(live.time_s)
+	elif impact is SceneryCollision.Event and is_finite(float(impact.time_fraction)) and impact.time_fraction >= 0.0:
+		report["mass_sample_tick_fraction"] = float(impact.time_fraction)
+	# Contact collision samples may expose mass properties before the canonical store list is available.
+	# Keep the typed fuel inventory honest by labeling an accepted endpoint sample in that case.
+	var fuel_sample: Dictionary = live.duplicate(true)
+	if mass_is_dynamic:
+		fuel_sample["finite_fuel"] = true
+	var fuel_sample_basis := mass_sample_basis
+	if not _sample_has_fuel_inventory(fuel_sample) and endpoint_live.get("ok", false) \
+			and bool(endpoint_live.get("finite_fuel", false)):
+		fuel_sample = endpoint_live
+		fuel_sample_basis = "accepted-endpoint-approximation"
+	report["fuel_sample_basis"] = fuel_sample_basis
+	var tanks: Array = flight.session.aircraft.model.get("fuel_system", {}).get("tanks", [])
+	var sources: Dictionary = _energy_sources_at_sample(fuel_sample, energy_sources, tanks)
+	var fuel_by_kind_kg: Dictionary = {}
+	for kind: String in FUEL_SOURCE_KINDS:
+		if sources.has(kind):
+			fuel_by_kind_kg[kind] = maxf(0.0, float(sources[kind]))
+	report["fuel_by_kind_kg"] = fuel_by_kind_kg
+	# Backward-compatible scalar semantics: this is kerosene only, never total onboard fuel.
+	report["fuel_kg"] = _kerosene_fuel_kg
+	report["fuel_kind"] = "kerosene"
+	report["fuel_kg_basis"] = "declared inventory; legacy kerosene-only scalar"
 	# Presentation estimate, not a simulated tank/joint failure. A damaged wing
 	# alone does not imply a ruptured tank; whole-airframe destruction can.
 	# Central = the fuselage/engine/propeller groups, so labelled nose, belly and spinner hits count (CR-01d).
@@ -246,7 +286,7 @@ func _start() -> void:
 	flight._shadow.visible = false
 	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
 	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
-	effects.start(_impact_point,velocity,report,_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
+	effects.start(_impact_point,velocity,report,_kerosene_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
 	report["energy"] = Effects.energy_outcome(sources, report, bool(flight.session.engine_running), hot)
 	report["energy_sources"] = sources.duplicate()
 	effects.apply_energy(report.energy)
@@ -498,6 +538,64 @@ func _record_sample() -> void:
 	history.append(CrashCause.sample(t, telemetry, s[RB.RATE], s[RB.RATE + 2], session.engine_running))
 	while not history.is_empty() and float(history[0].t) < t - CrashCause.HISTORY_S:
 		history.pop_front()
+
+
+static func _select_mass_sample(impact: Variant, endpoint: Dictionary) -> Dictionary:
+	if impact is SceneryCollision.Event:
+		var contact: Dictionary = impact.contact_mass_properties
+		var valid: Dictionary = EffectiveMass.validate_properties(contact)
+		if valid.get("ok", false):
+			var basis := "impact-contact-approximation"
+			if str(contact.get("sample_boundary", "")) == "swept_contact_linear_inventory":
+				basis = "swept-contact-linear-inventory-approximation"
+			return {sample = contact, basis = basis, dynamic = true}
+	if endpoint.get("ok", false):
+		var finite: bool = bool(endpoint.get("finite_fuel", false))
+		return {sample = endpoint, basis = "accepted-endpoint-approximation" if finite else "constant-build",
+			dynamic = finite}
+	return {sample = {}, basis = "unavailable", dynamic = false}
+
+
+static func _sample_has_fuel_inventory(sample: Dictionary) -> bool:
+	if not bool(sample.get("finite_fuel", false)):
+		return false
+	if sample.get("stores") is Array and not sample.stores.is_empty():
+		return true
+	return sample.get("store_amounts_by_id") is Dictionary or sample.get("remaining_mass_kg_by_id") is Dictionary
+
+
+static func _energy_sources_at_sample(sample: Dictionary, baseline: Dictionary, tanks: Array) -> Dictionary:
+	var sources: Dictionary = baseline.duplicate(true)
+	if not bool(sample.get("finite_fuel", false)):
+		return sources
+	var totals: Dictionary = {}
+	var stores: Variant = sample.get("stores")
+	if stores is Array:
+		for store: Variant in stores:
+			if not store is Dictionary:
+				continue
+			var source: String = str(FUEL_FAMILY_SOURCES.get(str(store.get("family", "")), ""))
+			var amount: Variant = store.get("remaining_kg")
+			if source.is_empty() or typeof(amount) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(amount)):
+				continue
+			totals[source] = float(totals.get(source, 0.0)) + maxf(0.0, float(amount))
+	else:
+		var by_id: Variant = sample.get("store_amounts_by_id", sample.get("remaining_mass_kg_by_id"))
+		if not by_id is Dictionary:
+			return sources
+		for tank: Variant in tanks:
+			if not tank is Dictionary:
+				continue
+			var source: String = str(FUEL_FAMILY_SOURCES.get(str(tank.get("family", "")), ""))
+			var amount_value: Variant = by_id.get(str(tank.get("id", "")), NAN)
+			if amount_value is Dictionary:
+				amount_value = amount_value.get("onboard_kg", amount_value.get("requested_onboard_kg", NAN))
+			if source.is_empty() or typeof(amount_value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(amount_value)):
+				continue
+			totals[source] = float(totals.get(source, 0.0)) + maxf(0.0, float(amount_value))
+	for source: String in totals:
+		sources[source] = float(totals[source])
+	return sources
 
 
 ## CR-09d1: one inventory item (le frame [x_aft, y_right, z_up] from the datum) as a model-frame box (+x right, +y up,

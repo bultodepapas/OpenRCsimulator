@@ -15,7 +15,7 @@ Two changes are integrated:
 
 The response reads no airspeed or body motion and applies no feedback rudder. Full mode, keyboard, physical RC radios and recorded physics inputs bypass the gamepad policy. RC transmitters continue to own their rates/expo. Missing optional quantities preserve the previous immediate/unity behavior. The resulting yaw command also feeds the declared nosewheel mix, reducing steering travel in Normal-gamepad operation.
 
-Existing `commands.yaw` holds the transient input state. Reset centers it, holds freeze it, and disarming clears demand immediately. Physics checkpoints store downstream accepted inputs and restore paused replay; they do not restore a live controller/filter session. See the [aircraft contract](../../../../AIRCRAFT_CONTRACT.md).
+Existing `commands.yaw` holds the transient input state. Reset centers it, holds freeze it, and disarming clears demand immediately. Physics checkpoints store downstream accepted inputs and restore paused replay; they do not restore a live controller/filter session. See the [aircraft contract](../../../AIRCRAFT_CONTRACT.md).
 
 The generated aircraft equals the saved [R2 baseline](baseline-aircraft.json) except for the two new gamepad quantities and `Cnp/Cnr`. The accepted R2 pitch policy/polar, mass, inertia, fin geometry, static derivatives, physical throws, servo timing, turbine and landing gear data are unchanged. No golden flight was re-recorded.
 

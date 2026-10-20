@@ -1,0 +1,23 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\source\\app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--max-fps",
+    "60",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\loading_storm_forced.gd",
+    "--",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\loading-storm-forced-candidate.json",
+    "--cycles=3"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "wall_s": 27.734999999998763,
+  "engine_errors": false
+}

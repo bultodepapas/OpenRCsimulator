@@ -1,0 +1,48 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   cache copies valid bounded RGBA pixels
+ok   cache retrieval returns ImageTexture and refreshes LRU use
+ok   cache evicts least-recently-used entry at the count limit
+ok   cache enforces accounted RGBA8 byte limits
+ok   cache byte limit evicts older image even below count limit
+ok   cache rejects dimensions above its per-instance bound
+ok   cache rejects malformed keys
+ok   cache strips mipmaps before ImageTexture creation and accounts exact base-level bytes
+ok   clearing cache releases all retained entries and byte accounting
+ok   saved variant fixture is complete
+ok   thumbnail identity freezes a complete saved record
+ok   identity pins camera, bounded pixels, renderer and separate profile identity
+ok   presentation-only change creates a new image identity without changing physical trial ID
+ok   physical scale change creates a separate image identity and trial ID
+ok   identity inspection never mutates the caller's saved record
+ok   incomplete or malformed non-saved records refuse
+ok   headless cache miss returns a deferred unavailable result
+ok   headless GPU render refusal has a clear reason
+ok   request never mutates the persisted variant record
+ok   test seeds an identity-specific CPU cache texture
+ok   cancel suppresses a deferred cache-hit publication
+ok   late cache-hit completion cannot publish after a newer request
+ok   valid cached pixels publish through the ImageTexture signal
+ok   headless cached publication creates no temporary viewport resources
+ok   saved variant fixture is removed
+ok   headless lifecycle cycle 00 releases all temporary resource references
+ok   headless lifecycle cycle 01 releases all temporary resource references
+ok   headless lifecycle cycle 02 releases all temporary resource references
+ok   headless lifecycle cycle 03 releases all temporary resource references
+ok   headless lifecycle cycle 04 releases all temporary resource references
+ok   headless lifecycle cycle 05 releases all temporary resource references
+ok   headless lifecycle cycle 06 releases all temporary resource references
+ok   headless lifecycle cycle 07 releases all temporary resource references
+ok   headless lifecycle cycle 08 releases all temporary resource references
+ok   headless lifecycle cycle 09 releases all temporary resource references
+ok   headless lifecycle cycle 10 releases all temporary resource references
+ok   headless lifecycle cycle 11 releases all temporary resource references
+ok   headless lifecycle cycle 12 releases all temporary resource references
+ok   headless lifecycle cycle 13 releases all temporary resource references
+ok   headless lifecycle cycle 14 releases all temporary resource references
+ok   headless lifecycle cycle 15 releases all temporary resource references
+ok   headless lifecycle cycle 16 releases all temporary resource references
+ok   headless lifecycle cycle 17 releases all temporary resource references
+ok   headless lifecycle cycle 18 releases all temporary resource references
+ok   headless lifecycle cycle 19 releases all temporary resource references
+45 checks, 0 failed

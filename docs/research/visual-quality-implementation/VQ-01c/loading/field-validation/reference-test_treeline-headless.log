@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+L7 tree runtime: 28629 checks, 1 failed; species [588, 531, 561]
+WARNING: Tree wind is disabled for maple_tree because source material -9223371886145042431 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:53)
+       [1] show_aircraft (res://ui/home_scene.gd:133)
+       [2] _init (res://ui/home_scene.gd:95)
+       [3] show_home (res://app_root.gd:295)
+       [4] _ready (res://app_root.gd:235)
+       [5] transition (res://tests/test_treeline.gd:136)
+       [6] run (res://tests/test_treeline.gd:103)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:53)
+       [1] _build_world (res://main.gd:2158)
+       [2] _ready (res://main.gd:496)
+       [3] start_flight (res://app_root.gd:600)
+       [4] _on_fly (res://ui/home.gd:1340)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:53)
+       [1] show_aircraft (res://ui/home_scene.gd:133)
+       [2] _init (res://ui/home_scene.gd:95)
+       [3] _rebuild_home_scene (res://app_root.gd:1596)
+       [4] start_flight (res://app_root.gd:617)
+       [5] _on_fly (res://ui/home.gd:1340)
+FAIL real Fly route creates flight

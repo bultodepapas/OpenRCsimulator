@@ -37,7 +37,7 @@ Three facts of the plan's Revision 4 change: the forward-extent discrepancy is a
 
 ## Silhouette overlay (owner)
 
-The manual is not in the repository, so the overlay of the r1 previews (`Timber turbo evolution/turbo_timber_evolution/r1/previews/side_right.png`, `top.png`) or the TT-03 captures (`inspection_side_left.png`, `inspection_top.png`, orthographic, 1.2 spans tall) on the manual three-view remains the owner's review. The metrology above is the second check, as the plan orders.
+The manual is not in the repository, so the overlay of the r1 previews (`assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1/previews/side_right.png`, `top.png`) or the TT-03 captures (`inspection_side_left.png`, `inspection_top.png`, orthographic, 1.2 spans tall) on the manual three-view remains the owner's review. The metrology above is the second check, as the plan orders.
 
 ## Limits
 

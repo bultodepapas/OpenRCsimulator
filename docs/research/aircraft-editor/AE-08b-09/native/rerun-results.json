@@ -1,0 +1,25 @@
+[
+  {
+    "case": "es-compare-150",
+    "exit_code": 0,
+    "stderr": "",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "../research/aircraft-editor/capture_workshop.gd",
+      "--",
+      "--width=1280",
+      "--height=720",
+      "--language=es",
+      "--text-scale=1.5",
+      "--scale=1",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-implementation\\native-final\\es-compare-150.png",
+      "--page=compare",
+      "--scale=0.5"
+    ]
+  }
+]

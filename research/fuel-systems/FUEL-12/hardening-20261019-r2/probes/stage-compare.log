@@ -1,0 +1,8 @@
+format=fuel-stage-byte-compare v1
+baseline_project=C:\DEVELOPMENT\OpenRCsimulator\tmp\fuel-completion\final-snapshot\app
+candidate_project=C:\DEVELOPMENT\OpenRCsimulator\app
+baseline_stage_sha256=b20417ec1a89cc8cea447740cfab23d1080e94b10e09b740bf3895b4ef216378
+candidate_stage_sha256=b20417ec1a89cc8cea447740cfab23d1080e94b10e09b740bf3895b4ef216378
+baseline_query_count=16 result_bytes=165136
+candidate_query_count=16 result_bytes=165136
+byte_exact=true

@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+positive endpoint below residual tolerance: { &"ok": true, &"state": [0.00000000005, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], &"events": [], &"surface_evaluations": 6 }
+tiny positive resource must still exhaust: { &"ok": true, &"state": [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], &"events": [{ &"type": "empty", &"time_s": 0.00005, &"id": "empty", &"surface_residual": -0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005 }], &"surface_evaluations": 28 }

@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   native renderer is available
+ok   three complete saved fixtures cover two visual families and a distinct cancellation identity
+ok   native thumbnail capture succeeds for jensen-das-ugly-stik-60
+ok   bounded 320x192 PNG is written for stik
+ok   thumbnail contains rendered model pixels and no smoke node was present
+ok   native thumbnail capture succeeds for gp-extra-300s-60
+ok   bounded 320x192 PNG is written for extra300s
+ok   thumbnail contains rendered model pixels and no smoke node was present
+ok   two family captures have distinct pixel identities
+ok   native cancellation cycle 00 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 01 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 02 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 03 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 04 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 05 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 06 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 07 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 08 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 09 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 10 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 11 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 12 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 13 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 14 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 15 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 16 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 17 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 18 observes and releases the isolated viewport without publishing
+ok   native cancellation cycle 19 observes and releases the isolated viewport without publishing
+ok   thumbnail requests never mutate the active interactive preview state, model, camera or smoke clock
+ok   thumbnail cache remains within its declared pixel byte and entry limits
+ok   native capture evidence JSON is written
+32 checks, 0 failed

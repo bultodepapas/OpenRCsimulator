@@ -39,11 +39,19 @@ def fixture(name: str) -> dict:
 
 
 class AircraftMigration(unittest.TestCase):
-    def test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy(self):
+    def test_current_extra_finite_glow_v2_is_idempotent(self):
+        source = json.loads((ROOT / "app/data/aircraft/gp_extra_300s_60.json").read_text(encoding="utf-8"))
+        self.assertEqual(upgrade(source), source)
+        self.assertEqual(source["capabilities"]["energy"], "finite_glow_fuel")
+        self.assertEqual(source["propulsion"]["engine"]["glow_installation"],
+                         "res://data/glow/extra_61fx_2t.json")
+
+    def test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy(self):
         source = json.loads((ROOT / "app/data/aircraft/sebart_avanti_s_a200.json").read_text(encoding="utf-8"))
         self.assertEqual(upgrade(source), source)
         self.assertEqual(source["capabilities"]["flaps"], "simulated")
         self.assertEqual(source["flaps"]["max_angle_deg"]["value"], 50.0)
+        self.assertEqual(source["capabilities"]["energy"], "finite_liquid_fuel")
         self.assertEqual(POLICIES[source["id"]]["gear"], "locked_up")
         self.assertEqual(POLICIES[source["id"]]["gear_contacts"], 0)
         bad = deepcopy(source)
@@ -55,10 +63,11 @@ class AircraftMigration(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "flaps data requires"):
             upgrade(bad_flaps)
 
-    def test_current_p51_flaps_v2_is_idempotent_without_changing_v1_policy(self):
+    def test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy(self):
         source = json.loads((ROOT / "app/data/aircraft/p51d_mustang_120.json").read_text(encoding="utf-8"))
         self.assertEqual(upgrade(source), source)
         self.assertEqual(source["capabilities"]["flaps"], "simulated")
+        self.assertEqual(source["capabilities"]["energy"], "finite_liquid_fuel")
         self.assertEqual(POLICIES[source["id"]]["gear"], "locked_down_taildragger")
         incomplete = deepcopy(source)
         del incomplete["flaps"]["aerodynamic_gain"]
@@ -68,6 +77,24 @@ class AircraftMigration(unittest.TestCase):
         bad_flaps["capabilities"]["flaps"] = "not_simulated"
         with self.assertRaisesRegex(ValueError, "flaps data requires"):
             upgrade(bad_flaps)
+
+    def test_finite_current_routes_keep_explicit_historical_v1_projection(self):
+        expected = {
+            "gp_extra_300s_60.json": "finite_glow_fuel",
+            "p51d_mustang_120.json": "finite_liquid_fuel",
+            "sebart_avanti_s_a200.json": "finite_liquid_fuel",
+        }
+        for name, energy in expected.items():
+            with self.subTest(name=name):
+                source = json.loads((ROOT / "app/data/aircraft" / name).read_text(encoding="utf-8"))
+                self.assertEqual(source["capabilities"]["energy"], energy)
+                historical = legacy_input(source)
+                self.assertEqual(historical["format"], FORMAT_V1)
+                self.assertNotIn("capabilities", historical)
+                # This is a version projection for historical research tools, not a production-loader fallback.
+                self.assertIn("fuel_system", historical)
+                if name != "gp_extra_300s_60.json":
+                    self.assertIn("fuel_consumption", historical["propulsion"])
 
     def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
         source = json.loads(

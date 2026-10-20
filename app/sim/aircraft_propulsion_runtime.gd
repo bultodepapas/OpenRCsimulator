@@ -3,7 +3,9 @@ extends RefCounted
 const Propulsion: Script = preload("res://physics/propulsion.gd")
 const Turbine: Script = preload("res://physics/turbine.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const RB: Script = preload("res://physics/rigid_body.gd")
+const WashTransport := preload("res://physics/wash_transport.gd")
 
 ## VehicleModel fields (sim/vehicle_model.gd) the fixed-wing propulsion route fills.
 const CALLBACK_FIELDS: PackedStringArray = [
@@ -33,6 +35,15 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 		result.step_policy = GlowFlight.step.bind(session)
 		result.stage = GlowFlight.evaluate.bind(session)
 		result.block_aux = Callable(session, "_coupled_aux")
+		return result
+	if not context.propulsion.get("liquid_fuel", {}).is_empty():
+		result.stage = LiquidFlight.evaluate.bind(session)
+		result.block_aux = LiquidFlight.aux.bind(session)
+		# Preparation is structural and may run before this owner's endpoint arrays exist.
+		var wash_count: int = context.propulsion.slipstream.pieces.size() if WashTransport.enabled(context.propulsion) else 0
+		var prefix: int = 1 + int(session.call("wheel_count")) + (0 if context.turbine_continuous else wash_count)
+		declared_events.append({type = "fuel_exhausted", index = RB.SIZE + prefix,
+			transition = LiquidFlight.project_exhaustion})
 		return result
 	if context.turbine_continuous:
 		result.stage = Callable(session, "_turbine_evaluate")
@@ -189,6 +200,10 @@ static func _base_description(context: Dictionary) -> Dictionary:
 	}
 	if context.has("law_identity"):
 		result.law_identity = context.law_identity
+	if not context.propulsion.get("liquid_fuel", {}).is_empty():
+		result.liquid_fuel_model = LiquidFlight.LAW
+		result.consumption_law = str(context.propulsion.liquid_fuel.law)
+		result.fuel_store_id = str(context.propulsion.liquid_fuel.tank_id)
 	return result
 
 

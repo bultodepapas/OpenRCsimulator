@@ -2,7 +2,7 @@
 
 **Status:** DATA-4a/b compatibility tooling plus AS-01 v2 dispatch; the Godot loader remains the flight authority.
 
-The current fleet uses the [v2 contract](../../../AIRCRAFT_CONTRACT.md) and [v2 schema](../../../app/data/schema/openrc-aircraft-v2.schema.json). `check.py` selects v1 or v2 from each file’s declared format; unknown versions fail. The [v1 schema](../../../app/data/schema/openrc-aircraft-v1.schema.json) remains for historical experiments and supplies the reviewed numeric constraints used by the v2 generator. Both support editor association without adding `$schema` to aircraft files.
+The current fleet uses the [v2 contract](../../../docs/AIRCRAFT_CONTRACT.md) and [v2 schema](../../../app/data/schema/openrc-aircraft-v2.schema.json). `check.py` selects v1 or v2 from each file’s declared format; unknown versions fail. The [v1 schema](../../../app/data/schema/openrc-aircraft-v1.schema.json) remains for historical experiments and supplies the reviewed numeric constraints used by the v2 generator. Both support editor association without adding `$schema` to aircraft files.
 
 Run from the repository root (Python 3.12 tested):
 

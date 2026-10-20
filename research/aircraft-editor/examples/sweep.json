@@ -1,0 +1,12 @@
+{
+  "format": "openrc-aircraft-workshop-sweep",
+  "version": 1,
+  "mode": "grid",
+  "recipe": {},
+  "axes": [
+    {
+      "key": "scale",
+      "values": [0.9, 1.0, 1.1]
+    }
+  ]
+}

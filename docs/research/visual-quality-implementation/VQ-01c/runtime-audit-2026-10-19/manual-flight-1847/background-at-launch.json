@@ -1,0 +1,17 @@
+[
+  {
+    "ProcessId": 77684,
+    "Name": "Godot_v4.7.2-stable_win64_console.exe",
+    "CommandLine": "\"C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe\" --headless --path app --check-only workshop/draft_store.gd"
+  },
+  {
+    "ProcessId": 73296,
+    "Name": "Godot_v4.7.2-stable_win64.exe",
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe --headless --path app --check-only workshop/draft_store.gd"
+  },
+  {
+    "ProcessId": 72104,
+    "Name": "Godot_v4.7.2-stable_win64.exe",
+    "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe --path C:\\DEVELOPMENT\\OpenRCsimulator\\app --log-file C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-recordings\\20261019-184715-v2\\engine.log --script C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-profiler\\entry.gd"
+  }
+]

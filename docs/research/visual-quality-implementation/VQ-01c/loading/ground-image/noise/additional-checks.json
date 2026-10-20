@@ -1,0 +1,99 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-ground-image-headless.log",
+    "diagnostics": []
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-field-surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "shared-ground-image-headless.log",
+    "diagnostics": []
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_ground_image_cache.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "shared-ground-image-native.log",
+    "diagnostics": []
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ground-noise-frozen-20261019\\mutation_test.gd"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "log": "deliberate-index-mutation.log",
+    "diagnostics": [
+      "FAIL cold default pixels and every mip equal the original recipe",
+      "FAIL warm default pixels and every mip equal the original recipe",
+      "FAIL cold image edits do not mutate a live warm image",
+      "FAIL warm image edits do not poison a subsequent image",
+      "FAIL explicit seed still controls the uncached recipe",
+      "FAIL explicit seeds do not replace the default",
+      "FAIL seed 0 pixels and every mip equal the scalar recipe",
+      "FAIL seed -1 pixels and every mip equal the scalar recipe",
+      "FAIL both uploaded textures preserve all image bytes",
+      "FAIL texture update preserves another live scene",
+      "FAIL texture update preserves future scenes"
+    ]
+  }
+]

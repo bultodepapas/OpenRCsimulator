@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"candidate_samples_usec":[390146,434238,413751,399949,381425],"iterations":12000,"preset":"classic","reference_samples_usec":[768819,892175,765553,741232,739016],"snapshot":false,"warmup":500}
+preset=classic layers=1 workload=update-only iterations=12000 fps=60 ref_median_us=765553 candidate_median_us=399949 delta_percent=-47.8
+{"candidate_samples_usec":[572053,644967,606787,608220,593945],"iterations":12000,"preset":"classic","reference_samples_usec":[1278953,1308257,1332880,1314686,1309204],"snapshot":true,"warmup":500}
+preset=classic layers=1 workload=update+snapshot iterations=12000 fps=60 ref_median_us=1309204 candidate_median_us=606787 delta_percent=-53.7
+{"candidate_samples_usec":[789568,800711,897045,884736,877606],"iterations":12000,"preset":"prestorm","reference_samples_usec":[1691922,1665881,1789119,1805788,1835075],"snapshot":false,"warmup":500}
+preset=prestorm layers=3 workload=update-only iterations=12000 fps=60 ref_median_us=1789119 candidate_median_us=877606 delta_percent=-50.9
+{"candidate_samples_usec":[2955020,2893596,4011862,1828548,1225242],"iterations":12000,"preset":"prestorm","reference_samples_usec":[3384947,4075553,10555148,3018287,3036754],"snapshot":true,"warmup":500}
+preset=prestorm layers=3 workload=update+snapshot iterations=12000 fps=60 ref_median_us=3384947 candidate_median_us=2893596 delta_percent=-14.5
+checksum=1463381.760

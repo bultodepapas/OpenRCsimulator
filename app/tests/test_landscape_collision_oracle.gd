@@ -18,6 +18,7 @@ var failures := 0
 
 func _initialize() -> void:
 	_test_reference_is_frozen()
+	_test_empty_envelope_sweeps()
 	_test_deterministic_differential_sweeps()
 	print("landscape collision oracle: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -34,6 +35,39 @@ func _test_reference_is_frozen() -> void:
 	_check("oracle matches committed baseline SHA-256", hash.finish().hex_encode() == ORACLE_SHA256)
 	_check("oracle has independent full contacts implementation", source.contains("static func contacts(")
 		and source.contains("static func _candidate_indices("))
+
+
+func _test_empty_envelope_sweeps() -> void:
+	var built: Dictionary = CollisionWorld.build({pilot = {}, objects = []}, {groups = []},
+		{fixtures = [{id = "empty-envelope", type = "flood", north = 16.0, east = 16.0, height = 8.0}]})
+	_check("empty-envelope fixture builds", built.ok)
+	if not built.ok:
+		return
+	var hull := PackedFloat64Array([0.0, 0.0, 0.0, -2.0, 0.0, 0.0, 2.0, 0.0, 0.0,
+		0.0, -2.0, 0.0, 0.0, 2.0, 0.0])
+	var inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+	# Clear paths share occupied 32 m bins with the lamp. The boundary case
+	# crosses into another bin during a large rotation.
+	var fixtures: Array[Dictionary] = [
+		{north = 4.0, east = 4.0, delta = 0.33, yaw = 0.0, hit = false},
+		{north = 4.0, east = 4.0, delta = 0.33, yaw = PI, hit = false},
+		{north = 31.9, east = 4.0, delta = 0.3, yaw = PI, hit = false},
+		{north = 12.0, east = 16.0, delta = 8.0, yaw = 0.4, hit = true},
+	]
+	for index: int in fixtures.size():
+		var fixture: Dictionary = fixtures[index]
+		var previous := _state(fixture.north, fixture.east, -4.0, 80.0, 0.0, 0.0,
+			M.q_from_euler(0.0, 0.0, 0.0), 0.0, 0.0, 0.0)
+		var current := _state(fixture.north + fixture.delta, fixture.east, -4.0, 80.0, 0.0, 0.0,
+			M.q_from_euler(fixture.yaw, 0.0, 0.0), 0.0, 0.0, 0.0)
+		var reference: Array = Oracle.contacts(previous, current, hull, built.world, index, 2.0, inertia)
+		var candidate: Array = Collision.contacts(previous, current, hull, built.world, index, 2.0, inertia)
+		_check_case("empty-envelope contact parity", index, _events_equal(reference, candidate), "")
+		_check_case("empty-envelope fixture has expected contacts", index,
+			(not candidate.is_empty()) == bool(fixture.hit), "")
+		var first: Variant = Collision.first_hit(previous, current, hull, built.world, index, 2.0, inertia)
+		_check_case("empty-envelope first-hit parity", index,
+			_events_equal(reference.slice(0, 1), [first] if first != null else []), "")
 
 
 func _test_deterministic_differential_sweeps() -> void:

@@ -3,7 +3,7 @@
   "status": "research_candidate_unqualified",
   "asset_id": "HX-700",
   "source": {
-    "path": "Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend",
+    "path": "assets/source-deliveries/hx-700-original/HX-700_Helicoptero_RC.blend",
     "sha256": "cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb",
     "size_bytes": 1587270,
     "blender_version": "5.2.2 LTS",

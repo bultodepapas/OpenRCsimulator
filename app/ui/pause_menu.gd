@@ -58,7 +58,7 @@ var _sidebar_fade: TextureRect
 
 
 ## `can_end`: whether "End flight" (back to Home) is offered; the direct route (`--` arguments) has no Home.
-func _init(can_end := true) -> void:
+func _init(can_end := true, trial_mode := false) -> void:
 	name = "PauseMenu"
 	layer = LAYER
 	var screen := Screen.mount(self, "Screen")
@@ -117,11 +117,11 @@ func _init(can_end := true) -> void:
 	failure_summary_label.name = "FailureSummary"
 	failure_summary_label.visible = false
 	column.add_child(failure_summary_label)
-	continue_button = _button("Continue", "PrimaryButton", "Continue")
+	continue_button = _button("Resume trial" if trial_mode else "Continue", "PrimaryButton", "Continue")
 	continue_button.custom_minimum_size.y = 56
 	continue_button.pressed.connect(func() -> void: continue_requested.emit())
 	column.add_child(continue_button)
-	restart_button = _button("Restart flight", "QuietButton", "Restart")
+	restart_button = _button("Restart trial" if trial_mode else "Restart flight", "QuietButton", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
 	session_options_button = _disclosure_button("Session options", "SessionOptions")
@@ -134,6 +134,7 @@ func _init(can_end := true) -> void:
 
 	workshop_button = _button("Aircraft Workshop", "QuietButton", "Workshop")
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	workshop_button.visible = not trial_mode
 	session_options_container.add_child(workshop_button)
 	time_of_day_button = _button("Time of day", "QuietButton", "TimeOfDay")
 	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
@@ -157,10 +158,14 @@ func _init(can_end := true) -> void:
 	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
 	column.add_child(exit_options_button)
 	exit_options_container = _option_group("ExitOptionsGroup", column)
-	end_button = _button("End flight", "QuietButton", "End")
+	end_button = _button("Return to Workshop" if trial_mode else "End flight", "QuietButton", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end
-	exit_options_container.add_child(end_button)
+	if trial_mode:
+		column.add_child(end_button)
+		column.move_child(end_button, restart_button.get_index() + 1)
+	else:
+		exit_options_container.add_child(end_button)
 	quit_button = _button("Quit", "QuietButton", "Quit")
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	exit_options_container.add_child(quit_button)

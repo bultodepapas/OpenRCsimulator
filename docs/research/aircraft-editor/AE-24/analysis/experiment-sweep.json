@@ -1,0 +1,263 @@
+{
+	"analysis": {
+		"candidate_count": 3,
+		"candidates": [
+			{
+				"candidate_id": "candidate-a3bdcbf0efa6dd54cebefc0e",
+				"index": 0,
+				"ok": true,
+				"recipe": {
+					"control_multiplier": 1.0,
+					"mass_policy": "constant_wing_loading",
+					"power_multiplier": 1.0,
+					"scale": 0.9,
+					"tank_capacity_multiplier": 1.0,
+					"weight_multiplier": 1.0
+				},
+				"static_report": {
+					"available": true,
+					"compiled_build_summary": {
+						"control_multiplier": 1.0,
+						"fuel_capacity_l": 0.25515000000000004,
+						"mass_kg": 2.3195694910957347,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 0.9,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0,
+						"wing_area_m2": 0.37625715000000004,
+						"wing_loading_kg_m2": 6.164851594436769,
+						"wing_span_m": 1.3716000000000002
+					},
+					"compiler_version": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"limits": [
+						"Static estimates use the existing Workshop compiler/evaluator outputs only.",
+						"They do not predict scripted speed, climb, roll response, endurance, or measured engine output.",
+						"Numerical validity is not physical aircraft validation."
+					],
+					"method": "Static coefficient-law estimate at 1.225 kg/m³; virtual RPM/propeller proposal, not a measured engine rating.",
+					"metrics": {
+						"idle_rpm": 3111.1111111111113,
+						"max_rpm": 12387.77777777778,
+						"static_power_w": 788.8071222817035,
+						"static_thrust_n": 33.41402028190364
+					},
+					"ok": true,
+					"recipe": {
+						"control_multiplier": 1.0,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 0.9,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0
+					},
+					"scope": "bounded_static_estimate",
+					"unavailable_reason": ""
+				}
+			},
+			{
+				"candidate_id": "candidate-13e7e85a9efc8f4d6aa9b41e",
+				"index": 1,
+				"ok": true,
+				"recipe": {
+					"control_multiplier": 1.0,
+					"mass_policy": "constant_wing_loading",
+					"power_multiplier": 1.0,
+					"scale": 1.0,
+					"tank_capacity_multiplier": 1.0,
+					"weight_multiplier": 1.0
+				},
+				"static_report": {
+					"available": true,
+					"compiled_build_summary": {
+						"control_multiplier": 1.0,
+						"fuel_capacity_l": 0.35,
+						"mass_kg": 2.8786621383897963,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 1.0,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0,
+						"wing_area_m2": 0.464515,
+						"wing_loading_kg_m2": 6.197134943736577,
+						"wing_span_m": 1.524
+					},
+					"compiler_version": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"limits": [
+						"Static estimates use the existing Workshop compiler/evaluator outputs only.",
+						"They do not predict scripted speed, climb, roll response, endurance, or measured engine output.",
+						"Numerical validity is not physical aircraft validation."
+					],
+					"method": "Static coefficient-law estimate at 1.225 kg/m³; virtual RPM/propeller proposal, not a measured engine rating.",
+					"metrics": {
+						"idle_rpm": 2800.0,
+						"max_rpm": 11149.0,
+						"static_power_w": 973.8359534342014,
+						"static_thrust_n": 41.25187689123905
+					},
+					"ok": true,
+					"recipe": {
+						"control_multiplier": 1.0,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 1.0,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0
+					},
+					"scope": "bounded_static_estimate",
+					"unavailable_reason": ""
+				}
+			},
+			{
+				"candidate_id": "candidate-833ce9c4f9bf7ea556873fba",
+				"index": 2,
+				"ok": true,
+				"recipe": {
+					"control_multiplier": 1.0,
+					"mass_policy": "constant_wing_loading",
+					"power_multiplier": 1.0,
+					"scale": 1.1,
+					"tank_capacity_multiplier": 1.0,
+					"weight_multiplier": 1.0
+				},
+				"static_report": {
+					"available": true,
+					"compiled_build_summary": {
+						"control_multiplier": 1.0,
+						"fuel_capacity_l": 0.46585000000000015,
+						"mass_kg": 3.501326468451654,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 1.1,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0,
+						"wing_area_m2": 0.5620631500000001,
+						"wing_loading_kg_m2": 6.229418293036385,
+						"wing_span_m": 1.6764000000000001
+					},
+					"compiler_version": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"limits": [
+						"Static estimates use the existing Workshop compiler/evaluator outputs only.",
+						"They do not predict scripted speed, climb, roll response, endurance, or measured engine output.",
+						"Numerical validity is not physical aircraft validation."
+					],
+					"method": "Static coefficient-law estimate at 1.225 kg/m³; virtual RPM/propeller proposal, not a measured engine rating.",
+					"metrics": {
+						"idle_rpm": 2545.4545454545455,
+						"max_rpm": 10135.454545454546,
+						"static_power_w": 1178.3415036553843,
+						"static_thrust_n": 49.91477103839926
+					},
+					"ok": true,
+					"recipe": {
+						"control_multiplier": 1.0,
+						"mass_policy": "constant_wing_loading",
+						"power_multiplier": 1.0,
+						"scale": 1.1,
+						"tank_capacity_multiplier": 1.0,
+						"weight_multiplier": 1.0
+					},
+					"scope": "bounded_static_estimate",
+					"unavailable_reason": ""
+				}
+			}
+		],
+		"errors": [],
+		"format": "openrc-aircraft-workshop-sweep",
+		"limits": [
+			"At most 32 candidates.",
+			"Each candidate is compiled against declared Workshop bounds and capabilities.",
+			"Static estimates are not scripted flight performance or physical validation."
+		],
+		"mode": "grid",
+		"ok": true,
+		"seed": 0,
+		"sweep_sha256": "e722b5d6a7ba732b1b4bca2b1a39c914bb27b8dd484fb1ad2388ac3a39887410",
+		"version": 1
+	},
+	"analysis_kind": "sweep",
+	"format": "openrc-aircraft-workshop-analysis",
+	"frozen_trial": {
+		"compiler_version": "openrc-aircraft-workshop-v1-generic-compiler-2",
+		"physical_identity": {
+			"ancestor_revision": 0,
+			"ancestor_variant_id": "",
+			"base_id": "jensen-das-ugly-stik-60",
+			"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+			"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+			"dependencies": {
+				"files": {
+					"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+				},
+				"format": "openrc-aircraft-workshop-dependencies v1"
+			},
+			"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+			"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+			"experimental": true,
+			"format": "openrc-aircraft-trial v1",
+			"presentation": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+			"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+			"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+			"trial_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce"
+		},
+		"presentation_identity": {
+			"binding": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"format": "openrc-aircraft-presentation-identity",
+			"schedule_policy": "ticks-240-v1",
+			"sha256": "13506d4cb9c727c305c186aee964ef931b06981f82ba7590166e805a8a0b6a12",
+			"version": 1,
+			"visual_seed": 0
+		},
+		"presentation_profile": {
+			"binding": {
+				"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+				"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+				"visual_family": "jensen-das-ugly-stik-60"
+			},
+			"format": "openrc-aircraft-presentation",
+			"markings": [],
+			"paint": [],
+			"schedule_policy": "ticks-240-v1",
+			"smoke": [],
+			"version": 1,
+			"visual_seed": 0
+		},
+		"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758"
+	},
+	"source": {
+		"aircraft_id": "jensen-das-ugly-stik-60",
+		"kind": "catalog"
+	},
+	"source_identity": {
+		"build": {
+			"commit": "",
+			"commit_date": "",
+			"describe": "",
+			"dirty": false,
+			"godot": "4.7.2-stable (official)",
+			"label": "",
+			"parsed": {
+				"after": 0,
+				"base": "0.1.3",
+				"dirty": false,
+				"prerelease": "",
+				"semver": "0.1.3",
+				"sha": "",
+				"tag": ""
+			},
+			"source": "development",
+			"version": "0.1.3"
+		},
+		"solver_sha256": "315971752e38c1dac56eb0f741d862a54cfec04b06ea548df9eefa44a149ebdb"
+	},
+	"status": "ok",
+	"version": 1
+}

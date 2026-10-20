@@ -31,8 +31,8 @@ if str(FUEL_DIR) not in sys.path:
     sys.path.insert(0, str(FUEL_DIR))
 import fuel_registry  # noqa: E402
 
-# FUEL-05c: a 1 l gasoline tank (DA-120 manual: 32 oz or larger), registry 40:1 premix, fixed half tank
-# (prescribed fuel: no burn), balanced with the tank empty as the Top Flite Giant P-51D manual does.
+# FUEL-05c/08: a 1 l gasoline tank (DA-120 manual: 32 oz or larger), registry 40:1 premix, authored half-tank
+# reference fill for finite consumption, balanced with the tank empty as the Top Flite Giant P-51D manual does.
 TANK_L = 1.0
 GAS_BLEND = "gasoline_premix_40_1"
 FIXED_FILL = 0.5
@@ -317,7 +317,7 @@ items = [
     ("engine standoffs / mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", le(rc_fw - 0.03), None, "estimated", "on the model's firewall", "engine_mount"),
     ("cowl (fiberglass) with dummy exhausts", 0.60, "estimated", "fiberglass cowl of a 2.5 m warbird", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, 0.0), [g["cowl_rear_z"] - g["spinner"]["back_z"], fus_w, fus_d], "measured", "between the spinner back and the cowl rear (geometry.json)", "cowl_main"),
     ("fuel tank 1 l (empty) with lines", 0.20, "estimated", "gasoline tank with clunk and lines", le(rc_fw + 0.10, -0.02), None, "estimated", "behind the model's firewall", "fuel_tank"),
-    ("fuel (half tank)", FUEL_KG, "derived", f"FUEL-05c: half of the 1 l tank x {fuel_registry.blend_source(GAS_BLEND)}; prescribed flight state (no consumption)", le(rc_fw + 0.10, -0.02), [0.16, 0.10, 0.0625], "estimated", "same as the tank; uniform liquid box holding the 1 l capacity", "fuel_flight"),
+    ("fuel (half tank)", FUEL_KG, "derived", f"FUEL-05c: half of the 1 l tank x {fuel_registry.blend_source(GAS_BLEND)}; authored reference fuel for finite gasoline_bsfc_v1 consumption", le(rc_fw + 0.10, -0.02), [0.16, 0.10, 0.0625], "estimated", "same as the tank; uniform liquid box holding the 1 l capacity", "fuel_flight"),
     ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", le(rc_fw + 0.03, -0.08), None, "estimated", "below the tank, as far forward as the cowl allows", "ignition_battery"),
     ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", le(rc_fw + 0.06, -0.09), None, "estimated", "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)", "receiver_batteries"),
     ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", le(0.25, -0.05), None, "estimated", "under the cockpit floor", "receiver_radio"),
@@ -1066,6 +1066,18 @@ check_consistency(data)
 legacy_data = data
 data = upgrade(legacy_data)
 
+# FUEL-08: finite gasoline use. BSFC is a disclosed gasoline-class estimate within the
+# 406-580 g/kWh evidence band in docs/research/fuel-systems/FUEL-00/README.md; it is not
+# a DA-120 measurement. FUEL-00 found no gasoline idle-flow source, so the 4.8 g/min
+# baseline is explicitly estimated rather than inferred from the BSFC proxy.
+data["capabilities"]["energy"] = "finite_liquid_fuel"
+data["propulsion"]["fuel_consumption"] = {
+    "law": "gasoline_bsfc_v1",
+    "tank_id": "main_tank",
+    "bsfc": q(0.500, "kg/kWh", "estimated", "FUEL-08: 500 g/kWh proxy within the documented 406-580 g/kWh small gasoline-engine evidence band (FUEL-00; Moulton 2007 and Horn 2015); not measured on the DA-120"),
+    "idle_flow": q(0.000080, "kg/s", "estimated", "FUEL-08: explicit 4.8 g/min idle baseline; no published DA-120/gasoline idle flow found in FUEL-00"),
+}
+
 # --- P51-11a: hinged trailing-edge flaps (shared law controls.flaps.hinged_trailing_edge.v1, as the Ventage Jet) ----------
 # Plain flaps (XP-51: plain, 32.22 sq ft, landing 50 deg, take-off/combat 20 deg; NACA MR L-566 dimension table and
 # Tables III/IV). The kit settings are used: 15 deg take-off and 45 deg landing (source.json kit.flaps_deg, CARF manual).
@@ -1140,6 +1152,8 @@ trailing-edge law (P51-11a); the gear retracts (P51-11b; its drag area is the re
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
+Fuel uses a finite `gasoline_bsfc_v1` estimate bound to `main_tank`: BSFC 500 g/kWh is a proxy inside the 406-580 g/kWh evidence band in FUEL-00, not a DA-120 measurement. The explicit 4.8 g/min idle baseline is estimated because no gasoline idle-flow measurement was found. The generated half-tank inventory is the authored reference fill; it is distinct from the 1 l tank capacity.
+
 Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, static margin {sm:.1f} % MAC, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
 Throws (Hangar 9 Mustang 1.50 manual, high rate): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
 Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}; scripted envelope and ground tests exercise modeled speed, climb, glide, takeoff and landing against literature/RC-class bands. These are not physical measurements.
@@ -1169,7 +1183,7 @@ CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_
 ## Known simplifications
 
 - Propeller tables: blade-element model calibrated on Mejzlik's manufacturer-SIMULATED 26x12 2/3-blade tables (rms 6.5 %); the 4-blade is a prediction. The windmilling branch is the uncalibrated BEM (Mejzlik keeps Cp slightly positive past zero thrust).
-- Engine: generic two-stroke torque shape scaled to one static-rpm anchor; carburettor lag, idle instability and fuel use are not modelled.
+- Engine: generic two-stroke torque shape scaled to one static-rpm anchor; carburettor lag and idle instability are not modelled. Fuel flow uses the finite BSFC-plus-idle estimate described above; DA-120-specific consumption remains unmeasured.
 - Slipstream: tail only (fin, stab halves), no lag, no wing wash; wash factors borrowed from Selig 2010 (an RC 3D airplane), swirl factor estimated.
 - Propeller normal force and P-factor: McCormick's formulas (via Selig 2010); the near-static jet normal force is omitted.
 - Flaps: shared hinged-trailing-edge law (P51-11a), kit 15/45 deg settings; retractable gear (P51-11b), airborne starts stowed. Main-wheel brakes from the GP-03 wheel profile (P51-11c; limited by the shared tyre-slip law). Tail-wheel spring softer than a real one (240 Hz explicit tick rule).

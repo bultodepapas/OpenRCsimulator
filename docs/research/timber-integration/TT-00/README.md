@@ -6,7 +6,7 @@ Owning plan: [Turbo Timber Evolution integration](../../../TIMBER-INTEGRATION-PL
 
 ## Scope and result
 
-Inspected the user-supplied `Timber turbo evolution/` package without modifying or moving it. Read the actual catalog, renderer, flight session, loader, controls, trace and export seams. Researched manufacturer manuals/product revisions and official Godot import documentation. The source changed during initial inspection; the final evidence identifies exact bytes by SHA-256 rather than treating the `v12` filename as immutable.
+Inspected the user-supplied `assets/source-deliveries/turbo-timber-evolution-original/` package without modifying or moving it. Read the actual catalog, renderer, flight session, loader, controls, trace and export seams. Researched manufacturer manuals/product revisions and official Godot import documentation. The source changed during initial inspection; the final evidence identifies exact bytes by SHA-256 rather than treating the `v12` filename as immutable.
 
 The accepted audit snapshot contains 118 files and 139,757,658 bytes: 112 binary STLs, a Blender scene, a STEP, its ZIP duplicate, the scene sidecar and two Python scripts. All 112 STL names match the sidecar's material map; all declared hinge members exist. Every triangle vertex is finite; 26 triangles have exactly zero area. No manifold, self-intersection or mechanical-clearance claim follows from these checks.
 
@@ -55,7 +55,7 @@ curl --fail --location --silent \
   --output /tmp/timber-dna-reader/_blendfile_header.py
 python3 -m pip install --target /tmp/timber-dna-reader/deps zstandard==0.25.0
 PYTHONPATH=/tmp/timber-dna-reader/deps python3 research/timber/tt00/audit_blend.py \
-  'Timber turbo evolution/turbo_timber_evolution_v12.blend' \
+  'assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution_v12.blend' \
   /tmp/timber-dna-reader/blendfile.py /tmp/timber-blend-audit.json
 cmp /tmp/timber-blend-audit.json docs/research/timber-integration/TT-00/blend-audit.json
 ```

@@ -1,0 +1,147 @@
+{
+  "recorded_date": "2026-10-19",
+  "scope": "Technical email intake and documentation; no runtime or hardware changes",
+  "source": {
+    "provider": "Gmail",
+    "gmail_message_id": "1a1536cc3495022d",
+    "gmail_thread_id": "1a1536cc3495022d",
+    "rfc_message_id": "<b3012216-1cc6-4b5f-8843-23f7586f5ae6@jetimodel.cz>",
+    "sender": "Jakub Uhlík <j.uhlik@jetimodel.cz>",
+    "sent_at": "2026-10-19T11:09:49+02:00",
+    "subject": "Re: Fwd: Fwd: JETI model Transmitters + OpenRC Simulator — Open-Source Integration Collaboration",
+    "existing_owner_reply_gmail_message_id": "1a154a608b3cacca",
+    "excluded": [
+      "OpenPGP signature",
+      "OpenPGP public key",
+      "inline logo"
+    ],
+    "correspondence_format": "Decoded plain-text bodies and selected headers, including quoted context; not signed MIME"
+  },
+  "attachments": [
+    {
+      "path": "docs/research/radio-input/D6-JETI-00/sources/JETI Transmitters in OpenRCsimulator by bultodepapas.pdf",
+      "bytes": 556524,
+      "sha256": "dd2b20ec91e65c111d93cd118bd9dffbadfb33c4a0b8a4a5f5c288f921472c46",
+      "original_filename": "JETI Transmitters in OpenRCsimulator by bultodepapas.pdf",
+      "gmail_reported_bytes": 556524,
+      "preservation": "original attachment bytes"
+    },
+    {
+      "path": "docs/research/radio-input/D6-JETI-00/sources/controller_profiles.cfg",
+      "bytes": 1140,
+      "sha256": "09c79c8998d7055493eed1c1d83b862573041918a42754d03eb219ea0324ea5d",
+      "original_filename": "controller_profiles.cfg",
+      "gmail_reported_bytes": 1140,
+      "preservation": "original attachment bytes"
+    },
+    {
+      "path": "docs/research/radio-input/D6-JETI-00/sources/USB descriptors.txt",
+      "bytes": 37079,
+      "sha256": "d0c598c176e321e0a6c64afdc93e497fa6f754eabd9a2f68d91f577daaa2f24e",
+      "original_filename": "USB descriptors.txt",
+      "gmail_reported_bytes": 37079,
+      "preservation": "original attachment bytes"
+    }
+  ],
+  "derived_files": [
+    {
+      "path": "docs/research/radio-input/D6-JETI-00/correspondence.txt",
+      "bytes": 11656,
+      "sha256": "f9ec2788da3c3a27adcb57edd3e0c0577a0ed2f536ef05916f82daaef06c867c"
+    },
+    {
+      "path": "docs/research/radio-input/D6-JETI-00/pdf-extracted.txt",
+      "bytes": 2426,
+      "sha256": "43dfdfdd484cb05243f18525e52f8507d9a8285f23a6245fb5fab512137dc508"
+    }
+  ],
+  "pdf_inspection": {
+    "parser": "PyMuPDF",
+    "version": "1.28.2",
+    "page_count": 4,
+    "encrypted": false,
+    "needs_password": false,
+    "native_text_characters_by_page": [
+      696,
+      1350,
+      194,
+      2
+    ],
+    "whitespace_only_pages": [
+      4
+    ],
+    "render_scale": 1.7,
+    "visually_reviewed_pages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "image_content_note": "Page 3 contains Windows axis/switch annotations absent from native text; page 4 is a transmitter photo.",
+    "temporary_renders": "tmp/pdfs/jeti-2026-10-19/"
+  },
+  "source_review": {
+    "git_head": "be97a75a90a3f1bf27fe2d49481c8c5d52446283",
+    "working_tree": "Unrelated edits present; runtime files were not changed by this task.",
+    "files": [
+      {
+        "path": "app/input/controller_service.gd",
+        "bytes": 24676,
+        "sha256": "65706d4b45f2e115a4f62dc9ec9b3c4969047cd42f2cee15540909b6a65f6375"
+      },
+      {
+        "path": "app/input/controller_registry.gd",
+        "bytes": 7518,
+        "sha256": "50d29fcc33f66b8ec3f1671f60429f6c8477f110b4a994aa60bf77cf65f4160d"
+      },
+      {
+        "path": "app/input/controller_profile.gd",
+        "bytes": 23262,
+        "sha256": "98de55e098d66e811bd4dfbed12debbbf7131ea7b7c8f0d94108c9a2aebc8d4b"
+      },
+      {
+        "path": "app/input/controller_profile_store.gd",
+        "bytes": 16287,
+        "sha256": "76dc5220b73fd09869620622c6571dd66b51cd2d4a62f5143bc95ded42e33458"
+      },
+      {
+        "path": "app/input/controller_actions.gd",
+        "bytes": 26175,
+        "sha256": "61eed0d10ecff5ca9d909e1c236659160c26f02eae52a1e405e20afadd68b6d1"
+      },
+      {
+        "path": "app/input/rc_input.gd",
+        "bytes": 21992,
+        "sha256": "c4c63bc039d8e10afaf18a555f874ab180826be6798620e54baff3171139b69d"
+      },
+      {
+        "path": "app/input/smoke_aux.gd",
+        "bytes": 5968,
+        "sha256": "07649da097d4c56fadccaddbc9bdd833719fbd358254fde0ffd14848e45bf83f"
+      },
+      {
+        "path": "app/input/input_report_data.gd",
+        "bytes": 6582,
+        "sha256": "aa6740f041084e357f92cc0d4963c03de328f5a8cad4b532939eb134b52a8d1a"
+      },
+      {
+        "path": "app/ui/controller_setup.gd",
+        "bytes": 83688,
+        "sha256": "5597f1a653e07453554f017372df3f1fdb7973ac829c880e74dff57d813ef9b2"
+      },
+      {
+        "path": "app/ui/controller_prompts.gd",
+        "bytes": 7572,
+        "sha256": "d7f2e0885d55b463d7f33e5ad8edf54161ebcf8e36fc6e3826458fb6799dbe23"
+      }
+    ],
+    "git_head_note": "Base captured during review; concurrent commits advanced HEAD during intake. File hashes identify the reviewed input/UI bytes."
+  },
+  "qualification": {
+    "manufacturer_contact_report": "Basic fixed-wing flight reported with DC-16II / Mode 2 on Windows",
+    "simulator_build": "not supplied",
+    "transmitter_firmware": "not supplied",
+    "godot_switch_mapping": "unverified",
+    "full_hardware_qualification": "pending"
+  }
+}

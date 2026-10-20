@@ -1,0 +1,587 @@
+{
+  "format": "openrc-manual-flight-analysis v1",
+  "timezone": "America/Bogota",
+  "quality": {
+    "raw_rows_match_finish": true,
+    "monotonic_intervals_valid": true,
+    "context_poll_msec": 100,
+    "context_eligibility": "endpoint state; transition frames remain included",
+    "frame_clock": "engine observer callbacks, not display presents",
+    "gpu_scope": "whole adapter; no per-process timestamps or wait stacks",
+    "host_sampling": "irregular, coarse CPU/memory samples; no wait-state attribution",
+    "gpu_csv_timezone": "America/Bogota; matches launch UTC and local driver timestamp",
+    "marker_count": 0,
+    "observer_scope": "own callback clocks; external monitor and OS overhead not included"
+  },
+  "active_frame_interval_ms": {
+    "count": 3223,
+    "min": 11.584,
+    "p50": 20.494,
+    "p95": 37.06659999999998,
+    "p99": 57.32455999999979,
+    "max": 4987.437,
+    "first": 28.679,
+    "last": 48.515
+  },
+  "active_fps_mean": 40.61290685488407,
+  "active_endpoint_simulation": {
+    "first_tick": 3,
+    "last_tick": 17051,
+    "wall_s": 79.330329,
+    "simulation_s": 71.03333333333333,
+    "simulation_to_wall_ratio": 0.8954120602894932
+  },
+  "host_active": {
+    "process_cpu_core_percent": {
+      "count": 54,
+      "min": 0.0,
+      "p50": 78.3,
+      "p95": 91.15999999999998,
+      "p99": 95.3,
+      "max": 95.3,
+      "first": 72.8,
+      "last": 87.5
+    },
+    "process_cpu_machine_percent": {
+      "count": 54,
+      "min": 0.0,
+      "p50": 3.2625,
+      "p95": 3.798333333333333,
+      "p99": 3.970833333333333,
+      "max": 3.970833333333333,
+      "first": 3.033333333333333,
+      "last": 3.6458333333333335
+    },
+    "system_cpu_percent": {
+      "count": 54,
+      "min": 9.9,
+      "p50": 36.45,
+      "p95": 55.27999999999996,
+      "p99": 86.54399999999998,
+      "max": 99.9,
+      "first": 29.1,
+      "last": 44.6
+    },
+    "rss_bytes": {
+      "count": 54,
+      "min": 983715840,
+      "p50": 992659456.0,
+      "p95": 998655385.6,
+      "p99": 1010487009.28,
+      "max": 1021382656,
+      "first": 1021382656,
+      "last": 998658048
+    },
+    "private_bytes": {
+      "count": 54,
+      "min": 1926737920,
+      "p50": 1929428992.0,
+      "p95": 1935007744.0,
+      "p99": 1969513349.12,
+      "max": 1981292544,
+      "first": 1981292544,
+      "last": 1935007744
+    },
+    "sampler_usec": {
+      "count": 54,
+      "min": 11505.700000270735,
+      "p50": 16205.849999096245,
+      "p95": 3914575.050001435,
+      "p99": 4764667.041000501,
+      "max": 5031214.80000118,
+      "first": 14058.500000828644,
+      "last": 16246.99999956647
+    }
+  },
+  "gpu_active": {
+    "utilization.gpu [%]": {
+      "count": 78,
+      "min": 0.0,
+      "p50": 35.0,
+      "p95": 42.14999999999999,
+      "p99": 49.69000000000001,
+      "max": 52.0,
+      "first": 0.0,
+      "last": 30.0
+    },
+    "memory.used [MiB]": {
+      "count": 78,
+      "min": 6735.0,
+      "p50": 6761.0,
+      "p95": 6843.0,
+      "p99": 6886.53,
+      "max": 6895.0,
+      "first": 6840.0,
+      "last": 6778.0
+    },
+    "power.draw [W]": {
+      "count": 78,
+      "min": 25.77,
+      "p50": 89.70500000000001,
+      "p95": 103.002,
+      "p99": 159.9995000000002,
+      "max": 201.31,
+      "first": 201.31,
+      "last": 139.37
+    },
+    "temperature.gpu": {
+      "count": 78,
+      "min": 39.0,
+      "p50": 42.0,
+      "p95": 42.0,
+      "p99": 43.230000000000004,
+      "max": 44.0,
+      "first": 43.0,
+      "last": 43.0
+    }
+  },
+  "engine_active": {
+    "nodes": {
+      "count": 3223,
+      "min": 1071.0,
+      "p50": 1071.0,
+      "p95": 1073.0,
+      "p99": 1073.0,
+      "max": 1073.0,
+      "first": 1071.0,
+      "last": 1071.0
+    },
+    "objects": {
+      "count": 3223,
+      "min": 4924.0,
+      "p50": 4927.0,
+      "p95": 4932.0,
+      "p99": 4933.0,
+      "max": 4933.0,
+      "first": 4925.0,
+      "last": 4929.0
+    },
+    "static_bytes": {
+      "count": 3223,
+      "min": 234806075.0,
+      "p50": 234901067.0,
+      "p95": 236383618.2,
+      "p99": 236747060.68,
+      "max": 236771691.0,
+      "first": 236307879.0,
+      "last": 234941159.0
+    },
+    "video_bytes": {
+      "count": 3223,
+      "min": 793138372.0,
+      "p50": 837667108.0,
+      "p95": 837671836.0,
+      "p99": 837671836.0,
+      "max": 837671836.0,
+      "first": 793138372.0,
+      "last": 837667108.0
+    },
+    "step_smoothed_usec": {
+      "count": 3223,
+      "min": 986.661,
+      "p50": 1296.068,
+      "p95": 1723.0412999999996,
+      "p99": 2515.1995199999997,
+      "max": 3213.08,
+      "first": 2850.905,
+      "last": 2348.257
+    },
+    "process_monitor_usec": {
+      "count": 3223,
+      "min": 8516.0,
+      "p50": 12498.0,
+      "p95": 118701.0,
+      "p99": 975735.0,
+      "max": 4963369.0,
+      "first": 35888.0,
+      "last": 12855.0
+    },
+    "physics_monitor_usec": {
+      "count": 3223,
+      "min": 261.0,
+      "p50": 3049.0,
+      "p95": 4989.0,
+      "p99": 6431.0,
+      "max": 10763.0,
+      "first": 261.0,
+      "last": 3032.0
+    }
+  },
+  "observer": {
+    "mean_usec": 24.784313725490197,
+    "max_usec": 635,
+    "total_usec": 99856
+  },
+  "host_sample_gaps_s": {
+    "count": 65,
+    "min": 1.0000708103179932,
+    "p50": 1.000398874282837,
+    "p95": 3.976846981048583,
+    "p99": 4.7199001979827875,
+    "max": 5.041990041732788,
+    "first": 4.061085224151611,
+    "last": 1.0005171298980713
+  },
+  "largest_intervals": [
+    {
+      "begin_engine_s": 88.923783,
+      "end_engine_s": 93.91122,
+      "begin_bogota": "2026-10-19T18:32:49.444730-05:00",
+      "end_bogota": "2026-10-19T18:32:54.432167-05:00",
+      "duration_ms": 4987.437,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 16371,
+      "previous_observer_usec": 25
+    },
+    {
+      "begin_engine_s": 11.246085,
+      "end_engine_s": 14.884125,
+      "begin_bogota": "2026-10-19T18:31:31.767032-05:00",
+      "end_bogota": "2026-10-19T18:31:35.405072-05:00",
+      "duration_ms": 3638.04,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": true,
+        "screen": "pause",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 0,
+      "previous_observer_usec": 16
+    },
+    {
+      "begin_engine_s": 8.223621,
+      "end_engine_s": 9.363835,
+      "begin_bogota": "2026-10-19T18:31:28.744568-05:00",
+      "end_bogota": "2026-10-19T18:31:29.884782-05:00",
+      "duration_ms": 1140.214,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "",
+        "crash": false,
+        "fault": "",
+        "flight_id": 0,
+        "focused": true,
+        "input_enabled": false,
+        "paused": true,
+        "screen": "home",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": -1,
+      "previous_observer_usec": 635
+    },
+    {
+      "begin_engine_s": 38.079266,
+      "end_engine_s": 39.075937,
+      "begin_bogota": "2026-10-19T18:31:58.600213-05:00",
+      "end_bogota": "2026-10-19T18:31:59.596884-05:00",
+      "duration_ms": 996.671,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "chase",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 4504,
+      "previous_observer_usec": 18
+    },
+    {
+      "begin_engine_s": 14.884125,
+      "end_engine_s": 15.794872,
+      "begin_bogota": "2026-10-19T18:31:35.405072-05:00",
+      "end_bogota": "2026-10-19T18:31:36.315819-05:00",
+      "duration_ms": 910.747,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": true,
+        "screen": "pause",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 0,
+      "previous_observer_usec": 216
+    },
+    {
+      "begin_engine_s": 17.566386,
+      "end_engine_s": 18.466579,
+      "begin_bogota": "2026-10-19T18:31:38.087333-05:00",
+      "end_bogota": "2026-10-19T18:31:38.987526-05:00",
+      "duration_ms": 900.193,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 27,
+      "previous_observer_usec": 55
+    },
+    {
+      "begin_engine_s": 62.784071,
+      "end_engine_s": 63.20015,
+      "begin_bogota": "2026-10-19T18:32:23.305018-05:00",
+      "end_bogota": "2026-10-19T18:32:23.721097-05:00",
+      "duration_ms": 416.079,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "chase",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 10209,
+      "previous_observer_usec": 35
+    },
+    {
+      "begin_engine_s": 37.157738,
+      "end_engine_s": 37.395611,
+      "begin_bogota": "2026-10-19T18:31:57.678685-05:00",
+      "end_bogota": "2026-10-19T18:31:57.916558-05:00",
+      "duration_ms": 237.873,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 4329,
+      "previous_observer_usec": 61
+    },
+    {
+      "begin_engine_s": 34.937729,
+      "end_engine_s": 35.10579,
+      "begin_bogota": "2026-10-19T18:31:55.458676-05:00",
+      "end_bogota": "2026-10-19T18:31:55.626737-05:00",
+      "duration_ms": 168.061,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 3851,
+      "previous_observer_usec": 18
+    },
+    {
+      "begin_engine_s": 25.957333,
+      "end_engine_s": 26.119764,
+      "begin_bogota": "2026-10-19T18:31:46.478280-05:00",
+      "end_bogota": "2026-10-19T18:31:46.640711-05:00",
+      "duration_ms": 162.431,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 1746,
+      "previous_observer_usec": 16
+    },
+    {
+      "begin_engine_s": 26.119764,
+      "end_engine_s": 26.276186,
+      "begin_bogota": "2026-10-19T18:31:46.640711-05:00",
+      "end_bogota": "2026-10-19T18:31:46.797133-05:00",
+      "duration_ms": 156.422,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 1758,
+      "previous_observer_usec": 39
+    },
+    {
+      "begin_engine_s": 23.171011,
+      "end_engine_s": 23.311578,
+      "begin_bogota": "2026-10-19T18:31:43.691958-05:00",
+      "end_bogota": "2026-10-19T18:31:43.832525-05:00",
+      "duration_ms": 140.567,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 1096,
+      "previous_observer_usec": 39
+    },
+    {
+      "begin_engine_s": 96.811278,
+      "end_engine_s": 96.925325,
+      "begin_bogota": "2026-10-19T18:32:57.332225-05:00",
+      "end_bogota": "2026-10-19T18:32:57.446272-05:00",
+      "duration_ms": 114.047,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": true,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": true,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 17060,
+      "previous_observer_usec": 21
+    },
+    {
+      "begin_engine_s": 84.391929,
+      "end_engine_s": 84.505712,
+      "begin_bogota": "2026-10-19T18:32:44.912876-05:00",
+      "end_bogota": "2026-10-19T18:32:45.026659-05:00",
+      "duration_ms": 113.783,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 15296,
+      "previous_observer_usec": 21
+    },
+    {
+      "begin_engine_s": 84.191772,
+      "end_engine_s": 84.30515,
+      "begin_bogota": "2026-10-19T18:32:44.712719-05:00",
+      "end_bogota": "2026-10-19T18:32:44.826097-05:00",
+      "duration_ms": 113.378,
+      "endpoint_context": {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "camera": "pilot",
+        "crash": false,
+        "fault": "",
+        "flight_id": 334973898286,
+        "focused": true,
+        "input_enabled": true,
+        "paused": false,
+        "screen": "flight",
+        "viewport": [
+          3840,
+          2160
+        ]
+      },
+      "endpoint_tick": 15261,
+      "previous_observer_usec": 52
+    }
+  ]
+}

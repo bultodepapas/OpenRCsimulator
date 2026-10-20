@@ -318,7 +318,7 @@ The sections below specify implementation choices, alternatives that require evi
 
 ### Ownership, boundaries, and delivery register
 
-Use the [aircraft contract](../../../AIRCRAFT_CONTRACT.md), [standardization plan](../../plans/aircraft-standardization.md), [turbine plan](../../plans/turbine-realism.md), [propulsion guide](../../PROPULSION-CORE-PLAN.md), [Glow guide](../../GLOW-ENGINES.md), [atmosphere guide](../../ATMOSPHERE-PLAN.md), [helicopter plan](../../plans/helicopter.md), and [ground-vehicle plan](../../plans/rc-monster-truck.md) as the authoritative homes for their implementation status. The IDs below track audit closure and cross-track dependencies only. Add repair substeps under the owning track when implementation begins.
+Use the [aircraft contract](../../AIRCRAFT_CONTRACT.md), [standardization plan](../../plans/aircraft-standardization.md), [turbine plan](../../plans/turbine-realism.md), [propulsion guide](../../PROPULSION-CORE-PLAN.md), [Glow guide](../../GLOW-ENGINES.md), [atmosphere guide](../../ATMOSPHERE-PLAN.md), [helicopter plan](../../plans/helicopter.md), and [ground-vehicle plan](../../plans/rc-monster-truck.md) as the authoritative homes for their implementation status. The IDs below track audit closure and cross-track dependencies only. Add repair substeps under the owning track when implementation begins.
 
 | ID | Work and owning boundary | Proof/status |
 |---|---|---|

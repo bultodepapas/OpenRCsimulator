@@ -1,0 +1,269 @@
+{
+	"comparison": "Same-law candidate experiment with the recorded initial body/internal state and command tape; byte comparison is scoped to these recordings.",
+	"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+	"failed": false,
+	"format": "openrc-fuel-hardening-replay v1",
+	"results": [
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "gp_extra_300s_60-full.orfl",
+			"candidate_sha256": "386129595670ca4aed4da8fd5c6ef83ea198eafed6d6f9e7bb946020311b5bc6",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "gp_extra_300s_60-full.orfl",
+			"source_sha256": "133e92d3353239256fe50efabdbb6693c875597b9839e9c42618b5702f115a6d"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "gp_extra_300s_60-low.orfl",
+			"candidate_sha256": "1cc4bb2f64807b4379cb5cd936f6143fd992eac49abee27c472f9ac3acdfdd08",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "gp_extra_300s_60-low.orfl",
+			"source_sha256": "a45666bfb27d35798e194b93fd093e6d3cbae72248be9b3ead796eb0bbb32c45"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "p51d_mustang_120-full.orfl",
+			"candidate_sha256": "5d9ea3b82225391bf84393812c2db794e1ef0e05fc7882135ae3fba07c08178d",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "p51d_mustang_120-full.orfl",
+			"source_sha256": "1dfa306a367d75b8a30f49c6098d6d3925f848a5417b7971158611b4e594e0b7"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "p51d_mustang_120-low.orfl",
+			"candidate_sha256": "e56bcc85731e84b1d632e59da5e15360046da7c82f626ed9befd5e6ff9ce69ab",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "p51d_mustang_120-low.orfl",
+			"source_sha256": "2b271f710fbe6b8a96a117399b285646741b966b75eadd9239a1431d82d8a917"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "sebart_avanti_s_a200-full.orfl",
+			"candidate_sha256": "bbaa8676b129c07d7aa270118e9716c81a29365b92e855112850eb00a5ee5955",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "sebart_avanti_s_a200-full.orfl",
+			"source_sha256": "caf3ce110a0d1fa2a37e753a90c49530dba864e8e97731d2b01b73355dc4508b"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "sebart_avanti_s_a200-low.orfl",
+			"candidate_sha256": "32f6f45c52df9ee6bffab1a0d2d382cb7f9613e4ce3a3a679b3b11312a2d4ecd",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "sebart_avanti_s_a200-low.orfl",
+			"source_sha256": "68f17ee04dbbaceabd2f3539c42ce25374c846907a5d693800f677f49500ea26"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "stik_glow_61fx_2t-full.orfl",
+			"candidate_sha256": "1a9318cb65aa3ebc76f984eee88cf210d2375696c3944ed25aa34e7052bdaf35",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "stik_glow_61fx_2t-full.orfl",
+			"source_sha256": "7e1487a052fb9cb2d809722417f834b6badbb404de68d75d44fbcf0e96f64006"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "stik_glow_61fx_2t-low.orfl",
+			"candidate_sha256": "86010a64ca7f6d13a44ae9b5a79593c58aa6527f319df669a9bf89b9cfc1f97f",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "stik_glow_61fx_2t-low.orfl",
+			"source_sha256": "9eeb5fd75cca7b79918960ff027d08390adcd7070e554160948ab189a7258929"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "stik_glow_fs64v_4t-full.orfl",
+			"candidate_sha256": "e53af1892eeb209d12a22f9ff869c3cdd9a7e65ae8453f2cb8689f0854af664d",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "stik_glow_fs64v_4t-full.orfl",
+			"source_sha256": "a10417435e34f34317e37845bf21d4b0fb4220a6973070f009dc6a0a0247c969"
+		},
+		{
+			"baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+			"candidate": "stik_glow_fs64v_4t-low.orfl",
+			"candidate_sha256": "d2d111edee83b1cf8a9e8a77e10a6374e432042bcdd2ca97e719eefc915fdd5e",
+			"comparison": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"complete": true,
+			"current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+			"error": "",
+			"exact_candidate_replay": {
+				"byte_exact": true,
+				"complete": true,
+				"error": "",
+				"ok": true,
+				"rows": 601
+			},
+			"ok": true,
+			"solver_changed": true,
+			"source": "stik_glow_fs64v_4t-low.orfl",
+			"source_sha256": "a53a274186a1407a960082609730561d08633b7dace8c2859af7e63be179f2ab"
+		}
+	],
+	"software_only": true
+}

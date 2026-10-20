@@ -15,7 +15,7 @@ from typing import Any
 
 
 REPO = Path(__file__).resolve().parents[3]
-PACKAGE = REPO / "Timber turbo evolution/turbo_timber_evolution/r1"
+PACKAGE = REPO / "assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1"
 PROBE = Path(__file__).resolve().with_name("godot_probe.gd")
 DEFAULT_GODOT = REPO / ".tools/Godot_v4.7.2-stable_linux.x86_64"
 DEFAULT_OUTPUT = REPO / "docs/research/timber-integration/TT-00-R1"

@@ -1,6 +1,6 @@
 # Fuel-powered RC turbine realism and integration plan
 
-**Date:** 2026-10-13. **Status:** AV-18/19/20 software implemented; ECU/fuel integration and physical acceptance pending. **Owner:** Ventage Jet / physics track. **Parent:** [Ventage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
+**Checked:** 2026-10-19. **Status:** continuous RPM and single-store finite fuel are implemented. Full ECU/thermal/pump behavior and physical qualification remain pending. Current aircraft handling/ground verification has open regressions; dated passing evidence does not close them. **Owner:** Ventage Jet / physics track. **Parent:** [Ventage Jet guide](../AVANTI-S-PLAN.md). **Steps:** existing AV-05b and AV-10, plus AV-18…30. This document owns detailed turbine work and its status; the parent retains aircraft-wide work. Consolidate completed guidance into the parent/contract and retain evidence before deleting this active plan.
 
 **Owns:** `app/physics/turbine.gd`, bounded new turbine/fuel kernels, `app/tests/test_turbine*.gd`, Ventage Jet propulsion scenarios, `research/avanti-s/` turbine source/reducers and `docs/research/turbine-realism/`. Aircraft changes go through `research/avanti-s/av06/inputs.json` and `derive_physics.py`; generated `app/data/aircraft/sebart_avanti_s_a200.json` is never edited directly.
 
@@ -24,21 +24,17 @@ A nominal catalog match, plausible sound or passing golden replay does not confe
 
 ## 2. Baseline, demonstrated gaps and priorities
 
-The current implementation already has a nonlinear throttle-to-RPM map, asymmetric rate schedules, a governor lag, static thrust/flow tables, ram corrections, separate inlet/nozzle arms and rotor gyro momentum. These are useful foundations; preserve them as a frozen comparison model before changing behavior.
+The [AV-18 source review](../research/turbine-realism/AV-18/README.md) preserves the **2026-10-13 baseline**, including its fixed-fuel inventory, sampled RPM and missing ECU. Those are historical findings, not today's feature status.
 
-| Priority | Starting limitation | Consequence | Required correction |
-| --- | --- | --- | --- |
-| P0 | RPM advances before body RK4 and is held during stages | Coupled thrust/gyro transients can inherit a lower-order split | One evolving continuous turbine state evaluated at each body stage |
-| P0 | Disabling the engine gives zero RPM in the next pre-step | Abrupt loss of spin; no physical shutdown sequence | Separate fuel valve, combustion, rotor speed, cooling and run permission |
-| P0 | Fuel-flow map is unused; wet inventory is constant | No endurance or empty-tank event; no weight/balance evolution | Consume actual delivered fuel; derive mass/CG/tensor together |
-| P0 | Large-step schedules and interior maps are estimated | Apparent realism can be self-confirmed by the same equations | Reproducible response metrics, parameter sensitivity and independent identification |
-| P1 | No EGT/core thermal state or supply/pump behavior | Hot starts, limits and supply loss have no causal mechanism | Bounded thermal/ECU model, then optional calibrated supply model |
-| P1 | Density-only engine correction | Same density can conceal different engine pressure/temperature conditions | Separate ambient pressure, temperature and corrected engine quantities |
-| P1 | Installed thrust/ram/crossflow remain unvalidated | Airspeed, climb and idle energy may be misattributed | Separate static, installation, flight-speed and aero evidence |
-| P1 | Audio/crash/HUD lack a complete engine-state interface | Sound can imply thrust or a stopped rotor incorrectly | Read-only committed propulsion telemetry with explicit clocks |
-| P2 | No pickup, hopper, slosh, surge or component wear | Advanced installation/failure behavior absent | Add only where identified data and complete state justify it |
+| Implemented boundary | Current code and remaining limit |
+| --- | --- |
+| Continuous RPM | [Turbine law](../../app/physics/turbine.gd) and session stage evaluation use evolving RPM for governor, thrust and gyro. Missing/`sampled` selectors retain the historical route; the catalog selects RK4. |
+| Finite main-tank fuel | [Liquid law](../../app/physics/liquid_fuel.gd) and [session adapter](../../app/sim/liquid_fuel_flight.gd) consume the RPM fuel map, update stage mass/CG/inertia and locate usable exhaustion. The source latch, residue, selected fill/reset and checkpoint state exist. |
+| Basic source cutoff | Combustion loads stop and RPM follows the existing estimated deceleration schedule toward zero. This does not implement ECU startup, thermal/cooling history, starter or relight. |
+| Aircraft systems | Retracts, wheel/brake/steering, runway starts and flight flaps exist under AV-09/F. Their physical contact/aero identification and broader scenario qualification remain open. |
+| Pending mechanisms | AV-21 identification, AV-22 thermal/history, AV-05b ECU, AV-23 pump/battery and AV-25 feed/hopper/slosh need their own data and lifecycle proof. |
 
-The inspected inventory is 11.705089 kg with 1.28 kg of declared fuel. These are virtual-build values, not hardware measurements. Its 3.2 L tank is dealer-derived and its geometry estimated. The source review qualifies the older research's manual-version citations; AV-18a will repair those specific citations without rewriting historical findings as current evidence.
+The [fuel standard](../FUEL-SYSTEM.md) owns current datum, inventory, fill and depletion behavior; the [aircraft guide](../AVANTI-S-PLAN.md) owns aircraft-wide status. The register below separates implemented subsets from unfinished acceptance. Valid sources and equations alone do not establish a passing current flight suite.
 
 ## 3. What the research supports
 
@@ -67,6 +63,8 @@ The numbered source links below resolve to the exact official publications and t
 Do not adopt a generic “three-second turbine,” assume every down-step is faster, or make engine acceleration depend directly on aircraft speed. Preserve ordinary idle, low idle, normal stop, emergency cut, flameout and OFF as distinct cases.
 
 ## 4. Required behavior by physical mechanism
+
+Sections 4–12 define target mechanisms and acceptance constraints. Only the subsets identified in §§2/13 are implemented; future ECU/thermal/supply fields and states below are proposals until admitted by the aircraft contract and consumed by runtime code.
 
 ### 4.1 Radio demand, ECU curve and response
 
@@ -135,7 +133,7 @@ dm_tank/dt = -mdot_delivered - mdot_leak + mdot_transfer
 m_consumed(t) = integral(mdot_delivered dt)
 ```
 
-The first implementation has no leak and no transfer. OFF/cooling with a closed valve consumes no fuel; startup, stabilization and controlled auto-off can consume fuel. Flameout may temporarily occur with fuel delivery still present: report consumed liquid separately from combusted energy. Fuel cut does not erase rotor/core energy in the same tick. Residual delivery or trapped fuel needs an explicit line state before it is modeled.
+The current single-store map has no leak/transfer or independently simulated pump/valve delivery state. It consumes fuel only while the source is enabled. For a future ECU model, OFF/cooling with a closed valve consumes no fuel; startup, stabilization and controlled auto-off can consume fuel. Flameout may temporarily occur with fuel delivery still present: report consumed liquid separately from combusted energy. Fuel cut does not erase rotor/core energy in the same tick. Residual delivery or trapped fuel needs an explicit line state before it is modeled.
 
 Use kg/s internally. Convert ml/min with the documented density and temperature of the mixture. Oil fraction by volume versus mass and “5% added to fuel” versus “5% of final mixture” must be resolved before calculating density or heating value. Keep fuel-specific viscosity/start effects and ECU fuel selection in engine data; no universal diesel penalty or X52 diesel support inferred from another model's manual.
 
@@ -145,27 +143,11 @@ For the declared 3.2 L and catalog full-load 0.39 L/min, **8.21 minutes** is a m
 
 ### 4.5 Changing mass, CG, inertia and datum
 
-Define dry hardware once and bind each tank to an explicit inventory component ID. Replace the loaded liquid component with a derived fill-dependent quantity; do not leave it in the static inventory and add dynamic fuel a second time. Never infer tanks from free-text component names.
+Current finite fuel binds the liquid and shell inventory by ID and derives mass, first moment and tensor through the [shared fuel/mass contract](../FUEL-SYSTEM.md). The session uses an immutable authored reference datum, stage-local mass properties and consistent force/contact arms; selected fill and reset do not rebase the structure. The liquid centroid/envelope are authored estimates, not a free-surface or slosh model. Hardware is not rebalanced during depletion.
 
-For all hardware and liquid distributions, derive together:
+[AV-10b's independent mechanics reference](../../research/avanti-s/av10/README.md) retains the fixed-datum/moving-CG equations, analytic fixtures and outflow assumptions. It is an offline comparison model, not proof that every proposed flux term is in production. Physical tank geometry, internal transfer and outflow moments remain unmeasured.
 
-```text
-m = sum(m_i)
-c = sum(m_i * c_i) / m
-I_CG = sum(I_i_at_own_center
-           + m_i * ((dot(d_i,d_i) * identity) - outer(d_i,d_i)))
-d_i = c_i - c
-```
-
-The six tensor entries preserve the repository sign convention and must describe one distribution. A fill-dependent tank centroid/envelope is preferable to a full box with only its mass scaled. The initial verified approximation may hold the liquid at a fixed centroid, explicitly marked estimated; it does not simulate slosh or a free surface.
-
-**This is a solver change, not a `sim.mass` assignment.** The current rigid-body state is referenced to the inventory CG. A changing CG affects velocity interpretation, aerodynamic/contact/nozzle arms, rendering placement, hull transforms, trim and inertia derivatives. Simply editing mass/CG each tick can create discontinuous geometry or artificial angular acceleration.
-
-AV-10b must derive an open-system momentum balance and choose the state reference before integration. Recommended investigation: a fixed dry-body reference datum for the optional variable-mass route, with stage-local spatial mass properties and a carefully defined transform to current-CG telemetry. Compare it against a correctly derived moving-CG formulation on independent fixtures. Keep the existing constant-mass route intact. Admit the variable-mass route only after agreement and acceptable cost; document the chosen equations in DECISIONS when adopted.
-
-Account for momentum carried by departing liquid/gas once. Net engine thrust already represents a control-volume momentum/pressure result; adding a second rocket term double counts it. Conversely, blindly adding `-I_dot * omega` while omitting angular-momentum outflow can produce spurious spin-up. Frozen-within-tick mass properties are an approximation that requires a measured convergence/error bound, not an assertion of stage-coupled accuracy.
-
-Require a positive physical tensor for every accepted fill and a continuous visual structural datum. A hypothetical 1.28 kg fuel reduction increases force-per-mass by about **12.3%** between this declared half-tank build and its virtual dry build at unchanged force; that illustrates why fuel matters, but does not predict actual acceleration, climb or CG travel. Do not rebalance hardware between fill states. Preserve existing AV-14 fuel-sensitivity corrections.
+Extensions must account for departing momentum once: net engine thrust already represents a control-volume result. Neither a second rocket term nor an isolated `-I_dot * omega` is justified without the complete balance. Require positive tensors, continuous structural geometry, held-out full/half/reserve comparisons and measured convergence/cost before expanding the model.
 
 ### 4.6 Pickup, hopper, negative g and slosh
 
@@ -219,13 +201,13 @@ Healthy flights have no invented random flameouts. Optional training faults reco
 
 ## 6. Minimal model and optional extensions
 
-Use a data-driven, bounded empirical model first. Recommended progression:
+The current empirical model already has stage-coupled RPM and a single finite fuel store with stage mass properties. Remaining progression:
 
-1. Stage-coupled RPM, legacy steady maps and actual fuel telemetry, retaining prescribed mass. Establish a known numerical delta before retuning.
-2. Source-backed ECU modes plus identified/estimated thermal history and a separate cutoff/rundown map. Initial empirical estimates remain experimental.
-3. Explicit tank depletion and empty event; then the independently verified variable-mass route. Telemetry-only depletion can be an isolated test harness, but production cannot claim physical fuel burn with frozen mass.
-4. Installed/ambient corrections supported by measurements or bounded experimental surrogates.
-5. Pump, battery, hopper, relight and slosh only as separately validated optional modules.
+1. Resolve current flight/trace/ground verification gaps and identify the existing maps with held-out observations.
+2. Add source-backed ECU modes, thermal history and a separately identified cutoff/rundown law. Estimated initial parameters remain experimental.
+3. Qualify full/half/reserve missions and the tank/distribution assumptions of the existing finite route.
+4. Extend installed/ambient corrections only with identified data and bounded domains.
+5. Add pump, supply battery, hopper, relight and slosh as separately admitted optional modules.
 
 Do not simultaneously evolve thrust as an independent state and derive another thrust from RPM unless the second state represents a specifically identified residual dynamic. A second-order thrust model can serve as an offline benchmark; it must not disagree with RPM/audio/fuel/state semantics in production. Identify the smallest state set that explains held-out data.
 
@@ -233,7 +215,7 @@ A pump extension may use delivered-flow/pressure lag and saturation, with supply
 
 ## 7. Aircraft-data and state contracts
 
-Extend [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) before enabling any new configuration. Current `prescribed_fuel` means fixed wet mass; silently consuming it would break that capability. Propose a conditional `finite_fuel` capability plus explicit turbine-control/model-law selections; exact names require contract-owner review. Optional modules must be rejected until all consumers and lifecycle state exist. Keep v2 quantity objects exactly `{value, unit, kind, source}`; unit/kind/source rules remain unchanged.
+The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns accepted syntax. `prescribed_fuel` retains fixed mass; the implemented finite route selects `capabilities.energy: finite_liquid_fuel` and `propulsion.fuel_consumption.law: turbine_map_v1` with an explicit tank ID. Future ECU/thermal/supply modules require contract/consumer/lifecycle admission; the target fields and state classes below are not a description of currently accepted data. Keep quantity provenance and versioned identities.
 
 | Authored definition | Required content / validation |
 | --- | --- |
@@ -258,6 +240,8 @@ A physical dwell timer can use a continuous phase age; fixed-rate ECU timers can
 
 ## 8. Integration with the existing simulator
 
+The continuous RPM, finite-store, stage mass and exhaustion seams already exist. This table constrains future ECU/thermal/supply changes; it does not mark every seam as missing. Reuse the model/stage and shared event interfaces instead of adding aircraft-specific kernel branches.
+
 | Seam | Concrete change and constraint |
 | --- | --- |
 | `app/physics/turbine.gd` | Keep pure table/force queries; add a pure stage evaluator returning derivatives, loads, rotor momentum and diagnostics. Isolate new ECU/fuel kernels when useful; no render types |
@@ -265,7 +249,7 @@ A physical dwell timer can use a continuous phase age; fixed-rate ECU timers can
 | `FlightSession` continuous setup | Route the turbine through existing continuous callbacks; append engine/fuel state after existing owned layouts, with explicit indices/capacity. `AUX_RPM` becomes an endpoint mirror, never a second evolving state |
 | `VehicleModel.stage` | One pure evaluation per stage, shared by load and derivative consumers. Validate the complete payload; no persistent cache keyed incompletely |
 | Event integration | Extend/reuse `step_policy` patterns with bounded earliest-event localization; turbine modes must change transactionally between substeps. Evaluate the remainder with the new mode and fuel limit |
-| Mass properties / rigid body | Add the chosen verified variable-mass route only for the explicit capability. Update all stage forces/contact arms and accepted endpoint/render transforms consistently |
+| Mass properties / rigid body | Reuse the implemented fixed-reference finite-liquid route. Extensions must preserve stage force/contact arms, positive tensors and continuous endpoint/render geometry |
 | Trim/start | RUN trim solves actual steady propulsion at initial fill/ambient conditions. Airborne starts initialize running/settled state; a requested cold start is an explicit engine scenario. No fallback to old trim after a new model/environment fails |
 | Checkpoint/reload/reset | Version layouts/identity; restore all continuous, sampled/discrete state, timers, fuel, weather/RNG and source identity. A rejected step/reload preserves the full previous accepted transaction |
 | Trace / telemetry | Version metadata and sampling semantics. Record state-time engine outputs separately from k1-time loads; no mixed-row RPM/thrust reconstruction |
@@ -301,7 +285,7 @@ Required flight comparisons at matched commands/configuration:
 | Hot/high and wind | Shared environment, corrected operating point, controller limits, exact deterministic input history |
 | Engine-off / attempted relight | Residual energy/rundown, altitude loss, permission/timeout; no guaranteed rescue |
 
-Ventage Jet currently has gear locked up and no qualified runway start. Taxi, takeoff, rejected takeoff, braking, landing rollout and flap-dependent go-around depend on **AV-09** and ground/start qualification. Define them now as later acceptance cases; do not test an airborne locked-up jet on invisible landing gear. Landing-realism claims remain open until those systems exist.
+AV-09/F now supplies retracts, runway starts, steering/brakes and flight flaps. Taxi/takeoff/landing/go-around scenarios can exercise those systems; their implementation does not close AV-28 handling or physical landing acceptance. Keep current ground-test failures and measured contact/aero gaps explicit.
 
 ## 10. Audio, visuals, HUD and terminal flight
 
@@ -374,35 +358,35 @@ Mutation controls in disposable copies: instantaneous RPM cut, stage RPM replace
 
 ## 13. Incremental implementation sequence
 
-Each integration slice is independently reviewable. [AV-18…20 evidence](../research/turbine-realism/AV-20/README.md) distinguishes delivered software from pending calibration and later ECU/fuel work. No combined turbine/fuel/aero/UI retune.
+Each integration slice is independently reviewable. [AV-18…20 evidence](../research/turbine-realism/AV-20/README.md) records the original RPM integration. Finite-store implementation came later through FUEL; current calibration, ECU and scenario gates remain separate. No combined turbine/fuel/aero/UI retune.
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | AV-18 | Source/runtime audit, baseline and metrics | Delivered: dated sources, native paired snapshots and [response reducer](../../research/avanti-s/av18/response_metrics.py), 11 analytic tests; no measured engine calibration |
 | AV-18a | Repair affected historical manual URLs/pages and record variant/thermal differences | Delivered: AV-05 cites the correct March 2015 ECU manual and February 2023 P250 publication; historical fit scope retained |
 | AV-19 | Explicit turbine integration and state/identity contract | Delivered: optional `spool_integrator` category, strict loader/schema and stiffness preflight; supported one-RPM layout, versioned snapshots/trace and generated aircraft selection |
-| AV-20 | Continuous turbine RPM with existing maps/settings, prescribed mass | Delivered: stage thrust/gyro/governor, endpoint mirror, analytic impulse/refinement, rollback/replay, trace guards and inactive-fleet exactness; evidence and full-suite limits linked above |
+| AV-20 | Continuous turbine RPM with existing maps/settings | Delivered RPM integration; original AV-20 proof used prescribed mass. Finite fuel arrived through AV-10/FUEL; original replay/refinement results retain their dated scope. |
 | AV-21 | Steady/response identification and bounded empirical maps | Run-separated validation, schedule/curve joins, parameter sensitivity; estimated fallback labeled **pending** |
 | AV-22 | Thermal/history and state-specific cold/hot flow/rundown kernels outside `app/` | EGT/sensor distinction, no cold hot-thrust leakage, thermal/history and numerical tests **pending** |
-| AV-05b | Integrate ECU start/idle/normal stop/fuel cut/flameout/cooling | Source-backed permissions/events, residual energy, fault/lifecycle/trace proof; low idle/relight only when supported **pending** |
+| AV-05b | ECU start/idle/normal stop/fuel cut/flameout/cooling | Basic finite-source cutoff and estimated RPM rundown exist. Full source-backed ECU permissions, thermal history, cooling, startup and relight lifecycle remain **pending**. |
 | AV-23 | Optional calibrated pump and separate supply-battery behavior | Delivered-flow/voltage/saturation/start/cooling data, energy/rollback checks; deferred if data insufficient **pending** |
-| AV-10a | Tank inventory binding, usable volume and depletion kernel | No duplicated fuel; constant-flow and mission integrals; empty-event localization in isolated harness **pending** |
-| AV-10b | Derive and independently verify variable-mass equations/state datum | [Independent reference](../../research/avanti-s/av10/README.md) and 5 analytic/transform fixtures delivered; tank distribution/flux assumptions and production architecture **pending** |
-| AV-10c | Integrate finite fuel and changing mass/CG/inertia | Actual-session empty event, trim/start/reset/replay; continuous structural geometry, full/half/reserve fixed-build comparison **pending** |
+| AV-10a | Tank inventory binding, usable volume and depletion kernel | Implemented single-store binding, usable residue, RPM-map flow and located exhaustion through FUEL. Broader mission/measurement and feed-system qualification remain open; see the shared fuel guide. |
+| AV-10b | Variable-mass equations/state datum | [Independent reference](../../research/avanti-s/av10/README.md) exists; production uses the shared fixed-reference datum and stage mass properties. Tank distribution/flux assumptions and matched physical comparison remain unqualified. |
+| AV-10c | Integrate finite fuel and changing mass/CG/inertia | Implemented in the finite-liquid session: changing properties, exhaustion/latch, residue, selected fill/reset and checkpoint/replay. Current whole-aircraft handling regressions, full mission/refinement evidence and physical acceptance remain open. |
 | AV-24 | Installed force budget, ambient corrected coordinates and domain policy | [VAL-AUD-R03](../research/physics-audit-2026-10-14/remediation/R03/F02-capture-vector.md) repairs the zero-axial capture-force jump; [local intake kinematics](../research/physics-audit-2026-10-14/remediation/R03/F07-local-intake.md) now use the force application point in standalone and RK stages. Corrected engine maps, installed-force identification and physical acceptance remain **pending**. |
 | AV-25 | Optional hopper/pickup and supply interruptions; slosh experiment if justified | Buffer/transfer mass conservation and measured effective-acceleration behavior; slosh remains opt-in until validated **pending** |
-| AV-26 | Rotor gyro/rotation sense and transient mount-balance investigation | Stage gyro oracle, both-sense sensitivity; add mounting load only with complete momentum/evidence balance **pending** |
-| AV-27 | Telemetry, versioned replay and audio/HUD/crash handoff | Pure committed snapshot, compatible traces, pause and terminal-afterrun clock decision; AUD/HUD/CR owner proofs **pending** |
-| AV-28 | Flight-energy/handling scenarios; later ground cases with AV-09 | Same-source/command paired traces, go-around/idle/glide/fuel/ambient metrics; ground scenarios blocked by absent gear, airborne work independent **pending** |
+| AV-26 | Rotor gyro/rotation sense and transient mount balance | Stage gyro is implemented; measured rotation/inertia, both-sense sensitivity and any additional mounting load require the complete momentum/evidence balance. |
+| AV-27 | Telemetry, versioned replay and audio/HUD/crash handoff | Basic committed turbine/fuel state and versioned serialization exist. Current trace regressions, future ECU/thermal fields and terminal-afterrun clock/consumer proof remain **pending**. |
+| AV-28 | Flight-energy/handling scenarios; later ground cases with AV-09 | Same-source/command paired traces, go-around/idle/glide/fuel/ambient metrics; AV-09/F gear/flaps exist; scenario qualification and current handling/ground regressions remain **pending** |
 | AV-29 | Matched installation physical validation and pilot acceptance | Held-out engine runs and flight cards; unsupported domains and remaining uncertainty published **pending** |
-| AV-30 | Fleet/full-suite, cost and clean export integration | Generator `--check`, isolated LF full suite, no unrelated regressions, target cost, fresh-clone/export trace smoke; default promotion decision **pending** |
+| AV-30 | Fleet/full-suite, cost and clean export integration | Generator `--check`, isolated LF full suite, no unrelated regressions, target cost, fresh-clone/export trace smoke; acceptance/default decision for later ECU mechanisms **pending** |
 
-Dependencies:
+Remaining qualification order (the existing finite-store route does not wait for AV-21):
 
 ```text
 AV-18 -> AV-19 -> AV-20 -> AV-21
 AV-19/21 -> AV-22 -> AV-05b
-AV-19/21 -> AV-10a -> AV-10b -> AV-10c
+AV-10a/b/c implemented subset -> measured tank/flow and mission qualification
 AV-05b/10c -> AV-24 -> AV-27 -> AV-28 -> AV-29 -> AV-30
 AV-23/25/26 are evidence-gated extensions; they cannot block a verified minimal slice.
 AV-09 + ground/start qualification -> ground portions of AV-28 only.

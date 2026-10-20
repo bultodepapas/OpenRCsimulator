@@ -1,0 +1,73 @@
+import hashlib
+import json
+import os
+import pathlib
+import re
+import shutil
+import subprocess
+import sys
+import time
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+OUT = pathlib.Path(__file__).resolve().parent
+GODOT = ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'
+sys.path.insert(0, str(ROOT / 'research/performance'))
+from session_baseline import validate_probe_report, percentile_nearest_rank
+
+
+def snapshot(name):
+    dest = OUT / name
+    if not dest.exists():
+        shutil.copytree(ROOT / 'app', dest,
+                        ignore=shutil.ignore_patterns('.godot', 'assets', 'captures'))
+        for folder in ('assets', '.godot'):
+            subprocess.run(['cmd', '/c', 'mklink', '/J', str(dest / folder),
+                            str(ROOT / 'app' / folder)], check=True, capture_output=True)
+        # Aircraft authoring preloads have explicit sibling research paths.
+    return dest
+
+
+def run(app, output, case, aircraft, warmup, samples):
+    if output.exists():
+        data = json.loads(output.read_text())
+        assert not validate_probe_report(data)
+        return data
+    cmd = [str(GODOT), '--headless', '--path', str(app), '--audio-driver', 'Dummy',
+           '--script', str(ROOT / 'research/performance/session_probe.gd'), '--',
+           f'--output={output}', f'--case={case}', f'--aircraft={aircraft}',
+           f'--warmup-ticks={warmup}', f'--sample-ticks={samples}', '--observer=on']
+    p = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+    output.with_suffix('.log').write_text(p.stdout + p.stderr, encoding='utf-8')
+    if p.returncode or re.search(r'\b(?:SCRIPT\s+)?ERROR\b', p.stdout + p.stderr):
+        raise RuntimeError((p.stdout + p.stderr)[-5000:])
+    data = json.loads(output.read_text())
+    errors = validate_probe_report(data)
+    if errors:
+        raise RuntimeError(str(errors))
+    return data
+
+
+baseline = snapshot('baseline-app')
+candidate = snapshot('candidate-app')
+for name, app in [('reference', baseline), ('candidate', candidate)]:
+    shutil.copyfile(OUT / f'{name}.gd', app / 'sim/scenery_collision.gd')
+# Sibling resource outside app is required by compiler tests loaded with catalog modules.
+if not (OUT / 'research').exists():
+    subprocess.run(['cmd', '/c', 'mklink', '/J', str(OUT / 'research'), str(ROOT / 'research')],
+                   check=True, capture_output=True)
+warmup, samples, repeats = map(int, sys.argv[1:4])
+case = sys.argv[4]
+aircraft = sys.argv[5] if len(sys.argv) > 5 else 'jensen-das-ugly-stik-60'
+campaign = []
+for pair in range(repeats):
+    reports = {}
+    for name in (('baseline', 'candidate') if pair % 2 == 0 else ('candidate', 'baseline')):
+        path = OUT / f'{case}-{aircraft}-{samples}-pair{pair}-{name}.json'
+        data = run(baseline if name == 'baseline' else candidate, path, case, aircraft, warmup, samples)
+        reports[name] = data
+        print(name, pair, case, 'p50', percentile_nearest_rank(data['tick_usec'], .5), flush=True)
+    assert reports['baseline']['fingerprint'] == reports['candidate']['fingerprint']
+    # Strictly compare all deterministic probe identity fields below after examining schema.
+    campaign.append({name: str(OUT / f'{case}-{aircraft}-{samples}-pair{pair}-{name}.json')
+                     for name in reports})
+(OUT / f'campaign-{case}-{aircraft}-{samples}.json').write_text(json.dumps(campaign, indent=2))

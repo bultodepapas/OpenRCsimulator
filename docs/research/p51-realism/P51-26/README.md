@@ -1,6 +1,6 @@
 # P51-26: powered directional stiffness — slipstream quadrature and propeller sidewash
 
-2026-10-16 · Revision 2 · **Status: implemented in the runtime as the P-51's opt-in `propeller_sidewash` slipstream law. Powered rudder per sideslip is now a smooth 0.62–0.68 °/° (was 0.52–0.89), against the P-51D's 0.46–0.55.** Revision 1 (2026-10-15) diagnosed two defects in the shared legacy slipstream path and left a candidate for the slipstream owner; it is kept below. Prefix: P51-26. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-26/README.md)
+2026-10-16 · Revision 2 · **Status: implemented in the runtime as the P-51's opt-in `propeller_sidewash` slipstream law. Powered rudder per sideslip is now a smooth 0.62–0.68 °/° (was 0.52–0.89), against the P-51D's 0.46–0.55.** Revision 1 (2026-10-15) diagnosed two defects in the shared legacy slipstream path and left a candidate for the slipstream owner; it is kept below. Prefix: P51-26. [Plan](../../../P51-PLAN.md) · [Tools](../../../../research/p51/p51-26/README.md)
 
 ## Runtime implementation — 2026-10-16
 

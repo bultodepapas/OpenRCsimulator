@@ -9,7 +9,7 @@ copied byte-for-byte into this directory:
   SHA-256: 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
 
 The source Blender file remains preserved at:
-monster car 2/monster_truck_nitro_1.blend
+assets/source-deliveries/monster-car-2/monster_truck_nitro_1.blend
 
 No external model or free-download asset was used. No separate redistribution
 license was supplied with the files; this record documents provenance and does

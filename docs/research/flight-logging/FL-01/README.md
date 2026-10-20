@@ -11,7 +11,7 @@ Use the free external [PlotJuggler](https://github.com/PlotJuggler/PlotJuggler) 
 
 ## Existing runtime behavior
 
-The main implementation is in [`recorder.gd`](../../../../app/sim/recorder.gd), [`trace.gd`](../../../../app/sim/trace.gd), [`flight_session.gd`](../../../../app/sim/flight_session.gd), and [`simulation.gd`](../../../../app/sim/simulation.gd). The current [stack guide](../../../../STACK.md) also states that fixed-wing input is sampled before each simulation tick and that CSV traces are diagnostics while checkpoints carry replay state.
+The main implementation is in [`recorder.gd`](../../../../app/sim/recorder.gd), [`trace.gd`](../../../../app/sim/trace.gd), [`flight_session.gd`](../../../../app/sim/flight_session.gd), and [`simulation.gd`](../../../../app/sim/simulation.gd). The current [stack guide](../../../STACK.md) also states that fixed-wing input is sampled before each simulation tick and that CSV traces are diagnostics while checkpoints carry replay state.
 
 `Simulation` emits a sample at tick zero after reset and again after each accepted 240 Hz step. `FlightSession` updates `sim.inputs` before the step. For a sample at tick `k > 0`, `state`, `aux`, `tick`, and `t_s` are the accepted post-step boundary, while the recorded command vector drove the just-completed interval from `k-1` to `k`. The force/moment row is the RK4 first-stage load: it uses the previous body state and auxiliary values after the tick-boundary actuator update, before RK integration. Weather traces carry `loads_t_s` to show that earlier load time explicitly. The row therefore combines channels with different sampling times; analysis and replay must use each channel's documented timing rather than treating every cell as a simultaneous observation.
 
@@ -98,6 +98,39 @@ events to 240 regardless of elapsed flight length.
 Only focused regressions and editor import were run, not the entire cross-platform
 CI/export matrix. PlotJuggler native import, exported-package logging qualification,
 3D playback and physical/pilot acceptance remain outside this evidence.
+
+## FL-04-R1 — analysis report write failures (2026-10-19)
+
+The native CLI previously checked report creation but ignored the result of
+`store_string()` and flush errors. It now checks both, returns a nonzero process
+status on failure and reports the output path and filesystem error. Success text
+is emitted only after the write check. A failed destination may retain partial
+JSON; process status remains mandatory when accepting a report.
+
+The focused [report-writer regression](../../../../app/tests/test_flight_log_report_write.gd)
+passes on native Windows and WSL Linux with Godot 4.7.2. It covers complete JSON,
+directory/file-as-parent failures, the actual CLI failure exit and a disposable
+successful-analysis fixture whose final report cannot be written. Linux also
+checks `/dev/full` to exercise failure after opening a writable destination.
+Focused reruns also passed the existing flight-log suite (3,247 checks, zero failures)
+and all 14 Python tool tests. No solver, recorded baseline or aircraft data changed.
+Usage and the partial-report boundary live in the [manual](../../../FLIGHT-LOGGING.md).
+
+## FL-04-R2 — bounded CSV column indices (2026-10-19)
+
+A malformed CSV header containing `aux_` followed by 5,000 digits escaped the
+Python CLI's validation handler with `ValueError` and exit 1. Indexed-family
+validation now bounds numeric conversion by the family's actual column count,
+rejecting unreachable indices without constructing an arbitrarily large integer.
+Existing decimal names, leading zeros and Unicode decimal digits remain accepted.
+
+All 16 [Python tool tests](../../../../tools/flight_log/test_flight_log.py) pass,
+including the oversized suffix, contiguous/gapped indices and a valid index with
+5,000 leading zeros. An independent subprocess comparison against the pre-fix
+source confirms a controlled `error:` diagnostic and exit 2, with no traceback:
+[before/after evidence](csv-index-before-after.json). No solver, aircraft data or
+recorded baseline changed. This is malformed-input verification, not physical
+flight validation.
 
 ## References
 

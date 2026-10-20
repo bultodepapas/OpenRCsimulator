@@ -6,10 +6,10 @@ hashes the submitted GLB as identity evidence, and never runs the supplied
 Blender scripts. The user confirmed the supplied model and scripts may be
 included and modified; provenance remains attached to the original files.
 
-The geometry source is `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json`
+The geometry source is `assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json`
 (SHA-256 `8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef`).
 The matching submitted GLB is
-`RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` (SHA-256
+`assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` (SHA-256
 `7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6`). The
 spec declares metres and asset axes +X right, +Y up, and −Z forward. The data
 generator converts to physics body FRD: +X forward, +Y right, +Z down. It

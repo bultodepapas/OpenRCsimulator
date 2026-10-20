@@ -176,7 +176,7 @@ static func about_text(build: Dictionary) -> String:
 	else:
 		lines.append(TranslationServer.translate("OpenRC Simulator %s, development build (run from the source tree)") % build.version)
 	lines.append("Godot %s · %s · %s · %s" % [build.godot, TranslationServer.translate("MIT licence"),
-		TranslationServer.translate("Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"), REPOSITORY])
+		TranslationServer.translate("Ugly Stick designed by Phil Kraft · font Open Sans (SIL OFL)"), REPOSITORY])
 	return "\n".join(lines)
 
 

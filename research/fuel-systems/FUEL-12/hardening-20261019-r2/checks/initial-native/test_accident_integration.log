@@ -1,0 +1,113 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   report exists independently of VFX and holds crash for deliberate restart
+ok   read-only economics preserves healthy float64 state exactly
+ok   healthy flight has no accident report
+PROP STRIKE at 8948 rpm, 2.1 m/s: engine stopped
+ok   production prop strike continues flight with engine stopped
+ok   accepted contact does not calculate, publish or save a report
+ok   confirmed propeller is priced once at USD 5.39
+ok   production prop strike derives a bounded parts-only comparison
+ok   optimal parts price does not complete the accident assessment
+ok   explicit package comparison can choose a cheaper complete cover
+ok   comparing an alternative cannot rebill or apply it
+ok   priced part freezes its source and compatibility notes
+ok   shaft and engine inspection prevents a false total or upper cost bound
+ok   repeated notification cannot bill the prop twice
+ok   snapshot persists outside accepted physics callbacks
+ok   stored report reopens with frozen catalog identity
+ok   archive preserves the comparison snapshot without repricing
+ok   malformed archived comparison is rejected: negative_amount
+ok   malformed archived comparison is rejected: wrong_catalog
+ok   malformed archived comparison is rejected: false_complete
+ok   malformed archived comparison is rejected: zero_sum
+ok   malformed archived comparison is rejected: empty_coverage
+ok   invalid checkpoint cannot discard current costs
+ok   valid physics checkpoint restores
+ok   restored prop latch is costed once with explicit missing-history caveat
+ok   settlement queues presentation without opening UI inside accepted ticks
+ok   movement before publication cancels a stale landed card
+ok   nonterminal prop damage opens a large report after supported rest
+ok   landing presentation preserves the inspection subtotal and no restart action
+ok   renewed movement collapses automatic report without clearing costs or changing physics
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   terminal production contact opens persistent report
+ok   unknown structural damage does not invent total loss or servo salvage
+ok   source changes quarantine contacts without catalog, publication or archive work in callback
+ok   frame-boundary rebind refuses stale prices for a changed aircraft
+ok   restart clears only current ledger and keeps archived report
+ok   archived report reopening is view-only
+ok   contact journal is bounded and duplicate parts stay one purchase
+ok   late prop strike survives a full journal with bounded separate evidence
+ok   overflow strike duplicates cannot change valuation or grow dedup memory
+ok   lake fixture uses valid accepted-event contract (bank_ground)
+ok   lake-bank ground impact does not invent water exposure
+ok   lake fixture uses valid accepted-event contract (water)
+ok   late water exposure survives full history and retains its evidence
+ok   journal overflow remains explicit incomplete evidence
+ok   source mismatch cannot misprice a modified aircraft
+ok   archive failure is reported without repeated per-frame writes
+ok   explicit archival retries a previous failed write
+ok   invalid contact evidence still presents a terminal inspection report
+ok   malformed saved report is refused
+ok   reset/archive publishes pending accepted damage without needing a frame
+ok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (30 Hz)
+ok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (60 Hz)
+ok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (144 Hz)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   variant glow start accepts the configured runway state: stik-glow-55ax-2t
+PROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped
+ok   variant production prop strike remains nonterminal: stik-glow-55ax-2t
+ok   variant prices its own propeller once: stik-glow-55ax-2t
+ok   variant retains selected source identity and inspection uncertainty: stik-glow-55ax-2t
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   variant glow start accepts the configured runway state: stik-glow-fs64v-4t
+PROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped
+ok   variant production prop strike remains nonterminal: stik-glow-fs64v-4t
+ok   variant prices its own propeller once: stik-glow-fs64v-4t
+ok   variant retains selected source identity and inspection uncertainty: stik-glow-fs64v-4t
+ok   sold-out manufacturer offer stays labeled in report
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   variant glow start accepts the configured runway state: gp-extra-300s-60
+PROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped
+ok   variant production prop strike remains nonterminal: gp-extra-300s-60
+ok   variant prices its own propeller once: gp-extra-300s-60
+ok   variant retains selected source identity and inspection uncertainty: gp-extra-300s-60
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   terminal hull crash has the effects director only when requested (effects off, publication every 1)
+ok   terminal hull crash headlines the whole-aircraft ceiling (effects off, publication every 1)
+ok   terminal hull crash names the covered airframe inspection (effects off, publication every 1)
+ok   terminal crash report is independent of effects and publication cadence (effects off, publication every 1)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   terminal hull crash has the effects director only when requested (effects on, publication every 1)
+ok   terminal hull crash headlines the whole-aircraft ceiling (effects on, publication every 1)
+ok   terminal hull crash names the covered airframe inspection (effects on, publication every 1)
+ok   terminal crash report is independent of effects and publication cadence (effects on, publication every 1)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+ok   terminal hull crash has the effects director only when requested (effects off, publication every 5)
+ok   terminal hull crash headlines the whole-aircraft ceiling (effects off, publication every 5)
+ok   terminal hull crash names the covered airframe inspection (effects off, publication every 5)
+ok   terminal crash report is independent of effects and publication cadence (effects off, publication every 5)
+CR-30/32: 77 checks, 0 failed
+WARNING: Tree wind is disabled for maple_tree because source material -9223371815462630962 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:384)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2111)
+       [9] build (res://render/world/world.gd:286)
+       [10] _build_world (res://main.gd:2067)
+       [11] _ready (res://main.gd:472)
+       [12] _make (res://tests/test_accident_integration.gd:32)
+       [13] _run (res://tests/test_accident_integration.gd:42)

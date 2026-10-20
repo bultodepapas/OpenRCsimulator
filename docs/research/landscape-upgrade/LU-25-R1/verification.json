@@ -1,0 +1,107 @@
+[
+  {
+    "test": "test_lake_definition_cache",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.39,
+    "test_sha256": "c59971dde95867859e6a28aee58932ce94bc0b7eeac115976fcda1c6b7126e1b"
+  },
+  {
+    "test": "test_lake_surface",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.391,
+    "test_sha256": "19610131ee5868cd48dc855545ee3c8adda8945ec170a7bf67edfa6e4477d76e"
+  },
+  {
+    "test": "test_lake_collision",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.469,
+    "test_sha256": "93125788d5cf2063ac39aa5353033c0f550f1cf4336c2b70bc1411b4a4a9c179"
+  },
+  {
+    "test": "test_lake_ground_contact",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.359,
+    "test_sha256": "e7b8f35d5aebda553395dfc36115afcf9c4bccf098fa60db11931546bb3e4f70"
+  },
+  {
+    "test": "test_lake_session",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 3.969,
+    "test_sha256": "c3c52b9b13774d2e71532fc3b3f8bdab51c2d5b7ba833b9749b6730c5e5cbd2c"
+  },
+  {
+    "test": "test_water_checkpoint",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 10.219,
+    "test_sha256": "32e8bc9fee091311f1cd29b0d1ec7c9a5b6b43adfef156ca6081f677a40f58aa"
+  },
+  {
+    "test": "test_landscape_checkpoint",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 4.312,
+    "test_sha256": "e98c5b58054cbc6c792ba67fcf02c926eaf81576b98bb9e11d7d2964e6ec0ccc"
+  },
+  {
+    "test": "test_landscape_collision_session",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 2.688,
+    "test_sha256": "fd41b26d834dd9034bd1b2459e4406ca09e0b6ebf3d657badcf078af2d3f2d90"
+  },
+  {
+    "test": "test_landscape_collision_oracle",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 7.687,
+    "test_sha256": "57fc23ed6479ee29f31f1c7433b5275c734804f1026ee876c3f52e5f6c692cb8"
+  },
+  {
+    "test": "test_checkpoint",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 7.391,
+    "test_sha256": "8192c74885e176a0f204d272cc7ea582e3063b122da27c761e5fdb393757c508"
+  },
+  {
+    "test": "test_checkpoint_integrity",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.265,
+    "test_sha256": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0"
+  },
+  {
+    "test": "test_simulation",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.282,
+    "test_sha256": "31ae0d9fbf9274122e23ef738b09a4f29f2d2fb4f12ad365ff177d2236cf2cf5"
+  },
+  {
+    "test": "test_sf_vehicle_model",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 0.281,
+    "test_sha256": "76e06055c33b5e65e95c6f990e8d44651c99e37be3b142a4d09e0e72726d2271"
+  },
+  {
+    "test": "test_heli_ground_session",
+    "ok": true,
+    "exit_code": 0,
+    "elapsed_seconds": 78.062,
+    "test_sha256": "87d9fcd6f96294b3d33038d6ff56b5950a5e7db2f658ce03211ace6aef0272b0"
+  },
+  {
+    "test": "test_golden",
+    "ok": false,
+    "exit_code": 1,
+    "elapsed_seconds": 7.047,
+    "test_sha256": "b8e73fffa402328953a77db00fd48d287e908687791c0ba4d4a3f4ba7422273c"
+  }
+]

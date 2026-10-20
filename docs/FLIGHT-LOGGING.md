@@ -1,6 +1,6 @@
 # Flight logging and replay
 
-Current source feature, 2026-10-14. Owner: physics/simulation, FL-01…04.
+Current fixed-wing workflow, checked 2026-10-19. Owner: physics/simulation, FL-01…04.
 Records fixed-wing flights for handling investigations. The existing **T** CSV trace,
 helicopter recorder and truck recorder retain their own contracts.
 
@@ -26,14 +26,18 @@ buffer; it adds no simulated flight time. F11 marks a simulation tick, not wall 
 Recording can begin midway through a flight; it captures the complete initial
 physics checkpoint, including current propulsion, wind RNG and actuator state.
 
-To launch directly into a recording from the repository root:
+After [developer setup](TOOLS.md#developer-setup), run from the repository root.
+Select your installed engine, then launch a recording:
 
 ```powershell
+$env:GODOT = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe' # Set to your installed path.
 python tools/flight_log/flight_log.py record --out "tmp/my-flight.orfl"
 ```
 
-The launcher finds the native Windows Godot in `.tools`, `GODOT`, or PATH. Use
-`--godot <path>` to select the [pinned engine](TOOLS.md#developer-setup).
+For Linux/Bash, set `export GODOT="$(app/get-godot.sh)"` and use `python3` in the
+commands below. Engine selection is `--godot <path>`, then `GODOT`, then the pinned
+Windows console executable in `.tools`. A supplied executable name can resolve
+through PATH; the launcher does not automatically search for a Linux engine.
 `--aircraft gp-extra-300s-60` selects another catalog ID. Record mode waits for normal
 application exit unless an explicit timeout is supplied. Export/replay default to
 300 seconds; increase `--timeout` for long recordings. Never kill the app just to
@@ -42,7 +46,7 @@ stop recording: press F10, then close it normally.
 Equivalent engine command, also usable without Python:
 
 ```powershell
-& $GodotWindows --path app -- --quick-flight --flight-log=C:/captures/roll.orfl
+& $env:GODOT --path app -- --quick-flight --flight-log=C:/captures/roll.orfl
 ```
 
 Use a new file name. Existing recordings and analysis outputs are never overwritten.
@@ -70,7 +74,7 @@ the original log retains all recorded events.
 
 Exact replay restores the original accepted aircraft snapshot and environment,
 feeds the recorded commands into the actual fixed-step solver, and checks each
-body/auxiliary/continuous state, discrete mode, force/moment and derived air sample
+body/auxiliary/continuous state, discrete mode, force/moment, derived air and live mass sample
 byte for byte. It stops at the first discrepancy. The original engine, timestep and
 solver source fingerprint must match. Different platforms are not presumed to
 match: a successful comparison establishes only the run actually checked.
@@ -102,12 +106,11 @@ candidates are rejected. An external starter/cut/mixture intervention replays it
 recorded state edit at the same tick. Treat such intervals carefully when comparing
 different propulsion configurations.
 
-In particular, the R02 wing-wake state changed from a coefficient to velocity in
-m/s. Equal array lengths do not make those checkpoints compatible. Use the original
-source for historical exact replay. A new-law experiment must prepare a valid new
-initial wake explicitly and retain the shared body/command scenario, as in the
-[physics-audit comparison](research/physics-audit-2026-10-14/remediation/R11/README.md).
-That experiment does not reconstruct an unrecorded mid-flight wake history.
+Equal array lengths do not establish compatible state semantics. For example, the
+R02 wake changed from a coefficient to velocity in m/s. Historical exact replay
+requires its original source; a new-law experiment needs a valid initial wake and
+the same body/command scenario. The [retained comparison](research/physics-audit-2026-10-14/remediation/R11/README.md)
+does not reconstruct unrecorded mid-flight wake history.
 
 Reports identify baseline/current solver fingerprints and whether they differ.
 For an aircraft-only experiment require `solver_changed: false`; for a solver
@@ -139,6 +142,7 @@ Useful groups:
 | Power response | `cmd_throttle`, `engine_rpm`, `Fx_N`, `tas_mps`, relevant continuous-state columns |
 | Gear / braking | `cmd_gear_down`, `cmd_wheel_brake`, gear auxiliary states, loads and body motion |
 | Flaps | `cmd_flaps`, the `aux_N` at metadata `flap_aux_index`, `srv_pitch`, airspeed, angle of attack and loads |
+| Fuel / balance | `mass_kg`, `cg_offset_x_m`, `cg_offset_y_m`, `cg_offset_z_m`, propulsion state and body motion |
 
 Use F11 event ticks in the report to select intervals. A practical session is a short
 settled segment, a small isolated step/doublet, neutral recovery, then a repeat at a
@@ -150,19 +154,20 @@ their own `loads_t_s`, not the endpoint timestamp.
 | Data | Meaning |
 | --- | --- |
 | `tick`, `t_s` | Exact integer accepted tick; time is `tick × dt`. Initial sample plus every accepted tick, normally 240 Hz. |
-| Position / velocity / quaternion / rates | Float64 NED position in m; body FRD velocity in m/s; body-to-NED `[w,x,y,z]`; body rates in rad/s. These are committed endpoints. |
+| Position / velocity / quaternion / rates | Float64 NED position in m and body FRD velocity in m/s at the fixed body datum; body-to-NED `[w,x,y,z]`; body rates in rad/s. These are committed endpoints. |
 | `Fx_N`…`Mz_Nm`, `loads_t_s` | Body force/moment excluding gravity, from RK4 k1 at the interval start. At tick 0, initial loads. A mid-flight initial row retains the preceding step's k1 time. |
 | `raw_*`, `stick_*` | Session input sample and shaped virtual/radio stick commands. These are not USB packets; keyboard raw throttle is a rate request. No HID identifiers or device enumeration are recorded. |
 | `cmd_*` | Commands actually supplied to the physics tick, after input conditioning/rates/trim, before failures/servo dynamics. Gear/brake and flap channels only where supported. |
 | `engine_rpm`, `srv_*` | Accepted shaft RPM and actual normalized servo outputs. |
 | `aux_*`, `continuous_*`, `mode_*` | Complete owner-defined internal arrays, preserving float64 and int64. Includes active wheel/wake/turbulence/energy/propulsion states. Layout/law descriptions are in report metadata and [FlightSession](../app/sim/flight_session.gd). Unused subsystems add no arrays. |
 | Air channels | Endpoint true airspeed, angle of attack, sideslip and NED wind. No extra aerodynamic force evaluation. |
+| `mass_kg`, `cg_offset_*_m` | Accepted endpoint mass and live CG vector from the fixed body datum O in FRD. New logs declare four mass values in `layout.mass`; historical logs without this block remain exportable. |
 | Events/interventions | Markers, pause/resume, stop/fault/reset reason; sparse changes outside integration, such as starter, mixture or cut, retain exact affected arrays before the next tick. |
 | Initial context | Accepted model, physical ground/collision/lake setup, weather, checkpoint, engine/build/source identity. Captured once, not repeated per tick. |
 
 Body velocity is not air-relative velocity. Positive `down_m` points down; altitude
 above the NED datum is `-down_m`, which is not terrain clearance. Servo values are
-fractions of maximum throw, not degrees. [Aircraft units/signs](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units)
+fractions of maximum throw, not degrees. [Aircraft units/signs](AIRCRAFT_CONTRACT.md#coordinates-signs-and-units)
 remain authoritative.
 
 The optional flap channel is normalized 0–1. Its accepted actuator position is retained
@@ -172,8 +177,15 @@ maximum angle for degrees down. Elevator servo output includes the authored flap
 `cmd_pitch` remains the pilot demand before mixing/failures. A recording with this
 actuator cannot be replayed against a model that removes its state. Clean historical
 recordings remain exportable and require their original source for exact replay.
-The existing **T** CSV route uses `openrc-trace v12` with explicit `cmd_flaps`,
-`flap_fraction` and `flap_deg` columns when flaps are installed.
+The separate **T** CSV route includes `cmd_flaps`, `flap_fraction` and `flap_deg`
+when flaps are installed. Current interactive recordings use `openrc-trace v14`
+for accepted mass/CG or `v15` for finite-liquid stores and their source latch.
+The `mass_kg` and `cg_body_x_m`/`cg_body_y_m`/`cg_body_z_m` channels use offsets
+from O. Metadata `mass_base_trace_format` retains the underlying propulsion/atmosphere
+layout. Glow traces declare their v3 line/source state through `openrc-glow-trace v2`;
+readers keep explicit compatibility for historical layouts. Active fixed-wing
+Recorder callers provide the accepted `mass_properties` callback. See the
+[fuel standard](FUEL-SYSTEM.md); older technical traces retain their declared versions.
 
 The log does not collect rendering frames, audio, GPU counters, operating-system
 telemetry, calibration files or network traffic. Wall-clock observer cost is an
@@ -186,9 +198,8 @@ The recorder is disconnected when off. It buffers at most 240 samples and 240 sm
 events, then writes a block and flushes; it does not retain a growing flight in RAM.
 Writing/serialization is synchronous and happens on the simulation thread. This
 bounds memory, but slow disks can still cause frame stalls; use a local disk and
-measure on the target machine. The short fleet probe observed roughly 7–10 ms of
-logger work across 260 ticks in the first run (roughly 10–13 ms in a later run), not a
-target-hardware performance qualification.
+measure on the target machine. Historical [fleet probe timings](research/flight-logging/FL-01/README.md)
+do not qualify current target-host performance.
 
 Each `.orfl` file starts with `ORFL0001`. Packets contain a bounded little-endian
 32-bit length, SHA-256 digest and Godot Variant payload. Object decoding is disabled.
@@ -215,11 +226,18 @@ header or unflushed samples. A partial CSV without its report can be mistaken fo
 complete flight: retain both files. Disk/size errors stop recording visibly while
 leaving the simulator available; inspect the resulting file before using it as evidence.
 
+The native analysis CLI checks report writes and flush errors before announcing
+success. A report-output failure returns nonzero and names the path and filesystem
+error; partial output is not accepted evidence. Always check process status along
+with the report. For retained engine diagnostics, wrap native invocations with the
+[checked Godot runner](../tools/godot/README.md).
+
 ## Verification and developer workflow
 
 ```powershell
-& $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_flight_log.gd
-& $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_flight_log_ui.gd
+& $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log.gd
+& $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log_ui.gd
+& $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log_report_write.gd
 python -m unittest discover -s tools/flight_log -p "test_*.py"
 ```
 
@@ -227,13 +245,6 @@ python -m unittest discover -s tools/flight_log -p "test_*.py"
 `--headless`, saving an ignored capture under `tmp/`. Tests use isolated inputs and
 disposable log files; no golden flights or accepted aircraft data are rewritten.
 
-| Step | Delivered boundary / proof |
-| --- | --- |
-| FL-01 | Existing-code audit, primary sources and reuse decision. |
-| FL-02 | Bounded recorder, tick observer, F10/F11 and direct-launch integration. |
-| FL-03 | Strict reader, prefix recovery, CSV, exact replay and explicit candidate experiments. |
-| FL-04 | Fleet observer equivalence/replay, corruption/cap/lifecycle checks, Python analysis and native UI verification. |
-
-[Source research and measured evidence](research/flight-logging/FL-01/README.md).
+[FL-01…04 source research, implementation and verification](research/flight-logging/FL-01/README.md).
 These are software checks; independent measurements and RC pilot feedback remain
 necessary for physical accuracy and flight feel.
