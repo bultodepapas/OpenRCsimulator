@@ -155,6 +155,25 @@ func _test_build() -> void:
 			and material.get_shader_parameter("wood_albedo") is Texture2D
 			and material.get_shader_parameter("slab_albedo") is Texture2D
 			and ranges.size() == 1 and str(ranges[0].id).begins_with("prop:pit-shelters:"))
+	var building_roofs: Node3D = root.get_node_or_null("BuildingRoofs")
+	var roof_count := building_roofs.get_child_count() if building_roofs != null else 0
+	var fitted_roofs := roof_count >= 20
+	if building_roofs != null:
+		for roof_node: Node in building_roofs.get_children():
+			var roof := roof_node as MeshInstance3D
+			if roof == null or roof.mesh == null or roof.mesh.get_surface_count() != 1:
+				fitted_roofs = false
+				break
+			var arrays := roof.mesh.surface_get_arrays(0)
+			var material := roof.mesh.surface_get_material(0) as ShaderMaterial
+			if arrays[Mesh.ARRAY_TEX_UV].size() != arrays[Mesh.ARRAY_VERTEX].size() \
+					or material == null or material.shader != load("res://scenery/building_roofs.gdshader") \
+					or not (material.get_shader_parameter("albedo_map") is Texture2D) \
+					or not roof.has_meta("damage_motion_id"):
+				fitted_roofs = false
+				break
+	_check("building roofs have fitted UVs, PBR maps and damage ids", fitted_roofs,
+		"roof nodes=%d" % roof_count)
 	var tris := _triangles(root)
 	print("     triangles: %d, build %.1f ms" % [tris, stats.build_ms])
 	_check("triangles within the scenery budget (%d)" % BUDGET_TRIANGLES, tris <= BUDGET_TRIANGLES, str(tris))
@@ -162,6 +181,19 @@ func _test_build() -> void:
 	for c in root.get_children():
 		if c is GeometryInstance3D and (c as GeometryInstance3D).cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 			_check("no engine shadow casting (0 shadow-pass draws)", false, str(c.name))
+	if building_roofs != null and roof_count > 0:
+		var first_id: String = building_roofs.get_child(0).get_meta("damage_motion_id")
+		Scenery.apply_damage(root, {first_id: {state = "broken"}})
+		var hidden := true
+		for roof_node: Node in building_roofs.get_children():
+			if roof_node.get_meta("damage_motion_id") == first_id and (roof_node as Node3D).visible:
+				hidden = false
+		Scenery.apply_damage(root, {})
+		var restored := true
+		for roof_node: Node in building_roofs.get_children():
+			if roof_node.get_meta("damage_motion_id") == first_id and not (roof_node as Node3D).visible:
+				restored = false
+		_check("roof skins hide with a broken building and restore on reset", hidden and restored)
 	root.free()
 
 

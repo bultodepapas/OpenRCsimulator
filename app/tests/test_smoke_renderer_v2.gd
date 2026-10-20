@@ -113,6 +113,7 @@ func _test_renderer() -> void:
 		printerr("Configuration fault: ", budget.fault)
 		smoke.free()
 		return
+	check("v2 uses fresh lifetime draw ordering", smoke._emitters.a.draw_order == GPUParticles3D.DRAW_ORDER_LIFETIME)
 	check("four batch cap permits two source outlets", budget.source_emitters == 2 and budget.show_emitters == 0)
 	check("saturated demand stays within fixed capacity", budget.capacity == 768 and budget.saturated)
 	check("high occupancy demand receives more capacity", budget.slot_particles.a > budget.slot_particles.b)
@@ -155,6 +156,12 @@ func _test_renderer() -> void:
 	show.advance(8.0 / 240, pose, Vector3.ZERO, 0.0, {})
 	check("cancelled burst cannot resurrect after safety stop", not show._emitters.wing.emitting)
 	show.free()
+	var historical = Smoke.new()
+	var historical_profile := _profile([_entry("historical")])
+	historical_profile.version = 1
+	check("historical order fixture configures", historical.configure(historical_profile, {"smoke_slots": [_show("historical")]}))
+	check("v1 retains historical view-depth draw ordering", historical._emitters.historical.draw_order == GPUParticles3D.DRAW_ORDER_VIEW_DEPTH)
+	historical.free()
 	await process_frame
 
 func _native_probe() -> void:
@@ -228,6 +235,7 @@ func _native_probe() -> void:
 	check("native pool recreation removes every pre-reset puff", _colored_pixels(root.get_texture().get_image()) == 0)
 	smoke.free()
 	var motion_report: Dictionary = await _native_motion_probe(camera)
+	var live_outlet_report: Dictionary = await _native_live_outlet_probe(camera)
 	var lifecycle_options := _lifecycle_options()
 	if int(lifecycle_options.cycles) > 0:
 		await _native_lifecycle_probe(int(lifecycle_options.cycles), str(lifecycle_options.output))
@@ -241,7 +249,7 @@ func _native_probe() -> void:
 		off_image.save_png(output.path_join("expired-native.png"))
 		var file := FileAccess.open(output.path_join("native.json"), FileAccess.WRITE)
 		file.store_string(JSON.stringify({"engine": Engine.get_version_info(), "adapter": RenderingServer.get_video_adapter_name(), "source_sha256": _source_receipt(),
-			"multicolor_pause_pixel_identical": multicolor_pause_same, "visible_pixels": on_count, "expired_pixels": _colored_pixels(off_image), "motion": motion_report, "checks": checks, "failures": failures,
+			"multicolor_pause_pixel_identical": multicolor_pause_same, "visible_pixels": on_count, "expired_pixels": _colored_pixels(off_image), "motion": motion_report, "live_outlet": live_outlet_report, "checks": checks, "failures": failures,
 			"scope": "Native GLES3 compile/render/lifecycle probe; not a frame-time or physical validation campaign."}, "\t"))
 	camera.free()
 	light.free()
@@ -654,3 +662,115 @@ func _lifecycle_counters() -> Dictionary:
 		"video_bytes": int(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)),
 		"render_objects": int(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME)),
 	}
+
+
+func _native_live_outlet_probe(camera: Camera3D) -> Dictionary:
+	# A same-draw opaque marker defines the nozzle edge. No idle draw is inserted
+	# between the last accepted interval and readback for either policy.
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 6.0
+	var artifact_dir := ""
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--out="):
+			artifact_dir = argument.trim_prefix("--out=")
+	if not artifact_dir.is_empty(): DirAccess.make_dir_recursive_absolute(artifact_dir)
+	var policies := [
+		{"id": "lifetime-fresh", "draw_order": GPUParticles3D.DRAW_ORDER_LIFETIME},
+		{"id": "view-depth-history", "draw_order": GPUParticles3D.DRAW_ORDER_VIEW_DEPTH},
+	]
+	var results: Array[Dictionary] = []
+	for policy: Dictionary in policies:
+		var entry := _entry("live_outlet")
+		entry.width_m = 1.0
+		entry.lifetime_s = 0.8
+		entry.color = "#FF0000FF"
+		entry.merge({"density": 2.0, "emission_rate_hz": 240.0, "jet_speed_mps": 0.65,
+			"dispersion_m2_s": 0.04, "buoyancy_mps": 0.0, "turbulence_mps": 0.0,
+			"velocity_inheritance": 1.0, "drag_s": 0.4})
+		var smoke = Smoke.new()
+		root.add_child(smoke)
+		var endpoint := _show("live_outlet")
+		endpoint["radius_m"] = 0.001
+		check("live outlet %s fixture configures" % policy.id,
+			smoke.configure(_profile([entry]), {"smoke_slots": [endpoint]}))
+		# This override exists only on the disposable comparison fixture. Production
+		# v2 has no runtime switch back to the delayed view-depth policy.
+		var emitter: GPUParticles3D = smoke._emitters.live_outlet
+		emitter.draw_order = int(policy.draw_order)
+		var marker := MeshInstance3D.new()
+		var box := BoxMesh.new()
+		box.size = Vector3(0.4, 0.12, 0.12)
+		var marker_material := StandardMaterial3D.new()
+		marker_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		marker_material.albedo_color = Color.GREEN
+		box.material = marker_material
+		marker.mesh = box
+		marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(marker)
+		var transform := Transform3D(Basis(Vector3.UP, PI / 2.0), Vector3.ZERO)
+		var pose := {"tick": 0, "slot_transforms": {"live_outlet": transform}}
+		marker.position = Vector3(0.2, 0, 0)
+		camera.position = Vector3(0, 0, 8)
+		camera.look_at(Vector3.ZERO)
+		smoke.advance(0.0, pose, Vector3.ZERO, 1.0, {})
+		for frame in 30:
+			pose.tick += 8
+			var source_x := 40.0 * float(pose.tick) / 240.0
+			pose.slot_transforms.live_outlet = Transform3D(transform.basis, Vector3(source_x, 0, 0))
+			marker.position = Vector3(source_x + 0.2, 0, 0)
+			camera.position = Vector3(source_x, 0, 8)
+			camera.look_at(Vector3(source_x, 0, 0))
+			smoke.advance(8.0 / 240.0, pose, Vector3.ZERO, 1.0, {})
+			await process_frame
+			await RenderingServer.frame_post_draw
+		# This is deliberately NOT _drain_draw_requests(). Readback synchronizes
+		# the completed draw; it does not submit another particle or idle frame.
+		var image := root.get_texture().get_image()
+		var stats := _live_outlet_pixels(image, float(root.size.y) / camera.size)
+		var process: ShaderMaterial = emitter.process_material
+		stats.merge({"policy": policy.id, "draw_order": int(policy.draw_order), "accepted_tick": int(pose.tick),
+			"accepted_time_s": float(pose.tick) / 240.0, "source_x_m": 40.0,
+			"expected_newborn_projected_x_px": camera.unproject_position(Vector3(40, 0, 0)).x,
+			"carrier_velocity_mps": str(process.get_shader_parameter("carrier_velocity")),
+			"capacity": emitter.amount, "requested_rate_hz": entry.emission_rate_hz,
+			"decoded_pixels_sha256": image.get_data().hex_encode().sha256_text()})
+		results.append(stats)
+		if not artifact_dir.is_empty():
+			image.save_png(artifact_dir.path_join("live-outlet-%s.png" % policy.id))
+		smoke.free()
+		marker.free()
+		# Draining between disposed fixtures prevents cross-case image remnants;
+		# the measured images above are always from the un-drained live draw.
+		await _drain_draw_requests()
+	check("live lifetime-ordered plume connects within0.3m of moving outlet",
+		results[0].marker_pixels > 0 and results[0].near_outlet_red_pixels >= 5 and results[0].gap_m <= 0.3)
+	check("comparison reproduces view-depth history displacement",
+		results[1].marker_pixels > 0 and results[1].near_outlet_red_pixels == 0 and results[1].gap_m > 1.0)
+	return {"method": "40m/s straight outlet,30Hz accepted presentation,640x360 orthographic6m camera following an opaque green nozzle marker. One process_frame+frame_post_draw per interval; immediate get_image after frame30, no extra/no-request settling frames. Red smoke sampled aft of marker in that same draw; near zone0.3m aft and16px high; red threshold R-max(G,B)>0.015.",
+		"results": results,
+		"ordering_tradeoff": "Lifetime order uses current instances but is not view-dependent or global alpha sorting. The comparison overrides only a disposable v2 fixture to reproduce the former Compatibility history policy."}
+
+
+func _live_outlet_pixels(image: Image, pixels_per_m: float) -> Dictionary:
+	var marker_left := image.get_width()
+	var marker_pixels := 0
+	for y in image.get_height():
+		for x in image.get_width():
+			var color := image.get_pixel(x, y)
+			if color.g - maxf(color.r, color.b) > 0.25:
+				marker_left = mini(marker_left, x)
+				marker_pixels += 1
+	var newest_red_x := -1
+	var near_pixels := 0
+	var center_y := image.get_height() / 2
+	var near_extent := ceili(0.3 * pixels_per_m)
+	for y in range(maxi(0, center_y - 8), mini(image.get_height(), center_y + 8)):
+		for x in range(marker_left):
+			var color := image.get_pixel(x, y)
+			if color.r - maxf(color.g, color.b) > 0.015:
+				newest_red_x = maxi(newest_red_x, x)
+				if x >= marker_left - near_extent: near_pixels += 1
+	var gap_pixels := marker_left - newest_red_x - 1 if newest_red_x >= 0 else image.get_width()
+	return {"marker_left_px": marker_left, "marker_pixels": marker_pixels,
+		"newest_visible_smoke_px": newest_red_x, "near_outlet_red_pixels": near_pixels,
+		"gap_pixels": gap_pixels, "gap_m": float(gap_pixels) / pixels_per_m}

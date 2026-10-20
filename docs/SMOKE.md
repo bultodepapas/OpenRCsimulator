@@ -50,6 +50,8 @@ The renderer exposes `configure(profile, bindings)`, `play()`, `pause()`, `stop(
 
 The v2 authored menu/profile permits eight outlets, with at most four enabled in any source/show combination. Their fixed allocations total **at most 768 particles**. V2 allocates from requested rate × lifetime, caps rates to available capacity and reports requested/resolved rates and saturation through `budget_info()`. Live residual pools are not resized or reassigned. V1 retains equal allocation. Birth thinning and distance LOD do not prove reduced allocated GPU work.
 
+V2 draws in plain lifetime order so fast puffs use the current Compatibility buffer. V1 retains view-depth ordering. The pinned backend's depth-sorting history caused visible outlet lag in the native moving test; settling a screenshot hid it. Lifetime order fixes that attachment delay, with camera-dependent alpha overlap still requiring qualification. See [native comparison evidence](research/smoke-investigations/SM-16-23/README.md).
+
 World-space puffs inherit outlet motion, outward velocity and qualified wash, then relax toward shared ambient wind. V2 adds coherent detail, diffusion-inspired growth and optical-depth opacity. Mutable materials/event buffers belong to individual emitters; immutable resources can be shared. This is a visual approximation, not fluid simulation, measured chemistry, obstacle coupling or validated rotor wash.
 
 | Action | Behavior |

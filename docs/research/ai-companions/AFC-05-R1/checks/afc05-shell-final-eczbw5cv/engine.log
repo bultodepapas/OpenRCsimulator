@@ -1,0 +1,85 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371806990137021 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:434)
+       [4] attach (res://scenery/scenery.gd:179)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:320)
+       [12] _ready (res://app_root.gd:256)
+       [13] _run (res://tests/test_companions_shell.gd:43)
+ok   rotorcraft direct route rejects an enabled companion group
+ok   rotorcraft direct route allows an explicitly disabled group
+ok   fixed-wing direct route keeps enabled companions available
+ok   non-companion direct arguments leave companions disabled
+ok   direct companion CLI validates --companions
+ok   direct companion CLI validates --companions=4
+ok   direct companion CLI validates --companions=-1
+ok   direct companion CLI validates --companions=1.5
+ok   direct companion CLI validates --companions-seed
+ok   direct companion CLI validates --companions-seed=-1
+ok   direct companion CLI validates --companions-seed=4294967296
+ok   Home companions default Off with count 1 and seed 1
+ok   Home companions are disabled outside Club Field
+ok   Home opens the companions dialog through the shell
+ok   Home Cancel preserves preferences and the live Home draft
+ok   Home Apply persists the checked count and seed
+ok   Home summary reflects the saved choice
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Home flight receives the saved companion config before startup
+ok   the manager starts three real AI pilots
+ok   Pause freezes simulation ticks and propeller angle
+ok   Pause dialog reports all three active pilots
+ok   Pause Cancel leaves the flight config and active group unchanged
+ok   Cancel preserves live companion presentation
+ok   Pause Apply stages two pilots for the next restart
+ok   sound and labels apply without replacing or advancing the paused flight
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Restart rebuilds the live group from the staged count
+ok   Pause Save as default is the only Pause action that persists
+ok   Pause save failure rolls the staged flight config back
+ok   failed save also restores live presentation
+ok   Pause save failure preserves the previous on-disk default
+ok   Cancel after a failed save leaves the flight config unchanged
+ok   Remove now appears for an active group
+ok   Remove now leaves no active AI pilots
+ok   Remove now does not rewrite the saved default
+ok   future preferences fixture writes
+ok   future schema stays protected
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   direct CLI ignores saved Home companion settings
+ok   direct fixed-wing Pause keeps the flight settings entry
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282/player.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282/companion-0.orfl
+Companion capture REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282
+ok   synthetic electric demo cannot enable companions or fleet capture
+ok   synthetic electric demo retains explicit companion Off support
+ok   direct CLI starts a fleet capture before flight ticks
+ok   capture HUD distinguishes the fleet and leaves the separate player log idle
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282/player.orfl (40 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282/companion-0.orfl (40 ticks)
+Companion capture closed: C:/DEVELOPMENT/OpenRCsimulator/tmp/afc-shell-capture-18193282 (complete=true, tick=40)
+ok   F10 closes all streams without starting a second player log
+ok   capture HUD confirms a saved cohort
+ok   F11 marks the player stream
+ok   F11 marks the companion-0 stream
+ok   F11 marks every stream at the same tick
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Restart rebuilds the companion without reusing its capture directory
+ok   capture directory is never saved in Home preferences
+Companions shell: 0 failed

@@ -659,3 +659,13 @@ legacy comparison path until native rollout gates pass. Four active batches and
 [Contract](SMOKE.md), [research and acceptance plan](../SMOKE_SYSTEM_MASTER_PLAN.md)
 and [implementation evidence](research/smoke-investigations/SM-16-23/README.md).
 
+### 2026-10-20 — Prefer current particle positions over delayed depth sorting (SM-19)
+
+Use plain lifetime ordering for v2 smoke and retain historical view-depth ordering
+for v1. The pinned Compatibility implementation sorts a historical buffer; the
+same-draw moving-outlet probe reproduced a detached plume despite correct mounts.
+Fresh-buffer ordering closes that gap without a synchronization stall or another
+draw pass. Camera-dependent alpha crossings remain a visual qualification gate.
+[Exact backend source](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/particles_storage.cpp#L734-L778)
+and [native comparison](research/smoke-investigations/SM-16-23/README.md).
+

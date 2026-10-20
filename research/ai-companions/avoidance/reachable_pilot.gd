@@ -25,13 +25,17 @@ var _has_held_maneuver := false
 var _held_bank_rad := 0.0
 var _hold_until_tick := -1
 var _clear_since_tick := -1
+var _last_decision: Dictionary = {}
 
 
 func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary:
 	_planning_tick = tick
 	var clearance_value: Variant = snapshot.get("ground_clearance_m", NAN)
 	_planning_clearance_m = float(clearance_value) if typeof(clearance_value) in [TYPE_FLOAT, TYPE_INT] else NAN
-	return super.command(snapshot, tick, traffic)
+	var packet: Dictionary = super.command(snapshot, tick, traffic)
+	if tick == 0 and not _last_decision.is_empty():
+		print("AFC_REACHABLE_INITIAL " + JSON.stringify(_last_decision))
+	return packet
 
 
 func _avoidance_velocity(
@@ -65,6 +69,7 @@ func _avoidance_velocity(
 		nominal_bank, nominal_bank, clearance, threats)
 	var best_bank: float = nominal_bank
 	var best_score: float = float(baseline.score)
+	var best_prediction: Dictionary = baseline
 	for bank_degrees: float in BANK_CHOICES_DEG:
 		var candidate_bank: float = deg_to_rad(bank_degrees)
 		var result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
@@ -74,12 +79,14 @@ func _avoidance_velocity(
 		if candidate_score > best_score:
 			best_score = candidate_score
 			best_bank = candidate_bank
+			best_prediction = result
 	# Include the continuous nominal bank in the candidate set and favor it when
 	# a reachable choice cannot improve the worst predicted clearance.
 	var nominal_score: float = float(baseline.score)
 	if nominal_score >= best_score:
 		best_bank = nominal_bank
 		best_score = nominal_score
+		best_prediction = baseline
 
 	if _has_held_maneuver:
 		var held_result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
@@ -110,6 +117,17 @@ func _avoidance_velocity(
 		_held_bank_rad = best_bank
 		_hold_until_tick = _planning_tick + HOLD_TIME_TICKS
 		_clear_since_tick = -1
+	_last_decision = {
+		"tick": _planning_tick,
+		"selected_bank_deg": rad_to_deg(best_bank),
+		"nominal_bank_deg": rad_to_deg(nominal_bank),
+		"baseline_score_m": float(baseline.score),
+		"candidate_score_m": best_score,
+		"candidate_player_min_m": float(best_prediction.minimum_player_distance_m),
+		"candidate_peer_min_m": float(best_prediction.minimum_peer_distance_m),
+		"terrain_margin_m": float(best_prediction.terrain_margin_m),
+		"threat_count": threats.size(),
+	}
 
 	return _bank_response(base_air_north, base_air_east, own_euler[0], nominal_bank, best_bank)
 
