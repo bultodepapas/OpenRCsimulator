@@ -1,20 +1,20 @@
 {
-  "format": "openrc-evidence-sha256 v1",
+  "format": "openrc-evidence-sha256 v2",
   "date": "2026-10-20",
   "files": {
-    "app/data/fields/lights.json": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
-    "app/app_state/preferences.gd": "960799c028fc4cf1dc722e8bdd91a2a07c45e8c6281c38ede881c578fda9a3ac",
-    "app/ui/time_of_day_controls.gd": "3200117b1754165153b8da69b31f1b321a06653d8187b10c76aa19f21a38e02d",
-    "app/app_root.gd": "026c0de93bbdb9630526096c6df49995d30ebfe243dc17837e2d2be38f3f4822",
-    "app/main.gd": "608987f68e0eb74ff0fa15ad4bfa409e99ea8d264bd0531e59ecb67fcede5807",
-    "app/helicopter_main.gd": "afd36d0cc9ce565bc3cd7529c1e2c5b0bc6091bbe5829b7e9d2ab83eedfbd0e0",
-    "app/render/world/world.gd": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
-    "app/render/landscape_upgrade/airfield_lighting.gd": "d154da44ddb920845eb50e3c1148b81d22272dd4e6ece7a0fa4d113435b709a8",
+    "app/data/fields/lights.json": "58f39c532899f6f566bbe07dd37f1d1f10b8add2a6ac7f00d1beec62905971b9",
+    "app/app_state/preferences.gd": "c728a0534292104d1ccb86c69f9ce97ef02040d8dddfdf42bfa883ab5dbaf0d2",
+    "app/ui/time_of_day_controls.gd": "609bc0a52a5d881b188529560f4661903c0c5d1a40dcf1cf091eb4acc3865885",
+    "app/app_root.gd": "f0942b04b988010e56a973c25f3bbf1916865b68cc13c938a0cdb7ac9ce1ff09",
+    "app/main.gd": "43fbc50511507e7a09a9d16c010ef75b0bb72f1dc12d8a19bf2d06da9a918d6f",
+    "app/helicopter_main.gd": "58c2a4fd8fc3c5ecc0de8b42dd15889dbccc5a43649641a2154b2772f0c2527e",
+    "app/render/world/world.gd": "9b4e488d689496e2018ed984b45848e6d29ab5bcdc3f0122a29beaa425df2784",
+    "app/render/landscape_upgrade/airfield_lighting.gd": "8d2fbc77955667ee8ea69707a5cb5bac6d9c698a37c9b7541207bc78999c8431",
     "app/render/landscape_upgrade/runway_ground_spill.gdshader": "fa92f65ab980ad18211b6bb6d72e40b0e965070e3914bcd1fc35ff7a970fbb81",
-    "app/render/near_grass.gd": "6086f71dcecd27eb2d7d58d01445acab7e4d7f0337e55e79a8082bd20a8f7976",
-    "app/render/field.gd": "4bc253c6567be5e13afc804bd19c7055132d0b02cc387e1fbddd376dba1b1b5b",
-    "app/tests/capture_landscape_upgrade.gd": "34a95eecb9ae5c7835703d43b8d13701fa565a3fd76518c012a9795560f21f28",
-    "app/tests/test_landscape_lighting.gd": "9faa2a054cafef115a72c900fbb6e6b641abfacc72ca7b92c641af3ea450c3db",
+    "app/render/near_grass.gd": "f9e039b1d8ca8e3f2af8ac176844042333c3568fcfbc8e659a0fafee93a8af67",
+    "app/render/field.gd": "9400da2a61d3d5e500d6debdac288ab46ea68b32884eb660ade1440e0b187ba6",
+    "app/tests/capture_landscape_upgrade.gd": "b9e01753f4f32bf371480a93a4501730ca4b56a7c6a55c9c64068fa94f71d7ee",
+    "app/tests/test_landscape_lighting.gd": "ea2ae9e570a9f3f8609b64ababf76c2e7a20f2dcdcb44475d759608465225e06",
     "app/tests/test_near_grass.gd": "ec4069008327cafd31fc1e68f1e917ec994c25096abdcb1a4cdf0184f2207d9b",
     "docs/research/landscape-upgrade/LU-09-R2/day-auto.png": "9092be219a8280ee3b47bf70b2b8013748ec124337ec8da932c278a711a530a6",
     "docs/research/landscape-upgrade/LU-09-R2/day-manual-on.png": "a80cbe9c19d157665c065c6343211fb95ca774b3737aea1e7e8372e264c67a6d",
@@ -26,5 +26,8 @@
     "docs/research/landscape-upgrade/LU-09-R2/night-spill-off-report.json": "1cb4f158b85966d574586b49a0fffe7e5bdb9219e47c42f3a336558f6228dd9b",
     "docs/research/landscape-upgrade/LU-09-R2/optics-report.json": "212b95682854850e970412d216ce497f68172f40b669f263307210be1346fc09",
     "docs/research/landscape-upgrade/LU-09-R2/marker-checks.json": "f0d1502661300f4b6cb36d73a40b178a23202099db51e453e05a4d4edf93c15f"
-  }
+  },
+  "source_revision": "0b6b3c74ad4a251d9115ff782d8d0ec3ddce1e2f",
+  "source_hash_basis": "SHA-256 of committed Git blob bytes, independent of checkout line endings",
+  "evidence_hash_basis": "SHA-256 of file bytes"
 }
