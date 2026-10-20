@@ -10,6 +10,7 @@ const Widgets := preload("res://ui/widgets.gd")
 
 signal continue_requested
 signal restart_requested
+signal change_aircraft_requested
 signal workshop_requested(from: Control)
 signal time_of_day_requested(from: Control)
 signal failure_settings_requested(from: Control)
@@ -25,9 +26,12 @@ const WIDTH := 384
 const LARGE_TEXT_SCALE := 1.5
 const MAX_TEXT_SCALE := 2.0
 const MAX_RAIL_VIEWPORT_RATIO := 0.45
+const GAMEPAD_ATTENTION_DELAY := 1.0 # seconds a connected pad may stay unready before Pause offers its settings
 
 var continue_button: Button
 var restart_button: Button
+## UI-34a (UI-30 AS-1): ends the flight through the End-flight transaction and opens the aircraft catalog.
+var change_aircraft_button: Button
 var session_options_button: Button
 var settings_button: Button
 var exit_options_button: Button
@@ -38,10 +42,14 @@ var overlays_button: Button
 var end_button: Button
 var help_button: Button
 var controls_button: Button
+## UI-31 (UI-30 PS-2): the same destination, shown at the top only while the controller needs attention.
+var controller_recovery_button: Button
 var quit_button: Button
 var session_options_container: VBoxContainer
 var exit_options_container: VBoxContainer
 var status_label: Label
+## UI-34a: which aircraft and field this pause belongs to.
+var identity_label: Label
 var controller_value_label: Label
 var collective_control := false
 var failure_config_label: Label
@@ -52,6 +60,7 @@ var _failure_config: Dictionary = {}
 var _failure_notifications_enabled := true
 var _failure_summary_disclosed := false
 var _controller_status_elapsed := 0.0
+var _controller_attention_elapsed := 0.0
 var _open_group := ""
 var _panel: PanelContainer
 var _sidebar_fade: TextureRect
@@ -104,6 +113,10 @@ func _init(can_end := true, trial_mode := false) -> void:
 	title.text = "PAUSED"
 	title.theme_type_variation = "TitleLabel"
 	column.add_child(title)
+	identity_label = _wrapped_label()
+	identity_label.name = "Identity"
+	identity_label.visible = false
+	column.add_child(identity_label)
 	status_label = _wrapped_label()
 	column.add_child(status_label)
 	controller_value_label = _wrapped_label()
@@ -117,6 +130,10 @@ func _init(can_end := true, trial_mode := false) -> void:
 	failure_summary_label.name = "FailureSummary"
 	failure_summary_label.visible = false
 	column.add_child(failure_summary_label)
+	controller_recovery_button = _button("Controller settings", "QuietButton", "ControllerRecovery")
+	controller_recovery_button.visible = false
+	controller_recovery_button.pressed.connect(func() -> void: controls_requested.emit(controller_recovery_button))
+	column.add_child(controller_recovery_button)
 	continue_button = _button("Resume trial" if trial_mode else "Continue", "PrimaryButton", "Continue")
 	continue_button.custom_minimum_size.y = 56
 	continue_button.pressed.connect(func() -> void: continue_requested.emit())
@@ -154,6 +171,11 @@ func _init(can_end := true, trial_mode := false) -> void:
 	help_button = _button("Help", "QuietButton", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	column.add_child(help_button)
+	# Top-level beside the exit group: switching aircraft is the common way to leave a flight.
+	change_aircraft_button = _button("Change aircraft", "QuietButton", "ChangeAircraft")
+	change_aircraft_button.visible = false # the shell offers it where Home is the return destination
+	change_aircraft_button.pressed.connect(func() -> void: change_aircraft_requested.emit())
+	column.add_child(change_aircraft_button)
 	exit_options_button = _disclosure_button("Exit options", "ExitOptions")
 	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
 	column.add_child(exit_options_button)
@@ -208,6 +230,8 @@ func _focus_primary() -> void:
 	if screen == null or not screen._active:
 		return
 	var primary := continue_button if not continue_button.disabled else restart_button
+	if controller_recovery_button.visible and bool(_session.get("_controller_lost")):
+		primary = controller_recovery_button # Continue cannot succeed until a device is chosen
 	primary.grab_focus()
 	var scroll := find_child("PauseScroll", true, false) as ScrollContainer
 	if scroll != null:
@@ -268,6 +292,7 @@ func refresh() -> void:
 	status_label.text = status_text(_session)
 	status_label.visible = status_label.text != ""
 	_refresh_controller_value()
+	_refresh_controller_recovery()
 	failure_config_label.text = failure_config_text(_failure_config)
 	failure_config_label.visible = failure_config_label.text != ""
 	failure_summary_label.text = active_failure_text(_session, _failure_notifications_enabled and _failure_summary_disclosed)
@@ -346,12 +371,38 @@ func _toggle_group(group_name: String) -> void:
 
 
 func _process(delta: float) -> void:
+	var attention := is_instance_valid(_session) and controller_attention(_session)
+	_controller_attention_elapsed = _controller_attention_elapsed + delta if attention else 0.0
 	_controller_status_elapsed += delta
 	if _controller_status_elapsed >= 0.1 and is_instance_valid(_session):
 		_controller_status_elapsed = 0.0
 		status_label.text = status_text(_session)
 		status_label.visible = not status_label.text.is_empty()
 		_refresh_controller_value()
+		_refresh_controller_recovery()
+
+
+## Whether the selected flight controller blocks Continue (lost, or connected but not yet armed).
+func controller_attention(session: Node) -> bool:
+	if session == null or not bool(session.get("external_controller_selection")):
+		return false
+	return bool(session.get("_controller_lost")) or (session.radio.connected and not session.radio.armed)
+
+
+## Moves the focus to the top-level Controller settings action when it is shown (Continue was refused).
+func focus_controller_recovery() -> void:
+	if controller_recovery_button.visible:
+		controller_recovery_button.grab_focus()
+
+
+func _refresh_controller_recovery() -> void:
+	var needed := controller_attention(_session)
+	# A connected gamepad re-checks its readiness for a moment after every pause; only a lasting problem earns
+	# the shortcut. A lost device or an unarmed radio needs it at once.
+	if needed and not bool(_session.get("_controller_lost")) and _session.radio.is_gamepad():
+		needed = _controller_attention_elapsed >= GAMEPAD_ATTENTION_DELAY
+	# Only where the shell offers Controller settings at all (controls_button is hidden without a registry).
+	controller_recovery_button.visible = controls_button.visible and needed
 
 
 func _refresh_controller_value() -> void:
@@ -377,6 +428,30 @@ func _on_joy_changed(_device: int, _connected: bool) -> void:
 
 ## One sentence about the pause cause, translated where the cause is known; technical reasons stay as they are.
 func status_text(session: Node) -> String:
+	var calibration := calibration_result_text(session)
+	var status := _session_status_text(session)
+	if calibration.is_empty() or status == calibration:
+		return status
+	if status.is_empty() or status == str(session.pause_reason):
+		return calibration
+	return calibration + "\n" + status
+
+
+## UI-31 (UI-30 PS-1): the outcome of a radio calibration that just ended, or "" for any other pause.
+func calibration_result_text(session: Node) -> String:
+	var reason := str(session.get("pause_reason"))
+	if reason == "calibration cancelled":
+		return tr("Radio calibration cancelled; the previous profile stays.")
+	if reason == "radio calibrated" or reason.begins_with("Radio calibrated."):
+		return tr("Radio calibrated and saved.")
+	if reason.begins_with("radio calibrated, NOT saved"):
+		return tr("Radio calibrated for this flight, but the profile was not saved.")
+	if reason.begins_with("Calibration not saved: "):
+		return tr("Radio calibration was not saved: %s") % reason.trim_prefix("Calibration not saved: ")
+	return ""
+
+
+func _session_status_text(session: Node) -> String:
 	if not session.is_flyable():
 		return tr("This flight cannot continue: %s") % session.pause_reason
 	if bool(session.get("external_controller_selection")):
@@ -400,6 +475,12 @@ func status_text(session: Node) -> String:
 		"calibration cancelled":
 			return tr("Radio calibration cancelled; the previous profile stays.")
 	return session.pause_reason
+
+
+## "Aircraft · field" under the title; "" hides it.
+func set_identity(text: String) -> void:
+	identity_label.text = text
+	identity_label.visible = not text.is_empty()
 
 
 ## A message under the buttons (e.g. a trace that could not be saved); "" hides it.

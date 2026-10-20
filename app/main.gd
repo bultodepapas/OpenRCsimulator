@@ -981,6 +981,12 @@ func _on_smoke_connection_changed(_device: int, _connected: bool) -> void:
 		_smoke.pump.emitting = false
 
 
+## UI-31 (UI-30 PS-4): the shell's Pause owns the frozen flight; an open assignment is cancelled, not left holding.
+func cancel_smoke_assignment() -> void:
+	if _smoke_assignment != null:
+		_end_smoke_assignment(true)
+
+
 func _end_smoke_assignment(cancelled: bool) -> void:
 	var layer := get_node_or_null("SmokeAuxLayer")
 	_smoke_assignment = null
@@ -1456,12 +1462,13 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_K:
 				session.start_calibration()
 			KEY_ENTER, KEY_KP_ENTER:
-				session.advance_calibration()
-			KEY_ESCAPE:
 				if session.calibration != null:
-					session.cancel_calibration() # Esc leaves the wizard first; the pause menu comes on the next press
-				else:
-					pause_requested.emit()
+					session.advance_calibration()
+					if session.calibration == null:
+						pause_requested.emit() # UI-31: the result shows in Pause, never a frozen flight without a menu
+			KEY_ESCAPE:
+				session.cancel_calibration() # Esc leaves a running wizard (its profile stays) and shows Pause
+				pause_requested.emit()
 			KEY_Z:
 				_rig.toggle_auto_zoom()
 			KEY_V:
@@ -1581,6 +1588,8 @@ func set_overlays_visible(on: bool) -> void:
 	var latency_marker := get_node_or_null("LatencyPatch") as CanvasLayer
 	if latency_marker != null:
 		latency_marker.visible = on
+	if _flight_log_label != null: # UI-31 (UI-30 PS-10): its layer 25 would otherwise draw over every menu
+		(_flight_log_label.get_parent() as CanvasLayer).visible = on
 
 
 ## Called by the Home launch transaction, after the real model/session have accepted their inputs.
@@ -1957,6 +1966,7 @@ func _update_flight_log_label() -> void:
 	if _flight_log_label == null:
 		var layer := CanvasLayer.new()
 		layer.layer = 25
+		layer.visible = _failure_overlays_visible # created under a menu stays hidden with the other overlays
 		add_child(layer)
 		_flight_log_label = Label.new()
 		layer.add_child(_flight_log_label)

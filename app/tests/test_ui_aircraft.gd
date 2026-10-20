@@ -249,6 +249,7 @@ func _run() -> void:
 	await ui.tap(KEY_DOWN) # Session options
 	await ui.tap(KEY_DOWN) # Settings
 	await ui.tap(KEY_DOWN) # Help
+	await ui.tap(KEY_DOWN) # Change aircraft (UI-34a)
 	await ui.tap(KEY_DOWN) # Exit options
 	_check("Exit options is keyboard reachable", ui.focus_name() == "ExitOptions", ui.focus_name())
 	await ui.tap(KEY_ENTER)

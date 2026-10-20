@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 8 · 2026-10-16 · Owner: product shell · UI-20…29.**
+**Revision 9 · 2026-10-20 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
 
 **Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
@@ -346,3 +346,120 @@ Run relevant [TOOLS](TOOLS.md) checks, inspect engine errors and exit status, th
 Formative tasks: select aircraft, edit conditions, find Controls, change language, return from Pause. Record assistance/wrong turns/failures with at least three first-time users; target ≥90% unassisted completion across recorded tasks and zero critical loss/resume errors. This is formative evidence, not population validation.
 
 Completion requires both native visual acceptance and behavior gates. Consolidate operating instructions into [MENU-PLAN](MENU-PLAN.md), retain dated evidence/provenance, and remove this active plan when complete under the [documentation conventions](README.md#conventions-for-documents).
+
+## 11. UI-30 audit repairs
+
+**Status: proposed 2026-10-20 · UI-31…38.** The [UI-30 audit](research/menu-investigations/UI-30/README.md) owns the findings, evidence and severity. This section owns the repair order and the proof for each step. The repairs fix flows, state and consistency inside the delivered shell: the visual direction, canvas policy and screen stack stay. No physics, aircraft data or golden recording changes.
+
+Rules for every step:
+
+1. **Recovery comes before polish.** No reachable state may hold the simulation without a visible next action.
+2. **Browsing never overwrites a saved choice as a side effect.**
+3. **One interaction pattern per control type.** The label says what happens; cyclers, dialogs and editors look different.
+4. **Use the space where the user compares content.** At logical ≥1500×850, give that content width and keep the scene visible. Compact layout keeps the current rail behavior.
+5. **Every visible surface joins the shell's stack, theme, text scale and translation.**
+
+| Step | Priority | Work | Fixes | Proof | Status |
+| --- | --- | --- | --- | --- | --- |
+| UI-31 | P0 | **Recovery dead ends.** See the list below this table. | PS-1–4, PS-7, PS-10–12 | Reproduce each dead end in `test_controller_pause_recovery.gd`, `test_ui_pause.gd` or `test_controller_menu.gd` first: fail before, pass after. Native calibration-card capture. | Proposed |
+| UI-32 | P0 | **Preserve choices.** Rotorcraft weather does not overwrite saved airplane turbulence. Battery mode and fuel fill persist per aircraft (additive preference keys; legacy files stay readable). The start is stored per vehicle class and resolved at launch. Selection keeps the Home note. | AS-3, AS-4, AS-7 | Preference round-trip tests. `test_ui_home.gd`: Stik → helicopter → Stik keeps turbulence and start; End flight keeps fuel and battery. | Proposed |
+| UI-33 | P1 | **Interaction and words.** See the list below this table. | HN-1–6, VC-4, VC-8, PS-5, SC-3, AL-1, AL-5 | A glossary check: no retired label left in source or `es.po`. Focus-order tests. EN/ES 1080p and 4K captures. Formative task "find Controls / change conditions". | Proposed |
+| UI-34 | P1 | **Aircraft flow.** See the list below this table. | SP-1, SP-2, SP-7, SP-8, HN-7, AS-1, AS-2, AS-5, AS-6, AS-8–11 | A UI test asserts ≤3 activations for a mid-flight switch, with the trace transaction preserved. At 1080p default text all catalog entries are visible without scrolling. Native 1080p/4K/21:9 captures. Re-run the UI-05 selection timing protocol. | Proposed |
+| UI-35 | P1 | **Shared modal shell.** See the list below this table. | VC-1–3, VC-5, VC-9, VC-10, SP-3, SP-5, SC-5, AL-3, AL-4 | Extend the modal matrix and run `check_contrast.py` on the new states. Capture every dialog in EN/ES at 1080p and 4K. Conditions needs no scroll at 1080p default text. | Proposed |
+| UI-36 | P2 | **Settings and content.** See the list below this table. | SC-1, SC-2, SC-4, SC-6–9, PS-6 | Settings preview/revert/persistence tests. A staging test: the current flight and active failures are unchanged until Restart. EN/ES captures. | Proposed; renderer options, units and paused weather need agreement from the DT, VQ, CAM, HUD and M5-W owners |
+| UI-37 | P2 | **Join the shell.** See the list below this table. | SP-4, SP-6, VC-6, VC-7, PS-8, PS-9, AL-2 | In-flight captures at 150% and 200% text, 1080p and 4K. Overlay layout tests at the new sizes. ES garage capture. Accident regression suites. | Proposed; coordinate with HUD, CR and RCV |
+| UI-38 | — | **Acceptance.** Re-run the UI-30 `audit.gd` matrix. Native Windows captures at 1440p, 4K and 21:9. Formative tasks with at least three first-time users: select an aircraft, switch aircraft mid-flight, change conditions, find Controls, return from Pause. Link each closed finding to its proof. | All | Updated `metrics.json`, task log, owner visual review | Proposed |
+
+**UI-31 — recovery dead ends**
+- Radio calibration becomes a modal step card (step, live axes, Esc to cancel). Pause reopens with the result when calibration ends, from any input. The controller track (D6-GP) owns the calibration logic; UI owns the card.
+- When the controller is lost or unarmed, Controls becomes a top-level, focused action under the status.
+- The Workshop trial runs the same controller launch step as Home flights.
+- Continue checks the other holds before it closes Pause.
+- Smoke AUX moves onto the screen stack.
+- The flight-log label is hidden with the overlays.
+- Helicopter R uses the shared restart path, with vehicle-neutral status text.
+- Restart runs the trace-save check.
+- Window focus-out pauses.
+
+**UI-33 — interaction and words**
+- Home rows: ‹ › for cyclers, › for dialogs. Landscape shows its consequence.
+- Workshop is separated from the page navigation.
+- The garage page shows a garage backdrop.
+- The pinned primary action is labeled with its object.
+- Pause:
+  - order: current session · next flight · application;
+  - indented groups with chevrons;
+  - an "Aircraft · field" header.
+- One EN/ES glossary.
+- Home Quit gets its own group.
+- Build identity moves to About.
+
+**UI-34 — aircraft flow** (four reviewable sub-steps)
+- **UI-34a — switch from Pause** (AS-1). Pause gets **Change aircraft**: the End-flight transaction, then the Aircraft page with the current entry focused. The Pause header shows the aircraft and field.
+- **UI-34b — catalog and summary layout** (SP-1, SP-2, SP-7, SP-8, AS-2, AS-9):
+  - wide catalog panel with a summary line and status chip per entry, plus a selected-aircraft card;
+  - flight details become a card in the scene area;
+  - the rail and summary widen with text scale before they scroll;
+  - catalog entries get `short_name`;
+  - a Home-fit test for every catalog entry.
+- **UI-34c — feedback and cost** (HN-7, AS-5, AS-8, AS-11):
+  - the Aircraft page shows the preview loading or failed state;
+  - the Natural Random briefing previews the drawn aircraft;
+  - Fly and End flight show a rendered "Preparing flight" state before the synchronous build;
+  - runway and fuel capability are cached;
+  - the preview broker survives Home rebuilds.
+- **UI-34d — catalog reach** (AS-6, AS-10):
+  - favourite saved builds are listed under their base aircraft and launch through the existing trial route;
+  - selecting the helicopter no longer disables Workshop and Natural Random;
+  - a blocked aircraft shows its reason under FLY.
+
+**UI-35 — shared modal shell** (three reviewable sub-steps)
+- **UI-35a — modal frame** (VC-1, SP-3, SC-5, AL-4). `Screen` gains:
+  - title;
+  - one dismiss control;
+  - scrolling body;
+  - action row with the primary last;
+  - two or three width classes;
+  - height up to 88% of the logical canvas.
+
+  Escape order is field → popup → confirm a dirty draft → close. Initial focus goes to the first editable control.
+- **UI-35b — theme states** (VC-2, VC-3, VC-5, VC-9, VC-10, AL-3):
+  - shared tab, title, panel and error variations;
+  - states for slider focus, check boxes, SpinBox, ScrollBar, native dialogs and disabled controls;
+  - opaque panels reaches every surface.
+- **UI-35c — wide canvases** (SP-5). An optional centred UI span for canvases wider than 21:9.
+
+**UI-36 — settings and content**
+- One Settings transaction model.
+- A Controls category.
+- Renderer options exposed only where DT, VQ and CAM already provide them.
+- Help split into First flight · Controls · Radio setup · Developer · About; aircraft-specific keys are contextual.
+- Conditions opens on the matching preset; the wind preset and intro live in the Wind tab.
+- One Units setting shared by menus and overlays.
+- Conditions in Pause, staged and labeled "applies on Restart".
+- One onboarding surface on the first flight: the hint with larger key caps; the Control guide opens on request (with HUD).
+
+**UI-37 — join the shell**
+- Overlays, HUD, input panel, hint and update notice take their font sizes from `UiTheme` with the full text scale.
+- The accident report becomes a Screen, with Return to Home and a quiet archived-report control.
+- The garage pause uses `PauseMenu` with `tr()`.
+- Theme refresh through a node group; overlays are re-translated.
+- The canvas policy applies on all routes.
+- Rotorcraft flights use the overlay framework, with an arming-steps panel (HELI and HUD own the content).
+
+Order:
+
+1. UI-31 and UI-32 first. They are independent, test-first and visually neutral.
+2. UI-34a next. It is the highest-value flow fix and does not depend on layout work.
+3. UI-33 settles the vocabulary that UI-34b–d and UI-35 use.
+4. UI-35a comes before UI-36, because those dialogs adopt the shell.
+5. UI-37 follows each owner's schedule.
+
+Each sub-step is one reviewable change. Each step leaves a working app and retains its evidence under `research/menu-investigations/UI-3x/`.
+
+Additional gates, on top of §10:
+
+- No route may leave `session.sim.paused` true with no visible Screen or calibration card. Assert this after every Pause, restart, trial and calibration path.
+- A mid-flight aircraft switch takes ≤3 activations.
+- The catalog shows every current entry without scrolling at 1080p default text.
+- Each closed finding is re-captured with the same `audit.gd` case.

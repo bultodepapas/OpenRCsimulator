@@ -1,0 +1,3112 @@
+{
+ "step": "UI-30",
+ "date": "2026-10-20",
+ "source": "9a55ea7a",
+ "renderer": "Godot 4.7.2 Compatibility/OpenGL, Mesa llvmpipe under Xvfb; undecorated window covering the screen",
+ "scaling_3d_scale": "0.5 for all cases except the 1080p reference Home/Settings/Help/Controls/Conditions frames (1.0)",
+ "note": "Timings are software-rendered and are not performance results.",
+ "captures": [
+  {
+   "image": "en-1920x1080-100-firstrun-home.webp",
+   "set": "firstrun",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-firstrun-after-fly.webp",
+   "set": "firstrun",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1080-100-firstrun-after-3s.webp",
+   "set": "firstrun",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1080-100-flight-hud.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1080-100-pause.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-pause-session.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-pause-session-workshop.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-1920x1080-100-pause-session-timeofday.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "TimeOfDayDialog",
+   "focus": "LightingMode",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-pause-session-failures.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "FailuresMenu",
+   "focus": "Apply",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-pause-session-controllersettings.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@1242",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-pause-session-overlays.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "OverlaysDialog",
+   "focus": "Preset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-pause-settings.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-pause-help.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-pause-exit.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-after-restart.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1080-100-home-after-flight.webp",
+   "set": "flightfull",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-weather.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-weather-tab1.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-weather-tab2.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-weather-tab3.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-weather-tab4.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-workshop.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-1920x1080-100-failures.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "FailuresMenu",
+   "focus": "Apply",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-natural_random.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "NaturalRandomScreen",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-time_of_day.webp",
+   "set": "homerest",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-stik-glow-61fx-2t.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_stik_glow_61fx_2t",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-stik-glow-55ax-2t.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_stik_glow_55ax_2t",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-stik-glow-fs64v-4t.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_stik_glow_fs64v_4t",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-gp-extra-300s-60.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_gp_extra_300s_60",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-p51d-mustang-120.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_p51d_mustang_120",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-sebart-avanti-s-a200-p100rx.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_sebart_avanti_s_a200_p100rx",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-turbo-lumber-evolution.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_turbo_lumber_evolution",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-aircraft-xcell-60-research.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Aircraft_xcell_60_research",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-home-last-aircraft.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavFlight",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-home-heli.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavFlight",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1080-100-heli-flight.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 17
+  },
+  {
+   "image": "en-1920x1080-100-heli-pause.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-heli-pause-session.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1080-100-garage-drive.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "@Button@444",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-1920x1080-100-garage-pause.webp",
+   "set": "switching",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "@Button@444",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-1920x1080-150-home.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-home-details.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-practice.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-garage.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-controls.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-weather.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-workshop.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1080-150-pause.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1080-150-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 33
+  },
+  {
+   "image": "en-1920x1080-150-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 27
+  },
+  {
+   "image": "en-1920x1200-100-home.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-1920x1200-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-1920x1200-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-1920x1200-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-1920x1200-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1200
+   ],
+   "logical": [
+    1920.0,
+    1200.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-home.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-help.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-2560x1080-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-2560x1080-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1080-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1080-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1080
+   ],
+   "logical": [
+    2560.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-home.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-help.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-2560x1440-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-2560x1440-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-2560x1440-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-2560x1440-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    2560,
+    1440
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-home.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-help.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-3440x1440-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-3440x1440-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3440x1440-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3440x1440-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    3440,
+    1440
+   ],
+   "logical": [
+    2580.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-home.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-help.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-3840x2160-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-3840x2160-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-3840x2160-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-3840x2160-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    3840,
+    2160
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-home.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-help.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "en-5120x1440-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "en-5120x1440-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "en-5120x1440-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "en-5120x1440-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    5120,
+    1440
+   ],
+   "logical": [
+    3840.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-home.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-home-details.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "FlightDetailsToggle",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-aircraft.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavAircraft",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-practice.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavPractice",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-garage.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "NavGarage",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-settings-display.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-controls.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "ControllerSetup",
+   "focus": "@OptionButton@350",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-weather.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "WeatherDialog",
+   "focus": "WeatherPreset",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-workshop.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Workshop",
+   "focus": "OpenLibrary",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 14
+  },
+  {
+   "image": "es-1920x1080-100-flight-hud.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "",
+   "focus": "",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 11
+  },
+  {
+   "image": "es-1920x1080-100-pause.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "Continue",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-pause-session.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "SessionOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-pause-settings.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Settings",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-pause-help.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Help",
+   "focus": "Close",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 1,
+   "min_font_logical_px": 18
+  },
+  {
+   "image": "es-1920x1080-100-pause-exit.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "PauseMenu",
+   "focus": "ExitOptions",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 22
+  },
+  {
+   "image": "es-1920x1080-100-home-after-flight.webp",
+   "set": "core",
+   "pixels": [
+    1920,
+    1080
+   ],
+   "logical": [
+    1920.0,
+    1080.0
+   ],
+   "top_screen": "Home",
+   "focus": "Fly",
+   "controls_outside_viewport": 0,
+   "visible_scrollbars": 0,
+   "min_font_logical_px": 18
+  }
+ ],
+ "timings": {
+  "en-1920x1080-100-flightfull": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 59290
+   }
+  ],
+  "en-1920x1080-100-switching": [
+   {
+    "event": "select_stik-glow-61fx-2t",
+    "frames": 0,
+    "ms_until_preview_ready": 6615,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_stik-glow-55ax-2t",
+    "frames": 0,
+    "ms_until_preview_ready": 7306,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_stik-glow-fs64v-4t",
+    "frames": 0,
+    "ms_until_preview_ready": 5556,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_gp-extra-300s-60",
+    "frames": 0,
+    "ms_until_preview_ready": 10278,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_p51d-mustang-120",
+    "frames": 0,
+    "ms_until_preview_ready": 10174,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_sebart-avanti-s-a200-p100rx",
+    "frames": 0,
+    "ms_until_preview_ready": 14915,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_turbo-lumber-evolution",
+    "frames": 0,
+    "ms_until_preview_ready": 13584,
+    "preview_label_visible": false
+   },
+   {
+    "event": "select_xcell-60-research",
+    "frames": 0,
+    "ms_until_preview_ready": 11150,
+    "preview_label_visible": false
+   },
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 8968
+   }
+  ],
+  "en-1920x1080-150-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 16073
+   }
+  ],
+  "en-1920x1200-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 16972
+   }
+  ],
+  "en-2560x1080-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 9150
+   }
+  ],
+  "en-2560x1440-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 17367
+   }
+  ],
+  "en-3440x1440-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 15271
+   }
+  ],
+  "en-3840x2160-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 25771
+   }
+  ],
+  "en-5120x1440-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 20522
+   }
+  ],
+  "es-1920x1080-100-core": [
+   {
+    "event": "fly_to_flight_node_ms",
+    "ms": 15556
+   }
+  ]
+ }
+}

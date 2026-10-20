@@ -57,6 +57,10 @@ const HOME_AUTOWRAP_META := "_home_authored_autowrap_mode"
 ## The catalog aircraft that Fly starts (set_aircraft() changes it).
 var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "runway"
+## UI-32 (UI-30 AS-7): each vehicle class keeps the start the pilot chose; the field and aircraft only limit what is
+## shown and launched, so browsing a helicopter or a runway-less landscape never rewrites the airplane choice.
+var _airplane_start_preference: String = "runway"
+var _rotorcraft_start_preference: String = "runway"
 var runway_available: bool = true
 var rotorcraft_pad_available: bool = true
 var landscape_id: String = Landscapes.DEFAULT_ID
@@ -72,7 +76,7 @@ var start_button: Button
 var battery_mode: String = "ideal"
 var _battery_preference: String = "pack"
 ## FUEL-07: start fill of a finite-fuel tank; full by default (D4). The preference survives aircraft changes.
-const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
+const FUEL_FILLS := Preferences.FUEL_FILLS
 var fuel_start_fill: float = 1.0
 var _fuel_preference: float = 1.0
 var fuel_button: Button
@@ -749,6 +753,17 @@ func _select_page(index: int) -> void:
 			_page_buttons[selected].grab_focus()
 
 
+## UI-34a (UI-30 AS-1): Pause's Change aircraft lands here, with the aircraft just flown focused.
+func open_aircraft_catalog() -> void:
+	if not is_inside_tree():
+		return
+	_select_page(1)
+	var selected := _catalog_ids.find(aircraft_id)
+	if selected >= 0:
+		_catalog_buttons[selected].grab_focus()
+	_schedule_selected_aircraft_reveal()
+
+
 func _reveal_selected_aircraft() -> void:
 	if not is_inside_tree() or not _pages[1].visible: return
 	var selected := _catalog_ids.find(aircraft_id)
@@ -922,12 +937,9 @@ func set_aircraft(id: String) -> void:
 		if _catalog_buttons[index].has_focus():
 			focused_catalog_index = index
 			break
-	var entering_rotorcraft: bool = Catalog.is_rotorcraft(id) and not Catalog.is_rotorcraft(aircraft_id)
 	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
 	_requested_aircraft_id = ""
-	if entering_rotorcraft:
-		start_choice = "runway"
-	set_start_choice(start_choice)
+	reapply_start_preference()
 	set_battery_mode(_battery_preference)
 	set_fuel_fill(_fuel_preference)
 	var e := Catalog.entry(aircraft_id)
@@ -975,7 +987,42 @@ func set_preview_state(state: String) -> void:
 	aircraft_preview_label.visible = state != "ready"
 
 
+## The pilot's explicit start for the selected vehicle class (remembered for that class).
 func set_start_choice(choice: String) -> void:
+	if Catalog.is_rotorcraft(aircraft_id):
+		_rotorcraft_start_preference = choice
+	else:
+		_airplane_start_preference = choice
+	_show_start_choice(choice)
+
+
+## Saved starts for both classes, applied to the selected aircraft.
+func set_start_preferences(airplane: String, rotorcraft: String) -> void:
+	# D6e-R4: the former explicit 50 % choice is the trimmed airborne start.
+	_airplane_start_preference = "airborne" if airplane == FlightSession.START_HALF_POWER else airplane
+	_rotorcraft_start_preference = rotorcraft
+	reapply_start_preference()
+
+
+## The remembered start of a class, before this field or aircraft limits it.
+func start_preference(rotorcraft: bool) -> String:
+	return _rotorcraft_start_preference if rotorcraft else _airplane_start_preference
+
+
+## Shows the remembered start again after the aircraft or the landscape changed what is available.
+func reapply_start_preference() -> void:
+	_show_start_choice(start_preference(Catalog.is_rotorcraft(aircraft_id)))
+
+
+func battery_preference() -> String:
+	return _battery_preference
+
+
+func fuel_preference() -> float:
+	return _fuel_preference
+
+
+func _show_start_choice(choice: String) -> void:
 	if Catalog.is_rotorcraft(aircraft_id):
 		start_choice = "airborne" if choice == "airborne" or not rotorcraft_pad_available else "runway"
 		start_button.disabled = not rotorcraft_pad_available

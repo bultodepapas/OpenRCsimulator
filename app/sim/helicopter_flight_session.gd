@@ -403,7 +403,7 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   crash.ground_point_world_ned=PackedFloat64Array([point[0],point[1],-terrain[0]])
   var up: PackedFloat64Array=PackedFloat64Array([-terrain[1],-terrain[2],-1.0])
   crash.ground_normal_world_ned=M.scale(up,1.0/M.norm(up))
-  pause_reason=str(crash.reason)+" · R: restart"
+  pause_reason=str(crash.reason) # UI-31: Pause offers Restart; the HUD keeps its own key hint
   # Preserve accepted body/shaft state for evidence; cut drive at the terminal boundary.
   power.armed=false
   zero_drive_hold=true

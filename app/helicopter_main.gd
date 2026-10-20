@@ -24,6 +24,8 @@ const Preferences = preload("res://app_state/preferences.gd")
 const ControllerActions = preload("res://input/controller_actions.gd")
 const Prompts = preload("res://ui/controller_prompts.gd")
 signal pause_requested
+## UI-31 (UI-30 PS-7): R uses the shell's restart transaction, like the airplane route.
+signal restart_requested
 signal overlay_settings_changed(settings: Dictionary)
 var aircraft_id: String="xcell-60-research"
 var field_path: String=FieldLoader.DEFAULT_PATH
@@ -409,14 +411,14 @@ func _unhandled_input(event: InputEvent) -> void:
  elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_RIGHT: _rig.drag(event.relative)
  elif event is InputEventKey and event.pressed and not event.echo:
   match event.physical_keycode:
-   KEY_R: session.reset()
+   KEY_R: _request_restart()
    KEY_P:
     if not session.crash.is_empty(): _aftermath_paused=not _aftermath_paused
     elif session.sim.paused: session.resume()
     else: session.sim.set_paused(true); session.pause_reason="paused"
    KEY_ESCAPE:
-    if session.calibration!=null: session.cancel_calibration()
-    else: pause_requested.emit()
+    session.cancel_calibration() # UI-31: Esc leaves a running wizard and shows Pause
+    pause_requested.emit()
    KEY_C: _rig.cycle(1)
    KEY_1: _rig.set_view("pilot")
    KEY_2: _rig.set_view("chase")
@@ -430,7 +432,10 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_I: session.request_flight_mode()
    KEY_L: _cycle_night_lights()
    KEY_K: session.start_calibration()
-   KEY_ENTER,KEY_KP_ENTER: session.advance_calibration()
+   KEY_ENTER,KEY_KP_ENTER:
+    if session.calibration!=null:
+     session.advance_calibration()
+     if session.calibration==null: pause_requested.emit() # UI-31: the result shows in Pause
    KEY_T:
     if recorder.recording: recorder.stop()
     else: recorder.start(session.trace_meta())
@@ -477,3 +482,7 @@ func _write_trace(args: Dictionary) -> void:
  if recorder.trace.row_count()!=ticks+1: get_tree().quit(1); return
  var error: Error=recorder.stop(str(args.trace))
  get_tree().quit(error)
+
+func _request_restart() -> void:
+ if restart_requested.has_connections(): restart_requested.emit()
+ else: session.reset() # standalone research scenes have no shell
