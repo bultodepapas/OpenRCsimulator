@@ -9,14 +9,14 @@
         0.0,
         -2.3
       ],
-      "draws": 150,
+      "draws": 19,
       "eye_ned": [
         10.0,
         34.0,
         -27.0
       ],
       "fov": 42.0,
-      "sha256": "2e53cddae8ca27de3b8d285bb8619d788b6f539d7d3f9b12ce6de8bc7d44a82b",
+      "sha256": "15c0578c52573e2ad54de4c79b2aded53bb00f1f9431f839f4565e5aa622a65c",
       "view": "club_air"
     },
     {
@@ -25,14 +25,14 @@
         -2.0,
         -2.0
       ],
-      "draws": 159,
+      "draws": 7,
       "eye_ned": [
         -4.0,
         14.0,
         -1.7
       ],
       "fov": 46.0,
-      "sha256": "63f30651bd3896b506c306503755d34e121e0ef5e5872f02cd6d2ba536b30c88",
+      "sha256": "d0d69b19bb3bd3c285bd86c2a2fb80317c5636e92b5e824fa415f5f6905157fb",
       "view": "pavilion_pilot"
     },
     {
@@ -41,14 +41,14 @@
         0.0,
         -3.0
       ],
-      "draws": 134,
+      "draws": 6,
       "eye_ned": [
         -12.0,
         14.0,
         -11.0
       ],
       "fov": 43.0,
-      "sha256": "6660a6b1acbe71746f8f683700b8b8a608dd7cbdcea82e5a5f55b7f4e0b07e8d",
+      "sha256": "ca84dd514e64eaedd4f663e5175c3d713e905a32814fc25f552448e2555f439f",
       "view": "pavilion_roof"
     },
     {
@@ -57,14 +57,14 @@
         -33.5,
         -1.5
       ],
-      "draws": 74,
+      "draws": 3,
       "eye_ned": [
         -27.0,
         -21.0,
         -8.0
       ],
       "fov": 42.0,
-      "sha256": "05cda937e59b991689f0973e165a74892969ce594e6152e585cbffe811723ac2",
+      "sha256": "84d07d8b13228b9060df9bfabdb806f2284c5f0ab6af5763a67a9c45bded16cd",
       "view": "shed_roof"
     },
     {
@@ -73,15 +73,31 @@
         365.0,
         -3.0
       ],
-      "draws": 41,
+      "draws": 5,
       "eye_ned": [
         450.0,
         160.0,
         -75.0
       ],
       "fov": 55.0,
-      "sha256": "e50e5a2518a681fdb81066b09aa7336c8c24b338a507d9b0066218f17598f8e7",
+      "sha256": "4bff994f16d4a3b83fff663df46aac5bfbab05624fee1ab33a1850a0b13ab277",
       "view": "farm_roofs"
+    },
+    {
+      "at_ned": [
+        594.0,
+        333.0,
+        -3.0
+      ],
+      "draws": 5,
+      "eye_ned": [
+        550.0,
+        300.0,
+        -24.0
+      ],
+      "fov": 50.0,
+      "sha256": "c066a9b92d6628db3e71c0c874389815b0ee729fec40f5125ff8f124504278d8",
+      "view": "farm_close"
     }
   ]
 }

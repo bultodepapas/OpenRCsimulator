@@ -236,9 +236,10 @@ func _native_probe() -> void:
 	smoke.free()
 	var motion_report: Dictionary = await _native_motion_probe(camera)
 	var live_outlet_report: Dictionary = await _native_live_outlet_probe(camera)
+	var ordering_report: Dictionary = await _native_ordering_probe(camera)
 	var lifecycle_options := _lifecycle_options()
 	if int(lifecycle_options.cycles) > 0:
-		await _native_lifecycle_probe(int(lifecycle_options.cycles), str(lifecycle_options.output))
+		await _native_lifecycle_probe(int(lifecycle_options.cycles), str(lifecycle_options.output), camera)
 	var output := ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): output = arg.trim_prefix("--out=")
@@ -249,7 +250,7 @@ func _native_probe() -> void:
 		off_image.save_png(output.path_join("expired-native.png"))
 		var file := FileAccess.open(output.path_join("native.json"), FileAccess.WRITE)
 		file.store_string(JSON.stringify({"engine": Engine.get_version_info(), "adapter": RenderingServer.get_video_adapter_name(), "source_sha256": _source_receipt(),
-			"multicolor_pause_pixel_identical": multicolor_pause_same, "visible_pixels": on_count, "expired_pixels": _colored_pixels(off_image), "motion": motion_report, "live_outlet": live_outlet_report, "checks": checks, "failures": failures,
+			"multicolor_pause_pixel_identical": multicolor_pause_same, "visible_pixels": on_count, "expired_pixels": _colored_pixels(off_image), "motion": motion_report, "live_outlet": live_outlet_report, "ordering_views": ordering_report, "checks": checks, "failures": failures,
 			"scope": "Native GLES3 compile/render/lifecycle probe; not a frame-time or physical validation campaign."}, "\t"))
 	camera.free()
 	light.free()
@@ -502,7 +503,11 @@ func _lifecycle_options() -> Dictionary:
 	return {"cycles": count, "output": output}
 
 
-func _native_lifecycle_probe(cycle_count: int, output: String) -> void:
+func _native_lifecycle_probe(cycle_count: int, output: String, camera: Camera3D) -> void:
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 6.0
+	camera.position = Vector3(0, 0, 8)
+	camera.look_at(Vector3.ZERO)
 	DirAccess.make_dir_recursive_absolute(output)
 	var campaign_start_us := Time.get_ticks_usec()
 	var initial_failures := failures
@@ -774,3 +779,66 @@ func _live_outlet_pixels(image: Image, pixels_per_m: float) -> Dictionary:
 	return {"marker_left_px": marker_left, "marker_pixels": marker_pixels,
 		"newest_visible_smoke_px": newest_red_x, "near_outlet_red_pixels": near_pixels,
 		"gap_pixels": gap_pixels, "gap_m": float(gap_pixels) / pixels_per_m}
+
+
+func _native_ordering_probe(camera: Camera3D) -> Dictionary:
+	# The baseline fixture light illuminates only one side of a billboard. A
+	# controlled opposing fill keeps both comparison views readable as colors.
+	var fill := DirectionalLight3D.new()
+	fill.rotation_degrees = Vector3(40, 160, 0)
+	fill.light_energy = 0.8
+	root.add_child(fill)
+	var artifact_dir := ""
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--out="): artifact_dir = argument.trim_prefix("--out=")
+	var images: Array[Dictionary] = []
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 4.0
+	for policy in [GPUParticles3D.DRAW_ORDER_LIFETIME, GPUParticles3D.DRAW_ORDER_VIEW_DEPTH]:
+		var entries: Array = []
+		var endpoints: Array = []
+		var transforms: Dictionary = {}
+		for index in 2:
+			var slot := "crossing_%d" % index
+			var entry := _entry(slot)
+			entry.width_m = 1.0
+			entry.lifetime_s = 1.5
+			entry.palette = ["#FF3030FF", "#2060FFFF", "#FFF080FF"]
+			entry.step_s = 0.2
+			entry.merge({"palette_mode": "smooth", "phase_offset_s": index * 0.1,
+				"density": 1.0, "emission_rate_hz": 96.0, "jet_speed_mps": 3.0,
+				"dispersion_m2_s": 0.08, "buoyancy_mps": 0.1, "turbulence_mps": 0.1,
+				"velocity_inheritance": 0.0, "drag_s": 0.4})
+			entries.append(entry)
+			endpoints.append(_show(slot))
+			var direction := Vector3.RIGHT if index == 0 else Vector3.LEFT
+			transforms[slot] = Transform3D(Basis.looking_at(direction, Vector3.UP), Vector3(-0.5 if index == 0 else 0.5, 0, -0.04 if index == 0 else 0.04))
+		var smoke = Smoke.new()
+		root.add_child(smoke)
+		smoke.configure(_profile(entries), {"smoke_slots": endpoints})
+		for emitter: GPUParticles3D in smoke._emitters.values(): emitter.draw_order = policy
+		camera.position = Vector3(0, 0.1, 8)
+		camera.look_at(Vector3(0, 0.1, 0))
+		var pose := {"tick": 0, "slot_transforms": transforms}
+		smoke.advance(0.0, pose, Vector3.ZERO, 1.0, {})
+		for frame in 60:
+			pose.tick += 8
+			smoke.advance(8.0 / 240.0, pose, Vector3.ZERO, 1.0, {})
+			await process_frame
+			await RenderingServer.frame_post_draw
+		for side in [-1, 1]:
+			camera.position = Vector3(0, 0.1, 8 * side)
+			camera.look_at(Vector3(0, 0.1, 0))
+			await _drain_draw_requests()
+			var image := root.get_texture().get_image()
+			var label := "ordering-%s-%s" % ["lifetime" if policy == GPUParticles3D.DRAW_ORDER_LIFETIME else "view-depth", "front" if side == 1 else "back"]
+			var colored_pixels := _colored_pixels(image)
+			check(label + " contains visible crossing palettes", colored_pixels > 10)
+			images.append({"id": label, "colored_pixels": colored_pixels,
+				"decoded_pixels_sha256": image.get_data().hex_encode().sha256_text()})
+			if not artifact_dir.is_empty(): image.save_png(artifact_dir.path_join(label + ".png"))
+		smoke.free()
+		await _drain_draw_requests()
+	fill.free()
+	return {"method": "Controlled opposing directional lights; two stationary opposing outlets using the same smooth red/blue/yellow palette with0.1s phaseoffset;2s acceptedtime. Opposing orthographicviews after8no-requestdraws freezeidenticalplumestate for informational orderingcomparison. Same seeds/profile for both drawpolicies.",
+		"images": images, "scope": "Capture assertions establish visibility only. These images do not establish global alpha-order correctness for arbitrary crossing plumes, canopies, water or cameras."}

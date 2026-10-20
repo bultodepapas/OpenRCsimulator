@@ -1,9 +1,14 @@
 {
+	"aircraft_id": "sebart-avanti-s-a200-p100rx",
 	"captures_sha256": {
-		"flight-trail.png": "5d2cf652933d1558bd36c5f5bf4f9acebbaabf744c3d5775c4d0f4ddaa6f368f",
-		"off-expired.png": "c9b4f19388df0e434782d322e08e51f8f0c1981b4f7918505df9908b357a4b1c",
-		"off-residual.png": "1d8baf6374870d46a851c6980f1a4523690d76e3f3b4a187d43495208f1fb752",
-		"tailpipe-close.png": "789ade0c2e74b93191abd093eab0dde14509cf327df2d76da33ec7ae335d9112"
+		"flight-trail-two-draw.png": "d832012fa4933b5b6d293e9b8f2dab7700582cb783c68f9b9130e1c5ad13d4e8",
+		"flight-trail.png": "c1e85e556dce82aead0980f2bc4e3e769b7e5ca3549be70fdbf9a3dd13d12775",
+		"off-expired-two-draw.png": "160dd54681ba3e35a653fe85b1a2c3399ee570b970954bd82400b493b708fcba",
+		"off-expired.png": "160dd54681ba3e35a653fe85b1a2c3399ee570b970954bd82400b493b708fcba",
+		"off-residual-two-draw.png": "c9fee41a70ee653474c8e1f6189d740c04af9894c43bb4b6086ffc1d82c17fde",
+		"off-residual.png": "c9fee41a70ee653474c8e1f6189d740c04af9894c43bb4b6086ffc1d82c17fde",
+		"tailpipe-close-two-draw.png": "ace3bc79d97aecb9ba8484553bbd13c7fbc957da83d5dbfd63803d16e61f63e3",
+		"tailpipe-close.png": "4f97806872a4ac239df257cbb77a738eb6cf6a81d6a5e130f84635dc4a172c82"
 	},
 	"crash": {},
 	"engine": {
@@ -19,7 +24,7 @@
 	},
 	"fault": "",
 	"renderer": "NVIDIA GeForce RTX 3090",
-	"scope": "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted.",
+	"scope": "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted. Two-draw and eight-additional-draw still readbacks are separate; neither is a zero-delay live alignment test. OFF expires requested show smoke; ordinary exhaust still follows its running engine.",
 	"smoke": {
 		"allocation": {
 			"budget_limit": 768,
@@ -28,6 +33,7 @@
 			"fault": "",
 			"resolved_rates_hz": {
 				"show_tailpipe": {
+					"bore_radius_m": 0.025,
 					"capacity": 720,
 					"density": 0.4,
 					"requested_hz": 240.0,
@@ -43,7 +49,7 @@
 		},
 		"disabled": false,
 		"mode": "stock",
-		"preset": "avanti-white-tailpipe-v1",
+		"preset": "avanti-white-tailpipe-v2",
 		"requested": false,
 		"source_running": true
 	},
@@ -55,6 +61,7 @@
 			"fault": "",
 			"resolved_rates_hz": {
 				"show_tailpipe": {
+					"bore_radius_m": 0.025,
 					"capacity": 720,
 					"density": 0.4,
 					"requested_hz": 240.0,
@@ -70,17 +77,17 @@
 		},
 		"disabled": false,
 		"mode": "stock",
-		"preset": "avanti-white-tailpipe-v1",
+		"preset": "avanti-white-tailpipe-v2",
 		"requested": true,
 		"source_running": true
 	},
 	"source_sha256": {
-		"C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd": "e361fe9a1ba559b1b4061575382d0f0ac4e2a4cfc9f97f1f70d64bb6aaf75dea",
-		"res://data/aircraft_customization.json": "9b98ced2660cf2089647d57cc02933d8ac803b69163f06748666fc354b83f0e5",
-		"res://main.gd": "050d4a16b160cbe853f11cacab3990f58b8d7ef63bd76d3d231968fb919abb96",
+		"C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd": "bf94746ae4c42b2be36a19b2bc30c2c28d55d6cb545754579fd19466a462c16d",
+		"res://data/aircraft_customization.json": "8872cf94b5190e5e2191d45a8b2e66651775a6f74f6d06b7fe1ef8b90f2021ec",
+		"res://main.gd": "324323bad7736d41faf5a296cdcb31db8253f4f819223265242d043d3f13bd06",
 		"res://render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
-		"res://render/smoke/profile_smoke.gd": "7e25a69e06e8aa7fcd2a8d35abd6a8733eddf0174a12ac37d72a5410c9c7c314",
-		"res://render/smoke/stock_profile.gd": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+		"res://render/smoke/profile_smoke.gd": "c567c81c017e924706d391212e4b7262a89ea71e3f8cf17bac3eff85f515e089",
+		"res://render/smoke/stock_profile.gd": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
 	},
-	"tick": 1800
+	"tick": 3120
 }

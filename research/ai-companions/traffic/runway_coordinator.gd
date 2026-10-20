@@ -12,6 +12,9 @@ const DEFAULT_RESERVATION_TTL_TICKS: int = 15 * TICK_RATE_HZ
 const DEFAULT_FAIRNESS_PROMOTION_TICKS: int = 20 * TICK_RATE_HZ
 const DEFAULT_MAX_QUEUE: int = 64
 const DEFAULT_MAX_EVENTS: int = 128
+const HARD_MAX_QUEUE: int = 256
+const HARD_MAX_EVENTS: int = 512
+const HARD_MAX_WRECKS: int = 64
 
 const MODE_FREE: String = "free"
 const MODE_RESERVED: String = "reserved"
@@ -38,7 +41,7 @@ var _player_in_runway: bool = false
 var _player_approach_intent: bool = false
 var _grant: Dictionary = {}
 var _occupant: Dictionary = {}
-var _blocked_wreck_id: String = ""
+var _blocked_wrecks: Dictionary = {}
 var _requests: Array[Dictionary] = []
 var _events: Array[Dictionary] = []
 var _request_sequence: int = 0
@@ -58,15 +61,15 @@ func _init(initial_direction: int = 1, fairness_promotion_ticks: int = DEFAULT_F
 	if reservation_ttl_ticks > 0:
 		_reservation_ttl_ticks = reservation_ttl_ticks
 	if max_queue > 0:
-		_max_queue = max_queue
+		_max_queue = mini(HARD_MAX_QUEUE, max_queue)
 	if max_events > 0:
-		_max_events = max_events
+		_max_events = mini(HARD_MAX_EVENTS, max_events)
 
 
 ## Submit every same-tick request before calling resolve(). direction=0 follows
 ## the currently accepted runway direction. max wind limits below zero mean that
 ## this request has no authored limit and must be checked by a later profile gate.
-func submit_request(tick: int, request_id: String, owner_id: int, generation: int, pilot_id: String, operation: String, direction: int = 0, player_request: bool = false, emergency: bool = false, committed_arrival: bool = false, protected_volume_id: String = "", earliest_entry_tick: int = -1, latest_entry_tick: int = -1, max_crosswind_mps: float = -1.0, max_gust_mps: float = -1.0) -> Dictionary:
+func submit_request(tick: int, request_id: String, owner_id: int, generation: int, pilot_id: String, operation: String, direction: int = 0, player_request: bool = false, emergency: bool = false, committed_arrival: bool = false, protected_volume_id: String = "", earliest_entry_tick: int = -1, latest_entry_tick: int = -1, max_crosswind_mps: float = -1.0, max_gust_mps: float = -1.0, protected_volume_ids: Array = []) -> Dictionary:
 	if tick < 0 or request_id.is_empty() or owner_id < 0 or generation < 0:
 		return _reject("invalid_identity_or_tick")
 	if not VALID_OPERATIONS.has(operation):
@@ -79,6 +82,14 @@ func submit_request(tick: int, request_id: String, owner_id: int, generation: in
 		return _reject("invalid_entry_window")
 	if not _optional_limit_is_valid(max_crosswind_mps) or not _optional_limit_is_valid(max_gust_mps):
 		return _reject("invalid_wind_limit")
+	var protected_volumes: Array[String] = []
+	for volume: Variant in protected_volume_ids:
+		if not volume is String or String(volume).is_empty():
+			return _reject("invalid_protected_volume")
+		if not protected_volumes.has(String(volume)):
+			protected_volumes.append(String(volume))
+	if not protected_volume_id.is_empty() and not protected_volumes.has(protected_volume_id):
+		protected_volumes.append(protected_volume_id)
 	if _requests.size() >= _max_queue:
 		return _reject("request_queue_full")
 	if _request_id_exists(request_id):
@@ -95,6 +106,7 @@ func submit_request(tick: int, request_id: String, owner_id: int, generation: in
 		"emergency": emergency,
 		"committed_arrival": committed_arrival,
 		"protected_volume_id": protected_volume_id,
+		"protected_volumes": protected_volumes,
 		"request_tick": tick,
 		"request_sequence": _request_sequence,
 		"earliest_entry_tick": earliest_entry_tick,
@@ -146,7 +158,8 @@ func observe_player(tick: int, player_id: int, generation: int, in_runway: bool,
 	var was_approaching: bool = _player_approach_intent
 	_player_in_runway = in_runway
 	_player_approach_intent = approach_intent
-	if (in_runway or approach_intent) and _mode == MODE_RESERVED and not bool(_grant.get("player_request", false)):
+	var reserved_emergency: bool = bool(_grant.get("emergency", false))
+	if (in_runway or (approach_intent and not reserved_emergency)) and _mode == MODE_RESERVED and not bool(_grant.get("player_request", false)):
 		_revoke_reservation(tick, "player_incursion" if in_runway else "player_approach", true)
 	if in_runway:
 		if _mode != MODE_BLOCKED and not _occupant_matches(player_id, generation):
@@ -176,12 +189,14 @@ func resolve(tick: int) -> Dictionary:
 	_consider_wind_reversal(tick)
 	if _mode != MODE_FREE:
 		return {"ok": true, "granted": false, "mode": _mode, "reason": "runway_not_free"}
-	if _player_in_runway or _player_approach_intent:
+	if _player_in_runway:
 		return {"ok": true, "granted": false, "mode": _mode, "reason": "player_priority"}
 	if _requests.is_empty():
 		return {"ok": true, "granted": false, "mode": _mode, "reason": "queue_empty"}
 	var ranked: Array[Dictionary] = []
 	for request: Dictionary in _requests:
+		if _player_approach_intent and not bool(request.get("emergency", false)) and not bool(request.get("player_request", false)):
+			continue
 		if not _request_direction_matches(request):
 			continue
 		var earliest: int = int(request.get("earliest_entry_tick", -1))
@@ -191,7 +206,7 @@ func resolve(tick: int) -> Dictionary:
 			continue
 		ranked.append({"request": request, "priority": _effective_priority(request, tick)})
 	if ranked.is_empty():
-		return {"ok": true, "granted": false, "mode": _mode, "reason": "no_eligible_direction_or_wind"}
+	return {"ok": true, "granted": false, "mode": _mode, "reason": "player_priority" if _player_approach_intent else "no_eligible_direction_or_wind"}
 	ranked.sort_custom(_ranked_request_less)
 	var winner: Dictionary = ranked[0]["request"]
 	_remove_request_id(String(winner["request_id"]))
@@ -206,6 +221,7 @@ func resolve(tick: int) -> Dictionary:
 		return resolve(tick)
 	var grant: Dictionary = winner.duplicate(true)
 	grant["ticket"] = _grant_sequence
+	grant["requested_direction"] = int(winner["direction"])
 	grant["direction"] = _direction if int(winner["direction"]) == 0 else int(winner["direction"])
 	grant["entry_tick"] = entry_tick
 	grant["deadline_tick"] = deadline_tick
@@ -223,7 +239,7 @@ func enter_runway(tick: int, ticket: int, owner_id: int, generation: int) -> Dic
 		return _reject("stale_grant")
 	if tick < int(_grant.get("entry_tick", -1)) or tick > int(_grant.get("deadline_tick", -1)):
 		return _reject("entry_outside_grant_window")
-	if _player_in_runway or _player_approach_intent:
+	if _player_in_runway or (_player_approach_intent and not bool(_grant.get("emergency", false)) and not bool(_grant.get("player_request", false))):
 		_revoke_reservation(tick, "player_incursion", true)
 		return _reject("player_priority")
 	if int(_grant.get("direction", 0)) != _direction:
@@ -232,7 +248,7 @@ func enter_runway(tick: int, ticket: int, owner_id: int, generation: int) -> Dic
 	if not _request_wind_is_valid(_grant):
 		_revoke_reservation(tick, "wind_envelope_exceeded", true)
 		return _reject("wind_envelope_exceeded")
-	_occupant = {"owner_id": owner_id, "generation": generation, "pilot_id": String(_grant.get("pilot_id", "")), "is_player": bool(_grant.get("player_request", false)), "is_wreck": false, "operation": String(_grant.get("operation", "")), "direction": _direction, "protected_volume_id": String(_grant.get("protected_volume_id", "")), "ticket": ticket}
+	_occupant = {"owner_id": owner_id, "generation": generation, "pilot_id": String(_grant.get("pilot_id", "")), "is_player": bool(_grant.get("player_request", false)), "is_wreck": false, "operation": String(_grant.get("operation", "")), "direction": _direction, "protected_volume_id": String(_grant.get("protected_volume_id", "")), "protected_volumes": _grant.get("protected_volumes", []).duplicate(true), "ticket": ticket}
 	_mode = MODE_OCCUPIED
 	_record_event(tick, "runway_occupied", {"ticket": ticket, "owner_id": owner_id, "generation": generation, "operation": _occupant["operation"]})
 	_grant.clear()
@@ -242,6 +258,8 @@ func enter_runway(tick: int, ticket: int, owner_id: int, generation: int) -> Dic
 ## Reports geometric clearance from the caller's swept footprint query. It is
 ## intentionally impossible to release on a CG-only or timer-only observation.
 func report_clearance(tick: int, owner_id: int, generation: int, footprint_clear: bool, protected_path_clear: bool) -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	if _mode != MODE_OCCUPIED and _mode != MODE_CLEARING:
 		return _reject("no_movable_occupant")
 	if bool(_occupant.get("is_wreck", false)) or owner_id != int(_occupant.get("owner_id", -1)) or generation != int(_occupant.get("generation", -1)):
@@ -265,31 +283,41 @@ func report_clearance(tick: int, owner_id: int, generation: int, footprint_clear
 func report_runway_wreck(tick: int, owner_id: int, generation: int, pilot_id: String, wreck_id: String, protected_volume_id: String = "runway") -> Dictionary:
 	if tick < 0 or owner_id < 0 or generation < 0 or wreck_id.is_empty():
 		return _reject("invalid_wreck_identity")
+	if not _blocked_wrecks.has(wreck_id) and _blocked_wrecks.size() >= HARD_MAX_WRECKS:
+		return _reject("wreck_blocker_capacity_exceeded")
 	if _mode == MODE_RESERVED:
 		_revoke_reservation(tick, "runway_wreck", false)
 	_requests = _requests.filter(func(request: Dictionary) -> bool: return int(request.get("owner_id", -1)) != owner_id or int(request.get("generation", -1)) != generation)
-	_occupant = {"owner_id": owner_id, "generation": generation, "pilot_id": pilot_id, "is_player": false, "is_wreck": true, "wreck_id": wreck_id, "protected_volume_id": protected_volume_id}
-	_blocked_wreck_id = wreck_id
+	var wreck: Dictionary = {"owner_id": owner_id, "generation": generation, "pilot_id": pilot_id, "is_player": false, "is_wreck": true, "wreck_id": wreck_id, "protected_volume_id": protected_volume_id}
+	if _mode != MODE_BLOCKED:
+		_occupant = wreck.duplicate(true)
+	_blocked_wrecks[wreck_id] = wreck
 	_mode = MODE_BLOCKED
 	_record_event(tick, "runway_blocked_by_wreck", {"owner_id": owner_id, "generation": generation, "wreck_id": wreck_id})
 	return {"ok": true, "mode": _mode, "wreck_id": wreck_id}
 
 
 func clear_wreck_and_occupancy(tick: int, wreck_id: String, wreck_removal_committed: bool) -> Dictionary:
-	if _mode != MODE_BLOCKED or wreck_id.is_empty() or wreck_id != _blocked_wreck_id:
+	if tick < 0 or _mode != MODE_BLOCKED or wreck_id.is_empty() or not _blocked_wrecks.has(wreck_id):
 		return _reject("wreck_identity_mismatch")
 	if not wreck_removal_committed:
 		return _reject("wreck_removal_not_committed")
-	var old_owner: int = int(_occupant.get("owner_id", -1))
-	var old_generation: int = int(_occupant.get("generation", -1))
-	_occupant.clear()
-	_blocked_wreck_id = ""
-	_mode = MODE_FREE
-	_record_event(tick, "runway_wreck_removed", {"wreck_id": wreck_id, "owner_id": old_owner, "generation": old_generation})
-	return {"ok": true, "mode": _mode}
+	var removed_wreck: Dictionary = _blocked_wrecks[wreck_id]
+	_blocked_wrecks.erase(wreck_id)
+	if _blocked_wrecks.is_empty():
+		_occupant.clear()
+		_mode = MODE_FREE
+	else:
+		var remaining_ids: Array = _blocked_wrecks.keys()
+		remaining_ids.sort()
+		_occupant = _blocked_wrecks[String(remaining_ids[0])].duplicate(true)
+	_record_event(tick, "runway_wreck_removed", {"wreck_id": wreck_id, "owner_id": removed_wreck.get("owner_id", -1), "generation": removed_wreck.get("generation", -1), "remaining_wrecks": _blocked_wrecks.size()})
+	return {"ok": true, "mode": _mode, "remaining_wrecks": _blocked_wrecks.size()}
 
 
 func cancel_request(tick: int, request_id: String, owner_id: int, generation: int, reason: String = "cancelled") -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	for index: int in range(_requests.size()):
 		var request: Dictionary = _requests[index]
 		if String(request.get("request_id", "")) == request_id and int(request.get("owner_id", -1)) == owner_id and int(request.get("generation", -1)) == generation:
@@ -300,6 +328,8 @@ func cancel_request(tick: int, request_id: String, owner_id: int, generation: in
 
 
 func cancel_reservation(tick: int, ticket: int, owner_id: int, generation: int, reason: String = "cancelled") -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	if _mode != MODE_RESERVED or ticket != int(_grant.get("ticket", -1)) or owner_id != int(_grant.get("owner_id", -1)) or generation != int(_grant.get("generation", -1)):
 		return _reject("stale_grant")
 	_revoke_reservation(tick, reason, false)
@@ -329,7 +359,7 @@ func snapshot_state() -> Dictionary:
 		"player_approach_intent": _player_approach_intent,
 		"grant": _grant.duplicate(true),
 		"occupant": _occupant.duplicate(true),
-		"blocked_wreck_id": _blocked_wreck_id,
+		"blocked_wrecks": _blocked_wrecks.duplicate(true),
 		"requests": _duplicate_dictionary_array(_requests),
 		"events": _duplicate_dictionary_array(_events),
 		"request_sequence": _request_sequence,
@@ -353,18 +383,23 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	var raw_events: Variant = candidate.get("events", null)
 	var raw_grant: Variant = candidate.get("grant", null)
 	var raw_occupant: Variant = candidate.get("occupant", null)
-	if not raw_requests is Array or not raw_events is Array or not raw_grant is Dictionary or not raw_occupant is Dictionary:
+	var raw_wrecks: Variant = candidate.get("blocked_wrecks", null)
+	if not raw_requests is Array or not raw_events is Array or not raw_grant is Dictionary or not raw_occupant is Dictionary or not raw_wrecks is Dictionary:
 		return _reject("invalid_state_shape")
 	if raw_requests.size() > int(candidate.get("max_queue", 0)) or raw_events.size() > int(candidate.get("max_events", 0)):
 		return _reject("state_bound_exceeded")
+	if int(candidate.get("max_queue", 0)) > HARD_MAX_QUEUE or int(candidate.get("max_events", 0)) > HARD_MAX_EVENTS or raw_wrecks.size() > HARD_MAX_WRECKS:
+		return _reject("state_hard_bound_exceeded")
 	if mode == MODE_RESERVED and raw_grant.is_empty():
 		return _reject("reserved_state_missing_grant")
 	if mode != MODE_RESERVED and not raw_grant.is_empty():
 		return _reject("grant_outside_reserved_state")
 	if (mode == MODE_OCCUPIED or mode == MODE_CLEARING or mode == MODE_BLOCKED) and raw_occupant.is_empty():
 		return _reject("occupied_state_missing_occupant")
-	if mode == MODE_BLOCKED and String(candidate.get("blocked_wreck_id", "")).is_empty():
+	if mode == MODE_BLOCKED and raw_wrecks.is_empty():
 		return _reject("blocked_state_missing_wreck")
+	if mode != MODE_BLOCKED and not raw_wrecks.is_empty():
+		return _reject("wreck_state_outside_blocked_mode")
 	var restored_requests: Array[Dictionary] = []
 	for value: Variant in raw_requests:
 		if not value is Dictionary or not value.has("request_id") or not value.has("owner_id") or not value.has("generation"):
@@ -387,7 +422,7 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	_player_approach_intent = bool(candidate.get("player_approach_intent", false))
 	_grant = raw_grant.duplicate(true)
 	_occupant = raw_occupant.duplicate(true)
-	_blocked_wreck_id = String(candidate.get("blocked_wreck_id", ""))
+	_blocked_wrecks = raw_wrecks.duplicate(true)
 	_requests = restored_requests
 	_events = restored_events
 	_request_sequence = int(candidate.get("request_sequence", 0))
@@ -395,8 +430,8 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	_event_sequence = int(candidate.get("event_sequence", 0))
 	_fairness_promotion_ticks = maxi(1, int(candidate.get("fairness_promotion_ticks", DEFAULT_FAIRNESS_PROMOTION_TICKS)))
 	_reservation_ttl_ticks = maxi(1, int(candidate.get("reservation_ttl_ticks", DEFAULT_RESERVATION_TTL_TICKS)))
-	_max_queue = maxi(1, int(candidate.get("max_queue", DEFAULT_MAX_QUEUE)))
-	_max_events = maxi(1, int(candidate.get("max_events", DEFAULT_MAX_EVENTS)))
+	_max_queue = clampi(int(candidate.get("max_queue", DEFAULT_MAX_QUEUE)), 1, HARD_MAX_QUEUE)
+	_max_events = clampi(int(candidate.get("max_events", DEFAULT_MAX_EVENTS)), 1, HARD_MAX_EVENTS)
 	return {"ok": true}
 
 
@@ -518,6 +553,8 @@ func _revoke_reservation(tick: int, reason: String, requeue: bool) -> void:
 		old_grant.erase("entry_tick")
 		old_grant.erase("deadline_tick")
 		old_grant.erase("granted_tick")
+		old_grant["direction"] = int(old_grant.get("requested_direction", old_grant.get("direction", 0)))
+		old_grant.erase("requested_direction")
 		_requests.append(old_grant)
 
 
@@ -563,5 +600,4 @@ func _record_event(tick: int, event_type: String, payload: Dictionary) -> void:
 		_events.pop_front()
 
 
-func _reject(reason: String) -> Dictionary:
-	return {"ok": false, "reason": reason}
+func _reject(reason: String) -> Dic

@@ -5,7 +5,12 @@ extends RefCounted
 
 const STATE_VERSION: String = "openrc-activity-quota-state v1"
 const DEFAULT_MAX_PENDING: int = 64
+const DEFAULT_MAX_ACTIVE: int = 32
 const DEFAULT_MAX_EVENTS: int = 128
+const HARD_MAX_PENDING: int = 256
+const HARD_MAX_ACTIVE: int = 32
+const HARD_MAX_EVENTS: int = 512
+const HARD_MAX_COOLDOWNS: int = 512
 
 var _choice_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _choice_seed: int = 1
@@ -16,14 +21,16 @@ var _events: Array[Dictionary] = []
 var _request_sequence: int = 0
 var _event_sequence: int = 0
 var _max_pending: int = DEFAULT_MAX_PENDING
+var _max_active: int = DEFAULT_MAX_ACTIVE
 var _max_events: int = DEFAULT_MAX_EVENTS
 
 
-func _init(seed_value: int = 1, max_pending: int = DEFAULT_MAX_PENDING, max_events: int = DEFAULT_MAX_EVENTS) -> void:
+func _init(seed_value: int = 1, max_pending: int = DEFAULT_MAX_PENDING, max_events: int = DEFAULT_MAX_EVENTS, max_active: int = DEFAULT_MAX_ACTIVE) -> void:
 	_choice_seed = _normalize_seed(seed_value)
 	_choice_rng.seed = _choice_seed
-	_max_pending = maxi(1, max_pending)
-	_max_events = maxi(1, max_events)
+	_max_pending = clampi(max_pending, 1, HARD_MAX_PENDING)
+	_max_events = clampi(max_events, 1, HARD_MAX_EVENTS)
+	_max_active = clampi(max_active, 1, HARD_MAX_ACTIVE)
 
 
 ## Choices are sorted by activity_id before drawing so dictionary/array assembly
@@ -74,6 +81,8 @@ func request_activity(tick: int, request_id: String, pilot_id: String, owner_id:
 		return {"ok": false, "reason": eligibility_reason if not eligibility_reason.is_empty() else "ineligible"}
 	if int(_cooldown_until.get(_cooldown_key(pilot_id, activity_id), -1)) > tick:
 		return _reject("activity_cooldown")
+	if not _cooldown_until.has(_cooldown_key(pilot_id, activity_id)) and _cooldown_until.size() >= HARD_MAX_COOLDOWNS:
+		return _reject("cooldown_state_full")
 	if _pending.size() >= _max_pending:
 		return _reject("activity_queue_full")
 	if _request_id_exists(request_id) or _has_pending_owner(owner_id, generation) or _active.has(_owner_key(owner_id, generation)):
@@ -124,6 +133,8 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 	var used_by_quota: Dictionary = _active_quota_counts()
 	var used_owners: Dictionary = {}
 	for request: Dictionary in ranked:
+		if _active.size() >= _max_active:
+			break
 		var key: String = _owner_key(int(request["owner_id"]), int(request["generation"]))
 		if used_owners.has(key) or _active.has(key):
 			continue
@@ -214,6 +225,7 @@ func snapshot_state() -> Dictionary:
 		"request_sequence": _request_sequence,
 		"event_sequence": _event_sequence,
 		"max_pending": _max_pending,
+		"max_active": _max_active,
 		"max_events": _max_events
 	}
 
@@ -228,9 +240,12 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	if not raw_pending is Array or not raw_active is Dictionary or not raw_cooldowns is Dictionary or not raw_events is Array:
 		return _reject("invalid_state_shape")
 	var max_pending: int = int(candidate.get("max_pending", 0))
+	var max_active: int = int(candidate.get("max_active", 0))
 	var max_events: int = int(candidate.get("max_events", 0))
-	if max_pending <= 0 or max_events <= 0 or raw_pending.size() > max_pending or raw_events.size() > max_events:
+	if max_pending <= 0 or max_active <= 0 or max_events <= 0 or raw_pending.size() > max_pending or raw_active.size() > max_active or raw_events.size() > max_events or raw_cooldowns.size() > HARD_MAX_COOLDOWNS:
 		return _reject("state_bound_exceeded")
+	if max_pending > HARD_MAX_PENDING or max_active > HARD_MAX_ACTIVE or max_events > HARD_MAX_EVENTS:
+		return _reject("state_hard_bound_exceeded")
 	var restored_pending: Array[Dictionary] = []
 	for request: Variant in raw_pending:
 		if not request is Dictionary or not request.has("request_id") or not request.has("owner_id") or not request.has("generation"):
@@ -251,6 +266,7 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	_request_sequence = int(candidate.get("request_sequence", 0))
 	_event_sequence = int(candidate.get("event_sequence", 0))
 	_max_pending = max_pending
+	_max_active = max_active
 	_max_events = max_events
 	return {"ok": true}
 
@@ -343,7 +359,11 @@ func _cooldown_key(pilot_id: String, activity_id: String) -> String:
 
 
 func _normalize_seed(value: int) -> int:
-	var wrapped: int = absi(value) % 2147483646
+	if value >= 1 and value <= 2147483646:
+		return value
+	var wrapped: int = value % 2147483646
+	if wrapped < 0:
+		wrapped = -wrapped
 	return wrapped + 1
 
 

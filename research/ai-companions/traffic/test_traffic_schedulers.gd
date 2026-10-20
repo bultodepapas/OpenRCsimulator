@@ -53,6 +53,15 @@ func _test_runway_priority_matches_independent_oracle() -> void:
 		_check(bool(released.get("ok", false)), "oracle slot should be released with its matching ticket")
 	_check(actual_owners == expected, "runway grant order should match the independent priority oracle")
 	_check(not bool(coordinator.resolve(100).get("granted", false)), "all oracle requests should be consumed")
+	var volume_contract = Runway.new()
+	volume_contract.submit_request(0, "landing-volumes", 2, 1, "pilot-2", "landing", 0, false, false, false, "arrival-gate", -1, -1, -1.0, -1.0, ["approach-tube", "runway-strip"])
+	var volume_grant: Dictionary = volume_contract.resolve(0).get("grant", {})
+	_check(volume_grant.get("protected_volumes", []).has("approach-tube") and volume_grant.get("protected_volumes", []).has("runway-strip") and volume_grant.get("protected_volumes", []).has("arrival-gate"), "reservation serializes every protected approach/runway volume ID")
+	var bounded = Runway.new(1, 10, 20, 1, 1)
+	_check(bool(bounded.submit_request(0, "first", 1, 1, "pilot-1", "takeoff").get("ok", false)), "bounded runway queue accepts up to its configured capacity")
+	_check(not bool(bounded.submit_request(0, "second", 2, 1, "pilot-2", "takeoff").get("ok", false)), "bounded runway queue refuses overflow without dropping an existing request")
+	bounded.resolve(0)
+	_check(bounded.snapshot_state()["events"].size() <= 1, "runway diagnostic event storage remains bounded")
 
 
 func _test_runway_aging_prevents_feasible_starvation() -> void:
@@ -96,6 +105,11 @@ func _test_runway_player_priority_and_implicit_occupancy() -> void:
 	_check(not bool(coordinator.enter_runway(2, int(ai_grant["ticket"]), 4, 1).get("ok", false)), "player approach invalidates an AI grant before entry")
 	_check(String(coordinator.snapshot_state()["mode"]) == "free", "revoked approach grant does not fabricate runway occupancy")
 	_check(String(coordinator.resolve(3).get("reason", "")) == "player_priority", "AI holds while player approach intent is present")
+	coordinator.submit_request(3, "emergency-landing", 5, 1, "pilot-5", "landing", 0, false, true, true)
+	var emergency_grant: Dictionary = coordinator.resolve(3).get("grant", {})
+	_check(bool(emergency_grant.get("emergency", false)), "immediate AI emergency retains priority over an advisory player approach")
+	coordinator.cancel_reservation(3, int(emergency_grant.get("ticket", -1)), 5, 1, "fixture_release")
+	_check(String(coordinator.resolve(3).get("reason", "")) == "player_priority", "ordinary AI traffic remains held after emergency reservation ends")
 	coordinator.observe_player(4, 0, 8, false, false)
 	var restored_grant: Dictionary = coordinator.resolve(4).get("grant", {})
 	_check(not restored_grant.is_empty(), "valid AI request is requeued after the player clears approach intent")
@@ -122,6 +136,8 @@ func _test_runway_wind_reversal_and_envelope_revocation() -> void:
 	coordinator.update_wind(2401, -5.0, 2.0, 4.0)
 	_check(int(coordinator.snapshot_state()["direction"]) == -1, "consistent opposite headwind reverses the runway after 10 seconds")
 	_check(String(coordinator.snapshot_state()["mode"]) == "free", "direction reversal revokes a stale reservation")
+	var retargeted: Dictionary = coordinator.resolve(2401).get("grant", {})
+	_check(int(retargeted.get("direction", 0)) == -1, "requeued direction-neutral request follows the newly accepted runway direction")
 	var events: Array[Dictionary] = coordinator.drain_events()
 	_check(_events_have(events, "reservation_revoked", "wind_direction_reversed"), "wind reversal reason is journaled")
 	var opposite_request = Runway.new(1)
@@ -151,14 +167,17 @@ func _test_runway_wreck_occupancy_and_serialization() -> void:
 	coordinator.submit_request(0, "queued", 30, 1, "pilot-30", "landing")
 	var blocked: Dictionary = coordinator.report_runway_wreck(1, 9, 2, "pilot-9", "wreck-9-g2", "arrival-west")
 	_check(bool(blocked.get("ok", false)) and String(blocked.get("mode", "")) == "blocked", "runway wreck moves the coordinator into persistent blocked state")
+	coordinator.report_runway_wreck(2, 10, 1, "pilot-10", "wreck-10-g1", "departure-east")
 	_check(not bool(coordinator.resolve(200000).get("granted", false)), "wreck blocks new operations beyond any reservation duration")
 	_check(not bool(coordinator.clear_wreck_and_occupancy(200001, "wreck-9-g2", false).get("ok", false)), "wreck occupancy cannot clear before world removal commits")
 	_check(not bool(coordinator.clear_wreck_and_occupancy(200001, "other-wreck", true).get("ok", false)), "another wreck identity cannot clear the blocker")
 	var restored = Runway.new()
 	_check(bool(restored.restore_state(coordinator.snapshot_state()).get("ok", false)), "runway snapshot restores through a versioned serializable state")
 	_check(restored.snapshot_state() == coordinator.snapshot_state(), "restored runway state preserves blocker, queue, and event sequence")
-	_check(bool(coordinator.clear_wreck_and_occupancy(200002, "wreck-9-g2", true).get("ok", false)), "exact committed wreck removal atomically clears occupancy")
-	_check(bool(coordinator.resolve(200002).get("granted", false)), "queued movement can proceed after wreck cleanup")
+	var first_clear: Dictionary = coordinator.clear_wreck_and_occupancy(200002, "wreck-9-g2", true)
+	_check(bool(first_clear.get("ok", false)) and String(first_clear.get("mode", "")) == "blocked", "removing one wreck leaves the other runway blocker occupied")
+	_check(bool(coordinator.clear_wreck_and_occupancy(200003, "wreck-10-g1", true).get("ok", false)), "last exact committed wreck removal atomically clears occupancy")
+	_check(bool(coordinator.resolve(200003).get("granted", false)), "queued movement can proceed after all wreck cleanup")
 	var corrupt: Dictionary = coordinator.snapshot_state()
 	corrupt["mode"] = "blocked"
 	corrupt["blocked_wreck_id"] = ""
@@ -198,6 +217,10 @@ func _test_activity_quota_fairness_cooldown_and_eligibility() -> void:
 	_check(bool(replaced_generation.get("ok", false)), "new sortie generation is distinct from the previous active lease")
 	independent.retire_agent(1, 6, 1, "old_generation_retired")
 	_check(independent.resolve(1).get("granted", []).size() == 1, "old-generation retirement releases its slot without touching the new generation")
+	var bounded = ActivityScheduler.new(3, 8, 8, 1)
+	bounded.request_activity(0, "lane-one", "pilot-20", 20, 1, "circuit", "lane-one", 1.0, 1, 0, 0)
+	bounded.request_activity(0, "lane-two", "pilot-21", 21, 1, "pass", "lane-two", 1.0, 1, 0, 0)
+	_check(bounded.resolve(0).get("granted", []).size() == 1 and bounded.snapshot_state()["active"].size() == 1, "active activity leases obey the hard fleet bound across independent resources")
 
 
 func _test_activity_weighted_choice_and_replay_state() -> void:
@@ -238,6 +261,13 @@ func _test_incidents_off_and_grace() -> void:
 	var toggled = IncidentScheduler.new(503, "rare", 0, false)
 	var toggle_result: Dictionary = toggled.set_rate("off", 10)
 	_check(bool(toggle_result.get("ok", false)) and toggled.next_deadline_tick() == -1, "switching Off removes future deadlines immediately")
+	var active_checkpoint = IncidentScheduler.new(504, "lively", 0, false)
+	var due: int = active_checkpoint.next_deadline_tick()
+	active_checkpoint.advance_to(due, _one_eligible_pilot())
+	var checkpoint: Dictionary = active_checkpoint.snapshot_state()
+	var restored = IncidentScheduler.new(1)
+	_check(bool(restored.restore_state(checkpoint).get("ok", false)), "incident timing, active episode, cooldowns, and RNG restore from serializable state")
+	_check(restored.snapshot_state() == checkpoint, "incident restore retains exact point-process state")
 
 
 func _test_incident_deadlines_ignore_frame_and_fleet_size() -> void:
@@ -329,6 +359,22 @@ func _test_incident_cooldowns_and_non_crash_guarantee() -> void:
 	_check(_output_has(cancelled, "incident_cancelled", "recovery_space_occupied"), "occupied recovery space cancels and logs the opportunity")
 	var next_due: int = ineligible.next_deadline_tick()
 	_check(next_due > due_no_space and ineligible.active_incident().is_empty(), "cancelled opportunity is not postponed or converted into a later burst")
+	_check(ineligible.advance_to(next_due - 1, _one_eligible_pilot()).is_empty(), "an ineligible attempt does not create an early deferred incident")
+	var next_opportunity: Array[Dictionary] = ineligible.advance_to(next_due, _one_eligible_pilot())
+	_check(not next_opportunity.is_empty() and not ineligible.active_incident().is_empty() and int(ineligible.active_incident().get("tick", -1)) == next_due, "eligible pilot starts only at the next independently scheduled opportunity")
+	var protected = IncidentScheduler.new(801, "lively", 0, false)
+	var protected_events: Array[Dictionary] = protected.advance_to(protected.next_deadline_tick(), _one_eligible_pilot(), false, true)
+	_check(_output_has(protected_events, "incident_cancelled", "player_protective_volume"), "player protective volume cancels and logs an incident opportunity")
+	var off_active = IncidentScheduler.new(802, "lively", 0, false)
+	var active_tick: int = off_active.next_deadline_tick()
+	var active_events: Array[Dictionary] = off_active.advance_to(active_tick, _one_eligible_pilot())
+	var active_id: int = -1
+	for event: Dictionary in active_events:
+		if String(event.get("type", "")) == "incident_started":
+			active_id = int(event.get("payload", {}).get("opportunity_id", -1))
+	_check(active_id >= 0, "fixture starts an active incident before Off transition")
+	off_active.set_rate("off", active_tick)
+	_check(off_active.active_incident().is_empty() and off_active.next_deadline_tick() == -1, "switching Off cancels the active scheduled episode and all future deadlines")
 
 
 func _reference_runway_order(requests: Array[Dictionary], tick: int, fairness_ticks: int) -> Array[int]:

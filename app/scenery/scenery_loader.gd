@@ -7,6 +7,7 @@ extends RefCounted
 
 const Prefabs = preload("res://scenery/prefabs.gd")
 const Models = preload("res://scenery/models.gd")
+const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
 
 const FORMAT := "openrc-scenery v1"
 const DEFAULT_PATH := "res://data/scenery/default.json"
@@ -276,21 +277,40 @@ static func _instances(errors: PackedStringArray, path: String, gd: Dictionary, 
 			return
 		group.aircraft = (ids as Array).map(func(x: Variant) -> String: return str(x))
 		for a: String in group.aircraft:
-			if Models.FLEET.find_key(a) == null:
+			if not ParkedAircraft.AIRCRAFT.has(a):
 				errors.append("%s.aircraft: '%s' has no baked fleet model (tools/scenery/bake_fleet.gd)" % [path, a])
 				return
 		group.prefab = "fleet"
+		var scale_value := _quantity(errors, path + ".scale", gd.scale, "1") if gd.has("scale") else 1.0
+		var elevation := _quantity(errors, path + ".elevation", gd.elevation, "m") if gd.has("elevation") else 0.0
+		var configuration := str(gd.get("configuration", "assembled"))
+		if scale_value < 0.25 or scale_value > 1.5 or elevation > 1.5:
+			errors.append(path + ": parked scale must be 0.25–1.5 and elevation 0–1.5 m")
+			return
+		if configuration != "assembled" and configuration != "service":
+			errors.append(path + ".configuration: expected assembled or service")
+			return
 		var rows := _points(errors, path + ".placements", gd.get("placements"), 4, "m, m, deg, index")
 		for r: Array in rows:
 			var idx := int(r[3])
-			if idx < 0 or idx >= (group.aircraft as Array).size():
+			if r[3] != float(idx) or idx < 0 or idx >= (group.aircraft as Array).size():
 				errors.append(path + ".placements: aircraft index out of range")
 				return
-			var err := _check_point(r[0], r[1], 1.0, 1.6, group.zone, geo, profile)
+			if configuration == "service" and group.aircraft[idx] != "jensen-das-ugly-stik-60":
+				errors.append(path + ".configuration: service snapshot is available only for Ugly Stik")
+				return
+			var info := ParkedAircraft.info(group.aircraft[idx], configuration)
+			if info.is_empty():
+				errors.append(path + ": missing parked aircraft snapshot")
+				return
+			var size: Array = info.size
+			var radius := 0.5 * sqrt(float(size[0]) ** 2 + float(size[2]) ** 2) * scale_value
+			var err := _check_point(r[0], r[1], float(size[1]) * scale_value + elevation, radius, group.zone, geo, profile)
 			if not err.is_empty():
 				errors.append("%s at (%.1f, %.1f): %s" % [path, r[0], r[1], err])
 				return
-			placements.append({north = r[0], east = r[1], heading = r[2], aircraft = group.aircraft[idx]})
+			placements.append({north = r[0], east = r[1], heading = r[2], aircraft = group.aircraft[idx],
+				scale = scale_value, elevation = elevation, configuration = configuration})
 		group.placements = placements
 		return
 	var prefab := str(gd.get("prefab", ""))

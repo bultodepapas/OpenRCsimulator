@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7a55f62d-7c9c-4fab-8b11-13f0242241e0",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-driver",
+    "opengl3",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\smoke\\capture_avanti.gd",
+    "--",
+    "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-fleet-lifetime-final\\p51",
+    "--aircraft=p51d-mustang-120"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:28:19.279240+00:00",
+  "label": "p51",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-fleet-lifetime-final\\checks\\p51-7e1697_q\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-fleet-lifetime-final\\checks\\p51-7e1697_q\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Stock smoke capture complete:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371775465747852 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 35.125,
+  "log_bytes": 1261,
+  "log_sha256": "ecf4681e043f93dab31972c77ee00ddad276755471cd3182f3a7c2d5d2e76ae3"
+}

@@ -181,3 +181,7 @@ meshoptimizer LOD (1,488 → 372 triangles per insulator), compacted and refitte
 to the same 0.30 × 1.10 × 0.30 m attachment envelope.
 Source files, license text and hashes
 are retained in the repository's `assets/landscape/power-lines/` directory.
+
+## Building roofs (LU-33, 2026-10-20)
+
+The pavilion and church use [Roof Slates 03 by Rob Tuytel / Poly Haven](https://polyhaven.com/a/roof_slates_03); farmhouses and selected village homes use [Clay Roof Tiles by Amal Kumar / Poly Haven](https://polyhaven.com/a/clay_roof_tiles). Both are CC0. Their downloaded 1K color, OpenGL normal and ARM maps are retained without alteration. The veranda, shed and barns reuse the existing CC0 Corrugated Iron 02 set. Physical texture widths, file hashes and license links are in [building-roofs/LICENSES.md](building-roofs/LICENSES.md).

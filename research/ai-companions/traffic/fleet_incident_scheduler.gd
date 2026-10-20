@@ -16,6 +16,8 @@ const FIRST_INCIDENT_GRACE_TICKS: int = 60 * TICK_RATE_HZ
 const MIN_FLEET_INTERVAL_TICKS: int = 120 * TICK_RATE_HZ
 const MIN_PILOT_INTERVAL_TICKS: int = 180 * TICK_RATE_HZ
 const DEFAULT_MAX_EVENTS: int = 256
+const HARD_MAX_EVENTS: int = 1024
+const HARD_MAX_TRACKED_PILOTS: int = 128
 const MAX_CRASH_PRONE_FRACTION: float = 0.25
 const RNG_ALGORITHM_ID: String = "Godot.RandomNumberGenerator 4.7.2-stable"
 
@@ -49,7 +51,7 @@ func _init(seed_value: int = 1, rate_name: String = RATE_OFF, start_tick: int = 
 	_start_tick = maxi(0, start_tick)
 	_grace_until_tick = _start_tick + FIRST_INCIDENT_GRACE_TICKS
 	_allow_crash_prone = allow_crash_prone
-	_max_events = maxi(1, max_events)
+	_max_events = clampi(max_events, 1, HARD_MAX_EVENTS)
 	set_rate(rate_name, _start_tick)
 
 
@@ -57,7 +59,7 @@ func _init(seed_value: int = 1, rate_name: String = RATE_OFF, start_tick: int = 
 ## Occasional=1/8, Lively=1/3 per simulated minute. Changing rate is an explicit
 ## settings event: it resamples the next interval from the fixed time stream.
 func set_rate(rate_name: String, tick: int) -> Dictionary:
-	if tick < 0 or not VALID_RATES.has(rate_name):
+	if tick < 0 or tick < _last_advanced_tick or not VALID_RATES.has(rate_name):
 		return _reject("invalid_rate_or_tick")
 	if rate_name == _rate_name:
 		return {"ok": true, "changed": false, "next_deadline_tick": _next_deadline_tick}
@@ -76,11 +78,14 @@ func set_rate(rate_name: String, tick: int) -> Dictionary:
 	return {"ok": true, "changed": true, "next_deadline_tick": _next_deadline_tick}
 
 
-func set_crash_prone_allowed(tick: int, allowed: bool) -> void:
+func set_crash_prone_allowed(tick: int, allowed: bool) -> Dictionary:
+	if tick < 0 or tick < _last_advanced_tick:
+		return _reject("invalid_policy_tick")
 	if _allow_crash_prone == allowed:
-		return
+		return {"ok": true, "changed": false}
 	_allow_crash_prone = allowed
 	_record_event(tick, "crash_prone_policy_changed", {"allowed": allowed})
+	return {"ok": true, "changed": true}
 
 
 ## `eligible_pilots` is the planning snapshot at each due opportunity. Rows use
@@ -104,7 +109,7 @@ func advance_to(tick: int, eligible_pilots: Array, player_protective_volume_clea
 
 
 func complete_incident(tick: int, opportunity_id: int, outcome: String = "episode_ended") -> Dictionary:
-	if _active.is_empty() or opportunity_id != int(_active.get("opportunity_id", -1)):
+	if tick < int(_active.get("tick", 0)) or _active.is_empty() or opportunity_id != int(_active.get("opportunity_id", -1)):
 		return _reject("stale_incident")
 	var old: Dictionary = _active.duplicate(true)
 	_active.clear()
@@ -113,7 +118,7 @@ func complete_incident(tick: int, opportunity_id: int, outcome: String = "episod
 
 
 func cancel_active(tick: int, opportunity_id: int, reason: String) -> Dictionary:
-	if _active.is_empty() or opportunity_id != int(_active.get("opportunity_id", -1)):
+	if tick < int(_active.get("tick", 0)) or _active.is_empty() or opportunity_id != int(_active.get("opportunity_id", -1)):
 		return _reject("stale_incident")
 	var old: Dictionary = _active.duplicate(true)
 	_active.clear()
@@ -178,10 +183,14 @@ func restore_state(candidate: Dictionary) -> Dictionary:
 	var max_events: int = int(candidate.get("max_events", 0))
 	if max_events <= 0 or raw_events.size() > max_events:
 		return _reject("state_bound_exceeded")
+	if max_events > HARD_MAX_EVENTS or raw_cooldowns.size() > HARD_MAX_TRACKED_PILOTS:
+		return _reject("state_hard_bound_exceeded")
 	if rate_name == RATE_OFF and int(candidate.get("next_deadline_tick", -1)) != -1:
 		return _reject("off_state_has_deadline")
 	if rate_name != RATE_OFF and int(candidate.get("next_deadline_tick", -1)) < 0:
 		return _reject("enabled_state_missing_deadline")
+	if rate_name != RATE_OFF and int(candidate.get("next_deadline_tick", -1)) <= int(candidate.get("last_advanced_tick", -1)):
+		return _reject("enabled_state_deadline_not_in_future")
 	if not raw_active.is_empty() and (not raw_active.has("opportunity_id") or not raw_active.has("pilot_id") or not raw_active.has("generation")):
 		return _reject("malformed_active_incident")
 	var restored_events: Array[Dictionary] = []
@@ -257,6 +266,10 @@ func _process_opportunity(tick: int, eligible_pilots: Array, player_clear: bool,
 	candidates.sort_custom(_pilot_candidate_less)
 	var pilot_index: int = _pilot_rng.randi_range(0, candidates.size() - 1)
 	var selected: Dictionary = candidates[pilot_index]
+	var selected_pilot_id: String = String(selected["pilot_id"])
+	if not _last_pilot_start_tick.has(selected_pilot_id) and _last_pilot_start_tick.size() >= HARD_MAX_TRACKED_PILOTS:
+		emitted.append(_record_event(tick, "incident_cancelled", {"opportunity_id": opportunity_id, "reason": "pilot_history_capacity"}))
+		return
 	var options: Array = selected.get("episode_options", [])
 	var episode_family: String = "bounded_mistake"
 	if not options.is_empty():
@@ -325,7 +338,12 @@ func _pilot_candidate_less(left: Dictionary, right: Dictionary) -> bool:
 
 
 func _normalize_seed(value: int) -> int:
-	return absi(value) % 2147483646 + 1
+	if value >= 1 and value <= 2147483646:
+		return value
+	var wrapped: int = value % 2147483646
+	if wrapped < 0:
+		wrapped = -wrapped
+	return wrapped + 1
 
 
 func _derive_stream_seed(base_seed: int, salt: int) -> int:

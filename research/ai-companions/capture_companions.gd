@@ -75,6 +75,10 @@ func _run() -> void:
 	app.open_companions_settings(app.pause_menu.companions_button)
 	await ui.settle()
 	await _capture("pause-dialog.png")
+	if OS.get_cmdline_user_args().has("--labels"):
+		app.companions_dialog.labels_check.grab_focus()
+		await ui.settle()
+		await _capture("presentation-controls.png")
 	app.close_companions()
 	app._close_pause()
 	var flight: Node = app.flight
@@ -87,10 +91,14 @@ func _run() -> void:
 	var agent: Node = flight.companions.agents[0]
 	var state: PackedFloat64Array = agent.session.sim.state
 	var center: Vector3 = Frames.ned_to_render([state[0], state[1], state[2]])
-	flight._camera.global_position = center + Vector3(2.5, 1.5, 3.5)
-	flight._camera.look_at(center)
+	flight._camera.global_position = center + Vector3(3.5, 2.0, 5.0)
+	flight._camera.look_at(center + Vector3.UP * 0.8)
 	flight._camera.fov = 45.0
 	await _capture("companion-closeup.png")
+	if OS.get_cmdline_user_args().has("--labels"):
+		if agent._traffic_label == null or not agent._traffic_label.visible:
+			failed = true
+			printerr("Near companion label was not visible.")
 	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("COMPANION CAPTURES COMPLETE")

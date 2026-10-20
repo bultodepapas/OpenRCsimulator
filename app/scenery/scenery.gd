@@ -13,6 +13,7 @@ const Prefabs = preload("res://scenery/prefabs.gd")
 const BuildingRoofs = preload("res://scenery/building_roofs.gd")
 const PowerLines = preload("res://scenery/power_lines.gd")
 const Models = preload("res://scenery/models.gd")
+const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
 const Population = preload("res://scenery/population.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
@@ -281,6 +282,10 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var roof_parent := Node3D.new()
 	roof_parent.name = "BuildingRoofs"
 	root.add_child(roof_parent)
+	var fleet_parent := Node3D.new()
+	fleet_parent.name = "ParkedAircraft"
+	fleet_parent.process_mode = Node.PROCESS_MODE_DISABLED
+	root.add_child(fleet_parent)
 	var timing := {}
 	for group: Dictionary in scenery.groups:
 		var g0 := Time.get_ticks_usec()
@@ -368,21 +373,21 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 							var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
 							GroundFeatures.contact_shadow(contact_kit, shadow_xf, shadow_size, shadow_mode, sun)
 							stats.shadows += 1
-			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
+			"fleet": # Offline material-preserving snapshots, shared resources and automatic mesh LODs.
 				for placement_index: int in group.placements.size():
 					var pl: Dictionary = group.placements[placement_index]
-					var damage_id := "fleet:%s:%02d:%s" % [group.id, placement_index, pl.aircraft]
-					var model_id := str(Models.FLEET.find_key(str(pl.aircraft)))
-					var arr := Models.arrays(model_id)
-					if arr.is_empty():
+					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"))
+					if mesh == null:
 						continue
-					var kit := _kit(cells, _cell(pl.north, pl.east))
-					kit.xf = Transform3D.IDENTITY
-					var parked_xf := _placement_xf(pl.north, pl.east, pl.heading)
-					parked_xf.origin.y += Models.parked_base_height(model_id)
-					var damage_first := kit.verts.size()
-					kit.append_arrays(arr.pos, arr.nrm, arr.col, parked_xf)
-					kit.tag_damage(damage_first, damage_id)
+					var parked := MeshInstance3D.new()
+					parked.name = "%s_%02d" % [group.id, placement_index]
+					parked.mesh = mesh
+					parked.transform = ParkedAircraft.transform_for(pl)
+					parked.visibility_range_end = 350.0
+					parked.visibility_range_end_margin = 25.0
+					parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+					parked.set_meta("placement", pl)
+					fleet_parent.add_child(parked)
 					stats.fleet += 1
 			"fence":
 				var points := PackedVector2Array()

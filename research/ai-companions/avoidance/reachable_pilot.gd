@@ -26,13 +26,27 @@ var _held_bank_rad := 0.0
 var _hold_until_tick := -1
 var _clear_since_tick := -1
 var _last_decision: Dictionary = {}
+var _override_roll_demand := false
+var _selected_bank_target_rad := 0.0
 
 
 func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary:
 	_planning_tick = tick
+	_override_roll_demand = false
 	var clearance_value: Variant = snapshot.get("ground_clearance_m", NAN)
 	_planning_clearance_m = float(clearance_value) if typeof(clearance_value) in [TYPE_FLOAT, TYPE_INT] else NAN
 	var packet: Dictionary = super.command(snapshot, tick, traffic)
+	if _override_roll_demand and bool(packet.get("ok", false)):
+		var state_value: Variant = snapshot.get("state", PackedFloat64Array())
+		if state_value is PackedFloat64Array and state_value.size() == AvoidanceRigidBody.SIZE:
+			var state: PackedFloat64Array = state_value
+			var attitude := AvoidanceMath.quat(state[AvoidanceRigidBody.ATT],
+				state[AvoidanceRigidBody.ATT + 1], state[AvoidanceRigidBody.ATT + 2],
+				state[AvoidanceRigidBody.ATT + 3])
+			var euler: PackedFloat64Array = AvoidanceMath.q_to_euler(attitude)
+			if euler.size() == 3:
+				packet.roll = clampf(1.8 * (_selected_bank_target_rad - euler[2])
+					- 0.35 * state[AvoidanceRigidBody.RATE], -1.0, 1.0)
 	if tick == 0 and not _last_decision.is_empty():
 		print("AFC_REACHABLE_INITIAL " + JSON.stringify(_last_decision))
 	return packet
@@ -129,7 +143,7 @@ func _avoidance_velocity(
 		"threat_count": threats.size(),
 	}
 
-	return _bank_response(base_air_north, base_air_east, own_euler[0], nominal_bank, best_bank)
+	return _bank_response(base_air_north, base_air_east, nominal_bank, best_bank)
 
 
 func _prepare_threats(traffic: Array, own_velocity: PackedFloat64Array) -> Array[Dictionary]:
@@ -256,23 +270,15 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
 		"minimum_peer_distance_m": minimum_peer_distance}
 
 
-func _bank_response(base_air_north: float, base_air_east: float, current_heading: float,
+func _bank_response(base_air_north: float, base_air_east: float,
 		nominal_bank: float, selected_bank: float) -> Dictionary:
-	var feed_forward_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps,
-		G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
-	var desired_course_error: float = clampf((selected_bank - feed_forward_bank) / 1.6,
-		-deg_to_rad(12.0), deg_to_rad(12.0))
-	var base_heading: float = AvoidanceMath.atan2_(base_air_east, base_air_north)
-	var base_error: float = wrapf(base_heading - current_heading, -PI, PI)
-	var adjusted_heading: float = base_heading + desired_course_error - base_error
-	var air_speed: float = AvoidanceMath.sqrt_(base_air_north * base_air_north + base_air_east * base_air_east)
 	var active: bool = absf(selected_bank - nominal_bank) > deg_to_rad(1.0) or _has_held_maneuver
 	if not active:
 		return _unmodified_traffic_response(base_air_north, base_air_east)
-	return {"active": true,
-		"air_north": air_speed * cos(adjusted_heading),
-		"air_east": air_speed * sin(adjusted_heading),
-		"altitude_delta": 0.0}
+	_selected_bank_target_rad = clampf(selected_bank, -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	_override_roll_demand = true
+	return {"active": true, "air_north": base_air_north,
+		"air_east": base_air_east, "altitude_delta": 0.0}
 
 
 func _unmodified_traffic_response(base_air_north: float, base_air_east: float) -> Dictionary:

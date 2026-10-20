@@ -1,0 +1,109 @@
+{
+	"aircraft_id": "p51d-mustang-120",
+	"captures_sha256": {
+		"flight-trail-two-draw.png": "14131cd290d5887852ea6a7efd1b60816bb534bbbec560518bc6f7227dd1cf3b",
+		"flight-trail.png": "a17379c6222b74ace995b81fe531cef27021ebc56e05e24bcd30e6879d562c68",
+		"off-expired-two-draw.png": "1e6936531d2dfaedc643cf51f669f81f4225c274313070564090a9a1401c841b",
+		"off-expired.png": "1e6936531d2dfaedc643cf51f669f81f4225c274313070564090a9a1401c841b",
+		"off-residual-two-draw.png": "0f2bcd5e1aae72f341eca2788773459f347d22503b2211a7e33820b81edba067",
+		"off-residual.png": "900dff0631c04c999d7773ae1ce1f0608e6ed3cb18f33ea5d8bf60239c56618e",
+		"tailpipe-close-two-draw.png": "423fd240f3043326e984c65f967e6a4d5cfbf7798249054d5a91cedcc3119e5b",
+		"tailpipe-close.png": "c28ceb3b6dc6c7ee70e1d05dd24d5a9ed3f142a25ef77ccacd9887172b04186d"
+	},
+	"crash": {},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fault": "",
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"scope": "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted. Two-draw and eight-additional-draw still readbacks are separate; neither is a zero-delay live alignment test. OFF expires requested show smoke; ordinary exhaust still follows its running engine.",
+	"smoke": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 732,
+			"configured": true,
+			"fault": "",
+			"resolved_rates_hz": {
+				"show_exhaust": {
+					"bore_radius_m": 0.008,
+					"capacity": 672,
+					"density": 1.0,
+					"requested_hz": 112.0,
+					"resolved_hz": 112.0
+				},
+				"source_exhaust": {
+					"bore_radius_m": 0.008,
+					"capacity": 60,
+					"density": 0.08,
+					"requested_hz": 48.0,
+					"resolved_hz": 48.0
+				}
+			},
+			"saturated": false,
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_exhaust": 672,
+				"source_exhaust": 60
+			},
+			"source_emitters": 1
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "stock-gasoline_light-v2",
+		"requested": false,
+		"source_running": true
+	},
+	"smoke_on": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 732,
+			"configured": true,
+			"fault": "",
+			"resolved_rates_hz": {
+				"show_exhaust": {
+					"bore_radius_m": 0.008,
+					"capacity": 672,
+					"density": 1.0,
+					"requested_hz": 112.0,
+					"resolved_hz": 112.0
+				},
+				"source_exhaust": {
+					"bore_radius_m": 0.008,
+					"capacity": 60,
+					"density": 0.08,
+					"requested_hz": 48.0,
+					"resolved_hz": 48.0
+				}
+			},
+			"saturated": false,
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_exhaust": 672,
+				"source_exhaust": 60
+			},
+			"source_emitters": 1
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "stock-gasoline_light-v2",
+		"requested": true,
+		"source_running": true
+	},
+	"source_sha256": {
+		"C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd": "bf94746ae4c42b2be36a19b2bc30c2c28d55d6cb545754579fd19466a462c16d",
+		"res://data/aircraft_customization.json": "8872cf94b5190e5e2191d45a8b2e66651775a6f74f6d06b7fe1ef8b90f2021ec",
+		"res://main.gd": "324323bad7736d41faf5a296cdcb31db8253f4f819223265242d043d3f13bd06",
+		"res://render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
+		"res://render/smoke/profile_smoke.gd": "c567c81c017e924706d391212e4b7262a89ea71e3f8cf17bac3eff85f515e089",
+		"res://render/smoke/stock_profile.gd": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+	},
+	"tick": 3120
+}
