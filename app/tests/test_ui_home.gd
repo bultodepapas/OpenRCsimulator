@@ -53,8 +53,10 @@ func _run() -> void:
 	_check("helicopter Home explains startup sequence", helicopter_home.limits_label.text.contains("arm, release hold"))
 	helicopter_home.set_start_choice("airborne")
 	_check("explicit practice hover remains selectable",helicopter_home.start_choice=="airborne" and helicopter_home.start_button.text=="Start: hover")
-	_check("airplane Workshop and Natural Random are disabled for the rotorcraft",
-		helicopter_home.workshop_button.disabled and helicopter_home.natural_random_button.disabled)
+	# UI-34d (UI-30 AS-6): Workshop has its own airplane library and Natural Random draws its own airplane.
+	_check("Workshop and Natural Random stay available with the rotorcraft; failure practice stays airplane-only",
+		not helicopter_home.workshop_button.disabled and not helicopter_home.natural_random_button.disabled
+		and helicopter_home.failures_button.disabled)
 	helicopter_home.free()
 
 	TranslationServer.set_locale("en")

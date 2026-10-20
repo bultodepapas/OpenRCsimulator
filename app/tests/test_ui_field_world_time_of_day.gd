@@ -138,8 +138,7 @@ func _home_and_flight() -> void:
 	await ui.tap(KEY_DOWN) # Restart
 	await ui.tap(KEY_DOWN) # Session options
 	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_DOWN) # Workshop
-	await ui.tap(KEY_DOWN) # Sky and lighting
+	await ui.tap(KEY_DOWN) # Sky and lighting (UI-33: this flight's tools come first in Session options)
 	_check("Sky and lighting is reachable inside Session options", ui.focus_name() == "TimeOfDay", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

@@ -963,8 +963,8 @@ func _route_controller_restart(event: InputEvent) -> bool:
 func open_natural_random(from: Control = null) -> void:
 	if not screens.is_top("home") or flight != null:
 		return
-	if Catalog.is_rotorcraft(home.aircraft_id) or not home.runway_available:
-		return
+	if not home.runway_available:
+		return # UI-34d (UI-30 AS-6): the briefing draws its own airplane; only the field limits it
 	var briefing := NaturalRandomScreen.new()
 	briefing.fly_requested.connect(start_flight)
 	briefing.reroll_requested.connect(_draw_random_scenario)
@@ -978,6 +978,8 @@ func open_natural_random(from: Control = null) -> void:
 func close_natural_random() -> void:
 	if screens.is_top("natural_random"):
 		screens.pop()
+		if home_scene != null and home != null:
+			home_scene.request_aircraft(home.aircraft_id) # UI-34c: Home shows its own selection again
 
 
 func _draw_random_scenario() -> void:
@@ -1001,6 +1003,9 @@ func _repeat_random_scenario() -> void:
 func _prepare_random_briefing(scenario: Dictionary) -> void:
 	natural_random_screen.set_busy(true)
 	natural_random_screen.set_scenario(scenario)
+	# UI-34c (UI-30 AS-11): the backdrop shows the airplane the briefing describes, never Home's selection.
+	if home_scene != null:
+		home_scene.request_aircraft(str(scenario.get("aircraft_id", "")))
 	var sources: Dictionary = ScenarioConfig.validate_sources(scenario, field_path)
 	if not sources.ok:
 		natural_random_screen.show_error(tr("Could not prepare random flight: %s") % "; ".join(sources.errors))
@@ -1202,8 +1207,7 @@ func open_help(from: Control = null) -> void:
 
 ## One editor route for the whole catalog. Trial flights never replace the original selection.
 func open_workshop(from: Control = null) -> void:
-	if (flight != null and Catalog.is_rotorcraft(str(flight.get("aircraft_id")))) \
-		or (home != null and Catalog.is_rotorcraft(home.aircraft_id)):
+	if flight != null and Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
 		return
 	if not _workshop_screens.is_empty():
 		_return_to_workshop()
@@ -1214,6 +1218,8 @@ func open_workshop(from: Control = null) -> void:
 	# Test/tool hosts use custom preference files and must not touch player recovery.
 	editor.set("recovery_enabled", preferences_path == Preferences.DEFAULT_PATH)
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
+	if Catalog.is_rotorcraft(editor.initial_aircraft_id):
+		editor.initial_aircraft_id = Catalog.DEFAULT_ID # UI-34d: Workshop builds airplanes; start from the default one
 	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
 	var weather: Dictionary = flight.weather_config if flight != null else preferences.get("weather_config", WeatherSettings.defaults())
 	var lighting: Dictionary = flight.lighting_config if flight != null else preferences.get("lighting_config", TimeOfDay.defaults())

@@ -72,7 +72,7 @@ func _test_spanish() -> void:
 	var translations: Dictionary = {
 		"StockAirplaneHeading": "Avión de serie",
 		"ModelStatusHeading": "Estado del modelo",
-		"FlightConditionsHeading": "Condiciones de vuelo",
+		"FlightConditionsHeading": "Condiciones",
 		"FlightDetailsHeading": "Detalles del vuelo",
 	}
 	for node_name: String in translations:

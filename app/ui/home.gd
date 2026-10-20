@@ -127,6 +127,7 @@ var _header_actions: HBoxContainer
 var _brand_label: Label
 var _alpha_badge: PanelContainer
 var _version_label: Label
+var _version_shown := false
 var _rail_scrim: TextureRect
 var _top_scrim: TextureRect
 var _page_host: VBoxContainer
@@ -141,6 +142,13 @@ var _flight_details: VBoxContainer
 var _details_button: Button
 var _details_chevron
 var _requested_aircraft_id := ""
+var _catalog_preview_label: Label
+## UI-34b (UI-30 SP-1, AS-2): beside the catalog on desktop layouts, what the selected aircraft is and its limits.
+var _catalog_detail: PanelContainer
+var _detail_name_label: Label
+var _detail_capability_label: Label
+var _detail_summary_label: Label
+var _detail_note_label: Label
 
 
 func _init() -> void:
@@ -186,7 +194,11 @@ func _init() -> void:
 	version_label.name = "Version"
 	version_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	version_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	version_label.autowrap_mode = TextServer.AUTOWRAP_OFF # UI-33 (UI-30 VC-8): one quiet line beside the badge
+	version_label.autowrap_mode = TextServer.AUTOWRAP_OFF
+	# UI-33 (UI-30 VC-8): an exported build shows its short version beside the badge; a development run keeps its
+	# full identity in Help → About instead of a wrapped label in the brand.
+	_version_shown = build.source == "export"
+	version_label.visible = _version_shown
 	_version_label = version_label
 	identity.add_child(version_label)
 	_header.add_child(identity)
@@ -436,10 +448,16 @@ func _init() -> void:
 	_page_host.add_child(aircraft_page)
 	_pages.append(aircraft_page)
 	aircraft_page.add_child(_label("AIRCRAFT CATALOG", "SectionTitle"))
-	var catalog_intro := _label("Choose a model. Flight capability and limitations are shown on each entry.", "SecondaryLabel")
+	var catalog_intro := _label("Choose a model for the next flight.", "SecondaryLabel")
 	catalog_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catalog_intro.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_page.add_child(catalog_intro)
+	# UI-34c (UI-30 AS-5): the catalog shows the same preview state as the Flight card.
+	_catalog_preview_label = _label("", "SecondaryLabel")
+	_catalog_preview_label.name = "CatalogPreviewState"
+	_catalog_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_catalog_preview_label.visible = false
+	aircraft_page.add_child(_catalog_preview_label)
 	var catalog_list := VBoxContainer.new()
 	catalog_list.name = "AircraftCatalog"
 	catalog_list.add_theme_constant_override("separation", 6)
@@ -571,11 +589,6 @@ func _init() -> void:
 	help_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	utility_row.add_child(help_button)
-	var quit_gap := Control.new() # UI-33 (UI-30 HN-4): leaving the application stands apart from Help
-	quit_gap.name = "QuitGap"
-	quit_gap.custom_minimum_size.x = 16.0
-	quit_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	utility_row.add_child(quit_gap)
 	quit_button = _button("Quit", "QuietButton")
 	quit_button.name = "Quit"
 	quit_button.custom_minimum_size.y = 34
@@ -590,8 +603,49 @@ func _init() -> void:
 	for header_button in [language_button, settings_button]:
 		header_button.autowrap_mode = TextServer.AUTOWRAP_OFF
 
+	_build_catalog_detail()
 	_select_page(0)
 	set_aircraft(aircraft_id)
+
+
+func _build_catalog_detail() -> void:
+	_catalog_detail = PanelContainer.new()
+	_catalog_detail.name = "AircraftDetails"
+	_catalog_detail.theme_type_variation = "Card"
+	_catalog_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_catalog_detail.visible = false
+	add_child(_catalog_detail)
+	var lines := VBoxContainer.new()
+	lines.add_theme_constant_override("separation", 8)
+	_catalog_detail.add_child(lines)
+	_detail_name_label = _label("", "CardTitle", false)
+	_detail_capability_label = _label("", "SectionLabel", false)
+	_detail_summary_label = _label("", "SecondaryLabel", false)
+	_detail_note_label = _label("", "SecondaryLabel", false)
+	for label: Label in [_detail_name_label, _detail_capability_label, _detail_summary_label, _detail_note_label]:
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
+		lines.add_child(label)
+
+
+func _update_catalog_detail() -> void:
+	if _catalog_detail == null:
+		return
+	var shown_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
+	var entry: Dictionary = Catalog.entry(shown_id)
+	_detail_name_label.text = tr(entry.get("name", ""))
+	_detail_capability_label.text = tr("Flyable") if entry.get("status") == Catalog.FLYABLE \
+		else tr("Experimental") if entry.get("status") == Catalog.EXPERIMENTAL else tr("Preview only")
+	_detail_summary_label.text = tr(entry.get("summary", ""))
+	_detail_note_label.text = tr(entry.get("status_note", ""))
+
+
+func _update_catalog_detail_visibility() -> void:
+	if _catalog_detail == null or _pages.size() < 2:
+		return
+	var viewport_size := get_viewport_rect().size if is_inside_tree() else Vector2(1920.0, 1080.0)
+	var compact := viewport_size.x < 1500.0 or viewport_size.y < 850.0
+	_catalog_detail.visible = _pages[1].visible and not compact
 
 
 func _nav_button(label: String, node_name: String, page_index: int) -> Button:
@@ -643,31 +697,21 @@ static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
 
 
 func _update_catalog_texts() -> void:
+	_update_catalog_detail()
 	var selected_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
 	for index in _catalog_ids.size():
 		var id: String = _catalog_ids[index]
 		var item := _catalog_buttons[index]
 		var entry: Dictionary = Catalog.entry(id)
 		var capability := tr("Flyable") if entry.status == Catalog.FLYABLE else tr("Experimental") if entry.status == Catalog.EXPERIMENTAL else tr("Preview only")
-		item.text = "%s\n%s" % [tr(entry.name), capability]
-		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(entry.status_note)]
+		item.text = "%s\n%s" % [tr(Catalog.short_name(id)), capability]
+		item.tooltip_text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), tr(entry.status_note)]
 		item.set_pressed_no_signal(id == selected_id)
 
 
+## UI-34b (UI-30 AS-9, SP-7): the catalog's one-line name; the full name stays in the tooltip and the details card.
 func _aircraft_display_name() -> String:
-	var full_name: String = tr(Catalog.entry(aircraft_id).name)
-	var compact := UiTheme.compact_layout
-	if is_inside_tree():
-		var viewport_size := get_viewport_rect().size
-		compact = viewport_size.x < 1500.0 or viewport_size.y < 850.0
-	if not compact:
-		return full_name
-	match aircraft_id:
-		"stik-glow-61fx-2t": return "Ugly Stick · 61FX"
-		"stik-glow-55ax-2t": return "Ugly Stick · 55AX"
-		"stik-glow-fs64v-4t": return "Ugly Stick · FS-64V"
-		"xcell-60-research": return "X-Cell .60 Trainer"
-	return full_name
+	return tr(Catalog.short_name(aircraft_id))
 
 
 func _update_flight_capability() -> void:
@@ -751,6 +795,7 @@ func _select_page(index: int) -> void:
 	_scroll.scroll_vertical = 0
 	fly_button.visible = selected != 3
 	ground_vehicle_button.visible = selected == 3
+	_update_catalog_detail_visibility()
 	if selected == 1:
 		_schedule_selected_aircraft_reveal()
 	# Focus stays on the selected destination's content; it never skips into another section.
@@ -840,7 +885,7 @@ func _apply_responsive_layout() -> void:
 	settings_button.custom_minimum_size.x = maxf(130.0, settings_button.get_theme_font("font").get_string_size(
 		tr(settings_button.text), HORIZONTAL_ALIGNMENT_LEFT, -1, settings_button.get_theme_font_size("font_size")).x + 32.0)
 	_alpha_badge.visible = not large_text
-	_version_label.visible = not large_text
+	_version_label.visible = _version_shown and not large_text
 	_set_responsive_font(_brand_label, UiTheme.SIZE.header, true)
 	var header_height := maxf(_header.get_combined_minimum_size().y, _header_actions.get_combined_minimum_size().y)
 	var header_action_width := maxf(420.0, language_button.custom_minimum_size.x + settings_button.custom_minimum_size.x + 8.0)
@@ -858,6 +903,13 @@ func _apply_responsive_layout() -> void:
 	_top_scrim.offset_bottom = 150.0 if compact else 176.0
 	_left_layout.offset_left = inset
 	_left_layout.offset_right = inset + rail_width
+	if _catalog_detail != null:
+		var detail_left := inset + rail_width + 32.0
+		_catalog_detail.offset_left = detail_left
+		_catalog_detail.offset_right = detail_left + clampf(viewport_size.x * 0.22, 360.0, 460.0)
+		_catalog_detail.offset_top = maxf(88.0 if compact else 108.0, header_top + header_height + 16.0)
+		_catalog_detail.offset_bottom = _catalog_detail.offset_top
+		_update_catalog_detail_visibility()
 	_left_layout.offset_top = maxf(88.0 if compact else 108.0, header_top + header_height + 16.0)
 	_left_layout.offset_bottom = -24.0
 	_navigation.columns = 2 if compact else 1
@@ -984,8 +1036,9 @@ func set_aircraft(id: String) -> void:
 		var fly_previous: Control = start_button if selected_page == 0 and not fly_button.disabled else _page_buttons[selected_page]
 		fly_button.focus_neighbor_top = fly_button.get_path_to(fly_previous)
 		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
-	workshop_button.disabled = rotorcraft
-	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
+	# UI-34d (UI-30 AS-6): Workshop has its own airplane library, so a helicopter selection does not close it.
+	workshop_button.disabled = false
+	workshop_button.tooltip_text = ""
 	_update_landscape_activities()
 	failures_button.disabled = rotorcraft
 	failures_button.tooltip_text = tr("Failure practice currently supports airplanes only.") if rotorcraft else ""
@@ -1000,8 +1053,9 @@ func set_aircraft(id: String) -> void:
 
 ## Kept separate from save/launch errors. Label auto-translation stays live.
 func set_preview_state(state: String) -> void:
-	aircraft_preview_label.text = "Loading aircraft preview…" if state == "loading" else "Aircraft preview could not be loaded."
-	aircraft_preview_label.visible = state != "ready"
+	for label: Label in [aircraft_preview_label, _catalog_preview_label]:
+		label.text = "Loading aircraft preview…" if state == "loading" else "Aircraft preview could not be loaded."
+		label.visible = state != "ready"
 
 
 ## The pilot's explicit start for the selected vehicle class (remembered for that class).
@@ -1049,7 +1103,7 @@ func _show_start_choice(choice: String) -> void:
 			start_button.tooltip_text = tr("This landscape supports airborne starts only.")
 		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
 		return
-	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
+	var supported: bool = Catalog.runway_supported(aircraft_id) and runway_available
 	# D6e-R4: every airplane launches trimmed for level flight at 50 % throttle, in the air or after the runway
 	# takeoff, so the former explicit "50% throttle" choice is this airborne start and is shown as such.
 	var airborne: bool = choice == "airborne" or choice == FlightSession.START_HALF_POWER
@@ -1070,10 +1124,9 @@ func set_landscape(id: String) -> void:
 
 
 func _update_landscape_activities() -> void:
-	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
-	natural_random_button.disabled = rotorcraft or not runway_available
-	natural_random_button.tooltip_text = tr("Natural Random currently supports airplanes only.") if rotorcraft \
-		else tr("Natural Random requires Club field.") if not runway_available else ""
+	# UI-34d (UI-30 AS-6): Natural Random draws its own airplane, so only the field limits it.
+	natural_random_button.disabled = not runway_available
+	natural_random_button.tooltip_text = tr("Natural Random requires Club field.") if not runway_available else ""
 
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
@@ -1111,7 +1164,7 @@ func _cycle_start_choice() -> void:
 		start_requested.emit("runway" if start_choice == "airborne" else "airborne")
 		return
 	var choices: Array[String] = []
-	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
+	if Catalog.runway_supported(aircraft_id) and runway_available:
 		choices.append("runway")
 	choices.append("airborne")
 	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])
@@ -1150,6 +1203,7 @@ func set_time_of_day(preset: String) -> void:
 ## A rejected launch leaves the same usable Home, including keyboard focus.
 func reject_start(message: String) -> void:
 	_fly_sent = false
+	fly_button.text = "FLY"
 	set_aircraft(aircraft_id)
 	set_note(message)
 	fly_button.grab_focus()
@@ -1158,7 +1212,7 @@ func reject_start(message: String) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		set_landscape(landscape_id)
-		set_start_choice(start_choice) # Rotorcraft launch labels are translated when assigned.
+		_show_start_choice(start_choice) # re-render the translated label; never re-record the remembered choice
 		_update_texts()
 	elif what == NOTIFICATION_THEME_CHANGED and is_node_ready():
 		_apply_responsive_layout.call_deferred()
@@ -1420,6 +1474,10 @@ func _on_fly() -> void:
 		return
 	_fly_sent = true
 	fly_button.disabled = true
+	# UI-34c (UI-30 HN-7): one rendered frame acknowledges the press before the synchronous flight build.
+	fly_button.text = "Preparing flight…"
+	if is_inside_tree():
+		await get_tree().process_frame
 	fly_requested.emit()
 
 

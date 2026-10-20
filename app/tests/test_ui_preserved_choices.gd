@@ -95,6 +95,15 @@ func _run() -> void:
 	await ui.settle()
 	home = app.home
 	_check("returning to the club field restores the runway start", home.start_choice == "runway", home.start_choice)
+	app.set_landscape(green)
+	await ui.settle()
+	app.set_language("es") # a language switch re-renders the start label; it must not record the limited start
+	await ui.settle()
+	app.set_language("en")
+	app.set_landscape(Landscapes.DEFAULT_ID)
+	await ui.settle()
+	home = app.home
+	_check("a language switch on a runway-less field keeps the runway preference", home.start_choice == "runway", home.start_choice)
 
 	# --- F8: selecting an aircraft keeps Home's note (a failure debrief or a launch rejection).
 	home.set_note("Kept note")

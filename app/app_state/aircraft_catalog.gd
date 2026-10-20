@@ -12,8 +12,12 @@ const EXPERIMENTAL := "experimental"
 const PREVIEW := "preview"
 
 const DEFAULT_ID := "jensen-das-ugly-stik-60"
+## Per-ID answers read from stock data files, which never change while the application runs.
+static var _finite_fuel_cache := {}
+static var _runway_cache := {}
 
-## In menu order. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
+## In menu order. `short_name` (UI-34b) is the one-line label for the Home card and catalog list; `name` stays complete in
+## details and tooltips. `name` is a proper name (never translated; the Timber's fictional name is the one exception: es.po carries
 ## its Spanish form and ui/home.gd passes names through tr()); `summary` and `status_note` are English source strings
 ## (tr() at the call site). `data` is "" for a preview. render/airplane.gd builds each ID with the model team's builder
 ## and knows its datum; tests/test_aircraft_catalog.gd checks that every ID builds and every flyable one trims.
@@ -22,6 +26,7 @@ const ENTRIES := [
 		id = "jensen-das-ugly-stik-60",
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick",
+		short_name = "Ugly Stick",
 		summary = "High-wing sport trainer · 1.52 m · .61 glow",
 		status = FLYABLE,
 		status_note = "Full-rudder sideslip and R02 yaw damping acceptance remain pending.",
@@ -32,6 +37,7 @@ const ENTRIES := [
 		id = "stik-glow-61fx-2t",
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · MAX-61FX",
+		short_name = "Ugly Stick · 61FX",
 		summary = "High-wing sport trainer · 1.52 m · .61 2-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: the Stik's own O.S. MAX-61FX on the glow engine model; profile scaled from the MAX-55AX, not flight-validated.",
@@ -41,6 +47,7 @@ const ENTRIES := [
 		id = "stik-glow-55ax-2t",
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · MAX-55AX",
+		short_name = "Ugly Stick · 55AX",
 		summary = "High-wing sport trainer · 1.52 m · .55 2-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: inferred O.S. MAX-55AX 2-stroke installation and engine profile; not flight-validated.",
@@ -50,6 +57,7 @@ const ENTRIES := [
 		id = "stik-glow-fs64v-4t",
 		visual_family = "jensen-das-ugly-stik-60",
 		name = "Ugly Stick · FS-64V",
+		short_name = "Ugly Stick · FS-64V",
 		summary = "High-wing sport trainer · 1.52 m · .64 4-stroke glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: inferred O.S. FS-64V 4-stroke installation and engine profile; not flight-validated.",
@@ -59,6 +67,7 @@ const ENTRIES := [
 		id = "gp-extra-300s-60",
 		visual_family = "gp-extra-300s-60",
 		name = "Great Planes Extra 300S .60",
+		short_name = "Extra 300S",
 		summary = "Low-wing aerobat · 1.63 m · .61 glow",
 		status = EXPERIMENTAL,
 		status_note = "Experimental finite MAX-61FX glow installation from the NITRO candidate profile; Extra-specific fuel-feed calibration is unavailable, and physical validation is pending.",
@@ -68,6 +77,7 @@ const ENTRIES := [
 		id = "p51d-mustang-120",
 		visual_family = "p51d-mustang-120",
 		name = "P-51D Mustang 1/4",
+		short_name = "P-51D Mustang",
 		summary = "Giant-scale warbird · 2.82 m · 120 cc gasoline",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: estimated quarter-scale physics, not yet flight-tested.",
@@ -77,6 +87,7 @@ const ENTRIES := [
 		id = "sebart-avanti-s-a200-p100rx",
 		visual_family = "sebart-avanti-s-a200-p100rx",
 		name = "Ventage Jet",
+		short_name = "Ventage Jet",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Runway or airborne start.",
@@ -88,6 +99,7 @@ const ENTRIES := [
 		id = "turbo-lumber-evolution",
 		visual_family = "turbo-lumber-evolution",
 		name = "Turbo Lumber Evolution",
+		short_name = "Turbo Lumber",
 		summary = "High-wing STOL · 1.55 m · 4S electric",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
@@ -100,6 +112,7 @@ const ENTRIES := [
 		vehicle = "rotorcraft",
 		visual_family = "hx-700",
 		name = "RC Helicopter Research Trainer",
+		short_name = "X-Cell .60 Trainer",
 		summary = "X-Cell reference physics · HX-700 visual",
 		status = EXPERIMENTAL,
 		status_note = "Experimental: X-Cell .60 reference physics with an HX-700 visual surrogate; ground pad or practice hover; not flight-validated.",
@@ -182,7 +195,27 @@ static func battery_data(id: String) -> String:
 
 
 ## Whether the aircraft declares a finite fuel consumer, so a finite-store start fill applies.
+## Stock data never changes while the application runs, so each answer is read once (UI-34c, UI-30 AS-8).
 static func has_finite_fuel(id: String) -> bool:
+	if not _finite_fuel_cache.has(id):
+		_finite_fuel_cache[id] = _read_finite_fuel(id)
+	return _finite_fuel_cache[id]
+
+
+## Whether a runway start is supported (FlightSession validates the aircraft data's gear), cached per stock ID.
+static func runway_supported(id: String) -> bool:
+	if not _runway_cache.has(id):
+		_runway_cache[id] = bool(load("res://sim/flight_session.gd").runway_aircraft_supported(id))
+	return _runway_cache[id]
+
+
+## The one-line label for the Home card and catalog list; falls back to the full name.
+static func short_name(id: String) -> String:
+	var e := entry(id)
+	return str(e.get("short_name", e.get("name", "")))
+
+
+static func _read_finite_fuel(id: String) -> bool:
 	if not can_fly(id) or is_rotorcraft(id):
 		return false
 	var path: String = str(entry(id).get("data", ""))
