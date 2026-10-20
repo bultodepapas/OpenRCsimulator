@@ -108,8 +108,8 @@ msgstr "Viento uniforme con rachas suaves y periódicas."
 msgid "Wind is uniform across the field; optional turbulence changes smoothly over time."
 msgstr "El viento es uniforme en todo el campo; la turbulencia opcional cambia suavemente con el tiempo."
 
-msgid "Flight conditions"
-msgstr "Condiciones de vuelo"
+msgid "Conditions"
+msgstr "Condiciones"
 
 msgid "Uniform wind and smooth repeating gusts. No turbulence or spatial variation."
 msgstr "Viento uniforme y rachas suaves y periódicas. Sin turbulencia ni variación espacial."
@@ -297,13 +297,13 @@ msgstr "Terminar vuelo"
 msgid "This flight cannot continue: %s"
 msgstr "Este vuelo no puede continuar: %s"
 
-msgid "Crashed. The flight restarts by itself after you continue."
+msgid "Crashed. The flight restarts by itself after you resume."
 msgstr "Accidente. El vuelo se reinicia solo al continuar."
 
-msgid "Crashed. Continue to inspect the wreck, or restart the flight."
+msgid "Crashed. Resume to inspect the wreck, or restart the flight."
 msgstr "Accidente. Continúa para inspeccionar los restos o reinicia el vuelo."
 
-msgid "The radio was disconnected: engine at idle, sticks centred. Continue flies with the keyboard, or plug the radio back in."
+msgid "The radio was disconnected: engine at idle, sticks centred. Resume flies with the keyboard, or plug the radio back in."
 msgstr "La radio se desconectó: motor al ralentí y mandos centrados. Pulsa Continuar para volar con el teclado o vuelve a conectar la radio."
 
 msgid "Radio calibration cancelled; the previous profile stays."
@@ -888,13 +888,13 @@ msgstr "Teclado"
 msgid "Release the sticks, triggers and buttons, then select Continue."
 msgstr "Suelta las palancas, los gatillos y los botones; después pulsa Continuar."
 
-msgid "Controls ready. Select Continue to fly."
+msgid "Controls ready. Select Resume to fly."
 msgstr "Controles listos. Pulsa Continuar para volar."
 
 msgid "Could not restart flight: %s"
 msgstr "No se pudo reiniciar el vuelo: %s"
 
-msgid "Flight restarted. Select Continue when the controls are ready."
+msgid "Flight restarted. Select Resume when the controls are ready."
 msgstr "Vuelo reiniciado. Pulsa Continuar cuando los controles estén listos."
 
 msgid "Gamepad"
@@ -2003,14 +2003,14 @@ msgstr "GAMEPAD SEGURO · mueve los controles y suéltalos"
 msgid "CONTROLLER LOST · select controls to continue"
 msgstr "CONTROL DESCONECTADO · selecciona controles para continuar"
 
-msgid "Controller unavailable. Select a connected device or keyboard in Controller settings."
-msgstr "Controlador no disponible. Elige un dispositivo conectado o el teclado en Configuración del control."
+msgid "Controller unavailable. Select a connected device or keyboard in Controls."
+msgstr "Controlador no disponible. Elige un dispositivo conectado o el teclado en Controles."
 
 msgid "Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action."
 msgstr "Mueve una vez cada control asignado, suelta las palancas y los gatillos y espera el neutro. Debes elegir Continuar explícitamente."
 
-msgid "Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio."
-msgstr "Baja el acelerador para armar. Si la asignación no es correcta, abre Configuración del control y calibra la radio seleccionada."
+msgid "Lower the throttle to arm. If the mapping is wrong, open Controls and calibrate the selected radio."
+msgstr "Baja el acelerador para armar. Si la asignación no es correcta, abre Controles y calibra la radio seleccionada."
 
 msgid "Throttle on resume: %.0f%%"
 msgstr "Acelerador al reanudar: %.0f%%"
@@ -2815,11 +2815,11 @@ msgid "Aircraft preview could not be loaded."
 msgstr "No se pudo cargar la vista previa del avión."
 
 #. HELI-20 ground lifecycle
-msgid "USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates."
-msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Configuración del control. El corte activa hold y soltarlo no arranca el rotor. K calibra."
+msgid "USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controls. Throttle cut latches hold; releasing it never starts the rotor. K calibrates."
+msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Controles. El corte activa hold y soltarlo no arranca el rotor. K calibra."
 
-msgid "USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controller settings."
-msgstr "Radio USB (EdgeTX): selecciona Advanced Joystick en Model setup. Baja el acelerador para armar; al desconectarla se pausa el vuelo. K: calibrar. Asigna el tren a AUX o a Alternar tren de aterrizaje en Configuración del control."
+msgid "USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controls."
+msgstr "Radio USB (EdgeTX): selecciona Advanced Joystick en Model setup. Baja el acelerador para armar; al desconectarla se pausa el vuelo. K: calibrar. Asigna el tren a AUX o a Alternar tren de aterrizaje en Controles."
 msgid "Night lights: auto"
 msgstr "Luces nocturnas: automático"
 
@@ -2904,17 +2904,17 @@ msgstr "Este avión"
 msgid "Not available"
 msgstr "No disponible"
 
-msgid "Assign in Controller settings"
-msgstr "Asignar en Configuración del control"
+msgid "Assign in Controls"
+msgstr "Asignar en Controles"
 
 msgid "On"
 msgstr "Encendido"
 
-msgid "Checking controller input. If it does not respond, open Controller settings."
-msgstr "Comprobando el mando. Si no responde, abre Configuración del control."
+msgid "Checking controller input. If it does not respond, open Controls."
+msgstr "Comprobando el mando. Si no responde, abre Controles."
 
-msgid "Flight controller: %s. Review your bindings in Controller settings."
-msgstr "Control de vuelo: %s. Revisa las asignaciones en Configuración del control."
+msgid "Flight controller: %s. Review your bindings in Controls."
+msgstr "Control de vuelo: %s. Revisa las asignaciones en Controles."
 
 msgid "Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5)."
 msgstr "Acelerador en gatillo: X izquierdo guiñada, X derecho alabeo, Y derecho cabeceo, RT/R2 acelerador (eje 5)."
@@ -4596,3 +4596,13 @@ msgstr "Cambiar aeronave"
 
 msgid "Workshop trial"
 msgstr "Prueba del taller"
+
+# UI-33: one EN/ES glossary across Home, Pause and dialogs (UI-30 AL-1, MENU-REDESIGN-PLAN §6).
+msgid "Resume"
+msgstr "Continuar"
+
+msgid "Quit to desktop"
+msgstr "Salir al escritorio"
+
+msgid "Devices, profiles and radio calibration"
+msgstr "Dispositivos, perfiles y calibración de la radio"

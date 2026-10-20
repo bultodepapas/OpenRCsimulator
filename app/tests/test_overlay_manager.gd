@@ -406,7 +406,7 @@ func _controls_guide() -> void:
 	_check("aircraft switch updates equipment prompts", _guide_text(guide).contains("R1") and not _guide_text(guide).contains("Circle"))
 	profile.actions.smoke_toggle = {type = "unbound"}
 	guide.refresh(context)
-	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controller settings") and not _guide_text(guide).contains("R1"))
+	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controls") and not _guide_text(guide).contains("R1"))
 	var radio := Profile.defaults("radio", "jeti_mode2")
 	radio.aux = {
 		smoke = {type = "switch", buttons = [81, 82, 83], invert = false, label = "Sa"},
@@ -420,7 +420,7 @@ func _controls_guide() -> void:
 	guide.refresh(context)
 	_check("maintained switch AUX appears as assigned equipment in the guide",
 		guide._equipment_labels.has("smoke") and guide._equipment_labels.has("flaps") and guide._equipment_labels.has("gear")
-		and not _guide_text(guide).contains("Assign in Controller settings"))
+		and not _guide_text(guide).contains("Assign in Controls"))
 	_check("guide shows physical switch names and observed indices without gamepad labels",
 		_guide_text(guide).contains("Sa") and _guide_text(guide).contains("Sb") and _guide_text(guide).contains("Sc")
 		and _guide_text(guide).contains("81") and _guide_text(guide).contains("101")

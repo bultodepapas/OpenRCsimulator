@@ -172,7 +172,7 @@ func _test_home_at_720() -> void:
 	_check("Home weather affordance fits the scroll viewport", scroll != null
 		and weather_rect.position.y >= scroll_rect.position.y
 		and weather_rect.end.y <= scroll_rect.end.y)
-	_check("Home weather summary exposes the selected sky", home.weather_button.text.contains("Weather")
+	_check("Home weather summary exposes the selected sky", home.weather_button.text.contains("Conditions")
 		and home.weather_button.tooltip_text.contains("Distant Storm"))
 	var requested := [0]
 	home.weather_requested.connect(func(_from: Control) -> void: requested[0] += 1)

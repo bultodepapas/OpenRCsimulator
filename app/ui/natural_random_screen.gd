@@ -109,7 +109,7 @@ func _init(initial_scenario: Dictionary = {}) -> void:
 	aircraft_status_label = _label("", "SecondaryLabel", true)
 	aircraft_content.add_child(aircraft_status_label)
 
-	var flight_conditions_heading := _label("Flight conditions", "SectionLabel")
+	var flight_conditions_heading := _label("Conditions", "SectionLabel")
 	flight_conditions_heading.name = "FlightConditionsHeading"
 	content.add_child(flight_conditions_heading)
 	recipe_light_label = _label("", "CardTitle", true)

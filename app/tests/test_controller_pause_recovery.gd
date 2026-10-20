@@ -135,7 +135,7 @@ func _run() -> void:
 	await create_timer(0.15).timeout
 	check("normal Pause opens with live roll input and keeps readiness", app.pause_menu != null
 		and session.sim.paused and session.radio.armed and session.radio.sticks().roll > 0.5
-		and app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
+		and app.pause_menu.status_text(session) == tr("Controls ready. Select Resume to fly."))
 	await ui.tap(KEY_DOWN)
 	check("focused menu navigation selects Restart", ui.focus_name() == "Restart")
 	await ui.tap(KEY_ENTER)

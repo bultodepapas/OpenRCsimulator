@@ -144,7 +144,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	panel.add_child(column)
 
 	var header: HBoxContainer = HBoxContainer.new()
-	var title: Label = _label("Flight conditions", "TitleLabel")
+	var title: Label = _label("Conditions", "TitleLabel")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	column.add_child(header)

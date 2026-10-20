@@ -134,7 +134,7 @@ func _draft_dialog() -> void:
 	_check("precision fixture valid", Preferences.save_to(PREFS, prefs) == OK)
 	var app: Node = await _app()
 	var home: Control = app.home
-	_check("Home presents a weather button next to Fly", home.weather_button != null and home.weather_button.text.contains("Weather"), home.weather_button.text)
+	_check("Home presents a weather button next to Fly", home.weather_button != null and home.weather_button.text.contains("Conditions"), home.weather_button.text)
 	_check("Home initially focuses Fly", ui.focus_name() == "Fly", ui.focus_name())
 	for step in 40:
 		if ui.focus_name() == "Weather": break
@@ -223,7 +223,7 @@ func _draft_dialog() -> void:
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	dialog = app.weather_dialog
-	_check("Spanish localizes Home and the modal preset list", home.weather_button.text.begins_with("Clima")
+	_check("Spanish localizes Home and the modal preset list", home.weather_button.text.begins_with("Condiciones")
 		and dialog.preset_picker.get_item_text(1) == "Calma", "%s / %s" % [home.weather_button.text, dialog.preset_picker.get_item_text(1)])
 	_check("Spanish localizes the compact night profile and campfire choices",
 		dialog.time_of_day_controls.field_lighting_picker.get_item_text(0) == "Club suave"

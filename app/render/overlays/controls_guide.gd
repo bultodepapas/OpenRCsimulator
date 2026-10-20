@@ -182,7 +182,7 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 			if binding.get("type", "unbound") == "unbound":
 				prompt.text = "—"
 		elif binding.get("type", "unbound") == "unbound":
-			caption += "\n" + tr("Assign in Controller settings")
+			caption += "\n" + tr("Assign in Controls")
 		var label := _row(caption, prompt.text, prompt.texture_path)
 		if available and binding.get("type", "unbound") != "unbound":
 			_equipment_labels[channel] = {label = label, caption = caption}

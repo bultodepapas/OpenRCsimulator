@@ -167,7 +167,7 @@ func _atmosphere_flow() -> void:
 		str(saved))
 	var home_field_detail := _field_weather_detail(expected)
 	_check("Home Weather tooltip contains the complete custom field-density summary",
-		app.home.weather_button.text.begins_with(tr("Weather"))
+		app.home.weather_button.text.begins_with(tr("Conditions"))
 		and app.home.weather_button.tooltip_text.contains(home_field_detail),
 		app.home.weather_button.tooltip_text)
 
@@ -340,7 +340,7 @@ func _localization() -> void:
 		"tab=%s modes=%s/%s field=%s" % [dialog.tab_container.get_tab_title(2), dialog.atmosphere_mode_picker.get_item_text(0),
 			dialog.atmosphere_mode_picker.get_item_text(1), (dialog.find_child("field_elevation_mLabel", true, false) as Label).text])
 	_check("Spanish Home exposes custom field density in the Weather tooltip",
-		app.home.weather_button.text.begins_with("Clima")
+		app.home.weather_button.text.begins_with("Condiciones")
 		and app.home.weather_button.tooltip_text.contains(_field_weather_detail(app.home.weather_config))
 		and app.home.weather_button.tooltip_text.contains("Campo 1500.0 m")
 		and app.home.weather_button.tooltip_text.contains("altitud de densidad"),

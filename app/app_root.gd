@@ -1760,7 +1760,7 @@ func _commit_restart_flight() -> void:
 		session._poll_controller(false)
 	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
 		pause_menu.refresh()
-		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
+		pause_menu.set_note(tr("Flight restarted. Select Resume when the controls are ready."))
 		pause_menu.continue_button.grab_focus()
 	else:
 		_close_pause()
