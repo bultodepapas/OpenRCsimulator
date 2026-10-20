@@ -1,0 +1,18 @@
+{
+  "app/scenery/power_lines.gd": "0ab2fcd51ba63d27c4bf88729602cc8d5935a3b53f429314b9c4f1b2b8cff82c",
+  "app/scenery/prefabs.gd": "1d22a627575ebd7b4d6375adc376886fd8fabb15a016ef8c1974c7f664cc4ca8",
+  "app/scenery/scenery.gd": "7259f08447ddc122e7ed730984d707b72386f089859bd9db7b39feda52712027",
+  "app/scenery/collision_world.gd": "9f601b43a1eee5925036298d7fd3f2c0a241a8f69685ab05b8c6aa2fac8f5894",
+  "app/data/scenery/default.json": "f063cfc9865294a7df939f97f69bbabc25a8ef532734e9f687afee3278889058",
+  "app/data/scenery/countryside.json": "d7246e00c1a9df65f0a4f339778300602b6de38c2338a9e0686a34adf5ff1899",
+  "app/data/scenery/power_cable.json": "b29026e81fae6a77b51bd4900d9442ff657b11f31f37c672fd23f03e47289a13",
+  "app/data/scenery/power_insulator.json": "729152ff2a4caf49b48214db52a425d3069b710fc18eede02204b313765f2dbd",
+  "tools/scenery/place.py": "5cd9e579e8c0f775e14aec093c5742bb20eec525dd5ac8544ab2499f746f89e1",
+  "tools/scenery/bake_power_cable.py": "ac6f141a1c4c44e37cf78d66623fb8560bc64460d23327d30022907666a68e94",
+  "tools/scenery/bake_power_insulator.py": "81815442071f32957e02396aec39cf7bce4cc498fdf31c86266e86c578b4d230",
+  "app/assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb": "b0ab9d357e5fb70714db6a4322d3b73c326e959954a5c8962acefc0d1db0494e",
+  "app/test.sh": "9ea6290f84766fb873b842945841d735d0296f979dd873cbf538ebdf645cedc9",
+  "app/tests/test_power_lines.gd": "8dc185327b96c6bb411a8a5f972a8b8e30e6760fcdc20cda2ddf5d8e01605585",
+  "app/tests/test_power_line_collisions.gd": "aae9cd14477b88b8a23c68d3100bd2cad853e7e66bebcdce43dcc8252517894e",
+  "app/tests/test_scenery_build.gd": "a347de708d8f7a099b009c49edbd9c8adb8c4547618fa15a8d362e7064083705"
+}

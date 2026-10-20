@@ -38,17 +38,22 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _initialize() -> void:
 	_test_committed_data_and_validation()
-	_test_blade_mesh()
+	var field_lights_only := OS.get_cmdline_user_args().has("--only=field-lights")
+	if not field_lights_only:
+		_test_blade_mesh()
 	var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
 	_check("default field loads for grass checks", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
 	if bool(loaded.get("ok", false)):
 		_field = loaded.field
 		_test_field_light_clearance()
-		_test_standalone_build()
-		_test_default_chunks_and_clearance()
-		_test_deterministic_placements()
-		_test_translated_pilot_and_small_field()
-		_test_field_builder_and_scenery_hook()
+		if field_lights_only:
+			_test_field_light_builder_integration()
+		else:
+			_test_standalone_build()
+			_test_default_chunks_and_clearance()
+			_test_deterministic_placements()
+			_test_translated_pilot_and_small_field()
+			_test_field_builder_and_scenery_hook()
 	print("%d near-grass checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -201,6 +206,7 @@ func _test_field_light_clearance() -> void:
 	var baseline_count := _layout_count(NearGrass.clipped_chunks(_field, _rows))
 	var light_layout := NearGrass.clipped_chunks(_field, _rows, _field_light_exclusions)
 	var light_count := _layout_count(light_layout)
+	var scalar_layout := _brute_clipped_chunks(_field, _rows, _field_light_exclusions)
 	var minimum_gap := _minimum_light_proxy_clearance(light_layout, _field_light_proxies)
 	_check("light exclusions remove only the accepted rows within light clearance bounds",
 		light_count < baseline_count and light_count == 4516,
@@ -208,9 +214,28 @@ func _test_field_light_clearance() -> void:
 	_check("every accepted grass center clears the authoritative light collision footprint by 0.4 m",
 		minimum_gap >= NearGrass.CLEARANCE_M - 0.00001,
 		"minimum horizontal gap %.6f m" % minimum_gap)
-	print("field-light grass clearance: %d -> %d placements; min physical gap %.6f m; masks %d" % [
-		baseline_count, light_count, minimum_gap, _field_light_exclusions.size(),
+	_check("bounded exclusion grid exactly preserves the scalar field-light layout",
+		JSON.stringify(light_layout) == JSON.stringify(scalar_layout))
+	var baseline_ms := _median_layout_time_ms([])
+	var masked_ms := _median_layout_time_ms(_field_light_exclusions)
+	print("field-light grass clearance: %d -> %d placements; min physical gap %.6f m; masks %d; layout median %.3f -> %.3f ms" % [
+		baseline_count, light_count, minimum_gap, _field_light_exclusions.size(), baseline_ms, masked_ms,
 	])
+
+
+func _test_field_light_builder_integration() -> void:
+	var previous_scenery := OS.get_environment("OPENRC_SCENERY")
+	var previous_audio := OS.get_environment("OPENRC_SCENERY_AUDIO")
+	OS.set_environment("OPENRC_SCENERY", "off")
+	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
+	var built: Node3D = FieldBuilder.build(_field)
+	var grass := built.get_node_or_null("NearGrass") as Node3D
+	_check("default field applies light clearance in its procedural grass build",
+		grass != null and int(grass.get_meta("clumps", -1)) == 4516,
+		"actual=%d" % [int(grass.get_meta("clumps", -1)) if grass != null else -1])
+	built.free()
+	OS.set_environment("OPENRC_SCENERY", previous_scenery)
+	OS.set_environment("OPENRC_SCENERY_AUDIO", previous_audio)
 
 
 func _test_deterministic_placements() -> void:
@@ -303,7 +328,7 @@ func _test_field_builder_and_scenery_hook() -> void:
 	var imported_placements: Array = imported_grass.get_meta("placements", []) if imported_grass != null else []
 	var imported_minimum_gap := _minimum_placement_light_clearance(imported_placements, _field_light_proxies)
 	_check("opt-in imported grass placements clear every physical field-light footprint",
-		imported_grass != null and not imported_placements.is_empty()
+		imported_grass != null and _field_light_proxies.size() == 22 and not imported_placements.is_empty()
 		and imported_minimum_gap >= NearGrass.CLEARANCE_M - 0.00001,
 		"placements=%d minimum gap=%.6f m" % [imported_placements.size(), imported_minimum_gap])
 	_check("opt-in scenery attaches downloaded habitat plants within its source budget",
@@ -433,6 +458,28 @@ func _layout_count(layout: Array) -> int:
 	for chunk: Array in layout:
 		total += chunk.size()
 	return total
+
+
+func _brute_clipped_chunks(field: Dictionary, rows: Array, exclusions: Array) -> Array:
+	var chunks: Array = [[], [], [], []]
+	for row: Array in rows:
+		var north := float(field.pilot.north) + float(row[0]) * 0.001
+		var east := float(field.pilot.east) + float(row[1]) * 0.001
+		if not NearGrass.accepts(north, east, field, exclusions):
+			continue
+		var chunk := (0 if row[0] < 0 else 2) + (0 if row[1] < 0 else 1)
+		chunks[chunk].append([north, east, int(row[2]), int(row[3])])
+	return chunks
+
+
+func _median_layout_time_ms(exclusions: Array) -> float:
+	var samples: Array[float] = []
+	for _sample: int in 5:
+		var started := Time.get_ticks_usec()
+		NearGrass.clipped_chunks(_field, _rows, exclusions)
+		samples.append(float(Time.get_ticks_usec() - started) / 1000.0)
+	samples.sort()
+	return samples[samples.size() / 2]
 
 
 func _minimum_light_proxy_clearance(layout: Array, proxies: Array[Dictionary]) -> float:

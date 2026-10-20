@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   supplier topology retained: 5743 triangles
+ok   uniformly scaled tower height 30 m
+ok   measured tower footprint
+ok   five existing placement identities retained
+ok   downloaded span topology retained
+ok   Godot winding declared
+ok   crossarms transverse to route 0
+ok   seven complete conductors per span 0
+ok   crossarms transverse to route 1
+ok   seven complete conductors per span 1
+ok   crossarms transverse to route 2
+ok   seven complete conductors per span 2
+ok   crossarms transverse to route 3
+ok   seven complete conductors per span 3
+ok   bounded full route: 3584 cable triangles
+ok   finite imported world geometry
+ok   sag remains above ground and below tower tops
+ok   cached source deterministic
+ok   six downloaded insulators on each tower
+all power-line checks passed

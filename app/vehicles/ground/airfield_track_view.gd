@@ -3,7 +3,12 @@ extends RefCounted
 
 const GRAVEL_SHADER := preload("res://scenery/gravel.gdshader")
 const PALETTE := preload("res://scenery/palette.gd")
+const TRACK_BARRIER := preload("res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb")
 const GRID_STEP_M := 0.10
+
+# The authored road-contact AABBs are the authority. Cache fitted visual meshes
+# by exact dimensions and orientation; the source UVs and PBR maps stay intact.
+static var _fitted_barriers: Dictionary = {}
 
 static func build(course: Dictionary, road: Callable, ground_material: ShaderMaterial = null) -> Node3D:
 	var root := Node3D.new()
@@ -329,16 +334,71 @@ static func _add_walls(root: Node3D, track: Dictionary) -> void:
 		var emax := float(wall.east_max_m)
 		var bottom := float(wall.bottom_up_m)
 		var top := float(wall.top_up_m)
+		var size := Vector3(emax - emin, top - bottom, nmax - nmin)
 		var barrier := MeshInstance3D.new()
-		var box := BoxMesh.new()
-		# Match each authored wall AABB exactly. These meshes add no collision.
-		box.size = Vector3(emax - emin, top - bottom, nmax - nmin)
-		barrier.mesh = box
+		# Fit the CC0 barrier's actual vertices, including its worn edges and lifting
+		# loops, to the physical box. Baked vertices keep get_aabb() exact as well.
+		barrier.mesh = _fitted_barrier(size, i % 2 == 1)
 		barrier.position = Vector3((emin + emax) * 0.5, (bottom + top) * 0.5, -(nmin + nmax) * 0.5)
-		barrier.material_override = _flat_material(Color("#c8682c") if i % 2 == 0 else Color("#e4e0d6"))
 		barrier.name = str(wall.get("id", "TrackWall"))
-		barrier.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(barrier)
+
+
+static func _fitted_barrier(size: Vector3, turn_around: bool) -> ArrayMesh:
+	var key := var_to_bytes([size, turn_around]).hex_encode()
+	if _fitted_barriers.has(key):
+		return _fitted_barriers[key]
+	var asset := TRACK_BARRIER.instantiate()
+	var instances := asset.find_children("*", "MeshInstance3D", true, false)
+	if instances.is_empty():
+		asset.free()
+		return ArrayMesh.new()
+	var instance := instances[0] as MeshInstance3D
+	var source := instance.mesh
+	var bounds := source.get_aabb()
+	var along_x := size.x >= size.z
+	var scales := Vector3(maxf(size.x, size.z) / bounds.size.x,
+		size.y / bounds.size.y, minf(size.x, size.z) / bounds.size.z)
+	var center := bounds.get_center()
+	var fitted := ArrayMesh.new()
+	for surface in range(source.get_surface_count()):
+		var arrays := source.surface_get_arrays(surface)
+		var positions: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var tangents: PackedFloat32Array = arrays[Mesh.ARRAY_TANGENT]
+		for vertex in range(positions.size()):
+			var point := (positions[vertex] - center) * scales
+			var normal := Vector3(normals[vertex].x / scales.x,
+				normals[vertex].y / scales.y, normals[vertex].z / scales.z).normalized()
+			if turn_around:
+				point = Vector3(-point.x, point.y, -point.z)
+				normal = Vector3(-normal.x, normal.y, -normal.z)
+			if not along_x:
+				point = Vector3(-point.z, point.y, point.x)
+				normal = Vector3(-normal.z, normal.y, normal.x)
+			positions[vertex] = point
+			normals[vertex] = normal
+			if tangents.size() == positions.size() * 4:
+				var offset := vertex * 4
+				var tangent := Vector3(tangents[offset] * scales.x,
+					tangents[offset + 1] * scales.y, tangents[offset + 2] * scales.z)
+				if turn_around:
+					tangent = Vector3(-tangent.x, tangent.y, -tangent.z)
+				if not along_x:
+					tangent = Vector3(-tangent.z, tangent.y, tangent.x)
+				tangent = (tangent - normal * normal.dot(tangent)).normalized()
+				tangents[offset] = tangent.x
+				tangents[offset + 1] = tangent.y
+				tangents[offset + 2] = tangent.z
+		arrays[Mesh.ARRAY_VERTEX] = positions
+		arrays[Mesh.ARRAY_NORMAL] = normals
+		if not tangents.is_empty():
+			arrays[Mesh.ARRAY_TANGENT] = tangents
+		fitted.add_surface_from_arrays(source.surface_get_primitive_type(surface), arrays)
+		fitted.surface_set_material(surface, source.surface_get_material(surface))
+	asset.free()
+	_fitted_barriers[key] = fitted
+	return fitted
 
 
 static func _add_signs(root: Node3D, road: Callable) -> void:

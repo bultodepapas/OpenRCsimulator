@@ -51,6 +51,10 @@ fi
 rm -f "$IMPORT_LOG"
 
 if [[ "$TEST_PART" != units ]]; then
+echo "== LU-30: downloaded power-line extracts stay current"
+python3 "$HERE/../tools/scenery/bake_power_cable.py" --check
+python3 "$HERE/../tools/scenery/bake_power_insulator.py" --check
+
 echo "== PT1h-R1: real-engine diagnostic failure matrix"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_run_checked.py" NativeGodotTests
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_frame_capture.py"

@@ -8,6 +8,7 @@ scalable at runtime.
 from __future__ import annotations
 
 import hashlib
+import argparse
 import json
 import math
 import struct
@@ -180,6 +181,21 @@ def make_profile(document: dict, binary: bytes) -> dict:
 
     if len(vertex_records) != 81 or len(triangles) != 128 * 3:
         raise AssertionError("Unexpected extracted topology")
+    # Geometry-level check catches the handedness mistake that declarations
+    # alone miss. Evaluate a representative 96 m span with 2.3% sag.
+    points = [
+        [v["center"][0] * 96.0 + v["radial"][0],
+         v["center"][1] * 96.0 * 0.023 + v["radial"][1], v["radial"][2]]
+        for v in vertex_records
+    ]
+    for offset in range(0, len(triangles), 3):
+        a, b, c = triangles[offset:offset + 3]
+        u = [points[c][axis] - points[a][axis] for axis in range(3)]
+        v = [points[b][axis] - points[a][axis] for axis in range(3)]
+        normal = [u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]]
+        radial = [sum(vertex_records[i]["radial"][axis] for i in (a, b, c)) for axis in range(3)]
+        if sum(normal[axis] * radial[axis] for axis in range(3)) <= 0:
+            raise ValueError("Imported cable face points inward")
     profile = {
         "format": "openrc-power-cable-profile-v1",
         "source": {
@@ -221,13 +237,22 @@ def make_profile(document: dict, binary: bytes) -> dict:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
     digest = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
     if digest != EXPECTED_SHA256:
         raise SystemExit(f"Source SHA-256 mismatch: expected {EXPECTED_SHA256}, got {digest}")
     document, binary = read_glb(SOURCE)
     profile = make_profile(document, binary)
+    text = json.dumps(profile, separators=(",", ":")) + "\n"
+    if args.check:
+        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != text:
+            raise SystemExit("Cable profile differs from a fresh source extraction")
+        print("Cable profile matches the source extraction; all 128 faces point outward")
+        return
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(json.dumps(profile, separators=(",", ":")) + "\n", encoding="utf-8")
+    OUTPUT.write_text(text, encoding="utf-8")
     print(f"Wrote {OUTPUT.relative_to(ROOT)}: {len(profile['vertices'])} vertices, {len(profile['triangles']) // 3} triangles")
     print(f"Centerline span {profile['measurements']['source_span_m']} m; sag ratio {profile['measurements']['source_centerline_sag_ratio']}")
 

@@ -17,7 +17,7 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_TRIANGLES := 650000 # LU-21 native-qualified source-scene ceiling; count all surfaces and MultiMesh instances
+const BUDGET_TRIANGLES := 725000 # LU-30: imported towers/insulators + conductors; native evidence in LU-30, 715023 measured
 const BUDGET_BUILD_MS := 800.0 # provisional ceiling includes cold source import/parsing (native sample: 714 ms); 150 ms target is reported, not gated
 
 var _failures := 0

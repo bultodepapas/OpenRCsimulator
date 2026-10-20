@@ -8,6 +8,8 @@ const SHADER: Shader = preload("res://render/near_grass.gdshader")
 const DATA_PATH: String = "res://data/fields/grass.json"
 const RADIUS_M: float = 30.0
 const CLEARANCE_M: float = 0.4 # estimated; exceeds the widest clump at maximum scale plus shader sway
+const EXCLUSION_GRID_CELL_M := 4.0
+const MAX_EXCLUSION_GRID_REFERENCES := 8192
 const LIGHT_CIRCLE_SEGMENTS := 16
 const STAKE_COLLISION_RADIUS_M := 0.035 # app/scenery/collision_world.gd::_add_lights
 const COUNT: int = 6000
@@ -48,8 +50,12 @@ static func validated_rows(raw: Variant) -> Array:
 
 
 ## Rectangles come from the validated field; any mown/runway surface excludes the full clump footprint.
-static func accepts(north: float, east: float, field: Dictionary, exclusions: Array = []) -> bool:
-	if GrassMask.excludes(north, east, exclusions):
+static func accepts(north: float, east: float, field: Dictionary, exclusions: Array = [],
+		exclusion_grid: Dictionary = {}) -> bool:
+	var nearby_exclusions: Array = exclusions
+	if not exclusion_grid.is_empty():
+		nearby_exclusions = exclusion_grid.get(_exclusion_cell(north, east), [])
+	if GrassMask.excludes(north, east, nearby_exclusions):
 		return false
 	var on_rough: bool = false
 	for surface: Dictionary in field.surfaces:
@@ -168,14 +174,55 @@ static func clump_mesh() -> ArrayMesh:
 ## Pure placement boundary, inspectable with the dummy renderer (MultiMesh transform readback is unavailable there).
 static func clipped_chunks(field: Dictionary, rows: Array, exclusions: Array = []) -> Array:
 	var chunks: Array = [[], [], [], []]
+	var exclusion_grid := _build_exclusion_grid(exclusions)
 	for row: Array in rows:
 		var north: float = float(field.pilot.north) + float(row[0]) * 0.001
 		var east: float = float(field.pilot.east) + float(row[1]) * 0.001
-		if not accepts(north, east, field, exclusions):
+		if not accepts(north, east, field, exclusions, exclusion_grid):
 			continue
 		var chunk: int = (0 if row[0] < 0 else 2) + (0 if row[1] < 0 else 1)
 		chunks[chunk].append([north, east, int(row[2]), int(row[3])])
 	return chunks
+
+
+## Index ordinary footprints once per layout. Oversized or malformed inputs retain the scalar scan.
+static func _build_exclusion_grid(exclusions: Array) -> Dictionary:
+	if exclusions.is_empty():
+		return {}
+	var grid: Dictionary = {}
+	var references := 0
+	for footprint_value: Variant in exclusions:
+		if typeof(footprint_value) != TYPE_DICTIONARY:
+			return {}
+		var footprint: Dictionary = footprint_value
+		var points_value: Variant = footprint.get("points", PackedVector2Array())
+		if not points_value is PackedVector2Array or (points_value as PackedVector2Array).size() < 3:
+			return {}
+		var raw_bounds: Array = [footprint.get("north_min", INF), footprint.get("north_max", -INF),
+			footprint.get("east_min", INF), footprint.get("east_max", -INF)]
+		for bound: Variant in raw_bounds:
+			if not _finite_number(bound):
+				return {}
+		var min_north := floori((float(raw_bounds[0]) - GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var max_north := floori((float(raw_bounds[1]) + GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var min_east := floori((float(raw_bounds[2]) - GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var max_east := floori((float(raw_bounds[3]) + GrassMask.CLEARANCE_M) / EXCLUSION_GRID_CELL_M)
+		var item_references := (max_north - min_north + 1) * (max_east - min_east + 1)
+		if item_references <= 0 or item_references > MAX_EXCLUSION_GRID_REFERENCES \
+			or references + item_references > MAX_EXCLUSION_GRID_REFERENCES:
+			return {}
+		references += item_references
+		for north_cell: int in range(min_north, max_north + 1):
+			for east_cell: int in range(min_east, max_east + 1):
+				var key := Vector2i(north_cell, east_cell)
+				var bucket: Array = grid.get(key, [])
+				bucket.append(footprint)
+				grid[key] = bucket
+	return grid
+
+
+static func _exclusion_cell(north: float, east: float) -> Vector2i:
+	return Vector2i(floori(north / EXCLUSION_GRID_CELL_M), floori(east / EXCLUSION_GRID_CELL_M))
 
 
 static func build(field: Dictionary, ground: ShaderMaterial, exclusions: Array = []) -> Node3D:

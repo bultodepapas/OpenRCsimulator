@@ -28,6 +28,8 @@ const RUNWAY_MARKER_READABILITY_GAIN_FLOOR := 0.0025 # art-directed floor for a 
 const RUNWAY_MARKER_FADE_START_M := 300.0 # estimated useful field distance; no photometric claim.
 const RUNWAY_MARKER_FADE_END_M := 600.0 # fade the readability aid outside the field.
 const RUNWAY_GROUND_SPILL_DIAMETER_M := 0.65 # small dry-turf scatter patch; no reflective streak.
+const RUNWAY_GROUND_SPILL_DISPLAY_CAP := 0.05 # bounded display contribution; no lux claim.
+const RUNWAY_GROUND_SPILL_RADIANCE := 0.02
 const RUNWAY_EDGE_ROW := "runway_edge_stakes"
 const RUNWAY_THRESHOLD_ROW := "threshold_stakes"
 const FLOOD_HOUSING := Color("#41484a")
@@ -59,6 +61,7 @@ var _sprite_bindings: Array[Dictionary] = []
 var _omnis: Array[OmniLight3D] = []
 var _window_materials: Array[ShaderMaterial] = []
 var _ground_spill_material: ShaderMaterial
+var _ground_spill_node: MultiMeshInstance3D
 var _last_night_factor := -1.0
 var _last_exposure := -1.0
 var _sdr_local_gain := 1.0
@@ -149,6 +152,8 @@ func apply_lighting(snapshot: Dictionary) -> void:
 			material.set_shader_parameter("night_glow", factor)
 	if is_instance_valid(_ground_spill_material):
 		_ground_spill_material.set_shader_parameter("night_factor", factor)
+	if is_instance_valid(_ground_spill_node):
+		_ground_spill_node.visible = factor > 0.0
 
 
 ## FW-71: profile changes only presentation; fixtures and physical proxies stay installed.
@@ -352,6 +357,9 @@ func _build_marker_ground_spill(fixtures: Array) -> void:
 		quad.size = Vector2.ONE
 		_ground_spill_material = ShaderMaterial.new()
 		_ground_spill_material.shader = RUNWAY_GROUND_SPILL_SHADER
+		_ground_spill_material.set_shader_parameter("radiance", RUNWAY_GROUND_SPILL_RADIANCE)
+		_ground_spill_material.set_shader_parameter("display_cap", RUNWAY_GROUND_SPILL_DISPLAY_CAP)
+		_ground_spill_material.set_shader_parameter("night_factor", 0.0)
 		quad.material = _ground_spill_material
 		var batch := MultiMesh.new()
 		batch.transform_format = MultiMesh.TRANSFORM_3D
@@ -368,6 +376,7 @@ func _build_marker_ground_spill(fixtures: Array) -> void:
 		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		instance.extra_cull_margin = RUNWAY_GROUND_SPILL_DIAMETER_M
 		add_child(instance)
+		_ground_spill_node = instance
 		set_meta("ground_spill_instances", points.size())
 		return
 

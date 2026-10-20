@@ -44,12 +44,25 @@ func _initialize() -> void:
 	# ArrayMesh packs normals; its angular quantization is distinct from the float64 sampler.
 	check(max_normal_error < 0.0002, "render normals match physical gradient within packed-normal precision: %.8f" % max_normal_error)
 	check(winding_valid, "terrain uses visible clockwise Godot front faces")
+	var barrier_triangles := 0
 	for wall: Dictionary in course.track.walls:
 		var rendered := view.get_node(str(wall.id)) as MeshInstance3D
 		var bounds := rendered.get_aabb()
 		var lower := bounds.position + rendered.position
 		var upper := lower + bounds.size
 		check(lower.is_equal_approx(Vector3(wall.east_min_m, wall.bottom_up_m, -float(wall.north_max_m))) and upper.is_equal_approx(Vector3(wall.east_max_m, wall.top_up_m, -float(wall.north_min_m))), "wall mesh matches its collision bounds: " + str(wall.id))
+		var barrier_mesh := rendered.mesh as ArrayMesh
+		check(barrier_mesh != null and barrier_mesh.get_surface_count() > 0, "wall has fitted source geometry: " + str(wall.id))
+		if barrier_mesh != null and barrier_mesh.get_surface_count() > 0:
+			var barrier_arrays := barrier_mesh.surface_get_arrays(0)
+			var barrier_vertices: PackedVector3Array = barrier_arrays[Mesh.ARRAY_VERTEX]
+			var barrier_uvs: PackedVector2Array = barrier_arrays[Mesh.ARRAY_TEX_UV]
+			var barrier_indices: PackedInt32Array = barrier_arrays[Mesh.ARRAY_INDEX]
+			barrier_triangles += barrier_indices.size() / 3
+			check(barrier_vertices.size() > 500 and barrier_uvs.size() == barrier_vertices.size(), "wall retains detailed mapped geometry: " + str(wall.id))
+			var finish := barrier_mesh.surface_get_material(0) as BaseMaterial3D
+			check(finish != null and finish.albedo_texture != null and finish.normal_texture != null, "wall retains source PBR maps: " + str(wall.id))
+	check(barrier_triangles > 0 and barrier_triangles < 40000, "five fitted barriers stay within render geometry budget: %d triangles" % barrier_triangles)
 	check(view.find_children("*", "CollisionObject3D", true, false).is_empty(), "renderer creates no second physical world")
 	view.free()
 	print("RCV track view: %d failures" % failures)

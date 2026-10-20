@@ -49,6 +49,7 @@ func _initialize() -> void:
 	check("sag remains above ground and below tower tops", low > 12.0 and low < 16.0 and high < 30.1)
 	var clone := Kit.new()
 	Power.append_tower(clone)
-	check("cached source deterministic", clone.verts == tower.pos)
+	check("cached source deterministic", clone.verts.slice(0, tower.pos.size()) == tower.pos)
+	check("six downloaded insulators on each tower", clone.verts.size() == (5743 + 6 * 1488) * 3)
 	print("all power-line checks passed" if failures == 0 else "%d power-line failures" % failures)
 	quit(0 if failures == 0 else 1)

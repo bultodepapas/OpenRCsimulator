@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok pylon collision world builds
+ok one tower has 12 leg-section and 3 crossarm proxies
+ok all tower parts retain the placement damage and hard-terminal contract
+ok legacy leg ID remains stable with section IDs appended
+ok lowest arm matches source width, depth, and height
+ok crossarm X axis follows the tower placement heading
+ok sweep through measured lower-leg envelope hits the leg proxy
+ok leg collision keeps the placement damage ID
+ok sweep across the source crossarm reaches its end envelope
+ok open lattice center gap remains clear between legs and arms
+ok rotated tower collision world builds
+ok oblique crossarm stores the tower heading
+ok oblique path maps to local crossarm coordinates
+ok oblique sweep across local tower depth still hits the crossarm
+ok oblique pass through the open lower lattice remains clear
+power-line collisions: 15 checks, 0 failures

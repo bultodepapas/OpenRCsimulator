@@ -85,5 +85,16 @@
       "source_md5": "cef5c0386ca9f7bd380e75594d6a1f96",
       "sha256": "ccf9dd721250f42a138567eb776f1264842fd713f7368a61d923f2db0308c175"
     }
-  ]
+  ],
+  "runtime_derivative": {
+    "path": "app/assets/landscape/track-barrier/concrete-road-barrier-lod2.glb",
+    "export_script": "tools/landscape/export_track_barrier_lod.py",
+    "blender_version": "5.2.2 LTS",
+    "source_mesh": "concrete_road_barrier_LOD2",
+    "source_vertices": 2359,
+    "export_vertices_after_gltf_uv_splits": 4113,
+    "triangles": 4722,
+    "embedded_maps": ["diffuse", "normal_gl", "arm"],
+    "sha256": "709d15aa8d84c72817c63659d1529757156a514fae02c0844404de84c01f96c1"
+  }
 }

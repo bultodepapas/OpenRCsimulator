@@ -68,7 +68,7 @@ func _initialize() -> void:
 	_check("fixed FW sun keeps existing lights root visible", field_lights.visible)
 	_check("day has no local pools", is_zero_approx(float(helper.get_meta("night_factor"))))
 	_check("day has no marker ground scatter", spill_material != null
-		and is_zero_approx(float(spill_material.get_shader_parameter("night_factor"))))
+		and is_zero_approx(float(spill_material.get_shader_parameter("night_factor"))) and not spill.visible)
 	for spot: SpotLight3D in existing_spots:
 		_check("day flood energy is zero: " + spot.name, is_zero_approx(spot.light_energy))
 	var flood_sprite := field_lights.get_node("flood_west_lamp") as MeshInstance3D
@@ -90,12 +90,13 @@ func _initialize() -> void:
 		and existing_spots.all(func(s: SpotLight3D) -> bool: return s.light_energy > 0.0))
 	_check("manual on also enables bounded batched ground scatter",
 		is_equal_approx(float(spill_material.get_shader_parameter("night_factor")), 1.0)
-		and float(spill_material.get_shader_parameter("display_cap")) <= 0.05)
+		and float(spill_material.get_shader_parameter("display_cap")) <= 0.05 and spill.visible)
 	_check("manual off extinguishes lights while retaining their fixtures", helper.set_activation("off")
 		and is_zero_approx(float(helper.get_meta("night_factor")))
 		and existing_spots.all(func(s: SpotLight3D) -> bool: return is_zero_approx(s.light_energy))
 		and helper.get_node_or_null("RunwayFixtureHardware") != null)
-	_check("manual off removes the ground scatter", is_zero_approx(float(spill_material.get_shader_parameter("night_factor"))))
+	_check("manual off removes the ground scatter", is_zero_approx(float(spill_material.get_shader_parameter("night_factor")))
+		and not spill.visible)
 	_check("invalid activation is rejected without changing the switch", not helper.set_activation("invalid")
 		and str(helper.get_meta("field_activation")) == "off")
 	_check("auto restores daylight gating", helper.set_activation("auto")
