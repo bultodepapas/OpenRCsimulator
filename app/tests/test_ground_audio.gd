@@ -103,6 +103,25 @@ func _test_contact_audio_state_machine() -> void:
 		audio.update_contacts(tick, false, [grass, landing], 0.2, 0.02, Vector3.ZERO)
 	_check("brief taxi chatter cannot retrigger the touchdown one-shot", audio.touchdown_events == 1)
 	audio.reset()
+	var stale_descent := _contact("nose", 0.0, 1000.0, 3.0, 0.0, false, "hard")
+	for tick: int in range(51):
+		stale_descent.approach_speed_mps = 3.0 if tick < 10 else 0.0
+		audio.update_contacts(tick, false, [stale_descent], 0.0, 1.0 / 60.0)
+	stale_descent.normal_force_n = 1200.0
+	audio.update_contacts(51, false, [stale_descent], 0.0, 1.0 / 60.0)
+	_check("an earlier dive cannot turn a later settled contact into a hard touchdown", audio.touchdown_events == 0)
+	audio.reset()
+	var gentle := _contact("nose", 0.0, 1000.0, 0.3, 0.0, false, "hard")
+	gentle.roll_enabled = false
+	for tick: int in range(51):
+		audio.update_contacts(tick, false, [gentle], 0.0, 1.0 / 60.0)
+	gentle.normal_force_n = 1200.0
+	gentle.rolling_speed_mps = 8.0
+	audio.update_contacts(51, false, [gentle], 0.0, 1.0 / 60.0)
+	_check("a gentle skid touchdown emits an impact", audio.touchdown_events == 1)
+	_check("skids never emit wheel rolling even with lateral speed",
+		not (audio.get_node("Roll_1_0") as AudioStreamPlayer3D).playing)
+	audio.reset()
 	var reset_ground := _contact("main", 1200.0, 1000.0, 0.0, 0.0, true, "hard")
 	audio.update_contacts(0, false, [reset_ground], 0.0, 1.0 / 60.0, Vector3.ZERO)
 	_check("reset re-seeds loaded contacts without replaying their spawn impact", audio.touchdown_events == 0)

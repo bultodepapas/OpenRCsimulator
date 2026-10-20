@@ -80,6 +80,13 @@ func _run() -> void:
 		printerr("--out=<absolute prefix> and --aircraft=<catalog ID> are required; --list prints the current fleet")
 		quit(1)
 		return
+	var output_directory := str(args.out).get_base_dir()
+	if not DirAccess.dir_exists_absolute(output_directory):
+		var mkdir_error := DirAccess.make_dir_recursive_absolute(output_directory)
+		if mkdir_error != OK:
+			printerr("cannot create capture directory: ", output_directory, " error=", mkdir_error)
+			quit(1)
+			return
 	aircraft_id = str(args.aircraft)
 	capture_fps = clampi(int(args.get("fps", 60)), 1, 60)
 	if args.has("size"):
@@ -421,7 +428,7 @@ func _drain_audio_probe() -> void:
 					var step := maxf(absf(finite_sample.x - _master_previous.x), absf(finite_sample.y - _master_previous.y))
 					master_max_step = maxf(master_max_step, step)
 					if step >= 0.8:
-					master_steps_over_08 += 1
+						master_steps_over_08 += 1
 				_master_previous = finite_sample
 				_master_has_previous = true
 			master_discarded_frames = master_capture.get_discarded_frames()
@@ -598,6 +605,13 @@ func _report(timeline: Array) -> Dictionary:
 		format = "openrc-audio-fleet-sequence-v1", aircraft = aircraft_id, vehicle = "rotorcraft" if rotorcraft else "fixed-wing",
 		godot = Engine.get_version_info().string, fps = capture_fps, mix_rate = AudioServer.get_mix_rate(),
 		driver = AudioServer.get_driver_name(), frames = frame, duration_s = float(frame) / capture_fps,
+		pcm_wav = {path = str(args.out) + ".wav", sample_format = "signed PCM16 stereo",
+			frames = master_samples.size(), seconds = float(master_samples.size()) / float(AudioServer.get_mix_rate()),
+			discarded_frames = master_discarded_frames, peak_linear = master_peak,
+			peak_dbfs = linear_to_db(maxf(master_peak, 0.0000001)), over_unity_samples = master_over_unity,
+			max_sample_step = master_max_step, sample_steps_over_0_8 = master_steps_over_08,
+			invalid_sample_seen = master_invalid_sample,
+			meaning = "AudioEffectCapture appended after configured Master bus effects; PCM is software output, not acoustic calibration."},
 		route = route, staged_landing_fixture = landing_fixture_ok,
 		landing_fixture_message = landing_fixture_message, actual_runway_takeoff_observed = takeoff_seen,
 		actual_contact_after_landing_stage = touchdown_seen, rollout_or_settle_contact_observed = rollout_contact_seen,
@@ -613,5 +627,5 @@ func _report(timeline: Array) -> Dictionary:
 			meaning = "AudioEffectCapture on the soundscape sum before the Master limiter; sample-step threshold is a screening statistic, not a perceptual click verdict."},
 		fault = str(session.sim.fault_reason), crash = not session.crash.is_empty(), focus_resumes = focus_resumes,
 		notes = notes, audio_adapter_sha256 = FileAccess.get_sha256(source_path),
-		note = "Movie Maker PCM from the production adapter. Fixed-wing takeoff/flight is live from runway; the later descending approach is staged by resetting FlightSession, then contacts/rollout use the live physics session. Helicopter lifecycle uses its ground route; no wheel taxi or rollout is claimed. Audio captures are software evidence, not speaker or acoustic validation.",
+		note = "Native WASAPI AudioEffectCapture PCM from the production adapter, with no Movie Maker render. Fixed-wing takeoff/flight is live from runway; the later descending approach is staged by resetting FlightSession, then contacts/rollout use the live physics session. Helicopter lifecycle uses its ground route; no wheel taxi or rollout is claimed. Engine gain and gear roll rows are normalized runtime diagnostics; gear shares the aircraft bus, so no separate gear PCM is claimed. Audio captures are software evidence, not speaker or acoustic validation.",
 	}

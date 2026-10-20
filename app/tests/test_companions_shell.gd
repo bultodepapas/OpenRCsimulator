@@ -43,7 +43,10 @@ func _run() -> void:
 	var defaults: Dictionary = CompanionConfig.defaults()
 	_check("Home companions default Off with count 1 and seed 1",
 		app.home.companion_config == defaults and not app.home.companions_button.disabled
-		and app.home.companions_button.text.contains("Off"), str(app.home.companion_config))
+		and app.home.companions_button.tooltip_text.contains("Off"), str(app.home.companion_config))
+	app.home.set_landscape("green_paradise")
+	_check("Home companions are disabled outside Club Field", app.home.companions_button.disabled)
+	app.home.set_landscape("club_field")
 
 	# Cancel discards the Home draft and leaves the on-disk preference at defaults.
 	app.home.companions_button.grab_focus()
