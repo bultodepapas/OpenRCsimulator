@@ -194,7 +194,7 @@ kappa = note("aero", "section lift slope / 2pi", 0.9, "estimated: 13 % symmetric
 CLa_w = note("aero", "CLa wing (1/rad)", helmbold(AR, kappa, sweep_hc), "Helmbold/DATCOM")
 AR_h = bh * bh / Sh
 CLa_h = note("aero", "CLa horizontal (1/rad)", helmbold(AR_h, kappa), f"Helmbold, AR {AR_h:.2f}")
-eta_h = note("aero", "tail dynamic pressure ratio", 0.9, "estimated; propwash not modelled (ROADMAP E0b)")
+eta_h = note("aero", "tail dynamic pressure ratio", 0.9, "estimated free-stream ratio for the coefficients; the runtime adds the propeller tail-slipstream increment separately (EX-14c)")
 deps = note("aero", "d(eps)/d(alpha)", 2 * CLa_w / (math.pi * AR), "elliptic-wing downwash estimate")
 slope_h = note("aero", "effective tail slope (1/rad)", CLa_h * eta_h * (1 - deps), "CLa_h eta (1 - deps/dalpha): the tail sees body alpha in the local model")
 CLa = note("aero", "CLa airplane (1/rad)", CLa_w + slope_h * Sh / S, "wing + tail (wing-body interference ~1 for d/b 0.1)")
@@ -478,6 +478,53 @@ note("propulsion", "propeller hub (model right, up, aft m)", prop_hub_model,
 note("propulsion", "propeller hub offset from loaded CG (LE frame)", prop_hub_offset,
      "transformed propeller hub [x_aft,y_right,z_up] minus the derived loaded inventory CG")
 
+# --- EX-14c: propeller in a crossflow and tail slipstream (the P-51's P51-06/P51-12 method) --------------------------
+# The Glow shaft flies the installation's 12-annulus no-induction surrogate, so Ct(J), solidity, section slope and
+# profile drag come from that same propeller (research/glow-engines/calibration_report.py mirrors the runtime), not
+# from the borrowed APC 11x6 tables. McCormick's blade-element result as used by Selig (AIAA 2010-7938), per radian of
+# disc angle of attack, q = ½ρV², V = JnD:
+#   C̄l = (3J/2π)·[16·Ct/(σπ²J) + C̄d]
+#   C_N = σπJ²/16 · [C̄l + (aJ/2π)·ln(1 + (π/J)²) + (π/J)·C̄d]   (× ρn²D⁴)
+#   C_M = σπJ²/32 · [(2π/3J)·C̄l + (a/2)·(1 − (J/π)²·ln(1 + (π/J)²)) − (π/J)·C̄d]   (× ρn²D⁵, nose-left for α > 0)
+GLOW_DIR = ROOT / "research" / "glow-engines"
+if str(GLOW_DIR) not in sys.path:
+    sys.path.insert(0, str(GLOW_DIR))
+from calibration_report import annular_prop_performance  # noqa: E402
+INSTALLATION = "app/data/glow/extra_61fx_2t.json"
+gp = {k: v["value"] for k, v in json.load(open(ROOT / INSTALLATION))["propeller"].items()}
+section = {"lift_slope_per_rad": gp["lift_slope"], "cd0": gp["cd0"], "induced_drag": gp["induced_drag"], "blades": gp["blades"]}
+D_p, N_REF = gp["diameter_m"], 12000.0  # Ct of the no-induction surrogate does not depend on rpm at fixed J
+n_ref = N_REF / 60.0
+sigma = note("propulsion", "solidity of the Glow propeller surrogate", gp["blades"] * gp["chord_m"] * 0.8 * (D_p / 2) / (math.pi * (D_p / 2) ** 2),
+             f"B c (0.8 R) / (pi R^2): {gp['blades']:g} constant-chord blades over its 0.2-1.0 R annuli ({INSTALLATION})")
+a_bl, cd_bl = gp["lift_slope"], gp["cd0"]
+nf_rows, pm_rows = [], []
+for k_j in range(22):
+    J_ = 0.05 * k_j
+    if J_ == 0.0:
+        nf_rows.append([0.0, 0.0])
+        pm_rows.append([0.0, 0.0])
+        continue
+    ct_ = annular_prop_performance(N_REF, J_ * n_ref * D_p, D_p, gp["pitch_m"], gp["chord_m"], RHO, section)["thrust_n"] / (RHO * n_ref ** 2 * D_p ** 4)
+    lg = math.log(1 + (math.pi / J_) ** 2)
+    clb = 3 * J_ / (2 * math.pi) * (16 * ct_ / (sigma * math.pi ** 2 * J_) + cd_bl)
+    cn = sigma * math.pi * J_ ** 2 / 16 * (clb + a_bl * J_ / (2 * math.pi) * lg + math.pi / J_ * cd_bl)
+    cm = sigma * math.pi * J_ ** 2 / 32 * (2 * math.pi / (3 * J_) * clb + a_bl / 2 * (1 - (J_ / math.pi) ** 2 * lg) - math.pi / J_ * cd_bl)
+    nf_rows.append([round(J_, 2), round(max(cn, 0.0), 6)])
+    pm_rows.append([round(J_, 2), round(max(cm, 0.0), 6)])
+note("propulsion", "C_N, C_M at J 0.3 and 0.5 (per rad)", [nf_rows[6][1], pm_rows[6][1], nf_rows[10][1], pm_rows[10][1]], "x rho n2 D4 and x rho n2 D5")
+# Tail pieces: geometry only; the wake (momentum theory, swirl, sidewash) is computed by physics/slipstream.gd.
+fin_te_at = lambda y: T["rudder_te_low"][0] + (T["rudder_top_te_z"] - T["rudder_te_low"][0]) * (y - T["rudder_te_low"][1]) / (T["fin_top_y"] - T["rudder_te_low"][1])
+fin_root_y = fus_top(xv_ac)  # as the P-51: the fuselage blocks the wash below its top line
+fin_chords = [fin_te_at(fin_root_y) - fin_le_at(fin_root_y), fin_te_at(T["fin_top_y"]) - T["fin_le_top_z"]]
+note("slipstream", "fin piece: root height, span, chords (m)", [fin_root_y, T["fin_top_y"] - fin_root_y] + fin_chords,
+     "fuselage top at the fin ac up to the fin tip; LE/TE lines of the fin polygon. The rudder below the fuselage top line is left out (P-51 convention)")
+slip_pieces = [
+    {"surface": "vertical", "area": Sv, "root": le(xv_ac, fin_root_y), "span_dir": [0.0, 0.0, 1.0], "span": T["fin_top_y"] - fin_root_y, "chords": fin_chords},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, 1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, -1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
+]
+
 # --- Assemble ----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
 D = lambda how: f"{SCRIPT}: {how}"
@@ -641,13 +688,23 @@ data = {
 }
 p = data["propulsion"]
 p["id"] = "propulsion_main"
-p["description"] = "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted."
+p["description"] = "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; propeller normal force, P-factor and the quasi-static tail slipstream with swirl use the Glow propeller surrogate (EX-14c); exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted."
 p["engine"]["glow_installation"] = "res://data/glow/extra_61fx_2t.json"
 p["propeller"]["thrust_angles"] = q([down_deg, right_deg], "deg", "manual",
     "Original plan thrust-frame notes transcribed in " + GEO_SRC + "; ordered [down, right] to match the v2 propulsion contract")
 p["propeller"]["thrust_line_offset"] = q(prop_hub_offset, "m", "derived",
     D("visual thrust_frame pivot/rotation and propeller child transform to actual hub; hub minus loaded inventory CG in [x_aft,y_right,z_up]"))
 p["propeller"]["rotating_inertia"] = dict(p["propeller"]["rotating_inertia"], source=p["propeller"]["rotating_inertia"]["source"] + " (2-1/2 in spinner here, within the estimate)")
+p["propeller"]["normal_force"] = q(nf_rows, "1", "derived", D(f"EX-14c: McCormick blade-element normal force per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D4; Ct(J), solidity {sigma:.4f}, section slope and cd0 of the Glow propeller surrogate ({INSTALLATION})"))
+p["propeller"]["pfactor_moment"] = q(pm_rows, "1", "derived", D("EX-14c: McCormick P-factor yawing moment per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D5; same Glow propeller surrogate"))
+p["propeller"]["slipstream"] = {
+    "hub": q(prop_hub_le, "m", "derived", D("EX-14c: propeller disc centre from the visual thrust frame (le frame), as thrust_line_offset")),
+    "wash_factor": q([0.8, 1.8], "1", "borrowed", "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75 (Fig. 5); the P-51's value. No Extra wake measurement"),
+    "swirl_factor": q(0.6, "1", "estimated", "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8, the P-51's value; Selig: the swirl offsets ~40 % of the torque roll"),
+    "vertical_drift": q(1 - deps, "1", "derived", D("1 - d(eps)/d(alpha): the wake drifts with the downwashed flow")),
+    "propeller_sidewash": q(1.0, "1", "borrowed", "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, applied as published (1); also selects the piecewise swirl quadrature (P51-26). The Glow installation supports only this quasi-static wake (EX-14c)"),
+    "pieces": [{k: (q(v, "m2" if k == "area" else ("1" if k == "span_dir" else "m"), "derived", D("EX-14c: tail piece from geometry.json")) if k != "surface" else v) for k, v in pc.items()} for pc in slip_pieces],
+}
 
 # The loader's exact consistency rules (aircraft_data.gd _surfaces) must hold: recompute them from the rounded file.
 def check_consistency(d):
@@ -700,7 +757,7 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- No propwash. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
+- EX-14c: the quasi-static tail slipstream (momentum wake, Selig wash factor, swirl, Ribner sidewash), propeller normal force and P-factor follow the P-51 method on the Glow propeller surrogate. The rudder below the fuselage top line, the wing in the wake, a transported (lagged) wake and the jet normal force are not modelled; no Extra wake measurement exists. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
 """
 
 if "--check" in sys.argv:

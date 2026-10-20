@@ -114,9 +114,18 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		return _fail("Glow installation aircraft engine or propeller is malformed")
 	if aircraft_engine.has("shaft"):
 		return _fail("Glow installation cannot be combined with the legacy shaft module")
+	# EX-14c: the propeller normal force, P-factor and the quasi-static tail slipstream compose with the Glow shaft (the
+	# stage route hands the wake its own thrust and torque). The smooth and transported wakes need wash states the Glow
+	# layout does not carry, so they stay refused.
 	for optional_module: String in ["normal_force", "pfactor_moment", "slipstream"]:
-		if aircraft_propeller.has(optional_module) or model_propulsion.has(optional_module):
-			return _fail("Glow installation does not support propulsion.propeller." + optional_module)
+		var validated: Variant = model_propulsion.get(optional_module)
+		if aircraft_propeller.has(optional_module) and (validated == null or not (validated is Dictionary or validated is PackedFloat64Array) or validated.is_empty()):
+			return _fail("Glow installation requires a validated propulsion.propeller." + optional_module)
+	var slipstream: Variant = model_propulsion.get("slipstream", {})
+	if slipstream is Dictionary:
+		for stateful: String in ["edge_fraction", "reverse_fade", "transport_speed_floor"]:
+			if slipstream.has(stateful):
+				return _fail("Glow installation supports only the quasi-static slipstream (no slipstream." + stateful + ")")
 	var capabilities: Variant = raw.get("capabilities", {})
 	if not capabilities is Dictionary or capabilities.get("energy") != "finite_glow_fuel":
 		return _fail("Glow installation requires the finite_glow_fuel capability")

@@ -1337,7 +1337,7 @@
     }
   },
   "propulsion": {
-    "description": "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted.",
+    "description": "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; propeller normal force, P-factor and the quasi-static tail slipstream with swirl use the Glow propeller surrogate (EX-14c); exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted.",
     "engine": {
       "name": "O.S. MAX-61FX (two-stroke glow)",
       "peak_power": {
@@ -1495,6 +1495,369 @@
         "unit": "deg",
         "kind": "manual",
         "source": "Original plan thrust-frame notes transcribed in assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); ordered [down, right] to match the v2 propulsion contract"
+      },
+      "normal_force": {
+        "value": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.05,
+            0.000103
+          ],
+          [
+            0.1,
+            0.000336
+          ],
+          [
+            0.15,
+            0.000707
+          ],
+          [
+            0.2,
+            0.001214
+          ],
+          [
+            0.25,
+            0.001844
+          ],
+          [
+            0.3,
+            0.002575
+          ],
+          [
+            0.35,
+            0.003389
+          ],
+          [
+            0.4,
+            0.004264
+          ],
+          [
+            0.45,
+            0.005174
+          ],
+          [
+            0.5,
+            0.006091
+          ],
+          [
+            0.55,
+            0.006983
+          ],
+          [
+            0.6,
+            0.007817
+          ],
+          [
+            0.65,
+            0.00856
+          ],
+          [
+            0.7,
+            0.009175
+          ],
+          [
+            0.75,
+            0.009625
+          ],
+          [
+            0.8,
+            0.00987
+          ],
+          [
+            0.85,
+            0.009918
+          ],
+          [
+            0.9,
+            0.009782
+          ],
+          [
+            0.95,
+            0.009462
+          ],
+          [
+            1.0,
+            0.008984
+          ],
+          [
+            1.05,
+            0.008362
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14c: McCormick blade-element normal force per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D4; Ct(J), solidity 0.0706, section slope and cd0 of the Glow propeller surrogate (app/data/glow/extra_61fx_2t.json)"
+      },
+      "pfactor_moment": {
+        "value": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.05,
+            0.000919
+          ],
+          [
+            0.1,
+            0.001775
+          ],
+          [
+            0.15,
+            0.002544
+          ],
+          [
+            0.2,
+            0.003202
+          ],
+          [
+            0.25,
+            0.003726
+          ],
+          [
+            0.3,
+            0.004099
+          ],
+          [
+            0.35,
+            0.004323
+          ],
+          [
+            0.4,
+            0.004398
+          ],
+          [
+            0.45,
+            0.004316
+          ],
+          [
+            0.5,
+            0.004071
+          ],
+          [
+            0.55,
+            0.003656
+          ],
+          [
+            0.6,
+            0.003061
+          ],
+          [
+            0.65,
+            0.002281
+          ],
+          [
+            0.7,
+            0.001308
+          ],
+          [
+            0.75,
+            0.000134
+          ],
+          [
+            0.8,
+            0.0
+          ],
+          [
+            0.85,
+            0.0
+          ],
+          [
+            0.9,
+            0.0
+          ],
+          [
+            0.95,
+            0.0
+          ],
+          [
+            1.0,
+            0.0
+          ],
+          [
+            1.05,
+            0.0
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14c: McCormick P-factor yawing moment per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D5; same Glow propeller surrogate"
+      },
+      "slipstream": {
+        "hub": {
+          "value": [
+            -0.265897,
+            0.00014,
+            -3.5e-05
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/extra-300/ex05/derive_physics.py: EX-14c: propeller disc centre from the visual thrust frame (le frame), as thrust_line_offset"
+        },
+        "wash_factor": {
+          "value": [
+            0.8,
+            1.8
+          ],
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75 (Fig. 5); the P-51's value. No Extra wake measurement"
+        },
+        "swirl_factor": {
+          "value": 0.6,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8, the P-51's value; Selig: the swirl offsets ~40 % of the torque roll"
+        },
+        "vertical_drift": {
+          "value": 0.526555,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/extra-300/ex05/derive_physics.py: 1 - d(eps)/d(alpha): the wake drifts with the downwashed flow"
+        },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, applied as published (1); also selects the piecewise swirl quadrature (P51-26). The Glow installation supports only this quasi-static wake (EX-14c)"
+        },
+        "pieces": [
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.051391,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.849684,
+                0.0,
+                0.047264
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.235836,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.257349,
+                0.1082
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.049722,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.837779,
+                0.0,
+                0.0262
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.3125,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.1951,
+                0.1357
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.049722,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.837779,
+                0.0,
+                0.0262
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.3125,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.1951,
+                0.1357
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            }
+          }
+        ]
       }
     },
     "kind": "glow_prop",

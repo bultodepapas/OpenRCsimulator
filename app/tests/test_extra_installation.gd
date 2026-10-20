@@ -120,11 +120,18 @@ func _installation(model: Dictionary) -> void:
 		var propeller_result: Dictionary = GlowProp.evaluate(rpm, along, 1.225, prop.glow.propeller)
 		var thrust: float = float(propeller_result.thrust_n)
 		var torque: float = float(propeller_result.torque_nm)
-		var force := [axis[0] * thrust, axis[1] * thrust, axis[2] * thrust]
+		# EX-14c: McCormick in-plane force at the disc and P-factor couple, -C(J) rho n2 D^k v_c / V, from the data tables.
+		var speed := sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] + velocity[2] * velocity[2])
+		var n := rpm / 60.0
+		var advance := maxf(along, 0.0) / (n * float(prop.diameter))
+		var cn := 0.0 if speed == 0.0 else -_table_at(prop.normal_force, advance) * 1.225 * n * n * pow(float(prop.diameter), 4) / speed
+		var cm := 0.0 if speed == 0.0 else -_table_at(prop.pfactor_moment, advance) * 1.225 * n * n * pow(float(prop.diameter), 5) / speed
+		var crossflow := [velocity[0] - axis[0] * along, velocity[1] - axis[1] * along, velocity[2] - axis[2] * along]
+		var force := [axis[0] * thrust + cn * crossflow[0], axis[1] * thrust + cn * crossflow[1], axis[2] * thrust + cn * crossflow[2]]
 		var expected := [force[0], force[1], force[2],
-			arm[1] * force[2] - arm[2] * force[1] - torque * axis[0],
-			arm[2] * force[0] - arm[0] * force[2] - torque * axis[1],
-			arm[0] * force[1] - arm[1] * force[0] - torque * axis[2]]
+			arm[1] * force[2] - arm[2] * force[1] - torque * axis[0] + cm * crossflow[0],
+			arm[2] * force[0] - arm[0] * force[2] - torque * axis[1] + cm * crossflow[1],
+			arm[0] * force[1] - arm[1] * force[0] - torque * axis[2] + cm * crossflow[2]]
 		var actual := P.loads(PackedFloat64Array(velocity), rpm, prop, 1.225)
 		var ok := true
 		for i in 6:
@@ -144,3 +151,16 @@ func _installation(model: Dictionary) -> void:
 	check("stopped propeller retains finite flow loads and zero rotor momentum",
 		stopped_finite and stopped_loads != PackedFloat64Array([0, 0, 0, 0, 0, 0])
 		and Dynamics.rotor_momentum(model, 0.0) == PackedFloat64Array([0, 0, 0]))
+
+
+## Piecewise-linear lookup of a flat [J0, C0, J1, C1, ...] table, held constant beyond its ends (independent of
+## Propulsion.coefficient()).
+func _table_at(flat: PackedFloat64Array, x: float) -> float:
+	var rows := flat.size() / 2
+	if x <= flat[0]:
+		return flat[1]
+	for k in range(1, rows):
+		if x <= flat[2 * k]:
+			var t := (x - flat[2 * k - 2]) / (flat[2 * k] - flat[2 * k - 2])
+			return flat[2 * k - 1] + t * (flat[2 * k + 1] - flat[2 * k - 1])
+	return flat[2 * rows - 1]
