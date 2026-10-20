@@ -73,6 +73,35 @@ CI divides app verification into eight unit partitions and one integration job; 
 
 The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 
+## CodeRabbit reviews
+
+[`.coderabbit.yaml`](../.coderabbit.yaml) configures the hosted GitHub App. Install
+[CodeRabbit](https://github.com/apps/coderabbitai/installations/new) with access
+only to `bultodepapas/OpenRCsimulator`, then ensure this repository is enabled in
+the [CodeRabbit repository settings](https://app.coderabbit.ai/settings/repositories).
+Public repositories qualify for [free OSS reviews](https://docs.coderabbit.ai/management/plans#open-source)
+without a paid subscription or credit card. `enable_free_tier` does not activate
+OSS eligibility; repository visibility and App access do. No CI workflow or API
+secret is needed.
+
+New accounts can show a 14-day Advanced trial. Public-repository OSS access is
+separate from that trial and continues without a paid subscription. Included
+OSS review limits differ from trial limits; check `coderabbit usage --agent`
+for current availability. Paid usage continuation is not required for OSS.
+
+Non-draft PRs targeting the default branch receive automatic reviews, including
+incremental reviews on pushes. Public repositories with fewer than 10 stars
+require a manual trigger under the OSS policy. Reviews pause after five reviewed
+commits on an active PR; this pause is separate from OSS quotas and rate limits.
+On a PR, comment `@coderabbitai review` for an incremental
+review, `@coderabbitai full review` to re-read the entire diff, or
+`@coderabbitai configuration` to inspect effective settings. Verify installation
+by opening a non-draft PR and checking for the CodeRabbit bot review/check;
+an existing PR can use the manual review command. OSS [rate limits](https://docs.coderabbit.ai/management/rate-limits)
+still apply. Chat replies require a mention; issue enrichment and planning are off.
+The bot applies the repository guidelines and advises reviewers; it does not
+replace CI, physical validation or maintainer approval.
+
 ## Release sequence
 
 1. Review the selected diff and retain proof beside the owning research evidence.
