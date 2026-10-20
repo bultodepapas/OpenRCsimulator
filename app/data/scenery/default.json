@@ -515,47 +515,22 @@
    }
   },
   {
-   "id": "worn-pavilion-pilot-west",
+   "id": "worn-pavilion-pilot",
    "type": "track",
    "zone": "pilot_line",
    "surface": "worn",
    "collides": false,
    "width": {
-    "value": 0.85,
+    "value": 0.65,
     "unit": "m",
     "kind": "estimated",
-    "source": "Single-file foot traffic from the pavilion veranda to the west pilot position"
+    "source": "Single-file foot traffic from the pavilion veranda to the central pilot station"
    },
    "points": {
     "value": [
      [-13.8, -0.25],
-     [-8.0, -1.5],
-     [-4.5, -8.0],
-     [-1.0, -13.0]
-    ],
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Foot access stays behind the flightline barrier and outside the grass runway"
-   }
-  },
-  {
-   "id": "worn-pavilion-pilot-east",
-   "type": "track",
-   "zone": "pilot_line",
-   "surface": "worn",
-   "collides": false,
-   "width": {
-    "value": 0.85,
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Single-file foot traffic from the pavilion veranda to the east pilot position"
-   },
-   "points": {
-    "value": [
-     [-13.8, -0.25],
-     [-8.0, 1.5],
-     [-4.5, 9.0],
-     [-1.0, 16.0]
+     [-8.0, -0.15],
+     [-2.5, 0.0]
     ],
     "unit": "m",
     "kind": "estimated",

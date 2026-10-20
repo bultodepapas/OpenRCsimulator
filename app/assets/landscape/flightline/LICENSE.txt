@@ -1,13 +1,16 @@
-Wood049 and Metal026 by ambientCG (Lennart Demes)
+Wood049, Wood060, Metal026 and Metal038 by ambientCG (Lennart Demes)
 https://ambientcg.com/view?id=Wood049
+https://ambientcg.com/view?id=Wood060
 https://ambientcg.com/view?id=Metal026
+https://ambientcg.com/view?id=Metal038
 
-The three Wood049_1K-JPG and four Metal026_1K-JPG texture files are distributed under the
+The Wood049_1K-JPG, Wood060_2K-JPG, Metal026_1K-JPG and Metal038_1K-JPG texture files are distributed under the
 Creative Commons CC0 1.0 Universal public-domain dedication.
 https://creativecommons.org/publicdomain/zero/1.0/
 https://docs.ambientcg.com/license/
 
-Wood downloaded 2026-10-15; metal downloaded 2026-10-16.
+Wood049 downloaded 2026-10-15; Metal026 downloaded 2026-10-16.
+Wood060 and Metal038 downloaded 2026-10-20.
 Original files, without image modifications.
 Runtime shaders apply artistic aging, tint and restrained normal depth.
 See PROVENANCE.json for source URLs, archive identity and file hashes.

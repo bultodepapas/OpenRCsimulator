@@ -30,7 +30,7 @@ void vertex() {
 	height_m = VERTEX.y;
 	board_variation = clamp((COLOR.r - 0.72) / 0.18, 0.0, 1.0);
 	// Model-space mapping survives the damage batch's vertex/normal/colour rebuild.
-	// Wood049 is a horizontal-grain 0.8 m tile; red carries a per-board offset.
+	// Wood060 is a lengthwise-grain 1.15 m tile; red offsets each board.
 	vec3 n = NORMAL;
 	upward = max(n.y, 0.0);
 	downward = max(-n.y, 0.0);
@@ -48,9 +48,11 @@ void fragment() {
 	// Wood060 carries actual lengthwise grain. Variation changes exposure, not the grain.
 	float patches = texture(wood_roughness, UV * vec2(0.47, 0.73) + vec2(0.21)).r;
 	float sunbleach = clamp(0.12 + board_variation * 0.25 + upward * 0.12 + patches * 0.12, 0.0, 0.58);
-	float luminance = dot(timber, vec3(0.2126, 0.7152, 0.0722));
-	vec3 silvered = vec3(luminance * 1.04 + 0.045, luminance * 1.03 + 0.041, luminance * 0.95 + 0.035);
-	vec3 wood = mix(timber * vec3(1.10, 1.02, 0.91), silvered, sunbleach);
+	// The scan is very dark and high contrast at this scale. Toned, partly
+	// silvered timber keeps its real grain without bright orange stippling.
+	vec3 wood = mix(timber, vec3(0.29, 0.26, 0.22), 0.60);
+	wood = mix(wood, vec3(0.32, 0.31, 0.28), sunbleach * 0.36);
+	wood *= 1.27;
 	float damp = 1.0 - smoothstep(0.02, 0.22 + patches * 0.12, height_m);
 	wood *= mix(vec3(1.0), vec3(0.67, 0.72, 0.61), damp * 0.32);
 	// End grain absorbs finish, while downward faces receive a narrow contact shadow.
@@ -60,10 +62,10 @@ void fragment() {
 	float zinc_rough = texture(zinc_roughness, metal_uv).r;
 	float zinc_metal = texture(zinc_metalness, metal_uv).r;
 	float old_rough = texture(metal_roughness, metal_uv * 0.76).r;
-	float rail_step = max((barrier_height_m - 0.06 - 0.225) / 3.0, 0.001);
+	float rail_step = max((barrier_height_m - 0.06 - 0.24) / 3.0, 0.001);
 	float joint = 0.0;
 	for (int rail = 0; rail < 4; rail++) {
-		joint = max(joint, 1.0 - smoothstep(0.012, 0.055, abs(height_m - (0.225 + float(rail) * rail_step))));
+		joint = max(joint, 1.0 - smoothstep(0.012, 0.055, abs(height_m - (0.24 + float(rail) * rail_step))));
 	}
 	// Corrosion is confined to the planted foot and the post faces behind saddles.
 	float post_joint = joint * rail_end_face * (1.0 - is_fitting);
@@ -80,5 +82,5 @@ void fragment() {
 	METALLIC = mix(mix(mix(zinc_metal * 0.84, texture(metalness, metal_uv * 0.76).r, corrosion), zinc_metal * 0.91, is_fitting), 0.0, is_wood);
 	vec3 steel_normal = mix(texture(zinc_normal, metal_uv).rgb, texture(metal_normal, metal_uv * 0.76).rgb, corrosion);
 	NORMAL_MAP = mix(steel_normal, texture(wood_normal, UV).rgb, is_wood);
-	NORMAL_MAP_DEPTH = mix(mix(0.18, 0.13, is_fitting), 0.29, is_wood);
+	NORMAL_MAP_DEPTH = mix(mix(0.18, 0.13, is_fitting), 0.11, is_wood);
 }

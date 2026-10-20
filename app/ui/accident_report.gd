@@ -38,6 +38,7 @@ var _details_scroll: ScrollContainer
 var _details_content: VBoxContainer
 var _toast_status: Label
 var _toast_amount: Label
+var _aircraft_identity: Label
 
 var _report: Dictionary = {}
 var _terminal := false
@@ -264,6 +265,12 @@ func _build_ui() -> void:
 	column.add_theme_constant_override("separation", _scaled(9))
 	_report_panel.add_child(column)
 
+	# TT-20: identify this aircraft's estimate without changing its economic fields.
+	_aircraft_identity = _label("", Color("#f1b0a7"), _scaled(15))
+	_aircraft_identity.name = "AircraftIdentity"
+	_aircraft_identity.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_aircraft_identity.visible = false
+
 	var heading := HBoxContainer.new()
 	heading.add_theme_constant_override("separation", _scaled(14))
 	column.add_child(heading)
@@ -285,6 +292,7 @@ func _build_ui() -> void:
 	_caption_label = _label("", UiTheme.TEXT_2, _scaled(18))
 	_caption_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(_caption_label)
+	column.add_child(_aircraft_identity)
 
 	var actions := HFlowContainer.new()
 	actions.name = "ReportActions"
@@ -407,6 +415,20 @@ static func layout_metrics(viewport_size: Vector2, ui_scale: float = 1.0) -> Dic
 func _render_report() -> void:
 	if _surface == null:
 		return
+	var identity_value: Variant = _report.get("identity", {})
+	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
+	var timber := str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+	_aircraft_identity.visible = timber
+	_aircraft_identity.text = tr("Turbo Lumber Evolution") if timber else ""
+	var card := _card_style()
+	var toast := _toast_style()
+	if timber:
+		card.border_color = Color("#a83d32")
+		card.border_width_top = _scaled(3)
+		toast.border_color = Color("#a83d32")
+		toast.border_width_left = _scaled(3)
+	_report_panel.add_theme_stylebox_override("panel", card)
+	_toast_panel.add_theme_stylebox_override("panel", toast)
 	_title_label.text = tr("DAMAGE REPORT") if _settled_report else tr("ACCIDENT REPORT")
 	var state := _headline_state(_report)
 	_outcome_label.text = _outcome_text(_report.get("outcome", "unavailable"))

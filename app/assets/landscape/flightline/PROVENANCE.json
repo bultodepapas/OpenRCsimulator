@@ -49,6 +49,47 @@
       "Metal026_1K-JPG_Roughness.jpg": "6a849e369a2a21ff44f87327b64753616224ca6992f2efef4d233bf319e3c1b1"
     }
   },
+  "timber_finish": {
+    "asset": "ambientCG Wood060",
+    "author": "Lennart Demes / ambientCG",
+    "downloaded": "2026-10-20",
+    "license": "CC0-1.0",
+    "source": "https://ambientcg.com/view?id=Wood060",
+    "license_source": "https://docs.ambientcg.com/license/",
+    "archive_url": "https://ambientcg.com/get?file=Wood060_2K-JPG.zip",
+    "archive_sha256": "54527fac1222a0d59c2a039f5ab83c84eec284936557fb2f87ee30c566594900",
+    "resolution": [2048, 2048],
+    "runtime_tile_metres": 1.15,
+    "source_technique": "Photometric Stereo, as declared by ambientCG; the runtime weathering tint is artistic.",
+    "processing": "Unmodified JPGs extracted from source archive. The lengthwise grain is mapped along rails. Godot imports mipmaps and the shader uses anisotropic filtering.",
+    "sha256": {
+      "Wood060_2K-JPG_Color.jpg": "0473543a25a05f4f10a0fd85c373abe1ce5ce34eb72a12266cb21395b435b478",
+      "Wood060_2K-JPG_NormalGL.jpg": "e7bf6ad2192404b98a3d8878b5a0e43731b4ea3b6761dbe153531a79e168cb0f",
+      "Wood060_2K-JPG_Roughness.jpg": "57971f79d5c7d6c0cdb3fb296b13d84a553d75cc259d3642788836c9a5e0ef59"
+    }
+  },
+  "zinc_finish": {
+    "asset": "ambientCG Metal038",
+    "author": "Lennart Demes / ambientCG",
+    "downloaded": "2026-10-20",
+    "license": "CC0-1.0",
+    "source": "https://ambientcg.com/view?id=Metal038",
+    "license_source": "https://docs.ambientcg.com/license/",
+    "inspected_archive_url": "https://ambientcg.com/get?file=Metal038_2K-JPG.zip",
+    "inspected_archive_sha256": "9c4cd701a53ea208decbc160bcae71e204f6d518e442f6dfcf9d4c9e2af712bf",
+    "archive_url": "https://ambientcg.com/get?file=Metal038_1K-JPG.zip",
+    "archive_sha256": "804a0e45cc923c71277f89b7e1a7b95bd8786899254e43692eb781b8c3981aae",
+    "resolution": [1024, 1024],
+    "runtime_tile_metres": 0.35,
+    "source_technique": "Procedural, as declared by ambientCG; the spangle and scratches are source texture detail.",
+    "processing": "Unmodified JPGs extracted from source archive. The 1K maps suffice for the narrow steel posts and small fittings; selected after inspecting the 2K source. Ground and joint weathering blend the existing Metal026 source.",
+    "sha256": {
+      "Metal038_1K-JPG_Color.jpg": "f89631556587042a5973806c822af39928098743c28effcbab531d3dc68d7421",
+      "Metal038_1K-JPG_Metalness.jpg": "5f8ecd7ef3ac085d42b65f26c6ed099dbb8c25d687973e6bb60abd8b7e788e87",
+      "Metal038_1K-JPG_NormalGL.jpg": "0f49cbf317e84b7e0f058fa692b13c97b66daa75a77b3215bc21772cc931514e",
+      "Metal038_1K-JPG_Roughness.jpg": "d34b92bb2514c17cff0922371b63820cebfba749ecf309e6511f8c7060703a2f"
+    }
+  },
   "post_planting": {
     "assets": [
       "grass_common_short",

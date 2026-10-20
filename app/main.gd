@@ -10,6 +10,7 @@ const Scripted := preload("res://sim/scripted.gd")
 const Frames := preload("res://render/frames.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const GroundGear := preload("res://render/ground_gear.gd")
+const TimberVisualMotion := preload("res://aircraft/timber_visual_motion.gd")
 const PropellerBlur := preload("res://render/propeller_blur.gd")
 const EngineSmoke := preload("res://render/smoke/exhaust.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
@@ -675,6 +676,7 @@ func _ready() -> void:
 	session.set_fuel_start_fill(fuel_start_fill) # FUEL-07: validated above; only finite-fuel tanks use it
 	session.reset()
 	GroundGear.attach(_airplane, session)
+	TimberVisualMotion.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
 	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses

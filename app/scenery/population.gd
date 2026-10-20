@@ -97,10 +97,18 @@ static func build(batches: Dictionary) -> Node3D:
 
 static func triangles(mesh: Mesh) -> int:
 	var total := 0
+	# Imported ArrayMeshes expose counts without copying/decompressing all vertex
+	# attributes. PrimitiveMesh still needs its general Mesh array fallback.
+	if mesh is ArrayMesh:
+		var array_mesh := mesh as ArrayMesh
+		for surface in array_mesh.get_surface_count():
+			var index_count := array_mesh.surface_get_array_index_len(surface)
+			total += (index_count if index_count > 0 else array_mesh.surface_get_array_len(surface)) / 3
+		return total
 	for surface in mesh.get_surface_count():
 		# Mesh array-length convenience methods belong to ArrayMesh and fail on
 		# primitive sources such as QuadMesh. The surface arrays are available on
-	# both, and indexed geometry must count indices rather than unique vertices.
+		# both, and indexed geometry must count indices rather than unique vertices.
 		var arrays: Array = mesh.surface_get_arrays(surface)
 		var index_data: Variant = arrays[Mesh.ARRAY_INDEX]
 		var vertex_data: Variant = arrays[Mesh.ARRAY_VERTEX]

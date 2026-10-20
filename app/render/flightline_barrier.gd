@@ -97,6 +97,7 @@ static func build(cue: Dictionary) -> Node3D:
 		index += 1
 	var material := ShaderMaterial.new()
 	material.shader = Finish
+	material.set_shader_parameter("barrier_height_m", float(cue.height))
 	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg"))
 	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"))
 	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"))

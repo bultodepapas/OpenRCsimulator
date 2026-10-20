@@ -39,11 +39,13 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 	var dirt := Palette.col("dirt") if surface == "dirt" else Palette.col("gravel")
 	var crown := Palette.vegetation(Palette.col("worn_grass"), theme)
 	var route := _round_track_corners(pts, width, 0.994 if surface == "worn" else 0.94)
+	if surface == "worn":
+		route = _worn_route(route)
 	var lanes: Array
 	if surface == "worn":
 		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
-		var edge := crown.lerp(PATCH_FIELD_GRASS_COLOR, 0.28)
-		var tread := crown.darkened(0.06)
+		var edge := Color("#536b40")
+		var tread := Color("#4f6940")
 		lanes = [[-1.0, -0.62, edge], [-0.62, 0.62, tread], [0.62, 1.0, edge]]
 	else:
 		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
@@ -56,11 +58,31 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 			var a1: float = lane[1]
 			var c: Color = lane[2]
 			var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
-			var p00 := route[i] + offs[i] * a0 * width * 0.5
-			var p01 := route[i] + offs[i] * a1 * width * 0.5
-			var p10 := route[i + 1] + offs[i + 1] * a0 * width * 0.5
-			var p11 := route[i + 1] + offs[i + 1] * a1 * width * 0.5
+			var w0 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i, 37)) if surface == "worn" else 1.0)
+			var w1 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i + 1, 37)) if surface == "worn" else 1.0)
+			var p00 := route[i] + offs[i] * a0 * w0
+			var p01 := route[i] + offs[i] * a1 * w0
+			var p10 := route[i + 1] + offs[i + 1] * a0 * w1
+			var p11 := route[i + 1] + offs[i + 1] * a1 * w1
 			_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
+
+
+## Break long walking treads into small, uneven mowing/wear intervals. Endpoints and centre route are retained.
+static func _worn_route(points: PackedVector2Array) -> PackedVector2Array:
+	var out := PackedVector2Array([points[0]])
+	for segment in points.size() - 1:
+		var a := points[segment]
+		var b := points[segment + 1]
+		var delta := b - a
+		var steps := maxi(1, ceili(delta.length() / 0.7))
+		var normal := Vector2(-delta.y, delta.x).normalized()
+		for step in range(1, steps + 1):
+			var t := float(step) / float(steps)
+			var point := a.lerp(b, t)
+			if step < steps:
+				point += normal * (Palette.hash01(segment * 103 + step, 79) - 0.5) * 0.10
+			out.append(point)
+	return out
 
 
 ## Clip sharp polyline corners with a bounded quadratic arc; endpoints and route intent stay fixed.

@@ -9,6 +9,7 @@ const Controls := preload("res://aircraft/ugly_stik_controls.gd")
 const UglyStik := preload("res://aircraft/ugly_stik_model.gd")
 const HX700 := preload("res://aircraft/hx700_model.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
+const TimberVisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
@@ -108,6 +109,8 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 			return {}
 	airplane.root.set_meta("aircraft_id", id)
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
+	if family == TIMBER_ID:
+		TimberVisualLighting.apply(airplane.root)
 	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
 

@@ -1,0 +1,13 @@
+Barrier tape on weighted posts — original model by Innerscene
+
+License: CC0 1.0 Universal (public domain dedication)
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Source asset page:
+https://www.innerscene.com/tools/library/3d-parts/barrier-tape-on-weighted-posts-03228818
+
+Official download endpoint:
+https://www.innerscene.com/api/library/barrier-tape-on-weighted-posts-03228818/download
+
+Downloaded 2026-10-20. Runtime GLB SHA-256:
+15a154de039ef4d3769e103ebd9bf90648be44b2c1be935e6751f96ccfd9299c
