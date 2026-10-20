@@ -356,6 +356,25 @@ class IncidentBundleTests(unittest.TestCase):
         self.assertTrue(any(issue["code"] == "resource_receipt_mismatch"
                             for issue in manifest["issues"]))
 
+    def test_resource_receipt_requires_published_boolean(self):
+        run_dir, _checked = self.make_run()
+        self.add_resource_report(run_dir)
+        report = self.read_receipt(run_dir)
+        report["resources"].pop("published")
+        self.write_receipt(run_dir, report)
+        output = self.root / "resource-receipt-without-published.zip"
+
+        code, _stdout, stderr = self.invoke(run_dir, output)
+
+        self.assertEqual(code, 1, stderr)
+        manifest, archive = self.unzip_manifest(output)
+        with archive:
+            self.assertNotIn("resources.json", archive.namelist())
+        entry = next(item for item in manifest["attachments"] if item["role"] == "resource_report")
+        self.assertEqual(entry["status"], "invalid_receipt")
+        self.assertTrue(any(issue["code"] == "resource_receipt_invalid"
+                            for issue in manifest["issues"]))
+
     def test_file_and_combined_budgets_create_partial_bundle(self):
         run_dir, _checked = self.make_run()
         report_size = (run_dir / "report.json").stat().st_size

@@ -140,3 +140,75 @@ scan. `resources-pressure.json.gz`, `resources-initial-warning.log.gz` and
 tool hashes match the reviewed source; the frame report supplies runtime source
 identity. Decompress into a new folder for inspection; absolute paths describe the
 original host. No golden flight was changed.
+
+## PT1h-R5 incident packaging and timeline correlation
+
+Verified 2026-10-19 with Godot 4.7.2, Python 3.11.9 on Windows, Python 3.12.3
+on WSL Linux, psutil 7.2.2, and the official Windows
+[Perfetto v58.2 release](https://github.com/google/perfetto/releases/tag/v58.2).
+Current commands and limits live in the
+[tool guide](../../../../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5).
+
+The checked runner now supplies one UUID capture identity to the engine and its
+resource report. Frame capture and resource sampling record monotonic/UTC anchors
+at their start and end. Frame durations remain monotonic; UTC is only approximate
+cross-process alignment. Both offline tools use standard-library adapters to
+existing ZIP and Perfetto formats. No addon, logger callback, normal-play polling,
+simulation change or golden-flight update was introduced.
+
+The final native **headless** scripted run retained 181 frames over 3.016537 s
+and 56 OS samples. Peak sampled RSS was 606,347,264 bytes. The checked invocation
+passed with the existing unsupported maple-tree wind warning. Its bundle and
+timeline both report complete. A separate deliberate two-frame retention limit
+produced engine exit 1, two frames totaling 0.005714 s, and 38 OS samples. Both
+offline tools returned 1 for that partial evidence and retained the failure.
+
+The parent independently loaded both traces into Perfetto Trace Processor and
+compared **every** imported frame timestamp/duration and RSS value with the source
+reports. All matched, and the parser reported no import errors. A separate known
+hitch fixture imported exactly `(start 0 ms, duration 20 ms)` and
+`(start 20 ms, duration 100 ms)`. Both ZIPs passed CRC checks and every manifest
+size/SHA-256 matched its stored bytes. This validates conversion and packaging;
+it does not establish GPU performance, leak freedom or causal attribution.
+
+Review and real captures caught and fixed three meaningful gaps: a valid resource
+series incorrectly marked partial, an incomplete frame prefix incorrectly rejected
+for being shorter than the requested duration, and a sampler-construction failure
+publishing a malformed resource file. Failed sampler construction now explicitly
+reports no published artifact while preserving the engine verdict. Tests also
+cover mismatched capture IDs, clock drift/coverage, invalid and unknown metrics,
+duplicate/malformed JSON, source mutation, links, budgets, missing/tampered files,
+exclusive output and injected disk-full failures. Invalid observer counters are
+omitted instead of drawing sanitized zero values as measurements.
+
+Focused verification:
+
+- Windows diagnostic suite: 119 tests, including actual-engine checks.
+- Linux diagnostic suite: 119 discovered, 113 passed, six skipped (optional engine
+  classes and Windows junction cases). All three real Linux frame-capture checks
+  passed separately, including disabled diagnostics and the capped prefix.
+- Frame collector: 86 checks passed on both systems; diagnostic observer:
+  23 checks passed on Windows. Full project CI and exports were not run.
+
+The four-instance ObjectDB warning recurred in the initial complete Windows run.
+It did not recur in the verbose capped run or final delivery run. Its log is
+retained below; the cause remains unresolved. A repeatable lifecycle-growth
+investigation is still appropriate before claiming a memory leak or its fix.
+
+[incident-manifest.json](incident-manifest.json) records artifact hashes and
+reviewed source identities. The retained files are:
+
+- [Complete incident ZIP](incident-delivery-incident.zip) and
+  [failed-prefix incident ZIP](incident-capped-incident.zip): checked receipt,
+  engine log, resource report, frame report and manifest.
+- [Complete timeline](incident-delivery-timeline.json.gz),
+  [failed-prefix timeline](incident-capped-timeline.json.gz) and
+  [known-hitch trace](incident-known-hitch-trace.json.gz): decompress before opening
+  in Perfetto.
+- [Independent verification](incident-verification.json): exact import checks,
+  clock uncertainty/drift, bundle results and trace-processor binary hash.
+- [ObjectDB warning log](incident-objectdb-warning.log.gz): initial recurrence.
+
+Resource attachments in bundles receive receipt/invocation integrity checks;
+their numeric measurements are validated by the timeline exporter, not by the
+packager. Optional `.orfl` attachments remain caller-selected and replay-unverified.

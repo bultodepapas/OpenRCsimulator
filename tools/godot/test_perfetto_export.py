@@ -250,6 +250,22 @@ class PerfettoExportTests(unittest.TestCase):
         metadata = next(event["args"] for event in events if event.get("name") == "capture_metadata")
         self.assertEqual(metadata["sources"]["frames"]["unknown_metric_names"], ["future_metric"])
 
+    def test_short_capped_prefix_preserves_duration_without_weakening_integrity(self):
+        report = frame_report(complete=False)
+        report["sample_s"] = 10.0
+        events, partial = build_trace(frames=report)
+        self.assertTrue(partial)
+        self.assertEqual(sum(e["dur"] for e in events if e["ph"] == "X"), 120000)
+        report["complete"] = True
+        report["failure"] = ""
+        with self.assertRaisesRegex(SourceError, "shorter than sample_s"):
+            build_trace(frames=report)
+        report["complete"] = False
+        report["failure"] = "retention limit"
+        report["frame_wall_usec"][1] += 1
+        with self.assertRaises(SourceError):
+            build_trace(frames=report)
+
     def test_mismatched_ids_and_missing_combined_clock_are_rejected(self):
         with self.assertRaisesRegex(SourceError, "same non-empty capture_id"):
             build_trace(

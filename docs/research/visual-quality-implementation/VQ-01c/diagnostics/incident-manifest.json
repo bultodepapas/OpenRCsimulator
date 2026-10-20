@@ -1,0 +1,57 @@
+{
+  "format": "openrc-diagnostic-evidence v1",
+  "step": "PT1h-R5",
+  "date": "2026-10-19",
+  "artifacts": {
+    "incident-delivery-incident.zip": {
+      "bytes": 40427,
+      "sha256": "e3be5bd3578e0cd42ad02fb8d7a0c9547354ef83eeadf071ceec5abc915ae77b"
+    },
+    "incident-capped-incident.zip": {
+      "bytes": 46203,
+      "sha256": "45d339375837f37e8de85e79c9845923c9cf9aad83996eb075146d248d62c1c7"
+    },
+    "incident-verification.json": {
+      "bytes": 5183,
+      "sha256": "6c361bacbc3eec1c8fa4c16efd05f52e19eaf74c3058d88035d9335965f739c0"
+    },
+    "incident-delivery-timeline.json.gz": {
+      "bytes": 29334,
+      "sha256": "3987467452e1e31aacada48c85ec4ba88b6e6070253021fd440e0a755021a75d",
+      "uncompressed_bytes": 653055,
+      "uncompressed_sha256": "cbc6e6c8c9b318fbbeafd2eca443d7dd1a1a27f42d6f7ace29a650a42f3b88ef"
+    },
+    "incident-capped-timeline.json.gz": {
+      "bytes": 7177,
+      "sha256": "e5d18597a554589f3003159526b548ad027d96d4a1c1bd2ad9cd3950b9539d76",
+      "uncompressed_bytes": 85623,
+      "uncompressed_sha256": "86208e727acf16327ac6cca1d09cd27ce9ae8467158e760e42617d27c212bb33"
+    },
+    "incident-known-hitch-trace.json.gz": {
+      "bytes": 823,
+      "sha256": "068764555831a77d41836a2b8f7183041461c63bf4489ba7cabec1be994ec0cd",
+      "uncompressed_bytes": 2366,
+      "uncompressed_sha256": "5529e2e8c201e26797713b2c368eaf044acb1944891dfffc14b5c8e1b9061717"
+    },
+    "incident-objectdb-warning.log.gz": {
+      "bytes": 758,
+      "sha256": "c8e554e503df3be3235cd461e16691912d383249b4608e91aae976b840dbbfb1",
+      "uncompressed_bytes": 1457,
+      "uncompressed_sha256": "50e9f1d947cbb44c447534574cb114039ed699e77e4bcf395a6a96709f3c37ee"
+    }
+  },
+  "reviewed_source_sha256": {
+    "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+    "tools/godot/resource_samples.py": "676825d8fb9d646ed81705328a8767a3dec96e4939ba11e4db84a826ed7ae704",
+    "tools/godot/incident_bundle.py": "5499b04ee1ffefec841c891b30be02f9e76cb583b9cd13aa3421d6e0b99b971c",
+    "tools/godot/perfetto_export.py": "417a1b6d2c099247768207f0d1a80c74453b1f5324190f1f419ebb8761244372",
+    "app/render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+    "tools/godot/test_incident_bundle.py": "54a696d088b37b2601ad0e8ca2bb8a49c397f2563bfb94d2bf78da0727f12007",
+    "tools/godot/test_perfetto_export.py": "6939400a5ea62634aeff2db0e9d00ddc2bf14b4c56ce18c12c4fd87b11fd5771",
+    "tools/godot/test_resource_runner.py": "a58cf6f90a27866cf05b32d2671946f7f360c8da0348c2965e15d7618dc0dcfc",
+    "tools/godot/test_resource_samples.py": "6af6705dfe9f0c0dd6d587e75707e6e4d5456d8f8b6fe65b6df4201aca40d2cd",
+    "tools/godot/test_frame_capture.py": "f30b5a9cf8fcd4f28a14f9c8dc492f5c49899efd888641f21ea91bc3da4f20b7"
+  },
+  "perfetto_release": "https://github.com/google/perfetto/releases/tag/v58.2",
+  "scope": "Functional diagnostic accuracy and failure handling; not performance or physical acceptance."
+}

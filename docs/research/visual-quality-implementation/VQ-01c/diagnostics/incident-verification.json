@@ -1,0 +1,161 @@
+{
+  "delivery": {
+    "frames": 181,
+    "frame_wall_total_ns": 3016537000,
+    "rss_samples": 56,
+    "rss_peak_bytes": 606347264,
+    "trace_complete": true,
+    "bundle_complete": true,
+    "run_ok": true,
+    "all_slice_timestamps_and_durations_match_source": true,
+    "all_rss_values_match_source": true,
+    "perfetto_import_errors": [],
+    "zip_integrity_and_hashes": "passed",
+    "clock": {
+      "mode": "aligned_utc",
+      "alignment": "each monotonic timeline mapped by its start UNIX-minus-monotonic offset",
+      "uncertainty_floor_usec": 20000,
+      "combined_uncertainty_usec": 40000,
+      "uncertainty_semantics": "anchor uncertainty estimate, not a guaranteed operating-system bound",
+      "effective_uncertainty_usec": {
+        "frame_start": 20000,
+        "frame_end": 20000,
+        "resource_start": 20000,
+        "resource_end": 20000
+      },
+      "max_clock_drift_usec": 50000,
+      "frame_offset_start_usec": 1792461638180070,
+      "resource_offset_start_usec": 1792435448285364,
+      "frame_offset_end_usec": 1792461638180525,
+      "resource_offset_end_usec": 1792435448285580,
+      "frame_offset_drift_usec": 455,
+      "resource_offset_drift_usec": 216,
+      "allowed_drift_usec": 90000,
+      "frame_data_utc_bounds_usec": [
+        1792461646469932,
+        1792461649486469
+      ],
+      "resource_data_utc_bounds_usec": [
+        1792461638439567,
+        1792461649700694
+      ],
+      "data_window_overlap_usec": 3016537,
+      "zero_utc_usec": 1792461638439567,
+      "frame_clock": {
+        "source": "godot_ticks_usec",
+        "origin_usec": 0,
+        "start": {
+          "monotonic_usec": 7277930,
+          "unix_usec": 1792461645458000,
+          "uncertainty_usec": 20000
+        },
+        "end": {
+          "monotonic_usec": 11306475,
+          "unix_usec": 1792461649487000,
+          "uncertainty_usec": 20000
+        }
+      },
+      "resource_clock": {
+        "source": "python_perf_counter",
+        "origin_usec": 26189880795,
+        "start": {
+          "monotonic_usec": 26189880797,
+          "unix_usec": 1792461638166161,
+          "uncertainty_usec": 20000
+        },
+        "end": {
+          "monotonic_usec": 26201544229,
+          "unix_usec": 1792461649829809,
+          "uncertainty_usec": 20000
+        }
+      }
+    }
+  },
+  "capped": {
+    "frames": 2,
+    "frame_wall_total_ns": 5714000,
+    "rss_samples": 38,
+    "rss_peak_bytes": 607850496,
+    "trace_complete": false,
+    "bundle_complete": false,
+    "run_ok": false,
+    "all_slice_timestamps_and_durations_match_source": true,
+    "all_rss_values_match_source": true,
+    "perfetto_import_errors": [],
+    "zip_integrity_and_hashes": "passed",
+    "clock": {
+      "mode": "aligned_utc",
+      "alignment": "each monotonic timeline mapped by its start UNIX-minus-monotonic offset",
+      "uncertainty_floor_usec": 20000,
+      "combined_uncertainty_usec": 40000,
+      "uncertainty_semantics": "anchor uncertainty estimate, not a guaranteed operating-system bound",
+      "effective_uncertainty_usec": {
+        "frame_start": 20000,
+        "frame_end": 20000,
+        "resource_start": 20000,
+        "resource_end": 20000
+      },
+      "max_clock_drift_usec": 50000,
+      "frame_offset_start_usec": 1792461290055672,
+      "resource_offset_start_usec": 1792435448285247,
+      "frame_offset_end_usec": 1792461290057027,
+      "resource_offset_end_usec": 1792435448285132,
+      "frame_offset_drift_usec": 1355,
+      "resource_offset_drift_usec": 115,
+      "allowed_drift_usec": 90000,
+      "frame_data_utc_bounds_usec": [
+        1792461297631331,
+        1792461297637045
+      ],
+      "resource_data_utc_bounds_usec": [
+        1792461290342746,
+        1792461297916020
+      ],
+      "data_window_overlap_usec": 5714,
+      "zero_utc_usec": 1792461290342746,
+      "frame_clock": {
+        "source": "godot_ticks_usec",
+        "origin_usec": 0,
+        "start": {
+          "monotonic_usec": 7569328,
+          "unix_usec": 1792461297625000,
+          "uncertainty_usec": 20000
+        },
+        "end": {
+          "monotonic_usec": 7596973,
+          "unix_usec": 1792461297654000,
+          "uncertainty_usec": 20000
+        }
+      },
+      "resource_clock": {
+        "source": "python_perf_counter",
+        "origin_usec": 25841754888,
+        "start": {
+          "monotonic_usec": 25841754891,
+          "unix_usec": 1792461290040138,
+          "uncertainty_usec": 20000
+        },
+        "end": {
+          "monotonic_usec": 25849719808,
+          "unix_usec": 1792461298004940,
+          "uncertainty_usec": 20000
+        }
+      }
+    }
+  },
+  "known_hitch": {
+    "expected_slices_ns": [
+      [
+        0,
+        20000000
+      ],
+      [
+        20000000,
+        100000000
+      ]
+    ],
+    "matched": true
+  },
+  "perfetto_version": "Perfetto v58.2-add693d8b (add693d8b338ba9599dbcbc3e300b1ab8c000897)\nTrace Processor RPC API version: 14",
+  "trace_processor_sha256": "adfa6bad3d72be3ba9b83fa2b17b69fa13b3ab1cad0f42e52b86188bd5f0f997"
+}

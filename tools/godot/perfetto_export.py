@@ -295,7 +295,10 @@ def _validate_frames(report: dict[str, Any]) -> tuple[dict[str, Any], bool, dict
     except (RecursionError, OverflowError, TypeError, ValueError) as error:
         raise SourceError(f"frame source validation failed safely: {error}") from error
     if partial:
-        errors = [error for error in errors if error != "report is marked incomplete"]
+        # Retention caps and interrupted captures can legitimately stop before
+        # the requested duration. Every raw-data consistency check still applies.
+        prefix_conditions = {"report is marked incomplete", "raw frame sample is shorter than sample_s"}
+        errors = [error for error in errors if error not in prefix_conditions]
     if errors or derived is None:
         preview = "; ".join(errors[:8]) if errors else "native frame validation produced no derived data"
         raise SourceError(f"frame source failed native validation: {preview}")

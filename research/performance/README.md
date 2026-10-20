@@ -431,6 +431,20 @@ commands, three runway repeats, airborne controls, unfavorable component timings
 and boundary/oracle regressions. Follow its reproduction steps for a frozen
 before/after comparison; the H16 oracle above isolates a different change.
 
+## Ground-patch construction cache (DT-11a)
+
+`ground_patch_cache/prepare.py --work <new-directory> --reference <original-ground_features.gd>`
+copies the current field/scenery callers outside `app/` and redirects only their
+ground-patch dependency. Run the emitted `field_compare.gd` with the native engine,
+`--path app --script <absolute-probe> -- --output=<new.json>`; `--reverse` changes
+the initial order. It checks six whole-field geometry pairs, input immutability
+and cache retention. Pair zero includes first-use caches and is excluded from warm
+medians. Run serially and retain checked logs. This measures detached construction;
+use `loading_probe.gd` separately for the real Home/Fly route.
+
+[Dated measurements, exact baseline, commands and limitations](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md).
+The permanent regression is `res://tests/test_ground_patch_cache.gd`.
+
 ## Segmented slipstream invariants (H17)
 
 [H17](../../docs/research/simulation-state/H17/README.md) uses the same full-session

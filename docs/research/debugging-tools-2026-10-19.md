@@ -216,3 +216,12 @@ Start with incident capture and the offline timeline: both build on evidence the
 project already collects. Use ProcMon/VMMap/WPR on demand before adding more runtime
 instrumentation. The current intermittent ObjectDB warning is a useful first case
 for the lifecycle scenario, not an established leak cause.
+
+### Implemented follow-up: PT1h-R5
+
+The first delivered slice is a bounded local incident ZIP and offline Perfetto
+adapter for existing frame/resource captures. Shared capture IDs and paired clock
+anchors support approximate correlation; incomplete prefixes remain explicit.
+This does not yet add a runtime event queue, scene markers, console or lifecycle
+probe. See the [usage guide](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5)
+and [reviewed tests/evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md#pt1h-r5-incident-packaging-and-timeline-correlation).

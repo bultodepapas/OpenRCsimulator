@@ -468,7 +468,7 @@ def create_bundle(run_dir: Path, output_path: Path, *, frames_path: Path | None 
         if not isinstance(receipt, dict):
             resource_entry["status"] = "invalid_receipt"
             issue("resource_receipt_invalid", "report.json resources receipt must be an object", "resources.json")
-        elif ("published" in receipt and type(receipt.get("published")) is not bool):
+        elif "published" not in receipt or type(receipt.get("published")) is not bool:
             resource_entry["status"] = "invalid_receipt"
             issue("resource_receipt_invalid", "resource receipt published field must be a boolean",
                   "resources.json")

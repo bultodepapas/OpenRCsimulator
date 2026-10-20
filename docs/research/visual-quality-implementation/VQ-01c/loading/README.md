@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [bounded ground-patch buffer reuse](ground-patch-cache/README.md)
+preserves 30 native whole-field geometry pairs and reduces repeated field construction
+by 8.5%. Three paired Home/Fly processes complete 18 transitions with active simulation,
+zero orphan nodes and clean audio teardown; repeated Fly first draw improves by 2.6%.
+
 2026-10-19 construction follow-up: [treeline validation allocations](field-validation/README.md)
 preserves complete normalized data and diagnostics in 55 fixture pairs, reducing
 default field validation by 18.3% and complete file loading by 15.9% in five processes.
