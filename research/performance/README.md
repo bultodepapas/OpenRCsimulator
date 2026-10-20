@@ -433,6 +433,11 @@ before/after comparison; the H16 oracle above isolates a different change.
 
 ## Ground-patch construction cache (DT-11a)
 
+The [plank-color follow-up](../../docs/research/visual-quality-implementation/VQ-01c/loading/timber-colors/README.md)
+retains original/candidate dependency snapshots, paired field/prefab probes and a
+scalar color oracle. It reuses shared vertex samples within each plank and records
+the rejected generic MeshKit experiments. No persistent cache is introduced.
+
 The [botanical spacing follow-up](../../docs/research/visual-quality-implementation/VQ-01c/loading/botanical-spacing/README.md)
 retains a separate field/metadata comparison and traced layout probe for moving
 cheap spacing rejection ahead of shoreline sampling. Its report includes original

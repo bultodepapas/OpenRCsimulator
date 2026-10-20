@@ -1,0 +1,128 @@
+{
+  "processes": [
+    {
+      "process": 1,
+      "usec": {
+        "reference": 585311,
+        "candidate": 567956
+      },
+      "scenery_ms": {
+        "reference": 204.255,
+        "candidate": 178.317
+      },
+      "instances_ms": {
+        "reference": 101.559,
+        "candidate": 73.551
+      }
+    },
+    {
+      "process": 2,
+      "usec": {
+        "reference": 588398,
+        "candidate": 529906
+      },
+      "scenery_ms": {
+        "reference": 202.903,
+        "candidate": 162.131
+      },
+      "instances_ms": {
+        "reference": 97.358,
+        "candidate": 69.606
+      }
+    },
+    {
+      "process": 3,
+      "usec": {
+        "reference": 638780,
+        "candidate": 847185
+      },
+      "scenery_ms": {
+        "reference": 225.096,
+        "candidate": 268.257
+      },
+      "instances_ms": {
+        "reference": 125.476,
+        "candidate": 113.835
+      }
+    },
+    {
+      "process": 4,
+      "usec": {
+        "reference": 539438,
+        "candidate": 519490
+      },
+      "scenery_ms": {
+        "reference": 186.317,
+        "candidate": 162.334
+      },
+      "instances_ms": {
+        "reference": 94.951,
+        "candidate": 69.125
+      }
+    },
+    {
+      "process": 5,
+      "usec": {
+        "reference": 572004,
+        "candidate": 542515
+      },
+      "scenery_ms": {
+        "reference": 199.929,
+        "candidate": 169.27
+      },
+      "instances_ms": {
+        "reference": 96.751,
+        "candidate": 70.927
+      }
+    }
+  ],
+  "median_of_process_medians": {
+    "usec": {
+      "reference": 585311,
+      "candidate": 542515
+    },
+    "scenery_ms": {
+      "reference": 202.903,
+      "candidate": 169.27
+    },
+    "instances_ms": {
+      "reference": 97.358,
+      "candidate": 70.927
+    }
+  },
+  "exact_pairs": 30,
+  "prefabs": {
+    "processes": [
+      {
+        "process": 1,
+        "reference": 40693,
+        "candidate": 28260
+      },
+      {
+        "process": 2,
+        "reference": 40914,
+        "candidate": 28572
+      },
+      {
+        "process": 3,
+        "reference": 40430,
+        "candidate": 28034
+      },
+      {
+        "process": 4,
+        "reference": 43726,
+        "candidate": 29507
+      },
+      {
+        "process": 5,
+        "reference": 41926,
+        "candidate": 29322
+      }
+    ],
+    "median_of_process_medians": {
+      "reference": 40914,
+      "candidate": 28572
+    },
+    "exact_pairs": 60
+  }
+}

@@ -1,0 +1,126 @@
+{
+	"exact": 12,
+	"failures": [],
+	"samples": [
+		{
+			"pair": 0,
+			"usec": 84849,
+			"variant": "reference"
+		},
+		{
+			"pair": 0,
+			"usec": 40682,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 41003,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"usec": 41132,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 42343,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"usec": 41469,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 40498,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"usec": 41038,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 40113,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"usec": 46593,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 40564,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"usec": 40812,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 42784,
+			"variant": "reference"
+		},
+		{
+			"pair": 6,
+			"usec": 43563,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 42493,
+			"variant": "candidate"
+		},
+		{
+			"pair": 7,
+			"usec": 42230,
+			"variant": "reference"
+		},
+		{
+			"pair": 8,
+			"usec": 41380,
+			"variant": "reference"
+		},
+		{
+			"pair": 8,
+			"usec": 43828,
+			"variant": "candidate"
+		},
+		{
+			"pair": 9,
+			"usec": 49788,
+			"variant": "candidate"
+		},
+		{
+			"pair": 9,
+			"usec": 53367,
+			"variant": "reference"
+		},
+		{
+			"pair": 10,
+			"usec": 58953,
+			"variant": "reference"
+		},
+		{
+			"pair": 10,
+			"usec": 42224,
+			"variant": "candidate"
+		},
+		{
+			"pair": 11,
+			"usec": 41444,
+			"variant": "candidate"
+		},
+		{
+			"pair": 11,
+			"usec": 41328,
+			"variant": "reference"
+		}
+	]
+}

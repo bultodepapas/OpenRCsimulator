@@ -1,0 +1,154 @@
+diff --git a/app/scenery/club_furniture.gd b/app/scenery/club_furniture.gd
+index a068d90ba..f58e11783 100644
+--- a/app/scenery/club_furniture.gd
++++ b/app/scenery/club_furniture.gd
+@@ -69,6 +69,8 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
+ 	k.xf = saved*Transform3D(Basis(Vector3.RIGHT,angle),centre)
+ 	var bevel := 0.003
+ 	var rings: Array[PackedVector3Array] = []
++	# Adjacent side triangles share ring vertices; sample their grain once per plank.
++	var colors: Array[PackedColorArray] = []
+ 	for r in range(segments+3):
+ 		var end := r == 0 or r == segments+2
+ 		var x := lerpf(-length_m*0.5+bevel,length_m*0.5-bevel,float(r-1)/segments)
+@@ -77,13 +79,18 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
+ 		var h := thickness*0.5 - (bevel if end else 0.0)
+ 		var w := width*0.5 - (bevel if end else 0.0)
+ 		var ring := PackedVector3Array()
++		var color_ring := PackedColorArray()
+ 		for p: Vector2 in [Vector2(h-bevel,-w),Vector2(h,-w+bevel),Vector2(h,w-bevel),Vector2(h-bevel,w),Vector2(-h+bevel,w),Vector2(-h,w-bevel),Vector2(-h,-w+bevel),Vector2(-h+bevel,-w)]:
+-			ring.append(Vector3(x,p.x,p.y))
++			var point := Vector3(x,p.x,p.y)
++			ring.append(point)
++			color_ring.append(_wood_color(point,tone,seed))
+ 		rings.append(ring)
++		colors.append(color_ring)
+ 	for r in rings.size()-1:
+ 		for j in 8:
+ 			var next := (j+1)%8
+-			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,seed)
++			_face(k,rings[r][next],rings[r+1][next],rings[r+1][j],rings[r][j],tone,
++				colors[r][next],colors[r+1][next],colors[r+1][j],colors[r][j])
+ 	# Cross-section faces positive X; reverse only the negative-X cap.
+ 	var cap := rings[0]
+ 	cap.reverse()
+@@ -92,23 +99,30 @@ static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
+ 	k.xf = saved
+ 
+ 
+-static func _face(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, d: Vector3, tone: Color, seed: int) -> void:
++static func _face(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, d: Vector3, tone: Color,
++		ca: Color, cb: Color, cc: Color, cd: Color) -> void:
++	var first := k.cols.size()
++	k.quad(a,b,c,d,tone)
++	k.cols[first] = ca
++	k.cols[first+1] = cc
++	k.cols[first+2] = cb
++	k.cols[first+3] = ca
++	k.cols[first+4] = cd
++	k.cols[first+5] = cc
++
++
++static func _wood_color(p: Vector3, tone: Color, seed: int) -> Color:
+ 	if _wood == null:
+ 		_wood = Wood.get_image()
+ 		# Filter before vertex sampling: no glittering single-texel grain or extra draw.
+ 		_wood.resize(96,64,Image.INTERPOLATE_LANCZOS)
+-	var first := k.cols.size()
+-	k.quad(a,b,c,d,tone)
+-	var points := [a,c,b,a,d,c]
+-	for i in 6:
+-		var p: Vector3 = points[i]
+-		var u := fposmod(p.x/0.8+float(seed)*0.173,1.0)
+-		var v := fposmod((p.z+p.y*2.0)/0.8+float(seed)*0.319,1.0)
+-		var sample := _wood.get_pixel(int(u*95),int(v*63))
+-		var light := (sample.r+sample.g+sample.b)/3.0
+-		var shade := clampf(1.0+(light-0.39)*3.0,0.78,1.18)
+-		shade *= 0.91+0.13*float(seed%5)/4.0
+-		k.cols[first+i] = Color(tone.r*shade,tone.g*shade,tone.b*shade,1.0)
++	var u := fposmod(p.x/0.8+float(seed)*0.173,1.0)
++	var v := fposmod((p.z+p.y*2.0)/0.8+float(seed)*0.319,1.0)
++	var sample := _wood.get_pixel(int(u*95),int(v*63))
++	var light := (sample.r+sample.g+sample.b)/3.0
++	var shade := clampf(1.0+(light-0.39)*3.0,0.78,1.18)
++	shade *= 0.91+0.13*float(seed%5)/4.0
++	return Color(tone.r*shade,tone.g*shade,tone.b*shade,1.0)
+ 
+ 
+ static func _bolt(k: MeshKit, origin: Vector3, normal: Vector3, radius: float) -> void:
+diff --git a/app/tests/test_club_furniture_colors.gd b/app/tests/test_club_furniture_colors.gd
+new file mode 100644
+index 000000000..87390495a
+--- /dev/null
++++ b/app/tests/test_club_furniture_colors.gd
+@@ -0,0 +1,70 @@
++extends SceneTree
++
++const Kit = preload("res://scenery/mesh_kit.gd")
++const Wood = preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg")
++var _checks := 0
++var _failures := 0
++
++
++func _check(label: String, passed: bool) -> void:
++	_checks += 1
++	if not passed:
++		_failures += 1
++		printerr("FAIL ", label)
++
++
++func _initialize() -> void:
++	var builder_path := "res://scenery/club_furniture.gd"
++	for arg in OS.get_cmdline_user_args():
++		if arg.begins_with("--builder="): builder_path = arg.trim_prefix("--builder=")
++	var builder: Script = load(builder_path)
++	var wood: Image = Wood.get_image()
++	wood.resize(96, 64, Image.INTERPOLATE_LANCZOS)
++	var transforms: Array[Transform3D] = [Transform3D.IDENTITY,
++		Transform3D(Basis(Vector3.UP, 0.71), Vector3(4, 2, -3)),
++		Transform3D(Basis.from_scale(Vector3(-1, 1, 1)), Vector3(-2, 1, 5)),
++		Transform3D(Basis(Vector3.FORWARD, -0.43).scaled(Vector3(2, 0.8, 1.3)), Vector3(2, -1, 3))]
++	for fixture in 6:
++		var segments: int = [-2, 1, 4, 6, 14, 16][fixture]
++		var seed: int = [-19, -1, 0, 7, 23, 193][fixture]
++		var length_m := 0.7 + fixture * 0.23
++		var width := 0.08 + fixture * 0.015
++		var thickness := 0.025 + fixture * 0.005
++		var tone := Color(0.3 + fixture * 0.08, 0.24, 0.13, 0.4)
++		var local := Kit.new()
++		builder.board(local, length_m, width, thickness, Vector3.ZERO, Basis.IDENTITY, seed, tone, segments)
++		var side_count := 48 * (maxi(1, segments) + 2)
++		_check("fixture %d triangle count" % fixture, local.cols.size() == side_count + 36)
++		var expected := PackedColorArray()
++		# Independent scalar oracle samples emitted local vertices, not cached rings.
++		for index in side_count:
++			expected.append(_sample(wood, local.verts[index], seed, tone))
++		for index in 36:
++			expected.append(tone.darkened(0.08))
++		_check("fixture %d source grain and cap colors" % fixture, local.cols == expected)
++		for transform: Transform3D in transforms:
++			var kit := Kit.new()
++			kit.box(Vector3.ONE, Vector3.ZERO, Color.MAGENTA)
++			kit.tag_damage(0, "prefix")
++			var first := kit.verts.size()
++			var prefix := var_to_bytes([kit.verts, kit.norms, kit.cols, kit.damage_ranges])
++			kit.xf = transform
++			builder.board(kit, length_m, width, thickness, Vector3(0.3, 0.5, -0.2),
++				Basis(Vector3.RIGHT, 0.47), seed, tone, segments)
++			_check("fixture %d transformed colors" % fixture, kit.cols.slice(first) == expected)
++			_check("fixture %d restored transform" % fixture, kit.xf == transform)
++			_check("fixture %d preserved prefix and damage ranges" % fixture,
++				var_to_bytes([kit.verts.slice(0, first), kit.norms.slice(0, first),
++					kit.cols.slice(0, first), kit.damage_ranges]) == prefix)
++	print("club furniture colors: %d checks, %d failures" % [_checks, _failures])
++	quit(0 if _failures == 0 else 1)
++
++
++func _sample(wood: Image, point: Vector3, seed: int, tone: Color) -> Color:
++	var u := fposmod(point.x / 0.8 + float(seed) * 0.173, 1.0)
++	var v := fposmod((point.z + point.y * 2.0) / 0.8 + float(seed) * 0.319, 1.0)
++	var pixel := wood.get_pixel(int(u * 95), int(v * 63))
++	var light := (pixel.r + pixel.g + pixel.b) / 3.0
++	var shade := clampf(1.0 + (light - 0.39) * 3.0, 0.78, 1.18)
++	shade *= 0.91 + 0.13 * float(seed % 5) / 4.0
++	return Color(tone.r * shade, tone.g * shade, tone.b * shade, 1.0)

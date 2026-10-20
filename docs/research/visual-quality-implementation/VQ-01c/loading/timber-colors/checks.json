@@ -1,0 +1,1309 @@
+[
+  {
+    "retained_log": "baseline-attribution.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c384cd27-cfb7-4ad6-b987-d3ffdb30d169",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/field_attribution.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:33:04.102603+00:00",
+      "label": "baseline-attribution",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\baseline-attribution-xzyr4iv6\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\baseline-attribution-xzyr4iv6\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 11,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371934647974009 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.86,
+      "log_bytes": 3925,
+      "log_sha256": "1cc7e0a73055fb3ea6afbb1909587200022ea11cf94f69a80c23955c750d7413"
+    }
+  },
+  {
+    "retained_log": "boxes-explore.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "8cea2f4c-0740-45ce-a3f8-80884a8cec30",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/box_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/box-explore.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:34:50.696531+00:00",
+      "label": "boxes-explore",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\boxes-explore-80tjuy48\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\boxes-explore-80tjuy48\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.5,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "expected-color-slot-mutation.log.gz",
+    "expected_failure": true,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "f8434ab6-7bb5-4a28-93c8-9511b6f7e8f1",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\test_club_furniture_colors.gd",
+        "--",
+        "--builder=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_mutation.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:52:23.294174+00:00",
+      "label": "expected-color-slot-mutation",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\expected-color-slot-mutation-qm4_3gnt\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\expected-color-slot-mutation-qm4_3gnt\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 0.312,
+      "log_bytes": 1226,
+      "log_sha256": "9fbd28a033dd3e3465af20173e550068d23c1aade264407ae3669db4767205d7"
+    }
+  },
+  {
+    "retained_log": "instance-attribution.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "461bd617-bbf1-42ab-85fa-709a63dcea49",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/instances_attribution.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:37:32.378239+00:00",
+      "label": "instance-attribution",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\instance-attribution-krk0fkrv\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\instance-attribution-krk0fkrv\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 11,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371931141535864 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.406,
+      "log_bytes": 7365,
+      "log_sha256": "4825e072e170356a473fc473df341614ba164e6b0b57b2eed7e824ca521ecf79"
+    }
+  },
+  {
+    "retained_log": "production-loading.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "ce48b6d4-e4d3-47c8-9ba9-abd1ac528da3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/production-loading.json",
+        "--cycles=3"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:51:14.783423+00:00",
+      "label": "production-loading",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-loading-w5512vi6\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-loading-w5512vi6\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "loading probe: 3 Home/Fly cycles"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 15.5,
+      "log_bytes": 1827,
+      "log_sha256": "a4f170f88ba00e986fb8cd9d00260b55725efb68473bcae741f016b607b87070"
+    }
+  },
+  {
+    "retained_log": "production-test_club_furniture_colors.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "25f60bcb-0902-41aa-881c-e7b2af793f4d",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_club_furniture_colors.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:44.094519+00:00",
+      "label": "production-test_club_furniture_colors",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_club_furniture_colors-_hdwfaj3\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_club_furniture_colors-_hdwfaj3\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "club furniture colors: 84 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.297,
+      "log_bytes": 121,
+      "log_sha256": "c8919a34bfac9a438ca7e573108cb4a64cd413a0b3fa74a2114701d86e2e643c"
+    }
+  },
+  {
+    "retained_log": "production-test_field_integration.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "41b06177-9f53-493d-9053-2511c7f37834",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_field_integration.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:51.292641+00:00",
+      "label": "production-test_field_integration",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_field_integration-b4r48u31\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_field_integration-b4r48u31\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "all field integration checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 7.609,
+      "log_bytes": 2393,
+      "log_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5"
+    }
+  },
+  {
+    "retained_log": "production-test_landscape_architecture.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "fe680c0b-a738-4a86-9fe7-880764d8a5d0",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_architecture.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:48.717096+00:00",
+      "label": "production-test_landscape_architecture",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_landscape_architecture-04xxlubw\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_landscape_architecture-04xxlubw\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "all architecture checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.484,
+      "log_bytes": 1176,
+      "log_sha256": "ec282b1b5b3a2d68cb5f8618d11112b434524860f488422f75fe05b570bd2b96"
+    }
+  },
+  {
+    "retained_log": "production-test_scenery_build.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5fabd0a8-4e13-468e-b95f-49b337c30888",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_build.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:44.487678+00:00",
+      "label": "production-test_scenery_build",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_scenery_build-kdr0la7c\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_scenery_build-kdr0la7c\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "all scenery build checks passed"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 5,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371933255465118 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 4.125,
+      "log_bytes": 8729,
+      "log_sha256": "0abe1f186051dd5cab203120f4e2464a0808c8d24bf34e2092993b619db517f7"
+    }
+  },
+  {
+    "retained_log": "production-test_scenery_destruction.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "dd54695e-7c08-4b0c-a9fa-db66a5b95ce3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_scenery_destruction.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:49.302849+00:00",
+      "label": "production-test_scenery_destruction",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_scenery_destruction-jkunfq1t\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\production-test_scenery_destruction-jkunfq1t\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.891,
+      "log_bytes": 119,
+      "log_sha256": "9fd9f09ece6f9ec7f08cdbee937712f0d16cf7f09f68f918fd0adb8b16aeb3c8"
+    }
+  },
+  {
+    "retained_log": "quad-batch-explore.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "c0ac7d1a-8d7b-4fd2-9ddc-e989ba4c393c",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/quad_batch_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/quad-batch-explore.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:36:55.486996+00:00",
+      "label": "quad-batch-explore",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\quad-batch-explore-q6y3cz7f\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\quad-batch-explore-q6y3cz7f\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.407,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "quads-explore.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "fca00b33-888f-4041-bd4c-c7c888572e4c",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/quad_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/quad-explore.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:35:50.612125+00:00",
+      "label": "quads-explore",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\quads-explore-fr1rp13w\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\quads-explore-fr1rp13w\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.625,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-color-candidate.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "9002f3e0-2d8d-4678-9b99-f01a113cf833",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\test_club_furniture_colors.gd",
+        "--",
+        "--builder=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_candidate.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:02.916306+00:00",
+      "label": "timber-color-candidate",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-color-candidate-n_vesdxu\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-color-candidate-n_vesdxu\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "club furniture colors: 84 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.312,
+      "log_bytes": 121,
+      "log_sha256": "c8919a34bfac9a438ca7e573108cb4a64cd413a0b3fa74a2114701d86e2e643c"
+    }
+  },
+  {
+    "retained_log": "timber-color-reference.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e00ea225-859f-40dc-83fd-d2f0d713feb3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\test_club_furniture_colors.gd",
+        "--",
+        "--builder=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_reference.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:02.494335+00:00",
+      "label": "timber-color-reference",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-color-reference-wnpnndmz\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-color-reference-wnpnndmz\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "club furniture colors: 84 checks, 0 failures"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.313,
+      "log_bytes": 121,
+      "log_sha256": "c8919a34bfac9a438ca7e573108cb4a64cd413a0b3fa74a2114701d86e2e643c"
+    }
+  },
+  {
+    "retained_log": "timber-field-1.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "7c2da077-7949-467c-8488-d3d76797c8e1",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field_compare.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field-run-1.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:47:58.661952+00:00",
+      "label": "timber-field-1",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-1-0pb9bsku\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-1-0pb9bsku\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920488003697 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 13.578,
+      "log_bytes": 1106,
+      "log_sha256": "05fb7a4901fb01614cc775352157fa3384eb42d1d52a4d6ffca1265bc1f5e8c2"
+    }
+  },
+  {
+    "retained_log": "timber-field-2.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "e25825a9-ea96-4cbf-b0b8-2d992d8547c0",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field_compare.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field-run-2.json",
+        "--reverse"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:48:12.422029+00:00",
+      "label": "timber-field-2",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-2-5vuixwr_\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-2-5vuixwr_\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920471226480 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 13.453,
+      "log_bytes": 1106,
+      "log_sha256": "6cd4c3baf891abef0750aa7f378a4e21965b4109aca0cfbed95c07f49d63ec1f"
+    }
+  },
+  {
+    "retained_log": "timber-field-3.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6321e4cb-0d0b-49d6-a043-14764781b8c1",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field_compare.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field-run-3.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:48:26.006157+00:00",
+      "label": "timber-field-3",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-3-ek3aca3i\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-3-ek3aca3i\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920471226480 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 16.516,
+      "log_bytes": 1106,
+      "log_sha256": "fb4190655064db183296894a54ed9fd56575f02b4e97e8eb6175bcef1fbb3aa4"
+    }
+  },
+  {
+    "retained_log": "timber-field-4.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "2b037fa2-ed76-4e01-977c-e8b23b28041c",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field_compare.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field-run-4.json",
+        "--reverse"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:48:42.900756+00:00",
+      "label": "timber-field-4",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-4-t2hn1bz3\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-4-t2hn1bz3\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920471226480 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 14.375,
+      "log_bytes": 1106,
+      "log_sha256": "6cd4c3baf891abef0750aa7f378a4e21965b4109aca0cfbed95c07f49d63ec1f"
+    }
+  },
+  {
+    "retained_log": "timber-field-5.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b3d5f090-47d7-4e51-9169-1b9e6925938f",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field_compare.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\field-run-5.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:48:57.381007+00:00",
+      "label": "timber-field-5",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-5-zfglarm1\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-5-zfglarm1\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920471226480 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 13.141,
+      "log_bytes": 1106,
+      "log_sha256": "fb4190655064db183296894a54ed9fd56575f02b4e97e8eb6175bcef1fbb3aa4"
+    }
+  },
+  {
+    "retained_log": "timber-field-explore.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "ed7603fa-71ba-4603-8602-d63365ff4d41",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/field_compare.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/field-explore.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:45:36.579498+00:00",
+      "label": "timber-field-explore",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-explore-dan2aimi\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-field-explore-dan2aimi\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "field comparison pairs=6 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 4,
+          "message": "Tree wind is disabled for maple_tree because source material -9223371920471226480 is unsupported (cull mode is not disabled)",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 12.672,
+      "log_bytes": 1106,
+      "log_sha256": "fb4190655064db183296894a54ed9fd56575f02b4e97e8eb6175bcef1fbb3aa4"
+    }
+  },
+  {
+    "retained_log": "timber-parse.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "2275c97c-edec-4a03-bfce-9cf6a5a0f47c",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/timber_candidate.gd",
+        "--check-only"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:44:59.143748+00:00",
+      "label": "timber-parse",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-parse-jx_kaxnn\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-parse-jx_kaxnn\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.328,
+      "log_bytes": 75,
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-1.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "8c4a329b-dbba-4f5b-bbdb-7865e73d1b46",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\prefabs-run-1.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:24.390616+00:00",
+      "label": "timber-prefabs-1",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-1-3wtfvyd_\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-1-3wtfvyd_\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.406,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-2.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "141b894d-46da-4a11-b927-bc25869fa6ec",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\prefabs-run-2.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:25.902219+00:00",
+      "label": "timber-prefabs-2",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-2-ipqj2fut\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-2-ipqj2fut\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.407,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-3.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "65593508-ad64-4705-8f56-481ceef2de7b",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\prefabs-run-3.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:27.409774+00:00",
+      "label": "timber-prefabs-3",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-3-vdjljb0h\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-3-vdjljb0h\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.407,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-4.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "db86bfce-74f6-4c0c-ab8c-1f01fd4fda7a",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\prefabs-run-4.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:28.916756+00:00",
+      "label": "timber-prefabs-4",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-4-_k057j63\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-4-_k057j63\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.594,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-5.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "407e6a21-0aa1-4a72-9f33-c1e3043ac8fa",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\timber_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\prefabs-run-5.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:50:30.619217+00:00",
+      "label": "timber-prefabs-5",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-5-5bd0mmoq\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-5-5bd0mmoq\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.516,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  },
+  {
+    "retained_log": "timber-prefabs-explore.log.gz",
+    "expected_failure": false,
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "5f7a6444-0ef7-4d89-8316-914cbac65c9f",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/timber_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/scenery-construction-20261019/timber-explore.json"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-20T02:45:34.520983+00:00",
+      "label": "timber-prefabs-explore",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-explore-p8vjucwd\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\scenery-construction-20261019\\checks\\timber-prefabs-explore-p8vjucwd\\report.json",
+      "timeout_seconds": 60.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [
+        "prefab pairs=12 failures=[]"
+      ],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.515,
+      "log_bytes": 104,
+      "log_sha256": "e1d0a58fa00aa1e4115116a48261c279959add5845cced3a239da980d7235242"
+    }
+  }
+]
