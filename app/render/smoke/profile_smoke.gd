@@ -22,6 +22,7 @@ var _resolved: Dictionary = {}
 var _last_birth_tick: Dictionary = {}
 var _presentation_time_s := 0.0
 var _maximum_wash := 0.0
+var _maximum_bore_radius := 0.0
 var _lod := 1.0
 var _schedule = Schedule.new()
 var _profile: Dictionary = {}
@@ -120,6 +121,7 @@ func reset() -> void:
 	_history.clear()
 	_last_birth_tick.clear()
 	_maximum_wash = 0.0
+	_maximum_bore_radius = 0.0
 	_last_transforms.clear()
 	_primed_slots.clear()
 	_schedule.reset()
@@ -344,7 +346,8 @@ func _allocate_emitters(active_entries: Array[Dictionary]) -> void:
 		var count := counts[index]
 		var requested := float(entry.get("emission_rate_hz", float(count) / float(entry.lifetime_s)))
 		var resolved := minf(requested, float(count) / float(entry.lifetime_s))
-		_resolved[slot] = {"requested_hz": requested, "resolved_hz": resolved, "capacity": count, "density": float(entry.get("density", 1.0))}
+		_resolved[slot] = {"requested_hz": requested, "resolved_hz": resolved, "capacity": count, "density": float(entry.get("density", 1.0)),
+			"bore_radius_m": float(_endpoint_by_id.get(slot, {}).get("radius_m", float(entry.width_m) * 0.025))}
 		var emitter := _make_emitter(slot, count, entry, mask, int(_profile.visual_seed))
 		_emitters[slot] = emitter
 		add_child(emitter)
@@ -395,7 +398,7 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 	var capacity_rate := float(count) / float(entry.lifetime_s)
 	process.set_shader_parameter("rate_fraction", minf(1.0, float(entry.get("emission_rate_hz", capacity_rate)) / capacity_rate))
 	process.set_shader_parameter("field_seed", float(visual_seed % 4096) * 0.0137)
-	process.set_shader_parameter("bore_radius_m", float(_endpoint_by_id.get(slot, {}).get("radius_m", float(entry.width_m) * 0.025)))
+	process.set_shader_parameter("bore_radius_m", float(_resolved[slot].bore_radius_m))
 	var times := PackedFloat32Array()
 	var states := PackedVector4Array()
 	times.resize(MAX_BIRTH_EVENTS)
@@ -433,6 +436,9 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 		var end_position := current.origin
 		var begin_direction := (-previous.basis.z).normalized()
 		var end_direction := (-current.basis.z).normalized()
+		var bore_radius := float(_resolved[slot].bore_radius_m) * current.basis.x.length()
+		material.set_shader_parameter("bore_radius_m", bore_radius)
+		_maximum_bore_radius = maxf(_maximum_bore_radius, bore_radius)
 		material.set_shader_parameter("segment_begin", begin_position)
 		material.set_shader_parameter("segment_end", end_position)
 		material.set_shader_parameter("direction_begin", begin_direction)
@@ -531,7 +537,7 @@ func _record_history(tick: int, segments: Dictionary, wind: Vector3, interval_s:
 func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 	var active_lifetime := 0.0
 	var maximum_particle_extent := 0.0
-	var maximum_spawn_extent := 0.0
+	var maximum_spawn_extent := _maximum_bore_radius
 	var maximum_intrinsic_flow_speed := 0.0
 	var maximum_jet := 0.65
 	var maximum_drag := 0.65

@@ -9,7 +9,7 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade"
+    "sha256": "51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3"
   },
   "solver": {
     "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",

@@ -2,6 +2,8 @@
 
 **Research date:** 2026-10-15, America/Bogota. **Status:** planning evidence and initial data only. Serves the [CR-28…38 implementation plan](../../../plans/crash-damage-economics.md). No new crash physics, repair calculator or on-screen cost is implemented by this research.
 
+Counts and observations below describe the initial snapshot. [TT-22](../../timber-integration/TT-22/README.md) adds dated Turbo Lumber price observations and corrects the propeller/spinner billing; offer-level dates remain authoritative for freshness.
+
 ## Artifacts and evidence scope
 
 | Artifact | Role |

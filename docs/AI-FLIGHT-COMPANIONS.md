@@ -5,7 +5,8 @@ gates live in [the implementation plan](../AI_FLIGHT_COMPANIONS_PLAN.md).
 [Verification and measured limits](research/ai-companions/AFC-00-06/README.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
-and [lifecycle checks](research/ai-companions/AFC-03-R1/README.md).
+[lifecycle checks](research/ai-companions/AFC-03-R1/README.md), and
+[moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md).
 
 ## Use
 
@@ -41,7 +42,7 @@ the companion clock.
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
-| Avoidance | Predicted closest approach biases heading/altitude; no guaranteed separation from arbitrary player maneuvers |
+| Avoidance | Predicted closest approach biases heading/altitude; moving-encounter qualification failed, including terrain crashes in two controlled crossing cases |
 | Aircraft contact | Disabled; overlapping airplanes do not exchange contact forces |
 | Terrain/scenery | Launch checks the nominal circuit corridor against actual session terrain, lake and collision proxies; ordinary contact/crash checks remain active. Only the player changes shared scenery damage |
 | Crash/fault fallback | That companion stops, its voice is silenced, and status identifies it; restart or Remove clears it |
@@ -52,6 +53,12 @@ Takeoff/landing cycles, other models, low passes, aerobatics, overtaking activit
 pilot difficulty choices, incidents, comic scenarios and busy-skies presets are
 still planned. No control advertises them as available. No model, physics law,
 solver frequency or golden flight was retuned to make this slice work.
+
+The moving-traffic survey in AFC-04-R1 missed the 30 m player separation target
+in all six head-on/crossing cases, and two crossing cases caused AI terrain contact.
+A strongest-threat selection repair removed a stale descent demand and a crash
+in a separate constructed two-threat fixture; it did not resolve those crossings
+or establish safe separation. Avoidance and recovery remain experimental.
 
 The measured three-companion CPU workload misses the plan's initial fleet budget.
 This is not a 60 fps or target-hardware qualification. A one-companion, 20-minute
@@ -141,6 +148,12 @@ step never advances companions. Player damage is mirrored after all AI finish th
 tick, for use at the next boundary. Remove disconnects all three player observers;
 reconfiguring the same manager reconnects them once.
 
+The current linear closest-approach policy selects one strongest threat. Replacing
+it replaces both lateral and vertical responses; a weaker threat cannot leave a
+stale altitude demand. Equal severity retains the first observation in the
+manager's stable order. This is not simultaneous conflict resolution, reachable
+trajectory prediction or a recovery guarantee.
+
 Profiles are validated once per manager launch, before replacing a live roster.
 Each newly loaded companion verifies its accepted aircraft data against that
 qualification. The field comparison includes normalized geometry, so retaining
@@ -178,9 +191,12 @@ retain baseline/candidate evidence and qualify the changed sources first.
 Run focused tests through `tools/godot/run_checked.py`:
 `test_companions_config.gd`, `test_companions_session.gd`,
 `test_companions_pilot.gd`, `test_companions_manager.gd`,
+`test_companions_encounters.gd`,
 `test_companions_profiles.gd`, `test_companions_airspace.gd`, `test_companions_lifecycle.gd`,
 `test_companions_record.gd`, `test_companions_dialog.gd`, and `test_companions_shell.gd`.
 The long qualification matrix lives outside the regular unit suite in
 `research/ai-companions/pilot_probe.gd`. The same directory contains a two-minute
 production manager check with full scenery collision, complete callback cost
-measurements, and native render probes. See the evidence report for invocations.
+measurements, native render probes, and `encounter_probe.gd` for bounded moving
+traffic and recorded two-threat flights. See the evidence reports for invocations
+and the distinction between failed flight gates and successful log replay.

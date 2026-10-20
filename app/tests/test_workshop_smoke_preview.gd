@@ -90,12 +90,28 @@ func _run() -> void:
 				if reference_slots.is_empty(): reference_slots = slots
 				_check("%d FPS preserves the same midpoint mounts" % fps, slots == reference_slots)
 			await process_frame
-		_check("%d FPS ends at tick 1440, pauses and retains the bounded budget" % fps,
-			preview._playhead_tick == 1440 and not preview._playing and not preview.is_processing()
+		_check("%d FPS reaches the six-second pass endpoint and stops emission" % fps,
+			preview._playhead_tick == 1440 and preview._playing
+			and preview._emission_stopped and preview._smoke.get("_stopped")
 			and preview._rig.position.is_equal_approx(-pass_start)
 			and preview._smoke.budget_info().capacity == 768 and preview._smoke.budget_info().fault.is_empty())
+		var tail_steps := 0
+		while preview._playing and tail_steps < 100:
+			preview._process(0.1)
+			tail_steps += 1
+		var tail_history: Array = preview._smoke.get("_history")
+		var history_window_ok := tail_history.is_empty() or \
+			float(preview._playhead_tick - int(tail_history.front().tick)) / 240.0 <= 8.5
+		_check("%d FPS ages eight-second residuals through the plume tail" % fps,
+			not preview._playing and not preview.is_processing()
+			and preview._playhead_tick >= preview._emission_stop_tick + 8 * 240
+			and preview._playhead_tick >= preview.call("_pass_tail_end_tick")
+			and preview._smoke.get("_stopped") and preview._smoke.get("_last_tick") == preview._playhead_tick
+			and history_window_ok
+			and preview._smoke.budget_info().fault.is_empty())
 		preview._process(1.0)
-		_check("%d FPS completion cannot advance while paused" % fps, preview._playhead_tick == 1440)
+		_check("%d FPS completion cannot advance while paused" % fps,
+			preview._playhead_tick >= 1440 + 8 * 240)
 	preview.toggle_playback()
 	preview.set_process(false)
 	_check("Play after completion explicitly starts a fresh pass", preview._playing and preview._playhead_tick == 0
@@ -185,7 +201,7 @@ func _run() -> void:
 	preview.reset_playback()
 	preview.set_fit_plume(false)
 	preview.set_motion_mode("unknown")
-	_check("unknown motion mode is ignored", preview._motion_mode == "stationary")
+	_check("unknown motion mode is ignored", preview._motion_mode == "pass")
 	_check("preview motion never changes the profile or creates flight state", profile == preview._profile
 		and preview.find_child("Simulation", true, false) == null)
 	var lifecycle_ok := true

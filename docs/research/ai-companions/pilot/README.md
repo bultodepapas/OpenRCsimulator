@@ -1,5 +1,14 @@
 # Ugly Stik Companion Pilot Qualification
 
+2026-10-20 follow-up: [AFC-04-R1](../AFC-04-R1/README.md) requalified the narrow
+separated-circuit scope after repairing strongest-threat selection. Its 148-check
+matrix passed, with both CSVs byte-identical to the original evidence below.
+The current pilot SHA-256 is
+`51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3`.
+The profile retains this fixed evidence entry point; original run identities below
+remain historical. AFC-04-R1 also found moving-encounter separation failures and
+two crossing-induced terrain crashes, which remain outside the qualified scope.
+
 ## Result
 
 The pilot passed the six tested calm and gentle-practice matrix scenarios for one, two, and three companions. Every aircraft completed 28,800 physics ticks (120 simulated seconds) without a pilot refusal, crash, or simulation fault. Both additional three-aircraft calm repeats completed and produced bit-identical sampled states and commands for the same seed.

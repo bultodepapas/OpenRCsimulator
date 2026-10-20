@@ -4,10 +4,12 @@ extends SceneTree
 const World := preload("res://render/world/world.gd")
 var flight: Node
 var out := ""
+var aircraft_id := "sebart-avanti-s-a200-p100rx"
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
+		if arg.begins_with("--aircraft="): aircraft_id = arg.trim_prefix("--aircraft=")
 	if out.is_empty():
 		printerr("Pass --out=<fresh absolute directory>")
 		quit(1)
@@ -22,7 +24,7 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(out)
 	root.size = Vector2i(1280, 720)
 	flight = load("res://main.tscn").instantiate()
-	flight.aircraft_id = "sebart-avanti-s-a200-p100rx"
+	flight.aircraft_id = aircraft_id
 	flight.interactive_start = true
 	flight.external_controller_selection = true
 	flight.start_choice = "airborne_half_power"
@@ -56,7 +58,7 @@ func _run() -> void:
 	await _capture("off-residual", false)
 	for frame in 90: await _frame()
 	await _capture("off-expired", false)
-	var report := {engine = Engine.get_version_info(), renderer = RenderingServer.get_video_adapter_name(),
+	var report := {aircraft_id = aircraft_id, engine = Engine.get_version_info(), renderer = RenderingServer.get_video_adapter_name(),
 		scope = "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted.",
 		tick = flight.session.sim.tick, fault = flight.session.sim.fault_reason,
 		crash = flight.session.crash, smoke_on = on_evidence, smoke = flight._smoke_evidence(),
@@ -69,7 +71,10 @@ func _run() -> void:
 	var file := FileAccess.open(out.path_join("capture.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t"))
 	print("Avanti smoke capture complete: ", out)
-	quit(0 if flight.session.sim.fault_reason.is_empty() and flight.session.crash.is_empty() else 1)
+	var result := 0 if flight.session.sim.fault_reason.is_empty() and flight.session.crash.is_empty() else 1
+	flight.queue_free()
+	await process_frame
+	quit(result)
 
 func _frame() -> void:
 	for tick in 8: flight.session.sim.step()

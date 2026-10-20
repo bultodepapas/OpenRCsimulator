@@ -117,7 +117,7 @@ func _run() -> void:
 	check("accepted finite-glow latch enqueues one exact off event",
 		off_tape.size() == 1 and int(off_tape[0].tick) == 11
 		and str(off_tape[0].kind) == "glow_prop" and not bool(off_tape[0].running)
-		and is_equal_approx(float(off_tape[0].level), 1.0))
+		and is_zero_approx(float(off_tape[0].level)))
 	check("smoke sampling leaves accepted physics state untouched",
 		session.sim.state == state_before and session.sim.continuous == continuous_before
 		and session.sim.aux == aux_before and session.sim.modes == modes_before

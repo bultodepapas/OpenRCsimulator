@@ -123,6 +123,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 [TT-21](timber-integration/TT-21/README.md) records Turbo Lumber's render-only optimization: bounded finish caches, batched hub hardware and reduced airborne dust work, with paired timing and unchanged-render evidence.
 
+[TT-22](timber-integration/TT-22/README.md) records the Turbo Lumber parts/price audit, separated propeller and spinner billing, and the parts-first accident report with native English, Spanish and crash verification.
+
 ### Desktop delivery
 
 Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [DT-00-R1](desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](desktop-delivery-investigations/DT-00-R2/README.md) for platform, installer, display, performance and native-test research. The [desktop delivery plan](../DESKTOP-DELIVERY-PLAN.md) tracks acceptance.

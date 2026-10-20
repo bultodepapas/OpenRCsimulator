@@ -190,6 +190,18 @@ class RuntimeEconomicsTests(unittest.TestCase):
         ]
         self.assertEqual(len(current_timber_offers), 21)
         self.assertTrue(all(offer["observed_on"] == "2026-10-20" for offer in current_timber_offers))
+        source_cost = build_catalog.read(build_catalog.HERE / "aircraft-costing.json")
+        timber_candidates = next(
+            row["price_observations"] for row in source_cost["fleet"]
+            if row["aircraft_id"] == "turbo-lumber-evolution"
+        )
+        self.assertEqual(len(timber_candidates), 21)
+        self.assertTrue(all(offer_id.endswith("_horizon_20261020") for offer_id in timber_candidates))
+        self.assertTrue(set(timber_candidates).issubset(self.context["offer_by_id"]))
+        # Historical quotes remain in the dated evidence catalog, but no longer
+        # appear as current Turbo Timber candidates alongside their replacements.
+        self.assertIn("timber_evolution_battery_proxy", self.context["offer_by_id"])
+        self.assertNotIn("timber_evolution_battery_proxy", timber_candidates)
         self.assertEqual(self.context["price_date"], "2026-10-20")
         self.assertEqual(self.dossiers["xcell-60-research"]["components"], [])
 

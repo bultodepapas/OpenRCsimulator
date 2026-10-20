@@ -239,7 +239,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -259,7 +259,7 @@
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "c944a8be45fc44c50a83f28adaf4299b67f44de0d6614329e054aa9aa8b981f3"
+          "sha256": "275a3fc97ac0df700e531c07c1d7f02bdb7f885b1bf377bc9a54ddc14e90661f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
@@ -271,14 +271,14 @@
         },
         {
           "path": "res://render/smoke/stock_profile.gd",
-          "sha256": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
         },
         {
           "path": "res://workshop/presentation.gd",
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "47ae3a6a958d570f6e24dc033a2c0db23130d85f17802a1fb9683cd4aa5bca21"
+      "slots_sha256": "080802aa9493907003fcd897b37bf2b7faceb02cfd04379cb23168ce4c25c917"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -536,7 +536,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -556,7 +556,7 @@
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "c944a8be45fc44c50a83f28adaf4299b67f44de0d6614329e054aa9aa8b981f3"
+          "sha256": "275a3fc97ac0df700e531c07c1d7f02bdb7f885b1bf377bc9a54ddc14e90661f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
@@ -568,14 +568,14 @@
         },
         {
           "path": "res://render/smoke/stock_profile.gd",
-          "sha256": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
         },
         {
           "path": "res://workshop/presentation.gd",
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "a4c42f4d1391ebf1f133cc00886ca674d0f0ebc4659a813afa0ae4b3681cd449"
+      "slots_sha256": "51838094e814e2549e4da2a7793b202c283212b504dc057fe445e97beeb170f2"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -853,7 +853,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -873,7 +873,7 @@
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "c944a8be45fc44c50a83f28adaf4299b67f44de0d6614329e054aa9aa8b981f3"
+          "sha256": "275a3fc97ac0df700e531c07c1d7f02bdb7f885b1bf377bc9a54ddc14e90661f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
@@ -885,14 +885,14 @@
         },
         {
           "path": "res://render/smoke/stock_profile.gd",
-          "sha256": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
         },
         {
           "path": "res://workshop/presentation.gd",
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "df5fe789c71f6f4b5a03e350254a9431fc12f7263af88bf2a9ff508c5272f99a"
+      "slots_sha256": "084bbec196fc479de647119b5b26ce2fe4821dbc135618d7bb9775563cf03ae4"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1067,7 +1067,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1087,7 +1087,7 @@
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "c944a8be45fc44c50a83f28adaf4299b67f44de0d6614329e054aa9aa8b981f3"
+          "sha256": "275a3fc97ac0df700e531c07c1d7f02bdb7f885b1bf377bc9a54ddc14e90661f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
@@ -1099,14 +1099,14 @@
         },
         {
           "path": "res://render/smoke/stock_profile.gd",
-          "sha256": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
         },
         {
           "path": "res://workshop/presentation.gd",
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "b89a8424972f1811a185b47f7c4cc79613f384fc3d498aea7f724bd95d3b12d6"
+      "slots_sha256": "e4c71d5a84f8f7e1f8408b94e9e5ef78d292ac0a8a026f47796c3d4b34f6e8ee"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1331,7 +1331,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "12aed63f2122eca511acdf4b07b7013fc19d4fb3df06e7f4e45d9aaa543468a8"
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1351,7 +1351,7 @@
         },
         {
           "path": "res://render/smoke/profile_smoke.gd",
-          "sha256": "c944a8be45fc44c50a83f28adaf4299b67f44de0d6614329e054aa9aa8b981f3"
+          "sha256": "275a3fc97ac0df700e531c07c1d7f02bdb7f885b1bf377bc9a54ddc14e90661f"
         },
         {
           "path": "res://render/smoke/profile_smoke_schedule.gd",
@@ -1363,14 +1363,14 @@
         },
         {
           "path": "res://render/smoke/stock_profile.gd",
-          "sha256": "6113b39fde347d1b7ca356c281df1d1186e15cfa284d9a4e8b7957ab3eb04447"
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
         },
         {
           "path": "res://workshop/presentation.gd",
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "057081bf26f7db68c67326117e7d3eeac0a087e805685b7c7e4ba117b24ec755"
+      "slots_sha256": "a1368ea459f059ed4843f665a0c245d835e5604eda1a2c380fe948f227fd7816"
     }
   ]
 }

@@ -60,6 +60,9 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 	bank_material.set_shader_parameter("rc_dirt_albedo", load("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
 	bank_material.set_shader_parameter("rc_dirt_normal", load("res://assets/landscape/rc-ground/dirt-normal.jpg"))
 	bank_material.set_shader_parameter("rc_dirt_roughness", load("res://assets/landscape/rc-ground/dirt-roughness.jpg"))
+	for parameter: String in ["grass_photo_enabled", "rc_grass_albedo", "rc_grass_normal",
+			"rc_grass_roughness", "turf_detail", "turf_detail_strength"]:
+		bank_material.set_shader_parameter(parameter, ground_material.get_shader_parameter(parameter))
 	Terrain.mask_parameters(ground_material, lake)
 	ground_material.set_shader_parameter("lake_mask_mode", 1)
 	field_node.add_child(node)

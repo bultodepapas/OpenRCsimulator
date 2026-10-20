@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2c323dbc-fda9-454a-8364-1f300d8fbd50",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/timber/visual-upgrade/review_cost.gd",
+    "--",
+    "--review-out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/timber-integration/TT-22/cost-es-large",
+    "--locale=es",
+    "--viewport=1280x720",
+    "--text-scale=2"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:49:38.594073+00:00",
+  "label": "cost-es-large",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-22\\checks\\cost-es-large-p8ameq6t\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-22\\checks\\cost-es-large-p8ameq6t\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.891,
+  "log_bytes": 236,
+  "log_sha256": "d82504dcdb963c4618dcd81eed8027fc29fe3e068034ad51187e0d1d3c7b5b0a"
+}

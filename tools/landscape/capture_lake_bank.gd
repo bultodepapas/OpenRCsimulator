@@ -55,8 +55,14 @@ func _run() -> void:
 	var bank_material := (field.get_node("Lake/Basin") as MeshInstance3D).material_override as ShaderMaterial
 	if bank_material == null or not bank_material.get_shader_parameter("rc_dirt_albedo") is Texture2D \
 			or not bank_material.get_shader_parameter("rc_dirt_normal") is Texture2D \
-			or not bank_material.get_shader_parameter("rc_dirt_roughness") is Texture2D:
-		push_error("Club lake bank is missing the three soil textures")
+			or not bank_material.get_shader_parameter("rc_dirt_roughness") is Texture2D \
+			or not bank_material.get_shader_parameter("rc_grass_albedo") is Texture2D \
+			or not bank_material.get_shader_parameter("rc_grass_normal") is Texture2D \
+			or not bank_material.get_shader_parameter("rc_grass_roughness") is Texture2D \
+			or not bank_material.get_shader_parameter("turf_detail") is Texture2D \
+			or bank_material.get_shader_parameter("grass_photo_enabled") != true \
+			or float(bank_material.get_shader_parameter("turf_detail_strength")) <= 0.0:
+		push_error("Club lake bank is missing the field grass or soil textures")
 		quit(1)
 		return
 	viewport.add_child(field)

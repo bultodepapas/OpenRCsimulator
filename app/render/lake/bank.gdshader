@@ -4,6 +4,7 @@
 shader_type spatial;
 render_mode cull_back, diffuse_burley;
 #include "res://render/grass_surface.gdshaderinc"
+#include "res://render/turf_detail.gdshaderinc"
 #include "res://render/rc_ground_detail.gdshaderinc"
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
 uniform vec3 sun_dir = vec3(0.0, 0.707, 0.707);
@@ -48,6 +49,37 @@ void fragment() {
  float d = distance(world_pos, CAMERA_POSITION_WORLD);
  vec2 gx = dFdx(world_pos.xz);
  vec2 gy = dFdy(world_pos.xz);
+ // The outer basin still represents field grass. Use the same world-space
+ // grass samples and distance fade as the adjoining ground to remove its seam.
+ float grass_photo_weight = grass_photo_enabled ? rc_near_weight(gx, gy, d) : 0.0;
+ float detail_weight = turf_weight(gx, gy, d) * (1.0 - grass_photo_weight);
+ vec3 turf_normal = base_normal;
+ float turf_roughness = 1.0;
+ if (detail_weight > 0.001) {
+  vec3 detail = turf_sample(world_pos.xz, gx, gy);
+  turf *= 1.0 + (detail.b - 0.5) * 0.9 * detail_weight;
+  vec2 slope = (detail.rg * 2.0 - 1.0) * 0.65 * detail_weight;
+  vec3 perturbation = (VIEW_MATRIX * vec4(slope.x, 0.0, slope.y, 0.0)).xyz;
+  perturbation -= turf_normal * dot(turf_normal, perturbation);
+  turf_normal = normalize(turf_normal + perturbation);
+ }
+ if (grass_photo_weight > 0.001) {
+  vec2 uv_a;
+  vec2 uv_b;
+  float blend;
+  rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, blend);
+  vec3 grass_color;
+  vec3 grass_normal;
+  float grass_roughness;
+  rc_grass_sample(uv_a, uv_b, gx / 1.4, gy / 1.4, blend,
+   grass_color, grass_normal, grass_roughness);
+  vec3 grass_mean = OUTPUT_IS_SRGB ? RC_GRASS_MEAN_SRGB : RC_GRASS_MEAN_LINEAR;
+  turf *= mix(vec3(1.0), clamp(grass_color / grass_mean, vec3(0.25), vec3(2.4)),
+   grass_photo_weight * 0.7);
+  turf_normal = rc_project_normal(turf_normal, grass_normal, VIEW_MATRIX,
+   grass_photo_weight * 0.65);
+  turf_roughness = mix(1.0, max(grass_roughness, 0.78), grass_photo_weight);
+ }
  float photo_weight = rc_near_weight(gx, gy, d) * earth;
  vec3 photo_normal = vec3(0.5, 0.5, 1.0);
  float photo_roughness = 1.0;
@@ -65,11 +97,13 @@ void fragment() {
    photo_weight * 0.9);
  }
  ALBEDO = mix(turf, soil, earth);
- ROUGHNESS = mix(1.0, mix(0.94, 0.82, wet), earth);
+ NORMAL = normalize(mix(turf_normal, base_normal, earth));
+ ROUGHNESS = mix(turf_roughness, mix(0.94, 0.82, wet), earth);
  ROUGHNESS = mix(ROUGHNESS, clamp(photo_roughness, 0.75, 1.0), photo_weight * 0.55);
  SPECULAR = 0.1 * wet;
  if (photo_weight > 0.001) {
-  NORMAL = rc_project_normal(base_normal, photo_normal, VIEW_MATRIX, photo_weight * 0.38);
+  NORMAL = normalize(mix(NORMAL,
+   rc_project_normal(base_normal, photo_normal, VIEW_MATRIX, 0.38), photo_weight));
  }
  vec3 ray = world_pos - CAMERA_POSITION_WORLD;
  vec3 v = ray / max(d, 1e-3);

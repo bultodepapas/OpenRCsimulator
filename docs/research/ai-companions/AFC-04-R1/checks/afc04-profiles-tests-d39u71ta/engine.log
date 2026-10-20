@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   qualified source aircraft loads with exact input identity  []
+ok   pinned Club field loads  []
+FAIL current Stik and Club profiles validate  ["qualification.evidence: unsupported evidence reference"]

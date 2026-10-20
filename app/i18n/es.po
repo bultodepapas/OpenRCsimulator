@@ -4034,8 +4034,8 @@ msgstr "Estático"
 msgid "Illustrative pass"
 msgstr "Pasada ilustrativa"
 
-msgid "Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs."
-msgstr "Pasada visual de seis segundos y pausa. Sin simulación de vuelo. Cambiar el movimiento borra el humo."
+msgid "Six-second visual pass; residual smoke fades before pause. No flight simulation. Changing motion clears the puffs."
+msgstr "La pasada visual dura seis segundos; el humo restante se desvanece antes de pausar. Sin simulación de vuelo. Cambiar el movimiento borra el humo."
 
 msgid "Pause smoke"
 msgstr "Pausar humo"
@@ -4799,7 +4799,7 @@ msgid "Emission rate"
 msgstr "Frecuencia de emisión"
 
 msgid "Palette phase offset"
-msgstr "Desfase de fase de paleta"
+msgstr "Desfase de paleta"
 
 msgid "Jet speed"
 msgstr "Velocidad del chorro"

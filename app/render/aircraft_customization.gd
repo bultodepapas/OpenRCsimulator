@@ -419,7 +419,10 @@ static func update_smoke_transforms(handles: Dictionary) -> Dictionary:
 			continue
 		direction = direction.normalized()
 		var up := Vector3.RIGHT if absf(direction.dot(Vector3.UP)) > 0.999 else Vector3.UP
-		result[str(endpoint.id)] = Transform3D(Basis.looking_at(direction, up), world * endpoint.position)
+		# Preserve admitted uniform scale for the authored physical bore. Consumers
+		# normalize direction vectors and scale aperture radius separately.
+		var outlet_basis := Basis.looking_at(direction, up).scaled(Vector3.ONE * world.basis.x.length())
+		result[str(endpoint.id)] = Transform3D(outlet_basis, world * endpoint.position)
 	return result
 
 

@@ -4,7 +4,7 @@ extends RefCounted
 const Presentation := preload("res://workshop/presentation.gd")
 const AVANTI_FAMILY := "sebart-avanti-s-a200-p100rx"
 const SLOT_ID := "show_tailpipe"
-const PRESET_ID := "avanti-white-tailpipe-v1"
+const PRESET_ID := "avanti-white-tailpipe-v2"
 const SmokeSystem := preload("res://render/smoke/smoke_system.gd")
 
 

@@ -40,7 +40,9 @@ func _initialize() -> void:
 		var expected: Vector3 = root.transform * Vector3(-0.2, 0.1, 0.3)
 		_check("position scale CG and inversion at " + str(scale_value), transforms.left_exit.origin.distance_to(expected) < 0.00001)
 		var direction: Vector3 = (root.transform.basis * Vector3.LEFT).normalized()
-		_check("direction scale CG and inversion at " + str(scale_value), (-transforms.left_exit.basis.z).dot(direction) > 0.99999)
+		_check("direction scale CG and inversion at " + str(scale_value), (-transforms.left_exit.basis.z).normalized().dot(direction) > 0.99999)
+		_check("authored bore retains uniform scale at " + str(scale_value),
+			absf(transforms.left_exit.basis.x.length() * float(first.radius_m) - scale_value * float(first.radius_m)) < 0.000001)
 	outlet_node.position = Vector3(0.0, 0.25, 0.0)
 	var moved := Customization.update_smoke_transforms(resolved.handles)
 	_check("cached articulated handles update", moved.right_exit.origin.distance_to(root.transform * Vector3(0.2, 0.35, 0.3)) < 0.00001)

@@ -49,6 +49,7 @@ var _playback_controls: Array[Control] = []
 var _preview_wind := Vector3(0.0, 0.0, 1.5)
 var _motion_mode := "stationary"
 var _emission_stopped := false
+var _emission_stop_tick := -1
 var _fit_plume := false
 var _motion_selector: OptionButton
 var _requested_id := ""
@@ -1011,7 +1012,7 @@ func _build_playback() -> void:
 	_motion_selector.name = "PreviewMotion"
 	_motion_selector.add_item(tr("Stationary"))
 	_motion_selector.add_item(tr("Illustrative pass"))
-	_motion_selector.tooltip_text = tr("Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs.")
+	_motion_selector.tooltip_text = tr("Six-second visual pass; residual smoke fades before pause. No flight simulation. Changing motion clears the puffs.")
 	_motion_selector.item_selected.connect(func(index: int) -> void:
 		set_motion_mode("stationary" if index == 0 else "pass"))
 	for control: Control in [_play_button, _stop_emission_button, reset, _fit_plume_button, _time_label, wind, _motion_selector]:
@@ -1069,7 +1070,7 @@ func _configure_smoke() -> void:
 func toggle_playback() -> void:
 	if not is_instance_valid(_smoke): return
 	if not _playing and _view_mode == "compare" and _comparison_original: return
-	if not _playing and _pass_visible() and _playhead_tick >= PASS_TICKS:
+	if not _playing and _pass_visible() and _playhead_tick >= _pass_tail_end_tick():
 		reset_playback()
 	_playing = not _playing
 	set_process(_playing)
@@ -1091,6 +1092,7 @@ func reset_playback() -> void:
 	_playing = false
 	set_process(false)
 	_emission_stopped = false
+	_emission_stop_tick = -1
 	_playhead_tick = 0
 	_playhead_seconds = 0.0
 	_apply_preview_pose()
@@ -1107,6 +1109,7 @@ func stop_emission() -> void:
 	if not is_instance_valid(_smoke) or _emission_stopped: return
 	_smoke.stop()
 	_emission_stopped = true
+	_emission_stop_tick = _playhead_tick
 	_stop_emission_button.disabled = true
 	_stop_emission_button.text = tr("Emission stopped")
 	_request_redraw()
@@ -1132,7 +1135,7 @@ func _process(delta: float) -> void:
 	if not is_finite(delta) or delta <= 0.0: return
 	_playhead_seconds += minf(delta, 0.1)
 	var next := int(floor(_playhead_seconds * 240.0 + 0.0000001))
-	if _pass_visible():
+	if _pass_visible() and _playhead_tick < PASS_TICKS:
 		next = mini(next, PASS_TICKS)
 	var dt := float(next - _playhead_tick) / 240.0
 	_playhead_tick = next
@@ -1142,8 +1145,11 @@ func _process(delta: float) -> void:
 	_sync_rate_feedback()
 	if _fit_plume: _refresh_camera()
 	_time_label.text = "%.1f s" % (float(_playhead_tick) / 240.0)
-	if _pass_visible() and _playhead_tick == PASS_TICKS:
-		toggle_playback()
+	if _pass_visible() and _playhead_tick >= PASS_TICKS:
+		if not _emission_stopped:
+			stop_emission()
+		if _playhead_tick >= _pass_tail_end_tick():
+			toggle_playback()
 
 
 ## Local preview choice only: never saved into the build or passed to a trial.
@@ -1169,7 +1175,17 @@ func _apply_preview_pose() -> void:
 	if not is_instance_valid(_rig): return
 	_rig.position = Vector3.ZERO
 	if _pass_visible():
-		_rig.position.z = (0.5 - float(_playhead_tick) / PASS_TICKS) * _pass_distance()
+		var pass_fraction := clampf(float(_playhead_tick) / PASS_TICKS, 0.0, 1.0)
+		_rig.position.z = (0.5 - pass_fraction) * _pass_distance()
+
+
+func _pass_tail_end_tick() -> int:
+	var stopped_at := _emission_stop_tick if _emission_stop_tick >= 0 else PASS_TICKS
+	var maximum_lifetime := 0.0
+	for entry: Dictionary in _profile.get("smoke", []):
+		if bool(entry.get("enabled", false)):
+			maximum_lifetime = maxf(maximum_lifetime, float(entry.get("lifetime_s", 0.0)))
+	return stopped_at + int(ceil(maximum_lifetime * 240.0)) + 24
 
 
 func _preview_pose(tick: int) -> Dictionary:

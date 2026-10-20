@@ -12,6 +12,7 @@ func _initialize() -> void:
 	await _test_fractional_timeline()
 	_test_allocation_floor()
 	await _test_transparent_idle()
+	await _test_scaled_bore()
 	if "--native" in OS.get_cmdline_user_args():
 		await _native_probe()
 	print("Smoke renderer v2: %d checks, %d failures" % [checks, failures])
@@ -440,5 +441,29 @@ func _test_transparent_idle() -> void:
 	pose.tick = 8
 	smoke.advance(8.0 / 240.0, pose, Vector3.ZERO, 1.0, {})
 	check("all-alpha-zero palettes avoid births and residual processing", not smoke._emitters.transparent.emitting and not smoke._last_birth_tick.has("transparent"))
+	smoke.free()
+	await process_frame
+
+
+func _test_scaled_bore() -> void:
+	var endpoint := _source("scaled")
+	endpoint["radius_m"] = 0.01
+	var entry := _entry("scaled")
+	var smoke = Smoke.new()
+	root.add_child(smoke)
+	check("authored bore fixture configures", smoke.configure(_profile([entry]), {"smoke_slots": [endpoint]}))
+	var pose := {"tick": 0, "slot_transforms": {"scaled": Transform3D.IDENTITY}}
+	var sample := {"kind": "glow_prop", "running": true, "level": 1.0}
+	smoke.advance(0.0, pose, Vector3.ZERO, 0.0, sample)
+	var material: ShaderMaterial = smoke._emitters.scaled.process_material
+	for scale_factor: float in [0.1, 1.0, 5.0]:
+		pose.tick += 8
+		pose.slot_transforms.scaled = Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale_factor), Vector3.ZERO)
+		smoke.advance(8.0 / 240.0, pose, Vector3.ZERO, 0.0, sample)
+		check("authored bore follows %.1fx model scale exactly once" % scale_factor,
+			absf(float(material.get_shader_parameter("bore_radius_m")) - 0.01 * scale_factor) < 0.000001)
+		check("plume width stays independent of physical aperture at %.1fx" % scale_factor,
+			is_equal_approx(float(material.get_shader_parameter("width_m")), float(entry.width_m)))
+	check("scaled bore expands conservative bounds", smoke._maximum_bore_radius >= 0.05 - 0.000001)
 	smoke.free()
 	await process_frame

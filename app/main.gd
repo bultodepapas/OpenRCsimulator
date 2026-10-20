@@ -937,7 +937,7 @@ func _process(delta: float) -> void:
 	_camera_dt = dt
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
-	var smoke_clock_s := sim.time()
+	var smoke_clock_s: float = sim.time()
 	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
 		smoke_clock_s = maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
 	_update_smoke(smoke_clock_s)
@@ -2728,7 +2728,7 @@ func _update_profile_smoke(presentation_time_s: float = -1.0) -> void:
 	if _profile_smoke == null or session == null or session.sim.paused: return
 	# Manual captures present accepted endpoints; live flight passes the exact
 	# interpolated clock used for the displayed model pose.
-	var clock_s := session.sim.time() if presentation_time_s < 0.0 else presentation_time_s
+	var clock_s: float = session.sim.time() if presentation_time_s < 0.0 else presentation_time_s
 	var tick := floori(clock_s * 240.0 + 0.000001)
 	if clock_s < _profile_presented_s: _reset_profile_smoke()
 	var prop: Dictionary = session.aircraft.model.propulsion

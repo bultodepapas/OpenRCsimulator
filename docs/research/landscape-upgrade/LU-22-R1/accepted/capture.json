@@ -1,7 +1,7 @@
 {
   "adapter": "NVIDIA GeForce RTX 3090",
   "bank_builder_sha256": "b7467250cf9ba32bc59456aa851351b2c6930e18da5f1472ef89652e4cb996a8",
-  "bank_shader_sha256": "94ec0a1729b4f4c3717d419a8abbb03a28e71ddf3ae7666337f752cd097acbbe",
+  "bank_shader_sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
   "complete": true,
   "method": "gl_compatibility",
   "records": [
@@ -18,7 +18,7 @@
         -1.5
       ],
       "fov": 58.0,
-      "sha256": "c18acf390a1e19442a3135fef583731821fe378955628620007799b7d75ab0ae",
+      "sha256": "c09d9fdca06e990f36353f5d9aea252b5e822b0d5d75d13ae80e25f540864edd",
       "view": "lake_shore"
     },
     {
@@ -34,7 +34,7 @@
         -1.6
       ],
       "fov": 48.0,
-      "sha256": "a0c6e4c35059b65ab98c9545b26ffc2a6ce6a6c07b1e2a28709fedcb7172ddb0",
+      "sha256": "6ba11dfa2b28becbf869ad5d606c8bcecb68f8b2c305c857641bfaf636499bc1",
       "view": "bank_detail"
     },
     {
@@ -50,7 +50,7 @@
         -45.0
       ],
       "fov": 55.0,
-      "sha256": "1434699866c6c25a751378c35d17dea9637d93a6a2eda57a341ae393923b91c5",
+      "sha256": "9489e26a29bf02a1966d1ad32ae418e2cc2790f6a75ee5ed743aae81d8ae5669",
       "view": "lake_overview"
     }
   ]

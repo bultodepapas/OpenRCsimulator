@@ -727,7 +727,7 @@ clock, pilot, guidance, controller, index, avoidance and world-state scripts;
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-03 | Compose manager/agent nodes and one session per agent; keep clock ownership explicit. Implement initial airborne join slots, ID/generation lifecycle, visibility-safe admission, common weather-time origin and the player-authored scenery-mask bridge. | Partial: manager/agent nodes, fixed launch slots, common snapshots, scenery-mask bridge; 47 manager checks, 653 lifecycle checks, and one 20-minute headless flight after 50 lifecycle cycles (10 visual/audio) in AFC-03-R1. Hot admission, generation reuse and nonzero-time weather joins remain open. |
-| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: current pilot provides float64 circle guidance and closest-approach response; 24 pilot checks, 148 long-matrix checks and a full-world 120 s production run. Dedicated encounter oracle, recovery envelope and the phase endurance matrix remain open. |
+| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: float64 circle guidance and closest-approach response; 24 pilot checks, 191 independent prediction/selection checks and a strongest-threat vertical-demand repair in [AFC-04-R1](docs/research/ai-companions/AFC-04-R1/README.md). The earlier 148-check circuit matrix and full-world 120 s production run cover separated circuits. All six moving encounters miss 30 m and two cause terrain crashes; reachable avoidance, recovery and phase endurance gates remain open. |
 | AFC-05 | Bind aircraft views through the real builder and float64 render boundary. Add limited spatial engine sources, pilot-camera preservation, optional labels and crash/fault cleanup fallback. | Partial: existing model builder, CG/render boundary, bounded engine voice and fault/crash freeze; native captures and 10 visual/audio lifecycle cycles retained. Labels, full crash presentation and target-renderer qualification remain open. |
 | AFC-06 | Add minimal Home/Pause controls: enabled, count, circuits, skill restricted to Experienced, seed, recall/remove. Persist only supported settings. Add explicit CLI `--companions=<0..3>` and `--companions-seed=<u32>` for deterministic developer launches; defaults remain Off. | Partial: default-Off Home/Pause settings, 1–3 count, seed, persistence, restart apply, Remove now and CLI. Dialog/shell tests pass; recall, hot edits, translations and complete keyboard/controller review remain open. |
 
@@ -747,6 +747,17 @@ state; 30/60/144 fps and jittered-render decision replay on the same engine; cor
 profile and solver-fault isolation; selected existing UI, field and log regressions.
 
 ### Phase 2 — Runway life and complete sorties
+
+**Entry blocker found in AFC-04-R1:** finish moving-encounter recovery before
+implementing this phase. Record the two failing crossing fixtures, including an
+exogenous player tape that survives AI termination; diagnose the altitude and
+rate-control response without changing aircraft physics. Evaluate bank/climb
+responses against every threat and terrain, add the planned reaction margin and
+maneuver hold/release policy, and test recovery with traffic overhead. Retain
+baseline tapes, exact replay and closed-loop comparison for each candidate.
+Require crash-free post-encounter recovery, explicit separation results and the
+existing circuit matrix before qualifying encounter recovery. The short
+survey does not close the multi-seed endurance or performance gates.
 
 **Outcome:** companions taxi, take off, join, land, vacate and repeat while other
 companions remain airborne. Dependencies: stable MVP plus ground/field owners and

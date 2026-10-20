@@ -98,6 +98,19 @@ func _main_checks() -> void:
 		stock._update_smoke()
 		check("presentation leaves accepted simulation state untouched", physical == stock.session.sim.state
 			and continuous == stock.session.sim.continuous)
+		stock.session.reset()
+		stock._update_profile_smoke(0.0)
+		stock._smoke_key_on = true
+		stock.session.sim.set_paused(false)
+		stock.session.sim.step()
+		stock._update_profile_smoke(0.002)
+		check("future accepted request waits for displayed pose", stock._profile_smoke_tick == 0
+			and stock._profile_request_tape.size() == 1 and stock._profile_request_tape[0].tick == 1
+			and stock._profile_presented_request == 0.0)
+		stock._update_profile_smoke(1.0 / 240.0)
+		check("request enters at matching presented tick", stock._profile_smoke_tick == 1
+			and stock._profile_request_tape.is_empty() and stock._profile_presented_request == 1.0
+			and stock._profile_smoke.budget_info().fault.is_empty())
 		stock.session.crash = {"smoke_test": true}
 		check("crash gates new show requests", stock._profile_smoke_request() == 0.0)
 	stock.queue_free()

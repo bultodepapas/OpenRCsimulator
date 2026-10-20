@@ -1,6 +1,6 @@
 # Turbo Lumber Evolution (Timber): integration and remaining work
 
-Checked 2026-10-20 · Owner: aircraft/model track · Prefix: **TT-00…21**, including TT-13b/c and gates TT-A/B/C.
+Checked 2026-10-20 · Owner: aircraft/model track · Prefix: **TT-00…22**, including TT-13b/c and gates TT-A/B/C.
 
 Runtime code, configuration and accepted data define current behavior. This plan owns TT status and acceptance; the [asset guide](../assets/aircraft/turbo-lumber-evolution/README.md) owns source identity, pipelines, model interfaces and current asset limitations.
 
@@ -37,6 +37,8 @@ TT-13c's r1 generated crash map is historical; r2 consumes authored `openrc_sect
 TT-20 adds the separate render finish, construction details, factory lamp layout, bounded suspension presentation, contact dust and aircraft-specific cost-panel styling. Its [research and native verification](research/timber-integration/TT-20/README.md) preserve the distinction between visual evidence and physical qualification.
 
 [TT-21](research/timber-integration/TT-21/README.md) optimizes repeated finish construction, wheel-hardware submissions and airborne dust observation. Paired measurements, exact native visual comparisons and flight/crash checks preserve the TT-20 appearance and simulation contracts.
+
+[TT-22](research/timber-integration/TT-22/README.md) corrects propeller/spinner billing, refreshes dated commercial part-price references and presents affected parts first in the Turbo Lumber accident report. Incomplete coverage and inspection costs remain explicit; physics and collision decisions are unchanged.
 
 ## Remaining work
 
