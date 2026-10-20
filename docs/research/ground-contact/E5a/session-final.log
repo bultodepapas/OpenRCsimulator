@@ -1,67 +1,141 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_left at 240 Hz completes without crash/fault  
 ok coast_left retains three wheel contacts 3
-ok ground heading follows yaw command -29.122435 deg
+ok ground heading follows yaw command -27.195113 deg
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_left at 480 Hz completes without crash/fault  
 ok coast_left retains three wheel contacts 3
-ok ground heading follows yaw command -29.101252 deg
+ok ground heading follows yaw command -27.174353 deg
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_left at 960 Hz completes without crash/fault  
 ok coast_left retains three wheel contacts 3
-ok ground heading follows yaw command -29.090630 deg
-ok coast_left refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00117413417191, 0.00067562616382, 0.00015877745384, 0.00363678086662]
-ok coast_left refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00058859779715, 0.00033915026247, 0.00007959997137, 0.00183409074764]
-ok coast_left component group 0 difference shrinks on second refinement [0.00117413417191, 0.00058859779715]
-ok coast_left component group 1 difference shrinks on second refinement [0.00067562616382, 0.00033915026247]
-ok coast_left component group 2 difference shrinks on second refinement [0.00015877745384, 0.00007959997137]
-ok coast_left component group 3 difference shrinks on second refinement [0.00363678086662, 0.00183409074764]
+ok ground heading follows yaw command -27.163970 deg
+ok coast_left refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00110207550104, 0.00060726549175, 0.00015693595491, 0.0034645413212]
+ok coast_left refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00055210369363, 0.00030460093437, 0.00007864419293, 0.00174611260527]
+ok coast_left component group 0 difference shrinks on second refinement [0.00110207550104, 0.00055210369363]
+ok coast_left component group 1 difference shrinks on second refinement [0.00060726549175, 0.00030460093437]
+ok coast_left component group 2 difference shrinks on second refinement [0.00015693595491, 0.00007864419293]
+ok coast_left component group 3 difference shrinks on second refinement [0.0034645413212, 0.00174611260527]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_right at 240 Hz completes without crash/fault  
 ok coast_right retains three wheel contacts 3
-ok ground heading follows yaw command 29.122435 deg
+ok ground heading follows yaw command 27.162895 deg
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_right at 480 Hz completes without crash/fault  
 ok coast_right retains three wheel contacts 3
-ok ground heading follows yaw command 29.101252 deg
+ok ground heading follows yaw command 27.142532 deg
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok coast_right at 960 Hz completes without crash/fault  
 ok coast_right retains three wheel contacts 3
-ok ground heading follows yaw command 29.090630 deg
-ok coast_right refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00117413415867, 0.00067562616206, 0.00015877745381, 0.00363678086642]
-ok coast_right refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00058859779631, 0.00033915026236, 0.00007959997137, 0.00183409074763]
-ok coast_right component group 0 difference shrinks on second refinement [0.00117413415867, 0.00058859779631]
-ok coast_right component group 1 difference shrinks on second refinement [0.00067562616206, 0.00033915026236]
-ok coast_right component group 2 difference shrinks on second refinement [0.00015877745381, 0.00007959997137]
-ok coast_right component group 3 difference shrinks on second refinement [0.00363678086642, 0.00183409074763]
+ok ground heading follows yaw command 27.132357 deg
+ok coast_right refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00108924617793, 0.00060799982807, 0.0001552455042, 0.00346431054541]
+ok coast_right refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00054572698552, 0.0003049499319, 0.00007777237191, 0.00174599296802]
+ok coast_right component group 0 difference shrinks on second refinement [0.00108924617793, 0.00054572698552]
+ok coast_right component group 1 difference shrinks on second refinement [0.00060799982807, 0.0003049499319]
+ok coast_right component group 2 difference shrinks on second refinement [0.0001552455042, 0.00007777237191]
+ok coast_right component group 3 difference shrinks on second refinement [0.00346431054541, 0.00174599296802]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok idle at 240 Hz completes without crash/fault  
 ok idle retains three wheel contacts 3
-ok idle engine remains running near its configured idle 2800.0
+ok idle engine remains running near its configured idle 3137.28689835602
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok idle at 480 Hz completes without crash/fault  
 ok idle retains three wheel contacts 3
-ok idle engine remains running near its configured idle 2800.0
+ok idle engine remains running near its configured idle 3137.28689835622
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok idle at 960 Hz completes without crash/fault  
 ok idle retains three wheel contacts 3
-ok idle engine remains running near its configured idle 2800.0
-ok idle refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000019709, 0.00000001581686, 0.00000000028452, 0.0000000629455]
-ok idle refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000001207, 0.00000000067854, 0.00000000001779, 0.00000000308583]
-ok idle component group 0 difference shrinks on second refinement [0.00000000019709, 0.00000000001207]
-ok idle component group 1 difference shrinks on second refinement [0.00000001581686, 0.00000000067854]
-ok idle component group 2 difference shrinks on second refinement [0.00000000028452, 0.00000000001779]
-ok idle component group 3 difference shrinks on second refinement [0.0000000629455, 0.00000000308583]
+ok idle engine remains running near its configured idle 3137.28689835623
+ok idle refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000036957, 0.00000001562593, 0.00000000100279, 0.00000007561074]
+ok idle refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000002126, 0.00000000091138, 0.00000000005896, 0.00000000449157]
+ok idle component group 0 difference shrinks on second refinement [0.00000000036957, 0.00000000002126]
+ok idle component group 1 difference shrinks on second refinement [0.00000001562593, 0.00000000091138]
+ok idle component group 2 difference shrinks on second refinement [0.00000000100279, 0.00000000005896]
+ok idle component group 3 difference shrinks on second refinement [0.00000007561074, 0.00000000449157]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok pulse at 240 Hz completes without crash/fault  
 ok pulse retains three wheel contacts 3
+ok from-rest pulse exercises stick-to-slip breakaway [{ &"tick": 204, &"time_s": 0.85, &"contact": 2, &"stuck": false }, { &"tick": 205, &"time_s": 0.85416666666667, &"contact": 2, &"stuck": true }, { &"tick": 207, &"time_s": 0.8625, &"contact": 1, &"stuck": false }, { &"tick": 208, &"time_s": 0.86666666666667, &"contact": 1, &"stuck": true }, { &"tick": 209, &"time_s": 0.87083333333333, &"contact": 0, &"stuck": false }, { &"tick": 227, &"time_s": 0.94583333333333, &"contact": 1, &"stuck": false }, { &"tick": 227, &"time_s": 0.94583333333333, &"contact": 2, &"stuck": false }]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok pulse at 480 Hz completes without crash/fault  
 ok pulse retains three wheel contacts 3
+ok from-rest pulse exercises stick-to-slip breakaway [{ &"tick": 407, &"time_s": 0.84791666666667, &"contact": 2, &"stuck": false }, { &"tick": 408, &"time_s": 0.85, &"contact": 2, &"stuck": true }, { &"tick": 414, &"time_s": 0.8625, &"contact": 1, &"stuck": false }, { &"tick": 415, &"time_s": 0.86458333333333, &"contact": 1, &"stuck": true }, { &"tick": 417, &"time_s": 0.86875, &"contact": 0, &"stuck": false }, { &"tick": 452, &"time_s": 0.94166666666667, &"contact": 2, &"stuck": false }, { &"tick": 453, &"time_s": 0.94375, &"contact": 1, &"stuck": false }]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
 ok pulse at 960 Hz completes without crash/fault  
 ok pulse retains three wheel contacts 3
-ok pulse refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.0011414841358, 0.00130711624678, 0.00000597277169, 0.00021433098168]
-ok pulse refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00057070131541, 0.00065413036757, 0.00000299517521, 0.00010676787407]
-ok pulse component group 0 difference shrinks on second refinement [0.0011414841358, 0.00057070131541]
-ok pulse component group 1 difference shrinks on second refinement [0.00130711624678, 0.00065413036757]
-ok pulse component group 2 difference shrinks on second refinement [0.00000597277169, 0.00000299517521]
-ok pulse component group 3 difference shrinks on second refinement [0.00021433098168, 0.00010676787407]
-ok pulse produces resolved RPM response at 240 Hz [2800.0, 4849.02068272949]
-ok pulse moves farther than idle by more than the refinement allowance [0.02436325942937, 1.89695356126993]
-ok pulse produces resolved RPM response at 480 Hz [2800.0, 4849.02068272949]
-ok pulse moves farther than idle by more than the refinement allowance [0.02436325948998, 1.89602661555477]
-ok pulse produces resolved RPM response at 960 Hz [2800.0, 4849.02068272949]
-ok pulse moves farther than idle by more than the refinement allowance [0.02436325949302, 1.89556470126916]
-ok report opened 
-64 checks, 0 failed
+ok from-rest pulse exercises stick-to-slip breakaway [{ &"tick": 814, &"time_s": 0.84791666666667, &"contact": 2, &"stuck": false }, { &"tick": 815, &"time_s": 0.84895833333333, &"contact": 2, &"stuck": true }, { &"tick": 827, &"time_s": 0.86145833333333, &"contact": 1, &"stuck": false }, { &"tick": 828, &"time_s": 0.8625, &"contact": 1, &"stuck": true }, { &"tick": 832, &"time_s": 0.86666666666667, &"contact": 0, &"stuck": false }, { &"tick": 903, &"time_s": 0.940625, &"contact": 2, &"stuck": false }, { &"tick": 904, &"time_s": 0.94166666666667, &"contact": 1, &"stuck": false }]
+ok pulse refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00135025369327, 0.00073433119717, 0.00001270368309, 0.0003588345662]
+ok pulse refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00105049350828, 0.00056811959531, 0.00001151766314, 0.00021040050376]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_idle at 240 Hz completes without crash/fault  
+ok rolling_idle retains three wheel contacts 3
+ok rolling_idle remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_idle at 480 Hz completes without crash/fault  
+ok rolling_idle retains three wheel contacts 3
+ok rolling_idle remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_idle at 960 Hz completes without crash/fault  
+ok rolling_idle retains three wheel contacts 3
+ok rolling_idle remains sliding throughout the refinement interval []
+ok rolling_idle refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000002375291, 0.00000004035337, 0.000000001948, 0.00000024649101]
+ok rolling_idle refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000636587, 0.00000000607766, 0.00000000036383, 0.00000004316948]
+ok rolling_idle component group 0 difference shrinks on second refinement [0.00000002375291, 0.00000000636587]
+ok rolling_idle component group 1 difference shrinks on second refinement [0.00000004035337, 0.00000000607766]
+ok rolling_idle component group 2 difference shrinks on second refinement [0.000000001948, 0.00000000036383]
+ok rolling_idle component group 3 difference shrinks on second refinement [0.00000024649101, 0.00000004316948]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_hold at 240 Hz completes without crash/fault  
+ok rolling_hold retains three wheel contacts 3
+ok rolling_hold remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_hold at 480 Hz completes without crash/fault  
+ok rolling_hold retains three wheel contacts 3
+ok rolling_hold remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_hold at 960 Hz completes without crash/fault  
+ok rolling_hold retains three wheel contacts 3
+ok rolling_hold remains sliding throughout the refinement interval []
+ok rolling_hold refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000665009, 0.00000004832037, 0.00000000195286, 0.00000024653882]
+ok rolling_hold refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000000207272, 0.00000000991848, 0.00000000046735, 0.00000006460046]
+ok rolling_hold component group 0 difference shrinks on second refinement [0.00000000665009, 0.00000000207272]
+ok rolling_hold component group 1 difference shrinks on second refinement [0.00000004832037, 0.00000000991848]
+ok rolling_hold component group 2 difference shrinks on second refinement [0.00000000195286, 0.00000000046735]
+ok rolling_hold component group 3 difference shrinks on second refinement [0.00000024653882, 0.00000006460046]
+ok rolling-hold angular-rate order comparison resolves above the numerical floor [0.00000024653882, 0.00000006460046]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_pulse at 240 Hz completes without crash/fault  
+ok rolling_pulse retains three wheel contacts 3
+ok rolling_pulse remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_pulse at 480 Hz completes without crash/fault  
+ok rolling_pulse retains three wheel contacts 3
+ok rolling_pulse remains sliding throughout the refinement interval []
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok rolling_pulse at 960 Hz completes without crash/fault  
+ok rolling_pulse retains three wheel contacts 3
+ok rolling_pulse remains sliding throughout the refinement interval []
+ok rolling_pulse refinement level 0: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.0000047142448, 0.00000508245078, 0.00000004188802, 0.0000010460644]
+ok rolling_pulse refinement level 1: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s [0.00000457476633, 0.00000254655797, 0.00000002330282, 0.00000065548329]
+ok pulse produces resolved RPM response at 240 Hz [3137.28689835602, 6462.60798976356]
+ok pulse moves farther than idle by more than the refinement allowance [0.00383290850212, 3.26989243016531]
+ok pulse produces resolved RPM response at 480 Hz [3137.28689835622, 6462.61296039367]
+ok pulse moves farther than idle by more than the refinement allowance [0.00383290850214, 3.27124313131906]
+ok pulse produces resolved RPM response at 960 Hz [3137.28689835623, 6462.64626395589]
+ok pulse moves farther than idle by more than the refinement allowance [0.00383290850214, 3.27229382187874]
+ok rolling_pulse produces resolved RPM response at 240 Hz [3164.13916620423, 6502.41238418242]
+ok rolling_pulse moves farther than idle by more than the refinement allowance [7.36537035819552, 10.5903063699448]
+ok rolling_pulse produces resolved RPM response at 480 Hz [3164.13916684636, 6502.41257557458]
+ok rolling_pulse moves farther than idle by more than the refinement allowance [7.36537038197283, 10.5903016423592]
+ok rolling_pulse produces resolved RPM response at 960 Hz [3164.13916692365, 6502.45156125582]
+ok rolling_pulse moves farther than idle by more than the refinement allowance [7.36537038834321, 10.5903062274457]
+ok rolling hold produces resolved RPM response at 240 Hz [3164.13916620423, 5114.5825939258]
+ok rolling hold moves farther than idle at 240 Hz [7.36537035819552, 10.9964860600496]
+ok rolling hold produces resolved RPM response at 480 Hz [3164.13916684636, 5114.58259463919]
+ok rolling hold moves farther than idle at 480 Hz [7.36537038197283, 10.9964860605191]
+ok rolling hold produces resolved RPM response at 960 Hz [3164.13916692365, 5114.58259438854]
+ok rolling hold moves farther than idle at 960 Hz [7.36537038834321, 10.9964860609104]
+ok report opened
+117 checks, 0 failed

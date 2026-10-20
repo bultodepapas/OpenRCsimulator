@@ -34,6 +34,60 @@
     "total": 0,
     "warnings": 0
   },
+  "session_refinement_follow_up": {
+    "date": "2026-10-19",
+    "platform": "Windows",
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "runner_capture_id": "1c926569-bca5-4628-93dd-427a19cb844c",
+    "started_utc": "2026-10-20T04:31:30.029379+00:00",
+    "elapsed_seconds": 112.812,
+    "timeout_seconds": 180,
+    "checks": 117,
+    "failures": 0,
+    "exit_code": 0,
+    "result_json": "session-final.json",
+    "result_json_sha256": "9306ad97bedaae1df1c1e0737415c9aeedd8942daa2f5ab19407a92a79742912",
+    "engine_log": "session-final.log",
+    "engine_log_sha256": "51cd8f7de3aa5191de0b39b3c8f1da55d09d6c7574de06c1a5a1afe9f6627208",
+    "source_commit_before_local_follow_up": "867b01a115efcc8ff656943308f230e86d34c203",
+    "source_sha256": {
+      "research/ground-contact/e5a/session.gd": "9b4dff6757581ac4d3c223be53a3c0084f9849fc60cb746e31c7c8fcef5f5cd7",
+      "research/ground-contact/e5a/verify.py": "30a10f8c1afc050a8407a348fee1c62fe1ecf0518295d057c6748ad94a0bf213",
+      "app/sim/flight_session.gd": "48a05b3de4dc53998af389559cf4e27008a59731b9e2b072d2ef53b17caed932",
+      "app/physics/ground_contact.gd": "bd585612c3735d9dbb30e4ffdea5505cafa657996d7ae7a6f50688093a8242bf",
+      "app/data/aircraft/gp_extra_300s_60.json": "62c76bc514b923b1ada51a0770378f7d085038fd6ae1bf4a92160d55cc55f69d",
+      "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "assets/aircraft/extra-300s-60/geometry.json": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810"
+    },
+    "rolling_pulse_order_gate": {
+      "throttle": 0.25,
+      "position_component_m": [0.0000047142448, 0.00000457476633],
+      "ratio": 0.97,
+      "absolute_bound_m": 0.002,
+      "anchor_events": 0,
+      "order_gate_exempt": "on/off command edges and tick-sampled engine/servo updates give a nonmonotone accumulated trajectory difference"
+    },
+    "rolling_hold_order_gate": {
+      "throttle": 0.1,
+      "minimum_contacts_at_240_480_960_hz": [3, 3, 3],
+      "angular_rate_delta_rad_s": [0.00000024653882, 0.00000006460046],
+      "ratio": 3.82,
+      "numerical_floor_rad_s": 0.0000001
+    },
+    "diagnostic_continuous_hold_025": {
+      "minimum_contacts_at_240_480_960_hz": [2, 2, 2],
+      "refinement_delta_groups": [
+        [0.00000152784695, 0.00000055068756],
+        [0.00000405725563, 0.00000131535393],
+        [0.00000028875354, 0.00000010692099],
+        [0.00000502546142, 0.00000141614032]
+      ],
+      "selection_reason": "order ratios pass but the hold loses one of the required three loaded contacts at every tick rate; 0.10 keeps the oracle in the three-contact sliding domain"
+    },
+    "goldens_changed": false,
+    "mutation_gate": "pending; run verify.py --mutations in disposable clone before release publication"
+  },
   "physical_acceptance": false,
   "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
   "python": "3.12.3",
