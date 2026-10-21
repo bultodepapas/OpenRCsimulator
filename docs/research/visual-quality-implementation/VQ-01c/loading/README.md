@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-21 construction follow-up: [batch accepted shadow triangles](shadow-geometry/triangle-runs-2026-10-21/README.md)
+preserves 180 exact workload pairs and reduces nearby population-caster collection
+by 10.9–14.5% in three native processes. Seven regression suites pass. This is a
+component result; complete loading and FPS remain unmeasured for this change.
+
 2026-10-19 construction follow-up: [shared plank vertex colors](timber-colors/README.md)
 reduces placed-object construction by 27.1%, preserving 30 whole-field and 60 prefab
 pairs. Scalar color, transform and damage regressions pass; three Home/Fly cycles

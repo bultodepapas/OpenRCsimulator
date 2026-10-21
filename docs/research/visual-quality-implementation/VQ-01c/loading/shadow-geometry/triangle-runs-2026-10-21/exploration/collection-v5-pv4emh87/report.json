@@ -1,0 +1,66 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "40d78d36-64bf-4a8a-abd4-cedfec322926",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/field_population_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:18:58.477478+00:00",
+  "label": "collection-v5",
+  "log": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\collection-v5-pv4emh87\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\collection-v5-pv4emh87\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Could not preload resource script \"D:/OpenRCsimulator-scratch/field-population-20261021/provenance/field-candidate.gd\".",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/field_population_probe.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Could not resolve script \"D:/OpenRCsimulator-scratch/field-population-20261021/provenance/field-candidate.gd\".",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/field_population_probe.gd:6)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/field_population_probe.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.265,
+  "log_bytes": 725,
+  "log_sha256": "65f930f37d32171b7b341db3fa463eea8eaf43a004fe7ac07a94a149c32219cd"
+}

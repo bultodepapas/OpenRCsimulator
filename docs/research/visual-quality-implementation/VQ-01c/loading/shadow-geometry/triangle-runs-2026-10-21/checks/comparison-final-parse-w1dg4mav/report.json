@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "decaa7b7-da9d-4a00-b5e8-8a9a810fc9e5",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--check-only",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_field_collection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:23:54.623171+00:00",
+  "label": "comparison-final-parse",
+  "log": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\comparison-final-parse-w1dg4mav\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\comparison-final-parse-w1dg4mav\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.219,
+  "log_bytes": 75,
+  "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+}

@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/field_population_probe.gd:9)
+pair 0: 31074 -> 27483 us; exact=true
+pair 1: 31495 -> 27234 us; exact=true
+pair 2: 30335 -> 27215 us; exact=true
+pair 3: 30171 -> 27179 us; exact=true
+pair 4: 30309 -> 27935 us; exact=true
+pair 5: 30302 -> 26969 us; exact=true
+pair 6: 31052 -> 30340 us; exact=true
+pair 7: 31571 -> 27734 us; exact=true
+pair 8: 31092 -> 27046 us; exact=true
+pair 9: 30473 -> 27061 us; exact=true
+population collection exact: true

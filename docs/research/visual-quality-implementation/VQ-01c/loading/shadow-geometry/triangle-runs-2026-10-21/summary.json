@@ -1,0 +1,312 @@
+{
+  "baseline_commit": "e51af9593acd232d5b39aed52c8654092cdf6f17",
+  "scope": "Sum of the three nearby default-field casters, separately by kind. Population includes static base; kinds overlap. Not full construction/loading/FPS.",
+  "runs": [
+    {
+      "file": "integrated-1.json",
+      "exact": true,
+      "pairs": 10,
+      "workloads_per_pair": 6,
+      "kinds": {
+        "population": {
+          "baseline_median_ms": 36.956,
+          "candidate_median_ms": 31.7685,
+          "median_paired_improvement_percent": 14.52915339579768,
+          "pairs_ms": [
+            [
+              36.621,
+              31.705
+            ],
+            [
+              40.826,
+              29.825
+            ],
+            [
+              35.382,
+              31.544
+            ],
+            [
+              36.567,
+              30.85
+            ],
+            [
+              34.697,
+              34.393
+            ],
+            [
+              38.755,
+              30.691
+            ],
+            [
+              39.567,
+              32.641
+            ],
+            [
+              41.397,
+              32.815
+            ],
+            [
+              36.634,
+              31.832
+            ],
+            [
+              37.278,
+              32.674
+            ]
+          ]
+        },
+        "static": {
+          "baseline_median_ms": 8.193,
+          "candidate_median_ms": 7.0925,
+          "median_paired_improvement_percent": 13.845710230383204,
+          "pairs_ms": [
+            [
+              8.138,
+              7.152
+            ],
+            [
+              8.248,
+              6.855
+            ],
+            [
+              8.055,
+              6.81
+            ],
+            [
+              7.899,
+              7.081
+            ],
+            [
+              7.961,
+              7.341
+            ],
+            [
+              8.71,
+              6.94
+            ],
+            [
+              8.126,
+              7.14
+            ],
+            [
+              8.812,
+              6.94
+            ],
+            [
+              8.402,
+              7.374
+            ],
+            [
+              8.566,
+              7.104
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "file": "integrated-2.json",
+      "exact": true,
+      "pairs": 10,
+      "workloads_per_pair": 6,
+      "kinds": {
+        "population": {
+          "baseline_median_ms": 42.1175,
+          "candidate_median_ms": 38.019999999999996,
+          "median_paired_improvement_percent": 11.809086600128028,
+          "pairs_ms": [
+            [
+              40.411,
+              31.368
+            ],
+            [
+              36.748,
+              30.138
+            ],
+            [
+              36.372,
+              34.711
+            ],
+            [
+              49.184,
+              38.73
+            ],
+            [
+              41.624,
+              37.31
+            ],
+            [
+              49.411,
+              36.156
+            ],
+            [
+              42.611,
+              39.183
+            ],
+            [
+              38.485,
+              44.459
+            ],
+            [
+              49.555,
+              42.987
+            ],
+            [
+              56.857,
+              54.309
+            ]
+          ]
+        },
+        "static": {
+          "baseline_median_ms": 10.093,
+          "candidate_median_ms": 8.304,
+          "median_paired_improvement_percent": 11.131580147927533,
+          "pairs_ms": [
+            [
+              10.299,
+              7.31
+            ],
+            [
+              8.381,
+              7.37
+            ],
+            [
+              7.95,
+              7.715
+            ],
+            [
+              11.659,
+              7.606
+            ],
+            [
+              8.896,
+              8.188
+            ],
+            [
+              11.841,
+              8.42
+            ],
+            [
+              9.744,
+              9.602
+            ],
+            [
+              9.887,
+              9.568
+            ],
+            [
+              11.407,
+              10.104
+            ],
+            [
+              12.352,
+              11.013
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "file": "integrated-3.json",
+      "exact": true,
+      "pairs": 10,
+      "workloads_per_pair": 6,
+      "kinds": {
+        "population": {
+          "baseline_median_ms": 34.284,
+          "candidate_median_ms": 30.4675,
+          "median_paired_improvement_percent": 10.851897840855706,
+          "pairs_ms": [
+            [
+              32.822,
+              30.505
+            ],
+            [
+              35.648,
+              28.595
+            ],
+            [
+              34.393,
+              30.602
+            ],
+            [
+              34.538,
+              30.318
+            ],
+            [
+              33.449,
+              36.772
+            ],
+            [
+              36.97,
+              31.703
+            ],
+            [
+              33.958,
+              30.43
+            ],
+            [
+              40.986,
+              29.398
+            ],
+            [
+              32.927,
+              29.41
+            ],
+            [
+              34.175,
+              31.486
+            ]
+          ]
+        },
+        "static": {
+          "baseline_median_ms": 8.2805,
+          "candidate_median_ms": 7.041,
+          "median_paired_improvement_percent": 15.305772100106235,
+          "pairs_ms": [
+            [
+              8.667,
+              7.271
+            ],
+            [
+              8.773,
+              6.736
+            ],
+            [
+              7.941,
+              7.009
+            ],
+            [
+              8.358,
+              6.83
+            ],
+            [
+              8.203,
+              9.014
+            ],
+            [
+              8.694,
+              7.073
+            ],
+            [
+              8.079,
+              7.126
+            ],
+            [
+              9.507,
+              6.91
+            ],
+            [
+              8.158,
+              7.477
+            ],
+            [
+              8.163,
+              6.979
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

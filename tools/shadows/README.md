@@ -14,6 +14,14 @@ thresholds and source isolation; run it with the pinned engine, with or without
 `--headless`. [Construction measurements and rejected bounds shortcut](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/README.md)
 are separate from visual acceptance below.
 
+DT-11a cutoff collection also appends contiguous accepted triangle runs in native
+code. `test_field_population_collection.gd` checks run boundaries, selection and
+source isolation. `compare_field_collection.gd` accepts `--reference=<frozen field
+collector>`, `--reference-projected=<frozen projected collector>` and `--out=<JSON>`;
+candidate scripts default to the working runtime. Population rows include static
+base work, so report the two kinds separately. [Measurements and reproduction](../../docs/research/visual-quality-implementation/VQ-01c/loading/shadow-geometry/triangle-runs-2026-10-21/README.md)
+record the exact-output and visual checks.
+
 Status: Native Godot 4.7.2 Compatibility validation tools.
 
 Install the pinned offline analysis dependency with `python -m pip install -r
