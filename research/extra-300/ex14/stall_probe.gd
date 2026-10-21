@@ -30,16 +30,14 @@ func _initialize() -> void:
 			id = arg.trim_prefix("--aircraft=")
 		elif arg.begins_with("--data="):
 			data_path = arg.trim_prefix("--data=")
-	var data: Variant = Catalog.entry(id).data
-	if not data_path.is_empty():
-		data = JSON.parse_string(FileAccess.get_file_as_string(data_path))
+	var data: String = Catalog.entry(id).data if data_path.is_empty() else data_path
 	for rates in ["normal", "full"]:
 		for ailerons in ["hands_off", "wings_level"]:
 			print(JSON.stringify(_stall(data, rates, ailerons)))
 	quit(0)
 
 
-func _stall(data: Variant, rates: String, ailerons: String) -> Dictionary:
+func _stall(data: String, rates: String, ailerons: String) -> Dictionary:
 	var session := Flight.new()
 	session.setup(data)
 	root.add_child(session)
