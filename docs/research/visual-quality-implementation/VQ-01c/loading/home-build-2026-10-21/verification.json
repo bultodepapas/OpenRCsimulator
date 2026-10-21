@@ -1,0 +1,48 @@
+{
+  "retained_artifacts_verified": 53,
+  "checked_reports": [
+    {
+      "label": "collector-export",
+      "ok": true,
+      "warnings": 0,
+      "elapsed_seconds": 28.156
+    },
+    {
+      "label": "collector-native-01",
+      "ok": true,
+      "warnings": 1,
+      "elapsed_seconds": 12.953
+    },
+    {
+      "label": "collector-native-02",
+      "ok": true,
+      "warnings": 1,
+      "elapsed_seconds": 12.297
+    },
+    {
+      "label": "diagnostic-export",
+      "ok": true,
+      "warnings": 0,
+      "elapsed_seconds": 7.281
+    },
+    {
+      "label": "diagnostic-native-01",
+      "ok": true,
+      "warnings": 1,
+      "elapsed_seconds": 13.235
+    },
+    {
+      "label": "diagnostic-native-02",
+      "ok": true,
+      "warnings": 1,
+      "elapsed_seconds": 12.672
+    }
+  ],
+  "source_inputs_unchanged": 3840,
+  "profile_hashes": "passed",
+  "release_identity_active_cycles_cleanup": "passed",
+  "span_nesting_and_field_callback": "passed",
+  "local_links": "passed",
+  "unchanged_export_preset": true,
+  "limitations": "No runtime candidate, five-pair gain, image parity, full app suite, long lifecycle or physical-display qualification."
+}

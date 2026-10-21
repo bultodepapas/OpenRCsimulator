@@ -1,0 +1,323 @@
+{
+  "format": "openrc-home-build-evidence-v1",
+  "files": [
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\artifact-identities.json",
+      "retained": "provenance/artifact-identities.json",
+      "raw_sha256": "a8f72802744c1a4625f33207f8a0da4334371c6df9650202d4fe4adc03b75873",
+      "stored_sha256": "a8f72802744c1a4625f33207f8a0da4334371c6df9650202d4fe4adc03b75873"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\canonical-loading-probe.gd",
+      "retained": "provenance/canonical-loading-probe.gd",
+      "raw_sha256": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97",
+      "stored_sha256": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\collector-build-environment.json",
+      "retained": "provenance/collector-build-environment.json",
+      "raw_sha256": "689468e9395dca3017fe395a79f27c1ddc5499a5db5ebecfbfc50e39d313c460",
+      "stored_sha256": "689468e9395dca3017fe395a79f27c1ddc5499a5db5ebecfbfc50e39d313c460"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\collector.patch",
+      "retained": "provenance/collector.patch",
+      "raw_sha256": "269f93e13b53c7d09d9cf0fbf63027dcf0680fea18acaca51a857d1ad541957a",
+      "stored_sha256": "269f93e13b53c7d09d9cf0fbf63027dcf0680fea18acaca51a857d1ad541957a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\diagnostic-build-environment.json",
+      "retained": "provenance/diagnostic-build-environment.json",
+      "raw_sha256": "59263b31e3566b4d6a68d89c9aa97b4a075c1ba9d9529dd905bfe488daa046c4",
+      "stored_sha256": "59263b31e3566b4d6a68d89c9aa97b4a075c1ba9d9529dd905bfe488daa046c4"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\final-export_presets.cfg",
+      "retained": "provenance/final-export_presets.cfg",
+      "raw_sha256": "ab5bb044eaa55a781a66e94d9c1ad2fe51883e484f7b8e3865950f9e4d240c92",
+      "stored_sha256": "ab5bb044eaa55a781a66e94d9c1ad2fe51883e484f7b8e3865950f9e4d240c92"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\final-package_loading_probe.gd",
+      "retained": "provenance/final-package_loading_probe.gd",
+      "raw_sha256": "8c9fdb25b025c4680654b864f8fb2c5a45a8e787b0a25b64d7c201f9f1e75d1c",
+      "stored_sha256": "8c9fdb25b025c4680654b864f8fb2c5a45a8e787b0a25b64d7c201f9f1e75d1c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\final-package_probe_host.tscn",
+      "retained": "provenance/final-package_probe_host.tscn",
+      "raw_sha256": "b76389d906507687e33d9d40317ddbc28a0d8089a41fa61bdebb813c08f52f08",
+      "stored_sha256": "b76389d906507687e33d9d40317ddbc28a0d8089a41fa61bdebb813c08f52f08"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\final-project.godot",
+      "retained": "provenance/final-project.godot",
+      "raw_sha256": "5788e346c8cd8eddfcba120c676404cd79eeb2b4d6c43a876ee36b234ca94231",
+      "stored_sha256": "5788e346c8cd8eddfcba120c676404cd79eeb2b4d6c43a876ee36b234ca94231"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\graphics-phase2-2026-10-21\\make_loading_profile.py",
+      "retained": "provenance/graphics-phase2-2026-10-21/make_loading_profile.py",
+      "raw_sha256": "a4cdf0f33ed7e2e859213476380f621dda8d20612df8587184fcfb53a3c1a5bf",
+      "stored_sha256": "a4cdf0f33ed7e2e859213476380f621dda8d20612df8587184fcfb53a3c1a5bf"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home-profile-sha256.json",
+      "retained": "provenance/home-profile-sha256.json",
+      "raw_sha256": "a89ff591a0651f23aee145480ed564d11677d9b718370016eaa561be9ec26cf5",
+      "stored_sha256": "a89ff591a0651f23aee145480ed564d11677d9b718370016eaa561be9ec26cf5"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home-profile.patch",
+      "retained": "provenance/home-profile.patch",
+      "raw_sha256": "4e979490215ded9660e4267aded60e915d81c4fd502d6a05f27b7b606d175de8",
+      "stored_sha256": "4e979490215ded9660e4267aded60e915d81c4fd502d6a05f27b7b606d175de8"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home_prepare_export_collector.py",
+      "retained": "provenance/home_prepare_export_collector.py",
+      "raw_sha256": "d206262a0f78ecf0d631f1377d134eaef1c2773cf5c90193d286138885d34d1d",
+      "stored_sha256": "d206262a0f78ecf0d631f1377d134eaef1c2773cf5c90193d286138885d34d1d"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home_prepare_graphics_export.py",
+      "retained": "provenance/home_prepare_graphics_export.py",
+      "raw_sha256": "e73ee380a712789aba0a4a148a948fbc5906688cf954123082de30ad3b8aa152",
+      "stored_sha256": "e73ee380a712789aba0a4a148a948fbc5906688cf954123082de30ad3b8aa152"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home_run_graphics_export.py",
+      "retained": "provenance/home_run_graphics_export.py",
+      "raw_sha256": "e36a6f123a3a3a33087b0e02b365ce1ff3c65fd5138941c68943b00c54583001",
+      "stored_sha256": "e36a6f123a3a3a33087b0e02b365ce1ff3c65fd5138941c68943b00c54583001"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\home_run_package_loading.py",
+      "retained": "provenance/home_run_package_loading.py",
+      "raw_sha256": "a4c1652ea687a18be038281a810401ecb0e7cdf9ab83f99549a83dcf6be41b87",
+      "stored_sha256": "a4c1652ea687a18be038281a810401ecb0e7cdf9ab83f99549a83dcf6be41b87"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\native-build-receipt.json",
+      "retained": "provenance/native-build-receipt.json",
+      "raw_sha256": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb",
+      "stored_sha256": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\prepare_export_collector.py",
+      "retained": "provenance/prepare_export_collector.py",
+      "raw_sha256": "d206262a0f78ecf0d631f1377d134eaef1c2773cf5c90193d286138885d34d1d",
+      "stored_sha256": "d206262a0f78ecf0d631f1377d134eaef1c2773cf5c90193d286138885d34d1d"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\prepare_graphics_export.py",
+      "retained": "provenance/prepare_graphics_export.py",
+      "raw_sha256": "e73ee380a712789aba0a4a148a948fbc5906688cf954123082de30ad3b8aa152",
+      "stored_sha256": "e73ee380a712789aba0a4a148a948fbc5906688cf954123082de30ad3b8aa152"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\prepare_home_profile.py",
+      "retained": "provenance/prepare_home_profile.py",
+      "raw_sha256": "d8cdeef4207cb7712271e026f104955acc328775a9ea0c0aad65aa82ab3329df",
+      "stored_sha256": "d8cdeef4207cb7712271e026f104955acc328775a9ea0c0aad65aa82ab3329df"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\data\\field_loader.gd",
+      "retained": "provenance/profile-sources/data/field_loader.gd.gz",
+      "raw_sha256": "829241376ea06c16f5b4fb545ff3258fc6057ff4e86b14e1144f9a9f48090c45",
+      "stored_sha256": "f8f86c30ccc02761928e8750a8b9792d12bfdd9eb8b6be078f3b3e573f1c4238"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\package_loading_probe.gd",
+      "retained": "provenance/profile-sources/package_loading_probe.gd",
+      "raw_sha256": "8c9fdb25b025c4680654b864f8fb2c5a45a8e787b0a25b64d7c201f9f1e75d1c",
+      "stored_sha256": "8c9fdb25b025c4680654b864f8fb2c5a45a8e787b0a25b64d7c201f9f1e75d1c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\phase2_loading_profile.gd",
+      "retained": "provenance/profile-sources/phase2_loading_profile.gd",
+      "raw_sha256": "85fcfcad0a036885e8d299a4a15389d9c2a45c48c1b61f73746c4399cd0fb6f9",
+      "stored_sha256": "85fcfcad0a036885e8d299a4a15389d9c2a45c48c1b61f73746c4399cd0fb6f9"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\render\\airplane.gd",
+      "retained": "provenance/profile-sources/render/airplane.gd",
+      "raw_sha256": "655d7aefd69bc0226e0a2ba61d2246671d7898fb2dac5bcad118ca6301cb7644",
+      "stored_sha256": "655d7aefd69bc0226e0a2ba61d2246671d7898fb2dac5bcad118ca6301cb7644"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\render\\field.gd",
+      "retained": "provenance/profile-sources/render/field.gd",
+      "raw_sha256": "1fd9cf3df5f473b5bc90f8b1faaf2f4d3d1b1f2e00fda6b0eed31523b4b3b5e3",
+      "stored_sha256": "1fd9cf3df5f473b5bc90f8b1faaf2f4d3d1b1f2e00fda6b0eed31523b4b3b5e3"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\render\\field_projected_shadows.gd",
+      "retained": "provenance/profile-sources/render/field_projected_shadows.gd",
+      "raw_sha256": "00751decc84c2a66c98b730fd9183448a05b7300fa8ba37f3b7fb86e291e7311",
+      "stored_sha256": "00751decc84c2a66c98b730fd9183448a05b7300fa8ba37f3b7fb86e291e7311"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\render\\landscape_upgrade\\airfield_lighting.gd",
+      "retained": "provenance/profile-sources/render/landscape_upgrade/airfield_lighting.gd",
+      "raw_sha256": "5764207ea0da4d5815ce20ac82f615d8ae0dbc367f96b0b142c801cfea8fef42",
+      "stored_sha256": "5764207ea0da4d5815ce20ac82f615d8ae0dbc367f96b0b142c801cfea8fef42"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\render\\world\\world.gd",
+      "retained": "provenance/profile-sources/render/world/world.gd.gz",
+      "raw_sha256": "c3058c60653e05ac74dc918a79d4e955b507c4d96e3ffa65370c14e67f7cf59f",
+      "stored_sha256": "ce5ba75679ec1019999ad99c292ca8f497a4f7f699ac0b3bb2a1c734574647e1"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\scenery\\imported_near_grass.gd",
+      "retained": "provenance/profile-sources/scenery/imported_near_grass.gd",
+      "raw_sha256": "c07ffe23629ff08fd59553a1fcf5344ef183ef47245f42741ab6f0cb6049ae08",
+      "stored_sha256": "c07ffe23629ff08fd59553a1fcf5344ef183ef47245f42741ab6f0cb6049ae08"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\scenery\\scenery.gd",
+      "retained": "provenance/profile-sources/scenery/scenery.gd",
+      "raw_sha256": "fee772ecbf51691b352d8b88b49b213f67330988fa49b753e553e04dec6f401c",
+      "stored_sha256": "fee772ecbf51691b352d8b88b49b213f67330988fa49b753e553e04dec6f401c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\scenery\\scenery_loader.gd",
+      "retained": "provenance/profile-sources/scenery/scenery_loader.gd",
+      "raw_sha256": "bfbf28b98606f998c9efac907b7834c3f0d9f4357d5eac0dc98b3e0cdfc8160c",
+      "stored_sha256": "bfbf28b98606f998c9efac907b7834c3f0d9f4357d5eac0dc98b3e0cdfc8160c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\profile-sources\\ui\\home_scene.gd",
+      "retained": "provenance/profile-sources/ui/home_scene.gd",
+      "raw_sha256": "0dfc4071b31ee4542b01e0d2fac62f030826aba599bb81105d4c6b82cefb3f3a",
+      "stored_sha256": "0dfc4071b31ee4542b01e0d2fac62f030826aba599bb81105d4c6b82cefb3f3a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\project-original.godot",
+      "retained": "provenance/project-original.godot",
+      "raw_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99",
+      "stored_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\retain_home_build.py",
+      "retained": "provenance/retain_home_build.py",
+      "raw_sha256": "2a240c021277e9be57f3c588ae53d65d2b9272530a3c85227841d1eeaf1f7102",
+      "stored_sha256": "2a240c021277e9be57f3c588ae53d65d2b9272530a3c85227841d1eeaf1f7102"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\source-manifest.json",
+      "retained": "provenance/source-manifest.json.gz",
+      "raw_sha256": "af277f7772dfc9c9ed72202caf83c35e78b6c7aa6c6a96d9356759ff8431c5ed",
+      "stored_sha256": "e91d61754fd454636fd34072050a890bfe70ec502ec4b203aa7aeeb7471b11b5"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\provenance\\source-verification.json",
+      "retained": "provenance/source-verification.json",
+      "raw_sha256": "e6c13ef9948f65f85d47ccea160d528cd12abc1282363e76b861c814ef80f556",
+      "stored_sha256": "e6c13ef9948f65f85d47ccea160d528cd12abc1282363e76b861c814ef80f556"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-export-h88v0_7h\\engine.log",
+      "retained": "checks/collector-export-h88v0_7h/engine.log.gz",
+      "raw_sha256": "9748e1b0fdc23eea80eef7c004efeadad36c89c89787c2c4045ce844c4a2febe",
+      "stored_sha256": "462d5eb4fa0876699a378a83e4dac17992dcbcea04c974aa267b6d6a3ac7854c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-export-h88v0_7h\\report.json",
+      "retained": "checks/collector-export-h88v0_7h/report.json",
+      "raw_sha256": "aad5098e14a1d7fdb4f7e73021760187489bc5593f937378a7b63d44afca9d94",
+      "stored_sha256": "aad5098e14a1d7fdb4f7e73021760187489bc5593f937378a7b63d44afca9d94"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-native-01-bgh71v__\\engine.log",
+      "retained": "checks/collector-native-01-bgh71v__/engine.log",
+      "raw_sha256": "fa53e9e3b1541acb7baf1309c1ae79139f5ac3e5c5f100b5a7f9528f28bfdaca",
+      "stored_sha256": "fa53e9e3b1541acb7baf1309c1ae79139f5ac3e5c5f100b5a7f9528f28bfdaca"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-native-01-bgh71v__\\report.json",
+      "retained": "checks/collector-native-01-bgh71v__/report.json",
+      "raw_sha256": "52a744c74c1eb2700a6f80c338c5791b79b10debe5a74f24fef0cc49cf8d642e",
+      "stored_sha256": "52a744c74c1eb2700a6f80c338c5791b79b10debe5a74f24fef0cc49cf8d642e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-native-02-u5xq4uo_\\engine.log",
+      "retained": "checks/collector-native-02-u5xq4uo_/engine.log",
+      "raw_sha256": "28ea0583c2f8656e4a720ddaa8bcc653e45953f006c80179bfa77874f759c3d4",
+      "stored_sha256": "28ea0583c2f8656e4a720ddaa8bcc653e45953f006c80179bfa77874f759c3d4"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\collector-native-02-u5xq4uo_\\report.json",
+      "retained": "checks/collector-native-02-u5xq4uo_/report.json",
+      "raw_sha256": "b6b0a9c8ac432c948c658c6dec7706de0332515a651943079f6908e61423fc78",
+      "stored_sha256": "b6b0a9c8ac432c948c658c6dec7706de0332515a651943079f6908e61423fc78"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-export-jlm5g3i1\\engine.log",
+      "retained": "checks/diagnostic-export-jlm5g3i1/engine.log.gz",
+      "raw_sha256": "e20d2a3be1936b83a8bba297b3cf722ebe902fb810974062041a7cf6b3a575a9",
+      "stored_sha256": "8ce8348405f6e93f2ccad9b00bbfd016596b6ed5c4eb9753f03297b7f137a24f"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-export-jlm5g3i1\\report.json",
+      "retained": "checks/diagnostic-export-jlm5g3i1/report.json",
+      "raw_sha256": "6106ea465338f985bd10d7025e237a812cc13ccecaff4dafa9242e7d2afbb65e",
+      "stored_sha256": "6106ea465338f985bd10d7025e237a812cc13ccecaff4dafa9242e7d2afbb65e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-native-01-nb4kyxg2\\engine.log",
+      "retained": "checks/diagnostic-native-01-nb4kyxg2/engine.log",
+      "raw_sha256": "d82c4dfcae0c4ebba1ffd505f86d3dc9fab7e5e5f33bb2c4c5db938560d4303e",
+      "stored_sha256": "d82c4dfcae0c4ebba1ffd505f86d3dc9fab7e5e5f33bb2c4c5db938560d4303e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-native-01-nb4kyxg2\\report.json",
+      "retained": "checks/diagnostic-native-01-nb4kyxg2/report.json",
+      "raw_sha256": "2c26cccec930edaacd4e8de6fa95acdb0e9007e4c32b8486e0e14ea8878ac2f2",
+      "stored_sha256": "2c26cccec930edaacd4e8de6fa95acdb0e9007e4c32b8486e0e14ea8878ac2f2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-native-02-fw_yymf_\\engine.log",
+      "retained": "checks/diagnostic-native-02-fw_yymf_/engine.log",
+      "raw_sha256": "dd3e0e0b1331b62b67947dc74aa4aa1a5d54661ce498a66ee1bedc6ac3c82075",
+      "stored_sha256": "dd3e0e0b1331b62b67947dc74aa4aa1a5d54661ce498a66ee1bedc6ac3c82075"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\checks\\diagnostic-native-02-fw_yymf_\\report.json",
+      "retained": "checks/diagnostic-native-02-fw_yymf_/report.json",
+      "raw_sha256": "79045cc2389ba8475ac41c3d3ad9c2064ce575b0345da5ceab67ecd5c59d7e15",
+      "stored_sha256": "79045cc2389ba8475ac41c3d3ad9c2064ce575b0345da5ceab67ecd5c59d7e15"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\runs\\collector-01.json",
+      "retained": "runs/collector-01.json",
+      "raw_sha256": "b03990a1113ac5f560bf5095cbf4e8d67921f9b41cd7edb88ef1d8925e21e531",
+      "stored_sha256": "b03990a1113ac5f560bf5095cbf4e8d67921f9b41cd7edb88ef1d8925e21e531"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\runs\\collector-02.json",
+      "retained": "runs/collector-02.json",
+      "raw_sha256": "4d484b255b8c2b0e5889f6a5283b80fa684ec73a88f845dfc38e9b933ca3288a",
+      "stored_sha256": "4d484b255b8c2b0e5889f6a5283b80fa684ec73a88f845dfc38e9b933ca3288a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\runs\\diagnostic-01.json",
+      "retained": "runs/diagnostic-01.json",
+      "raw_sha256": "6b8dd5f9cbebf83b43f892485a77a7ae4a0fb8ab45b286726e12d1a6410c104d",
+      "stored_sha256": "6b8dd5f9cbebf83b43f892485a77a7ae4a0fb8ab45b286726e12d1a6410c104d"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\home-build-20261021-3f3892c7\\runs\\diagnostic-02.json",
+      "retained": "runs/diagnostic-02.json",
+      "raw_sha256": "71807a0870526e35fb0ea2ee51067829dcb5b50fca0a83d080b9d4ec06620d5c",
+      "stored_sha256": "71807a0870526e35fb0ea2ee51067829dcb5b50fca0a83d080b9d4ec06620d5c"
+    },
+    {
+      "source": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\check_home_build_evidence.py",
+      "retained": "provenance/check_home_build_evidence.py",
+      "raw_sha256": "da2b28654e7daa615a544bf5e7f5b09d2aba5c7570e4555115e749e70d529a6b",
+      "stored_sha256": "da2b28654e7daa615a544bf5e7f5b09d2aba5c7570e4555115e749e70d529a6b"
+    }
+  ]
+}
