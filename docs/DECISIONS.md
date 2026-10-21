@@ -641,6 +641,10 @@ so Git checkout conversion cannot invalidate identical code; existing flight-log
 raw identities and replay rules stay unchanged. This permits no source-code drift
 and makes no cross-platform trajectory claim. Missing readable sources in compiled
 exports refuse companion admission until package qualification is implemented.
+The reachable-turn wrapper also binds its actual inherited circuit script as a
+mandatory dependency. Keep both raw-hashed controller files byte-stable through
+explicit LF checkout attributes; missing, extra or changed dependency pins refuse
+admission. This preserves the original circuit source as an auditable base.
 [Profile checks and fresh-clone evidence](research/ai-companions/AFC-02/README.md).
 
 ### 2026-10-20 — Check static companion corridors against session geometry (AFC-02)

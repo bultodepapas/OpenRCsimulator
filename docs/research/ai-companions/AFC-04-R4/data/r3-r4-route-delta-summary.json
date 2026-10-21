@@ -1,0 +1,288 @@
+{
+  "equivalence_claimed": false,
+  "format": "afc-04-r3-r4-route-delta-summary-v1",
+  "full_comparisons": {
+    "calm": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\comparisons\\final\\r3-r4-calm.json",
+    "gentle": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\comparisons\\final\\r3-r4-gentle.json"
+  },
+  "interpretation": "The measured target-height deltas are positive or zero in the route samples and are consistent with the R4 active-avoidance local-terrain floor. R4 pilot code raises an avoidance descent target to local terrain plus BASE_HEIGHT_AGL_M when needed. Downstream path/control differences are real; this comparison does not establish general R2 equivalence.",
+  "scope": "Six nominal route cases only; each deliberately conflicting parallel-two-threat fixture is separate in the full comparison JSON.",
+  "weather": {
+    "calm": {
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "comparison_valid": true,
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+      "r3_pilot_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "r3_report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-04-R3\\calm-survey\\report.json",
+      "r3_report_sha256": "b4b66a8489edf45ace7d7af6f70c58e40f7fda03b4548ec534700fe415dbbfed",
+      "r4_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "r4_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\encounters-calm-60s-20261021\\report.json",
+      "r4_report_sha256": "a05b894ea8ad5288238883fab9c6998d45bc4953a461cd4c3fcf401aadc84182",
+      "route_metrics": [
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 16,
+            "max_abs_delta": 0.004554620000000398,
+            "maximum_delta": 0.004554620000000398,
+            "mean_delta_r4_minus_r3": 5.197865224626674e-05,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-crossing-left",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 65.4331826162913,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 65.4332046230941,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": 2.2006802794294344e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 294,
+            "max_abs_delta": 0.006958429999997406,
+            "maximum_delta": 0.006958429999997406,
+            "mean_delta_r4_minus_r3": 0.0011929364725456828,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-crossing-right",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 41.3360049045769,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 41.337563965235,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": 0.0015590606580957456
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 31,
+            "max_abs_delta": 0.005988909999999237,
+            "maximum_delta": 0.005988909999999237,
+            "mean_delta_r4_minus_r3": 0.00011144570715475359,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-head-on",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 61.0901964480923,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 61.0901131592066,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": -8.328888569764104e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 281,
+            "max_abs_delta": 0.006656259999999747,
+            "maximum_delta": 0.006656259999999747,
+            "mean_delta_r4_minus_r3": 0.0010902905823626675,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-crossing-left",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 58.4652523291407,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 58.4649428929333,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -0.0003094362073952084
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 15,
+            "max_abs_delta": 0.0060671600000006265,
+            "maximum_delta": 0.0060671600000006265,
+            "mean_delta_r4_minus_r3": 6.416412645592213e-05,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-crossing-right",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 65.7674999613419,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 65.7674244200249,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -7.554131700260314e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 34,
+            "max_abs_delta": 0.006219080000001043,
+            "maximum_delta": 0.006219080000001043,
+            "mean_delta_r4_minus_r3": 0.0001463731780365945,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-head-on",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 60.7814054853572,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 60.7811341715234,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -0.0002713138337995247
+        }
+      ],
+      "same_pilot_source": false,
+      "same_world_and_probe": true,
+      "trajectory": {
+        "ai_target_height_delta_all_routes": {
+          "compared_values": 3606,
+          "different_values": 671,
+          "max_abs_delta": 0.006958429999997406,
+          "maximum_delta": 0.006958429999997406,
+          "mean_delta_r4_minus_r3": 0.0004428647864669812,
+          "minimum_delta": 0.0
+        },
+        "matched_rows": 9015,
+        "max_abs_altitude_delta_m": 0.0012897199999954978,
+        "max_abs_pitch_command_delta": 0.0007209999999999994,
+        "max_abs_position_delta_m": {
+          "east": 0.0021988899999314526,
+          "north": 0.004424620000008872
+        },
+        "r3_rows": 9015,
+        "r4_rows": 9015,
+        "route_ai_player_rows": 7212
+      }
+    },
+    "gentle": {
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "comparison_valid": true,
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "probe_sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1",
+      "r3_pilot_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "r3_report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-04-R3\\gentle-survey\\report.json",
+      "r3_report_sha256": "fa5e0b0ecb5bfe37d4d2dba5be479c21ddbfb65bdef2429798d89ec65fab3224",
+      "r4_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "r4_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\encounters-gentle-production-60s-20261021\\report.json",
+      "r4_report_sha256": "6be03c37c3d072ce05f91ea1693400b0b1cb79ebc7b96bc1986662e1a32d1bb4",
+      "route_metrics": [
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 10,
+            "max_abs_delta": 0.0024455799999998362,
+            "maximum_delta": 0.0024455799999998362,
+            "mean_delta_r4_minus_r3": 2.3374675540770692e-05,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-crossing-left",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 65.6151599385258,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 65.6151442150595,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": -1.572346630496213e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 290,
+            "max_abs_delta": 0.00666927000000328,
+            "maximum_delta": 0.00666927000000328,
+            "mean_delta_r4_minus_r3": 0.0012144594009983575,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-crossing-right",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 49.2034032786442,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 49.2052651662273,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": 0.0018618875830966886
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 31,
+            "max_abs_delta": 0.006595920000002309,
+            "maximum_delta": 0.006595920000002309,
+            "mean_delta_r4_minus_r3": 0.00011816332778704397,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261020-head-on",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 60.9709823176057,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_min_player_separation_m": 60.97089008315,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.00219106233719657,
+          "r4_minus_r3_min_player_separation_m": -9.223445569972455e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 300,
+            "max_abs_delta": 0.006751500000000021,
+            "maximum_delta": 0.006751500000000021,
+            "mean_delta_r4_minus_r3": 0.0012694823960066482,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-crossing-left",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 58.0907087514468,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 58.0903937199042,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -0.0003150315425983763
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 9,
+            "max_abs_delta": 0.0057492400000001,
+            "maximum_delta": 0.0057492400000001,
+            "mean_delta_r4_minus_r3": 4.7609317803652634e-05,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-crossing-right",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 65.8083805372573,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 65.8083149942432,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -6.554301410233165e-05
+        },
+        {
+          "ai_target_height_delta": {
+            "compared_values": 601,
+            "different_values": 26,
+            "max_abs_delta": 0.006772249999997371,
+            "maximum_delta": 0.006772249999997371,
+            "mean_delta_r4_minus_r3": 0.0001219665058236064,
+            "minimum_delta": 0.0
+          },
+          "case_id": "seed-20261021-head-on",
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_min_player_separation_m": 61.3951880907093,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_min_player_separation_m": 61.3949144542825,
+          "r4_minus_r3_initial_commanded_target_height_m": 0.002191062516601505,
+          "r4_minus_r3_min_player_separation_m": -0.00027363642679745226
+        }
+      ],
+      "same_pilot_source": false,
+      "same_world_and_probe": true,
+      "trajectory": {
+        "ai_target_height_delta_all_routes": {
+          "compared_values": 3606,
+          "different_values": 666,
+          "max_abs_delta": 0.006772249999997371,
+          "maximum_delta": 0.006772249999997371,
+          "mean_delta_r4_minus_r3": 0.00046584260399334655,
+          "minimum_delta": 0.0
+        },
+        "matched_rows": 9015,
+        "max_abs_altitude_delta_m": 0.0013221999999970535,
+        "max_abs_pitch_command_delta": 0.0006990000000000017,
+        "max_abs_position_delta_m": {
+          "east": 0.0032880999999633787,
+          "north": 0.005968100000018239
+        },
+        "r3_rows": 9015,
+        "r4_rows": 9015,
+        "route_ai_player_rows": 7212
+      }
+    }
+  }
+}

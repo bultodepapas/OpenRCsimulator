@@ -1,0 +1,36 @@
+{
+  "format": "openrc-afc-fresh-checkout-validation v1",
+  "commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+  "scope": "Fresh local clone with no initial Godot cache; explicit attributes patch will be tested before acceptance.",
+  "initial_import_cache_present": false,
+  "files": [
+    {
+      "path": "app/ai/companions/pilot.gd",
+      "main_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "checkout_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "checkout_crlf_lines": 0,
+      "byte_identical": true
+    },
+    {
+      "path": "app/ai/companions/circuit_controller.gd",
+      "main_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+      "checkout_sha256": "8a89ab3f729e2cf346f741e76473db3fae5f82d209127d47079d29612488d158",
+      "checkout_crlf_lines": 424,
+      "byte_identical": false
+    },
+    {
+      "path": "app/ai/companions/static_trajectory.gd",
+      "main_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+      "checkout_sha256": "dfc4254d50e22659d0e8b43fc5cc3a289ab970ce4a79f715a3f811ef79619c84",
+      "checkout_crlf_lines": 189,
+      "byte_identical": false
+    },
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "main_sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e",
+      "checkout_sha256": "e67990354f2368a6a000adbc5a51e0cd9bb8517f3df466131f2fb4f4e2533293",
+      "checkout_crlf_lines": 0,
+      "byte_identical": false
+    }
+  ]
+}

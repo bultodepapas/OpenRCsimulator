@@ -1,0 +1,58 @@
+{
+  "schema": "openrc-vegetation-export-probe/v1",
+  "status": "passed",
+  "build_identity": {
+    "describe": "vegetation-renewal-evidence",
+    "dirty": "1",
+    "commit": "b45fb0693d24889281ecdd09d8c5db456bd8a1f9",
+    "date": "2026-10-21T00:00:00Z"
+  },
+  "host": "empty project with mounted PCK",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "probe": "docs/research/visual-quality-implementation/L6c/vegetation-renewal/fixtures/verify_pack.gd",
+  "exports": [
+    {
+      "preset": "Windows",
+      "pack": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final-Windows.pck",
+      "bytes": 336187232,
+      "sha256": "755174acb7defe7c9fbf96c8cc98f84c8fa26c7fd95ae9cf3e37d0ebc93f3b0f",
+      "export_exit_code": 0,
+      "export_passed": true,
+      "export_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\windows-export.log",
+      "probe_exit_code": 0,
+      "probe_passed": true,
+      "probe_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\probe-Windows.log",
+      "export_log_sha256": "b5adc0f3f10da252ae1f55d7a2ab31c1d02cf7a71c3c62d29948fc171be5dca4",
+      "probe_log_sha256": "85055f76fd0a43de3ca54fa36834ecfe49004d4eefdb1e4cb4f5138601d0ab2d"
+    },
+    {
+      "preset": "Linux",
+      "pack": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final-Linux.pck",
+      "bytes": 336187296,
+      "sha256": "def75ab4a1762de6a5da01000454ade5016a3ee1565a541f19ecd14be058d3bc",
+      "export_exit_code": 0,
+      "export_passed": true,
+      "export_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\linux-export.log",
+      "probe_exit_code": 0,
+      "probe_passed": true,
+      "probe_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\probe-Linux.log",
+      "export_log_sha256": "bca9ee0c2e5bdcbf8f7a0792736f483b8a9e86eb4336716f901f46d18eacf6a7",
+      "probe_log_sha256": "85055f76fd0a43de3ca54fa36834ecfe49004d4eefdb1e4cb4f5138601d0ab2d"
+    },
+    {
+      "preset": "macOS",
+      "pack": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final-macOS.pck",
+      "bytes": 336183512,
+      "sha256": "38535bb0b74efcfdd36f33b79c50cb7a831e49900be0ca1192a7a0fad6eb08fe",
+      "export_exit_code": 0,
+      "export_passed": true,
+      "export_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\macos-export.log",
+      "probe_exit_code": 0,
+      "probe_passed": true,
+      "probe_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\probe-macOS.log",
+      "export_log_sha256": "6489a7014bccb59334cd76b88b3098bed1641bbc738c2b3d129a863be3a5cf58",
+      "probe_log_sha256": "85055f76fd0a43de3ca54fa36834ecfe49004d4eefdb1e4cb4f5138601d0ab2d"
+    }
+  ],
+  "combined_log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\exports\\final\\combined-export-probe.log"
+}

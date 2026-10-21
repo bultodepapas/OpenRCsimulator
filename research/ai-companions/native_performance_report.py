@@ -11,6 +11,49 @@ from pathlib import Path
 def assess(frames: dict, fixture: dict, count: int, minimum_seconds: float = 60.0) -> dict:
     errors: list[str] = []
 
+    def invalid(reason: str) -> dict:
+        return {"valid_active_workload": False, "invalid_reasons": [reason],
+                "count": count, "simulation_wall_ratio": 0.0, "frame_ms": {},
+                "render_budget_pass": False}
+
+    def finite_number(value: object) -> bool:
+        return type(value) in (int, float) and math.isfinite(value)
+
+    # A malformed capture must fail as evidence, including NaN/Infinity and
+    # booleans masquerading as numbers. Never trust only its summary percentiles.
+    if not isinstance(frames, dict) or not isinstance(fixture, dict):
+        return invalid("capture and fixture must be objects")
+    if type(count) is not int or not 0 <= count <= 3:
+        return invalid("invalid requested count")
+    for obj, names in [(frames, ["simulation", "raw_metrics", "frame_ms", "flight_companions"]),
+                       (fixture, ["initial", "final"])]:
+        if any(not isinstance(obj.get(name), dict) for name in names):
+            return invalid("missing or malformed capture objects")
+    for name in ["actual_sample_s", "actual_warmup_s", "actual_sample_start_monotonic_usec",
+                 "actual_sample_end_monotonic_usec"]:
+        if not finite_number(frames.get(name)):
+            return invalid("missing or nonfinite " + name)
+    sample_count = frames.get("frames")
+    ticks = frames["raw_metrics"].get("sim_tick")
+    wall = frames.get("frame_end_monotonic_usec")
+    durations = frames.get("frame_wall_usec")
+    if (type(sample_count) is not int or sample_count < 2
+            or any(not isinstance(a, list) or len(a) != sample_count for a in [ticks, wall, durations])):
+        return invalid("missing common frame/tick/duration samples")
+    if (any(not finite_number(t) or t != int(t) or t < 0 for t in ticks)
+            or any(not finite_number(t) or t != int(t) or t <= 0 for t in wall + durations)):
+        return invalid("invalid tick, wall or frame-duration sample")
+    roster = frames["flight_companions"].get("roster")
+    if not isinstance(roster, list) or any(not isinstance(a, dict) for a in roster):
+        return invalid("malformed companion roster")
+    if count and not isinstance(frames["flight_companions"].get("status"), dict):
+        return invalid("malformed companion status")
+    if not all(finite_number(fixture[key].get("tick")) for key in ["initial", "final"]):
+        return invalid("missing or invalid endpoint tick")
+    timing = frames["frame_ms"]
+    if any(not finite_number(timing.get(key)) or timing[key] <= 0 for key in ["p50", "p95", "p99", "max"]):
+        return invalid("missing or invalid frame percentiles")
+
     def require(value: bool, reason: str) -> None:
         if not value:
             errors.append(reason)
@@ -19,6 +62,20 @@ def assess(frames: dict, fixture: dict, count: int, minimum_seconds: float = 60.
     require(frames.get("os") == "Windows" and frames.get("backend") == "gl_compatibility", "wrong native backend/OS")
     require(frames.get("window") == "1280x720", "wrong window size")
     require(float(frames.get("actual_sample_s", 0)) >= minimum_seconds, "sample duration too short")
+    require(frames["actual_warmup_s"] >= 10.0, "warmup duration too short")
+    start, end = frames["actual_sample_start_monotonic_usec"], frames["actual_sample_end_monotonic_usec"]
+    require(start >= 0 and end > start and wall[-1] == end
+            and wall[0] - durations[0] == start, "sample endpoints do not match frame durations")
+    require(abs(sum(durations) / 1e6 - frames["actual_sample_s"]) <= 1e-6
+            and abs((end - start) / 1e6 - frames["actual_sample_s"]) <= 1e-6,
+            "reported sample duration disagrees with raw frames")
+    require(all(b - a == d for a, b, d in zip(wall, wall[1:], durations[1:])),
+            "frame durations disagree with monotonic timestamps")
+    ordered = sorted(durations)
+    measured = {name: ordered[max(0, math.ceil(q * sample_count) - 1)] / 1000.0
+                for name, q in [("p50", .5), ("p95", .95), ("p99", .99), ("max", 1.0)]}
+    require(all(abs(timing[k] - measured[k]) <= 1e-9 for k in measured),
+            "reported frame percentiles disagree with raw frames")
     require(fixture.get("active_flight_endpoint") is True, "inactive fixture endpoint")
     first, final = fixture.get("initial", {}), fixture.get("final", {})
     require(first.get("tick") == 0 and final.get("tick", 0) > 0, "fixture launch/tick mismatch")
@@ -50,11 +107,10 @@ def assess(frames: dict, fixture: dict, count: int, minimum_seconds: float = 60.
         require(aircraft.get("tick") == final.get("tick") and not aircraft.get("paused", True)
                 and not aircraft.get("crashed", True) and aircraft.get("fault") == ""
                 and aircraft.get("failure") == "", "companion stopped or lost clock synchronization")
-    timing = frames.get("frame_ms", {})
-    p95, p99 = float(timing.get("p95", math.inf)), float(timing.get("p99", math.inf))
+    p95, p99 = measured["p95"], measured["p99"]
     budget_pass = math.isfinite(p95) and math.isfinite(p99) and p95 <= 16.67 and p99 <= 25.0
     return {"valid_active_workload": not errors, "invalid_reasons": errors,
-            "count": count, "simulation_wall_ratio": ratio, "frame_ms": timing,
+            "count": count, "simulation_wall_ratio": ratio, "frame_ms": measured,
             "render_budget_pass": not errors and budget_pass,
             "scope": "This capture only; isolation, source identity, CPU budget, all-visible/regime matrix and release gates require separate evidence."}
 

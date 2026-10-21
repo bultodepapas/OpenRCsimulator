@@ -1,0 +1,10 @@
+{
+  "format": "openrc-visual-ridge-checkout-fix v1",
+  "path": "app/data/fields/mountains.json",
+  "before_sha256": "f8690633dc59dbb93c14a1357292a45ad76d4a6e8375f0086a7f712797584588",
+  "after_sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+  "expected_layout_sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+  "semantic_json_equal": true,
+  "before_artifact": "D:\\OpenRCsimulator-AFC-work\\evidence\\fresh-validation\\mountains-before-attributes.json",
+  "method": "Fresh clone plus exact LF attribute; Git checkout-index generated missing path; geometry/data values unchanged."
+}

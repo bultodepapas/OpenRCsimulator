@@ -27,9 +27,10 @@
     "sha256": "0eddedb359837a379eba520a897a8d7f0b91322f9078e7175535f466bb76cdb6"
   },
   "reducer": {
-    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\native_performance_report.py",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R2\\sources\\native_performance_report.py",
     "bytes": 4618,
-    "sha256": "a11d6e7ab7d75a897dd065a5a5f7282c49e01449af01d148dddda580d4946983"
+    "sha256": "a11d6e7ab7d75a897dd065a5a5f7282c49e01449af01d148dddda580d4946983",
+    "retention_note": "Original reducer bytes retained before validation hardening; original native assessments remain unchanged."
   },
   "cases": [
     {

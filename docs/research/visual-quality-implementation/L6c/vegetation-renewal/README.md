@@ -1,6 +1,6 @@
 # Vegetation renewal implementation and evidence
 
-2026-10-20–21 · L6c / L7 / L11b, with SC/LU collision coverage.
+2026-10-20 local (America/Bogota; raw UTC logs extend into October 21) · L6c / L7 / L11b, with SC/LU collision coverage.
 
 The production landscape now uses downloaded photographic oak and pine models around the club and farm, a new oak/maple/pine forest atlas, and photographic ferns and flowering Empodium accents. The clubhouse maple and the other three maples are preserved. This report records the implemented scope; the broader [research and acceptance plan](../../../vegetation-renewal-2026-10-20.md) includes work and hardware acceptance still outstanding.
 
@@ -33,6 +33,8 @@ Meshes retain Godot-generated LODs and source-part MultiMesh batching. The fores
 
 The flowering mesh was selected through a native gallery. The first Empodium D selection contained leaves without an open bloom and was rejected. The adopted A source has 758 triangles. Two duplicate flower slots were reassigned to the existing small LOLIPOP grass tuft to retain planted density within the botanical budget. No cap was raised.
 
+Final budget review also changed two non-maple alias selections from Quercus to pine, saving 5,540 source triangles while retaining the prominent car-park oak and mixed saplings. The close Quercus soft collision crown now starts at 0.22 of source height, conservatively covering the lowest supplied foliage triangles (measured fraction 0.22364). An off-axis sweep regression covers a visible low branch. Maple collision and hard trunk behavior are unchanged.
+
 ## Source provenance and preservation
 
 - [LandscapeLab Quercus](https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb): 7,016 triangles, two surfaces, CC BY-SA 4.0.
@@ -59,7 +61,27 @@ Two independent native `--recipe realistic` bakes produced byte-identical atlas 
 
 Focused tests verify original source materials/triangles, preserved maple mapping, instancing, botanical exclusions/budgets, field identities, wind fallback, source-specific collision coverage and native GPU instance-buffer readback. The native tree test performs 31,991 checks with zero failures. The source converters and catalog regeneration checks pass; library tests: 9, atlas-processing tests: 15, recipe-adapter tests: 2, flight-runner tests: 6.
 
-Validation records, export checks, final timings and remaining acceptance limits are completed below after the serial native measurement run. No full-app or lower-end hardware pass is implied by these focused results.
+The focused [test index](checks/results.json) retains final logs, including failures. No full-app or lower-end hardware pass is implied.
+
+| Check | Result and scope |
+| --- | --- |
+| Imported models, materials, placements and wind fallback | Pass |
+| Botanical habitats / downloaded habitats | 22 / 330 checks pass; 89,655 / 90,000 botanical triangles |
+| Population, bounds and woodland exclusions | Pass |
+| Landscape collision / vegetation proxies | 52 / 32 checks pass, including low Quercus foliage coverage |
+| Separate scenery-build geometry limits | Pass: non-fleet 724,884 / 725,000; fleet 273,421 / 350,000 |
+| Complete-scene LU-21 geometry limit | **Fail:** baseline 1,012,235, final 1,024,645 against 650,000; final adds 12,410 (1.23%). The shared baseline already exceeded this limit. |
+| Cold scenery build | **Fail:** serial follow-up baseline 902.745 ms, candidate 913.668 ms against 800 ms (+10.923 ms). Earlier contended captures were 947.59 / 1,453.8 ms. These are fresh-process scenery construction checks, not cold OS-cache or full Home/Fly loading measurements. |
+
+The scenery-build and complete-scene tests use different counted configurations; their totals are not interchangeable. No budget or loading threshold was increased to obtain a pass.
+
+The [serial check receipts](checks/serial/) retain the follow-up build pair, native tree test and workspace import. A first native workspace run correctly failed the error-log gate because its four new model import caches were missing, despite the tree assertions completing. A normal headless editor import rebuilt those caches; the subsequent native run passed with 31,991 checks and no engine errors. All 15 protected-maple file hashes still matched afterward, and the workspace's 56 changed runtime files matched the frozen candidate byte for byte.
+
+## Motion and export evidence
+
+Native 720p captures retain 192 frames each at 24 prescribed samples/s: [original forest pan](motion/baseline-forest-pan.mp4), [renewed forest pan](motion/candidate-forest-pan.mp4), and [close card orbit](motion/candidate-card-orbit.mp4). Their adjacent JSON files retain camera transforms, deterministic wind time, frame hashes and render counters. These clips exercise the production scenery through a prescribed camera route; they do not measure live flight pacing. The sampled pan frames show varied detailed silhouettes. The orbit confirms the remaining crossed-card depth limitation and angle-dependent lighting; it is not evidence of an accepted near-forest representation.
+
+All three export presets produced PCKs successfully and passed the same [empty-host resource probe](fixtures/verify_pack.gd). [Export verification](exports/verification.json) retains pack hashes, byte sizes and check results. The probe loads all four new models with expected source triangle/surface counts, checks their textures, atlas alpha and mask, and reads packaged source/slot license notices. It runs from an otherwise empty project to prevent loose source files from satisfying the checks. This verifies Windows, Linux and macOS preset **pack contents on this Windows host**, not execution of native binaries on all three operating systems. The final packs are approximately 320.6 MiB each; source files added to the frozen app account for a net 29.65 MiB, which is not a GPU-residency measurement.
 
 ## Reproduction
 

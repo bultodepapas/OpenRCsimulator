@@ -79,6 +79,15 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	# A decorated window can be clamped by the desktop working area, changing
+	# the measured viewport (for example 1080 requested -> 1061 actual).
+	# Keep the requested native size; the runner still rejects any mismatch.
+	if DisplayServer.get_name() != "headless":
+		var requested_size := root.size
+		root.borderless = true
+		await process_frame
+		root.size = requested_size
+		await process_frame
 	if mode == "performance" and output_path.is_empty():
 		_fail("--report=<absolute path> is required for performance mode")
 		return

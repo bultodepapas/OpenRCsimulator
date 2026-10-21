@@ -217,3 +217,31 @@ recorder, shell and the three-second pilot heading checks pass on the isolated
 merged application. This parity supports retaining the existing 148-check pilot
 matrix as the qualification basis; that matrix was not rerun. No new activity,
 physical-validation, moving-encounter or performance acceptance is claimed.
+
+## Controller dependency and fresh Windows checkout
+
+The [checkout verification](controller-dependency-checkout/verification.json)
+qualifies snapshot `16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643`, plus the explicit
+Git line-ending corrections recorded there. The profile now binds both the
+reachable-bank controller (`363942b4…259ed`) and its actual circuit base
+(`1d5699fa…615c`). Missing, additional, malformed or changed dependencies refuse
+admission. This closes the gap where a wrapper's unchanged hash could otherwise
+hide changed inherited guidance.
+
+A fresh local Windows clone with no Godot cache imported successfully. All
+**1,200 scripts parsed**, with zero failures and no source drift across the
+interrupted/resumed sweep. All **16 companion regression groups passed**:
+1,696 numbered assertions, plus the dialog and shell checks. The final shell run
+has no engine errors and retains three existing tree-material wind warnings.
+This is a parser sweep and the companion suite, not the entire application's
+test suite, a packaged export or physical validation.
+
+The initial checkout exposed two byte-identity failures. Git converted the new
+circuit base to CRLF, correctly causing source-profile refusal. It also converted
+`mountains.json`, invalidating the existing settlement bake's source hash despite
+identical parsed JSON. Explicit LF rules for both files fix fresh checkouts;
+the disposable clone regenerated them through Git, and the settlement generator's
+`--check` passed. No generated geometry or physical aircraft data was edited.
+The receipt preserves both failures, an intermediate runner-marker failure and
+the final passing runs. Retained source snapshots use `-text` to preserve their
+original evidence bytes. Linux/macOS, export and pilot-review gates remain open.

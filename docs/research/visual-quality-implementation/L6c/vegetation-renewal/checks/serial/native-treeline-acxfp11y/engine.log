@@ -1,0 +1,226 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ERROR: Cannot open file 'res://.godot/imported/pine_joined.glb-2be10caba11144d983761db44a019dde.scn'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://.godot/imported/pine_joined.glb-2be10caba11144d983761db44a019dde.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:555)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Cannot open file 'res://.godot/imported/quercus.glb-26fcdbe4bae21572fa6e6eef18288140.scn'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://.godot/imported/quercus.glb-26fcdbe4bae21572fa6e6eef18288140.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:555)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+WARNING: Tree wind is disabled for maple_tree because source material -9223371865223853846 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:387)
+       [2] build (res://scenery/imported_vegetation.gd:136)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (res://tests/test_treeline.gd:32)
+ERROR: Cannot open file 'res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:555)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Cannot open file 'res://.godot/imported/fern_02_a.gltf-07ff9db8da1094c7b571c2ded286fb0f.scn'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://.godot/imported/fern_02_a.gltf-07ff9db8da1094c7b571c2ded286fb0f.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:553)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:555)
+       [1] get_parts (res://scenery/imported_vegetation.gd:71)
+       [2] build (res://scenery/imported_vegetation.gd:130)
+       [3] build (res://scenery/botanical_habitats.gd:221)
+       [4] build (res://scenery/scenery.gd:489)
+       [5] attach (res://scenery/scenery.gd:180)
+       [6] build (res://render/field.gd:98)
+       [7] run (res://tests/test_treeline.gd:32)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+L7 tree runtime: 31991 checks, 0 failed; species [588, 531, 561]

@@ -6,23 +6,32 @@ from native_performance_report import assess
 
 class WorkloadAcceptance(unittest.TestCase):
     def setUp(self):
+        self._capture()
+
+    def _capture(self, frame_usec=10000):
+        count = 6000
+        final_tick = 2400 + count * frame_usec * 240 // 1000000
         self.fixture = {"active_flight_endpoint": True, "initial": {"tick": 0},
-                        "final": {"tick": 16800, "paused": False, "crashed": False, "prop_strike": False, "fault": ""}}
+                        "final": {"tick": final_tick, "paused": False, "crashed": False, "prop_strike": False, "fault": ""}}
         self.frames = {"complete": True, "failure": "", "os": "Windows", "backend": "gl_compatibility",
-                       "window": "1280x720", "actual_sample_s": 60.0, "input_enabled": True,
-                       "simulation": {"end_tick": 16800, "physics_enabled": True, "paused": False,
+                       "window": "1280x720", "actual_sample_s": count * frame_usec / 1e6,
+                       "actual_warmup_s": 10.0, "actual_sample_start_monotonic_usec": 10000000,
+                       "actual_sample_end_monotonic_usec": 10000000 + count * frame_usec, "input_enabled": True,
+                       "simulation": {"end_tick": final_tick, "physics_enabled": True, "paused": False,
                                       "fault": "", "physics_ticks_per_second": 240},
-                       "frames": 3, "raw_metrics": {"sim_tick": [2400, 9600, 16800]},
-                       "frame_end_monotonic_usec": [10000000, 40000000, 70000000],
-                       "frame_ms": {"p95": 12.0, "p99": 20.0},
+                       "frames": count, "raw_metrics": {"sim_tick": [2400 + i * frame_usec * 240 // 1000000 for i in range(1, count + 1)]},
+                       "frame_end_monotonic_usec": [10000000 + i * frame_usec for i in range(1, count + 1)],
+                       "frame_wall_usec": [frame_usec] * count,
+                       "frame_ms": dict.fromkeys(["p50", "p95", "p99", "max"], frame_usec / 1000),
                        "flight_companions": {"status": {"active": 1, "error": "", "faulted": 0, "crashed": 0},
-                                             "roster": [{"tick": 16800, "paused": False, "crashed": False, "fault": "", "failure": ""}]}}
+                                             "roster": [{"tick": final_tick, "paused": False, "crashed": False, "fault": "", "failure": ""}]}}
 
     def test_active_clock_and_budget(self):
         self.assertTrue(assess(self.frames, self.fixture, 1)["render_budget_pass"])
 
     def test_smooth_frames_cannot_hide_inactive_or_slow_flight(self):
-        for values in [[2400, 2400, 2400], [2400, 6000, 9600], [9600, 2400, 16800]]:
+        original = self.frames["raw_metrics"]["sim_tick"]
+        for values in [[2400] * len(original), [2400 + (t - 2400) // 2 for t in original], list(reversed(original))]:
             frames = copy.deepcopy(self.frames)
             frames["raw_metrics"]["sim_tick"] = values
             self.assertFalse(assess(frames, self.fixture, 1)["valid_active_workload"])
@@ -40,7 +49,7 @@ class WorkloadAcceptance(unittest.TestCase):
             self.assertFalse(assess(self.frames, fixture, 1)["valid_active_workload"])
 
     def test_valid_slow_frames_are_budget_failure(self):
-        self.frames["frame_ms"]["p95"] = 20.0
+        self._capture(frame_usec=20000)
         result = assess(self.frames, self.fixture, 1)
         self.assertTrue(result["valid_active_workload"])
         self.assertFalse(result["render_budget_pass"])
@@ -51,6 +60,35 @@ class WorkloadAcceptance(unittest.TestCase):
             frames[key] = value
             self.assertFalse(assess(frames, self.fixture, 1)["valid_active_workload"])
         self.assertFalse(assess(self.frames, self.fixture, 2)["valid_active_workload"])
+
+    def test_short_warmup_and_inconsistent_sample_endpoints_refuse(self):
+        for key, value in [("actual_warmup_s", 9.0), ("actual_sample_end_monotonic_usec", 71000000),
+                           ("actual_sample_start_monotonic_usec", 0)]:
+            frames = copy.deepcopy(self.frames)
+            frames[key] = value
+            self.assertFalse(assess(frames, self.fixture, 1)["valid_active_workload"])
+
+    def test_summary_cannot_hide_raw_slow_frames(self):
+        self._capture(frame_usec=20000)
+        self.frames["frame_ms"] = dict.fromkeys(["p50", "p95", "p99", "max"], 10.0)
+        result = assess(self.frames, self.fixture, 1)
+        self.assertFalse(result["render_budget_pass"])
+        self.assertIn("reported frame percentiles disagree with raw frames", result["invalid_reasons"])
+
+    def test_raw_duration_and_timestamp_mismatch_refuses(self):
+        self.frames["frame_wall_usec"][100] += 1
+        self.assertFalse(assess(self.frames, self.fixture, 1)["valid_active_workload"])
+
+    def test_nonfinite_boolean_and_wrong_shapes_refuse_without_exception(self):
+        for key, value in [("frames", True), ("simulation", []), ("actual_sample_s", float("nan")),
+                           ("actual_warmup_s", float("inf")), ("frame_ms", None), ("frame_wall_usec", "bad")]:
+            frames = copy.deepcopy(self.frames)
+            frames[key] = value
+            self.assertFalse(assess(frames, self.fixture, 1)["valid_active_workload"])
+        for value in [None, True, float("nan"), float("inf"), -1, "x"]:
+            frames = copy.deepcopy(self.frames)
+            frames["raw_metrics"]["sim_tick"][3] = value
+            self.assertFalse(assess(frames, self.fixture, 1)["valid_active_workload"])
 
 
 if __name__ == "__main__":

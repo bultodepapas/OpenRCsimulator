@@ -1,0 +1,80 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok a deterministic seed represents each broadleaf habit
+ok habit 0 stays inside the previous foliage envelope
+ok habit 0 keeps its single bounded mode-3 crown part
+ok habit 0 rebuild is byte-identical
+ok habit 0 crown normals remain finite and follow the deformed surface
+ok habit 1 stays inside the previous foliage envelope
+ok habit 1 keeps its single bounded mode-3 crown part
+ok habit 1 rebuild is byte-identical
+ok habit 1 crown normals remain finite and follow the deformed surface
+ok habit 2 stays inside the previous foliage envelope
+ok habit 2 keeps its single bounded mode-3 crown part
+ok habit 2 rebuild is byte-identical
+ok habit 2 crown normals remain finite and follow the deformed surface
+ok all three crown habits retain distinct geometry budgets
+ok crown construction remains seed-varied
+ok all 256 sampled trees keep the measured XZ, height and mode-3 wind envelope
+ok plant mesh uses 24 triangles and stays in the same small-plant budget
+ok petals remain species-colour marked while stems and leaves use vertex colour
+ok plant stays below 0.45 m with ground contact
+ok plant foliage remains inside its previous half-metre footprint
+ok flower positions remain grouped into the same sixty-metre chunks
+ok flower chunks still share one draw mesh and the existing sway AABB
+ok prefab flower border replaces its mound with six visible stems and petals
+ok rounded prefab flowers stay within the LU-24 300-triangle budget
+ok prefab flower cluster stays inside the old 0.62 m footprint and 0.42 m height
+ok flower stems touch the ground without a broad green base mound
+ok normalized lake loads for the complete scenery budget
+WARNING: Tree wind is disabled for landscapelab_pine because source material -9223371944932407280 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:387)
+       [2] build (res://scenery/imported_vegetation.gd:136)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _test_complete_scenery_budget (res://tests/test_landscape_vegetation.gd:190)
+       [5] _initialize (res://tests/test_landscape_vegetation.gd:33)
+WARNING: Tree wind is disabled for landscapelab_quercus because source material -9223371942650705887 is unsupported (non-repeating textures are not supported)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:387)
+       [2] build (res://scenery/imported_vegetation.gd:136)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _test_complete_scenery_budget (res://tests/test_landscape_vegetation.gd:190)
+       [5] _initialize (res://tests/test_landscape_vegetation.gd:33)
+WARNING: Tree wind is disabled for maple_tree because source material -9223371941241419728 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:387)
+       [2] build (res://scenery/imported_vegetation.gd:136)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _test_complete_scenery_budget (res://tests/test_landscape_vegetation.gd:190)
+       [5] _initialize (res://tests/test_landscape_vegetation.gd:33)
+ok imported trees and shrubs stay out of the procedural motion tree; people use their population batch
+ok static scenery remains within the current 63-cell budget
+ok production trees and shrubs are downloaded source meshes
+ok downloaded flowers replace the retired 2,970 procedural cushions
+ok downloaded habitat triangles and batches meet their provisional budgets
+ok production imported vegetation retains source damage IDs
+ok source damage IDs hide and restore imported plants
+ok complete scene uses realistic sources at the same 17 trees and preserves four maples
+FAIL whole scenery stays below the approved LU-21 triangle ceiling triangles=1024645
+     LU-17 complete scenery triangles: 1024645 (limit 650000), imported tree sources={ "landscapelab_pine": 10, "landscapelab_quercus": 3, "maple_tree": 4 } (85672 triangles)
+LU-17 vegetation: 36 checks, 1 failures
+Godot check failed: process_exit (process exit 1); report: C:\DEVELOPMENT\OpenRCsimulator\tmp\godot-checks\godot-v88nnz5c\report.json
+  log:30 WARNING: Tree wind is disabled for landscapelab_pine because source material -9223371944932407280 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+  log:39 WARNING: Tree wind is disabled for landscapelab_quercus because source material -9223371942650705887 is unsupported (non-repeating textures are not supported)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)
+  log:48 WARNING: Tree wind is disabled for maple_tree because source material -9223371941241419728 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)

@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+static trajectory oracle: 58 intersections, 0 omissions
+trajectory sparse index: 360 paths, 96 blocked, 264 pruned clear, 0 mismatches
+full trajectory context: 6fd2b6dadd624eec4c4ffba06d5e771032ceeab46419586705ef3585f599b294 proxies=6092
+static trajectory: 40 checks, 0 failed

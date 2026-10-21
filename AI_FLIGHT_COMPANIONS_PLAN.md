@@ -21,6 +21,14 @@ retaining every physics step. Its evidence lives in [AFC-02](docs/research/ai-co
 [AFC-03-R1](docs/research/ai-companions/AFC-03-R1/README.md) and
 [AFC-00-R1](docs/research/ai-companions/AFC-00-R1/README.md).
 
+The [fresh Windows checkout verification](docs/research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
+passes all 1,200 script parses and 16 companion regression groups (1,696 numbered
+assertions plus dialog/shell checks) on its recorded snapshot. The source profile
+also binds the controller's actual inherited circuit script. Two explicit Git LF
+rules repair checkout-dependent controller admission and the existing settlement
+bake's visual-profile identity. This does not close the full application test,
+packaged export, platform or physical-validation gates.
+
 AFC-02 now also checks the actual session's static scenery, terrain and lake at
 launch using a continuous nominal circuit corridor and person/shelter footprint
 exclusions. This does not prove that avoidance or recovery stays inside that
@@ -783,8 +791,8 @@ ground/air transition.
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-07 | Implement runway reservation/occupancy states, approach/departure volumes, player requests, implicit player occupancy, queue fairness and blocked-runway state. | Partial: isolated coordinator and independent priority/blocker tests pass; [AFC-07 R1](docs/research/ai-companions/AFC-07-R1/README.md). A strict per-request tailwind limit revokes unsafe grants during direction hysteresis; 19 additional checks pass. Actual protected-volume observations, live manager integration and player request controls remain pending. |
-| AFC-08 | Author and validate Club staging/taxi edges and hold-short locations against visible scenery/collision proxies. Implement physical taxi and line-up with edge reservations and timeout recovery. | Pending: `test_companions_taxi.gd`; footprint clearance, deadlock/blocked edge, inability to turn, and no in-place rotation. |
-| AFC-09 | Qualify takeoff/climb, arrival/flare/rollout, early abort and go-around using current Stik physics. Use existing research drivers for measurements; implement production state machines in the new pilot/maneuver files. | Pending: `test_companions_sortie.gd`; complete rollout metrics and unchanged aircraft data. |
+| AFC-08 | Author and validate Club staging/taxi edges and hold-short locations against visible scenery/collision proxies. Implement physical taxi and line-up with edge reservations and timeout recovery. | Research partial: the [C5e exit trials](docs/research/ai-companions/AFC-09-R1/README.md) retain physical north-side vacating with full-airframe footprint checks. Both south-crosswind controls stall during the turn and time out; a bounded ground-speed controller is being investigated without changing aircraft physics. Staging/taxi graph, reservation integration, blocked-edge recovery and production tests remain pending. |
+| AFC-09 | Qualify takeoff/climb, arrival/flare/rollout, early abort and go-around using current Stik physics. Use existing research drivers for measurements; implement production state machines in the new pilot/maneuver files. | Research partial: [C5e](docs/research/ai-companions/AFC-09-R1/README.md) passes all 22 existing gates in five of eight directional/weather cases, with exact complete replay of all eight ORFLs. West headwind exceeds the approach speed ceiling by 0.0343 m/s; two south-crosswind cases fail vacating. C5f's single-case gain experiment is not accepted qualification. Entry-readiness checks, safe abort/go-around, 50-sortie campaign and production state machines remain open. |
 | AFC-10 | Add energy reserve/return policy, sortie turnaround, recall, population increase/decrease and takeoff/landing activity controls. Reserve enough modeled endurance for two circuits and one go-around; deny a sortie when the profile cannot establish this. | Pending: fuel/battery reserve, depleted/ideal-energy distinctions, lineup readiness and population lifecycle evidence. |
 
 **Acceptance:** 50 complete Stik sorties, split across runway directions and the

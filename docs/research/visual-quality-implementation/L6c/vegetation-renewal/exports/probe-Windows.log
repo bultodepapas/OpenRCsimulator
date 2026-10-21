@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Tree atlas/mask catalog and three source notices validated
+Vegetation catalog and Poly Haven CC0 notices validated
+Scene landscapelab_quercus: 7016 source triangles, 2 surfaces, 2 materials, 4 textures
+Scene landscapelab_pine: 4246 source triangles, 2 surfaces, 2 materials, 4 textures
+Scene polyhaven_fern_02_a: 784 source triangles, 1 surfaces, 1 materials, 3 textures
+Scene polyhaven_flower_empodium_a: 758 source triangles, 1 surfaces, 1 materials, 3 textures
+PASS: tree atlas/mask, three tree notices, Poly Haven notices, and four packed vegetation scenes

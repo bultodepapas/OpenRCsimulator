@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for landscapelab_pine because source material -9223371954210207728 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _initialize (res://tests/test_botanical_habitats.gd:38)
+WARNING: Tree wind is disabled for landscapelab_quercus because source material -9223371951928506335 is unsupported (non-repeating textures are not supported)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _initialize (res://tests/test_botanical_habitats.gd:38)
+WARNING: Tree wind is disabled for maple_tree because source material -9223371950519220176 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _initialize (res://tests/test_botanical_habitats.gd:38)
+botanical metrics: plants=285 triangles=89655/90000 batches=14/24 sources=[bush_common_flowers=4 placements/5472 triangles, clover_1=58 placements/21982 triangles, corn_4=22 placements/21076 triangles, flower_4_group=1 placements/1690 triangles, forest_leafy_shrub=4 placements/576 triangles, grass_common_short=15 placements/2325 triangles, grass_common_tall=9 placements/2934 triangles, grass_lolipop_small=37 placements/962 triangles, grass_lolipop_tall=25 placements/500 triangles, grass_wispy_tall=2 placements/1244 triangles, polyhaven_fern_02_a=11 placements/8624 triangles, polyhaven_flower_empodium_a=7 placements/5306 triangles, reed_aredon=28 placements/10640 triangles, wheat_4=62 placements/6324 triangles]
+botanical source bounds: fern={ "ground_offset": 0.028774, "height": 0.286804, "max": [0.254283, 0.25803, 0.302153], "min": [-0.297657, -0.028774, -0.311268], "size": [0.551941, 0.286804, 0.613421] } Empodium={ "ground_offset": 0.002294, "height": 0.267072, "max": [0.102077, 0.264778, 0.073787], "min": [-0.115286, -0.002294, -0.176978], "size": [0.217364, 0.267072, 0.250766] }
+downloaded vegetation scene checks: 22 checks, 0 failures

@@ -1,0 +1,347 @@
+{
+  "format": "afc-04-r4-mirror-precopy-identity-v1",
+  "created_utc": "2026-10-21T00:24:06.187389+00:00",
+  "main_commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+  "mirror_commit": "2966595b1f243be3905e2699b71c0283195ae306",
+  "mirror_root": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+  "imported_cache": {
+    "kind": "junction",
+    "target": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\.godot\\imported"
+  },
+  "r3_context_receipt": {
+    "path": "docs/research/ai-companions/AFC-04-R3/crossings/source-bound-receipt.json",
+    "bytes": 32566,
+    "sha256": "a5e3b3628cd3bd8bf11c8b10c4a4cda9c3bc0143fe5f96f562d9470249870333"
+  },
+  "copy_paths": [
+    "app/ai/companions/circuit_controller.gd",
+    "app/ai/companions/circuit_controller.gd.uid",
+    "app/ai/companions/pilot.gd",
+    "app/ai/companions/pilot.gd.uid",
+    "app/ai/companions/profile_loader.gd",
+    "app/ai/companions/profile_loader.gd.uid",
+    "app/ai/companions/fleet_record.gd",
+    "app/ai/companions/fleet_record.gd.uid",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "app/tests/test_companions_profiles.gd",
+    "app/tests/test_companions_profiles.gd.uid",
+    "app/tests/test_companions_pilot.gd",
+    "app/tests/test_companions_pilot.gd.uid",
+    "app/tests/test_companions_clearance.gd",
+    "app/tests/test_companions_clearance.gd.uid",
+    "app/tests/test_companions_record.gd",
+    "app/tests/test_companions_record.gd.uid"
+  ],
+  "context_paths": [
+    "app/project.godot",
+    "app/physics/rigid_body.gd",
+    "app/physics/math3d.gd",
+    "app/physics/wind_config.gd",
+    "app/sim/flight_session.gd",
+    "app/data/fields/default.json",
+    "app/data/fields/lake.json",
+    "app/data/field_loader.gd",
+    "app/data/lake_loader.gd",
+    "app/scenery/collision_setup.gd",
+    "app/scenery/collision_world.gd",
+    "research/ai-companions/pilot_probe.gd",
+    "research/ai-companions/encounter_probe.gd"
+  ],
+  "files": {
+    "app/ai/companions/circuit_controller.gd": {
+      "main": {
+        "bytes": 21717,
+        "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+      },
+      "mirror_before_copy": null
+    },
+    "app/ai/companions/circuit_controller.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "67f040209fa311b1eec3991ce219247d7332a8f12eaba578944ea233fc30c1db"
+      },
+      "mirror_before_copy": null
+    },
+    "app/ai/companions/pilot.gd": {
+      "main": {
+        "bytes": 23965,
+        "sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+      },
+      "mirror_before_copy": {
+        "bytes": 21717,
+        "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+      }
+    },
+    "app/ai/companions/pilot.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "48c310ba71243b532a057032e7bb74d090f48bcb35e4e2ef733a26470fe3d29a"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "7949ed0a7d4f38e80d2012a6abc3f1700c9ce5b682b002a7ae6a4a77e94772ee"
+      }
+    },
+    "app/ai/companions/profile_loader.gd": {
+      "main": {
+        "bytes": 33508,
+        "sha256": "0e41819475ad221a075f63fd15de874abd592043851e12dd06dec393024f6279"
+      },
+      "mirror_before_copy": {
+        "bytes": 32902,
+        "sha256": "2e2e41cc7737f030179658c71c68ced02217397bc5c8dd30f623d6f92a55973d"
+      }
+    },
+    "app/ai/companions/profile_loader.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "1227766f0f5328f89493df0f5d4bb7ddb29010e0fc6f197732d2d0b51e6d0f4d"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "381f675abc6ef8c150dc0702de254643fccc505301d4815eec30adc5dff22249"
+      }
+    },
+    "app/ai/companions/fleet_record.gd": {
+      "main": {
+        "bytes": 11634,
+        "sha256": "02eea8e73a5ab9d0c6a3335ed51ac747482bfe6fa8c1f84c4b3a3b66ab825917"
+      },
+      "mirror_before_copy": {
+        "bytes": 11832,
+        "sha256": "c0ab87f0ada39ca2dfe79a9ae09f5b5b7e563306e1284382350fbc5cdfb5d6be"
+      }
+    },
+    "app/ai/companions/fleet_record.gd.uid": {
+      "main": {
+        "bytes": 19,
+        "sha256": "2cdd11f52cf3d61ea816b910e8731c7d711076a02d3e39b8bb4941a87ec99069"
+      },
+      "mirror_before_copy": {
+        "bytes": 20,
+        "sha256": "694d8020fdecf6886b041fe4f500ba926292341521461205294fcb2b66215c3d"
+      }
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "main": {
+        "bytes": 1524,
+        "sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e"
+      },
+      "mirror_before_copy": {
+        "bytes": 1319,
+        "sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008"
+      }
+    },
+    "app/tests/test_companions_profiles.gd": {
+      "main": {
+        "bytes": 13320,
+        "sha256": "c7aa9318105ad3564662b5a14d9bb39c8bbfac31f823aa3382a82e0f142cc946"
+      },
+      "mirror_before_copy": {
+        "bytes": 12529,
+        "sha256": "dc89b0b39ecc152d5997ffd7d0f9f44d549e78efaf1cad8b6e6facea7cb262b0"
+      }
+    },
+    "app/tests/test_companions_profiles.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "4a34d48b6f06aa7923d75632a57dda633d70c48c78316d7ea75ee04f8a1f3a5c"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "4bdf8c1b6acf56d88b618da5acc02f8e23d71da969342a9f238313a5643c897b"
+      }
+    },
+    "app/tests/test_companions_pilot.gd": {
+      "main": {
+        "bytes": 11907,
+        "sha256": "ce1a30f9c52b668ba4e92a86b02a6e9b5aab300a5e663c57236b11d1e94084fd"
+      },
+      "mirror_before_copy": {
+        "bytes": 11796,
+        "sha256": "858c353aba7b2325a96dfe05d858c8c39c27f2c02c9ae5cea48652d57244bfba"
+      }
+    },
+    "app/tests/test_companions_pilot.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "2118c048f326c633addcc306bd3e2dea432f419d1206ceadd9c63ab3a453afad"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "a3a70f50209a85d6b1370591c63a5dc38b14b7ddda6dbf78edea4d256a9951b5"
+      }
+    },
+    "app/tests/test_companions_clearance.gd": {
+      "main": {
+        "bytes": 3982,
+        "sha256": "0e546ce72685e65e73b5b61e8a9f2b4083156f6f95f550aa26d41bf4ffb90b26"
+      },
+      "mirror_before_copy": {
+        "bytes": 4237,
+        "sha256": "c1c991047344307652de7233d344b7dac76a9710880e4895302b5d93863d38d1"
+      }
+    },
+    "app/tests/test_companions_clearance.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "00376a32322bffda0528d2c33b00d58c6da1409ae3a04a49ccc9a5253f201e1f"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "a7b09f000700f99e0eca7a8df9c1e5097142d995d184c6f8edc721f803096ff4"
+      }
+    },
+    "app/tests/test_companions_record.gd": {
+      "main": {
+        "bytes": 36925,
+        "sha256": "b7ca697cdfc67538ae5cae4dc1b2c0305cb5fa529f0bced0714e552c965d4925"
+      },
+      "mirror_before_copy": {
+        "bytes": 37688,
+        "sha256": "35d4ac4b0df8f13b2332aacccebfba4fec85d816283be878a12359f550f5131b"
+      }
+    },
+    "app/tests/test_companions_record.gd.uid": {
+      "main": {
+        "bytes": 20,
+        "sha256": "2372db8d81cda3bb24eb917bd7b9166c2a8549c81c744470d4be5742c1489010"
+      },
+      "mirror_before_copy": {
+        "bytes": 21,
+        "sha256": "7588c1ed1d8c68c8f2bfb59be8d2de2695a4094c942efa3e051db302b540eb6f"
+      }
+    },
+    "app/project.godot": {
+      "main": {
+        "bytes": 2145,
+        "sha256": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+      },
+      "mirror_before_copy": {
+        "bytes": 2198,
+        "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28"
+      }
+    },
+    "app/physics/rigid_body.gd": {
+      "main": {
+        "bytes": 5582,
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      },
+      "mirror_before_copy": {
+        "bytes": 5582,
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      }
+    },
+    "app/physics/math3d.gd": {
+      "main": {
+        "bytes": 5005,
+        "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+      },
+      "mirror_before_copy": {
+        "bytes": 5005,
+        "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+      }
+    },
+    "app/physics/wind_config.gd": {
+      "main": {
+        "bytes": 12178,
+        "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+      },
+      "mirror_before_copy": {
+        "bytes": 12178,
+        "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+      }
+    },
+    "app/sim/flight_session.gd": {
+      "main": {
+        "bytes": 235678,
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+      },
+      "mirror_before_copy": {
+        "bytes": 235678,
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+      }
+    },
+    "app/data/fields/default.json": {
+      "main": {
+        "bytes": 158788,
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+      },
+      "mirror_before_copy": {
+        "bytes": 158788,
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+      }
+    },
+    "app/data/fields/lake.json": {
+      "main": {
+        "bytes": 1570,
+        "sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+      },
+      "mirror_before_copy": {
+        "bytes": 1641,
+        "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+      }
+    },
+    "app/data/field_loader.gd": {
+      "main": {
+        "bytes": 60929,
+        "sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1"
+      },
+      "mirror_before_copy": {
+        "bytes": 62128,
+        "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+      }
+    },
+    "app/data/lake_loader.gd": {
+      "main": {
+        "bytes": 18729,
+        "sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+      },
+      "mirror_before_copy": {
+        "bytes": 19121,
+        "sha256": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d"
+      }
+    },
+    "app/scenery/collision_setup.gd": {
+      "main": {
+        "bytes": 1921,
+        "sha256": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb"
+      },
+      "mirror_before_copy": {
+        "bytes": 1961,
+        "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+      }
+    },
+    "app/scenery/collision_world.gd": {
+      "main": {
+        "bytes": 39157,
+        "sha256": "a13e84a7fd1f9b0b4214059219b95cdb3b539882dfa4afe1a0f1158c53827c63"
+      },
+      "mirror_before_copy": {
+        "bytes": 37095,
+        "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      }
+    },
+    "research/ai-companions/pilot_probe.gd": {
+      "main": {
+        "bytes": 24165,
+        "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+      },
+      "mirror_before_copy": {
+        "bytes": 24165,
+        "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+      }
+    },
+    "research/ai-companions/encounter_probe.gd": {
+      "main": {
+        "bytes": 49059,
+        "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+      },
+      "mirror_before_copy": {
+        "bytes": 49059,
+        "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+      }
+    }
+  },
+  "mutation_boundary": "Only copy_paths may be refreshed in the mirror for R4 qualification. Physics, field, lake, scenery, project settings, and probe scripts remain at the pre-copy identity above."
+}
