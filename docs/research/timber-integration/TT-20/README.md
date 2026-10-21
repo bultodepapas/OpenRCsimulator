@@ -32,6 +32,8 @@ The presentation helpers do not write flight state, controls, collision definiti
 
 The trace is a numerical preservation check, not a physical-validation claim. No golden flight was re-recorded. The source GLB remains SHA-256 `d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722`.
 
+Release follow-up, 2026-10-21: the generic night-kit test assumed both navigation lamps sit beyond the outermost mesh vertex. TT-20 places its lamps on authored wingtip lenses at x = ±0.7579 m, 0.0149 m inside the 0.7728 m half-span. The test now verifies a lamp matches each authored anchor and remains within 4% of the modeled tip; aircraft without anchors retain the outside-bounds check. The focused native Windows suite passes 86/86. No visual asset, flight state or collision data changed.
+
 The retained machine-readable evidence includes [visual isolation](visual-isolation.json), [focused regression checks](focused-checks.json), [flight equivalence](flight-equivalence.json), [source-pipeline checks](source-pipeline-checks.json), [script parsing](script-parse-check.json) and [fresh-materialization generation](fresh-pipeline-check.json). The paint-assignment spatial index produced the same 178 remaps over 12,030 white triangles and reduced one measured headless finish-construction pass from 5,048 ms to 601 ms; this is construction time, not a frame-rate measurement. The [performance and exact-pixel repair evidence](visual-detail-performance.json) records the method and hashes.
 
 ## Retained visual review

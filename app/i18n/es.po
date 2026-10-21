@@ -4256,6 +4256,9 @@ msgstr "De %s · revisión %d"
 msgid "Only listed compatible settings will change. Physical adjustments stay unchanged."
 msgstr "Solo cambiarán los ajustes compatibles indicados. Los ajustes físicos se conservan."
 
+msgid "This stock appearance profile will use the current format when applied."
+msgstr "Al aplicar, este perfil de apariencia original usará el formato actual."
+
 msgid "Settings to apply"
 msgstr "Ajustes que se aplicarán"
 
@@ -4911,6 +4914,18 @@ msgstr "El campo del club ofrece de 1 a 3 compañeros experimentales Ugly Stik q
 
 msgid "Apply changes sound and labels immediately. Flight settings take effect after Restart flight. Remove companions now clears the current roster; disable companions and Apply to keep them off after restarting. Aircraft-to-aircraft contact is disabled."
 msgstr "Aplicar cambia el sonido y las etiquetas de inmediato. Los ajustes de vuelo se aplican al reiniciar el vuelo. Quitar compañeros ahora elimina el grupo actual; desactiva los compañeros y pulsa Aplicar para que no vuelvan al reiniciar. El contacto entre aviones está desactivado."
+
+msgid "Flight companions: %s · %d"
+msgstr "Compañeros de vuelo: %s · %d"
+
+msgid "Flight companions: %s · %d companions · seed %d"
+msgstr "Compañeros de vuelo: %s · %d compañeros · semilla %d"
+
+msgid "Flight companions · next restart: %s · %d · seed %d"
+msgstr "Compañeros de vuelo · próximo reinicio: %s · %d · semilla %d"
+
+msgid "Available for airplanes at Club Field."
+msgstr "Disponible para aviones en el campo del club."
 
 msgid "Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use."
 msgstr "Vuelos experimentales con compañeros. Empieza con un avión; añadir más aumenta el uso de CPU."

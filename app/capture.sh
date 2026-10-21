@@ -108,7 +108,11 @@ shot "-field-top" --t=1.5 --look_az=0 --look_el=-90 --look_alt=30 --hide_airplan
 for lang in en es; do
   for screen in home pause help hint; do
     out="$HERE/captures/ui-$screen-$lang.png"
-    "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" -- \
+    # Flight-backed Pause/Hint captures rebuild the Club field under llvmpipe.
+    # The old 60 s bound expired on CI; a Linux/Xvfb pause run took 76.65 s.
+    ui_timeout=60
+    if [[ "$screen" == pause || "$screen" == hint ]]; then ui_timeout=120; fi
+    "$VPY" "$HERE/tests/capture_runner.py" --out "$out" --kind ui --scene "$screen" --timeout "$ui_timeout" -- \
       xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" --rendering-driver opengl3 --audio-driver Dummy \
       --script res://tests/capture_ui.gd -- --out="$out" --lang="$lang" --screen="$screen"
     CAPTURE_NAMES+=("${out#"$HERE/captures/"}")

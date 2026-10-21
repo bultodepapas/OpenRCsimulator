@@ -42,6 +42,10 @@ func _run() -> void:
 		for proxy: Dictionary in world.get("proxies", []):
 			if proxy.kind != kind:
 				continue
+			# Sapling crowns extend below an aircraft's wing even at trunk height.
+			# Use a mature tree and fly below its crown to exercise hard trunk contact.
+			if kind == "tree_trunk" and (not str(proxy.id).contains(":shade-tree:") or float(proxy.down) > -1.5):
+				continue
 			# LU-14 replaces the old enclosing pavilion proxy with structural parts.
 			if kind == "building" and proxy.part != "pavilion_main":
 				continue
@@ -54,7 +58,7 @@ func _run() -> void:
 		check("production inventory includes " + kind, not target.is_empty())
 		if target.is_empty():
 			continue
-		var height := maxf(0.65, -float(target.down))
+		var height := 0.65 if kind == "tree_trunk" else maxf(0.65, -float(target.down))
 		# Aim through the gap between shelter posts at the parked P-51's wing.
 		var east_offset := -1.1 if kind == "parked_aircraft" else 0.0
 		var north_offset := 4.0 if kind == "parked_aircraft" else -10.0

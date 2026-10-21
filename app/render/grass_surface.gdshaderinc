@@ -68,3 +68,22 @@ vec3 rough_grass_colour(vec2 p) {
 	vec3 dry_tint = mix(vec3(1.0), vec3(1.18, 1.04, 0.80), dry_amount * mc.y * pin); // no dry patch in the pilot box
 	return base * tone * dry_tint;
 }
+
+// Keep club mowing and taxi markings on both the ground and the near-grass blades.
+// The same colour transform prevents an artificial contrast ring at the grass fade.
+vec3 club_turf(vec3 grass_colour, vec2 p, bool enabled) {
+	if (!enabled || abs(p.x) > 57.0 || p.y < -28.0 || p.y > -1.5) return grass_colour;
+	float edge_noise = (vnoise(p / 3.7 + 19.0) - 0.5) * 0.75;
+	vec2 apron_d = abs(p - vec2(0.0, -15.0));
+	float apron = (1.0 - smoothstep(53.2 + edge_noise, 55.2 + edge_noise, apron_d.x))
+		* (1.0 - smoothstep(11.0 + edge_noise, 13.0 + edge_noise, apron_d.y));
+	float wide = 1.0 - smoothstep(0.85, 1.45, abs(p.y + 6.35) + edge_noise * 0.15);
+	float ends = (1.0 - smoothstep(42.0, 44.0, abs(p.x))) * smoothstep(3.7, 5.8, abs(p.x));
+	float links = (1.0 - smoothstep(1.15, 1.8, abs(abs(p.x) - 39.0)))
+		* smoothstep(-9.8, -9.1, p.y) * (1.0 - smoothstep(-7.1, -6.4, p.y));
+	float taxi = clamp(max(wide * ends, links), 0.0, 1.0);
+	vec3 apron_colour = grass_colour * vec3(1.055, 1.065, 1.025);
+	vec3 taxi_colour = grass_colour * vec3(0.955, 0.97, 0.91);
+	vec3 result = mix(grass_colour, apron_colour, apron * 0.85);
+	return mix(result, taxi_colour, taxi * (0.72 + 0.2 * vnoise(p / 1.8 + 7.0)));
+}

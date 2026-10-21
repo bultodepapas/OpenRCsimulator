@@ -1,0 +1,18 @@
+--- a/app/physics/aero.gd	2026-10-21 03:48:52.636731166 +0000
++++ b/app/physics/aero.gd	2026-10-21 03:48:52.650731228 +0000
+@@ -528,6 +528,15 @@
+ 		if cm_ac != 0.0 and plane_speed > 0.0:
+ 			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
+ 			my_sum += section_my
++		# EX-14h EXPERIMENT (disposable copy only): separated-flow centre of pressure aft of c/4 by 0.25*|a|/(pi/2)*(1-f).
++		if plane_speed > 0.0 and weight > 0.0:
++			var cn_exp: float = cl * M.cos_(effective) + cd * M.sin_(effective)
++			var chords_exp: PackedFloat64Array = env.get("station_chords", PackedFloat64Array())
++			var c_exp: float = chords_exp[i] if i < chords_exp.size() else float(ref.c)
++			var cm_exp: float = -0.25 * weight * absf(effective) / (PI / 2.0) * cn_exp
++			var my_exp: float = lift_q * plane_speed * plane_speed * station_area * c_exp * cm_exp
++			section_my += my_exp
++			my_sum += my_exp
+ 		if flap_active and plane_speed > 0.0 and i < flap_shifts.size() and flap_shifts[i] != 0.0:
+ 			# Thin-airfoil theory treats flap lift increment as a pressure change over
+ 			# the section, not as whole-wing Δlift acting at the aft panel. Apply the

@@ -1,6 +1,6 @@
 # EX-14: Extra 300S realism pass against the weighed build and owner reports
 
-2026-10-20/21 · EX-14a/c/d/e/f/g, with shared steps NITRO-61FX-R1/R2 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
+2026-10-20/21 · EX-14a/c/d/e/f/g/h, with shared steps NITRO-61FX-R1/R2 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
 
 Goal: make the GPMA0236 Extra 300S .60 fly like the real RC model. The targets come from the only magazine flight report of this kit, from five named owners on its build thread, and from comparable 60-size Extras. Each change below is a mechanism with its own source. None is a gain tuned to pass a maneuver. Software verification here does not establish physical validation (EX-09).
 
@@ -28,6 +28,7 @@ The [manifest](sources.json) lists 32 local files (`references/extra-300/`, giti
   - Letko & Williams NACA TN 3551: fuselage side force by cross-section.
   - Polhamus NASA TR R-29: crossflow drag of rounded rectangles.
   - Ragheb & Selig 2013: measured spins of the 35 % Extra 260.
+  - EX-14h, all already local: Sheldahl & Klimas SAND80-2114 (NACA 0012/0015 section data at Re 3.6·10⁵, to 180°), NASA FASER static lift and forced-oscillation roll damping (D8b-R2d digitizations), Selig AIAA 2010-7635 and Dantsker & Selig AIAA 2015-2568 (instrumented high-α flight), all in `references/rc-aero-data/` ([registry](../../flight-dynamics/rc-aero-data-sources.md)); the kit manual's flying notes (p. 46) and its plan's full-size rib 2D (`references/extra-300/gp-extra-300s-60/`).
 
 No source gives a measured speed, roll rate, knife-edge mix or spin rate for a 60-size Extra. The targets are qualitative bands.
 
@@ -50,6 +51,7 @@ No source gives a measured speed, roll rate, knife-edge mix or spin rate for a 6
 | EX-14e | Ground effect (shared M5-GE-1 law) with constants fitted to an image-method VLM of the Extra's wing and tail. The VLM reuses the P-51 P51-20 solver unchanged: induced c 17.2, e 1.21 (rms 0.006); tail c 19.2, e 1.33 (rms 0.013). The low wing sits at x 0.133 on its wheels | `research/extra-300/ex14/ground_effect_vlm.py` → `vlm_ground_effect.json`; Extra generator; CI check |
 | [EX-14f](#ex-14f--propeller-section-camber) | Optional cambered-section zero-lift angle in the Glow propeller surrogate, fitted to measured APC Sport 11×6 data and adopted by the Extra's installation | NITRO: `glow/propeller.gd`, `glow/installation.gd`, installation schema, Python mirrors, `fit_section.py`, `build_installations.py`; `test_glow_propeller_camber.gd` |
 | [EX-14g](#ex-14g--installed-engine) | The Extra's installation uses the muffler-installed MAX-61FX (NITRO-61FX-R2, Gierke-anchored back-pressure law) with the carburettor sized on the bare engine | NITRO: `build_profiles.py` (`INSTALLED`), `os_max_61fx_installed_candidate.json`, `build_installations.py`, `installation_schema.py`; tests: `test_profiles.py` and the binding pins |
+| [EX-14h](#ex-14h--post-stall-wing-polar) | The Extra's wing gets the D8b-R2d tabulated post-stall polar (v2 method, full spanwise progression) fitted to NASA FASER's measured lift retention and stall-onset roll damping, replacing the legacy blend's 14–18° roll instability | `research/extra-300/ex14/fit_wing_polar.gd` → `wing_polar_fit.json`; Extra generator; `test_extra_post_stall.gd`; `test.sh` check |
 
 Regenerated through their pipelines:
 - Workshop descriptor;
@@ -249,16 +251,89 @@ Other changes from B to D:
 
 **The knife-edge miss is real.** In this model knife-edge leans on thrust·sinβ and the wash on the rudder, and B's better figure rode on catalog power the installed engine does not have. The sources agree on direction but not size. RCM's .61FX review asks for more rudder, and the owners who held altitude ran Saito 100–1.20 four-strokes. So a .61FX Extra that cannot hold knife-edge on the stock rudder is the reported behaviour, but no source gives the sink rate. Remaining physics are finding 3: the fuselage yaw split, gear and pant side area, and belly pitch.
 
+## EX-14h — post-stall wing polar
+
+**The gap.** The power-off stall banked 76° in its first second and a held stall entered a spin. The real airplane:
+- Owners (RCU 1062376): "Stalls were very very mild...it sort of mushes forward while loosing a bit of altitude. Center the elevator and its flying again"; "Wingtips didnt drop and the nose really didnt drop either"; "points off on spin entries as it will not drop a wing".
+- Manual: "For smooth flying and normal maneuvers, use the low rate settings... High rate elevator may be required for crisp snap rolls and spins."
+
+**Cause.** The legacy blend separates every strip at one angle onto the flat plate.
+- On the Extra the [bench](ft/ex14h/bench.md) gives roll damping Clp +0.79 / +0.99 / +0.84 / +0.48 at 15 / 16 / 17 / 18°.
+- NASA FASER (Ultra Stick 120, the Extra's Reynolds class) measures −0.45 to 13.5° and −0.31 at 17.5° ([D8b-R2d](../../flight-robustness/D8b-R2/analog/README.md)).
+- [`stall_probe.gd`](../../../../research/extra-300/ex14/stall_probe.gd) flies the owners' test: idle, altitude held until the stick reaches its stop, the stop held 5 s, on the manual's low and high rates. On low rate the stop reaches α 16.9°, inside that window, and the wing is already 52° down.
+
+**Section.** The kit plan draws rib 2D at full size in its CG drawing; the printed 4⅛ in measures 4.13 in at 300 dpi.
+- The rib is 1.89 in thick on a 14.7 in local chord: t/c 12.9 %, with its leading edge on a NACA 0013 within 0.01 in. This confirms the generator's 13 % estimate.
+- At Re 3.6·10⁵ (SAND80-2114, Tables 2–3, checked against the page images) the two neighbouring sections stall differently:
+  - NACA 0012 collapses from CL 0.98 to 0.28 within 3°.
+  - NACA 0015 falls gradually, from 0.96 at 11° to 0.48 at 18°.
+
+**Candidates.** Bench, [probe](ft/ex14h/probe/) and card subsets; the full card for production and the adopted polar.
+
+| Wing law | Clp at 15–18° | Low-rate stop held, wings kept level | Power-off stall: bank in 1 s | Upright spin | Snap: short of 360° (R / L) |
+| --- | --- | --- | --- | --- | --- |
+| Legacy blend (before) | +0.79…+0.48 | spin entry | −76° | spin, 1.21 s/turn | 84° / 123° |
+| Sandia 13 % (0012/0015 rows, Avanti AV-17-R2 policy) | +0.08…+1.04 | – | – | – | – |
+| Sandia NACA 0015 (same policy) | −0.02…+0.05 | spin entry | – | – | – |
+| **FASER-fitted v2 (adopted)** | +0.01…−0.24 | wing drop over 2.5 s | +14° | spin, 1.85 s/turn | 69° / 0° |
+| Adopted + separated centre of pressure (experiment) | as adopted | **mush** | +9° | **none** (skidding spiral) | 33° / 0° |
+| Legacy + separated centre of pressure (experiment) | as legacy | spin entry | −75° | spin, 1.07 s/turn | 35° / 80° |
+
+The 2-D section data cannot give the mush. Their post-stall slope is neutral (0015) or violently unstable (0012) at the onset; only FASER's measured three-dimensional damping is stable there.
+
+**Adopted.** [`fit_wing_polar.gd`](../../../../research/extra-300/ex14/fit_wing_polar.gd) runs D8b-R2d's [`make_v2.gd`](../../../../research/flight-robustness/d8b-r2/analog/make_v2.gd) recipe on the Extra's calibrated attached line; only the aircraft differs.
+- Fitted knots: 1.00 / 0.86 / 0.86 / 0.82 of the strip peak at 18 / 24 / 30 / 36°.
+- RMS errors: 0.059 retention, 0.255 onset Clp.
+- The generator embeds `wing_polar_fit.json` unrounded: its `q()` rounding to 6 decimals breaks the loader's 1e-9 attached-line join.
+- The shipped rows equal the flown candidate's. The flown file differs only by a 1-ulp JSON round trip of `Cldr`.
+
+Full card against production on the same commit 3bfdc64f ([compare](ft/ex14h/compare.md), [production](ft/ex14h/production/summary.md), [candidate](ft/ex14h/candidate/summary.md)):
+
+| | Production | EX-14h |
+| --- | --- | --- |
+| Power-off stall: speed, bank in the first second | 11.11 m/s, −76° | 11.05 m/s, +14° |
+| Stall held 5 s, controls neutral: rotation in the last 2 s, height lost | 408°/s spin, 82 m | 138°/s spin, 64 m |
+| Skidded stall (right): roll-off in 1 s | 52° into the rudder | 28° toward the held aileron |
+| Spin (right): s per turn, sink, recovery turns | 1.21, 21.4 m/s, 0.24 | 1.85, 19.9 m/s, 0.12 |
+| Snap (right / left): short of 360° | 84° / 123° | 69° / 0° |
+| Attached flight: landing, take-off, loop, rolls, go-around | – | within 1–5 % |
+
+**Not adopted: the separated centre of pressure.** The strip model keeps a stalled strip's force at the quarter chord, but measured sections move it aft.
+- SAND80-2114 Fig. 30 (NACA 0015, Re 3.6·10⁵): Cm,c/4 ≈ −0.06 at 20°, −0.10 at 30°, −0.17 at 45°, −0.4 at 90°.
+- Selig's full-envelope RC model applies the section moment at the quarter chord, "driven largely by drag acting on the 50% chord location".
+- Experiment: a disposable-copy law ([patch](ft/ex14h/cp-shift-experiment.patch)) moving the centre of pressure aft by 0.25·|α|/90°·(1 − attached fraction) reproduces those values.
+- With the adopted polar it flies the owners' stall on the manual's low rate. With the wings held level: bank ≤ 6.5°, nose drop 4.9°, sink 1–3 m/s, 9.6 m lost in 5 s, flying again once the elevator is centred. On high rate a wing still drops, as owners warn ("too much elevator will stall the plane").
+- But it stops the card's upright spin.
+
+The model's spin is an accelerating spiral dive in every variant: α 18–23°, sideslip about 20°, airspeed 13 → 23 m/s over 6 s ([spin state](ft/ex14h/spin-state.md)). The Extra 260 spins steadily at α ≈ 34° and 12–13 m/s at this wing loading. The centre-of-pressure moment exposes that gap; it does not cause it.
+
+The full-up stop is not too stiff in pitch. Dantsker & Selig's instrumented Sukhoi holds α 18–22° with 20° of up elevator in an unpowered descending harrier; the model's stop is 21.5°. The law therefore waits for spin physics with rotation and separation dynamics (D10-R4, D8b-R2d-v3).
+
+**Verification.**
+- Generator chain: `derive_physics.py --check`, `fit_wing_polar.gd --check` (refits on the data without its polar: idempotent), descriptors, mass-balance report, crash-economics catalog and runtime. The costing dossier was rebound after review: EX-14h changes only `aero.wing_polar`.
+- `test_extra_post_stall.gd` (new, 7 checks): the declared rows are the fitter's; Clp at 16 / 17 / 18° is −0.16 / −0.21 / −0.24, against legacy +0.99 / +0.84 / +0.48; CL at 20° keeps the peak, where legacy falls to 0.54.
+- 56 programs that load the Extra or its polar. All pass except:
+  - `test_engine_audio`: fails only under 6-way load; 146/146 alone.
+  - `test_workshop_integration`: the smoke-budget failure, already present before EX-14f.
+  - `test_workshop_reuse`: 8 profile-copy failures, identical at the pre-change commit `1a00c874~1`. Both are upstream workshop issues.
+- The full suite was not run.
+
+**Limits.**
+- FASER is an analog airframe (rectangular high wing); the negative branch is the unmeasured fixture recipe.
+- Hands-off on low rate the wing still rolls off slowly. Near α 20° a small steady moment (idle torque, the cruise rudder trim) acts on near-neutral damping.
+- The spin turns slower than the Extra 260 band (Ωb/2V 0.13–0.15 against 0.20).
+- Software verification only.
+
 ## Open findings (ranked)
 
 1. **Installed engine power rests on a secondhand dyno figure.** EX-14g adopts it, with one Glassock rig check.
    - The back pressure is a wide-open function of rpm, so the part-throttle derate and endurance are slightly overstated.
    - The Pitts muffler's own loss is not quantified.
    - Needed: a tach and thrust reading of the airplane's own 61FX on the 12×6, static and on a full-throttle level pass, with the muffler noted. One reading would replace k and confirm the prop fit.
-2. **The stall drops a wing; the real airplane mushes.**
-   - The battery's power-off stall banks 78° in the first second, and a held stall enters a spin.
-   - Owners: "very very mild … mushes forward", with reluctant spin entries.
-   - This is the shared post-stall polar ([D8b-R2](../../flight-robustness/D8b-R2/analog/)), awaiting that owner's decision. The Extra's symmetric, untwisted taper-0.5 wing gets the legacy table.
+2. **The stall is milder but does not yet mush, and the spin is a spiral dive.**
+   - EX-14h removes the violent wing drop (+14° in the first second, against −76°), but a held low-rate stall still rolls off over 2.5 s.
+   - The measured separated centre of pressure gives the owners' mush and crisper snaps. It stops the card's upright spin, because the model's spin is an accelerating spiral at α 18–23° rather than the Extra 260's steady α ≈ 34°.
+   - Next: spin physics with rotation and separation dynamics (D10-R4, D8b-R2d-v3), then the centre-of-pressure law ([EX-14h](#ex-14h--post-stall-wing-polar)).
 3. **Knife-edge is close but not sustained.**
    - With full rudder the model holds β ≈ τ·δr ≈ 21°. With the installed engine (EX-14g) it sinks 13.6 m/s at full rudder and power (5.9 with catalog power); owners hold altitude only at full rudder and power, and RCM asks for more rudder on the .61FX.
    - Missing pieces:
@@ -267,7 +342,7 @@ Other changes from B to D:
      - knife-edge pitch toward the belly, which owners mix out with 3–6 % up.
 4. **Left hammerhead torque roll and snap rolls.**
    - Left hammerheads lose the pivot at the top: 119–135° of roll and 134° of pitch rotation in the probe. Missing wing swirl does not explain it: on this low wing the wake covers only 1.8 cm of exposed root per side near static (about 140 cm², against about 500 cm² per stab half). The pitch points to gyroscopic precession of the clockwise prop turning the left yaw rate into pitch, with little elevator authority near zero airspeed. Real hammerheads are asymmetric for the same reason, and pilots compensate with timing and elevator, so the probe's simple pilot is part of the result.
-   - Snaps still stop short (FT-05: 37° and 108°); owners call them crisp. This is the post-stall separation dynamics, D8b-R2d-v3.
+   - Snaps stop short of 360° by 69° (right) and complete to the left (EX-14h); owners call them crisp. The separated centre of pressure brings the right snap to 33° short (EX-14h).
 5. **Ground and landing remain unmeasured.** Rolling resistance, tyre and spring values are borrowed, and no measured flare exists.
 
 ## Reproduce
@@ -276,14 +351,18 @@ Other changes from B to D:
 python3 research/glow-engines/build_profiles.py --check
 python3 research/glow-engines/fit_section.py --check && python3 research/glow-engines/build_installations.py --check
 python3 research/extra-300/ex14/ground_effect_vlm.py --check
+"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/extra-300/ex14/fit_wing_polar.gd" -- --check
 python3 research/extra-300/ex05/derive_physics.py --check
 python3 research/aircraft-editor/build_descriptors.py --check
 python3 -I research/fuel-systems/mass_balance_report.py --check research/fuel-systems/mass_balance_current.json --fail-on-drift
 python3 research/crash-economics/build_catalog.py --check && python3 research/crash-economics/build_runtime.py --check
 G="$(app/get-godot.sh)"
-for t in glow_dive_support body_side_force extra_installation extra_handling extra_runway glow_installation ground_effect trace_metadata; do
+for t in glow_dive_support body_side_force extra_installation extra_handling extra_runway extra_post_stall wing_polar glow_installation ground_effect trace_metadata; do
   "$G" --headless --path app --audio-driver Dummy --script res://tests/test_$t.gd; done
 "$G" --headless --path <app copy> --audio-driver Dummy --script "$PWD/research/extra-300/ex14/taxi_tail_probe.gd"
 "$G" --headless --path <app copy> --audio-driver Dummy --script "$PWD/research/extra-300/ex14/hammerhead_probe.gd" -- --throttle=0.35 --kick=6
+"$G" --headless --path app --audio-driver Dummy --script "$PWD/research/extra-300/ex14/stall_probe.gd" [-- --data=<abs candidate json>]
+"$G" --headless --path app --script "$PWD/research/flight-robustness/d8b-r2/analog/post_stall_sweep.gd" -- res://data/aircraft/gp_extra_300s_60.json
+python3 -I research/extra-300/ex14/sandia_polar.py <legacy Extra json> 0.15 <out json>   # rejected Sandia candidate
 python3 research/flight-test/run.py --out <new dir> --aircraft gp-extra-300s-60 --app <app copy>
 ```

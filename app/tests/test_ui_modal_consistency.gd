@@ -115,7 +115,6 @@ func _run() -> void:
 		and "RECORDING AND DEVELOPER" in help_texts and not "FLY" in help_texts)
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	for suffix in ["", ".display", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))

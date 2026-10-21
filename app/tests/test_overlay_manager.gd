@@ -503,7 +503,7 @@ func _flight_scene() -> void:
 	await _diagnostics_visibility(flight, overlays)
 	saved.clear()
 	var ui := UiDriver.new(self)
-	_check("Stik flight has the smoke installation", flight.get("_smoke") != null)
+	_check("Stik flight has the stock smoke profile", flight.get("_profile_smoke") != null and bool(flight.get("_stock_smoke_profile")))
 	var pump_before: bool = flight.get("_smoke_key_on")
 	await ui.tap(KEY_F2)
 	_check("F2 in flight: Full → Developer, saved", overlays.settings.preset == "developer" and saved.size() == 1)

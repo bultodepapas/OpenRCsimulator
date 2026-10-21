@@ -153,7 +153,13 @@ func _run() -> void:
 			return
 		var transition_start_usec: int = Time.get_ticks_usec()
 		fly_button.pressed.emit()
-		flight = app.get("flight")
+		# Home acknowledges the press on one rendered frame before emitting fly_requested.
+		# Wait only two frames so a stalled or rejected transition still fails this capture.
+		for _ack_frame in 2:
+			await process_frame
+			flight = app.get("flight")
+			if flight != null:
+				break
 		if flight == null:
 			push_error("Home Fly did not create the flight scene")
 			quit(1)

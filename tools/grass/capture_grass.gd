@@ -22,7 +22,7 @@ const IMPORTED_GRASS_SHADER_PATH: String = "res://scenery/imported_grass.gdshade
 const GRASS_DATA_PATH: String = "res://data/fields/grass.json"
 const WIND: Vector3 = Vector3(5.0, 0.0, 0.0)
 const IMPORTED_GRASS_IDS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
-const IMPORTED_FLOWER_IDS: Array[String] = ["clover_1", "flower_3_group", "flower_4_group"]
+const IMPORTED_FLOWER_IDS: Array[String] = ["clover_1", "flower_4_group", "polyhaven_flower_empodium_a"]
 const STATIC_IMPORTED_GRASS_COUNTS: Dictionary = {
 	"grass_common_short": 67,
 	"grass_common_tall": 42,

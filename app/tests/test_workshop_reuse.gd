@@ -77,7 +77,7 @@ func run() -> void:
 	editor.call("_review_profile_transfer")
 	var dialog: ConfirmationDialog = editor.get("_transfer_dialog")
 	var description: String = editor.get("_transfer_text").text
-	check("copy previews accepted and skipped domains before mutation", dialog.visible and description.contains("Settings to apply") and description.contains("Settings skipped") and description.contains("Engine exhaust") and editor.get_presentation() == target_before)
+	check("copy previews accepted and skipped domains before mutation", dialog.visible and description.contains("Settings to apply") and description.contains("Settings skipped") and description.contains("Engine exhaust") and description.contains("stock appearance profile") and editor.get_presentation() == target_before)
 	check("Cancel is the initial review focus", dialog.gui_get_focus_owner() == dialog.get_cancel_button())
 	editor.call("dismiss_modal_for_exit")
 	check("closing copy review preserves draft and library", not dialog.visible and editor.get("_library_dialog").visible and editor.get_presentation() == target_before)

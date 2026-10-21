@@ -50,6 +50,10 @@ The shared tree received external work and commits during the task. This evidenc
 
 Each PNG has an adjacent geometry JSON. Captures use a separate empty library and save no player variants. GPU probe images are synthetic renderer fixtures with an unlit black background; editor captures exercise the lit model. Neither qualifies dense overlapping smoke during a real flight.
 
+## v0.1.7 release follow-up, 2026-10-21
+
+Copying a v2 source profile into a fresh stock Extra 300S target failed because the untouched target was represented as legacy v1. The transfer now offers a current-format target only when the validated v1 target equals its empty stock default; the review discloses the format change, and Cancel leaves the v1 draft untouched. An edited v1 target still requires explicit migration. The focused native Windows checks pass: profile transfer 20/20 and Workshop reuse UI 0 failures.
+
 ## Remaining acceptance
 
 Patterns/decals and spinner/prop accents, rotorcraft editing, preview scrub and explicit migrations remain planned. Subsequent [AE-24d.1](../AE-24d-1/README.md) delivered isolated bounded thumbnails; the moving-pass follow-up below extends playback. Native dense overlap/frame/GPU cost, platform/export journeys, hardware/accessibility/playtests, wider scale/refinement, twenty-airframe onboarding and source-backed mass/CG/hardware editing remain open.

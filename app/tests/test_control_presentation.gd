@@ -37,6 +37,17 @@ func _same_visual(a: Dictionary, b: Dictionary) -> bool:
 					return false
 	return true
 
+func _free_visual(visual: Dictionary) -> void:
+	# Release instance materials before immediate free. The headless renderer can
+	# otherwise query a material RID after its owner has been destroyed.
+	for node: Node in visual.root.find_children("*", "MeshInstance3D", true, false):
+		var mesh_node := node as MeshInstance3D
+		mesh_node.material_override = null
+		if mesh_node.mesh != null:
+			for surface_index in mesh_node.mesh.get_surface_count():
+				mesh_node.set_surface_override_material(surface_index, null)
+	visual.root.free()
+
 func _run() -> void:
 	var ids := [Adapter.STIK_ID, Adapter.STIK_GLOW_55AX_ID, Adapter.STIK_GLOW_61FX_ID,
 		Adapter.STIK_GLOW_FS64V_ID, Adapter.EXTRA_ID, Adapter.P51_ID, Adapter.TIMBER_ID, Adapter.AVANTI_ID]
@@ -80,7 +91,7 @@ func _run() -> void:
 			Adapter.apply_throttle(reference, 0.8)
 			Adapter.apply_controls(candidate, rotations, 0.8)
 			_check("missing throttle linkage retains surface updates", _same_visual(reference, candidate))
-		reference.root.free()
-		candidate.root.free()
+		_free_visual(reference)
+		_free_visual(candidate)
 	print("control presentation: %d checks, %d failed" % [checks, failed])
 	quit(1 if failed else 0)

@@ -10,6 +10,7 @@ const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const LakeWorld := preload("res://render/lake/lake_world.gd")
 const GrassMask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
+const FieldLightData := preload("res://render/world/field_lights.gd")
 
 var _checks := 0
 var _failures := 0
@@ -125,12 +126,15 @@ func _test_field_builder_mask_integration(field: Dictionary, scenery: Dictionary
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	OS.set_environment("OPENRC_SCENERY_BIRDS", "off")
 	var default_footprints := GrassMask.footprints(scenery)
+	var lights_result: Dictionary = FieldLightData.load_from()
+	_check("default field light exclusion data loads", bool(lights_result.get("ok", false)), str(lights_result.get("errors", [])))
+	var light_exclusions: Array = NearGrass.light_exclusions(lights_result.get("lights", [])) if bool(lights_result.get("ok", false)) else []
 	var raw_rows: Variant = JSON.parse_string(FileAccess.get_file_as_string(NearGrass.DATA_PATH))
 	var rows: Array = NearGrass.validated_rows(raw_rows)
 	OS.set_environment("OPENRC_SCENERY", "off")
 	var plain_field: Node3D = FieldBuilder.build(field)
 	var plain_grass: Node3D = plain_field.get_node_or_null("NearGrass") as Node3D
-	var plain_chunks: Array = NearGrass.clipped_chunks(field, rows)
+	var plain_chunks: Array = NearGrass.clipped_chunks(field, rows, light_exclusions)
 	var plain_centers := _layout_centers(plain_chunks)
 	var plain_overlaps := _count_excluded(plain_centers, default_footprints)
 	var plain_expected := _layout_count(plain_chunks)
@@ -149,7 +153,9 @@ func _test_field_builder_mask_integration(field: Dictionary, scenery: Dictionary
 	var scenery_node: Node = furnished_field.get_node_or_null("Scenery")
 	var grass_node: Node3D = furnished_field.get_node_or_null("NearGrass") as Node3D
 	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
-	var furnished_chunks: Array = NearGrass.clipped_chunks(field, rows, exclusions)
+	var furnished_exclusions := exclusions.duplicate()
+	furnished_exclusions.append_array(light_exclusions)
+	var furnished_chunks: Array = NearGrass.clipped_chunks(field, rows, furnished_exclusions)
 	var furnished_centers := _layout_centers(furnished_chunks)
 	var furnished_overlaps := _count_excluded(furnished_centers, default_footprints)
 	var furnished_legacy_expected := _layout_count(furnished_chunks)
@@ -164,6 +170,7 @@ func _test_field_builder_mask_integration(field: Dictionary, scenery: Dictionary
 	var source_definition: Dictionary = scenery_node.get_meta("source_definition", {}) if scenery_node != null else {}
 	var lake: Dictionary = LakeWorld.resolve(field, Scenery.options()).get("lake", {})
 	var production_masks := ImportedNearGrass.exclusions_for(source_definition, lake)
+	production_masks.append_array(light_exclusions)
 	var imported_expected := ImportedNearGrass.layout(field, "high", production_masks)
 	var imported_unmasked := ImportedNearGrass.layout(field, "high")
 	var imported_placements: Array = grass_node.get_meta("cpu_placements", []) if grass_node != null else []
@@ -196,7 +203,7 @@ func _test_field_builder_mask_integration(field: Dictionary, scenery: Dictionary
 		var translated_field: Node3D = FieldBuilder.build(translated)
 		var translated_scenery: Node = translated_field.get_node_or_null("Scenery")
 		var translated_grass: Node3D = translated_field.get_node_or_null("NearGrass") as Node3D
-		var translated_chunks: Array = NearGrass.clipped_chunks(translated, rows)
+		var translated_chunks: Array = NearGrass.clipped_chunks(translated, rows, light_exclusions)
 		var translated_centers := _layout_centers(translated_chunks)
 		var ghost_overlaps := _count_excluded(translated_centers, default_footprints)
 		translated_ghost_overlaps = ghost_overlaps
