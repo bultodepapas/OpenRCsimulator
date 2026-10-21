@@ -70,8 +70,8 @@ func _initialize() -> void:
 		print("AFC CALLBACK TIMING PROBE PARSED")
 		quit(0)
 		return
-	if not arguments.has("--measure"):
-		printerr("Refusing to run timed cases without explicit --measure.")
+	if arguments.has("--measure") == arguments.has("--smoke"):
+		printerr("Supply exactly one of --measure or --smoke.")
 		quit(2)
 		return
 	call_deferred("_run")
@@ -79,7 +79,13 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var output := ""
-	for argument: String in OS.get_cmdline_user_args():
+	var arguments := OS.get_cmdline_user_args()
+	var smoke := arguments.has("--smoke")
+	var warmup_ticks := 1 if smoke else WARMUP_TICKS
+	var measured_ticks := 4 if smoke else MEASURED_TICKS
+	var total_ticks := warmup_ticks + measured_ticks
+	var started_utc := Time.get_datetime_string_from_system(true)
+	for argument: String in arguments:
 		if argument.begins_with("--out="):
 			output = argument.trim_prefix("--out=")
 	if output.is_empty() or FileAccess.file_exists(output):
@@ -112,11 +118,21 @@ func _run() -> void:
 	var rows: Array = []
 	var complete := true
 	for count_value: int in COUNTS:
-		var branch_order: Array[String] = ["production", "candidate"] if count_value % 2 == 0 else ["candidate", "production"]
+		var branch_order: Array[String] = []
+		if count_value % 2 == 0:
+			branch_order.append("production")
+			branch_order.append("candidate")
+		else:
+			branch_order.append("candidate")
+			branch_order.append("production")
 		var branches: Dictionary = {}
 		for branch: String in branch_order:
+			print("[callback] start count=%d variant=%s mode=%s" % [count_value, branch, "smoke" if smoke else "measurement"])
 			branches[branch] = _run_case(count_value, field_result.field, collision.world, lake.lake,
-				branch == "candidate")
+				branch == "candidate", warmup_ticks, measured_ticks)
+			print("[callback] finished count=%d variant=%s complete=%s ticks=%d/%d" % [
+				count_value, branch, str(branches[branch].get("complete", false)),
+				int(branches[branch].get("completed_total_ticks", 0)), total_ticks])
 		var row := _compare_pair(count_value, branch_order, branches)
 		rows.append(row)
 		complete = complete and bool(row.get("complete", false))
@@ -125,12 +141,16 @@ func _run() -> void:
 	complete = complete and source_unchanged
 	var report := {
 		format = "openrc-afc-reachable-clear-callback-timing v1",
+		run_mode = "smoke" if smoke else "measurement",
 		complete = complete,
+		started_utc = started_utc,
+		finished_utc = Time.get_datetime_string_from_system(true),
 		engine = Engine.get_version_info().string,
 		processor = OS.get_processor_name(),
 		physics_hz = physics_hz,
-		warmup_ticks = WARMUP_TICKS,
-		measured_ticks = MEASURED_TICKS,
+		warmup_ticks = warmup_ticks,
+		measured_ticks = measured_ticks,
+		total_ticks_per_branch = total_ticks,
 		cases = rows,
 		count_order = COUNTS,
 		variant_order_by_count = {"even_count_production_then_candidate": true,
@@ -155,9 +175,9 @@ func _run() -> void:
 			"renders_audio_realtime_pacing": false,
 		},
 		percentile_method = "nearest rank: sorted[ceil(sample_count * p) - 1]",
-		scope = "Paired headless software timing of complete player/session callbacks and exclusive production manager/agent buckets. Production and candidate controllers use detached fixtures; accepted profile identity remains production.",
-		measurement_overhead = "The probe reports outer profiler envelope and wrapper shim beside complete callback samples. Timed agent proxies and wrapped manager callbacks add diagnostic timer reads inside callback time; these are not subtracted or corrected. No per-score-call counter is enabled during timing.",
-		note = "Local shared-host diagnostic only; not target-hardware qualification, rendered-frame pacing, a 60 fps result, or physical validation. Matching per-tick state and command fingerprints are required for a complete comparison."
+		scope = "Paired headless software callback timing; production and candidate controllers use detached fixtures and the accepted profile identity remains production. Smoke runs validate all branches only and are not timing evidence.",
+		measurement_overhead = "The probe serializes raw per-tick samples and reports outer profiler envelope and wrapper shim beside callback samples. Timed agent proxies and wrapped manager callbacks add diagnostic timer reads inside callback time; these are neither subtracted nor corrected. No per-score-call counter is enabled during timing.",
+		note = "Shared-host diagnostic only; not target-hardware qualification, rendered-frame pacing, a 60 fps result, or physical validation. Matching per-tick state and command fingerprints are required for a complete comparison."
 	}
 	var file := FileAccess.open(output, FileAccess.WRITE)
 	if file == null:
@@ -166,14 +186,14 @@ func _run() -> void:
 		return
 	file.store_string(JSON.stringify(report, "\t"))
 	file.close()
-	print(JSON.stringify(report))
 	print("AFC CALLBACK TIMING PROFILE COMPLETE")
 	quit(0 if complete else 1)
 
 
 func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake: Dictionary,
-		candidate_override: bool) -> Dictionary:
+		candidate_override: bool, warmup_tick_count: int, measured_tick_count: int) -> Dictionary:
 	_observation_calls_measured = 0
+	var total_tick_count := warmup_tick_count + measured_tick_count
 	var case_field: Dictionary = field.duplicate(true)
 	var case_collision_world: Dictionary = collision_world.duplicate(true)
 	var case_lake: Dictionary = lake.duplicate(true)
@@ -241,10 +261,11 @@ func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake:
 	var shim_samples: Array[int] = []
 	var hashes := _new_hashes(count)
 	var failure := ""
-	var finished_total := 0
-	var finished_measured := 0
-	for tick in TOTAL_TICKS:
-		_counting_measurement = tick >= WARMUP_TICKS
+	var completed_total := 0
+	var completed_warmup := 0
+	var completed_measured := 0
+	for tick in total_tick_count:
+		_counting_measurement = tick >= warmup_tick_count
 		_active_buckets = {}
 		_manager_before_usec = 0
 		_manager_after_usec = 0
@@ -269,7 +290,7 @@ func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake:
 		if not failure.is_empty():
 			break
 
-		if tick >= WARMUP_TICKS:
+		if tick >= warmup_tick_count:
 			var observation_usec := int(_active_buckets.get("ai_observation_usec", 0))
 			var planning_usec := int(_active_buckets.get("ai_plan_prepare_usec", 0))
 			var stepping_usec := int(_active_buckets.get("ai_stepping_usec", 0))
@@ -293,9 +314,11 @@ func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake:
 			_append_sample(samples, "manager_overhead_usec", manager_overhead_usec)
 			_append_sample(samples, "manager_before_usec", _manager_before_usec)
 			_append_sample(samples, "manager_after_usec", _manager_after_usec)
-			_add_trace_tick(hashes, tick - WARMUP_TICKS, player, original_agents)
-			finished_measured += 1
-		finished_total += 1
+			_add_trace_tick(hashes, tick - warmup_tick_count, player, original_agents)
+			completed_measured += 1
+		else:
+			completed_warmup += 1
+		completed_total += 1
 
 	if player.sim.before_step.is_connected(wrapped_before):
 		player.sim.before_step.disconnect(wrapped_before)
@@ -329,11 +352,16 @@ func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake:
 	return {
 		count = count,
 		variant = "candidate" if candidate_override else "production",
-		complete = failure.is_empty() and finished_total == TOTAL_TICKS and finished_measured == MEASURED_TICKS,
+		complete = failure.is_empty() and completed_total == total_tick_count \
+			and completed_warmup == warmup_tick_count and completed_measured == measured_tick_count,
 		failure = failure,
-		warmup_ticks = WARMUP_TICKS,
-		measured_ticks = finished_measured,
-		finished_total_ticks = finished_total,
+		warmup_ticks = warmup_tick_count,
+		measured_ticks = completed_measured,
+		completed_total_ticks = completed_total,
+		completed_warmup_ticks = completed_warmup,
+		attempted_total_ticks = total_tick_count,
+		tick_accounting_exact = completed_total == total_tick_count \
+			and completed_warmup == warmup_tick_count and completed_measured == measured_tick_count,
 		manager_accepted_ticks = manager_accepted_ticks,
 		manager_observation_batches = manager_observation_batches,
 		observation_calls_measured = _observation_calls_measured,
@@ -344,7 +372,12 @@ func _run_case(count: int, field: Dictionary, collision_world: Dictionary, lake:
 		seed = 20261020,
 		weather = "production default calm configuration",
 		callback_buckets = distributions,
+		raw_callback_samples_usec = samples,
 		measurement_envelope = measurement,
+		raw_measurement_samples_usec = {
+			profiler_envelope = envelope_samples,
+			wrapper_shim = shim_samples,
+		},
 		trace_fingerprints = hash_report
 	}
 

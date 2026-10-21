@@ -1,0 +1,1324 @@
+{
+  "controller_tests": {
+    "checks_failed": 0,
+    "checks_passed": 237,
+    "matrix_runner": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 581.593,
+      "engine_log": {
+        "bytes": 21885,
+        "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/engine.log",
+        "sha256": "766ad6b109ca83152d79f72f34868cd6f1d0864f9772698252e70e4f38a6251e"
+      },
+      "label": "afc04-r4-current-pilot-matrix",
+      "ok": true,
+      "process_exit": 0,
+      "reason": "passed",
+      "report": {
+        "bytes": 1480,
+        "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/report.json",
+        "sha256": "3fde545915215b53c6b71fc47e1a073c578c4a73bf9f39a2d7847d676df3b6b0"
+      }
+    },
+    "pilot_matrix": {
+      "all_scenarios_complete": true,
+      "checks": 148,
+      "companions": [
+        1,
+        2,
+        3
+      ],
+      "deterministic_repeat": true,
+      "elapsed_seconds_diagnostic_only": 581.593,
+      "failed_checks": 0,
+      "maximum_radius_error_m": 4.048,
+      "minimum_peer_separation_m": 121.744,
+      "minimum_player_separation_m": 122.307,
+      "scenario_count": 6,
+      "seconds_per_scenario": 120,
+      "ticks_per_scenario": 28800,
+      "total_simulated_ticks": 172800,
+      "weather_profiles": [
+        "calm",
+        "gentle-practice"
+      ]
+    },
+    "stages": {
+      "clearance": {
+        "checks": 20,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.5,
+        "engine_log": {
+          "bytes": 117,
+          "path": "qualification/checks/clearance/r4-clearance-nvcygacn/engine.log",
+          "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+        },
+        "failed_checks": 0,
+        "label": "r4-clearance",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1230,
+          "path": "qualification/checks/clearance/r4-clearance-nvcygacn/report.json",
+          "sha256": "cff9350861be715ca50617cb94aa1d492dfb4d758b34b325f8d5f7470f4e7002"
+        }
+      },
+      "pilot": {
+        "checks": 24,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.532,
+        "engine_log": {
+          "bytes": 1451,
+          "path": "qualification/checks/pilot/r4-pilot-270idf1_/engine.log",
+          "sha256": "f4cf926ff6299db70be51d4b0f4122f02cb4f3b6e0be511c379030e148af1726"
+        },
+        "failed_checks": 0,
+        "label": "r4-pilot",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1205,
+          "path": "qualification/checks/pilot/r4-pilot-270idf1_/report.json",
+          "sha256": "069fb7cee35c8ed97660776aa7f8d74e52b86ba67331c36924d838da193f29db"
+        }
+      },
+      "profiles": {
+        "checks": 37,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 6.0,
+        "engine_log": {
+          "bytes": 2252,
+          "path": "qualification/checks/profiles/r4-profiles-755005i1/engine.log",
+          "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519"
+        },
+        "failed_checks": 0,
+        "label": "r4-profiles",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1241,
+          "path": "qualification/checks/profiles/r4-profiles-755005i1/report.json",
+          "sha256": "0df786e57e049da9637b0f9e4cbdd4e31d861f61f6d69f8a8c34c44df694fe51"
+        }
+      },
+      "record": {
+        "checks": 156,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 33.829,
+        "engine_log": {
+          "bytes": 15801,
+          "path": "qualification/checks/record/r4-record-f2gaje5i/engine.log",
+          "sha256": "cffc106ceed527f62ace5adb6af34c640c118ef5df00f4733b5e62664ec12767"
+        },
+        "failed_checks": 0,
+        "label": "r4-record",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1215,
+          "path": "qualification/checks/record/r4-record-f2gaje5i/report.json",
+          "sha256": "ad4a98e268c1abb59f8f3cd254905482918f0a1dd85d4ee4e05f88a80e0af08e"
+        }
+      }
+    }
+  },
+  "data_artifacts": {
+    "crossing_comparator": {
+      "bytes": 16750,
+      "path": "research/ai-companions/avoidance/compare_r3_r4_crossing_surveys.py",
+      "sha256": "c68ed5c815dd66cf983b634cd44adae78843eec9e5f61efb4781d6b7307e860e"
+    },
+    "crossing_comparison": {
+      "bytes": 29757,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-calm-crossings-20s-comparison.json",
+      "sha256": "a0cb940e22ca64931e8a0d9c4bf860eebabfcaf46e6ced576ed04de8e18067cc"
+    },
+    "crossing_replay_verification": {
+      "bytes": 10744,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/crossing-exact-replay-verification.json",
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    "crossing_report": {
+      "bytes": 14401,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/encounter-crossings-calm-20s-r4-report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    },
+    "external-aircraft-authoring-manifest.json": {
+      "bytes": 4464,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/external-aircraft-authoring-manifest.json",
+      "sha256": "b959fced4480021d5a69d91fde22151603291533e2dc518033d63a82787b49f2"
+    },
+    "pre-copy-identity.json": {
+      "bytes": 12155,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/pre-copy-identity.json",
+      "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+    },
+    "r3-r4-calm-survey-delta.json": {
+      "bytes": 106405,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-calm-survey-delta.json",
+      "sha256": "0a7a38d8a458ee3b597ec7792ab5e98e2fa42f9bdc770246fb3e89d6f39641d4"
+    },
+    "r3-r4-gentle-survey-delta.json": {
+      "bytes": 107256,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-gentle-survey-delta.json",
+      "sha256": "8dab337e90437390cdb9a7fbcfdd41d6b6d7a6e1c54636926ba3e3f9405cd2e5"
+    },
+    "r3-r4-route-delta-summary.json": {
+      "bytes": 13834,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-route-delta-summary.json",
+      "sha256": "8de1e63154545ab3f7f8f7fe3705d035a52c9327dbb785b444501771da72f815"
+    },
+    "receipt_builder": {
+      "bytes": 36659,
+      "path": "research/ai-companions/avoidance/build_r4_verification_bundle.py",
+      "sha256": "82f8d3d4a24fbabdfc6530c2589478c21be6ae3ca42a74926bf1ba0aa163b558"
+    },
+    "replay_verifier": {
+      "bytes": 13315,
+      "path": "research/ai-companions/avoidance/verify_r4_crossing_replays.py",
+      "sha256": "aa357692f1c12c0877968292faf1f5c9ca774fe7c6953ded223c33c88854aa83"
+    },
+    "run-source-identity.json": {
+      "bytes": 7738,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/run-source-identity.json",
+      "sha256": "4619bd3b4ec09e540b7bf3ee59438c597aec8bb526aeb00187c283fe9e53ca22"
+    },
+    "survey_comparator": {
+      "bytes": 16263,
+      "path": "research/ai-companions/avoidance/compare_r3_r4_surveys.py",
+      "sha256": "aea770b8388b5047119496d2709baec52f08999dfb7b62d77cf49049783d000d"
+    }
+  },
+  "encounter_surveys": {
+    "calm_60s": {
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "comparison": {
+        "all_six_route_cases_present": true,
+        "comparison_valid": true,
+        "r3_report_sha256": "b4b66a8489edf45ace7d7af6f70c58e40f7fda03b4548ec534700fe415dbbfed",
+        "r4_report_sha256": "a05b894ea8ad5288238883fab9c6998d45bc4953a461cd4c3fcf401aadc84182",
+        "route_case_minimum_separation_deltas_m": {
+          "seed-20261020-crossing-left": 2.2006802794294344e-05,
+          "seed-20261020-crossing-right": 0.0015590606580957456,
+          "seed-20261020-head-on": -8.328888569764104e-05,
+          "seed-20261021-crossing-left": -0.0003094362073952084,
+          "seed-20261021-crossing-right": -7.554131700260314e-05,
+          "seed-20261021-head-on": -0.0002713138337995247
+        },
+        "route_case_target_height_deltas_m": {
+          "seed-20261020-crossing-left": 0.00219106233719657,
+          "seed-20261020-crossing-right": 0.00219106233719657,
+          "seed-20261020-head-on": 0.00219106233719657,
+          "seed-20261021-crossing-left": 0.002191062516601505,
+          "seed-20261021-crossing-right": 0.002191062516601505,
+          "seed-20261021-head-on": 0.002191062516601505
+        },
+        "same_pilot_source": false,
+        "same_world_and_probe": true,
+        "trajectory_csv": {
+          "header_equal": true,
+          "matched_key_rows": 9015,
+          "r3_csv_sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3",
+          "r3_data_rows": 9015,
+          "r4_csv_sha256": "dc4656a6bc7ea47e2a20f03bb8f67c255404a2a798eeb7e76df725be690368f9",
+          "r4_data_rows": 9015
+        }
+      },
+      "deterministic_repeat_exact": true,
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "minimum_nominal_route_player_separation_m": 41.337563965235,
+      "nominal_route_case_count": 6,
+      "nominal_route_cases": [
+        {
+          "case_id": "seed-20261020-crossing-left",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.133695262381,
+            "player": 34.9930111865258
+          },
+          "minimum_player_separation_m": 65.4332046230941,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.69059135168,
+            "player": 34.9930181145764
+          },
+          "minimum_player_separation_m": 41.337563965235,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-head-on",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.0930585017504,
+            "player": 34.9930207050975
+          },
+          "minimum_player_separation_m": 61.0901131592066,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.9076587145101,
+            "player": 34.9930260423411
+          },
+          "minimum_player_separation_m": 58.4649428929333,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-right",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.2192713805241,
+            "player": 34.993036578002
+          },
+          "minimum_player_separation_m": 65.7674244200249,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-head-on",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.1939821277358,
+            "player": 34.9930185468682
+          },
+          "minimum_player_separation_m": 60.7811341715234,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        }
+      ],
+      "non_admitted_two_threat_fixture": {
+        "case_id": "seed-20261020-parallel-two-threats",
+        "classification": "constructed_non_admitted_spawn_fixture_failure",
+        "complete": true,
+        "minimum_peer_separation_m": 8.99999996608621,
+        "minimum_player_separation_m": 28.9998518765195,
+        "production_spawn_admission": false,
+        "separation_gate_passed": false,
+        "valid_run": true
+      },
+      "pilot_source_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+      "requested_ticks": 14400,
+      "seconds": 60,
+      "valid_complete_runs": true,
+      "weather": "calm"
+    },
+    "floor_interpretation": "All false flags remain visible: the local-terrain floor commands 35.002191... m against nominal 35.0 m. The observed upward target change is intentional; separation and AGL gates stay unchanged.",
+    "gentle_60s": {
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "comparison": {
+        "all_six_route_cases_present": true,
+        "comparison_valid": true,
+        "r3_report_sha256": "fa5e0b0ecb5bfe37d4d2dba5be479c21ddbfb65bdef2429798d89ec65fab3224",
+        "r4_report_sha256": "6be03c37c3d072ce05f91ea1693400b0b1cb79ebc7b96bc1986662e1a32d1bb4",
+        "route_case_minimum_separation_deltas_m": {
+          "seed-20261020-crossing-left": -1.572346630496213e-05,
+          "seed-20261020-crossing-right": 0.0018618875830966886,
+          "seed-20261020-head-on": -9.223445569972455e-05,
+          "seed-20261021-crossing-left": -0.0003150315425983763,
+          "seed-20261021-crossing-right": -6.554301410233165e-05,
+          "seed-20261021-head-on": -0.00027363642679745226
+        },
+        "route_case_target_height_deltas_m": {
+          "seed-20261020-crossing-left": 0.00219106233719657,
+          "seed-20261020-crossing-right": 0.00219106233719657,
+          "seed-20261020-head-on": 0.00219106233719657,
+          "seed-20261021-crossing-left": 0.002191062516601505,
+          "seed-20261021-crossing-right": 0.002191062516601505,
+          "seed-20261021-head-on": 0.002191062516601505
+        },
+        "same_pilot_source": false,
+        "same_world_and_probe": true,
+        "trajectory_csv": {
+          "header_equal": true,
+          "matched_key_rows": 9015,
+          "r3_csv_sha256": "c5ce828b4dcbdf3a25062df97b76986446c106667a5806d92b6643281f82bc8d",
+          "r3_data_rows": 9015,
+          "r4_csv_sha256": "e95f49062e7c48220d4033ea7a1316551e995c3e4d7d1bf7202228c991f42c5e",
+          "r4_data_rows": 9015
+        }
+      },
+      "deterministic_repeat_exact": true,
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "minimum_nominal_route_player_separation_m": 49.2052651662273,
+      "nominal_route_case_count": 6,
+      "nominal_route_cases": [
+        {
+          "case_id": "seed-20261020-crossing-left",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.1790465306596,
+            "player": 34.5813720235295
+          },
+          "minimum_player_separation_m": 65.6151442150595,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.9052706623878,
+            "player": 34.9331826465878
+          },
+          "minimum_player_separation_m": 49.2052651662273,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-head-on",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "minimum_agl_m_by_role": {
+            "ai": 34.1240128329393,
+            "player": 34.586376929224
+          },
+          "minimum_player_separation_m": 60.97089008315,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.903014033194,
+            "player": 34.3701661804733
+          },
+          "minimum_player_separation_m": 58.0903937199042,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-right",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.1930260887114,
+            "player": 34.9205409904675
+          },
+          "minimum_player_separation_m": 65.8083149942432,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-head-on",
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "minimum_agl_m_by_role": {
+            "ai": 34.1775166842326,
+            "player": 34.9227790026681
+          },
+          "minimum_player_separation_m": 61.3949144542825,
+          "raw_initial_target_height_matches_nominal": false,
+          "separation_gate_passed": true,
+          "valid_run": true
+        }
+      ],
+      "non_admitted_two_threat_fixture": {
+        "case_id": "seed-20261020-parallel-two-threats",
+        "classification": "constructed_non_admitted_spawn_fixture_failure",
+        "complete": true,
+        "minimum_peer_separation_m": 8.21013660127961,
+        "minimum_player_separation_m": 28.9997759380315,
+        "production_spawn_admission": false,
+        "separation_gate_passed": false,
+        "valid_run": true
+      },
+      "pilot_source_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "probe_source_sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1",
+      "requested_ticks": 14400,
+      "seconds": 60,
+      "valid_complete_runs": true,
+      "weather": "gentle-practice"
+    },
+    "raw_false_initial_target_height_flags_across_twelve_nominal_routes": 12
+  },
+  "evidence_artifacts": [
+    {
+      "bytes": 29757,
+      "path": "comparisons/final/r3-r4-calm-crossing-20s.json",
+      "sha256": "a0cb940e22ca64931e8a0d9c4bf860eebabfcaf46e6ced576ed04de8e18067cc"
+    },
+    {
+      "bytes": 106405,
+      "path": "comparisons/final/r3-r4-calm.json",
+      "sha256": "0a7a38d8a458ee3b597ec7792ab5e98e2fa42f9bdc770246fb3e89d6f39641d4"
+    },
+    {
+      "bytes": 107256,
+      "path": "comparisons/final/r3-r4-gentle.json",
+      "sha256": "8dab337e90437390cdb9a7fbcfdd41d6b6d7a6e1c54636926ba3e3f9405cd2e5"
+    },
+    {
+      "bytes": 98905,
+      "path": "comparisons/r3-r4-calm.json",
+      "sha256": "cb726a164f23056f69e0408f99ff90a51944c867898bb8b416ff1622a60b9fde"
+    },
+    {
+      "bytes": 99721,
+      "path": "comparisons/r3-r4-gentle.json",
+      "sha256": "fecd17d015aefc5f78ed7b6f9acba3f72afaedca57d19394f3548e60b5fad6ff"
+    },
+    {
+      "bytes": 10744,
+      "path": "crossing-replay-verification.json",
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    {
+      "bytes": 14401,
+      "path": "crossings-calm-20s-r4-20261021/report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-ai.orfl",
+      "sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-coupled.orfl",
+      "sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a"
+    },
+    {
+      "bytes": 8526268,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-exogenous.orfl",
+      "sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b"
+    },
+    {
+      "bytes": 8526228,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-ai.orfl",
+      "sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-coupled.orfl",
+      "sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0"
+    },
+    {
+      "bytes": 8526264,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-exogenous.orfl",
+      "sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380"
+    },
+    {
+      "bytes": 170737,
+      "path": "crossings-calm-20s-r4-20261021/trajectory.csv",
+      "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+    },
+    {
+      "bytes": 4406314,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/flight.csv",
+      "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+    },
+    {
+      "bytes": 6787,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/replay.json",
+      "sha256": "2df6998a73a0d36a6978a83b11f20122c3ae969812fc54a7ed3f1e09054d4c63"
+    },
+    {
+      "bytes": 3853991,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "bytes": 6799,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+      "sha256": "0a50ce25b262c1fdb34c3af68fe74f4ad5a4155cc1d8c7fa86310795f8a5cbde"
+    },
+    {
+      "bytes": 3853991,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "bytes": 6843,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+      "sha256": "64acf3addc0f727c4726938d304ecc3de390a2cd019370b2d9fee1b27c858568"
+    },
+    {
+      "bytes": 4400837,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/flight.csv",
+      "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+    },
+    {
+      "bytes": 6786,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/replay.json",
+      "sha256": "f2f7f1b2f5765d09c62056eeace5c13a3569d41a438e940b93637ddf8e0257c3"
+    },
+    {
+      "bytes": 3856728,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+      "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+    },
+    {
+      "bytes": 6796,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+      "sha256": "3539907b936db6b1e550dd92131cb6059b4996ee6fb207f68acc6dff34af058a"
+    },
+    {
+      "bytes": 3856728,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+      "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+    },
+    {
+      "bytes": 6840,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+      "sha256": "fe1ac416b4bd54c26041e065b09dc39b7468ada47054cc56ae36c197e693c6aa"
+    },
+    {
+      "bytes": 20316,
+      "path": "encounters-calm-60s-20261021/report.json",
+      "sha256": "a05b894ea8ad5288238883fab9c6998d45bc4953a461cd4c3fcf401aadc84182"
+    },
+    {
+      "bytes": 1917180,
+      "path": "encounters-calm-60s-20261021/trajectory.csv",
+      "sha256": "dc4656a6bc7ea47e2a20f03bb8f67c255404a2a798eeb7e76df725be690368f9"
+    },
+    {
+      "bytes": 20247,
+      "path": "encounters-gentle-production-60s-20261021/report.json",
+      "sha256": "6be03c37c3d072ce05f91ea1693400b0b1cb79ebc7b96bc1986662e1a32d1bb4"
+    },
+    {
+      "bytes": 1916331,
+      "path": "encounters-gentle-production-60s-20261021/trajectory.csv",
+      "sha256": "e95f49062e7c48220d4033ea7a1316551e995c3e4d7d1bf7202228c991f42c5e"
+    },
+    {
+      "bytes": 2383,
+      "path": "pilot-matrix-20261021/README.md",
+      "sha256": "8d338a6e7c14f747bfa0709b9b74f7006f84bfe0c2f25a88370c5621e87cb866"
+    },
+    {
+      "bytes": 196250,
+      "path": "pilot-matrix-20261021/flight_samples_1hz.csv",
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    {
+      "bytes": 954,
+      "path": "pilot-matrix-20261021/scenario_metrics.csv",
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    },
+    {
+      "bytes": 117,
+      "path": "qualification/checks/clearance/r4-clearance-nvcygacn/engine.log",
+      "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+    },
+    {
+      "bytes": 1230,
+      "path": "qualification/checks/clearance/r4-clearance-nvcygacn/report.json",
+      "sha256": "cff9350861be715ca50617cb94aa1d492dfb4d758b34b325f8d5f7470f4e7002"
+    },
+    {
+      "bytes": 1451,
+      "path": "qualification/checks/pilot/r4-pilot-270idf1_/engine.log",
+      "sha256": "f4cf926ff6299db70be51d4b0f4122f02cb4f3b6e0be511c379030e148af1726"
+    },
+    {
+      "bytes": 1205,
+      "path": "qualification/checks/pilot/r4-pilot-270idf1_/report.json",
+      "sha256": "069fb7cee35c8ed97660776aa7f8d74e52b86ba67331c36924d838da193f29db"
+    },
+    {
+      "bytes": 2252,
+      "path": "qualification/checks/profiles/r4-profiles-755005i1/engine.log",
+      "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519"
+    },
+    {
+      "bytes": 1241,
+      "path": "qualification/checks/profiles/r4-profiles-755005i1/report.json",
+      "sha256": "0df786e57e049da9637b0f9e4cbdd4e31d861f61f6d69f8a8c34c44df694fe51"
+    },
+    {
+      "bytes": 15801,
+      "path": "qualification/checks/record/r4-record-f2gaje5i/engine.log",
+      "sha256": "cffc106ceed527f62ace5adb6af34c640c118ef5df00f4733b5e62664ec12767"
+    },
+    {
+      "bytes": 1215,
+      "path": "qualification/checks/record/r4-record-f2gaje5i/report.json",
+      "sha256": "ad4a98e268c1abb59f8f3cd254905482918f0a1dd85d4ee4e05f88a80e0af08e"
+    },
+    {
+      "bytes": 12155,
+      "path": "qualification/pre-copy-identity.json",
+      "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+    },
+    {
+      "bytes": 7738,
+      "path": "qualification/run-source-identity.json",
+      "sha256": "4619bd3b4ec09e540b7bf3ee59438c597aec8bb526aeb00187c283fe9e53ca22"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-ai/afc04-r4-exact-seed-20261020-crossing-right-ai-a4_5d9w0/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2007,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-ai/afc04-r4-exact-seed-20261020-crossing-right-ai-a4_5d9w0/report.json",
+      "sha256": "a13b8b019eeffcfe7ed0d059a91a68edc60683cfeb1fb5d4f79968debccdab73"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-coupled/afc04-r4-exact-seed-20261020-crossing-right-player-coupled-w7jbbseq/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2104,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-coupled/afc04-r4-exact-seed-20261020-crossing-right-player-coupled-w7jbbseq/report.json",
+      "sha256": "3383a2439d2323192018d8b331ed2ef55e3ea5aae85aab63e5615e0cde68eb1c"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-exogenous/afc04-r4-exact-seed-20261020-crossing-right-player-exogenous-iu5of2l_/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2120,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-exogenous/afc04-r4-exact-seed-20261020-crossing-right-player-exogenous-iu5of2l_/report.json",
+      "sha256": "e2d8ff830a6d441f3e130fe17fb7108b6ff47c17dec16258ddbf799722efc7eb"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-ai/afc04-r4-exact-seed-20261021-crossing-left-ai-ifo3dpdv/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2000,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-ai/afc04-r4-exact-seed-20261021-crossing-left-ai-ifo3dpdv/report.json",
+      "sha256": "6272e7d371e6ed4be9a921e34b6dd9135d0da361dbb37583a24c583dcf43fba9"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-coupled/afc04-r4-exact-seed-20261021-crossing-left-player-coupled-565xck5x/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2096,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-coupled/afc04-r4-exact-seed-20261021-crossing-left-player-coupled-565xck5x/report.json",
+      "sha256": "e969327f68b64da4043356d70214484948d46e8572a7cda5e9a53b53b3c34348"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-exogenous/afc04-r4-exact-seed-20261021-crossing-left-player-exogenous-loe2m8bw/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2112,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-exogenous/afc04-r4-exact-seed-20261021-crossing-left-player-exogenous-loe2m8bw/report.json",
+      "sha256": "57745587a14f0808be6f8f6fcd7be6c4b37d657f85eadb228274095af95a96d2"
+    },
+    {
+      "bytes": 4861,
+      "path": "qualification/runner/crossings-calm20/afc04-r4-calm-crossings-20s-j5_y1crw/engine.log",
+      "sha256": "b5f1bfb6cd05f88f1f20684faa2931fe11e360883de19ef27ed2d7f2d82635c7"
+    },
+    {
+      "bytes": 1636,
+      "path": "qualification/runner/crossings-calm20/afc04-r4-calm-crossings-20s-j5_y1crw/report.json",
+      "sha256": "eb2a5f4bd5cb22bd4f37a4429bfc4f4ac35be0a9c0876b0f1557504be350cbff"
+    },
+    {
+      "bytes": 3973,
+      "path": "qualification/runner/encounters-calm/afc04-r4-final-calm-60s-encounters-pbqyabt4/engine.log",
+      "sha256": "3cfb303f78489a0378f93cfc5a8793d7d7a259c44e28d915e9c8e89e0d5562ff"
+    },
+    {
+      "bytes": 4509,
+      "path": "qualification/runner/encounters-calm/afc04-r4-final-calm-60s-encounters-pbqyabt4/report.json",
+      "sha256": "a52d4cbe4bad6d9006dd99f752a22021a323755a2ee50c109688a05222238243"
+    },
+    {
+      "bytes": 2079,
+      "path": "qualification/runner/encounters-gentle-final/afc04-r4-production-gentle-60s-oy0mizz5/engine.log",
+      "sha256": "5c23dc0730738edafb290df80a10cae0aaa1fc8bdd5557569245a452d4a01d33"
+    },
+    {
+      "bytes": 1650,
+      "path": "qualification/runner/encounters-gentle-final/afc04-r4-production-gentle-60s-oy0mizz5/report.json",
+      "sha256": "11079068619fb2b799af367b7ffd917ad3de7258298f3ad13b062ea1d3ed8aaf"
+    },
+    {
+      "bytes": 112,
+      "path": "qualification/runner/encounters-gentle-parse/afc04-r4-gentle-probe-parse-vv2egrr1/engine.log",
+      "sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f"
+    },
+    {
+      "bytes": 1423,
+      "path": "qualification/runner/encounters-gentle-parse/afc04-r4-gentle-probe-parse-vv2egrr1/report.json",
+      "sha256": "9e66a50dcc646014f5d3fb2bd648fd09642e194778a81ac5854d71fe34829406"
+    },
+    {
+      "bytes": 0,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-final-gentle-60s-encounters-2datzom6/engine.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 19680,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/engine.log",
+      "sha256": "b9c7d34031c09d9abb1029cf81b8b74fd6a2140e45967f1e22c62d5255acbefc"
+    },
+    {
+      "bytes": 7465,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/report.json",
+      "sha256": "9a56264f0e03e4dfe172057f2a66f448db6a384e04a39428a57b0be1da990e36"
+    },
+    {
+      "bytes": 162222,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/engine.log",
+      "sha256": "64fc8949564ce95522c719d56778c2e2d3c86bb78ef79f613e5e1fed95b0ceb0"
+    },
+    {
+      "bytes": 3827,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/report.json",
+      "sha256": "adedbcf69cfdadebe2226e6d40a3510dbf90a4aae906ecf6979817cf66344830"
+    },
+    {
+      "bytes": 21885,
+      "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/engine.log",
+      "sha256": "766ad6b109ca83152d79f72f34868cd6f1d0864f9772698252e70e4f38a6251e"
+    },
+    {
+      "bytes": 1480,
+      "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/report.json",
+      "sha256": "3fde545915215b53c6b71fc47e1a073c578c4a73bf9f39a2d7847d676df3b6b0"
+    }
+  ],
+  "evidence_root": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R4",
+  "format": "afc-04-r4-verification-v1",
+  "import": {
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 8
+    },
+    "elapsed_seconds": 87.312,
+    "engine_log": {
+      "bytes": 162222,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/engine.log",
+      "sha256": "64fc8949564ce95522c719d56778c2e2d3c86bb78ef79f613e5e1fed95b0ceb0"
+    },
+    "label": "afc04-r4-dedicated-mirror-import",
+    "ok": true,
+    "process_exit": 0,
+    "reason": "passed",
+    "report": {
+      "bytes": 3827,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/report.json",
+      "sha256": "adedbcf69cfdadebe2226e6d40a3510dbf90a4aae906ecf6979817cf66344830"
+    }
+  },
+  "production_scope_limits": [
+    "The six nominal encounter routes per weather each run for 60 simulated seconds; this does not establish long endurance.",
+    "The separate two-threat fixture is explicitly not production-spawn admitted and fails the 30 m separation gate; its failure remains in the report.",
+    "The 120-second matrix covers one, two, and three companions in calm and gentle-practice; no larger fleet or broad weather claim is made.",
+    "The six ORFL exact replays validate recorded simulation samples against an unchanged solver; they do not execute or requalify the companion controller.",
+    "R3/R4 comparisons are limited to retained fixtures and matched weather/world/probe; no universal equivalence or physical validation claim is made.",
+    "Elapsed wall times were measured on a shared host during unrelated vegetation work and are diagnostic only; no isolated performance conclusion is made."
+  ],
+  "provenance_receipt": "provenance-receipt.json",
+  "scope": "Frozen AFC-04-R4 production pilot and source snapshot; no current-workspace or performance claim.",
+  "selected_crossings_20s": {
+    "r4_production": {
+      "cases": [
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "minimum_agl_m_by_role": {
+            "ai": 34.9144056800297,
+            "player": 34.9930181145764
+          },
+          "minimum_player_separation_m": 59.8198811976987,
+          "separation_gate_passed": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "minimum_agl_m_by_role": {
+            "ai": 34.9167134888043,
+            "player": 34.9930394253665
+          },
+          "minimum_player_separation_m": 58.4649428929333,
+          "separation_gate_passed": true
+        }
+      ],
+      "deterministic_repeat_exact": true,
+      "exact_replay_count": 6,
+      "initial_target_height_diagnostics": {
+        "cases": [
+          {
+            "case_id": "seed-20261020-crossing-right",
+            "expected_initial_target_height_m": 35.0,
+            "initial_commanded_target_height_m": 35.0021910623372,
+            "raw_initial_target_height_matches_nominal": false,
+            "reported_initial_target_height_error_m": 0.00219106233716104
+          },
+          {
+            "case_id": "seed-20261021-crossing-left",
+            "expected_initial_target_height_m": 35.0,
+            "initial_commanded_target_height_m": 35.0021910625166,
+            "raw_initial_target_height_matches_nominal": false,
+            "reported_initial_target_height_error_m": 0.00219106251655887
+          }
+        ],
+        "false_nominal_match_count": 2,
+        "interpretation": "Retain the raw false flags. The active R4 local-terrain floor commands 35.002191... m against nominal 35.0 m; this diagnostic does not relax separation or AGL thresholds."
+      },
+      "recorded_orfl_count": 6,
+      "replay_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "requested_ticks": 4800,
+      "seconds": 20,
+      "separation_gate_m": 30.0,
+      "valid_complete_runs": true,
+      "weather": "calm"
+    },
+    "same_weather_r3_r4_comparison": {
+      "aggregate_numeric_deltas": {
+        "agl_m": {
+          "compared_values": 804,
+          "different_values": 400,
+          "max_abs_delta": 0.0012265599999992105,
+          "maximum_delta": 0.0012265599999992105,
+          "mean_delta_r4_minus_r3": 0.00036946116915421404,
+          "minimum_delta": 0.0,
+          "p95_abs_delta": 0.0011204399999940051,
+          "rms_delta": 0.0005650144007560021
+        },
+        "altitude_m": {
+          "compared_values": 804,
+          "different_values": 400,
+          "max_abs_delta": 0.0011675599999989572,
+          "maximum_delta": 0.0011675599999989572,
+          "mean_delta_r4_minus_r3": 0.0003686536194030362,
+          "minimum_delta": 0.0,
+          "p95_abs_delta": 0.0011176399999968112,
+          "rms_delta": 0.0005635110592453162
+        },
+        "east_m": {
+          "compared_values": 804,
+          "different_values": 400,
+          "max_abs_delta": 0.0013441099999909056,
+          "maximum_delta": 0.0003747100000168757,
+          "mean_delta_r4_minus_r3": -0.00010663075870604745,
+          "minimum_delta": -0.0013441099999909056,
+          "p95_abs_delta": 0.0011571799999785526,
+          "rms_delta": 0.0004199910770809776
+        },
+        "north_m": {
+          "compared_values": 804,
+          "different_values": 399,
+          "max_abs_delta": 0.0012244300000361363,
+          "maximum_delta": 0.0012244300000361363,
+          "mean_delta_r4_minus_r3": 4.3511990050467204e-05,
+          "minimum_delta": -0.0005864400000064052,
+          "p95_abs_delta": 0.0008408400000234906,
+          "rms_delta": 0.00034561366404349444
+        },
+        "pitch": {
+          "compared_values": 804,
+          "different_values": 402,
+          "max_abs_delta": 0.000518,
+          "maximum_delta": 0.000518,
+          "mean_delta_r4_minus_r3": -4.0758706467661725e-06,
+          "minimum_delta": -0.000454,
+          "p95_abs_delta": 0.00028500000000000053,
+          "rms_delta": 0.00011999690605464205
+        },
+        "pitch_rad": {
+          "compared_values": 804,
+          "different_values": 400,
+          "max_abs_delta": 5.874000000000157e-05,
+          "maximum_delta": 5.874000000000157e-05,
+          "mean_delta_r4_minus_r3": 1.882636815920204e-06,
+          "minimum_delta": -5.234000000001182e-05,
+          "p95_abs_delta": 2.512999999999821e-05,
+          "rms_delta": 1.0956924637526647e-05
+        },
+        "target_height_m": {
+          "compared_values": 402,
+          "different_values": 192,
+          "max_abs_delta": 0.006811050000003149,
+          "maximum_delta": 0.006811050000003149,
+          "mean_delta_r4_minus_r3": 0.0010870381094527416,
+          "minimum_delta": 0.0,
+          "p95_abs_delta": 0.004470759999996687,
+          "rms_delta": 0.0019146693727149784
+        }
+      },
+      "case_deltas": {
+        "seed-20261020-crossing-right": {
+          "delta_initial_target_height_r4_minus_r3_m": 0.00219106233719657,
+          "delta_min_separation_r4_minus_r3_m": 9.14477482965026e-05,
+          "player_initial_spawn_spec_equal": true,
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_initial_target_height_matches_nominal": true,
+          "r3_min_separation_to_player_m": 59.8197897499504,
+          "r3_separation_gate_passed": true,
+          "r3_valid_complete": true,
+          "r4_expected_initial_target_height_m": 35.0,
+          "r4_initial_commanded_target_height_m": 35.0021910623372,
+          "r4_initial_target_height_error_m": 0.00219106233716104,
+          "r4_initial_target_height_matches_nominal": false,
+          "r4_min_separation_to_player_m": 59.8198811976987,
+          "r4_separation_gate_passed": true,
+          "r4_valid_complete": true
+        },
+        "seed-20261021-crossing-left": {
+          "delta_initial_target_height_r4_minus_r3_m": 0.002191062516601505,
+          "delta_min_separation_r4_minus_r3_m": -0.0003094362073952084,
+          "player_initial_spawn_spec_equal": true,
+          "r3_initial_commanded_target_height_m": 35.0,
+          "r3_initial_target_height_matches_nominal": true,
+          "r3_min_separation_to_player_m": 58.4652523291407,
+          "r3_separation_gate_passed": true,
+          "r3_valid_complete": true,
+          "r4_expected_initial_target_height_m": 35.0,
+          "r4_initial_commanded_target_height_m": 35.0021910625166,
+          "r4_initial_target_height_error_m": 0.00219106251655887,
+          "r4_initial_target_height_matches_nominal": false,
+          "r4_min_separation_to_player_m": 58.4649428929333,
+          "r4_separation_gate_passed": true,
+          "r4_valid_complete": true
+        }
+      },
+      "comparison_valid": true,
+      "matched_trajectory_rows": 804,
+      "r3_pilot_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "r4_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "scope_note": "The two reports share calm weather, probe, route seeds, field, collision world and lake. Differences are observed source/version deltas for these fixtures, not a claim of universal R2 equivalence or physical validation.",
+      "target_height_interpretation": "Retain R4's initial_target_height_matches_nominal=false flags as reported diagnostics. The R4 local-terrain clearance floor raises the target above nominal 35 m; its exact per-route value is included above. This comparison does not call the result equivalent.",
+      "weather": {
+        "matched": true,
+        "r3": "calm",
+        "r4": "calm"
+      },
+      "world_identities_equal": true
+    },
+    "six_stream_exact_replay_verification": {
+      "all_exact_complete_solver_unchanged": true,
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "expected_orfl_count": 6,
+      "failures": [],
+      "format": "afc-04-r4-crossing-exact-replay-verification-v1",
+      "initial_target_height_diagnostics": {
+        "acceptance_note": "A false nominal-match flag is retained as a diagnostic miss. The R4 local-terrain clearance floor intentionally raises the active target above the nominal 35 m; this is reported separately and does not relax separation or AGL gates.",
+        "cases": [
+          {
+            "case_id": "seed-20261020-crossing-right",
+            "classification": "intentional_floor_diagnostic_miss",
+            "commanded_initial_target_height_m": 35.0021910623372,
+            "expected_initial_target_height_m": 35.0,
+            "observed_delta_commanded_minus_nominal_m": 0.00219106233719657,
+            "raw_initial_target_height_matches_nominal": false,
+            "reported_error_m": 0.00219106233716104
+          },
+          {
+            "case_id": "seed-20261021-crossing-left",
+            "classification": "intentional_floor_diagnostic_miss",
+            "commanded_initial_target_height_m": 35.0021910625166,
+            "expected_initial_target_height_m": 35.0,
+            "observed_delta_commanded_minus_nominal_m": 0.002191062516601505,
+            "raw_initial_target_height_matches_nominal": false,
+            "reported_error_m": 0.00219106251655887
+          }
+        ],
+        "raw_false_flag_count": 2
+      },
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "pilot_source_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+      "replay_count": 6,
+      "replay_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "replays": {
+        "seed-20261020-crossing-right-ai": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-ai\\flight.csv",
+          "flight_csv_sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-ai.orfl",
+          "orfl_sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-ai\\replay.json",
+          "replay_json_sha256": "2df6998a73a0d36a6978a83b11f20122c3ae969812fc54a7ed3f1e09054d4c63",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64",
+          "status": "ok"
+        },
+        "seed-20261020-crossing-right-player-coupled": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-coupled\\flight.csv",
+          "flight_csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-coupled.orfl",
+          "orfl_sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-coupled\\replay.json",
+          "replay_json_sha256": "0a50ce25b262c1fdb34c3af68fe74f4ad5a4155cc1d8c7fa86310795f8a5cbde",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a",
+          "status": "ok"
+        },
+        "seed-20261020-crossing-right-player-exogenous": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-exogenous\\flight.csv",
+          "flight_csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-exogenous.orfl",
+          "orfl_sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-exogenous\\replay.json",
+          "replay_json_sha256": "64acf3addc0f727c4726938d304ecc3de390a2cd019370b2d9fee1b27c858568",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b",
+          "status": "ok"
+        },
+        "seed-20261021-crossing-left-ai": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-ai\\flight.csv",
+          "flight_csv_sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-ai.orfl",
+          "orfl_sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-ai\\replay.json",
+          "replay_json_sha256": "f2f7f1b2f5765d09c62056eeace5c13a3569d41a438e940b93637ddf8e0257c3",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8",
+          "status": "ok"
+        },
+        "seed-20261021-crossing-left-player-coupled": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-coupled\\flight.csv",
+          "flight_csv_sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-coupled.orfl",
+          "orfl_sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-coupled\\replay.json",
+          "replay_json_sha256": "3539907b936db6b1e550dd92131cb6059b4996ee6fb207f68acc6dff34af058a",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0",
+          "status": "ok"
+        },
+        "seed-20261021-crossing-left-player-exogenous": {
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "complete": true,
+          "csv_rows": 4801,
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-exogenous\\flight.csv",
+          "flight_csv_sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76",
+          "mode": "exact",
+          "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-exogenous.orfl",
+          "orfl_sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380",
+          "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-exogenous\\replay.json",
+          "replay_json_sha256": "fe1ac416b4bd54c26041e065b09dc39b7468ada47054cc56ae36c197e693c6aa",
+          "rows": 4801,
+          "solver_changed": false,
+          "source_sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380",
+          "status": "ok"
+        }
+      },
+      "survey_case_status": {
+        "seed-20261020-crossing-right": {
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910623372,
+          "initial_target_height_error_m": 0.00219106233716104,
+          "initial_target_height_matches_nominal": false,
+          "min_agl_m_by_role": {
+            "ai": 34.9144056800297,
+            "player": 34.9930181145764
+          },
+          "min_separation_to_player_m": 59.8198811976987,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        "seed-20261021-crossing-left": {
+          "complete": true,
+          "expected_initial_target_height_m": 35.0,
+          "initial_commanded_target_height_m": 35.0021910625166,
+          "initial_target_height_error_m": 0.00219106251655887,
+          "initial_target_height_matches_nominal": false,
+          "min_agl_m_by_role": {
+            "ai": 34.9167134888043,
+            "player": 34.9930394253665
+          },
+          "min_separation_to_player_m": 58.4649428929333,
+          "separation_gate_passed": true,
+          "valid_run": true
+        }
+      },
+      "survey_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\report.json",
+      "survey_report_sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20",
+      "weather": "calm"
+    }
+  },
+  "setup_and_non_acceptance_artifacts": [
+    {
+      "classification": "setup_failure_missing_import_cache",
+      "controller_behavior_evaluated": false,
+      "engine_log": {
+        "bytes": 19680,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/engine.log",
+        "sha256": "b9c7d34031c09d9abb1029cf81b8b74fd6a2140e45967f1e22c62d5255acbefc"
+      },
+      "error_count": 115,
+      "note": "Missing imported scenery resources in the pre-import C-mirror/cache attempt. The dedicated frozen D-mirror import later passed with zero errors and eight warnings.",
+      "reason": "engine_error",
+      "runner_report": {
+        "bytes": 7465,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/report.json",
+        "sha256": "9a56264f0e03e4dfe172057f2a66f448db6a384e04a39428a57b0be1da990e36"
+      }
+    },
+    {
+      "classification": "incomplete_no_output",
+      "controller_behavior_evaluated": false,
+      "engine_log": {
+        "bytes": 0,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-final-gentle-60s-encounters-2datzom6/engine.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "note": "Retained empty log; no run report or survey output was produced. The completed gentle-practice 60-second survey is recorded separately.",
+      "report": null
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 98905,
+          "path": "comparisons/r3-r4-calm.json",
+          "sha256": "cb726a164f23056f69e0408f99ff90a51944c867898bb8b416ff1622a60b9fde"
+        },
+        {
+          "bytes": 99721,
+          "path": "comparisons/r3-r4-gentle.json",
+          "sha256": "fecd17d015aefc5f78ed7b6f9acba3f72afaedca57d19394f3548e60b5fad6ff"
+        }
+      ],
+      "classification": "superseded_preliminary_comparison_invalid_key_mapping",
+      "controller_behavior_evaluated": false,
+      "note": "Earlier comparison outputs used incorrect row-key mapping and are excluded from acceptance; corrected same-weather comparisons are under comparisons/final and hashed in the artifact manifest."
+    }
+  ],
+  "source_binding": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "base_circuit_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "calm_encounter_probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+    "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "field_id": "default",
+    "flightlog_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "main_commit_at_snapshot": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+    "mirror_commit": "2966595b1f243be3905e2699b71c0283195ae306",
+    "physics_hz": 240,
+    "planning_hz": 60,
+    "production_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "profile_solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "r3_candidate_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "raw_frozen_physics_files": [
+      {
+        "bytes": 49971,
+        "path": "app/physics/aero.gd",
+        "sha256": "06dfbbcd8c96124d4d19591aaa8d940ba299258710334f3911625baae043630f"
+      },
+      {
+        "bytes": 140678,
+        "path": "app/physics/aircraft_data.gd",
+        "sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737"
+      }
+    ]
+  },
+  "status": "qualified_with_retained_scope-limited_failure_and_diagnostics"
+}

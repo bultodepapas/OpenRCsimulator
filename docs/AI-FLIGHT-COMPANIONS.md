@@ -73,12 +73,13 @@ seam. Five of eight directional/weather cases pass all their gates; approach
 overspeed and two stalled exit turns keep this behavior out of the runtime fleet.
 All eight recordings replay exactly, including the failed cases.
 
-The [reachable-controller research survey](research/ai-companions/AFC-04-R3/README.md)
+The [production-controller survey](research/ai-companions/AFC-04-R4/README.md)
 passes the 30 m player-separation target in six head-on/crossing cases per weather,
 each flown for 60 seconds. The intentionally conflicting two-threat spawn is
 reported separately and fails separation. Earlier failed crossing tapes remain
-retained. The source-bound controller is integrated; final migration flight checks
-are underway. Its 3 m prediction uncertainty is an engineering allowance, not a
+retained. The production migration passes its circuit matrix and six exact crossing
+replays on the recorded source snapshot. The local-terrain floor causes documented
+trajectory differences from the research controller. Its 3 m prediction uncertainty is an engineering allowance, not a
 qualified error bound. The 35 m local-terrain altitude target floor is not a
 guaranteed flight-path clearance. Static candidate constraints, general recovery
 and multi-seed endurance remain open.

@@ -1,10 +1,11 @@
 # Ugly Stik Companion Pilot Qualification
 
-2026-10-20 migration update: [AFC-04-R3](../AFC-04-R3/README.md) retains the
-wind-aware bank-candidate controller's 148-check circuit matrix, six-route moving
-encounters per weather and exact recorded crossing replays. The runtime now uses
-that wrapper with bounded optional diagnostics and a local-terrain target floor.
-Final production migration flight checks remain in progress. The immutable circuit
+2026-10-21 migration update: [AFC-04-R4](../AFC-04-R4/README.md) verifies the
+production wind-aware bank-candidate wrapper with its 148-check circuit matrix,
+six-route moving encounters per weather and six exact crossing replays. Bounded
+optional diagnostics and the local-terrain target floor are included. Its measured
+trajectory differences from [R3](../AFC-04-R3/README.md) are retained explicitly.
+The immutable circuit
 base is still SHA `1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c`;
 the profile binds both sources. This entry point retains historical evidence;
 it must not be read as general avoidance, endurance or performance qualification.

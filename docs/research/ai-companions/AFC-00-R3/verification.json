@@ -1131,13 +1131,46 @@
       "sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2"
     }
   ],
+    "callback_timing_supplement": {
+      "path": "docs/research/ai-companions/AFC-00-R3/callback-timing-supplement.json",
+      "sha256": "370599dd7f8ab43d17bb3cea972aa818cdb8c25d0312bb5078a7f1c49c89afe8",
+      "status": "complete_shared_host_diagnostic_only"
+    },
+    "retained_baseline_differential": {
+      "status": "pass",
+      "retained_baseline_path": "research/ai-companions/performance/reachable_clear_baseline.gd",
+      "retained_baseline_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "production_source_at_test_time_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "pre_edit_test_copy_path": "research/ai-companions/performance/callback_pre_promotion_test_clear_fast_path.gd",
+      "pre_edit_test_sha256": "61619a2c234eb86e3363813bdc7bc8bdf5c1ad7584fe9951680880ac7ac28624",
+      "current_test_path": "research/ai-companions/performance/test_clear_fast_path.gd",
+      "current_test_sha256": "922cef9f3cb3e1302ff78c4aad3f8f3c17bee71a456dff00c47e8ce52173066f",
+      "baseline_reference": "res://../research/ai-companions/performance/reachable_clear_baseline.gd",
+      "candidate_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/differential-retained-baseline-1.json",
+      "report_sha256": "a18ed1a766dcc98fc58cd51a18b2202615b2094f75818b94a424f23bc4ebb9bc",
+      "runner_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/checks/differential-retained-baseline-1/differential-retained-baseline-0_95pet0/report.json",
+      "runner_report_sha256": "b50e4c6c46020985c2199741a9013616355270f6c92fff72c8f63d2ae0b26a11",
+      "runner_log_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/checks/differential-retained-baseline-1/differential-retained-baseline-0_95pet0/engine.log",
+      "runner_log_sha256": "94fdb9c1fd1e4e51f1464e4acc49a59528e6dca63f2756924a4a2e671714f391",
+      "started_utc": "2026-10-21T03:26:03.903374Z",
+      "elapsed_seconds": 2.36,
+      "warnings_as_errors": true,
+      "checks": 11,
+      "failures": 0,
+      "paired_commands": 1280,
+      "clear_pairs": 130,
+      "held_pairs": 766,
+      "score_evaluations_avoided": 1430,
+      "scope": "Synthetic differential equivalence only; the current test is prepared to remain valid after production source promotion by resolving its baseline from the retained byte-identical production copy."
+    },
   "audit": {
     "score_purity": "The production _score_bank implementation reads its inputs and planning wind, returns a local score, and does not write controller state. The clear return preserves production output/diagnostics while skipping the eleven alternate-bank score calls.",
     "subclass_limit": "A subclass overriding _score_bank with observable side effects would see fewer calls; the equivalence claim covers the concrete production controller plus test-only call counting.",
     "limits": [
       "One calm-default Club world, one two-agent roster, one scripted player input tape, and 480 ticks (2 seconds).",
       "Software simulation equivalence only; no actual RC aircraft flight validation.",
-      "No wall-clock or CPU timing was collected; score-call reduction is not a measured speedup.",
+      "The static and flight-equivalence checks collected no wall-clock or CPU timing; score-call reduction is not a measured speedup. A separate shared-host callback diagnostic is indexed in callback_timing_supplement and carries no causal wall-time claim.",
       "Candidate remained a research-only fixture override; no accepted profile or production application was changed.",
       "The run does not qualify long-duration behavior, broader aircraft/weather regimes, or dynamic traffic avoidance."
     ],

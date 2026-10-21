@@ -59,7 +59,7 @@ Two independent native `--recipe realistic` bakes produced byte-identical atlas 
 | Foliage mask | `6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f` |
 | Tree catalog | `797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e` |
 
-Focused tests verify original source materials/triangles, preserved maple mapping, instancing, botanical exclusions/budgets, field identities, wind fallback, source-specific collision coverage and native GPU instance-buffer readback. The native tree test performs 31,991 checks with zero failures. The source converters and catalog regeneration checks pass; library tests: 9, atlas-processing tests: 15, recipe-adapter tests: 2, flight-runner tests: 6.
+Focused tests verify original source materials/triangles, preserved maple mapping, instancing, botanical exclusions/budgets, field identities, wind fallback, source-specific collision coverage and native GPU instance-buffer readback. The native tree test performs 31,991 checks with zero failures. The [source converters and catalog regeneration checks](checks/source-checks.json) pass; library tests: 9, atlas-processing tests: 15, recipe-adapter tests: 2, flight-runner tests: 9.
 
 The focused [test index](checks/results.json) retains final logs, including failures. No full-app or lower-end hardware pass is implied.
 
@@ -83,9 +83,29 @@ Native 720p captures retain 192 frames each at 24 prescribed samples/s: [origina
 
 All three export presets produced PCKs successfully and passed the same [empty-host resource probe](fixtures/verify_pack.gd). [Export verification](exports/verification.json) retains pack hashes, byte sizes and check results. The probe loads all four new models with expected source triangle/surface counts, checks their textures, atlas alpha and mask, and reads packaged source/slot license notices. It runs from an otherwise empty project to prevent loose source files from satisfying the checks. This verifies Windows, Linux and macOS preset **pack contents on this Windows host**, not execution of native binaries on all three operating systems. The final packs are approximately 320.6 MiB each; source files added to the frozen app account for a net 29.65 MiB, which is not a GPU-residency measurement.
 
+## Active-flight measurements
+
+The frozen comparison runs on Windows with a Ryzen 9 5900X (24 logical processors), RTX 3090 and NVIDIA OpenGL driver 617.42. Each accepted pair alternates baseline/candidate order, with 10 s warm-up and 60 s active flight per run. Both builds use wind on, the same input tape, simulation and frame logger, 4× MSAA, disabled VSync and a 60 Hz software cap.
+
+| Resolution | Accepted pairs | Worst candidate p95 / p99 | Paired p95 change: median / range | Result |
+| --- | ---: | ---: | ---: | --- |
+| 1280 × 720 | 5 | 17.886 / 19.737 ms | +0.147 ms / −0.058 to +0.216 ms | All measured pacing and simulation/wall targets pass |
+| 1920 × 1080 | In progress | — | — | Not yet qualified |
+
+These are fixed-pilot-camera neutral-input flights, not a dense-forest overflight or every control/camera route in the research plan. Other headless Godot work was active on the shared host and is counted in the retained contention log. The software cap limits conclusions about uncapped throughput; GPU timing is reported separately. Lower-end hardware, human aircraft-readability acceptance and the broader lifecycle matrix remain unverified.
+
+## Remaining acceptance work
+
+- Qualify a bounded near-forest mesh representation and its transition before calling close or overhead field-tree views realistic. The current orbit is retained evidence of the unresolved card geometry.
+- Extend material-feature support before enabling wind deformation on the new close trees. Their supplied PBR appearance currently takes precedence over an incompatible wind shader.
+- Resolve the shared complete-scene geometry and scenery-build time gates without increasing their thresholds. The passing botanical and non-fleet limits do not supersede those gates.
+- Run the remaining dense-forest, chase, low-sun, lake/meadow and lifecycle profiles, followed by representative lower-end hardware and human flight-readability review. No measurement here substitutes for those results.
+
+The source assets, converters, renderer integration and current placement replacement are implemented. These remaining gates prevent claiming that every viewing distance, hardware tier and full-session requirement in the original research plan has been accepted.
+
 ## Reproduction
 
-Use the [vegetation pipeline guide](../../../../../tools/landscape/vegetation/README.md) for source conversions/catalog checks and the [tree guide](../../../../../tools/trees/README.md) for baking, captures and timing. Keep GPU jobs serial. The native flight probe selects the existing external-controller seam before scene initialization so a connected desktop gamepad cannot replace the recorded input tape; both builds use the same probe and normal input callback.
+Use the [vegetation pipeline guide](../../../../../tools/landscape/vegetation/README.md) for source conversions/catalog checks and the [tree guide](../../../../../tools/trees/README.md) for baking, captures and timing. Keep GPU jobs serial. The native flight probe selects the existing external-controller seam before scene initialization so a connected desktop gamepad cannot replace the recorded input tape; both builds use the same probe and normal input callback. Live UI shortcuts are disabled in the probe, with a smoke regression exercising the pause-triggering assignment key. Production focus-loss safety remains active, so interrupted runs are rejected. A borderless window and explicit position preserve the requested viewport dimensions; each report must still match them exactly.
 
 Timing uses frozen `baseline/app` and `candidate/app` snapshots under `D:/OpenRCsimulator-vegetation-renewal-2026-10-20/` during this session. The candidate was cloned from that baseline and overlaid with the vegetation changes only. Both retain the same simulation, frame logger, aircraft and input tape. The shared repository advanced independently, so current HEAD alone does not identify these measurements. Retained receipts distinguish them.
 

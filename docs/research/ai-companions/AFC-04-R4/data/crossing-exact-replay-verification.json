@@ -1,0 +1,173 @@
+{
+  "all_exact_complete_solver_unchanged": true,
+  "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+  "expected_orfl_count": 6,
+  "failures": [],
+  "format": "afc-04-r4-crossing-exact-replay-verification-v1",
+  "initial_target_height_diagnostics": {
+    "acceptance_note": "A false nominal-match flag is retained as a diagnostic miss. The R4 local-terrain clearance floor intentionally raises the active target above the nominal 35 m; this is reported separately and does not relax separation or AGL gates.",
+    "cases": [
+      {
+        "case_id": "seed-20261020-crossing-right",
+        "classification": "intentional_floor_diagnostic_miss",
+        "commanded_initial_target_height_m": 35.0021910623372,
+        "expected_initial_target_height_m": 35.0,
+        "observed_delta_commanded_minus_nominal_m": 0.00219106233719657,
+        "raw_initial_target_height_matches_nominal": false,
+        "reported_error_m": 0.00219106233716104
+      },
+      {
+        "case_id": "seed-20261021-crossing-left",
+        "classification": "intentional_floor_diagnostic_miss",
+        "commanded_initial_target_height_m": 35.0021910625166,
+        "expected_initial_target_height_m": 35.0,
+        "observed_delta_commanded_minus_nominal_m": 0.002191062516601505,
+        "raw_initial_target_height_matches_nominal": false,
+        "reported_error_m": 0.00219106251655887
+      }
+    ],
+    "raw_false_flag_count": 2
+  },
+  "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+  "pilot_source_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+  "probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+  "replay_count": 6,
+  "replay_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+  "replays": {
+    "seed-20261020-crossing-right-ai": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-ai\\flight.csv",
+      "flight_csv_sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-ai.orfl",
+      "orfl_sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-ai\\replay.json",
+      "replay_json_sha256": "2df6998a73a0d36a6978a83b11f20122c3ae969812fc54a7ed3f1e09054d4c63",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64",
+      "status": "ok"
+    },
+    "seed-20261020-crossing-right-player-coupled": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-coupled\\flight.csv",
+      "flight_csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-coupled.orfl",
+      "orfl_sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-coupled\\replay.json",
+      "replay_json_sha256": "0a50ce25b262c1fdb34c3af68fe74f4ad5a4155cc1d8c7fa86310795f8a5cbde",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a",
+      "status": "ok"
+    },
+    "seed-20261020-crossing-right-player-exogenous": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-exogenous\\flight.csv",
+      "flight_csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-exogenous.orfl",
+      "orfl_sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261020-crossing-right-player-exogenous\\replay.json",
+      "replay_json_sha256": "64acf3addc0f727c4726938d304ecc3de390a2cd019370b2d9fee1b27c858568",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b",
+      "status": "ok"
+    },
+    "seed-20261021-crossing-left-ai": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-ai\\flight.csv",
+      "flight_csv_sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-ai.orfl",
+      "orfl_sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-ai\\replay.json",
+      "replay_json_sha256": "f2f7f1b2f5765d09c62056eeace5c13a3569d41a438e940b93637ddf8e0257c3",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8",
+      "status": "ok"
+    },
+    "seed-20261021-crossing-left-player-coupled": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-coupled\\flight.csv",
+      "flight_csv_sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-coupled.orfl",
+      "orfl_sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-coupled\\replay.json",
+      "replay_json_sha256": "3539907b936db6b1e550dd92131cb6059b4996ee6fb207f68acc6dff34af058a",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0",
+      "status": "ok"
+    },
+    "seed-20261021-crossing-left-player-exogenous": {
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "complete": true,
+      "csv_rows": 4801,
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "flight_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-exogenous\\flight.csv",
+      "flight_csv_sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76",
+      "mode": "exact",
+      "orfl": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-exogenous.orfl",
+      "orfl_sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380",
+      "replay_json": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-replays\\seed-20261021-crossing-left-player-exogenous\\replay.json",
+      "replay_json_sha256": "fe1ac416b4bd54c26041e065b09dc39b7468ada47054cc56ae36c197e693c6aa",
+      "rows": 4801,
+      "solver_changed": false,
+      "source_sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380",
+      "status": "ok"
+    }
+  },
+  "survey_case_status": {
+    "seed-20261020-crossing-right": {
+      "complete": true,
+      "expected_initial_target_height_m": 35.0,
+      "initial_commanded_target_height_m": 35.0021910623372,
+      "initial_target_height_error_m": 0.00219106233716104,
+      "initial_target_height_matches_nominal": false,
+      "min_agl_m_by_role": {
+        "ai": 34.9144056800297,
+        "player": 34.9930181145764
+      },
+      "min_separation_to_player_m": 59.8198811976987,
+      "separation_gate_passed": true,
+      "valid_run": true
+    },
+    "seed-20261021-crossing-left": {
+      "complete": true,
+      "expected_initial_target_height_m": 35.0,
+      "initial_commanded_target_height_m": 35.0021910625166,
+      "initial_target_height_error_m": 0.00219106251655887,
+      "initial_target_height_matches_nominal": false,
+      "min_agl_m_by_role": {
+        "ai": 34.9167134888043,
+        "player": 34.9930394253665
+      },
+      "min_separation_to_player_m": 58.4649428929333,
+      "separation_gate_passed": true,
+      "valid_run": true
+    }
+  },
+  "survey_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\report.json",
+  "survey_report_sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20",
+  "weather": "calm"
+}
