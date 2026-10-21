@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1a16aa1e-d8bf-40c6-85a2-9715e7368644",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_linux.x86_64",
+    "--headless",
+    "--path",
+    "tmp/merge-main-15f6efc7/upstream/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_shell.gd"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-21T00:18:00.508533+00:00",
+  "label": "companions-shell",
+  "log": "/home/bulto/OpenRCsimulator/tmp/merge-main-15f6efc7/final-shell-checked/companions-shell-lulhm_ry/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/merge-main-15f6efc7/final-shell-checked/companions-shell-lulhm_ry/report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371800379913702 is unsupported (cull mode is not disabled)",
+      "context": [
+        "     at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "     GDScript backtrace (most recent call first):",
+        "         [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 35.2179,
+  "log_bytes": 5608,
+  "log_sha256": "8063dedbc1165461adaa97cf97dcfe2c44f177370058378450374ad5d1dddde2"
+}

@@ -180,7 +180,7 @@ source and both AI profile JSON files have identical SHA-256 hashes in both
 clones and the current worktree. The `.gitattributes` blob is identical, and
 the main repository index hash remained unchanged.
 
-The runtime profile now pins the canonical solver qualification hash
+At this checkout checkpoint, the runtime profile pinned the canonical solver qualification hash
 `1526c984…8f33b7e`: strict UTF-8 decoding, CRLF/lone-CR to LF normalization,
 then SHA-256 over each sorted resource path and normalized source. This hash
 matches all 133 sources across both clones, with no per-file differences after
@@ -193,3 +193,27 @@ qualification, not a claim of cross-platform trajectory equivalence or new
 physical validation. No solver code or additional `.gitattributes` rules were
 changed for the solver identity. Captured evidence byte-preservation rules were
 added afterward and are covered by the separate check above.
+
+## Solver-only merge compatibility (AFC-02-R1), 2026-10-20
+
+The Extra's opt-in fuselage side force changes `aero.gd` and `aircraft_data.gd`,
+so the merged 133-source qualification hash is
+`b9911cc9166e1cb8c523cfa61c2b4fb17dd0ac727384d9622ebf00afd9f16f30`.
+The accepted Stik declares neither `body_cy_beta` nor `body_crossflow_area`:
+the loader adds neither field and the new force branch remains inactive.
+Stik data, the pilot and the qualified circuit scope are unchanged.
+
+The [merge receipt](solver-merge-15f6efc7/receipt.json) identifies the isolated
+upstream and merged sources, recordings, CSVs and checked runs. Fresh player and
+companion recordings each contain 260 intervals: upstream exact replay is complete
+with `solver_changed=false`; the same-data merged candidate has
+`solver_changed=true` and a byte-identical CSV. Two retained AFC-04-R2 crossing
+tapes also produce byte-identical upstream/merged candidate CSVs for all 2,880
+intervals each. Candidate runs remain open-loop experiments, not exact replay.
+
+The profile and its regression pin change together; source-drift refusals, strict
+UTF-8/LF normalization and the 133-source assertion remain. Profile, manager,
+recorder, shell and the three-second pilot heading checks pass on the isolated
+merged application. This parity supports retaining the existing 148-check pilot
+matrix as the qualification basis; that matrix was not rerun. No new activity,
+physical-validation, moving-encounter or performance acceptance is claimed.

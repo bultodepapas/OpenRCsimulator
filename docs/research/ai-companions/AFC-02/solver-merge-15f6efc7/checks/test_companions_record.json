@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0083ff63-c061-4558-9fba-53b23d11d130",
+  "command": [
+    "/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "--headless",
+    "--path",
+    "/home/bulto/OpenRCsimulator/tmp/merge-main-15f6efc7/upstream/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_record.gd"
+  ],
+  "cwd": "/home/bulto/OpenRCsimulator",
+  "started_utc": "2026-10-21T00:14:10.335447+00:00",
+  "label": "test_companions_record",
+  "log": "/home/bulto/OpenRCsimulator/tmp/merge-main-15f6efc7/isolated-companion-checked/test_companions_record-stoayv7n/engine.log",
+  "report": "/home/bulto/OpenRCsimulator/tmp/merge-main-15f6efc7/isolated-companion-checked/test_companions_record-stoayv7n/report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 24.539719,
+  "log_bytes": 16560,
+  "log_sha256": "79fe358b9ccfda7b8f24c976f32c2ea16c1bbf4f66b877f05fab563e71328138"
+}

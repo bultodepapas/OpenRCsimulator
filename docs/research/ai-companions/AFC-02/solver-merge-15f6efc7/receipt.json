@@ -1,0 +1,200 @@
+{
+  "format": "openrc-companion-solver-merge-parity v1",
+  "step": "AFC-02-R1",
+  "date": "2026-10-20",
+  "engine": "Godot 4.7.2-stable official Linux x86_64",
+  "physics_hz": 240,
+  "merge_commit": "3d436cf5f3c64c5892c9fc28f1b94a89e8c540f2",
+  "upstream_commit": "f5c8c42e31603b62cc3b43e30bacd9cc5254fc53",
+  "local_commit": "15f6efc7e062b39c27fd3b1a61996b2c1b2e9ff9",
+  "merged_app_tree": "d0e47954b8d1ccd1ce20c68d2fed9229c1869449",
+  "source_count": 133,
+  "normalization": "utf8-lf",
+  "upstream_solver_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+  "merged_solver_sha256": "b9911cc9166e1cb8c523cfa61c2b4fb17dd0ac727384d9622ebf00afd9f16f30",
+  "solver_changes": [
+    "app/physics/aero.gd",
+    "app/physics/aircraft_data.gd"
+  ],
+  "reason": "Both new fuselage side-force quantities are absent from the unchanged Stik. Loader and numerical load branches remain inactive; pilot, Stik data and qualification scope are unchanged. Concurrent unstaged glow-engine edits were excluded from the isolated application.",
+  "fresh_pairs": [
+    {
+      "role": "player",
+      "intervals": 260,
+      "csv_byte_identical": true,
+      "recording": "fresh/player/baseline.orfl",
+      "csv": "fresh/player/flight.csv",
+      "exact_report": "fresh/player/exact.json",
+      "candidate_report": "fresh/player/candidate.json"
+    },
+    {
+      "role": "companion-0",
+      "intervals": 260,
+      "csv_byte_identical": true,
+      "recording": "fresh/companion-0/baseline.orfl",
+      "csv": "fresh/companion-0/flight.csv",
+      "exact_report": "fresh/companion-0/exact.json",
+      "candidate_report": "fresh/companion-0/candidate.json"
+    }
+  ],
+  "retained_crossings": [
+    {
+      "baseline_recording": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261020-crossing-right-ai.orfl",
+      "mode": "same-data candidate on both source snapshots",
+      "intervals": 2880,
+      "csv_byte_identical": true,
+      "csv": "crossing-right/flight.csv",
+      "upstream_report": "crossing-right/upstream.json",
+      "merged_report": "crossing-right/merged.json",
+      "comparison": "crossing-right/comparison.json"
+    },
+    {
+      "baseline_recording": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261021-crossing-left-ai.orfl",
+      "mode": "same-data candidate on both source snapshots",
+      "intervals": 2880,
+      "csv_byte_identical": true,
+      "csv": "crossing-left/flight.csv",
+      "upstream_report": "crossing-left/upstream.json",
+      "merged_report": "crossing-left/merged.json",
+      "comparison": "crossing-left/comparison.json"
+    }
+  ],
+  "checks": [
+    {
+      "label": "test_companions_profiles",
+      "report": "checks/test_companions_profiles.json",
+      "log": "checks/test_companions_profiles.log"
+    },
+    {
+      "label": "test_companions_manager",
+      "report": "checks/test_companions_manager.json",
+      "log": "checks/test_companions_manager.log"
+    },
+    {
+      "label": "test_companions_record",
+      "report": "checks/test_companions_record.json",
+      "log": "checks/test_companions_record.log"
+    },
+    {
+      "label": "test_companions_shell",
+      "report": "checks/test_companions_shell.json",
+      "log": "checks/test_companions_shell.log"
+    },
+    {
+      "label": "pilot-spot-check",
+      "report": "checks/pilot-spot-check.json",
+      "log": "checks/pilot-spot-check.log"
+    }
+  ],
+  "qualification_basis": "Existing 148-check calm/gentle 1-3-Stik matrix retained through no-op source-path analysis, paired replay parity and focused integration. The full matrix was not rerun. Candidate runs are not exact replay or physical validation. Moving encounters, performance and release gates remain open.",
+  "artifacts": {
+    "checks/pilot-spot-check.json": {
+      "sha256": "7626a44b1c28babb5610f990829521c665c25d333c556b3984523f143d7a018e",
+      "bytes": 1370
+    },
+    "checks/pilot-spot-check.log": {
+      "sha256": "097ae9f5cb0f961bd3aaea7710622bfdd2928e1255dbf4e29329aa3702b429e4",
+      "bytes": 2148
+    },
+    "checks/test_companions_manager.json": {
+      "sha256": "c79afbbb65c94c07788bd907932aabdff151919ffcaabe985892d0bb1e0b781c",
+      "bytes": 1258
+    },
+    "checks/test_companions_manager.log": {
+      "sha256": "e1c4cd75db615f042c38cc189603790839db04ea7cc30c90a756565b3cbfb809",
+      "bytes": 1415
+    },
+    "checks/test_companions_profiles.json": {
+      "sha256": "2144f77ae4d2c571a4ca4b1ea82556ba995f375e9471d631306784949e43d58b",
+      "bytes": 1261
+    },
+    "checks/test_companions_profiles.log": {
+      "sha256": "752acffb8ec15a52a8b0a18bffccc8d81e916089f44535c2237a7e6ed1fb8063",
+      "bytes": 1839
+    },
+    "checks/test_companions_record.json": {
+      "sha256": "8890680e6283e986d11008be34af8db9c9961d1786e365db0fa6397c7d935e5e",
+      "bytes": 1255
+    },
+    "checks/test_companions_record.log": {
+      "sha256": "79fe358b9ccfda7b8f24c976f32c2ea16c1bbf4f66b877f05fab563e71328138",
+      "bytes": 16560
+    },
+    "checks/test_companions_shell.json": {
+      "sha256": "00b187dc17b36a99bf9ff662459e4d7fd8e4411c4b2bc2934b9c1063a8ac3d85",
+      "bytes": 1642
+    },
+    "checks/test_companions_shell.log": {
+      "sha256": "8063dedbc1165461adaa97cf97dcfe2c44f177370058378450374ad5d1dddde2",
+      "bytes": 5608
+    },
+    "checks/upstream-record.json": {
+      "sha256": "bd01fa6e120fe7a67aa972fbfa6ed1632bfd9bbf634686c9a3a7a9eb48585cb3",
+      "bytes": 557
+    },
+    "crossing-left/comparison.json": {
+      "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+      "bytes": 1441
+    },
+    "crossing-left/flight.csv": {
+      "sha256": "bb9b9a0608f37b587113c3638ee9c5ea1884940fe6bda78911b47f990564f45c",
+      "bytes": 2620948
+    },
+    "crossing-left/merged.json": {
+      "sha256": "0b7e8b075cf5dbc11802c4fd90f5b4d2ddb86dd86b32b9afeddb887625c97547",
+      "bytes": 6985
+    },
+    "crossing-left/upstream.json": {
+      "sha256": "32b9d0afb5ec85fe08f1c4aeb5efa866531b962dedf91913ba5a86ec480ff571",
+      "bytes": 6985
+    },
+    "crossing-right/comparison.json": {
+      "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+      "bytes": 1441
+    },
+    "crossing-right/flight.csv": {
+      "sha256": "afd8cd879425791ac7596706884277e923fb7ef9157a6301c81b751eda0e70ae",
+      "bytes": 2605419
+    },
+    "crossing-right/merged.json": {
+      "sha256": "f93b097011c741da576075b7417281935318fb7ee6f58a42e2277927edaf753c",
+      "bytes": 6986
+    },
+    "crossing-right/upstream.json": {
+      "sha256": "d151677ea9e0fda7727b4a22d388d04b584e1a5fe601db97b9aa1575dc453cc4",
+      "bytes": 6986
+    },
+    "fresh/companion-0/baseline.orfl": {
+      "sha256": "2bb19482697c4b92f6832dd2803478e09a63f273fb9bf68ead37bed657c7ec2f",
+      "bytes": 5002076
+    },
+    "fresh/companion-0/candidate.json": {
+      "sha256": "3b1805b11a10445d8a62199238f82c881d9a91108464a0ce44d7ce4d2524045c",
+      "bytes": 6622
+    },
+    "fresh/companion-0/exact.json": {
+      "sha256": "dac1f83aaab1709a17e29e22de8a0d95eaaf1c726ae00b369c67f6876c94e2d8",
+      "bytes": 6411
+    },
+    "fresh/companion-0/flight.csv": {
+      "sha256": "b504726b6e55a75ec78ef518c244d1c4560d1fd00b9e61e25785a3ec1d516650",
+      "bytes": 233309
+    },
+    "fresh/player/baseline.orfl": {
+      "sha256": "f697219d0b8ccd15494a3da0098759a2fd7c0b9bb79246cd669513ecebf75d84",
+      "bytes": 5002312
+    },
+    "fresh/player/candidate.json": {
+      "sha256": "50d130e24fb95e9688046a875bbfd6f78ea720a7a7eec3c6f5bb7e678e9c33ff",
+      "bytes": 6699
+    },
+    "fresh/player/exact.json": {
+      "sha256": "57c8c426a4781138c15e07b37b4b76eaf082658c35be9ec7324f68b2fa7cd061",
+      "bytes": 6488
+    },
+    "fresh/player/flight.csv": {
+      "sha256": "5e29ce83cd3a22e2deb0a1149a361ee82c97ba83e03800320d4a791885eb17fe",
+      "bytes": 200334
+    }
+  }
+}
