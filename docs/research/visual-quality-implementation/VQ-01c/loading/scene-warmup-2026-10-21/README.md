@@ -39,6 +39,8 @@ Measurements are source/editor runs; export presets use `script_export_mode=2`, 
 
 ## Next bounded action
 
+Follow-up completed: [Windows release attribution](../package-attribution-2026-10-21/README.md) executes the package check below, retains the dependency diagnostic and owns the next action. This rejected candidate remains unchanged.
+
 **DT-11a / DT, then UI:** measure the same first-Fly resource-load boundary in one current Windows export using the repository's existing isolated export workflow and pinned mode. Keep original source and package identities, first-draw/readiness semantics, fresh/warm distinction and clean teardown. First inspect available disk/template capacity; do not download another large toolchain or clear user caches merely to force a run.
 
 If the exported first load is still material, inspect the dominant dependency group of `main.gd` before selecting one lazy-load or dependency reduction experiment. Require actual complete Home-to-Fly improvement >5%, no Home regression, unchanged validation, unused-feature first-use checks, repeated route/lifecycle checks and five alternating fresh/warm pairs before adoption. Do not defer a dependency onto the first crash, failure, smoke or controller event without measuring that new stall. If package loading is small, retain the scene-loading path and return to the measured field/scenery construction cost (~0.57/~0.20 s during flight), selecting only one attributable mechanism. No broad preload rewrite or renderer change follows from this result.

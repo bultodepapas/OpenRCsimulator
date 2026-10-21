@@ -1,0 +1,15 @@
+{
+  "tracked_inputs": 3840,
+  "differences": {
+    "production": [],
+    "diagnostic_snapshot": [
+      "app/app_root.gd",
+      "app/project.godot"
+    ]
+  },
+  "added_diagnostic_files": [
+    "app/package_loading_probe.gd",
+    "app/package_probe_host.tscn"
+  ],
+  "scope": "tracked app/assets-aircraft/tools only; imported caches are private and uncontrolled"
+}

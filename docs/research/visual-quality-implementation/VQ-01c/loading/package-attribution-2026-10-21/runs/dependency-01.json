@@ -1,0 +1,493 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 695272,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"cycle": 1,
+			"fly_first_draw_usec": 2334525,
+			"fly_ready_usec": 2216862,
+			"fly_sync_usec": 47,
+			"nodes_at_home": 781,
+			"nodes_in_flight": 1272,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 815614,
+			"return_sync_usec": 764678,
+			"tick_at_first_draw": 12
+		},
+		{
+			"cycle": 2,
+			"fly_first_draw_usec": 1438983,
+			"fly_ready_usec": 1348652,
+			"fly_sync_usec": 42,
+			"nodes_at_home": 781,
+			"nodes_in_flight": 1272,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 806116,
+			"return_sync_usec": 758063,
+			"tick_at_first_draw": 12
+		}
+	],
+	"dependency_spans": [
+		{
+			"load_usec": 7,
+			"loaded": true,
+			"path": "res://spec.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2563,
+			"loaded": true,
+			"path": "res://sim/scripted.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://render/frames.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/airplane.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 6392,
+			"loaded": true,
+			"path": "res://render/ground_gear.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 19640,
+			"loaded": true,
+			"path": "res://aircraft/timber_visual_motion.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 4,
+			"loaded": true,
+			"path": "res://render/propeller_blur.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/smoke/exhaust.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://physics/propulsion.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://physics/slipstream.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 7332,
+			"loaded": true,
+			"path": "res://ui/smoke_aux_assignment.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 2593,
+			"loaded": true,
+			"path": "res://render/pilot_camera.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 7468,
+			"loaded": true,
+			"path": "res://render/camera/camera_rig.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://physics/ground_terrain.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://input/commands.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://physics/control_surfaces.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1901,
+			"loaded": true,
+			"path": "res://render/panel.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://sim/flight_session.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://failures/config.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://ai/companions/config.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 93616,
+			"loaded": true,
+			"path": "res://ai/companions/manager.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 4,
+			"loaded": true,
+			"path": "res://ui/ui_theme.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 101322,
+			"loaded": true,
+			"path": "res://render/crash/director.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 6,
+			"loaded": true,
+			"path": "res://render/crash/presentation_context.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 65751,
+			"loaded": true,
+			"path": "res://economy/incident.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 1356,
+			"loaded": true,
+			"path": "res://economy/settlement.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 25605,
+			"loaded": true,
+			"path": "res://ui/accident_report.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 10913,
+			"loaded": true,
+			"path": "res://render/crash/scenery_damage.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 4,
+			"loaded": true,
+			"path": "res://physics/impact_snapshot.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 55018,
+			"loaded": true,
+			"path": "res://sim/recorder.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 5,
+			"loaded": true,
+			"path": "res://sim/flight_log.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://physics/rigid_body.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://app_state/aircraft_catalog.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://app_state/preferences.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://scenarios/scenario_config.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://render/engine_sound.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 59763,
+			"loaded": true,
+			"path": "res://audio/flight_audio.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 16693,
+			"loaded": true,
+			"path": "res://environment/visual_timeline.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 11893,
+			"loaded": true,
+			"path": "res://app_state/visual_checkpoint.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://environment/time_of_day_config.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://render/time_of_day_lighting.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/atmosphere.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://environment/sky_appearance_config.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 7708,
+			"loaded": true,
+			"path": "res://app_state/sky_checkpoint.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 14337,
+			"loaded": true,
+			"path": "res://render/weather/lightning.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://render/shader_clock.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://render/shadow.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/ground.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://data/field_loader.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://landscapes/catalog.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/field.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://render/lake/lake_world.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/world/world.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://ui/field_error.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1184,
+			"loaded": true,
+			"path": "res://render/hud.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 10308,
+			"loaded": true,
+			"path": "res://render/frame_samples.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://physics/air_data.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://physics/math3d.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 3434,
+			"loaded": true,
+			"path": "res://render/visual_evidence.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 3,
+			"loaded": true,
+			"path": "res://app_state/build_info.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1971,
+			"loaded": true,
+			"path": "res://input/latency_patch.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 46696,
+			"loaded": true,
+			"path": "res://render/overlays/overlay_manager.gd",
+			"was_cached": false
+		},
+		{
+			"load_usec": 4,
+			"loaded": true,
+			"path": "res://render/smoke/smoke_system.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 2,
+			"loaded": true,
+			"path": "res://render/smoke/stock_profile.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 1,
+			"loaded": true,
+			"path": "res://render/aircraft_customization.gd",
+			"was_cached": true
+		},
+		{
+			"load_usec": 92397,
+			"loaded": true,
+			"path": "res://workshop/launch.gd",
+			"was_cached": false
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"execution": {
+		"debug_build": false,
+		"editor_feature": false,
+		"executable": "D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/dependency/OpenRC Simulator.exe",
+		"project_path": ""
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 6621208,
+	"home_first_draw_from_load_usec": 3931046,
+	"home_sync_usec": 2522498,
+	"max_fps": 60,
+	"package_build": {
+		"commit": "2463af6547d44c3a7623d9d07790f12d39b4eb1c",
+		"commit_date": "2026-10-21T11:16:41-05:00",
+		"describe": "v0.1.7-12-g2463af65-dependency",
+		"dirty": true,
+		"format": "openrc-build v1"
+	},
+	"renderer": "gl_compatibility",
+	"scene_spans": [
+		{
+			"instantiate_usec": 41,
+			"load_start_usec": 7291322,
+			"load_usec": 192730,
+			"path": "res://main.tscn"
+		},
+		{
+			"instantiate_usec": 44,
+			"load_start_usec": 9974945,
+			"load_usec": 510,
+			"path": "res://main.tscn"
+		}
+	],
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 323739,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1280,
+		720
+	],
+	"vsync_mode": 1
+}

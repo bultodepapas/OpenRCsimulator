@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8dbb8128-139e-4378-8d5c-d5b7ea02b6ae",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T16:20:50.207853+00:00",
+  "label": "collector-import",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\collector-import-rpeo9s0x\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\collector-import-rpeo9s0x\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.766,
+  "log_bytes": 1367,
+  "log_sha256": "2e4226df6d711973135a93faa2e7aae43ea4a7b652b0916c3bd37aad1cb6d11a"
+}

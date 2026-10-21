@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7cbfec46-68d2-461b-a9c8-2c7fae240c16",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\snapshot\\app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--output=D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\runs\\source-01.json",
+    "--cycles=2"
+  ],
+  "cwd": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\empty-host",
+  "started_utc": "2026-10-21T16:24:22.984251+00:00",
+  "label": "source-native-01",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\source-native-01-xqbdvmfi\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\source-native-01-xqbdvmfi\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "loading probe: 2 Home/Fly cycles"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 17.359,
+  "log_bytes": 1458,
+  "log_sha256": "8d4f4ec8ea4d0b6ffbc57d6b9e94b904fdebd33e198405512e5b963d97de88e7"
+}

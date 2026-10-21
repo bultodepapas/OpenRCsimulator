@@ -1,0 +1,59 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "503276dd-7668-4e1f-bb50-2f03b3850165",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\diagnostic\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--output=D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\runs\\diagnostic-02.json",
+    "--cycles=2"
+  ],
+  "cwd": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\empty-host",
+  "started_utc": "2026-10-21T16:24:40.603793+00:00",
+  "label": "diagnostic-native-02",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\diagnostic-native-02-0rrpo_qv\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\diagnostic-native-02-0rrpo_qv\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "loading probe: 2 Home/Fly cycles"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.375,
+  "log_bytes": 632,
+  "log_sha256": "9e94599bdc37966adbe57415ebe7dcc694362b0d9e518a010a4f27a8df77d892"
+}

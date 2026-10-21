@@ -1,0 +1,5 @@
+{
+  "reason": "Release template requires a main scene even with custom SceneTree",
+  "executable_sha256": "cfb09a5615167adadce1bbdc8065304c408d4aa40a240f153a698e375eeaa25e",
+  "project_sha256": "5539ee39babc829e495a1c312ce779ae44f6df154375297d59cc37091490433e"
+}

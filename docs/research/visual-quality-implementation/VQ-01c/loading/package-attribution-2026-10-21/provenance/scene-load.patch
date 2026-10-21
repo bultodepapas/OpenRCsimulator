@@ -1,0 +1,21 @@
+--- control/app/app_root.gd
++++ diagnostic/app/app_root.gd
+@@ -744,7 +744,17 @@
+ 	if Catalog.is_rotorcraft(aircraft_id):
+ 		var helicopter_script: Script = load(route_path) as Script
+ 		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
+-	return load(route_path).instantiate()
++	var load_begin: int = Time.get_ticks_usec()
++	var packed: PackedScene = load(route_path)
++	var load_end: int = Time.get_ticks_usec()
++	var instance: Node = packed.instantiate()
++	var instantiate_end: int = Time.get_ticks_usec()
++	var spans: Array = Engine.get_meta("package_scene_spans", [])
++	if spans.size() < 16:
++		spans.append({"path": route_path, "load_start_usec": load_begin,
++			"load_usec": load_end - load_begin, "instantiate_usec": instantiate_end - load_end})
++		Engine.set_meta("package_scene_spans", spans)
++	return instance
+ 
+ 
+ func open_settings(from: Control = null) -> void:
