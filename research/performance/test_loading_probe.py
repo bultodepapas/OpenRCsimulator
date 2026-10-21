@@ -54,6 +54,159 @@ func _run() -> void:
 	quit(0)
 '''
 
+HANDOFF_FIXTURE = '''extends "{probe}"
+
+class MockApp extends Node:
+	var flight: Node
+
+class MockHome extends Node:
+	var fly_button: Button
+
+class MockSession extends Node:
+	var flyable := true
+
+	func is_flyable() -> bool:
+		return flyable
+
+class MockFlight extends Node:
+	var startup_error := ""
+	var session: Node
+
+
+func _run() -> void:
+	var passed := await _deferred_success()
+	if passed:
+		passed = await _rejected_launch()
+	if passed:
+		passed = await _cancelled_launch()
+	if passed:
+		passed = await _bounded_timeout()
+	if passed:
+		passed = await _startup_error()
+	if passed:
+		passed = await _unflyable_session()
+	if passed:
+		print("PASS all Home Fly handoff regressions")
+	quit(0 if passed else 1)
+
+
+func _route() -> Array:
+	var app := MockApp.new()
+	var home := MockHome.new()
+	home.fly_button = Button.new()
+	home.fly_button.disabled = true # Models Home after it has accepted Fly.
+	app.add_child(home)
+	root.add_child(app)
+	return [app, home]
+
+
+func _flight(startup_error := "", flyable := true) -> MockFlight:
+	var flight := MockFlight.new()
+	flight.startup_error = startup_error
+	var session := MockSession.new()
+	session.flyable = flyable
+	flight.session = session
+	flight.add_child(session)
+	return flight
+
+
+func _check_case(condition: bool, label: String, detail := "") -> bool:
+	if condition:
+		print("PASS Home Fly handoff: ", label)
+		return true
+	push_error("Home Fly handoff regression failed: %s %s" % [label, detail])
+	return false
+
+
+func _discard_app(app: Node) -> void:
+	if is_instance_valid(app):
+		if app.get_parent() != null:
+			app.get_parent().remove_child(app)
+		app.free()
+
+
+func _deferred_success() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	var flight := _flight()
+	app.add_child(flight)
+	app.set_deferred("flight", flight)
+	if not app.flight == null:
+		push_error("Home Fly handoff success fixture was not deferred")
+		await _discard_app(app)
+		return false
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var ok := result.get("ok", false) and result.get("flight") == flight and int(result.get("ready_usec", 0)) > 0
+	var checked := _check_case(ok, "deferred success", str(result))
+	await _discard_app(app)
+	return checked
+
+
+func _rejected_launch() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	home.fly_button.set_deferred("disabled", false) # Home.reject_start restores a retryable button.
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var ok := not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly rejected:")
+	var checked := _check_case(ok, "rejected launch", str(result))
+	await _discard_app(app)
+	return checked
+
+
+func _cancelled_launch() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	root.call_deferred("remove_child", app)
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var ok := not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly cancelled:")
+	var checked := _check_case(ok, "cancelled route", str(result))
+	await _discard_app(app)
+	return checked
+
+
+func _bounded_timeout() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	var max_frames := 2
+	var result: Dictionary = await _wait_for_flight(app, home, max_frames)
+	var ok := not result.get("ok", true) and str(result.get("error", "")) == \
+		"Home Fly handoff exceeded %d process frames" % max_frames
+	var checked := _check_case(ok, "bounded pending timeout", str(result))
+	await _discard_app(app)
+	return checked
+
+
+func _startup_error() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	var flight := _flight("controlled startup error")
+	flight.session = null # Startup error must be reported before session validation.
+	app.flight = flight
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var ok := not result.get("ok", true) and str(result.get("error", "")) == \
+		"Home Fly startup error: controlled startup error"
+	var checked := _check_case(ok, "startup_error", str(result))
+	await _discard_app(app)
+	return checked
+
+
+func _unflyable_session() -> bool:
+	var route := _route()
+	var app: MockApp = route[0]
+	var home: MockHome = route[1]
+	app.flight = _flight("", false)
+	var result: Dictionary = await _wait_for_flight(app, home, 4)
+	var ok := not result.get("ok", true) and str(result.get("error", "")) == "Flight session is not flyable"
+	var checked := _check_case(ok, "unflyable session", str(result))
+	await _discard_app(app)
+	return checked
+'''
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -103,6 +256,21 @@ def main():
         assert rejected.returncode == 1
         assert output.read_bytes() == b"existing report" and settings.read_bytes() == b"existing settings"
         print("PASS existing files preserved")
+
+        handoff_script = folder / "handoff_fixture.gd"
+        handoff_script.write_text(HANDOFF_FIXTURE.format(probe=PROBE.as_posix()), encoding="utf-8")
+        handoff = subprocess.run([engine, "--headless", "--path", str(ROOT / "app"), "--audio-driver",
+                                  "Dummy", "--verbose", "--script", str(handoff_script)],
+                                 capture_output=True, text=True, timeout=15)
+        handoff_log = handoff.stdout + handoff.stderr
+        assert handoff.returncode == 0, handoff_log
+        assert "PASS all Home Fly handoff regressions" in handoff_log, handoff_log
+        for case in ("deferred success", "rejected launch", "cancelled route", "bounded pending timeout",
+                     "startup_error", "unflyable session"):
+            assert "PASS Home Fly handoff: " + case in handoff_log, handoff_log
+        assert not re.search(r"(?m)^(?:SCRIPT )?ERROR:", handoff_log), handoff_log
+        assert "instances were leaked" not in handoff_log, handoff_log
+        print("PASS Home Fly handoff states", flush=True)
     return 0
 
 
