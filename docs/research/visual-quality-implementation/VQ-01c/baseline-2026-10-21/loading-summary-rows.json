@@ -1,0 +1,67 @@
+[
+  {
+    "Run": "loading-fixed-01",
+    "HomeEngine_s": 9.110532,
+    "HomeLoad_s": 5.192319,
+    "Ready1_s": 3.388223,
+    "Fly1_s": 4.018166,
+    "Fly2_s": 1.918147,
+    "Paused1": true,
+    "Paused2": false,
+    "Return1_s": 1.075362,
+    "Return2_s": 1.162104,
+    "Complete": true
+  },
+  {
+    "Run": "loading-fixed-03",
+    "HomeEngine_s": 8.760467,
+    "HomeLoad_s": 4.883307,
+    "Ready1_s": 3.042433,
+    "Fly1_s": 3.167058,
+    "Fly2_s": 1.637286,
+    "Paused1": false,
+    "Paused2": false,
+    "Return1_s": 0.969821,
+    "Return2_s": 0.950716,
+    "Complete": true
+  },
+  {
+    "Run": "loading-fixed-04",
+    "HomeEngine_s": 8.849,
+    "HomeLoad_s": 5.049522,
+    "Ready1_s": 3.761056,
+    "Fly1_s": 3.905605,
+    "Fly2_s": 1.691715,
+    "Paused1": false,
+    "Paused2": false,
+    "Return1_s": 1.00313,
+    "Return2_s": 1.087645,
+    "Complete": true
+  },
+  {
+    "Run": "loading-fixed-05",
+    "HomeEngine_s": 9.877544,
+    "HomeLoad_s": 5.61096,
+    "Ready1_s": 3.360764,
+    "Fly1_s": 3.468854,
+    "Fly2_s": 2.096079,
+    "Paused1": true,
+    "Paused2": false,
+    "Return1_s": 1.00978,
+    "Return2_s": 1.105332,
+    "Complete": true
+  },
+  {
+    "Run": "loading-fixed-06",
+    "HomeEngine_s": 9.442583,
+    "HomeLoad_s": 5.317214,
+    "Ready1_s": 3.706697,
+    "Fly1_s": 3.824116,
+    "Fly2_s": 1.86866,
+    "Paused1": true,
+    "Paused2": false,
+    "Return1_s": 1.640588,
+    "Return2_s": 1.018709,
+    "Complete": true
+  }
+]

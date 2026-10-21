@@ -6,7 +6,9 @@ Make OpenRC look substantially more convincing while flying: recognizable aircra
 
 **Execution order:** freeze a usable baseline → resolve attributed pacing/loading blockers → prioritize the selected Compatibility work in its owning order. A bounded, isolated Forward+ study may then answer parity/cost questions; only justified candidates advance to combined qualification and accepted settings. Retain Compatibility whenever the renderer study fails its stop/go gates. RTX, neural rendering and frame generation remain deferred.
 
-**Next executable action:** refresh VQ-01c/d evidence on the current source/package and a named native host; rank its actual failures before changing appearance. Existing tools and partial evidence are available, but native pacing, loading and owner readability acceptance remain open. The immediate deliverable is a comparable baseline and one chosen repair, not another rendering feature.
+**First execution result:** [2026-10-21 baseline triage](../research/visual-quality-implementation/VQ-01c/baseline-2026-10-21/README.md) repairs and tests the deferred Home/Fly loading collector, retains three standard native runs and five completed fresh/warm loading pairs, and ranks the next work. First-Fly draw median is 3.824 s; a paused control and an active p95 miss prevent baseline qualification. Runtime and aircraft source bytes are unchanged. This completes the bounded triage slice, not VQ-01c/d acceptance.
+
+**Next executable action:** attribute startup pauses on the standard route, then split first-load construction into measured phases and choose its dominant repeatable cost for one DT-11a repair. The evidence report owns the ordered work, timeboxes and pass/fail tests. Refresh motion references and owner readability evidence before appearance changes; physical-display and current-package gates remain open.
 
 Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 3](#priority-and-expected-return) to choose dependency-ready work, and [section 6](#6-measurement-and-acceptance) to decide whether it succeeds.
 

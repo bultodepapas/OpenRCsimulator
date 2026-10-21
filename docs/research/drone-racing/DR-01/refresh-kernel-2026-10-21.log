@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   the plant installs on the kernel and resets at hover 
+ok   layout: four inputs, four sampled duties, four rotor speeds, no discrete modes 
+ok   hover closed form: four thrusts carry the weight 
+ok   one second of hover holds altitude within 1 mm and stays level z -1.500000 p 0 q 0 r 0
+ok   rotor speeds stay at the hover speed under the lag law 
+ok   the spinning momentum of matched pairs cancels 
+ok   raising the right rotors rolls left (negative p), no pitch [-1.11384893318239, 0.0, 0.0]
+ok   raising the front rotors pitches up (positive q), no roll [-0.0, 1.32601063474094, -0.0]
+ok   speeding the counter-clockwise pair yaws clockwise (positive r) with no roll or pitch [-0.0, 0.0, 0.63960952888147]
+ok   rotor acceleration yaws the body inertially: more clockwise yaw after one tick with rotor inertia than without with 5.22e-2 without 6.24e-4
+ok   rotor drag never does positive in-plane work (200 random states) -0.22878531671036414
+ok   a steady wind builds []
+ok   flying with the wind through the environment contract gives the still-air loads (Galilean, 1e-9) 0
+ok   two kernels replay the same bytes 
+ok   the plant's kernel checkpoints and restores 
+15 checks, 0 failed

@@ -1,0 +1,318 @@
+{
+  "runs": [
+    {
+      "report": "stik-live-01.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "536cb1f0d8f0dff6338102b5152fa4905a4e54340f68a364947b12993883d863",
+      "log": "stik-live-01.log",
+      "log_sha256": "0a05892e03b41d2af86daa6cfcab06dae2fa92d330c049e7d0b27a1cb325f775",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.004077,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 16.668,
+          "p95": 17.461000000000002,
+          "p99": 18.054000000000002,
+          "max": 280.46900000000005
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.987342,
+        "sample_simulation_span_s": 59.787499999999966,
+        "sample_simulation_ticks": 14349,
+        "simulation_wall_ratio": 0.9966685971850523,
+        "tick_wall_ratio": 0.9966685971850529,
+        "max_frame_interval_usec": 280469,
+        "max_nonadvancing_interval_usec": 0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": true,
+        "pass": true
+      },
+      "performance_pass": true,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/stik-live-01-56348h9n/report.json",
+      "group": "standard"
+    },
+    {
+      "report": "stik-live-02.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "81c592caffd95b22fd0aad82ae7643ef04e5c7b5383263ffd8dc234cdb18bd4f",
+      "log": "stik-live-02.log",
+      "log_sha256": "11e9268ba8cd2562ee68e05c5945f7038e2eb8969f98c015be617fd273754945",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance during the measured sample",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.005048,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 15.537,
+          "p95": 29.889,
+          "p99": 30.624,
+          "max": 31.507
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.99117,
+        "sample_simulation_span_s": 0.0,
+        "sample_simulation_ticks": 0,
+        "simulation_wall_ratio": 0.0,
+        "tick_wall_ratio": 0.0,
+        "max_frame_interval_usec": 31507,
+        "max_nonadvancing_interval_usec": 59991170
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": false,
+        "pass": false
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/stik-live-02-1hlvu_vm/report.json",
+      "group": "standard"
+    },
+    {
+      "report": "stik-live-03.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "d1396fdfbd42179d9f62855d73445d4403fa336f907c1dc9cfa02837aa278b16",
+      "log": "stik-live-03.log",
+      "log_sha256": "224cfcc2be15c1089165ed9606ff74c8546aa3aba628372fb9c92558f45d3d0f",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.008102,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 16.659,
+          "p95": 18.427,
+          "p99": 19.167,
+          "max": 20.785
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.982808,
+        "sample_simulation_span_s": 59.98333333333329,
+        "sample_simulation_ticks": 14396,
+        "simulation_wall_ratio": 1.0000087580650325,
+        "tick_wall_ratio": 1.0000087580650332,
+        "max_frame_interval_usec": 20785,
+        "max_nonadvancing_interval_usec": 0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": true,
+        "pass": false
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/stik-live-03-suohyt1d/report.json",
+      "group": "standard"
+    },
+    {
+      "report": "stik-focused-smoke.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "d802fd91feef5fa095710346bfa4385ae376dfc15624917447d90e46cea44723",
+      "log": "stik-focused-smoke.log",
+      "log_sha256": "92b19719c87dc01b39251ee00d50032149dfcfb548a80ec364c39342388a5338",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance during the measured sample",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 15.0,
+        "actual_warmup_s": 10.014368,
+        "eligible": false,
+        "reasons": [
+          "requested sample is shorter than 60 s"
+        ]
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 15.517,
+          "p95": 29.742,
+          "p99": 30.549,
+          "max": 31.799
+        },
+        "sample_wall_span_excluding_first_interval_s": 15.009379,
+        "sample_simulation_span_s": 0.0,
+        "sample_simulation_ticks": 0,
+        "simulation_wall_ratio": 0.0,
+        "tick_wall_ratio": 0.0,
+        "max_frame_interval_usec": 31799,
+        "max_nonadvancing_interval_usec": 15009379
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": false,
+        "pass": false
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/stik-focused-smoke-g1nd71uu/report.json",
+      "group": "diagnostic_or_smoke"
+    },
+    {
+      "report": "pause-probe.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "70a8e78f6257b308f5a055f9c4d8a4dacc9c367bbb51776d0f933a1f4ad6edfc",
+      "log": "pause-probe.log",
+      "log_sha256": "e34b468c7cce2a6d763fbad75e6651e517514636aee62009ecd7205521779387",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 15.0,
+        "actual_warmup_s": 10.015611,
+        "eligible": false,
+        "reasons": [
+          "requested sample is shorter than 60 s"
+        ]
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 16.663,
+          "p95": 17.349,
+          "p99": 17.862,
+          "max": 19.505000000000003
+        },
+        "sample_wall_span_excluding_first_interval_s": 15.000184,
+        "sample_simulation_span_s": 15.000000000000032,
+        "sample_simulation_ticks": 3600,
+        "simulation_wall_ratio": 0.9999877334838047,
+        "tick_wall_ratio": 0.9999877334838025,
+        "max_frame_interval_usec": 19505,
+        "max_nonadvancing_interval_usec": 0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": true,
+        "pass": true
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/pause-probe-lfydqa9t/report.json",
+      "group": "diagnostic_or_smoke"
+    },
+    {
+      "report": "stik-diagnostic-01.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "ee674ec810ccedda31433627ea25530757a5e4cf7545f7dcbe46d404a9be62f8",
+      "log": "stik-diagnostic-01.log",
+      "log_sha256": "f1b84b101fe722f41738dcdc0ad0ebaf3250420dee5cc2f5a7b8c60f2cfb877d",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.00175,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 16.651,
+          "p95": 21.984,
+          "p99": 31.148,
+          "max": 36.312999999999995
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.996609,
+        "sample_simulation_span_s": 59.995833333333366,
+        "sample_simulation_ticks": 14399,
+        "simulation_wall_ratio": 0.9999870714915465,
+        "tick_wall_ratio": 0.999987071491546,
+        "max_frame_interval_usec": 36313,
+        "max_nonadvancing_interval_usec": 0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": true,
+        "pass": false
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed",
+      "checked_report": "native/stik-diagnostic-01-w3ixaiac/report.json",
+      "group": "diagnostic_or_smoke"
+    }
+  ],
+  "baseline_qualified": false,
+  "scope": "Individual reductions only. Different durations, startup routes and observer modes are not pooled."
+}

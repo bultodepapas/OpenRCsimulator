@@ -254,7 +254,7 @@ The earlier [Godot integration review](wind-godot-integration.md) records its ow
 
 ### Drone racing (shared-foundation review)
 
-[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) consumes HELI's shared inflow evidence; multirotor flight and racing remain proposed.
+[DR-01](drone-racing/DR-01/README.md) retains the original quadrotor, data, controller, racing and presentation survey. The [2026-10-21 refresh](drone-racing/DR-01/refresh-2026-10-21.md) corrects stale integration assumptions, audits five-inch geometry and downloadable assets, and separates software evidence from hardware validation. [DR-04a](drone-racing/DR-04a/README.md) records the implemented laboratory plant; its 15 checks were rerun during the refresh. The [5-inch FPV integration plan](../plans/drone-racing.md) owns remaining session/controller, free-flight, racing and fidelity gates; none is a playable drone route yet.
 
 ### Cross-aircraft
 

@@ -1,0 +1,44 @@
+PASS success
+PASS failure
+PASS retained
+PASS existing files preserved
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\research\performance\test_loading_probe.py", line 283, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\research\performance\test_loading_probe.py", line 271, in main
+    assert handoff.returncode == 0, handoff_log
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: WorkerThreadPool: 24 threads, 7 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Using "default" pen tablet driver...
+
+Loading resource: res://i18n/es.po remapped: res://i18n/es.po
+Completed load for: 'res://i18n/es.po' remapped 'res://i18n/es.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+Loading resource: res://default_bus_layout.tres remapped: res://default_bus_layout.tres
+Completed load for: 'res://default_bus_layout.tres' remapped 'res://default_bus_layout.tres' at thread -1
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd remapped: C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd
+Completed load for: 'C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd' remapped 'C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd' at thread -1
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:85)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:97)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:109)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:122)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:138)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ok" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd:151)
+ERROR: Failed to load script "C:/Users/bulto/AppData/Local/Temp/openrc-loading-probe-xbs7aqex/handoff_fixture.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+

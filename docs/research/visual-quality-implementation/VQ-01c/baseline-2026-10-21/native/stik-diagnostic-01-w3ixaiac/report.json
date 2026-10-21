@@ -1,0 +1,110 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ce20b652-b302-428b-9e81-2875e5a05f43",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase1-2026-10-21/native/stik-diagnostic-01.json",
+    "--warmup=10",
+    "--t=60",
+    "--frame-diagnostics"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T15:20:30.393558+00:00",
+  "label": "stik-diagnostic-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase1-2026-10-21\\native\\stik-diagnostic-01-w3ixaiac\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase1-2026-10-21\\native\\stik-diagnostic-01-w3ixaiac\\report.json",
+  "timeout_seconds": 130.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 81.859,
+  "log_bytes": 1407,
+  "log_sha256": "f1b84b101fe722f41738dcdc0ad0ebaf3250420dee5cc2f5a7b8c60f2cfb877d",
+  "resources": {
+    "file": "resources.json",
+    "published": true,
+    "coverage": "sampled",
+    "bytes": 100418,
+    "sha256": "7decbf53eae54851af3865d2b21813626bf2fb705862bd073a78de28ff67b0a0",
+    "sample_count": 81,
+    "measurement_status": "ok",
+    "summary": {
+      "peaks": {
+        "rss_bytes": 1263517696,
+        "vms_bytes": 1921490944,
+        "cpu_percent": 138.8353293039494,
+        "num_threads": null,
+        "virtual_memory_total_bytes": 68603191296,
+        "virtual_memory_available_bytes": 25393430528,
+        "virtual_memory_percent": 66.9,
+        "swap_used_bytes": 142966784,
+        "swap_total_bytes": 19510456320
+      },
+      "minima": {
+        "virtual_memory_available_bytes": 22718689280
+      },
+      "counter_deltas": {
+        "cpu_system_seconds": 6.859375,
+        "cpu_user_seconds": 45.546875,
+        "io_read_bytes": 439902487,
+        "io_read_count": 15263,
+        "io_write_bytes": 1581531,
+        "io_write_count": 45
+      },
+      "counter_resets": [],
+      "process_memory_window": {
+        "rss_bytes": {
+          "first_bytes": 2113536,
+          "last_bytes": 990728192,
+          "delta_bytes": 988614656
+        },
+        "vms_bytes": {
+          "first_bytes": 3866624,
+          "last_bytes": 1640923136,
+          "delta_bytes": 1637056512
+        }
+      },
+      "volume_capacity_peaks": {},
+      "volume_free_capacity_minima": {}
+    }
+  }
+}

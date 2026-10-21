@@ -95,6 +95,7 @@ func _route() -> Array:
 	var home := MockHome.new()
 	home.fly_button = Button.new()
 	home.fly_button.disabled = true # Models Home after it has accepted Fly.
+	home.add_child(home.fly_button)
 	app.add_child(home)
 	root.add_child(app)
 	return [app, home]
@@ -137,7 +138,7 @@ func _deferred_success() -> bool:
 		await _discard_app(app)
 		return false
 	var result: Dictionary = await _wait_for_flight(app, home, 4)
-	var ok := result.get("ok", false) and result.get("flight") == flight and int(result.get("ready_usec", 0)) > 0
+	var ok: bool = result.get("ok", false) and result.get("flight") == flight and int(result.get("ready_usec", 0)) > 0
 	var checked := _check_case(ok, "deferred success", str(result))
 	await _discard_app(app)
 	return checked
@@ -149,7 +150,7 @@ func _rejected_launch() -> bool:
 	var home: MockHome = route[1]
 	home.fly_button.set_deferred("disabled", false) # Home.reject_start restores a retryable button.
 	var result: Dictionary = await _wait_for_flight(app, home, 4)
-	var ok := not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly rejected:")
+	var ok: bool = not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly rejected:")
 	var checked := _check_case(ok, "rejected launch", str(result))
 	await _discard_app(app)
 	return checked
@@ -161,7 +162,7 @@ func _cancelled_launch() -> bool:
 	var home: MockHome = route[1]
 	root.call_deferred("remove_child", app)
 	var result: Dictionary = await _wait_for_flight(app, home, 4)
-	var ok := not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly cancelled:")
+	var ok: bool = not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly cancelled:")
 	var checked := _check_case(ok, "cancelled route", str(result))
 	await _discard_app(app)
 	return checked
@@ -172,9 +173,11 @@ func _bounded_timeout() -> bool:
 	var app: MockApp = route[0]
 	var home: MockHome = route[1]
 	var max_frames := 2
+	var start_frame := Engine.get_process_frames()
 	var result: Dictionary = await _wait_for_flight(app, home, max_frames)
-	var ok := not result.get("ok", true) and str(result.get("error", "")) == \
+	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == \
 		"Home Fly handoff exceeded %d process frames" % max_frames
+	ok = ok and Engine.get_process_frames() - start_frame == max_frames
 	var checked := _check_case(ok, "bounded pending timeout", str(result))
 	await _discard_app(app)
 	return checked
@@ -185,10 +188,11 @@ func _startup_error() -> bool:
 	var app: MockApp = route[0]
 	var home: MockHome = route[1]
 	var flight := _flight("controlled startup error")
+	app.add_child(flight)
 	flight.session = null # Startup error must be reported before session validation.
 	app.flight = flight
 	var result: Dictionary = await _wait_for_flight(app, home, 4)
-	var ok := not result.get("ok", true) and str(result.get("error", "")) == \
+	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == \
 		"Home Fly startup error: controlled startup error"
 	var checked := _check_case(ok, "startup_error", str(result))
 	await _discard_app(app)
@@ -200,8 +204,9 @@ func _unflyable_session() -> bool:
 	var app: MockApp = route[0]
 	var home: MockHome = route[1]
 	app.flight = _flight("", false)
+	app.add_child(app.flight)
 	var result: Dictionary = await _wait_for_flight(app, home, 4)
-	var ok := not result.get("ok", true) and str(result.get("error", "")) == "Flight session is not flyable"
+	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == "Flight session is not flyable"
 	var checked := _check_case(ok, "unflyable session", str(result))
 	await _discard_app(app)
 	return checked

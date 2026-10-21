@@ -1,0 +1,94 @@
+{
+  "raw_metrics_keys": [
+    "draw_calls",
+    "fps_monitor",
+    "frame_setup_cpu_ms",
+    "invalid_value_count",
+    "memory_static_bytes",
+    "node_count",
+    "object_count",
+    "observer_poll_usec",
+    "orphan_node_count",
+    "physics_3d_active_objects",
+    "physics_3d_collision_pairs",
+    "physics_process_time_s",
+    "physics_step_usec",
+    "primitives",
+    "process_time_s",
+    "render_buffer_memory_bytes",
+    "render_cpu_ms",
+    "render_gpu_ms",
+    "render_texture_memory_bytes",
+    "render_video_memory_bytes",
+    "resource_count",
+    "sim_tick",
+    "sim_time_s"
+  ],
+  "simulation": {
+    "elapsed_time_s": 69.7791666666667,
+    "end_tick": 16759,
+    "end_time_s": 69.8291666666667,
+    "fault": "",
+    "paused": false,
+    "physics_enabled": true,
+    "physics_ticks_per_second": 240,
+    "scope": "first _process clock prime through sample completion; includes warm-up",
+    "start_tick": 12,
+    "start_time_s": 0.05,
+    "step_usec_smoothed": 774.370191486603,
+    "ticks": 16747
+  },
+  "measured_simulation": {
+    "end_tick": 16759,
+    "end_time_s": 69.8291666666667,
+    "scope": "first sampled frame end through last sampled frame end; excludes the first sampled interval",
+    "start_tick": 2360,
+    "start_time_s": 9.83333333333333,
+    "ticks": 14399
+  },
+  "monitor_nearest_rank": {
+    "render_cpu_ms": {
+      "n": 3600,
+      "p50": 1.00699996948242,
+      "p95": 1.40299999713898,
+      "max": 3.52800011634827
+    },
+    "render_gpu_ms": {
+      "n": 3600,
+      "p50": 2.98799991607666,
+      "p95": 3.97000002861023,
+      "max": 8.32999992370605
+    },
+    "frame_setup_cpu_ms": {
+      "n": 3600,
+      "p50": 0.105,
+      "p95": 0.15,
+      "max": 0.313
+    },
+    "observer_poll_usec": {
+      "n": 3600,
+      "p50": 18.0,
+      "p95": 25.0,
+      "max": 85.0
+    },
+    "physics_step_usec": {
+      "n": 3600,
+      "p50": 777.718584390044,
+      "p95": 931.261587053553,
+      "max": 1564.91706215776
+    },
+    "process_time_s": {
+      "n": 3600,
+      "p50": 0.005787,
+      "p95": 0.010064,
+      "max": 0.201581
+    },
+    "physics_process_time_s": {
+      "n": 3600,
+      "p50": 0.001626,
+      "p95": 0.00249,
+      "max": 0.004438
+    }
+  },
+  "scope": "Frame-sampled diagnostics; viewport GPU/CPU timings do not equal complete-frame cost or establish causality."
+}

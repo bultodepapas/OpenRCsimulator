@@ -2,6 +2,8 @@
 
 2026-10-14 · Revision 17 · Step prefix: **VQ-**
 
+2026-10-21 execution update: [VQ-01c baseline triage](research/visual-quality-implementation/VQ-01c/baseline-2026-10-21/README.md) restores deferred Home/Fly measurement and retains current native/loading evidence. First-load construction and startup-pause attribution take priority; native qualification and VQ-01d motion/pilot acceptance remain open. No runtime appearance or physics change is adopted.
+
 Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md) preserves vertices, normals, indices and bounds in 40 native pairs while reducing construction median about 20%. All 94 focused headless assertions pass. The native combined horizon/atmosphere test has texture shutdown errors reproduced on the reference; no teardown fix is adopted. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) retains separate evidence. Appearance, full-loading non-regression and native acceptance remain open.
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
