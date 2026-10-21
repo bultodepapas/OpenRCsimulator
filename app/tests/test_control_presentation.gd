@@ -42,6 +42,7 @@ func _free_visual(visual: Dictionary) -> void:
 	# otherwise query a material RID after its owner has been destroyed.
 	for node: Node in visual.root.find_children("*", "MeshInstance3D", true, false):
 		var mesh_node := node as MeshInstance3D
+		mesh_node.material_override = null
 		if mesh_node.mesh != null:
 			for surface_index in mesh_node.mesh.get_surface_count():
 				mesh_node.set_surface_override_material(surface_index, null)

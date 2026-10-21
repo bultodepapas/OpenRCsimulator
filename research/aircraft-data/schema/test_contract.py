@@ -37,9 +37,12 @@ class ContractTests(unittest.TestCase):
 
         # Adding a fourth-column-breaking sample remains structurally legal;
         # the production loader owns the grouped-row rule.
-        appended = cases['sebart_avanti_s_a200:aero.wing_polar.positive:extra-vector-entry']
-        self.assertTrue(appended.schema_ok)
-        self.assertFalse(appended.loader_ok)
+        polar_cases = [case for name, case in cases.items()
+                       if name.endswith(':aero.wing_polar.positive:extra-vector-entry')]
+        self.assertTrue(polar_cases, 'corpus must exercise a grouped polar row')
+        for appended in polar_cases:
+            self.assertTrue(appended.schema_ok)
+            self.assertFalse(appended.loader_ok)
 
     def test_schema_and_real_loader_agree_on_cases(self):
         cases = build_cases()
