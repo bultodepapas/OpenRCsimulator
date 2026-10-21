@@ -65,9 +65,17 @@ func _run() -> void:
 		check("trial has distinct physical identity", session.aircraft.model.id != Catalog.DEFAULT_ID)
 		check("catalog visual identity is retained", flight.aircraft_id == Catalog.DEFAULT_ID)
 		check("trial is airborne", session.start_choice == "airborne")
-		check("trial consumes frozen cosmetics and a single smoke budget", flight.workshop_trial.presentation_profile == frozen_visual
-			and flight.get("_profile_smoke") != null and flight.get("_smoke") == null
-			and flight.get("_profile_smoke").budget_info().capacity == 768)
+		var smoke_profile: Node3D = flight.get("_profile_smoke")
+		var smoke_budget: Dictionary = smoke_profile.budget_info() if smoke_profile != null else {}
+		check("trial consumes frozen cosmetics within one shared smoke budget",
+			flight.workshop_trial.presentation_profile == frozen_visual
+			and smoke_profile != null and flight.get("_smoke") == null
+			and int(smoke_budget.get("budget_limit", 0)) == 768
+			and int(smoke_budget.get("capacity", 0)) > 0
+			and int(smoke_budget.get("capacity", 0)) <= int(smoke_budget.get("budget_limit", 0))
+			and int(smoke_budget.get("show_emitters", 0)) == frozen_visual.smoke.size()
+			and int(smoke_budget.get("source_emitters", -1)) == 0,
+			str(smoke_budget))
 		check("trace stores separate presentation identity", session.trace_meta().workshop_presentation.sha256 == flight.workshop_trial.presentation_identity.sha256)
 		var base_raw: Dictionary = JSON.parse_string(source.get_string_from_utf8())
 		var base_capacity_m3: float = float(base_raw.fuel_system.tanks[0].capacity.value) * 0.001
