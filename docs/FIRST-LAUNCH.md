@@ -123,6 +123,16 @@ On supported Stik, P-51D and stock Ventage Jet configurations, **J** opens a sep
 
 **Settings.** Home pins Fly and utility actions; scroll for Workshop, practice and RC cars. Settings (Home or Pause) covers windowed/borderless display, themed text size, opaque panels, reduced motion, language, sound, Controls and Help/About. Game and menu-cue volume preview live. Display previews revert after 15 seconds unless kept; Back discards unkept display changes, while language saves immediately. Preferences are separate from aircraft and controller profiles.
 
+Current source adds **Settings → Graphics**: unlimited or 30/60/90/120/144/165/240 FPS,
+VSync on/off and main-view MSAA off/2×/4×/8×. **Display → Window resolution** offers
+720p through 4K, including 16:10 and ultrawide sizes, fitted to the available desktop.
+Automatic preserves the window size at the start of a settings transaction;
+borderless fullscreen uses the desktop resolution. Graphics changes preview immediately
+and share the 15-second Keep/Revert recovery. Restore graphics defaults returns to
+unlimited FPS, VSync on and 4× MSAA. These controls do not change flight physics.
+VSync's effective state is displayed because the driver/compositor may override it.
+Workshop's separate preview images do not use the main-view MSAA setting.
+
 Pause groups secondary actions under **Session options** and **Exit options**. Esc closes the top page or open group first; returning from Settings keeps the flight paused. Large text uses scrolling with focus following the selected action. The interactive UI scales automatically through native 4K without lowering 3D resolution. [Verification and remaining qualification](research/menu-investigations/UI-22-26-R1/README.md).
 
 **Aircraft Workshop (Workbench).** Open it from Home or Pause to create experimental local builds, save revisions and test them from an airborne start. Adjustments depend on the aircraft's supported capabilities. [Workflow, current limits and development plan](AIRCRAFT-WORKSHOP.md).

@@ -4986,3 +4986,39 @@ msgstr "Introduce una semilla entera entre 0 y 4.294.967.295."
 
 msgid "Choose between 1 and 3 companions."
 msgstr "Elige entre 1 y 3 compañeros."
+
+msgid "Graphics"
+msgstr "Gráficos"
+
+msgid "Window resolution"
+msgstr "Resolución de ventana"
+
+msgid "Display and graphics changes have a 15-second safety timer."
+msgstr "Los cambios de pantalla y gráficos se revierten en 15 segundos si no los confirmas."
+
+msgid "Window sizes fit the available desktop. Fullscreen uses the desktop resolution."
+msgstr "La ventana se ajusta al espacio disponible. La pantalla completa usa la resolución del escritorio."
+
+msgid "Frame rate limit"
+msgstr "Límite de fotogramas"
+
+msgid "Vertical synchronization"
+msgstr "Sincronización vertical"
+
+msgid "Antialiasing (MSAA)"
+msgstr "Suavizado de bordes (MSAA)"
+
+msgid "Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display."
+msgstr "Más suavizado reduce los bordes dentados y exige más a la GPU. VSync evita cortes de imagen; limitar los FPS puede ahorrar energía. Prueba qué se ve más fluido en tu pantalla."
+
+msgid "Restore graphics defaults"
+msgstr "Restaurar gráficos predeterminados"
+
+msgid "Unlimited"
+msgstr "Sin límite"
+
+msgid "Output: %d × %d · VSync: %s"
+msgstr "Salida: %d × %d · VSync: %s"
+
+msgid "The driver or desktop compositor may override VSync."
+msgstr "El controlador o el escritorio pueden imponer su propio ajuste de VSync."

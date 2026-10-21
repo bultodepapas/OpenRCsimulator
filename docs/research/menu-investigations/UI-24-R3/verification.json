@@ -1,0 +1,228 @@
+{
+  "runs": [
+    {
+      "directory": "accepted-test_advanced_graphics_settings-3520c1cn",
+      "ok": false,
+      "reason": "process_exit",
+      "assertion_lines": 25,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-headless-initialized-8nyumi4k",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 57,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-native-compact-agauju07",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 60,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-native-final-uaos9asi",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 71,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-native-ostih_3p",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 60,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-native-restore-rect-04ta_6um",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 74,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-native-rollback-5k83_dc6",
+      "ok": false,
+      "reason": "process_exit",
+      "assertion_lines": 65,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "advanced-parse-loknqfto",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "final-import-kotx30zb",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "final-scale-wp3pu1yw",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 72,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "final-test_advanced_graphics_settings-1cox6pv1",
+      "ok": false,
+      "reason": "process_exit",
+      "assertion_lines": 25,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "final-test_display_preferences-b0metvcn",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "final-test_settings_ui-4uxzs2n5",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 58,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "final-test_ui_settings_integration-y2jypxav",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 31,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "import-l8e9na3o",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "modal-responsive-fixed-ukx98w7l",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "modal-responsive-p9b9ge_6",
+      "ok": false,
+      "reason": "process_exit",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "ordinary-release-home-61jyv8g7",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "settings-integration-h7hvyxxd",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 31,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      }
+    },
+    {
+      "directory": "settings-ui-84rnninh",
+      "ok": false,
+      "reason": "process_exit",
+      "assertion_lines": 55,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "settings-ui-reflow-zvvya1hw",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 58,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "directory": "windows-export-ia25tps8",
+      "ok": true,
+      "reason": "passed",
+      "assertion_lines": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "notes": [
+    "Initial layout, maximized restore-rectangle and headless fixture failures are retained; see README for fixes and accepted runs.",
+    "Headless UI fixture now starts deferred, after engine window initialization."
+  ]
+}

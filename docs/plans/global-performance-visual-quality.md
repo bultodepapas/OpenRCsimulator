@@ -195,6 +195,13 @@ Future per-build color/decal and show-effect controls belong to [AE-24](aircraft
 
 ### VQ-06a/b — qualified presets, one settings path
 
+2026-10-21 user-directed extension: [UI-24-R3](../research/menu-investigations/UI-24-R3/README.md)
+delivers individually selectable window resolution, frame cap, VSync and main-view
+MSAA through the existing UI-24 store and recovery flow. This advances the manual
+controls independently of automatic hardware presets; it does not qualify a new
+Performance/High/Ultra profile or establish a target-hardware speedup. Defaults
+remain unchanged. Native macOS/Linux behavior and per-GPU readability/cost remain gates.
+
 Define pure validated profile data and a presentation-only apply boundary. A module such as `app/render/quality_profile.gd` is **proposed**, not implemented; placement follows the existing UI registry boundary. Reuse SC-24 tiers after checking obstacle visibility and collision identity.
 
 | Setting | Balanced | Performance candidate | Rule |
