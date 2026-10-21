@@ -1,6 +1,6 @@
 # Tree and forest realism improvement plan
 
-2026-10-17; updated 2026-10-18. **Status: bounded implementation and automated verification complete; five paired 720p flights meet the numerical targets under recorded desktop load. Independent owner and broader hardware acceptance remain open.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md), [initial implementation](../research/visual-quality-implementation/L6a-R1/README.md), [completion evidence](../research/visual-quality-implementation/L6c/tree-completion/README.md).
+2026-10-17; updated 2026-10-21. **Status: bounded implementation and automated verification complete; five paired 720p flights meet the numerical targets under recorded desktop load. Close downloaded trees now sway ([L15b-R2](#follow-ups-2026-10-21)). Independent owner and broader hardware acceptance remain open.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md), [initial implementation](../research/visual-quality-implementation/L6a-R1/README.md), [completion evidence](../research/visual-quality-implementation/L6c/tree-completion/README.md).
 
 Improve tree silhouettes, bark and foliage materials, natural color variation, woodland composition and perceived density from pilot, chase and ground cameras. Use existing or freely downloadable trees and textures. **Do not model trees, generate new tree geometry, paint replacement tree textures or build a tree-authoring tool.** Importing, validating, converting and baking representations of licensed downloaded models are integration work; source assets remain intact.
 
@@ -154,6 +154,18 @@ The [completion record](../research/visual-quality-implementation/L6c/tree-compl
 | L6c / VQ-06c | Visual/replay evidence, 20 Fly and 20 RC/reset cycles, frozen full suite, final overlay checks and three-platform exports complete. Five alternating 720p live-flight pairs meet p95/p99, simulation/wall and +0.5 ms delta targets under the recorded desktop load. Independent pilot preference/recognition, lower-end hardware, idle-host qualification and the combined grass/tree release remain acceptance work. |
 
 This plan stays active only for those acceptance gates and any explicitly approved follow-up. Do not resume rejected density, custom geometry or an impostor framework merely to mark every optional research idea as integrated.
+
+### Follow-ups, 2026-10-21
+
+A code and capture audit of the current vegetation produced two render-only deliveries and the open items below.
+
+| ID | Work | Proof / status |
+| --- | --- | --- |
+| **L15b-R2** | The 13 downloaded Quercus/pine close trees sway in the session wind. They use the field cards' law in metres and shading-only leaf flutter, through a shader family mirroring their StandardMaterial3D features. Sway is bounded per asset so every vertex stays inside its unchanged collision proxy. Maples, oak and library-only forms stay static. | Delivered: [evidence](../research/visual-quality-implementation/L15b-R2/README.md). Open: exact calm parity and A/B timing on the native host; owner review of amplitude/flutter. |
+| L7-R1 view fix | Four-view woodland and hedge cards showed the opposite side's frame from north and south. | Delivered: [silhouette proof and native regression](../research/visual-quality-implementation/L6c/tree-completion/impostor-view-frames/README.md). |
+| Owner decision | The clubhouse maple's leaves reach 2.72 m (0.19 H), but its crown proxy starts at 0.355–0.38 H. Between 15 and 21 % of its leaf vertices, up to 6.8 m from the stem, are visible but not collidable. All four maples share the rule. The Quercus received the same fix earlier (0.22 H). | Changing it alters protected collision dimensions and the world identity. |
+| Owner decision | From the pilot station, the 480 near cards (270–570 m) read as an even scatter, and the per-tree species hash mixes light maple and dark oak/pine cards tree by tree. A same-count recipe with groves, species patches and correlated heights would be an L7-R1 world change. | Needs approval before any layout or identity change. |
+| Latent, low | `treeline.gd` counts a tree at exactly 600 m as near while the shader treats it as far (none lies within 599–601 m). Botanical habitats exclude worn tracks but not dirt tracks (no overlap in the default world). `woodland_floor.gdshader` hashes with large-argument `sin`, so captures vary by GPU. `botanicals.gdshader` is unused. Comments in `treeline.gdshader` and `near_grass.gdshader` still say wind stays zero until M5, but session wind is live. | Fix when an owning change touches these files. |
 
 ## 8. Acceptance and rollback
 
