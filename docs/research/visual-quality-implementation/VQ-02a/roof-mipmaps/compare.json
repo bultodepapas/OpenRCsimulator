@@ -1,0 +1,47 @@
+{
+  "club_air": {
+    "changed_px": 7611,
+    "changed_pct": 0.826,
+    "max_abs_diff": 103,
+    "region_px": 12628,
+    "laplacian_energy_before": 5468.7,
+    "laplacian_energy_after": 1512.91,
+    "energy_ratio": 0.277
+  },
+  "pavilion_pilot": {
+    "changed_px": 9518,
+    "changed_pct": 1.033,
+    "max_abs_diff": 70,
+    "region_px": 18718,
+    "laplacian_energy_before": 2811.71,
+    "laplacian_energy_after": 1452.75,
+    "energy_ratio": 0.517
+  },
+  "pavilion_roof": {
+    "changed_px": 46995,
+    "changed_pct": 5.099,
+    "max_abs_diff": 114,
+    "region_px": 78482,
+    "laplacian_energy_before": 3797.65,
+    "laplacian_energy_after": 776.17,
+    "energy_ratio": 0.204
+  },
+  "shed_roof": {
+    "changed_px": 18,
+    "changed_pct": 0.002,
+    "max_abs_diff": 12,
+    "region_px": 329,
+    "laplacian_energy_before": 875.88,
+    "laplacian_energy_after": 776.51,
+    "energy_ratio": 0.887
+  },
+  "farm_roofs": {
+    "changed_px": 127,
+    "changed_pct": 0.014,
+    "max_abs_diff": 27,
+    "region_px": 776,
+    "laplacian_energy_before": 4819.3,
+    "laplacian_energy_after": 4417.88,
+    "energy_ratio": 0.917
+  }
+}
