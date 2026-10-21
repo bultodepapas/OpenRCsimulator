@@ -1,0 +1,483 @@
+{
+	"actual_world_state": {
+		"adapt_y": 1.41587815512963,
+		"adapt_y_anchor": 1.51249307967114,
+		"ambient_lin": "(0.391311, 0.323544, 0.29502)",
+		"cloud_light1_weight": 1.0,
+		"cloud_light2_dir": "(0.986229, -0.076375, -0.146696)",
+		"cloud_light2_weight": 0.0,
+		"cloud_lin": "(0.532392, 0.39772, 0.284037)",
+		"exposure": 0.634208360624506,
+		"gain": 1.05701393437418,
+		"haze_lin": "(0.458968, 0.430561, 0.398927)",
+		"light_color": "(1.0, 0.7119, 0.4182, 1.0)",
+		"light_dir": "(-0.987309, 0.105072, 0.119088)",
+		"light_elevation_deg": 6.03132289011341,
+		"light_energy": 0.645797729492188,
+		"light_source": "sun",
+		"lobe_dir": "(-0.992804, 0.0, 0.11975)",
+		"lobe_height": 0.106829314268337,
+		"lobe_k": 39.8631,
+		"lobe_lin": "(3.356382, 1.445849, 0.335948)",
+		"lst_deg": 264.416616873536,
+		"lunar": {
+			"airmass": 37.9196083778363,
+			"axis_angle_deg": 337.839588566732,
+			"azimuth_deg": 81.4882611864974,
+			"body_to_ned": [
+				-0.19175889138344,
+				-0.861792726044103,
+				0.469618808091059,
+				-0.968626557434254,
+				0.243256727513055,
+				0.0508798265789628,
+				-0.158085798882948,
+				-0.445128590249057,
+				-0.881401961839448
+			],
+			"bright_limb_deg": 356.710427917271,
+			"distance_km": 380203.627783738,
+			"earthshine": 0.0000000017308223430881,
+			"eclipse": {
+				"axis_ned": [
+					0.120040538026289,
+					0.987337270700968,
+					0.103708163203884
+				],
+				"offset_ned": [
+					6.08856305250641,
+					0.242934744217021,
+					-9.36023628183614
+				],
+				"penumbra_radius": 4.7396128525241,
+				"penumbral_magnitude": -2.71462820461366,
+				"umbra_radius": 2.71443730193103,
+				"umbral_magnitude": -3.72721597991019
+			},
+			"elevation_deg": -4.44230191310685,
+			"flux": 0.970347876283707,
+			"illuminated": 0.999640207402463,
+			"jd": 2461310.22916667,
+			"libration_lat_deg": -2.93480157361206,
+			"libration_lon_deg": -4.49127963536077,
+			"parallactic_deg": -49.3873113372288,
+			"phase_angle_deg": 2.17372593023409,
+			"present": false,
+			"radius_deg": 0.261822945661413,
+			"subsolar_lat_deg": -0.878308615841734,
+			"subsolar_lon_deg": -5.19592433234071,
+			"sun_ned": [
+				-0.12011089016626,
+				-0.987340069581438,
+				-0.103600005127362
+			],
+			"true_elevation_deg": -4.44230191310685,
+			"waxing": false
+		},
+		"moon_aureole_lin": "(0.0, 0.0, 0.0)",
+		"moon_azimuth_deg": 81.4882611864974,
+		"moon_config": {
+			"format": "openrc-moon-config v1",
+			"halo": "auto",
+			"moon": "real",
+			"moonlight": "real",
+			"night_look": "eye",
+			"phase": "full",
+			"size": "real"
+		},
+		"moon_dir": "(0.986229, -0.076375, -0.146696)",
+		"moon_display_gamma": 1.0,
+		"moon_display_scale": 1.0,
+		"moon_earthshine": "(0.0, 0.0, 0.0)",
+		"moon_eclipse": false,
+		"moon_eclipse_factor": "(1.0, 1.0, 1.0)",
+		"moon_elevation_deg": -4.44230191310685,
+		"moon_flux": 0.970347876283707,
+		"moon_illuminated": 0.999640207402463,
+		"moon_lin": "(0.0, 0.0, 0.0)",
+		"moon_penumbra_radius": 4.73960995155541,
+		"moon_phase_angle_deg": 2.17372593023409,
+		"moon_phase_k": 0.963731652931703,
+		"moon_phase_l": 0.959804795590711,
+		"moon_radius": 0.00456976633967626,
+		"moon_render_to_body": "[X: (-0.968969, 0.242003, 0.050335), Y: (0.157027, 0.445391, 0.881458), Z: (0.190897, 0.86201, -0.469571)]",
+		"moon_shadow_axis": "(0.987337, -0.103708, -0.120041)",
+		"moon_shadow_offset": "(0.242935, 9.360236, -6.088563)",
+		"moon_squash": 1.0,
+		"moon_sun_dir": "(-0.987567, 0.102499, 0.119189)",
+		"moon_textured": true,
+		"moon_umbra_radius": 2.71444014952902,
+		"shadow_strength": 1.0,
+		"sky_lobe2_dir": "(0.989118, 0.0, -0.147126)",
+		"sky_lobe2_height": 0.207375171484917,
+		"sky_lobe2_k": 2.06084042597838,
+		"sky_lobe2_lin": "(0.0, 0.0, 0.0)",
+		"sun_azimuth_deg": 263.06799693842,
+		"sun_dir": "(-0.987309, 0.105072, 0.119088)",
+		"sun_disc": 1.0,
+		"sun_elevation_deg": 6.09355774289055,
+		"tonemapper": "agx",
+		"zenith_lin": "(0.034601, 0.059053, 0.114993)"
+	},
+	"arguments": {
+		"aircraft": "default",
+		"hour": 19.5,
+		"out": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion",
+		"seconds": 0.0,
+		"view": "lake",
+		"width": 1920
+	},
+	"cases": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.0,
+				-5.0
+			],
+			"clock_s": 0.0,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "before-000",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/before-000.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.22
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.5,
+				-5.0
+			],
+			"clock_s": 0.25,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "before-015",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/before-015.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.22
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				91.0,
+				-5.0
+			],
+			"clock_s": 0.5,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "before-030",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/before-030.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.22
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				91.5,
+				-5.0
+			],
+			"clock_s": 0.75,
+			"counters": {
+				"draw_calls": 105,
+				"primitives": 198807
+			},
+			"id": "before-045",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/before-045.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.22
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				92.0,
+				-5.0
+			],
+			"clock_s": 1.0,
+			"counters": {
+				"draw_calls": 105,
+				"primitives": 198807
+			},
+			"id": "before-060",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/before-060.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.22
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.0,
+				-5.0
+			],
+			"clock_s": 0.0,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "after-000",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/after-000.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.06
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.5,
+				-5.0
+			],
+			"clock_s": 0.25,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "after-015",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/after-015.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.06
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				91.0,
+				-5.0
+			],
+			"clock_s": 0.5,
+			"counters": {
+				"draw_calls": 106,
+				"primitives": 198975
+			},
+			"id": "after-030",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/after-030.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.06
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				91.5,
+				-5.0
+			],
+			"clock_s": 0.75,
+			"counters": {
+				"draw_calls": 105,
+				"primitives": 198807
+			},
+			"id": "after-045",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/after-045.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.06
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				92.0,
+				-5.0
+			],
+			"clock_s": 1.0,
+			"counters": {
+				"draw_calls": 105,
+				"primitives": 198807
+			},
+			"id": "after-060",
+			"image": "D:/OpenRCsimulator-scratch/reflection-20261021/world-twilight-motion/after-060.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			],
+			"water_roughness": 0.06
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"environment": {
+		"fog_density": 0.000170086961588822,
+		"fog_enabled": true,
+		"glow_enabled": false,
+		"reflected_light_source": 2,
+		"ssao_enabled": true,
+		"tonemap_exposure": 0.634208381175995,
+		"tonemap_mode": 4
+	},
+	"format": "openrc-graphics-capture v1",
+	"gpu": {
+		"api": "1.4.351",
+		"name": "NVIDIA GeForce RTX 3090"
+	},
+	"lighting": {
+		"engine_shadows": true,
+		"hour": 19.5,
+		"snapshot": {
+			"cloud_cirrus_strength": 0.12,
+			"cloud_cluster_strength": 0.35,
+			"cloud_color": "(0.0039, 0.0078, 0.0118, 1.0)",
+			"cloud_coverage": 0.35,
+			"cloud_deck_m": 1500.0,
+			"cloud_drift_cells_per_s": "(0.004, 0.0015)",
+			"cloud_scale": 6.0,
+			"cloud_seed": 1253,
+			"cloud_shadow_strength": 0.22,
+			"cloud_silver_strength": 0.0,
+			"cloud_update_s": 1.0,
+			"disc_cloud_occlusion": true,
+			"disc_elevation_deg": -20.0903802949398,
+			"exposure": 0.6,
+			"gradient_curve": 2.6,
+			"haze": "(0.0078, 0.0118, 0.0196, 1.0)",
+			"haze_energy": 1.0,
+			"rim_end_m": 20000.0,
+			"rim_start_m": 16000.0,
+			"shadow_energy_compat": 0.85,
+			"shadow_max_distance_m": 300.0,
+			"shadow_strength": 0.0,
+			"solar": {
+				"azimuth_deg": 270.084970335476,
+				"direction_ned": [
+					0.00138766692095787,
+					-0.935707729151099,
+					0.352773468372282
+				],
+				"elevation_deg": -20.6570469616065,
+				"errors": [],
+				"hour_angle_deg": 110.657067759483,
+				"julian_date": 2461120.3125,
+				"ok": true
+			},
+			"sun_azimuth_deg": 270.084970335476,
+			"sun_color": "(1.0, 0.5922, 0.3529, 1.0)",
+			"sun_diameter_deg": 0.53,
+			"sun_elevation_deg": 0.05,
+			"sun_energy": 0.0,
+			"sun_scatter": 0.785,
+			"visibility_m": 23000.0,
+			"white": 1.0,
+			"zenith": "(0.0039, 0.0078, 0.0196, 1.0)"
+		},
+		"sun_azimuth_deg": 270.084970335476,
+		"sun_direction_render": [
+			-0.999998509883881,
+			0.000872664502821863,
+			-0.00148301105946302
+		],
+		"sun_elevation_deg": 0.05,
+		"sun_energy": 0.0,
+		"sun_shadow_enabled": true
+	},
+	"msaa_3d": 2,
+	"offscreen": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"renderer": "forward_plus",
+	"sky_process_mode": 3,
+	"time_scale": 20,
+	"viewport": [
+		1920,
+		1080
+	],
+	"world_date": "2026-09-26"
+}

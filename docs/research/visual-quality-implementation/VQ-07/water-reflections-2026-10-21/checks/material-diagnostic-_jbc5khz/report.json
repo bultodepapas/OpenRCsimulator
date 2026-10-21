@@ -1,0 +1,66 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5977e36f-e48b-4a9b-b390-36a27e2246d3",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:/OpenRCsimulator-scratch/reflection-20261021/material_probe.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-scratch/reflection-20261021/materials",
+    "--view=lake",
+    "--hour=15"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T21:14:38.446219+00:00",
+  "label": "material-diagnostic",
+  "log": "D:\\OpenRCsimulator-scratch\\reflection-20261021\\checks\\material-diagnostic-_jbc5khz\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\reflection-20261021\\checks\\material-diagnostic-_jbc5khz\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "graphics capture: large complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 27,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.625,
+  "log_bytes": 1555,
+  "log_sha256": "54fba8e38fb70e63f4641f71ca449f448cd28b732aef1a34525d0d704744efb5"
+}

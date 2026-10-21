@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high_experimental","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] run (D:/OpenRCsimulator-scratch/reflection-20261021/motion_probe.gd:139)
+graphics capture: before-000 complete
+graphics capture: before-015 complete
+graphics capture: before-030 complete
+graphics capture: before-045 complete
+graphics capture: before-060 complete
+graphics capture: after-000 complete
+graphics capture: after-015 complete
+graphics capture: after-030 complete
+graphics capture: after-045 complete
+graphics capture: after-060 complete
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)

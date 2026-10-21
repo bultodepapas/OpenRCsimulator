@@ -1,0 +1,102 @@
+{
+  "standard": [
+    {
+      "image": "aircraftground.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "1d94f40f4c740ee0f4cde14721cc17f2777abe26e09c45ee9275f0c8a6a5f0d6",
+      "after_sha256": "1d94f40f4c740ee0f4cde14721cc17f2777abe26e09c45ee9275f0c8a6a5f0d6"
+    },
+    {
+      "image": "flightline.png",
+      "changed_pixels": 4,
+      "max_channel_delta": 1,
+      "mean_absolute_channel_delta": 4.822530864197531e-07,
+      "before_sha256": "2aa760cf5eb140add9a13bf7dd96f4885c4cc3e72b216314c16dbb0c586d4ff8",
+      "after_sha256": "a527e5b96447cf7dc858c3a7fc3790f9c70e61a689bb50463a2516e600c38bf0"
+    },
+    {
+      "image": "lake.png",
+      "changed_pixels": 562,
+      "max_channel_delta": 1,
+      "mean_absolute_channel_delta": 7.426697530864198e-05,
+      "before_sha256": "316a0a8e518df39b2157450af0b7031d48d713f8c7227157b0ad48f34d9fb3ad",
+      "after_sha256": "c36ad984d2258c57f73003868317b7d6dcb3aa7f9ec94c728ecea6e61b3bd750"
+    },
+    {
+      "image": "pavilion.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "393c3610e049c05a4499b3db1e9cc0ea92013400368865e84a217f0809fa174d",
+      "after_sha256": "393c3610e049c05a4499b3db1e9cc0ea92013400368865e84a217f0809fa174d"
+    },
+    {
+      "image": "pilot.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "1b70ff9c08b41bbc832f6607575c912323ebdb2ef84f2029c378f0e307081020",
+      "after_sha256": "1b70ff9c08b41bbc832f6607575c912323ebdb2ef84f2029c378f0e307081020"
+    },
+    {
+      "image": "windsock.png",
+      "changed_pixels": 8,
+      "max_channel_delta": 1,
+      "mean_absolute_channel_delta": 9.645061728395062e-07,
+      "before_sha256": "bd7a67c4822d28a9827e51d4e76a47478c5a91f482760916b4567b46f908de33",
+      "after_sha256": "9b2f758fc90c3ed63554039c1de8591de5b48a1b4125a5c227bc2635b69fa0f8"
+    }
+  ],
+  "high": [
+    {
+      "image": "aircraftground.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "4528aaa54b0ae48b5511a967527cd9ed92c6a7eb66c191db13998836117661e2",
+      "after_sha256": "4528aaa54b0ae48b5511a967527cd9ed92c6a7eb66c191db13998836117661e2"
+    },
+    {
+      "image": "flightline.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "81374ee02b7b88d14062376fc153d0b66a738df49a22eb96014b0bc77fe6dab3",
+      "after_sha256": "81374ee02b7b88d14062376fc153d0b66a738df49a22eb96014b0bc77fe6dab3"
+    },
+    {
+      "image": "lake.png",
+      "changed_pixels": 711685,
+      "max_channel_delta": 92,
+      "mean_absolute_channel_delta": 5.846448206018518,
+      "before_sha256": "1d8e531c729b03d13eb4494f425c388232add780cadc085c6ad30a5fc03a6b72",
+      "after_sha256": "a9130cab8b711c69fa514c5933df6e2d2a54a76373a98bccdcd8391cb7d0f5f9"
+    },
+    {
+      "image": "pavilion.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "ec6507eb61306608fb9ee5267a51ab49fceae0f90e780ed90e6ecde4696405cb",
+      "after_sha256": "ec6507eb61306608fb9ee5267a51ab49fceae0f90e780ed90e6ecde4696405cb"
+    },
+    {
+      "image": "pilot.png",
+      "changed_pixels": 1084,
+      "max_channel_delta": 75,
+      "mean_absolute_channel_delta": 0.011838991769547325,
+      "before_sha256": "880c7b6d487190608683cbe6386c198a8b1f81700463a039a598c55e3cf07fbb",
+      "after_sha256": "847ad1990ddcf11755256043acb873fc89664f24eb917b5653de8c0db2b34275"
+    },
+    {
+      "image": "windsock.png",
+      "changed_pixels": 0,
+      "max_channel_delta": 0,
+      "mean_absolute_channel_delta": 0.0,
+      "before_sha256": "e8ed323611d9c7e28377097bc424da758fcc4782357087094d6fabe9b4a97d42",
+      "after_sha256": "e8ed323611d9c7e28377097bc424da758fcc4782357087094d6fabe9b4a97d42"
+    }
+  ]
+}

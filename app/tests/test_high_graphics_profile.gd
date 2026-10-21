@@ -3,6 +3,7 @@ extends SceneTree
 const Atmosphere := preload("res://render/atmosphere.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const Spec := preload("res://spec.gd")
+const WaterMaterial := preload("res://render/lake/water_material.gd")
 
 const PROFILE_ENV := "OPENRC_GRAPHICS_PROFILE"
 
@@ -27,6 +28,7 @@ func _initialize() -> void:
 	OS.unset_environment(PROFILE_ENV)
 	_check("no request selects standard", not HighGraphics.active() and HighGraphics.requested().is_empty())
 	_test_standard_integration()
+	_test_water_defaults(false)
 
 	OS.set_environment(PROFILE_ENV, "  ultra  ")
 	_check("invalid request is normalized but inactive", HighGraphics.requested() == "ultra" and not HighGraphics.active())
@@ -44,6 +46,7 @@ func _initialize() -> void:
 	_test_protected_environment_and_physics()
 	_test_atmosphere_reapplication(native_forward_plus)
 	_test_flow_policy(native_forward_plus)
+	_test_water_defaults(native_forward_plus)
 
 	if had_profile_env:
 		OS.set_environment(PROFILE_ENV, saved_profile_env)
@@ -82,6 +85,21 @@ func _test_flow_policy(native_high: bool) -> void:
 
 func _near(actual: float, expected: float, tolerance := 1.0e-5) -> bool:
 	return absf(actual - expected) <= tolerance
+
+
+func _test_water_defaults(native_high: bool) -> void:
+	var water := WaterMaterial.create({})
+	_check("water default follows actual native High", _near(
+		float(water.get_shader_parameter("water_roughness")), 0.06 if native_high else 0.22))
+	WaterMaterial.update_lighting(water, Spec.ATMOSPHERE)
+	_check("lighting refresh preserves water finish", _near(
+		float(water.get_shader_parameter("water_roughness")), 0.06 if native_high else 0.22))
+	var authored := WaterMaterial.create({water_roughness = 0.35})
+	_check("authored water roughness overrides profile default", _near(
+		float(authored.get_shader_parameter("water_roughness")), 0.35))
+	WaterMaterial.update_lighting(authored, {water_roughness = 0.48})
+	_check("explicit water lighting override remains authoritative", _near(
+		float(authored.get_shader_parameter("water_roughness")), 0.48))
 
 
 func _test_standard_integration() -> void:
