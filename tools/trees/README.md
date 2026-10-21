@@ -84,7 +84,7 @@ The render-only tree response consumes the session's shared `wind_vec` and simul
   --baseline-app /path/to/pre-L15b/app
 ```
 
-Use a fresh output directory. The baseline is optional for later regression runs; initial acceptance includes baseline parity. The complete capture wrapper also runs this check. See [L15b evidence](../../docs/research/visual-quality-implementation/L15b/README.md) for the card-specific root rotation, parameter estimates, culling proof and limits.
+Use a fresh output directory. The baseline is optional for later regression runs; initial acceptance includes baseline parity. The complete capture wrapper also runs this check. Its tree-only image mask permits at most 16 changed pixels in the first two columns at a frame edge already touched by a calm tree, plus one pixel within a 13 px tree-edge neighborhood per comparison. All other changes outside the original mask fail; copied-data self-tests reject larger edge, near-tree and unrelated background changes. The summary records these bounded exceptions. See [L15b evidence](../../docs/research/visual-quality-implementation/L15b/README.md) for the card-specific root rotation, parameter estimates, culling proof and limits.
 
 
 ## Native imported-tree comparisons

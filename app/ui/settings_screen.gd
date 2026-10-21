@@ -26,6 +26,7 @@ var _trial_deadline_msec := 0
 var _status_state := "instructions"
 var _status_value := 0
 var _layout_panel: PanelContainer
+var _layout_center: CenterContainer
 var _layout_shell: VBoxContainer
 var _scroll: ScrollContainer
 var _destinations: BoxContainer
@@ -91,12 +92,12 @@ func _build() -> void:
 	_surface.close_requested.connect(close)
 	_surface.dismiss_option_popup_first = true
 	_surface.dim(0.58)
-	var center: CenterContainer = _surface.center(24.0)
+	_layout_center = _surface.center(24.0)
 	_layout_panel = PanelContainer.new()
 	_layout_panel.theme_type_variation = "SettingsPanel"
 	_layout_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_layout_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	center.add_child(_layout_panel)
+	_layout_center.add_child(_layout_panel)
 	_layout_shell = VBoxContainer.new()
 	_layout_shell.add_theme_constant_override("separation", 12)
 	_layout_panel.add_child(_layout_shell)
@@ -423,7 +424,21 @@ func _should_stack_rows() -> bool:
 func _update_layout() -> void:
 	if _surface == null or _layout_panel == null:
 		return
-	var available: Vector2 = _surface.size - Vector2(48.0, 48.0)
+	var compact_height := ScreenTheme.text_scale >= 1.75 and _surface.size.y <= 600.0
+	var gutter := 16.0 if compact_height else 24.0
+	_layout_center.offset_left = gutter
+	_layout_center.offset_top = gutter
+	_layout_center.offset_right = -gutter
+	_layout_center.offset_bottom = -gutter
+	_layout_shell.add_theme_constant_override("separation", 4 if compact_height else 12)
+	if compact_height:
+		var panel_style := _surface.theme.get_stylebox("panel", "SettingsPanel").duplicate() as StyleBoxFlat
+		panel_style.content_margin_top = 12
+		panel_style.content_margin_bottom = 12
+		_layout_panel.add_theme_stylebox_override("panel", panel_style)
+	else:
+		_layout_panel.remove_theme_stylebox_override("panel")
+	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
 	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(600.0, maxf(0.0, available.y)))
 	var stack_rows := _should_stack_rows()
 	_destinations.vertical = stack_rows

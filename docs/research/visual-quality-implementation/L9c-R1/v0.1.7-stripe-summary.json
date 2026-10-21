@@ -1,0 +1,199 @@
+{
+  "byte_identical_repeat": true,
+  "capture_environment": {
+    "LP_NUM_THREADS": "1",
+    "OPENRC_SCENERY": "off",
+    "OPENRC_SCENERY_AUDIO": "off",
+    "OPENRC_SCENERY_BIRDS": "off"
+  },
+  "commands": {
+    "filtered": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/home/bulto/openrc-stripes-v017/filtered",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ],
+    "import": [
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--headless",
+      "--path",
+      "/home/bulto/openrc-stripes-v017/raw-app",
+      "--audio-driver",
+      "Dummy",
+      "--import"
+    ],
+    "raw": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/home/bulto/openrc-stripes-v017/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/home/bulto/openrc-stripes-v017/raw",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ],
+    "reference16": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 10240x1024x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/home/bulto/openrc-stripes-v017/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "10240x1024",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/home/bulto/openrc-stripes-v017/reference16",
+      "--fixture=stripe-reference",
+      "--scale=16"
+    ],
+    "reference8": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 5120x512x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/home/bulto/openrc-stripes-v017/raw-app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "5120x512",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/home/bulto/openrc-stripes-v017/reference8",
+      "--fixture=stripe-reference",
+      "--scale=8"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 640x64x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/app",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "640x64",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd",
+      "--",
+      "--out=/home/bulto/openrc-stripes-v017/repeat",
+      "--fixture=stripe-reference",
+      "--scale=1"
+    ]
+  },
+  "complete": true,
+  "format": "openrc-l9c-stripe-reference v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "metrics": {
+    "runway_oblique_100": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0014225281800216007,
+        "temporal_rms_linear_rgb": 0.0019809632857267535
+      },
+      "mask_pixels": 5311,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.005846126064003746,
+        "temporal_rms_linear_rgb": 0.006658650142062659
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.004609632254514994,
+        "temporal_rms_linear_rgb": 0.007235959649183773
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.0006899721688690281,
+        "temporal_rms_linear_rgb": 0.0009431273654648854
+      }
+    },
+    "runway_oblique_300": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0017746412252433819,
+        "temporal_rms_linear_rgb": 0.002865016913251866
+      },
+      "mask_pixels": 310,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.0014190386629236178,
+        "temporal_rms_linear_rgb": 0.0024778922084053947
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.00939966985158217,
+        "temporal_rms_linear_rgb": 0.014008569748753665
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.0024506622624691373,
+        "temporal_rms_linear_rgb": 0.004303114911718582
+      }
+    },
+    "runway_threshold": {
+      "filtered": {
+        "spatial_rms_linear_rgb": 0.0024835185368378087,
+        "temporal_rms_linear_rgb": 0.0032619306591902706
+      },
+      "mask_pixels": 40358,
+      "no_stripes": {
+        "spatial_rms_linear_rgb": 0.023455958548936843,
+        "temporal_rms_linear_rgb": 0.008683877775864247
+      },
+      "raw": {
+        "spatial_rms_linear_rgb": 0.003060172901709026,
+        "temporal_rms_linear_rgb": 0.0041306561883502155
+      },
+      "reference_disagreement": {
+        "spatial_rms_linear_rgb": 0.0005600250607912007,
+        "temporal_rms_linear_rgb": 0.0007695308524896454
+      }
+    }
+  },
+  "negative_controls_rejected": {
+    "no_stripes": "runway_oblique_100/spatial_rms_linear_rgb: filter improvement does not exceed reference disagreement (filtered=0.00584613, raw=0.00460963, reference=0.000689972)",
+    "raw": "runway_oblique_100/spatial_rms_linear_rgb: filter improvement does not exceed reference disagreement (filtered=0.00460963, raw=0.00460963, reference=0.000689972)"
+  },
+  "reference_margin": 2.0,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "scope": "stripe-only error against a 16x reference, separated from measured 8x/16x disagreement; not proven convergence or perceptual shimmer closure",
+  "sources_sha256": {
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/app/render/ground.gdshader": "837e37002d985749036306bca401c9f9b66eacce8ee1f7944eb804576ea4ae80",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/capture_surfaces.gd": "18b67864d0dc6f09a19be30ff798715aa765cabcd0af6e387c0124ec0bb4f108",
+    "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/release-v0.1.7/tools/ground/check_stripes.py": "14734b4135f9a695e7079c951b697bf1e0131bcfea009a7d989afd5f9a5c788c"
+  }
+}

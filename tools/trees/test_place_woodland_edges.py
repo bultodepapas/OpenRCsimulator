@@ -178,9 +178,9 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
                          48 + 172 + 4 + validation["path_sweep_samples_at_0_25m"])
         self.assertEqual(validation["floor_rectangles_checked"], 4)
         self.assertEqual(validation["all_current_treeline_positions_checked"], 1680)
-        self.assertEqual(validation["all_scenery_placement_envelopes_checked"], 136)
+        self.assertEqual(validation["all_scenery_placement_envelopes_checked"], 170)
         self.assertEqual(validation["scenery_track_segments_checked"], 29)
-        self.assertEqual(validation["scenery_hedge_fence_segments_checked"], 10)
+        self.assertEqual(validation["scenery_hedge_fence_segments_checked"], 23)
         self.assertEqual(validation["scenery_patch_polygons_checked"], 1)
 
         margins = validation["minimum_margins_m_or_degrees"]

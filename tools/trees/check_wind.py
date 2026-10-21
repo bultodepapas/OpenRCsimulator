@@ -52,6 +52,11 @@ EXCLUDED_DIRS = {".git", ".godot", ".tools", "__pycache__", "build", "captures",
 SCREEN = f"-screen 0 {WIDTH}x{HEIGHT}x24"
 COUNTER_KEYS = ("draw_calls", "primitives", "objects", "shadow_draw_calls")
 MIN_VISIBLE_MOTION_PIXELS = 8
+MAX_EDGE_ENTRY_PIXELS = 16
+MAX_NEAR_RASTER_PIXELS = 1
+EDGE_ENTRY_WIDTH_PX = 2
+NEAR_RASTER_PADDING_PX = 13
+MotionMask = tuple[np.ndarray, np.ndarray, np.ndarray]
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -523,13 +528,40 @@ def dilated_tree_mask(calm: np.ndarray, background: np.ndarray, padding: int) ->
     return np.asarray(padded) > 0
 
 
-def masked_pixel_difference(first: np.ndarray, second: np.ndarray, allowed: np.ndarray, context: str) -> int:
-    if first.shape != second.shape or first.shape[:2] != allowed.shape:
+def tree_motion_mask(calm: np.ndarray, background: np.ndarray, view: str) -> MotionMask:
+    core = dilated_tree_mask(calm, background, _mask_padding(view))
+    near = dilated_tree_mask(calm, background, max(_mask_padding(view), NEAR_RASTER_PADDING_PX))
+    silhouette = np.any(calm != background, axis=2)
+    edge = np.zeros_like(core)
+    # A card clipped by the frame can lean into it without leaving a calm
+    # silhouette near its previously invisible crown. Limit that allowance
+    # to two columns and a small changed-pixel budget per comparison.
+    if np.any(silhouette[:, :EDGE_ENTRY_WIDTH_PX]):
+        edge[:, :EDGE_ENTRY_WIDTH_PX] = True
+    if np.any(silhouette[:, -EDGE_ENTRY_WIDTH_PX:]):
+        edge[:, -EDGE_ENTRY_WIDTH_PX:] = True
+    return core, near, edge
+
+
+def masked_pixel_difference(first: np.ndarray, second: np.ndarray,
+                            allowed: np.ndarray | MotionMask, context: str,
+                            allowance_stats: dict[str, int] | None = None) -> int:
+    core, near, edge = allowed if isinstance(allowed, tuple) else (allowed, allowed, np.zeros_like(allowed))
+    if first.shape != second.shape or any(mask.shape != first.shape[:2] for mask in (core, near, edge)):
         raise RuntimeError(f"{context}: mismatched image or tree-mask shapes")
     diff = np.any(first != second, axis=2)
-    leaked = int(np.logical_and(diff, np.logical_not(allowed)).sum())
-    if leaked:
-        raise RuntimeError(f"{context}: {leaked} changed pixels escaped the dilated tree-only mask")
+    escaped = diff & ~core
+    edge_count = int(np.count_nonzero(escaped & edge))
+    near_count = int(np.count_nonzero(escaped & ~edge & near))
+    outside_count = int(np.count_nonzero(escaped & ~edge & ~near))
+    if outside_count or edge_count > MAX_EDGE_ENTRY_PIXELS or near_count > MAX_NEAR_RASTER_PIXELS:
+        raise RuntimeError(
+            f"{context}: tree-only mask escape: outside={outside_count}, "
+            f"edge={edge_count}/{MAX_EDGE_ENTRY_PIXELS}, near={near_count}/{MAX_NEAR_RASTER_PIXELS}"
+        )
+    if allowance_stats is not None:
+        allowance_stats["edge_entry_pixels"] = allowance_stats.get("edge_entry_pixels", 0) + edge_count
+        allowance_stats["near_raster_pixels"] = allowance_stats.get("near_raster_pixels", 0) + near_count
     return int(diff.sum())
 
 
@@ -561,6 +593,32 @@ def checker_self_test() -> dict[str, Any]:
     moving_delta = masked_pixel_difference(east_t0, moving_east_t1, allowed, "self-test moving east")
     require_visible_motion({"east t=1 vs t=0": moving_delta}, "self-test moving east")
 
+    # The edge and isolated-pixel allowances must remain bounded. A separate
+    # background change, two near-tree pixels, or a broad edge must fail.
+    backdrop = np.zeros((64, 64, 3), dtype=np.uint8)
+    tree = backdrop.copy()
+    tree[30:50, :4] = (70, 90, 110)
+    tree[20:30, 20:30] = (70, 90, 110)
+    motion_mask = tree_motion_mask(tree, backdrop, "wide-az000")
+    entering = tree.copy()
+    entering[10:13, 0] = (70, 90, 110)
+    entering[25, 35] = (70, 90, 110)
+    masked_pixel_difference(tree, entering, motion_mask, "self-test narrow tree sweep")
+    for label, flaw in (
+        ("off-tree", (0, 50, 1, 51)),
+        ("two near-tree pixels", (25, 35, 27, 36)),
+        ("broad frame-edge change", (0, 0, 18, 1)),
+    ):
+        defect = tree.copy()
+        top, left, bottom, right = flaw
+        defect[top:bottom, left:right] = (180, 180, 180)
+        try:
+            masked_pixel_difference(tree, defect, motion_mask, "self-test " + label)
+        except RuntimeError:
+            pass
+        else:
+            raise RuntimeError("checker self-test accepted " + label)
+
     with tempfile.TemporaryDirectory(prefix="l15b-wind-check-") as temp_name:
         folder = Path(temp_name)
         image_path = folder / "copied-case.png"
@@ -574,6 +632,7 @@ def checker_self_test() -> dict[str, Any]:
         if not rejected_corrupt:
             raise RuntimeError("checker self-test did not reject a corrupted copied PNG/hash")
     return {"static_same_input_pair_rejected": True, "moving_pair_accepted": True,
+            "bounded_tree_sweep_accepted": True, "off_tree_and_broad_sweep_rejected": True,
             "corrupted_png_hash_rejected": True}
 
 
@@ -600,7 +659,7 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
         view = "zoom-az000"
         calm = image_rgb(folder / cases[f"calm-t0--{view}"]["image"])
         background = image_rgb(folder / cases[f"background-{view}"]["image"])
-        allowed = dilated_tree_mask(calm, background, _mask_padding(view))
+        allowed = tree_motion_mask(calm, background, view)
         east_t0 = image_rgb(folder / cases[f"east-t0--{view}"]["image"])
         east_t1 = image_rgb(folder / cases[f"east-t1--{view}"]["image"])
         motion = {
@@ -613,7 +672,7 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
                 "visible_motion_pixels": motion}
 
     arrays: dict[str, np.ndarray] = {}
-    allowed_masks: dict[str, np.ndarray] = {}
+    allowed_masks: dict[str, MotionMask] = {}
     for view in VIEWS:
         calm_id = f"calm-t0--{view}"
         background_id = f"background-{view}"
@@ -630,7 +689,7 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
         minimum_mask_pixels = 100 if view.startswith("zoom-") else 20
         if mask_pixels < minimum_mask_pixels:
             raise RuntimeError(f"{view}: isolated production tree mask has only {mask_pixels} pixels")
-        allowed_masks[view] = dilated_tree_mask(calm_image, background_image, _mask_padding(view))
+        allowed_masks[view] = tree_motion_mask(calm_image, background_image, view)
         base_draw_delta = calm["draw_calls"] - background["draw_calls"]
         base_primitive_delta = calm["primitives"] - background["primitives"]
         base_shadow_delta = calm["shadow_draw_calls"] - background["shadow_draw_calls"]
@@ -644,7 +703,7 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
     state_metrics: dict[str, Any] = {}
     for condition in states:
         changed_total = 0
-        outside_total = 0
+        allowance_stats: dict[str, int] = {}
         for view in VIEWS:
             case_id = f"{condition}--{view}"
             case = cases[case_id]
@@ -655,11 +714,17 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
                 raise RuntimeError(f"{case_id}: wind changed draw, primitive, object or shadow counts")
             image = image_rgb(folder / case["image"])
             changed = masked_pixel_difference(
-                arrays[f"calm-t0--{view}"], image, allowed_masks[view], f"{case_id} vs calm"
+                arrays[f"calm-t0--{view}"], image, allowed_masks[view], f"{case_id} vs calm",
+                allowance_stats,
             )
             changed_total += changed
-            outside_total += 0
-        state_metrics[condition] = {"changed_pixels": changed_total, "changed_pixels_outside_tree_mask": outside_total}
+        state_metrics[condition] = {
+            "changed_pixels": changed_total,
+            "changed_pixels_outside_tree_mask": sum(allowance_stats.values()),
+            "bounded_edge_entry_pixels": allowance_stats.get("edge_entry_pixels", 0),
+            "bounded_near_raster_pixels": allowance_stats.get("near_raster_pixels", 0),
+            "unaccepted_changed_pixels": 0,
+        }
 
     movement = {
         vector: state_metrics[f"{vector}-t0"]["changed_pixels"]
@@ -722,7 +787,7 @@ def _mask_padding(view_id: str) -> int:
     return math.ceil(focal_px * 0.3 / 270.0) + 3
 
 
-def verify_time_strip(folder: Path, cases: dict[str, dict[str, Any]], allowed_mask: np.ndarray) -> dict[str, Any]:
+def verify_time_strip(folder: Path, cases: dict[str, dict[str, Any]], allowed_mask: MotionMask) -> dict[str, Any]:
     frames: list[np.ndarray] = []
     changed_pairs: list[int] = []
     for index, expected_time in enumerate(TIME_STRIP_TIMES):
@@ -903,6 +968,12 @@ def main() -> int:
         },
         "repeatability": {"candidate": candidate_repeatability, "baseline": baseline_repeatability},
         "checker_self_test": self_test,
+        "tree_only_mask_gates": {
+            "edge_entry_width_px": EDGE_ENTRY_WIDTH_PX,
+            "max_edge_entry_pixels_per_comparison": MAX_EDGE_ENTRY_PIXELS,
+            "near_raster_padding_px": NEAR_RASTER_PADDING_PX,
+            "max_near_raster_pixels_per_comparison": MAX_NEAR_RASTER_PIXELS,
+        },
         "baseline_parity": baseline_parity,
         "candidate": candidate_review,
         "limits": [

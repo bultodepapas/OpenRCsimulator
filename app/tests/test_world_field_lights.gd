@@ -189,8 +189,21 @@ func _initialize() -> void:
 		ok = ok and dressed.get_node_or_null("strip_left") != null and dressed.get_node_or_null("strip_right") != null
 		_check("%s: smooth under-wing strips on both sides, every station" % id, ok, detail)
 		_check("%s: smooth wing-top strips on both sides, every station" % id, top_ok, top_detail)
-		var tip_ok: bool = (dressed.get_node("nav_right") as Node3D).position.x > half and (dressed.get_node("nav_left") as Node3D).position.x < -half
-		_check("%s: nav lights at the real wing tips (span %.2f m)" % [id, 2.0 * half], tip_ok)
+		var nav_left := dressed.get_node("nav_left") as Node3D
+		var nav_right := dressed.get_node("nav_right") as Node3D
+		var tip_ok: bool = nav_right.position.x > half and nav_left.position.x < -half
+		var anchors: Dictionary = plane.root.get_meta("light_anchors", {})
+		if anchors.has("nav_left") and anchors.has("nav_right"):
+			var left_anchor: Dictionary = anchors.nav_left
+			var right_anchor: Dictionary = anchors.nav_right
+			var lens_margin := maxf(0.03, 0.04 * half)
+			tip_ok = tip_ok or (left_anchor.get("position") is Vector3 and right_anchor.get("position") is Vector3
+				and nav_left.position.distance_to(left_anchor.position) < 0.0001
+				and nav_right.position.distance_to(right_anchor.position) < 0.0001
+				and absf(absf(nav_left.position.x) - half) <= lens_margin
+				and absf(absf(nav_right.position.x) - half) <= lens_margin)
+		_check("%s: nav lights at the modeled tips or authored lenses (span %.2f m)" % [id, 2.0 * half], tip_ok,
+			"left=%.4f right=%.4f half=%.4f" % [nav_left.position.x, nav_right.position.x, half])
 		plane.root.free()
 
 	# Light on a point: the point helper follows the pinned GLES3 radial and smooth cone functions.

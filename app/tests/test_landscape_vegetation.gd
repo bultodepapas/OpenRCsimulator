@@ -18,7 +18,9 @@ const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 
 const TREE_XZ_LIMIT := 3.84 # baseline max half-extent across the measured seed sample; catalog width remains 8 m.
 const TREE_TOP_LIMIT := 10.0 # measured baseline top is below 10.0 m; catalog/collision height remains 10.5 m.
-const TRIANGLE_LIMIT := 650000 # LU-21: native-qualified source-scene ceiling; counts surfaces and indexed instances.
+const NON_FLEET_TRIANGLE_LIMIT := 725000 # LU-30 field allowance; SC-09-R1 budgets the parked fleet separately.
+const FLEET_TRIANGLE_LIMIT := 350000 # SC-09-R1 full-detail static aircraft allowance.
+const LAKE_CONTEXT_TRIANGLE_LIMIT := 30000 # Explicit allowance for lake-context habitat geometry.
 
 var checks := 0
 var failures := 0
@@ -223,6 +225,11 @@ func _test_complete_scenery_budget() -> void:
 		var restored := ImportedVegetation.set_damage_hidden(imported_plants, damage_id, false)
 		_check("source damage IDs hide and restore imported plants", hidden and restored, damage_id)
 	var triangles := _triangle_count(built)
+	var fleet := built.get_node_or_null("ParkedAircraft")
+	var fleet_triangles := _triangle_count(fleet) if fleet != null else 0
+	var field_only := Scenery.build(field, scenery, {audio = false, birds = false, theme = "", quality = "high"})
+	var field_only_triangles := _triangle_count(field_only)
+	var lake_context_triangles := triangles - field_only_triangles
 	var source_tree_counts: Dictionary = {}
 	var source_tree_triangles := 0
 	for group: Dictionary in scenery.groups:
@@ -240,10 +247,18 @@ func _test_complete_scenery_budget() -> void:
 		source_tree_counts == {landscapelab_quercus = 3, landscapelab_pine = 10, maple_tree = 4}
 		and source_tree_triangles == 85672,
 		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
-	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,
-		"triangles=%d" % triangles)
-	print("     LU-17 complete scenery triangles: %d (limit %d), imported tree sources=%s (%d triangles)" %
-		[triangles, TRIANGLE_LIMIT, source_tree_counts, source_tree_triangles])
+	_check("field scenery excluding the parked fleet stays within the LU-30 allowance",
+		field_only_triangles - fleet_triangles <= NON_FLEET_TRIANGLE_LIMIT,
+		"field=%d fleet=%d non-fleet=%d" % [field_only_triangles, fleet_triangles, field_only_triangles - fleet_triangles])
+	_check("parked aircraft stay within the SC-09-R1 full-detail allowance",
+		fleet_triangles > 0 and fleet_triangles <= FLEET_TRIANGLE_LIMIT,
+		"fleet=%d" % fleet_triangles)
+	_check("lake-context scenery has a separate bounded geometry allowance",
+		lake_context_triangles >= 0 and lake_context_triangles <= LAKE_CONTEXT_TRIANGLE_LIMIT,
+		"lake-context=%d" % lake_context_triangles)
+	print("     LU-17 scenery triangles: full=%d field=%d fleet=%d lake-context=%d, imported tree sources=%s (%d triangles)" %
+		[triangles, field_only_triangles, fleet_triangles, lake_context_triangles, source_tree_counts, source_tree_triangles])
+	field_only.free()
 	built.free()
 
 

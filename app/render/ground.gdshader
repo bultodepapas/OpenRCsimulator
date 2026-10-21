@@ -190,7 +190,9 @@ vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footpri
 		float stripe = square_filtered(u, (along_x ? footprint.y : footprint.x) / (2.0 * stripe_m));
 		vec2 axis = along_x ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
 		float bend = dot(normalize(view.xz + vec2(1e-5)), axis);
-		mown *= 1.0 + (club_field_detail ? 0.026 : stripe_amp) * stripe * bend;
+		// Keep the club's subtle cap while letting stripe_amp=0 remove the stripes for guarded captures.
+		float active_stripe_amp = club_field_detail ? clamp(stripe_amp, 0.0, 0.026) : stripe_amp;
+		mown *= 1.0 + active_stripe_amp * stripe * bend;
 		float from_end = half_len - abs(along);
 		float zone = smoothstep(6.0, 12.0, from_end) * (1.0 - smoothstep(26.0, 34.0, from_end));
 		float centre = 1.0 - smoothstep(0.12, 0.45, abs(across) / max(half_wid, 0.1));
@@ -198,25 +200,6 @@ vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footpri
 		mown *= mix(vec3(1.0), club_field_detail ? vec3(1.01, 0.985, 0.91) : vec3(1.12, 1.0, 0.78), w);
 	}
 	return mix(underneath, mown, inside);
-}
-
-// Maintained grass around the club runway and two short taxi strips on its pilot side. These are colour only:
-// the validated runway, rotor pad and ground contact rectangles are unchanged. A break keeps the rotor pad clear.
-vec3 club_turf(vec3 grass_colour, vec2 p) {
-	if (!club_field_detail || abs(p.x) > 57.0 || p.y < -28.0 || p.y > -1.5) return grass_colour;
-	float edge_noise = (vnoise(p / 3.7 + 19.0) - 0.5) * 0.75;
-	vec2 apron_d = abs(p - vec2(0.0, -15.0));
-	float apron = (1.0 - smoothstep(53.2 + edge_noise, 55.2 + edge_noise, apron_d.x))
-		* (1.0 - smoothstep(11.0 + edge_noise, 13.0 + edge_noise, apron_d.y));
-	float wide = 1.0 - smoothstep(0.85, 1.45, abs(p.y + 6.35) + edge_noise * 0.15);
-	float ends = (1.0 - smoothstep(42.0, 44.0, abs(p.x))) * smoothstep(3.7, 5.8, abs(p.x));
-	float links = (1.0 - smoothstep(1.15, 1.8, abs(abs(p.x) - 39.0)))
-		* smoothstep(-9.8, -9.1, p.y) * (1.0 - smoothstep(-7.1, -6.4, p.y));
-	float taxi = clamp(max(wide * ends, links), 0.0, 1.0);
-	vec3 apron_colour = grass_colour * vec3(1.055, 1.065, 1.025);
-	vec3 taxi_colour = grass_colour * vec3(0.955, 0.97, 0.91);
-	vec3 result = mix(grass_colour, apron_colour, apron * 0.85);
-	return mix(result, taxi_colour, taxi * (0.72 + 0.2 * vnoise(p / 1.8 + 7.0)));
 }
 
 // Cubic edge feather and its derivative, matching GroundTerrain's C1 rectangle mask.
@@ -293,7 +276,7 @@ vec3 lobe_term(vec3 d) {
 
 void fragment() {
 	vec3 col = rough_grass_colour(world_pos.xz);
-	col = club_turf(col, world_pos.xz);
+	col = club_turf(col, world_pos.xz, club_field_detail);
 	// Evaluate derivatives before the terrain branch; suppress subpixel relief and skip all wave work beyond 80 m.
 	vec2 footprint = fwidth(world_pos.xz);
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;

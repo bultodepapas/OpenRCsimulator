@@ -31,6 +31,7 @@ uniform uint appearance_shadow_seed = 1253u;
 uniform float appearance_shadow_cluster = 0.0;
 uniform float fade_start_m = 22.0;
 uniform float fade_end_m = 30.0;
+uniform bool club_field_detail = false;
 varying vec3 world_pos;
 varying float cloud_transmission;
 
@@ -61,7 +62,7 @@ vec3 lobe_term(vec3 d) {
 void fragment() {
 	// Override after the renderer's back-face flip: grass roots receive the same upward lighting as the ground.
 	NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
-	ALBEDO = rough_grass_colour(world_pos.xz) * mix(1.0, 0.94, UV.y);
+	ALBEDO = club_turf(rough_grass_colour(world_pos.xz), world_pos.xz, club_field_detail) * mix(1.0, 0.94, UV.y);
 	ROUGHNESS = 1.0;
 	METALLIC = 0.0;
 	SPECULAR = 0.0;

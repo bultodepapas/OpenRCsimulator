@@ -31,7 +31,14 @@ static func propose(source_profile: Variant, source_bindings: Variant,
 
 	var source: Dictionary = checked_source["profile"]
 	var target: Dictionary = checked_target["profile"].duplicate(true)
-	# Copy review is not an implicit schema migration. Keep both records intact.
+	# A stock v1 target has no authored choices to migrate. Offer its current-format
+	# equivalent in the review; the caller still applies only after confirmation.
+	var promoted_legacy_target := false
+	if int(source.version) == Presentation.VERSION \
+			and target == Presentation.defaults(target_bindings, Presentation.LEGACY_VERSION):
+		target = Presentation.defaults(target_bindings)
+		promoted_legacy_target = true
+	# Customized legacy profiles still require an explicit migration.
 	if int(source.version) != int(target.version):
 		return _failure(PackedStringArray(["Appearance profiles use different schema versions; review an explicit migration before copying."]))
 	var source_slots: Dictionary = {
@@ -68,7 +75,7 @@ static func propose(source_profile: Variant, source_bindings: Variant,
 			errors.append("Proposed profile is unavailable against the target bindings.")
 		return _failure(errors)
 	return {"ok": true, "errors": errors, "profile": checked_proposal["profile"].duplicate(true),
-		"applied": applied, "skipped": skipped}
+		"applied": applied, "skipped": skipped, "promoted_legacy_target": promoted_legacy_target}
 
 
 static func _compatibility_reason(domain: String, entry: Dictionary, source_slot: Dictionary,

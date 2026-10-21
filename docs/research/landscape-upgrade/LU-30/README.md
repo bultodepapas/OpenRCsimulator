@@ -77,8 +77,17 @@ it is a visual adaptation, not a voltage-rated suspension-string design.
 Five lattices, 30 insulators and 28 conductors total 76,939 triangles.
 The isolated scenery-build test measures 715,023 triangles across the scene,
 with the same 60 merged cells. Its former 650,000 ceiling is raised explicitly
-to 725,000 for these downloaded assets; the build-time ceiling remains 800 ms
-(675 ms measured in the final checked run).
+to 725,000 for these downloaded assets; the cold-build target remains 800 ms
+(675 ms measured in the final checked run). The v0.1.7 test reports cold timing
+and gates two warm builds at 800 ms on the same runner.
+
+The v0.1.7 release check uses this 725,000 ceiling for non-fleet field geometry,
+the separately reviewed SC-09-R1 350,000 ceiling for parked aircraft, and a
+30,000 ceiling for lake-context additions. Godot 4.7.2 measured 998,305 field
+triangles, including 273,421 fleet triangles (724,884 non-fleet), and 26,340
+additional lake-context triangles. The complete lake-context scene is 1,024,645
+triangles. The former LU-21 650,000 assertion predates both the power-line and
+parked-fleet additions; these three component limits preserve bounded checks.
 
 Passed checks:
 

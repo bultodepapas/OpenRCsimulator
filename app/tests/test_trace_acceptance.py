@@ -93,7 +93,7 @@ class TraceAcceptance(unittest.TestCase):
             ('jensen-das-ugly-stik-60', 'propeller-rpm-lag-v1', 'none', False),
             # The Extra source installs a dedicated glow carburettor model; the P-51
             # source supplies the shaft power curve used by the coupled RPM balance.
-            ('gp-extra-300s-60', 'glow-mean-cycle-carburettor-v4', 'none', False),
+            ('gp-extra-300s-60', 'glow-mean-cycle-carburettor-v4', 'tail-slipstream-increment-v1', True),
             ('p51d-mustang-120', 'propeller-shaft-coupled-rk4-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
             # BAT-13: the Timber flies its finite pack by default; --battery=ideal keeps the fixed bus.

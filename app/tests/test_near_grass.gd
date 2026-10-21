@@ -308,8 +308,9 @@ func _test_field_builder_and_scenery_hook() -> void:
 	_check("default SC-16/SC-17 data validates", bool(validated_scenery.get("ok", false)), str(validated_scenery.get("errors", [])))
 	if bool(validated_scenery.get("ok", false)):
 		var counts: Dictionary = _scenery_ornament_counts(validated_scenery.scenery)
-		_check("validated scenery retires procedural cushions and keeps six downloaded shrub placements",
-			counts.flowers == 0 and counts.bushes == 6, str(counts))
+		_check("validated scenery retires procedural cushions and retains pavilion and orchard shrub placements",
+			counts.flowers == 0 and counts.bushes == 18
+			and counts.bushes_by_group == {"bushes": 6, "countryside-orchard": 12}, str(counts))
 
 	OS.set_environment("OPENRC_SCENERY", "on")
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
@@ -616,6 +617,7 @@ func _quantity(value: float) -> Dictionary:
 func _scenery_ornament_counts(scenery: Dictionary) -> Dictionary:
 	var flowers: int = 0
 	var bushes: int = 0
+	var bushes_by_group: Dictionary = {}
 	for group: Dictionary in scenery.groups:
 		if group.type == "flowers":
 			flowers += group.positions.size()
@@ -623,4 +625,6 @@ func _scenery_ornament_counts(scenery: Dictionary) -> Dictionary:
 			for placement: Dictionary in group.placements:
 				if placement.prefab == "bush":
 					bushes += 1
-	return {"flowers": flowers, "bushes": bushes}
+					var group_id := str(group.get("id", ""))
+					bushes_by_group[group_id] = int(bushes_by_group.get(group_id, 0)) + 1
+	return {"flowers": flowers, "bushes": bushes, "bushes_by_group": bushes_by_group}

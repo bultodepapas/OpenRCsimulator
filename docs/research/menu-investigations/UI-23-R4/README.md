@@ -47,3 +47,12 @@ Reproduce from the repository root in PowerShell (the harness writes to `tmp/men
 The final retained Windows runs report one **3840×2160, 144-DPI display**. The initial session reported 1920×1080/96 DPI; once Windows reported 4K, the matrix was repeated and a separate fullscreen pass added. The nine fullscreen images verify `Window.MODE_FULLSCREEN`, actual display dimensions and actual image pixels for Home, Settings and Pause in EN/ES at normal text, plus ES at 200%. See [windowed log](native-final.log) and [fullscreen log](native-fullscreen.log). Ultrawide images remain native-size window renders. Mixed-monitor DPI transitions, physical controller usability and exported builds remain open.
 
 No new assets, dependencies, physics tuning or golden-flight recordings are introduced. The shared working tree also contains unrelated work; the recorded source hashes identify this slice without claiming ownership of those changes.
+
+## v0.1.7 compact Settings follow-up
+
+The current 200% Settings theme left only 7 px of scroll body at 960×540 and
+43 px at 1024×576 in both languages. On these short canvases, Settings now uses
+a 16 px outer gutter, 12 px vertical panel padding and 4 px spacing between
+its shell rows. Header, category tabs, status and Save/Close actions stay
+outside the scroll body. Godot 4.7.2 reran the full EN/ES responsive matrix:
+560 cases, zero failures, including all 12 previously collapsed Settings cases.

@@ -81,8 +81,7 @@ func _run() -> void:
 	var panel: Control = app.pause_menu.get("_panel")
 	_check("32:9 Pause sidebar sits inside the centred span", panel != null and panel.get_global_rect().position.x >= margin - 1.0,
 		"panel=%s" % (panel.get_global_rect() if panel != null else Rect2()))
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 
 	# --- AL-3: opaque panels reach the sidebar fade that Pause and Natural Random draw.
 	UiTheme.opaque_panels = true

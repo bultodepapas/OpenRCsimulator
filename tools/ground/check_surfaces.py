@@ -196,14 +196,17 @@ def index_captures(manifest: dict[str, Any], folder: Path,
     return indexed
 
 
-def check_surface_metadata(manifest: dict[str, Any], priority: bool) -> None:
-    expected_kinds = [1, 2] if priority else [3, 2]
+def check_surface_metadata(manifest: dict[str, Any], fixture: str) -> None:
+    expected = {
+        "default": ([3, 2], ["rough", "runway", "helicopter-pad-surface"]),
+        "priority_baseline": ([2], ["rough", "runway"]),
+        "priority": ([1, 2], ["rough", "runway", "mown"]),
+    }
+    expected_kinds, expected_input_order = expected[fixture]
     if manifest.get("surface_count") != len(expected_kinds) or manifest.get("surface_kinds") != expected_kinds:
-        raise RuntimeError("surface arrays do not contain mown/rotorpad-before-runway priority order")
-    expected_input_order = (["rough", "runway", "mown"] if priority
-                            else ["rough", "runway", "helicopter-pad-surface"])
+        raise RuntimeError(f"{fixture}: surface arrays do not have the expected priority order")
     if manifest.get("surface_input_order") != expected_input_order:
-        raise RuntimeError("priority fixture input order was not reversed as intended")
+        raise RuntimeError(f"{fixture}: surface input order differs from the fixture")
     rects = manifest.get("surface_rects")
     bounds = manifest.get("surface_bounds")
     if not isinstance(rects, list) or len(rects) != len(expected_kinds) or not isinstance(bounds, list) or len(bounds) != 4:
@@ -332,9 +335,10 @@ def pair_metrics(folder: Path, captures: dict[tuple[str, float, str], tuple[dict
     return result
 
 
-def make_priority_field(default_path: Path, output_path: Path) -> None:
+def make_priority_fields(default_path: Path, baseline_path: Path, priority_path: Path) -> None:
     raw = json.loads(default_path.read_text())
     surfaces = copy.deepcopy(raw["surfaces"])
+    rough = copy.deepcopy(next(surface for surface in surfaces if surface["type"] == "rough"))
     runway = copy.deepcopy(next(surface for surface in surfaces if surface["type"] == "runway"))
     mown = copy.deepcopy(runway)
     mown["id"] = "mown"
@@ -343,13 +347,17 @@ def make_priority_field(default_path: Path, output_path: Path) -> None:
         mown[key] = {"value": value, "unit": "m", "kind": "estimated",
                      "source": "L9c priority capture fixture around the existing runway; visual test only."}
     raw["id"] = "l9c_priority_capture"
-    # Input order puts runway below the later mown rectangle; the renderer must retain runway priority.
-    raw["surfaces"] = [next(surface for surface in surfaces if surface["type"] == "rough"), runway, mown]
+    # Compare two otherwise identical synthetic fields. The default club has
+    # textures, trees and flight cues that cannot serve as the pixel baseline.
+    raw["surfaces"] = [rough, runway]
     # The broad pad crosses the field validator's reserved tree corridor; trees are irrelevant to this GPU fixture.
     raw["objects"] = []
     raw.pop("flight_cues", None)  # Broad synthetic mown pad is independent of flight-cue placement.
     raw.pop("rotorcraft_pad", None)  # This synthetic layout replaces the referenced rotorpad surface.
-    output_path.write_text(json.dumps(raw, indent=2) + "\n")
+    baseline_path.write_text(json.dumps(raw, indent=2) + "\n")
+    # Input order puts runway below the later mown rectangle; the renderer must retain runway priority.
+    raw["surfaces"].append(mown)
+    priority_path.write_text(json.dumps(raw, indent=2) + "\n")
 
 
 def main() -> int:
@@ -374,11 +382,14 @@ def main() -> int:
     if out.exists() and (not out.is_dir() or any(out.iterdir())):
         parser.error(f"output must be new or empty; stale evidence is refused: {out}")
     out.mkdir(parents=True, exist_ok=True)
-    folders = {name: out / name for name in ("default-repeat-1", "default-repeat-2", "priority-repeat-1", "priority-repeat-2")}
+    folders = {name: out / name for name in ("default-repeat-1", "default-repeat-2",
+                                              "priority_baseline-repeat-1", "priority_baseline-repeat-2",
+                                              "priority-repeat-1", "priority-repeat-2")}
     for folder in folders.values():
         folder.mkdir()
+    baseline_path = out / "priority-baseline-field.json"
     priority_path = out / "priority-field.json"
-    make_priority_field(app / "data/fields/default.json", priority_path)
+    make_priority_fields(app / "data/fields/default.json", baseline_path, priority_path)
     env = dict(os.environ, LP_NUM_THREADS="1", OPENRC_SCENERY="off", OPENRC_SCENERY_AUDIO="off",
                OPENRC_SCENERY_BIRDS="off", PYTHONDONTWRITEBYTECODE="1")
     base = ["xvfb-run", "-a", "-s", SCREEN, str(godot), "--path", str(app), "--rendering-driver", "opengl3",
@@ -386,16 +397,17 @@ def main() -> int:
     manifests: dict[str, dict[str, Any]] = {}
     repeat_counts: dict[str, int] = {}
     commands: dict[str, list[str]] = {}
-    for label in ("default", "priority"):
+    for label in ("default", "priority_baseline", "priority"):
         for repeat in (1, 2):
             name = f"{label}-repeat-{repeat}"
             command = [*base, f"--out={folders[name]}"]
-            if label == "priority":
-                command += [f"--field={priority_path}", "--fixture=priority"]
+            if label != "default":
+                command += [f"--field={baseline_path if label == 'priority_baseline' else priority_path}",
+                            "--fixture=priority"]
             commands[name] = command
             checked_run(command, out / f"{name}.log", env, args.timeout)
             manifests[name] = load_manifest(folders[name])
-            check_surface_metadata(manifests[name], priority=(label == "priority"))
+            check_surface_metadata(manifests[name], label)
         repeat_counts[label] = compare_repeats(folders[f"{label}-repeat-1"], folders[f"{label}-repeat-2"],
                                                 manifests[f"{label}-repeat-1"], manifests[f"{label}-repeat-2"])
     default_folder = folders["default-repeat-1"]
@@ -403,28 +415,35 @@ def main() -> int:
     metrics = pair_metrics(default_folder, default_captures)
     custom_folder = folders["priority-repeat-1"]
     custom_captures = index_captures(manifests["priority-repeat-1"], custom_folder, {"runway_zoom_100"})
-    default_on = default_captures[("runway_zoom_100", 0.0, "on")][1]
+    baseline_folder = folders["priority_baseline-repeat-1"]
+    baseline_captures = index_captures(manifests["priority_baseline-repeat-1"], baseline_folder,
+                                       {"runway_zoom_100"})
+    baseline_on = baseline_captures[("runway_zoom_100", 0.0, "on")][1]
+    baseline_off = baseline_captures[("runway_zoom_100", 0.0, "off")][1]
     custom_on = custom_captures[("runway_zoom_100", 0.0, "on")][1]
-    default_meta = default_captures[("runway_zoom_100", 0.0, "on")][0]
+    baseline_meta = baseline_captures[("runway_zoom_100", 0.0, "on")][0]
+    custom_meta = custom_captures[("runway_zoom_100", 0.0, "on")][0]
+    custom_off = custom_captures[("runway_zoom_100", 0.0, "off")][1]
+    if (baseline_meta["projected_runway"] != custom_meta["projected_runway"]
+            or not np.array_equal(baseline_off, custom_off)):
+        raise RuntimeError("priority fixtures differ outside their enabled surface batch")
     # The 12 m runway width is about nine pixels in this end-on 10° view.
     # A seven-pixel erosion leaves a three-pixel interior band and discards edge AA.
-    runway_core = filter_mask(polygon_mask(default_meta), 7, ImageFilter.MinFilter)
-    default_changed = np.max(np.abs(default_on.astype(np.int16) - default_captures[("runway_zoom_100", 0.0, "off")][1].astype(np.int16)), axis=2) > 1
-    runway_core &= default_changed
+    runway_core = filter_mask(polygon_mask(baseline_meta), 7, ImageFilter.MinFilter)
+    baseline_changed = np.max(np.abs(baseline_on.astype(np.int16) - baseline_off.astype(np.int16)), axis=2) > 1
+    runway_core &= baseline_changed
     if np.count_nonzero(runway_core) < 16:
         raise RuntimeError("custom priority comparison has no runway core")
-    priority_delta = np.abs(default_on.astype(np.int16) - custom_on.astype(np.int16))[runway_core]
+    priority_delta = np.abs(baseline_on.astype(np.int16) - custom_on.astype(np.int16))[runway_core]
     priority_mean = float(priority_delta.mean())
     priority_p95 = float(np.quantile(priority_delta, 0.95))
     if priority_mean > 2.0 or priority_p95 > 5.0:
         raise RuntimeError(f"runway lost priority under overlapping mown surface: mean={priority_mean:.2f}, p95={priority_p95:.2f}")
-    custom_meta = custom_captures[("runway_zoom_100", 0.0, "on")][0]
     if "mown" not in custom_meta.get("projected_surfaces", {}):
         raise RuntimeError("priority fixture is missing its projected mown rectangle")
     mown_mask = polygon_mask({"projected_runway": custom_meta["projected_surfaces"]["mown"]})
     runway_mask = polygon_mask(custom_meta)
     mown_ring = mown_mask & ~filter_mask(runway_mask, 11, ImageFilter.MaxFilter)
-    custom_off = custom_captures[("runway_zoom_100", 0.0, "off")][1]
     mown_effect = np.max(np.abs(custom_on.astype(np.int16) - custom_off.astype(np.int16)), axis=2)
     mown_pixels = mown_ring & (mown_effect > 1)
     if np.count_nonzero(mown_pixels) < 32 or float(mown_effect[mown_pixels].mean()) < 2.0:
@@ -432,8 +451,9 @@ def main() -> int:
     metrics["reversed_input_priority_fixture"] = {
         "surface_count": 2,
         "shader_kind_order": manifests["priority-repeat-1"]["surface_kinds"],
-        "runway_core_mean_abs_rgb_delta_from_default": round(priority_mean, 4),
-        "runway_core_p95_abs_rgb_delta_from_default": round(priority_p95, 4),
+        "runway_core_mean_abs_rgb_delta_from_baseline": round(priority_mean, 4),
+        "runway_core_p95_abs_rgb_delta_from_baseline": round(priority_p95, 4),
+        "surface_disabled_baseline_matches_variant": True,
         "mean_limit_levels": 2.0,
         "p95_limit_levels": 5.0,
         "mown_ring_changed_pixels": int(np.count_nonzero(mown_pixels)),
