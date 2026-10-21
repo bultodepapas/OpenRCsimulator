@@ -106,11 +106,16 @@ func _default_and_switch() -> void:
 		"%s | %s" % [home.language_button.text, home.control_label.text])
 	_check("AUX profile errors translate", TranslationServer.translate("Could not save the updated controller profile; the existing profile is unchanged.") == "No se pudo guardar el perfil de control actualizado; el perfil existente no cambió." and TranslationServer.translate("The current controller profile could not be updated.") == "No se pudo actualizar el perfil de control actual.")
 	_check("focus stays on Language", ui.focus_name() == "Language", ui.focus_name())
+	var companion_summary := "Compañeros de vuelo: Ninguno · 1"
+	_check("Home companion summary and detail translate", home.companions_button.text == companion_summary
+		and home.companions_button.tooltip_text.begins_with("Compañeros de vuelo: Ninguno · 1 compañeros · semilla 1"),
+		"%s | %s" % [home.companions_button.text, home.companions_button.tooltip_text])
 	var untranslated := PackedStringArray()
 	var spanish_values := {}
 	var spanish_catalog: Translation = load("res://i18n/es.po")
 	for source in spanish_catalog.get_message_list():
 		spanish_values[spanish_catalog.get_message(source)] = true
+	spanish_values[companion_summary] = true # Dynamic text was checked against its Spanish template above.
 	for c in home.find_children("*", "", true, false):
 		if (c is Label or c is Button) and c.can_auto_translate() and c.text != "" \
 			and c.atr(c.text) == c.text and not spanish_values.has(c.text):

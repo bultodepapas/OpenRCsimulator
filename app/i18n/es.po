@@ -4906,6 +4906,18 @@ msgstr "La migración del humo heredado no está disponible para este modelo."
 msgid "Flight companions"
 msgstr "Compañeros de vuelo"
 
+msgid "Flight companions: %s · %d"
+msgstr "Compañeros de vuelo: %s · %d"
+
+msgid "Flight companions: %s · %d companions · seed %d"
+msgstr "Compañeros de vuelo: %s · %d compañeros · semilla %d"
+
+msgid "Flight companions · next restart: %s · %d · seed %d"
+msgstr "Compañeros de vuelo · próximo reinicio: %s · %d · semilla %d"
+
+msgid "Available for airplanes at Club Field."
+msgstr "Disponible para aviones en el campo del club."
+
 msgid "Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use."
 msgstr "Vuelos experimentales con compañeros. Empieza con un avión; añadir más aumenta el uso de CPU."
 
