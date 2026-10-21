@@ -54,6 +54,17 @@ Two camera positions and three fixed crops do not establish perceptual absence o
 
 The production triangle-integral square filter is mathematically consistent; its uniform one-dimensional footprint remains an approximation to a projected two-dimensional pixel. This step adds a defensible regression measurement instead of tuning the appearance to an ambiguous motion score.
 
+## Club-field ablation repair (2026-10-21)
+
+During v0.1.7 preparation, a club-field presentation change bypassed the
+`stripe_amp` uniform with a fixed `0.026` amplitude. The stripe-only capture
+therefore returned zero signal for both its filtered and raw controls, because
+setting `stripe_amp=0` no longer removed the visible stripes. The production
+shader now caps the club amplitude at `0.026` through that same uniform. Its
+normal `0.05` setting retains the club appearance, while zero disables the
+stripes for the guarded comparison. The raw-wave and no-stripes controls remain
+part of the full visual gate.
+
 - [PBRT: texture sampling and antialiasing](https://pbr-book.org/4ed/Textures_and_Materials/Texture_Sampling_and_Antialiasing): filtering and supersampling principles.
 - [PBRT: image reconstruction](https://pbr-book.org/4ed/Sampling_and_Reconstruction/Image_Reconstruction): box-filter limitations.
 - [Godot Camera3D](https://docs.godotengine.org/en/stable/classes/class_camera3d.html): cropped frustum API; signatures checked against the pinned 4.7.2 engine.

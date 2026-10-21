@@ -190,7 +190,9 @@ vec3 surface_colour(vec3 rough, vec3 underneath, vec2 p, vec3 view, vec2 footpri
 		float stripe = square_filtered(u, (along_x ? footprint.y : footprint.x) / (2.0 * stripe_m));
 		vec2 axis = along_x ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
 		float bend = dot(normalize(view.xz + vec2(1e-5)), axis);
-		mown *= 1.0 + (club_field_detail ? 0.026 : stripe_amp) * stripe * bend;
+		// Keep the club's subtle cap while letting stripe_amp=0 remove the stripes for guarded captures.
+		float active_stripe_amp = club_field_detail ? clamp(stripe_amp, 0.0, 0.026) : stripe_amp;
+		mown *= 1.0 + active_stripe_amp * stripe * bend;
 		float from_end = half_len - abs(along);
 		float zone = smoothstep(6.0, 12.0, from_end) * (1.0 - smoothstep(26.0, 34.0, from_end));
 		float centre = 1.0 - smoothstep(0.12, 0.45, abs(across) / max(half_wid, 0.1));
