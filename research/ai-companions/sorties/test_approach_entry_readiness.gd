@@ -73,6 +73,10 @@ func _run() -> void:
 	wrapped_heading_reverse.expected_heading_rad = PI - 0.01
 	wrapped_heading_reverse.yaw_rad = -PI + 0.01
 	_assert(bool(readiness_script.classify(wrapped_heading_reverse).ready), "heading error wraps across ±π in the reverse direction")
+	var zero_ground_speed := nominal.duplicate(true)
+	zero_ground_speed.ground_speed_mps = 0.0
+	_assert(bool(readiness_script.classify(zero_ground_speed).ready), "zero measured ground speed is accepted")
+	_assert_rejected(nominal, "ground_speed_mps", -0.001, "ground_speed")
 
 	var invalid_prediction := nominal.duplicate(true)
 	invalid_prediction.gate_prediction_valid = false

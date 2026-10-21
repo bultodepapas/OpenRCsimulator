@@ -43,7 +43,7 @@ static func classify(metrics: Dictionary) -> Dictionary:
 		reasons.append("bank")
 	if not is_finite(sink) or absf(sink) > SINK_TOLERANCE_MPS:
 		reasons.append("sink")
-	if not is_finite(ground_speed):
+	if not is_finite(ground_speed) or ground_speed < 0.0:
 		reasons.append("ground_speed")
 	var prediction_valid: Variant = metrics.get("gate_prediction_valid", false)
 	var prediction_is_valid := false
