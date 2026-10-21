@@ -156,3 +156,9 @@ WEB-06 support-strip refinement: centered the support content at a maximum 1280 
 ## WEB-07 — v0.1.7 release page preparation, 2026-10-20
 
 Prepared Spanish and English release copy from `docs/releases/v0.1.7.md`. The page links the three platform archives, `SHA256SUMS`, first-launch guide and release notes to tag v0.1.7. It identifies the release as stable software for an early-alpha simulator, retains the open Stik sideslip and R02 yaw checks, and removes the superseded P51-22 pending-acceptance claim. ZIP signing and macOS notarization limits are stated accurately. Local Chrome checks of both languages show the expected URLs and no console warnings or errors. At 390×844, the page has no horizontal overflow; the opening and download section were visually reviewed. The v0.1.7 tag and assets are not public yet, so those external URLs and the deployed page remain unverified.
+
+## WEB-07 — public v0.1.7 deployment, 2026-10-21
+
+The [tag CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/39583319215) passed every job and published the [stable release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.7). The downloaded `SHA256SUMS` file matches its published SHA-256 digest, and its three ZIP hashes match the corresponding release-asset digests. [Pages deployment](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/39597561362) succeeded at `ee4833792a61a19c7683566f1a4eaf1fad0ef0db` on `gh-pages`.
+
+The public Spanish and English pages show all four v0.1.7 download links, the tagged first-flight guide and release notes. All six release links returned HTTP 200. Chrome at 390×844 showed no horizontal overflow or empty translations, and no console warnings or errors. The opening and download section were visually reviewed on the public page.
