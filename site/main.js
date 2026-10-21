@@ -28,7 +28,7 @@ const aircraft = {
   timber: {name:'Turbo Lumber<br>Evolution',span:'1.55 m',power:'800 Kv / 4S',guide:'TIMBER-INTEGRATION-PLAN',category:['EL LADO ELÉCTRICO','THE ELECTRIC SIDE'],description:['Un ala alta eléctrico con ruedas fijas y sonido propio. Inicio en el aire o en pista, sin asistencias; su propulsión aún usa datos estimados.','An electric high-wing model with fixed wheels and its own sound. Airborne or runway starts, assists off; propulsion still uses estimated data.'],gear:['Ruedas fijas','Fixed wheels']}
 };
 
-Object.assign(translations, websiteCopy, {devAvailableCopy:'Stable desktop software release. Its notes describe exactly what the package contains.'});
+Object.assign(translations, websiteCopy);
 aircraft.heli = {name:'RC Helicopter<br>Research Trainer',span:'HX-700',power:'X-Cell .60',guide:'HELICOPTER',category:['ALAS QUE GIRAN','ROTATING WINGS'],description:['Visual HX-700 y física de referencia X-Cell .60 SE. Un entrenador experimental con arranque en plataforma, vuelo estacionario y kit nocturno; no es un modelo HX-700 calibrado.','HX-700 visuals with X-Cell .60 SE reference physics. An experimental trainer with ground-pad startup, hover practice and a night kit; not a calibrated HX-700 flight model.'],gear:['Patines','Skids']};
 
 const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting'],savoxPartner:['Savox, aliados','Savox, project partners']};

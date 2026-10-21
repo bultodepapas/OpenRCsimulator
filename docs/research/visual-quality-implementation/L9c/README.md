@@ -55,6 +55,30 @@ The full-suite and trace comparisons preceded concurrent DATA-3 metadata edits;
 the fresh-clone visual proof applies only this landscape change. Captured render
 and tool source hashes match the working files.
 
+## Release priority-fixture correction (2026-10-21)
+
+The [v0.1.7 preparation visual run](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/39550153153)
+reported a 6.88 mean and 10.00 p95 RGB-level difference at the runway core.
+The checker compared the current default club field against a synthetic field
+with a different ID and without its trees and flight cues. The club ID now also
+enables dedicated ground detail, so the two captures represent different scenes;
+this difference cannot establish that the mown rectangle covered the runway.
+
+The priority check now renders a synthetic runway-only baseline and a variant
+with the overlapping mown rectangle. Both use the same field ID, scenery,
+camera and capture settings. Their surface-disabled images must match byte for
+byte; each fixture also repeats in a separate process. The original full club
+captures still measure runway readability. The production shader and field data
+are unchanged.
+
+The local Linux Compatibility run with pinned Godot 4.7.2 completed: 24 default
+and four captures per synthetic fixture repeated byte for byte; the surface-off
+baseline and variant matched exactly. Runway-core mean/p95 RGB deltas were both
+0.00 against limits 2.00/5.00, while the mown ring changed 23,040 pixels. The
+disabled-surface shader mutation was rejected. The 100 m club-runway edge kept
+29.8% Weber contrast. This verifies the software comparison, not pilot-visible
+shimmer or physical field accuracy.
+
 ## Intermittent headless import abort (2026-10-16)
 
 Two visual CI runs, [38931908363](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38931908363)
