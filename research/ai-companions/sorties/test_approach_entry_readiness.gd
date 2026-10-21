@@ -73,6 +73,9 @@ func _run() -> void:
 	var invalid_prediction := nominal.duplicate(true)
 	invalid_prediction.gate_prediction_valid = false
 	_assert_rejected_result(invalid_prediction, "gate_prediction", "invalid wind/gate prediction is refused")
+	var missing_prediction := nominal.duplicate(true)
+	missing_prediction.erase("gate_prediction_valid")
+	_assert_rejected_result(missing_prediction, "gate_prediction", "missing gate prediction is refused")
 	for malformed_prediction: Variant in [1, 0, "true", "false", null]:
 		var malformed := nominal.duplicate(true)
 		malformed.gate_prediction_valid = malformed_prediction

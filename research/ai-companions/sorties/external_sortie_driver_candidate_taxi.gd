@@ -25,13 +25,13 @@ const TAXI_POLICY_ID := "AFC09-taxi-speed-c1"
 const DEFAULT_TAXI_TARGET_SPEED_MPS := 1.5 # provisional bounded-sweep point; not selected for acceptance
 const DEFAULT_TAXI_MAX_GROUND_SPEED_MPS := 2.0
 const DEFAULT_TAXI_THROTTLE_CAP := 0.45
-const DEFAULT_TAXI_THROTTLE_FEEDFORWARD := 0.28
-const DEFAULT_TAXI_SPEED_KP := 0.18
-const DEFAULT_TAXI_SPEED_KI := 0.04
-const DEFAULT_TAXI_INTEGRAL_LIMIT := 0.5
-const DEFAULT_TAXI_YAW_LIMIT := 1.0 # normalized rudder command; aircraft data caps nose steering at 20 deg
+const DEFAULT_TAXI_THROTTLE_FEEDFORWARD := 0.12
+const DEFAULT_TAXI_SPEED_KP := 0.28
+const DEFAULT_TAXI_SPEED_KI := 0.08
+const DEFAULT_TAXI_INTEGRAL_LIMIT := 1.0
+const DEFAULT_TAXI_YAW_LIMIT := 0.55 # retain C5e's normalized steering demand while testing throttle control
 const DEFAULT_TAXI_YAW_KP := 1.5
-const DEFAULT_TAXI_YAW_RATE_DAMPING := 0.4
+const DEFAULT_TAXI_YAW_RATE_DAMPING := 0.0 # preserve the measured C5e yaw law for this isolated taxi candidate
 const DEFAULT_TAXI_SPEED_GUARD_MARGIN_MPS := 0.15
 const DEFAULT_TAXI_PROGRESS_DEADLINE_S := 8.0
 const DEFAULT_TAXI_PROGRESS_DISTANCE_M := 0.25
@@ -43,9 +43,10 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 		taxi_override: Dictionary = {}) -> Dictionary:
 	if not is_finite(duration_s) or duration_s <= IDLE_HOLD_S or duration_s > MAX_DURATION_S:
 		return {ok = false, error = "duration must be finite and in (1, 240] seconds"}
-	var taxi_config: Dictionary = _validated_taxi_config(taxi_override)
-	if not bool(taxi_config.get("ok", false)):
-		return {ok = false, error = str(taxi_config.get("error", "invalid taxi controller configuration"))}
+	var validated_taxi_config: Dictionary = _validated_taxi_config(taxi_override)
+	if not bool(validated_taxi_config.get("ok", false)):
+		return {ok = false, error = str(validated_taxi_config.get("error", "invalid taxi controller configuration"))}
+	var taxi_config: Dictionary = validated_taxi_config.config
 	var loaded: Dictionary = FieldLoader.load_from()
 	if not loaded.ok:
 		return {ok = false, error = "field load refused: " + "; ".join(loaded.errors)}
@@ -227,12 +228,14 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 		vacate_target_north_m = vacate_target_north,
 		vacate_timeout = false,
 		vacate_policy_id = TAXI_POLICY_ID,
+		vacate_controller_config = taxi_config.duplicate(true),
 		vacate_target_speed_mps = float(taxi_config.target_speed_mps),
 		vacate_max_ground_speed_limit_mps = float(taxi_config.max_ground_speed_mps),
 		vacate_max_ground_speed_mps = 0.0,
 		vacate_max_throttle_command = 0.0,
 		vacate_max_actual_rudder_deg = 0.0,
 		vacate_max_rudder_servo_normalized = 0.0,
+		vacate_max_nosewheel_steering_deg = 0.0,
 		vacate_max_yaw_rate_rad_s = 0.0,
 		vacate_max_rpm = 0.0,
 		vacate_speed_guard_triggered = false,
@@ -243,6 +246,7 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 		vacate_progress_timeout = false,
 		vacate_progress_elapsed_s = -1.0,
 		vacate_all_wheels_down = true,
+		vacate_all_anchors = true,
 		vacate_full_footprint_clear = false,
 		vacate_lateral_footprint_violation = false,
 		vacate_min_lateral_footprint_margin_m = INF,
@@ -433,11 +437,16 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 			out.vacate_max_heading_error_rad = maxf(float(out.vacate_max_heading_error_rad), absf(wrapf(-current_yaw, -PI, PI)))
 			var current_surfaces: Dictionary = session.surface_angles_deg()
 			var current_servos: Dictionary = session.surfaces()
+			var nosewheel_angle_deg: float = float(current_servos.get("yaw", 0.0)) * nosewheel_steering_limit_deg
 			out.vacate_max_actual_rudder_deg = maxf(float(out.vacate_max_actual_rudder_deg), absf(float(current_surfaces.get("rudder", 0.0))))
 			out.vacate_max_rudder_servo_normalized = maxf(float(out.vacate_max_rudder_servo_normalized), absf(float(current_servos.get("yaw", 0.0))))
+			out.vacate_max_nosewheel_steering_deg = maxf(float(out.vacate_max_nosewheel_steering_deg), absf(nosewheel_angle_deg))
 			out.vacate_max_yaw_rate_rad_s = maxf(float(out.vacate_max_yaw_rate_rad_s), absf(after[12]))
 			out.vacate_max_rpm = maxf(float(out.vacate_max_rpm), float(session.sim.aux[FlightSession.AUX_RPM]))
+			out.vacate_speed_guard_triggered = bool(taxi_controller.get("speed_guard_triggered", false))
+			out.vacate_speed_guard_hits = int(taxi_controller.get("speed_guard_hits", 0))
 			out.vacate_all_wheels_down = bool(out.vacate_all_wheels_down) and all_wheels_down
+			out.vacate_all_anchors = bool(out.vacate_all_anchors) and all_anchors
 			var full_exit_clear: bool = all_wheels_clear_north and all_hull_clear_north
 			if full_exit_clear:
 				vacate_clear_ticks += 1
@@ -475,7 +484,8 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 			if bool(out.runway_vacated) and session.sim.time() - vacate_start_time >= 2.0:
 				out.vacate_end = {tick = session.sim.tick, time_s = session.sim.time(), speed_mps = speed_mps,
 				north_m = after[0], east_m = after[1], all_wheels_clear_north = all_wheels_clear_north,
-					all_hull_clear_north = all_hull_clear_north, all_wheels_down = all_wheels_down}
+					all_hull_clear_north = all_hull_clear_north, all_wheels_down = all_wheels_down,
+					all_anchors = all_anchors}
 				out.complete = true
 				break
 		if index % sample_interval == 0:
@@ -491,6 +501,7 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 				sample.command_yaw = float(command.get("yaw", 0.0))
 				sample.actual_yaw_servo_normalized = float(actual_servos.get("yaw", NAN))
 				sample.actual_rudder_deg = float(actual_surfaces.get("rudder", NAN))
+				sample.actual_nosewheel_steering_deg = float(actual_servos.get("yaw", NAN)) * nosewheel_steering_limit_deg
 				sample.yaw_rate_body_rad_s = after[12]
 				sample.throttle_command = float(command.get("throttle", 0.0))
 				sample.applied_throttle = float(session.propulsion_throttle())
@@ -636,6 +647,10 @@ static func _vacate_commands(state: PackedFloat64Array, target_north: float, ela
 	var yaw_rate: float = state[12]
 	var yaw_command: float = clampf(float(config.yaw_kp) * heading_error - float(config.yaw_rate_damping) * yaw_rate,
 		-float(config.yaw_limit), float(config.yaw_limit))
+	if absf(heading_error) < deg_to_rad(7.0):
+		var reduced_yaw_limit: float = minf(0.25, float(config.yaw_limit))
+		yaw_command = clampf(float(config.yaw_kp) * heading_error - float(config.yaw_rate_damping) * yaw_rate,
+			-reduced_yaw_limit, reduced_yaw_limit)
 	var error: float = float(config.target_speed_mps) - speed
 	var integral: float = float(controller.get("speed_integral", 0.0))
 	var integral_limit: float = float(config.integral_limit)

@@ -9,19 +9,26 @@ const WindConfig := preload("res://physics/wind_config.gd")
 
 var options: Dictionary = {}
 var driver: Script
+var readiness_script: Script
 var checks := 0
 var failures: Array[String] = []
+var candidate_driver := false
 
 
 func _initialize() -> void:
-	driver = load(get_script().resource_path.get_base_dir().path_join("external_sortie_driver.gd"))
-	if driver == null:
-		printerr("External sortie research driver is unavailable.")
-		quit(2)
-		return
 	for argument: String in OS.get_cmdline_user_args():
 		var pair: PackedStringArray = argument.trim_prefix("--").split("=", true, 1)
 		options[pair[0]] = pair[1] if pair.size() > 1 else true
+	var selected_driver: String = str(options.get("driver", ""))
+	candidate_driver = not selected_driver.is_empty()
+	if selected_driver.is_empty():
+		selected_driver = get_script().resource_path.get_base_dir().path_join("external_sortie_driver.gd")
+	driver = load(selected_driver)
+	readiness_script = load(get_script().resource_path.get_base_dir().path_join("approach_entry_readiness.gd"))
+	if driver == null or readiness_script == null:
+		printerr("External sortie research driver or entry-readiness classifier is unavailable.")
+		quit(2)
+		return
 	call_deferred("_run")
 
 
@@ -56,8 +63,14 @@ func _run() -> void:
 		printerr("Weather configuration refused: " + str(checked_weather.get("errors", [])))
 		quit(2)
 		return
-	var result: Dictionary = driver.run(direction == "east", log_path, duration_s, pilot_path,
-		checked_weather.config, profile, true)
+	var taxi_override: Dictionary = _taxi_override_from_options()
+	var result: Dictionary
+	if candidate_driver:
+		result = driver.run(direction == "east", log_path, duration_s, pilot_path,
+			checked_weather.config, profile, true, taxi_override)
+	else:
+		result = driver.run(direction == "east", log_path, duration_s, pilot_path,
+			checked_weather.config, profile, true)
 	if not result.get("ok", false):
 		failures.append("session setup: " + str(result.get("error", "unknown failure")))
 	else:
@@ -105,6 +118,8 @@ func _run() -> void:
 			"supported <= 0.5 m/s rollout holds for 2 s with settled angular rate and <2 mm drift", JSON.stringify(stable))
 		_assert(bool(result.get("runway_vacated", false)), "physical taxi exit clears the loaded runway", str(result.get("vacate_end", {})))
 		_check_circuit(result, direction == "east")
+		if candidate_driver:
+			_check_taxi_candidate(result)
 	var report: Dictionary = result.duplicate(true)
 	report.checks = checks
 	report.failures = failures.duplicate()
@@ -143,6 +158,22 @@ func _check_circuit(result: Dictionary, eastbound: bool) -> void:
 	var expected_east: float = float(result.get("runway_center_east_m", 0.0)) + gate_along * (1.0 if eastbound else -1.0)
 	var expected_heading: float = wrapf(heading + float(pilot_diagnostics.get("approach_crab_angle_rad", 0.0)), -PI, PI)
 	var actual_east: float = float(approach.get("east_m", INF))
+	var gate_prediction_valid: bool = pilot_diagnostics.is_empty() or bool(pilot_diagnostics.get("approach_gate_prediction_valid", false))
+	var entry_classification: Dictionary = readiness_script.classify({
+		altitude_m = approach.get("altitude_m", NAN),
+		airspeed_mps = approach.get("airspeed_mps", NAN),
+		north_m = approach.get("north_m", NAN),
+		runway_center_north_m = result.get("runway_center_north_m", NAN),
+		east_m = actual_east,
+		expected_east_m = expected_east,
+		yaw_rad = approach.get("yaw_rad", NAN),
+		expected_heading_rad = expected_heading,
+		bank_rad = approach.get("bank_rad", NAN),
+		sink_mps = approach.get("sink_mps", NAN),
+		ground_speed_mps = approach.get("ground_speed_mps", NAN),
+		gate_prediction_valid = gate_prediction_valid,
+	})
+	result.approach_entry_readiness = entry_classification
 	_assert(not approach.is_empty() and absf(float(approach.get("altitude_m", -100.0)) - 6.0) <= 0.5
 		and absf(float(approach.get("airspeed_mps", -100.0)) - 12.0) <= 0.5
 		and (pilot_diagnostics.is_empty() or bool(pilot_diagnostics.get("approach_gate_prediction_valid", false)))
@@ -165,6 +196,72 @@ func _from_degrees(profile: String, direction: String) -> float:
 			return 180.0
 		_:
 			return 0.0
+
+
+func _taxi_override_from_options() -> Dictionary:
+	var option_to_parameter := {
+		"taxi-target-speed": "target_speed_mps",
+		"taxi-max-ground-speed": "max_ground_speed_mps",
+		"taxi-throttle-cap": "throttle_cap",
+		"taxi-throttle-feedforward": "throttle_feedforward",
+		"taxi-speed-kp": "speed_kp",
+		"taxi-speed-ki": "speed_ki",
+		"taxi-integral-limit": "integral_limit",
+		"taxi-yaw-limit": "yaw_limit",
+		"taxi-yaw-kp": "yaw_kp",
+		"taxi-yaw-rate-damping": "yaw_rate_damping",
+		"taxi-speed-guard-margin": "speed_guard_margin_mps",
+		"taxi-progress-deadline": "progress_deadline_s",
+		"taxi-progress-distance": "progress_distance_m",
+	}
+	var overrides := {}
+	for option_name: String in option_to_parameter:
+		if options.has(option_name):
+			var raw_value: String = str(options[option_name])
+			if not raw_value.is_valid_float():
+				overrides["invalid_cli_value_%s" % option_name] = raw_value
+			else:
+				overrides[option_to_parameter[option_name]] = float(raw_value)
+	return overrides
+
+
+func _check_taxi_candidate(result: Dictionary) -> void:
+	var config: Dictionary = result.get("vacate_controller_config", {})
+	var max_speed: float = float(result.get("vacate_max_ground_speed_mps", INF))
+	var configured_max_speed: float = float(result.get("vacate_max_ground_speed_limit_mps", -INF))
+	var guard_margin: float = float(config.get("speed_guard_margin_mps", INF))
+	_assert(str(result.get("vacate_policy_id", "")) == "AFC09-taxi-speed-c1",
+		"candidate uses the separately versioned research taxi policy", str(result.get("vacate_policy_id", "")))
+	_assert(not bool(result.get("vacate_progress_timeout", true)) and float(result.get("vacate_progress_elapsed_s", 0.0)) < 0.0,
+		"taxi progress deadline was not exhausted", str([result.get("vacate_progress_timeout"), result.get("vacate_progress_elapsed_s")]))
+	_assert(bool(result.get("vacate_all_wheels_down", false)) and bool(result.get("vacate_all_anchors", false))
+		and bool(result.get("vacate_full_footprint_clear", false)),
+		"all wheels and contact anchors remain supported while every hull point and wheel clears the north runway edge",
+		str([result.get("vacate_all_wheels_down"), result.get("vacate_all_anchors"),
+			result.get("vacate_full_footprint_clear"), result.get("vacate_end", {})]))
+	_assert(not bool(result.get("vacate_lateral_footprint_violation", true)),
+		"full taxi footprint stays within runway side corridor until the north-side exit",
+		str(result.get("vacate_min_lateral_footprint_margin_m", NAN)))
+	_assert(is_finite(max_speed) and is_finite(configured_max_speed) and max_speed <= configured_max_speed + 0.1,
+		"measured ground speed stays below max-GS guard plus 0.1 m/s tolerance",
+		str([max_speed, configured_max_speed, guard_margin, result.get("vacate_speed_guard_triggered"), result.get("vacate_speed_guard_hits")]))
+	_assert(float(result.get("vacate_max_throttle_command", INF)) <= float(config.get("throttle_cap", -INF)) + 1e-9,
+		"physical taxi throttle never exceeds the configured cap",
+		str([result.get("vacate_max_throttle_command"), config.get("throttle_cap")]))
+	var rudder_throw_deg: float = float(result.get("vacate_rudder_servo_throw_deg", NAN))
+	var steering_limit_deg: float = float(result.get("vacate_nosewheel_steering_limit_deg", NAN))
+	var rudder_actual_deg: float = float(result.get("vacate_max_actual_rudder_deg", INF))
+	var servo_normalized: float = float(result.get("vacate_max_rudder_servo_normalized", INF))
+	var nosewheel_actual_deg: float = float(result.get("vacate_max_nosewheel_steering_deg", INF))
+	_assert(is_finite(rudder_throw_deg) and is_finite(steering_limit_deg) and steering_limit_deg >= 0.0
+		and rudder_actual_deg <= absf(rudder_throw_deg) * float(config.get("yaw_limit", 1.0)) + 0.1
+		and servo_normalized <= float(config.get("yaw_limit", 1.0)) + 1e-6
+		and nosewheel_actual_deg <= steering_limit_deg + 0.1,
+		"measured rudder-servo response stays within the accepted rudder and nosewheel limits",
+		str([rudder_throw_deg, steering_limit_deg, rudder_actual_deg, servo_normalized,
+			nosewheel_actual_deg, result.get("vacate_max_yaw_rate_rad_s")]))
+	_assert(result.get("contact_event_history", []).is_empty() and not bool(result.get("terminal_damage", true)),
+		"taxi remains clear of contact events and damage", str([result.get("contact_event_history", []), result.get("terminal_damage")]))
 
 
 func _assert(condition: bool, label: String, detail: String = "") -> void:

@@ -1,0 +1,738 @@
+{
+  "format": "AFC-09 R1 C5e eight-directional-control verification v1",
+  "recorded_from": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties",
+  "summary": {
+    "candidate": "AFC09-C5e",
+    "selected_cases": 8,
+    "full_22_gate_passes": 5,
+    "full_22_gate_failures": 3,
+    "physical_runway_vacate_completions": 6,
+    "physical_taxi_timeouts": 2,
+    "approach_entry_failures": 1,
+    "setup_failures_in_selected_matrix": 0,
+    "exact_replays_ok": 8,
+    "exact_replay_solver_changed_count": 0,
+    "acceptance": "C5e remains exploratory; the eight-case matrix is not accepted because 3 of 8 cases fail an existing gate."
+  },
+  "candidate_identity": {
+    "pilot_id": "AFC09-C5e final_join TAS feedback gain 0.16, fixed bias 0.0",
+    "pilot_path_in_reports": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+    "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+    "accepted_aircraft_id": "jensen-das-ugly-stik-60",
+    "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "physics_hz": 240,
+    "dt_s": 0.004166666666666667
+  },
+  "source_identities_common_to_selected_runs": {
+    "field_id": "default",
+    "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+    "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+    "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+    "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+    "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa"
+  },
+  "failure_analysis": {
+    "west_headwind": {
+      "gate_tas_mps": 12.5342797305149,
+      "existing_upper_limit_mps": 12.5,
+      "excess_mps": 0.03427973051489985,
+      "physical_vacate_completed": true
+    },
+    "south_crosswind_taxies": [
+      "east seed 20261027",
+      "west seed 20261051"
+    ],
+    "taxi_trace_observation": "At +3 s, both south-crosswind cases have fallen to 0.075/0.165 m/s with steering command and actual rudder servo near ±0.53/±0.57, throttle 0.232/0.223, RPM 4569/4481; by +5 s they remain near 0.02–0.03 m/s while throttle is about 0.237 and RPM about 4780. The passing west north-crosswind case reaches 1.714 m/s at +3 s, with command/servo 0.099, throttle 0.069, RPM 3427, and completes the footprint exit in 5.633 s.",
+    "causal_limit": "The south-profile ORFLs show a positive northward wind component near +0.5 m/s, while the passing north-profile case shows about -0.5 m/s. This direction-correlated result does not establish wind compensation or a single cause; it is evidence of a low-speed/high-steering interaction needing a controlled ground-speed sweep."
+  },
+  "excluded_setup_attempt": {
+    "classification": "setup_failure_excluded_replaced_by_r1",
+    "selected_matrix_case": false,
+    "error": [
+      "session setup: unknown failure"
+    ],
+    "checks": 0,
+    "raw_report": {
+      "file": "AFC09-c5e-east-headwind-s20261015.json",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015.json",
+      "bytes": 454,
+      "sha256": "739af5577c67549aeedf99fef17dc1e135ce24d1e2e902cf1332585c0f05b2b5"
+    },
+    "orfl": "none (empty log hash; session setup failed)",
+    "replacement_report": "AFC09-c5e-east-headwind-s20261015-r1.json"
+  },
+  "cases": [
+    {
+      "direction": "east",
+      "weather_profile": "calm",
+      "turbulence_seed": 0,
+      "full_22_gate_pass": true,
+      "failed_check_count": 0,
+      "failure_class": "none",
+      "failure_summary": "all 22 checks passed",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 5.89166666666667,
+      "approach_entry": {
+        "tick": 19611,
+        "time_s": 81.7125,
+        "airspeed_mps": 12.2740724862372,
+        "altitude_m": 5.98138722417092,
+        "north_m": 14.5798597206294,
+        "east_m": -134.991176949172,
+        "ground_speed_mps": 12.2740724862372,
+        "yaw_rad": 1.55834575260808,
+        "bank_rad": 0.0121969513971199,
+        "sink_mps": 0.252633668825776
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 30664,
+        "first_tick": 0,
+        "final_tick": 30663,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "929f3d3de4e98692b923276453cbe3b0dd2d94f1bf0cd9ffb2b885ec38191c1e",
+        "replay_report": {
+          "file": "AFC09-c5e-east-calm-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\replay.json",
+          "bytes": 6805,
+          "sha256": "9986f247ffc6b0dd83c5e6669a16f33cfbedaced4d7ac69925db799b1453ae34"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-east-calm-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\flight.csv",
+          "bytes": 29172073,
+          "sha256": "7a32d2fba1c74b2f525dc4cac5f35b86b50b9ef48966757ec2072607567c4963"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-east-calm.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm.json",
+        "bytes": 211123,
+        "sha256": "c1646dbc78a09819899eb575a1ae415abe3280861f808aa6ac19bf82e85dccc5"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-east-calm.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm.orfl",
+        "bytes": 28815288,
+        "sha256": "929f3d3de4e98692b923276453cbe3b0dd2d94f1bf0cd9ffb2b885ec38191c1e"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "2ccf7636512f85b940332f90a4a5d69f26f590aaf245e1e4f8100b5703377e52"
+      }
+    },
+    {
+      "direction": "east",
+      "weather_profile": "headwind",
+      "turbulence_seed": 20261015,
+      "full_22_gate_pass": true,
+      "failed_check_count": 0,
+      "failure_class": "none",
+      "failure_summary": "all 22 checks passed",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 6.10833333333332,
+      "approach_entry": {
+        "tick": 25025,
+        "time_s": 104.270833333333,
+        "airspeed_mps": 11.7811132154108,
+        "altitude_m": 5.97714531268139,
+        "north_m": 14.9436029914942,
+        "east_m": -122.684120556327,
+        "ground_speed_mps": 10.2026922586512,
+        "yaw_rad": 1.56990350490945,
+        "bank_rad": -0.0133331554320345,
+        "sink_mps": 0.108616099313803
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 33206,
+        "first_tick": 0,
+        "final_tick": 33205,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "6fb89cdfaf5577e34fa6fce55c7a1df2fa0f3bec51f82bafb12ffa40b35cbeae",
+        "replay_report": {
+          "file": "AFC09-c5e-east-headwind-s20261015-r1-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\replay.json",
+          "bytes": 7980,
+          "sha256": "3448f76eae17a9f5cb8fdc5166f5a1bff9abd06a08170628562249da046855c4"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-east-headwind-s20261015-r1-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\flight.csv",
+          "bytes": 38483487,
+          "sha256": "8704062b6018dce1117bba35607ec9db8f68b3a419ed3c059b7d94d330b0025c"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-east-headwind-s20261015-r1.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1.json",
+        "bytes": 227879,
+        "sha256": "5759464476fcbc3a146227e7f214ec8fc55e11ceee7ebb0e8ee12c7d9d6ea8d2"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-east-headwind-s20261015-r1.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1.orfl",
+        "bytes": 32936988,
+        "sha256": "6fb89cdfaf5577e34fa6fce55c7a1df2fa0f3bec51f82bafb12ffa40b35cbeae"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "28d5e5204f5e1592b1be980c5c9d4c9e55b43de055b2bb6f8eaf74dc0d659466"
+      }
+    },
+    {
+      "direction": "east",
+      "weather_profile": "north_crosswind_0p5",
+      "turbulence_seed": 20261025,
+      "full_22_gate_pass": true,
+      "failed_check_count": 0,
+      "failure_class": "none",
+      "failure_summary": "all 22 checks passed",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 5.93333333333334,
+      "approach_entry": {
+        "tick": 19468,
+        "time_s": 81.1166666666667,
+        "airspeed_mps": 12.2843094756234,
+        "altitude_m": 5.98071080278361,
+        "north_m": 14.5346372765525,
+        "east_m": -134.608546451804,
+        "ground_speed_mps": 12.3554884677296,
+        "yaw_rad": 1.51398789114512,
+        "bank_rad": 0.0162409763191565,
+        "sink_mps": 0.27588822160593
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 30779,
+        "first_tick": 0,
+        "final_tick": 30778,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "183e5d4613d67a923cf035d52b207469b67116651dbbcc305997e03c6c1815ed",
+        "replay_report": {
+          "file": "AFC09-c5e-east-north-crosswind-0p5-s20261025-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\replay.json",
+          "bytes": 7996,
+          "sha256": "2637ed4a5898ba414602a868195176801d7b7390ab2277b1a2fdc6251ef34996"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-east-north-crosswind-0p5-s20261025-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\flight.csv",
+          "bytes": 35668919,
+          "sha256": "d620845b3bd40c7cbd85f277acfa00e87d1a23dcf1b397a5011f2390cc56bec0"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-east-north-crosswind-0p5-s20261025.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025.json",
+        "bytes": 211608,
+        "sha256": "6edf54d0232301d8cf85dad0d33ecdecd31d4153b05ecc3d35bad5969e50d441"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-east-north-crosswind-0p5-s20261025.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025.orfl",
+        "bytes": 30877740,
+        "sha256": "183e5d4613d67a923cf035d52b207469b67116651dbbcc305997e03c6c1815ed"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "b8afff9a96914370248f566ab19d59c8e90b230594b3a72f4dd80e8d592c9aaa"
+      }
+    },
+    {
+      "direction": "east",
+      "weather_profile": "south_crosswind_0p5",
+      "turbulence_seed": 20261027,
+      "full_22_gate_pass": false,
+      "failed_check_count": 2,
+      "failure_class": "physical_taxi_timeout",
+      "failure_summary": "physical north-side taxi failed to vacate within 45 s",
+      "physical_sortie_complete": false,
+      "physical_runway_vacated": false,
+      "vacate_timeout": true,
+      "vacate_time_s": -1.0,
+      "approach_entry": {
+        "tick": 19536,
+        "time_s": 81.4,
+        "airspeed_mps": 12.2448782827261,
+        "altitude_m": 5.9802902362334,
+        "north_m": 14.6957754216593,
+        "east_m": -134.519119966972,
+        "ground_speed_mps": 12.2735502691399,
+        "yaw_rad": 1.60445193599242,
+        "bank_rad": 0.00535206817726989,
+        "sink_mps": 0.237130647606265
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 40087,
+        "first_tick": 0,
+        "final_tick": 40086,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "aba2cde2048429984442cff0ebce8fa92b493d0007c906a37a824c185fcd8de2",
+        "replay_report": {
+          "file": "AFC09-c5e-east-south-crosswind-0p5-s20261027-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\replay.json",
+          "bytes": 8057,
+          "sha256": "7903fa30492addccac9b13a7f85feced2a574378f1bbe70f003562121f3ab778"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-east-south-crosswind-0p5-s20261027-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\flight.csv",
+          "bytes": 45744203,
+          "sha256": "0a34c1d38021b5f139697af8276ca747c513685d8467f01f9956b0855f1e6eda"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-east-south-crosswind-0p5-s20261027.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027.json",
+        "bytes": 273133,
+        "sha256": "3862f2aa509f061ab6b9e11c54169462d73e121297b2c8e63877a36fe57811df"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-east-south-crosswind-0p5-s20261027.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027.orfl",
+        "bytes": 38775584,
+        "sha256": "aba2cde2048429984442cff0ebce8fa92b493d0007c906a37a824c185fcd8de2"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "279f0ca63cdf7f31a464a30d304be240320bbb34c24f496a8e53da52aef056c4"
+      }
+    },
+    {
+      "direction": "west",
+      "weather_profile": "calm",
+      "turbulence_seed": 0,
+      "full_22_gate_pass": true,
+      "failed_check_count": 0,
+      "failure_class": "none",
+      "failure_summary": "all 22 checks passed",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 5.58750000000001,
+      "approach_entry": {
+        "tick": 19611,
+        "time_s": 81.7125,
+        "airspeed_mps": 12.2734572360962,
+        "altitude_m": 5.98073530207259,
+        "north_m": 15.4219415817261,
+        "east_m": 134.959893512265,
+        "ground_speed_mps": 12.2734572360962,
+        "yaw_rad": -1.58329462814888,
+        "bank_rad": 0.0122596249523723,
+        "sink_mps": 0.249138731410641
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 30583,
+        "first_tick": 0,
+        "final_tick": 30582,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "b58fd8d89c8527b2d6e26d2536e45a71b0cef5f7a094423b4641f409cd927f98",
+        "replay_report": {
+          "file": "AFC09-c5e-west-calm-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\replay.json",
+          "bytes": 6806,
+          "sha256": "63fa6bf4b5e7fa4a615968d7ea98f1e98f848467d74deb8756cc210d53d7516a"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-west-calm-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\flight.csv",
+          "bytes": 29087959,
+          "sha256": "8bd6f3ad1aff28bde8c6d6da562a591b56ffa6bd2ded897e83cf6535623c9c01"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-west-calm.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm.json",
+        "bytes": 210607,
+        "sha256": "5a69584d350fc74c637c333f9121b67a9646a5a066d8cbbaf3eda1aeb2ae066b"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-west-calm.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm.orfl",
+        "bytes": 28751784,
+        "sha256": "b58fd8d89c8527b2d6e26d2536e45a71b0cef5f7a094423b4641f409cd927f98"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "2ccf7636512f85b940332f90a4a5d69f26f590aaf245e1e4f8100b5703377e52"
+      }
+    },
+    {
+      "direction": "west",
+      "weather_profile": "headwind",
+      "turbulence_seed": 20261039,
+      "full_22_gate_pass": false,
+      "failed_check_count": 1,
+      "failure_class": "approach_entry_tas",
+      "failure_summary": "approach TAS exceeded 12.5 m/s by 0.034279731 m/s",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 5.78333333333333,
+      "approach_entry": {
+        "tick": 21419,
+        "time_s": 89.2458333333333,
+        "airspeed_mps": 12.5342797305149,
+        "altitude_m": 5.9896501492647,
+        "north_m": 15.0621894138042,
+        "east_m": 123.078627598313,
+        "ground_speed_mps": 10.3003033369108,
+        "yaw_rad": -1.55802819800184,
+        "bank_rad": -0.00281678811961343,
+        "sink_mps": 0.248348527790138
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 29777,
+        "first_tick": 0,
+        "final_tick": 29776,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "9233845fa8655349254db09bbb8ac9b62770499c7da2685d3b32747d6c869b33",
+        "replay_report": {
+          "file": "AFC09-c5e-west-headwind-s20261039-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\replay.json",
+          "bytes": 7977,
+          "sha256": "fedea19061726e4877dce02a5aa26c9d96012d3451865e26cf98986973edfe00"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-west-headwind-s20261039-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\flight.csv",
+          "bytes": 34421162,
+          "sha256": "de2a1b895e02143089bdfc73364251d163d4a52a2c89b53f2e97739e02154f36"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-west-headwind-s20261039.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039.json",
+        "bytes": 206742,
+        "sha256": "3fc9ea7484bdec87d14f2498880338c4da66835f2002cda75d57f63553acfc8a"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-west-headwind-s20261039.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039.orfl",
+        "bytes": 30027576,
+        "sha256": "9233845fa8655349254db09bbb8ac9b62770499c7da2685d3b32747d6c869b33"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "fd5b01e1b8e0774abfba6e987978ae04fbff9da53e2974789106c36b32a4fbb3"
+      }
+    },
+    {
+      "direction": "west",
+      "weather_profile": "north_crosswind_0p5",
+      "turbulence_seed": 20261044,
+      "full_22_gate_pass": true,
+      "failed_check_count": 0,
+      "failure_class": "none",
+      "failure_summary": "all 22 checks passed",
+      "physical_sortie_complete": true,
+      "physical_runway_vacated": true,
+      "vacate_timeout": false,
+      "vacate_time_s": 5.63333333333334,
+      "approach_entry": {
+        "tick": 19540,
+        "time_s": 81.4166666666667,
+        "airspeed_mps": 12.2766651654021,
+        "altitude_m": 5.98224365200365,
+        "north_m": 15.3568500951306,
+        "east_m": 135.081751724852,
+        "ground_speed_mps": 12.3374124005173,
+        "yaw_rad": -1.54663409356436,
+        "bank_rad": 0.00861897192106524,
+        "sink_mps": 0.293193771449173
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 30680,
+        "first_tick": 0,
+        "final_tick": 30679,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "e96d9fe43443a2d5b786bae2c11d704c4a93d1c251e9ef7cc392e64525caeb77",
+        "replay_report": {
+          "file": "AFC09-c5e-west-north-crosswind-0p5-s20261044-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\replay.json",
+          "bytes": 7993,
+          "sha256": "4aefed196149cdecefd751030c5b6f185649214bf5acaf372d5e671c1024807a"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-west-north-crosswind-0p5-s20261044-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\flight.csv",
+          "bytes": 35586065,
+          "sha256": "a51d2e22d8445e714396c7f4dcf15b9ecce0202b66da9555308abccefd107d8d"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-west-north-crosswind-0p5-s20261044.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044.json",
+        "bytes": 211536,
+        "sha256": "b4c6bd9fd2f701cb4ad613b0154ee3442acf07a12706ae4644115065c0ccd65f"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-west-north-crosswind-0p5-s20261044.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044.orfl",
+        "bytes": 30793676,
+        "sha256": "e96d9fe43443a2d5b786bae2c11d704c4a93d1c251e9ef7cc392e64525caeb77"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "e43fb15d72ae143aa2a7efeb0b6c91e999cd418b29349268e8f8eaa6ac0cd8ef"
+      }
+    },
+    {
+      "direction": "west",
+      "weather_profile": "south_crosswind_0p5",
+      "turbulence_seed": 20261051,
+      "full_22_gate_pass": false,
+      "failed_check_count": 2,
+      "failure_class": "physical_taxi_timeout",
+      "failure_summary": "physical north-side taxi failed to vacate within 45 s",
+      "physical_sortie_complete": false,
+      "physical_runway_vacated": false,
+      "vacate_timeout": true,
+      "vacate_time_s": -1.0,
+      "approach_entry": {
+        "tick": 19712,
+        "time_s": 82.1333333333333,
+        "airspeed_mps": 12.307928835499,
+        "altitude_m": 5.9794426731435,
+        "north_m": 15.5269168465753,
+        "east_m": 134.485792917709,
+        "ground_speed_mps": 12.3103338951582,
+        "yaw_rad": -1.63024782409278,
+        "bank_rad": 0.0181205487761856,
+        "sink_mps": 0.278694418300706
+      },
+      "exact_replay": {
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 40324,
+        "first_tick": 0,
+        "final_tick": 40323,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "source_orfl_sha256": "707c23c47b394f15d6695deccc490f04f235582f1ce803f19f6a92f73aaba59b",
+        "replay_report": {
+          "file": "AFC09-c5e-west-south-crosswind-0p5-s20261051-exact/replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\replay.json",
+          "bytes": 8072,
+          "sha256": "4ee675086a5a771b3781f27d80439dc7145ed5d53f08f1b7f5eab72760389171"
+        },
+        "numeric_flight_csv": {
+          "file": "AFC09-c5e-west-south-crosswind-0p5-s20261051-exact/flight.csv",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\flight.csv",
+          "bytes": 46025997,
+          "sha256": "add7e5502c5bb0e4825f5d2b10fe2931f09a94eacfa762d78f80106f13116243"
+        }
+      },
+      "raw_report": {
+        "file": "AFC09-c5e-west-south-crosswind-0p5-s20261051.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051.json",
+        "bytes": 275175,
+        "sha256": "e4643afbc314045ab6fd5500c194d87829ca2306c29917d96f19f9be7d8807e1"
+      },
+      "raw_orfl": {
+        "file": "AFC09-c5e-west-south-crosswind-0p5-s20261051.orfl",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051.orfl",
+        "bytes": 38976692,
+        "sha256": "707c23c47b394f15d6695deccc490f04f235582f1ce803f19f6a92f73aaba59b"
+      },
+      "run_identity": {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "pilot_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "field_id": "default",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+        "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+        "weather_config_sha256": "924d3e4b056fd7a3f39d0045ce1372bb93a91cb9c9ed7dfb4e75332eed808f20"
+      }
+    }
+  ],
+  "c5f_single_case_followup": {
+    "classification": "exploratory_only_not_accepted",
+    "behavior_change": "Only final_join_speed_gain changed from 0.16 to 0.20; fixed bias remains zero. This was an isolated retune against the single C5e west-headwind +0.0343 m/s miss, so its one-case pass does not qualify the envelope.",
+    "pilot_sha256": "111ad447048f50ee242ecadf4981d8efdc2e6aaf4827ad4dd51697138381d7e0",
+    "report": {
+      "file": "AFC09-c5f-west-headwind-s20261039-dmirror.json",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror.json",
+      "bytes": 205910,
+      "sha256": "4ac572f4c6a7376485d6a3773a6c78319bcf61b8e68e488884f907da73a56061"
+    },
+    "orfl": {
+      "file": "AFC09-c5f-west-headwind-s20261039-dmirror.orfl",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror.orfl",
+      "bytes": 30044536,
+      "sha256": "27717a2c7d2da2dc6e73710dd4ba821c50304332891ca01dd62f27d74959651a"
+    },
+    "exact_replay": {
+      "status": "ok",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 29797,
+      "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+      "replay_report": {
+        "file": "AFC09-c5f-west-headwind-s20261039-dmirror-exact/replay.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror-exact\\replay.json",
+        "bytes": 7981,
+        "sha256": "02efa7b89109e3630b05384150e3ad63dc15cb659e7e651ba4adccee6a790816"
+      },
+      "numeric_flight_csv": {
+        "file": "AFC09-c5f-west-headwind-s20261039-dmirror-exact/flight.csv",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror-exact\\flight.csv",
+        "bytes": 34447531,
+        "sha256": "490af92c60361bb5d370f3db9efcf4272f3a308bf6b66fe87dc3d35f34986e33"
+      }
+    },
+    "result": {
+      "checks": 22,
+      "failed_check_count": 0,
+      "physical_sortie_complete": true,
+      "runway_vacated": true
+    }
+  }
+}

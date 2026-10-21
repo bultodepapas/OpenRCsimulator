@@ -67,6 +67,12 @@ pilot difficulty choices, incidents, comic scenarios and busy-skies presets are
 still planned. No control advertises them as available. No model, physics law,
 solver frequency or golden flight was retuned to make this slice work.
 
+The separate [sortie research](research/ai-companions/AFC-09-R1/README.md) physically
+flies takeoff, circuit, landing and runway-exit trials through the existing session
+seam. Five of eight directional/weather cases pass all their gates; approach
+overspeed and two stalled exit turns keep this behavior out of the runtime fleet.
+All eight recordings replay exactly, including the failed cases.
+
 The [reachable-controller research survey](research/ai-companions/AFC-04-R3/README.md)
 passes the 30 m player-separation target in six head-on/crossing cases per weather,
 each flown for 60 seconds. The intentionally conflicting two-threat spawn is

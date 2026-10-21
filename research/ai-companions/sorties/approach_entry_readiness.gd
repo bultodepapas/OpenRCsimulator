@@ -46,7 +46,10 @@ static func classify(metrics: Dictionary) -> Dictionary:
 	if not is_finite(ground_speed):
 		reasons.append("ground_speed")
 	var prediction_valid: Variant = metrics.get("gate_prediction_valid", false)
-	if typeof(prediction_valid) != TYPE_BOOL or not prediction_valid:
+	var prediction_is_valid := false
+	if typeof(prediction_valid) == TYPE_BOOL:
+		prediction_is_valid = prediction_valid
+	if not prediction_is_valid:
 		reasons.append("gate_prediction")
 	return {ready = reasons.is_empty(), reasons = Array(reasons)}
 

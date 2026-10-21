@@ -116,13 +116,24 @@ def source_identity_failures(expected: dict[str, Any], current: dict[str, Any]) 
 	failures: list[str] = []
 	if expected.get("engine_sha256") != current.get("engine_sha256"):
 		failures.append("Godot executable hash differs from the recorded source identity")
+	expected_projects = expected.get("projects", {})
+	current_projects = current.get("projects", {})
+	if not isinstance(expected_projects, dict) or not isinstance(current_projects, dict):
+		return failures + ["project source identities are malformed"]
 	for build_name in ("baseline", "candidate"):
-		expected_project = expected.get("projects", {}).get(build_name, {})
-		current_project = current.get("projects", {}).get(build_name, {})
+		expected_project = expected_projects.get(build_name, {})
+		current_project = current_projects.get(build_name, {})
+		if not isinstance(expected_project, dict) or not isinstance(current_project, dict):
+			failures.append(f"{build_name} source identity is malformed")
+			continue
 		if expected_project.get("sha256") != current_project.get("sha256") or expected_project.get("files") != current_project.get("files"):
 			failures.append(f"{build_name} source fingerprint differs from the recorded source identity")
+	expected_harness = expected.get("harness_sha256", {})
+	current_harness = current.get("harness_sha256", {})
+	if not isinstance(expected_harness, dict) or not isinstance(current_harness, dict):
+		return failures + ["harness source identities are malformed"]
 	for filename in HARNESS_FILES:
-		if expected.get("harness_sha256", {}).get(filename) != current.get("harness_sha256", {}).get(filename):
+		if expected_harness.get(filename) != current_harness.get(filename):
 			failures.append(f"{filename} hash differs from the recorded harness identity")
 	return failures
 
@@ -138,6 +149,9 @@ def legacy_receipt_failures(receipt: dict[str, Any], current: dict[str, Any]) ->
 	for build_name in ("baseline", "candidate"):
 		block = receipt.get(build_name, {})
 		current_project = current.get("projects", {}).get(build_name, {})
+		if not isinstance(block, dict) or not isinstance(current_project, dict):
+			failures.append(f"source receipt {build_name} identity is malformed")
+			continue
 		manifest = block.get("file_manifest")
 		if not isinstance(manifest, dict) or not manifest:
 			failures.append(f"source receipt has no full {build_name} file manifest")
@@ -147,6 +161,8 @@ def legacy_receipt_failures(receipt: dict[str, Any], current: dict[str, Any]) ->
 		if block.get("sha256") != current_project.get("sha256") or block.get("files") != current_project.get("files"):
 			failures.append(f"source receipt {build_name} fingerprint does not match the current project")
 	harness = receipt.get("harness", {})
+	if not isinstance(harness, dict):
+		return failures + ["source receipt harness identity is malformed"]
 	for filename in HARNESS_FILES:
 		value = harness.get(filename)
 		if not isinstance(value, str) or not SHA256_RE.fullmatch(value):
@@ -174,12 +190,19 @@ def accepted_pair_attempts(root_report: dict[str, Any], out: Path, pair_count: i
 			raise ValueError("accepted pair comparison is missing its pair or attempt identity") from error
 		if pair_number < 1 or pair_number > pair_count or attempt < 1 or pair_number in accepted:
 			raise ValueError("accepted pair identities are duplicated or outside the requested series")
-		pair_runs = [run for run in runs if int(run.get("pair", 0)) == pair_number and int(run.get("attempt", 1)) == attempt]
+		try:
+			pair_runs = [run for run in runs if int(run.get("pair", 0)) == pair_number and int(run.get("attempt", 1) or 1) == attempt]
+		except (AttributeError, TypeError, ValueError) as error:
+			raise ValueError("series run history contains an invalid pair or attempt identity") from error
 		if len(pair_runs) != 2:
 			raise ValueError(f"accepted pair {pair_number} does not have exactly two retained runs")
 		expected_order = orders[pair_number - 1]
 		for index, (run, build_name) in enumerate(zip(pair_runs, expected_order, strict=True), start=1):
-			if run.get("build_name") != build_name or int(run.get("order_in_pair", 0)) != index:
+			try:
+				order_in_pair = int(run.get("order_in_pair", 0))
+			except (AttributeError, TypeError, ValueError) as error:
+				raise ValueError(f"accepted pair {pair_number} has an invalid run order") from error
+			if run.get("build_name") != build_name or order_in_pair != index:
 				raise ValueError(f"accepted pair {pair_number} run order does not match the alternating schedule")
 			if run.get("complete") is not True or run.get("failures"):
 				raise ValueError(f"accepted pair {pair_number} contains an incomplete run")
@@ -216,8 +239,12 @@ def resume_contract_failures(
 	failures: list[str] = []
 	if root_report.get("format") != "openrc-tree-flight-quality-series-v1":
 		failures.append("--resume output is not a recognized flight-quality series")
-	if root_report.get("status") == "collected":
-		failures.append("series is already collected; it cannot be resumed")
+	if root_report.get("status") not in ("incomplete", "running"):
+		failures.append("series is not in an incomplete or interrupted state")
+	if not isinstance(root_report.get("resume_history", []), list):
+		failures.append("series resume history is malformed")
+	if not isinstance(root_report.get("runs"), list) or not isinstance(root_report.get("pairs"), list):
+		failures.append("series run/pair history is malformed")
 	if os.path.normcase(str(Path(str(root_report.get("out", ""))).resolve())) != os.path.normcase(str(out.resolve())):
 		failures.append("--out does not match the recorded series directory")
 	if os.path.normcase(str(Path(str(root_report.get("engine", ""))).resolve())) != os.path.normcase(str(engine.resolve())):
@@ -225,15 +252,23 @@ def resume_contract_failures(
 	if root_report.get("engine_sha256") != current_identities.get("engine_sha256"):
 		failures.append("Godot executable hash differs from the recorded series")
 	recorded_projects = root_report.get("projects", {})
+	if not isinstance(recorded_projects, dict):
+		failures.append("recorded project paths are malformed")
+		recorded_projects = {}
 	for build_name in ("baseline", "candidate"):
 		if os.path.normcase(str(Path(str(recorded_projects.get(build_name, ""))).resolve())) != os.path.normcase(str(projects[build_name].resolve())):
 			failures.append(f"{build_name} project path differs from the recorded series")
 	if root_report.get("environment_overrides") != {"baseline": baseline_environment, "candidate": candidate_environment}:
 		failures.append("environment overrides differ from the recorded series")
 	recorded_settings = root_report.get("settings", {})
+	if not isinstance(recorded_settings, dict):
+		failures.append("recorded series settings are malformed")
+		recorded_settings = {}
 	for key, value in series_settings(args).items():
 		# Legacy v1 output did not record timeout_s; it does not change sample contents.
 		if key == "timeout_s" and key not in recorded_settings:
+			if value != 600.0:
+				failures.append("legacy series omitted its timeout; resume must use the historical 600-second default")
 			continue
 		if recorded_settings.get(key) != value:
 			failures.append(f"setting {key} differs from the recorded series")
@@ -267,6 +302,29 @@ def run_identifier(pair_number: int, attempt: int, order_index: int, build_name:
 	if attempt == 1:
 		return f"pair-{pair_number:02d}-{order_index}-{build_name}"
 	return f"pair-{pair_number:02d}-attempt-{attempt:02d}-{order_index}-{build_name}"
+
+
+def accepted_identity_hashes(root_report: dict[str, Any], accepted: dict[int, int]) -> tuple[set[str], set[str], set[str]]:
+	frame_hashes: set[str] = set()
+	scenario_hashes: set[str] = set()
+	input_hashes: set[str] = set()
+	for run in root_report.get("runs", []):
+		pair_number = int(run.get("pair", 0))
+		if accepted.get(pair_number) != int(run.get("attempt", 1)):
+			continue
+		for key, target in (
+			("frame_samples_sha256", frame_hashes),
+			("scenario_sha256", scenario_hashes),
+			("input_tape_sha256", input_hashes),
+		):
+			value = run.get(key)
+			if not isinstance(value, str) or not value:
+				raise ValueError(f"accepted run {run.get('run_id')} is missing {key}")
+			target.add(value)
+	for label, values in (("FrameSamples source", frame_hashes), ("scenario", scenario_hashes), ("input route tape", input_hashes)):
+		if len(values) > 1:
+			raise ValueError(f"accepted pairs contain multiple {label} identities")
+	return frame_hashes, scenario_hashes, input_hashes
 
 
 def pair_identity_failures(left: dict[str, Any], right: dict[str, Any]) -> list[str]:
@@ -367,6 +425,12 @@ def main(argv: list[str] | None = None) -> int:
 	if args.width < 640 or args.height < 480 or args.fps < 1:
 		print("Width/height/fps are outside supported native qualification bounds.", file=sys.stderr)
 		return 2
+	if args.resume and not args.out:
+		print("--resume requires --out to name the existing series directory.", file=sys.stderr)
+		return 2
+	if args.resume_source_receipt and not args.resume:
+		print("--resume-source-receipt requires --resume.", file=sys.stderr)
+		return 2
 	engine = resolve_repo_path(args.engine)
 	projects = {
 		"baseline": resolve_repo_path(args.baseline),
@@ -382,54 +446,100 @@ def main(argv: list[str] | None = None) -> int:
 	try:
 		for project in projects.values():
 			validate_engine_and_project(engine, project)
-		make_fresh_directory(out)
-	except (FileNotFoundError, FileExistsError, RuntimeError) as error:
+		current_identities = source_identities(engine, projects)
+	except (FileNotFoundError, OSError, RuntimeError, KeyError) as error:
 		print(str(error), file=sys.stderr)
 		return 2
-
-	root_report: dict[str, Any] = {
-		"format": "openrc-tree-flight-quality-series-v1",
-		"status": "running",
-		"started_utc": utc_now(),
-		"engine": str(engine),
-		"engine_sha256": sha256_file(engine),
-		"projects": {name: str(path) for name, path in projects.items()},
-		"project_purpose": {"baseline": "same-revision tree baseline frozen by the qualification owner", "candidate": "same-revision tree candidate frozen by the qualification owner"},
-		"environment_overrides": {"baseline": baseline_environment, "candidate": candidate_environment},
-		"settings": {
-			"pairs": args.pairs,
-			"warmup_s": args.warmup,
-			"sample_s": args.sample,
-			"width": args.width,
-			"height": args.height,
-			"fps_cap": args.fps,
-			"vsync": "disabled; identical software cap via Godot --max-fps",
-			"weather": "calm",
-			"lighting": "2026-10-18 12:00 local simulation time",
-			"aircraft": "jensen-das-ugly-stik-60",
-			"start": "airborne, --quick-flight",
-			"camera": "pilot camera fixed at azimuth 0/elevation 5 degrees; auto-zoom off",
-			"route": "neutral tick-indexed input through FlightSession.read_raw",
-			"logger": "app/render/frame_samples.gd, invoked directly by the external research probe",
-			"render_settings": "root viewport MSAA_4X; actual viewport size is asserted against the run's requested dimensions",
-		},
-		"runs": [],
-		"pairs": [],
-		"out": str(out),
-	}
-	write_json(out / "series.json", root_report)
+	if args.resume_source_receipt:
+		try:
+			receipt = load_json(resolve_repo_path(args.resume_source_receipt))
+		except (OSError, json.JSONDecodeError, ValueError) as error:
+			print(f"could not load --resume-source-receipt: {error}", file=sys.stderr)
+			return 2
+	else:
+		receipt = None
+	accepted: dict[int, int] = {}
+	if args.resume:
+		series_path = out / "series.json"
+		try:
+			root_report = load_json(series_path)
+			contract_failures = resume_contract_failures(
+				root_report,
+				args=args,
+				out=out,
+				engine=engine,
+				projects=projects,
+				baseline_environment=baseline_environment,
+				candidate_environment=candidate_environment,
+				current_identities=current_identities,
+				receipt=receipt,
+			)
+			if contract_failures:
+				raise ValueError("; ".join(contract_failures))
+			accepted = accepted_pair_attempts(root_report, out, args.pairs)
+			frame_source_hashes, scenario_hashes, input_tape_hashes = accepted_identity_hashes(root_report, accepted)
+		except (OSError, json.JSONDecodeError, ValueError, TypeError) as error:
+			print(f"could not safely resume series: {error}", file=sys.stderr)
+			return 2
+		previous_state = {
+			"status": root_report.get("status"),
+			"error": root_report.get("error"),
+			"finished_utc": root_report.get("finished_utc"),
+		}
+		root_report.setdefault("resume_history", []).append({"resumed_utc": utc_now(), **previous_state})
+		root_report["source_identities"] = current_identities
+		root_report["settings"]["timeout_s"] = args.timeout
+		if receipt is not None:
+			receipt_path = resolve_repo_path(args.resume_source_receipt)
+			root_report["resume_source_receipt"] = {
+				"path": str(receipt_path),
+				"sha256": sha256_file(receipt_path),
+				"pre_resume_flight_quality_py_sha256": receipt["harness"]["flight_quality.py"],
+				"current_flight_quality_py_sha256": current_identities["harness_sha256"]["flight_quality.py"],
+				"note": "The resume-capable collector differs from the pre-run receipt; common and probe hashes were verified exactly.",
+			}
+		root_report["status"] = "running"
+		root_report.pop("error", None)
+		root_report.pop("finished_utc", None)
+		write_json(series_path, root_report)
+		comparisons: list[dict[str, Any]] = root_report["pairs"]
+	else:
+		try:
+			make_fresh_directory(out)
+		except (FileExistsError, RuntimeError) as error:
+			print(str(error), file=sys.stderr)
+			return 2
+		root_report = {
+			"format": "openrc-tree-flight-quality-series-v1",
+			"status": "running",
+			"started_utc": utc_now(),
+			"engine": str(engine),
+			"engine_sha256": current_identities["engine_sha256"],
+			"projects": {name: str(path) for name, path in projects.items()},
+			"project_purpose": {"baseline": "same-revision tree baseline frozen by the qualification owner", "candidate": "same-revision tree candidate frozen by the qualification owner"},
+			"environment_overrides": {"baseline": baseline_environment, "candidate": candidate_environment},
+			"source_identities": current_identities,
+			"settings": series_settings(args),
+			"runs": [],
+			"pairs": [],
+			"out": str(out),
+		}
+		write_json(out / "series.json", root_report)
+		comparisons = root_report["pairs"]
+		frame_source_hashes: set[str] = set()
+		scenario_hashes: set[str] = set()
+		input_tape_hashes: set[str] = set()
 	orders = alternating_orders(args.pairs)
 	all_complete = True
-	frame_source_hashes: set[str] = set()
-	scenario_hashes: set[str] = set()
-	input_tape_hashes: set[str] = set()
-	comparisons: list[dict[str, Any]] = []
 	try:
 		for pair_index, pair_order in enumerate(orders, start=1):
+			if pair_index in accepted:
+				continue
+			pair_attempt = next_pair_attempt(root_report, out, pair_index, pair_order)
 			pair_entries: list[dict[str, Any]] = []
 			for order_index, build_name in enumerate(pair_order, start=1):
 				project = projects[build_name]
-				run_id = f"pair-{pair_index:02d}-{order_index}-{build_name}"
+				run_id = run_identifier(pair_index, pair_attempt, order_index, build_name)
 				run_dir = out / "runs" / run_id
 				run_dir.mkdir(parents=True, exist_ok=False)
 				report_path = run_dir / "frametimes.json"
@@ -458,6 +568,7 @@ def main(argv: list[str] | None = None) -> int:
 				entry: dict[str, Any] = {
 					"run_id": run_id,
 					"pair": pair_index,
+					"attempt": pair_attempt,
 					"build_name": build_name,
 					"order_in_pair": order_index,
 					"project": str(project),
@@ -483,10 +594,6 @@ def main(argv: list[str] | None = None) -> int:
 						entry["frame_report_sha256"] = sha256_file(report_path)
 						entry["scenario_sha256"] = report.get("scenario_sha256")
 						entry["input_tape_sha256"] = report.get("input_tape_sha256")
-						if entry["scenario_sha256"]:
-							scenario_hashes.add(str(entry["scenario_sha256"]))
-						if entry["input_tape_sha256"]:
-							input_tape_hashes.add(str(entry["input_tape_sha256"]))
 						source_hash = str(report.get("build", {}).get("frame_samples_sha256", ""))
 						entry["frame_samples_sha256"] = source_hash
 						entry["summary"] = {
@@ -503,8 +610,6 @@ def main(argv: list[str] | None = None) -> int:
 							"render_settings": report.get("settings", {}).get("render_settings", {}),
 							"viewport_render_timing": report.get("build", {}).get("viewport_render_timing", {}),
 						}
-						if source_hash:
-							frame_source_hashes.add(source_hash)
 						if report.get("route_id") != "performance-neutral-trim":
 							failures.append("performance report has an unexpected route id")
 						if float(report.get("warmup_s", 0)) != float(args.warmup) or float(report.get("sample_s", 0)) != float(args.sample):
@@ -534,8 +639,12 @@ def main(argv: list[str] | None = None) -> int:
 					all_complete = False
 					raise RuntimeError(f"pair {pair_index} identity mismatch: " + "; ".join(identity_failures))
 				comparison = compare_pair(left, right)
-				comparisons.append(comparison)
+				comparison["attempt"] = pair_attempt
 				root_report["pairs"].append(comparison)
+				for entry in pair_entries:
+					frame_source_hashes.add(str(entry["frame_samples_sha256"]))
+					scenario_hashes.add(str(entry["scenario_sha256"]))
+					input_tape_hashes.add(str(entry["input_tape_sha256"]))
 				write_json(out / "series.json", root_report)
 		if len(frame_source_hashes) != 1:
 			all_complete = False
