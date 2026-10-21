@@ -113,6 +113,14 @@ func glow_bounded_trim_contract() -> void:
 			check("synthetic excessive-idle 17 m/s refuses cleanly fill=%s seed=%s" % [fill, seed],
 				not refused_result.ok and "stalled" in refused_result.message and finite_result(refused_result) and
 				refused_result.throttle == 0.0 and refused_result.residual > 1e-8)
+			# EX-14f: the bounded line search keeps the residual of its own iterate (a refused step must not leave a worse
+			# candidate's residual behind), so the reported residual is that of the reported unknowns, bit for bit.
+			var unknowns := PackedFloat64Array([refused_result.alpha, refused_result.elevator, refused_result.throttle,
+				refused_result.beta, refused_result.aileron, refused_result.rudder])
+			var own_residual: float = Trim._norm(Trim._residual(unknowns, "level", 17.0, excessive_idle, G, 1.225, 1.0))
+			check("synthetic excessive-idle refusal reports its own iterate's residual fill=%s seed=%s (%s vs %s)" % [fill, seed,
+				String.num_scientific(own_residual), String.num_scientific(float(refused_result.residual))],
+				own_residual == float(refused_result.residual))
 
 
 func linear_contract() -> void:

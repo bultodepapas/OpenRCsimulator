@@ -93,7 +93,8 @@ class InstallationLineEndingTests(unittest.TestCase):
         extra_path = ROOT / "app/data/glow/extra_61fx_2t.json"
         extra_installation = generated[extra_path]
         self.assertEqual(extra_installation["family"], "glow_2t")
-        self.assertEqual(extra_installation["profile"], "res://data/glow/os_max_61fx_candidate.json")
+        # EX-14g: the Extra binds the muffler-installed 61FX (NITRO-61FX-R2).
+        self.assertEqual(extra_installation["profile"], "res://data/glow/os_max_61fx_installed_candidate.json")
         self.assertNotIn("fuel_feed", extra_installation)  # no Extra-specific carburetor location is sourced
         profile = json.loads((ROOT / "app/data/glow/os_max_61fx_candidate.json").read_text(encoding="utf-8"))
         self.assertEqual((profile["id"], profile["family"]), ("os_max_61fx_candidate", "glow_2t"))

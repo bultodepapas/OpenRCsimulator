@@ -20,7 +20,7 @@ EXPECTED_INSTALLATIONS = {
     "stik_fs64v_4t.json": ("glow_4t", "os_fs_64v_candidate"),
     "stik_fs64v_4t_apc_13x6.json": ("glow_4t", "os_fs_64v_candidate"),
     "stik_61fx_2t.json": ("glow_2t", "os_max_61fx_candidate"),
-    "extra_61fx_2t.json": ("glow_2t", "os_max_61fx_candidate"),
+    "extra_61fx_2t.json": ("glow_2t", "os_max_61fx_installed_candidate"),  # EX-14g: Pitts muffler, NITRO-61FX-R2
 }
 KINDS = ["manual", "measured", "borrowed", "estimated", "derived"]
 

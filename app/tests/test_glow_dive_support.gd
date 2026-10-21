@@ -12,7 +12,10 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-const AIRCRAFT := ["gp-extra-300s-60", "stik-glow-61fx-2t"]
+# The Stik's symmetric-section 12x6 still dives past the former 20,000 rpm support. Since EX-14f the Extra's cambered
+# 12x6 absorbs more power and peaks below it, so for the Extra the dive checks no fault and an overspeed past the
+# 17,000 rpm practical limit.
+const AIRCRAFT := {"gp-extra-300s-60": 17000.0, "stik-glow-61fx-2t": 20000.0}
 const DIVE_PITCH_DEG := -80.0
 const SUPPORT_RPM := 32000.0
 
@@ -28,7 +31,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
-	for id: String in AIRCRAFT:
+	for id: String in AIRCRAFT.keys():
 		var session := FlightSession.new()
 		session.setup(Catalog.entry(id).data)
 		root.add_child(session)
@@ -63,8 +66,8 @@ func _initialize() -> void:
 		_check("%s dive: steeper than 70 deg and faster than its 41 m/s-class level Vmax" % id,
 			trace.value(last, "pitch_deg") < -70.0 and peak_speed > 45.0,
 			"pitch %.1f deg, peak %.1f m/s" % [trace.value(last, "pitch_deg"), peak_speed])
-		_check("%s dive: rpm above the former 20,000 rpm support yet inside the windmill support" % id,
-			peak_rpm > 20000.0 and peak_rpm < SUPPORT_RPM, "peak %.0f rpm" % peak_rpm)
+		_check("%s dive: rpm above %.0f rpm yet inside the windmill support" % [id, float(AIRCRAFT[id])],
+			peak_rpm > float(AIRCRAFT[id]) and peak_rpm < SUPPORT_RPM, "peak %.0f rpm" % peak_rpm)
 		session.free()
 	print("NITRO-61FX-R1 dive support: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

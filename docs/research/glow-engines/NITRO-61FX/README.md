@@ -197,7 +197,7 @@ The Extra 300S flies faster than the Stik. In the flight-test knife-edge (FT-05 
 
 `build_profiles.py` now appends two inferred windmill knots, 24,000 and 32,000 rpm, to the MAX-61FX candidate only. Indicated efficiency is exactly 0 at both. Brake torque there equals minus friction and pumping, so the engine stops accelerating beyond 24,000 rpm, and a dive windmills inside the support up to the 32,000 rpm pitch speed (81 m/s). Delivery 0.75 / 0.60 and trapping 0.62 / 0.55 continue the falling trend of the tuned range. All of these are estimates, not measurements. Every knot up to 20,000 rpm is byte-identical, so flights that stayed below 20,000 rpm are unchanged (the FT-05 knife-edge cases that did are bit-identical). `max_rpm` becomes 32,000. The 17,000 rpm practical limit and the APC 15,833 rpm structural limit remain the telemetry flags. The aircraft's own `max_rpm`, which the engine audio uses, is unchanged.
 
-[`test_glow_dive_support.gd`](../../../../app/tests/test_glow_dive_support.gd) holds a −80° full-throttle dive for 12 s from 30 m/s on both 61FX airframes. The Extra peaks at 56.0 m/s and 21,447 rpm, the Stik at 49.5 m/s and 20,072 rpm, with 10 checks and no fault. On a disposable copy with the previous profile, 6 of the 10 checks fail: the Extra faults after 1,111 of 2,881 ticks and the Stik after 1,890. Every glow and fuel test program passes (17 programs). The windmilling engine above 17,000 rpm is a numerical support assumption; it is not validated engine behavior.
+[`test_glow_dive_support.gd`](../../../../app/tests/test_glow_dive_support.gd) holds a −80° full-throttle dive for 12 s from 30 m/s on both 61FX airframes. The Extra peaked at 56.0 m/s and 21,447 rpm and the Stik at 49.5 m/s and 20,072 rpm, with 10 checks and no fault. Since EX-14f the Extra's cambered 12×6 absorbs more power: it dives to 69.3 m/s at 19,343 rpm. The test therefore requires more than 20,000 rpm of the Stik only, and more than the 17,000 rpm practical limit of the Extra. On a disposable copy with the previous profile, 6 of the 10 checks fail: the Extra faults after 1,111 of 2,881 ticks and the Stik after 1,890. Every glow and fuel test program passes (17 programs). The windmilling engine above 17,000 rpm is a numerical support assumption; it is not validated engine behavior.
 
 ## 2026-10-21 — Propeller section camber and the installed-engine question (EX-14f)
 
@@ -212,3 +212,26 @@ With the catalog-rated profile, a realistic prop takes the Extra to 47 m/s. An e
 - whether the Stik's 61FX installation adopts the cambered section.
 
 The cheapest evidence that would settle both is one tachometer reading of the airplane's own engine on its 12×6, static and on a full-throttle level pass.
+
+## 2026-10-21 — Muffler-installed variant (NITRO-61FX-R2)
+
+The catalog candidate reproduces O.S.'s 1.9 PS at 16,000 rpm, a bare-engine rating. Installed measurements are lower. Gierke's dyno reading of a stock-muffler 61FX is 1.24 hp at 13,000 rpm (secondhand quote, MAN 05/2003, RCU 1638558; "most muffler equipped .60 make their maximum HP output at around 13,000 RPM"). Glassock's rig, an O.S. 10 cc FX on a 12×6, needed 0.617 N·m of shaft torque at 11,000 rpm and 30 m/s through a geared motor with extra friction.
+
+`build_profiles.py` now also writes `os_max_61fx_installed_candidate`. It is the bare candidate with one change, `delivery_ratio` × (1 − k·(rpm/13,000)²):
+- **Mechanism:** silencer back pressure grows about with the square of the exhaust flow and lowers the fresh charge. The factor is held beyond the last powered knot, 20,000 rpm.
+- **Calibration:** k = 0.2093, solved by the generator so the wide-open brake torque at 13,000 rpm is Gierke's 0.679 N·m.
+- **Check (not fitted):** 0.680 N·m at 11,000 rpm, consistent with Glassock's 0.617 N·m shaft torque plus rig friction.
+- **Power curve:** 925–935 W from 13,000 to 16,000 rpm, then 862 W at 17,000.
+
+The carburettor stays the bare engine's hardware: venturi area and idle stop are sized on the bare breathing (`CARBURETTOR_PROFILE` in `build_installations.py`). The travel exponent is recalibrated to the half-stick rpm ratio on the installed engine.
+
+Limits:
+- The back pressure is a wide-open function of rpm, so the part-throttle derate is overstated.
+- The anchor is secondhand, and the Pitts in-cowl muffler is probably more restrictive than the stock silencer it was measured on.
+
+The Extra 300S installation uses this variant (its prototype ran the Pitts, manual p3); the Stik keeps the bare candidate. Tests:
+- `test_profiles.py` rebuilds the anchor torque independently, to 6 decimals.
+- The binding pins in `installation_schema.py` and three test files name the variant.
+- `test_fuel_properties.gd` covers the new profile.
+
+Flight results are in the [Extra's EX-14g evidence](../../extra-300-realism/EX-14/README.md#ex-14g--installed-engine).

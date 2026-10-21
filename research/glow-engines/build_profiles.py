@@ -98,6 +98,22 @@ def blend(f):
 FX61_URL = 'https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm'
 FX61_SCALE = 9.95/8.93
 WINDMILL_RPM = [24000., 32000.]  # NITRO-61FX-R1 inferred support for full-throttle dives (no indicated work)
+# NITRO-61FX-R2: installed (muffler) variants. An exhaust silencer's back pressure grows with the exhaust flow, about
+# with its square, so at wide-open throttle with rpm squared, and it lowers the fresh charge a two-stroke delivers. The
+# variant keeps every bare-candidate table except delivery_ratio, scaled by 1 - k (rpm / ref)^2 up to the last powered
+# knot and held beyond it (the R1 windmill knots do no indicated work). k is solved so the wide-open brake torque at the
+# anchor rpm meets a dyno reading of the installed engine.
+INSTALLED = {
+    'os_max_61fx_installed_candidate': dict(
+        base='os_max_61fx_candidate', model='MAX-61FX (muffler-installed)', anchor_rpm=13000., ref_rpm=13000.,
+        anchor_w=1.24*745.6998715822702, last_powered_rpm=20000.,
+        anchor_source=('Dave Gierke, Model Airplane News 05/2003 ".60 engine shootout", O.S. 61FX with its stock muffler: '
+                       '1.24 hp at 13,000 rpm, "most muffler equipped .60 make their maximum HP output at around 13,000 RPM" '
+                       '(secondhand: RC Universe thread 1638558, 2004-03-21; the article itself was not found); mechanical hp'),
+        check_source=('Glassock 2012 (QUT PhD) rig: an O.S. 10 cc FX on a 12x6 at 30 m/s turned 11,000 rpm with 0.617 N m shaft '
+                      'torque through a geared motor (extra friction); references/rc-throttle-power/'),
+    ),
+}
 ENGINES = ['os_max_55ax_candidate', 'os_fs_64v_candidate', 'os_max_61fx_candidate']
 
 
@@ -189,6 +205,39 @@ def candidate(engine):
                 feed='naturally_aspirated', oil_model='inert', parameters=p, fuel=f, operation=op)
 
 
+def installed(engine):
+    """NITRO-61FX-R2: the installed variant of a bare candidate (only delivery_ratio differs)."""
+    from calibration_report import evaluate  # the same mean-cycle reconstruction the calibration report uses
+    spec = INSTALLED[engine]
+    base = candidate(spec['base'])
+    bare = base['parameters']['delivery_ratio']['value']
+    def factor(k, rpm):
+        return 1.0 - k * (min(rpm, spec['last_powered_rpm']) / spec['ref_rpm']) ** 2
+    def build(k):
+        p = json.loads(json.dumps(base))
+        p['parameters']['delivery_ratio']['value'] = [[r, d * factor(k, r)] for r, d in bare]
+        return p
+    target = spec['anchor_w'] / (spec['anchor_rpm'] * math.tau / 60.0)
+    lo, hi = 0.0, 0.6
+    for _ in range(80):
+        mid = 0.5 * (lo + hi)
+        if evaluate(build(mid), spec['anchor_rpm'])['brake_shaft_torque_nm'] > target:
+            lo = mid
+        else:
+            hi = mid
+    k = 0.5 * (lo + hi)
+    p = build(k)
+    p['id'] = engine
+    p['model'] = spec['model']
+    rule = SPEC['families'][p['family']]['delivery_ratio']
+    p['parameters']['delivery_ratio'] = quantity(p['parameters']['delivery_ratio']['value'], rule, 'derived',
+        'build_profiles.py NITRO-61FX-R2: %s delivery x (1 - %.6f (rpm/%.0f)^2), held beyond %.0f rpm; k solves wide-open brake '
+        'torque %.6f N m at %.0f rpm, the installed anchor (%s). Check: %s. Back pressure modelled as a wide-open-throttle '
+        'function of rpm only (part-throttle derate overstated); not a measured map'
+        % (spec['base'], k, spec['ref_rpm'], spec['last_powered_rpm'], target, spec['anchor_rpm'], spec['anchor_source'], spec['check_source']))
+    return p
+
+
 def quantity_schema(rule):
     num = dict(type='number', maximum=rule['maximum'])
     num['exclusiveMinimum' if rule['positive'] else 'minimum'] = rule['minimum']
@@ -226,7 +275,8 @@ def schema():
 
 def outputs():
     return {'profile_contract.json': SPEC, 'openrc-glow-engine-v1.schema.json': schema(),
-            **{engine+'.json':candidate(engine) for engine in ENGINES}}
+            **{engine+'.json':candidate(engine) for engine in ENGINES},
+            **{engine+'.json':installed(engine) for engine in INSTALLED}}
 
 
 def main():
