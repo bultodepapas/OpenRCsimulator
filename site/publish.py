@@ -43,7 +43,15 @@ def publish(message):
             run("git", "config", key, run("git", "config", key, cwd=SITE), cwd=stage)
         for name in FILES:
             shutil.copy2(SITE / name, stage / name)
-        shutil.copytree(SITE / "assets", stage / "assets", dirs_exist_ok=True)
+        assets_target = stage / "assets"
+        expected_assets_target = stage.resolve() / "assets"
+        if assets_target.resolve() != expected_assets_target or assets_target.is_symlink():
+            raise RuntimeError("Refusing to replace gh-pages assets outside the staging checkout.")
+        if assets_target.exists():
+            if not assets_target.is_dir():
+                raise RuntimeError("The gh-pages assets path is not a directory.")
+            shutil.rmtree(assets_target)
+        shutil.copytree(SITE / "assets", assets_target)
         run("git", "add", "--", *FILES, "assets", cwd=stage)
         if run("git", "status", "--porcelain", cwd=stage):
             run("git", "commit", "-m", message, cwd=stage)

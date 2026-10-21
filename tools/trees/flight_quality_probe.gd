@@ -104,6 +104,10 @@ func _run() -> void:
 	if scene == null:
 		_fail("could not instantiate res://main.tscn")
 		return
+	# A connected desktop gamepad otherwise takes priority over read_raw, silently
+	# replacing this probe's tick-indexed tape. Use the normal external-selection
+	# seam before _ready; select no device and retain the keyboard command path.
+	scene.external_controller_selection = true
 	root.add_child(scene)
 	if scene.get("session") == null or scene.get("_rig") == null or scene.get("_camera") == null:
 		_fail("main scene did not initialize a physics flight, camera rig and camera")

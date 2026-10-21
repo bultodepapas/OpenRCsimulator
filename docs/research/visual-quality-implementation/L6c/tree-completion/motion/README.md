@@ -1,6 +1,6 @@
 # Prescribed tree camera motion
 
-2026-10-18. Six native clips cover three camera tracks at 1280×720 and 1920×1080, each with **192 samples at 24 samples/s**. These are offline camera samples through production scenery with 5 m/s shader wind, not active flight or frame-pacing measurements. Every original PNG hash, camera pose, FOV, shader clock and renderer counter is in the per-track report. The MP4 files are compressed review aids; selected source PNGs and contact sheets are also retained.
+2026-10-18. Six native clips cover three camera tracks at 1280×720 and 1920×1080, each with **192 samples at 24 samples/s**. These are offline camera samples through production scenery with 5 m/s shader wind, not active flight or frame-pacing measurements. Every original PNG hash, camera pose, FOV, shader clock and renderer counter is in the per-track report. The MP4 files and contact sheets remain for review; 18 selected still PNG copies were pruned because those views are present in the retained sheets/clips and can be regenerated with the retained capture controller and runner below.
 
 | Track | Coverage |
 | --- | --- |

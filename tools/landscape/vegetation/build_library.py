@@ -116,6 +116,28 @@ LANDSCAPELAB_ASSETS = {
     },
 }
 
+UNDERSTORY_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/realistic_understory_2026"
+UNDERSTORY_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/realistic_understory_2026"
+UNDERSTORY_MANIFEST = UNDERSTORY_DERIVED_DIR / "conversion_manifest.json"
+UNDERSTORY_MANIFEST_SHA256 = "cd7b74c5157930cbf03181968673b326212df5d4d9f6b8249f52bdffedc41de1"
+UNDERSTORY_NOTICE = "LICENSE_UNDERSTORY.txt"
+UNDERSTORY_ASSETS = {
+    "polyhaven_fern_02_a": {
+        "source_id": "polyhaven_fern_02",
+        "source_name": "fern_02_a",
+        "role": "herb",
+        "triangles": 784,
+        "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+    },
+    "polyhaven_flower_empodium_d": {
+        "source_id": "polyhaven_flower_empodium",
+        "source_name": "flower_empodium_d_LOD0",
+        "role": "flower",
+        "triangles": 360,
+        "sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+    },
+}
+
 SOURCE_NOTICES = {
     CROPS_NOTICE: (
         "Downloaded source: LowPoly Crops Pack\n"
@@ -967,6 +989,7 @@ def catalog_for(
     }
     add_maple(catalog, pending_files)
     add_landscapelab_tree_pack(catalog, pending_files)
+    add_realistic_understory_pack(catalog, pending_files)
     add_converted_plant_pack(catalog, pending_files, "lolipop_grass_2026",
         {"grass_lolipop_small": 26, "grass_lolipop_tall": 20}, "LICENSE_GRASS.txt",
         "grass", "LOLIPOP", "Grass pack (lowpoly, game-ready)")
@@ -1136,6 +1159,197 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
     catalog["files"].sort(key=lambda item: item["path"].lower())
     catalog["import"]["geometry_policy"] += "; LandscapeLab Quercus and Pine preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata"
     catalog["import"]["shared_material_policy"] += "; LandscapeLab materials and embedded textures are preserved byte-for-byte, including their source MASK foliage conventions"
+
+
+def add_realistic_understory_pack(catalog: dict, library_files: dict[str, bytes]) -> None:
+    """Install the verified Poly Haven fern and flower derivatives and their shared CC0 notice."""
+    if not UNDERSTORY_MANIFEST.is_file():
+        raise BuildError(f"missing realistic understory conversion manifest: {UNDERSTORY_MANIFEST}")
+    manifest_bytes = UNDERSTORY_MANIFEST.read_bytes()
+    if sha256_bytes(manifest_bytes) != UNDERSTORY_MANIFEST_SHA256:
+        raise BuildError("realistic understory conversion manifest changed from its reviewed pin")
+    try:
+        manifest = json.loads(manifest_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BuildError(f"invalid realistic understory conversion manifest: {exc}") from exc
+    if manifest.get("format") != "openrc-realistic-understory-conversion v1":
+        raise BuildError("realistic understory manifest format changed from its reviewed contract")
+
+    def verify_records(records: list[dict], base: Path, label: str) -> dict[str, bytes]:
+        verified: dict[str, bytes] = {}
+        for item in records:
+            relative = item.get("path")
+            if not isinstance(relative, str) or relative in verified:
+                raise BuildError(f"invalid or duplicate {label} path in understory manifest: {relative!r}")
+            path = output_path(base, relative)
+            if not path.is_file() or path.stat().st_size != item.get("bytes"):
+                raise BuildError(f"missing or truncated understory {label}: {path}")
+            data = path.read_bytes()
+            if sha256_bytes(data) != item.get("sha256"):
+                raise BuildError(f"understory {label} hash differs from its manifest: {path}")
+            verified[relative] = data
+        return verified
+
+    inputs = manifest.get("inputs")
+    outputs = manifest.get("outputs")
+    variants = manifest.get("variants")
+    sources = manifest.get("sources")
+    if not all(isinstance(value, list) for value in (inputs, outputs, variants, sources)):
+        raise BuildError("realistic understory manifest is missing input/output/source/variant lists")
+    input_bytes = verify_records(inputs, ROOT, "source input")
+    output_bytes = verify_records(outputs, UNDERSTORY_DERIVED_DIR, "derived output")
+
+    expected_ids = list(UNDERSTORY_ASSETS)
+    if [item.get("id") for item in variants] != expected_ids:
+        raise BuildError("understory manifest must contain the reviewed fern and Empodium variants")
+    source_by_id = {item.get("id"): item for item in sources}
+    if set(source_by_id) != {item["source_id"] for item in UNDERSTORY_ASSETS.values()}:
+        raise BuildError("understory manifest source records do not match the selected Poly Haven assets")
+
+    derived_prefix = UNDERSTORY_DERIVED_DIR.relative_to(ROOT).as_posix() + "/"
+    runtime_prefix = "models/realistic_understory_2026/"
+    for variant in variants:
+        asset_id = variant["id"]
+        expected = UNDERSTORY_ASSETS[asset_id]
+        runtime_model = variant.get("runtime_model_relative_path")
+        expected_model = runtime_prefix + (
+            "fern_02_a.gltf" if asset_id == "polyhaven_fern_02_a" else "flower_empodium_d.gltf"
+        )
+        if (
+            variant.get("source_id") != expected["source_id"]
+            or variant.get("source_name") != expected["source_name"]
+            or variant.get("role") != expected["role"]
+            or variant.get("source_triangles") != expected["triangles"]
+            or variant.get("source_surfaces") != 1
+            or variant.get("source_materials") != 1
+            or variant.get("source_sha256") != expected["sha256"]
+            or runtime_model != expected_model
+            or variant.get("scene") != "res://assets/landscape/vegetation/" + expected_model
+            or variant.get("source_format") != "glTF 2.0"
+        ):
+            raise BuildError(f"understory variant changed from its reviewed candidate contract: {asset_id}")
+
+        proof_path = variant.get("source_conversion_proof")
+        proof_rel = (
+            PurePosixPath(proof_path).relative_to(UNDERSTORY_DERIVED_DIR.relative_to(ROOT).as_posix()).as_posix()
+            if isinstance(proof_path, str)
+            else ""
+        )
+        proof_bytes = output_bytes.get(proof_rel)
+        if (
+            not proof_bytes
+            or sha256_bytes(proof_bytes) != variant.get("source_conversion_proof_sha256")
+        ):
+            raise BuildError(f"understory conversion proof changed from its manifest: {asset_id}")
+
+        dependencies = variant.get("dependencies")
+        dependency_hashes = variant.get("source_dependency_sha256")
+        source_entry = variant.get("source_entry")
+        if not isinstance(dependencies, list) or not isinstance(dependency_hashes, dict):
+            raise BuildError(f"understory dependencies are missing for {asset_id}")
+        if source_entry not in dependencies or source_entry != derived_prefix + expected_model.removeprefix(runtime_prefix):
+            raise BuildError(f"understory model source path changed from its reviewed contract: {asset_id}")
+
+        expected_dependency_hashes: dict[str, str] = {}
+        for dependency in dependencies:
+            if not isinstance(dependency, str) or not dependency.startswith(derived_prefix):
+                raise BuildError(f"understory dependency escapes its derived directory: {dependency!r}")
+            relative = dependency[len(derived_prefix):]
+            data = output_bytes.get(relative)
+            if data is None:
+                raise BuildError(f"understory dependency is absent from the output receipt: {dependency}")
+            digest = sha256_bytes(data)
+            if dependency != source_entry:
+                expected_dependency_hashes[dependency] = digest
+            runtime_path = runtime_prefix + relative
+            if runtime_path not in library_files:
+                library_files[runtime_path] = data
+                catalog["files"].append({
+                    "path": runtime_path,
+                    "source_entry": dependency,
+                    "bytes": len(data),
+                    "sha256": digest,
+                })
+        if dependency_hashes != expected_dependency_hashes:
+            raise BuildError(f"understory dependency hashes do not match the output receipt: {asset_id}")
+
+        source = source_by_id[expected["source_id"]]
+        license_evidence = source.get("license_evidence")
+        license_input = input_bytes.get(license_evidence) if isinstance(license_evidence, str) else None
+        if source.get("license") != "CC0-1.0" or not license_input:
+            raise BuildError(f"understory license evidence is missing for {asset_id}")
+
+        catalog["assets"].append({
+            "id": asset_id,
+            "source_id": expected["source_id"],
+            "source_name": expected["source_name"],
+            "description": "Downloaded " + source["title"] + " candidate",
+            "role": expected["role"],
+            "scene": variant["scene"],
+            "source_entry": source_entry,
+            "source_sha256": expected["sha256"],
+            "source_dependency_sha256": dependency_hashes,
+            "source_format": variant["source_format"],
+            "source_conversion_proof": proof_path,
+            "source_conversion_proof_sha256": variant["source_conversion_proof_sha256"],
+            "source_triangles": variant["source_triangles"],
+            "source_surfaces": variant["source_surfaces"],
+            "source_materials": variant["source_materials"],
+            "source_bounds_m": variant["source_bounds_m"],
+            "grounded_bounds_m": variant["grounded_bounds_m"],
+            "source_geometry": variant["source_geometry"],
+            "material_alpha": variant["material_alpha"],
+            "textures": variant["textures"],
+            "dependencies": dependencies,
+            "lod": variant["lod"],
+            "source_metadata": variant["source_metadata"],
+            "visual_qualification": variant["visual_qualification"],
+        })
+
+    notice_rel = "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md"
+    notice_bytes = input_bytes.get(notice_rel)
+    if notice_bytes is None:
+        raise BuildError("understory runtime license notice is missing from the source receipt")
+    library_files[UNDERSTORY_NOTICE] = notice_bytes
+    catalog["files"].append({
+        "path": UNDERSTORY_NOTICE,
+        "source_entry": notice_rel,
+        "bytes": len(notice_bytes),
+        "sha256": sha256_bytes(notice_bytes),
+    })
+
+    for source in sources:
+        evidence = source["license_evidence"]
+        evidence_bytes = input_bytes.get(evidence)
+        proof_variant = next(item for item in variants if item["source_id"] == source["id"])
+        catalog["sources"].append({
+            "id": source["id"],
+            "title": source["title"],
+            "author": ", ".join(source.get("authors", {})),
+            "url": source["url"],
+            "license": source["license"],
+            "license_url": source["license_url"],
+            "license_statement_url": source["license_statement_url"],
+            "license_evidence": evidence,
+            "license_sha256": sha256_bytes(evidence_bytes) if evidence_bytes is not None else None,
+            "runtime_notice": notice_rel,
+            "runtime_notice_sha256": sha256_bytes(notice_bytes),
+            "conversion_proof": proof_variant["source_conversion_proof"],
+            "conversion_proof_sha256": proof_variant["source_conversion_proof_sha256"],
+            "source": source,
+        })
+
+    catalog["counts"]["total_assets"] += len(UNDERSTORY_ASSETS)
+    catalog["counts"]["grass_and_herbs"] += sum(
+        item["role"] in ("grass", "herb") for item in UNDERSTORY_ASSETS.values()
+    )
+    catalog["counts"]["flowers"] += sum(item["role"] == "flower" for item in UNDERSTORY_ASSETS.values())
+    catalog["counts"]["source_triangles_one_of_each"] += sum(
+        item["triangles"] for item in UNDERSTORY_ASSETS.values()
+    )
+    catalog["files"].sort(key=lambda item: item["path"].lower())
+    catalog["import"]["geometry_policy"] += "; Poly Haven fern and flower derivatives preserve selected source mesh primitives and binary geometry while removing only gallery transforms"
+    catalog["import"]["shared_material_policy"] += "; understory textures preserve supplier maps; fern MASK 0.5 is retained and Flower Empodium BLEND is staged as MASK 0.5 with alpha packing recorded"
 
 
 def add_converted_plant_pack(catalog: dict, library_files: dict[str, bytes], source_id: str,

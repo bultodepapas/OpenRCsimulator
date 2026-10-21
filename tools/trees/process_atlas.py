@@ -111,12 +111,49 @@ def _load_bake(bake_dir: Path) -> list[dict[str, Any]]:
     _require([item.get("id") for item in species] == list(EXPECTED_SLOTS),
              f"bake.json species order must be {list(EXPECTED_SLOTS)}.")
 
+    recipe_species = ["source_asset_id" in item for item in species]
+    _require(all(recipe_species) or not any(recipe_species),
+             "bake.json cannot mix legacy and source-recipe species.")
+    realistic_recipe = all(recipe_species)
+
     for item in species:
         tree_id = item["id"]
-        _require(item.get("bark_material_name") == EXPECTED_BARK_MATERIAL_NAME,
-                 f"{tree_id}: bark mask identity must be {EXPECTED_BARK_MATERIAL_NAME!r}.")
-        _require(item.get("foliage_material_name") == EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id],
-                 f"{tree_id}: foliage mask identity must be {EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id]!r}.")
+        bark_name = item.get("bark_material_name")
+        foliage_name = item.get("foliage_material_name")
+        if realistic_recipe:
+            _require(isinstance(bark_name, str) and bark_name and isinstance(foliage_name, str)
+                     and foliage_name and bark_name != foliage_name,
+                     f"{tree_id}: realistic source must retain distinct exact bark and foliage material names.")
+            _require(item.get("source_material_names") == sorted([bark_name, foliage_name]),
+                     f"{tree_id}: source material names must exactly match the mask identities.")
+            _require(isinstance(item.get("source_asset_id"), str) and item["source_asset_id"],
+                     f"{tree_id}: source_asset_id is required.")
+            for field in ("source_sha256", "derived_sha256"):
+                value = item.get(field)
+                _require(isinstance(value, str) and len(value) == 64
+                         and all(character in "0123456789abcdef" for character in value.lower()),
+                         f"{tree_id}: {field} must be a SHA-256.")
+            provenance = item.get("source_provenance")
+            _require(isinstance(provenance, dict)
+                     and all(isinstance(provenance.get(key), str) and provenance[key]
+                             for key in ("creator", "license", "source_url", "source_revision")),
+                     f"{tree_id}: source provenance is incomplete.")
+            normalization = item.get("normalization")
+            _require(isinstance(normalization, dict)
+                     and normalization.get("height_m") == 1
+                     and isinstance(normalization.get("source_height_m"), (int, float))
+                     and math.isfinite(normalization["source_height_m"])
+                     and normalization["source_height_m"] > 0
+                     and isinstance(normalization.get("scale"), (int, float))
+                     and math.isfinite(normalization["scale"])
+                     and math.isclose(normalization["scale"] * normalization["source_height_m"], 1.0,
+                                      rel_tol=1e-6, abs_tol=1e-6),
+                     f"{tree_id}: source recipe must normalize the tree to 1 m.")
+        else:
+            _require(bark_name == EXPECTED_BARK_MATERIAL_NAME,
+                     f"{tree_id}: bark mask identity must be {EXPECTED_BARK_MATERIAL_NAME!r}.")
+            _require(foliage_name == EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id],
+                     f"{tree_id}: foliage mask identity must be {EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id]!r}.")
         frame_size = item.get("frame_size_m")
         _require(type(frame_size) in (int, float) and math.isfinite(frame_size) and frame_size > 0,
                  f"{tree_id}: frame_size_m must be a finite positive number.")
@@ -127,6 +164,20 @@ def _load_bake(bake_dir: Path) -> list[dict[str, Any]]:
         _require(tuple(rect) == EXPECTED_SLOTS[tree_id],
                  f"{tree_id}: atlas_rect_px must be {list(EXPECTED_SLOTS[tree_id])}.")
     return species
+
+
+def _foliage_coverage(mask: np.ndarray, cutoff: int) -> dict[str, Any]:
+    foliage = (mask[:, :, 0] >= cutoff) & (mask[:, :, 3] >= 128)
+    y, x = np.nonzero(foliage)
+    _require(x.size > 0, "Material foliage coverage is empty at the requested cutoff.")
+    bbox = [int(x.min()), int(y.min()), int(x.max()), int(y.max())]
+    return {
+        "cutoff": cutoff,
+        "bbox_px_inclusive": bbox,
+        "width_px": bbox[2] - bbox[0] + 1,
+        "height_px": bbox[3] - bbox[1] + 1,
+        "opaque_pixel_count": int(x.size),
+    }
 
 
 def _transparent_padding(tile: np.ndarray) -> tuple[dict[str, int], list[int]]:

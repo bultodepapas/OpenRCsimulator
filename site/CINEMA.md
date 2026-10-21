@@ -2,7 +2,7 @@
 
 WEB-03/04 package studio renders of native catalog aircraft. Captures call `Builder.build()` from `res://render/airplane.gd`; model geometry and authored materials remain unchanged. The renders are visual source studies, not gameplay or flight validation.
 
-The existing Jensen Das Ugly Stik 60 assets remain `assets/cinema/stik-hero.webp` and `stik-hero.mp4`, with their provenance in `assets/cinema/cinema.json`. The Ventage Jet uses catalog id `sebart-avanti-s-a200-p100rx` and has a separate manifest at `assets/cinema/jet-cinema.json`.
+The earlier Jensen Das Ugly Stik cinema capture is no longer shipped on the website: its generated poster and MP4 were removed after the Jet became the opening aircraft. Its capture settings and source/output hashes remain in `assets/cinema/cinema.json`, and the capture pipeline can reproduce it. The Ventage Jet uses catalog id `sebart-avanti-s-a200-p100rx` and has a separate manifest at `assets/cinema/jet-cinema.json`.
 
 ## Ventage Jet render
 

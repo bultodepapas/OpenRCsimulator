@@ -16,6 +16,8 @@ var camera: Camera3D
 var report: Dictionary = {"species": []}
 var bad: bool = false
 var alpha_texture_cache: Dictionary = {}
+var recipe_species: Dictionary = {}
+var recipe_id: String = ""
 
 
 func _model(path: String) -> Node3D:
@@ -77,6 +79,9 @@ func _bounds(model: Node3D) -> AABB:
 func _capture(id: String, variant: String, frame: float) -> Image:
 	var original: bool = variant.begins_with("source")
 	var foliage_mask: bool = variant == "adapted_foliage_mask"
+	var spec: Dictionary = recipe_species.get(id, {})
+	var bark_material_name: String = str(spec.get("bark_material_name", BARK_MATERIAL_NAME))
+	var foliage_material_name: String = str(spec.get("foliage_material_name", FOLIAGE_MATERIAL_NAMES.get(id, "")))
 	var model: Node3D = _model("res://trees/%s%s.glb" % [id, "-reference" if original else ""])
 	if model == null:
 		bad = true
@@ -102,11 +107,10 @@ func _capture(id: String, variant: String, frame: float) -> Image:
 				continue
 			var material: StandardMaterial3D = source_material.duplicate(true) as StandardMaterial3D
 			if foliage_mask:
-				var expected_foliage_name: String = str(FOLIAGE_MATERIAL_NAMES.get(id, ""))
 				var names: Array[String] = [source_material.resource_name, node.mesh.surface_get_name(surface)]
-				var is_foliage: bool = names.has(expected_foliage_name)
-				var is_bark: bool = names.has(BARK_MATERIAL_NAME)
-				if expected_foliage_name.is_empty() or is_foliage == is_bark:
+				var is_foliage: bool = names.has(foliage_material_name)
+				var is_bark: bool = names.has(bark_material_name)
+				if foliage_material_name.is_empty() or bark_material_name.is_empty() or is_foliage == is_bark:
 					bad = true
 					printerr("%s surface %d has no unique source foliage/bark material identity: %s" % [id, surface, names])
 					continue
@@ -162,7 +166,43 @@ func _alpha_only_texture(source: Texture2D) -> Texture2D:
 	return texture
 
 
+func _load_bake_recipe() -> bool:
+	var recipe_path: String = "res://trees/bake-recipe.json"
+	if not FileAccess.file_exists(recipe_path):
+		return true
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(recipe_path))
+	if not parsed is Dictionary or parsed.get("format") != "openrc-tree-bake-recipe v1":
+		printerr("Bake recipe has an unsupported format")
+		return false
+	var species: Variant = parsed.get("species")
+	if not species is Array or species.size() != IDS.size():
+		printerr("Bake recipe must contain exactly three species")
+		return false
+	recipe_id = str(parsed.get("recipe_id", ""))
+	if recipe_id.is_empty():
+		printerr("Bake recipe has no recipe_id")
+		return false
+	for index: int in range(IDS.size()):
+		var item: Variant = species[index]
+		if not item is Dictionary or item.get("id") != IDS[index]:
+			printerr("Bake recipe species order must preserve the legacy atlas slots")
+			return false
+		for field: String in ["source_asset_id", "source_sha256", "derived_sha256", "bark_material_name", "foliage_material_name"]:
+			if str(item.get(field, "")).is_empty():
+				printerr("Bake recipe %s is missing %s" % [IDS[index], field])
+				return false
+		var normalization: Variant = item.get("normalization")
+		if not normalization is Dictionary or float(normalization.get("height_m", 0.0)) != 1.0:
+			printerr("Bake recipe %s must normalize source height to exactly 1 m" % IDS[index])
+			return false
+		recipe_species[IDS[index]] = item.duplicate(true)
+	return true
+
+
 func _run() -> void:
+	if not _load_bake_recipe():
+		quit(1)
+		return
 	if output.is_empty() or DisplayServer.get_name() == "headless":
 		printerr("Bake requires --out and a real Compatibility framebuffer (use Xvfb).")
 		quit(1)
@@ -210,11 +250,22 @@ func _run() -> void:
 		model.free()
 		for variant: String in ["source_lit", "source_albedo", "adapted_lit", "adapted_albedo", "adapted_foliage_mask"]:
 			await _capture(id, variant, frame)
-		report.species.append({"id": id, 
+		var species_report: Dictionary = {"id": id,
 			"frame_size_m": frame, "pivot_y_m": 0.5,
-			"bark_material_name": BARK_MATERIAL_NAME,
-			"foliage_material_name": FOLIAGE_MATERIAL_NAMES[id],
-			"atlas_rect_px": [SLOTS[index].x, SLOTS[index].y, 512, 512]})
+			"bark_material_name": str(recipe_species.get(id, {}).get("bark_material_name", BARK_MATERIAL_NAME)),
+			"foliage_material_name": str(recipe_species.get(id, {}).get("foliage_material_name", FOLIAGE_MATERIAL_NAMES[id])),
+			"atlas_rect_px": [SLOTS[index].x, SLOTS[index].y, 512, 512]}
+		if recipe_species.has(id):
+			var spec: Dictionary = recipe_species[id]
+			species_report["source_asset_id"] = spec["source_asset_id"]
+			species_report["source_sha256"] = spec["source_sha256"]
+			species_report["derived_sha256"] = spec["derived_sha256"]
+			species_report["source_material_names"] = spec["source_material_names"].duplicate()
+			species_report["source_provenance"] = spec["provenance"].duplicate(true)
+			species_report["normalization"] = spec["normalization"].duplicate(true)
+		report.species.append(species_report)
+	if not recipe_id.is_empty():
+		report["recipe_id"] = recipe_id
 	report["renderer"] = RenderingServer.get_current_rendering_method()
 	report["adapter"] = RenderingServer.get_video_adapter_name()
 	report["godot"] = Engine.get_version_info().string

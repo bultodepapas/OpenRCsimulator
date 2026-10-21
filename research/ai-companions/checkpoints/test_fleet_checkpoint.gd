@@ -59,6 +59,7 @@ var _checkpoint_path := ""
 var _report_path := ""
 var _source_hashes: Dictionary = {}
 var _report: Dictionary = {}
+var _decision_replay_comparison: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -264,6 +265,7 @@ func _run() -> void:
 			"raw_source_sha256": str(record.profile_identity.get("solver_sha256", "")),
 			"normalized_profile_qualification_sha256": str(record.profile_identity.get("solver_qualification_sha256", "")),
 		},
+		"decision_replay_comparison": _decision_replay_comparison.duplicate(true),
 		"limitations": record.limitations.duplicate(true),
 	}
 	_dispose_fixture(restored)
@@ -429,6 +431,7 @@ func _run_decision_replay(record: Dictionary, expected_paths: Dictionary, manife
 		_field, _world, _source_hashes, _evidence_directory("decision-restored"))
 	_check("nonzero-tick ORFL input replay restores a detached fleet and lets Manager recompute decisions",
 		replayed.get("ok", false), str(replayed.get("reason", "")))
+	_decision_replay_comparison = replayed.get("comparison", {}).duplicate(true)
 	if replayed.get("ok", false):
 		var comparison: Dictionary = replayed.get("comparison", {})
 		_check("all three fleet streams compare every ORFL row and retained event",
@@ -479,6 +482,23 @@ func _run_decision_negative_cases(record: Dictionary, expected_paths: Dictionary
 		var event_binding: Dictionary = FleetReplay.validate_manifest(manifest, record, changed_events)
 		_check("replay refuses a semantically changed ORFL event before restoring a candidate",
 			not event_binding.get("ok", true), str(event_binding.get("reason", "")))
+
+	var metadata_directory: String = _evidence_directory("decision-tampered-metadata")
+	var metadata_copy: String = metadata_directory.path_join("companion-0.orfl")
+	var metadata_rewrite: Dictionary = _rewrite_orfl(expected_paths["companion-0"], metadata_copy, "metadata")
+	var metadata_info: Dictionary = FlightLogReader.inspect(metadata_copy, false) if metadata_rewrite.get("ok", false) else {"ok": false}
+	_check("meaningful-metadata tamper remains a complete, internally checksummed ORFL",
+		metadata_rewrite.get("changed", false) and metadata_info.get("ok", false)
+		and metadata_info.get("complete", false), str(metadata_info.get("error", "")))
+	if metadata_info.get("ok", false):
+		var changed_metadata: Dictionary = expected_paths.duplicate(true)
+		changed_metadata["companion-0"] = metadata_copy
+		var metadata_comparison: Dictionary = FleetReplay.compare_stream_sets(expected_paths,
+			changed_metadata, manifest, record)
+		_check("replay comparison refuses a neighboring meaningful metadata field outside the provenance allowlist",
+			not metadata_comparison.get("ok", true)
+			and str(metadata_comparison.get("reason", "")).contains("header.metadata.configuration"),
+			str(metadata_comparison.get("reason", "")))
 
 	var source_fixture: Dictionary = _new_fixture("tampered-source-preflight")
 	if not source_fixture.get("ok", false):
@@ -542,6 +562,11 @@ func _rewrite_orfl(source_path: String, destination: String, mutation: String) -
 					event.detail = "tampered stop event"
 					value.events[event_index] = event
 					changed = true
+		if mutation == "metadata" and value.get("kind") == "header":
+			var metadata: Dictionary = value.get("metadata", {}).duplicate(true)
+			metadata.configuration = "tampered meaningful configuration"
+			value.metadata = metadata
+			changed = true
 		packets.append(value)
 	input.close()
 	if not changed or packets.size() < 3 or packets.back().get("kind") != "footer":

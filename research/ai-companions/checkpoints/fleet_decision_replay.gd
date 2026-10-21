@@ -375,8 +375,25 @@ static func compare_stream_sets(expected_paths: Dictionary, actual_paths: Dictio
 	return {ok = true, streams = _record_stream_ids(record).size(), rows_compared = stream_rows,
 		per_stream_rows = record.future_player_tape.size() + 1,
 		events_compared = true,
-		comparison_exclusions = ["header.created_utc", "header.metadata launch provenance (restore replaces it with unknown)",
-			"footer.chain_sha256 (header timestamp participates)", "footer.observer_usec", "footer.peak_buffer_rows"]}
+		comparison_exclusions = [
+			"header.created_utc",
+			"header.metadata.created_utc",
+			"header.metadata.scenario",
+			"header.metadata.selected_start_choice",
+			"header.metadata.launch_choice",
+			"header.metadata.launch_kind",
+			"header.metadata.launch_field_id",
+			"header.metadata.launch_trim_throttle",
+			"header.metadata.launch_state",
+			"header.metadata.launch_aux",
+			"header.metadata.launch_ground_anchors",
+			"header.metadata.launch_engine_running",
+			"header.metadata.launch_error",
+			"header.metadata.launch_continuous",
+			"footer.chain_sha256 (header timestamp participates)",
+			"footer.observer_usec",
+			"footer.peak_buffer_rows",
+		]}
 
 
 static func row_disagreement(expected: Dictionary, actual: Dictionary) -> String:
@@ -737,13 +754,15 @@ static func _headers_equivalent(left: Dictionary, right: Dictionary) -> bool:
 
 static func _normalized_header(value: Dictionary) -> Dictionary:
 	var normalized := value.duplicate(true)
-	# Capture wall-clock time is intentionally not part of deterministic simulation identity.
+	# Wall-clock values are observer provenance. The fields below describe the original start and are
+	# replaced/cleared by FlightSession.restore_checkpoint; current checkpoint state, recorded-start
+	# arrays, accepted rows/commands, and physical/controller comparisons remain exact.
 	normalized.erase("created_utc")
 	var metadata: Dictionary = normalized.get("metadata", {}).duplicate(true)
 	# FlightSession deliberately clears source-launch provenance on restore; physical profile data still compares.
 	for key: String in ["created_utc", "scenario", "selected_start_choice", "launch_choice", "launch_kind", "launch_field_id",
 		"launch_trim_throttle", "launch_state", "launch_aux", "launch_ground_anchors",
-		"launch_engine_running", "launch_error"]:
+		"launch_engine_running", "launch_error", "launch_continuous"]:
 		metadata.erase(key)
 	normalized.metadata = metadata
 	return normalized
