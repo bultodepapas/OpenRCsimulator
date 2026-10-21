@@ -93,3 +93,8 @@ and its original receipt remain indexed separately. Full run paths, source maps,
 retry details, hardware, hashes, and the checked-runner reports are in
 [callback-timing-supplement.json](callback-timing-supplement.json) and
 [verification.json](verification.json).
+
+The [source-byte checkout check](source-byte-checkout.json) verifies the retained
+baseline, candidate and original differential harness in disposable Git clones
+with both `core.autocrlf=true` and `false`. Explicit `-text` rules preserve all
+three source hashes; no main-worktree index operation was used.

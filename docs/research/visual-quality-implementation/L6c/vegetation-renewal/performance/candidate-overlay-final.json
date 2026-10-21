@@ -1,0 +1,284 @@
+{
+  "files": [
+    {
+      "path": "assets/landscape/UPGRADE_CREDITS.md",
+      "sha256": "fface2ee2301fd1f9549fd8edafa29a067029016a135a2cbbb951c4d81a6e0d6",
+      "baseline_sha256": "7300ed7cf9eb77c13d21542de52c39561eb6e3ebaec0e01cb34ca4703e7f525b"
+    },
+    {
+      "path": "assets/landscape/trees/LICENSE.txt",
+      "sha256": "3382eb7d8b585705659d6ebba79ec1264e34d7640d2df66fa95f83174f9b0a9d",
+      "baseline_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "assets/landscape/trees/atlas.png",
+      "sha256": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
+      "baseline_sha256": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43"
+    },
+    {
+      "path": "assets/landscape/trees/catalog.json",
+      "sha256": "797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e",
+      "baseline_sha256": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a"
+    },
+    {
+      "path": "assets/landscape/trees/foliage_mask.png",
+      "sha256": "6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f",
+      "baseline_sha256": "cfc8f109896a25a60327d827798fe27dca86155d950678ec02440087c8010b1a"
+    },
+    {
+      "path": "assets/landscape/trees/licenses/CommonTree_1.txt",
+      "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/trees/licenses/CommonTree_3.txt",
+      "sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/trees/licenses/Pine_1.txt",
+      "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/LICENSE_LANDSCAPELAB.txt",
+      "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/LICENSE_UNDERSTORY.txt",
+      "sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/catalog.json",
+      "sha256": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+      "baseline_sha256": "e458263680779b41b6374ceba4cb732b9494ae0dfe020d4cff3b1b0c0e6a2e39"
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+      "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb.import",
+      "sha256": "a109bb483a8841b798b5d1790ce448588ebedda85261107c88ae6dd6fae993dd",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png",
+      "sha256": "5ee8ccff7394ea5c20d678e45ae2164b42faf4b9aacdb937c4adb98b97e8efe8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png.import",
+      "sha256": "cf7f55c146294008549142702d0e922fd990778da97be7661695f76ce7a39be8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_2.png",
+      "sha256": "85b5350621792705d9cc475326d97d82fcd19985270a517f2e4232f72460462a",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_2.png.import",
+      "sha256": "3ee792704717255b64503b884d768804355bcfde7a68d2e87423977ff246e638",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_3-Image_0.png",
+      "sha256": "e8fac2f0115961e0c7357b400cedf9131e660c3b25e50ddb16f9ad49103c01c6",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_3-Image_0.png.import",
+      "sha256": "f7c68e8d955981c1908410b5d8ecef540d2ab656ba0a1ff0819285462b4baaf3",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_4.png",
+      "sha256": "8af0ed5d783f8cef1ef1a86272901da43327e01167213dabba3b795b9d4a90ba",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_4.png.import",
+      "sha256": "561f07fc3cad3c8d20327d4f61fde5a92c9fbeb419ebf517bf20afe6a13ddaf9",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+      "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb.import",
+      "sha256": "19b56c1b5ac4c0fb0ac998b57a3152a5f264dbf527a71b9bfb80da9c3f3d33c4",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png",
+      "sha256": "21462e7dbd2724f5414675731c26d20bf5c7f7ce93d8764514f09bde581d29dc",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png.import",
+      "sha256": "27ca2a227c4772979eafaa4a587b2e177d2836d769864257695e341450f92ed0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_2.png",
+      "sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_2.png.import",
+      "sha256": "fcfc92702e21c28425c3ba431ffe2a55c282bcc8cb1ab8398b657466771f19db",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_3-Image_0.png",
+      "sha256": "92ab95d1900720d615ee6cf6038b7b3af2ceba2ed7ee41bc52a1a24f2f65a58b",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_3-Image_0.png.import",
+      "sha256": "986f14b03b0f9088c07cd92a46eadfd6407d5998ba27416dd122f36310ecf210",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_4.png",
+      "sha256": "ebbb008c5dc660aa456e4efcf6eae7adc8467e86db3a2d8dfdabade6fa6cebf4",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_4.png.import",
+      "sha256": "01430e1bdf490634fde32c48f8ced70645a9be5685382cf506569713ef75c6f3",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf",
+      "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf.import",
+      "sha256": "e48f14f2b64caa76aa094f75c8ebf56e7a2a5ec28817dcd811fe525f2f6914ba",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.bin",
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf",
+      "sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf.import",
+      "sha256": "c700add93a6b25e50f56cc8858c0ac6c19463e6aee6e6fb1b12dc3cc24ca8e76",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg.import",
+      "sha256": "5b269a64fef3510884ba2ac72651a1b02378ee5cfe3d203b1a142ef0f9dfbf6f",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png.import",
+      "sha256": "99d49b5777a90ce5cd8bc34ecee860ab3856d7d60f728476e2030ee2bcdd566a",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg.import",
+      "sha256": "7dffbc723abc5a900543327b79271e655f9d57ff73355be719a2d3b7e80788c0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg.import",
+      "sha256": "f5f490899bce77290755f80bd1dd9836ed4fd3f55546458172c1a251e98705de",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+      "sha256": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png.import",
+      "sha256": "30009a0c43624a9f4762196a73a79897b95458de95ab1bf8e29cfc535aca7414",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg",
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab",
+      "baseline_sha256": null
+    },
+    {
+      "path": "assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg.import",
+      "sha256": "3720a9e170068a01733ca0f1734f8acdb3262137d20564c8859d70bb31fd44ca",
+      "baseline_sha256": null
+    },
+    {
+      "path": "export_presets.cfg",
+      "sha256": "ab5bb044eaa55a781a66e94d9c1ad2fe51883e484f7b8e3865950f9e4d240c92",
+      "baseline_sha256": "c101d761dc070f0f85dd1187a8627a7a7e146cad2551d5fa52f4f0a24187bf54"
+    },
+    {
+      "path": "render/tree_assets.gd",
+      "sha256": "b7b58c76ec5cb2e82060c40d28a449588ea2ec1e38e0566f21da39ee0c1ad97c",
+      "baseline_sha256": "36887b765bdf09595862a0dfa357ac565c7d58424d9627eafcc7040deeb4e1c3"
+    },
+    {
+      "path": "render/treeline.gdshader",
+      "sha256": "24e59345ba715f0f3c9c471eb886357153c6fee33c5a362a1b0c954e852a469c",
+      "baseline_sha256": "603dc7d7f5454904005921af0b94e66d96b70cd931c30782ffb92d9c47cfafcf"
+    },
+    {
+      "path": "scenery/botanical_habitats.gd",
+      "sha256": "f52aeb6de723fd4ece07d7e1703fdd7fd687367f2d88aae8d057588a3d6a4843",
+      "baseline_sha256": "8ad1e663b66863eb40fcf508ed3ec09fa3f2c2280bf8aa47795db1daa303eb1f"
+    },
+    {
+      "path": "scenery/collision_world.gd",
+      "sha256": "7504a8e5c2a8557c7ace18fca7c9e876d0de55ef1e1c3f493e4bb10660660b0a",
+      "baseline_sha256": "09343d14f9cf0b38a770832d1056d143da39f78772ac54a1047ec4504944b7e9"
+    },
+    {
+      "path": "scenery/imported_vegetation.gd",
+      "sha256": "10e313dcaec24adf80851063303783ac5ba94e8d6adab41a1c8c0bd453035b7d",
+      "baseline_sha256": "638818450111dc06e77ee022d03f1a145199ef4189a2a2cd1d85a5d2f2704c40"
+    },
+    {
+      "path": "scenery/vegetation_placement.gd",
+      "sha256": "0508be49ebbdf65d2becf745a001172df9428646bbc5368ea5edc1149ae4f12d",
+      "baseline_sha256": "97e2072775587efcb784b311050b6018e9a157662a96271c0e738464031fe4b8"
+    }
+  ]
+}

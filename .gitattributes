@@ -183,3 +183,7 @@
 /docs/research/ai-companions/**/*.csv -text
 /docs/research/ai-companions/**/*.log -text -whitespace
 /docs/research/ai-companions/**/sources/** -text
+# Frozen AFC differential inputs retain their exact tested source bytes.
+/research/ai-companions/performance/reachable_clear_baseline.gd -text
+/research/ai-companions/performance/reachable_clear_candidate.gd -text
+/research/ai-companions/performance/callback_pre_promotion_test_clear_fast_path.gd -text

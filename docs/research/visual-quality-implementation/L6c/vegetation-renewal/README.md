@@ -90,9 +90,22 @@ The frozen comparison runs on Windows with a Ryzen 9 5900X (24 logical processor
 | Resolution | Accepted pairs | Worst candidate p95 / p99 | Paired p95 change: median / range | Result |
 | --- | ---: | ---: | ---: | --- |
 | 1280 × 720 | 5 | 17.886 / 19.737 ms | +0.147 ms / −0.058 to +0.216 ms | All measured pacing and simulation/wall targets pass |
-| 1920 × 1080 | In progress | — | — | Not yet qualified |
+| 1920 × 1080 | 2 of 5 | Not used for qualification | Not used for qualification | **Incomplete:** focus interruptions; user requested finishing with 720p evidence |
 
-These are fixed-pilot-camera neutral-input flights, not a dense-forest overflight or every control/camera route in the research plan. Other headless Godot work was active on the shared host and is counted in the retained contention log. The software cap limits conclusions about uncapped throughput; GPU timing is reported separately. Lower-end hardware, human aircraft-readability acceptance and the broader lifecycle matrix remain unverified.
+The [720p series](performance/720/series.json), [raw per-run frame reports](performance/720/runs/) and [computed summary](performance/summary.json) retain all five pairs. Candidate simulation/wall ratios span 0.999938–1.000060. Its worst frame was 28.681 ms, with zero measured wall-frame intervals over 50 ms. The per-run 1% low spans 48.32–53.86 fps, calculated as 1,000 divided by the mean of the slowest 1% of wall-frame intervals. This does not mean every frame maintained 60 fps.
+
+| 720p counter, median of five run-p95 values | Baseline | Candidate |
+| --- | ---: | ---: |
+| Viewport CPU render time | 1.596 ms | 1.875 ms |
+| Viewport GPU render time | 3.459 ms | 3.382 ms |
+| Visible draw calls | 107 | 106 |
+| Visible primitives | 248,925 | 249,064 |
+| Godot video-memory estimate | 712,855,032 bytes | 707,231,898 bytes |
+| Godot texture-memory estimate | 642,806,482 bytes | 645,602,672 bytes |
+
+These are fixed-pilot-camera neutral-input flights, not a dense-forest overflight or every control/camera route in the research plan. Shadow submissions are zero for this measured view. Other headless Godot processes appear in 161 of 176 [720p contention samples](performance/720/contention-counts.json); no second native Godot renderer was observed. Median sampled system CPU usage was 19.2%, with a maximum of 100%. This shared-host run is not an isolated hardware lab result. GPU timing varies across runs, so its median difference is not claimed as an optimization. Godot memory counters are estimates, not measured physical residency. The software cap limits conclusions about uncapped throughput.
+
+The [incomplete 1080p series](performance/1080/series.json) retains two complete pairs and all other attempts. It is explicitly unqualified; collection ended following the user's request to finish with 720p evidence. Earlier [rejected series](performance/rejected-series.json) include a paused run and a decorated-window viewport of 1920 × 1061. No paused or incorrectly sized run contributes to the accepted 720p comparison.
 
 ## Remaining acceptance work
 
@@ -108,6 +121,8 @@ The source assets, converters, renderer integration and current placement replac
 Use the [vegetation pipeline guide](../../../../../tools/landscape/vegetation/README.md) for source conversions/catalog checks and the [tree guide](../../../../../tools/trees/README.md) for baking, captures and timing. Keep GPU jobs serial. The native flight probe selects the existing external-controller seam before scene initialization so a connected desktop gamepad cannot replace the recorded input tape; both builds use the same probe and normal input callback. Live UI shortcuts are disabled in the probe, with a smoke regression exercising the pause-triggering assignment key. Production focus-loss safety remains active, so interrupted runs are rejected. A borderless window and explicit position preserve the requested viewport dimensions; each report must still match them exactly.
 
 Timing uses frozen `baseline/app` and `candidate/app` snapshots under `D:/OpenRCsimulator-vegetation-renewal-2026-10-20/` during this session. The candidate was cloned from that baseline and overlaid with the vegetation changes only. Both retain the same simulation, frame logger, aircraft and input tape. The shared repository advanced independently, so current HEAD alone does not identify these measurements. Retained receipts distinguish them.
+
+The [full source identities](performance/final-source-identities.json), [56-file vegetation overlay](performance/candidate-overlay-final.json) and [post-run verification](performance/frozen-source-verification.json) confirm that both snapshots remained byte-identical throughout collection, excluding generated `.godot` caches. The [retained harness sources](performance/harness/) include the exact 720p continuation collector: additional resume-validation checks landed in the live collector after that invocation began, so the recorded version was retained and used again. The measurement probe and common runner remained identical. Resume history retains prior errors and attempts; complete pairs are never removed because of their timing results.
 
 ```powershell
 python tools/trees/flight_quality.py --baseline <baseline-app> --candidate <candidate-app> --engine <native-godot> --out <new-evidence-folder> --pairs 5 --warmup 10 --sample 60 --width 1280 --height 720 --baseline-env OPENRC_TREE_WIND=on --candidate-env OPENRC_TREE_WIND=on

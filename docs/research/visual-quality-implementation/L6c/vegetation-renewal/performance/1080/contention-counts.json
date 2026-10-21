@@ -1,0 +1,890 @@
+[
+  {
+    "utc": "2026-10-21T03:18:16.797104+00:00",
+    "system_cpu_percent": 27.1,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:18:21.842331+00:00",
+    "system_cpu_percent": 25.3,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:26.893963+00:00",
+    "system_cpu_percent": 31.4,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:31.939779+00:00",
+    "system_cpu_percent": 73.6,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:36.988662+00:00",
+    "system_cpu_percent": 74.5,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:42.063724+00:00",
+    "system_cpu_percent": 99.6,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:47.110784+00:00",
+    "system_cpu_percent": 46.4,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:52.156963+00:00",
+    "system_cpu_percent": 21.6,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:18:57.185534+00:00",
+    "system_cpu_percent": 23.9,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:02.213654+00:00",
+    "system_cpu_percent": 18.4,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:07.243110+00:00",
+    "system_cpu_percent": 22.1,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:12.271729+00:00",
+    "system_cpu_percent": 27.2,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:17.301542+00:00",
+    "system_cpu_percent": 20.8,
+    "headless_godot_processes": 4,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:22.330550+00:00",
+    "system_cpu_percent": 31.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:27.358991+00:00",
+    "system_cpu_percent": 13.3,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:32.386869+00:00",
+    "system_cpu_percent": 10.4,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:37.416661+00:00",
+    "system_cpu_percent": 11.4,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:42.446934+00:00",
+    "system_cpu_percent": 13.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:47.489286+00:00",
+    "system_cpu_percent": 25.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:52.521376+00:00",
+    "system_cpu_percent": 13.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:19:57.567419+00:00",
+    "system_cpu_percent": 16.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:02.614072+00:00",
+    "system_cpu_percent": 15.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:07.662740+00:00",
+    "system_cpu_percent": 15.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:12.706302+00:00",
+    "system_cpu_percent": 13.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:17.738607+00:00",
+    "system_cpu_percent": 13.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:22.791679+00:00",
+    "system_cpu_percent": 16.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:27.835525+00:00",
+    "system_cpu_percent": 18.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:32.871017+00:00",
+    "system_cpu_percent": 65.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:38.135722+00:00",
+    "system_cpu_percent": 100.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:20:43.187918+00:00",
+    "system_cpu_percent": 95.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:48.220448+00:00",
+    "system_cpu_percent": 44.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:53.249813+00:00",
+    "system_cpu_percent": 21.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:20:58.306613+00:00",
+    "system_cpu_percent": 25.6,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:21:03.353415+00:00",
+    "system_cpu_percent": 16.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:08.398742+00:00",
+    "system_cpu_percent": 17.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:13.440996+00:00",
+    "system_cpu_percent": 18.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:18.483066+00:00",
+    "system_cpu_percent": 18.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:23.528164+00:00",
+    "system_cpu_percent": 26.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:28.562807+00:00",
+    "system_cpu_percent": 16.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:33.618171+00:00",
+    "system_cpu_percent": 22.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:21:38.664763+00:00",
+    "system_cpu_percent": 37.0,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:43.768289+00:00",
+    "system_cpu_percent": 19.8,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:48.805060+00:00",
+    "system_cpu_percent": 16.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:53.848706+00:00",
+    "system_cpu_percent": 15.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:21:58.890623+00:00",
+    "system_cpu_percent": 17.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:03.928574+00:00",
+    "system_cpu_percent": 59.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:09.037630+00:00",
+    "system_cpu_percent": 56.2,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:14.217661+00:00",
+    "system_cpu_percent": 96.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:19.262447+00:00",
+    "system_cpu_percent": 59.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:24.311081+00:00",
+    "system_cpu_percent": 29.9,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:29.352938+00:00",
+    "system_cpu_percent": 82.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:34.842589+00:00",
+    "system_cpu_percent": 74.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:40.166266+00:00",
+    "system_cpu_percent": 99.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:45.215910+00:00",
+    "system_cpu_percent": 35.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:50.261178+00:00",
+    "system_cpu_percent": 22.8,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:22:55.306977+00:00",
+    "system_cpu_percent": 22.1,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:00.351025+00:00",
+    "system_cpu_percent": 29.0,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:05.404211+00:00",
+    "system_cpu_percent": 25.7,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:10.466488+00:00",
+    "system_cpu_percent": 38.5,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:15.512646+00:00",
+    "system_cpu_percent": 25.8,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:20.552473+00:00",
+    "system_cpu_percent": 22.3,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:25.581817+00:00",
+    "system_cpu_percent": 19.0,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:30.621876+00:00",
+    "system_cpu_percent": 29.3,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:35.654120+00:00",
+    "system_cpu_percent": 14.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:40.684771+00:00",
+    "system_cpu_percent": 12.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:45.713938+00:00",
+    "system_cpu_percent": 9.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:50.744417+00:00",
+    "system_cpu_percent": 8.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:23:55.774289+00:00",
+    "system_cpu_percent": 10.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:00.806075+00:00",
+    "system_cpu_percent": 10.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:05.838085+00:00",
+    "system_cpu_percent": 10.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:10.868492+00:00",
+    "system_cpu_percent": 8.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:15.900196+00:00",
+    "system_cpu_percent": 8.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:20.934159+00:00",
+    "system_cpu_percent": 12.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:25.965549+00:00",
+    "system_cpu_percent": 9.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:31.007948+00:00",
+    "system_cpu_percent": 13.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:36.039319+00:00",
+    "system_cpu_percent": 22.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:41.071039+00:00",
+    "system_cpu_percent": 11.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:46.104452+00:00",
+    "system_cpu_percent": 9.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:51.143316+00:00",
+    "system_cpu_percent": 8.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:24:56.176278+00:00",
+    "system_cpu_percent": 10.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:01.207944+00:00",
+    "system_cpu_percent": 10.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:06.241442+00:00",
+    "system_cpu_percent": 7.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:11.272830+00:00",
+    "system_cpu_percent": 9.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:16.318173+00:00",
+    "system_cpu_percent": 11.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:21.387203+00:00",
+    "system_cpu_percent": 35.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:26.428202+00:00",
+    "system_cpu_percent": 63.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:31.622694+00:00",
+    "system_cpu_percent": 87.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:36.682377+00:00",
+    "system_cpu_percent": 70.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:41.729824+00:00",
+    "system_cpu_percent": 19.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:46.776893+00:00",
+    "system_cpu_percent": 14.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:51.826863+00:00",
+    "system_cpu_percent": 17.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:25:56.870931+00:00",
+    "system_cpu_percent": 20.5,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:01.914207+00:00",
+    "system_cpu_percent": 15.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:06.958849+00:00",
+    "system_cpu_percent": 17.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:11.995582+00:00",
+    "system_cpu_percent": 15.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:17.038340+00:00",
+    "system_cpu_percent": 26.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:22.075531+00:00",
+    "system_cpu_percent": 13.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:27.113059+00:00",
+    "system_cpu_percent": 23.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:32.144750+00:00",
+    "system_cpu_percent": 10.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:37.187026+00:00",
+    "system_cpu_percent": 8.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:42.220125+00:00",
+    "system_cpu_percent": 12.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:47.259505+00:00",
+    "system_cpu_percent": 9.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:52.294759+00:00",
+    "system_cpu_percent": 10.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:26:57.325456+00:00",
+    "system_cpu_percent": 10.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:02.365622+00:00",
+    "system_cpu_percent": 11.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:07.407461+00:00",
+    "system_cpu_percent": 8.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:12.440382+00:00",
+    "system_cpu_percent": 11.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:17.472639+00:00",
+    "system_cpu_percent": 10.6,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:22.506320+00:00",
+    "system_cpu_percent": 9.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:27.537752+00:00",
+    "system_cpu_percent": 10.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:32.569805+00:00",
+    "system_cpu_percent": 9.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:37.603157+00:00",
+    "system_cpu_percent": 9.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:42.637301+00:00",
+    "system_cpu_percent": 9.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:47.670028+00:00",
+    "system_cpu_percent": 9.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:52.703453+00:00",
+    "system_cpu_percent": 11.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:27:57.735626+00:00",
+    "system_cpu_percent": 10.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:02.766100+00:00",
+    "system_cpu_percent": 9.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:07.796364+00:00",
+    "system_cpu_percent": 8.6,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:12.839076+00:00",
+    "system_cpu_percent": 11.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:17.874511+00:00",
+    "system_cpu_percent": 11.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:22.937933+00:00",
+    "system_cpu_percent": 42.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:28:27.968601+00:00",
+    "system_cpu_percent": 16.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:33.001156+00:00",
+    "system_cpu_percent": 11.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:38.036103+00:00",
+    "system_cpu_percent": 10.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:43.066889+00:00",
+    "system_cpu_percent": 11.6,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:48.096536+00:00",
+    "system_cpu_percent": 9.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:53.126748+00:00",
+    "system_cpu_percent": 11.1,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:28:58.157828+00:00",
+    "system_cpu_percent": 10.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:03.197572+00:00",
+    "system_cpu_percent": 7.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:08.228076+00:00",
+    "system_cpu_percent": 8.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:13.260871+00:00",
+    "system_cpu_percent": 10.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:18.297595+00:00",
+    "system_cpu_percent": 10.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:23.328345+00:00",
+    "system_cpu_percent": 10.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:28.366436+00:00",
+    "system_cpu_percent": 10.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:33.405912+00:00",
+    "system_cpu_percent": 12.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:38.438556+00:00",
+    "system_cpu_percent": 9.2,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:43.471811+00:00",
+    "system_cpu_percent": 14.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:48.502013+00:00",
+    "system_cpu_percent": 13.8,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:53.532644+00:00",
+    "system_cpu_percent": 12.3,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:29:58.570537+00:00",
+    "system_cpu_percent": 12.6,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:03.601921+00:00",
+    "system_cpu_percent": 11.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:08.646861+00:00",
+    "system_cpu_percent": 11.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:13.696017+00:00",
+    "system_cpu_percent": 10.5,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:18.726931+00:00",
+    "system_cpu_percent": 10.9,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:23.783243+00:00",
+    "system_cpu_percent": 42.0,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 0
+  },
+  {
+    "utc": "2026-10-21T03:30:28.823867+00:00",
+    "system_cpu_percent": 26.6,
+    "headless_godot_processes": 2,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:33.860429+00:00",
+    "system_cpu_percent": 47.7,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  },
+  {
+    "utc": "2026-10-21T03:30:38.990508+00:00",
+    "system_cpu_percent": 50.4,
+    "headless_godot_processes": 0,
+    "native_godot_processes": 1
+  }
+]
