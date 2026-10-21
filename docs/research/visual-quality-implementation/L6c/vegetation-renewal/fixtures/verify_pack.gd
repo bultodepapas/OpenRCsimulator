@@ -65,8 +65,14 @@ const EXPECTED_VEGETATION_ASSETS := {
 }
 
 const EXPECTED_POLYHAVEN_SOURCES := {
-	"polyhaven_fern_02": "Fern 02",
-	"polyhaven_flower_empodium": "Flower Empodium",
+	"polyhaven_fern_02": {
+		"title": "Fern 02",
+		"url": "https://polyhaven.com/a/fern_02",
+	},
+	"polyhaven_flower_empodium": {
+		"title": "Flower Empodium",
+		"url": "https://polyhaven.com/a/flower_empodium",
+	},
 }
 
 
@@ -171,18 +177,39 @@ func _check_vegetation_sources(catalog: Dictionary) -> String:
 		if not found_sources.has(source_id):
 			return "Vegetation catalog is missing source record: " + source_id
 		var source_record: Dictionary = found_sources[source_id]
-		if source_record.get("license", "") != "CC0-1.0" \
-				or source_record.get("license_evidence", "") != "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md":
-			return "Incorrect Poly Haven license evidence for " + source_id
-		var notice_path := "res://" + str(source_record.get("runtime_notice", ""))
-		var notice_text := _read_text(notice_path).to_lower()
-		if notice_text.is_empty() or not notice_text.contains("cc0") \
-				or not notice_text.contains(str(EXPECTED_POLYHAVEN_SOURCES[source_id]).to_lower()):
-			return "Missing or incomplete Poly Haven source license: " + notice_path
-	var shared_notice := _read_text(UNDERSTORY_LICENSE_PATH).to_lower()
-	if shared_notice.is_empty() or not shared_notice.contains("fern 02") \
-			or not shared_notice.contains("flower empodium") or not shared_notice.contains("cc0 1.0"):
-		return "Missing combined Poly Haven vegetation license"
+		var expected_source: Dictionary = EXPECTED_POLYHAVEN_SOURCES[source_id]
+		if source_record.get("title", "") != expected_source.title \
+				or source_record.get("url", "") != expected_source.url \
+				or source_record.get("license", "") != "CC0-1.0" \
+				or source_record.get("license_url", "") != "https://creativecommons.org/publicdomain/zero/1.0/" \
+				or source_record.get("license_statement_url", "") != "https://polyhaven.com/license":
+			return "Incorrect Poly Haven source or license metadata for " + source_id
+	var catalog_files: Variant = catalog.get("files", null)
+	if not (catalog_files is Array):
+		return "Vegetation catalog has no runtime file inventory"
+	var license_record: Dictionary = {}
+	for file_record: Variant in catalog_files:
+		if file_record is Dictionary and file_record.get("path", "") == "LICENSE_UNDERSTORY.txt":
+			license_record = file_record
+			break
+	if license_record.is_empty():
+		return "Vegetation catalog does not ship LICENSE_UNDERSTORY.txt"
+	var notice_path := "res://assets/landscape/vegetation/" + str(license_record.get("path", ""))
+	var shared_notice_raw := _read_text(notice_path)
+	var shared_notice := shared_notice_raw.to_lower()
+	if notice_path != UNDERSTORY_LICENSE_PATH or shared_notice.is_empty() \
+			or shared_notice_raw.to_utf8_buffer().size() != int(license_record.get("bytes", -1)) \
+			or FileAccess.get_sha256(notice_path) != str(license_record.get("sha256", "")):
+		return "Missing or altered packaged Poly Haven license: " + notice_path
+	for source_id: String in EXPECTED_POLYHAVEN_SOURCES:
+		var expected_source: Dictionary = EXPECTED_POLYHAVEN_SOURCES[source_id]
+		if not shared_notice.contains(str(expected_source.title).to_lower()) \
+				or not shared_notice.contains(str(expected_source.url).to_lower()):
+			return "Packaged Poly Haven license is missing source attribution for " + source_id
+	if not shared_notice.contains("cc0 1.0") \
+			or not shared_notice.contains("https://polyhaven.com/license") \
+			or not shared_notice.contains("https://creativecommons.org/publicdomain/zero/1.0/legalcode.en"):
+		return "Packaged Poly Haven license is missing CC0 license references"
 
 	var found_assets: Dictionary = {}
 	for asset: Variant in assets:

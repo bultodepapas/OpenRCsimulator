@@ -128,6 +128,9 @@ func _run() -> void:
 		var_to_bytes(profile_base) == var_to_bytes(profile_candidate)
 		and profile_base.get("controller_sha256", "") == EXPECTED_PILOT_SHA256,
 		str({"baseline": profile_base, "candidate": profile_candidate}))
+	_check("both branches use the same full scenery collision world",
+		baseline.world.identity == candidate.world.identity,
+		str({"baseline": baseline.world.identity, "candidate": candidate.world.identity}))
 	_check("candidate is marked as an explicit research override, not an accepted profile",
 		candidate.candidate_override and candidate.candidate_sha256 == candidate_sha,
 		str({"override": candidate.candidate_override, "sha256": candidate.candidate_sha256}))
@@ -253,6 +256,7 @@ func _run() -> void:
 		"profile_identity": profile_base,
 		"source_hashes": sources_before.hashes,
 		"world_identity": baseline.world.identity,
+		"candidate_world_identity": candidate.world.identity,
 		"score_work": {"planning_decisions": _plan_decisions,
 			"clear_decisions_with_no_held_plan": _clear_decisions,
 			"bank_score_evaluations_skipped": _baseline_saved_scores,
@@ -383,7 +387,8 @@ func _inspect_logs(capture: Dictionary) -> Dictionary:
 		if not inspected.get("ok", false) or not inspected.get("complete", false):
 			return {ok = false, reason = "%s ORFL incomplete: %s" % [id, inspected.get("error", "invalid report")]}
 		var actual_rows: int = int(inspected.get("rows", -1))
-		var final_tick: int = int(inspected.get("final_tick", -1))
+		var footer: Dictionary = inspected.get("footer", {})
+		var final_tick: int = int(footer.get("final_tick", -1))
 		if actual_rows != row_count or final_tick != TICKS:
 			return {ok = false, reason = "%s ORFL clock/count mismatch rows=%d final=%d" % [id, actual_rows, final_tick]}
 		var header: Dictionary = capture.writers[entries.size()].header
