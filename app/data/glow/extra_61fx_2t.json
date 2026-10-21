@@ -1,7 +1,7 @@
 {
   "format": "openrc-glow-installation v2",
   "family": "glow_2t",
-  "profile": "res://data/glow/os_max_61fx_candidate.json",
+  "profile": "res://data/glow/os_max_61fx_installed_candidate.json",
   "fuel_inventory": "usable glow premix",
   "settings": {
     "throttle_effective_area_m2": {
@@ -17,10 +17,10 @@
       "source": "NITRO-06: barrel open-area fraction at the idle stop giving the former per-cycle idle charge 0.28 at the declared 2800 rpm static idle (breathing 0.594) through the choked nozzle law; derived from estimates"
     },
     "throttle_travel_exponent": {
-      "value": 0.514443559415884,
+      "value": 0.410397375541997,
       "unit": "1",
       "kind": "derived",
-      "source": "NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at 0.81 of the full-throttle static rpm (9140 of 11284 rpm), the operating band Menon 2010 (O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched propeller (78-84 %); another engine, a derived ratio, no linkage drawing"
+      "source": "NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at 0.81 of the full-throttle static rpm (8333 of 10288 rpm), the operating band Menon 2010 (O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched propeller (78-84 %); another engine, a derived ratio, no linkage drawing"
     },
     "servo_time_constant_s": {
       "value": 0.06,

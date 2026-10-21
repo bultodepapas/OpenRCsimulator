@@ -1,0 +1,434 @@
+{
+  "format": "openrc-glow-engine v1",
+  "id": "os_max_61fx_installed_candidate",
+  "manufacturer": "O.S. Engines",
+  "model": "MAX-61FX (muffler-installed)",
+  "family": "glow_2t",
+  "status": "candidate",
+  "feed": "naturally_aspirated",
+  "oil_model": "inert",
+  "parameters": {
+    "displacement_m3": {
+      "value": 9.95e-06,
+      "unit": "m3",
+      "kind": "derived",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm; cc × 1e-6 -> m3"
+    },
+    "bore_m": {
+      "value": 0.024,
+      "unit": "m",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm; manufacturer bore specification converted from mm to m"
+    },
+    "stroke_m": {
+      "value": 0.022,
+      "unit": "m",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm; manufacturer stroke specification converted from mm to m"
+    },
+    "rod_to_crank_radius_ratio": {
+      "value": 3.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-03 explicit unmeasured slider-crank geometry estimate; connecting-rod length / crank radius = 3.5; matched internal dimension unavailable"
+    },
+    "reciprocating_mass_kg": {
+      "value": 0.013750000000000002,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "NITRO-03 explicit unmeasured equivalent-mass estimate: 2.5% of manufacturer dry engine mass (550 g); 1–5% sensitivity retained in vibration evidence; no matched component measurement; https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm"
+    },
+    "mechanical_torque_nm": {
+      "value": [
+        [
+          0.0,
+          0.00891377379619261
+        ],
+        [
+          2000.0,
+          0.013370660694288914
+        ],
+        [
+          4000.0,
+          0.01782754759238522
+        ],
+        [
+          7000.0,
+          0.024512877939529675
+        ],
+        [
+          10000.0,
+          0.031198208286674134
+        ],
+        [
+          13000.0,
+          0.037883538633818596
+        ],
+        [
+          16000.0,
+          0.04456886898096305
+        ],
+        [
+          17000.0,
+          0.046797312430011194
+        ],
+        [
+          20000.0,
+          0.053482642777155656
+        ],
+        [
+          24000.0,
+          0.06239641657334827
+        ],
+        [
+          32000.0,
+          0.08022396416573349
+        ]
+      ],
+      "unit": "rpm, N·m",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated; MAX-61FX: 55AX law scaled by displacement 9.95/8.93 (equal rated BMEP 526.7 vs 525.1 kPa); docs/research/glow-engines/NITRO-61FX/README.md"
+    },
+    "combustion_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.8,
+          0.9
+        ],
+        [
+          1.0,
+          0.98
+        ],
+        [
+          1.15,
+          1.0
+        ],
+        [
+          1.6,
+          0.85
+        ],
+        [
+          2.5,
+          0.2
+        ],
+        [
+          3.0,
+          0.0
+        ],
+        [
+          20.0,
+          0.0
+        ]
+      ],
+      "unit": "1, 1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "delivery_ratio": {
+      "value": [
+        [
+          0.0,
+          0.45
+        ],
+        [
+          2000.0,
+          0.547274845257904
+        ],
+        [
+          4000.0,
+          0.6469192572379392
+        ],
+        [
+          7000.0,
+          0.751442697322653
+        ],
+        [
+          10000.0,
+          0.8323228634094907
+        ],
+        [
+          13000.0,
+          0.8064717388897685
+        ],
+        [
+          16000.0,
+          0.6828910845561011
+        ],
+        [
+          17000.0,
+          0.6163332128876747
+        ],
+        [
+          20000.0,
+          0.428839721676072
+        ],
+        [
+          24000.0,
+          0.3783879897141812
+        ],
+        [
+          32000.0,
+          0.3027103917713449
+        ]
+      ],
+      "unit": "rpm, 1",
+      "kind": "derived",
+      "source": "build_profiles.py NITRO-61FX-R2: os_max_61fx_candidate delivery x (1 - 0.209341 (rpm/13000)^2), held beyond 20000 rpm; k solves wide-open brake torque 0.679225 N m at 13000 rpm, the installed anchor (Dave Gierke, Model Airplane News 05/2003 \".60 engine shootout\", O.S. 61FX with its stock muffler: 1.24 hp at 13,000 rpm, \"most muffler equipped .60 make their maximum HP output at around 13,000 RPM\" (secondhand: RC Universe thread 1638558, 2004-03-21; the article itself was not found); mechanical hp). Check: Glassock 2012 (QUT PhD) rig: an O.S. 10 cc FX on a 12x6 at 30 m/s turned 11,000 rpm with 0.617 N m shaft torque through a geared motor (extra friction); references/rc-throttle-power/. Back pressure modelled as a wide-open-throttle function of rpm only (part-throttle derate overstated); not a measured map"
+    },
+    "trapping_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.6
+        ],
+        [
+          2000.0,
+          0.65
+        ],
+        [
+          4000.0,
+          0.7
+        ],
+        [
+          7000.0,
+          0.74
+        ],
+        [
+          10000.0,
+          0.76
+        ],
+        [
+          13000.0,
+          0.76
+        ],
+        [
+          16000.0,
+          0.74
+        ],
+        [
+          17000.0,
+          0.72
+        ],
+        [
+          20000.0,
+          0.66
+        ],
+        [
+          24000.0,
+          0.62
+        ],
+        [
+          32000.0,
+          0.55
+        ]
+      ],
+      "unit": "rpm, 1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "scavenge_pressure_pa": {
+      "value": [
+        [
+          0.0,
+          2000.0
+        ],
+        [
+          2000.0,
+          2800.0
+        ],
+        [
+          4000.0,
+          3600.0
+        ],
+        [
+          7000.0,
+          4800.0
+        ],
+        [
+          10000.0,
+          6000.0
+        ],
+        [
+          13000.0,
+          7200.0
+        ],
+        [
+          16000.0,
+          8400.0
+        ],
+        [
+          17000.0,
+          8800.0
+        ],
+        [
+          20000.0,
+          10000.0
+        ],
+        [
+          24000.0,
+          11600.0
+        ],
+        [
+          32000.0,
+          14800.0
+        ]
+      ],
+      "unit": "rpm, Pa",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "indicated_efficiency": {
+      "value": [
+        [
+          0.0,
+          0.006001180953593153
+        ],
+        [
+          2000.0,
+          0.09485086252310526
+        ],
+        [
+          4000.0,
+          0.12071321910330185
+        ],
+        [
+          7000.0,
+          0.16148124955601104
+        ],
+        [
+          10000.0,
+          0.17803016894187393
+        ],
+        [
+          13000.0,
+          0.18571089364093854
+        ],
+        [
+          16000.0,
+          0.1888911284958461
+        ],
+        [
+          17000.0,
+          0.19048676773025133
+        ],
+        [
+          20000.0,
+          0.15877031280994947
+        ],
+        [
+          24000.0,
+          0.0
+        ],
+        [
+          32000.0,
+          0.0
+        ]
+      ],
+      "unit": "rpm, 1",
+      "kind": "derived",
+      "source": "build_profiles.py: independently inferred WOT torque knots + estimated gas-exchange/loss curves; ONLY rated-power knot constrained by https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm; MAX-61FX: 55AX torque knots and losses scaled by displacement 9.95/8.93 (equal rated BMEP 526.7 vs 525.1 kPa); docs/research/glow-engines/NITRO-61FX/README.md"
+    }
+  },
+  "fuel": {
+    "nitromethane_volume_fraction": {
+      "value": 0.1,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "lubricant_volume_fraction": {
+      "value": 0.18,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_density_kg_m3": {
+      "value": 792.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_density_kg_m3": {
+      "value": 1137.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "lubricant_density_kg_m3": {
+      "value": 961.0,
+      "unit": "kg/m3",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_lhv_j_kg": {
+      "value": 20000000.0,
+      "unit": "J/kg",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_lhv_j_kg": {
+      "value": 11300000.0,
+      "unit": "J/kg",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "methanol_stoich_air_fuel_ratio": {
+      "value": 6.429,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    },
+    "nitromethane_stoich_air_fuel_ratio": {
+      "value": 1.687,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "https://doi.org/10.2514/6.2016-5011, Table 1; oil-inert lower bound, 25 degC"
+    }
+  },
+  "operation": {
+    "max_rpm": {
+      "value": 32000.0,
+      "unit": "rpm",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "rated_rpm": {
+      "value": 16000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm"
+    },
+    "rated_power_w": {
+      "value": 1397.4476249999998,
+      "unit": "W",
+      "kind": "derived",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm; metric PS × 735.49875 W/PS"
+    },
+    "reference_dry_density_kg_m3": {
+      "value": 1.225,
+      "unit": "kg/m3",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "nominal_mixture": {
+      "value": 1.15,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-01 candidate assumption; unmeasured and not physically validated"
+    },
+    "recommended_max_rpm": {
+      "value": 17000.0,
+      "unit": "rpm",
+      "kind": "manual",
+      "source": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/catalog/17750.htm"
+    }
+  }
+}

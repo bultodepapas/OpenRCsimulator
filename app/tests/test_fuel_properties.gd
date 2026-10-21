@@ -7,7 +7,7 @@ const Fuels := preload("res://physics/fuel_properties.gd")
 const Profile := preload("res://physics/glow/profile.gd")
 
 const GLOW_PROFILES := ["res://data/glow/os_max_55ax_candidate.json", "res://data/glow/os_max_61fx_candidate.json",
-	"res://data/glow/os_fs_64v_candidate.json"]
+	"res://data/glow/os_fs_64v_candidate.json", "res://data/glow/os_max_61fx_installed_candidate.json"]
 
 var _checks := 0
 var _failed := 0

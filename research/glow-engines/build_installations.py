@@ -95,6 +95,9 @@ def throttle_settings(two, profile_file):
     }
 
 HALF_STICK_RPM_RATIO = 0.81
+# NITRO-61FX-R2: an installed variant differs only in its exhaust; the carburettor (venturi area, idle stop) is the
+# bare engine's hardware, so its two quantities are sized on the bare profile's breathing.
+CARBURETTOR_PROFILE = {'os_max_61fx_installed_candidate': 'os_max_61fx_candidate'}
 TRAVEL_EXPONENT = ('NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at '
                    '{ratio:.2f} of the full-throttle static rpm ({half:.0f} of {full:.0f} rpm), the operating band Menon 2010 '
                    '(O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched '
@@ -148,11 +151,11 @@ def travel_exponent(profile, prop, area, idle_opening):
     p = 0.5 * (lo + hi)
     return p, static_rpm(profile, prop, area, idle_opening, p, 0.5), full
 
-def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True, section=None):
+def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True, section=None, profile_id=None):
     family = 'glow_2t' if two else 'glow_4t'
-    profile_file = ('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate')+'.json'
+    profile_file = (profile_id or ('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate'))+'.json'
     settings = {
-        **throttle_settings(two, profile_file),
+        **throttle_settings(two, CARBURETTOR_PROFILE.get(profile_file[:-5], profile_file[:-5])+'.json'),
         'servo_time_constant_s': q(.06, 's'),
         'air_time_constant_s': q(.045 if two else .075, 's'),
         'fuel_transport_time_constant_s': q(.12 if two else .16, 's'),
@@ -175,7 +178,7 @@ def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True, secti
         },
     }
     out = dict(format='openrc-glow-installation v2', family=family,
-                profile='res://data/glow/'+('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate')+'.json',
+                profile='res://data/glow/'+profile_file,
                 fuel_inventory='usable glow premix', settings=settings,
                 initial_temperature_k=q(390., 'K'),
                 propeller={
@@ -361,7 +364,9 @@ def outputs():
     # EX-14f: the Extra flies the cambered section fitted to measured APC Sport 11x6 data (fit_section.py), transferred
     # to its 12x6 by c/D. The Stik installations keep the symmetric surrogate until their owners adopt it.
     fit=json.loads((ROOT/'research/glow-engines/section_fits.json').read_text(encoding='utf-8'))['apc_sport_11x6_uiuc']
-    out[ROOT/'app/data/glow'/'extra_61fx_2t.json']=installation(True,12,6,fx61=True,include_feed=False,section={
+    # EX-14g: the Extra's prototype ran a Slimline Pitts in-cowl muffler (manual p3), so it uses the muffler-installed
+    # 61FX (NITRO-61FX-R2) instead of the bare catalog-rated candidate.
+    out[ROOT/'app/data/glow'/'extra_61fx_2t.json']=installation(True,12,6,fx61=True,include_feed=False,profile_id='os_max_61fx_installed_candidate',section={
         'chord_m':fit['chord_over_diameter']*12*.0254,'zero_lift_angle_rad':fit['zero_lift_angle_rad'],
         'source':'EX-14f research/glow-engines/fit_section.py: chord ratio %.4f and zero-lift angle %.2f deg fitted to the '
                  'measured UIUC APC Sport 11x6 Ct/Cp(J) knots (normalized rms %.3f; symmetric section best %.3f), transferred to '

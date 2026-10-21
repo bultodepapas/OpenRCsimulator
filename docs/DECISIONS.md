@@ -705,3 +705,15 @@ the profile owner. The cost is a known top-speed overshoot (47 m/s), recorded
 with the coherent alternative (40.8 m/s at 13,524 rpm). Revisit when a tach
 reading of the installed engine exists.
 [Evidence](research/extra-300-realism/EX-14/README.md#ex-14f--propeller-section-camber).
+
+### 2026-10-21 — Installed-engine variant for the Extra, anchored on a dyno reading (NITRO-61FX-R2, EX-14g)
+
+With the owner's delegation, give the Extra a muffler-installed MAX-61FX instead
+of the bare catalog-rated candidate. Model the silencer as back pressure that
+lowers the delivered charge, ∝ (rpm/13,000)², with one constant solved from
+Gierke's 1.24 hp at 13,000 rpm. Check it against Glassock's rig point. Keep the
+carburettor sized on the bare engine. This pairs the EX-14f propeller fix with
+installed power, so top speed, ground rpm and climb agree with their anchors
+together. The Stik keeps the bare candidate until its owner adopts the variant.
+Revisit with a tach and thrust reading of the actual installation.
+[Evidence](research/extra-300-realism/EX-14/README.md#ex-14g--installed-engine).

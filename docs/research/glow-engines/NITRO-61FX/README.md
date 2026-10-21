@@ -212,3 +212,26 @@ With the catalog-rated profile, a realistic prop takes the Extra to 47 m/s. An e
 - whether the Stik's 61FX installation adopts the cambered section.
 
 The cheapest evidence that would settle both is one tachometer reading of the airplane's own engine on its 12×6, static and on a full-throttle level pass.
+
+## 2026-10-21 — Muffler-installed variant (NITRO-61FX-R2)
+
+The catalog candidate reproduces O.S.'s 1.9 PS at 16,000 rpm, a bare-engine rating. Installed measurements are lower. Gierke's dyno reading of a stock-muffler 61FX is 1.24 hp at 13,000 rpm (secondhand quote, MAN 05/2003, RCU 1638558; "most muffler equipped .60 make their maximum HP output at around 13,000 RPM"). Glassock's rig, an O.S. 10 cc FX on a 12×6, needed 0.617 N·m of shaft torque at 11,000 rpm and 30 m/s through a geared motor with extra friction.
+
+`build_profiles.py` now also writes `os_max_61fx_installed_candidate`. It is the bare candidate with one change, `delivery_ratio` × (1 − k·(rpm/13,000)²):
+- **Mechanism:** silencer back pressure grows about with the square of the exhaust flow and lowers the fresh charge. The factor is held beyond the last powered knot, 20,000 rpm.
+- **Calibration:** k = 0.2093, solved by the generator so the wide-open brake torque at 13,000 rpm is Gierke's 0.679 N·m.
+- **Check (not fitted):** 0.680 N·m at 11,000 rpm, consistent with Glassock's 0.617 N·m shaft torque plus rig friction.
+- **Power curve:** 925–935 W from 13,000 to 16,000 rpm, then 862 W at 17,000.
+
+The carburettor stays the bare engine's hardware: venturi area and idle stop are sized on the bare breathing (`CARBURETTOR_PROFILE` in `build_installations.py`). The travel exponent is recalibrated to the half-stick rpm ratio on the installed engine.
+
+Limits:
+- The back pressure is a wide-open function of rpm, so the part-throttle derate is overstated.
+- The anchor is secondhand, and the Pitts in-cowl muffler is probably more restrictive than the stock silencer it was measured on.
+
+The Extra 300S installation uses this variant (its prototype ran the Pitts, manual p3); the Stik keeps the bare candidate. Tests:
+- `test_profiles.py` rebuilds the anchor torque independently, to 6 decimals.
+- The binding pins in `installation_schema.py` and three test files name the variant.
+- `test_fuel_properties.gd` covers the new profile.
+
+Flight results are in the [Extra's EX-14g evidence](../../extra-300-realism/EX-14/README.md#ex-14g--installed-engine).

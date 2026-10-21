@@ -37,7 +37,8 @@ class InventoryIdentityTests(unittest.TestCase):
     def test_extra_install_uses_existing_61fx_candidate_without_stik_feed_geometry(self) -> None:
         path = build_installations.ROOT / "app/data/glow/extra_61fx_2t.json"
         generated = build_installations.outputs()[path]
-        self.assertEqual(generated["profile"], "res://data/glow/os_max_61fx_candidate.json")
+        # EX-14g: the Extra binds the muffler-installed 61FX (NITRO-61FX-R2), not the bare candidate.
+        self.assertEqual(generated["profile"], "res://data/glow/os_max_61fx_installed_candidate.json")
         self.assertEqual(generated["family"], "glow_2t")
         self.assertAlmostEqual(generated["propeller"]["diameter_m"]["value"], 0.3048, delta=1e-12)
         self.assertNotIn("fuel_feed", generated)

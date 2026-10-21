@@ -2,7 +2,7 @@
 import math
 import unittest
 
-from build_profiles import ENGINES, SPEC, blend, candidate, outputs, schema
+from build_profiles import ENGINES, INSTALLED, SPEC, blend, candidate, installed, outputs, schema
 
 
 class ProfileGenerationTests(unittest.TestCase):
@@ -76,7 +76,27 @@ class ProfileGenerationTests(unittest.TestCase):
             self.assertEqual(p['status'],'candidate')
             self.assertEqual(p['parameters']['mechanical_torque_nm']['kind'],'estimated')
             self.assertIn('ONLY rated-power knot',p['parameters']['indicated_efficiency']['source'])
-        self.assertEqual(len(outputs()),2+len(ENGINES))
+        self.assertEqual(len(outputs()),2+len(ENGINES)+len(INSTALLED))
+
+    def test_installed_61fx_changes_only_delivery_and_meets_its_anchor(self):
+        # NITRO-61FX-R2: independent reconstruction (not the calibration report) of the anchored brake torque.
+        bare, inst = candidate('os_max_61fx_candidate'), installed('os_max_61fx_installed_candidate')
+        spec = INSTALLED['os_max_61fx_installed_candidate']
+        self.assertEqual({k for k in bare['parameters'] if bare['parameters'][k] != inst['parameters'][k]}, {'delivery_ratio'})
+        for key in ['fuel', 'operation', 'family', 'status', 'feed']:
+            self.assertEqual(bare[key], inst[key])
+        factors = [(r, d1 / d0) for (r, d0), (_, d1) in zip(bare['parameters']['delivery_ratio']['value'], inst['parameters']['delivery_ratio']['value'])]
+        self.assertTrue(all(0.0 < f <= 1.0 for _, f in factors))
+        self.assertTrue(all(f1 <= f0 + 1e-15 for (_, f0), (_, f1) in zip(factors, factors[1:])))  # non-increasing in rpm
+        held = [f for r, f in factors if r >= spec['last_powered_rpm']]
+        self.assertAlmostEqual(min(held), max(held), 12)  # held beyond the last powered knot
+        v = {k: q['value'] for k, q in inst['parameters'].items()}; b = blend(inst['fuel']); rpm = spec['anchor_rpm']
+        at = lambda name: dict(v[name])[rpm]
+        air = 1.225 * v['displacement_m3'] * at('delivery_ratio') * at('trapping_efficiency')
+        work = air / b['stoich_air_fuel_ratio'] * b['fuel_lhv_j_kg'] * at('indicated_efficiency')
+        pump = at('scavenge_pressure_pa') * at('delivery_ratio') * v['displacement_m3'] / math.tau
+        brake = (work / math.tau - at('mechanical_torque_nm') - pump) * rpm * math.tau / 60
+        self.assertAlmostEqual(brake, spec['anchor_w'], places=6)
 
     def test_61fx_scales_the_55ax_by_displacement(self):
         fx,ax=candidate('os_max_61fx_candidate'),candidate('os_max_55ax_candidate')
