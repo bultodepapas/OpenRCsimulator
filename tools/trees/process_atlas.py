@@ -140,11 +140,12 @@ def _load_bake(bake_dir: Path) -> list[dict[str, Any]]:
                      f"{tree_id}: source provenance is incomplete.")
             normalization = item.get("normalization")
             _require(isinstance(normalization, dict)
-                     and normalization.get("height_m") == 1
-                     and isinstance(normalization.get("source_height_m"), (int, float))
+                     and type(normalization.get("height_m")) in (int, float)
+                     and normalization["height_m"] == 1
+                     and type(normalization.get("source_height_m")) in (int, float)
                      and math.isfinite(normalization["source_height_m"])
                      and normalization["source_height_m"] > 0
-                     and isinstance(normalization.get("scale"), (int, float))
+                     and type(normalization.get("scale")) in (int, float)
                      and math.isfinite(normalization["scale"])
                      and math.isclose(normalization["scale"] * normalization["source_height_m"], 1.0,
                                       rel_tol=1e-6, abs_tol=1e-6),

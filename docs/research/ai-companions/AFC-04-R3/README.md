@@ -89,6 +89,17 @@ remain under `research/ai-companions/avoidance/`. Static path assessment used th
 [promoted checker](../../../../app/ai/companions/static_trajectory.gd) through a
 research-only harness.
 
+## Recorded route-intercept crossings
+
+The production pilot and R2 candidate were also recorded for two fixed 20-second
+crossing fixtures. The candidate completed both without crash, fault or refusal,
+with minimum player separations of 59.820 m and 58.465 m; the production
+baseline minima were 4.127 m and 3.860 m. All 12 baseline/candidate ORFL streams
+replayed in exact mode with unchanged solver identity. The player tapes match
+byte-for-byte between controller runs. The fixtures disable production spawn
+admission and do not establish that gate. Full metrics, raw-file locations,
+hashes, and replay details are in [`crossings/`](crossings/README.md).
+
 ## Scope and pending gates
 
 These results support the narrow six-route, 60-second separation gate for this
@@ -98,9 +109,9 @@ cost or target-renderer gates. No physics, profile, scenery or golden-flight dat
 was tuned. The 120-second matrix is correctness evidence, not a performance
 measurement.
 
-The candidate's recorded crossing runs and exact `.orfl` replays remain pending
-the Windows host's idle window. Keep the original R1/R2 crossing results and
-their failed initial-conflict fixture separate; exact log replay does not run the
-AI controller. See [AFC-04-R2](../AFC-04-R2/README.md) for the previous pilot's
-crossing evidence and [AFC-12-R2](../AFC-12-R2/README.md) for the reusable static
-trajectory checker's contract tests.
+Exact `.orfl` replay validates the recorded commands against the unchanged
+solver; it does not run the AI controller. The intentionally conflicting
+two-threat spawn remains separate from the valid six-route survey. See
+[AFC-04-R2](../AFC-04-R2/README.md) for prior crossing evidence and
+[AFC-12-R2](../AFC-12-R2/README.md) for the reusable static trajectory checker's
+contract tests.

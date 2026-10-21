@@ -1,4 +1,4 @@
-extends "res://ai/companions/pilot.gd"
+extends "res://ai/companions/circuit_controller.gd"
 
 ## AFC-04/AFC-12 research candidate. It inherits the accepted Stik guidance and
 ## only replaces the moving-traffic response. The no-traffic command path still

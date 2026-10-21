@@ -266,6 +266,14 @@ func _run() -> void:
 			"normalized_profile_qualification_sha256": str(record.profile_identity.get("solver_qualification_sha256", "")),
 		},
 		"decision_replay_comparison": _decision_replay_comparison.duplicate(true),
+		"execution_context": {
+			"project_root": ProjectSettings.globalize_path("res://").simplify_path(),
+			"checkpoint_source_root": ProjectSettings.globalize_path("res://../research/ai-companions/checkpoints").simplify_path(),
+			"controller_path": str(record.profile_identity.get("controller_path", "")),
+			"controller_sha256": str(record.profile_identity.get("controller_sha256", "")),
+			"reachable_pilot_source_path": REACHABLE_PILOT_SOURCE_PATH,
+			"reachable_pilot_source_sha256": _source_hashes.get(REACHABLE_PILOT_SOURCE_PATH, ""),
+		},
 		"limitations": record.limitations.duplicate(true),
 	}
 	_dispose_fixture(restored)

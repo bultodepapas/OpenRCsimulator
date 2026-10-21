@@ -71,6 +71,181 @@
       "sha256": "1f8344ed8da8edfcefceebc1db9b45cde0b949436f830d30f0f7c8b0d86361a1"
     },
     {
+      "bytes": 14284,
+      "path": "crossings/baseline/report.json",
+      "sha256": "1523cc89c89cbce1993d4314dc9e64f7ec8e0ef16666bb7576f2251ec1ccc174"
+    },
+    {
+      "bytes": 170897,
+      "path": "crossings/baseline/trajectory.csv",
+      "sha256": "d738ebf6190a48aee52fe8cfa395e7d7e3dbdea87b3ebded6d18fa3dca4bd55d"
+    },
+    {
+      "bytes": 14285,
+      "path": "crossings/candidate/report.json",
+      "sha256": "34dd6f45ea0e9065f9dc0d1fecf672085f44fe3439ee65af06d1e8e3f10f988a"
+    },
+    {
+      "bytes": 170730,
+      "path": "crossings/candidate/trajectory.csv",
+      "sha256": "663f060b731480584fcdf8a7801674f2c1806a5682f62669ce3ce7aba481e0d2"
+    },
+    {
+      "bytes": 1986,
+      "path": "crossings/README.md",
+      "sha256": "8d87030c7ad1737fff2076658b25e7ef8ed77d31a3e021216e52166cf06b2b1c"
+    },
+    {
+      "bytes": 17860,
+      "path": "crossings/replay-verification.json",
+      "sha256": "5a2e9b0d10e550ee498d9f2ab4b7c9556c60264ad5ebe39aeeaa2952f35603f3"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-ai/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6786,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-ai/replay.json",
+      "sha256": "8b693a1fbcb1e87079d6f0ca3d7c87f4b593140751be63763ffdb4088b0de946"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-player-coupled/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6798,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-player-coupled/replay.json",
+      "sha256": "074df3e0f8c9b66f75d939823195ff5247549c0a81714a721b18ad59bca93deb"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-player-exogenous/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6842,
+      "path": "crossings/replays/baseline-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "sha256": "d92d8d901d42adad23b4bf1dd1422f4b17a4681495ed4db7373b19992162bbe6"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-ai/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6785,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-ai/replay.json",
+      "sha256": "7f1a85b26e1f0f3b46c83fc5cc77cc17ac54fe9c18af4d130d939bf391fb7dae"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-player-coupled/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6795,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-player-coupled/replay.json",
+      "sha256": "dd4f008cbb82b29ed50903aebb5dcf677e1aef7ad3d5182548b6d3065d3dc40d"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-player-exogenous/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6839,
+      "path": "crossings/replays/baseline-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "sha256": "0ff0b4e67d1e1044dfe92ea1e0615c9b33e9755e6f6817e24ba79dd81cdfbe9f"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-ai/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6787,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-ai/replay.json",
+      "sha256": "3e4c4d8ac22ef0e2376ba539642790479541dab22abcf445e8f7280ee354b572"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-player-coupled/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6799,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-player-coupled/replay.json",
+      "sha256": "ba925d14ff5329c5764eaafd02163d320ca066687446eca6e771f262f015298e"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-player-exogenous/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6843,
+      "path": "crossings/replays/candidate-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "sha256": "e8b6f3dd2a81a47f3eac3788ba0217f0f1fb1769c6161aefb3c6195cd2c06ca2"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-ai/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6786,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-ai/replay.json",
+      "sha256": "d2256661257dcdae775895be3c4d7f1bc45ca80d86d64be2a54c63dd6a2f061c"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-player-coupled/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6796,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-player-coupled/replay.json",
+      "sha256": "44958c962264ff076c581c6a2a33a9b2e496ff282a57fb1b6aba979a1dbcb816"
+    },
+    {
+      "bytes": 208,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-player-exogenous/godot.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 6840,
+      "path": "crossings/replays/candidate-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "sha256": "518964cad239ca2383ddbd5567504c2db06ab4e76ee905ce634e51f089cfe399"
+    },
+    {
+      "bytes": 6655,
+      "path": "crossings/runners/baseline/engine.log",
+      "sha256": "11b513d543bfb7cb34f944ec03d86249d79d087863fee8584820b243cbeefa5e"
+    },
+    {
+      "bytes": 4444,
+      "path": "crossings/runners/baseline/report.json",
+      "sha256": "63322d958574e17df97e0300d68e24cfd77346083397e054919c7cf972086136"
+    },
+    {
+      "bytes": 23307,
+      "path": "crossings/runners/candidate/engine.log",
+      "sha256": "02a49f097df98704b8bda19aa838b3c29e27b8ea7cff4739f6773be89b1a775c"
+    },
+    {
+      "bytes": 4529,
+      "path": "crossings/runners/candidate/report.json",
+      "sha256": "6b57449fe2e624f32c9df719507fd8c27c71b4a9ed5c732f100cb1bb0e9a6040"
+    },
+    {
+      "bytes": 32566,
+      "path": "crossings/source-bound-receipt.json",
+      "sha256": "a5e3b3628cd3bd8bf11c8b10c4a4cda9c3bc0143fe5f96f562d9470249870333"
+    },
+    {
       "bytes": 223655,
       "path": "gentle-survey/predictor-vs-flown-per-plan.json",
       "sha256": "d05b004264d97c5c01e048d089faeb430b1cbada1ee3ed0a18b9970324bf8144"
@@ -136,9 +311,9 @@
       "sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
     },
     {
-      "bytes": 6103,
+      "bytes": 6707,
       "path": "README.md",
-      "sha256": "f66b611587ca330459fa6a078351d97e4bb6a411767d12768e98d9729eb5bff6"
+      "sha256": "47fbe275df023811b3d32e56d355f41eb8447131a6b55e47f23c3f94371ae924"
     },
     {
       "bytes": 7357,
@@ -241,6 +416,11 @@
       "sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a"
     },
     {
+      "bytes": 2198,
+      "path": "sources/mirror/app/project.godot",
+      "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28"
+    },
+    {
       "bytes": 28102,
       "path": "sources/mirror/app/render/world/field_lights.gd",
       "sha256": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195"
@@ -286,6 +466,11 @@
       "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
     },
     {
+      "bytes": 18513,
+      "path": "sources/mirror/app/tools/flight_log_cli.gd",
+      "sha256": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432"
+    },
+    {
       "bytes": 9337,
       "path": "sources/mirror/research/ai-companions/avoidance/assess_static_paths.gd",
       "sha256": "1a0aeb53e093f9afd9af4c385d2e0dba924774ec5d678ba497c424474beb9fba"
@@ -314,6 +499,16 @@
       "bytes": 24165,
       "path": "sources/mirror/research/ai-companions/pilot_probe.gd",
       "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+    },
+    {
+      "bytes": 38763,
+      "path": "sources/mirror/tools/flight_log/flight_log.py",
+      "sha256": "8d85a82bb73501577f9dbe2ad97bce79c3e49d7e32dcb472ebd7943a4ff0a809"
+    },
+    {
+      "bytes": 20229,
+      "path": "sources/mirror/tools/godot/run_checked.py",
+      "sha256": "7335de7267871da28c6d2cd8d49e589d0de0600ab6677f3700051adf9dd35f88"
     }
   ],
   "candidate": {
@@ -557,6 +752,14 @@
       "failures": 0,
       "passed": true,
       "runner_report": "checks/reachable-pilot-r2-unit/report.json"
+    },
+    "crossing_recordings": {
+      "baseline_complete_without_controller_failure": true,
+      "candidate_two_fixture_separation_gate_passed": true,
+      "exact_replay_count": 12,
+      "all_exact_complete_solver_unchanged": true,
+      "verification": "crossings/replay-verification.json",
+      "source_bound_receipt": "crossings/source-bound-receipt.json"
     }
   },
   "comparisons": {
@@ -604,7 +807,6 @@
     "root": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
     "source_truth": "Exact used source copies under sources/mirror/; current main worktree is not asserted identical for shared field/scenery code."
   },
-  "pending": "R2 recorded crossing runs and exact .orfl replays are deferred until the Windows idle window; no exact candidate-vs-baseline crossing replay is claimed here.",
   "shared_context": {
     "aircraft_radius_m": 0.898964440234366,
     "collision_proxy_count": 6031,
@@ -821,5 +1023,71 @@
       "valid_route_case_count": 6,
       "weather": "gentle-practice"
     }
-  ]
+  ],
+  "crossings": {
+    "fixture_scope": "Two nominal route-intercept fixtures, 20 seconds each; production spawn admission disabled.",
+    "baseline": {
+      "pilot_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+      "report": "crossings/baseline/report.json",
+      "cases": [
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "ticks": 4800,
+          "minimum_player_separation_m": 4.12658419490564,
+          "separation_gate_passed": false,
+          "ai_crash": {},
+          "ai_fault": "",
+          "pilot_refusal": ""
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "ticks": 4800,
+          "minimum_player_separation_m": 3.85955877521716,
+          "separation_gate_passed": false,
+          "ai_crash": {},
+          "ai_fault": "",
+          "pilot_refusal": ""
+        }
+      ],
+      "all_complete_without_controller_failure": true
+    },
+    "candidate": {
+      "pilot_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "report": "crossings/candidate/report.json",
+      "cases": [
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "ticks": 4800,
+          "minimum_player_separation_m": 59.8197897499504,
+          "separation_gate_passed": true,
+          "ai_crash": {},
+          "ai_fault": "",
+          "pilot_refusal": ""
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "ticks": 4800,
+          "minimum_player_separation_m": 58.4652523291407,
+          "separation_gate_passed": true,
+          "ai_crash": {},
+          "ai_fault": "",
+          "pilot_refusal": ""
+        }
+      ],
+      "all_route_separation_gates_passed": true
+    },
+    "exact_replay": {
+      "verification": "crossings/replay-verification.json",
+      "source_bound_receipt": "crossings/source-bound-receipt.json",
+      "stream_count": 12,
+      "all_exact_complete_solver_unchanged": true,
+      "failures": [],
+      "raw_orfl_and_replay_csv_storage": "External D: evidence directory; absolute paths and SHA-256 values are in the source-bound receipt.",
+      "meaning": "Exact replay validates recorded commands against the unchanged solver; it does not execute the companion controller."
+    }
+  }
 }

@@ -590,6 +590,13 @@ static func _part(
 			var override_material := mesh_instance.get_active_material(surface_index)
 			if override_material != null:
 				material = override_material
+		if str(asset.get("id", "")) in ["landscapelab_quercus", "landscapelab_pine"] \
+				and material is StandardMaterial3D:
+			# The supplier GLBs assign metallicFactor=0.5 to bark and foliage.
+			# These are dielectric surfaces. Keep downloaded resources untouched;
+			# the cached draw material retains their textures, alpha and roughness.
+			material = material.duplicate() as StandardMaterial3D
+			(material as StandardMaterial3D).metallic = 0.0
 		materials.append(material)
 	return {
 		"mesh": mesh,

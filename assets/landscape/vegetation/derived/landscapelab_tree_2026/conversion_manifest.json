@@ -10,8 +10,8 @@
     "license_evidence_bytes": 1718,
     "license_evidence_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
     "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-    "runtime_notice_bytes": 848,
-    "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+    "runtime_notice_bytes": 1038,
+    "runtime_notice_sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
   },
   "geometry_created": false,
   "method": "retain the pinned self-contained glTF binary unchanged; inspect its accessors and embedded materials/textures",

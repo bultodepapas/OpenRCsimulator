@@ -58,6 +58,7 @@ func _run() -> void:
 		result.identity.aircraft_data_sha256 == aircraft.input_identity.sha256 \
 		and result.identity.field_data_sha256 == result.field_profile.field_source.sha256 \
 		and result.identity.controller_sha256 == result.profile.controller.sha256 \
+		and result.identity.controller_dependencies == result.profile.controller.dependencies \
 		and result.identity.solver_sha256 == FlightLog.solver_identity() \
 		and result.identity.solver_qualification_sha256 == result.profile.solver.sha256 \
 		and result.identity.engine_version == "4.7.2" \
@@ -91,6 +92,17 @@ func _run() -> void:
 	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.controller.sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 	_check("controller source drift fails closed", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	for dependencies: Variant in [null, {}, {"res://unrelated.gd": "0".repeat(64)},
+			{Loader.CIRCUIT_SOURCE_PATH: "0".repeat(64)}, {Loader.CIRCUIT_SOURCE_PATH: 42}]:
+		bad_aircraft = profile_copy.duplicate(true)
+		bad_aircraft.controller.dependencies = dependencies
+		_check("missing/malformed/wrong circuit dependency refuses", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	bad_aircraft = profile_copy.duplicate(true)
+	bad_aircraft.controller.erase("dependencies")
+	_check("legacy unbound controller profile refuses", not _validate(bad_aircraft, field_profile_copy).get("ok", false))
+	var loaded_pilot: Script = load(Loader.PILOT_SOURCE_PATH)
+	_check("actual pilot inheritance is source bound", loaded_pilot.get_base_script().resource_path == Loader.CIRCUIT_SOURCE_PATH
+		and FileAccess.get_sha256(Loader.CIRCUIT_SOURCE_PATH) == profile_copy.controller.dependencies[Loader.CIRCUIT_SOURCE_PATH])
 
 	bad_aircraft = profile_copy.duplicate(true)
 	bad_aircraft.solver.sha256 = "0000000000000000000000000000000000000000000000000000000000000000"

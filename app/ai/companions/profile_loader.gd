@@ -18,6 +18,7 @@ const SOLVER_SOURCE_DIRECTORIES := ["res://physics", "res://sim", "res://failure
 const ACCEPTED_AIRCRAFT_ID := "jensen-das-ugly-stik-60"
 const AIRCRAFT_DATA_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const PILOT_SOURCE_PATH := "res://ai/companions/pilot.gd"
+const CIRCUIT_SOURCE_PATH := "res://ai/companions/circuit_controller.gd"
 const CLUB_FIELD_PATH := "res://data/fields/default.json"
 const AIRCRAFT_PROFILE_PATHS := {
 	ACCEPTED_AIRCRAFT_ID: "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
@@ -93,6 +94,7 @@ static func load_profile(
 		"aircraft_data_sha256": str(aircraft_profile.aircraft_data.sha256),
 		"controller_path": PILOT_SOURCE_PATH,
 		"controller_sha256": str(aircraft_profile.controller.sha256),
+		"controller_dependencies": aircraft_profile.controller.dependencies.duplicate(true),
 		"solver_sha256": str(validated.solver_sha256),
 		"solver_qualification_sha256": str(validated.solver_qualification_sha256),
 		"solver_normalization": SOLVER_NORMALIZATION,
@@ -170,13 +172,25 @@ static func validate_profile_data(
 		errors.append("aircraft_identity.sha256: accepted session data is not the current source file")
 
 	var controller: Dictionary = _object(errors, "controller", profile.get("controller"))
-	_check_keys(errors, "controller", controller, ["path", "sha256"], ["path", "sha256"])
+	_check_keys(errors, "controller", controller, ["path", "sha256", "dependencies"], ["path", "sha256", "dependencies"])
 	if controller.get("path") != PILOT_SOURCE_PATH:
 		errors.append("controller.path: unsupported pilot source path")
 	var controller_sha: String = _read_sha256(errors, "controller.sha256", controller.get("sha256"))
 	var expected_controller_sha: String = _sha256_file(errors, "pilot controller", PILOT_SOURCE_PATH)
 	if not controller_sha.is_empty() and controller_sha != expected_controller_sha:
 		errors.append("controller.sha256: current pilot source does not match this profile")
+	var dependencies: Dictionary = _object(errors, "controller.dependencies", controller.get("dependencies"))
+	_check_keys(errors, "controller.dependencies", dependencies, [CIRCUIT_SOURCE_PATH], [CIRCUIT_SOURCE_PATH])
+	var base_sha: String = _read_sha256(errors, "controller.dependencies circuit SHA", dependencies.get(CIRCUIT_SOURCE_PATH))
+	var actual_base_sha: String = _sha256_file(errors, "circuit controller", CIRCUIT_SOURCE_PATH)
+	if not base_sha.is_empty() and base_sha != actual_base_sha:
+		errors.append("controller.dependencies: current circuit source does not match this profile")
+	# Bind the declared dependency to the script Godot actually resolves, not just
+	# a matching unrelated file in the profile's metadata.
+	var pilot_script: Script = load(PILOT_SOURCE_PATH) as Script
+	if pilot_script == null or pilot_script.get_base_script() == null \
+			or pilot_script.get_base_script().resource_path != CIRCUIT_SOURCE_PATH:
+		errors.append("controller.dependencies: pilot must inherit the qualified circuit source")
 
 	var solver: Dictionary = _object(errors, "solver", profile.get("solver"))
 	_check_keys(errors, "solver", solver, ["sha256", "normalization"], ["sha256", "normalization"])

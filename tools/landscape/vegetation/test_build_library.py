@@ -240,8 +240,13 @@ class BuildLibraryTests(unittest.TestCase):
         self.assertEqual(source["revision"], library.LANDSCAPELAB_REVISION)
         self.assertEqual(source["license"], "CC BY-SA 4.0")
         self.assertEqual(source["conversion_proof_sha256"], library.LANDSCAPELAB_MANIFEST_SHA256)
-        self.assertEqual(library_files[library.LANDSCAPELAB_NOTICE],
-                         (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE).read_bytes())
+        license_notice = library_files[library.LANDSCAPELAB_NOTICE]
+        self.assertEqual(
+            license_notice,
+            (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE).read_bytes(),
+        )
+        self.assertIn(b"metallic set to 0.0", license_notice)
+        self.assertIn(b"textures, alpha modes, and roughness remain unchanged", license_notice)
 
     def test_polyhaven_understory_catalog_preserves_candidate_receipts_and_alpha_policy(self) -> None:
         with (

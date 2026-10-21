@@ -1,8 +1,8 @@
-## AFC-04: independent geometric witnesses for the current linear CPA policy.
+## AFC-04: independent witnesses for the retained linear CPA fallback policy.
 ## This is a prediction/selection test, not a reachable-maneuver guarantee.
 extends SceneTree
 
-const Pilot := preload("res://ai/companions/pilot.gd")
+const Pilot := preload("res://ai/companions/circuit_controller.gd")
 const Field := preload("res://data/field_loader.gd")
 const Math := preload("res://physics/math3d.gd")
 const Body := preload("res://physics/rigid_body.gd")

@@ -25,6 +25,12 @@ func _run() -> void:
 	# Request focus once before launch; subsequent focus losses retain the normal
 	# pause policy and make the measurement invalid instead of silently resuming.
 	root.grab_focus()
+	await process_frame
+	await process_frame
+	if not root.has_focus():
+		printerr("Native fixture could not acquire focus before launch.")
+		quit(1)
+		return
 	_app = AppRoot.new()
 	_app.user_args = args
 	root.add_child(_app)

@@ -27,7 +27,7 @@ REALISTIC_PINS = {
     'quercus_sha256': 'd4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e',
     'pine_sha256': '74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8',
     'landscapelab_readme_sha256': '87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276',
-    'landscapelab_license_sha256': '754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352',
+    'landscapelab_license_sha256': 'f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922',
     'maple_manifest_sha256': 'ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421',
     'maple_source_sha256': 'ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942',
     'maple_license_sha256': '56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574',
@@ -301,12 +301,16 @@ def main():
             except ValueError:
                 input_name = str(input_path)
             input_hashes[input_name] = sha(input_path)
+    if recipe_kind == 'legacy':
+        output_hashes = {str(p.relative_to(out)): sha(p) for folder in ('derived', 'atlas')
+                         for p in sorted((out / folder).glob('*')) if p.is_file()}
+    else:
+        output_hashes = {str(p.relative_to(out)): sha(p) for folder in ('derived', 'atlas')
+                         for p in sorted((out / folder).rglob('*')) if p.is_file()}
     report = {'format':'openrc-tree-bake v1' if recipe_kind == 'legacy' else 'openrc-tree-bake v2', 'godot':version,
               'runtime_alpha_reference': str(match_atlas.relative_to(ROOT).as_posix()) if match_atlas else None,
               'inputs_sha256':input_hashes,
-              'outputs_sha256':{str(p.relative_to(out)):sha(p) for folder in ('derived','atlas')
-                                for p in sorted((out/folder).rglob('*' if recipe_kind != 'legacy' else '*'))
-                                if p.is_file()},
+              'outputs_sha256': output_hashes,
               'bake':json.loads((raw/'bake.json').read_text())}
     if recipe_path is not None:
         report['recipe_id'] = recipe_data['recipe_id']

@@ -103,6 +103,19 @@ func _test_catalog_and_parts() -> void:
 	_check("Maple source meshes retain 5,541 triangles and two material surfaces",
 		maple_triangles == 5541 and maple_surfaces == 2)
 	_check("Maple source materials stay attached to their imported surfaces", maple_material_mapping_valid)
+	for asset_id in ["landscapelab_quercus", "landscapelab_pine"]:
+		for part: Dictionary in ImportedVegetation.get_parts(asset_id):
+			var source_mesh: Mesh = part.mesh
+			for surface_index in source_mesh.get_surface_count():
+				var original := source_mesh.surface_get_material(surface_index) as StandardMaterial3D
+				var effective := part.materials[surface_index] as StandardMaterial3D
+				_check("%s keeps supplier materials immutable and renders dielectric vegetation" % asset_id,
+					original != null and effective != null and original != effective
+					and is_equal_approx(original.metallic, 0.5) and is_zero_approx(effective.metallic)
+					and original.albedo_texture == effective.albedo_texture
+					and original.normal_texture == effective.normal_texture
+					and original.transparency == effective.transparency
+					and is_equal_approx(original.alpha_scissor_threshold, effective.alpha_scissor_threshold))
 
 
 func _test_fit_and_aliases() -> void:

@@ -1,256 +1,141 @@
-extends RefCounted
+extends "res://ai/companions/circuit_controller.gd"
 
-## Float64, trim-relative circuit pilot for the accepted Jensen Das Ugly Stik 60.
-## The manager supplies a complete session snapshot and applies this packet through FlightSession.
-const Math3D := preload("res://physics/math3d.gd")
-const RigidBody := preload("res://physics/rigid_body.gd")
+## AFC-04/AFC-12 experimental wind-aware reachable-turn response.
+## Circuit guidance and the no-traffic controls remain in the source-bound base.
+## Static containment and prediction uncertainty qualification remain open.
+const AvoidanceMath := preload("res://physics/math3d.gd")
+const AvoidanceRigidBody := preload("res://physics/rigid_body.gd")
 
-const G := 9.80665
-const UINT32_MODULUS := 4294967296.0
-const MIN_COUNT := 1
-const MAX_COUNT := 3
-const MIN_TRIM_SPEED_MPS := 10.0
-const MAX_TRIM_SPEED_MPS := 25.0
-const MIN_TRIM_THROTTLE := 0.0
-const MAX_TRIM_THROTTLE := 1.0
-const ROUTE_RADIUS_LENGTH_FACTOR := 0.8
-const ROUTE_RADIUS_WIDTH_FACTOR := 4.0
-const ROUTE_CENTER_RADIUS_FACTOR := 2.0
-const ROUTE_CENTER_WIDTH_FACTOR := 2.0
-const BASE_HEIGHT_AGL_M := 35.0
-const HEIGHT_BAND_M := 20.0
-const MIN_CLEARANCE_M := 20.0
-const RECOVERY_CLEARANCE_M := 30.0
-const MAX_BANK_RAD := 0.4363323129985824 # 25 degrees, radians
-const MAX_WIND_MPS := 4.0
-const MAX_TURBULENCE_RMS_MPS := 0.30
-const AVOIDANCE_HORIZON_S := 6.0
-const DEFAULT_PLAYER_SEPARATION_M := 30.0
+const PREDICTION_HORIZON_S := 8.0
+const PREDICTION_STEP_S := 0.25
+const REACTION_MARGIN_S := 0.9
+const BANK_RESPONSE_S := 0.75
+const HOLD_TIME_TICKS := 480 # two seconds at the existing 240 Hz simulation clock
+const RELEASE_CLEAR_TIME_TICKS := 240
+const RELEASE_EXTRA_CLEARANCE_M := 5.0
+const POSITION_UNCERTAINTY_M := 3.0
+const TERRAIN_CLEARANCE_M := 20.0
+const TERRAIN_UNCERTAINTY_M := 5.0
+const AVOID_BANK_LIMIT_RAD := 0.4363323129985824
+const BANK_CHOICES_DEG := [-25.0, -20.0, -15.0, -10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0]
+const AVOIDANCE_STATE_VERSION := "reachable-pilot-state-v1"
+const MAX_PLAN_DIAGNOSTICS := 128
 
-var configure_error: String = ""
-var _configured: bool = false
-var _slot: int = -1
-var _count: int = 0
-var _seed: int = 0
-var _phase_rad: float = 0.0
-var _direction: float = 1.0
-var _target_speed_mps: float = 15.0
-var _trim_throttle: float = 0.45
-var _field_ground_up_m: float = 0.0
-var _target_height_agl_m: float = 0.0
-var _runway_north_m: float = 0.0
-var _runway_east_m: float = 0.0
-var _runway_length_m: float = 0.0
-var _runway_width_m: float = 0.0
-var _pilot_north_m: float = 0.0
-var _pilot_east_m: float = 0.0
-var _center_north_m: float = 0.0
-var _center_east_m: float = 0.0
-var _radius_m: float = 0.0
-var _target_height_m: float = 0.0
+## Diagnostics are read-only, bounded and off in normal flight.
+var diagnostics_enabled := false
+var _planning_tick := 0
+var _planning_clearance_m := NAN
+var _has_held_maneuver := false
+var _held_bank_rad := 0.0
+var _hold_until_tick := -1
+var _clear_since_tick := -1
+var _last_decision: Dictionary = {}
+var _override_roll_demand := false
+var _selected_bank_target_rad := 0.0
+var _planning_wind := PackedFloat64Array([0.0, 0.0, 0.0])
+var _plan_diagnostic_count := 0
 
 
-## `trim` is the accepted FlightSession start/trim result (expects V and throttle when present).
-## `field` is FieldLoader's normalized Club field, including its referenced runway surface.
 func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: Dictionary) -> bool:
-	_configured = false
-	configure_error = ""
-	if count < MIN_COUNT or count > MAX_COUNT or slot < 0 or slot >= count:
-		return _refuse("slot/count must identify one of 1..3 companions")
-	if seed_value < 0 or seed_value > 4294967295:
-		return _refuse("seed must be an unsigned 32-bit integer")
-	if field.get("id", "") != "default":
-		return _refuse("the airborne Stik profile is qualified only for the Club field")
-	if trim.is_empty():
-		return _refuse("a solved FlightSession trim is required")
-	var speed_result: Dictionary = _read_number(trim, ["V", "airspeed_m_s", "speed_m_s", "speed"], NAN)
-	if not speed_result.ok or float(speed_result.value) < MIN_TRIM_SPEED_MPS or float(speed_result.value) > MAX_TRIM_SPEED_MPS:
-		return _refuse("the trim speed must be finite and between %.1f and %.1f m/s" % [MIN_TRIM_SPEED_MPS, MAX_TRIM_SPEED_MPS])
-	var throttle_result: Dictionary = _read_number(trim, ["throttle", "trim_throttle", "throttle_command"], NAN)
-	if not throttle_result.ok or float(throttle_result.value) < MIN_TRIM_THROTTLE or float(throttle_result.value) > MAX_TRIM_THROTTLE:
-		return _refuse("trim throttle must be finite and in [0, 1]")
-	var pilot_value: Variant = field.get("pilot", {})
-	if typeof(pilot_value) != TYPE_DICTIONARY:
-		return _refuse("Club field is missing its normalized pilot position")
-	var pilot: Dictionary = pilot_value
-	var pilot_north: Dictionary = _read_number(pilot, ["north"], NAN)
-	var pilot_east: Dictionary = _read_number(pilot, ["east"], NAN)
-	var pilot_down: Dictionary = _read_number(pilot, ["down"], NAN)
-	if not pilot_north.ok or not pilot_east.ok or not pilot_down.ok:
-		return _refuse("Club field pilot coordinates must be finite")
-	var runway_id: String = str(field.get("runway", ""))
-	var runway: Dictionary = {}
-	var surfaces_value: Variant = field.get("surfaces", [])
-	if not surfaces_value is Array:
-		return _refuse("Club field is missing its normalized runway surface")
-	for surface_value: Variant in surfaces_value:
-		if typeof(surface_value) != TYPE_DICTIONARY:
-			continue
-		var surface: Dictionary = surface_value
-		if str(surface.get("id", "")) == runway_id and str(surface.get("type", "")) == "runway":
-			runway = surface
-			break
-	if runway.is_empty():
-		return _refuse("Club field's referenced runway is unavailable")
-	var runway_north: Dictionary = _read_number(runway, ["center_north"], NAN)
-	var runway_east: Dictionary = _read_number(runway, ["center_east"], NAN)
-	var runway_length: Dictionary = _read_number(runway, ["length_east_west"], NAN)
-	var runway_width: Dictionary = _read_number(runway, ["width_north_south"], NAN)
-	if not runway_north.ok or not runway_east.ok or not runway_length.ok or not runway_width.ok \
-			or float(runway_length.value) < 40.0 or float(runway_width.value) <= 0.0:
-		return _refuse("Club runway geometry must be finite and large enough for a circuit")
-
-	_slot = slot
-	_count = count
-	_seed = seed_value
-	_target_speed_mps = float(speed_result.value)
-	_trim_throttle = float(throttle_result.value)
-	_pilot_north_m = float(pilot_north.value)
-	_pilot_east_m = float(pilot_east.value)
-	_field_ground_up_m = -float(pilot_down.value)
-	_runway_north_m = float(runway_north.value)
-	_runway_east_m = float(runway_east.value)
-	_runway_length_m = float(runway_length.value)
-	_runway_width_m = float(runway_width.value)
-	_radius_m = maxf(_runway_length_m * ROUTE_RADIUS_LENGTH_FACTOR, _runway_width_m * ROUTE_RADIUS_WIDTH_FACTOR)
-	_center_north_m = _runway_north_m + ROUTE_CENTER_RADIUS_FACTOR * _radius_m + ROUTE_CENTER_WIDTH_FACTOR * _runway_width_m
-	_center_east_m = _runway_east_m
-	_target_height_agl_m = BASE_HEIGHT_AGL_M + float(slot) * HEIGHT_BAND_M
-	_target_height_m = _field_ground_up_m + _target_height_agl_m
-	# The seed moves the fleet around its shared orbit; slot offsets preserve separation.
-	var seed_phase: float = TAU * float(seed_value) / UINT32_MODULUS
-	_phase_rad = fposmod(seed_phase + TAU * float(slot) / float(count), TAU)
-	_direction = 1.0 if (seed_value & 1) == 0 else -1.0
-	var pilot_distance: float = Math3D.sqrt_((_center_north_m - _pilot_north_m) ** 2 + (_center_east_m - _pilot_east_m) ** 2)
-	if not is_finite(pilot_distance) or pilot_distance - _radius_m < DEFAULT_PLAYER_SEPARATION_M:
-		return _refuse("derived Club circuit intersects the pilot's 30 m exclusion volume")
-	_configured = true
-	return true
+	var configured: bool = super.configure(slot, count, seed_value, trim, field)
+	if configured:
+		_reset_reachable_state()
+	return configured
 
 
-## Reset-boundary pose for FlightSession; the controller never writes simulation state.
-func initial_pose() -> Dictionary:
-	if not _configured:
-		return {"ok": false, "reason": "pilot is not configured"}
-	var north: float = _center_north_m + _radius_m * Math3D.cos_(_phase_rad)
-	var east: float = _center_east_m + _radius_m * Math3D.sin_(_phase_rad)
-	var heading: float = wrapf(_phase_rad + _direction * PI / 2.0, -PI, PI)
-	return {
-		"ok": true,
-		"north": north,
-		"east": east,
-		"height_m": _target_height_m,
-		"height_agl_m": _target_height_agl_m,
-		"heading_rad": heading,
-	}
+func _reset_reachable_state() -> void:
+	_planning_tick = 0
+	_planning_clearance_m = NAN
+	_has_held_maneuver = false
+	_held_bank_rad = 0.0
+	_hold_until_tick = -1
+	_clear_since_tick = -1
+	_last_decision.clear()
+	_override_roll_demand = false
+	_selected_bank_target_rad = 0.0
+	_planning_wind = PackedFloat64Array([0.0, 0.0, 0.0])
+	_plan_diagnostic_count = 0
 
 
-## Snapshot contract:
-## - state: PackedFloat64Array[13], rigid-body NED position, FRD body velocity, quaternion and body rates.
-## - airspeed_m_s: atmosphere-relative true airspeed; wind_ned: PackedFloat64Array[3] in NED m/s.
-## - ground_clearance_m: local terrain clearance; trim: FlightSession trim result (V/throttle).
-## - turbulence_rms_m_s: accepted NED RMS vector. Traffic entries use the same `state` layout and may set is_player.
-## Packet surface values are normalized stick deltas from solved trim; throttle is an absolute 0..1 position.
 func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary:
-	if not _configured:
-		return _packet(false, "pilot is not configured")
-	var state_value: Variant = snapshot.get("state", PackedFloat64Array())
-	if not state_value is PackedFloat64Array or state_value.size() != RigidBody.SIZE:
-		return _packet(false, "snapshot state must be a 13-value PackedFloat64Array")
-	var state: PackedFloat64Array = state_value
-	if not _array_finite(state):
-		return _packet(false, "snapshot state contains a nonfinite value")
-	var attitude := Math3D.quat(state[RigidBody.ATT], state[RigidBody.ATT + 1], state[RigidBody.ATT + 2], state[RigidBody.ATT + 3])
-	var euler: PackedFloat64Array = Math3D.q_to_euler(attitude)
+	_planning_tick = tick
+	_override_roll_demand = false
 	var wind_result: Dictionary = _vector3(snapshot.get("wind_ned", PackedFloat64Array([0.0, 0.0, 0.0])))
-	if not wind_result.ok:
-		return _packet(false, "snapshot wind_ned must contain three finite NED values")
-	var wind: PackedFloat64Array = wind_result.value
-	var wind_speed: float = Math3D.sqrt_(wind[0] * wind[0] + wind[1] * wind[1] + wind[2] * wind[2])
-	if wind_speed > MAX_WIND_MPS:
-		return _packet(false, "Stik circuit profile is unqualified above %.1f m/s wind" % MAX_WIND_MPS)
-	var turbulence_result: Dictionary = _turbulence_magnitude(snapshot)
-	if not turbulence_result.ok or float(turbulence_result.value) > MAX_TURBULENCE_RMS_MPS:
-		return _packet(false, "Stik circuit profile is unqualified for this turbulence level")
-	var active_trim: Dictionary = snapshot.get("trim", {}) if typeof(snapshot.get("trim", {})) == TYPE_DICTIONARY else {}
-	var speed_result: Dictionary = _read_number(active_trim, ["V", "airspeed_m_s", "speed_m_s", "speed"], _target_speed_mps)
-	var throttle_result: Dictionary = _read_number(active_trim, ["throttle", "trim_throttle", "throttle_command"], _trim_throttle)
-	if not speed_result.ok or not throttle_result.ok:
-		return _packet(false, "snapshot trim speed and throttle must be finite")
-	var target_speed: float = clampf(float(speed_result.value), MIN_TRIM_SPEED_MPS, MAX_TRIM_SPEED_MPS)
-	var base_throttle: float = clampf(float(throttle_result.value), 0.0, 1.0)
-	var wind_body: PackedFloat64Array = Math3D.q_rotate(Math3D.q_conj(attitude), wind)
-	var air_body := PackedFloat64Array([
-		state[RigidBody.VEL] - wind_body[0],
-		state[RigidBody.VEL + 1] - wind_body[1],
-		state[RigidBody.VEL + 2] - wind_body[2],
-	])
-	var airspeed_value: Variant = snapshot.get("airspeed_m_s", NAN)
-	var airspeed: float = float(airspeed_value) if typeof(airspeed_value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(airspeed_value)) else Math3D.norm(air_body)
-	if not is_finite(airspeed) or airspeed <= 0.0:
-		return _packet(false, "snapshot airspeed must be finite and positive")
-	var ground_velocity: PackedFloat64Array = Math3D.q_rotate(attitude,
-		PackedFloat64Array([state[RigidBody.VEL], state[RigidBody.VEL + 1], state[RigidBody.VEL + 2]]))
-	var north: float = state[RigidBody.POS]
-	var east: float = state[RigidBody.POS + 1]
-	var height: float = -state[RigidBody.POS + 2]
-	var radial_north: float = north - _center_north_m
-	var radial_east: float = east - _center_east_m
-	var distance: float = Math3D.sqrt_(radial_north * radial_north + radial_east * radial_east)
-	if not is_finite(distance) or distance < 1e-6:
-		return _packet(false, "snapshot position is at the circuit center")
-	var unit_north: float = radial_north / distance
-	var unit_east: float = radial_east / distance
-	var tangent_north: float = -_direction * unit_east
-	var tangent_east: float = _direction * unit_north
-	var radius_error: float = distance - _radius_m
-	var radial_target: float = clampf(-0.55 * radius_error, -6.0, 6.0)
-	var wind_radial: float = wind[0] * unit_north + wind[1] * unit_east
-	var target_air_north: float = tangent_north * target_speed + unit_north * (radial_target - wind_radial)
-	var target_air_east: float = tangent_east * target_speed + unit_east * (radial_target - wind_radial)
-	var avoidance: Dictionary = _avoidance_velocity(state, attitude, ground_velocity, target_air_north, target_air_east, traffic)
-	target_air_north = float(avoidance.air_north)
-	target_air_east = float(avoidance.air_east)
-	var target_heading: float = Math3D.atan2_(target_air_east, target_air_north)
-	var course_error: float = wrapf(target_heading - euler[0], -PI, PI)
-	var feed_forward_bank: float = _direction * atan2(target_speed * target_speed, G * _radius_m)
-	var bank_target: float = clampf(feed_forward_bank + clampf(1.6 * course_error, -deg_to_rad(12.0), deg_to_rad(12.0)), -MAX_BANK_RAD, MAX_BANK_RAD)
-	var roll_delta: float = clampf(1.8 * (bank_target - euler[2]) - 0.35 * state[RigidBody.RATE], -1.0, 1.0)
-	var beta: float = Math3D.atan2_(air_body[1], Math3D.sqrt_(air_body[0] * air_body[0] + air_body[2] * air_body[2]))
-	var coordinated_rate: float = G * tan(euler[2]) / maxf(airspeed, 3.0)
-	var yaw_delta: float = clampf(4.0 * beta + 0.5 * (coordinated_rate - state[RigidBody.RATE + 2]), -1.0, 1.0)
-	var world_velocity: PackedFloat64Array = Math3D.q_rotate(attitude,
-		PackedFloat64Array([state[RigidBody.VEL], state[RigidBody.VEL + 1], state[RigidBody.VEL + 2]]))
-	var target_height: float = _target_height_m
-	if float(avoidance.altitude_delta) != 0.0:
-		target_height += float(avoidance.altitude_delta)
-	var clearance_value: Variant = snapshot.get("ground_clearance_m", height - _field_ground_up_m)
-	var clearance: float = float(clearance_value) if typeof(clearance_value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(clearance_value)) else height - _field_ground_up_m
-	# Avoidance descent must not enter the terrain-recovery band. Use local terrain,
-	# with the lowest circuit band as the target floor; higher bands may still descend.
-	if float(avoidance.altitude_delta) < 0.0:
-		target_height = maxf(target_height, height - clearance + BASE_HEIGHT_AGL_M)
-	var recovery: bool = clearance < RECOVERY_CLEARANCE_M
-	if recovery:
-		target_height = maxf(target_height, height + 10.0)
-	var target_down_speed: float = -clampf((target_height - height) * 0.12, -1.5, 1.5)
-	var pitch_delta: float = clampf(0.8 * (world_velocity[2] - target_down_speed) - 0.5 * state[RigidBody.RATE + 1], -1.0, 1.0)
-	var throttle: float = clampf(base_throttle + 0.10 * (target_speed - airspeed), 0.0, 1.0)
-	if recovery:
-		throttle = 1.0
-	var packet := {
-		"ok": true,
-		"roll": roll_delta,
-		"pitch": pitch_delta,
-		"yaw": yaw_delta,
-		"throttle": throttle,
-		"radius_error_m": radius_error,
-		"target_height_m": target_height,
-		"avoidance_active": bool(avoidance.active),
-		"recovering_clearance": recovery,
-		"tick": tick,
+	_planning_wind = wind_result.value if wind_result.get("ok", false) else PackedFloat64Array([0.0, 0.0, 0.0])
+	var clearance_value: Variant = snapshot.get("ground_clearance_m", NAN)
+	_planning_clearance_m = float(clearance_value) if typeof(clearance_value) in [TYPE_FLOAT, TYPE_INT] else NAN
+	var packet: Dictionary = super.command(snapshot, tick, traffic)
+	if _override_roll_demand and bool(packet.get("ok", false)):
+		var state_value: Variant = snapshot.get("state", PackedFloat64Array())
+		if state_value is PackedFloat64Array and state_value.size() == AvoidanceRigidBody.SIZE:
+			var state: PackedFloat64Array = state_value
+			var attitude := AvoidanceMath.quat(state[AvoidanceRigidBody.ATT],
+				state[AvoidanceRigidBody.ATT + 1], state[AvoidanceRigidBody.ATT + 2],
+				state[AvoidanceRigidBody.ATT + 3])
+			var euler: PackedFloat64Array = AvoidanceMath.q_to_euler(attitude)
+			if euler.size() == 3:
+				packet.roll = clampf(1.8 * (_selected_bank_target_rad - euler[2])
+					- 0.35 * state[AvoidanceRigidBody.RATE], -1.0, 1.0)
+	if diagnostics_enabled and tick == 0 and not _last_decision.is_empty() and _plan_diagnostic_count < MAX_PLAN_DIAGNOSTICS:
+		_plan_diagnostic_count += 1
+		print("AFC_REACHABLE_INITIAL " + JSON.stringify(_last_decision))
+	return packet
+
+
+## Serializable controller-only state for deterministic checkpoint continuation.
+## FlightSession state remains authoritative for physical position and velocity.
+func snapshot_state() -> Dictionary:
+	return {
+		"version": AVOIDANCE_STATE_VERSION,
+		"planning_tick": _planning_tick,
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_rad": _held_bank_rad if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
 	}
-	return packet if _packet_finite(packet) else _packet(false, "controller produced a nonfinite demand")
+
+
+## Restore is atomic and strict so an untrusted/old checkpoint cannot poison control.
+func restore_state(candidate: Dictionary) -> Dictionary:
+	if candidate.size() != 6 or String(candidate.get("version", "")) != AVOIDANCE_STATE_VERSION:
+		return {"ok": false, "reason": "state_version_or_shape_mismatch"}
+	for key: String in ["planning_tick", "has_held_maneuver", "held_bank_rad", "hold_until_tick", "clear_since_tick"]:
+		if not candidate.has(key):
+			return {"ok": false, "reason": "state_missing_%s" % key}
+	var planning_tick_value: Variant = candidate.planning_tick
+	var has_held_value: Variant = candidate.has_held_maneuver
+	var held_bank_value: Variant = candidate.held_bank_rad
+	var hold_until_value: Variant = candidate.hold_until_tick
+	var clear_since_value: Variant = candidate.clear_since_tick
+	if typeof(planning_tick_value) != TYPE_INT or int(planning_tick_value) < 0 \
+			or typeof(has_held_value) != TYPE_BOOL \
+			or typeof(held_bank_value) not in [TYPE_FLOAT, TYPE_INT] \
+			or typeof(hold_until_value) != TYPE_INT \
+			or typeof(clear_since_value) != TYPE_INT:
+		return {"ok": false, "reason": "invalid_state_types"}
+	var planning_tick: int = int(planning_tick_value)
+	var has_held: bool = bool(has_held_value)
+	var held_bank: float = float(held_bank_value)
+	var hold_until: int = int(hold_until_value)
+	var clear_since: int = int(clear_since_value)
+	if not is_finite(held_bank) or absf(held_bank) > AVOID_BANK_LIMIT_RAD \
+			or clear_since < -1 or clear_since > planning_tick:
+		return {"ok": false, "reason": "state_value_out_of_range"}
+	if has_held:
+		if hold_until < 0:
+			return {"ok": false, "reason": "held_maneuver_missing_deadline"}
+	else:
+		if held_bank != 0.0 or hold_until != -1 or clear_since != -1:
+			return {"ok": false, "reason": "inactive_maneuver_state_not_canonical"}
+	_planning_tick = planning_tick
+	_has_held_maneuver = has_held
+	_held_bank_rad = held_bank if has_held else 0.0
+	_hold_until_tick = hold_until if has_held else -1
+	_clear_since_tick = clear_since if has_held else -1
+	_override_roll_demand = false
+	_selected_bank_target_rad = 0.0
+	_last_decision.clear()
+	return {"ok": true}
 
 
 func _avoidance_velocity(
@@ -260,13 +145,124 @@ func _avoidance_velocity(
 		base_air_north: float,
 		base_air_east: float,
 		traffic: Array) -> Dictionary:
-	var best_severity: float = 0.0
-	var best_away_north: float = 0.0
-	var best_away_east: float = 0.0
-	var best_vertical_delta: float = 0.0
-	var own_north: float = state[RigidBody.POS]
-	var own_east: float = state[RigidBody.POS + 1]
-	var own_down: float = state[RigidBody.POS + 2]
+	# This branch is deliberately the production implementation, preserving the
+	# original controller path exactly when no moving traffic is present.
+	if traffic.is_empty():
+		_release_held_maneuver_if_clear()
+		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+
+	var own_air_north: float = own_velocity[0] - _planning_wind[0]
+	var own_air_east: float = own_velocity[1] - _planning_wind[1]
+	var own_speed: float = AvoidanceMath.sqrt_(own_air_north * own_air_north + own_air_east * own_air_east)
+	if not is_finite(own_speed) or own_speed < 3.0:
+		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+	var own_euler: PackedFloat64Array = AvoidanceMath.q_to_euler(attitude)
+	if own_euler.size() != 3:
+		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+	var prior_has_plan: bool = _has_held_maneuver
+	var prior_plan_bank: float = _held_bank_rad
+	var current_bank: float = clampf(own_euler[2], -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps, G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	var threats: Array[Dictionary] = _prepare_threats(traffic, own_velocity)
+	if threats.is_empty():
+		_release_held_maneuver_if_clear()
+		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+
+	var clearance: float = _planning_clearance_m
+	if not is_finite(clearance):
+		clearance = -state[AvoidanceRigidBody.POS + 2] - _field_ground_up_m
+	var baseline: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
+		nominal_bank, nominal_bank, clearance, threats)
+	var best_bank: float = nominal_bank
+	var best_score: float = float(baseline.score)
+	for bank_degrees: float in BANK_CHOICES_DEG:
+		var candidate_bank: float = deg_to_rad(bank_degrees)
+		var result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
+			nominal_bank, candidate_bank, clearance, threats)
+		var tie_bias: float = 0.15 if candidate_bank > 0.0 else 0.0
+		var candidate_score: float = float(result.score) - 0.75 * absf(candidate_bank - nominal_bank) + tie_bias
+		if candidate_score > best_score:
+			best_score = candidate_score
+			best_bank = candidate_bank
+	# Include the continuous nominal bank in the candidate set and favor it when
+	# a reachable choice cannot improve the worst predicted clearance.
+	var nominal_score: float = float(baseline.score)
+	if nominal_score >= best_score:
+		best_bank = nominal_bank
+		best_score = nominal_score
+
+	if _has_held_maneuver:
+		var held_result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
+			nominal_bank, _held_bank_rad, clearance, threats)
+		var baseline_clear: bool = float(baseline.score) >= RELEASE_EXTRA_CLEARANCE_M
+		if baseline_clear:
+			if _clear_since_tick < 0:
+				_clear_since_tick = _planning_tick
+		else:
+			_clear_since_tick = -1
+		var held_is_unsafe: bool = float(held_result.score) < -2.0
+		if held_is_unsafe and best_score > float(held_result.score) + 2.0:
+			_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "retarget")
+			_clear_since_tick = -1
+		elif _planning_tick >= _hold_until_tick and _clear_since_tick >= 0 \
+				and _planning_tick - _clear_since_tick >= RELEASE_CLEAR_TIME_TICKS:
+			_clear_held_maneuver("threat_clear")
+			return _unmodified_traffic_response(base_air_north, base_air_east)
+		else:
+			best_bank = _held_bank_rad
+	else:
+		if float(baseline.score) >= 0.0:
+			return _unmodified_traffic_response(base_air_north, base_air_east)
+		_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "conflict")
+		_clear_since_tick = -1
+	if not diagnostics_enabled:
+		return _bank_response(base_air_north, base_air_east, nominal_bank, best_bank)
+	var selected_prediction: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
+		nominal_bank, best_bank, clearance, threats, true)
+	var predicted_traces: Array[Dictionary] = []
+	var distance_traces: Array = selected_prediction.get("distance_traces_m", [])
+	for threat_index in mini(threats.size(), distance_traces.size()):
+		predicted_traces.append({
+			"id": str(threats[threat_index].get("id", "")),
+			"is_player": bool(threats[threat_index].get("is_player", false)),
+			"distance_m": Array(distance_traces[threat_index]),
+		})
+	_last_decision = {
+		"tick": _planning_tick,
+		"selected_bank_deg": rad_to_deg(best_bank),
+		"nominal_bank_deg": rad_to_deg(nominal_bank),
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_deg": rad_to_deg(_held_bank_rad) if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
+		"selected_bank_is_held": _has_held_maneuver and is_equal_approx(best_bank, _held_bank_rad),
+		"baseline_score_m": float(baseline.score),
+		"best_candidate_adjusted_score_m": best_score,
+		"selected_score_m": float(selected_prediction.score),
+		"selected_player_min_m": _finite_diagnostic(selected_prediction.minimum_player_distance_m),
+		"selected_peer_min_m": _finite_diagnostic(selected_prediction.minimum_peer_distance_m),
+		"selected_terrain_margin_m": float(selected_prediction.terrain_margin_m),
+		"threat_count": threats.size(),
+		"prediction_step_s": PREDICTION_STEP_S,
+		"prediction_horizon_s": PREDICTION_HORIZON_S,
+		"prediction_wind_ned_m_s": Array(_planning_wind),
+		"prediction_air_speed_m_s": own_speed,
+		"predicted_threat_distance_traces": predicted_traces,
+	}
+	var plan_changed: bool = _has_held_maneuver and (not prior_has_plan
+		or not is_equal_approx(prior_plan_bank, _held_bank_rad))
+	if plan_changed and _planning_tick > 0 and _plan_diagnostic_count < MAX_PLAN_DIAGNOSTICS:
+		var event: Dictionary = _last_decision.duplicate(true)
+		event["ground_velocity_ned_m_s"] = Array(own_velocity)
+		print("AFC_REACHABLE_PLAN " + JSON.stringify(event))
+		_plan_diagnostic_count += 1
+
+	return _bank_response(base_air_north, base_air_east, nominal_bank, best_bank)
+
+
+func _prepare_threats(traffic: Array, own_velocity: PackedFloat64Array) -> Array[Dictionary]:
+	var threats: Array[Dictionary] = []
+	var sample_count: int = int(round(PREDICTION_HORIZON_S / PREDICTION_STEP_S))
 	for item_value: Variant in traffic:
 		if typeof(item_value) != TYPE_DICTIONARY:
 			continue
@@ -276,149 +272,196 @@ func _avoidance_velocity(
 				and (not item.has("slot") or int(item.get("slot", -1)) == _slot):
 			continue
 		var other: Dictionary = _traffic_kinematics(item)
-		if not other.ok:
+		if not other.get("ok", false):
 			continue
-		var rel_north: float = float(other.north) - own_north
-		var rel_east: float = float(other.east) - own_east
-		var rel_down: float = float(other.down) - own_down
-		var rel_v_north: float = float(other.velocity_north) - own_velocity[0]
-		var rel_v_east: float = float(other.velocity_east) - own_velocity[1]
-		var rel_v_down: float = float(other.velocity_down) - own_velocity[2]
-		var rel_speed_sq: float = rel_v_north * rel_v_north + rel_v_east * rel_v_east + rel_v_down * rel_v_down
-		var closest_time: float = 0.0
-		if rel_speed_sq > 1e-9:
-			closest_time = clampf(-(rel_north * rel_v_north + rel_east * rel_v_east + rel_down * rel_v_down) / rel_speed_sq,
-				0.0, AVOIDANCE_HORIZON_S)
-		var closest_north: float = rel_north + rel_v_north * closest_time
-		var closest_east: float = rel_east + rel_v_east * closest_time
-		var closest_down: float = rel_down + rel_v_down * closest_time
-		var closest_distance: float = Math3D.sqrt_(closest_north * closest_north + closest_east * closest_east + closest_down * closest_down)
-		var closure_speed: float = Math3D.sqrt_(rel_speed_sq)
+		var north: float = float(other.north)
+		var east: float = float(other.east)
+		var down: float = float(other.down)
+		var velocity_north: float = float(other.velocity_north)
+		var velocity_east: float = float(other.velocity_east)
+		var velocity_down: float = float(other.velocity_down)
+		var threat_wind: PackedFloat64Array = _planning_wind
+		var threat_wind_result: Dictionary = _vector3(item.get("wind_ned", _planning_wind))
+		if threat_wind_result.get("ok", false):
+			threat_wind = threat_wind_result.value
+		var air_velocity_north: float = velocity_north - threat_wind[0]
+		var air_velocity_east: float = velocity_east - threat_wind[1]
+		var heading: float = AvoidanceMath.atan2_(air_velocity_east, air_velocity_north)
+		var bank: float = 0.0
+		var other_state_value: Variant = item.get("state", PackedFloat64Array())
+		if other_state_value is PackedFloat64Array and other_state_value.size() == AvoidanceRigidBody.SIZE:
+			var other_state: PackedFloat64Array = other_state_value
+			var other_attitude := AvoidanceMath.quat(other_state[AvoidanceRigidBody.ATT],
+				other_state[AvoidanceRigidBody.ATT + 1], other_state[AvoidanceRigidBody.ATT + 2],
+				other_state[AvoidanceRigidBody.ATT + 3])
+			var other_euler: PackedFloat64Array = AvoidanceMath.q_to_euler(other_attitude)
+			if other_euler.size() == 3:
+				bank = clampf(other_euler[2], -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+		elif item.has("bank_rad") and typeof(item.bank_rad) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(item.bank_rad)):
+			bank = clampf(float(item.bank_rad), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+		var air_horizontal_speed: float = AvoidanceMath.sqrt_(air_velocity_north * air_velocity_north
+			+ air_velocity_east * air_velocity_east)
+		var turn_rate: float = G * tan(bank) / maxf(air_horizontal_speed, 3.0)
+		if item.has("intent_turn_rate_rad_s") and typeof(item.intent_turn_rate_rad_s) in [TYPE_FLOAT, TYPE_INT] \
+				and is_finite(float(item.intent_turn_rate_rad_s)):
+			turn_rate = float(item.intent_turn_rate_rad_s)
+		turn_rate = clampf(turn_rate, -0.5, 0.5)
+		var closure_north: float = velocity_north - own_velocity[0]
+		var closure_east: float = velocity_east - own_velocity[1]
+		var closure_down: float = velocity_down - own_velocity[2]
+		var closure_speed: float = AvoidanceMath.sqrt_(closure_north * closure_north
+			+ closure_east * closure_east + closure_down * closure_down)
 		var is_player: bool = bool(item.get("is_player", item.get("player", true)))
-		var minimum_distance: float = DEFAULT_PLAYER_SEPARATION_M if is_player else 15.0
-		minimum_distance = maxf(minimum_distance, 3.0 * float(item.get("wingspan_m", 1.7)))
-		minimum_distance = maxf(minimum_distance, closure_speed * 0.5)
-		if closest_distance >= minimum_distance:
-			continue
-		var severity: float = (minimum_distance - closest_distance) / minimum_distance
-		if severity <= best_severity:
-			continue
-		var horizontal_distance: float = Math3D.sqrt_(closest_north * closest_north + closest_east * closest_east)
-		var away_north: float
-		var away_east: float
-		if horizontal_distance > 1e-6:
-			away_north = -closest_north / horizontal_distance
-			away_east = -closest_east / horizontal_distance
+		var wingspan: float = float(item.get("wingspan_m", 1.7))
+		var base_separation: float = maxf(30.0 if is_player else 15.0, 3.0 * wingspan)
+		var required_separation: float = base_separation + closure_speed * REACTION_MARGIN_S + POSITION_UNCERTAINTY_M
+		var predicted_positions := PackedFloat64Array()
+		predicted_positions.resize((sample_count + 1) * 3)
+		predicted_positions[0] = north
+		predicted_positions[1] = east
+		predicted_positions[2] = down
+		for sample_index in range(1, sample_count + 1):
+			heading = wrapf(heading + turn_rate * PREDICTION_STEP_S, -PI, PI)
+			north += air_horizontal_speed * cos(heading) * PREDICTION_STEP_S + threat_wind[0] * PREDICTION_STEP_S
+			east += air_horizontal_speed * sin(heading) * PREDICTION_STEP_S + threat_wind[1] * PREDICTION_STEP_S
+			down += velocity_down * PREDICTION_STEP_S
+			var offset: int = sample_index * 3
+			predicted_positions[offset] = north
+			predicted_positions[offset + 1] = east
+			predicted_positions[offset + 2] = down
+		threats.append({"id": item_id, "is_player": is_player,
+			"required_separation_m": required_separation, "positions": predicted_positions})
+	return threats
+
+
+func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, own_speed: float,
+		current_bank: float, nominal_bank: float, candidate_bank: float, clearance: float,
+		threats: Array[Dictionary], include_trace: bool = false) -> Dictionary:
+	var sample_count: int = int(round(PREDICTION_HORIZON_S / PREDICTION_STEP_S))
+	var own_north: float = state[AvoidanceRigidBody.POS]
+	var own_east: float = state[AvoidanceRigidBody.POS + 1]
+	var own_down: float = state[AvoidanceRigidBody.POS + 2]
+	var heading: float = AvoidanceMath.atan2_(own_velocity[1] - _planning_wind[1],
+		own_velocity[0] - _planning_wind[0])
+	var minimum_by_threat := PackedFloat64Array()
+	minimum_by_threat.resize(threats.size())
+	var distance_traces: Array[PackedFloat64Array] = []
+	for threat_index in threats.size():
+		minimum_by_threat[threat_index] = INF
+		if include_trace:
+			var trace := PackedFloat64Array()
+			trace.resize(sample_count + 1)
+			distance_traces.append(trace)
+	var minimum_terrain_margin: float = clearance - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M
+	var down_rate: float = own_velocity[2]
+	var terrain_horizon: float = minf(PREDICTION_HORIZON_S, REACTION_MARGIN_S)
+	minimum_terrain_margin = minf(minimum_terrain_margin,
+		clearance - down_rate * terrain_horizon - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
+	for sample_index in range(sample_count + 1):
+		if sample_index > 0:
+			var midpoint_s: float = (float(sample_index) - 0.5) * PREDICTION_STEP_S
+			var ramp: float = clampf((midpoint_s - REACTION_MARGIN_S) / BANK_RESPONSE_S, 0.0, 1.0)
+			var bank: float = lerpf(current_bank, candidate_bank, ramp)
+			var turn_rate: float = G * tan(bank) / maxf(own_speed, 3.0)
+			heading = wrapf(heading + turn_rate * PREDICTION_STEP_S, -PI, PI)
+			own_north += own_speed * cos(heading) * PREDICTION_STEP_S + _planning_wind[0] * PREDICTION_STEP_S
+			own_east += own_speed * sin(heading) * PREDICTION_STEP_S + _planning_wind[1] * PREDICTION_STEP_S
+			own_down = state[AvoidanceRigidBody.POS + 2] + down_rate * minf(float(sample_index) * PREDICTION_STEP_S, terrain_horizon)
+			var remaining_clearance: float = clearance - (own_down - state[AvoidanceRigidBody.POS + 2])
+			minimum_terrain_margin = minf(minimum_terrain_margin,
+				remaining_clearance - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
+		var offset: int = sample_index * 3
+		for threat_index in threats.size():
+			var positions: PackedFloat64Array = threats[threat_index].positions
+			var north_delta: float = positions[offset] - own_north
+			var east_delta: float = positions[offset + 1] - own_east
+			var down_delta: float = positions[offset + 2] - own_down
+			var distance: float = AvoidanceMath.sqrt_(north_delta * north_delta
+				+ east_delta * east_delta + down_delta * down_delta)
+			minimum_by_threat[threat_index] = minf(minimum_by_threat[threat_index], distance)
+			if include_trace:
+				distance_traces[threat_index][sample_index] = distance
+	var worst_margin: float = minimum_terrain_margin
+	var minimum_player_distance: float = INF
+	var minimum_peer_distance: float = INF
+	for threat_index in threats.size():
+		var threat: Dictionary = threats[threat_index]
+		var separation: float = minimum_by_threat[threat_index]
+		var margin: float = separation - float(threat.required_separation_m)
+		if bool(threat.is_player):
+			minimum_player_distance = minf(minimum_player_distance, separation)
+			worst_margin = minf(worst_margin, margin * 1.2)
 		else:
-			var rel_horizontal_speed: float = Math3D.sqrt_(rel_v_north * rel_v_north + rel_v_east * rel_v_east)
-			if rel_horizontal_speed > 1e-6:
-				away_north = _direction * rel_v_east / rel_horizontal_speed
-				away_east = -_direction * rel_v_north / rel_horizontal_speed
-			else:
-				away_north = cos(_phase_rad)
-				away_east = sin(_phase_rad)
-		best_severity = severity
-		best_away_north = away_north
-		best_away_east = away_east
-		# Replace the whole response; a weaker threat must not leave a vertical demand.
-		best_vertical_delta = 0.0
-		if absf(closest_down) < minimum_distance * 0.4:
-			best_vertical_delta = 10.0 if closest_down > 0.0 else -10.0
-	var correction_speed: float = 14.0 * best_severity if best_severity > 0.0 else 0.0
-	return {
-		"active": best_severity > 0.0,
-		"air_north": base_air_north + best_away_north * correction_speed,
-		"air_east": base_air_east + best_away_east * correction_speed,
-		"altitude_delta": best_vertical_delta,
-	}
+			minimum_peer_distance = minf(minimum_peer_distance, separation)
+			worst_margin = minf(worst_margin, margin)
+	var result := {"score": worst_margin, "terrain_margin_m": minimum_terrain_margin,
+		"minimum_player_distance_m": minimum_player_distance,
+		"minimum_peer_distance_m": minimum_peer_distance}
+	if include_trace:
+		result["distance_traces_m"] = distance_traces
+	return result
 
 
-func _traffic_kinematics(item: Dictionary) -> Dictionary:
-	var state_value: Variant = item.get("state", PackedFloat64Array())
-	if state_value is PackedFloat64Array and state_value.size() == RigidBody.SIZE and _array_finite(state_value):
-		var state: PackedFloat64Array = state_value
-		var attitude: PackedFloat64Array = Math3D.quat(state[RigidBody.ATT], state[RigidBody.ATT + 1], state[RigidBody.ATT + 2], state[RigidBody.ATT + 3])
-		var velocity: PackedFloat64Array = Math3D.q_rotate(attitude,
-			PackedFloat64Array([state[RigidBody.VEL], state[RigidBody.VEL + 1], state[RigidBody.VEL + 2]]))
-		return {
-			"ok": true,
-			"north": state[RigidBody.POS], "east": state[RigidBody.POS + 1], "down": state[RigidBody.POS + 2],
-			"velocity_north": velocity[0], "velocity_east": velocity[1], "velocity_down": velocity[2],
-		}
-	var position_result: Dictionary = _vector3(item.get("position_ned", PackedFloat64Array()))
-	var velocity_result: Dictionary = _vector3(item.get("velocity_ned", PackedFloat64Array()))
-	if not position_result.ok or not velocity_result.ok:
-		return {"ok": false}
-	var position: PackedFloat64Array = position_result.value
-	var velocity: PackedFloat64Array = velocity_result.value
-	return {
-		"ok": true,
-		"north": position[0], "east": position[1], "down": position[2],
-		"velocity_north": velocity[0], "velocity_east": velocity[1], "velocity_down": velocity[2],
-	}
+func _bank_response(base_air_north: float, base_air_east: float,
+		nominal_bank: float, selected_bank: float) -> Dictionary:
+	var active: bool = absf(selected_bank - nominal_bank) > deg_to_rad(1.0) or _has_held_maneuver
+	if not active:
+		return _unmodified_traffic_response(base_air_north, base_air_east)
+	_selected_bank_target_rad = clampf(selected_bank, -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	_override_roll_demand = true
+	return {"active": true, "air_north": base_air_north,
+		"air_east": base_air_east, "altitude_delta": 0.0}
 
 
-func _turbulence_magnitude(snapshot: Dictionary) -> Dictionary:
-	var value: Variant = snapshot.get("turbulence_rms_m_s", snapshot.get("turbulence_rms_mps", PackedFloat64Array([0.0, 0.0, 0.0])))
-	if typeof(value) in [TYPE_FLOAT, TYPE_INT]:
-		var scalar: float = float(value)
-		return {"ok": is_finite(scalar) and scalar >= 0.0, "value": scalar}
-	var vector_result: Dictionary = _vector3(value)
-	if not vector_result.ok:
-		return {"ok": false, "value": INF}
-	return {"ok": true, "value": Math3D.norm(vector_result.value)}
+func _unmodified_traffic_response(base_air_north: float, base_air_east: float) -> Dictionary:
+	return {"active": false, "air_north": base_air_north,
+		"air_east": base_air_east, "altitude_delta": 0.0}
 
 
-func _packet(ok: bool, reason: String) -> Dictionary:
-	return {"ok": ok, "reason": reason, "roll": 0.0, "pitch": 0.0, "yaw": 0.0,
-		"throttle": _trim_throttle, "radius_error_m": 0.0, "target_height_m": _target_height_m,
-		"avoidance_active": false, "recovering_clearance": false}
+func _release_held_maneuver_if_clear() -> void:
+	if not _has_held_maneuver:
+		return
+	if _clear_since_tick < 0:
+		_clear_since_tick = _planning_tick
+	if _planning_tick >= _hold_until_tick \
+			and _planning_tick - _clear_since_tick >= RELEASE_CLEAR_TIME_TICKS:
+		_clear_held_maneuver("empty_traffic_clear")
 
 
-func _packet_finite(packet: Dictionary) -> bool:
-	for key: String in ["roll", "pitch", "yaw", "throttle"]:
-		if typeof(packet.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(packet[key])):
-			return false
-	return float(packet.roll) >= -1.0 and float(packet.roll) <= 1.0 \
-		and float(packet.pitch) >= -1.0 and float(packet.pitch) <= 1.0 \
-		and float(packet.yaw) >= -1.0 and float(packet.yaw) <= 1.0 \
-		and float(packet.throttle) >= 0.0 and float(packet.throttle) <= 1.0
+func _set_held_maneuver(bank_rad: float, deadline_tick: int, reason: String) -> void:
+	var changed: bool = not _has_held_maneuver or not is_equal_approx(_held_bank_rad, bank_rad)
+	_has_held_maneuver = true
+	_held_bank_rad = clampf(bank_rad, -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	_hold_until_tick = deadline_tick
+	_clear_since_tick = -1
+	if changed:
+		_log_maneuver_transition("hold", reason)
 
 
-func _refuse(message: String) -> bool:
-	configure_error = message
-	return false
+func _clear_held_maneuver(reason: String) -> void:
+	if not _has_held_maneuver:
+		return
+	_has_held_maneuver = false
+	_held_bank_rad = 0.0
+	_hold_until_tick = -1
+	_clear_since_tick = -1
+	_log_maneuver_transition("release", reason)
 
 
-static func _read_number(source: Dictionary, keys: Array, fallback: float) -> Dictionary:
-	for key_value: Variant in keys:
-		var key: String = str(key_value)
-		if not source.has(key):
-			continue
-		var value: Variant = source[key]
-		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
-			return {"ok": false, "value": NAN}
-		return {"ok": true, "value": float(value)}
-	return {"ok": is_finite(fallback), "value": fallback}
+func _log_maneuver_transition(action: String, reason: String) -> void:
+	if not diagnostics_enabled or _plan_diagnostic_count >= MAX_PLAN_DIAGNOSTICS:
+		return
+	_plan_diagnostic_count += 1
+	print("AFC_REACHABLE_MANEUVER " + JSON.stringify({
+		"action": action,
+		"reason": reason,
+		"tick": _planning_tick,
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_deg": rad_to_deg(_held_bank_rad) if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
+	}))
 
 
-static func _vector3(value: Variant) -> Dictionary:
-	if value is PackedFloat64Array:
-		if value.size() != 3 or not _array_finite(value):
-			return {"ok": false, "value": PackedFloat64Array()}
-		return {"ok": true, "value": value.duplicate()}
-	if value is Array and value.size() == 3:
-		var out := PackedFloat64Array()
-		for entry: Variant in value:
-			if typeof(entry) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(entry)):
-				return {"ok": false, "value": PackedFloat64Array()}
-			out.append(float(entry))
-		return {"ok": true, "value": out}
-	return {"ok": false, "value": PackedFloat64Array()}
-
-
-static func _array_finite(values: PackedFloat64Array) -> bool:
-	for value: float in values:
-		if not is_finite(value):
-			return false
-	return true
+func _finite_diagnostic(value: float) -> Variant:
+	return value if is_finite(value) else null

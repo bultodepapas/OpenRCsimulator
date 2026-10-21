@@ -234,7 +234,8 @@ func _write_json_new(name: String, value: Dictionary) -> Error:
 static func _source_hashes() -> Dictionary:
 	var result := {}
 	for path: String in ["res://ai/companions/fleet_record.gd", "res://ai/companions/manager.gd",
-			"res://ai/companions/agent.gd", "res://ai/companions/pilot.gd", "res://sim/flight_log.gd",
+			"res://ai/companions/agent.gd", "res://ai/companions/pilot.gd",
+			"res://ai/companions/circuit_controller.gd", "res://sim/flight_log.gd",
 			"res://ai/companions/config.gd", "res://ai/companions/profile_loader.gd",
 			"res://ai/companions/airspace.gd", "res://main.gd"]:
 		result[path] = FileAccess.get_sha256(path) if FileAccess.file_exists(path) else "unavailable"

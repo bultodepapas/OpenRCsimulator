@@ -41,12 +41,8 @@ func _run() -> void:
 		var response: Dictionary = pilot.command(snapshot, 0, [threat])
 		_check("avoidance target stays at least 35 m above local terrain",
 			response.ok and response.target_height_m >= height - float(snapshot.ground_clearance_m) + 35.0)
-		if slot == 0:
-			_check("a constrained descent does not initiate a climb from the lowest circuit band",
-				response.target_height_m <= clear.target_height_m)
-		else:
-			_check("higher circuit bands retain their permitted 10 m descent",
-				response.target_height_m == clear.target_height_m - 10.0)
+		_check("reachable horizontal avoidance retains the nominal circuit altitude",
+			response.target_height_m == clear.target_height_m)
 		_check("lateral avoidance remains active when vertical descent is constrained",
 			response.avoidance_active and response.roll != clear.roll)
 		var before := var_to_bytes([snapshot, threat])

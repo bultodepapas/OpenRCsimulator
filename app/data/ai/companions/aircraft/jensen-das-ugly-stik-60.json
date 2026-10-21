@@ -9,7 +9,10 @@
   },
   "controller": {
     "path": "res://ai/companions/pilot.gd",
-    "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    "sha256": "e6914d1dab33a9dfaf5543a0a08a574203841f7d5c1fbbe8f68f659cbe4db177",
+    "dependencies": {
+      "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    }
   },
   "solver": {
     "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",

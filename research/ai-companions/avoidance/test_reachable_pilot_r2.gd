@@ -1,6 +1,6 @@
 extends SceneTree
 
-const BasePilot := preload("res://ai/companions/pilot.gd")
+const BasePilot := preload("res://ai/companions/circuit_controller.gd")
 const R1CandidatePilot := preload("res://../research/ai-companions/avoidance/reachable_pilot.gd")
 const CandidatePilot := preload("res://../research/ai-companions/avoidance/reachable_pilot_r2.gd")
 const FieldLoader := preload("res://data/field_loader.gd")

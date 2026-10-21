@@ -42,6 +42,9 @@
 /tools/landscape/vegetation/convert_forest_shrub.py -text
 /app/assets/landscape/vegetation/LICENSE_GRASS.txt -text
 /app/assets/landscape/vegetation/LICENSE_FOREST.txt -text
+# New vegetation license notices are hash-bound catalog inputs.
+/app/assets/landscape/vegetation/LICENSE_LANDSCAPELAB.txt -text whitespace=cr-at-eol
+/app/assets/landscape/vegetation/LICENSE_UNDERSTORY.txt -text whitespace=cr-at-eol
 # License snapshots retain the exact reviewed notice and upstream whitespace.
 /docs/research/visual-quality-implementation/L6a-R1/mature-oak/**/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
 /docs/research/visual-quality-implementation/L6b-R2/source/quaternius-standard/LICENSE.txt whitespace=-blank-at-eol,cr-at-eol

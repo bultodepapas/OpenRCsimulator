@@ -7,4 +7,5 @@ License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0
 License text: https://creativecommons.org/licenses/by-sa/4.0/legalcode
 Upstream license evidence: README.md in this source directory; the pinned repository README applies CC BY-SA 4.0 by default, and neither selected asset has an additional LICENSE file.
 Attribution: LandscapeLab Assets contributors; the pinned repository does not name individual creators for these two files.
-Changes: none. The runtime models are byte-for-byte copies of the supplied GLBs.
+Source changes: none. Derived/runtime model files are byte-for-byte copies of the supplied GLBs.
+Application material behavior: imported Quercus and Pine use a duplicated StandardMaterial3D with metallic set to 0.0; textures, alpha modes, and roughness remain unchanged.

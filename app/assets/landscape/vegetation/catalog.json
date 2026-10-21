@@ -192,9 +192,9 @@
       "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
       "license_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
       "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-      "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352",
+      "runtime_notice_sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
       "conversion_proof": "assets/landscape/vegetation/derived/landscapelab_tree_2026/conversion_manifest.json",
-      "conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
       "source": {
         "repository": "https://github.com/boku-ilen/landscapelab-assets",
         "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
@@ -205,8 +205,8 @@
         "license_evidence_bytes": 1718,
         "license_evidence_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
         "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-        "runtime_notice_bytes": 848,
-        "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+        "runtime_notice_bytes": 1038,
+        "runtime_notice_sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
       }
     },
     {
@@ -384,8 +384,8 @@
     {
       "path": "LICENSE_LANDSCAPELAB.txt",
       "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-      "bytes": 848,
-      "sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+      "bytes": 1038,
+      "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
     },
     {
       "path": "LICENSE_MAPLE.txt",
@@ -2464,7 +2464,7 @@
       "source_git_blob_sha1": "e625adef3ae04e455037c4db4d39d7f486f0a498",
       "source_upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
       "source_format": "glTF 2.0 binary (GLB)",
-      "source_conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
       "source_triangles": 7016,
       "source_surfaces": 2,
       "source_materials": 2,
@@ -2582,7 +2582,7 @@
       "source_git_blob_sha1": "8634899c22a9e4a7bf8d3fc94930ed560d340dd0",
       "source_upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
       "source_format": "glTF 2.0 binary (GLB)",
-      "source_conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
       "source_triangles": 4246,
       "source_surfaces": 2,
       "source_materials": 2,
