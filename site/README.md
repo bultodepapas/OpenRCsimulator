@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01…07 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
