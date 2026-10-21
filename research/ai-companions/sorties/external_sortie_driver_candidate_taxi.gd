@@ -143,10 +143,24 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 	var runway_north_edge: float = float(runway.center_north) + runway_half_width
 	var vacate_target_north: float = runway_north_edge + RUNWAY_CLEARANCE_M
 	var nosewheel_steering_limit_deg: float = 0.0
+	var found_nose_contact := false
 	for contact: Dictionary in session.aircraft.model.landing_gear.contacts:
 		if str(contact.get("name", "")) == "nose":
-			nosewheel_steering_limit_deg = float(contact.get("max_steering", {}).get("value", 0.0))
+			var steering_limit: Variant = contact.get("max_steering", 0.0)
+			if typeof(steering_limit) == TYPE_DICTIONARY:
+				steering_limit = steering_limit.get("value", 0.0)
+			if typeof(steering_limit) != TYPE_FLOAT and typeof(steering_limit) != TYPE_INT:
+				session.free()
+				return {ok = false, error = "validated nose-wheel steering limit is not numeric"}
+			nosewheel_steering_limit_deg = float(steering_limit)
+			if not is_finite(nosewheel_steering_limit_deg) or nosewheel_steering_limit_deg <= 0.0:
+				session.free()
+				return {ok = false, error = "validated nose-wheel steering limit is not finite and positive"}
+			found_nose_contact = true
 			break
+	if not found_nose_contact:
+		session.free()
+		return {ok = false, error = "validated tricycle landing gear has no nose contact"}
 	var initial: PackedFloat64Array = session.sim.state.duplicate()
 	var initial_yaw: float = M.q_to_euler(initial.slice(6, 10))[0]
 	var initial_checkpoint: Dictionary = session.checkpoint()
