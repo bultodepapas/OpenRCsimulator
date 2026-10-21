@@ -1,0 +1,180 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for landscapelab_pine because source material -9223371803802465839 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:320)
+       [12] _ready (res://app_root.gd:256)
+       [13] _run (res://tests/test_companions_shell.gd:43)
+WARNING: Tree wind is disabled for landscapelab_quercus because source material -9223371801520764446 is unsupported (non-repeating textures are not supported)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:320)
+       [12] _ready (res://app_root.gd:256)
+       [13] _run (res://tests/test_companions_shell.gd:43)
+WARNING: Tree wind is disabled for maple_tree because source material -9223371800111478287 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:320)
+       [12] _ready (res://app_root.gd:256)
+       [13] _run (res://tests/test_companions_shell.gd:43)
+ERROR: Hill settlement placements are stale for the current ridge profile
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_inputs (res://render/landscape_upgrade/hill_settlements.gd:147)
+       [1] build (res://render/landscape_upgrade/hill_settlements.gd:27)
+       [2] _build_hills (res://render/landscape_upgrade/regional_lighting.gd:127)
+       [3] _build (res://render/landscape_upgrade/regional_lighting.gd:92)
+       [4] build (res://render/landscape_upgrade/regional_lighting.gd:29)
+       [5] build (res://render/landscape_upgrade/airfield_lighting.gd:91)
+       [6] build (res://render/world/world.gd:333)
+       [7] _init (res://ui/home_scene.gd:92)
+       [8] show_home (res://app_root.gd:320)
+       [9] _ready (res://app_root.gd:256)
+       [10] _run (res://tests/test_companions_shell.gd:43)
+ok   rotorcraft direct route rejects an enabled companion group
+ok   rotorcraft direct route allows an explicitly disabled group
+ok   fixed-wing direct route keeps enabled companions available
+ok   non-companion direct arguments leave companions disabled
+ok   direct companion CLI validates --companions
+ok   direct companion CLI validates --companions=4
+ok   direct companion CLI validates --companions=-1
+ok   direct companion CLI validates --companions=1.5
+ok   direct companion CLI validates --companions-seed
+ok   direct companion CLI validates --companions-seed=-1
+ok   direct companion CLI validates --companions-seed=4294967296
+ok   Home companions default Off with count 1 and seed 1
+ok   Home companions are disabled outside Club Field
+ok   Home opens the companions dialog through the shell
+ok   Home Cancel preserves preferences and the live Home draft
+ok   Home Apply persists the checked count and seed
+ok   Home summary reflects the saved choice
+ERROR: Hill settlement placements are stale for the current ridge profile
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_inputs (res://render/landscape_upgrade/hill_settlements.gd:147)
+       [1] build (res://render/landscape_upgrade/hill_settlements.gd:27)
+       [2] _build_hills (res://render/landscape_upgrade/regional_lighting.gd:127)
+       [3] _build (res://render/landscape_upgrade/regional_lighting.gd:92)
+       [4] build (res://render/landscape_upgrade/regional_lighting.gd:29)
+       [5] build (res://render/landscape_upgrade/airfield_lighting.gd:91)
+       [6] build (res://render/world/world.gd:333)
+       [7] _build_world (res://main.gd:2343)
+       [8] _ready (res://main.gd:528)
+       [9] start_flight (res://app_root.gd:651)
+       [10] _on_fly (res://ui/home.gd:1536)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Home flight receives the saved companion config before startup
+ok   the manager starts three real AI pilots
+ok   Pause freezes simulation ticks and propeller angle
+ok   Pause dialog reports all three active pilots
+ok   Pause Cancel leaves the flight config and active group unchanged
+ok   Cancel preserves live companion presentation
+ok   Pause Apply stages two pilots for the next restart
+ok   sound and labels apply without replacing or advancing the paused flight
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Restart rebuilds the live group from the staged count
+ok   Pause Save as default is the only Pause action that persists
+ok   Pause save failure rolls the staged flight config back
+ok   failed save also restores live presentation
+ok   Pause save failure preserves the previous on-disk default
+ok   Cancel after a failed save leaves the flight config unchanged
+ok   Remove now appears for an active group
+ok   Remove now leaves no active AI pilots
+ok   Remove now does not rewrite the saved default
+ok   future preferences fixture writes
+ok   future schema stays protected
+ERROR: Hill settlement placements are stale for the current ridge profile
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_inputs (res://render/landscape_upgrade/hill_settlements.gd:147)
+       [1] build (res://render/landscape_upgrade/hill_settlements.gd:27)
+       [2] _build_hills (res://render/landscape_upgrade/regional_lighting.gd:127)
+       [3] _build (res://render/landscape_upgrade/regional_lighting.gd:92)
+       [4] build (res://render/landscape_upgrade/regional_lighting.gd:29)
+       [5] build (res://render/landscape_upgrade/airfield_lighting.gd:91)
+       [6] build (res://render/world/world.gd:333)
+       [7] _build_world (res://main.gd:2343)
+       [8] _ready (res://main.gd:528)
+       [9] start_flight (res://app_root.gd:651)
+       [10] _ready (res://app_root.gd:215)
+       [11] _run (res://tests/test_companions_shell.gd:250)
+       [12] close_app (res://tests/ui_driver.gd:97)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   direct CLI ignores saved Home companion settings
+ok   direct fixed-wing Pause keeps the flight settings entry
+ERROR: Hill settlement placements are stale for the current ridge profile
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_inputs (res://render/landscape_upgrade/hill_settlements.gd:147)
+       [1] build (res://render/landscape_upgrade/hill_settlements.gd:27)
+       [2] _build_hills (res://render/landscape_upgrade/regional_lighting.gd:127)
+       [3] _build (res://render/landscape_upgrade/regional_lighting.gd:92)
+       [4] build (res://render/landscape_upgrade/regional_lighting.gd:29)
+       [5] build (res://render/landscape_upgrade/airfield_lighting.gd:91)
+       [6] build (res://render/world/world.gd:333)
+       [7] _build_world (res://main.gd:2343)
+       [8] _ready (res://main.gd:528)
+       [9] start_flight (res://app_root.gd:651)
+       [10] _ready (res://app_root.gd:215)
+       [11] _check_capture_shell (res://tests/test_companions_shell.gd:274)
+       [12] _run (res://tests/test_companions_shell.gd:260)
+       [13] close_app (res://tests/ui_driver.gd:97)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740/player.orfl
+Flight log REC: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740/companion-0.orfl
+Companion capture REC: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740
+ok   synthetic electric demo cannot enable companions or fleet capture
+ok   synthetic electric demo retains explicit companion Off support
+ok   direct CLI starts a fleet capture before flight ticks
+ok   capture HUD distinguishes the fleet and leaves the separate player log idle
+Flight log saved: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740/player.orfl (48 ticks)
+Flight log saved: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740/companion-0.orfl (48 ticks)
+Companion capture closed: D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/tmp/afc-shell-capture-18561740 (complete=true, tick=48)
+ok   F10 closes all streams without starting a second player log
+ok   capture HUD confirms a saved cohort
+ok   F11 marks the player stream
+ok   F11 marks the companion-0 stream
+ok   F11 marks every stream at the same tick
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Restart rebuilds the companion without reusing its capture directory
+ok   capture directory is never saved in Home preferences
+Companions shell: 0 failed

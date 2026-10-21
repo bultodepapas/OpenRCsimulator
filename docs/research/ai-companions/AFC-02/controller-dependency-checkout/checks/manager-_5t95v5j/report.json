@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "aaa7f6dc-4b0a-4dbc-9712-938f1eef449a",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:\\OpenRCsimulator-AFC-work\\fresh-validation-20261020\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_manager.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T00:40:40.181518+00:00",
+  "label": "manager",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\fresh-validation\\companions-regression\\checks\\manager-_5t95v5j\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\fresh-validation\\companions-regression\\checks\\manager-_5t95v5j\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 26.75,
+  "log_bytes": 1432,
+  "log_sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f"
+}

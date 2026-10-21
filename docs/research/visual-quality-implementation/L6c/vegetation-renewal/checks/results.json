@@ -2,46 +2,100 @@
   {
     "test": "test_imported_vegetation",
     "returncode": 0,
-    "seconds": 1.25
+    "seconds": 1.25,
+    "evidence": "test_imported_vegetation.log"
   },
   {
     "test": "test_botanical_habitats",
     "returncode": 0,
-    "seconds": 2.609
+    "seconds": 2.609,
+    "evidence": "test_botanical_habitats.log"
   },
   {
     "test": "test_landscape_tree_bounds",
     "returncode": 0,
-    "seconds": 2.141
+    "seconds": 2.141,
+    "evidence": "test_landscape_tree_bounds.log"
   },
   {
     "test": "test_landscape_population",
     "returncode": 0,
-    "seconds": 2.984
+    "seconds": 2.984,
+    "evidence": "test_landscape_population.log"
   },
   {
     "test": "test_downloaded_habitats",
-    "returncode": 1,
-    "seconds": 1.422
+    "returncode": 0,
+    "evidence": "test_downloaded_habitats.log",
+    "result": "330 checks passed; the earlier failure status was stale"
   },
   {
     "test": "test_woodland_edge_habitat",
     "returncode": 0,
-    "seconds": 1.125
+    "seconds": 1.125,
+    "evidence": "test_woodland_edge_habitat.log"
   },
   {
     "test": "test_tree_wind",
     "returncode": 0,
-    "seconds": 0.484
+    "seconds": 0.484,
+    "evidence": "test_tree_wind.log"
   },
   {
     "test": "test_landscape_vegetation",
     "returncode": 1,
-    "seconds": 4.016
+    "seconds": 4.016,
+    "evidence": "test_landscape_vegetation.log",
+    "failure": {
+      "reason": "The complete-scene LU-21 triangle ceiling is still exceeded; the frozen baseline already exceeded it.",
+      "limit_triangles": 650000,
+      "baseline_triangles": 1012235,
+      "final_triangles": 1024645,
+      "final_tree_sources": {
+        "landscapelab_quercus": 3,
+        "landscapelab_pine": 10,
+        "maple_tree": 4
+      },
+      "final_close_tree_source_triangles": 85672
+    }
   },
   {
     "test": "test_scenery_build",
     "returncode": 1,
-    "seconds": 7.484
+    "seconds": 7.484,
+    "evidence": "test_scenery_build.log",
+    "failure": {
+      "reason": "The cold scene-build time exceeds the existing 800 ms gate; baseline also exceeded it. The final non-fleet and fleet triangle budgets pass.",
+      "cold_build_limit_ms": 800,
+      "baseline_cold_build_ms": 947.59,
+      "final_cold_build_ms": 1453.8,
+      "final_total_triangles": 998305,
+      "final_non_fleet_triangles": 724884,
+      "non_fleet_limit_triangles": 725000,
+      "final_fleet_triangles": 273421,
+      "fleet_limit_triangles": 350000
+    }
+  },
+  {
+    "test": "test_imported_tree_rendering",
+    "returncode": 0,
+    "seconds": 0.594,
+    "evidence": "test-imported-tree-rendering-bp715dpk-engine.log",
+    "report": "test-imported-tree-rendering-bp715dpk-report.json"
+  },
+  {
+    "test": "test_landscape_collision",
+    "returncode": 0,
+    "seconds": 1.719,
+    "evidence": "test-landscape-collision-abje7hbg-engine.log",
+    "report": "test-landscape-collision-abje7hbg-report.json",
+    "result": "52 checks passed"
+  },
+  {
+    "test": "test_vegetation_collision_proxies",
+    "returncode": 0,
+    "seconds": 1.032,
+    "evidence": "test_vegetation_collision_proxies.log",
+    "result": "32 checks passed, including the Quercus lower-crown witness"
   }
 ]

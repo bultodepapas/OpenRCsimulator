@@ -1,0 +1,10 @@
+{
+  "format": "openrc-afc-checkout-attributes-fix v1",
+  "scope": "One .gitattributes line over fresh local clone. Existing CRLF copy retained outside app; git checkout-index regenerated the missing base under the LF attribute. No main-tree Git index operations.",
+  "attributes_index_sha256": "136c656adfcb6abd227da998f0e0b974ed874c0641a9c92dc06018847ecc9ede",
+  "attributes_worktree_sha256": "1cec35bd289ebf580b039f5849a71095b5871ec1d2186fb6a1cfd7a263222397",
+  "circuit_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+  "circuit_crlf_lines": 0,
+  "checkout_index_force_caveat": "An initial --force command left an up-to-date existing file unchanged; the failed assertion and profile refusal were retained. Regenerating an absent path exercised the new attribute.",
+  "runner_marker_caveat": "First post-fix suite exited 0 with all 37 assertions passing but runner rejected an incorrect required footer. Final run used the exact footer and passed."
+}

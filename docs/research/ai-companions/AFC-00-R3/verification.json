@@ -1,0 +1,1146 @@
+{
+  "format": "openrc-afc-00-r3-verification v1",
+  "status": "pass",
+  "receipt_created_utc": "2026-10-21T02:52:41Z",
+  "scope": "Research-only software equivalence of the reachable-clear bank-score early return. Two-second simulated fixture, no performance timing or physical-flight claim.",
+  "snapshot": {
+    "path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020",
+    "git_commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+    "engine": "Godot 4.7.2-stable official ed1daf0bf",
+    "app_path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+    "validation_boundary": "Source identity is bound to the exact pre-mountains-EOL-fix snapshot recorded by the final flight report."
+  },
+  "source_identity": {
+    "production_controller_path": "res://ai/companions/pilot.gd",
+    "production_controller_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "required_base_path": "res://ai/companions/circuit_controller.gd",
+    "required_base_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "candidate_path": "res://../research/ai-companions/performance/reachable_clear_candidate.gd",
+    "candidate_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "flight_harness_path": "res://../research/ai-companions/performance/flight_clear_equivalence.gd",
+    "flight_harness_sha256": "a1c1e6ebadef87a6cc20b8d385913d4cf04bc1995eb0aa61c4e354088c948ddf",
+    "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "accepted_profile_controller_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "candidate_deployment": "Candidate override used only in detached fixtures; accepted profile identity stayed pinned to production."
+  },
+  "source_map_audit": {
+    "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-equivalence.json",
+    "report_sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9",
+    "path_count": 428,
+    "matched_to_pre_fix_clone": 428,
+    "mismatches": 0,
+    "full_path_hash_map_in_report": true,
+    "verified_before_visual_eol_repair": true,
+    "reconstruction": {
+      "affected_file": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app/data/fields/mountains.json",
+      "pre_fix_file_sha256": "f8690633dc59dbb93c14a1357292a45ad76d4a6e8375f0086a7f712797584588",
+      "pre_fix_capture_path": "D:/OpenRCsimulator-AFC-work/evidence/fresh-validation/mountains-before-attributes.json",
+      "pre_fix_capture_sha256": "f8690633dc59dbb93c14a1357292a45ad76d4a6e8375f0086a7f712797584588",
+      "repair_receipt_path": "D:/OpenRCsimulator-AFC-work/evidence/fresh-validation/mountains-attributes-fix.json",
+      "repair_receipt_sha256": "29087ee06794248eaf3cfec92911539c312ba51d1b7be7774b230aea39f64b80",
+      "patched_clone_gitattributes_path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/.gitattributes",
+      "patched_clone_gitattributes_sha256": "7a850dd373a4115b4d73e04024b68262d565e84124394047746a44e3b4755f0d",
+      "patch_description": "Visual-only mountains.json LF checkout rule; source file was rechecked out. No flight controller or solver source changed. The pre-fix asset hash and capture preserve the bytes tested here."
+    }
+  },
+  "static_differential": {
+    "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\differential-1.json",
+    "report_sha256": "eadb1688def3c0caa406bf80ba989a731e84043a31e7154bb3c4ddd78330c4ef",
+    "runner": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\checks\\differential-31m1_5m0\\report.json",
+      "sha256": "9840646a9350c5bb6ad3fa9efd876005d9f7ec2ba162965d45b4023bac501c09",
+      "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\checks\\differential-31m1_5m0\\engine.log",
+      "log_sha256": "94fdb9c1fd1e4e51f1464e4acc49a59528e6dca63f2756924a4a2e671714f391",
+      "label": "differential",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "errors": 0,
+      "warnings": 0,
+      "warnings_as_errors": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "../research/ai-companions/performance/test_clear_fast_path.gd",
+        "--",
+        "--out=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/differential-1.json"
+      ]
+    },
+    "format": "openrc-afc-clear-fast-path-proof v1",
+    "checks": 11,
+    "failures": 0,
+    "pairs": 1280,
+    "clear_pairs": 130,
+    "held_pairs": 766,
+    "score_evaluations_avoided": 1430,
+    "production_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "candidate_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "scope": "synthetic differential command/state oracle; not physical-flight or timing qualification"
+  },
+  "flight_equivalence": {
+    "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-equivalence.json",
+    "report_sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9",
+    "runner": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\report.json",
+      "sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2",
+      "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\engine.log",
+      "log_sha256": "758da088dd6e757c52abb06e6ecd2be709c148e8105472f6010751604a5966db",
+      "label": "clear-fast-path-flight",
+      "ok": true,
+      "complete": true,
+      "exit_code": 0,
+      "reason": "passed",
+      "errors": 0,
+      "warnings": 0,
+      "warnings_as_errors": true,
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+        "--",
+        "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3"
+      ]
+    },
+    "format": "openrc-clear-fast-path-flight-equivalence v1",
+    "checks": 24,
+    "failures": 0,
+    "physics_hz": 240,
+    "accepted_ticks": 480,
+    "simulated_duration_s": 2.0,
+    "source_manifest_path_count": 428,
+    "direct_source_manifest_matches": 428,
+    "source_manifest_mismatches": 0,
+    "agents": 2,
+    "world_identity_baseline": "6fd2b6dadd624eec4c4ffba06d5e771032ceeab46419586705ef3585f599b294",
+    "world_identity_candidate": "6fd2b6dadd624eec4c4ffba06d5e771032ceeab46419586705ef3585f599b294",
+    "input_tape_semantic_sha256": "dfd02e4f6bcf5f1c379e456c144a3d2d72c8cb7f8b3f47a94a3e0f79f8fcfadf",
+    "input_tape_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-input-tape.json",
+    "input_tape_file_sha256": "6ccdebbdfafa29cd11ae22b81311e55c825226321e4c1cd305ad269eb73af7ed",
+    "clear_decisions": 240,
+    "skipped_score_evaluations": 2640,
+    "expected_skipped_per_clear_decision": 11,
+    "first_difference_tick": -1,
+    "byte_exact_matched_ticks": 480,
+    "compared_frames": [
+      "player/companion state, previous state, inputs, aux, continuous, modes, loads, contact events, scenery damage",
+      "player commands/raw controls/trims",
+      "agent command packets and session controls",
+      "controller snapshot state, held-maneuver latch, tick/wind/clearance, decision diagnostics",
+      "manager accepted ticks, observation batches, snapshot clock, damage flag"
+    ],
+    "timing_collected": false,
+    "retry_history": [
+      {
+        "attempt": 1,
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\flight-equivalence.json",
+        "report_sha256": "1b8ce7d929e1eca24f0f2b5c971c15f3f4fc8060b70f7332b93a5a2a03df303f",
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\report.json",
+          "sha256": "98469d66ee327e42fdd0cf941e5f0f5fd66d60d709e1e3e980c524e444aa8096",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\engine.log",
+          "log_sha256": "4d954a98c508e47648215550ca0d5736232355fabb2d99fbfc26107456e8e955",
+          "label": "clear-fast-path-flight",
+          "ok": false,
+          "complete": true,
+          "exit_code": 1,
+          "reason": "process_exit",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+            "--",
+            "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-1"
+          ]
+        },
+        "checks": 23,
+        "failures": 2,
+        "accepted_ticks": 480,
+        "proof_status": "fail",
+        "disposition": "rejected failure retained",
+        "explanation": "Superseded harness defect: it read final_tick from the wrong level of the inspect result, so both complete 481-row ORFL streams were reported with final_tick=-1; the follow-on solver identity check also failed because stream inspection had been rejected."
+      },
+      {
+        "attempt": 2,
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\flight-equivalence.json",
+        "report_sha256": "3f5d31559a2d4f5c010e5d203dc58a6db48aa9abe1b1169c50f822845da0a76f",
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\report.json",
+          "sha256": "447de18d803b67a7597bd2758a40aa384c88ed98065ef995fabc02a8f6a18ccb",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\engine.log",
+          "log_sha256": "e5b29bd2d716a46befdd8b8a5b42f8738f8bfa2b0d4c4dd7ab39f69ded5906c3",
+          "label": "clear-fast-path-flight",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+            "--",
+            "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-2"
+          ]
+        },
+        "checks": 23,
+        "failures": 0,
+        "accepted_ticks": 480,
+        "proof_status": "pass",
+        "disposition": "passing retry retained; superseded by final 24-check run",
+        "explanation": "Footer access was corrected; all 23 checks passed."
+      },
+      {
+        "attempt": 3,
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-equivalence.json",
+        "report_sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9",
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\report.json",
+          "sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\engine.log",
+          "log_sha256": "758da088dd6e757c52abb06e6ecd2be709c148e8105472f6010751604a5966db",
+          "label": "clear-fast-path-flight",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+            "--",
+            "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3"
+          ]
+        },
+        "checks": 24,
+        "failures": 0,
+        "accepted_ticks": 480,
+        "proof_status": "pass",
+        "disposition": "canonical passing run",
+        "explanation": "Final run passed all 24 checks, including the completed source identity recheck."
+      }
+    ],
+    "all_six_orfl_streams": [
+      {
+        "id": "baseline-player",
+        "branch": "baseline",
+        "stream": "player",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\player.orfl",
+        "orfl_sha256": "b33123dca28d3a26f7820d27c80fff7d0cad38d51d853cc9cc13d9967efd15fe",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-player\\replay.json",
+        "replay_report_sha256": "0797c39e0b9bd485bd332d57c29b1f4272a75854556a5f0d5eeeb1019963b033",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "b33123dca28d3a26f7820d27c80fff7d0cad38d51d853cc9cc13d9967efd15fe",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-player\\flight.csv",
+        "csv_sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-player-exact-hpyy79ao\\report.json",
+          "sha256": "a400d2c82f2b8547618827893956a5bf5e44df06351d4ec868b5a0d4f67cfa2b",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-player-exact-hpyy79ao\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "baseline-player-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/baseline/player.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-player/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-player/replay.json",
+            "--replay"
+          ]
+        }
+      },
+      {
+        "id": "baseline-companion-0",
+        "branch": "baseline",
+        "stream": "companion-0",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\companion-0.orfl",
+        "orfl_sha256": "e1221c638b7d767d082d7617b1d5965ed3874793153f0b702cf1c3c93f0de758",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-0\\replay.json",
+        "replay_report_sha256": "88b64ea8175c0cf93142831f71dddf401a8d6a06af0d05a3490fa6bddea00290",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "e1221c638b7d767d082d7617b1d5965ed3874793153f0b702cf1c3c93f0de758",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-0\\flight.csv",
+        "csv_sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-0-exact-04pfpg68\\report.json",
+          "sha256": "23d0ee6e3c9abf6508d79bb689caf65064656822f0bba372cd7815e2a8d1c625",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-0-exact-04pfpg68\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "baseline-companion-0-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/baseline/companion-0.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-companion-0/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-companion-0/replay.json",
+            "--replay"
+          ]
+        }
+      },
+      {
+        "id": "baseline-companion-1",
+        "branch": "baseline",
+        "stream": "companion-1",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\companion-1.orfl",
+        "orfl_sha256": "ebdf6a57e5969400767cad849a1fad6fc8511b48a00971f99c68a170f5b5e748",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-1\\replay.json",
+        "replay_report_sha256": "e75478b8190c6cf0f1f7d2bdbee6ea14ace5c02296e56f27a8d4f76147c81e88",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "ebdf6a57e5969400767cad849a1fad6fc8511b48a00971f99c68a170f5b5e748",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-1\\flight.csv",
+        "csv_sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-1-exact-ad3ahrwt\\report.json",
+          "sha256": "40038d0ded3beb049086d4d8b1a565571ee155d08a12aedbd10bcd87938d2a7a",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-1-exact-ad3ahrwt\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "baseline-companion-1-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/baseline/companion-1.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-companion-1/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/baseline-companion-1/replay.json",
+            "--replay"
+          ]
+        }
+      },
+      {
+        "id": "candidate-player",
+        "branch": "candidate",
+        "stream": "player",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\player.orfl",
+        "orfl_sha256": "c386af1bbd502a0f4f9673586b8403427d807a9889bee2370cd5ec75bd26d402",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-player\\replay.json",
+        "replay_report_sha256": "cf24e928322862c06e49cd1a91408a939c6296c29701d40f56ef400dae50a637",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "c386af1bbd502a0f4f9673586b8403427d807a9889bee2370cd5ec75bd26d402",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-player\\flight.csv",
+        "csv_sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-player-exact-ocj1ek3a\\report.json",
+          "sha256": "84254a660eb2112a69690d2212fa5c68b82d32ba108cd0207cc9ac4cc43bee06",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-player-exact-ocj1ek3a\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "candidate-player-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/candidate/player.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-player/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-player/replay.json",
+            "--replay"
+          ]
+        }
+      },
+      {
+        "id": "candidate-companion-0",
+        "branch": "candidate",
+        "stream": "companion-0",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\companion-0.orfl",
+        "orfl_sha256": "2acaae785aa9375507975660ce31f16003935dff347b6b118bffd75186983f62",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-0\\replay.json",
+        "replay_report_sha256": "876faa6853eec383c908342ced296363a8726154a21a5ea0a312fb31c300f932",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "2acaae785aa9375507975660ce31f16003935dff347b6b118bffd75186983f62",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-0\\flight.csv",
+        "csv_sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-0-exact-iq84szqg\\report.json",
+          "sha256": "fea084466be68ca029d6bd3c80d06ca38dfc2914729623b0a41a3c50de68cf20",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-0-exact-iq84szqg\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "candidate-companion-0-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/candidate/companion-0.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-companion-0/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-companion-0/replay.json",
+            "--replay"
+          ]
+        }
+      },
+      {
+        "id": "candidate-companion-1",
+        "branch": "candidate",
+        "stream": "companion-1",
+        "orfl_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\companion-1.orfl",
+        "orfl_sha256": "72d85db3869b22a80016bf4c1fd48ceff451c2831fc0aaa5cebe753fabcdca44",
+        "replay_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-1\\replay.json",
+        "replay_report_sha256": "2c0f936afb6178ef4650534d7fab295992977e25961b297f311d50047a539437",
+        "status": "ok",
+        "mode": "exact",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "source_sha256": "72d85db3869b22a80016bf4c1fd48ceff451c2831fc0aaa5cebe753fabcdca44",
+        "source_hash_matches_orfl": true,
+        "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-1\\flight.csv",
+        "csv_sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6",
+        "csv_data_rows": 481,
+        "runner": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-1-exact-3nlhnb0k\\report.json",
+          "sha256": "57e9d7e9479801695f546aac1f9d1c1667e63cad5762fe380600d08ccff25eed",
+          "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-1-exact-3nlhnb0k\\engine.log",
+          "log_sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c",
+          "label": "candidate-companion-1-exact",
+          "ok": true,
+          "complete": true,
+          "exit_code": 0,
+          "reason": "passed",
+          "errors": 0,
+          "warnings": 0,
+          "warnings_as_errors": true,
+          "command": [
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+            "--audio-driver",
+            "Dummy",
+            "--script",
+            "res://tools/flight_log_cli.gd",
+            "--",
+            "--log=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/candidate/companion-1.orfl",
+            "--csv=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-companion-1/flight.csv",
+            "--report=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/all-stream-exact-replay-1/candidate-companion-1/replay.json",
+            "--replay"
+          ]
+        }
+      }
+    ],
+    "paired_csv_comparisons": [
+      {
+        "stream": "player",
+        "comparison_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\player.csv-differential.json",
+        "comparison_report_sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+        "status": "ok",
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "first_divergence": null,
+        "baseline_csv_sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48",
+        "candidate_csv_sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48",
+        "byte_identical_csv": true,
+        "maximum_absolute_difference": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        },
+        "rmse": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        }
+      },
+      {
+        "stream": "companion-0",
+        "comparison_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\companion-0.csv-differential.json",
+        "comparison_report_sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+        "status": "ok",
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "first_divergence": null,
+        "baseline_csv_sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853",
+        "candidate_csv_sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853",
+        "byte_identical_csv": true,
+        "maximum_absolute_difference": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        },
+        "rmse": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        }
+      },
+      {
+        "stream": "companion-1",
+        "comparison_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\companion-1.csv-differential.json",
+        "comparison_report_sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c",
+        "status": "ok",
+        "rows": 481,
+        "first_tick": 0,
+        "final_tick": 480,
+        "first_divergence": null,
+        "baseline_csv_sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6",
+        "candidate_csv_sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6",
+        "byte_identical_csv": true,
+        "maximum_absolute_difference": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        },
+        "rmse": {
+          "position_m": 0.0,
+          "velocity_mps": 0.0,
+          "attitude_quaternion_angle_rad": 0.0,
+          "angular_rate_radps": 0.0
+        }
+      }
+    ]
+  },
+  "attempt_history": [
+    {
+      "attempt": 1,
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\flight-equivalence.json",
+      "report_sha256": "1b8ce7d929e1eca24f0f2b5c971c15f3f4fc8060b70f7332b93a5a2a03df303f",
+      "runner": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\report.json",
+        "sha256": "98469d66ee327e42fdd0cf941e5f0f5fd66d60d709e1e3e980c524e444aa8096",
+        "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\engine.log",
+        "log_sha256": "4d954a98c508e47648215550ca0d5736232355fabb2d99fbfc26107456e8e955",
+        "label": "clear-fast-path-flight",
+        "ok": false,
+        "complete": true,
+        "exit_code": 1,
+        "reason": "process_exit",
+        "errors": 0,
+        "warnings": 0,
+        "warnings_as_errors": true,
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+          "--",
+          "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-1"
+        ]
+      },
+      "checks": 23,
+      "failures": 2,
+      "accepted_ticks": 480,
+      "proof_status": "fail",
+      "disposition": "rejected failure retained",
+      "explanation": "Superseded harness defect: it read final_tick from the wrong level of the inspect result, so both complete 481-row ORFL streams were reported with final_tick=-1; the follow-on solver identity check also failed because stream inspection had been rejected."
+    },
+    {
+      "attempt": 2,
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\flight-equivalence.json",
+      "report_sha256": "3f5d31559a2d4f5c010e5d203dc58a6db48aa9abe1b1169c50f822845da0a76f",
+      "runner": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\report.json",
+        "sha256": "447de18d803b67a7597bd2758a40aa384c88ed98065ef995fabc02a8f6a18ccb",
+        "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\engine.log",
+        "log_sha256": "e5b29bd2d716a46befdd8b8a5b42f8738f8bfa2b0d4c4dd7ab39f69ded5906c3",
+        "label": "clear-fast-path-flight",
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "reason": "passed",
+        "errors": 0,
+        "warnings": 0,
+        "warnings_as_errors": true,
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+          "--",
+          "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-2"
+        ]
+      },
+      "checks": 23,
+      "failures": 0,
+      "accepted_ticks": 480,
+      "proof_status": "pass",
+      "disposition": "passing retry retained; superseded by final 24-check run",
+      "explanation": "Footer access was corrected; all 23 checks passed."
+    },
+    {
+      "attempt": 3,
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-equivalence.json",
+      "report_sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9",
+      "runner": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\report.json",
+        "sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2",
+        "log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\engine.log",
+        "log_sha256": "758da088dd6e757c52abb06e6ecd2be709c148e8105472f6010751604a5966db",
+        "label": "clear-fast-path-flight",
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "reason": "passed",
+        "errors": 0,
+        "warnings": 0,
+        "warnings_as_errors": true,
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/flight_clear_equivalence.gd",
+          "--",
+          "--evidence=D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3"
+        ]
+      },
+      "checks": 24,
+      "failures": 0,
+      "accepted_ticks": 480,
+      "proof_status": "pass",
+      "disposition": "canonical passing run",
+      "explanation": "Final run passed all 24 checks, including the completed source identity recheck."
+    }
+  ],
+  "raw_artifacts_root": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path",
+  "raw_artifact_count": 74,
+  "raw_artifacts": [
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-0\\flight.csv",
+      "bytes": 432171,
+      "sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-0\\replay.json",
+      "bytes": 6593,
+      "sha256": "88b64ea8175c0cf93142831f71dddf401a8d6a06af0d05a3490fa6bddea00290"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-1\\flight.csv",
+      "bytes": 433863,
+      "sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-companion-1\\replay.json",
+      "bytes": 6594,
+      "sha256": "e75478b8190c6cf0f1f7d2bdbee6ea14ace5c02296e56f27a8d4f76147c81e88"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-player\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\baseline-player\\replay.json",
+      "bytes": 6549,
+      "sha256": "0797c39e0b9bd485bd332d57c29b1f4272a75854556a5f0d5eeeb1019963b033"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-0\\flight.csv",
+      "bytes": 432171,
+      "sha256": "cd5ea96a7edc89b6dcc65a20a39d1696d82a2de034d159a385c91dacc6e57853"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-0\\replay.json",
+      "bytes": 6595,
+      "sha256": "876faa6853eec383c908342ced296363a8726154a21a5ea0a312fb31c300f932"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-1\\flight.csv",
+      "bytes": 433863,
+      "sha256": "badf2c5e369072ba2e6290eeddd6a4d710a45a938898f126bec65587ee4c74f6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-companion-1\\replay.json",
+      "bytes": 6596,
+      "sha256": "2c0f936afb6178ef4650534d7fab295992977e25961b297f311d50047a539437"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-player\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\candidate-player\\replay.json",
+      "bytes": 6551,
+      "sha256": "cf24e928322862c06e49cd1a91408a939c6296c29701d40f56ef400dae50a637"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\companion-0.csv-differential.json",
+      "bytes": 1437,
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\companion-1.csv-differential.json",
+      "bytes": 1437,
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\comparisons\\player.csv-differential.json",
+      "bytes": 1437,
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-0-exact-04pfpg68\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-0-exact-04pfpg68\\report.json",
+      "bytes": 1813,
+      "sha256": "23d0ee6e3c9abf6508d79bb689caf65064656822f0bba372cd7815e2a8d1c625"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-1-exact-ad3ahrwt\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-companion-1-exact-ad3ahrwt\\report.json",
+      "bytes": 1812,
+      "sha256": "40038d0ded3beb049086d4d8b1a565571ee155d08a12aedbd10bcd87938d2a7a"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-player-exact-hpyy79ao\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\baseline-player-exact-hpyy79ao\\report.json",
+      "bytes": 1783,
+      "sha256": "a400d2c82f2b8547618827893956a5bf5e44df06351d4ec868b5a0d4f67cfa2b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-0-exact-iq84szqg\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-0-exact-iq84szqg\\report.json",
+      "bytes": 1819,
+      "sha256": "fea084466be68ca029d6bd3c80d06ca38dfc2914729623b0a41a3c50de68cf20"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-1-exact-3nlhnb0k\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-companion-1-exact-3nlhnb0k\\report.json",
+      "bytes": 1819,
+      "sha256": "57e9d7e9479801695f546aac1f9d1c1667e63cad5762fe380600d08ccff25eed"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-player-exact-ocj1ek3a\\engine.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\all-stream-exact-replay-1\\runner-checks\\candidate-player-exact-ocj1ek3a\\report.json",
+      "bytes": 1789,
+      "sha256": "84254a660eb2112a69690d2212fa5c68b82d32ba108cd0207cc9ac4cc43bee06"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-1\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-1\\godot.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-1\\replay.json",
+      "bytes": 6556,
+      "sha256": "6ddb9345b89809b582a23c29fe6b3a260189a3eb7b68a1c1cd48f1dc526b996b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-3\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-3\\godot.log",
+      "bytes": 207,
+      "sha256": "d0703af4b5b6923139bcca991b0debb3d443aaab8435427b6fe46c5e65dae66c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\baseline-exact-replay-3\\replay.json",
+      "bytes": 6556,
+      "sha256": "ed0850a49752a45bc7d56e70357933590302618913b394b2971311eb0a4b26a9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-1\\export.json",
+      "bytes": 6283,
+      "sha256": "175863e758cc5b58648a6dce3d6eb407d5e0c388d82b499e244e7c96096a3895"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-1\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-1\\godot.log",
+      "bytes": 114,
+      "sha256": "29ba05d78c8e4ec59ad84cee21d4d47dbc26a6e25205d1157f1331b8faaed7fd"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-3\\export.json",
+      "bytes": 6283,
+      "sha256": "02e8eb9d1fe3f8fa74f3c80f9904cb6553b7e107942b20eca94f643060fe7cea"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-3\\flight.csv",
+      "bytes": 369625,
+      "sha256": "736f552f51bc8243510002dcfe7cf0e29c8466da1d7fd92d505c5c415fcdef48"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\candidate-export-3\\godot.log",
+      "bytes": 114,
+      "sha256": "29ba05d78c8e4ec59ad84cee21d4d47dbc26a6e25205d1157f1331b8faaed7fd"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\checks\\differential-31m1_5m0\\engine.log",
+      "bytes": 135,
+      "sha256": "94fdb9c1fd1e4e51f1464e4acc49a59528e6dca63f2756924a4a2e671714f391"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\checks\\differential-31m1_5m0\\report.json",
+      "bytes": 1322,
+      "sha256": "9840646a9350c5bb6ad3fa9efd876005d9f7ec2ba162965d45b4023bac501c09"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\differential-1.json",
+      "bytes": 560,
+      "sha256": "eadb1688def3c0caa406bf80ba989a731e84043a31e7154bb3c4ddd78330c4ef"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\baseline\\companion-0.orfl",
+      "bytes": 5193292,
+      "sha256": "8ab301062667dddf0f3dc186dd20b926312491f799b51a857183014bfa78163e"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\baseline\\companion-1.orfl",
+      "bytes": 5193292,
+      "sha256": "0d02db4cb29580cfaa124db08bc113974c2a835912a21fae064b09d88023e6b7"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\baseline\\player.orfl",
+      "bytes": 5193252,
+      "sha256": "0099a387f49d7c01f2c9b0760eab1f24495a6d808898e434b1f9edd57055fd92"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\candidate\\companion-0.orfl",
+      "bytes": 5193300,
+      "sha256": "af138a1a49c43a68bfa287a694e24f24da7b3b3b0c722a7a2a3902a5ccf14ffc"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\candidate\\companion-1.orfl",
+      "bytes": 5193300,
+      "sha256": "4afc63a8a5f780137543f5493fb2b91f581074ad7afed790bff9f61ee3bbf232"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\candidate\\player.orfl",
+      "bytes": 5193260,
+      "sha256": "7d1743d6f282b113ed9c399ed4fd7938b2a72bdb9aad8b69b4e6af1c50673aad"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\flight-equivalence.json",
+      "bytes": 51631,
+      "sha256": "1b8ce7d929e1eca24f0f2b5c971c15f3f4fc8060b70f7332b93a5a2a03df303f"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-1\\flight-input-tape.json",
+      "bytes": 35282,
+      "sha256": "6ccdebbdfafa29cd11ae22b81311e55c825226321e4c1cd305ad269eb73af7ed"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\baseline\\companion-0.orfl",
+      "bytes": 5193292,
+      "sha256": "2dac026e783bf8daf3ee12d3e1d797b47d1d1483ec0b3c26306936142a0bdf44"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\baseline\\companion-1.orfl",
+      "bytes": 5193292,
+      "sha256": "db023c46c17dc5a23c605308c64e8916f4e3ff1a0b3dfe4e2af2ec72c97bff47"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\baseline\\player.orfl",
+      "bytes": 5193252,
+      "sha256": "a04c17f1212d9382a76303a1adb76f8c7bab31297cca2eddaf213018acead2d2"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\candidate\\companion-0.orfl",
+      "bytes": 5193300,
+      "sha256": "647ccb659f3790d74d95e4f06f2aba95a08e13036532a5088fbbe1369077c71f"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\candidate\\companion-1.orfl",
+      "bytes": 5193300,
+      "sha256": "230d328167920318ec58cf923232a5be334216e6ceea540ef273c9fe6e9a7794"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\candidate\\player.orfl",
+      "bytes": 5193260,
+      "sha256": "e7fc2f23e9a46faf5ca41d537fd6809d871c21360b6b9f08289fbe69ce33f93a"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\flight-equivalence.json",
+      "bytes": 54196,
+      "sha256": "3f5d31559a2d4f5c010e5d203dc58a6db48aa9abe1b1169c50f822845da0a76f"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\flight-input-tape.json",
+      "bytes": 35282,
+      "sha256": "6ccdebbdfafa29cd11ae22b81311e55c825226321e4c1cd305ad269eb73af7ed"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-2\\player-replay-vs-candidate.csv-differential.json",
+      "bytes": 1437,
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\companion-0.orfl",
+      "bytes": 5193292,
+      "sha256": "e1221c638b7d767d082d7617b1d5965ed3874793153f0b702cf1c3c93f0de758"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\companion-1.orfl",
+      "bytes": 5193292,
+      "sha256": "ebdf6a57e5969400767cad849a1fad6fc8511b48a00971f99c68a170f5b5e748"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\baseline\\player.orfl",
+      "bytes": 5193252,
+      "sha256": "b33123dca28d3a26f7820d27c80fff7d0cad38d51d853cc9cc13d9967efd15fe"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\companion-0.orfl",
+      "bytes": 5193300,
+      "sha256": "2acaae785aa9375507975660ce31f16003935dff347b6b118bffd75186983f62"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\companion-1.orfl",
+      "bytes": 5193300,
+      "sha256": "72d85db3869b22a80016bf4c1fd48ceff451c2831fc0aaa5cebe753fabcdca44"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\candidate\\player.orfl",
+      "bytes": 5193260,
+      "sha256": "c386af1bbd502a0f4f9673586b8403427d807a9889bee2370cd5ec75bd26d402"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-equivalence.json",
+      "bytes": 54293,
+      "sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\flight-input-tape.json",
+      "bytes": 35282,
+      "sha256": "6ccdebbdfafa29cd11ae22b81311e55c825226321e4c1cd305ad269eb73af7ed"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\flight-equivalence-3\\player-replay-vs-candidate.csv-differential.json",
+      "bytes": 1437,
+      "sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\engine.log",
+      "bytes": 2751,
+      "sha256": "4d954a98c508e47648215550ca0d5736232355fabb2d99fbfc26107456e8e955"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-1\\clear-fast-path-flight-gpgasitj\\report.json",
+      "bytes": 1529,
+      "sha256": "98469d66ee327e42fdd0cf941e5f0f5fd66d60d709e1e3e980c524e444aa8096"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\engine.log",
+      "bytes": 2376,
+      "sha256": "e5b29bd2d716a46befdd8b8a5b42f8738f8bfa2b0d4c4dd7ab39f69ded5906c3"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-2\\clear-fast-path-flight-j0w1a934\\report.json",
+      "bytes": 1522,
+      "sha256": "447de18d803b67a7597bd2758a40aa384c88ed98065ef995fabc02a8f6a18ccb"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\engine.log",
+      "bytes": 2376,
+      "sha256": "758da088dd6e757c52abb06e6ecd2be709c148e8105472f6010751604a5966db"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\clear-fast-path\\runner-flight-3\\clear-fast-path-flight-zjoqkbrj\\report.json",
+      "bytes": 1522,
+      "sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2"
+    }
+  ],
+  "audit": {
+    "score_purity": "The production _score_bank implementation reads its inputs and planning wind, returns a local score, and does not write controller state. The clear return preserves production output/diagnostics while skipping the eleven alternate-bank score calls.",
+    "subclass_limit": "A subclass overriding _score_bank with observable side effects would see fewer calls; the equivalence claim covers the concrete production controller plus test-only call counting.",
+    "limits": [
+      "One calm-default Club world, one two-agent roster, one scripted player input tape, and 480 ticks (2 seconds).",
+      "Software simulation equivalence only; no actual RC aircraft flight validation.",
+      "No wall-clock or CPU timing was collected; score-call reduction is not a measured speedup.",
+      "Candidate remained a research-only fixture override; no accepted profile or production application was changed.",
+      "The run does not qualify long-duration behavior, broader aircraft/weather regimes, or dynamic traffic avoidance."
+    ],
+    "retained_aircraft_warning": "Six identical aircraft-data warning lines report Jyy=0.3692 kg m2 is 2.02x the scaled UltraStick25e value. The checked runner found zero Godot ERROR/WARNING diagnostics on all exact replays."
+  }
+}

@@ -68,10 +68,15 @@ each count 0–3, run the following through `tools/godot/run_checked.py`, requir
 python research/ai-companions/native_performance_report.py --frames <output>/frames.json --fixture <output>/fixture.json --count <count> --out <output>/assessment.json
 ```
 
-The reducer checks complete Windows/backend/resolution metadata, warmup/sample
+The current reducer checks complete Windows/backend/resolution metadata, warmup/sample
 length, advancing common ticks, 240 Hz, expected population, active endpoints and
-clock pacing before reporting a render pass. Its six unit cases cover frozen,
-slow/reset clocks, damaged/stopped/desynchronized fleets and malformed/short cases.
+clock pacing before reporting a render pass. A follow-up also recomputes nearest-rank
+percentiles from raw wall durations and cross-checks timestamps and sample endpoints.
+Its ten unit cases cover frozen/slow/reset clocks, damaged/stopped/desynchronized
+fleets, malformed/nonfinite input, insufficient warmup and forged timing summaries.
+[Raw-sample reassessment](raw-sample-reassessment.json) preserves the original four
+verdicts and exact percentile values. The original reducer is retained under
+[sources](sources/native_performance_report.py); original assessments remain unchanged.
 
 Earlier device-driven attempts crashed the player before sampling; the first
 neutral-input smoke lost focus at tick 12 and paused. They are rejected, despite
