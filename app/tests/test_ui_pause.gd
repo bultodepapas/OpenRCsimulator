@@ -88,7 +88,12 @@ func _run() -> void:
 	await _wait(0.5)
 	_check("simulation frozen (tick %d)" % tick, session.sim.tick == tick)
 	_check("propeller frozen", main._prop_angle == prop)
-	_check("engine sound paused and silent (%.1f dB)" % _peak_db(), main._engine_audio.stream_paused and _peak_db() <= -150.0)
+	var soundscape: Node = main._soundscape_audio.soundscape
+	var glow_player: AudioStreamPlayer3D = soundscape.glow_player
+	_check("engine sound paused and silent (%.1f dB)" % _peak_db(),
+		soundscape.gain <= 0.000001 and (glow_player == null or glow_player.stream_paused)
+		and _peak_db() <= -150.0,
+		"gain=%.6f glow_paused=%s" % [soundscape.gain, glow_player == null or glow_player.stream_paused])
 	var commands: Dictionary = session.commands.duplicate()
 	await ui.tap(KEY_DOWN)
 	_check("Down navigates the menu -> Restart", ui.focus_name() == "Restart", ui.focus_name())
@@ -112,7 +117,8 @@ func _run() -> void:
 	await ui.tap(KEY_ESCAPE)
 	_check("Esc again: back to the flight", app.pause_menu == null and session.holds.is_empty() and not session.sim.paused)
 	await _wait(0.4)
-	_check("flying again: ticks, sound", session.sim.tick > tick and not main._engine_audio.stream_paused and _peak_db() > -100.0,
+	_check("flying again: ticks, sound", session.sim.tick > tick and soundscape.gain > 0.0
+		and (glow_player == null or not glow_player.stream_paused) and _peak_db() > -100.0,
 		"%.1f dB" % _peak_db())
 
 	# --- Keys held while the menu closes stay masked until released.
