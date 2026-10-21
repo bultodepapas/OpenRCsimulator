@@ -1,6 +1,6 @@
 # EX-14: Extra 300S realism pass against the weighed build and owner reports
 
-2026-10-20/21 · EX-14a/c/d/e/f, with shared steps NITRO-61FX-R1 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
+2026-10-20/21 · EX-14a/c/d/e/f/g, with shared steps NITRO-61FX-R1/R2 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
 
 Goal: make the GPMA0236 Extra 300S .60 fly like the real RC model. The targets come from the only magazine flight report of this kit, from five named owners on its build thread, and from comparable 60-size Extras. Each change below is a mechanism with its own source. None is a gain tuned to pass a maneuver. Software verification here does not establish physical validation (EX-09).
 
@@ -49,6 +49,7 @@ No source gives a measured speed, roll rate, knife-edge mix or spin rate for a 6
 | D10-R3 / EX-14d | Opt-in `aero.surfaces.body_cy_beta` and `body_crossflow_area`: the fuselage side force in the local law at the ARP. It is Allen–Perkins in form: a slender-body term ½ρ·S·CYβ_B·u·v plus crossflow drag −½ρ·η·c_d·S_side·√(v²+w²)·v, not faded. With `body_cy_beta` the loader requires the oracle's `CYb` = fin + body. Extra values: CYβ_B −0.124/rad (its DATCOM body term; Letko × K_i gives −0.116), η 0.65, c_d 1.4, S_side 0.172 m² | Shared: `aero.gd`, `aircraft_data.gd`, v1/v2 schema, contract, [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md); Extra generator; `test_body_side_force.gd` |
 | EX-14e | Ground effect (shared M5-GE-1 law) with constants fitted to an image-method VLM of the Extra's wing and tail. The VLM reuses the P-51 P51-20 solver unchanged: induced c 17.2, e 1.21 (rms 0.006); tail c 19.2, e 1.33 (rms 0.013). The low wing sits at x 0.133 on its wheels | `research/extra-300/ex14/ground_effect_vlm.py` → `vlm_ground_effect.json`; Extra generator; CI check |
 | [EX-14f](#ex-14f--propeller-section-camber) | Optional cambered-section zero-lift angle in the Glow propeller surrogate, fitted to measured APC Sport 11×6 data and adopted by the Extra's installation | NITRO: `glow/propeller.gd`, `glow/installation.gd`, installation schema, Python mirrors, `fit_section.py`, `build_installations.py`; `test_glow_propeller_camber.gd` |
+| [EX-14g](#ex-14g--installed-engine) | The Extra's installation uses the muffler-installed MAX-61FX (NITRO-61FX-R2, Gierke-anchored back-pressure law) with the carburettor sized on the bare engine | NITRO: `build_profiles.py` (`INSTALLED`), `os_max_61fx_installed_candidate.json`, `build_installations.py`, `installation_schema.py`; tests: `test_profiles.py` and the binding pins |
 
 Regenerated through their pipelines:
 - Workshop descriptor;
@@ -77,6 +78,10 @@ Regenerated through their pipelines:
   - `test_trim_integrity`: fixed by the trim-solver repair below.
   - `test_workshop_integration` ("frozen cosmetics and a single smoke budget", default Stik) fails identically with every EX-14f app file and the trim repair reverted on a disposable copy, so it is not caused by this work. It passed in the 2026-10-20 sweep and follows the upstream smoke checkpoint `e04b2e6d`; its owner should look.
   - Everything else passes.
+- **After EX-14g (2026-10-21).**
+  - 18 glow and Extra programs pass (glow profiles, installation 362 checks, oracle, prepared, stage reuse, session, trace, dive support, trim integrity 731, fuel properties incl. the new profile).
+  - 30 fleet-wide programs that fly or load the Extra pass (half-power start, trim throttle, pilot trim, runway fleet, natural random flight, wind, turbulence, atmosphere, crash, golden, modes, checkpoint, trace metadata, UI runway/aircraft, Workshop, contract).
+  - Every generator `--check` passes, and the glow Python suites (`test_profiles.py`, `test_build_installations.py`, `test_installation_schema.py`, `test_installation_line_endings.py`, `test_cycle_oracle.py`, …) are green.
 - **Cost.** `bench_physics.gd` on the shared VM, best of 3 × 2,400 ticks. The VM is about 6× slower than the owner's workstation, which measured 390–455 µs in EX-06.
   - Before: 2,510–2,733 µs/tick. After: 3,340–3,445 µs/tick (+25–35 %).
   - Removing only the slipstream gives 2,771, so the mass, side force and ground effect cost is within noise. The single-centroid swirl would save about half of the wash cost, but P51-26 measured it off by up to ×2.15, so the segmented quadrature stays.
@@ -171,7 +176,16 @@ So at speed the engine had to over-rev to make any thrust: level Vmax at 18,283 
 - The Extra's 12×6 takes it by c/D transfer: chord 15.5 mm, α₀ −0.102 rad.
 - Cross-check against APC's own 12×6 Sport file, corrected by APC's measured bias on the 11×6/11×7 ([sources](propeller-sources.json)): Ct within ±5 % at J 0.4–0.6, static Ct 11 % low, Cp 6–13 % high.
 
-**Engine side: A / B / C on the same tests.** Production is now B (the owner committed it as `0f71655a`). C uses an evidence-only installed-engine hypothesis. Its indicated-efficiency factor puts brake torque on Gierke's 0.679 N·m at 13,000 rpm and near Glassock's 11,000 rpm point, falling past the peak (0.59 at 16,000 rpm). C is not in the repository.
+**Independent corroboration: phugoid damping.** The battery's linear modes hold rpm fixed, so they see only the prop's thrust–speed slope. With the symmetric section that slope was steep (thrust collapsing toward J 0.5), and the cambered section lowers the phugoid damping at every speed:
+
+| Speed | A (symmetric) | B and D (cambered) |
+| --- | --- | --- |
+| 1.3 Vs | 0.211 | 0.135 |
+| Start speed | 0.451 | 0.292 |
+
+The classical estimate 1/(√2·L/D) gives 0.06–0.10 for these glide ratios. The 2026-10-20 [trim-practice comparison](../../flight-dynamics/power-climb-2026-10-19/trim-practice-comparison.md) attributes the fleet's higher damping to propeller thrust falling with speed. The fit did not target the phugoid, so the move toward the estimate is a side effect, not a calibration.
+
+**Engine side: A / B / C on the same tests.** B was production from `0f71655a` until [EX-14g](#ex-14g--installed-engine) adopted C's design as D. C uses an evidence-only installed-engine hypothesis. Its indicated-efficiency factor puts brake torque on Gierke's 0.679 N·m at 13,000 rpm and near Glassock's 11,000 rpm point, falling past the peak (0.59 at 16,000 rpm). C is not in the repository.
 
 | | A: symmetric prop, catalog engine (EX-14) | **B: cambered prop, catalog engine (production)** | C: cambered prop, installed hypothesis | Anchor |
 | --- | --- | --- | --- | --- |
@@ -211,25 +225,48 @@ The repair moves those four lines inside the branch. Evidence:
 - `test_trim_integrity` passes 731 checks, against one failure without the repair. Its new invariant check ("a refusal reports its own iterate's residual") passes on both trees; it guards the logic defect but did not catch it here.
 - `test_pilot_trim` (118), `test_trim_throttle` (45), `test_half_power_start` (62), `test_trim_density` (35) and `test_glow_equilibrium` (196) pass.
 
+## EX-14g — installed engine
+
+The owner delegated the C decision ("continue like a senior developer expert"). The Extra's installation now pairs the EX-14f cambered prop with the muffler-installed MAX-61FX of [NITRO-61FX-R2](../../glow-engines/NITRO-61FX/README.md#2026-10-21--muffler-installed-variant-nitro-61fx-r2): the bare candidate's delivery × (1 − k·(rpm/13,000)²), with k = 0.209 solved from Gierke's 1.24 hp at 13,000 rpm. The carburettor stays sized on the bare engine. The Stik keeps the bare candidate.
+
+Targets fixed before flying, and results (full card on a frozen copy, 40/40 valid; [B vs D summary](ft/summary-extra-d.md), profile `ft/production-d`):
+
+| Target | Result | Verdict |
+| --- | --- | --- |
+| Static rpm on the 12×6 within 10,400 (Pitts) – 11,500 (stock) | 10,288 rpm, 32.1 N (T/W 0.86 full tank) | 1 % below the band; the prototype ran the restrictive Pitts, and the transferred fit over-absorbs 6–13 % |
+| Level Vmax 38–43 m/s at 12,000–14,500 rpm | **41.2 m/s at 13,662 rpm** | met |
+| No hover at half throttle | half-stick static 21.1 N (T/W 0.56) | met |
+| Mixed-throttle endurance ≥ 10 min on 355 ml (O.S.: 12–13 min on 350 cc) | 75 %: 13.1 min, 50 %: 18.7, full: 11.2 (B: 10.6 / 14.9 / 8.9) | met; slightly long, because the part-throttle derate is overstated |
+| Knife-edge no worse than B beyond noise | −13.6 m/s sink at full rudder and power (B −5.9, A −8.4) | **not met** |
+
+Other changes from B to D:
+- Best climb 12.3 → 9.2 m/s.
+- Takeoff roll 18 → 22 m. The rudder-free swing is still left (−13.2°).
+- Loop height 56 → 49 m; the Immelmann's speed over the top falls from 2.48 to 1.94 Vs.
+- Power-on stall 9.6 → 10.0 m/s.
+- The taxi tail still lifts at ⅓ throttle (4.0 s, 7.7 m/s).
+- The hammerhead to the right still pivots in 1.65 s within 1.9 spans.
+
+**The knife-edge miss is real.** In this model knife-edge leans on thrust·sinβ and the wash on the rudder, and B's better figure rode on catalog power the installed engine does not have. The sources agree on direction but not size. RCM's .61FX review asks for more rudder, and the owners who held altitude ran Saito 100–1.20 four-strokes. So a .61FX Extra that cannot hold knife-edge on the stock rudder is the reported behaviour, but no source gives the sink rate. Remaining physics are finding 3: the fuselage yaw split, gear and pant side area, and belly pitch.
+
 ## Open findings (ranked)
 
-1. **The engine is stronger than an installed .61FX.** This is NITRO's decision ([EX-14f](#ex-14f--propeller-section-camber)).
-   - The camber fix removed the impossible 18,000 rpm level flight and the half-throttle hover.
-   - It also exposed the catalog-power profile: with a realistic prop, level Vmax rises to 47 m/s. The only installed measurements are Gierke (secondhand: 1.24 hp at 13,000 rpm with the stock muffler) and Glassock (710 W at 11,000 rpm on a rig). Both point to about 75–80 % of the profile's torque in the 11,000–13,000 rpm band.
-   - The prototype's Pitts-style muffler is more restrictive still, but no source quantifies it.
-   - Needed: a tach and thrust reading of the airplane's own 61FX on the 12×6, static and on a full-throttle level pass, with the muffler noted.
+1. **Installed engine power rests on a secondhand dyno figure.** EX-14g adopts it, with one Glassock rig check.
+   - The back pressure is a wide-open function of rpm, so the part-throttle derate and endurance are slightly overstated.
+   - The Pitts muffler's own loss is not quantified.
+   - Needed: a tach and thrust reading of the airplane's own 61FX on the 12×6, static and on a full-throttle level pass, with the muffler noted. One reading would replace k and confirm the prop fit.
 2. **The stall drops a wing; the real airplane mushes.**
    - The battery's power-off stall banks 78° in the first second, and a held stall enters a spin.
    - Owners: "very very mild … mushes forward", with reluctant spin entries.
    - This is the shared post-stall polar ([D8b-R2](../../flight-robustness/D8b-R2/analog/)), awaiting that owner's decision. The Extra's symmetric, untwisted taper-0.5 wing gets the legacy table.
 3. **Knife-edge is close but not sustained.**
-   - With full rudder the model holds β ≈ τ·δr ≈ 21°. At full power it sinks 5–10 m/s at 40 m/s; owners hold altitude only at full rudder and power.
+   - With full rudder the model holds β ≈ τ·δr ≈ 21°. With the installed engine (EX-14g) it sinks 13.6 m/s at full rudder and power (5.9 with catalog power); owners hold altitude only at full rudder and power, and RCM asks for more rudder on the .61FX.
    - Missing pieces:
      - the fuselage yaw moment (the slender-body part acts forward and is destabilizing, the crossflow part 0.2 m aft and is stabilizing; they roughly cancel near 25°);
      - gear, wheel-pant and canopy side area;
      - knife-edge pitch toward the belly, which owners mix out with 3–6 % up.
 4. **Left hammerhead torque roll and snap rolls.**
-   - Left hammerheads torque-roll at the top.
+   - Left hammerheads lose the pivot at the top: 119–135° of roll and 134° of pitch rotation in the probe. Missing wing swirl does not explain it: on this low wing the wake covers only 1.8 cm of exposed root per side near static (about 140 cm², against about 500 cm² per stab half). The pitch points to gyroscopic precession of the clockwise prop turning the left yaw rate into pitch, with little elevator authority near zero airspeed. Real hammerheads are asymmetric for the same reason, and pilots compensate with timing and elevator, so the probe's simple pilot is part of the result.
    - Snaps still stop short (FT-05: 37° and 108°); owners call them crisp. This is the post-stall separation dynamics, D8b-R2d-v3.
 5. **Ground and landing remain unmeasured.** Rolling resistance, tyre and spring values are borrowed, and no measured flare exists.
 
