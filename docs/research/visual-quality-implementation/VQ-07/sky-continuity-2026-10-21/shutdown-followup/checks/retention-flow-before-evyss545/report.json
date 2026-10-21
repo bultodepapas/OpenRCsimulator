@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3613e196-c281-4fc0-8a39-c63d4d79f6db",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:/OpenRCsimulator-scratch/high-shutdown-20261021/retention.gd",
+    "--",
+    "--date=2026-09-26",
+    "--time=18:00",
+    "--time_scale=20"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:57:11.490088+00:00",
+  "label": "retention-flow-before",
+  "log": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\retention-flow-before-evyss545\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\retention-flow-before-evyss545\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "environment retained after clearing flow: false"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.36,
+  "log_bytes": 1304,
+  "log_sha256": "ec7277a51abc5bf2a82f030278f02d485b1f5c468662b49519f2c32716535f9e"
+}

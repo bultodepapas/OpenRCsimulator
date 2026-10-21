@@ -1,0 +1,265 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "95f8f2aa-5cf7-43d0-95fe-0f56fee6ef3f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--verbose",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd",
+    "--",
+    "camera"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:53:25.728223+00:00",
+  "label": "camera-native",
+  "log": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\camera-native-_agv3qz1\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\camera-native-_agv3qz1\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "shutdown probe: camera"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 61
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 6,
+      "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+      "context": [
+        "\twindows_read_data_files_in_registry: Registry lookup failed to get layer manifest files.",
+        "\tObjects - 1",
+        "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 2136180089392"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 442,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 449,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 498,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 505,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 515,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 522,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 532,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 546,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 553,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 563,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 570,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 583,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 590,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 626,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 633,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 640,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 647,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 654,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 661,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (D:/OpenRCsimulator-scratch/high-shutdown-20261021/probe.gd:7)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 14.578,
+  "log_bytes": 250050,
+  "log_sha256": "ccd2eee3f0a6119ac6cd9d8c265e05eaa262d748a515e4f3db332de5d66ed0c4"
+}

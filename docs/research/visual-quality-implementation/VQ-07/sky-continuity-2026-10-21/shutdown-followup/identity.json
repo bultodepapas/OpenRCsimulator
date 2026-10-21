@@ -1,0 +1,25 @@
+{
+  "base_commit_at_start": "6943058dd0e059395e325480573e475e1087ffd6",
+  "head_at_export": "972a0702427a88e1968f1f2c35dd26dc2ef5b596",
+  "prior_candidate_identity": "../source-build-identity.json",
+  "source_sha256": {
+    "app/render/world/world.gd": "73d0a7b28f0d3ec9d85eef5a38607a5d9caa8b8a7deea7dbf73a63955954dbfd",
+    "app/tests/test_world_presentation_context.gd": "d8643ff4b23841ce3e979c741f3cd1b571d744a17d9cf93e1b3a2fd776ff7c7c"
+  },
+  "binaries": {
+    "OpenRC Simulator.exe": {
+      "path": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\release\\OpenRC Simulator.exe",
+      "bytes": 444982832,
+      "sha256": "5fddd30623255d68d4d20c323a2674caad2849b071da6acec6a100a7f4afddb3"
+    },
+    "openrc_ground_vehicle.dll": {
+      "path": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\release\\openrc_ground_vehicle.dll",
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "notes": [
+    "Earlier continuity work was committed externally during this follow-up; no commit or staging by this run.",
+    "Manual unsigned Windows package; focused lifecycle verification, no performance qualification."
+  ]
+}

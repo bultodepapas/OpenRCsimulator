@@ -88,6 +88,22 @@ static var _live := {}
 const PRESENTATION_CONTEXT_FORMAT := "openrc-world-presentation v1"
 
 
+## A detached world can be restored by Workshop; only destruction releases its active flow cache.
+## Keep this on the environment owner so every World.build caller has the same lifetime contract.
+class OwnedWorldEnvironment extends WorldEnvironment:
+	var release_flow: Callable
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and release_flow.is_valid():
+			release_flow.call()
+
+
+static func _release_flow_environment(environment_id: int) -> void:
+	var active_environment: Environment = _flow.get("environment")
+	if active_environment != null and active_environment.get_instance_id() == environment_id:
+		_flow = {}
+
+
 ## Captures the one active world's mutable presentation state before a temporary world is built.
 ## Object pointers are weak references so a context never keeps a discarded candidate scene alive.
 static func presentation_context() -> Dictionary:
@@ -278,8 +294,10 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	_adapt_clock = -1.0 # the first update() with a view target snaps the adaptation
 	if not Atmosphere.state.is_empty():
 		Exposure.set_value(Atmosphere.state.exposure)
-	var world_environment := WorldEnvironment.new()
+	var world_environment := OwnedWorldEnvironment.new()
 	var environment := Atmosphere.environment(lighting)
+	# Bind identity, not a strong resource reference or a later replacement of the owner's property.
+	world_environment.release_flow = _release_flow_environment.bind(environment.get_instance_id())
 	if flowing:
 		HighGraphics.configure_flow_sky(environment)
 	Exposure.set_value(environment.tonemap_exposure) # reset shader exposure when moving between FW and SDR snapshot worlds

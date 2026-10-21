@@ -104,3 +104,46 @@ Local unsigned trial:
 with exporter-managed `openrc_ground_vehicle.dll` beside it. Normal launch is
 Standard; use Home **Settings → Graphics → Try High (restart)**. This manual
 Windows export is separate from the tagged multi-platform release pipeline.
+
+## Shutdown follow-up, 2026-10-21
+
+**Fixed:** the static `World._flow` cache kept the Environment, sky and materials
+alive after their scene owner was destroyed. A production-flight WeakRef probe
+reported `true` after `app.free()` and `false` only after explicitly clearing
+the cache. With the fix it reports `false` immediately, without manual clearing.
+The initial regression test failed three lifetime assertions before the change.
+
+The WorldEnvironment owner now releases only its own active flow on PREDELETE.
+The callback binds the original resource's instance ID without retaining it.
+Detaching a retained world does not clear flow; destroying an older world does
+not clear a newer one. All World builders share the cleanup, including scenes
+that never entered the tree. Physics, visual formulas and quality settings are
+unchanged. Independent code review found no significant issue in the final fix.
+
+Final presentation-context coverage has 26 checks: existing restore behavior,
+detach/re-add, older-world disposal, direct/queued destruction, weak resource
+release, stale context rejection and replacement of the owner's Environment.
+Native High moon continuity still passes 33 checks; lighting edits pass 57.
+Checked receipts, probe sources and final package identity are under
+`shutdown-followup/`. The first scripted pause/camera/lifecycle probes passed
+their route arguments through `app.user_args`, but World resolves sky arguments
+from OS arguments: those probes were legacy-sky controls, not flowing-sky proof.
+The corrected retention and final native camera probes pass explicit OS sky flags.
+
+**Separate shutdown diagnosis:** a verbose native camera/flow exit retained 19
+objects, all audio streams/playbacks. The observed generator source and playback
+survive immediately after freeing the app, then both WeakRefs become null after
+0.2 s with the mixer still alive. That run exits without ObjectDB or Texture RID
+warnings. This matches the previously documented
+[asynchronous playback lifetime](../../../audio/G3b/README.md) and the
+[earlier intermittent resource-exit diagnostic](../../../audio/AUD-06/README.md).
+No audio source pin was removed and no product shutdown delay was added.
+This is evidence against a sustained leak for the observed audio pair, not an
+identification of all 21 objects in the original non-verbose failure. That exact
+failure remains unisolated; a native immediate-exit run can still warn.
+
+The updated local unsigned Windows trial is
+`D:/OpenRCsimulator-scratch/high-shutdown-20261021/release/OpenRC Simulator.exe`
+with its sibling DLL. High remains experimental. Continue with native pacing
+attribution and moving aircraft/reflection comparisons; retain verbose shutdown
+logs when the original failure recurs instead of changing unrelated owners.
