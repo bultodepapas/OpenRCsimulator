@@ -1,5 +1,7 @@
 # CR-36d electric replacement-price evidence
 
+Historical October 15–16 snapshot. [TT-22](../../timber-integration/TT-22/README.md) supersedes the propeller/spinner billing and selected price observations; the earlier amounts and integration assumptions below describe this review's original state.
+
 The Horizon Hobby US replacement-part offers cited below were observed on 2026-10-15 and 2026-10-16, in USD before tax and shipping. The canonical [price-research-fleet.json](../../../../research/crash-economics/price-research-fleet.json) preserves each offer and its observation date; the integrated row estimates and constituent offers are recorded in [aircraft-costing.json](../../../../research/crash-economics/aircraft-costing.json). These are commercial reference parts for the fictional Turbo Lumber inventory; they do not establish that the fictional aircraft contains those exact products. The physical inventory is [turbo_lumber_evolution.json](../../../../app/data/aircraft/turbo_lumber_evolution.json), SHA-256 `61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee`.
 
 ## Integrated composite row estimates

@@ -40,11 +40,17 @@ var _playing := false
 var _playhead_tick := 0
 var _playhead_seconds := 0.0
 var _play_button: Button
+var _stop_emission_button: Button
+var _fit_plume_button: Button
 var _time_label: Label
+var _rate_feedback: Label
 var _source_preview_label: Label
 var _playback_controls: Array[Control] = []
 var _preview_wind := Vector3(0.0, 0.0, 1.5)
 var _motion_mode := "stationary"
+var _emission_stopped := false
+var _emission_stop_tick := -1
+var _fit_plume := false
 var _motion_selector: OptionButton
 var _requested_id := ""
 var _requested_scale := 1.0
@@ -325,17 +331,18 @@ func _refresh_camera() -> void:
 	if right.length_squared() < 0.5:
 		right = Vector3.RIGHT
 	var up := right.cross(forward).normalized()
-	var fit_distance := _distance_for_fill(_fit_model_scale(), direction, right, up, horizontal_tangent, vertical_tangent, FIT_FILL)
+	var fit_distance := _distance_for_fill(_fit_model_scale(), direction, right, up, horizontal_tangent, vertical_tangent, FIT_FILL, _fit_plume)
 	var safe_distance := _distance_for_fill(_visible_model_scale(), direction, right, up, horizontal_tangent, vertical_tangent, SAFE_FILL)
 	var distance := maxf(safe_distance, fit_distance / _zoom)
 	_camera.position = direction * distance
 	_camera.basis = Basis.looking_at(-_camera.position, Vector3.UP)
-	_camera.far = maxf(100.0, distance + _model_bounds.size.length() * MAX_MODEL_SCALE * 4.0)
+	var plume_bounds := _plume_bounds() if _fit_plume else AABB()
+	_camera.far = maxf(100.0, distance + maxf(_model_bounds.size.length() * MAX_MODEL_SCALE * 4.0, plume_bounds.size.length() * 2.0))
 	_request_redraw()
 
 
 func _distance_for_fill(scale: float, direction: Vector3, right: Vector3, up: Vector3,
-		horizontal_tangent: float, vertical_tangent: float, fill: float) -> float:
+		horizontal_tangent: float, vertical_tangent: float, fill: float, include_plume := false) -> float:
 	var bounds_min := _model_bounds.position
 	var center := _model_bounds.get_center()
 	var distance := _model_bounds.size.length() * scale * 0.5 + _camera.near + 0.2
@@ -356,7 +363,30 @@ func _distance_for_fill(scale: float, direction: Vector3, right: Vector3, up: Ve
 				var vertical_distance := absf(point.dot(up)) / maxf(vertical_tangent * fill, 0.001)
 				distance = maxf(distance, depth_offset + horizontal_distance)
 				distance = maxf(distance, depth_offset + vertical_distance)
+	if include_plume:
+		var plume := _plume_bounds()
+		if plume.size.length_squared() > 0.000001:
+			for x_index: int in 2:
+				for y_index: int in 2:
+					for z_index: int in 2:
+						var point := plume.position + Vector3(
+							plume.size.x if x_index == 1 else 0.0,
+							plume.size.y if y_index == 1 else 0.0,
+							plume.size.z if z_index == 1 else 0.0
+						)
+						var depth_offset := point.dot(direction)
+						var horizontal_distance := absf(point.dot(right)) / maxf(horizontal_tangent * fill, 0.001)
+						var vertical_distance := absf(point.dot(up)) / maxf(vertical_tangent * fill, 0.001)
+						distance = maxf(distance, depth_offset + horizontal_distance)
+						distance = maxf(distance, depth_offset + vertical_distance)
 	return distance
+
+
+func _plume_bounds() -> AABB:
+	if not is_instance_valid(_smoke) or not _smoke.has_method("get_plume_bounds"):
+		return AABB()
+	var bounds: Variant = _smoke.call("get_plume_bounds")
+	return bounds if bounds is AABB else AABB()
 
 
 func _measure_model_bounds(root: Node3D) -> AABB:
@@ -961,8 +991,13 @@ func set_presentation(profile: Dictionary) -> void:
 func _build_playback() -> void:
 	_play_button = _make_button("Play smoke", "Play the visual smoke preview.", "PreviewPlay")
 	_play_button.pressed.connect(toggle_playback)
+	_stop_emission_button = _make_button("Stop emission", "Stop new smoke births. Existing puffs keep fading while the preview runs.", "PreviewStopEmission")
+	_stop_emission_button.pressed.connect(stop_emission)
 	var reset := _make_button("Restart smoke", "Clear puffs and restart the preview clock.", "PreviewSmokeReset")
 	reset.pressed.connect(reset_playback)
+	_fit_plume_button = _make_button("Fit plume", "Fit the complete bounded smoke plume and aircraft in the preview.", "PreviewFitPlume")
+	_fit_plume_button.toggle_mode = true
+	_fit_plume_button.toggled.connect(set_fit_plume)
 	_time_label = Label.new()
 	_time_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
 	_time_label.text = "0.0 s"
@@ -977,10 +1012,10 @@ func _build_playback() -> void:
 	_motion_selector.name = "PreviewMotion"
 	_motion_selector.add_item(tr("Stationary"))
 	_motion_selector.add_item(tr("Illustrative pass"))
-	_motion_selector.tooltip_text = tr("Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs.")
+	_motion_selector.tooltip_text = tr("Six-second visual pass; residual smoke fades before pause. No flight simulation. Changing motion clears the puffs.")
 	_motion_selector.item_selected.connect(func(index: int) -> void:
 		set_motion_mode("stationary" if index == 0 else "pass"))
-	for control: Control in [_play_button, reset, _time_label, wind, _motion_selector]:
+	for control: Control in [_play_button, _stop_emission_button, reset, _fit_plume_button, _time_label, wind, _motion_selector]:
 		_playback_controls.append(control)
 		_mode_row.add_child(control)
 		control.visible = false
@@ -989,12 +1024,21 @@ func _build_playback() -> void:
 	_source_preview_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
 	_source_preview_label.visible = false
 	_mode_row.add_child(_source_preview_label)
+	_rate_feedback = Label.new()
+	_rate_feedback.name = "SmokeResolvedRates"
+	_rate_feedback.add_theme_font_size_override("font_size", UiTheme._font_size(12))
+	_rate_feedback.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_rate_feedback.visible = false
+	_playback_controls.append(_rate_feedback)
+	_mode_row.add_child(_rate_feedback)
 
 
 func _configure_smoke() -> void:
 	if not is_instance_valid(_stage) or _airplane.is_empty(): return
 	reset_playback()
 	for control in _playback_controls: control.visible = not _profile.get("smoke", []).is_empty()
+	_stop_emission_button.disabled = _emission_stopped
+	_fit_plume_button.button_pressed = _fit_plume
 	_source_preview_label.visible = false
 	var source_slots: Array = _airplane.get("customization_bindings", {}).get("smoke_slots", []).filter(func(slot: Dictionary) -> bool: return slot.kind == "source")
 	for entry: Dictionary in _profile.get("smoke", []):
@@ -1006,15 +1050,19 @@ func _configure_smoke() -> void:
 		_smoke.queue_free()
 		_smoke = null
 	if _profile.get("smoke", []).is_empty():
+		_sync_rate_feedback()
 		_refresh_model_presentation()
 		return
 	var described := Customization.describe(_requested_id)
-	if not described.get("ok", false): return
+	if not described.get("ok", false):
+		_sync_rate_feedback()
+		return
 	_smoke = ProfileSmoke.new()
 	_stage.add_child(_smoke)
 	if not _smoke.configure(_profile, described.bindings):
 		_smoke.queue_free()
 		_smoke = null
+	_sync_rate_feedback()
 	_refresh_model_presentation()
 	# Preview intentionally remains still until the user requests playback.
 
@@ -1022,16 +1070,18 @@ func _configure_smoke() -> void:
 func toggle_playback() -> void:
 	if not is_instance_valid(_smoke): return
 	if not _playing and _view_mode == "compare" and _comparison_original: return
-	if not _playing and _pass_visible() and _playhead_tick >= PASS_TICKS:
+	if not _playing and _pass_visible() and _playhead_tick >= _pass_tail_end_tick():
 		reset_playback()
 	_playing = not _playing
 	set_process(_playing)
 	_play_button.text = tr("Pause smoke" if _playing else "Play smoke")
 	if _playing:
 		_smoke.play()
+		if _emission_stopped: _smoke.stop()
 		if _playhead_tick == 0:
-			_smoke.advance(0.0, {tick = 0, slot_transforms = Customization.smoke_transforms(_airplane)}, _preview_wind,
+			_smoke.advance(0.0, _preview_pose(0), _preview_wind,
 				1.0, _preview_source_sample())
+		_sync_rate_feedback()
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	else:
 		_smoke.pause()
@@ -1041,13 +1091,38 @@ func toggle_playback() -> void:
 func reset_playback() -> void:
 	_playing = false
 	set_process(false)
+	_emission_stopped = false
+	_emission_stop_tick = -1
 	_playhead_tick = 0
 	_playhead_seconds = 0.0
 	_apply_preview_pose()
 	if is_instance_valid(_play_button): _play_button.text = tr("Play smoke")
+	if is_instance_valid(_stop_emission_button):
+		_stop_emission_button.disabled = false
+		_stop_emission_button.text = tr("Stop emission")
 	if is_instance_valid(_time_label): _time_label.text = "0.0 s"
 	if is_instance_valid(_smoke): _smoke.reset()
 	_request_redraw()
+
+
+func stop_emission() -> void:
+	if not is_instance_valid(_smoke) or _emission_stopped: return
+	_smoke.stop()
+	_emission_stopped = true
+	_emission_stop_tick = _playhead_tick
+	_stop_emission_button.disabled = true
+	_stop_emission_button.text = tr("Emission stopped")
+	_request_redraw()
+	_sync_rate_feedback()
+
+
+func set_fit_plume(enabled: bool) -> void:
+	if _fit_plume == enabled: return
+	_fit_plume = enabled
+	if enabled:
+		_zoom = 1.0
+	if is_instance_valid(_fit_plume_button): _fit_plume_button.button_pressed = enabled
+	_refresh_camera()
 
 
 func _exit_tree() -> void:
@@ -1060,16 +1135,21 @@ func _process(delta: float) -> void:
 	if not is_finite(delta) or delta <= 0.0: return
 	_playhead_seconds += minf(delta, 0.1)
 	var next := int(floor(_playhead_seconds * 240.0 + 0.0000001))
-	if _pass_visible():
+	if _pass_visible() and _playhead_tick < PASS_TICKS:
 		next = mini(next, PASS_TICKS)
 	var dt := float(next - _playhead_tick) / 240.0
 	_playhead_tick = next
 	_apply_preview_pose()
-	_smoke.advance(dt, {tick = _playhead_tick, slot_transforms = Customization.smoke_transforms(_airplane)},
+	_smoke.advance(dt, _preview_pose(_playhead_tick),
 		_preview_wind, 1.0, _preview_source_sample())
+	_sync_rate_feedback()
+	if _fit_plume: _refresh_camera()
 	_time_label.text = "%.1f s" % (float(_playhead_tick) / 240.0)
-	if _pass_visible() and _playhead_tick == PASS_TICKS:
-		toggle_playback()
+	if _pass_visible() and _playhead_tick >= PASS_TICKS:
+		if not _emission_stopped:
+			stop_emission()
+		if _playhead_tick >= _pass_tail_end_tick():
+			toggle_playback()
 
 
 ## Local preview choice only: never saved into the build or passed to a trial.
@@ -1095,8 +1175,61 @@ func _apply_preview_pose() -> void:
 	if not is_instance_valid(_rig): return
 	_rig.position = Vector3.ZERO
 	if _pass_visible():
-		_rig.position.z = (0.5 - float(_playhead_tick) / PASS_TICKS) * _pass_distance()
+		var pass_fraction := clampf(float(_playhead_tick) / PASS_TICKS, 0.0, 1.0)
+		_rig.position.z = (0.5 - pass_fraction) * _pass_distance()
+
+
+func _pass_tail_end_tick() -> int:
+	var stopped_at := _emission_stop_tick if _emission_stop_tick >= 0 else PASS_TICKS
+	var maximum_lifetime := 0.0
+	for entry: Dictionary in _profile.get("smoke", []):
+		if bool(entry.get("enabled", false)):
+			maximum_lifetime = maxf(maximum_lifetime, float(entry.get("lifetime_s", 0.0)))
+	return stopped_at + int(ceil(maximum_lifetime * 240.0)) + 24
+
+
+func _preview_pose(tick: int) -> Dictionary:
+	var camera_distance := 0.0
+	if is_instance_valid(_camera) and is_instance_valid(_rig):
+		camera_distance = _camera.global_position.distance_to(_rig.global_position)
+	return {
+		"tick": tick,
+		"slot_transforms": Customization.smoke_transforms(_airplane),
+		"camera_distance_m": camera_distance,
+	}
 
 
 func _preview_source_sample() -> Dictionary:
 	return {kind = str(_airplane.get("physical_propulsion_kind", "")), running = true, level = 1.0}
+
+
+func _sync_rate_feedback() -> void:
+	if not is_instance_valid(_rate_feedback):
+		return
+	if not is_instance_valid(_smoke):
+		_rate_feedback.text = tr("Resolved preview rate is unavailable.")
+		return
+	var info: Dictionary = _smoke.budget_info()
+	var rates: Dictionary = info.get("resolved_rates_hz", {})
+	var parts: PackedStringArray = []
+	for entry: Dictionary in _profile.get("smoke", []):
+		if not bool(entry.get("enabled", false)):
+			continue
+		var slot_id := str(entry.get("slot", ""))
+		var outlet_name := slot_id
+		for slot: Dictionary in _airplane.get("customization_bindings", {}).get("smoke_slots", []):
+			if str(slot.get("id", "")) == slot_id:
+				outlet_name = str(slot.get("label", slot_id))
+				break
+		var rate_info: Variant = rates.get(slot_id, {})
+		var rate_value: Variant = rate_info.get("resolved_hz", 0.0) if rate_info is Dictionary else 0.0
+		var rate := float(rate_value) if typeof(rate_value) in [TYPE_INT, TYPE_FLOAT] else 0.0
+		if not is_finite(rate):
+			rate = 0.0
+		parts.append(tr("%s: %.1f puffs/s") % [tr(outlet_name), rate])
+	if parts.is_empty():
+		_rate_feedback.text = tr("No enabled emitters.")
+		return
+	_rate_feedback.text = tr("Resolved preview rates: ") + ", ".join(parts)
+	if bool(info.get("saturated", false)):
+		_rate_feedback.text += " · " + tr("budget limited")

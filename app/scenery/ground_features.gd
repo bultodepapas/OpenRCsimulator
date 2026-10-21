@@ -39,11 +39,17 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 	var dirt := Palette.col("dirt") if surface == "dirt" else Palette.col("gravel")
 	var crown := Palette.vegetation(Palette.col("worn_grass"), theme)
 	var route := _round_track_corners(pts, width, 0.994 if surface == "worn" else 0.94)
+	if surface == "worn":
+		route = _worn_route(route)
 	var lanes: Array
 	if surface == "worn":
 		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
-		var edge := crown.lerp(PATCH_FIELD_GRASS_COLOR, 0.28)
-		var tread := crown.darkened(0.06)
+		var edge := Color("#647a4b")
+		var tread := Color("#627747")
+		# Opaque shader markers, not transparency: the downloaded sparse grass
+		# scan breaks up the centre more strongly than the feathered shoulders.
+		edge.a = 0.32
+		tread.a = 0.18
 		lanes = [[-1.0, -0.62, edge], [-0.62, 0.62, tread], [0.62, 1.0, edge]]
 	else:
 		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge
@@ -56,11 +62,31 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 			var a1: float = lane[1]
 			var c: Color = lane[2]
 			var tone := 0.94 + 0.1 * Palette.hash01(i, int(a0 * 10.0))
-			var p00 := route[i] + offs[i] * a0 * width * 0.5
-			var p01 := route[i] + offs[i] * a1 * width * 0.5
-			var p10 := route[i + 1] + offs[i + 1] * a0 * width * 0.5
-			var p11 := route[i + 1] + offs[i + 1] * a1 * width * 0.5
+			var w0 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i, 37)) if surface == "worn" else 1.0)
+			var w1 := width * 0.5 * (lerpf(0.78, 1.12, Palette.hash01(i + 1, 37)) if surface == "worn" else 1.0)
+			var p00 := route[i] + offs[i] * a0 * w0
+			var p01 := route[i] + offs[i] * a1 * w0
+			var p10 := route[i + 1] + offs[i + 1] * a0 * w1
+			var p11 := route[i + 1] + offs[i + 1] * a1 * w1
 			_flat_quad(k, p00, p10, p11, p01, lift, c * Color(tone, tone, tone))
+
+
+## Break long walking treads into small, uneven mowing/wear intervals. Endpoints and centre route are retained.
+static func _worn_route(points: PackedVector2Array) -> PackedVector2Array:
+	var out := PackedVector2Array([points[0]])
+	for segment in points.size() - 1:
+		var a := points[segment]
+		var b := points[segment + 1]
+		var delta := b - a
+		var steps := maxi(1, ceili(delta.length() / 0.7))
+		var normal := Vector2(-delta.y, delta.x).normalized()
+		for step in range(1, steps + 1):
+			var t := float(step) / float(steps)
+			var point := a.lerp(b, t)
+			if step < steps:
+				point += normal * (Palette.hash01(segment * 103 + step, 79) - 0.5) * 0.10
+			out.append(point)
+	return out
 
 
 ## Clip sharp polyline corners with a bounded quadratic arc; endpoints and route intent stay fixed.
@@ -359,6 +385,9 @@ static func _tri_colored(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, ca: Col
 ## "solid" (the footprint swept along the sun to its height), "roof" (only the roof outline, cast from `size.y`),
 ## "crown" (a disc of the crown, cast from 70 % of the height, plus the trunk's line).
 static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
+	if mode.begins_with("aircraft_"):
+		_aircraft_shadow(k, t, size, mode, sun)
+		return
 	if mode == "person":
 		# A bounded contact patch on the real support plane, including veranda slabs.
 		var center := Vector2(t.origin.x, t.origin.z)
@@ -426,6 +455,70 @@ static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: Stri
 		_shadow_tri(k, centroid, a, b, core, core, core)
 		_shadow_tri(k, a, ao, bo, core, edge, edge)
 		_shadow_tri(k, a, bo, b, core, edge, core)
+
+
+## Compact, feathered planform shadow on the actual grass/slab receiver.
+## Retained by Scenery's existing lighting transaction; no per-frame process or shadow viewport.
+static func _aircraft_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
+	var bench := mode.ends_with("_bench")
+	mode = mode.trim_suffix("_bench")
+	var half_span := size.x * 0.5
+	var half_length := size.z * 0.5
+	var wing_front := -0.18 if mode == "aircraft_jet" else -0.28
+	var wing_tip := 0.10 if mode == "aircraft_jet" else -0.22
+	var wing_back := 0.27 if mode == "aircraft_jet" else 0.03
+	var outline := PackedVector2Array([
+		Vector2(0, -1), Vector2(0.10, -0.72), Vector2(0.12, wing_front),
+		Vector2(1, wing_tip), Vector2(1, wing_back), Vector2(0.10, 0.30),
+		Vector2(0.07, 0.65), Vector2(0.38, 0.77), Vector2(0.38, 0.90),
+		Vector2(0.035, 0.89), Vector2(0, 1), Vector2(-0.035, 0.89),
+		Vector2(-0.38, 0.90), Vector2(-0.38, 0.77), Vector2(-0.07, 0.65),
+		Vector2(-0.10, 0.30), Vector2(-1, wing_back), Vector2(-1, wing_tip),
+		Vector2(-0.12, wing_front), Vector2(-0.10, -0.72)])
+	if mode == "aircraft_service":
+		outline = PackedVector2Array([Vector2(0, -1), Vector2(0.22, -0.7), Vector2(0.15, 0.6),
+			Vector2(1, 0.8), Vector2(1, 0.95), Vector2(-1, 0.95), Vector2(-1, 0.8),
+			Vector2(-0.15, 0.6), Vector2(-0.22, -0.7)])
+	var cast := shadow_cast(sun) * size.y * 0.35
+	var points := PackedVector2Array()
+	var center := Vector2.ZERO
+	for p: Vector2 in outline:
+		var world := t * Vector3(p.x * half_span, 0, p.y * half_length)
+		var point := Vector2(world.x, world.z) + cast
+		points.append(point)
+		center += point
+	if bench:
+		# Worktables are aligned east/west; clip their receiver so wing shadows never float beyond the edge.
+		var receiver := PackedVector2Array([
+			Vector2(t.origin.x - 1.2, t.origin.z - 0.4), Vector2(t.origin.x + 1.2, t.origin.z - 0.4),
+			Vector2(t.origin.x + 1.2, t.origin.z + 0.4), Vector2(t.origin.x - 1.2, t.origin.z + 0.4)])
+		var clipped := Geometry2D.intersect_polygons(points, receiver)
+		if clipped.is_empty():
+			return
+		points = clipped[0]
+		center = Vector2.ZERO
+		for point: Vector2 in points:
+			center += point
+	center /= float(points.size())
+	var lift := t.origin.y + 0.004
+	var core := Color(0, 0, 0, 0.32)
+	var edge := Color(0, 0, 0, 0)
+	var indices := Geometry2D.triangulate_polygon(points)
+	for i in range(0, indices.size(), 3):
+		_emit_fill_triangle(k, points[indices[i]], points[indices[i + 1]], points[indices[i + 2]],
+			core, core, core, lift)
+	for i in points.size():
+		var a := points[i]
+		var b := points[(i + 1) % points.size()]
+		var ao := a + (a - center).normalized() * 0.055
+		var bo := b + (b - center).normalized() * 0.055
+		if bench:
+			var receiver_min := Vector2(t.origin.x - 1.2, t.origin.z - 0.4)
+			var receiver_max := Vector2(t.origin.x + 1.2, t.origin.z + 0.4)
+			ao = ao.clamp(receiver_min, receiver_max)
+			bo = bo.clamp(receiver_min, receiver_max)
+		_emit_fill_triangle(k, a, ao, bo, core, edge, edge, lift)
+		_emit_fill_triangle(k, a, bo, b, core, edge, core, lift)
 
 
 ## Ground-plane offset per metre of height, away from the sun. The 0.2 floor bounds low-angle shadows.

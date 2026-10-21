@@ -1,0 +1,69 @@
+{
+  "format": "openrc-audio-validation-snapshot-v1",
+  "created_utc": "2026-10-20T16:39:07.807047-05:00",
+  "worktree": ".tools/audio-aud15-verify",
+  "base_commit": "a6524e3fd517898b8c8adac6210e20a58a989729",
+  "sparse_cones": [
+    "app",
+    "assets",
+    "research",
+    "tools"
+  ],
+  "preparation": [
+    "Detached sparse checkout from a6524e3f to isolate concurrent shared-tree edits.",
+    "Copied app/audio and tools/audio from the shared tree to preserve exact audio source bytes; checker includes ERROR log detection.",
+    "Copied existing ignored native ground-vehicle binaries and build receipt; no rebuild or physics change.",
+    "Regenerated customization registry through its existing build_customization.py because fresh-checkout source bytes differed; check then passed. No shared-tree files changed.",
+    "Fresh Godot 4.7.2 import completed with checked runner; import report retained below."
+  ],
+  "import_report": "tmp/audio-aud15/checks/isolated-import-m8pcb7xy/report.json",
+  "snapshot_sha256": {
+    "app/main.gd": "3d85af060e5fba5afe3fe937e23b6f2d5773770e2599678b5e99f4a474499c9f",
+    "app/workshop/presentation.gd": "7ca2e2ebb71b1d09d480107c61591fb5fc24a136706233f033187aee844ee1e2",
+    "app/render/aircraft_customization.gd": "d7876f9cae92dc03d09e27a73db3d7c253610f86ed613947c3d9d972373440a9",
+    "app/data/aircraft_customization.json": "886bb995bd9e2899b16652ee93fadecfa206121b459625f6885805245d1a1138",
+    "assets/aircraft/customization-bindings.json": "37b4c25f130d2f38e607b29e043ec46da4947dc0aa22faa07ad5b01c37e53d3e",
+    "research/aircraft-standardization/build_customization.py": "41e9ea51a733fab519599d7f8595f2aa790def20b954a77a1b6f67ac959ca180",
+    "tools/audio/check_fleet_sequence.py": "093489f76fba11d42e58ff632b4bf0e7ab875790d7e79148806c382a54fca592",
+    "tools/audio/fleet_sequence.gd": "77accf7050a9f7ba7bbb90eab18b6f1a866cb50f18864ae802e1b2f3482ff9ba",
+    "tools/audio/straight_flight_pilot.gd": "ea6c118d786a5e4c633dc3ea38cc663880bda21d8f9e8e0a2e39f26b38654187",
+    "tools/audio/helicopter_sequence_pilot.gd": "51478710960880d737063865a021d0b78b3ef2fa3f21c2050063a3840079b7d3",
+    "app/audio/powertrain_audio.gd": "e97d9d5196649e02260e4cce2385ac2744bb48d2a250d24a0fb74d2515dfcfa6",
+    "app/audio/soundscape.gd": "d6317efefad40e422b122478118e35a9238f4b683e8faf3330688db5513c6615",
+    "app/audio/ground_audio.gd": "fd43b4f400ef96b91b086d83388cc1b8337497e57fa3b0048944159aa26be3ea",
+    "app/audio/glow_audio_pump.gd": "99b50ad28cc442f2ba818d0e72fd23897fa1462df62d873028cd537937b9a40b",
+    "app/physics/rotorcraft/flight_dynamics.gd": "6fe5947b61ce3f1231a2baa4ea1fb339c6369dde9690c9ed4f677ab45f265a69"
+  },
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "scope": "Snapshot provenance only. Each native capture retains its own before/after source hashes and PCM/route outcomes; this is not a fleet pass.",
+  "applied_overlay": {
+    "source_commit": "51ad4357",
+    "files": [
+      "app/main.gd",
+      "app/render/smoke/profile_process.gdshader",
+      "app/render/smoke/profile_smoke.gd",
+      "app/render/smoke/profile_smoke_schedule.gd",
+      "app/workshop/presentation.gd",
+      "app/render/aircraft_customization.gd",
+      "app/data/aircraft_customization.json",
+      "assets/aircraft/customization-bindings.json",
+      "research/aircraft-standardization/build_customization.py"
+    ],
+    "generated_outputs": [
+      "app/data/aircraft_customization.json",
+      "assets/aircraft/customization-bindings.json"
+    ],
+    "generator_command": "python research/aircraft-standardization/build_customization.py",
+    "generator_check": "passed: 5 visual families",
+    "rationale": "Replaced the a6524e3f smoke/presentation refactor with the coherent pre-refactor source set after readiness found profile_smoke.gd referenced a missing Presentation.normalize_smoke_entry."
+  },
+  "readiness": {
+    "checker_py_compile": "passed",
+    "customization_generator_check": "passed",
+    "godot_list_probe": "passed",
+    "active_aircraft_count": 9,
+    "godot_log_errors": 0,
+    "captures_run_from_snapshot": true,
+    "capture_artifacts_written_outside_snapshot": true
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "warm_rebuild_median_ms": {
+    "before": 311.529,
+    "after": 224.058
+  },
+  "native_scenery_build_ms": {
+    "before": 824.287,
+    "after": 788.681
+  },
+  "native_views": {
+    "plain_farm": {
+      "pixels_identical": true,
+      "before": {
+        "median_ms": 0.742,
+        "p95_ms": 1.067,
+        "draws": 48.0,
+        "primitives": 141161.0
+      },
+      "after": {
+        "median_ms": 0.7,
+        "p95_ms": 1.109,
+        "draws": 48.0,
+        "primitives": 141161.0
+      }
+    },
+    "power_airfield": {
+      "pixels_identical": true,
+      "before": {
+        "median_ms": 1.656,
+        "p95_ms": 2.508,
+        "draws": 294.0,
+        "primitives": 500613.0
+      },
+      "after": {
+        "median_ms": 1.546,
+        "p95_ms": 2.384,
+        "draws": 294.0,
+        "primitives": 500613.0
+      }
+    },
+    "power_runway_east": {
+      "pixels_identical": true,
+      "before": {
+        "median_ms": 1.285,
+        "p95_ms": 2.062,
+        "draws": 167.0,
+        "primitives": 385076.0
+      },
+      "after": {
+        "median_ms": 1.209,
+        "p95_ms": 2.129,
+        "draws": 167.0,
+        "primitives": 385076.0
+      }
+    }
+  },
+  "limits": "Shared desktop and concurrent workspace. Component benchmarks demonstrate reduced CPU work; whole-build and frame timings are observations, not guaranteed speedups."
+}

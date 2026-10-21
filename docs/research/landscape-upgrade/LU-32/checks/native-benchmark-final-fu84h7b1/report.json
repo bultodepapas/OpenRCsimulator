@@ -1,0 +1,72 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7a87ad10-0555-4e41-a707-c49d15e3e579",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/landscape-perf-r2/bench_updates.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T18:53:27.539636+00:00",
+  "label": "native-benchmark-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf-r2\\checks\\native-benchmark-final-fu84h7b1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf-r2\\checks\\native-benchmark-final-fu84h7b1\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 4,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 10,
+      "message": "Texture with GL ID of 25: leaked 349524 bytes.",
+      "context": [
+        "   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 12,
+      "message": "Texture with GL ID of 26: leaked 349524 bytes.",
+      "context": [
+        "   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 14,
+      "message": "Texture with GL ID of 27: leaked 349524 bytes.",
+      "context": [
+        "   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 16,
+      "message": "Texture with GL ID of 28: leaked 349524 bytes.",
+      "context": [
+        "   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 14.609,
+  "log_bytes": 2265,
+  "log_sha256": "a063581d0b0c92b99ce1dd2d16049ce67bab5ba92028f2b4585eebc4e112385d"
+}

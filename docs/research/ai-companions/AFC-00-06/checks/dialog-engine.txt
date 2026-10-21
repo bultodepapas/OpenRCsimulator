@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   new settings are Off with count 1 and seed 0
+ok   controller Accept applies the selected settings once
+ok   Apply emits only the enabled, count and seed fields
+ok   an out-of-range seed blocks Apply
+ok   invalid Apply preserves every control value
+ok   invalid seed focuses the field for correction
+ok   Cancel requests close without applying the draft
+ok   Escape requests close from a focused control
+ok   Tab moves from enable to count
+ok   Tab moves from count to seed
+ok   controller navigation moves from enable to count
+ok   in-flight status explains restart and Remove now behavior
+ok   Remove companions is shown only for an active in-flight group
+ok   Save as default checkbox is available to the Pause owner
+ok   Remove emits the immediate removal request
+ok   the dialog leaves its preferences path untouched
+Companions dialog: 0 failed

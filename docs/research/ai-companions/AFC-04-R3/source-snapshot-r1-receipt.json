@@ -1,0 +1,171 @@
+{
+  "format": "afc-avoidance-r1-source-receipt-v1",
+  "created_utc": "2026-10-20",
+  "pilot_sha256": "6f560a55094909bf1cdb8f53a67253ac2545e5a7d217f1abd08aa9c29c92aef9",
+  "mirror": {
+    "root": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+    "commit": "2966595b1f243be3905e2699b71c0283195ae306",
+    "imported_cache": "app/.godot/imported junction to main cache"
+  },
+  "engine": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "version": "Godot 4.7.2.stable.official.ed1daf0bf"
+  },
+  "sources": [
+    {
+      "path": "app/ai/companions/pilot.gd",
+      "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    },
+    {
+      "path": "app/data/field_loader.gd",
+      "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+    },
+    {
+      "path": "app/data/fields/default.json",
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    {
+      "path": "app/data/fields/lake.json",
+      "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "app/physics/wind_config.gd",
+      "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+    },
+    {
+      "path": "app/physics/wind_field.gd",
+      "sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a"
+    },
+    {
+      "path": "app/render/world/field_lights.gd",
+      "sha256": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195"
+    },
+    {
+      "path": "app/scenery/collision_setup.gd",
+      "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+    },
+    {
+      "path": "app/scenery/collision_world.gd",
+      "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+    },
+    {
+      "path": "app/scenery/models.gd",
+      "sha256": "cc2e28f9b34c19c9b9ceca7629460a87f2966ac32670bb9c8f22e65cebdfd2d3"
+    },
+    {
+      "path": "app/scenery/prefabs.gd",
+      "sha256": "12657346c01e9bce350d2cbafb5f5247232c00f6f7a4daaa5d10134c760a811b"
+    },
+    {
+      "path": "app/scenery/scenery_loader.gd",
+      "sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd"
+    },
+    {
+      "path": "app/scenery/scenery.gd",
+      "sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+    },
+    {
+      "path": "research/ai-companions/encounter_probe.gd",
+      "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+    },
+    {
+      "path": "research/ai-companions/pilot_probe.gd",
+      "sha256": "d61e7f14a10bf3e860d2cfdcbc40ec99e19556d94b4822595a7caece61631a28"
+    },
+    {
+      "path": "research/ai-companions/avoidance/analyze_reachable_flight.py",
+      "sha256": "6953ee512ff6dbf16dc3b79d2b7475aa616125b8a9fe040d565acc41e9165a58"
+    },
+    {
+      "path": "research/ai-companions/avoidance/dump_collision_inventory.gd",
+      "sha256": "41041ebcc39306b5d78a76b899f706a7811f2b5da3541bd4660f68d69f4629e1"
+    },
+    {
+      "path": "research/ai-companions/avoidance/measure_encounter_trajectory.py",
+      "sha256": "90a849b685d21d6cfa060eb258b5175f424b0da926a8b30a047f5732e64eaed8"
+    },
+    {
+      "path": "research/ai-companions/avoidance/measure_static_clearance.py",
+      "sha256": "1149f5298788958a066945b152fef0bb1779f8eb6f2322af44f5fb2526f72002"
+    },
+    {
+      "path": "research/ai-companions/avoidance/reachable_pilot.gd",
+      "sha256": "6f560a55094909bf1cdb8f53a67253ac2545e5a7d217f1abd08aa9c29c92aef9"
+    },
+    {
+      "path": "research/ai-companions/avoidance/test_reachable_pilot.gd",
+      "sha256": "75bbee4114a178e685b3caf17713e186a383eda8c9b357eed25270d6bf29eb09"
+    },
+    {
+      "path": "research/ai-companions/avoidance/verify_crossing_replays.py",
+      "sha256": "5804a9c43c0b516744e782bc73d4f0d4a599e1635de00113cd2d29a33dbbd81f"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\survey-reachable-60s-r1-20261020\\report.json",
+      "sha256": "d2536b6c0934f6132edd141ad028f48211f57f3a63b8715a579d642355599e0e"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\survey-reachable-60s-r1-20261020\\trajectory.csv",
+      "sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\survey-reachable-60s-r1-20261020\\predictor-vs-flown-8s.json",
+      "sha256": "20804780e36e5e650a52ec9e5f9daf4d03288056a4852020d5fd10bb5fd99d67"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\survey-reachable-60s-r1-20261020\\static-corridor-clearance.json",
+      "sha256": "162821ef99ddb792fa6fe67019210ae2167da741961a247e8f44febb41c53b7a"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\survey-reachable-60s-r1-20261020\\collision-inventory.json",
+      "sha256": "06869ae64197ec55b81b82a958d2d97b3c1296f4d000a646bda24b8d90749a3c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\pilot-matrix-candidate-r1-20261020\\README.md",
+      "sha256": "8d338a6e7c14f747bfa0709b9b74f7006f84bfe0c2f25a88370c5621e87cb866"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\pilot-matrix-candidate-r1-20261020\\scenario_metrics.csv",
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\pilot-matrix-candidate-r1-20261020\\flight_samples_1hz.csv",
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-candidate-pilot-matrix-20261020-r1-9vxtu2_m\\report.json",
+      "sha256": "c3c912a0cba95d40f31cd5b22623f98efffc339fe01228dbaef8b368443b0c6e"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\baseline-crossings-20s-r1-20261020\\report.json",
+      "sha256": "333504fc2e22db8cc7d4a48993b6c738d8f22fa26f639675aece8484fa9d1216"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\candidate-crossings-20s-r1-20261020\\report.json",
+      "sha256": "3b15e8ffd7446d4da7f1e95f50efb69d2743c65315f0c46000c09cee4cd129f3"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\crossings-exact-replay-r1\\verification.json",
+      "sha256": "5c3c62d94a32a9db4d3c7315b3063b1f1fb190f6af0df0f380a58e58295345b0"
+    }
+  ]
+}

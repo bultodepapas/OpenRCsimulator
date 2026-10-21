@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "127e8195-5ffa-4d8e-b3d0-5b819b5341ab",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--rendering-driver",
+    "opengl3",
+    "--resolution",
+    "1600x900",
+    "--script",
+    "res://scenery/capture_views.gd",
+    "--",
+    "--out=D:/OpenRC-task-evidence/hangar-upgrade-2026-10-20/verified",
+    "--views=postcard_pits,postcard_club,fleet_close,pilot_south,hangar_west,hangar_east,hangar_service,hangar_micro,hangar_bench,hangar_ready,hangar_east_bench",
+    "--scenery_birds=off",
+    "--scenery_audio=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:50:52.501284+00:00",
+  "label": "hangar-verified",
+  "log": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\hangar-verified-th02hjfv\\engine.log",
+  "report": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\hangar-verified-th02hjfv\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371898459518716 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.594,
+  "log_bytes": 964,
+  "log_sha256": "43e356c3b92daf59ecaf185cd430d008894cecd5efabf4a0d5108cb972dcc92d"
+}

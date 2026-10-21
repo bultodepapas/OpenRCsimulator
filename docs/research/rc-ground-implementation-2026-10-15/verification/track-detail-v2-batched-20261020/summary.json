@@ -1,0 +1,171 @@
+{
+  "format": "openrc-ground-closeup-summary-v1",
+  "complete": true,
+  "case_count": 4,
+  "cases": [
+    {
+      "case_id": "mt8-bisonte__track_rollers__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-v2-batched-20261020/mt8-bisonte__track_rollers__chase__day.png",
+      "image_sha256": "28d78d785f5ca5734e4bb18bc559ee5e1fcca93f43fb448e2579d9a44eadf77b",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_rollers",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "552ec415c6ace85521bc61e0ff04335c22238f47b8f2630c8da4e195e4579b48",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 2.7175000000000002,
+        "p95": 3.69875,
+        "p99": 4.09915
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 458.0,
+        "p95": 458.0,
+        "p99": 458.0
+      },
+      "mesh_signature_sha256": "f28ab0372ceb4164735f56d91916bba3347c2da05f7550dd48cb159db504e886",
+      "mesh_geometry_signature_sha256": "f001300fd397136fb0ca6aeecc9bf8023e273c6ac1c38c2a6f68dfe5500534f2",
+      "unique_texture_count": 93
+    },
+    {
+      "case_id": "mt8-bisonte__track_rollers__low-orbit__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-v2-batched-20261020/mt8-bisonte__track_rollers__low-orbit__day.png",
+      "image_sha256": "29e225f88f24055a9d5c191411447360de8a29eba4ceec2917d4014d48fa99a4",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_rollers",
+      "camera_mode": "low-orbit",
+      "lighting": "day",
+      "state_sha256": "552ec415c6ace85521bc61e0ff04335c22238f47b8f2630c8da4e195e4579b48",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 2.676,
+        "p95": 3.6051999999999995,
+        "p99": 5.062619999999992
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 437.0,
+        "p95": 437.0,
+        "p99": 437.0
+      },
+      "mesh_signature_sha256": "f28ab0372ceb4164735f56d91916bba3347c2da05f7550dd48cb159db504e886",
+      "mesh_geometry_signature_sha256": "f001300fd397136fb0ca6aeecc9bf8023e273c6ac1c38c2a6f68dfe5500534f2",
+      "unique_texture_count": 93
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-v2-batched-20261020/mt8-bisonte__track_start__chase__day.png",
+      "image_sha256": "d6d6ece1a16ad7f4262b7920a4f447f93a91ae04a5017be9d67d6d231ef7daa6",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 4.437,
+        "p95": 5.90845,
+        "p99": 6.528579999999996
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 589.0,
+        "p95": 589.0,
+        "p99": 589.0
+      },
+      "mesh_signature_sha256": "f28ab0372ceb4164735f56d91916bba3347c2da05f7550dd48cb159db504e886",
+      "mesh_geometry_signature_sha256": "f001300fd397136fb0ca6aeecc9bf8023e273c6ac1c38c2a6f68dfe5500534f2",
+      "unique_texture_count": 93
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__low-orbit__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-v2-batched-20261020/mt8-bisonte__track_start__low-orbit__day.png",
+      "image_sha256": "fa2b6fbb4f17f092c7a20204c8c68765516f4481cbe6dfe2ff860ed006b0da2a",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "low-orbit",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 3.4175,
+        "p95": 4.6933,
+        "p99": 4.83568
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 529.0,
+        "p95": 529.0,
+        "p99": 529.0
+      },
+      "mesh_signature_sha256": "f28ab0372ceb4164735f56d91916bba3347c2da05f7550dd48cb159db504e886",
+      "mesh_geometry_signature_sha256": "f001300fd397136fb0ca6aeecc9bf8023e273c6ac1c38c2a6f68dfe5500534f2",
+      "unique_texture_count": 93
+    }
+  ]
+}

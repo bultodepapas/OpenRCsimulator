@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "936c5a15-6a90-421e-8491-58a976a94262",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_avanti_smoke.gd",
+    "--",
+    "--scenery=off",
+    "--soundscape=off",
+    "--birds=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:50:59.583686+00:00",
+  "label": "test_avanti_smoke",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_avanti_smoke-4t_kcm8g\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_avanti_smoke-4t_kcm8g\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.016,
+  "log_bytes": 2395,
+  "log_sha256": "11c120670dc94a510461393b4b52c549602764143696dfcbdd3a66fd0dd845cf"
+}

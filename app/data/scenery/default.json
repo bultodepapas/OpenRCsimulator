@@ -340,33 +340,239 @@
     "jensen-das-ugly-stik-60",
     "gp-extra-300s-60",
     "p51d-mustang-120",
-    "sebart-avanti-s-a200-p100rx"
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
    ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Current catalog models in staggered ready bays, between shelter columns and clear of the rear work aisle"
+   },
+   "elevation": {
+    "value": 0.1,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
    "placements": {
     "value": [
-     [-17.6, -38.0, 15.0, 0],
-     [-17.6, -24.0, 350.0, 1],
-     [-17.8, 24.0, 10.0, 2],
-     [-17.6, 38.5, 345.0, 3]
+     [-17.7, -40.3, 352, 0],
+     [-17.6, -24.5, 12, 1],
+     [-17.8, 29.7, 348, 2],
+     [-17.6, 35.8, 6, 3],
+     [-17.2, 20.6, 355, 4]
     ],
     "unit": "m, m, deg, index",
     "kind": "estimated",
-    "source": "Under the pit shelters, as in the photo"
+    "source": "Current catalog models in staggered ready bays, between shelter columns and clear of the rear work aisle"
    }
   },
   {
-   "id": "avanti-cradle",
-   "type": "instances",
+   "id": "fleet-large-jet",
+   "type": "fleet",
    "zone": "pits",
    "collides": false,
-   "prefab": "avanti_cradle",
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 1.3,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Large turbine model on the grass at the open west end of the shelter, nose toward the flightline"
+   },
+   "elevation": {
+    "value": 0.0,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
    "placements": {
     "value": [
-     [-17.6, 38.5, 345.0]
+     [-17.5, -48.0, 20, 3]
     ],
-    "unit": "m, m, deg",
+    "unit": "m, m, deg, index",
     "kind": "estimated",
-    "source": "Padded trestles directly under the catalog Ventage Jet snapshot, which is an in-air-start model with gear retracted"
+    "source": "Large turbine model on the grass at the open west end of the shelter, nose toward the flightline"
+   }
+  },
+  {
+   "id": "fleet-micro-jets",
+   "type": "fleet",
+   "zone": "pits",
+   "collides": false,
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 0.5,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Small sport jets beside the larger ready models with room to carry them to the flightline"
+   },
+   "elevation": {
+    "value": 0.0,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
+   "placements": {
+    "value": [
+     [-21.4, -48.2, 50, 3],
+     [-17.0, 48.0, 340, 3]
+    ],
+    "unit": "m, m, deg, index",
+    "kind": "estimated",
+    "source": "Small sport jets beside the larger ready models with room to carry them to the flightline"
+   }
+  },
+  {
+   "id": "fleet-grass",
+   "type": "fleet",
+   "zone": "pits",
+   "collides": false,
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 0.9,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; An electric bush plane and aerobatic model waiting on the mown grass"
+   },
+   "elevation": {
+    "value": 0.0,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
+   "placements": {
+    "value": [
+     [-21.1, 47.9, 15, 4],
+     [-23.8, -29.5, 190, 1]
+    ],
+    "unit": "m, m, deg, index",
+    "kind": "estimated",
+    "source": "An electric bush plane and aerobatic model waiting on the mown grass"
+   }
+  },
+  {
+   "id": "fleet-micro-bench",
+   "type": "fleet",
+   "zone": "pits",
+   "collides": false,
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 0.45,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Micro jet on the empty west end worktable for preflight preparation"
+   },
+   "elevation": {
+    "value": 0.9,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
+   "placements": {
+    "value": [
+     [-19.9, -42.6, 90, 3]
+    ],
+    "unit": "m, m, deg, index",
+    "kind": "estimated",
+    "source": "Micro jet on the empty west end worktable for preflight preparation"
+   }
+  },
+  {
+   "id": "fleet-sport-bench",
+   "type": "fleet",
+   "zone": "pits",
+   "collides": false,
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "assembled",
+   "scale": {
+    "value": 0.65,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Small aerobatic model on the empty east end worktable"
+   },
+   "elevation": {
+    "value": 0.9,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
+   "placements": {
+    "value": [
+     [-19.9, 19.4, 270, 1]
+    ],
+    "unit": "m, m, deg, index",
+    "kind": "estimated",
+    "source": "Small aerobatic model on the empty east end worktable"
+   }
+  },
+  {
+   "id": "fleet-service",
+   "type": "fleet",
+   "zone": "pits",
+   "collides": false,
+   "aircraft": [
+    "jensen-das-ugly-stik-60",
+    "gp-extra-300s-60",
+    "p51d-mustang-120",
+    "sebart-avanti-s-a200-p100rx",
+    "turbo-lumber-evolution"
+   ],
+   "configuration": "service",
+   "scale": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "estimated",
+    "source": "Uniform static display scale; Ugly Stik fuselage with its wing removed on the existing paired foam maintenance supports"
+   },
+   "elevation": {
+    "value": 1.12,
+    "unit": "m",
+    "kind": "derived",
+    "source": "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"
+   },
+   "placements": {
+    "value": [
+     [-19.9, -19.6, 90, 0]
+    ],
+    "unit": "m, m, deg, index",
+    "kind": "estimated",
+    "source": "Ugly Stik fuselage with its wing removed on the existing paired foam maintenance supports"
    }
   },
   {
@@ -512,54 +718,6 @@
     "unit": "m",
     "kind": "estimated",
     "source": "Worn pedestrian path around the flower border to the east shelter's open front bay"
-   }
-  },
-  {
-   "id": "worn-pavilion-pilot-west",
-   "type": "track",
-   "zone": "pilot_line",
-   "surface": "worn",
-   "collides": false,
-   "width": {
-    "value": 0.85,
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Single-file foot traffic from the pavilion veranda to the west pilot position"
-   },
-   "points": {
-    "value": [
-     [-13.8, -0.25],
-     [-8.0, -1.5],
-     [-4.5, -8.0],
-     [-1.0, -13.0]
-    ],
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Foot access stays behind the flightline barrier and outside the grass runway"
-   }
-  },
-  {
-   "id": "worn-pavilion-pilot-east",
-   "type": "track",
-   "zone": "pilot_line",
-   "surface": "worn",
-   "collides": false,
-   "width": {
-    "value": 0.85,
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Single-file foot traffic from the pavilion veranda to the east pilot position"
-   },
-   "points": {
-    "value": [
-     [-13.8, -0.25],
-     [-8.0, 1.5],
-     [-4.5, 9.0],
-     [-1.0, 16.0]
-    ],
-    "unit": "m",
-    "kind": "estimated",
-    "source": "Foot access stays behind the flightline barrier and outside the grass runway"
    }
   },
   {

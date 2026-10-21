@@ -1,0 +1,94 @@
+{
+  "format": "openrc-parked-fresh-check v1",
+  "base_commit": "861bb7b59036c7f458189a7ed0240eac004dab05",
+  "checkout_path": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\fresh-check",
+  "scope": "Fresh checkout plus explicit changed-file overlay; layout bytes and export filters. Separate isolated PCK test checks generated resources. Not a full app release export.",
+  "layout_check": "scenery layout matches the committed file",
+  "desktop_export_presets": [
+    {
+      "name": "Linux",
+      "resources": "all_resources",
+      "metadata_filter": "assets/scenery/aircraft/*.json"
+    },
+    {
+      "name": "Windows",
+      "resources": "all_resources",
+      "metadata_filter": "assets/scenery/aircraft/*.json"
+    },
+    {
+      "name": "macOS",
+      "resources": "all_resources",
+      "metadata_filter": "assets/scenery/aircraft/*.json"
+    }
+  ],
+  "overlaid_files": [
+    {
+      "path": "app/scenery/parked_aircraft.gd",
+      "sha256": "9d9438d9480a29feb4fa04555b8a651030164f8f92fa157adf84c4a6832f4ddf"
+    },
+    {
+      "path": "app/scenery/scenery_loader.gd",
+      "sha256": "7b07f2ecc47ffed2ef4d1ce7ca552f58bb14625666df30c6105ca017a682f541"
+    },
+    {
+      "path": "tools/scenery/place.py",
+      "sha256": "f088e8872f00f01bb74fde0c3a6b3175d6907b0a7bc78d25cffd11950020a047"
+    },
+    {
+      "path": "app/data/scenery/default.json",
+      "sha256": "f871d9917cdd7d240c173651b6a75a2083c1363006c4546e24ae7b0bf2b4264e"
+    },
+    {
+      "path": "app/export_presets.cfg",
+      "sha256": "c101d761dc070f0f85dd1187a8627a7a7e146cad2551d5fa52f4f0a24187bf54"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/avanti_assembled.json",
+      "sha256": "c5bd2701975ec28dac28d0203024f00d2bcf633764bd99be0183b0225fccf7ab"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/avanti_assembled.res",
+      "sha256": "9a71e869d6dffd8eb737b1af1a67136a17827b59b2ca04860e1643f056221326"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/extra_assembled.json",
+      "sha256": "f70a6684460476fa38856a4c1b26e9d79bc077ce2d0a0939a83013f3ed71245a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/extra_assembled.res",
+      "sha256": "3ce0b5b337292da6276af757d0486625fcc760346f000e889a9b65d67e6679c3"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/p51_assembled.json",
+      "sha256": "3bbd11dfe2b0e160bba27e35bb34dd94afae07b69b72057a33de06eabdb26a4a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/p51_assembled.res",
+      "sha256": "d65aa2095f1e676f41042c135ee562daf3242968e634cd43a6b9b7f643c96c2e"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_assembled.json",
+      "sha256": "91472c4d4af24cd53ba1d4f01eeae12939660b9a41b7b599cec76c91eb2db5a9"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_assembled.res",
+      "sha256": "b6b3e9c50355d060e134d4c6063f92bdf3c98c6d9bd74a72eac876e00c3b869c"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_service.json",
+      "sha256": "6fb4d06e32a0c3e7c15fee0b6cb9dd3719b78ffb215d387f2339d3cfa819d033"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_service.res",
+      "sha256": "dd46d6f9e4c1ba0b7261bc186e5f5c66a5842a5e91817d3f166b08a69b217a7f"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/timber_assembled.json",
+      "sha256": "2d716eec3eb402f9e424915a38c9af372e533b058fb7e738ee76cf87708d9b0a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/timber_assembled.res",
+      "sha256": "da434efa4ca738ec244299e3b685bcae4ee0ecb9a274fd49715957a304aa5ee7"
+    }
+  ]
+}

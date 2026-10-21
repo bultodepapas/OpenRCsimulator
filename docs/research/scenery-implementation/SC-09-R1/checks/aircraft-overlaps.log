@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CLEAR_OF_PROPS fleet:fleet-grass:00:turbo-lumber-evolution
+CLEAR_OF_PROPS fleet:fleet-grass:01:gp-extra-300s-60
+CLEAR_OF_PROPS fleet:fleet-large-jet:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_PROPS fleet:fleet-micro-bench:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_PROPS fleet:fleet-micro-jets:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_PROPS fleet:fleet-micro-jets:01:sebart-avanti-s-a200-p100rx
+CLEAR_OF_PROPS fleet:fleet-service:00:jensen-das-ugly-stik-60
+CLEAR_OF_PROPS fleet:fleet-sport-bench:00:gp-extra-300s-60
+CLEAR_OF_PROPS fleet:fleet:00:jensen-das-ugly-stik-60
+CLEAR_OF_PROPS fleet:fleet:01:gp-extra-300s-60
+CLEAR_OF_PROPS fleet:fleet:02:p51d-mustang-120
+CLEAR_OF_PROPS fleet:fleet:03:sebart-avanti-s-a200-p100rx
+CLEAR_OF_PROPS fleet:fleet:04:turbo-lumber-evolution
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-grass:00:turbo-lumber-evolution
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-grass:01:gp-extra-300s-60
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-large-jet:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-micro-bench:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-micro-jets:00:sebart-avanti-s-a200-p100rx
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-micro-jets:01:sebart-avanti-s-a200-p100rx
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-service:00:jensen-das-ugly-stik-60
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet-sport-bench:00:gp-extra-300s-60
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet:00:jensen-das-ugly-stik-60
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet:01:gp-extra-300s-60
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet:02:p51d-mustang-120
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet:03:sebart-avanti-s-a200-p100rx
+CLEAR_OF_OTHER_AIRCRAFT fleet:fleet:04:turbo-lumber-evolution
+SUMMARY parked_aircraft_parts=71 unique_placements=13 prop_overlap_pairs=0 aircraft_overlap_pairs=0

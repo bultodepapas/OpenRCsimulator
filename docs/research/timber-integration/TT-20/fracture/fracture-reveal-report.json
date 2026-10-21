@@ -1,0 +1,747 @@
+{
+	"asset_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+	"close_captures": [
+		{
+			"camera_distance_m": 0.181107997894287,
+			"camera_up_world": [
+				0.811988830566406,
+				-0.0000383947772206739,
+				-0.583673000335693
+			],
+			"foam_material": {
+				"albedo_alpha": 1.0,
+				"class": "StandardMaterial3D",
+				"cull_mode": 0,
+				"transparency": 0
+			},
+			"foam_mesh_name": "TornEPOCrossSection",
+			"foam_normal_world": [
+				0.282031923532486,
+				-0.875483155250549,
+				0.392412155866623
+			],
+			"foam_surfaces": 1,
+			"foam_world_center_m": [
+				-10.0223712921143,
+				0.00894944369792938,
+				7.63473987579346
+			],
+			"image": "wing_left-fracture-close.png",
+			"kind": "wing_left",
+			"occlusion_probe": {
+				"camera_world_m": [
+					-9.95536518096924,
+					-0.148638308048248,
+					7.69370079040527
+				],
+				"carbon_endpoint_candidates_world_m": [
+					[
+						-10.0361261367798,
+						0.0152810169383883,
+						7.64039087295532
+					],
+					[
+						-10.0338697433472,
+						0.00827715266495943,
+						7.64353036880493
+					]
+				],
+				"carbon_front_world_m": [
+					-10.0338697433472,
+					0.00827715266495943,
+					7.64353036880493
+				],
+				"face_probe_direction_world": [
+					-0.369978785514832,
+					0.870131373405457,
+					-0.325556665658951
+				],
+				"face_probe_hits": [
+					{
+						"distance_m": 0.181113079703777,
+						"mesh": "TornEPOCrossSection",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left/TornEPOCrossSection",
+						"triangle": 27
+					},
+					{
+						"distance_m": 0.181452687719617,
+						"mesh": "wing_left_fixed",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed",
+						"triangle": 1062
+					},
+					{
+						"distance_m": 0.18461384156574,
+						"mesh": "WreckContactShadow_01",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_01",
+						"triangle": 0
+					},
+					{
+						"distance_m": 0.228285418642486,
+						"mesh": "SoftAircraftShadow",
+						"path": "/root/Main/Field/ProjectedFieldShadows/Caster_flightline_barrier/SoftAircraftShadow",
+						"triangle": 0
+					}
+				],
+				"face_probe_target_distance_m": 0.181107997894287,
+				"face_target_behind": false,
+				"face_target_screen_px": [
+					799.999938964844,
+					499.999969482422
+				],
+				"first_aircraft_hit_face": {
+					"distance_m": 0.181113079703777,
+					"mesh": "TornEPOCrossSection",
+					"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left/TornEPOCrossSection",
+					"triangle": 27
+				},
+				"first_aircraft_hit_spar": {
+					"distance_m": 0.182489668668789,
+					"mesh": "DarkCarbonSparEnd",
+					"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left/DarkCarbonSparEnd",
+					"triangle": 138
+				},
+				"foam_visibility_ab_test": {
+					"changed_pixels": 625,
+					"mean_abs_rgb_delta": 0.0130718946456909,
+					"region_px": 25,
+					"sampled_pixels": 625
+				},
+				"rendered_pixel_witnesses": {
+					"carbon_max_channel": 0.0588235296308994,
+					"carbon_rgb": [
+						0.0313725508749485,
+						0.0509803928434849,
+						0.0588235296308994
+					],
+					"foam_luminance": 0.780716061592102,
+					"foam_rgb": [
+						0.756862759590149,
+						0.788235306739807,
+						0.776470601558685
+					]
+				},
+				"spar_probe_direction_world": [
+					-0.43018627166748,
+					0.859859228134155,
+					-0.274921923875809
+				],
+				"spar_probe_hits": [
+					{
+						"distance_m": 0.182489668668789,
+						"mesh": "DarkCarbonSparEnd",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left/DarkCarbonSparEnd",
+						"triangle": 138
+					},
+					{
+						"distance_m": 0.18330432015248,
+						"mesh": "TornEPOCrossSection",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left/TornEPOCrossSection",
+						"triangle": 26
+					},
+					{
+						"distance_m": 0.183649813305685,
+						"mesh": "wing_left_fixed",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed",
+						"triangle": 1064
+					},
+					{
+						"distance_m": 0.186819286125611,
+						"mesh": "WreckContactShadow_01",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_01",
+						"triangle": 0
+					},
+					{
+						"distance_m": 0.231012580519587,
+						"mesh": "SoftAircraftShadow",
+						"path": "/root/Main/Field/ProjectedFieldShadows/Caster_flightline_barrier/SoftAircraftShadow",
+						"triangle": 0
+					}
+				],
+				"spar_probe_target_distance_m": 0.182489722967148,
+				"spar_target_behind": false,
+				"spar_target_screen_px": [
+					799.615295410156,
+					615.4775390625
+				],
+				"viewport_size_px": [
+					1600.0,
+					1000.0
+				]
+			},
+			"source_host_name": "wing_left_fixed",
+			"source_host_root_x_span_m": [
+				-0.772751808166504,
+				0.00403238739818335
+			],
+			"spar_global_scale": [
+				0.99999988079071,
+				0.999999940395355,
+				0.99999988079071
+			],
+			"spar_height_m": 0.00800000037997961,
+			"spar_material": {
+				"albedo_alpha": 1.0,
+				"class": "StandardMaterial3D",
+				"cull_mode": 0,
+				"transparency": 0
+			},
+			"spar_mesh_name": "DarkCarbonSparEnd",
+			"spar_surfaces": 1,
+			"view_direction_world": [
+				-0.282031923532486,
+				0.875483155250549,
+				-0.392412155866623
+			]
+		},
+		{
+			"camera_distance_m": 0.181107997894287,
+			"camera_up_world": [
+				-0.124635718762875,
+				-0.0000203624349524034,
+				-0.992202579975128
+			],
+			"foam_material": {
+				"albedo_alpha": 1.0,
+				"class": "StandardMaterial3D",
+				"cull_mode": 0,
+				"transparency": 0
+			},
+			"foam_mesh_name": "TornEPOCrossSection",
+			"foam_normal_world": [
+				-0.700303196907043,
+				-0.708402693271637,
+				0.0879832655191422
+			],
+			"foam_surfaces": 1,
+			"foam_world_center_m": [
+				-9.09184646606445,
+				0.013165146112442,
+				8.26128005981445
+			],
+			"image": "wing_right-fracture-close.png",
+			"kind": "wing_right",
+			"occlusion_probe": {
+				"camera_world_m": [
+					-9.22039413452148,
+					-0.114347748458385,
+					8.25727272033691
+				],
+				"carbon_endpoint_candidates_world_m": [
+					[
+						-9.08514022827148,
+						0.0183981340378523,
+						8.27501773834229
+					],
+					[
+						-9.09074211120605,
+						0.0127309132367373,
+						8.27572154998779
+					]
+				],
+				"carbon_front_world_m": [
+					-9.09074211120605,
+					0.0127309132367373,
+					8.27572154998779
+				],
+				"face_probe_direction_world": [
+					0.709784626960754,
+					0.704071164131165,
+					0.0221267975866795
+				],
+				"face_probe_hits": [
+					{
+						"distance_m": 0.179453104775139,
+						"mesh": "WreckContactShadow_02",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_02",
+						"triangle": 1
+					},
+					{
+						"distance_m": 0.179453116755317,
+						"mesh": "WreckContactShadow_06",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_06",
+						"triangle": 1
+					},
+					{
+						"distance_m": 0.181103346312639,
+						"mesh": "TornEPOCrossSection",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right/TornEPOCrossSection",
+						"triangle": 24
+					},
+					{
+						"distance_m": 0.181437365529137,
+						"mesh": "wing_right_fixed",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed",
+						"triangle": 1038
+					},
+					{
+						"distance_m": 0.233424914361687,
+						"mesh": "SoftAircraftShadow",
+						"path": "/root/Main/Field/ProjectedFieldShadows/Caster_flightline_barrier/SoftAircraftShadow",
+						"triangle": 0
+					}
+				],
+				"face_probe_target_distance_m": 0.181107997894287,
+				"face_target_behind": false,
+				"face_target_screen_px": [
+					800.000183105469,
+					500.0
+				],
+				"first_aircraft_hit_face": {
+					"distance_m": 0.181103346312639,
+					"mesh": "TornEPOCrossSection",
+					"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right/TornEPOCrossSection",
+					"triangle": 24
+				},
+				"first_aircraft_hit_spar": {
+					"distance_m": 0.182480096127389,
+					"mesh": "DarkCarbonSparEnd",
+					"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right/DarkCarbonSparEnd",
+					"triangle": 121
+				},
+				"foam_visibility_ab_test": {
+					"changed_pixels": 458,
+					"mean_abs_rgb_delta": 0.0133605220794678,
+					"region_px": 25,
+					"sampled_pixels": 625
+				},
+				"rendered_pixel_witnesses": {
+					"carbon_max_channel": 0.0431372560560703,
+					"carbon_rgb": [
+						0.0235294122248888,
+						0.0352941192686558,
+						0.0431372560560703
+					],
+					"foam_luminance": 0.55212789773941,
+					"foam_rgb": [
+						0.537254929542542,
+						0.556862771511078,
+						0.549019634723663
+					]
+				},
+				"spar_probe_direction_world": [
+					0.710499465465546,
+					0.696397304534912,
+					0.101100482046604
+				],
+				"spar_probe_hits": [
+					{
+						"distance_m": 0.181430559833633,
+						"mesh": "WreckContactShadow_02",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_02",
+						"triangle": 1
+					},
+					{
+						"distance_m": 0.181430563027802,
+						"mesh": "WreckContactShadow_06",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckContactShadow_06",
+						"triangle": 1
+					},
+					{
+						"distance_m": 0.182480096127389,
+						"mesh": "DarkCarbonSparEnd",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right/DarkCarbonSparEnd",
+						"triangle": 121
+					},
+					{
+						"distance_m": 0.18329490367356,
+						"mesh": "TornEPOCrossSection",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right/TornEPOCrossSection",
+						"triangle": 23
+					},
+					{
+						"distance_m": 0.183639736948773,
+						"mesh": "wing_right_fixed",
+						"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed",
+						"triangle": 1044
+					},
+					{
+						"distance_m": 0.235997121265627,
+						"mesh": "SoftAircraftShadow",
+						"path": "/root/Main/Field/ProjectedFieldShadows/Caster_flightline_barrier/SoftAircraftShadow",
+						"triangle": 0
+					}
+				],
+				"spar_probe_target_distance_m": 0.182480126619339,
+				"spar_target_behind": false,
+				"spar_target_screen_px": [
+					801.533996582031,
+					615.485595703125
+				],
+				"viewport_size_px": [
+					1600.0,
+					1000.0
+				]
+			},
+			"source_host_name": "wing_right_fixed",
+			"source_host_root_x_span_m": [
+				-0.00403238274157047,
+				0.772751688957214
+			],
+			"spar_global_scale": [
+				1.0,
+				1.0,
+				0.99999988079071
+			],
+			"spar_height_m": 0.00800000037997961,
+			"spar_material": {
+				"albedo_alpha": 1.0,
+				"class": "StandardMaterial3D",
+				"cull_mode": 0,
+				"transparency": 0
+			},
+			"spar_mesh_name": "DarkCarbonSparEnd",
+			"spar_surfaces": 1,
+			"view_direction_world": [
+				0.700303196907043,
+				0.708402693271637,
+				-0.0879832655191422
+			]
+		}
+	],
+	"crash": {
+		"active": true,
+		"effects": {
+			"fire": 0.0,
+			"marks": 3,
+			"particles": 700,
+			"splinters": 144,
+			"update_usec": 9
+		},
+		"impact_usec": 3606,
+		"report": {
+			"abrasion_class": 1,
+			"abrasion_j_per_kg": 247.405494738963,
+			"cause": {
+				"detail": "path -51°, 37.9 m/s",
+				"factors": [],
+				"id": "dive",
+				"label": "Steep high-speed dive into the ground"
+			},
+			"cg_model": "(0.0, -0.002176, 0.06)",
+			"cg_offset_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"class": 4,
+			"component": "propeller",
+			"component_basis": "aircraft data crash_hull_components label of the struck hull point; not a structural section ID",
+			"component_damage": 1.0,
+			"component_group": "propeller",
+			"component_is_estimate": false,
+			"contact_point_world": "(-14.1115, 0.025, 21.33445)",
+			"durability": 1.0,
+			"effective_mass_kg": 1.80299488822254,
+			"energy": {
+				"fire_kind": "",
+				"fire_s": 0.0,
+				"flare": true,
+				"flash": false,
+				"flash_radius_m": 0.0,
+				"flash_s": 0.0,
+				"stain": false,
+				"vent_delay_s": 5.0,
+				"vent_s": 20.0
+			},
+			"energy_j": 1509.4451866364,
+			"energy_sources": {
+				"lipo": 0.33
+			},
+			"error": "",
+			"estimated_energy_j": 616.779729119267,
+			"friction_work_j": 541.818033478328,
+			"fuel_by_kind_kg": {},
+			"fuel_kg": 0.0,
+			"fuel_kg_basis": "declared inventory; legacy kerosene-only scalar",
+			"fuel_kind": "kerosene",
+			"fuel_sample_basis": "constant-build",
+			"impact_angle_deg": 48.6770617435757,
+			"inventory_boxes": [
+				{
+					"center": "(0.0, 0.1, 0.1013)",
+					"mass": 0.456,
+					"size": "(1.45, 0.025, 0.213535)"
+				},
+				{
+					"center": "(0.0, -0.025, 0.2208)",
+					"mass": 0.605,
+					"size": "(0.12, 0.12, 0.85)"
+				},
+				{
+					"center": "(0.0, -0.012, 0.7033)",
+					"mass": 0.08,
+					"size": "(0.596, 0.02, 0.15)"
+				},
+				{
+					"center": "(0.0, -0.16, 0.012)",
+					"mass": 0.135,
+					"size": "(0.263958, 0.16, 0.1)"
+				},
+				{
+					"center": "(0.0, -0.1, 0.7384)",
+					"mass": 0.012,
+					"size": "(0.028, 0.05, 0.04)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.251)",
+					"mass": 0.032,
+					"size": "(0.2, 0.2, 0.05)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.2125)",
+					"mass": 0.16,
+					"size": "(0.04, 0.04, 0.05)"
+				},
+				{
+					"center": "(0.0, -0.025, -0.142)",
+					"mass": 0.06,
+					"size": "(0.035, 0.016, 0.065)"
+				},
+				{
+					"center": "(0.0, -0.03, 0.118)",
+					"mass": 0.012,
+					"size": "(0.025, 0.01, 0.04)"
+				},
+				{
+					"center": "(0.0, -0.04, 0.228)",
+					"mass": 0.018,
+					"size": "(0.03, 0.02, 0.035)"
+				},
+				{
+					"center": "(0.0, 0.025, 0.058)",
+					"mass": 0.04,
+					"size": "(0.2, 0.02, 0.16)"
+				},
+				{
+					"center": "(0.0, -0.03, -0.052)",
+					"mass": 0.33,
+					"size": "(0.043, 0.032, 0.14)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.220998)",
+					"mass": 0.25,
+					"size": "(0.04, 0.04, 0.04)"
+				}
+			],
+			"kinematics": "detected rigid contact point",
+			"kinematics_is_proxy": false,
+			"mass_basis": "rigid-body effective mass at the contact point",
+			"mass_kg": 2.19,
+			"mass_sample_basis": "constant-build",
+			"mass_sample_tick": 38,
+			"mass_sample_time_s": 0.158333333333333,
+			"normal_class": 4,
+			"normal_energy_j": 700.886055817349,
+			"prop_broken": false,
+			"sample_time": "detected_tick_point",
+			"severity": 1.0,
+			"slapdown_class": 3,
+			"slapdown_energy_j": 137.060600247027,
+			"slapdown_j_per_kg": 62.584748971245,
+			"soft_rule": "impact",
+			"specific_energy_j_per_kg": 281.634579506515,
+			"speed_mps": 37.1280049951392,
+			"surface": "rough",
+			"tangential_speed_mps": 24.5157101456906,
+			"tank_rupture_kind": "estimated: C4, or C3 central impact >=600 J; uncalibrated",
+			"tank_ruptured": true,
+			"tick": 38,
+			"trigger": "hull_contact",
+			"valid": true
+		},
+		"shader_warmup": {
+			"drawn": true,
+			"draws": 2,
+			"particle_samples": 8,
+			"usec": 305422
+		},
+		"update_usec": 24,
+		"water": {
+			"droplet_pool_size": 0,
+			"elapsed_s": 0.0,
+			"has_event": false,
+			"impact_audio_emitted": false,
+			"impact_audio_source_index": -1,
+			"impact_depth_m": 0.0,
+			"point_ned": [],
+			"rings_visible": 0,
+			"seed": 1,
+			"version": 1
+		},
+		"water_active": false,
+		"water_event_count": 0,
+		"wreck": {
+			"active_body_count": 10,
+			"c3_contact_exposure_index_j": 0.0,
+			"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+			"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+			"c3_contact_release_pending": false,
+			"c3_contact_release_thresholds_j": {
+				"canopy": 25.0,
+				"engine": 50.0,
+				"gear": 12.0,
+				"propeller": 4.0
+			},
+			"cg_model": "(0.0, -0.002176, 0.06)",
+			"class_level": 4,
+			"component_hint": "propeller",
+			"contact_point_model": "(-0.007792, -0.126108, -0.232468)",
+			"contact_shadow_count": 24,
+			"detached_group_count": 9,
+			"elapsed_s": 2.52256944444444,
+			"energy_estimate_source": "normal_energy_j",
+			"fragment_groups": [
+				"core",
+				"wing_left",
+				"wing_right",
+				"engine",
+				"propeller",
+				"horizontal_tail",
+				"vertical_tail",
+				"gear",
+				"gear",
+				"canopy"
+			],
+			"mass_kg": 2.19,
+			"max_speed_seen_mps": 27.7015266418457,
+			"normal_impact_energy_estimate_j": 700.886055817349,
+			"paused": false,
+			"pool_size": 24,
+			"prepared": true,
+			"release_kinds": [],
+			"scatter_energy_fraction": 0.12,
+			"scatter_energy_j": 84.1063292311833,
+			"secondary_impact_strength_unit": "J",
+			"secondary_impacts": 9,
+			"sleeping_body_count": 7,
+			"started": true
+		}
+	},
+	"crash_frame": 9,
+	"crash_reveal_nodes": {
+		"nodes": [
+			{
+				"children": [
+					{
+						"has_mesh": true,
+						"name": "TornEPOCrossSection",
+						"surface_count": 1,
+						"visible": true,
+						"visible_in_tree": true
+					},
+					{
+						"has_mesh": true,
+						"name": "DarkCarbonSparEnd",
+						"surface_count": 1,
+						"visible": true,
+						"visible_in_tree": true
+					}
+				],
+				"kind": "wing_left",
+				"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_01/wing_left_fixed/TimberEPOFracture_wing_left",
+				"position_world_m": [
+					-10.0350036621094,
+					0.0653853416442871,
+					7.75913763046265
+				],
+				"valid": true,
+				"visible": true,
+				"visible_in_tree": true
+			},
+			{
+				"children": [
+					{
+						"has_mesh": true,
+						"name": "TornEPOCrossSection",
+						"surface_count": 1,
+						"visible": true,
+						"visible_in_tree": true
+					},
+					{
+						"has_mesh": true,
+						"name": "DarkCarbonSparEnd",
+						"surface_count": 1,
+						"visible": true,
+						"visible_in_tree": true
+					}
+				],
+				"kind": "wing_right",
+				"path": "/root/Main/CrashDirector/@Node3D@32/WreckPool_02/wing_right_fixed/TimberEPOFracture_wing_right",
+				"position_world_m": [
+					-9.15262222290039,
+					0.0959902852773666,
+					8.3524284362793
+				],
+				"valid": true,
+				"visible": true,
+				"visible_in_tree": true
+			}
+		],
+		"total_count": 2,
+		"visible_count": 2
+	},
+	"crash_speed_mps": 38.0,
+	"failures": [],
+	"final_fault": "",
+	"final_tick": 38,
+	"fixture": "production C4 initial state with the same 38 m/s crash profile as review_flight.gd",
+	"groups": [
+		{
+			"activated": true,
+			"kind": "core",
+			"member_count": 0
+		},
+		{
+			"activated": true,
+			"kind": "wing_left",
+			"member_count": 5
+		},
+		{
+			"activated": true,
+			"kind": "wing_right",
+			"member_count": 5
+		},
+		{
+			"activated": true,
+			"kind": "engine",
+			"member_count": 1
+		},
+		{
+			"activated": true,
+			"kind": "propeller",
+			"member_count": 3
+		},
+		{
+			"activated": true,
+			"kind": "horizontal_tail",
+			"member_count": 3
+		},
+		{
+			"activated": true,
+			"kind": "vertical_tail",
+			"member_count": 3
+		},
+		{
+			"activated": true,
+			"kind": "gear",
+			"member_count": 9
+		},
+		{
+			"activated": true,
+			"kind": "gear",
+			"member_count": 4
+		},
+		{
+			"activated": true,
+			"kind": "canopy",
+			"member_count": 1
+		}
+	],
+	"read_only_scope": "captures visibility and transforms only; no crash, collision, or separation logic is changed",
+	"review_frames": 150,
+	"schema": "timber-c4-fracture-reveal-review-v1",
+	"synthetic_crash_state": true,
+	"visual_detail_data_sha256": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+	"visual_details_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+	"wreck_script_sha256": "60a219932df4b742a9494651959449f719cc47ebee10ebd2fffaf8cc1f3cb41a"
+}

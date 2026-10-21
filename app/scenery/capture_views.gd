@@ -13,6 +13,21 @@ const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const Scenery = preload("res://scenery/scenery.gd")
 
+const DETAIL_VIEWS := {
+	"club_close": {eye = [-12.0, -5.0, -1.0], at = [-15.2, -4.7, -0.18], fov = 55.0},
+	"flower_close": {eye = [-14.0, -3.0, -0.7], at = [-15.4, -3.0, -0.2], fov = 55.0},
+	"carpark_close": {eye = [-39.0, -10.0, -1.4], at = [-39.0, -18.0, 0.0], fov = 55.0},
+	"runway_aerial": {eye = [-24.0, 0.0, -38.0], at = [12.0, 0.0, 0.0], fov = 55.0},
+	"taxi_close": {eye = [5.0, -31.0, -2.0], at = [14.0, -27.0, -0.1], fov = 55.0},
+	"hangar_west": {eye = [-8.0, -55.0, -3.2], at = [-17.0, -36.0, -0.8], fov = 52.0},
+	"hangar_east": {eye = [-7.5, 52.0, -3.1], at = [-18.0, 35.0, -0.9], fov = 52.0},
+	"hangar_service": {eye = [-17.0, -21.8, -2.1], at = [-19.9, -19.6, -1.2], fov = 47.0},
+	"hangar_micro": {eye = [-14.0, -53.0, -1.8], at = [-19.0, -48.0, -0.45], fov = 48.0},
+	"hangar_bench": {eye = [-17.2, -44.0, -1.8], at = [-19.9, -42.6, -1.0], fov = 45.0},
+	"hangar_ready": {eye = [-12.0, 23.0, -2.0], at = [-18.3, 28.7, -0.6], fov = 57.0},
+	"hangar_east_bench": {eye = [-14.0, 16.5, -2.0], at = [-19.4, 20.2, -0.8], fov = 50.0},
+}
+
 var _args := {}
 
 
@@ -50,7 +65,11 @@ func _run() -> void:
 	if _args.has("views"):
 		wanted = str(_args.views).split(",")
 	for name: String in wanted:
-		var v: Dictionary = Postcards.VIEWS[name]
+		var v: Dictionary = DETAIL_VIEWS.get(name, Postcards.VIEWS.get(name, {}))
+		if v.is_empty():
+			printerr("Unknown capture view: ", name)
+			quit(1)
+			return
 		cam.fov = v.fov
 		cam.look_at_from_position(Frames.ned_to_render(v.eye), Frames.ned_to_render(v.at), Vector3.UP)
 		await RenderingServer.frame_post_draw

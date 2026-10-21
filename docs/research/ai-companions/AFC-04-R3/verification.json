@@ -1,0 +1,825 @@
+{
+  "artifacts": [
+    {
+      "bytes": 213108,
+      "path": "calm-survey/predictor-vs-flown-per-plan.json",
+      "sha256": "cece5b77ebb9f10073df6a6e71f0e88bb9a686b14e6887739fb84b2bdeb6de21"
+    },
+    {
+      "bytes": 20067,
+      "path": "calm-survey/report.json",
+      "sha256": "b4b66a8489edf45ace7d7af6f70c58e40f7fda03b4548ec534700fe415dbbfed"
+    },
+    {
+      "bytes": 56476,
+      "path": "calm-survey/runner/engine.log",
+      "sha256": "e91d2d71bdd165bd10de982947a1d35ad9cd01d713619eb061021a9ea5bfbafe"
+    },
+    {
+      "bytes": 4571,
+      "path": "calm-survey/runner/report.json",
+      "sha256": "6a9ceb57b6c4d758ea263562258e99ae10112da7c8661234b9e0ea5bdd973b36"
+    },
+    {
+      "bytes": 13907,
+      "path": "calm-survey/static-path-clearance.json",
+      "sha256": "423289404cbefa8c2d192777d754865341f733f274c89290931f0114ff8e0091"
+    },
+    {
+      "bytes": 1917093,
+      "path": "calm-survey/trajectory.csv",
+      "sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
+    },
+    {
+      "bytes": 11753,
+      "path": "checks/reachable-pilot-r2-unit/engine.log",
+      "sha256": "cb7fb94685452596f7ec4a78cb5e6ff5d52cd9e743d24d9cde55f14a2c29ce03"
+    },
+    {
+      "bytes": 1350,
+      "path": "checks/reachable-pilot-r2-unit/report.json",
+      "sha256": "ac03ea213f93b6794b17ce69181bab610f3607e9f9a4b418e01877fdeec3f96f"
+    },
+    {
+      "bytes": 2212,
+      "path": "checks/static-calm/engine.log",
+      "sha256": "35126bbe7a3bcd480e23bfe0c6fc8e24aafe3d82adcc3e600ed89c3a1281f78e"
+    },
+    {
+      "bytes": 4762,
+      "path": "checks/static-calm/report.json",
+      "sha256": "2048c83f90b24cf60cbe15ccb65841f56025f0be33494580bcb28048aa7c43db"
+    },
+    {
+      "bytes": 2228,
+      "path": "checks/static-gentle/engine.log",
+      "sha256": "ed7cdd2aa064d7ae096c281337e6ef67494d917447414112c4164fe2e124577e"
+    },
+    {
+      "bytes": 4814,
+      "path": "checks/static-gentle/report.json",
+      "sha256": "2ca0439753df9b6765af6c2e728ceaa8cd48f24a57e5f5ca2391d8eee8387ca3"
+    },
+    {
+      "bytes": 2018,
+      "path": "checks/static-harness-parse/engine.log",
+      "sha256": "9ff39d302664cf141631b14affd965e3db3a6ec937a780502cfe738964131820"
+    },
+    {
+      "bytes": 4218,
+      "path": "checks/static-harness-parse/report.json",
+      "sha256": "1f8344ed8da8edfcefceebc1db9b45cde0b949436f830d30f0f7c8b0d86361a1"
+    },
+    {
+      "bytes": 223655,
+      "path": "gentle-survey/predictor-vs-flown-per-plan.json",
+      "sha256": "d05b004264d97c5c01e048d089faeb430b1cbada1ee3ed0a18b9970324bf8144"
+    },
+    {
+      "bytes": 20052,
+      "path": "gentle-survey/report.json",
+      "sha256": "fa5e0b0ecb5bfe37d4d2dba5be479c21ddbfb65bdef2429798d89ec65fab3224"
+    },
+    {
+      "bytes": 59203,
+      "path": "gentle-survey/runner/engine.log",
+      "sha256": "7e0ceade258c0e694b3572566fd961dd3e66840146eaa572686b58900417c0bc"
+    },
+    {
+      "bytes": 4625,
+      "path": "gentle-survey/runner/report.json",
+      "sha256": "f4d9fd910923aaf1a2dd7cc36497202542cc865a5f1ae37ca98427882ae40009"
+    },
+    {
+      "bytes": 13973,
+      "path": "gentle-survey/static-path-clearance.json",
+      "sha256": "bf5ad2f2d3d40380a5a8dabd59a3d3c1b85db5653059f5ae107eb474d5fdeb59"
+    },
+    {
+      "bytes": 1916339,
+      "path": "gentle-survey/trajectory.csv",
+      "sha256": "c5ce828b4dcbdf3a25062df97b76986446c106667a5806d92b6643281f82bc8d"
+    },
+    {
+      "bytes": 196250,
+      "path": "pilot-matrix/flight_samples_1hz.csv",
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    {
+      "bytes": 2383,
+      "path": "pilot-matrix/README.md",
+      "sha256": "8d338a6e7c14f747bfa0709b9b74f7006f84bfe0c2f25a88370c5621e87cb866"
+    },
+    {
+      "bytes": 21920,
+      "path": "pilot-matrix/runner/engine.log",
+      "sha256": "ccee36da62326e29b262884e0949ad8fc21c1417bfa771e183255c3c4adb0adb"
+    },
+    {
+      "bytes": 1575,
+      "path": "pilot-matrix/runner/report.json",
+      "sha256": "c266bf27a1e72e5c223026693a0fc93a1bd3b91fecebc22dc8e483738aeec84a"
+    },
+    {
+      "bytes": 954,
+      "path": "pilot-matrix/scenario_metrics.csv",
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    },
+    {
+      "bytes": 20064,
+      "path": "r1-calm-comparison/report.json",
+      "sha256": "d2536b6c0934f6132edd141ad028f48211f57f3a63b8715a579d642355599e0e"
+    },
+    {
+      "bytes": 1917093,
+      "path": "r1-calm-comparison/trajectory.csv",
+      "sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
+    },
+    {
+      "bytes": 6103,
+      "path": "README.md",
+      "sha256": "f66b611587ca330459fa6a078351d97e4bb6a411767d12768e98d9729eb5bff6"
+    },
+    {
+      "bytes": 7357,
+      "path": "source-snapshot-r1-receipt.json",
+      "sha256": "ac9daa4a99f03cd7785f49dd1cec05c454ae37c9f350e2ecb3476970ec5f2a9b"
+    },
+    {
+      "bytes": 16531,
+      "path": "sources/analysis/research/ai-companions/avoidance/analyze_reachable_plans.py",
+      "sha256": "1f29b10b215ba468113cab42bcc9e47164fe4a548e453b6b5846dbf479acb0b9"
+    },
+    {
+      "bytes": 4884,
+      "path": "sources/analysis/research/ai-companions/avoidance/test_analyze_reachable_plans.py",
+      "sha256": "d333db47231f741c43f3ff434f851e6c58376885498a6d5d77695fc02da70c87"
+    },
+    {
+      "bytes": 21717,
+      "path": "sources/mirror/app/ai/companions/pilot.gd",
+      "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    },
+    {
+      "bytes": 9250,
+      "path": "sources/mirror/app/ai/companions/static_trajectory.gd",
+      "sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+    },
+    {
+      "bytes": 60211,
+      "path": "sources/mirror/app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    },
+    {
+      "bytes": 62128,
+      "path": "sources/mirror/app/data/field_loader.gd",
+      "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+    },
+    {
+      "bytes": 158788,
+      "path": "sources/mirror/app/data/fields/default.json",
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    {
+      "bytes": 1641,
+      "path": "sources/mirror/app/data/fields/lake.json",
+      "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+    },
+    {
+      "bytes": 2621,
+      "path": "sources/mirror/app/data/ground/surface_friction.json",
+      "sha256": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586"
+    },
+    {
+      "bytes": 19121,
+      "path": "sources/mirror/app/data/lake_loader.gd",
+      "sha256": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d"
+    },
+    {
+      "bytes": 35886,
+      "path": "sources/mirror/app/physics/aircraft_contact_contract.gd",
+      "sha256": "25821831c966893d40666653b13e579a8d458d11c17378eb1fde6b062098e929"
+    },
+    {
+      "bytes": 140678,
+      "path": "sources/mirror/app/physics/aircraft_data.gd",
+      "sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737"
+    },
+    {
+      "bytes": 4721,
+      "path": "sources/mirror/app/physics/ground_surfaces.gd",
+      "sha256": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536"
+    },
+    {
+      "bytes": 11642,
+      "path": "sources/mirror/app/physics/ground_terrain.gd",
+      "sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a"
+    },
+    {
+      "bytes": 35299,
+      "path": "sources/mirror/app/physics/lake_surface.gd",
+      "sha256": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224"
+    },
+    {
+      "bytes": 5005,
+      "path": "sources/mirror/app/physics/math3d.gd",
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    {
+      "bytes": 5582,
+      "path": "sources/mirror/app/physics/rigid_body.gd",
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "bytes": 12178,
+      "path": "sources/mirror/app/physics/wind_config.gd",
+      "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+    },
+    {
+      "bytes": 5602,
+      "path": "sources/mirror/app/physics/wind_field.gd",
+      "sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a"
+    },
+    {
+      "bytes": 28102,
+      "path": "sources/mirror/app/render/world/field_lights.gd",
+      "sha256": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195"
+    },
+    {
+      "bytes": 1961,
+      "path": "sources/mirror/app/scenery/collision_setup.gd",
+      "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+    },
+    {
+      "bytes": 37095,
+      "path": "sources/mirror/app/scenery/collision_world.gd",
+      "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+    },
+    {
+      "bytes": 6711,
+      "path": "sources/mirror/app/scenery/models.gd",
+      "sha256": "cc2e28f9b34c19c9b9ceca7629460a87f2966ac32670bb9c8f22e65cebdfd2d3"
+    },
+    {
+      "bytes": 43178,
+      "path": "sources/mirror/app/scenery/prefabs.gd",
+      "sha256": "12657346c01e9bce350d2cbafb5f5247232c00f6f7a4daaa5d10134c760a811b"
+    },
+    {
+      "bytes": 35211,
+      "path": "sources/mirror/app/scenery/scenery.gd",
+      "sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b"
+    },
+    {
+      "bytes": 16829,
+      "path": "sources/mirror/app/scenery/scenery_loader.gd",
+      "sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd"
+    },
+    {
+      "bytes": 12285,
+      "path": "sources/mirror/app/sim/flight_log.gd",
+      "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+    },
+    {
+      "bytes": 235678,
+      "path": "sources/mirror/app/sim/flight_session.gd",
+      "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+    },
+    {
+      "bytes": 9337,
+      "path": "sources/mirror/research/ai-companions/avoidance/assess_static_paths.gd",
+      "sha256": "1a0aeb53e093f9afd9af4c385d2e0dba924774ec5d678ba497c424474beb9fba"
+    },
+    {
+      "bytes": 49092,
+      "path": "sources/mirror/research/ai-companions/avoidance/encounter_probe_gentle.gd",
+      "sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1"
+    },
+    {
+      "bytes": 22483,
+      "path": "sources/mirror/research/ai-companions/avoidance/reachable_pilot_r2.gd",
+      "sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8"
+    },
+    {
+      "bytes": 16514,
+      "path": "sources/mirror/research/ai-companions/avoidance/test_reachable_pilot_r2.gd",
+      "sha256": "b968bfe56c0a7db85a0d6bfb3c682df1f378012f7a87e53a521e6fcc3310e24b"
+    },
+    {
+      "bytes": 49059,
+      "path": "sources/mirror/research/ai-companions/encounter_probe.gd",
+      "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+    },
+    {
+      "bytes": 24165,
+      "path": "sources/mirror/research/ai-companions/pilot_probe.gd",
+      "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+    }
+  ],
+  "candidate": {
+    "calm_probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+    "gentle_probe_sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1",
+    "parent_path": "app/ai/companions/pilot.gd",
+    "parent_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "path": "research/ai-companions/avoidance/reachable_pilot_r2.gd",
+    "pilot_probe_sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32",
+    "sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "source_file_hashes": [
+      {
+        "bytes": 21717,
+        "kind": "mirror-source-copy",
+        "path": "app/ai/companions/pilot.gd",
+        "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+      },
+      {
+        "bytes": 9250,
+        "kind": "mirror-source-copy",
+        "path": "app/ai/companions/static_trajectory.gd",
+        "sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+      },
+      {
+        "bytes": 60211,
+        "kind": "mirror-source-copy",
+        "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+        "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+      },
+      {
+        "bytes": 62128,
+        "kind": "mirror-source-copy",
+        "path": "app/data/field_loader.gd",
+        "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+      },
+      {
+        "bytes": 158788,
+        "kind": "mirror-source-copy",
+        "path": "app/data/fields/default.json",
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+      },
+      {
+        "bytes": 1641,
+        "kind": "mirror-source-copy",
+        "path": "app/data/fields/lake.json",
+        "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+      },
+      {
+        "bytes": 2621,
+        "kind": "mirror-source-copy",
+        "path": "app/data/ground/surface_friction.json",
+        "sha256": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586"
+      },
+      {
+        "bytes": 19121,
+        "kind": "mirror-source-copy",
+        "path": "app/data/lake_loader.gd",
+        "sha256": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d"
+      },
+      {
+        "bytes": 35886,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/aircraft_contact_contract.gd",
+        "sha256": "25821831c966893d40666653b13e579a8d458d11c17378eb1fde6b062098e929"
+      },
+      {
+        "bytes": 140678,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/aircraft_data.gd",
+        "sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737"
+      },
+      {
+        "bytes": 4721,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/ground_surfaces.gd",
+        "sha256": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536"
+      },
+      {
+        "bytes": 11642,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/ground_terrain.gd",
+        "sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a"
+      },
+      {
+        "bytes": 35299,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/lake_surface.gd",
+        "sha256": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224"
+      },
+      {
+        "bytes": 5005,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/math3d.gd",
+        "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+      },
+      {
+        "bytes": 5582,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/rigid_body.gd",
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      },
+      {
+        "bytes": 12178,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/wind_config.gd",
+        "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+      },
+      {
+        "bytes": 5602,
+        "kind": "mirror-source-copy",
+        "path": "app/physics/wind_field.gd",
+        "sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a"
+      },
+      {
+        "bytes": 28102,
+        "kind": "mirror-source-copy",
+        "path": "app/render/world/field_lights.gd",
+        "sha256": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195"
+      },
+      {
+        "bytes": 1961,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/collision_setup.gd",
+        "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+      },
+      {
+        "bytes": 37095,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/collision_world.gd",
+        "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      },
+      {
+        "bytes": 6711,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/models.gd",
+        "sha256": "cc2e28f9b34c19c9b9ceca7629460a87f2966ac32670bb9c8f22e65cebdfd2d3"
+      },
+      {
+        "bytes": 43178,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/prefabs.gd",
+        "sha256": "12657346c01e9bce350d2cbafb5f5247232c00f6f7a4daaa5d10134c760a811b"
+      },
+      {
+        "bytes": 35211,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/scenery.gd",
+        "sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b"
+      },
+      {
+        "bytes": 16829,
+        "kind": "mirror-source-copy",
+        "path": "app/scenery/scenery_loader.gd",
+        "sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd"
+      },
+      {
+        "bytes": 12285,
+        "kind": "mirror-source-copy",
+        "path": "app/sim/flight_log.gd",
+        "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+      },
+      {
+        "bytes": 235678,
+        "kind": "mirror-source-copy",
+        "path": "app/sim/flight_session.gd",
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+      },
+      {
+        "bytes": 9337,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/avoidance/assess_static_paths.gd",
+        "sha256": "1a0aeb53e093f9afd9af4c385d2e0dba924774ec5d678ba497c424474beb9fba"
+      },
+      {
+        "bytes": 49092,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/avoidance/encounter_probe_gentle.gd",
+        "sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1"
+      },
+      {
+        "bytes": 22483,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/avoidance/reachable_pilot_r2.gd",
+        "sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8"
+      },
+      {
+        "bytes": 16514,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/avoidance/test_reachable_pilot_r2.gd",
+        "sha256": "b968bfe56c0a7db85a0d6bfb3c682df1f378012f7a87e53a521e6fcc3310e24b"
+      },
+      {
+        "bytes": 49059,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/encounter_probe.gd",
+        "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+      },
+      {
+        "bytes": 24165,
+        "kind": "mirror-source-copy",
+        "path": "research/ai-companions/pilot_probe.gd",
+        "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+      },
+      {
+        "bytes": 16531,
+        "kind": "analysis-source-copy",
+        "path": "research/ai-companions/avoidance/analyze_reachable_plans.py",
+        "sha256": "1f29b10b215ba468113cab42bcc9e47164fe4a548e453b6b5846dbf479acb0b9"
+      },
+      {
+        "bytes": 4884,
+        "kind": "analysis-source-copy",
+        "path": "research/ai-companions/avoidance/test_analyze_reachable_plans.py",
+        "sha256": "d333db47231f741c43f3ff434f851e6c58376885498a6d5d77695fc02da70c87"
+      }
+    ],
+    "static_checker_sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+  },
+  "candidate_status": "research_only_not_promoted",
+  "checks": {
+    "analyzer_unit": "python -B -m unittest discover -s research/ai-companions/avoidance -p test_analyze_reachable_plans.py (3 passed)",
+    "calm_survey_runner": {
+      "passed": true,
+      "runner_report": "calm-survey/runner/report.json"
+    },
+    "gentle_survey_runner": {
+      "passed": true,
+      "runner_report": "gentle-survey/runner/report.json"
+    },
+    "parent_static_checker_test": "The parent reports 38 geometric checks passed in app/tests/test_companions_trajectory.gd; actual-path checks and source identity are recorded separately here.",
+    "pilot_matrix": {
+      "checks": 148,
+      "elapsed_interpretation": "diagnostic wall time, not performance qualification",
+      "elapsed_seconds": 675.11,
+      "failures": 0,
+      "passed": true,
+      "runner_report": "pilot-matrix/runner/report.json"
+    },
+    "research_candidate_unit": {
+      "checks": 31,
+      "failures": 0,
+      "passed": true,
+      "runner_report": "checks/reachable-pilot-r2-unit/report.json"
+    }
+  },
+  "comparisons": {
+    "calm_r1_r2_full_survey_trajectory": {
+      "byte_identical": true,
+      "bytes": 1917093,
+      "r1_candidate_sha256": "6f560a55094909bf1cdb8f53a67253ac2545e5a7d217f1abd08aa9c29c92aef9",
+      "r1_report": "r1-calm-comparison/report.json",
+      "r1_trajectory": "r1-calm-comparison/trajectory.csv",
+      "r2_candidate_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "r2_report": "calm-survey/report.json",
+      "r2_trajectory": "calm-survey/trajectory.csv",
+      "rows": 9015,
+      "sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
+    },
+    "r1_r2_matrix_flight_samples": {
+      "byte_identical": true,
+      "bytes": 196250,
+      "retained_r1_reference": "../AFC-04-R2/circuit-matrix/flight_samples_1hz.csv",
+      "retained_r2": "pilot-matrix/flight_samples_1hz.csv",
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    "r1_r2_matrix_scenario_metrics": {
+      "byte_identical": true,
+      "bytes": 954,
+      "retained_r1_reference": "../AFC-04-R2/circuit-matrix/scenario_metrics.csv",
+      "retained_r2": "pilot-matrix/scenario_metrics.csv",
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    }
+  },
+  "created_date": "2026-10-20",
+  "engine": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "version": "Godot 4.7.2.stable.official.ed1daf0bf"
+  },
+  "format": "afc-04-r3-reachable-avoidance-evidence-v1",
+  "inherited_source_snapshot": {
+    "path": "source-snapshot-r1-receipt.json",
+    "sha256": "ac9daa4a99f03cd7785f49dd1cec05c454ae37c9f350e2ecb3476970ec5f2a9b"
+  },
+  "mirror": {
+    "commit": "2966595b1f243be3905e2699b71c0283195ae306",
+    "imported_cache": "app/.godot/imported junction to main imported cache",
+    "root": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+    "source_truth": "Exact used source copies under sources/mirror/; current main worktree is not asserted identical for shared field/scenery code."
+  },
+  "pending": "R2 recorded crossing runs and exact .orfl replays are deferred until the Windows idle window; no exact candidate-vs-baseline crossing replay is claimed here.",
+  "shared_context": {
+    "aircraft_radius_m": 0.898964440234366,
+    "collision_proxy_count": 6031,
+    "collision_world_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "field_id": "default",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "protected_count": 63,
+    "static_checker_identity": "0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea"
+  },
+  "surveys": [
+    {
+      "all_route_cases_complete": true,
+      "all_route_separation_gates_passed": true,
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "constructed_two_threat_fixture": {
+        "case_id": "seed-20261020-parallel-two-threats",
+        "complete": true,
+        "initial_state_is_conflicting_fixture": true,
+        "minimum_peer_separation_m": 9.0,
+        "minimum_player_separation_m": 28.999852076835,
+        "separation_gate_passed": false,
+        "valid_run": true
+      },
+      "evidence_paths": {
+        "plan_residuals": "calm-survey/predictor-vs-flown-per-plan.json",
+        "report": "calm-survey/report.json",
+        "runner_engine_log": "calm-survey/runner/engine.log",
+        "runner_report": "calm-survey/runner/report.json",
+        "static_path_check": "calm-survey/static-path-clearance.json",
+        "trajectory": "calm-survey/trajectory.csv"
+      },
+      "field_id": "default",
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "minimum_route_player_separation_m": 41.3360049045769,
+      "name": "calm-survey",
+      "per_plan_residuals": {
+        "count": 523,
+        "maximum": 0.6728910833154345,
+        "maximum_overestimate": 0.6728910833154345,
+        "maximum_underestimate_magnitude": 5.531717510124167,
+        "minimum": -5.531717510124167
+      },
+      "physics_hz": 240,
+      "pilot_source_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "planning_hz": 60,
+      "probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+      "residual_scope": "Observed residuals include flight-dynamics response, wind/model error, and 10 Hz trajectory reconstruction. They are not a worst-case prediction bound, continuous 240 Hz path, or terrain/static-obstacle clearance result.",
+      "route_case_count": 6,
+      "route_metrics": [
+        {
+          "case_id": "seed-20261020-head-on",
+          "complete": true,
+          "minimum_ai_agl_m": 34.0928443820954,
+          "minimum_player_separation_m": 61.0901964480923,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-left",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1335740919425,
+          "minimum_player_separation_m": 65.4331826162913,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "minimum_ai_agl_m": 34.6894269826816,
+          "minimum_player_separation_m": 41.3360049045769,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-head-on",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1937617430259,
+          "minimum_player_separation_m": 60.7814054853572,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "minimum_ai_agl_m": 34.9066191589292,
+          "minimum_player_separation_m": 58.4652523291407,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-right",
+          "complete": true,
+          "minimum_ai_agl_m": 34.2191386328126,
+          "minimum_player_separation_m": 65.7674999613419,
+          "separation_gate_passed": true,
+          "valid_run": true
+        }
+      ],
+      "seconds": 60,
+      "static_path_check": {
+        "aircraft_radius_m": 0.898964440234366,
+        "all_paths_clear": true,
+        "checker_identity": "0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea",
+        "interpolation_allowance_m": 0.5,
+        "limitations": "Checks the supplied 10 Hz piecewise-linear center path with the static trajectory helper's conservative aircraft envelope and a caller-supplied 0.5 m interpolation allowance. The allowance covers only geometric approximation between polyline points; no controller tracking/prediction error bound is inferred. This does not assess dynamic aircraft conflicts or physical safety.",
+        "minimum_reported_terrain_margin_m": 12.6916818097656,
+        "protected_count": 63,
+        "proxy_count": 6031,
+        "world_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae"
+      },
+      "valid_route_case_count": 6,
+      "weather": "calm"
+    },
+    {
+      "all_route_cases_complete": true,
+      "all_route_separation_gates_passed": true,
+      "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "constructed_two_threat_fixture": {
+        "case_id": "seed-20261020-parallel-two-threats",
+        "complete": true,
+        "initial_state_is_conflicting_fixture": true,
+        "minimum_peer_separation_m": 8.20945080337044,
+        "minimum_player_separation_m": 28.999776091528,
+        "separation_gate_passed": false,
+        "valid_run": true
+      },
+      "evidence_paths": {
+        "plan_residuals": "gentle-survey/predictor-vs-flown-per-plan.json",
+        "report": "gentle-survey/report.json",
+        "runner_engine_log": "gentle-survey/runner/engine.log",
+        "runner_report": "gentle-survey/runner/report.json",
+        "static_path_check": "gentle-survey/static-path-clearance.json",
+        "trajectory": "gentle-survey/trajectory.csv"
+      },
+      "field_id": "default",
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "minimum_route_player_separation_m": 49.2034032786442,
+      "name": "gentle-survey",
+      "per_plan_residuals": {
+        "count": 562,
+        "maximum": 0.9912110156785712,
+        "maximum_overestimate": 0.9912110156785712,
+        "maximum_underestimate_magnitude": 6.8822503948907965,
+        "minimum": -6.8822503948907965
+      },
+      "physics_hz": 240,
+      "pilot_source_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+      "planning_hz": 60,
+      "probe_source_sha256": "6ba930bf9b1377db518924925e64615433ad3ee152c7e29de8d1de91610fefe1",
+      "residual_scope": "Observed residuals include flight-dynamics response, wind/model error, and 10 Hz trajectory reconstruction. They are not a worst-case prediction bound, continuous 240 Hz path, or terrain/static-obstacle clearance result.",
+      "route_case_count": 6,
+      "route_metrics": [
+        {
+          "case_id": "seed-20261020-head-on",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1237673415769,
+          "minimum_player_separation_m": 60.9709823176057,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-left",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1789195396877,
+          "minimum_player_separation_m": 65.6151599385258,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "complete": true,
+          "minimum_ai_agl_m": 34.9040365790003,
+          "minimum_player_separation_m": 49.2034032786442,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-head-on",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1773088646692,
+          "minimum_player_separation_m": 61.3951880907093,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "complete": true,
+          "minimum_ai_agl_m": 34.9018414749816,
+          "minimum_player_separation_m": 58.0907087514468,
+          "separation_gate_passed": true,
+          "valid_run": true
+        },
+        {
+          "case_id": "seed-20261021-crossing-right",
+          "complete": true,
+          "minimum_ai_agl_m": 34.1929079656712,
+          "minimum_player_separation_m": 65.8083805372573,
+          "separation_gate_passed": true,
+          "valid_run": true
+        }
+      ],
+      "seconds": 60,
+      "static_path_check": {
+        "aircraft_radius_m": 0.898964440234366,
+        "all_paths_clear": true,
+        "checker_identity": "0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea",
+        "interpolation_allowance_m": 0.5,
+        "limitations": "Checks the supplied 10 Hz piecewise-linear center path with the static trajectory helper's conservative aircraft envelope and a caller-supplied 0.5 m interpolation allowance. The allowance covers only geometric approximation between polyline points; no controller tracking/prediction error bound is inferred. This does not assess dynamic aircraft conflicts or physical safety.",
+        "minimum_reported_terrain_margin_m": 12.7238729997656,
+        "protected_count": 63,
+        "proxy_count": 6031,
+        "world_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae"
+      },
+      "valid_route_case_count": 6,
+      "weather": "gentle-practice"
+    }
+  ]
+}

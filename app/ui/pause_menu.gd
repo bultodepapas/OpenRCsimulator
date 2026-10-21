@@ -9,6 +9,7 @@ const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
+const CompanionConfig := preload("res://ai/companions/config.gd")
 
 signal continue_requested
 signal restart_requested
@@ -16,6 +17,7 @@ signal change_aircraft_requested
 signal workshop_requested(from: Control)
 signal time_of_day_requested(from: Control)
 signal failure_settings_requested(from: Control)
+signal companions_requested(from: Control)
 signal overlays_requested(from: Control)
 signal end_requested
 signal help_requested(from: Control)
@@ -40,6 +42,7 @@ var exit_options_button: Button
 var workshop_button: Button
 var time_of_day_button: Button
 var failure_settings_button: Button
+var companions_button: Button
 var overlays_button: Button
 var end_button: Button
 var help_button: Button
@@ -167,6 +170,10 @@ func _init(can_end := true, trial_mode := false) -> void:
 	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
 	failure_settings_button.visible = false # the direct route has no next Home flight
 	session_options_container.add_child(failure_settings_button)
+	companions_button = _button("Flight companions", "QuietButton", "Companions")
+	companions_button.visible = false
+	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
+	session_options_container.add_child(companions_button)
 	workshop_button = _button("Workshop", "QuietButton", "Workshop")
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
 	workshop_button.visible = not trial_mode
@@ -313,6 +320,19 @@ func set_failure_context(config: Dictionary, notifications_enabled: bool) -> voi
 	_failure_summary_disclosed = notifications_enabled
 	if _session != null:
 		refresh()
+
+
+func set_companion_config(raw: Variant) -> Dictionary:
+	var checked: Dictionary = CompanionConfig.validate(raw)
+	if not checked.get("ok", false):
+		return checked
+	var config: Dictionary = checked.config
+	var state: String = tr("On") if bool(config.enabled) else tr("Off")
+	companions_button.text = tr("Flight companions · next restart: %s · %d · seed %d") % [
+		state, int(config.count), int(config.seed),
+	]
+	companions_button.tooltip_text = companions_button.text
+	return checked
 
 
 func failure_config_text(config: Dictionary) -> String:

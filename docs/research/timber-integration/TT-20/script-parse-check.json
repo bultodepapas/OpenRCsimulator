@@ -1,0 +1,690 @@
+{
+  "format": "openrc-script-parse-finalized-after-timber-helper-freeze-v1",
+  "engine": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+  "command": [
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--check-only",
+    "--script",
+    "res://<path>"
+  ],
+  "workers": 4,
+  "timeout_seconds_per_script": 60,
+  "unique_script_count": 1171,
+  "initial_sweep": {
+    "passed_count": 1154,
+    "transient_failed_count": 17,
+    "elapsed_seconds": 481.015
+  },
+  "frozen_helper_retry": {
+    "rerun_count": 17,
+    "passed_count": 17,
+    "failed_count": 0,
+    "elapsed_seconds": 25.11,
+    "source_hashes_before": {
+      "app/aircraft/timber_visual_details.gd": "f6dd76881aa2f6727917ddc7881aa03627e400455e08328c9cb2cbc32bc2f7b8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "56b0a7abb0961a3dd1edd6f977aef169be9d12485e7a558b11d5129b7a5f885d"
+    },
+    "source_hashes_after": {
+      "app/aircraft/timber_visual_details.gd": "f6dd76881aa2f6727917ddc7881aa03627e400455e08328c9cb2cbc32bc2f7b8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "56b0a7abb0961a3dd1edd6f977aef169be9d12485e7a558b11d5129b7a5f885d"
+    },
+    "source_hashes_unchanged_during_checks": true
+  },
+  "accepted_pass_count": 1171,
+  "accepted_fail_count": 0,
+  "recovered_scripts": [
+    {
+      "script": "app/tests/bench_radio_events.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 9,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-bench_radio_events-40b2fb45d5.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-bench_radio_events-40b2fb45d5.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_aircraft_lights.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_aircraft_lights-0144642020.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_aircraft_lights-0144642020.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_engine_smoke.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_engine_smoke-1711ec7a35.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_engine_smoke-1711ec7a35.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_lake_entry.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 12,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_lake_entry-e28a9886ea.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_lake_entry-e28a9886ea.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_landscape_upgrade.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_landscape_upgrade-35923e1eaf.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_landscape_upgrade-35923e1eaf.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_propeller_blur.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_propeller_blur-fb2200fee5.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_propeller_blur-fb2200fee5.log"
+      }
+    },
+    {
+      "script": "app/tests/capture_ui.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-capture_ui-bf42523d99.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-capture_ui-bf42523d99.log"
+      }
+    },
+    {
+      "script": "app/tests/fixtures/atmosphere_field.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-atmosphere_field-e9ca97d507.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-atmosphere_field-e9ca97d507.log"
+      }
+    },
+    {
+      "script": "app/tests/probe_field_failure.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-probe_field_failure-15497dbe17.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-probe_field_failure-15497dbe17.log"
+      }
+    },
+    {
+      "script": "app/tests/probe_trace_failure.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 11,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-probe_trace_failure-69a41b6212.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-probe_trace_failure-69a41b6212.log"
+      }
+    },
+    {
+      "script": "app/tests/test_accident_integration.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 10,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_accident_integration-45c23e103e.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_accident_integration-45c23e103e.log"
+      }
+    },
+    {
+      "script": "app/tests/test_aircraft_catalog.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 5,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_aircraft_catalog-3862a0a3fb.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_aircraft_catalog-3862a0a3fb.log"
+      }
+    },
+    {
+      "script": "app/tests/test_aircraft_customization.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 5,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_aircraft_customization-54ce52f008.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_aircraft_customization-54ce52f008.log"
+      }
+    },
+    {
+      "script": "app/tests/test_aircraft_light_control.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 6,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_aircraft_light_control-0909a3d075.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_aircraft_light_control-0909a3d075.log"
+      }
+    },
+    {
+      "script": "app/tests/test_aircraft_render_contract.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 5,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_aircraft_render_contract-6a674fb2fc.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_aircraft_render_contract-6a674fb2fc.log"
+      }
+    },
+    {
+      "script": "app/tests/test_airframe_scuffs.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 5,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_airframe_scuffs-f21f1ad6af.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_airframe_scuffs-f21f1ad6af.log"
+      }
+    },
+    {
+      "script": "app/tests/test_gear_visual_contacts.gd",
+      "first_attempt": {
+        "ok": false,
+        "reason": "engine_error",
+        "diagnostics": {
+          "error": 4,
+          "warning": 0
+        },
+        "log": "checks/script-parse-initial-test_gear_visual_contacts-0e73c1fede.log"
+      },
+      "retry": {
+        "ok": true,
+        "reason": "passed",
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-retry-test_gear_visual_contacts-0e73c1fede.log"
+      }
+    }
+  ],
+  "passed": true,
+  "final_visual_data_refresh": {
+    "reason": "Final exact-pixel paint-region correction changed the detail spec and generated data; helper code did not change.",
+    "full_sweep_rerun": false,
+    "scope_note": "The 1,171-script sweep and 17 frozen-helper retries remain recorded above for the prior generated-data snapshot. On this final generated-data snapshot, the directly relevant helper, generated data script, and Timber inspector were re-parsed; all passed.",
+    "fresh_pipeline_summary": "fresh-pipeline-check.json",
+    "fresh_pipeline_check_passed": true,
+    "visual_verification": {
+      "script": "research/timber/visual-upgrade/verify_visual.gd",
+      "passed": true,
+      "checks_passed": 184,
+      "render_details": 32,
+      "confirmation": "Final spec/data snapshot confirmed by the visual-asset owner."
+    },
+    "script_count": 3,
+    "passed_count": 3,
+    "failed_count": 0,
+    "source_hashes_before": {
+      "app/aircraft/timber_visual_details.gd": "f6dd76881aa2f6727917ddc7881aa03627e400455e08328c9cb2cbc32bc2f7b8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "f923a6c2b423e0bbf7e5407368b2083f2c99ef426f1a169f159231b9962dee53",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "1692bdeb62ea11c331fb3fba658d2979ca1e741114f10bbd207fbfbeba7b58a3",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "source_hashes_after": {
+      "app/aircraft/timber_visual_details.gd": "f6dd76881aa2f6727917ddc7881aa03627e400455e08328c9cb2cbc32bc2f7b8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "f923a6c2b423e0bbf7e5407368b2083f2c99ef426f1a169f159231b9962dee53",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "1692bdeb62ea11c331fb3fba658d2979ca1e741114f10bbd207fbfbeba7b58a3",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "results": [
+      {
+        "script": "app/aircraft/timber_visual_details.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.422,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-delta-timber_visual_details-3c50042bf6.log",
+        "detail": ""
+      },
+      {
+        "script": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.25,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-delta-visual_detail_data-559ce9f303.log",
+        "detail": ""
+      },
+      {
+        "script": "app/aircraft/inspect_timber.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.531,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-delta-inspect_timber-be5da66be0.log",
+        "detail": ""
+      }
+    ],
+    "source_hashes_match_recorded_snapshot": true
+  },
+  "evidence_root": "checks/",
+  "post_motion_helper_refresh": {
+    "reason": "Final fracture-cap placement and crash-only helper/spec/data snapshot after motion-owner freeze.",
+    "full_sweep_rerun": false,
+    "scope_note": "The 1,171-script sweep is retained above as historical broad coverage. After the final crash-overlay change, the helper, generated detail-data GDScript, and Timber inspector were re-parsed; all passed.",
+    "fresh_pipeline_check": "fresh-pipeline-check.json",
+    "fresh_pipeline_check_passed": true,
+    "required_generator_paths_tracked": true,
+    "glb_pins_match": true,
+    "main_index_unchanged": true,
+    "script_count": 3,
+    "passed_count": 3,
+    "failed_count": 0,
+    "source_hashes_before": {
+      "app/aircraft/timber_visual_details.gd": "413f57898c961dc09c853f121db69cb06ea824a07a2e4e1cd506d837751b6bfd",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "source_hashes_after": {
+      "app/aircraft/timber_visual_details.gd": "413f57898c961dc09c853f121db69cb06ea824a07a2e4e1cd506d837751b6bfd",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "source_hashes_unchanged_during_checks": true,
+    "source_hashes_match_current_worktree": false,
+    "motion_owner_freeze": "No further helper/spec/data edits; motion agent confirmed final fracture-cap geometry and coordinates.",
+    "results": [
+      {
+        "script": "app/aircraft/timber_visual_details.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.547,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-post-motion-timber_visual_details-3c50042bf6.log"
+      },
+      {
+        "script": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.328,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-post-motion-visual_detail_data-559ce9f303.log"
+      },
+      {
+        "script": "app/aircraft/inspect_timber.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.531,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-post-motion-inspect_timber-be5da66be0.log"
+      }
+    ],
+    "snapshot_status": "Superseded by final exposed-foam helper refresh; its retained logs remain historical."
+  },
+  "final_helper_refresh": {
+    "reason": "Final frozen helper adds the exposed-foam map on the crash-only fracture reveal; generated spec/data remain unchanged.",
+    "full_sweep_rerun": false,
+    "scope_note": "No broad resweep was repeated. After the final helper change, the helper, generated detail-data GDScript, and Timber inspector were re-parsed; all passed.",
+    "fresh_pipeline_check": "fresh-pipeline-check.json",
+    "fresh_pipeline_check_passed": true,
+    "fresh_pipeline_snapshot_note": "The r6 isolated materialization covers the unchanged final spec/data generator inputs.",
+    "required_generator_paths_tracked": true,
+    "glb_pins_match": true,
+    "main_index_unchanged": true,
+    "visual_isolation_report": "visual-isolation.json",
+    "visual_checks_passed": 184,
+    "visual_detail_meshes": 32,
+    "script_count": 3,
+    "passed_count": 3,
+    "failed_count": 0,
+    "source_hashes_before": {
+      "app/aircraft/timber_visual_details.gd": "edcdd33f90ee872cdc05355f40a9a9c76ef26c9221877b09e1b6182636dd3ff8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "source_hashes_after": {
+      "app/aircraft/timber_visual_details.gd": "edcdd33f90ee872cdc05355f40a9a9c76ef26c9221877b09e1b6182636dd3ff8",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20"
+    },
+    "source_hashes_unchanged_during_checks": true,
+    "source_hashes_match_current_worktree": false,
+    "results": [
+      {
+        "script": "app/aircraft/timber_visual_details.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.422,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-final-helper-timber_visual_details-3c50042bf6.log"
+      },
+      {
+        "script": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.235,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-final-helper-visual_detail_data-559ce9f303.log"
+      },
+      {
+        "script": "app/aircraft/inspect_timber.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.516,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-final-helper-inspect_timber-be5da66be0.log"
+      }
+    ],
+    "snapshot_status": "Superseded by final winding-gate helper/verifier refresh; retained logs are historical."
+  },
+  "winding_gate_refresh": {
+    "reason": "Final winding-gate helper and verifier snapshot.",
+    "full_sweep_rerun": false,
+    "scope_note": "No broad resweep was repeated. The final helper, generated detail-data script, Timber inspector, and updated visual verifier were parsed on this snapshot; all passed.",
+    "fresh_pipeline_check": "fresh-pipeline-check.json",
+    "fresh_pipeline_check_passed": true,
+    "required_generator_paths_tracked": true,
+    "glb_pins_match": true,
+    "main_index_unchanged": true,
+    "visual_isolation_report": "visual-isolation.json",
+    "visual_checks_passed": 186,
+    "visual_detail_meshes": 32,
+    "script_count": 4,
+    "passed_count": 4,
+    "failed_count": 0,
+    "source_hashes_before": {
+      "app/aircraft/timber_visual_details.gd": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20",
+      "research/timber/visual-upgrade/verify_visual.gd": "7d37c7456ed423841b427427f9eb58cb40241f7266ff2fadd4c3c3e7c0cf4d9e"
+    },
+    "source_hashes_after": {
+      "app/aircraft/timber_visual_details.gd": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+      "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+      "app/aircraft/inspect_timber.gd": "f634e4881b190cbdda1d594f79d887b8b4572100830ac5eae0dfce1d96b21f20",
+      "research/timber/visual-upgrade/verify_visual.gd": "7d37c7456ed423841b427427f9eb58cb40241f7266ff2fadd4c3c3e7c0cf4d9e"
+    },
+    "source_hashes_unchanged_during_checks": true,
+    "source_hashes_match_current_worktree": true,
+    "results": [
+      {
+        "script": "app/aircraft/timber_visual_details.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.531,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-winding-gate-timber_visual_details-3c50042bf6.log"
+      },
+      {
+        "script": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.343,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-winding-gate-visual_detail_data-559ce9f303.log"
+      },
+      {
+        "script": "app/aircraft/inspect_timber.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 0.625,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-winding-gate-inspect_timber-be5da66be0.log"
+      },
+      {
+        "script": "research/timber/visual-upgrade/verify_visual.gd",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 1.64,
+        "diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "log": "checks/script-parse-winding-gate-verify_visual-72db372a86.log"
+      }
+    ]
+  }
+}

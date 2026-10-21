@@ -1,0 +1,34 @@
+{
+  "assets": [
+    {
+      "asset": "Polystyrene",
+      "download": "1K Normal GL and Roughness JPEG maps",
+      "license": "CC0 1.0",
+      "runtime_files": {
+        "polystyrene_nor_gl_1k.jpg": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574",
+        "polystyrene_rough_1k.jpg": "5374d3ea09f2f7b4e1cd3c4cf19adc542f9622a3a5f1dae07c75502b4a080035"
+      },
+      "source": "https://polyhaven.com/a/polystyrene",
+      "source_files": {
+        "polystyrene_nor_gl_1k.jpg": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574",
+        "polystyrene_rough_1k.jpg": "5374d3ea09f2f7b4e1cd3c4cf19adc542f9622a3a5f1dae07c75502b4a080035"
+      },
+      "usage": "Low-strength normal and roughness maps on foam-painted airframe surfaces; aged diffuse color is intentionally unused."
+    },
+    {
+      "asset": "Rubber002",
+      "download": "Rubber002_1K-JPG.zip",
+      "license": "CC0 1.0",
+      "runtime_files": {
+        "Rubber002_1K-JPG_NormalGL.jpg": "02709d839b1a1f402834920b8b8816920bbe08a40463aa188905a87621d6fa65",
+        "Rubber002_1K-JPG_Roughness.jpg": "82417913bb17853c2ad8bd4c7049fe43a594be78f61b2791a0e9c9b8e3145529"
+      },
+      "source": "https://ambientcg.com/view?id=Rubber002",
+      "source_files": {
+        "Rubber002_1K-JPG_NormalGL.jpg": "02709d839b1a1f402834920b8b8816920bbe08a40463aa188905a87621d6fa65",
+        "Rubber002_1K-JPG_Roughness.jpg": "82417913bb17853c2ad8bd4c7049fe43a594be78f61b2791a0e9c9b8e3145529"
+      },
+      "usage": "Low-strength normal and roughness maps on the three authored foam tire surfaces; source albedo is intentionally unused."
+    }
+  ]
+}

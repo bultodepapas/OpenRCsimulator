@@ -1,0 +1,134 @@
+{
+  "generated_by": "tools/ground/import_airfield_detail.py",
+  "license": "CC0 1.0 Universal",
+  "assets": {
+    "flower_empodium": {
+      "source": "https://polyhaven.com/a/flower_empodium",
+      "license_url": "https://polyhaven.com/license",
+      "type": "original glTF model set, 1K textures",
+      "files": [
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/flower_empodium/flower_empodium_1k.gltf",
+          "bytes": 8859,
+          "md5": "af2d2eb97cd38ada73eea72dbd12591d",
+          "sha256": "3f39d6b7dba6de81014f5ce41e43ac1204a45bfe146cbb425515103c4c5e9798"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/flower_empodium.bin",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/flower_empodium/flower_empodium.bin",
+          "bytes": 101936,
+          "md5": "d13a97f2e5ab33746ea149300ed93a4a",
+          "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_empodium/flower_empodium_arm_1k.jpg",
+          "bytes": 267088,
+          "md5": "6ec066be959b6198859f988229f952f6",
+          "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_empodium/flower_empodium_diff_1k.jpg",
+          "bytes": 173921,
+          "md5": "16ba75adf653c6cfcfa84794bed24a06",
+          "sha256": "eca8de7f24d5612d918ddd02339698f9c44b00ad5a9d2fb61d6acda267786129"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_empodium/flower_empodium_nor_gl_1k.jpg",
+          "bytes": 346423,
+          "md5": "6589cf1891a2c8c217e1ee4ef3955fcc",
+          "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_alpha_1k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/flower_empodium/flower_empodium_alpha_1k.jpg",
+          "bytes": 121447,
+          "md5": "26c45143460531dde3ebb24c129a2071",
+          "sha256": "8e77376395c535c2ec2088ea733d35427f9f98079d0624f53f68f3055d326508"
+        }
+      ]
+    },
+    "quaternius_rocks": {
+      "source": "https://quaternius.itch.io/stylized-nature-megakit",
+      "source_archive": "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip",
+      "license": "CC0-1.0, embedded License_Standard.txt",
+      "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt",
+      "type": "unmodified source rock meshes and atlas",
+      "files": [
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf",
+          "source_member": "glTF/Rock_Medium_1.gltf",
+          "bytes": 1831,
+          "sha256": "5d1ab1fa03218f4a908728ed0eabe6486344a7e4f510b0d3d6f837fd1d011bd8"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.bin",
+          "source_member": "glTF/Rock_Medium_1.bin",
+          "bytes": 13284,
+          "sha256": "ea79527d4c2b3bdb7a28bf589bf0c1fd96d192a4d0738636753911dd58681e99"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf",
+          "source_member": "glTF/Rock_Medium_2.gltf",
+          "bytes": 1825,
+          "sha256": "fac2d05a05f2d0d2098de59c09b58f42cc875c9caca4fd4c4bd57f3d36e7b12e"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.bin",
+          "source_member": "glTF/Rock_Medium_2.bin",
+          "bytes": 9432,
+          "sha256": "76b60bf8349f71abdb0ed462b3223d93c2dcabdfb5754bc132e18b021cc6c805"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf",
+          "source_member": "glTF/Rock_Medium_3.gltf",
+          "bytes": 1832,
+          "sha256": "9a575b911372cf91693aa3a56aea8137ec2251c2b99fb34a31272ee64503047f"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.bin",
+          "source_member": "glTF/Rock_Medium_3.bin",
+          "bytes": 20124,
+          "sha256": "63f94bce2d3fb3fe25b2d6c843a828b1bec76855dbaac93fcf5d43582309caad"
+        },
+        {
+          "path": "app/assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png",
+          "source_member": "glTF/Rocks_Diffuse.png",
+          "bytes": 2517398,
+          "sha256": "b813696df6081f469a127092eb0ce45cc39d56f3ccc0699152bfcd3804810b48"
+        }
+      ]
+    },
+    "river_small_rocks": {
+      "source": "https://polyhaven.com/a/river_small_rocks",
+      "license_url": "https://polyhaven.com/license",
+      "type": "original 2K PBR texture maps",
+      "files": [
+        {
+          "path": "app/assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/river_small_rocks/river_small_rocks_diff_2k.jpg",
+          "bytes": 3908784,
+          "md5": "5e92928b04ca9484c3923d40f18777aa",
+          "sha256": "656a20860f5960cc0f442dd425bfe4607052ab1749efdde35d60c5df9639beac"
+        }
+      ]
+    },
+    "sparse_grass": {
+      "source": "https://polyhaven.com/a/sparse_grass",
+      "license_url": "https://polyhaven.com/license",
+      "type": "original 2K PBR texture maps",
+      "files": [
+        {
+          "path": "app/assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/sparse_grass/sparse_grass_diff_2k.jpg",
+          "bytes": 3733797,
+          "md5": "b181e9c61bae87c1bb9b14eecd767d65",
+          "sha256": "3b655de96161164bf2324e136b3409ad8417c9f94750bc008e9c93ee507c2fac"
+        }
+      ]
+    }
+  }
+}

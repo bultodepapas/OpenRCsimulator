@@ -1,0 +1,97 @@
+{
+  "complete": true,
+  "driver": "opengl3",
+  "first": {
+    "close": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 3098,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 39.16817301484829
+    },
+    "overview": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 2754,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 29.628540305010894
+    },
+    "pilot_left": {
+      "added_draws": 5,
+      "added_primitives": 39996,
+      "changed_pixels": 18402,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 34.00222801869362,
+      "outside_cue_control_rejected": true,
+      "protected_runway_pixels": 22740
+    },
+    "pilot_right": {
+      "added_draws": 5,
+      "added_primitives": 39996,
+      "changed_pixels": 18520,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 33.23326133909287,
+      "outside_cue_control_rejected": true,
+      "protected_runway_pixels": 22740
+    },
+    "rear": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 3422,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 29.291934541203975
+    }
+  },
+  "format": "openrc-l10c-r4-native-ablation v1",
+  "identical_repeat": true,
+  "renderer": "NVIDIA GeForce RTX 3090",
+  "scenery": {
+    "close": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 3098,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 40.60942543576501
+    },
+    "overview": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 2016,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 31.97172619047619
+    },
+    "pilot_left": {
+      "added_draws": 5,
+      "added_primitives": 39996,
+      "changed_pixels": 18408,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 35.3962950890917,
+      "outside_cue_control_rejected": true,
+      "protected_runway_pixels": 22740
+    },
+    "pilot_right": {
+      "added_draws": 5,
+      "added_primitives": 39996,
+      "changed_pixels": 18524,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 35.003562945368174,
+      "outside_cue_control_rejected": true,
+      "protected_runway_pixels": 22740
+    },
+    "rear": {
+      "added_draws": 5,
+      "added_primitives": 39806,
+      "changed_pixels": 3381,
+      "clipped_white_pixels": 0,
+      "mean_changed_rgb_delta": 30.158828748890862
+    }
+  },
+  "sources_sha256": {
+    "app/assets/landscape/flightline/PROVENANCE.json": "2c7b0d350f23b12a957f9f034bf9329257ce9e2e5fecafab982b6240babceae4",
+    "app/render/flightline_barrier.gd": "b12f06cda97698ec0b1c72ccd544112aef6b1cbd6c894fdb2fff5a32d59060c5",
+    "app/render/flightline_barrier.gdshader": "d12176e3e7f5d9c4976dcf2bc583b0b26fb66616594c36ef686c6385898fbe0e",
+    "app/render/flightline_barrier_detail.gd": "881da6550eab19ddba53d71dff6ae7aff789f55b9c4cd1e7544eb5ba98eea64a",
+    "tools/ground/capture_windsock.gd": "f5b50983ed0eaee1ca37f3adadb236c19cf95dce35626e8d20e3db39b14ccb8e",
+    "tools/ground/check_windsock.py": "1be4b1e1f8cffe3417c3c466f78c68bb52abdc2cdd01a32905b02d6887bec39a"
+  }
+}

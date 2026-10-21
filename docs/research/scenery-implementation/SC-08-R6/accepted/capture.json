@@ -1,0 +1,151 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "34797d4e4e12a4448f1eb51080cb3b82a22dbaf980a62c7955b792732b23cf63",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 107,
+      "eye": [
+        -29.2000007629395,
+        2.20000004768372,
+        9.5
+      ],
+      "fov": 66.0,
+      "sha256": "98d2ba44584882400f8982ee00dea7a979fcb68c5e173c35c45f3c3e0ad97857",
+      "view": "front"
+    },
+    {
+      "draws": 85,
+      "eye": [
+        -29.0,
+        8.0,
+        14.0
+      ],
+      "fov": 62.0,
+      "sha256": "427f1fde8906e333ac6219bf784dd36f4bc99252e51aff39434b84b700b1f028",
+      "view": "roof"
+    },
+    {
+      "draws": 76,
+      "eye": [
+        -30.0,
+        1.54999995231628,
+        16.7999992370605
+      ],
+      "fov": 74.0,
+      "sha256": "484d9b8ae341b1edefea70c037c8b9ca8d533ee7b046ddcddfb1450bae36b4c1",
+      "view": "underside"
+    },
+    {
+      "draws": 72,
+      "eye": [
+        -34.0,
+        2.34999990463257,
+        14.3000001907349
+      ],
+      "fov": 48.0,
+      "sha256": "81d99b3af75a8e31c65d7f23ec40ec1f8449274374d74288224bcacfc8e49b42",
+      "view": "eave_detail"
+    },
+    {
+      "draws": 74,
+      "eye": [
+        -34.0499992370605,
+        0.569999992847443,
+        14.8500003814697
+      ],
+      "fov": 46.0,
+      "sha256": "1b775d88e72c2230887e26bdc0f1b0c58755673c08777121cbfa3c1b152c2bf5",
+      "view": "post_foot"
+    },
+    {
+      "draws": 115,
+      "eye": [
+        -19.5,
+        4.25,
+        23.2000007629395
+      ],
+      "fov": 46.0,
+      "sha256": "c24755861ae40a8b4c1e0c28e1a046c90d7c93f2b0aa7551b7dc3a1867f4e5d5",
+      "view": "gutter_detail"
+    },
+    {
+      "draws": 187,
+      "eye": [
+        -19.2999992370605,
+        1.54999995231628,
+        23.3999996185303
+      ],
+      "fov": 48.0,
+      "sha256": "96207de71b29f52fbeb58d4eaa39f2ed2da15203a4bf563ecc4f5362e5a7dbc5",
+      "view": "downpipe"
+    },
+    {
+      "draws": 195,
+      "eye": [
+        -49.0,
+        4.5,
+        11.5
+      ],
+      "fov": 60.0,
+      "sha256": "c913b739c9958500d73df60653c3d8b1cb594875276f41581eebf9082c3b21db",
+      "view": "end"
+    },
+    {
+      "draws": 117,
+      "eye": [
+        -12.0,
+        5.0,
+        1.5
+      ],
+      "fov": 65.0,
+      "sha256": "50f1612691c36de2d36025ed9a9e3d0639084841b801cf739fb0b451abbe3694",
+      "view": "context"
+    }
+  ],
+  "scenery_stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 2167.062,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 171,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 26.377,
+      "botanicals": 222.188,
+      "cell_meshes": 70.459,
+      "fence": 47.049,
+      "fleet": 18.734,
+      "hedge": 29.066,
+      "instances": 212.865,
+      "meshes": 211.442,
+      "patch": 69.045,
+      "population": 318.209,
+      "shelter_material": 137.034,
+      "shelter_meshes": 2.693,
+      "track": 1.856,
+      "vegetation": 684.5,
+      "woodland_edges": 121.13
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  }
+}

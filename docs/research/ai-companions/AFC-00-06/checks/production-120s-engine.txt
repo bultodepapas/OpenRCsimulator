@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+{"complete":true,"count":3,"engine":"4.7.2-stable (official)","failure":"","format":"openrc-companions-production v1","min_clearance_m":34.5677852277669,"physics_hz":240,"requested_ticks":28800,"scope":"Full production manager/session callbacks, Club collision inventory and lake context. No rendering/audio or long-session resource-soak claim.","seed":1,"ticks":28800,"weather":"calm"}
+COMPANION PRODUCTION CHECK COMPLETE

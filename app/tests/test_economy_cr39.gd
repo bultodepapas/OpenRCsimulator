@@ -8,6 +8,7 @@ const ReplacementQuote = preload("res://economy/replacement_quote.gd")
 const AccidentReport = preload("res://ui/accident_report.gd")
 const STALE := "Cost data is out of date for this aircraft version; no prices were applied."
 const ARCHIVE := "user://test_cr39_last_accident.json"
+const TIMBER_ARCHIVE := "user://test_cr39_timber_cost_report.json"
 const Catalog = preload("res://economy/catalog.gd")
 
 var checks := 0
@@ -23,7 +24,10 @@ func _initialize() -> void:
 	_test_terminal_headline()
 	_test_physical_signature()
 	_test_fleet_contact_bindings()
+	_test_timber_propeller_parts_report()
+	_test_timber_registered_pack_binding()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ARCHIVE))
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(TIMBER_ARCHIVE))
 	print("CR-39 economics: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
 
@@ -183,5 +187,76 @@ func _test_fleet_contact_bindings() -> void:
 	for line: Dictionary in lumber.report.get("lines", []):
 		if line.get("id") == "propeller_main":
 			prop_line = line
-	check("electric prop strike prices the Lumber propeller once", prop_line.get("action") == "replacement" and prop_line.get("amount_minor") == 1698
+	check("electric prop strike prices the Lumber propeller once", prop_line.get("action") == "replacement" and prop_line.get("amount_minor") == 799
 		and not lumber.report.unresolved.has("A propeller strike was recorded; no compatible replacement price is available."), str(lumber.report.get("unresolved")))
+
+
+func _test_timber_propeller_parts_report() -> void:
+	var ledger := Incident.new()
+	ledger.archive_path = TIMBER_ARCHIVE
+	ledger.begin("turbo-lumber-evolution", "")
+	var propeller_id := str(ledger.dossier.get("propeller_component_id", ""))
+	ledger._mark_propeller()
+	ledger._queue_assessment(1)
+	ledger.evaluate_pending()
+	var replacement_count := 0
+	var propeller_line: Dictionary = {}
+	var spinner_line: Dictionary = {}
+	var spinner_billed := false
+	for line: Dictionary in ledger.report.get("lines", []):
+		if line.get("action") == "replacement":
+			replacement_count += 1
+		if line.get("id") == propeller_id:
+			propeller_line = line
+		if line.get("id") == "spinner_main":
+			spinner_line = line
+		if line.get("id") == "spinner_main" and line.get("action") in ["replacement", "repair"] \
+			and line.get("amount_minor") != null and int(line.amount_minor) > 0:
+			spinner_billed = true
+	check("Lumber blade strike prices only the EFL5962 prop at 799 cents",
+		propeller_id == "propeller_main" and propeller_line.get("action") == "replacement"
+		and propeller_line.get("quantity") == 1 and propeller_line.get("amount_minor") == 799
+		and propeller_line.get("product_sku") == "EFL5962"
+		and str(propeller_line.get("product_name", "")) != ""
+		and str(propeller_line.get("product_brand", "")) != ""
+		and propeller_line.get("offer_amount_minor") == 799
+		and propeller_line.get("sold_package_quantity") == 1
+		and str(propeller_line.get("package_description", "")) != "", str(propeller_line))
+	check("Lumber blade strike does not automatically bill the separate spinner",
+		replacement_count == 1 and not spinner_billed and ledger.report.get("known_subtotal_minor") == 799,
+		str(ledger.report.get("lines", [])))
+	check("Lumber spinner stays inspection-only until separate damage is established",
+		spinner_line.get("action") == "inspection" and spinner_line.get("amount_minor") == null,
+		str(spinner_line))
+	var archived_report: Dictionary = ledger.archive()
+	var reader := Incident.new()
+	reader.archive_path = TIMBER_ARCHIVE
+	var loaded: Dictionary = reader.load_archive()
+	var loaded_propeller: Dictionary = {}
+	for line: Dictionary in loaded.get("lines", []):
+		if line.get("id") == propeller_id:
+			loaded_propeller = line
+	check("Lumber product identity and package price survive report archive validation",
+		not loaded.is_empty() and archived_report.get("known_subtotal_minor") == 799
+		and loaded.get("known_subtotal_minor") == 799
+		and loaded_propeller.get("product_name") == propeller_line.get("product_name")
+		and loaded_propeller.get("product_brand") == propeller_line.get("product_brand")
+		and loaded_propeller.get("product_sku") == "EFL5962"
+		and loaded_propeller.get("offer_amount_minor") == 799
+		and loaded_propeller.get("package_description") == propeller_line.get("package_description"), str(loaded_propeller))
+
+
+func _test_timber_registered_pack_binding() -> void:
+	const PACK_SOURCE := "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"
+	var pack_hash := FileAccess.get_sha256(PACK_SOURCE)
+	var ledger := Incident.new()
+	ledger.begin("turbo-lumber-evolution", pack_hash)
+	check("registered Turbo Lumber pack bytes bind only through the validated variant path",
+		pack_hash.length() == 64 and not ledger.dossier.is_empty() and ledger._binding == "registered_variant"
+		and ledger.dossier.get("source_sha256") == pack_hash, str(ledger._catalog_errors))
+	ledger.observe({tick = 1, events = []}, {}, true)
+	ledger.evaluate_pending()
+	check("registered pack valuation preserves its distinct binding assumption",
+		ledger.report.get("ok", false) and ledger.report.get("identity", {}).get("source_sha256") == pack_hash
+		and ledger.report.get("assumptions", []).has("This registered battery configuration preserves the priced inventory and contact bindings."),
+		str(ledger.report.get("assumptions", [])))

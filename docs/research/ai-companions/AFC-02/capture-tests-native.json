@@ -1,0 +1,20 @@
+{
+	"capture_root": "C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/afc02-companions-record-3003621",
+	"checks": 157,
+	"failures": 0,
+	"format": "openrc-companion-record-test v1",
+	"measurements": [
+		{
+			"companion_sha256": "3c3c33b48d8cc25e915a3ed08deed4a5eefa4a3c98d9fbe427ba49ef85a24184",
+			"complete": true,
+			"files": [
+				"player.orfl",
+				"companion-0.orfl"
+			],
+			"player_sha256": "96953dc45ad31bda97c07b48ced888d2aef120df539f13b17e896c15c75e456d",
+			"rows": 261,
+			"test": "AFC-02 parity",
+			"ticks": 260
+		}
+	]
+}

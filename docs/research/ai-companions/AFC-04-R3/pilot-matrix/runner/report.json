@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "35c71255-25c5-4080-93cf-530eae656bd2",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/pilot_probe.gd",
+    "--",
+    "--pilot=res://../research/ai-companions/avoidance/reachable_pilot_r2.gd",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/avoidance/pilot-matrix-candidate-r2-20261020"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+  "started_utc": "2026-10-20T23:28:19.945552+00:00",
+  "label": "afc04-candidate-pilot-matrix-20261020-r2",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-candidate-pilot-matrix-20261020-r2-dmfb5y8z\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-candidate-pilot-matrix-20261020-r2-dmfb5y8z\\report.json",
+  "timeout_seconds": 1800.0,
+  "max_log_bytes": 16777216,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companion pilot qualification:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 675.11,
+  "log_bytes": 21920,
+  "log_sha256": "ccee36da62326e29b262884e0949ad8fc21c1417bfa771e183255c3c4adb0adb"
+}

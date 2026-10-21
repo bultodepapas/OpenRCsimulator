@@ -1,0 +1,42 @@
+{
+  "format": "openrc-timber-price-validation v1",
+  "timestamp_utc": "2026-10-20T22:06:27.526259+00:00",
+  "ok": true,
+  "results": [
+    {
+      "command": [
+        "python",
+        "research/crash-economics/build_catalog.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "CR-28: offers, integer cents, baseline coverage, fleet IDs, examples and generated freshness OK\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "research/crash-economics/build_runtime.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "stdout": "runtime economics sidecar is current (9 aircraft routes)\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "research/crash-economics",
+        "-p",
+        "test_*.py"
+      ],
+      "exit_code": 0,
+      "stdout": "{\"after_offers\": 1, \"before_offers\": 1, \"change_counts\": {}, \"changed_offers\": 0, \"unchanged_offers\": 1}\n",
+      "stderr": "..............................................................\n----------------------------------------------------------------------\nRan 62 tests in 0.748s\n\nOK\n"
+    }
+  ]
+}

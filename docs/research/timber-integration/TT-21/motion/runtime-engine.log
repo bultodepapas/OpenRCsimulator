@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   session setup
+ok   default field loaded  []
+ok   field assigned
+ok   runway pose is flyable
+ok   baseline wreck prepares before motion observer
+ok   motion observer attaches
+ok   Wreck prepares after observer attachment at rest
+ok   observer attachment preserves prepared Wreck section bounds and centers
+ok   motion observers leave simulation state unchanged
+ok   motion observers leave continuous state unchanged
+ok   motion observers leave auxiliary state unchanged
+ok   precomputed Wreck bounds stay fixed while the observer moves gear
+ok   both main gear contacts are compressed  [0.02117897512994, 0.02086702653177, 0.02099083830289]
+ok   left axle preserves contact height  render 0.021179 m; evaluator 0.021179 m
+ok   left wheel spin angle is unchanged  0.0
+ok   left spring leg articulates inside cable limit  5.99999931319157
+ok   right axle preserves contact height  render 0.020867 m; evaluator 0.020867 m
+ok   right wheel spin angle is unchanged  0.0
+ok   right spring leg articulates inside cable limit  5.99999931319157
+ok   cross-cables follow the spring legs  0.008628 m
+ok   cross-cable resource is a private ArrayMesh
+ok   both added extension springs have followers  2 follower(s)
+ok   extension spring coils follow the spring legs  0.005566 m
+ok   runway wheel has a loaded contact  compression=0.0212 m load=9.478 N
+ok   real loaded slip on rough ground emits tire dust
+ok   same slip on paved runway emits no tire dust
+ok   airborne wheel without compression emits no dust
+ok   dust fixture restores injected wheel telemetry
+ok   paused session freezes and stops new dust
+ok   focus-style simulation pause freezes dust without a hold
+ok   reset restores neutral cable pose  0.000000 m
+ok   reset restores neutral extension springs  0.000000 m
+ok   crash stops visual motion updates
+ok   reset resumes visual motion updates
+ok   reset restores suspension and axle transforms
+ok   reset clears dust emission
+ok   reset resumes particle clock
+ok   Wreck-style copy disables the observer
+ok   Wreck-style copy drops its session reference
+ok   Wreck-style copy owns an independent cable mesh
+ok   Wreck-style copy owns independent spring meshes
+runtime motion checks finished: 41 checks, 0 failure(s); report: C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-overhaul/motion-runtime-checks-final.json

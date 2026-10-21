@@ -1,0 +1,54 @@
+{
+  "format": "openrc-timber-physics-comparison v1",
+  "baseline": {
+    "path": "docs/research/timber-integration/TT-21/crash/report.json",
+    "sha256": "02afd0642337f9cbf8bf2d89bec708f476f957a68dc1d83706369863e5dce99e"
+  },
+  "candidate": {
+    "path": "docs/research/timber-integration/TT-22/crash/report.json",
+    "sha256": "1eb06aa6d18e736ff2050b9ed7bd835a7c93395a4db3dc5a0281eb8e575694df"
+  },
+  "final_tick_equal": true,
+  "final_state_equal": true,
+  "crash_decision_equal": true,
+  "captures": [
+    {
+      "image": "crash-000.png",
+      "tick": 4,
+      "tick_equal": true,
+      "state_equal": true
+    },
+    {
+      "image": "crash-019.png",
+      "tick": 38,
+      "tick_equal": true,
+      "state_equal": true
+    },
+    {
+      "image": "crash-039.png",
+      "tick": 38,
+      "tick_equal": true,
+      "state_equal": true
+    },
+    {
+      "image": "crash-099.png",
+      "tick": 38,
+      "tick_equal": true,
+      "state_equal": true
+    },
+    {
+      "image": "crash-309.png",
+      "tick": 38,
+      "tick_equal": true,
+      "state_equal": true
+    },
+    {
+      "image": "crash-609.png",
+      "tick": 38,
+      "tick_equal": true,
+      "state_equal": true
+    }
+  ],
+  "capture_count_equal": true,
+  "scope": "Exact float64 flight states and production crash decision. Excludes render timings and visual aftermath scheduling; not physical validation."
+}

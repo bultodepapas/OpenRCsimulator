@@ -1,0 +1,18 @@
+{
+  "format": "openrc-afc-evidence v1",
+  "date": "2026-10-20",
+  "scope": "standalone swept-bounds index; no runtime or hardware-count qualification",
+  "sources": {
+    "app/ai/companions/traffic_index.gd": "7357074d02b354f6b2176e6d92b048dc56286573d69218ef0751def30b973835",
+    "app/tests/test_companions_traffic_index.gd": "2c388aa88421bf4102c655b5b2606113c122cfe13f752ab2e89721a09174acb9",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+  },
+  "accepted_report": "checks/afc12-index-integrated-dyolypgb/report.json",
+  "checks": 102,
+  "linear_oracle": {
+    "ordered_pairs": 79360,
+    "exact_conflicts": 1088,
+    "candidates": 18228,
+    "omissions": 0
+  }
+}

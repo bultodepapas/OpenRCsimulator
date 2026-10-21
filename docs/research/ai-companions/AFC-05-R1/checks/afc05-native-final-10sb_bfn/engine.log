@@ -1,0 +1,265 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Unable to open file: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Unable to open file: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg".
+   at: GDScript::reload (res://scenery/building_roofs.gd:7)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png".
+   at: GDScript::reload (res://scenery/building_roofs.gd:8)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg".
+   at: GDScript::reload (res://scenery/building_roofs.gd:9)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg".
+   at: GDScript::reload (res://scenery/building_roofs.gd:10)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png".
+   at: GDScript::reload (res://scenery/building_roofs.gd:11)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg".
+   at: GDScript::reload (res://scenery/building_roofs.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scenery/scenery.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/field_projected_shadows.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/field.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/club_field/landscape.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/catalog.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://ui/home.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_root.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed to load script "res://app_root.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: scenery: groups[16] at (-13.1, -28.5): pits zone 28.1 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] show_home (res://app_root.gd:320)
+       [8] _ready (res://app_root.gd:256)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:43)
+ERROR: scenery: groups[17] at (-13.5, -32.2): pits zone 28.5 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] show_home (res://app_root.gd:320)
+       [8] _ready (res://app_root.gd:256)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:43)
+ERROR: scenery: groups[18] at (-13.0, 33.8): pits zone 28.0 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] show_home (res://app_root.gd:320)
+       [8] _ready (res://app_root.gd:256)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:43)
+ERROR: scenery: groups[16] at (-13.1, -28.5): pits zone 28.1 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] _build_field (res://main.gd:2388)
+       [5] build (res://render/world/world.gd:291)
+       [6] _build_world (res://main.gd:2343)
+       [7] _ready (res://main.gd:528)
+       [8] start_flight (res://app_root.gd:651)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: scenery: groups[17] at (-13.5, -32.2): pits zone 28.5 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] _build_field (res://main.gd:2388)
+       [5] build (res://render/world/world.gd:291)
+       [6] _build_world (res://main.gd:2343)
+       [7] _ready (res://main.gd:528)
+       [8] start_flight (res://app_root.gd:651)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: scenery: groups[18] at (-13.0, 33.8): pits zone 28.0 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] _build_field (res://main.gd:2388)
+       [5] build (res://render/world/world.gd:291)
+       [6] _build_world (res://main.gd:2343)
+       [7] _ready (res://main.gd:528)
+       [8] start_flight (res://app_root.gd:651)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Scenery collision inventory refused: groups[16] at (-13.1, -28.5): pits zone 28.1 m from the take-off path, needs ≥ 30.0 (BMFA); groups[17] at (-13.5, -32.2): pits zone 28.5 m from the take-off path, needs ≥ 30.0 (BMFA); groups[18] at (-13.0, 33.8): pits zone 28.0 m from the take-off path, needs ≥ 30.0 (BMFA)
+ERROR: scenery: groups[16] at (-13.1, -28.5): pits zone 28.1 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] _rebuild_home_scene (res://app_root.gd:1860)
+       [8] start_flight (res://app_root.gd:669)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: scenery: groups[17] at (-13.5, -32.2): pits zone 28.5 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] _rebuild_home_scene (res://app_root.gd:1860)
+       [8] start_flight (res://app_root.gd:669)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: scenery: groups[18] at (-13.0, 33.8): pits zone 28.0 m from the take-off path, needs ≥ 30.0 (BMFA)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:178)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] _rebuild_home_scene (res://app_root.gd:1860)
+       [8] start_flight (res://app_root.gd:669)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+Production flight did not start.
+ERROR: Texture with GL ID of 75: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 76: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)

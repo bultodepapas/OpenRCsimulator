@@ -507,6 +507,10 @@ const LakeCollision := preload("res://sim/lake_collision.gd")
 const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
+const EXTERNAL_SPAWN_MAX_OFFSET_M := 100000.0
+const EXTERNAL_SPAWN_MIN_HEIGHT_M := 1.0
+const EXTERNAL_SPAWN_MAX_HEIGHT_M := 10000.0
+const EXTERNAL_SPAWN_MAX_HEADING_RAD := 1000000.0
 ## D6e-R4: the throttle Home and Quick Flight trim every airplane for before placing it in the air or on the runway
 ## (level flight at this throttle: below it the airplane descends, above it climbs, and the trim stays until the pilot
 ## moves it). Tests, golden flights and the technical route keep the reference trim (trim_throttle NAN).
@@ -675,6 +679,12 @@ var start_choice: String = START_AIRBORNE
 ## throttle, in the air (START_AIRBORNE) and as the runway start's flying trim (START_RUNWAY). START_HALF_POWER is
 ## the explicit airborne 0.5. Select it before setup(); reset() refits a later selection.
 var trim_throttle: float = NAN
+## A controllerless owner drives this session explicitly, one validated tick packet at a time.
+var external_driver_enabled := false
+var _external_pending_packet: Dictionary = {}
+var _external_packet_ready := false
+var _external_spawn_heading_rad := 0.0
+var _external_spawn_heading_set := false
 ## Empty after a successful reset; otherwise the explicit reason the requested start was refused.
 var start_error: String = ""
 var _runway_field: Dictionary = {}
@@ -822,11 +832,68 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 	reset()
 
 
+## Disables all automatic input and physics callbacks. Call after setup and before adding this node to the tree.
+func configure_external_driver() -> bool:
+	if external_driver_enabled or sim == null or is_inside_tree() or is_node_ready() or sim.tick != 0 \
+			or not physics_enabled or not _has_valid_start():
+		return false
+	external_driver_enabled = true
+	input_enabled = false
+	calibration = null
+	if radio.connected:
+		radio.disconnect_device()
+	_external_pending_packet.clear()
+	_external_packet_ready = false
+	set_process_input(false)
+	set_physics_process(false)
+	sim.set_physics_process(false)
+	return true
+
+
+## Installs a fresh trimmed airborne reset at local terrain height + `height_m`, facing `heading_rad` from north.
+## Call only for a configured external session before tree entry and before its first accepted tick.
+func external_spawn_airborne(north: float, east: float, height_m: float, heading_rad: float) -> bool:
+	if not external_driver_enabled or sim == null or is_inside_tree() or is_node_ready() or sim.tick != 0 \
+			or not _has_valid_start() or not physics_enabled or not holds.is_empty():
+		return false
+	if not is_finite(north) or not is_finite(east) or not is_finite(height_m) or not is_finite(heading_rad) \
+			or absf(north) > EXTERNAL_SPAWN_MAX_OFFSET_M or absf(east) > EXTERNAL_SPAWN_MAX_OFFSET_M \
+			or height_m < EXTERNAL_SPAWN_MIN_HEIGHT_M or height_m > EXTERNAL_SPAWN_MAX_HEIGHT_M \
+			or absf(heading_rad) > EXTERNAL_SPAWN_MAX_HEADING_RAD:
+		return false
+	var terrain: PackedFloat64Array = environment.terrain(north, east)
+	if terrain.is_empty() or not is_finite(terrain[0]):
+		return false
+	var altitude_m: float = float(terrain[0]) + height_m
+	var down_m: float = -altitude_m
+	if not is_finite(altitude_m) or not is_finite(_weather.air_density(down_m)) \
+			or not is_finite(_weather.engine_charge_ratio(down_m)):
+		return false
+	var candidate_state: PackedFloat64Array = start.state.duplicate()
+	candidate_state[RB.POS] = north
+	candidate_state[RB.POS + 1] = east
+	candidate_state[RB.POS + 2] = down_m
+	if not Sim.state_is_valid(candidate_state):
+		return false
+	start.state = candidate_state
+	start_choice = START_AIRBORNE
+	_external_spawn_heading_rad = wrapf(heading_rad, -PI, PI)
+	_external_spawn_heading_set = true
+	reset()
+	return sim.tick == 0 and _flight_ready() and not sim.paused and Sim.state_is_valid(sim.state)
+
+
 func _load_selected_aircraft() -> Dictionary:
 	return _frozen_aircraft.duplicate(true) if not _frozen_aircraft.is_empty() else AircraftData.load_file(aircraft_path)
 
 
 func _ready() -> void:
+	if external_driver_enabled:
+		set_process_input(false)
+		set_physics_process(false)
+		if sim != null:
+			sim.set_physics_process(false)
+		return
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	if external_controller_selection:
 		return
@@ -838,7 +905,7 @@ func _ready() -> void:
 
 ## Technical/direct flights have no ControllerService to certify live polling.
 func _confirmed_direct_gamepad(id: int) -> bool:
-	if external_controller_selection or not is_inside_tree() or not get_window().has_focus():
+	if external_driver_enabled or external_controller_selection or not is_inside_tree() or not get_window().has_focus():
 		return false
 	if id != radio.device_id or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
 		return false
@@ -847,6 +914,8 @@ func _confirmed_direct_gamepad(id: int) -> bool:
 
 
 func _input(event: InputEvent) -> void:
+	if external_driver_enabled:
+		return
 	radio.set_auxiliary_enabled(not sim.paused and calibration == null and holds.is_empty())
 	if event is InputEventJoypadMotion:
 		radio.on_motion(event.device, event.axis, event.axis_value)
@@ -855,6 +924,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
+	if external_driver_enabled:
+		return
 	if external_controller_selection:
 		if not is_connected and radio.connected and device == radio.device_id:
 			controller_disconnected()
@@ -877,7 +948,7 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 
 ## [K]: start the radio calibration wizard. The simulation pauses and the engine idles until it is done.
 func start_calibration() -> bool:
-	if not radio.connected or radio.profile.get("kind", "") != "radio":
+	if external_driver_enabled or not radio.connected or radio.profile.get("kind", "") != "radio":
 		return false
 	calibration = RcCalibration.new(radio.profile)
 	radio.set_auxiliary_enabled(false)
@@ -887,7 +958,7 @@ func start_calibration() -> bool:
 
 ## [Enter]: next calibration step. When the wizard finishes, the profile is used and saved for this device.
 func advance_calibration() -> void:
-	if calibration == null:
+	if external_driver_enabled or calibration == null:
 		return
 	if calibration.advance(radio.axes):
 		if external_controller_selection and persist_controller_profile.is_valid():
@@ -941,6 +1012,8 @@ func controller_profile_rejection(_profile: Dictionary) -> String:
 
 ## Called only at a paused, explicit shell selection boundary; never by device enumeration.
 func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:
+	if external_driver_enabled:
+		return false
 	controller_cut_held = false
 	var staged_throttle: float = float(commands.throttle) if initial_start else 0.0
 	calibration = null
@@ -1162,6 +1235,19 @@ func _collision_bins_for(proxies: Array[Dictionary], cell_size: float) -> Dictio
 ## Detached damage snapshot for renderer state and checkpoint inspection.
 func scenery_damage() -> Dictionary:
 	return _scenery_damage.duplicate(true)
+
+
+## Imports a detached world-owned damage snapshot into an external session.
+func import_external_scenery_damage(damage: Dictionary, tick: int) -> bool:
+	if not external_driver_enabled or sim == null or not _scenery_damage_is_valid(damage, tick):
+		return false
+	var detached: Dictionary = damage.duplicate(true)
+	if detached == _scenery_damage:
+		return true
+	_scenery_damage = detached
+	_clear_pending_scenery_damage()
+	scenery_damage_changed.emit()
+	return true
 
 
 func last_scenery_event() -> SceneryCollision.Event:
@@ -1589,6 +1675,8 @@ func _legacy_contact_history(snapshot: Dictionary) -> Dictionary:
 
 
 func _stage_scenery_damage(event: SceneryCollision.Event) -> void:
+	if external_driver_enabled:
+		return # fleet-owned damage is imported/published by the external world coordinator
 	if event == null or not SceneryDamage.profile_is_valid(event.damage_profile) \
 			or event.damage_profile == "none" or event.damage_id.is_empty() \
 			or not is_finite(event.impact_energy_j) or event.impact_energy_j < SceneryDamage.threshold_j(event.damage_profile):
@@ -1773,6 +1861,8 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 
 
 func _poll_controller(integrate := true) -> bool:
+	if external_driver_enabled:
+		return false
 	radio.poll(read_axis, sim.dt(), read_button, integrate and not sim.paused and calibration == null and holds.is_empty())
 	if external_controller_selection and (not radio.input_error.is_empty() or not radio.profile_error.is_empty()):
 		controller_disconnected()
@@ -1782,6 +1872,8 @@ func _poll_controller(integrate := true) -> bool:
 
 
 func _physics_process(_delta: float) -> void:
+	if external_driver_enabled:
+		return
 	if not holds.is_empty():
 		if external_controller_selection and input_enabled and radio.connected:
 			_poll_controller(false)
@@ -1817,15 +1909,21 @@ func _physics_process(_delta: float) -> void:
 			var keyboard: Dictionary = aircraft.model.controls.get("keyboard", {}) if rates_active() else {}
 			commands = Commands.step_commands(commands, raw, sim.dt(), keyboard)
 		sim.inputs = _inputs()
+	_session_after_input()
+
+
+## Session guards run before the Simulation child, matching the normal callback order.
+## Returns true only when one kernel tick may follow.
+func _session_after_input() -> bool:
 	# D9d: any crash-hull point at or below the ground is a crash. E1: the wheels are spring-damper contacts instead
 	# (aircraft with a landing_gear section); a leg pushed past its travel is a crash too.
 	if not crash.is_empty():
 		if not crash_auto_restart:
-			return
+			return false
 		crash.ticks_left -= 1
 		if crash.ticks_left <= 0:
 			reset()
-		return
+		return false
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
 			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
@@ -1843,6 +1941,100 @@ func _physics_process(_delta: float) -> void:
 			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
 		elif gear_collapsed(sim.state):
 			_crash(_gear_limit_impact(sim.state))
+	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
+		and crash.is_empty() and _flight_ready() and Sim.state_is_valid(sim.state)
+
+
+## Stage one controllerless pilot sample. A rejected packet leaves the last staged packet intact.
+func prepare_external_tick(packet: Dictionary) -> Dictionary:
+	if not external_driver_enabled:
+		return {ok = false, errors = ["external driver is not configured"]}
+	var errors: Array[String] = []
+	var required := ["roll", "pitch", "yaw", "throttle"]
+	var allowed := ["roll", "pitch", "yaw", "throttle", "gear_down", "flaps", "brake"]
+	var normalized_packet: Dictionary = {}
+	for raw_key: Variant in packet.keys():
+		if typeof(raw_key) not in [TYPE_STRING, TYPE_STRING_NAME]:
+			errors.append("unsupported packet field: %s" % str(raw_key))
+			continue
+		var key: String = str(raw_key)
+		if not allowed.has(key):
+			errors.append("unsupported packet field: %s" % key)
+		elif normalized_packet.has(key):
+			errors.append("duplicate packet field: %s" % key)
+		else:
+			normalized_packet[key] = packet[raw_key]
+	for key: String in required:
+		if not normalized_packet.has(key):
+			errors.append("missing required field: %s" % key)
+		elif not _external_number_is_in_range(normalized_packet[key], 0.0 if key == "throttle" else -1.0, 1.0):
+			errors.append("%s must be a finite number in [%s, 1]" % [key, "0" if key == "throttle" else "-1"])
+	if normalized_packet.has("gear_down"):
+		if typeof(normalized_packet.gear_down) != TYPE_BOOL:
+			errors.append("gear_down must be a bool")
+		elif not gear_is_retractable():
+			errors.append("gear_down is unsupported by this aircraft")
+	if normalized_packet.has("flaps"):
+		if not _external_number_is_in_range(normalized_packet.flaps, 0.0, 1.0):
+			errors.append("flaps must be a finite number in [0, 1]")
+		elif not flaps_available():
+			errors.append("flaps are unsupported by this aircraft")
+	if normalized_packet.has("brake"):
+		if not _external_number_is_in_range(normalized_packet.brake, 0.0, 1.0):
+			errors.append("brake must be a finite number in [0, 1]")
+		elif not gear_is_retractable():
+			errors.append("brake is unsupported without retractable landing gear")
+	if not errors.is_empty():
+		return {ok = false, errors = errors}
+	var staged: Dictionary = {}
+	for key: String in required:
+		staged[key] = float(normalized_packet[key])
+	for key: String in ["gear_down", "flaps", "brake"]:
+		if normalized_packet.has(key):
+			staged[key] = normalized_packet[key] if key == "gear_down" else float(normalized_packet[key])
+	_external_pending_packet = staged
+	_external_packet_ready = true
+	return {ok = true, errors = []}
+
+
+## Consume one staged packet through the ordinary session guards and one kernel tick.
+func step_external_tick() -> bool:
+	if not external_driver_enabled or not _external_packet_ready or sim == null:
+		return false
+	if not physics_enabled or not sim.fault_reason.is_empty() or not holds.is_empty() \
+			or calibration != null or not _flight_ready() or sim.stop_at_tick >= 0 and sim.tick >= sim.stop_at_tick:
+		_discard_external_packet()
+		return false
+	var packet: Dictionary = _external_pending_packet
+	commands = {roll = packet.roll, pitch = packet.pitch, yaw = packet.yaw, throttle = packet.throttle}
+	raw = commands.duplicate()
+	if packet.has("gear_down"):
+		_gear_requested_down = packet.gear_down
+	if packet.has("flaps"):
+		_flap_requested = packet.flaps
+	if packet.has("brake"):
+		_wheel_brake_demand = packet.brake
+	sim.inputs = _inputs()
+	var previous_tick: int = sim.tick
+	if not _session_after_input() or sim.paused or not sim.fault_reason.is_empty():
+		_discard_external_packet()
+		return false
+	sim.step()
+	var accepted: bool = sim.tick == previous_tick + 1 and sim.fault_reason.is_empty()
+	_discard_external_packet()
+	return accepted
+
+
+func _discard_external_packet() -> void:
+	_external_pending_packet.clear()
+	_external_packet_ready = false
+
+
+func _external_number_is_in_range(value: Variant, minimum: float, maximum: float) -> bool:
+	if typeof(value) not in [TYPE_INT, TYPE_FLOAT]:
+		return false
+	var number := float(value)
+	return is_finite(number) and number >= minimum and number <= maximum
 
 
 ## E3d2: a turning propeller whose disc reaches the field breaks: the engine stops (dead stick) and the flight goes on.
@@ -2295,6 +2487,13 @@ func _reset_airborne_start() -> bool:
 		_failures.restart()
 	var weather_aux: PackedFloat64Array = _restart_weather_aux()
 	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
+	if _external_spawn_heading_set and initial.size() == RB.SIZE:
+		var trim_euler: PackedFloat64Array = M.q_to_euler(M.quat(initial[RB.ATT], initial[RB.ATT + 1],
+			initial[RB.ATT + 2], initial[RB.ATT + 3]))
+		var spawned_attitude: PackedFloat64Array = M.q_from_euler(_external_spawn_heading_rad,
+			trim_euler[1], trim_euler[2])
+		for axis: int in 4:
+			initial[RB.ATT + axis] = spawned_attitude[axis]
 	if _has_valid_start() and not weather_is_calm():
 		var attitude: PackedFloat64Array = M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
 		var wind_body: PackedFloat64Array = M.q_rotate(M.q_conj(attitude), _initial_wind())
@@ -2574,7 +2773,7 @@ func adjust_aileron_trim(delta_units: float) -> bool:
 ## Stick commands plus trims in maximum-throw units. Reduced rates never attenuate the trim correction.
 func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
-	if rates_active():
+	if rates_active() and not external_driver_enabled:
 		c = Commands.shape_sticks(c, aircraft.model.controls.rates.normal, not radio.connected)
 		# Short gamepad sticks may have aircraft-specific normal pitch/yaw travel.
 		# This is a fixed device setting; trim and physical radio travel remain independent.

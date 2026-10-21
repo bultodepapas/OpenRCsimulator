@@ -1,0 +1,64 @@
+{
+  "date_published": 1653609600,
+  "name": "Fern 02",
+  "type": 2,
+  "staging": null,
+  "authors": {
+    "Rob Tuytel": "scanning",
+    "Rico Cilliers": "modeling"
+  },
+  "sponsors": [
+    "78546118",
+    "25436656"
+  ],
+  "categories": [
+    "plants",
+    "nature",
+    "collection: smugglers_cove",
+    "collection: pine_forest"
+  ],
+  "tags": [
+    "plant",
+    "fern",
+    "foliage",
+    "jungle",
+    "shrub",
+    "bush",
+    "leaf",
+    "leaves",
+    "green",
+    "nature",
+    "forest",
+    "outdoor"
+  ],
+  "max_resolution": [
+    8192,
+    8192
+  ],
+  "polycount": 6232,
+  "texel_density": 10144.159682262632,
+  "dimensions": [
+    1972.5302457809448,
+    1724.0281701087952,
+    427.6947118341923
+  ],
+  "files_hash": "36e2a53d7f23f422640ad368c1f27745de2fef82",
+  "description": "Free 8K model of four realistic fern clumps featuring detailed serrated fronds, varied silhouettes and rich dappled green foliage.",
+  "category_id": "b46752a1-8a91-5224-8bda-44c37b96c364",
+  "category": "Nature/Plants/Ferns",
+  "collections": [
+    "pine_forest",
+    "smugglers_cove"
+  ],
+  "attributes": {
+    "condition": [
+      "clean"
+    ],
+    "material": [
+      "plant"
+    ]
+  },
+  "img_version": "334ce7aa",
+  "download_count": 81438,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/fern_02.png?width=256&height=256&format=webp&v=334ce7aa"
+}

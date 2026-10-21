@@ -1,0 +1,148 @@
+{
+  "format": "openrc-afc12r2-verification v1",
+  "verified_utc": "2026-10-20T23:39:19.414320+00:00",
+  "scope": "Geometric helper only; no flight/controller/cost or count qualification.",
+  "source_receipt_scope": "Collected after integrated test; original runner timestamps preserved.",
+  "sources": [
+    {
+      "path": "app/ai/companions/static_trajectory.gd",
+      "bytes": 9250,
+      "sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+    },
+    {
+      "path": "app/tests/test_companions_trajectory.gd",
+      "bytes": 11955,
+      "sha256": "e2bf20d152710e406eea04cffb01f7cc7c962af096c774eacf09e4f862a59fa8"
+    },
+    {
+      "path": "app/ai/companions/airspace.gd",
+      "bytes": 11966,
+      "sha256": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920"
+    },
+    {
+      "path": "app/scenery/collision_world.gd",
+      "bytes": 38866,
+      "sha256": "09343d14f9cf0b38a770832d1056d143da39f78772ac54a1047ec4504944b7e9"
+    },
+    {
+      "path": "app/physics/aircraft_contact_contract.gd",
+      "bytes": 35274,
+      "sha256": "84a46a225b368b8a40bb37e5f3b5714b822983f054ae0480f791ef46c20a5734"
+    },
+    {
+      "path": "app/physics/ground_terrain.gd",
+      "bytes": 11642,
+      "sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a"
+    },
+    {
+      "path": "app/physics/lake_surface.gd",
+      "bytes": 35299,
+      "sha256": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224"
+    },
+    {
+      "path": "app/data/lake_loader.gd",
+      "bytes": 18729,
+      "sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+    }
+  ],
+  "checks": [
+    {
+      "report": "checks/static-trajectory-fallback-dbwhjnc1/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "report": "checks/static-trajectory-indexed-qd06uv67/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "report": "checks/static-trajectory-integrated-73uvjv3z/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "report": "checks/static-trajectory-lp9z2ou3/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "report": "checks/static-trajectory-max-ogm431jd/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    },
+    {
+      "report": "checks/static-trajectory-reviewed-06ur7oxm/report.json",
+      "ok": true,
+      "errors": 0,
+      "warnings": 0
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "checks/static-trajectory-fallback-dbwhjnc1/engine.log",
+      "bytes": 276,
+      "sha256": "e81e6bf9d82032a9070df973006b92c2f74111024e557a7045bfbb1126f35927"
+    },
+    {
+      "path": "checks/static-trajectory-fallback-dbwhjnc1/report.json",
+      "bytes": 1209,
+      "sha256": "fdb3aa576d60878c6de30e7c4c5db6d8c2d855065ebd4b7f075534b42130ddf1"
+    },
+    {
+      "path": "checks/static-trajectory-indexed-qd06uv67/engine.log",
+      "bytes": 276,
+      "sha256": "56f1c07feada9d4e4a00362a19dc4195ce47472d77d16836e6f12a03f508d5f1"
+    },
+    {
+      "path": "checks/static-trajectory-indexed-qd06uv67/report.json",
+      "bytes": 1207,
+      "sha256": "e9e3f86dd4d9c616ad6773f798762f4774277a46d14f09e0860771e9f52bbdff"
+    },
+    {
+      "path": "checks/static-trajectory-integrated-73uvjv3z/engine.log",
+      "bytes": 276,
+      "sha256": "e81e6bf9d82032a9070df973006b92c2f74111024e557a7045bfbb1126f35927"
+    },
+    {
+      "path": "checks/static-trajectory-integrated-73uvjv3z/report.json",
+      "bytes": 1189,
+      "sha256": "dc7ef92f9fca1978742c1f765d234fd731befeeaaa96b8d79344d6aed493d572"
+    },
+    {
+      "path": "checks/static-trajectory-lp9z2ou3/engine.log",
+      "bytes": 172,
+      "sha256": "6664f8ee7ef975d95fca6184eded87d94141ab92860ac2ab98e7cf86aa72aebe"
+    },
+    {
+      "path": "checks/static-trajectory-lp9z2ou3/report.json",
+      "bytes": 1220,
+      "sha256": "269dff217de14513c417bb61c80ba65169fc1d50ec9b779cc17007037e1be481"
+    },
+    {
+      "path": "checks/static-trajectory-max-ogm431jd/engine.log",
+      "bytes": 276,
+      "sha256": "56f1c07feada9d4e4a00362a19dc4195ce47472d77d16836e6f12a03f508d5f1"
+    },
+    {
+      "path": "checks/static-trajectory-max-ogm431jd/report.json",
+      "bytes": 1195,
+      "sha256": "2e1aa815d7047138af070440f57a91bac2544887a48d95db3beb10871c29790f"
+    },
+    {
+      "path": "checks/static-trajectory-reviewed-06ur7oxm/engine.log",
+      "bytes": 276,
+      "sha256": "02d8d5a2de6c34dedefc94102f9b2383d6e2407b65be790e6ea4429ad04b55b3"
+    },
+    {
+      "path": "checks/static-trajectory-reviewed-06ur7oxm/report.json",
+      "bytes": 1247,
+      "sha256": "3f45442a5b812e07a777aabea95904f180ee3ee78dabccf22151b88a079e61e3"
+    }
+  ]
+}

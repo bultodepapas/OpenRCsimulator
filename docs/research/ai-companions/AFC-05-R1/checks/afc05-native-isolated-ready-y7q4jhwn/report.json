@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3cf739ca-daaa-44a0-944d-9330e7cdacae",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "tmp/afc04-isolated/app",
+    "--script",
+    "res://../research/ai-companions/capture_companions.gd",
+    "--",
+    "--labels",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/presentation/native-isolated-ready"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:50:15.785168+00:00",
+  "label": "afc05-native-isolated-ready",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-isolated-ready-y7q4jhwn\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-isolated-ready-y7q4jhwn\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 107
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 8,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 12,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 16,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 20,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 24,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 28,
+      "message": "'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 45,
+      "message": "'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 62,
+      "message": "'res://assets/landscape/vegetation/models/Clover_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 79,
+      "message": "'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 96,
+      "message": "'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 113,
+      "message": "'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 130,
+      "message": "'res://assets/landscape/vegetation/models/Pine_2.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 147,
+      "message": "'res://assets/landscape/vegetation/models/Pine_2.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 164,
+      "message": "'res://assets/landscape/vegetation/models/Pine_2.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 181,
+      "message": "'res://assets/landscape/vegetation/models/Pine_3.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 198,
+      "message": "'res://assets/landscape/vegetation/models/Pine_3.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 215,
+      "message": "'res://assets/landscape/vegetation/models/Pine_3.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 232,
+      "message": "'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 249,
+      "message": "'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:549)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 17.828,
+  "log_bytes": 114125,
+  "log_sha256": "255340feb5fd264aabc2322e486ebf1fe9b29eb0c42bfd43766c2bc91c3ee84c"
+}

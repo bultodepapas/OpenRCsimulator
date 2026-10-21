@@ -611,8 +611,12 @@ static func attach(root: Node3D) -> Node3D:
 	kit.add_child(_anchored(sprite("nav_left", Color(1.0, 0.06, 0.04), _anchor_position(anchors, "nav_left", left.centre), NAV_SIZE_M), anchors, "nav_left"))
 	kit.add_child(_anchored(sprite("nav_right", Color(0.08, 1.0, 0.25), _anchor_position(anchors, "nav_right", right.centre), NAV_SIZE_M), anchors, "nav_right"))
 	kit.add_child(_anchored(sprite("nav_tail", Color(1.0, 1.0, 1.0), _anchor_position(anchors, "nav_tail", Vector3(0.0, all.position.y + all.size.y * 0.6, all.end.z + 0.01)), NAV_SIZE_M), anchors, "nav_tail"))
-	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
-	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
+	kit.add_child(_anchored(sprite("strobe_left", Color(1.0, 1.0, 1.0), _anchor_position(anchors, "strobe_left", left.trailing), NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE), anchors, "strobe_left"))
+	kit.add_child(_anchored(sprite("strobe_right", Color(1.0, 1.0, 1.0), _anchor_position(anchors, "strobe_right", right.trailing), NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE), anchors, "strobe_right"))
+	# Optional authored beacon seats use the same light state and simulation clock.
+	for key: String in ["strobe_dorsal", "strobe_ventral"]:
+		if anchors.has(key):
+			kit.add_child(_anchored(sprite(key, Color(1.0, 0.045, 0.015), _anchor_position(anchors, key, Vector3.ZERO), 0.012, LED_RADIANCE, STROBE), anchors, key))
 	Exposure.register()
 	var top_lines: Dictionary = skins.upper
 	for key: String in ["left", "right"]:
@@ -645,6 +649,16 @@ static func attach(root: Node3D) -> Node3D:
 	landing.light_color = Color("#fff4e0")
 	landing.shadow_enabled = false
 	kit.add_child(landing)
+	if anchors.has("landing_right"):
+		var companion := landing.duplicate() as SpotLight3D
+		companion.name = "landing_light_right"
+		companion.position = _anchor_position(anchors, "landing_right", landing.position)
+		_anchored(companion, anchors, "landing_right")
+		# A paired installation shares the original beam's total energy.
+		landing.light_energy *= 0.5
+		companion.light_energy = landing.light_energy
+		kit.add_child(companion)
+		kit.add_child(_anchored(sprite("landing_lamp_right", Color("#fff4e0"), companion.position, NAV_SIZE_M), anchors, "landing_right"))
 	_mark_hosts(root, kit)
 	if not anchors.is_empty():
 		kit.set_meta("dynamic", true) # update_dynamic() has following or gated lights to serve
@@ -652,6 +666,9 @@ static func attach(root: Node3D) -> Node3D:
 	var bindings := {navigation = [], strobe = [], landing = [], orientation = []}
 	for child: Node3D in kit.get_children():
 		var label := str(child.name)
+		if anchors.has(label) and anchors[label].get("enabled", true) == false:
+			child.visible = false
+			continue
 		var group := "navigation" if label.begins_with("nav_") else "strobe" if label.begins_with("strobe_") else "landing" if label.begins_with("landing_") else "orientation"
 		bindings[group].append(child)
 	bind_groups(kit, bindings, root.get_meta("light_groups", GROUPS))

@@ -1,0 +1,333 @@
+{
+	"baseline_source": "research/timber/optimization/details_baseline.gd",
+	"baseline_source_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+	"candidate_source": "app/aircraft/timber_visual_details.gd",
+	"candidate_source_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+	"failures": [],
+	"measurement": "Synchronous headless CPU construction time; model build is timed separately from VisualDetails.apply; not frame time or FPS.",
+	"paired_alternating_runs": [
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 67667,
+					"full_apply_usec": 2388551,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 64176,
+					"phase_sum_usec": 2111802,
+					"phase_usec": {
+						"add_fracture_reveals": 33885,
+						"add_fuselage_markings": 362412,
+						"add_gear_springs": 1697,
+						"add_hub_fasteners": 3385,
+						"apply_material_finishes": 10818,
+						"repair_painted_surface_poke_through": 1699605
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 11,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 69761,
+					"full_apply_usec": 2606900,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 63633,
+					"phase_sum_usec": 2542782,
+					"phase_usec": {
+						"add_fracture_reveals": 47063,
+						"add_fuselage_markings": 616409,
+						"add_gear_springs": 5093,
+						"add_hub_fasteners": 454,
+						"apply_material_finishes": 24462,
+						"repair_painted_surface_poke_through": 1849301
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 12,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"baseline",
+				"candidate"
+			],
+			"render_signatures_match": true
+		},
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 26754,
+					"full_apply_usec": 923343,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 21000,
+					"phase_sum_usec": 805333,
+					"phase_usec": {
+						"add_fracture_reveals": 10391,
+						"add_fuselage_markings": 209226,
+						"add_gear_springs": 1128,
+						"add_hub_fasteners": 195,
+						"apply_material_finishes": 10307,
+						"repair_painted_surface_poke_through": 574086
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 8,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 28392,
+					"full_apply_usec": 855513,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 73420,
+					"phase_sum_usec": 2223170,
+					"phase_usec": {
+						"add_fracture_reveals": 14340,
+						"add_fuselage_markings": 283189,
+						"add_gear_springs": 1563,
+						"add_hub_fasteners": 236,
+						"apply_material_finishes": 14075,
+						"repair_painted_surface_poke_through": 1909767
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 5,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"candidate",
+				"baseline"
+			],
+			"render_signatures_match": true
+		},
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 24842,
+					"full_apply_usec": 930304,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 23400,
+					"phase_sum_usec": 951361,
+					"phase_usec": {
+						"add_fracture_reveals": 12855,
+						"add_fuselage_markings": 213521,
+						"add_gear_springs": 1400,
+						"add_hub_fasteners": 188,
+						"apply_material_finishes": 8880,
+						"repair_painted_surface_poke_through": 714517
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 13,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 28120,
+					"full_apply_usec": 935614,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 26034,
+					"phase_sum_usec": 940145,
+					"phase_usec": {
+						"add_fracture_reveals": 12707,
+						"add_fuselage_markings": 205742,
+						"add_gear_springs": 1716,
+						"add_hub_fasteners": 281,
+						"apply_material_finishes": 8910,
+						"repair_painted_surface_poke_through": 710789
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 5,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"baseline",
+				"candidate"
+			],
+			"render_signatures_match": true
+		},
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 27447,
+					"full_apply_usec": 930705,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 20762,
+					"phase_sum_usec": 969479,
+					"phase_usec": {
+						"add_fracture_reveals": 14873,
+						"add_fuselage_markings": 210273,
+						"add_gear_springs": 1622,
+						"add_hub_fasteners": 317,
+						"apply_material_finishes": 8309,
+						"repair_painted_surface_poke_through": 734085
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 6,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 21993,
+					"full_apply_usec": 938935,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 25395,
+					"phase_sum_usec": 907499,
+					"phase_usec": {
+						"add_fracture_reveals": 15665,
+						"add_fuselage_markings": 203943,
+						"add_gear_springs": 1687,
+						"add_hub_fasteners": 329,
+						"apply_material_finishes": 9709,
+						"repair_painted_surface_poke_through": 676166
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 8,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"candidate",
+				"baseline"
+			],
+			"render_signatures_match": true
+		},
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 25491,
+					"full_apply_usec": 908331,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 22814,
+					"phase_sum_usec": 919270,
+					"phase_usec": {
+						"add_fracture_reveals": 14968,
+						"add_fuselage_markings": 204709,
+						"add_gear_springs": 1674,
+						"add_hub_fasteners": 326,
+						"apply_material_finishes": 5103,
+						"repair_painted_surface_poke_through": 692490
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 6,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 23917,
+					"full_apply_usec": 955204,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 23813,
+					"phase_sum_usec": 957883,
+					"phase_usec": {
+						"add_fracture_reveals": 14497,
+						"add_fuselage_markings": 217132,
+						"add_gear_springs": 1680,
+						"add_hub_fasteners": 310,
+						"apply_material_finishes": 9299,
+						"repair_painted_surface_poke_through": 714965
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 9,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"baseline",
+				"candidate"
+			],
+			"render_signatures_match": true
+		},
+		{
+			"measurements": {
+				"baseline": {
+					"full_apply_model_build_usec": 26475,
+					"full_apply_usec": 927634,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 25538,
+					"phase_sum_usec": 946299,
+					"phase_usec": {
+						"add_fracture_reveals": 14445,
+						"add_fuselage_markings": 208252,
+						"add_gear_springs": 1552,
+						"add_hub_fasteners": 363,
+						"apply_material_finishes": 9477,
+						"repair_painted_surface_poke_through": 712210
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 6,
+					"repeat_output_match": true,
+					"variant": "baseline"
+				},
+				"candidate": {
+					"full_apply_model_build_usec": 25381,
+					"full_apply_usec": 937368,
+					"phase_and_full_output_match": true,
+					"phase_model_build_usec": 24355,
+					"phase_sum_usec": 927219,
+					"phase_usec": {
+						"add_fracture_reveals": 14084,
+						"add_fuselage_markings": 205689,
+						"add_gear_springs": 1560,
+						"add_hub_fasteners": 290,
+						"apply_material_finishes": 7809,
+						"repair_painted_surface_poke_through": 697787
+					},
+					"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+					"repeat_apply_usec": 5,
+					"repeat_output_match": true,
+					"variant": "candidate"
+				}
+			},
+			"order": [
+				"candidate",
+				"baseline"
+			],
+			"render_signatures_match": true
+		}
+	],
+	"schema": "openrc-timber-details-profile v1",
+	"warmup": [
+		{
+			"full_apply_model_build_usec": 33051,
+			"full_apply_usec": 1072647,
+			"phase_and_full_output_match": true,
+			"phase_model_build_usec": 122237,
+			"phase_sum_usec": 1678796,
+			"phase_usec": {
+				"add_fracture_reveals": 24811,
+				"add_fuselage_markings": 296583,
+				"add_gear_springs": 3302,
+				"add_hub_fasteners": 307,
+				"apply_material_finishes": 8896,
+				"repair_painted_surface_poke_through": 1344897
+			},
+			"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+			"repeat_apply_usec": 8,
+			"repeat_output_match": true,
+			"variant": "baseline"
+		},
+		{
+			"full_apply_model_build_usec": 35103,
+			"full_apply_usec": 2061201,
+			"phase_and_full_output_match": true,
+			"phase_model_build_usec": 27303,
+			"phase_sum_usec": 1022370,
+			"phase_usec": {
+				"add_fracture_reveals": 20681,
+				"add_fuselage_markings": 276934,
+				"add_gear_springs": 3616,
+				"add_hub_fasteners": 773,
+				"apply_material_finishes": 12873,
+				"repair_painted_surface_poke_through": 707493
+			},
+			"render_signature_sha256": "999a570020b9b55c1ac80686c90253f68057605402c9eb4c8bd411abf914faac",
+			"repeat_apply_usec": 16,
+			"repeat_output_match": true,
+			"variant": "candidate"
+		}
+	]
+}

@@ -1,0 +1,298 @@
+{
+	"capture": {
+		"camera_look_at_m": [
+			0.0,
+			-0.125,
+			0.025
+		],
+		"camera_position_m": [
+			0.12,
+			-0.18,
+			0.37
+		],
+		"image": "research/timber/visual-upgrade/timber-gear-motion.png",
+		"pose": "full_contact",
+		"resolution_px": [
+			1280,
+			960
+		],
+		"source": "default-field runway reset; loaded wheel contacts"
+	},
+	"checks": 41,
+	"dust_fixture_uses_temporary_wheel_slip_override": true,
+	"failures": 0,
+	"poses": {
+		"full_contact": {
+			"all_wheel_contact_compression_m": [
+				0.0211789751299373,
+				0.02086702653177,
+				0.0209908383028937
+			],
+			"cable_vertex_delta_m": 0.00862784124910831,
+			"description": "Settled default-field runway pose at evaluator contact compression; suspension arc stays within the 6-degree cable-safe render limit.",
+			"hinge_degrees": [
+				5.99999931319157,
+				5.99999931319157
+			],
+			"main_gear_axle_contact_height_m": [
+				0.0211789751299373,
+				0.02086702653177
+			],
+			"main_gear_wheel_wrapper_compression_m": [
+				0.0211789751299373,
+				0.02086702653177
+			],
+			"metrics": {
+				"authored_travel_degrees": 12.0,
+				"cable_safe_articulation_limit_degrees": 6.0,
+				"cable_vertex_delta_m": 0.00862784124910831,
+				"dust_fixture_telemetry_restored": true,
+				"focus_pause_stops_dust": true,
+				"loaded_compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"loaded_hinge_degrees": [
+					5.99999931319157,
+					5.99999931319157
+				],
+				"rest_cable_vertex_delta_m": 0.0,
+				"rest_spring_vertex_delta_m": 0.0,
+				"simulation_writes": {
+					"auxiliary": false,
+					"body_state": false,
+					"continuous": false
+				},
+				"spring_vertex_delta_m": 0.00556566892191768,
+				"wreck_prepared_groups_unchanged": true
+			},
+			"spring_vertex_delta_m": 0.00556566892191768,
+			"wheel_spin_radians": [
+				0.0,
+				0.0
+			]
+		},
+		"rest": {
+			"cable_vertex_delta_m": 0.0,
+			"hinge_degrees": [
+				0.0,
+				0.0
+			],
+			"main_gear_wheel_wrapper_compression_m": [
+				0.0,
+				0.0
+			],
+			"spring_vertex_delta_m": 0.0
+		}
+	},
+	"read_only_scope": "GroundGear and TimberVisualMotion render updates",
+	"results": [
+		{
+			"check": "session setup",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "default field loaded",
+			"detail": "[]",
+			"passed": true
+		},
+		{
+			"check": "field assigned",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "runway pose is flyable",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "baseline wreck prepares before motion observer",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "motion observer attaches",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "Wreck prepares after observer attachment at rest",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "observer attachment preserves prepared Wreck section bounds and centers",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "motion observers leave simulation state unchanged",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "motion observers leave continuous state unchanged",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "motion observers leave auxiliary state unchanged",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "precomputed Wreck bounds stay fixed while the observer moves gear",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "both main gear contacts are compressed",
+			"detail": "[0.02117897512994, 0.02086702653177, 0.02099083830289]",
+			"passed": true
+		},
+		{
+			"check": "left axle preserves contact height",
+			"detail": "render 0.021179 m; evaluator 0.021179 m",
+			"passed": true
+		},
+		{
+			"check": "left wheel spin angle is unchanged",
+			"detail": "0.0",
+			"passed": true
+		},
+		{
+			"check": "left spring leg articulates inside cable limit",
+			"detail": "5.99999931319157",
+			"passed": true
+		},
+		{
+			"check": "right axle preserves contact height",
+			"detail": "render 0.020867 m; evaluator 0.020867 m",
+			"passed": true
+		},
+		{
+			"check": "right wheel spin angle is unchanged",
+			"detail": "0.0",
+			"passed": true
+		},
+		{
+			"check": "right spring leg articulates inside cable limit",
+			"detail": "5.99999931319157",
+			"passed": true
+		},
+		{
+			"check": "cross-cables follow the spring legs",
+			"detail": "0.008628 m",
+			"passed": true
+		},
+		{
+			"check": "cross-cable resource is a private ArrayMesh",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "both added extension springs have followers",
+			"detail": "2 follower(s)",
+			"passed": true
+		},
+		{
+			"check": "extension spring coils follow the spring legs",
+			"detail": "0.005566 m",
+			"passed": true
+		},
+		{
+			"check": "runway wheel has a loaded contact",
+			"detail": "compression=0.0212 m load=9.478 N",
+			"passed": true
+		},
+		{
+			"check": "real loaded slip on rough ground emits tire dust",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "same slip on paved runway emits no tire dust",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "airborne wheel without compression emits no dust",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "dust fixture restores injected wheel telemetry",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "paused session freezes and stops new dust",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "focus-style simulation pause freezes dust without a hold",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "reset restores neutral cable pose",
+			"detail": "0.000000 m",
+			"passed": true
+		},
+		{
+			"check": "reset restores neutral extension springs",
+			"detail": "0.000000 m",
+			"passed": true
+		},
+		{
+			"check": "crash stops visual motion updates",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "reset resumes visual motion updates",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "reset restores suspension and axle transforms",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "reset clears dust emission",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "reset resumes particle clock",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "Wreck-style copy disables the observer",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "Wreck-style copy drops its session reference",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "Wreck-style copy owns an independent cable mesh",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "Wreck-style copy owns independent spring meshes",
+			"detail": "",
+			"passed": true
+		}
+	],
+	"schema": "timber-visual-motion-runtime-v1"
+}

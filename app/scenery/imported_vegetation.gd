@@ -605,6 +605,14 @@ static func _part(
 
 static func _triangle_count(mesh: Mesh) -> int:
 	var total := 0
+	# Count the imported buffers directly; surface_get_arrays would unpack every
+	# attribute just to measure its length during source registration.
+	if mesh is ArrayMesh:
+		var array_mesh := mesh as ArrayMesh
+		for surface_index in array_mesh.get_surface_count():
+			var index_count := array_mesh.surface_get_array_index_len(surface_index)
+			total += (index_count if index_count > 0 else array_mesh.surface_get_array_len(surface_index)) / 3
+		return total
 	for surface_index in range(mesh.get_surface_count()):
 		var arrays := mesh.surface_get_arrays(surface_index)
 		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]

@@ -1,0 +1,613 @@
+{
+  "format": "openrc-companion-encounter-verification v1",
+  "date": "2026-10-20",
+  "scope": "AFC-04-R1 atomic strongest-threat response; narrow circuit requalification only",
+  "moving_encounter_qualification_passed": false,
+  "qualified_scope_expanded": false,
+  "passing_checks": [
+    {
+      "label": "afc04-encounter-tests",
+      "checks": 191,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-tests-h9nkp7j9/report.json",
+        "sha256": "af7b2f8956d91521a3237969b0c5b7aa7edfb84d82e073b475bd073a26b67b26",
+        "bytes": 1274
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-tests-h9nkp7j9/engine.log",
+        "sha256": "ae3a42e65ac3e90a457e52aa0172b2a75e268c4997943a6a9a918b455082c0e3",
+        "bytes": 119
+      },
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "afc04-pilot-tests",
+      "checks": 24,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-pilot-tests-ixa8bcqb/report.json",
+        "sha256": "67f3e4092e28bfd64b6749bc21dc174bef18db8f5513b86aa61eb835cce44a68",
+        "bytes": 1235
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-pilot-tests-ixa8bcqb/engine.log",
+        "sha256": "76630d6afd22aa98e994411797e4db22c1d072fcbe28f8dad1bb64fc9c2688af",
+        "bytes": 1451
+      },
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "afc04-profiles-final",
+      "checks": 30,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-profiles-final-hccptogk/report.json",
+        "sha256": "e4c451a10790da40e94cb64cf158528b92f11cfa23ab170ee1fe82706d99846c",
+        "bytes": 1248
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-profiles-final-hccptogk/engine.log",
+        "sha256": "2026b782b3e4b08daafea2dc798cf0c7021f15200522415b5b8847cba3715ba9",
+        "bytes": 1872
+      },
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "afc04-manager-final",
+      "checks": 53,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-manager-final-rp55ydj4/report.json",
+        "sha256": "92bbb3de372eaea197fe14c9154624094f41a2a1f94d11e79cbc0df8a0d3c7ee",
+        "bytes": 1245
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-manager-final-rp55ydj4/engine.log",
+        "sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f",
+        "bytes": 1432
+      },
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "afc04-circuit-matrix",
+      "checks": 148,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-circuit-matrix-murbhuie/report.json",
+        "sha256": "9bdd49a90a42bd06e5508ceb900d49c4f5519c98d65509d2545c9ee243658c00",
+        "bytes": 1394
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-circuit-matrix-murbhuie/engine.log",
+        "sha256": "3de1a94d8842f37c06ec59972a88d3f394380842cbccb9cb0d984d13323f49ab",
+        "bytes": 21770
+      },
+      "diagnostics": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "afc04-record-final",
+      "checks": 156,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-record-final-6dgxgmlr/report.json",
+        "sha256": "e5a83868b32359c9d08dbb3cf55cd81f5dbfaad363b892e2d89c59a8c456a0c9",
+        "bytes": 1290
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-record-final-6dgxgmlr/engine.log",
+        "sha256": "76b0d5ac728c2c85c7a62819c5e99e8a0a6f4e48363138e3065331befba2a930",
+        "bytes": 14243
+      },
+      "reinspection": {
+        "tool": "tools/godot/run_checked.py:inspect_log",
+        "correct_required_text": "companions record: 156 checks, 0 failed",
+        "result": {
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "missing_required_text": []
+        },
+        "reason": "Initial runner invocation used the wrong completion marker; original report remains unchanged. No flight rerun or source change."
+      }
+    },
+    {
+      "label": "afc04-shell-final",
+      "checks": 46,
+      "passed": true,
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-shell-final-nm4spyk3/report.json",
+        "sha256": "b384e32e0fe86e459fc5c2302d820b97219c6d5962c5c0d88bbca610abf7416c",
+        "bytes": 1749
+      },
+      "engine_log": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-shell-final-nm4spyk3/engine.log",
+        "sha256": "edcf9a0c44ec46d851e85f46ea7cb6fa79541e4dfeca585a92bcec52a30016ef",
+        "bytes": 5302
+      },
+      "reinspection": {
+        "tool": "tools/godot/run_checked.py:inspect_log",
+        "correct_required_text": "Companions shell: 0 failed",
+        "result": {
+          "counts": {
+            "error": 0,
+            "warning": 1
+          },
+          "diagnostics": [
+            {
+              "severity": "warning",
+              "kind": "WARNING",
+              "line": 3,
+              "message": "Tree wind is disabled for maple_tree because source material -9223371813432588049 is unsupported (cull mode is not disabled)",
+              "context": [
+                "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+                "   GDScript backtrace (most recent call first):",
+                "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+              ]
+            }
+          ],
+          "missing_required_text": []
+        },
+        "reason": "Initial runner invocation used the wrong completion marker; original report remains unchanged. No flight rerun or source change."
+      }
+    }
+  ],
+  "focused_check_count": 500,
+  "circuit_matrix_checks": 148,
+  "source_files": [
+    {
+      "path": "app/ai/companions/pilot.gd",
+      "sha256": "51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3",
+      "bytes": 21429
+    },
+    {
+      "path": "app/ai/companions/profile_loader.gd",
+      "sha256": "ca5632d7785f61d9fbb7f367d7c4f531327a71187dc4584cd7d6a8bd28c4232d",
+      "bytes": 32293
+    },
+    {
+      "path": "app/tests/test_companions_encounters.gd",
+      "sha256": "85eb89cdb4adfc96568c33c7b4cdd4b50842923d0cc476fe4f02f34abe99031f",
+      "bytes": 8424
+    },
+    {
+      "path": "app/tests/test_companions_record.gd",
+      "sha256": "b7ca697cdfc67538ae5cae4dc1b2c0305cb5fa529f0bced0714e552c965d4925",
+      "bytes": 36925
+    },
+    {
+      "path": "app/tests/test_companions_shell.gd",
+      "sha256": "2345a3966d757945a90dd9f69f41730cd19fc7d749e6576fe1c252d34b2444b6",
+      "bytes": 15372
+    },
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "sha256": "493da1be3ce0e40a4a017ef8c17f9a12e07ac04f6ce58c06e4b8b2749e0fbd29",
+      "bytes": 1319
+    },
+    {
+      "path": "app/data/ai/companions/fields/club-default.json",
+      "sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+      "bytes": 3356
+    },
+    {
+      "path": "research/ai-companions/encounter_probe.gd",
+      "sha256": "4bc2a5c35edd01dcba831289838c695b734337a9adcbf2ebbdfcc925b3f2344c",
+      "bytes": 38421
+    },
+    {
+      "path": "research/ai-companions/pilot_probe.gd",
+      "sha256": "60140cc90b8d079c149c5560172a6bbb286ac0f23e48d5241a9a5eadc93f09aa",
+      "bytes": 23595
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+      "bytes": 235678
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+      "bytes": 12285
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+      "bytes": 19854
+    },
+    {
+      "path": "tools/flight_log/flight_log.py",
+      "sha256": "825bf140adfb62dd2374d7773143f6e77fa1e72377e50fd40504e013a59374f4",
+      "bytes": 37812
+    }
+  ],
+  "baseline_pilot_git_commit": "a6524e3fd517898b8c8adac6210e20a58a989729",
+  "baseline_pilot_git_blob": "126e3496336bd7b079cd3e3e1a7ac4798c1ced29",
+  "baseline_pilot_sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+  "candidate_pilot_sha256": "51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3",
+  "executed_probe_sha256": "c2b5ddbd0c1b41451c37cfaa7be5dde4f8d0a5107b8ef0f50b35dfe9ff883b87",
+  "executed_probe_reconstructs_exactly_by_removing_output_guard_return": true,
+  "baseline_survey": {
+    "path": "docs/research/ai-companions/AFC-04-R1/baseline/report.json",
+    "sha256": "4cc2bac9d1ab351642fa57f1185052a302e4f94162712d30bcf6d72d562988e7",
+    "bytes": 20708
+  },
+  "candidate_survey": {
+    "path": "docs/research/ai-companions/AFC-04-R1/candidate/report.json",
+    "sha256": "7129b308b5f2823386a0b2a1080949127876cd93660d263f9a09fc7628b9f5ec",
+    "bytes": 20099
+  },
+  "single_intruder_comparison": [
+    {
+      "case_id": "seed-20261020-head-on",
+      "state_command_digest_equal": true,
+      "complete": true,
+      "ticks": 2880,
+      "minimum_player_separation_m": 12.4827245450519,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "seed-20261020-crossing-left",
+      "state_command_digest_equal": true,
+      "complete": true,
+      "ticks": 2880,
+      "minimum_player_separation_m": 11.4882351368944,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "seed-20261020-crossing-right",
+      "state_command_digest_equal": true,
+      "complete": false,
+      "ticks": 2438,
+      "minimum_player_separation_m": 7.30630339103288,
+      "failure_reason": "ai crash at tick 2438: airframe contact (hull point 2), point speed 28.9 m/s at detected tick"
+    },
+    {
+      "case_id": "seed-20261021-head-on",
+      "state_command_digest_equal": true,
+      "complete": true,
+      "ticks": 2880,
+      "minimum_player_separation_m": 12.3254368889153,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "seed-20261021-crossing-left",
+      "state_command_digest_equal": true,
+      "complete": false,
+      "ticks": 2422,
+      "minimum_player_separation_m": 7.15605900483947,
+      "failure_reason": "ai crash at tick 2422: airframe contact (hull point 3), point speed 28.9 m/s at detected tick"
+    },
+    {
+      "case_id": "seed-20261021-crossing-right",
+      "state_command_digest_equal": true,
+      "complete": true,
+      "ticks": 2880,
+      "minimum_player_separation_m": 11.3835751454674,
+      "failure_reason": ""
+    }
+  ],
+  "two_threat_common_prefix": {
+    "ai": {
+      "baseline_rows": 996,
+      "candidate_rows": 2881,
+      "common_prefix_byte_equal": false
+    },
+    "player": {
+      "baseline_rows": 996,
+      "candidate_rows": 2881,
+      "common_prefix_byte_equal": true
+    },
+    "peer": {
+      "baseline_rows": 996,
+      "candidate_rows": 2881,
+      "common_prefix_byte_equal": true
+    }
+  },
+  "two_threat_common_first_995_ticks_minimum_distances_m": {
+    "baseline": {
+      "player": 17.21266179629238,
+      "peer": 8.392351387481977
+    },
+    "candidate": {
+      "player": 11.637840799174036,
+      "peer": 8.562820499415347
+    }
+  },
+  "candidate_two_threat_repeat_complete_and_exact": true,
+  "baseline_crash_prefix_digest_repeats": true,
+  "flight_log_replays": [
+    {
+      "version": "baseline",
+      "role": "ai",
+      "rows": 996,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-ai.orfl",
+        "sha256": "46ba99d1d41efce6c43e8aeb986d7c506bd830582808bccf77850cc153da44e7",
+        "bytes": 5542384
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-ai/replay.json",
+        "sha256": "67878f8db6d29ee15366c6e9805d072f879a846d664fa5a274677aad645bdb83",
+        "bytes": 6994
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-ai/flight.csv",
+        "sha256": "3bf740b12c137bf991beb224a79204f1e5912fd6da666872cdd4191f19f82a18",
+        "bytes": 774533
+      }
+    },
+    {
+      "version": "baseline",
+      "role": "player",
+      "rows": 996,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-player.orfl",
+        "sha256": "506e65cdd01b27c6b2b587343386ce3e78b9e8592394b42eb748495a76aabc4f",
+        "bytes": 5541492
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-player/replay.json",
+        "sha256": "540e1685c5ca0d517fd2ca974c6cc4673311ed74620de4e89145ba89c3a5d5e4",
+        "bytes": 6940
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-player/flight.csv",
+        "sha256": "1abf8683f2bbe83693bb7f3d933bfeb375a22b8146269ca5ea9e31084f96917f",
+        "bytes": 800404
+      }
+    },
+    {
+      "version": "baseline",
+      "role": "peer",
+      "rows": 996,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-peer.orfl",
+        "sha256": "7cd5f5631e340b5d8e6496b623a29989370c3fff402fac07c9426edc7a5b68f9",
+        "bytes": 5541488
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-peer/replay.json",
+        "sha256": "8d99299d4d5ca62e587c49da4bfa29490853283235383bee8e200f0c7631445d",
+        "bytes": 6935
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-peer/flight.csv",
+        "sha256": "375bbcc13287b972181f0291c5571f1b49fb6e2fed46307ceddb15ddd7b9b1e8",
+        "bytes": 800062
+      }
+    },
+    {
+      "version": "candidate",
+      "role": "ai",
+      "rows": 2881,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-ai.orfl",
+        "sha256": "efa2c07fff43ccd4815e2d0b137429c275b98ee5ccf017c76e6293c016ed908a",
+        "bytes": 7020024
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-ai/replay.json",
+        "sha256": "d1d6ff5034d587dc734c92931761cc9881e312daf5fd49421edf2e0f340ad4f1",
+        "bytes": 6784
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-ai/flight.csv",
+        "sha256": "116b830af8fe257ef879cfb99e58a20d0b6c6621bb581244838501f6a67a4ed9",
+        "bytes": 2591990
+      }
+    },
+    {
+      "version": "candidate",
+      "role": "player",
+      "rows": 2881,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-player.orfl",
+        "sha256": "44f4e2f76b4a9643e33486d061536807747ce95588e914ab3b148f92eee470df",
+        "bytes": 7020028
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-player/replay.json",
+        "sha256": "9e0ed7ca2d9bea8de13353d05c7f68e9da14246a07e8ba454d64b31b894596f6",
+        "bytes": 6791
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-player/flight.csv",
+        "sha256": "8d92da4e8ece4545c3d265762579a2703f15e0f6cc03713cd7e68a0b501b900d",
+        "bytes": 2311431
+      }
+    },
+    {
+      "version": "candidate",
+      "role": "peer",
+      "rows": 2881,
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "recording": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/parallel-two-threats-peer.orfl",
+        "sha256": "5548ce1ad581941acfa147013f62413b22e2e41b67d7db84770c94e6ddc0b4e3",
+        "bytes": 7020024
+      },
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-peer/replay.json",
+        "sha256": "cbcbff57f435598df474667e54ff8cdac35f1da1ec10cdc3ad42c73fcb8cb954",
+        "bytes": 6786
+      },
+      "csv": {
+        "path": "docs/research/ai-companions/AFC-04-R1/candidate/replay-peer/flight.csv",
+        "sha256": "aec0ec260157a0cd45bee0283317385847f8e9cfb7ee7a5b3a7260f4e72166ec",
+        "bytes": 2310500
+      }
+    }
+  ],
+  "baseline_tape_after_pilot_change": {
+    "csv_byte_equal": true,
+    "report": {
+      "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-after-pilot-change/replay.json",
+      "sha256": "67878f8db6d29ee15366c6e9805d072f879a846d664fa5a274677aad645bdb83",
+      "bytes": 6994
+    },
+    "csv": {
+      "path": "docs/research/ai-companions/AFC-04-R1/baseline/replay-after-pilot-change/flight.csv",
+      "sha256": "3bf740b12c137bf991beb224a79204f1e5912fd6da666872cdd4191f19f82a18",
+      "bytes": 774533
+    }
+  },
+  "circuit_csv_comparison": [
+    {
+      "baseline": {
+        "path": "docs/research/ai-companions/pilot/scenario_metrics.csv",
+        "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f",
+        "bytes": 954
+      },
+      "candidate": {
+        "path": "docs/research/ai-companions/AFC-04-R1/circuit-matrix/scenario_metrics.csv",
+        "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f",
+        "bytes": 954
+      },
+      "byte_equal": true
+    },
+    {
+      "baseline": {
+        "path": "docs/research/ai-companions/pilot/flight_samples_1hz.csv",
+        "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+        "bytes": 196250
+      },
+      "candidate": {
+        "path": "docs/research/ai-companions/AFC-04-R1/circuit-matrix/flight_samples_1hz.csv",
+        "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+        "bytes": 196250
+      },
+      "byte_equal": true
+    }
+  ],
+  "nonpassing_receipts": [
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-baseline-regression-abzf8_wt/report.json",
+        "sha256": "d31808f079a17020fa470975e5e796e621d12245640e6290df9cd4b3ada8d8b0",
+        "bytes": 1278
+      },
+      "label": "afc04-encounter-baseline-regression",
+      "process_exit": 1,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-baseline-sf9gj247/report.json",
+        "sha256": "16fe885c0177db450cbbd2b79bd3794db0d721dfdf1ac182be614fdd68601187",
+        "bytes": 1439
+      },
+      "label": "afc04-encounter-baseline",
+      "process_exit": 1,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-candidate-dqwqa0dz/report.json",
+        "sha256": "611b9bcb4d38bd08a53dc55cf2359c85c47dff8e0c3a55e55812b71eded5ceff",
+        "bytes": 1443
+      },
+      "label": "afc04-encounter-candidate",
+      "process_exit": 1,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-encounter-output-guard-cbpou6l0/report.json",
+        "sha256": "a180830c25cae134c13ae78a065cf577807b952b5109120ec18428c0f868cab3",
+        "bytes": 1411
+      },
+      "label": "afc04-encounter-output-guard",
+      "process_exit": 2,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-manager-tests-o5hhxji8/report.json",
+        "sha256": "cd1f0f823b9a0231af637d8d0f721bde7d6e9665cd61549a1b676515d5297c56",
+        "bytes": 1283
+      },
+      "label": "afc04-manager-tests",
+      "process_exit": 1,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-profiles-tests-d39u71ta/report.json",
+        "sha256": "97f4d54bb31cbf9205c5f70c85ea83e6127e0d05fd1c94ce425426373e0263da",
+        "bytes": 1285
+      },
+      "label": "afc04-profiles-tests",
+      "process_exit": 1,
+      "reason": "process_exit",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-record-final-6dgxgmlr/report.json",
+        "sha256": "e5a83868b32359c9d08dbb3cf55cd81f5dbfaad363b892e2d89c59a8c456a0c9",
+        "bytes": 1290
+      },
+      "label": "afc04-record-final",
+      "process_exit": 0,
+      "reason": "missing_required_text",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    },
+    {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R1/checks/afc04-shell-final-nm4spyk3/report.json",
+        "sha256": "b384e32e0fe86e459fc5c2302d820b97219c6d5962c5c0d88bbca610abf7416c",
+        "bytes": 1749
+      },
+      "label": "afc04-shell-final",
+      "process_exit": 0,
+      "reason": "missing_required_text",
+      "interpretation": "See README and passing-check reinspection entries; original receipts are immutable."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL three-aircraft Club field fleet configures before tree entry  { "ok": false, "errors": ["qualification.evidence: unsupported evidence reference"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL manager records the accepted aircraft, controller, solver and field profile identities  
+FAIL profile diagnostic identity is detached  
+FAIL launch records clearance against the actual world and companion model  
+FAIL airspace diagnostics are detached  
+FAIL route obstruction refuses admission before replacing the live roster  
+FAIL same seed reproduces identical initial companion states  { "ok": false, "errors": ["qualification.evidence: unsupported evidence reference"], "profile": {  }, "field_profile": {  }, "identity": {  } }
+FAIL companions have independent finite launch states  
+FAIL invalid count refusal preserves the live fleet atomically  { "ok": false, "config": {  }, "errors": ["count must be an integer in [0, 3]"] }
+FAIL player before_step/stepped callbacks advance each companion exactly once  player=240 manager=0
+FAIL fleet observations are sampled only on the 60 Hz planning cadence  0
+companions manager: 53 checks, 11 failed

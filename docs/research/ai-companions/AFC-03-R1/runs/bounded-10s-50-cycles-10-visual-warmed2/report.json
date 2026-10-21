@@ -1,0 +1,381 @@
+{
+	"companion_count": 1,
+	"complete": true,
+	"cycle_agent_ids": [
+		168728463109,
+		180908721940,
+		193088980760,
+		205269239575,
+		217449498402,
+		229629757221,
+		241810016040,
+		253990274912,
+		266170533702,
+		278350792475,
+		290531051300,
+		302711310119,
+		314891568904,
+		327071827742,
+		339252086535,
+		351432345377,
+		363612604182,
+		375792863004,
+		387973121804,
+		400153380639,
+		412333639434,
+		424513898272,
+		436694157070,
+		448874415907,
+		461054674706,
+		473234933533,
+		485415192303,
+		497595451142,
+		509775709949,
+		521955968773,
+		534136227604,
+		546316486424,
+		558496745239,
+		570677004066,
+		582857262885,
+		595037521704,
+		607217780576,
+		619398039366,
+		631578298139,
+		643758556964,
+		655938815783,
+		711756613609,
+		767557634443,
+		823358654238,
+		879159674930,
+		934960695055,
+		990761715969,
+		1046562736199,
+		1102363757050,
+		1158164777284
+	],
+	"cycle_session_ids": [
+		168745240326,
+		180925499167,
+		193105757962,
+		205286016800,
+		217466275598,
+		229646534435,
+		241826793234,
+		254007052061,
+		266187310831,
+		278367569670,
+		290547828477,
+		302728087301,
+		314908346132,
+		327088604952,
+		339268863767,
+		351449122594,
+		363629381413,
+		375809640232,
+		387989899104,
+		400170157894,
+		412350416667,
+		424530675492,
+		436710934311,
+		448891193096,
+		461071451934,
+		473251710727,
+		485431969569,
+		497612228374,
+		509792487196,
+		521972745996,
+		534153004831,
+		546333263626,
+		558513522464,
+		570693781262,
+		582874040099,
+		595054298898,
+		607234557725,
+		619414816495,
+		631595075334,
+		643775334141,
+		655955592965,
+		711773390826,
+		767574411110,
+		823375431792,
+		879176452190,
+		934977473065,
+		990778493220,
+		1046579513832,
+		1102380534268,
+		1158181554477
+	],
+	"engine": "4.7.2-stable (official)",
+	"failures": [],
+	"format": "openrc-companions-lifecycle v1",
+	"long_soak": "Use --seconds=1200 or --ticks=288000 for the planned 20-minute simulated run. The 20-minute option was not run as part of this bounded check.",
+	"measurements": [
+		{
+			"counted": false,
+			"nodes": 3,
+			"objects": 1841,
+			"resources": 259,
+			"stage": "visual_warmup"
+		},
+		{
+			"cycle": 10,
+			"nodes": 3,
+			"objects": 1846,
+			"resources": 259,
+			"stage": "lifecycle",
+			"visual": false
+		},
+		{
+			"cycle": 20,
+			"nodes": 3,
+			"objects": 1846,
+			"resources": 259,
+			"stage": "lifecycle",
+			"visual": false
+		},
+		{
+			"cycle": 30,
+			"nodes": 3,
+			"objects": 1846,
+			"resources": 259,
+			"stage": "lifecycle",
+			"visual": false
+		},
+		{
+			"cycle": 40,
+			"nodes": 3,
+			"objects": 1846,
+			"resources": 259,
+			"stage": "lifecycle",
+			"visual": false
+		},
+		{
+			"cycle": 50,
+			"nodes": 3,
+			"objects": 1843,
+			"resources": 259,
+			"stage": "lifecycle",
+			"visual": true
+		},
+		{
+			"cycles": 50,
+			"nodes": 3,
+			"objects_max": 1846,
+			"objects_min": 1842,
+			"resources_max": 259,
+			"resources_min": 259,
+			"stage": "lifecycle_summary"
+		},
+		{
+			"manager_ticks": 240,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 240,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 240
+		},
+		{
+			"manager_ticks": 480,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 480,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 480
+		},
+		{
+			"manager_ticks": 720,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 720,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 720
+		},
+		{
+			"manager_ticks": 960,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 960,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 960
+		},
+		{
+			"manager_ticks": 1200,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 1200,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 1200
+		},
+		{
+			"manager_ticks": 1440,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 1440,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 1440
+		},
+		{
+			"manager_ticks": 1680,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 1680,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 1680
+		},
+		{
+			"manager_ticks": 1920,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 1920,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 1920
+		},
+		{
+			"manager_ticks": 2160,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 2160,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 2160
+		},
+		{
+			"manager_ticks": 2400,
+			"nodes": 7,
+			"objects": 1850,
+			"player_tick": 2400,
+			"resources": 259,
+			"stage": "flight",
+			"tick": 2400
+		},
+		{
+			"end_objects": 1850,
+			"end_resources": 259,
+			"failure": "",
+			"requested_ticks": 2400,
+			"stage": "active_soak_end",
+			"start_objects": 1850,
+			"start_resources": 259,
+			"ticks": 2400
+		}
+	],
+	"output_directory": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-03-R1/runs/bounded-10s-50-cycles-10-visual-warmed2",
+	"physics_hz": 240,
+	"platform": "Windows",
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"requested_cycles": 50,
+	"requested_seconds": 10.0,
+	"requested_ticks": 2400,
+	"scope": "Tree-owned manager, agent, FlightSession and (for the bounded visual subset) engine voice lifecycle; fixed-step active-flight soak. This is software lifecycle evidence, not physical validation, wall-clock performance, or a 50-cycle fully rendered/audio run.",
+	"seed": 20261020,
+	"source_hash_receipt": {
+		"algorithm": "sha256",
+		"complete": true,
+		"files": [
+			{
+				"bytes": 5230,
+				"path": "app/ai/companions/config.gd",
+				"sha256": "2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b"
+			},
+			{
+				"bytes": 7056,
+				"path": "app/ai/companions/manager.gd",
+				"sha256": "16fff40dd95aa2282aa8cca7c0c3782105cb008142a83a066c172e66781572cf"
+			},
+			{
+				"bytes": 6152,
+				"path": "app/ai/companions/agent.gd",
+				"sha256": "7f57195b163200c2c2f18842a411819d34cdb9ee5f4dffa8a3e6691ab6e26799"
+			},
+			{
+				"bytes": 21319,
+				"path": "app/ai/companions/pilot.gd",
+				"sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade"
+			},
+			{
+				"bytes": 11187,
+				"path": "app/app_state/aircraft_catalog.gd",
+				"sha256": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e"
+			},
+			{
+				"bytes": 235678,
+				"path": "app/sim/flight_session.gd",
+				"sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+			},
+			{
+				"bytes": 32823,
+				"path": "app/sim/simulation.gd",
+				"sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d"
+			},
+			{
+				"bytes": 1921,
+				"path": "app/scenery/collision_setup.gd",
+				"sha256": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb"
+			},
+			{
+				"bytes": 18729,
+				"path": "app/data/lake_loader.gd",
+				"sha256": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6"
+			},
+			{
+				"bytes": 4088,
+				"path": "app/render/engine_audio.gd",
+				"sha256": "82d221f39818bec1c3b2fd3bec72f5a3798cb8c6ab6936f5181f285517df8ec8"
+			},
+			{
+				"bytes": 2638,
+				"path": "app/render/engine_sound.gd",
+				"sha256": "843bb5a5cfe8dda0ea4d7f49d6d94717813917add9cf3e2f17722c44f8d4c6df"
+			},
+			{
+				"bytes": 11328,
+				"path": "app/render/airplane.gd",
+				"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d"
+			},
+			{
+				"bytes": 2502,
+				"path": "app/render/frames.gd",
+				"sha256": "8ada0562ffaa7039676f0a8c222fcf5f1211d1c2e196a55f182b05fd25c34bc9"
+			},
+			{
+				"bytes": 16232,
+				"path": "app/tests/test_companions_lifecycle.gd",
+				"sha256": "f4ec5395abbee19d781caf42f3ab712d04ee8b57d4c50a9c0b86cd50f47f33ec"
+			},
+			{
+				"bytes": 60211,
+				"path": "app/data/aircraft/jensen_ugly_stik_60.json",
+				"sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+			},
+			{
+				"bytes": 158788,
+				"path": "app/data/fields/default.json",
+				"sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+			},
+			{
+				"bytes": 1570,
+				"path": "app/data/fields/lake.json",
+				"sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+			},
+			{
+				"bytes": 2145,
+				"path": "app/project.godot",
+				"sha256": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+			},
+			{
+				"bytes": 21896,
+				"path": "research/ai-companions/lifecycle_probe.gd",
+				"sha256": "10316e9a8beb5871279a706c9957c5b669d2f4cf1df9920aadcf681dc8215113"
+			}
+		]
+	},
+	"visual_audio_cycles": 10
+}

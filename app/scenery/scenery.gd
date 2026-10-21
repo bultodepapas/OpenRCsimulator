@@ -3,14 +3,17 @@
 ## validated `openrc-scenery v1` data becomes compact 40 m cells — each ONE merged mesh with ONE vertex-colour material
 ## (Compatibility does no 3D batching: SC-01) — plus contact shadows, moving parts on sim_clock, flower MultiMeshes,
 ## the parked fleet and the synthesised ambience. Visual only: nothing here reads or writes the simulation.
+## The two open pit shelters use one damage-aware PBR surface each beside the ordinary cell batches.
 extends RefCounted
 
 const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
+const BuildingRoofs = preload("res://scenery/building_roofs.gd")
 const PowerLines = preload("res://scenery/power_lines.gd")
 const Models = preload("res://scenery/models.gd")
+const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
 const Population = preload("res://scenery/population.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
@@ -23,6 +26,7 @@ const DamageBatches = preload("res://scenery/damage_batches.gd")
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Flowers = preload("res://scenery/flowers.gd")
 const BotanicalHabitats = preload("res://scenery/botanical_habitats.gd")
+const AirfieldDetail = preload("res://scenery/airfield_detail.gd")
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
 const Ambience = preload("res://scenery/ambience.gd")
 const Birds = preload("res://scenery/birds.gd")
@@ -30,6 +34,7 @@ const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const GRAVEL_SHADER: Shader = preload("res://scenery/gravel.gdshader")
 const MOTION_SHADER: Shader = preload("res://scenery/motion.gdshader")
+const PIT_SHELTER_SHADER: Shader = preload("res://scenery/pit_shelter_roof.gdshader")
 
 const CELL_M := 40.0
 const FAR_CELL_M := 400.0
@@ -184,6 +189,21 @@ static func opaque_material() -> StandardMaterial3D:
 	return m
 
 
+static func pit_shelter_material() -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = PIT_SHELTER_SHADER
+	material.set_shader_parameter("roof_albedo", load("res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg"))
+	material.set_shader_parameter("roof_normal", load("res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png"))
+	material.set_shader_parameter("roof_arm", load("res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg"))
+	material.set_shader_parameter("wood_albedo", load("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("wood_normal", load("res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("wood_roughness", load("res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("slab_albedo", load("res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("slab_normal", load("res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("slab_roughness", load("res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg"))
+	return material
+
+
 static func shadow_material() -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
@@ -236,6 +256,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	shade.albedo_color.a = shadow_strength
 	var pilot := Vector2(float(field.pilot.north), float(field.pilot.east))
 	var cells := {}
+	var pit_shelter_kits := {}
 	var population_batches := {}
 	var vegetation_batches := {}
 	var vegetation_triangles := 0
@@ -243,14 +264,30 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var ground_cells := {}
 	var gravel := ShaderMaterial.new()
 	gravel.shader = GRAVEL_SHADER
+	if str(field.get("id", "")) == "default":
+		gravel.set_shader_parameter("use_photo_aggregate", true)
+		gravel.set_shader_parameter("aggregate_albedo",
+			load("res://assets/landscape/airfield_detail/river_small_rocks/river_small_rocks_Diffuse_2k.jpg"))
+		gravel.set_shader_parameter("use_photo_worn", true)
+		gravel.set_shader_parameter("worn_albedo",
+			load("res://assets/landscape/airfield_detail/sparse_grass/sparse_grass_Diffuse_2k.jpg"))
 	var shadow_cells := {}
 	var population_contact_kit := MeshKit.new()
 	var population_shadow_groups: Array[Dictionary] = []
 	var shadow_groups: Dictionary = {}
-	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0, theme = theme, quality = quality}
+	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0,
+		fleet_triangles = 0, fleet_surfaces = 0, theme = theme, quality = quality}
 	var motion_parent := Node3D.new()
 	motion_parent.name = "Motion"
 	root.add_child(motion_parent)
+	var roof_parent := Node3D.new()
+	roof_parent.name = "BuildingRoofs"
+	root.add_child(roof_parent)
+	var fleet_parent := Node3D.new()
+	fleet_parent.name = "ParkedAircraft"
+	fleet_parent.process_mode = Node.PROCESS_MODE_DISABLED
+	root.add_child(fleet_parent)
+	var fleet_batches := {}
 	var timing := {}
 	for group: Dictionary in scenery.groups:
 		var g0 := Time.get_ticks_usec()
@@ -267,7 +304,11 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					var xf := _placement_xf(pl.north, pl.east, pl.heading)
 					var kit: MeshKit = null
 					if not Population.handles(prefab) and not VegetationPlacement.handles(prefab):
-						kit = _kit(cells, _cell(pl.north, pl.east))
+						if prefab == "pit_shelter":
+							kit = MeshKit.new()
+							pit_shelter_kits[damage_id] = kit
+						else:
+							kit = _kit(cells, _cell(pl.north, pl.east))
 					var damage_first := kit.verts.size() if kit != null else 0
 					if VegetationPlacement.handles(prefab):
 						var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
@@ -287,6 +328,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						kit.xf = xf
 						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
 						kit.xf = Transform3D.IDENTITY
+						for roof: MeshInstance3D in BuildingRoofs.create(prefab, xf, pl.seed, damage_id):
+							roof_parent.add_child(roof)
 						for part: Dictionary in moving:
 							var moving_node := _motion_node(part, xf, pl.seed)
 							moving_node.set_meta("damage_motion_id", damage_id)
@@ -332,22 +375,35 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 							var contact_kit: MeshKit = population_contact_kit if population_shadow else _kit(shadow_cells, shadow_cell)
 							GroundFeatures.contact_shadow(contact_kit, shadow_xf, shadow_size, shadow_mode, sun)
 							stats.shadows += 1
-			"fleet": # baked snapshots (tools/scenery/bake_fleet.gd): merged into the shelter's cell, ~5 k triangles each
+			"fleet": # Offline material-preserving snapshots, shared resources and automatic mesh LODs.
 				for placement_index: int in group.placements.size():
 					var pl: Dictionary = group.placements[placement_index]
-					var damage_id := "fleet:%s:%02d:%s" % [group.id, placement_index, pl.aircraft]
-					var model_id := str(Models.FLEET.find_key(str(pl.aircraft)))
-					var arr := Models.arrays(model_id)
-					if arr.is_empty():
+					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"))
+					if mesh == null:
 						continue
-					var kit := _kit(cells, _cell(pl.north, pl.east))
-					kit.xf = Transform3D.IDENTITY
-					var parked_xf := _placement_xf(pl.north, pl.east, pl.heading)
-					parked_xf.origin.y += Models.parked_base_height(model_id)
-					var damage_first := kit.verts.size()
-					kit.append_arrays(arr.pos, arr.nrm, arr.col, parked_xf)
-					kit.tag_damage(damage_first, damage_id)
+					# Batch repeated airframes per shelter, keeping east/west culling independent.
+					var batch_id := "%s_%s_%s" % [pl.aircraft, pl.get("configuration", "assembled"), "west" if pl.east < 0 else "east"]
+					if not fleet_batches.has(batch_id):
+						fleet_batches[batch_id] = {mesh = mesh, placements = []}
+					fleet_batches[batch_id].placements.append(pl)
+					var info := ParkedAircraft.info(pl.aircraft, pl.get("configuration", "assembled"))
+					var size := Vector3(float(info.size[0]), float(info.size[1]), float(info.size[2])) * float(pl.get("scale", 1.0))
+					var contact_xf := _placement_xf(pl.north, pl.east, pl.heading)
+					contact_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+					var mode := "aircraft_jet" if pl.aircraft == "sebart-avanti-s-a200-p100rx" else "aircraft_prop"
+					if pl.get("configuration", "assembled") == "service":
+						mode = "aircraft_service"
+					if float(pl.get("elevation", 0.0)) >= 0.90:
+						# The occupied 2.4 x 0.8 m worktops receive the shadow; foam blocks occlude it naturally.
+						contact_xf.origin.y = 0.90
+						mode += "_bench"
+					population_shadow_groups.append({transform = contact_xf, size = size, mode = mode, damage_id = ""})
+					if shadow_strength > 0.0:
+						GroundFeatures.contact_shadow(population_contact_kit, contact_xf, size, mode, sun)
+						stats.shadows += 1
 					stats.fleet += 1
+					stats.fleet_triangles += Population.triangles(mesh)
+					stats.fleet_surfaces += mesh.get_surface_count()
 			"fence":
 				var points := PackedVector2Array()
 				for point: Vector2 in group.points:
@@ -394,6 +450,25 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					_placement_xf(b.north, b.east, b.heading))
 				wire_kit.tag_damage(first_wire, "prop:%s:%02d" % [group.id, i])
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
+	stats.fleet_batch_surfaces = 0
+	for batch_id: String in fleet_batches:
+		var batch: Dictionary = fleet_batches[batch_id]
+		var multimesh := MultiMesh.new()
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimesh.mesh = batch.mesh
+		multimesh.instance_count = batch.placements.size()
+		for index: int in batch.placements.size():
+			multimesh.set_instance_transform(index, ParkedAircraft.transform_for(batch.placements[index]))
+		var parked := MultiMeshInstance3D.new()
+		parked.name = batch_id
+		parked.multimesh = multimesh
+		parked.visibility_range_end = 350.0
+		parked.visibility_range_end_margin = 25.0
+		parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		parked.set_meta("placements", batch.placements)
+		fleet_parent.add_child(parked)
+		stats.fleet_batch_surfaces += batch.mesh.get_surface_count()
+	stats.fleet_batches = fleet_batches.size()
 	var vegetation_started := Time.get_ticks_usec()
 	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
 		tree_wind = bool(opts.get("tree_wind", true)),
@@ -417,6 +492,13 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	stats.botanical_triangles = habitats.get_meta("triangles", 0)
 	stats.botanical_batches = habitats.get_meta("batches", 0)
 	timing["botanicals"] = float(Time.get_ticks_usec() - botanical_started) / 1000.0
+	var detail_started := Time.get_ticks_usec()
+	var detail := AirfieldDetail.build(field, scenery, quality)
+	root.add_child(detail)
+	stats.airfield_detail_instances = detail.get_meta("instances", 0)
+	stats.airfield_detail_triangles = detail.get_meta("triangles", 0)
+	stats.airfield_detail_batches = detail.get_meta("batches", 0)
+	timing["airfield_detail"] = float(Time.get_ticks_usec() - detail_started) / 1000.0
 	var woodland_started := Time.get_ticks_usec()
 	var woodland := WoodlandEdges.build(field, scenery, quality, lake)
 	root.add_child(woodland)
@@ -437,6 +519,23 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 		DamageBatches.capture(mi, kit.damage_ranges)
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(mi)
+	timing["cell_meshes"] = float(Time.get_ticks_usec() - m0) / 1000.0
+	var shelter_ids := pit_shelter_kits.keys()
+	shelter_ids.sort()
+	var shelter_material_started := Time.get_ticks_usec()
+	var shelter_material := pit_shelter_material() if not shelter_ids.is_empty() else null
+	timing["shelter_material"] = float(Time.get_ticks_usec() - shelter_material_started) / 1000.0
+	var shelter_meshes_started := Time.get_ticks_usec()
+	for shelter_id: String in shelter_ids:
+		var shelter_kit: MeshKit = pit_shelter_kits[shelter_id]
+		var shelter_mesh := MeshInstance3D.new()
+		shelter_mesh.name = "PitShelter_" + shelter_id.replace(":", "_")
+		shelter_mesh.mesh = shelter_kit.to_mesh(shelter_material)
+		DamageBatches.capture(shelter_mesh, shelter_kit.damage_ranges)
+		shelter_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(shelter_mesh)
+	stats.pit_shelter_surfaces = shelter_ids.size()
+	timing["shelter_meshes"] = float(Time.get_ticks_usec() - shelter_meshes_started) / 1000.0
 	var shadow_nodes: Dictionary = {}
 	var skeys: Array = shadow_groups.keys()
 	skeys.sort()
@@ -593,6 +692,10 @@ static func apply_damage(field_node: Node3D, damage: Dictionary, force_shadows: 
 	for child: Node in root.get_children():
 		if child is MeshInstance3D and child.has_meta("damage_ranges"):
 			DamageBatches.apply(child, damage)
+	var roofs: Node3D = root.get_node_or_null("BuildingRoofs")
+	if roofs != null:
+		for roof: Node3D in roofs.get_children():
+			roof.visible = damage.get(roof.get_meta("damage_motion_id"), {}).get("state", "") != "broken"
 	commit_lighting(field_node, prepare_lighting(field_node, root.get_meta("damage_lighting", {}), true))
 
 static func _find_scenery(field_node: Node3D) -> Node3D:

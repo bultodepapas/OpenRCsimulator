@@ -1,0 +1,189 @@
+{
+  "format": "openrc-companion-capture-receipt v1",
+  "captured_utc": "2026-10-20T21:27:54.526272+00:00",
+  "complete": true,
+  "engine": "4.7.2-stable (official)",
+  "checks": {
+    "config": {
+      "report": "checks/afc-capture-config-h0nm8z95/report.json",
+      "report_sha256": "0e1f3ae4bb673c8111b2bac12bbf15bca124d83b1203baf9c9098d37a9d52deb",
+      "log_sha256": "6af1bca35f43e45d1ba47ed26328823a81b350b51ccd3ecf58a1320df7c2dd10",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions": 28
+    },
+    "manager": {
+      "report": "checks/afc-capture-manager-njr9cs5h/report.json",
+      "report_sha256": "8510b7b4bccac078460c91cd39fe0eb0d97e09d8e6bcb434af947d730f83af18",
+      "log_sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions": 53
+    },
+    "shell": {
+      "report": "checks/afc-capture-shell-reviewed-laqfjrod/report.json",
+      "report_sha256": "1fad69ae1fdcce986001c1987aa81083d1476d1eb21c08bbf65731c1d5ddd984",
+      "log_sha256": "5dc63c32a2181d4937af82139521bf27c74c76a5050cd992665aa964753ed45a",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "assertions": 46
+    },
+    "record": {
+      "report": "checks/afc-capture-record-final-7d_30ge5/report.json",
+      "report_sha256": "73248124498fb6470e5de6e849fd4478d6234c9f148dd2a29a3d25731e308ffc",
+      "log_sha256": "f3cdd4a1d57132a9fc3784691ac1ee0813ba63aaa57c27b741387ba4301f03ec",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "assertions": 157
+    }
+  },
+  "source_sha256": {
+    "app/ai/companions/fleet_record.gd": "6075224e72296b34a3382333944fcdcd420ad7acf472361592d0f4d16f3895c6",
+    "app/ai/companions/manager.gd": "bac17a2087b8de9af0e0390a7060df9ab25228ffe799d50a01303cd3efafe83b",
+    "app/ai/companions/config.gd": "6adf231e4059255c2175257742c59447820028142eadc11c580d00a1482bd84c",
+    "app/ai/companions/agent.gd": "34cb3329b0106f5e45f88443f874867c7fa330fb573f22c4922f9db9e82b4021",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/ai/companions/profile_loader.gd": "ca5632d7785f61d9fbb7f367d7c4f531327a71187dc4584cd7d6a8bd28c4232d",
+    "app/ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+    "app/main.gd": "df161fd1d185956c4a89b96b7982c94626d2e78e8e29847d717b0456fbf4c5f1",
+    "app/tests/test_companions_record.gd": "b7ca697cdfc67538ae5cae4dc1b2c0305cb5fa529f0bced0714e552c965d4925",
+    "app/tests/test_companions_config.gd": "f1e06b03a5fe84a98396c3d81c67de6380126df37cc6c6b675cc29c676fe7466",
+    "app/tests/test_companions_shell.gd": "2345a3966d757945a90dd9f69f41730cd19fc7d749e6576fe1c252d34b2444b6",
+    "app/tests/test_companions_manager.gd": "43622e8b54f1a6c0ee202fc3965611d6263bb044cea999da5b7af5833e417cf9",
+    "app/sim/flight_log.gd": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+    "app/tools/flight_log_cli.gd": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432",
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+    "app/data/ai/companions/fields/club-default.json": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+  },
+  "unchanged_from_static_admission": [
+    "app/ai/companions/agent.gd",
+    "app/ai/companions/pilot.gd",
+    "app/ai/companions/profile_loader.gd",
+    "app/ai/companions/airspace.gd",
+    "app/tests/test_companions_manager.gd",
+    "app/sim/flight_session.gd",
+    "app/sim/simulation.gd",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "app/data/ai/companions/fields/club-default.json",
+    "app/data/aircraft/jensen_ugly_stik_60.json",
+    "app/data/fields/default.json"
+  ],
+  "evidence_sha256": {
+    "capture-tests-native.json": "b7903069de8694f59b5d5e1ab0c62034e6542024a0052e29096a8d1a7cead89f"
+  },
+  "captures": {
+    "parity-capture": {
+      "local_directory": "tmp/afc02-companions-record-3003621/parity-capture",
+      "manifest_sha256": "c7b923e3106d91fa2cbf0e7e27e65ae585801dbf21bdc42ab2cec33c6b5e6a04",
+      "summary_sha256": "d96dadaa73630a0dcd10223215f61161dd509a93fb47d1e67e44f17b5d773d3f",
+      "final_tick": 260,
+      "streams": [
+        {
+          "bytes": 4945292,
+          "complete": true,
+          "error": "",
+          "final_tick": 260,
+          "generation": 0,
+          "id": "player",
+          "log": "player.orfl",
+          "rows": 261,
+          "session_tick": 260,
+          "sha256": "96953dc45ad31bda97c07b48ced888d2aef120df539f13b17e896c15c75e456d"
+        },
+        {
+          "bytes": 4945056,
+          "complete": true,
+          "error": "",
+          "final_tick": 260,
+          "generation": 0,
+          "id": "companion-0",
+          "log": "companion-0.orfl",
+          "rows": 261,
+          "session_tick": 260,
+          "sha256": "3c3c33b48d8cc25e915a3ed08deed4a5eefa4a3c98d9fbe427ba49ef85a24184"
+        }
+      ],
+      "all_selected_source_hashes_match_current_files": true
+    },
+    "four-stream-cap": {
+      "local_directory": "tmp/afc02-companions-record-3003621/four-stream-cap",
+      "manifest_sha256": "f09ee2441f7dd6adce5fe0549ad52c77e1d310a0933b800b10f4319fa84b4adc",
+      "summary_sha256": "24e10a17850bd04814cf9be21791aeb09afe9d30cde37fb16958350f990bc3e9",
+      "final_tick": 3,
+      "streams": [
+        {
+          "bytes": 4743396,
+          "complete": true,
+          "error": "",
+          "final_tick": 3,
+          "generation": 0,
+          "id": "player",
+          "log": "player.orfl",
+          "rows": 4,
+          "session_tick": 3,
+          "sha256": "0c204862cec93de97310d96ab47d21f1241ae43ba3a9fb663fd37c9c170c0efa"
+        },
+        {
+          "bytes": 4743436,
+          "complete": true,
+          "error": "",
+          "final_tick": 3,
+          "generation": 0,
+          "id": "companion-0",
+          "log": "companion-0.orfl",
+          "rows": 4,
+          "session_tick": 3,
+          "sha256": "bda6ebe848ae9249522a972c3db2dd58f49410d63bc8ec8cbc22fccafd0a91f6"
+        },
+        {
+          "bytes": 4743432,
+          "complete": true,
+          "error": "",
+          "final_tick": 3,
+          "generation": 0,
+          "id": "companion-1",
+          "log": "companion-1.orfl",
+          "rows": 4,
+          "session_tick": 3,
+          "sha256": "c9a3a88acc1934314ddcd256d99e0fd073ec5e1919109cf13378a0e5ee43cd13"
+        },
+        {
+          "bytes": 4743436,
+          "complete": true,
+          "error": "",
+          "final_tick": 3,
+          "generation": 0,
+          "id": "companion-2",
+          "log": "companion-2.orfl",
+          "rows": 4,
+          "session_tick": 3,
+          "sha256": "34776555ecacf0b5eee6a86ab77e7d93247ed58803721ae01fc7d43cbdd8027c"
+        }
+      ],
+      "all_selected_source_hashes_match_current_files": true
+    }
+  },
+  "scope": "Fixed-roster capture: 260-tick recorded/unrecorded player and one-companion byte equality; both logs exactly replayed through existing reader. Four streams share three accepted ticks. Closure is distinct from replay verification.",
+  "retention": "Checked logs and JSON receipts are retained here. Generated .orfl files remain under ignored tmp for local inspection; the focused test reproduces them.",
+  "excluded": [
+    "Fleet restore",
+    "Decision replay",
+    "Shared-world event replay",
+    "Unjournaled direct geometry edits",
+    "Physical validation",
+    "Recording latency / rendered performance qualification",
+    "Full application suite"
+  ]
+}

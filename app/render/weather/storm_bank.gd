@@ -18,6 +18,13 @@ var _clock_s := 0.0
 var _cell_m := 900.0
 var _offset_cells := [0.0, 0.0]
 var _flash := {event_id = "", level = 0.0, source_world = [0.0, 0.0, 0.0], radiance = 0.0}
+var _lighting_ready := false
+var _cloud_linear := Vector3.ZERO
+var _haze_linear := Vector3.ZERO
+var _haze_density := 0.0
+var _flash_ready := false
+var _flash_source := Vector3.ZERO
+var _flash_radiance := 0.0
 
 
 func configure(profile: Dictionary, visual_seed: int) -> void:
@@ -26,6 +33,8 @@ func configure(profile: Dictionary, visual_seed: int) -> void:
 		return
 	_spec = next.duplicate(true)
 	_seed = visual_seed
+	_lighting_ready = false
+	_flash_ready = false
 	_flash = {event_id = "", level = 0.0, source_world = [0.0, 0.0, 0.0], radiance = 0.0}
 	for child: Node in get_children():
 		child.free()
@@ -41,6 +50,8 @@ func configure(profile: Dictionary, visual_seed: int) -> void:
 		var material := ShaderMaterial.new()
 		material.shader = shader
 		material.set_shader_parameter("cloud_texture", load(path))
+		material.set_shader_parameter("bank_base", float(_spec.base_m))
+		material.set_shader_parameter("bank_top", float(_spec.top_m))
 		_materials.append(material)
 	var random_source := RandomNumberGenerator.new()
 	random_source.seed = _seed
@@ -130,16 +141,24 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	var sky := environment.sky.sky_material as ShaderMaterial
 	var cloud_linear: Vector3 = sky.get_shader_parameter("cloud_lin")
 	var haze_linear: Vector3 = sky.get_shader_parameter("haze_lin")
+	var haze_density := environment.fog_density * 0.35
+	# Camera rebasing and the visual clock above still advance every call.
+	# Only skip identical material uploads; configure invalidates new materials.
+	if _lighting_ready and cloud_linear == _cloud_linear and haze_linear == _haze_linear \
+			and haze_density == _haze_density:
+		return
+	_lighting_ready = true
+	_cloud_linear = cloud_linear
+	_haze_linear = haze_linear
+	_haze_density = haze_density
 	# Match the sky's scene-linear radiance. GLES3 applies exposure once after the material.
 	for material: ShaderMaterial in _materials:
 		material.set_shader_parameter("cloud_lin", cloud_linear)
 		material.set_shader_parameter("haze_lin", haze_linear)
-		material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
-		material.set_shader_parameter("bank_base", float(_spec.base_m))
-		material.set_shader_parameter("bank_top", float(_spec.top_m))
+		material.set_shader_parameter("haze_density", haze_density)
 	_rain_material.set_shader_parameter("rain_lin", cloud_linear * 0.28)
 	_rain_material.set_shader_parameter("haze_lin", haze_linear)
-	_rain_material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
+	_rain_material.set_shader_parameter("haze_density", haze_density)
 
 
 ## Camera rigs may move after World.update; synchronize the copy before the lightning query.
@@ -170,6 +189,12 @@ func apply_flash(event: Dictionary, level: float, exposure: float) -> void:
 	var radiance := strength * 0.85 / safe_exposure
 	_flash = {event_id = str(event.get("event_id", "")) if strength > 0.0 else "",
 		level = strength, source_world = [source.x, source.y, source.z], radiance = radiance}
+	# Event metadata remains current even if its displayed uniforms are unchanged.
+	if _flash_ready and source == _flash_source and radiance == _flash_radiance:
+		return
+	_flash_ready = true
+	_flash_source = source
+	_flash_radiance = radiance
 	for material: ShaderMaterial in _materials:
 		material.set_shader_parameter("flash_source", source)
 		material.set_shader_parameter("flash_radiance", radiance)

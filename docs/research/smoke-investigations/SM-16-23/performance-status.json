@@ -1,0 +1,46 @@
+{
+  "format": "openrc-smoke-performance-status v1",
+  "updated_utc": "2026-10-20T22:16:04.119072+00:00",
+  "qualification": "open",
+  "campaign": "paired off/on, balanced order, ten-second warmup + sixty-second sample, Avanti airborne200m chase, scenery/audio/birds/companions/crash effects off",
+  "scope": "Exploratory native 1280x720 Compatibility/VSync timing, not isolated GPU cost, minimum hardware or full scene qualification.",
+  "rejected_attempts": [
+    {
+      "path": "tmp/smoke-perf-probe.json",
+      "reason": "Nonisolated direct-shell run; low simulation/wall progression and controller/focus interference."
+    },
+    {
+      "path": "tmp/smoke-overhaul-paired-timing/1-off.json",
+      "reason": "Simulation paused; stopped campaign."
+    },
+    {
+      "path": "tmp/smoke-overhaul-paired-timing-r2/2-on.json",
+      "reason": "Simulation paused after3.35s while frames continued. Rejected despite complete frame sampler."
+    }
+  ],
+  "current_limitation": "Other Godot processes were observed during early r3 samples and disappeared before later samples. Do not claim idle-host repeated-pair qualification or apply its wall delta as GPU time.",
+  "required_next": [
+    "Repeated idle-host matched off/on and retained legacy comparison",
+    "Worst-case four-emitter projected overdraw and full scene workload",
+    "Target/minimum hardware plus1080p stress",
+    "Shared all-visual-work p95 budget and existing physics step gate"
+  ],
+  "production_pause_policy_changed": false,
+  "benchmark_harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+  "summary": "timing/summary.json",
+  "observed_p95_gate_pass": false,
+  "sample_validity": "All six r3 runs complete, advancing and fault/crash/pause-free; ON emitter active over99% of observed frames.",
+  "remaining_identity_limit": "Six retained VIEW_DEPTH timing samples predate accepted wash, fractional-resume and LIFETIME draw ordering; they do not qualify final renderer.",
+  "current_source_attempt": {
+    "status": "rejected_before_sampling",
+    "report": "checks/rejected-current-timing-1-off-iqbrebbr/report.json",
+    "reason": "Concurrent scenery.gd and scenery_loader.gd preloaded missing res://scenery/parked_aircraft.gd. No current-source timing sample produced.",
+    "subsequently_resolved": true
+  },
+  "current_source_retry": {
+    "status": "rejected_report_write_failure",
+    "report": "checks/rejected-disk-full-1-off-guq_j71g/report.json",
+    "reason": "Drive had798720bytesfree; frame report opened but could not save. No complete current-source frame report or matched ON sample retained.",
+    "final_application_parse": "checks/smoke-final-main-parse-gts1bjd8/report.json"
+  }
+}

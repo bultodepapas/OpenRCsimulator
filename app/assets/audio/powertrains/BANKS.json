@@ -1,0 +1,46 @@
+{
+  "gasoline": [
+    {
+      "file": "gasoline_low.wav",
+      "rpm": 2800,
+      "role": "engine",
+      "gain": 1.0
+    },
+    {
+      "file": "gasoline_high.wav",
+      "rpm": 7400,
+      "role": "engine",
+      "gain": 1.0
+    }
+  ],
+  "electric": [
+    {
+      "file": "electric_quad.wav",
+      "rpm": 6960,
+      "role": "prop",
+      "gain": 1.0
+    }
+  ],
+  "turbine": [
+    {
+      "file": "turbine_designed.wav",
+      "rpm": 80000,
+      "role": "engine",
+      "gain": 1.0
+    }
+  ],
+  "rotor": [
+    {
+      "file": "rotor_low.wav",
+      "rpm": 2270,
+      "role": "main_rotor",
+      "gain": 1.0
+    },
+    {
+      "file": "rotor_high.wav",
+      "rpm": 2650,
+      "role": "main_rotor",
+      "gain": 1.0
+    }
+  ]
+}

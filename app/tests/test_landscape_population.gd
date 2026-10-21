@@ -6,6 +6,8 @@ const AircraftCatalog = preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Loader = preload("res://scenery/scenery_loader.gd")
 const Models = preload("res://scenery/models.gd")
+const ParkedAircraft = preload("res://scenery/parked_aircraft.gd")
+const GroundFeatures = preload("res://scenery/ground_features.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
@@ -33,7 +35,7 @@ func _initialize() -> void:
 		_test_catalog_fleet(loaded.scenery.groups)
 		_test_parking_and_people(loaded.scenery.groups)
 		_test_population_mapping()
-		_test_cradle_support()
+		_test_parked_support()
 		_test_prefab_proportions()
 		_test_animated_parts(field, loaded.scenery)
 	print("all landscape population checks passed" if _failures == 0 else "%d landscape population checks failed" % _failures)
@@ -51,7 +53,7 @@ func _test_catalog_fleet(groups: Array) -> void:
 	var fleet := _group(groups, "fleet")
 	var catalog_ids := Array(AircraftCatalog.airplane_flyable_ids())
 	var parked_ids: Array = fleet.get("aircraft", [])
-	var model_ids: Array = Models.FLEET.values()
+	var model_ids: Array = ParkedAircraft.AIRCRAFT.keys()
 	var unique_models: Dictionary = {}
 	for id: String in model_ids:
 		unique_models[id] = true
@@ -67,9 +69,9 @@ func _test_catalog_fleet(groups: Array) -> void:
 		parked_ids == model_ids and model_ids.size() == unique_models.size(),
 		"parked=%s baked=%s" % [parked_ids, model_ids])
 	for id: String in parked_ids:
-		var model_id := str(Models.FLEET.find_key(id))
-		_check("%s resolves to a baked display model" % id,
-			not model_id.is_empty() and not Models.arrays(model_id).is_empty(), model_id)
+		var mesh := ParkedAircraft.mesh(id)
+		_check("%s resolves to a material-preserving static mesh" % id,
+			mesh != null and not ParkedAircraft.info(id).is_empty(), id)
 
 
 func _test_parking_and_people(groups: Array) -> void:
@@ -122,40 +124,43 @@ func _test_population_mapping() -> void:
 			Population.ASSETS.has(id) and Population.handles(id), str(Population.ASSETS.get(id, "missing")))
 
 
-func _test_cradle_support() -> void:
-	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Loader.DEFAULT_PATH))
-	var fleet_raw := {}
-	var cradle_raw := {}
-	for g: Dictionary in raw.groups:
-		if g.id == "fleet":
-			fleet_raw = g
-		elif g.id == "avanti-cradle":
-			cradle_raw = g
-	var idx: int = fleet_raw.aircraft.find("sebart-avanti-s-a200-p100rx")
-	var aircraft_row: Array = fleet_raw.placements.value[idx]
-	var cradle_row: Array = cradle_raw.placements.value[0] if not cradle_raw.is_empty() else []
-	var aligned := cradle_row.size() == 3
-	if aligned:
-		aligned = absf(float(cradle_row[0]) - float(aircraft_row[0])) < 0.01 \
-			and absf(float(cradle_row[1]) - float(aircraft_row[1])) < 0.01 \
-			and absf(float(cradle_row[2]) - float(aircraft_row[2])) < 0.01
-	_check("gear-up Avanti display cradle aligns with its catalog snapshot", aligned,
-		"aircraft=%s cradle=%s" % [aircraft_row, cradle_row])
-	var kit := MeshKit.new()
-	Prefabs.build("avanti_cradle", kit, 1, "temperate")
-	_check("Avanti cradle has padded trestle geometry", kit.triangle_count() > 40)
-	var cradle_top := -INF
-	for v: Vector3 in kit.verts:
-		cradle_top = maxf(cradle_top, v.y)
-	var aircraft: Dictionary = Models.arrays("fleet_avanti")
-	var model_bottom := INF
-	for v: Vector3 in aircraft.pos:
-		model_bottom = minf(model_bottom, v.y)
-	var clearance := Models.parked_base_height("fleet_avanti") + model_bottom - cradle_top
-	_check("Avanti's lifted snapshot clears the cradle without a visible gap",
-		clearance >= 0.0 and clearance <= 0.03,
-		"base=%.3f model-bottom=%.3f cradle-top=%.3f gap=%.3f m" %
-		[Models.parked_base_height("fleet_avanti"), model_bottom, cradle_top, clearance])
+func _test_parked_support() -> void:
+	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
+	var scenery: Dictionary = Loader.load_from(Loader.DEFAULT_PATH, field).scenery
+	var counts := {grass = 0, slab = 0, table = 0, service = 0}
+	var scales := {}
+	for group: Dictionary in scenery.groups:
+		if group.type != "fleet":
+			continue
+		for placement: Dictionary in group.placements:
+			var mesh := ParkedAircraft.mesh(placement.aircraft, placement.configuration)
+			_check("snapshot has a grounded bottom " + str(group.id),
+				absf(mesh.get_aabb().position.y) < 0.002, str(mesh.get_aabb()))
+			var base := float(placement.elevation)
+			if is_zero_approx(base):
+				counts.grass += 1
+			elif is_equal_approx(base, 0.1):
+				counts.slab += 1
+			else:
+				counts.table += 1
+				_check("bench receiver is the existing table or foam top",
+					is_equal_approx(base, 0.9) or is_equal_approx(base, 1.12))
+			if placement.configuration == "service":
+				counts.service += 1
+			scales[placement.scale] = true
+	_check("layout has five slab, five grass and three bench aircraft",
+		counts.slab == 5 and counts.grass == 5 and counts.table == 3, str(counts))
+	_check("one maintenance configuration and at least four uniform scales",
+		counts.service == 1 and scales.size() >= 4, str(scales))
+	for sun: Vector3 in [Vector3(-0.4, 0.8, -0.3).normalized(), Vector3(0.8, 0.1, 0.5).normalized()]:
+		var shadow := MeshKit.new()
+		var table := Transform3D(Basis(Vector3.UP, PI * 0.5), Vector3(-42.6, 0.9, 19.9))
+		GroundFeatures.contact_shadow(shadow, table, Vector3(1.0, 0.4, 1.1), "aircraft_jet_bench", sun)
+		var on_worktop := not shadow.verts.is_empty()
+		for vertex: Vector3 in shadow.verts:
+			on_worktop = on_worktop and absf(vertex.y - 0.904) < 0.001 \
+				and absf(vertex.x - table.origin.x) <= 1.201 and absf(vertex.z - table.origin.z) <= 0.401
+		_check("bench shadows stay on the table at high and low sun", on_worktop)
 
 
 func _test_prefab_proportions() -> void:

@@ -66,6 +66,11 @@ var _last_night_factor := -1.0
 var _last_exposure := -1.0
 var _sdr_local_gain := 1.0
 var _regional: Node3D
+var _poll_valid := false
+var _polled_material: ShaderMaterial
+var _polled_direction: Variant = null
+var _polled_disc: Variant = null
+var _polled_exposure := -1.0
 
 
 ## field_lights is FieldLights.load_from().lights; validated_scenery is the loader's normalized scenery result.
@@ -96,6 +101,8 @@ static func build(field: Dictionary, field_lights: Dictionary = {}, validated_sc
 ## day/night source for the fixed-FW and flowing/explicit-TOD paths.
 func bind_environment(environment: Environment, field_lights_node: Node3D = null,
 		sdr_local_gain: float = 1.0) -> void:
+	_poll_valid = false
+	_polled_material = null
 	_environment = environment
 	# Static TOD snapshots retain their authored SDR exposure. This bounded view gain keeps local fittings useful
 	# on that path; output caps below still limit display contribution. It is not a photometric/lux correction.
@@ -112,13 +119,16 @@ func bind_environment(environment: Environment, field_lights_node: Node3D = null
 ## Applies a snapshot with sun_elevation_deg, or with sun_dir/disc_dir and optional sun_disc.
 ## Interpolates continuously from 3° sun elevation to −4°; geometry stays visible throughout daylight.
 func apply_lighting(snapshot: Dictionary) -> void:
+	# Explicit snapshots/profile changes must be superseded by the next sky poll.
+	_poll_valid = false
 	_last_snapshot = snapshot.duplicate()
+	var night_factor := _night_factor(snapshot)
 	# Regional homes/obstruction lights are independent of the club's light switch.
 	if is_instance_valid(_regional):
-		_regional.apply_night(_night_factor(snapshot))
+		_regional.apply_night(night_factor)
 	var factor := 0.0
 	if _profile != "off" and _activation != "off":
-		factor = 1.0 if _activation == "on" else _night_factor(snapshot)
+		factor = 1.0 if _activation == "on" else night_factor
 	var exposure := _current_exposure()
 	if is_equal_approx(factor, _last_night_factor) and is_equal_approx(exposure, _last_exposure):
 		return
@@ -210,13 +220,21 @@ func _update_from_environment() -> void:
 	var direction_value: Variant = material.get_shader_parameter("disc_dir")
 	if not direction_value is Vector3:
 		direction_value = material.get_shader_parameter("sun_dir")
+	var sun_disc: Variant = null if direction_value is Vector3 else material.get_shader_parameter("sun_disc")
+	var exposure := _current_exposure()
+	if _poll_valid and material == _polled_material and direction_value == _polled_direction \
+			and sun_disc == _polled_disc and exposure == _polled_exposure:
+		return
 	if direction_value is Vector3:
 		var direction: Vector3 = (direction_value as Vector3).normalized()
 		apply_lighting({"sun_elevation_deg": rad_to_deg(asin(clampf(direction.y, -1.0, 1.0)))})
-		return
-	var sun_disc: Variant = material.get_shader_parameter("sun_disc")
-	if (sun_disc is float or sun_disc is int) and float(sun_disc) <= 0.0:
+	elif (sun_disc is float or sun_disc is int) and float(sun_disc) <= 0.0:
 		apply_lighting({"sun_disc": 0.0})
+	_poll_valid = true
+	_polled_material = material
+	_polled_direction = direction_value
+	_polled_disc = sun_disc
+	_polled_exposure = exposure
 
 
 func _bind_field_lights(field_lights_node: Node3D) -> void:

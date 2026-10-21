@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL avoidance target stays at least 35 m above local terrain
+FAIL avoidance floor uses observed local terrain, not field datum
+FAIL neither side of recovery threshold requests further descent
+FAIL overhead traffic retains nominal altitude when descent would cross the floor
+companion clearance: 20 checks, 4 failed

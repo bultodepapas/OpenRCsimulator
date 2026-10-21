@@ -13,7 +13,7 @@ const LABEL_RE := "^[ -~]{1,32}$"
 const NODE_PATH_RE := "^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$"
 const PARAM_RE := "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
 const PAINT_KINDS := ["standard_albedo", "shader_color"]
-const SMOKE_ROLES := ["wing_tip_left", "wing_tip_right", "tail", "exhaust"]
+const SMOKE_ROLES := ["wing_tip_left", "wing_tip_right", "tail", "tailpipe", "exhaust"]
 const MARKING_TEXT_ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -ÁÉÍÓÚÜÑáéíóúüñ"
 const MARKING_FONT_SIZE := 64
 const MARKING_MIN_WIDTH_M := 0.01
@@ -75,12 +75,14 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 		return {"ok": false, "errors": PackedStringArray(["customization companion version is unsupported"])}
 	var binding_version := int(bindings.version)
 	var expected_keys := ["format", "version", "visual_family", "model_manifest_sha256", "paint_slots", "marking_slots", "smoke_slots", "slots_sha256"]
-	if binding_version == 2:
+	if binding_version >= 2:
 		expected_keys.append_array(["presentation_engine_version", "presentation_sources"])
+	if binding_version == 3:
+		expected_keys.append("source_proof_version")
 	if not _exact_keys(bindings, expected_keys):
 		errors.append("customization companion has unknown or missing keys")
 		return {"ok": false, "errors": errors}
-	if bindings.get("format") != COMPANION_FORMAT or binding_version not in [1, 2]:
+	if bindings.get("format") != COMPANION_FORMAT or binding_version not in [1, 2, 3]:
 		errors.append("customization companion format or version is unsupported")
 	if not _matches("^[a-z0-9]+(-[a-z0-9]+)*$", str(bindings.get("visual_family", ""))):
 		errors.append("customization companion visual family is malformed")
@@ -101,7 +103,19 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 		pass
 	if not _validate_slot_group(bindings.marking_slots, "marking", errors):
 		pass
-	if not _validate_slot_group(bindings.smoke_slots, "smoke", errors):
+	if binding_version == 3:
+		if bindings.smoke_slots.size() > 8:
+			errors.append("customization supports at most eight authored smoke outlets")
+		var seen_smoke := {}
+		for slot: Variant in bindings.smoke_slots:
+			var checked_slot: Dictionary = validate_smoke_slot(slot, 3)
+			if not checked_slot.ok:
+				errors.append_array(checked_slot.errors)
+			elif seen_smoke.has(str(slot.id)):
+				errors.append("smoke outlet id is duplicated")
+			else:
+				seen_smoke[str(slot.id)] = true
+	elif not _validate_slot_group(bindings.smoke_slots, "smoke", errors):
 		pass
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
@@ -110,11 +124,72 @@ static func validate_bindings(bindings: Dictionary, expected_family := "", expec
 	var actual := _sha256(_canonical_json(base))
 	if actual != str(bindings.slots_sha256):
 		errors.append("customization companion slot hash does not match its contents")
-	if binding_version == 2:
-		var source_result: Dictionary = PresentationSources.validate(bindings.presentation_sources, bindings.presentation_engine_version)
+	if binding_version >= 2:
+		var proof_version := 1
+		if binding_version == 3:
+			if not _integer_value(bindings.get("source_proof_version")) or int(bindings.source_proof_version) != 2:
+				errors.append("customization source proof version is unsupported")
+			proof_version = int(bindings.source_proof_version) if _integer_value(bindings.get("source_proof_version")) else 0
+		var source_result: Dictionary = PresentationSources.validate(bindings.presentation_sources, bindings.presentation_engine_version, proof_version)
 		if not source_result.get("ok", false):
 			for message: Variant in source_result.get("errors", []):
 				errors.append("presentation dependency validation failed: " + str(message))
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+## One strict descriptor reader shared by persistent profile validation and resolution.
+static func validate_smoke_slot(value: Variant, version: int = 3) -> Dictionary:
+	var errors := PackedStringArray()
+	if not (value is Dictionary) or version != 3:
+		return _failure("smoke outlet must use companion v3")
+	var slot: Dictionary = value
+	var kind := str(slot.get("kind", ""))
+	var policy := str(slot.get("activation_policy", ""))
+	var expected := ["id", "label", "kind", "pair", "role", "radius_m", "emissions_preset", "activation_policy", "provenance"]
+	var anchored := slot.has("anchor_id")
+	if kind == "source" or anchored:
+		expected += ["source_id", "source_kind", "anchor_id"]
+	elif kind == "show":
+		expected += ["node_path", "position_m", "direction"]
+		if policy == "source_and_request":
+			expected += ["source_id", "source_kind"]
+	if kind not in ["source", "show"] or not _exact_keys(slot, expected):
+		return _failure("smoke outlet has unsupported or missing keys")
+	for key: String in ["id", "label", "kind", "pair", "role", "emissions_preset", "activation_policy", "provenance"]:
+		if not (slot[key] is String):
+			return _failure("smoke outlet descriptor fields must be strings")
+	if not _matches(SLOT_ID_RE, str(slot.id)) or not _matches(LABEL_RE, str(slot.label)):
+		errors.append("smoke outlet id or label is malformed")
+	if str(slot.role) not in SMOKE_ROLES or not (slot.pair is String) or (not str(slot.pair).is_empty() and not _matches(SLOT_ID_RE, str(slot.pair))):
+		errors.append("smoke outlet role or pair is malformed")
+	if str(slot.provenance) not in ["estimated", "authored", "measured"] or str(slot.emissions_preset) not in ["glow_two_stroke", "glow_four_stroke", "glow_installation", "gasoline_two_stroke", "turbine_show", "independent_show"]:
+		errors.append("smoke outlet preset or provenance is unsupported")
+	if not _bounded_dimension(slot.radius_m, 0.0001, 0.1):
+		errors.append("smoke outlet radius must be in [0.0001, 0.1] metres")
+	if kind == "source" and (policy != "source_running" or str(slot.role) != "exhaust" or not str(slot.pair).is_empty()):
+		errors.append("source exhaust requires an unpaired exhaust and source_running policy")
+	if kind == "show" and policy not in ["independent_request", "source_and_request"]:
+		errors.append("show outlet activation policy is unsupported")
+	if anchored and kind == "show" and policy != "source_and_request":
+		errors.append("a source-anchored show outlet requires source_and_request policy")
+	if kind == "show" and str(slot.role) == "exhaust" and not anchored:
+		errors.append("an exhaust show outlet must use its physical source anchor")
+	if slot.has("source_id"):
+		if not (slot.source_id is String) or (str(slot.source_id) != "$propulsion" and not _matches("^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$", str(slot.source_id))) \
+				or str(slot.source_kind) not in ["glow_prop", "electric_prop", "turbine"]:
+			errors.append("smoke source identity or solver kind is unsupported")
+	if anchored:
+		if not _matches(SLOT_ID_RE, str(slot.anchor_id)):
+			errors.append("smoke source anchor id is malformed")
+	else:
+		if str(slot.node_path) != "." and not _matches(NODE_PATH_RE, str(slot.node_path)):
+			errors.append("smoke show node path is malformed")
+		if not _valid_pose_vector(slot.position_m, false) or not _valid_pose_vector(slot.direction, true):
+			errors.append("smoke show pose is invalid")
+	if str(slot.role) in ["wing_tip_left", "wing_tip_right"] and (kind != "show" or str(slot.pair) != "wing_tips"):
+		errors.append("wingtip outlet must be an explicit show pair")
+	if str(slot.role) in ["tail", "tailpipe", "exhaust"] and not str(slot.pair).is_empty():
+		errors.append("tail and exhaust outlets must be unpaired")
 	return {"ok": errors.is_empty(), "errors": errors}
 
 
@@ -225,32 +300,158 @@ static func apply(airplane: Dictionary, profile: Dictionary) -> Dictionary:
 	return {"ok": true, "errors": [], "marking_count": installed_labels.size()}
 
 
-## Resolve every registered endpoint each call so moving aircraft/root transforms and source anchors stay current.
-## The returned basis maps Godot's local -Z forward axis to the authored direction.
-static func smoke_transforms(airplane: Dictionary) -> Dictionary:
-	var result := {}
+## Validate once at configuration, retaining node handles rather than repeated file hashes.
+static func resolve_smoke_bindings(airplane: Dictionary) -> Dictionary:
 	var root: Node3D = airplane.get("root") as Node3D
-	if root == null:
-		return result
+	if root == null or not is_instance_valid(root):
+		return _failure("airplane instance has no render root")
 	var bindings: Dictionary = airplane.get("customization_bindings", {})
 	var checked := validate_bindings(bindings, str(airplane.get("visual_family", "")), str(airplane.get("model_manifest_sha256", "")))
 	if not checked.ok:
+		return checked
+	var handles: Dictionary = {"root": root, "endpoints": [], "sources": {}}
+	var errors := PackedStringArray()
+	var sources: Dictionary = legacy_source_anchors(airplane)
+	for endpoint: Dictionary in bindings.smoke_slots:
+		var descriptor := endpoint.duplicate(true)
+		if int(bindings.version) < 3:
+			var legacy: Dictionary = _resolve_endpoint(root, airplane, endpoint)
+			if not legacy.get("ok", false):
+				errors.append("Unavailable legacy smoke outlet: " + str(endpoint.id))
+				continue
+			handles.endpoints.append({"id": str(endpoint.id), "node": root, "position": legacy.position, "direction": legacy.direction})
+			continue
+		var node: Node3D = root
+		var position := Vector3.ZERO
+		var direction := Vector3.ZERO
+		if endpoint.has("source_id"):
+			var source_id := str(airplane.get("physical_propulsion_id", "")) if str(endpoint.source_id) == "$propulsion" else str(endpoint.source_id)
+			descriptor["source_id"] = source_id
+			if source_id.is_empty() or not sources.has(source_id) or not (sources[source_id] is Dictionary) \
+					or str(sources[source_id].get("kind", "")) != str(endpoint.source_kind):
+				errors.append("Missing or mismatched smoke source: " + str(endpoint.id))
+				continue
+			handles.sources[str(endpoint.id)] = source_id
+		if endpoint.has("anchor_id"):
+			var anchors_value: Variant = sources[descriptor.source_id].get("anchors", {})
+			if not (anchors_value is Dictionary):
+				errors.append("Malformed smoke source anchors: " + str(endpoint.id))
+				continue
+			var anchors: Dictionary = anchors_value
+			var anchor: Variant = anchors.get(str(endpoint.anchor_id))
+			if not (anchor is Dictionary):
+				errors.append("Missing smoke anchor: " + str(endpoint.id))
+				continue
+			var anchor_position: Variant = anchor.get("position")
+			var anchor_direction: Variant = anchor.get("direction")
+			if not (anchor_position is Vector3) or not (anchor_direction is Vector3):
+				errors.append("Invalid smoke anchor pose: " + str(endpoint.id))
+				continue
+			position = anchor_position
+			direction = anchor_direction
+			if maxf(absf(position.x), maxf(absf(position.y), absf(position.z))) > 5.0 \
+					or absf(direction.length() - 1.0) > 0.001:
+				errors.append("Smoke anchor pose is outside authored bounds: " + str(endpoint.id))
+				continue
+			if anchor.has("node"):
+				node = anchor.node as Node3D
+		else:
+			node = root if str(endpoint.node_path) == "." else root.get_node_or_null(NodePath(str(endpoint.node_path))) as Node3D
+			position = _vector3(endpoint.position_m)
+			direction = _vector3(endpoint.direction)
+		if node == null or not position.is_finite() or not direction.is_finite() or direction.length_squared() < 1e-12:
+			errors.append("Invalid smoke mount: " + str(endpoint.id))
+			continue
+		var relative: Dictionary = _node_to_root(root, node)
+		if not relative.ok or not _rigid_uniform_basis(relative.transform.basis):
+			errors.append("Unsupported smoke attachment transform: " + str(endpoint.id))
+			continue
+		handles.endpoints.append({"id": str(endpoint.id), "node": node, "position": position,
+			"direction": direction.normalized(), "descriptor": descriptor})
+	return {"ok": errors.is_empty(), "errors": errors, "handles": handles}
+
+
+## Explicit compatibility adapter: only this function maps the old positional anchor.
+## Authored source maps take priority and can contain several sources and anchors.
+static func legacy_source_anchors(airplane: Dictionary) -> Dictionary:
+	var authored: Variant = airplane.get("smoke_sources", {})
+	var result: Dictionary = authored.duplicate(true) if authored is Dictionary else {}
+	var root: Node3D = airplane.get("root") as Node3D
+	var source_id := str(airplane.get("physical_propulsion_id", ""))
+	var kind := str(airplane.get("physical_propulsion_kind", ""))
+	if source_id.is_empty() or result.has(source_id):
+		return result
+	var anchors: Dictionary = {}
+	var exhausts: Variant = airplane.get("exhausts", root.get_meta("exhausts", []) if root != null else [])
+	if exhausts is Array and not exhausts.is_empty() and exhausts[0] is Dictionary:
+		var anchor: Dictionary = exhausts[0]
+		if str(anchor.get("kind", "")) == kind:
+			anchors["physical_exit"] = anchor.duplicate(true)
+	# A source with no authored outlet remains available only for locally mounted
+	# source-gated show devices (for example a turbine smoke pump).
+	result[source_id] = {"kind": kind, "anchors": anchors}
+	return result
+
+
+## Moving/articulated nodes update every call. No profile, registry or file validation.
+static func update_smoke_transforms(handles: Dictionary) -> Dictionary:
+	var result: Dictionary = {}
+	if not is_instance_valid(handles.get("root")):
+		return result
+	var root: Node3D = handles.get("root") as Node3D
+	if root == null or not is_instance_valid(root):
 		return result
 	var root_world := root.global_transform if root.is_inside_tree() else root.transform
-	for endpoint: Dictionary in bindings.smoke_slots:
-		var resolved: Dictionary = _resolve_endpoint(root, airplane, endpoint)
-		if not resolved.ok:
+	if not root_world.is_finite() or not _rigid_uniform_basis(root_world.basis):
+		return result
+	for endpoint: Dictionary in handles.get("endpoints", []):
+		if not is_instance_valid(endpoint.get("node")):
 			continue
-		var world_direction: Vector3 = root_world.basis * resolved.direction
-		if not world_direction.is_finite() or world_direction.length_squared() < 1e-12:
+		var node: Node3D = endpoint.get("node") as Node3D
+		if node == null or not is_instance_valid(node):
 			continue
-		var direction := world_direction.normalized()
-		var up := Vector3.UP
-		if absf(direction.dot(up)) > 0.999:
-			up = Vector3.RIGHT
-		var origin: Vector3 = root_world * resolved.position
-		result[str(endpoint.id)] = Transform3D(Basis.looking_at(direction, up), origin)
+		var relative: Dictionary = _node_to_root(root, node)
+		if not relative.ok or not _rigid_uniform_basis(relative.transform.basis):
+			continue
+		var world: Transform3D = root_world * relative.transform
+		var direction: Vector3 = world.basis * endpoint.direction
+		if not world.is_finite() or not direction.is_finite() or direction.length_squared() < 1e-12:
+			continue
+		direction = direction.normalized()
+		var up := Vector3.RIGHT if absf(direction.dot(Vector3.UP)) > 0.999 else Vector3.UP
+		# Preserve admitted uniform scale for the authored physical bore. Consumers
+		# normalize direction vectors and scale aperture radius separately.
+		var outlet_basis := Basis.looking_at(direction, up).scaled(Vector3.ONE * world.basis.x.length())
+		result[str(endpoint.id)] = Transform3D(outlet_basis, world * endpoint.position)
 	return result
+
+
+## Compatibility facade caches configuration on the aircraft instance.
+static func smoke_transforms(airplane: Dictionary) -> Dictionary:
+	if not airplane.has("_smoke_binding_cache"):
+		var resolved := resolve_smoke_bindings(airplane)
+		airplane["_smoke_binding_cache"] = resolved.get("handles", {})
+		airplane["_smoke_binding_errors"] = resolved.get("errors", [])
+	return update_smoke_transforms(airplane["_smoke_binding_cache"])
+
+
+static func invalidate_smoke_bindings(airplane: Dictionary) -> void:
+	airplane.erase("_smoke_binding_cache")
+	airplane.erase("_smoke_binding_errors")
+
+
+static func _rigid_uniform_basis(value: Basis) -> bool:
+	if not value.is_finite():
+		return false
+	var x := value.x.length()
+	var y := value.y.length()
+	var z := value.z.length()
+	if minf(x, minf(y, z)) < 1e-9 or value.determinant() <= 0.0:
+		return false
+	return absf(x - y) <= x * 0.0001 and absf(x - z) <= x * 0.0001 \
+		and absf(value.x.dot(value.y)) <= x * y * 0.0001 \
+		and absf(value.x.dot(value.z)) <= x * z * 0.0001 \
+		and absf(value.y.dot(value.z)) <= y * z * 0.0001
 
 
 static func _resolve_endpoint(root: Node3D, airplane: Dictionary, endpoint: Dictionary) -> Dictionary:
@@ -523,8 +724,8 @@ static func _validate_slot_group(slots: Array, group: String, errors: PackedStri
 					errors.append("smoke show pose must contain three-number vectors")
 				if role in ["wing_tip_left", "wing_tip_right"] and str(slot.get("pair", "")) != "wing_tips":
 					errors.append("smoke wingtip endpoint pair is missing")
-				if role == "tail" and not str(slot.get("pair", "")).is_empty():
-					errors.append("smoke tail endpoint must be unpaired")
+				if role in ["tail", "tailpipe"] and not str(slot.get("pair", "")).is_empty():
+					errors.append("smoke tail/tailpipe endpoint must be unpaired")
 			else:
 				if role != "exhaust" or str(slot.get("source_kind", "")) != "glow_prop" or str(slot.get("source_anchor_ref", "")) != "exhausts[0]" \
 					or str(slot.get("physical_source_ref", "")) != "propulsion.id" or str(slot.get("physical_source_kind_ref", "")) != "propulsion.kind":

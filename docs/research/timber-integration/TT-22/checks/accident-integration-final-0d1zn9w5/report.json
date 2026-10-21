@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "abd63a31-d734-45fc-ba55-ee804097c91f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_accident_integration.gd",
+    "--",
+    "--scenery=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:03:54.762088+00:00",
+  "label": "accident-integration-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-22\\checks\\accident-integration-final-0d1zn9w5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-22\\checks\\accident-integration-final-0d1zn9w5\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 19.125,
+  "log_bytes": 7521,
+  "log_sha256": "70bbedb00b717d52019113e1f8c2dc08338de10a73c9c239cf20698a646074d2"
+}

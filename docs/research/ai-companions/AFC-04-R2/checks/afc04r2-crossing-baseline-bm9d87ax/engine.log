@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl
+CRASH at 29.1 m/s (sink 19.7 m/s, airframe contact (hull point 2), point speed 28.9 m/s at detected tick) - [R] restart
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl (2438 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl (2438 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl
+CRASH at 29.0 m/s (sink 23.5 m/s, airframe contact (hull point 3), point speed 28.9 m/s at detected tick) - [R] restart
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl (2422 ticks)
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl (2422 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl (2880 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.1 m/s (sink 19.7 m/s, airframe contact (hull point 2), point speed 28.9 m/s at detected tick) - [R] restart
+COMPANION ENCOUNTER SURVEY REPORT C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/report.json
+COMPANION ENCOUNTER SURVEY LOGS {"seed-20261020-crossing-right":{"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl","rows_written":2439,"sha256":"fa7ef3fac64bb2ae4035a98a6963711e7c7d59957efd47b27aca4c460b94c132","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl","rows_written":2439,"sha256":"5a74097741564e859cf86559f4802121877aa1fc80bb4c4524d9f6c5cca0ac1e","stop_error":0,"verified":true}},"seed-20261020-crossing-right-exogenous":{"player-exogenous":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl","rows_written":2881,"sha256":"0ab055ac39b92781c5bc628563d58f308b9095cc8f0e1ec597e93d333a19a87e","stop_error":0,"verified":true}},"seed-20261021-crossing-left":{"ai":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl","rows_written":2423,"sha256":"b0fa4edf1ccd2f43f9570f9e55539ca2a7834c73d57556cb29e3162e63a102ec","stop_error":0,"verified":true},"player":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl","rows_written":2423,"sha256":"01639c19dc412f163fe8533eba18488bd8e594bae10500cc2b82dd5421259822","stop_error":0,"verified":true}},"seed-20261021-crossing-left-exogenous":{"player-exogenous":{"path":"C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl","rows_written":2881,"sha256":"e4acdf8cbb67cb88fc929dbe209c8823bc928eea1541c7f18e1468c20bb0c157","stop_error":0,"verified":true}}}
+COMPANION ENCOUNTER SURVEY VALID_RUNS false DETERMINISTIC_REPEAT false SEPARATION_GATES false
+Survey is incomplete or invalid; separation misses alone do not fail process success.

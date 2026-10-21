@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ddf93a3a-73bb-426c-b18d-412d16e006dc",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp\\afc04-isolated\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/avoidance/test_reachable_pilot_r2.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:26:22.342111+00:00",
+  "label": "afc04-reachable-pilot-r2-unit-20261020-r2",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-reachable-pilot-r2-unit-20261020-r2-3qs67qr6\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-reachable-pilot-r2-unit-20261020-r2-3qs67qr6\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "reachable pilot:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.391,
+  "log_bytes": 11753,
+  "log_sha256": "cb7fb94685452596f7ec4a78cb5e6ff5d52cd9e743d24d9cde55f14a2c29ce03"
+}

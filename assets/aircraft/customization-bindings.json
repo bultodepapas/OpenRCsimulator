@@ -1,6 +1,6 @@
 {
   "format": "openrc-aircraft-customization-source",
-  "version": 1,
+  "version": 2,
   "families": [
     {
       "visual_family": "jensen-das-ugly-stik-60",
@@ -171,7 +171,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -189,7 +193,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tail",
@@ -207,7 +215,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "source_exhaust",
@@ -216,9 +228,26 @@
           "pair": "",
           "role": "exhaust",
           "source_kind": "glow_prop",
-          "source_anchor_ref": "exhausts[0]",
-          "physical_source_ref": "propulsion.id",
-          "physical_source_kind_ref": "propulsion.kind"
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.0029,
+          "emissions_preset": "glow_installation",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
         }
       ]
     },
@@ -400,7 +429,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -418,7 +451,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tail",
@@ -436,7 +473,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         }
       ]
     },
@@ -629,7 +670,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -647,7 +692,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tail",
@@ -665,7 +714,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "source_exhaust",
@@ -674,9 +727,26 @@
           "pair": "",
           "role": "exhaust",
           "source_kind": "glow_prop",
-          "source_anchor_ref": "exhausts[0]",
-          "physical_source_ref": "propulsion.id",
-          "physical_source_kind_ref": "propulsion.kind"
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
         }
       ]
     },
@@ -770,7 +840,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -788,7 +862,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tail",
@@ -806,7 +884,35 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_tailpipe",
+          "label": "Tailpipe",
+          "kind": "show",
+          "pair": "",
+          "role": "tailpipe",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.07992,
+            1.28196
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.025,
+          "emissions_preset": "turbine_show",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "source_kind": "turbine"
         }
       ]
     },
@@ -974,7 +1080,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_wing_tip_right",
@@ -992,7 +1102,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         },
         {
           "id": "show_tail",
@@ -1010,7 +1124,11 @@
             0,
             0,
             1
-          ]
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
         }
       ]
     }

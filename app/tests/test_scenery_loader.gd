@@ -118,6 +118,18 @@ func _mutations() -> void:
 		for g: Dictionary in c.groups:
 			if g.type == "fleet":
 				g.aircraft = ["unknown-aircraft"], "baked fleet model")
+	_refuse("a fractional fleet index", func(c: Dictionary) -> void:
+		_set_placement(c, "fleet", [-17.7, -39.5, 0.0, 0.5]), "index out of range")
+	for key: String in ["scale", "elevation"]:
+		_refuse("oversized parked " + key, func(c: Dictionary) -> void:
+			for g: Dictionary in c.groups:
+				if g.id == "fleet":
+					g[key].value = 20.0, "parked scale")
+	_refuse("unavailable maintenance configuration", func(c: Dictionary) -> void:
+		for g: Dictionary in c.groups:
+			if g.id == "fleet":
+				g.configuration = "service", "only for Ugly Stik")
+
 
 
 ## The committed layout must be what tools/scenery/place.py writes today (no hand edits to generated data).

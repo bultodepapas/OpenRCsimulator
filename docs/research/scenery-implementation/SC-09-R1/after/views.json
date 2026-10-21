@@ -1,0 +1,121 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 2381.341,
+  "scenery": true,
+  "stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 1441.864,
+    "cells": 60,
+    "fleet": 13,
+    "fleet_batch_surfaces": 179,
+    "fleet_batches": 8,
+    "fleet_surfaces": 282,
+    "fleet_triangles": 273421,
+    "flowers": 0,
+    "instances": 170,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 95,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 5.488,
+      "botanicals": 98.884,
+      "cell_meshes": 46.339,
+      "fence": 34.376,
+      "fleet": 207.455,
+      "hedge": 15.904,
+      "instances": 197.061,
+      "meshes": 100.14,
+      "patch": 53.561,
+      "population": 127.353,
+      "shelter_material": 50.243,
+      "shelter_meshes": 2.431,
+      "track": 1.941,
+      "vegetation": 371.418,
+      "woodland_edges": 62.891
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "fleet_close": {
+      "draw_calls": 164.0,
+      "objects": 165.0,
+      "primitives": 290564.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_bench": {
+      "draw_calls": 178.0,
+      "objects": 180.0,
+      "primitives": 310835.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_east": {
+      "draw_calls": 401.0,
+      "objects": 404.0,
+      "primitives": 460806.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_east_bench": {
+      "draw_calls": 142.0,
+      "objects": 143.0,
+      "primitives": 225714.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_micro": {
+      "draw_calls": 224.0,
+      "objects": 226.0,
+      "primitives": 340262.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_ready": {
+      "draw_calls": 136.0,
+      "objects": 138.0,
+      "primitives": 214780.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_service": {
+      "draw_calls": 151.0,
+      "objects": 152.0,
+      "primitives": 309106.0,
+      "shadow_draw_calls": 0
+    },
+    "hangar_west": {
+      "draw_calls": 397.0,
+      "objects": 400.0,
+      "primitives": 545502.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_south": {
+      "draw_calls": 174.0,
+      "objects": 175.0,
+      "primitives": 318683.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 380.0,
+      "objects": 383.0,
+      "primitives": 433276.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pits": {
+      "draw_calls": 367.0,
+      "objects": 370.0,
+      "primitives": 497422.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

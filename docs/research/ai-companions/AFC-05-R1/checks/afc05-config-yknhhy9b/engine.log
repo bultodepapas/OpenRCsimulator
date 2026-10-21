@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   defaults keep companions off
+ok   defaults select only the accepted Stik circuit profile
+ok   presentation defaults preserve audio and keep labels optional
+ok   presentation preferences accept mute and bounded labels
+ok   invalid volume refuses atomically
+ok   invalid volume refuses atomically
+ok   invalid volume refuses atomically
+ok   invalid volume refuses atomically
+ok   invalid volume refuses atomically
+ok   invalid volume refuses atomically
+ok   invalid label distance refuses atomically
+ok   invalid label distance refuses atomically
+ok   invalid label distance refuses atomically
+ok   invalid label distance refuses atomically
+ok   label toggle requires a boolean
+ok   valid three-aircraft uint32 config normalizes fixed MVP choices
+ok   enabled with zero companions is refused
+ok   count above the finite fleet cap is refused
+ok   fractional count is refused
+ok   boolean count is refused
+ok   negative seed is refused
+ok   seed above uint32 is refused
+ok   nonfinite seed is refused
+ok   unsupported aircraft is refused
+ok   unsupported activity is refused
+ok   unsupported pilot skill is refused
+ok   MVP incidents cannot be enabled
+ok   unknown fields are refused
+ok   explicit CLI seed overlays Home config and preserves its count
+ok   explicit CLI zero disables and clears the requested count
+ok   invalid CLI count is refused
+ok   invalid CLI seed is refused
+ok   duplicate CLI count is refused
+ok   CLI count flag without a value is refused
+ok   CLI seed flag without a value is refused
+ok   capture requires an enabled roster
+ok   capture without a directory is refused
+ok   empty capture directory is refused
+ok   duplicate capture arguments are refused
+ok   separate player and fleet log CLI starts are mutually exclusive
+ok   capture path is parsed separately and never persisted in companion settings
+companion config: 41 checks, 0 failed

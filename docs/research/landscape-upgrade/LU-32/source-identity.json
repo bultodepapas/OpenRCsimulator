@@ -1,0 +1,12 @@
+{
+  "app/render/landscape_upgrade/airfield_lighting.gd": "6c77822f8e85ceede8f7710dcbcceb04cb6c5475893f80ce0774c8c483d1132d",
+  "app/render/weather/storm_bank.gd": "16bcafc9304e8a802c34330a85af0218f0ca2960d207fa7ab0077443bd27145c",
+  "app/tests/test_landscape_lighting.gd": "b7d97c980831ad49a2e0a7b7aa4ecab6c4102d15d052dcfbf1c2502fbbf3dd53",
+  "app/tests/test_storm_bank.gd": "9bda799c045611513f8f42576837b71336c00dd52c10a393b3d48ef8168710a0",
+  "app/render/world/world.gd": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
+  "app/render/atmosphere.gd": "6e1b7c3ad694ad684837f565c0c5abc9105568ee64b1515cfd4380a42dbd37e8",
+  "app/tests/capture_landscape_upgrade.gd": "98ddf2e791e6ae358b19bb55919fc88542739b0f27e5ba6ff8769438f1bee37f",
+  "tools/atmosphere/storm_bank_capture.gd": "af8fa7bbe6d3e71fbb4f553e5f7ebd7e3fe4210ce6fa96e7260014b27f065d64",
+  "tmp/landscape-perf-r2/airfield_lighting.before.gd": "d154da44ddb920845eb50e3c1148b81d22272dd4e6ece7a0fa4d113435b709a8",
+  "tmp/landscape-perf-r2/storm_bank.before.gd": "d099042c21564879ef0994a8d303c71789c0f55686aca4bf8a2979154926b698"
+}

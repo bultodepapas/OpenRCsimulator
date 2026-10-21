@@ -15,7 +15,7 @@ The aircraft is **EXPERIMENTAL**, with airborne and downlocked runway starts. Th
 | Retracts and ground | AV-09: accepted extension, wheel contact/spin, nose steering, assumed main brakes and runway launch. Actuation/contact mechanics remain estimated; broader landing qualification is pending. |
 | Flaps | AV-09-F: accepted actuator travel, local aerodynamic loads/wake, rendering and manual elevator mix. Detents are 0°/20°/50°; mix is 8%/20% of full elevator travel following actual flap angle. Force coefficients, timing and speed advisory are not measured A200 limits. |
 | Inputs and polar | AV-17-R1/R2/R3: keyboard pitch progression, normal-gamepad pitch/yaw settings and progressive wing polar. These are implemented input/model choices, not physical identification. |
-| Presentation | AV-31: shared version-2 GLB builder, authored sections and gear/control bindings; turbine audio reads telemetry. Visual planform/installation does not replace the physical surrogate. |
+| Presentation | AV-31: shared version-2 GLB builder, authored sections and gear/control bindings; turbine audio reads telemetry. SM-11-R1 adds optional [tailpipe show smoke](SMOKE.md#avanti--ventage-jet-show-smoke-sm-11-r1) using the authored outlet and existing H/AUX controls. Visual planform/installation does not replace the physical surrogate. |
 
 Full ECU startup, EGT/core thermal history, pump/supply-battery dynamics, cooling/relight, hopper transfer and slosh remain future work. Basic fuel exhaustion/rundown must not be described as those systems.
 

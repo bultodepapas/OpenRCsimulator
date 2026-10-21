@@ -85,6 +85,29 @@ func _initialize() -> void:
 	sky_shader.set_shader_parameter("disc_dir", Vector3(0.0, sin(deg_to_rad(30.0)), -cos(deg_to_rad(30.0))))
 	helper.call("_update_from_environment")
 	_check("cloud-disc direction keeps the actual sun above the horizon", is_zero_approx(float(helper.get_meta("night_factor"))))
+	# Repeated sky polls must still observe explicit snapshots, exposure and material replacement.
+	helper.call("_update_from_environment")
+	helper.apply_lighting({"sun_elevation_deg": -8.0})
+	helper.call("_update_from_environment")
+	_check("unchanged sky supersedes a direct night snapshot", is_zero_approx(float(helper.get_meta("night_factor"))))
+	sky_shader.set_shader_parameter("disc_dir", Vector3.DOWN)
+	helper.call("_update_from_environment")
+	var uncapped_energy: float = omnis[0].light_energy
+	day_env.tonemap_exposure = 10000.0
+	helper.call("_update_from_environment")
+	_check("unchanged night direction observes changed exposure",
+		omnis[0].light_energy < uncapped_energy and omnis[0].light_energy <= 0.0000121)
+	day_env.tonemap_exposure = 1.0
+	var replacement := sky_shader.duplicate() as ShaderMaterial
+	replacement.set_shader_parameter("disc_dir", Vector3.UP)
+	day_env.sky.sky_material = replacement
+	helper.call("_update_from_environment")
+	_check("replacement sky material updates the light state", is_zero_approx(float(helper.get_meta("night_factor"))))
+	day_env.sky.sky_material = sky_shader
+	sky_shader.set_shader_parameter("disc_dir", Vector3.UP)
+	helper.bind_environment(day_env, field_lights)
+	_check("rebinding an unchanged environment initializes the fixtures",
+		existing_spots.all(func(s: SpotLight3D) -> bool: return is_zero_approx(s.light_energy)))
 	_check("manual on accepts an explicit daylight override", helper.set_activation("on")
 		and is_equal_approx(float(helper.get_meta("night_factor")), 1.0)
 		and existing_spots.all(func(s: SpotLight3D) -> bool: return s.light_energy > 0.0))

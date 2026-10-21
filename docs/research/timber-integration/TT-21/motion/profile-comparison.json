@@ -1,0 +1,214 @@
+{
+  "schema": "tt21-timber-motion-separate-run-exploratory-v1",
+  "profiling_mode": "separate-process exploratory CPU profiles; not an FPS measurement",
+  "timing_status": "confounded; before and after came from separate runs and do not establish optimization acceptance",
+  "timing_warning": "Host scheduling, load, frequency, and process setup can shift medians. Use the same-process alternating paired harness for performance claims.",
+  "before_report": "tmp\\timber-overhaul\\motion-profile-baseline-run2\\profile.json",
+  "after_report": "tmp\\timber-overhaul\\motion-profile-candidate-final\\profile.json",
+  "before_runtime_sha256": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+  "after_runtime_sha256": "44c07e912bda9026924f1db81f9dec3f723f2a4b069acb257159d4a5eaba9cd5",
+  "frozen_baseline_sha256": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+  "parity_checks": [
+    {
+      "check": "baseline runtime source matches frozen source",
+      "passed": true,
+      "before": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+      "frozen": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3"
+    },
+    {
+      "check": "candidate references the same frozen source",
+      "passed": true,
+      "before_frozen": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+      "after_frozen": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3"
+    },
+    {
+      "check": "input_states unchanged",
+      "passed": true
+    },
+    {
+      "check": "fixture_session_inputs_restored unchanged",
+      "passed": true
+    },
+    {
+      "check": "snapshot pose count unchanged",
+      "passed": true,
+      "before_count": 5,
+      "after_count": 5
+    },
+    {
+      "check": "exact state, leg, geometry, material, and AABB parity",
+      "passed": true,
+      "before_poses": [
+        "settled_rest",
+        "paused_focus_style",
+        "variable_compression_taxi_b",
+        "reset_rest",
+        "wreck_stopped"
+      ],
+      "after_poses": [
+        "settled_rest",
+        "paused_focus_style",
+        "variable_compression_taxi_b",
+        "reset_rest",
+        "wreck_stopped"
+      ]
+    },
+    {
+      "check": "zero harness failures",
+      "passed": true,
+      "before_failures": [],
+      "after_failures": []
+    }
+  ],
+  "profile_deltas": {
+    "process_profiles": [
+      {
+        "case": "settled_rest",
+        "operation_count": 1200,
+        "before_median_us_per_call": 181.65,
+        "after_median_us_per_call": 118.6,
+        "median_change_percent": -34.70960638590697,
+        "before_mean_us_per_call": 208.14,
+        "after_mean_us_per_call": 124.74,
+        "mean_change_percent": -40.06918420294033,
+        "before_p95_us_per_call": 308.7,
+        "after_p95_us_per_call": 171.25
+      },
+      {
+        "case": "variable_compression_taxi",
+        "operation_count": 1200,
+        "before_median_us_per_call": 424.0,
+        "after_median_us_per_call": 295.25,
+        "median_change_percent": -30.365566037735846,
+        "before_mean_us_per_call": 482.301666666667,
+        "after_mean_us_per_call": 305.353333333333,
+        "mean_change_percent": -36.6883105663469,
+        "before_p95_us_per_call": 753.15,
+        "after_p95_us_per_call": 409.2
+      },
+      {
+        "case": "airborne",
+        "operation_count": 1200,
+        "before_median_us_per_call": 154.35,
+        "after_median_us_per_call": 84.75,
+        "median_change_percent": -45.092322643343046,
+        "before_mean_us_per_call": 159.9975,
+        "after_mean_us_per_call": 89.5683333333333,
+        "mean_change_percent": -44.01891696224423,
+        "before_p95_us_per_call": 200.95,
+        "after_p95_us_per_call": 148.55
+      },
+      {
+        "case": "paused_focus_style",
+        "operation_count": 1200,
+        "before_median_us_per_call": 112.45,
+        "after_median_us_per_call": 67.35,
+        "median_change_percent": -40.10671409515341,
+        "before_mean_us_per_call": 160.92,
+        "after_mean_us_per_call": 73.1366666666667,
+        "mean_change_percent": -54.55091556881264,
+        "before_p95_us_per_call": 307.65,
+        "after_p95_us_per_call": 111.25
+      }
+    ],
+    "contact_dust_profiles": [
+      {
+        "case": "contact_dust_paved_no_slip",
+        "operation_count": 1200,
+        "before_median_us_per_call": 73.3,
+        "after_median_us_per_call": 72.4,
+        "median_change_percent": -1.2278308321964413,
+        "before_mean_us_per_call": 75.9458333333333,
+        "after_mean_us_per_call": 72.13,
+        "mean_change_percent": -5.024414330388945,
+        "before_p95_us_per_call": 108.7,
+        "after_p95_us_per_call": 100.55
+      },
+      {
+        "case": "contact_dust_synthetic_rough_slip",
+        "operation_count": 1200,
+        "before_median_us_per_call": 79.8,
+        "after_median_us_per_call": 58.35,
+        "median_change_percent": -26.879699248120296,
+        "before_mean_us_per_call": 88.9725,
+        "after_mean_us_per_call": 60.62,
+        "mean_change_percent": -31.866587990671274,
+        "before_p95_us_per_call": 154.9,
+        "after_p95_us_per_call": 85.0
+      }
+    ],
+    "cable_and_coil_update_profile": {
+      "case": "cable_and_coil_vertices_variable_pose",
+      "before": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "cable_and_coil_vertices_variable_pose",
+        "max_batch_mean_us_per_call": 764.2,
+        "mean_us_per_call": 259.57,
+        "median_us_per_call": 227.95,
+        "min_batch_mean_us_per_call": 177.7,
+        "operation_count": 1200,
+        "p95_us_per_call": 495.45
+      },
+      "after": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "cable_and_coil_vertices_variable_pose",
+        "max_batch_mean_us_per_call": 200.9,
+        "mean_us_per_call": 135.14,
+        "median_us_per_call": 128.7,
+        "min_batch_mean_us_per_call": 110.5,
+        "operation_count": 1200,
+        "p95_us_per_call": 186.45
+      }
+    },
+    "reset_response_profile": {
+      "before": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "reset_signal_visual_response",
+        "max_batch_mean_us_per_call": 788.05,
+        "mean_us_per_call": 275.650833333333,
+        "median_us_per_call": 251.85,
+        "min_batch_mean_us_per_call": 201.9,
+        "operation_count": 1200,
+        "p95_us_per_call": 489.8
+      },
+      "after": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "reset_signal_visual_response",
+        "max_batch_mean_us_per_call": 202.45,
+        "mean_us_per_call": 155.236666666667,
+        "median_us_per_call": 153.2,
+        "min_batch_mean_us_per_call": 125.1,
+        "operation_count": 1200,
+        "p95_us_per_call": 198.3
+      }
+    },
+    "wreck_response_profile": {
+      "before": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "wreck_stopped_early_return",
+        "max_batch_mean_us_per_call": 0.6,
+        "mean_us_per_call": 0.536666666666667,
+        "median_us_per_call": 0.55,
+        "min_batch_mean_us_per_call": 0.5,
+        "operation_count": 1200,
+        "p95_us_per_call": 0.55
+      },
+      "after": {
+        "batches": 60,
+        "calls_in_each_timed_batch": 20,
+        "case": "wreck_stopped_early_return",
+        "max_batch_mean_us_per_call": 0.35,
+        "mean_us_per_call": 0.3,
+        "median_us_per_call": 0.3,
+        "min_batch_mean_us_per_call": 0.25,
+        "operation_count": 1200,
+        "p95_us_per_call": 0.3
+      }
+    }
+  }
+}

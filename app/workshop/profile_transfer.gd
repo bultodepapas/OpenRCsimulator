@@ -31,6 +31,9 @@ static func propose(source_profile: Variant, source_bindings: Variant,
 
 	var source: Dictionary = checked_source["profile"]
 	var target: Dictionary = checked_target["profile"].duplicate(true)
+	# Copy review is not an implicit schema migration. Keep both records intact.
+	if int(source.version) != int(target.version):
+		return _failure(PackedStringArray(["Appearance profiles use different schema versions; review an explicit migration before copying."]))
 	var source_slots: Dictionary = {
 		"paint": _slot_map(source_bindings, "paint_slots"),
 		"markings": _slot_map(source_bindings, "marking_slots"),
@@ -98,6 +101,9 @@ static func _compatibility_reason(domain: String, entry: Dictionary, source_slot
 			if str(source_slot.get("kind", "")) != str(target_slot.get("kind", "")) \
 					or str(source_slot.get("role", "")) != str(target_slot.get("role", "")):
 				return "smoke_endpoint_mismatch"
+			for field: String in ["activation_policy", "source_kind", "emissions_preset"]:
+				if str(source_slot.get(field, "")) != str(target_slot.get(field, "")):
+					return "smoke_source_policy_mismatch"
 			return "compatible"
 	return "unsupported_domain"
 

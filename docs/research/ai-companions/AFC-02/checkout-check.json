@@ -1,0 +1,252 @@
+{
+  "format": "openrc-afc02-checkout-comparison v1",
+  "step": "AFC-02",
+  "captured_utc": "2026-10-20T20:19:10.686209+00:00",
+  "observed_main_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "method": "Copied the current .gitattributes, the five listed profile/input files, and all solver_identity() GDScript inputs into a separate temporary Git repository. Committed only that disposable repository, then made two fresh local clones with --no-hardlinks and core.autocrlf=true/false set before checkout.",
+  "disposable_commit": "865ec979e583f22313273766e6301e25fe7b5867",
+  "gitattributes_blob_sha1": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+  "main_index_sha256_before": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_sha256_after": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_unchanged": true,
+  "profiled_source_files": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": {
+      "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "bytes": 60211,
+      "lf_lines": 1583,
+      "crlf_lines": 1583
+    },
+    "app/data/fields/default.json": {
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "bytes": 158788,
+      "lf_lines": 8834,
+      "crlf_lines": 8834
+    },
+    "app/ai/companions/pilot.gd": {
+      "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+      "bytes": 21319,
+      "lf_lines": 418,
+      "crlf_lines": 0
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "sha256": "2db3f1c864947c38dabc77d53a80ea89c6836d2b63034ac3b00a5a08d0beee60",
+      "bytes": 1167,
+      "lf_lines": 34,
+      "crlf_lines": 0
+    },
+    "app/data/ai/companions/fields/club-default.json": {
+      "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+      "bytes": 3341,
+      "lf_lines": 103,
+      "crlf_lines": 0
+    }
+  },
+  "checkout_results": {
+    "true": {
+      "core_autocrlf": "true",
+      "commit": "865ec979e583f22313273766e6301e25fe7b5867",
+      "gitattributes_blob_sha1": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+      "files": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": {
+          "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "bytes": 60211,
+          "lf_lines": 1583,
+          "crlf_lines": 1583
+        },
+        "app/data/fields/default.json": {
+          "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "bytes": 158788,
+          "lf_lines": 8834,
+          "crlf_lines": 8834
+        },
+        "app/ai/companions/pilot.gd": {
+          "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+          "bytes": 21319,
+          "lf_lines": 418,
+          "crlf_lines": 0
+        },
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+          "sha256": "2db3f1c864947c38dabc77d53a80ea89c6836d2b63034ac3b00a5a08d0beee60",
+          "bytes": 1167,
+          "lf_lines": 34,
+          "crlf_lines": 0
+        },
+        "app/data/ai/companions/fields/club-default.json": {
+          "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+          "bytes": 3341,
+          "lf_lines": 103,
+          "crlf_lines": 0
+        }
+      },
+      "solver_identity": {
+        "sha256": "939bea1dfdbeaf3a9a153354adee93c5e1b8d4dc4e93ff46041fb7d3179ec48c",
+        "source_file_count": 133
+      },
+      "attributes": [
+        "app/data/aircraft/jensen_ugly_stik_60.json: text: set",
+        "app/data/aircraft/jensen_ugly_stik_60.json: eol: crlf",
+        "app/data/fields/default.json: text: set",
+        "app/data/fields/default.json: eol: crlf",
+        "app/ai/companions/pilot.gd: text: set",
+        "app/ai/companions/pilot.gd: eol: lf",
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: text: set",
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: eol: lf",
+        "app/data/ai/companions/fields/club-default.json: text: set",
+        "app/data/ai/companions/fields/club-default.json: eol: lf"
+      ]
+    },
+    "false": {
+      "core_autocrlf": "false",
+      "commit": "865ec979e583f22313273766e6301e25fe7b5867",
+      "gitattributes_blob_sha1": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+      "files": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": {
+          "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "bytes": 60211,
+          "lf_lines": 1583,
+          "crlf_lines": 1583
+        },
+        "app/data/fields/default.json": {
+          "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "bytes": 158788,
+          "lf_lines": 8834,
+          "crlf_lines": 8834
+        },
+        "app/ai/companions/pilot.gd": {
+          "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+          "bytes": 21319,
+          "lf_lines": 418,
+          "crlf_lines": 0
+        },
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+          "sha256": "2db3f1c864947c38dabc77d53a80ea89c6836d2b63034ac3b00a5a08d0beee60",
+          "bytes": 1167,
+          "lf_lines": 34,
+          "crlf_lines": 0
+        },
+        "app/data/ai/companions/fields/club-default.json": {
+          "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+          "bytes": 3341,
+          "lf_lines": 103,
+          "crlf_lines": 0
+        }
+      },
+      "solver_identity": {
+        "sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+        "source_file_count": 133
+      },
+      "attributes": [
+        "app/data/aircraft/jensen_ugly_stik_60.json: text: set",
+        "app/data/aircraft/jensen_ugly_stik_60.json: eol: crlf",
+        "app/data/fields/default.json: text: set",
+        "app/data/fields/default.json: eol: crlf",
+        "app/ai/companions/pilot.gd: text: set",
+        "app/ai/companions/pilot.gd: eol: lf",
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: text: set",
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: eol: lf",
+        "app/data/ai/companions/fields/club-default.json: text: set",
+        "app/data/ai/companions/fields/club-default.json: eol: lf"
+      ]
+    }
+  },
+  "profiled_source_hashes_match_between_clones": true,
+  "profiled_source_hashes_match_current_worktree": true,
+  "solver_identity": {
+    "method": "SHA-256 over sorted res:// paths plus exact bytes for all GDScript files under res://physics, res://sim, and res://failures.",
+    "source_file_count": 133,
+    "current_worktree": {
+      "sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+      "source_file_count": 133
+    },
+    "core_autocrlf_true_clone": {
+      "sha256": "939bea1dfdbeaf3a9a153354adee93c5e1b8d4dc4e93ff46041fb7d3179ec48c",
+      "source_file_count": 133
+    },
+    "core_autocrlf_false_clone": {
+      "sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+      "source_file_count": 133
+    },
+    "raw_identity_matches_between_clones": false,
+    "files_with_different_raw_bytes": 54,
+    "differing_resource_paths": [
+      "res://failures/config.gd",
+      "res://failures/runtime.gd",
+      "res://physics/aircraft_contact_contract.gd",
+      "res://physics/aircraft_modules.gd",
+      "res://physics/control_actuators.gd",
+      "res://physics/event_bracket.gd",
+      "res://physics/flaps.gd",
+      "res://physics/flight_modes.gd",
+      "res://physics/glow/profile.gd",
+      "res://physics/glow/propeller.gd",
+      "res://physics/glow/vibration.gd",
+      "res://physics/ground_vehicle/course.gd",
+      "res://physics/ground_vehicle/nitro_dynamics.gd",
+      "res://physics/ground_vehicle/support_bench_data.gd",
+      "res://physics/ground_vehicle/suspension_bench_data.gd",
+      "res://physics/ground_vehicle/vehicle_damage.gd",
+      "res://physics/ground_vehicle/vehicle_data.gd",
+      "res://physics/ground_vehicle/vehicle_environment.gd",
+      "res://physics/ground_wheels.gd",
+      "res://physics/liquid_fuel.gd",
+      "res://physics/physical_identity.gd",
+      "res://physics/resource_event_step.gd",
+      "res://physics/retractable_gear.gd",
+      "res://physics/rotorcraft/aerodynamic_stage.gd",
+      "res://physics/rotorcraft/airframe.gd",
+      "res://physics/rotorcraft/drive.gd",
+      "res://physics/rotorcraft/dynamic_inflow.gd",
+      "res://physics/rotorcraft/electronics.gd",
+      "res://physics/rotorcraft/flight_dynamics.gd",
+      "res://physics/rotorcraft/geared_coupling.gd",
+      "res://physics/rotorcraft/ground_start.gd",
+      "res://physics/rotorcraft/hx700_flex_bench.gd",
+      "res://physics/rotorcraft/impact_detector.gd",
+      "res://physics/rotorcraft/inflow.gd",
+      "res://physics/rotorcraft/lifecycle.gd",
+      "res://physics/rotorcraft/main_rotor.gd",
+      "res://physics/rotorcraft/main_rotor_stage.gd",
+      "res://physics/rotorcraft/performance_context.gd",
+      "res://physics/rotorcraft/skid_contact.gd",
+      "res://physics/rotorcraft/swash.gd",
+      "res://physics/rotorcraft/tail_rotor.gd",
+      "res://physics/rotorcraft/trim.gd",
+      "res://physics/rotorcraft_data.gd",
+      "res://physics/swirl_loads.gd",
+      "res://physics/wheel_profiles.gd",
+      "res://physics/wing_polar.gd",
+      "res://sim/aircraft_contact_events.gd",
+      "res://sim/checkpoint_json.gd",
+      "res://sim/fuel_sample.gd",
+      "res://sim/lake_collision.gd",
+      "res://sim/liquid_fuel_flight.gd",
+      "res://sim/maneuvers.gd",
+      "res://sim/scenery_collision.gd",
+      "res://sim/scenery_damage.gd"
+    ],
+    "portability_note": "The composite source hash changes with checkout line endings unless every included source byte is identical. The current profile pins the false/LF checkout identity; a true/CRLF checkout therefore fails the profile solver identity check. No solver or additional .gitattributes rules were changed for this test.",
+    "canonical_utf8_lf": {
+      "method": "For every sorted solver resource path, strict-decode source bytes as UTF-8, replace CRLF and lone CR line endings with LF, encode UTF-8, then hash path bytes followed by normalized source bytes.",
+      "current_worktree": {
+        "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+        "source_file_count": 133,
+        "files_changed_by_normalization": 79
+      },
+      "core_autocrlf_true_clone": {
+        "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+        "source_file_count": 133,
+        "files_changed_by_normalization": 133
+      },
+      "core_autocrlf_false_clone": {
+        "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+        "source_file_count": 133,
+        "files_changed_by_normalization": 79
+      },
+      "identical_across_clones": true,
+      "raw_different_file_count_between_clones": 54,
+      "canonical_different_file_count_between_clones": 0,
+      "profile_metadata_at_capture": "The current aircraft profile still pins the raw FlightLog identity; this evidence evaluates the proposed canonical qualification identity without changing runtime code or the earlier profile receipt."
+    }
+  },
+  "disposable_tracked_file_count": 139
+}

@@ -58,6 +58,7 @@ func _check_mesh(cue: Dictionary) -> void:
 	_check("repeat build owns distinct, byte-identical mesh data", mesh != repeat_mesh and vertices.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array() and normals.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_NORMAL].to_byte_array())
 	_test_posts_and_bays(cue, vertices)
 	_test_opening_and_slats(cue, vertices)
+	_check_rail_sections(cue)
 	first.free()
 	second.free()
 
@@ -125,8 +126,30 @@ func _test_boundary_variants(default_cue: Dictionary) -> void:
 		var positions: PackedVector3Array = Barrier.post_positions(variant)
 		var posts_per_bank: int = positions.size() / 2
 		_check("boundary post layout keeps the gap", absf(positions[posts_per_bank].x - positions[posts_per_bank - 1].x - FOOT_WIDTH_M - gap_width) < 0.00001)
+		_check_rail_sections(variant)
 		_check_planting(root, null, variant)
 		root.free()
+
+
+func _check_rail_sections(cue: Dictionary) -> void:
+	var rail_parts: Array[Dictionary] = []
+	for part: Dictionary in Barrier.parts(cue):
+		if part.profile == "wood":
+			rail_parts.append(part)
+	var proportions_ok: bool = not rail_parts.is_empty()
+	var openings_ok: bool = true
+	for index: int in range(0, rail_parts.size(), 4):
+		var previous_top: float = 0.0
+		for row: int in 4:
+			var rail: Dictionary = rail_parts[index + row]
+			var size: Vector3 = rail.size
+			var bottom: float = rail.base.y
+			var expected_height: float = 0.08 if row == 3 else 0.065
+			proportions_ok = proportions_ok and absf(size.z - 0.045) < 0.00001 and size.y <= expected_height + 0.00001
+			openings_ok = openings_ok and bottom >= previous_top + (0.025 if row > 0 else 0.2) - 0.00001
+			previous_top = bottom + size.y
+	_check("all timber sections keep their designed height and 45 mm depth", proportions_ok)
+	_check("all bays retain ground clearance and at least 25 mm open rail slots", openings_ok)
 
 
 func _check_planting(first: Node3D, second: Node3D, cue: Dictionary) -> void:

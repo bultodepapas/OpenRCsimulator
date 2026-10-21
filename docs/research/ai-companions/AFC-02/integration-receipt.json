@@ -1,0 +1,52 @@
+{
+  "format": "openrc-afc02-integration-receipt v1",
+  "captured_utc": "2026-10-20T20:25:41.572594+00:00",
+  "observed_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "scope": "Manager/agent admission with canonical solver profile; atomic modified-field refusal, detached diagnostic identity, 60 Hz observations, held 240 Hz command ticks, 10000-tick external/manual parity, unchanged player bytes and Home/Pause/restart/removal journey. Focused native Windows checks; not the complete application suite, physical validation, Linux/macOS flight, or packaged-export qualification.",
+  "source_sha256": {
+    "app/ai/companions/config.gd": "2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b",
+    "app/ai/companions/manager.gd": "a13eb3e3b4ef6a461fe2bee64b830a32d805e88b2a55eac58b7360ff3e466b59",
+    "app/ai/companions/agent.gd": "34cb3329b0106f5e45f88443f874867c7fa330fb573f22c4922f9db9e82b4021",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/ai/companions/profile_loader.gd": "4e030bded66282aaca2446f939c97d26a89be592630472ff6313ef92f0788ead",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+    "app/data/ai/companions/fields/club-default.json": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+    "app/tests/test_companions_manager.gd": "0f12a29c654d3dc315cb27300190c4622507c308f1cafad2b25c9c58850b6b56",
+    "app/tests/test_companions_shell.gd": "0016fe88150afbc8de00e525938beb82c0d81eb445b593a4f2d2ea68288ae5f5",
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/sim/flight_log.gd": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+  },
+  "checks": [
+    {
+      "report": "checks/profile-manager-canonical-yp6wa77x/report.json",
+      "report_sha256": "7af6db9661d2654574ced0606e321824291a33a8cb4ab803b355e9b915c5d71d",
+      "log_sha256": "87ac4ddc2b36116abb6ed0969cd966e935ce63e76fd5d2228e3f65ba198b209b",
+      "capture_id": "e9fa8137-2c45-4544-8090-1b0bc1c77764",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "completion": [
+        "companions manager: 47 checks, 0 failed"
+      ],
+      "elapsed_seconds": 19.0
+    },
+    {
+      "report": "checks/profile-shell-canonical-tmj4mqva/report.json",
+      "report_sha256": "d6593f818735e6788ccdc178a097ad286799be97d87ff5b47780e01aa9002d37",
+      "log_sha256": "fdfcfaa463fc13548964e24dcd7074f16d4ae71df2a9bf874953f7ac3fa78c66",
+      "capture_id": "c4967558-4fec-4ea6-9753-21ba1b102173",
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "completion": [
+        "Companions shell: 0 failed"
+      ],
+      "elapsed_seconds": 15.406
+    }
+  ],
+  "known_warning": "The shell run prints an existing unsupported maple-tree material wind warning; zero engine errors."
+}

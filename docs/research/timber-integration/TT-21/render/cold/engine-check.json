@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "52029331-916d-4920-94f1-2c512e921c96",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--disable-vsync",
+    "--max-fps",
+    "120",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/timber/optimization/render_profile.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-optimization/render-cold-final",
+    "--mode=production"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:12:11.591226+00:00",
+  "label": "render-cold-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-optimization\\checks\\render-cold-final-ighbj8fg\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-optimization\\checks\\render-cold-final-ighbj8fg\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.031,
+  "log_bytes": 300,
+  "log_sha256": "d9f80264e064b7aa50214691d2eaf879843e68d15e77399968081c3d3c0d3549"
+}

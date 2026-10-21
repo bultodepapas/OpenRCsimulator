@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL acceleration reach uses bounded overflow fallback
+traffic index: 95 checks, 1 failed; exact conflicts=1088 candidates=18228

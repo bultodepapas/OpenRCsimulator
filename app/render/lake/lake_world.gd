@@ -4,6 +4,7 @@ const Loader := preload("res://data/lake_loader.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const Terrain := preload("res://render/lake/lake_terrain.gd")
+const LakePlants := preload("res://render/lake/lake_plants.gd")
 const WaterEffects := preload("res://render/lake/water_effects.gd")
 static var _default_signature := PackedByteArray()
 
@@ -54,9 +55,19 @@ static func attach(field_node: Node3D, field: Dictionary, ground_material: Shade
 		push_error("lake: cannot build matching physical ground surfaces")
 		return null
 	var node := Terrain.build(lake, ground_material, surfaces.rects, lighting)
+	# Bind the already licensed soil maps after building the basin. The geometry
+	# source stays byte-identical to the pinned, verified lake bake.
+	var bank_material := (node.get_node("Basin") as MeshInstance3D).material_override as ShaderMaterial
+	bank_material.set_shader_parameter("rc_dirt_albedo", load("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
+	bank_material.set_shader_parameter("rc_dirt_normal", load("res://assets/landscape/rc-ground/dirt-normal.jpg"))
+	bank_material.set_shader_parameter("rc_dirt_roughness", load("res://assets/landscape/rc-ground/dirt-roughness.jpg"))
+	for parameter: String in ["grass_photo_enabled", "rc_grass_albedo", "rc_grass_normal",
+			"rc_grass_roughness", "turf_detail", "turf_detail_strength"]:
+		bank_material.set_shader_parameter(parameter, ground_material.get_shader_parameter(parameter))
 	Terrain.mask_parameters(ground_material, lake)
 	ground_material.set_shader_parameter("lake_mask_mode", 1)
 	field_node.add_child(node)
+	node.add_child(LakePlants.build(lake))
 	field_node.set_meta("lake_context", lake.duplicate(true))
 	field_node.set_meta("lake_identity", lake.identity)
 	var ambience := WaterEffects.ambient_player(lake, audio_on)

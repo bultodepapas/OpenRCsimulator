@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3641caab-b183-42ac-9367-200ab14bfed7",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://../research/ai-companions/trajectory/test_static_trajectory.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:37:54.121606+00:00",
+  "label": "static-trajectory-fallback",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\trajectory\\static-trajectory-fallback-dbwhjnc1\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\trajectory\\static-trajectory-fallback-dbwhjnc1\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "static trajectory: 38 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.75,
+  "log_bytes": 276,
+  "log_sha256": "e81e6bf9d82032a9070df973006b92c2f74111024e557a7045bfbb1126f35927"
+}

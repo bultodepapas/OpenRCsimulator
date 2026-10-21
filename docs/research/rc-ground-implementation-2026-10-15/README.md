@@ -42,6 +42,8 @@ The proposed 5% performance gate is **not passed**. Dispersion crosses zero, and
 
 Initial final, smoke-baseline and first timing outputs do not establish a valid grass baseline: the harness set a per-surface override while the field instance retained a higher-priority material override. The corrected harness updates the effective material and verifies parameter readback with a hard failure on mismatch. The switch-check PNG hashes differ and the final3 pair uses the corrected harness. Final2 is excluded because a shader comment changed its source hash between paired runs. None of those earlier timings is used as performance evidence.
 
+The excluded runs retain their reports and historical image hashes. Redundant PNGs were removed only where their bytes exactly match a retained final3 or color-fix capture; unique failed-run images remain available.
+
 ## Color-space repair found during integration
 
 The first native candidate exposed severely clipped turf despite successful parsing and geometry tests. Dividing Compatibility's encoded color sample by a linear-RGB source mean amplified almost every channel. The corrected shader selects the measured encoded mean when `OUTPUT_IS_SRGB` is true and the linear mean otherwise. Both measured means are retained in the include; no source image was repainted. The [corrected isolated view](verification/color-fix-trial/mt8-bisonte__start__chase__day.png) and final pairs demonstrate the repaired result.

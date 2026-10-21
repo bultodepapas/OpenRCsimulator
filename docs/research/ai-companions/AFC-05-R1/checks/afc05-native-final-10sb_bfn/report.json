@@ -1,0 +1,263 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4ddc9964-388f-40e2-a42d-902d054647aa",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--script",
+    "res://../research/ai-companions/capture_companions.gd",
+    "--",
+    "--labels",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/presentation/native-final"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:40:50.859092+00:00",
+  "label": "afc05-native-final",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-final-10sb_bfn\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-final-10sb_bfn\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "process_exit": 30,
+  "complete": true,
+  "counts": {
+    "error": 44,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 4,
+      "message": "Unable to open file: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 8,
+      "message": "Failed loading resource: res://.godot/imported/roof_slates_03_diff_1k.jpg-1984c2468f2c15c35b297a5ab277c2f6.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 12,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 16,
+      "message": "Unable to open file: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 20,
+      "message": "Failed loading resource: res://.godot/imported/roof_slates_03_nor_gl_1k.png-631bc0c7d8a4334cb659af658ed3b863.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 24,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 28,
+      "message": "Unable to open file: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 32,
+      "message": "Failed loading resource: res://.godot/imported/roof_slates_03_arm_1k.jpg-cb802109d02af290fbe4701e3d1bc295.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 36,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 40,
+      "message": "Unable to open file: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 44,
+      "message": "Failed loading resource: res://.godot/imported/clay_roof_tiles_diff_1k.jpg-1f0dee32de357e35122a5c9a98d6b7fd.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 48,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 52,
+      "message": "Unable to open file: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 56,
+      "message": "Failed loading resource: res://.godot/imported/clay_roof_tiles_nor_gl_1k.png-a211e32595f874fcbbb95af0e146c281.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 60,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 64,
+      "message": "Unable to open file: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.ctex.",
+      "context": [
+        "   at: _load_data (scene/resources/compressed_texture.cpp:45)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 68,
+      "message": "Failed loading resource: res://.godot/imported/clay_roof_tiles_arm_1k.jpg-ac5e10aed00f860fc3f17995d6d91102.ctex.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 72,
+      "message": "Failed loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 76,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg\".",
+      "context": [
+        "   at: GDScript::reload (res://scenery/building_roofs.gd:7)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 80,
+      "message": "Parse Error: Could not preload resource file \"res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png\".",
+      "context": [
+        "   at: GDScript::reload (res://scenery/building_roofs.gd:8)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 30,
+  "ok": false,
+  "elapsed_seconds": 15.546,
+  "log_bytes": 17291,
+  "log_sha256": "68758f87615b1b601f112e11a8a00af6315c76f185b2702b3fa8517cd40667ac"
+}

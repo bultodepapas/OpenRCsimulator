@@ -1,0 +1,110 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+SCRIPT ERROR: Parse Error: Preload file "res://scenery/parked_aircraft.gd" does not exist.
+   at: GDScript::reload (res://scenery/scenery_loader.gd:10)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "info" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://scenery/scenery_loader.gd:302)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scenery/scenery.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/field_projected_shadows.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/field.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/club_field/landscape.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/catalog.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://ui/home.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_root.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+ERROR: Failed to load script "res://app_root.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:40)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_from' in base 'GDScript'.
+   at: attach (res://scenery/scenery.gd:174)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:174)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [5] build (res://render/world/world.gd:291)
+       [6] _init (res://ui/home_scene.gd:92)
+       [7] show_home (res://app_root.gd:320)
+       [8] _ready (res://app_root.gd:256)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:43)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_from' in base 'GDScript'.
+   at: build (res://render/world/world.gd:327)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/world/world.gd:327)
+       [1] _init (res://ui/home_scene.gd:92)
+       [2] show_home (res://app_root.gd:320)
+       [3] _ready (res://app_root.gd:256)
+       [4] _run (res://../research/ai-companions/capture_companions.gd:43)
+SCRIPT ERROR: Invalid access to property or key 'environment' on a base object of type 'Dictionary'.
+   at: _init (res://ui/home_scene.gd:92)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://ui/home_scene.gd:92)
+       [1] show_home (res://app_root.gd:320)
+       [2] _ready (res://app_root.gd:256)
+       [3] _run (res://../research/ai-companions/capture_companions.gd:43)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_from' in base 'GDScript'.
+   at: attach (res://scenery/scenery.gd:174)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://scenery/scenery.gd:174)
+       [1] build (res://render/field.gd:98)
+       [2] build (res://landscapes/club_field/landscape.gd:12)
+       [3] build (res://landscapes/catalog.gd:31)
+       [4] _build_field (res://main.gd:2388)
+       [5] build (res://render/world/world.gd:291)
+       [6] _build_world (res://main.gd:2343)
+       [7] _ready (res://main.gd:528)
+       [8] start_flight (res://app_root.gd:651)
+       [9] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [10] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_from' in base 'GDScript'.
+   at: build (res://render/world/world.gd:327)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/world/world.gd:327)
+       [1] _build_world (res://main.gd:2343)
+       [2] _ready (res://main.gd:528)
+       [3] start_flight (res://app_root.gd:651)
+       [4] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [5] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'conditions' on a base object of type 'Dictionary'.
+   at: _build_world (res://main.gd:2344)
+   GDScript backtrace (most recent call first):
+       [0] _build_world (res://main.gd:2344)
+       [1] _ready (res://main.gd:528)
+       [2] start_flight (res://app_root.gd:651)
+       [3] _run (res://../research/ai-companions/capture_companions.gd:62)
+       [4] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'agents' on a base object of type 'Nil'.
+   at: _run (res://../research/ai-companions/capture_companions.gd:69)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://../research/ai-companions/capture_companions.gd:69)

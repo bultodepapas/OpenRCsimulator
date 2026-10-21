@@ -1,0 +1,65 @@
+[
+  {
+    "suite": "storm",
+    "image": "distant_storm-day-pilot-fov25.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "storm",
+    "image": "distant_storm-day-pilot-fov50.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "storm",
+    "image": "distant_storm-dusk-pilot-fov25.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "storm",
+    "image": "distant_storm-dusk-pilot-fov50.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "storm",
+    "image": "distant_storm-fullmoon-pilot-fov25.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "storm",
+    "image": "distant_storm-fullmoon-pilot-fov50.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "night",
+    "image": "night_runway_club.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  },
+  {
+    "suite": "night",
+    "image": "power_airfield.png",
+    "changed_rgb_pixels": 2,
+    "max_channel_difference_8bit": 1,
+    "mean_absolute_channel_difference_8bit": 7.233796296296296e-07
+  },
+  {
+    "suite": "night",
+    "image": "regional_turbines.png",
+    "changed_rgb_pixels": 0,
+    "max_channel_difference_8bit": 0,
+    "mean_absolute_channel_difference_8bit": 0.0
+  }
+]

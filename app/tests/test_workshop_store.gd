@@ -58,7 +58,7 @@ func _initialize() -> void:
 	_check("legacy v1 variant remains readable as explicit stock appearance",
 		legacy_profile_load.get("ok", false)
 		and legacy_profile_load.variant.base_bytes == base_bytes
-		and legacy_profile_load.variant.presentation_profile == PresentationProfile.defaults())
+		and legacy_profile_load.variant.presentation_profile == PresentationProfile.defaults({}, 1))
 	var legacy_recipe: Dictionary = _recipe()
 	legacy_recipe.erase("tank_capacity_multiplier")
 	var legacy_saved: Dictionary = Store.save_variant("Optional tank capacity compatibility", "jensen-das-ugly-stik-60",
@@ -94,7 +94,7 @@ func _initialize() -> void:
 		_check("later revisions retain the original dependency manifest", renamed["variant"].get("dependencies", {}) == first.get("dependencies", {}))
 		_check("updating a v1 record writes v2 and carries its legacy empty appearance forward",
 			int(renamed["variant"].get("revision", 0)) == 2
-			and renamed["variant"].get("presentation_profile", {}) == PresentationProfile.defaults())
+			and renamed["variant"].get("presentation_profile", {}) == PresentationProfile.defaults({}, 1))
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 		var unversioned_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"])
 		_check("same-ID save requires an expected revision", not bool(unversioned_save["ok"]) and _has_error(unversioned_save["errors"], "Expected revision is required"), str(unversioned_save["errors"]))

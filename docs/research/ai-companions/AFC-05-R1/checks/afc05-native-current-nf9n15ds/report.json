@@ -1,0 +1,261 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f7ce3b49-461b-4759-aa9b-6d5169b77411",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--script",
+    "res://../research/ai-companions/capture_companions.gd",
+    "--",
+    "--labels",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/presentation/native-current"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:55:21.156594+00:00",
+  "label": "afc05-native-current",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-current-nf9n15ds\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc05-native-current-nf9n15ds\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 20,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 4,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 19,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 34,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 49,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 64,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 79,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 94,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 109,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 124,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 139,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 154,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 169,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 184,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 199,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 214,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 229,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 244,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 259,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 274,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 289,
+      "message": "Parameter \"texture\" is null.",
+      "context": [
+        "   at: texture_set_size_override (drivers/gles3/storage/texture_storage.cpp:1864)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] mesh (res://scenery/parked_aircraft.gd:24)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 18.187,
+  "log_bytes": 17766,
+  "log_sha256": "6c679e87896d1812a5d81ab0f727436a24f617770415066a86615627f37e3aae"
+}

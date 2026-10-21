@@ -1,0 +1,53 @@
+{
+  "format": "openrc-afc22-r1-source-bound-receipt v1",
+  "proof_status": "pass",
+  "check_count": 53,
+  "failure_count": 0,
+  "capture_tick": 137,
+  "continuation_ticks": 240,
+  "engine": "4.7.2-stable (official)",
+  "profile_identity": {
+    "aircraft_data_format": "openrc-aircraft v2",
+    "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+    "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "aircraft_profile_sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008",
+    "controller_path": "res://ai/companions/pilot.gd",
+    "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "engine_version": "4.7.2",
+    "field_data_format": "openrc-field v1",
+    "field_data_path": "res://data/fields/default.json",
+    "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "field_profile_id": "club-default",
+    "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+    "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+    "format": "openrc-ai-profile-identity v1",
+    "solver_normalization": "utf8-lf",
+    "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+  },
+  "world_identity": "b31ad4183164ba13c0f41a40b764e8652bc9e1d133b29ac62bb244a3e32c8184",
+  "source_manifest_entries": 431,
+  "source_manifest_sha256": "98549a17072b05f7d8a36bda7399f96ce8f911527f9dc991341b8f1d757b3baf",
+  "bound_sources": {
+    "checkpoint_test_sha256": "6dcd98a2272d2c87359c2986efe9fa17e30d3ecef2cef649162ea77051bf5c2c",
+    "flight_session_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "controller": "res://ai/companions/pilot.gd",
+    "checkpoint_candidate_sha256": "76e5497b3f3a68f14727b79c90993b068879b3ef8e3dc00cc1312f1111327e5b",
+    "flight_log_sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+    "flight_log": "res://sim/flight_log.gd",
+    "checkpoint_candidate": "res://../research/ai-companions/checkpoints/fleet_checkpoint_candidate.gd",
+    "checkpoint_test": "res://../research/ai-companions/checkpoints/test_fleet_checkpoint.gd",
+    "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "flight_session": "res://sim/flight_session.gd"
+  },
+  "portable_artifacts_sha256": {
+    "fixed-roster-checkpoint.json": "789749a254b8e1d6885687fb523323ee7e3aae061837e6c3e5ccd0090a281788",
+    "continuation-report.json": "98eaee3c68ba3909e507e8751c6970912710a14886be6f5ba65ba3af7351cd2f",
+    "runner-report.json": "1fe01f73fa75211c0fcc823e068526e15812e5384329cb3ab4f9a2beaa263884",
+    "engine.log": "4c26b50d4b69a04f53f7fe09dd326d7edac4acd7ac0a6a7d2d35781296053579"
+  },
+  "original_evidence_root": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints",
+  "source_runner_path": "runner-audit/godot-0b0a7w2c"
+}

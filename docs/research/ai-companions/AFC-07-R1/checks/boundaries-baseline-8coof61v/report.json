@@ -1,0 +1,65 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f80c94f0-48f2-4ba3-9a72-2720362d0b80",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "research/ai-companions/traffic",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_scheduler_boundaries.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:14:48.292552+00:00",
+  "label": "boundaries-baseline",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic\\boundaries-baseline-8coof61v\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic\\boundaries-baseline-8coof61v\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "scheduler boundaries: 14 checks, 0 failed"
+  ],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 11,
+      "message": "Invalid call. Nonexistent 'bool' constructor.",
+      "context": [
+        "   at: choose_weighted_activity (res://activity_quota_scheduler.gd:46)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] choose_weighted_activity (res://activity_quota_scheduler.gd:46)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 16,
+      "message": "Invalid access to property or key 'ok' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _initialize (res://test_scheduler_boundaries.gd:49)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _initialize (res://test_scheduler_boundaries.gd:49)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "scheduler boundaries: 14 checks, 0 failed"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 60.421,
+  "log_bytes": 1021,
+  "log_sha256": "4802e3b44cf97a6715a454c532067a7ce6d5750585bb5982d131b6af23f9f591"
+}

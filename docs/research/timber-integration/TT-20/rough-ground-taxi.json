@@ -1,0 +1,157 @@
+{
+	"aircraft_body_state_unchanged_by_capture_fixture": true,
+	"capture_frames_after_slip_sample": 42,
+	"capture_image": "research/timber/visual-upgrade/timber-rough-ground-taxi.png",
+	"capture_render_resolution_px": [
+		1280,
+		960
+	],
+	"contact_evaluator": "FlightSession ground surface table + GroundWheels.frame on the production Turbo Lumber model",
+	"crash": {},
+	"dust_emitting_at_capture": true,
+	"dust_gate": {
+		"minimum_lateral_slip_mps": 0.65,
+		"minimum_longitudinal_slip_mps": 0.75,
+		"minimum_normal_load_n": 2.0,
+		"minimum_rough_rolling_factor": 5.0
+	},
+	"dust_source": {
+		"direction_world": [
+			-0.598781883716583,
+			0.800882041454315,
+			-0.00694290222600102
+		],
+		"ground_contact_position_render_m": [
+			0.511596441268921,
+			-0.00542389182373881,
+			-23.1379985809326
+		],
+		"normal_offset_m": 0.00399999367073178,
+		"position_render_m": [
+			0.511490702629089,
+			-0.00142602389678359,
+			-23.1380748748779
+		],
+		"trail_direction_basis": "away from wheel along the measured ground-frame travel heading, with upward component"
+	},
+	"fixture": {
+		"control_input": {
+			"pitch": 0.0,
+			"roll": 0.0,
+			"throttle": 1.0,
+			"yaw": 0.0
+		},
+		"controlled_slip_fixture": {
+			"kind": "temporary main-wheel rim-speed telemetry override",
+			"rim_speed_offset_mps": 1.25,
+			"scope": "one frozen capture sample only; original continuous state restored after PNG capture",
+			"synthetic_forces": false,
+			"synthetic_pose": false
+		},
+		"field_id": "default",
+		"heading_rad": 1.5707963267949,
+		"natural_max_lateral_speed_mps": 0.0569355945384629,
+		"natural_max_longitudinal_slip_mps": 0.207231774026029,
+		"natural_taxi_distance_m": 0.440857495854245,
+		"natural_taxi_speed_mps": 2.36941272101093,
+		"natural_taxi_ticks": 120,
+		"rolling_factor": 7.5,
+		"start_east_m": 0.0,
+		"start_north_m": 23.0,
+		"state_source": "FlightSession.try_runway_start contact equilibrium followed by ordinary externally stepped Simulation ticks",
+		"surface": "rough",
+		"synthetic_aircraft_state": false,
+		"type": "real_taxi_rollout_with_controlled_slip_capture"
+	},
+	"particle_count": 16,
+	"post_capture_contact_sample": [
+		{
+			"body_long_speed_mps": 2.30186671455271,
+			"compression_m": 0.0291430312774547,
+			"contact_index": 0,
+			"contact_name": "main_left",
+			"lateral_speed_mps": 0.0096381785121551,
+			"longitudinal_slip_mps": 0.179636392194706,
+			"normal_load_n": 13.1387915332633,
+			"position_ned_m": [
+				23.1374859394913,
+				0.516554320700296,
+				0.0344403257878758
+			],
+			"rolling_factor": 7.5,
+			"surface_index": 12,
+			"wheel_rim_speed_mps": 2.122230322358
+		},
+		{
+			"body_long_speed_mps": 2.29651813772534,
+			"compression_m": 0.0186444830868521,
+			"contact_index": 1,
+			"contact_name": "main_right",
+			"lateral_speed_mps": 0.0131519360774893,
+			"longitudinal_slip_mps": 0.176494294725651,
+			"normal_load_n": 8.60629270689273,
+			"position_ned_m": [
+				22.8740884140351,
+				0.519216149935282,
+				0.0174555086646084
+			],
+			"rolling_factor": 7.5,
+			"surface_index": 12,
+			"wheel_rim_speed_mps": 2.12002384299969
+		},
+		{
+			"body_long_speed_mps": 2.31806561692219,
+			"compression_m": -0.0285129067219319,
+			"contact_index": 2,
+			"contact_name": "tail",
+			"lateral_speed_mps": -0.0367634720844524,
+			"longitudinal_slip_mps": 2.2242274439551,
+			"normal_load_n": 0.0,
+			"position_ned_m": [
+				23.0017586839141,
+				-0.242167199542145,
+				-0.0306929483466978
+			],
+			"rolling_factor": 7.5,
+			"surface_index": 12,
+			"wheel_rim_speed_mps": 0.0938381729670931
+		}
+	],
+	"sample_at_capture": {
+		"body_long_speed_mps": 2.30186671455271,
+		"compression_m": 0.0291430312774547,
+		"contact_index": 0,
+		"contact_name": "main_left",
+		"lateral_speed_mps": 0.0096381785121551,
+		"longitudinal_slip_mps": -1.25,
+		"normal_load_n": 13.1387915332633,
+		"position_ned_m": [
+			23.1374859394913,
+			0.516554320700296,
+			0.0344403257878758
+		],
+		"rolling_factor": 7.5,
+		"surface_index": 12,
+		"wheel_rim_speed_mps": 3.55186671455271
+	},
+	"sample_at_emission": {
+		"body_long_speed_mps": 2.30186671455271,
+		"compression_m": 0.0291430312774547,
+		"contact_index": 0,
+		"contact_name": "main_left",
+		"lateral_speed_mps": 0.0096381785121551,
+		"longitudinal_slip_mps": -1.25,
+		"normal_load_n": 13.1387915332633,
+		"position_ned_m": [
+			23.1374859394913,
+			0.516554320700296,
+			0.0344403257878758
+		],
+		"rolling_factor": 7.5,
+		"surface_index": 12,
+		"wheel_rim_speed_mps": 3.55186671455271
+	},
+	"schema": "timber-rough-ground-taxi-capture-v1",
+	"simulation_fault": "",
+	"temporary_wheel_telemetry_restored": true
+}

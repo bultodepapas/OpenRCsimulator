@@ -1,0 +1,410 @@
+{
+  "assets": [
+    {
+      "channels": 1,
+      "duration_s": 1.35,
+      "edits": {
+        "applied_gain": 1.0769703559315018,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 0.2,
+        "envelope_leveling": null,
+        "highpass_hz": 45.0,
+        "lowpass_hz": 12000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": -0.2061466078058527,
+        "source_start_s": 0.1,
+        "source_window_s": 1.55,
+        "target_rms": 0.1
+      },
+      "file": "gasoline_low.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.01416015625,
+        "interior_step_p99": 0.028951110839843697,
+        "near_wrap_100ms_rms_range_db": 2.37438022299263,
+        "peak": 0.398101806640625,
+        "rms": 0.08348879944705083,
+        "seam_step": 0.012664794921875,
+        "wrap_second_difference": 0.0040283203125,
+        "wrap_second_difference_p99_ratio": 0.28448275862068967
+      },
+      "sample_count": 59535,
+      "sample_rate_hz": 44100,
+      "sha256": "ec1c2bac4deec6221ff3aecf25a4997b55bd60245d022fce4d55d76299945f87",
+      "source": "gas_120cc",
+      "source_quality": {
+        "peak_abs": 0.370361328125,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 2.0024041846698517,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    },
+    {
+      "channels": 1,
+      "duration_s": 1.0,
+      "edits": {
+        "applied_gain": 0.492361553587544,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 0.25,
+        "envelope_leveling": null,
+        "highpass_hz": 45.0,
+        "lowpass_hz": 14000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": -0.06280884233879601,
+        "source_start_s": 6.0,
+        "source_window_s": 1.25,
+        "target_rms": 0.1
+      },
+      "file": "gasoline_high.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.01861572265625,
+        "interior_step_p99": 0.032989501953125,
+        "near_wrap_100ms_rms_range_db": 2.0127012150033496,
+        "peak": 0.398101806640625,
+        "rms": 0.09452003296347233,
+        "seam_step": 0.02099609375,
+        "wrap_second_difference": 0.016143798828125,
+        "wrap_second_difference_p99_ratio": 0.8672131147540983
+      },
+      "sample_count": 44100,
+      "sample_rate_hz": 44100,
+      "sha256": "a59e62df3b44b115977d1a058ff17eb9b785d088025224860ff38a9fc5c545ad",
+      "source": "gas_120cc",
+      "source_quality": {
+        "peak_abs": 0.8083038330078125,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 2.4599864829962215,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    },
+    {
+      "channels": 1,
+      "duration_s": 8.25,
+      "edits": {
+        "applied_gain": 0.40624684265621186,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 0.75,
+        "envelope_leveling": null,
+        "highpass_hz": 50.0,
+        "lowpass_hz": 12000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": -0.010839478113686797,
+        "source_start_s": 26.0,
+        "source_window_s": 9.0,
+        "target_rms": 0.1
+      },
+      "file": "electric_quad.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.020111083984375,
+        "interior_step_p99": 0.026214599609375,
+        "near_wrap_100ms_rms_range_db": 1.8202579157645604,
+        "peak": 0.398101806640625,
+        "rms": 0.07114037195939772,
+        "seam_step": 0.013885498046875,
+        "wrap_second_difference": 0.009429931640625,
+        "wrap_second_difference_p99_ratio": 0.46889226100151743
+      },
+      "sample_count": 396000,
+      "sample_rate_hz": 48000,
+      "sha256": "a20108fe11cf56503ca3adcd943c5ef0b6d49b1e0fa6ebb8644ba41e179c71a1",
+      "source": "electric_quad",
+      "source_quality": {
+        "peak_abs": 0.97216796875,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 2.273755447438854,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    },
+    {
+      "channels": 1,
+      "duration_s": 11.0,
+      "edits": {
+        "applied_gain": 0.2762306017538927,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 1.0,
+        "envelope_leveling": null,
+        "highpass_hz": 55.0,
+        "lowpass_hz": 14000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": 0.004198701047465484,
+        "source_start_s": 32.0,
+        "source_window_s": 12.0,
+        "target_rms": 0.1
+      },
+      "file": "turbine_designed.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.183624267578125,
+        "interior_step_p99": 0.15951599121093807,
+        "near_wrap_100ms_rms_range_db": 0.6560765249760258,
+        "peak": 0.23419189453125,
+        "rms": 0.09999697003989748,
+        "seam_step": 0.044708251953125,
+        "wrap_second_difference": 0.184417724609375,
+        "wrap_second_difference_p99_ratio": 1.0043210902443078
+      },
+      "sample_count": 485100,
+      "sample_rate_hz": 44100,
+      "sha256": "86b7d17e19f2642d2aaf8acedbc82a48447a524642c9e5a1c1f919d2f067e7f4",
+      "source": "designed_jet",
+      "source_quality": {
+        "peak_abs": 0.9353179931640625,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 0.1513972871758989,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    },
+    {
+      "channels": 1,
+      "duration_s": 3.5,
+      "edits": {
+        "applied_gain": 1.571758219892673,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 0.5,
+        "envelope_leveling": {
+          "algorithm": "circular_moving_rms",
+          "applied_gain_max_db": 2.6401553672828015,
+          "applied_gain_min_db": -2.295299650692722,
+          "max_gain_db": 3.0,
+          "rms_envelope_p95_p05_after_db": 0.9634944193160491,
+          "rms_envelope_p95_p05_before_db": 4.35620974794804,
+          "target_basis": "input loop RMS before final global normalization",
+          "window_s": 0.2
+        },
+        "highpass_hz": 45.0,
+        "lowpass_hz": 12000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": 0.04856018014551723,
+        "source_start_s": 14.6,
+        "source_window_s": 4.0,
+        "target_rms": 0.1
+      },
+      "file": "rotor_low.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.10702606201171871,
+        "interior_step_p99": 0.11431884765625,
+        "near_wrap_100ms_rms_range_db": 2.9629700644138617,
+        "peak": 0.398101806640625,
+        "rms": 0.09583858244139569,
+        "seam_step": 0.026214599609375,
+        "wrap_second_difference": 0.054168701171875,
+        "wrap_second_difference_p99_ratio": 0.506126266384947
+      },
+      "sample_count": 168000,
+      "sample_rate_hz": 48000,
+      "sha256": "1cd0e6b4d742c923e112f3ce30413516c01e58d45e21aa2914840936d94cab4b",
+      "source": "toy_helicopter",
+      "source_quality": {
+        "peak_abs": 0.3077239990234375,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 5.6035762335314585,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    },
+    {
+      "channels": 1,
+      "duration_s": 4.0,
+      "edits": {
+        "applied_gain": 3.0099450367794747,
+        "crossfade_curve": "equal_power",
+        "crossfade_s": 0.5,
+        "envelope_leveling": {
+          "algorithm": "circular_moving_rms",
+          "applied_gain_max_db": 3.0,
+          "applied_gain_min_db": -3.0,
+          "max_gain_db": 3.0,
+          "rms_envelope_p95_p05_after_db": 2.4474126264342333,
+          "rms_envelope_p95_p05_before_db": 5.860589465551426,
+          "target_basis": "input loop RMS before final global normalization",
+          "window_s": 0.2
+        },
+        "highpass_hz": 45.0,
+        "lowpass_hz": 12000.0,
+        "peak_cap": 0.398107,
+        "source_endpoint_correlation": 0.16514377621985338,
+        "source_start_s": 2.0,
+        "source_window_s": 4.5,
+        "target_rms": 0.1
+      },
+      "file": "rotor_high.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_second_difference_p99": 0.125457763671875,
+        "interior_step_p99": 0.130889892578125,
+        "near_wrap_100ms_rms_range_db": 1.2242646657003227,
+        "peak": 0.380218505859375,
+        "rms": 0.0999969711808506,
+        "seam_step": 0.03369140625,
+        "wrap_second_difference": 0.03485107421875,
+        "wrap_second_difference_p99_ratio": 0.27779129165653127
+      },
+      "sample_count": 192000,
+      "sample_rate_hz": 48000,
+      "sha256": "c6b513152f722fee40abd4575b34dbf0c7db026b1a07b4751c3f235ba4325af3",
+      "source": "toy_helicopter",
+      "source_quality": {
+        "peak_abs": 0.1759490966796875,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 6.325063828491599,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
+    }
+  ],
+  "banks": {
+    "electric": [
+      {
+        "file": "electric_quad.wav",
+        "gain": 1.0,
+        "role": "prop",
+        "rpm": 6960
+      }
+    ],
+    "gasoline": [
+      {
+        "file": "gasoline_low.wav",
+        "gain": 1.0,
+        "role": "engine",
+        "rpm": 2800
+      },
+      {
+        "file": "gasoline_high.wav",
+        "gain": 1.0,
+        "role": "engine",
+        "rpm": 7400
+      }
+    ],
+    "rotor": [
+      {
+        "file": "rotor_low.wav",
+        "gain": 1.0,
+        "role": "main_rotor",
+        "rpm": 2270
+      },
+      {
+        "file": "rotor_high.wav",
+        "gain": 1.0,
+        "role": "main_rotor",
+        "rpm": 2650
+      }
+    ],
+    "turbine": [
+      {
+        "file": "turbine_designed.wav",
+        "gain": 1.0,
+        "role": "engine",
+        "rpm": 80000
+      }
+    ]
+  },
+  "dependencies": {
+    "miniaudio": "1.71",
+    "numpy": "2.4.6"
+  },
+  "format": "openrc-powertrain-audio v1",
+  "generator": "tools/audio/recorded_powertrains.py",
+  "notes": [
+    "The source files are Freesound public HQ MP3 previews; previews are lossy copies, not original masters.",
+    "RPM references are mapping anchors or acoustic estimates as separately stated; no source includes tachometer telemetry.",
+    "The turbine layer is a CC0 synthetic design and its RPM is a runtime mapping choice, not measured or recorded.",
+    "Glow 2-stroke and glow 4-stroke recordings were not found in the sourced bank; use the runtime procedural fallback until verified recordings are available."
+  ],
+  "rpm_reference_basis": {
+    "electric": "About 232.1 Hz is the strongest line in the selected quadcopter segment. 6960 RPM assumes two blade-pass events per revolution (60 * 232.1 / 2), rounded to 10 RPM. This is an acoustic estimate, not telemetry; the recording is a multirotor surrogate.",
+    "gasoline": "The 2800 and 7400 RPM values are runtime mapping anchors spanning selected low/high 120cc takeoff segments. The source page gives no tachometer reading, engine cycle or fuel type; they are not measured RPM.",
+    "rotor": "The selected toy-helicopter windows have dominant lines near 75.5 Hz and 88.2 Hz; 2270 and 2650 RPM assume two blade-pass events per revolution (60 * f / 2), rounded to 10 RPM. These are acoustic estimates, not telemetry, and the source is a toy helicopter fly-around.",
+    "turbine": "80000 RPM is only a runtime mapping anchor for the designed jet effect. The source is synthetic and has no physical RPM measurement."
+  },
+  "sources": {
+    "designed_jet": {
+      "author": "minian89",
+      "decoded_channels": 1,
+      "decoded_sample_rate_hz": 44100,
+      "download": "https://cdn.freesound.org/previews/152/152509_2467357-hq.mp3",
+      "file": "designed_jet_engine_hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/minian89/sounds/152509/",
+      "preview_bytes": 1792286,
+      "preview_format": "public HQ MP3 preview; lossy and lower fidelity than the original",
+      "preview_sha256": "84c3f0c54f31d3594620b386529ab362febecb7bf299e82ed4651b820740215f",
+      "retrieved": "2026-10-20",
+      "sha256": "84c3f0c54f31d3594620b386529ab362febecb7bf299e82ed4651b820740215f",
+      "source_fit": "The author says this jet-engine sound was created in Pure Data using methods from Andy Farnell's Designing Sound. It is an explicitly synthetic fallback, not a field recording or a measured RC turbine.",
+      "source_format": "44.1 kHz, 16-bit stereo WAV; 76.694 s",
+      "source_url": "https://freesound.org/people/minian89/sounds/152509/",
+      "title": "jet_engine.wav"
+    },
+    "electric_quad": {
+      "author": "Alcappuccino",
+      "decoded_channels": 1,
+      "decoded_sample_rate_hz": 48000,
+      "download": "https://cdn.freesound.org/previews/263/263022_4536481-hq.mp3",
+      "file": "electric_quad_takeoff_hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/Alcappuccino/sounds/263022/",
+      "preview_bytes": 1382112,
+      "preview_format": "public HQ MP3 preview; lossy and lower fidelity than the original",
+      "preview_sha256": "9497991b9008714d9d03bbcc6bad44e9cb072b87effde6c4b9b68c283280abdb",
+      "retrieved": "2026-10-20",
+      "sha256": "9497991b9008714d9d03bbcc6bad44e9cb072b87effde6c4b9b68c283280abdb",
+      "source_fit": "A DJI Phantom 2 quadcopter recorded by a camera mounted on the aircraft. It is an electric multirotor reference, not a fixed-wing propeller recording.",
+      "source_format": "48 kHz, 16-bit stereo WAV; 59.076 s",
+      "source_url": "https://freesound.org/people/Alcappuccino/sounds/263022/",
+      "title": "Quadrocopter Take-Off And Landing"
+    },
+    "gas_120cc": {
+      "author": "rcEyeSoar",
+      "decoded_channels": 1,
+      "decoded_sample_rate_hz": 44100,
+      "download": "https://cdn.freesound.org/previews/176/176968_3283314-hq.mp3",
+      "file": "gas_120cc_takeoff_hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/rcEyeSoar/sounds/176968/",
+      "preview_bytes": 359521,
+      "preview_format": "public HQ MP3 preview; lossy and lower fidelity than the original",
+      "preview_sha256": "9069c6e13b0a65994c575fee395c0b6504cd10983df2d0df56ae6584e346d979",
+      "retrieved": "2026-10-20",
+      "sha256": "9069c6e13b0a65994c575fee395c0b6504cd10983df2d0df56ae6584e346d979",
+      "source_fit": "The page describes a 120cc radio-control plane taking off from a runway. This is used only as a broad gasoline-class proxy; fuel and engine cycle are not specified on the sound page.",
+      "source_format": "44.1 kHz, 16-bit stereo WAV; 15.915 s",
+      "source_url": "https://freesound.org/people/rcEyeSoar/sounds/176968/",
+      "title": "1 radio control plane taking off.wav"
+    },
+    "toy_helicopter": {
+      "author": "qubodup",
+      "decoded_channels": 1,
+      "decoded_sample_rate_hz": 48000,
+      "download": "https://cdn.freesound.org/previews/188/188241_71257-hq.mp3",
+      "file": "rc_toy_helicopter_hq.mp3",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/qubodup/sounds/188241/",
+      "preview_bytes": 735288,
+      "preview_format": "public HQ MP3 preview; lossy and lower fidelity than the original",
+      "preview_sha256": "57a4ebf4c4e5457ff03911f89dc36a5a3c068c60939597236c65b0fe00d8c7ab",
+      "retrieved": "2026-10-20",
+      "sha256": "57a4ebf4c4e5457ff03911f89dc36a5a3c068c60939597236c65b0fe00d8c7ab",
+      "source_fit": "A small remote-controlled toy helicopter recorded in flight with a Zoom H2. It is not identified as a .60 glow helicopter and has no separate tail-rotor track.",
+      "source_format": "96 kHz, 24-bit stereo FLAC; 31.689 s",
+      "source_url": "https://freesound.org/people/qubodup/sounds/188241/",
+      "title": "Toy Engine Flying Around"
+    }
+  }
+}

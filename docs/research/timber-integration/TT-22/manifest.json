@@ -1,0 +1,208 @@
+{
+  "format": "openrc-timber-parts-report-delivery v1",
+  "date": "2026-10-20",
+  "created_utc": "2026-10-20T22:08:47.433233+00:00",
+  "scope": "Turbo Lumber parts, prices and accident-report presentation; unchanged flight, controls, collision and crash decisions.",
+  "sources": {
+    "app/economy/catalog.gd": "49f33cd06cada56ff424e939af8a0e3ac735f21ae4262a7af4652d3cdf088832",
+    "app/economy/incident.gd": "c90aef826bec4004553d534dbd03f3022059631c9b0325c7f9eebffc489bb477",
+    "app/economy/calculator.gd": "78346ee4a7cd45847320c2fbc1d10f255e46060a227ae66ec948dd09abf0a6e7",
+    "app/ui/accident_report.gd": "767a9cab5ee5f0eb9e9e2204b0d7e052ea25a94fdccc93ea445f5bb30fe979f4",
+    "app/i18n/es.po": "7b949031d215de1b3339b395f121634fb2701416d93f9e057ff1aa471cbc9c87",
+    "app/data/economy/catalog.json": "9394d57959b3b46837a5e799920ade5f1f7a49569893c736cc61092a8da859ef",
+    "app/app_state/aircraft_catalog.gd": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e",
+    "app/data/aircraft/turbo_lumber_evolution.json": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
+    "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d",
+    "app/assets/aircraft/turbo-lumber-evolution/timber.glb": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+    "app/tests/test_economy_catalog.gd": "c42239c6911d063ba7a307243ea4475b1ca0de18843e60c04712f34deadba650",
+    "app/tests/test_economy_cr39.gd": "6c845cbb4273fd7d880d5845164b96c317dbaa2e5bac0dc015bdbb40465ae7c4",
+    "app/tests/test_economy_calculator.gd": "6ba0fa7b84d01f9e49889db76feb80e42fc4b828cbdf35c6c0b35971fa498c1b",
+    "app/tests/test_economy_repair_details.gd": "e741d4267ec9231ec95441140359329d05b1133f4c861616fdef152b1d365a80",
+    "app/tests/test_accident_integration.gd": "61d3c98433a4460efe3b7a25c041af5bdfa2196f5ef3815e5fb1e1054adc01e8",
+    "app/tests/test_accident_report.gd": "a5cbf2b5bd69146aba2dc1f0ec3b525cb94946ebd7ca668d7b575e6d832ac3ad",
+    "research/crash-economics/aircraft-costing.json": "fd5647bc244925e116d4b9668c096e27967e857c98f11858fad8eb8579c28297",
+    "research/crash-economics/price-research-fleet.json": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21",
+    "research/crash-economics/catalog.json": "4fccd282d03a85a2bdb855bb3a04d2ae8513fb8cd8bad5ced92c75b706c4b2fa",
+    "research/crash-economics/worked-examples.json": "359c5799f33793eb1493dec1e2604006fb5afdb2beb56f9fd2f649f0f348dcbd",
+    "research/crash-economics/build_catalog.py": "c0f9db52dbfe6858a061ea94b0b9df0cff05fe373e33a0f0bf704ea75f422ff7",
+    "research/crash-economics/build_runtime.py": "4af9523151b57d4e1370a6d0b7900dc96bed143fb529e5a5605a3faa61e865b8",
+    "research/crash-economics/test_runtime_data.py": "35ef25a2efbcb5b41398ac057335351452cecd265cc8eb0ffcba6c1363edce77",
+    "research/timber/visual-upgrade/review_cost.gd": "449c773af76e0719db5bc60f6f574a228cc8fb827172d69f4120e4f8cc5c80f1",
+    "research/timber/visual-upgrade/review_flight.gd": "d8d0ab30b68620a8c54014fddbd2ea73aa3c8d14c60c4a6fc72fb29a201dec3b"
+  },
+  "engine_checks": [
+    {
+      "label": "accident-integration-final",
+      "report": "checks/accident-integration-final-0d1zn9w5/report.json",
+      "capture_id": "abd63a31-d734-45fc-ba55-ee804097c91f",
+      "checks": 78,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "calculator",
+      "report": "checks/calculator-49yxtkmt/report.json",
+      "capture_id": "ef3d1c1b-b08e-4bee-b8be-806df8150edc",
+      "checks": 67,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "catalog-pack",
+      "report": "checks/catalog-pack-66_hpwq0/report.json",
+      "capture_id": "d3e7baa4-f1df-466d-bd7c-bc5ee966292e",
+      "checks": 84,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "cost-en-final",
+      "report": "checks/cost-en-final-ghlx06t1/report.json",
+      "capture_id": "5fb4329f-4c3c-4d1f-873e-b52ce7b3cd7c",
+      "checks": null,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "cost-es-final",
+      "report": "checks/cost-es-final-q9d73ycw/report.json",
+      "capture_id": "2a414fb6-0ead-4dcc-833e-e79bc98b6bdc",
+      "checks": null,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "cr39-pack",
+      "report": "checks/cr39-pack-cpr1s6t1/report.json",
+      "capture_id": "af9f6b54-18bb-466a-a54b-35219ec1a94e",
+      "checks": 52,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "crash-pending-final",
+      "report": "checks/crash-pending-final-xlrjhp8l/report.json",
+      "capture_id": "926dc981-a0f6-4d34-b941-1bb08b298522",
+      "checks": null,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "repair-details",
+      "report": "checks/repair-details-nlhohs36/report.json",
+      "capture_id": "5047247a-4ea9-41bd-99e4-7fa146530c1c",
+      "checks": 49,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "label": "ui-pending-final",
+      "report": "checks/ui-pending-final-nc8lfimb/report.json",
+      "capture_id": "a100ca66-edae-49b6-9a75-0bb9f71ec8af",
+      "checks": 119,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ],
+  "godot_check_count": 449,
+  "python_test_count": 62,
+  "source_validation": "price-validation.json",
+  "physics_comparison": "physics-comparison.json",
+  "captures": {
+    "confirmed_propeller_strike": [
+      "cost-en/review.json",
+      "cost-es-large/review.json"
+    ],
+    "production_registered_pack_crash": "crash/report.json"
+  },
+  "production_crash": {
+    "source_sha256": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d",
+    "catalog_hash": "9394d57959b3b46837a5e799920ade5f1f7a49569893c736cc61092a8da859ef",
+    "line_count": 1,
+    "known_subtotal_minor": 0,
+    "total_minor": null,
+    "complete": false,
+    "ledger_unchanged": true,
+    "physics_unchanged": true
+  },
+  "corrections": {
+    "verified_offer_observations": 21,
+    "propeller_strike_minor_before": 1698,
+    "propeller_strike_minor_after": 799,
+    "spinner_reference_minor": 899,
+    "partial_inventory_value_minor": 46587,
+    "currency": "USD"
+  },
+  "limits": [
+    "Commercial reference prices for a fictional build; physical fit remains unverified where explicitly marked.",
+    "Fuselage, combined tail, main/tail gear, wiring/lights and commissioning retain unpriced scope.",
+    "Visual wreck breakup does not establish confirmed economic replacements or salvage.",
+    "Engine diagnostic counts exclude expected aircraft-data advisory text; no Godot errors or warnings occurred."
+  ],
+  "artifacts": {
+    "checks/accident-integration-final-0d1zn9w5/engine.log": "70bbedb00b717d52019113e1f8c2dc08338de10a73c9c239cf20698a646074d2",
+    "checks/accident-integration-final-0d1zn9w5/report.json": "4757d3e386fa222ba56d68d6549c863717d27f5a2c1d9255230b9ea3d19cf957",
+    "checks/calculator-49yxtkmt/engine.log": "a65238010e374069648611c69bbff9794b15120cb6f7d709c00c2fa8c3debbc0",
+    "checks/calculator-49yxtkmt/report.json": "dabfb2c1470f0d1df24dde8bc304812c39b6062a4f788f56d534759cc9c7ce35",
+    "checks/catalog-pack-66_hpwq0/engine.log": "7e2a742408fbfb3ec1895c6b1f8562410de0d53fca2db997998fa1b43617a22d",
+    "checks/catalog-pack-66_hpwq0/report.json": "d198230416390e3894d9fc0b29913a645b9ab4fb0f4b9e1aadbb44c00ce44bb7",
+    "checks/cost-en-final-ghlx06t1/engine.log": "47c4aaeac5815c1f9fc38fdccfaa8864fb352f3692ff8ef9d57a698369faaec3",
+    "checks/cost-en-final-ghlx06t1/report.json": "3119c8ab93c10dc2cbb8799b51d5452f74317c421cd834f479c18993316f1861",
+    "checks/cost-es-final-q9d73ycw/engine.log": "d82504dcdb963c4618dcd81eed8027fc29fe3e068034ad51187e0d1d3c7b5b0a",
+    "checks/cost-es-final-q9d73ycw/report.json": "f3a51a952e6d1bf40873ee5f6258f0390c38729e667d26dba0b772f89482d21f",
+    "checks/cr39-pack-cpr1s6t1/engine.log": "89a5986755eded47716d4a8e2eeb01dd42f0c9cf64aa93ec40c891ede20b10d6",
+    "checks/cr39-pack-cpr1s6t1/report.json": "5ec489496cc79aca9f69b5e43ab4936b4ff2f350686d01fa1b4bb84828257de2",
+    "checks/crash-pending-final-xlrjhp8l/engine.log": "db67ee1409912b3600f8065719d04f1f928c01f1c1ccde1795ea5b3e6feaac21",
+    "checks/crash-pending-final-xlrjhp8l/report.json": "e33737aca6a9d81099247d13ecbf9135b6128488d740a831648611f549bf5298",
+    "checks/repair-details-nlhohs36/engine.log": "595f7e0bf359424e36fd1c12862b4b4af404cf6ae0abf484ba005dbe340be418",
+    "checks/repair-details-nlhohs36/report.json": "8785b53901b115e07979390ddee12db0a8f79d734eac9e502199b0e5307a0093",
+    "checks/ui-pending-final-nc8lfimb/engine.log": "fcbd7b446f3530ee27cd804ceb383e8ff7a0cb4e4ef87f627c472d01620be2a2",
+    "checks/ui-pending-final-nc8lfimb/report.json": "609458d34c12ca58517c2cc04cda3332519456ba82af6df5063be47fb6e2a156",
+    "cost-en/cost-report.png": "f5fe5b851069503f4642a796d8d2d3b17e641369f85d92f5fbd2b3e3856d124d",
+    "cost-en/review.json": "821a5404b0dda3509b3a213d92e45d1e945ad241d5c81d7d408dafec20c62013",
+    "cost-es-large/cost-report.png": "11b3b977b3e6d9e09c98cc8d8fc6ced5e47a2dbb7ea2f739afa370932a95382b",
+    "cost-es-large/review.json": "460131d390978d834ba027cb9cf2bc802e5c5cd7455cde2ff6081487eef52b69",
+    "crash/crash-000.png": "f176fa76de0b35a2f310726ebd8b4b07935a045524662ad057cd4875a22d055d",
+    "crash/crash-019.png": "287218e455e31c10eb0837fbf0732b342ba35a008bb5d407dde8ae723d6ed63e",
+    "crash/crash-039.png": "9f660014005f550822c175a05fdeb873a5af49cb1b68d3b1f10a8d7c484aeff2",
+    "crash/crash-099.png": "83a1df0c28f3748e7ab4fb3aaa71cacef736422cc3eb8b231478ed525a2f26cb",
+    "crash/crash-309.png": "93191edc972e33fa1accd4d6d4bfa5e7474e129c989d6b179ed5dd3c94b7cf8d",
+    "crash/crash-609.png": "9f144f5bcea6b2319510bece4ad33bab2d65b856181d09ab81cb6bd078671be5",
+    "crash/crash-cost-report.png": "5012cb4d6b70054e611e49885ebcfc9379d0d69bcaf82baf0862048556f87a58",
+    "crash/fixture-incident.json": "ed678c3b1ecd2001d54eb3ea1cdf60aedf2afb15086a102736fc0928ac454458",
+    "crash/incident-report.json": "8f413a21533fb96965796fd0e0474a3befc1696742eab63665c457297813c6a6",
+    "crash/progress.json": "0c5089c4aec88d2811cae898ed3e27b410936725b4544018178c242167d26e3e",
+    "crash/report.json": "1eb06aa6d18e736ff2050b9ed7bd835a7c93395a4db3dc5a0281eb8e575694df",
+    "physics-comparison.json": "c0411cf423e11106e3d1ea50702f611ae485eaca10576a5817dae59c86895df9",
+    "price-audit.md": "c3c87cb6d09f5d2cd6f89815a6f05960f7ee47636422eedb8893d4251af0cb7c",
+    "price-validation.json": "e19a655acc03b3baf34e037c96dc171fd782d9662c7664f60a34791530a1e5e9",
+    "README.md": "e3c258c379b1072232408b1b3036e75c1a3a2bc67002004c82f33bd06f0dbae6"
+  }
+}

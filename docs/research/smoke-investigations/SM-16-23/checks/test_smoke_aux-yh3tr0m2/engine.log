@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:223)
+       [1] _next (res://input/rc_calibration.gd:122)
+       [2] advance (res://input/rc_calibration.gd:114)
+       [3] _calibration_with_aux (res://tests/test_smoke_aux.gd:45)
+       [4] _initialize (res://tests/test_smoke_aux.gd:146)
+WARNING: Ignoring invalid aux.smoke assignment; radio flight channels remain available.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] sanitize_profile (res://input/smoke_aux.gd:261)
+       [1] save_profile (res://input/rc_calibration.gd:143)
+       [2] _initialize (res://tests/test_smoke_aux.gd:191)
+SM-03/04: 60 checks, 0 failed

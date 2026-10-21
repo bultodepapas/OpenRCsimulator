@@ -1,6 +1,6 @@
 {
   "format": "openrc-aircraft-costing-research v1",
-  "observed_on": "2026-10-16",
+  "observed_on": "2026-10-20",
   "runtime_supported": false,
   "currency": "USD",
   "baseline": {
@@ -1224,27 +1224,27 @@
       "aircraft_id": "turbo-lumber-evolution",
       "status": "independent_partial_inventory_costing",
       "price_observations": [
-        "timber_evolution_pnp_aircraft_horizon_20261015",
-        "timber_evolution_bnf_aircraft_horizon_20261015",
-        "timber_evolution_replacement_wing_horizon_20261015",
-        "timber_evolution_replacement_landing_gear_horizon_20261015",
-        "timber_evolution_battery_proxy_horizon_20261015",
-        "timber_evolution_motor_spm1012_horizon_20261015",
-        "timber_evolution_esc_spmxae70e_horizon_20261015",
-        "timber_evolution_servo_spmsa370_horizon_20261015",
-        "timber_evolution_receiver_spm1032_horizon_20261015",
-        "timber_evolution_propeller_efl5962_horizon_20261015",
-        "timber_evolution_spinner_efl17553_horizon_20261015",
-        "timber_evolution_fuselage_efl105251_horizon_20261015",
-        "timber_evolution_horizontal_stab_efl5259_horizon_20261015",
-        "timber_evolution_led_controller_efla521_horizon_20261015",
-        "timber_evolution_landing_gear_efl105254_horizon_20261016",
-        "timber_evolution_gear_retainer_efl105255_horizon_20261016",
-        "timber_evolution_wheel_set_efl5258_horizon_20261016",
-        "timber_evolution_battery_hatch_efl105253_horizon_20261016",
-        "timber_evolution_cowl_efl105258_horizon_20261016",
-        "timber_evolution_landing_springs_efl5268_horizon_20261016",
-        "timber_evolution_wing_plugs_efl105257_horizon_20261016"
+        "timber_evolution_pnp_aircraft_horizon_20261020",
+        "timber_evolution_bnf_aircraft_horizon_20261020",
+        "timber_evolution_replacement_wing_horizon_20261020",
+        "timber_evolution_replacement_landing_gear_horizon_20261020",
+        "timber_evolution_battery_proxy_horizon_20261020",
+        "timber_evolution_motor_spm1012_horizon_20261020",
+        "timber_evolution_esc_spmxae70e_horizon_20261020",
+        "timber_evolution_servo_spmsa370_horizon_20261020",
+        "timber_evolution_receiver_spm1032_horizon_20261020",
+        "timber_evolution_propeller_efl5962_horizon_20261020",
+        "timber_evolution_spinner_efl17553_horizon_20261020",
+        "timber_evolution_fuselage_efl105251_horizon_20261020",
+        "timber_evolution_horizontal_stab_efl5259_horizon_20261020",
+        "timber_evolution_led_controller_efla521_horizon_20261020",
+        "timber_evolution_landing_gear_efl105254_horizon_20261020",
+        "timber_evolution_gear_retainer_efl105255_horizon_20261020",
+        "timber_evolution_wheel_set_efl5258_horizon_20261020",
+        "timber_evolution_battery_hatch_efl105253_horizon_20261020",
+        "timber_evolution_cowl_efl105258_horizon_20261020",
+        "timber_evolution_landing_springs_efl5268_horizon_20261020",
+        "timber_evolution_wing_plugs_efl105257_horizon_20261020"
       ],
       "replacement_total_minor": null,
       "missing": [
@@ -1254,10 +1254,10 @@
         "tail_surfaces remains unpriced: the horizontal stabilizer offer omits the vertical tail.",
         "gear_main remains unpriced: the updated gear set listing does not verify the complete physical group of main gear and wheels. gear_tail is also unpriced because no complete tailwheel-and-fork quote was verified.",
         "wiring_lighting remains unpriced: the LED controller does not cover the wiring and navigation LEDs.",
-        "The 4S 3200mAh battery and 9g servo offers showed backorder with an October 2026 estimate on 2026-10-15.",
+        "The 4S 3200mAh battery and SPMSA370 servo offers were on backorder with October 2026 estimates on both the 2026-10-15 historical capture and the 2026-10-20 official recheck.",
         "No complete replacement valuation, labor basis, or foam repair recipe was verified. The virtual ballast_reference row is not installed hardware and is excluded from this physical-inventory dossier."
       ],
-      "notes": "Independent partial inventory coverage, reviewed 2026-10-16. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing and propeller/spinner values are composite estimates from separate offers. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. Automatic propeller billing remains disabled because propeller_main also includes its spinner.",
+      "notes": "Independent partial inventory costing, reviewed 2026-10-20. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing value remains a composite of the wing and four servo offers; the physical propeller_main row is costed as separate $7.99 blade and $8.99 spinner economic lines without duplicate physical IDs. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. A blade strike replaces only the propeller_main blade line; spinner_main is inspection-only unless a spinner-specific contact occurs.",
       "dossier": {
         "expected_source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
         "lines": [
@@ -1271,11 +1271,11 @@
             "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. Horizon explicitly says the EFL105252 wing listing excludes servos. The manufacturer manual names two aileron, two flap, one elevator, and one rudder SPMSA370 servo. This intake allocates four of the six unit-price proxies here and the remaining two to the already-priced tail_servos row. The two row allocations total six units and do not overlap. The servo page showed backorder with an October 2026 estimate in the 2026-10-15 observation.",
             "price_constituents": [
               {
-                "offer_id": "timber_evolution_replacement_wing_horizon_20261015",
+                "offer_id": "timber_evolution_replacement_wing_horizon_20261020",
                 "quantity": 1
               },
               {
-                "offer_id": "timber_evolution_servo_spmsa370_horizon_20261015",
+                "offer_id": "timber_evolution_servo_spmsa370_horizon_20261020",
                 "quantity": 4
               }
             ]
@@ -1322,18 +1322,17 @@
             "physical_inventory_ids": [
               "propeller_main"
             ],
-            "evidence_kind": "estimated",
-            "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. The physical inventory row explicitly combines a three-blade propeller and spinner. The candidate replacement value can be recorded as a composite economic row, but a propeller strike must not automatically charge for the unstruck spinner. Preserve empty runtime propeller bindings unless the simulation separately models/bills these parts.",
-            "price_constituents": [
-              {
-                "offer_id": "timber_evolution_propeller_efl5962_horizon_20261015",
-                "quantity": 1
-              },
-              {
-                "offer_id": "timber_evolution_spinner_efl17553_horizon_20261015",
-                "quantity": 1
-              }
-            ]
+            "evidence_kind": "price_proxy",
+            "notes": "The physical inventory ID propeller_main remains a combined three-blade-propeller-and-spinner assembly. This economic line assigns only the blade value from the EFL5962 offer; the official current BNF manual lists this exact replacement part. The separate spinner_main line carries the spinner value without duplicating physical inventory coverage. A propeller strike replaces this blade line only; spinner is inspection-only.",
+            "price_observation": "timber_evolution_propeller_efl5962_horizon_20261020"
+          },
+          {
+            "id": "spinner_main",
+            "quantity": 1,
+            "physical_inventory_ids": [],
+            "evidence_kind": "price_proxy",
+            "price_observation": "timber_evolution_spinner_efl17553_horizon_20261020",
+            "notes": "Separate EFL17553 spinner price proxy; the official current BNF manual lists this exact replacement part and the listing names Evolution BNF/PNP compatibility. The simulated physical inventory still combines spinner with propeller_main, so this economic subcomponent has no duplicate physical ID. It is inspection-only after a blade strike and is replaced only when spinner-specific damage is established."
           },
           {
             "id": "motor_main",
@@ -1342,7 +1341,7 @@
               "motor_main"
             ],
             "evidence_kind": "price_proxy",
-            "price_observation": "timber_evolution_motor_spm1012_horizon_20261015",
+            "price_observation": "timber_evolution_motor_spm1012_horizon_20261020",
             "notes": "Spektrum SPM-1012 is an 800Kv motor and a commercial proxy only. The fictional build does not establish its exact installed motor SKU."
           },
           {
@@ -1352,7 +1351,7 @@
               "esc_main"
             ],
             "evidence_kind": "price_proxy",
-            "price_observation": "timber_evolution_esc_spmxae70e_horizon_20261015",
+            "price_observation": "timber_evolution_esc_spmxae70e_horizon_20261020",
             "notes": "Spektrum SPMXAE70E is a 70A ESC and a commercial proxy only. Exact installed product and connector revision are unverified."
           },
           {
@@ -1362,7 +1361,7 @@
               "receiver_radio"
             ],
             "evidence_kind": "price_proxy",
-            "price_observation": "timber_evolution_receiver_spm1032_horizon_20261015",
+            "price_observation": "timber_evolution_receiver_spm1032_horizon_20261020",
             "notes": "Current Spektrum AR637T+ listing is a generic receiver price proxy. PNP excludes a receiver and BNF includes an older AR637TA; the fictional installed receiver is unknown."
           },
           {
@@ -1372,7 +1371,7 @@
               "tail_servos"
             ],
             "evidence_kind": "price_proxy",
-            "price_observation": "timber_evolution_servo_spmsa370_horizon_20261015",
+            "price_observation": "timber_evolution_servo_spmsa370_horizon_20261020",
             "notes": "Two 9g metal-gear servos at the observed per-unit price proxy the modeled elevator and rudder servos. Exact installed products are unknown; listing was on backorder."
           },
           {
@@ -1391,8 +1390,8 @@
               "battery_main"
             ],
             "evidence_kind": "price_proxy",
-            "price_observation": "timber_evolution_battery_proxy_horizon_20261015",
-            "notes": "The SPMX324S50 matches the fictional 4S 3200mAh capacity class but is a newer 50C Smart G2 model, not a verified installation; the offer was on backorder."
+            "price_observation": "timber_evolution_battery_proxy_horizon_20261020",
+            "notes": "The SPMX324S50 matches the fictional 4S 3200mAh IC3 capacity class but is a newer 50C Smart G2 proxy, not the recommended discontinued SPMX32004S30 or a verified installation. The official listing was rechecked at $69.99, backorder with an October 2026 estimate, on 2026-10-20."
           },
           {
             "id": "final_assembly_and_commissioning",
@@ -1434,7 +1433,7 @@
             "propeller_main"
           ],
           "probe_spinner_tip": [
-            "propeller_main",
+            "spinner_main",
             "motor_main",
             "fuselage_main"
           ],
@@ -1471,6 +1470,7 @@
         },
         "propeller_component_id": "propeller_main",
         "propeller_inspection_ids": [
+          "spinner_main",
           "motor_main",
           "fuselage_main"
         ]

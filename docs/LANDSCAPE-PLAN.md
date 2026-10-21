@@ -14,8 +14,8 @@ Home selects Club field or Green paradise through the explicit landscape catalog
 - LU-16-R2 refines Club's downloaded Colombian SRTM mountains at 1.6–8.6 km north. Four chunks now use 27,648 triangles, source-derived relief/habitat textures and two compressed CC0 photographs for rock and vegetation variation. These mountains remain visual-only. [Sources, captures and repeated cost measurements](research/landscape-upgrade/LU-16-R2/README.md).
 - LU-28 adds 50 agricultural parcels, a divided highway, connected village/farm roads, eight houses, a second farmyard, fences, shrub crop rows and cattle. Offline geometry uses 24 spatial batches and 6,380 triangles; the road photograph is downloaded CC0 and other assets are reused. Surfaces remain visual-only; added structures use the existing scenery collision pipeline. [Research, captures, checks and cost](research/landscape-upgrade/LU-28/README.md).
 - LU-29 adds synchronized turbine/antenna markers, twelve hillside homes and warm regional lighting at houses, farms, gates, junctions and the church. It uses 157 optical instances, zero new dynamic lights and about 9.5k triangles. New distant houses/towers remain visual-only. [Research, native captures, tests and measured cost](research/landscape-upgrade/LU-29/README.md).
-- L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
-- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1/R2/R3](research/visual-quality-implementation/L10c/README.md) add beveled timber, fitted steel saddles and caps, downloaded wood/metal textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
+- L9 has filtered turf and field surfaces. The [2026-10-20 Club surface review](research/visual-quality-implementation/L9b/README.md) records the restrained grass runway, taxi strips, pedestrian wear and native pilot/close/aerial captures. L9e is engineering-verified; L9b's owner visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
+- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1–R4](research/visual-quality-implementation/L10c/README.md) add shaped timber, post-fastened steel saddles and caps, downloaded wood/galvanized textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
 - L14 static obstacle contacts now use the shared float64 LU-05 collision world, built from field, scenery and light data. Its inventory includes field-tree trunk/crown proxies and nearby structures, vehicles, parked aircraft, lights and field objects. The [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) records coverage and limits. Proxy sizes, foliage responses and impact thresholds are gameplay estimates, not sourced structural strength; the nearby-query cost gate remains open.
 - L15b tree sway and L15d cloud-shadow rendering are implemented. Their physical wind integration remains with M5. Dynamic wind and foliage sound is delivered by [AUD-01…05](AUDIO-PLAN.md), rather than pending L15e work.
 
@@ -41,7 +41,8 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 | LU-10-R1 | Attribute current scenery/lake query cost and repair one demonstrated bottleneck. | [Empty hull-envelope repair and oracle/session parity](research/landscape-upgrade/LU-10-R1/README.md) delivered; local query gain demonstrated, full-flight cost acceptance remains open. |
 | L9e-R1 | Compare current turf blending with one Laplacian candidate on retained maps. | Planned after VQ-02a and visibility reference; preserve masks/gradients/cues and pass combined visual/cost gates. |
 | L6b-R1 | Compare existing atlas alpha coverage with native alpha-to-coverage when a motion defect is reproduced. | Planned probe after VQ-02a; MSAA/scissor/edge compatibility, motion and cost proof. Custom mip importer excluded. |
-| LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | Conditional on pilot/overview review after ground work; visual/contact alignment and no new water physics or general authoring system. |
+| LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | [Delivered](research/landscape-upgrade/LU-22-R1/README.md): licensed dirt and shared field-grass maps, damp-bank transition and native before/after views. Lake geometry and contact checks pass; independent pilot and lower-end GPU review remain open. |
+| LU-22-R2 | Add depth-placed floating and emergent pond plants from free source meshes. | [Delivered](research/landscape-upgrade/LU-22-R2/README.md): CC0 leaves and blossoms, reused reeds, wave-following leaf shader, native views and validated shelf placement. Lower-end GPU and independent pilot review remain open. |
 
 The L15a windsock now consumes committed M5 wind with a swiveling basket and damped fabric response; [sources and software/visual evidence](research/wind-implementation/M5-W04b-R1/README.md). Independent physical cue calibration remains open. This delivery does not reopen completed foliage/audio work.
 
@@ -65,6 +66,16 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 ## Landscape integration
 
 LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. [LU-30-R1](research/landscape-upgrade/LU-30-R1/README.md) brings the nearest transmission tower to 652 m from the field origin, expands the corridor to nine towers, reduces insulator geometry and adds 17 batched red markers. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
+
+[LU-31](research/landscape-upgrade/LU-31/README.md) reduces botanical placement
+and mesh-accounting CPU work without changing the rendered landscape. Matched
+captures are pixel-identical; existing grass-mask integration failures and the
+limits of shared-machine timing are recorded in its evidence.
+
+[LU-32](research/landscape-upgrade/LU-32/README.md) skips redundant lighting
+and storm material updates. Stable-input CPU paths improve; continuously
+changing inputs have mixed measured results. Transition checks and nine
+paired native captures retain the visual behavior, without an FPS claim.
 
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |

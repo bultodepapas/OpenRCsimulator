@@ -1,0 +1,87 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "at_ned": [
+        -22.0,
+        0.0,
+        -2.3
+      ],
+      "draws": 368,
+      "eye_ned": [
+        10.0,
+        34.0,
+        -27.0
+      ],
+      "fov": 42.0,
+      "sha256": "9235d339b7ca76065aadccc21cc3ac1d7e8ade39554394938e0be3fbaa8a4555",
+      "view": "club_air"
+    },
+    {
+      "at_ned": [
+        -21.0,
+        -2.0,
+        -2.0
+      ],
+      "draws": 317,
+      "eye_ned": [
+        -4.0,
+        14.0,
+        -1.7
+      ],
+      "fov": 46.0,
+      "sha256": "a75e59aee935ee12c04bcfac0d74b60390f8f3754fa8ecd29d4f98b093383ec3",
+      "view": "pavilion_pilot"
+    },
+    {
+      "at_ned": [
+        -22.0,
+        0.0,
+        -3.0
+      ],
+      "draws": 292,
+      "eye_ned": [
+        -12.0,
+        14.0,
+        -11.0
+      ],
+      "fov": 43.0,
+      "sha256": "33303c9d7d03699f006446640ad1f1ebd7180761b24bbc1b70d08dee2e7fb4c9",
+      "view": "pavilion_roof"
+    },
+    {
+      "at_ned": [
+        -40.5,
+        -33.5,
+        -1.5
+      ],
+      "draws": 73,
+      "eye_ned": [
+        -27.0,
+        -21.0,
+        -8.0
+      ],
+      "fov": 42.0,
+      "sha256": "05cda937e59b991689f0973e165a74892969ce594e6152e585cbffe811723ac2",
+      "view": "shed_roof"
+    },
+    {
+      "at_ned": [
+        610.0,
+        365.0,
+        -3.0
+      ],
+      "draws": 41,
+      "eye_ned": [
+        450.0,
+        160.0,
+        -75.0
+      ],
+      "fov": 55.0,
+      "sha256": "e50e5a2518a681fdb81066b09aa7336c8c24b338a507d9b0066218f17598f8e7",
+      "view": "farm_roofs"
+    }
+  ]
+}

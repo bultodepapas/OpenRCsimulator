@@ -1,0 +1,42 @@
+{
+	"complete": true,
+	"engine": "4.7.2-stable (official)",
+	"format": "openrc-companions-cost v1",
+	"measured_ticks": 2400,
+	"note": "Headless complete callbacks with production Club collision inventory; excludes rendering and audio. A local preliminary measurement, not target-hardware qualification.",
+	"physics_hz": 240,
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"results": [
+		{
+			"count": 0,
+			"failure": "",
+			"finished_ticks": 2640,
+			"max_usec": 2632,
+			"mean_usec": 847.12125,
+			"p50_usec": 798,
+			"p95_usec": 1163,
+			"samples": 2400
+		},
+		{
+			"count": 1,
+			"failure": "",
+			"finished_ticks": 2640,
+			"max_usec": 5869,
+			"mean_usec": 1719.04166666667,
+			"p50_usec": 1651,
+			"p95_usec": 2112,
+			"samples": 2400
+		},
+		{
+			"count": 3,
+			"failure": "",
+			"finished_ticks": 2640,
+			"max_usec": 13271,
+			"mean_usec": 3509.34666666667,
+			"p50_usec": 3417,
+			"p95_usec": 4057,
+			"samples": 2400
+		}
+	],
+	"warmup_ticks": 240
+}

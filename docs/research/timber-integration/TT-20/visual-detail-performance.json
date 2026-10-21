@@ -1,0 +1,55 @@
+{
+  "schema": "openrc-timber-visual-detail-evidence v1",
+  "recorded_utc": "2026-10-20T19:31:05Z",
+  "snapshot_note": "This benchmark and paint-ray receipt precede the final crash-only fracture placement/material correction. Paint code did not change; all twelve intact inspection PNGs remained byte-identical after that correction (native-review.json). The runtime hashes below identify the measured snapshot, not the later crash-detail snapshot.",
+  "runtime": {
+    "helper": "app/aircraft/timber_visual_details.gd",
+    "helper_sha256": "f6dd76881aa2f6727917ddc7881aa03627e400455e08328c9cb2cbc32bc2f7b8",
+    "generated_data": "app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd",
+    "generated_data_sha256": "f923a6c2b423e0bbf7e5407368b2083f2c99ef426f1a169f159231b9962dee53",
+    "source_spec_sha256": "1692bdeb62ea11c331fb3fba658d2979ca1e741114f10bbd207fbfbeba7b58a3"
+  },
+  "paint_index_equivalence": {
+    "white_triangles": 12030,
+    "unindexed_remaps": 178,
+    "indexed_remaps": 178,
+    "mismatches": 0
+  },
+  "headless_apply_elapsed_ms": {
+    "unindexed_baseline": 5048.31,
+    "indexed_before_exact_pixel_repair": 753.18,
+    "indexed_final_spec": 601.19,
+    "measurement": "Fresh Timber.build completed before the timer; Time.get_ticks_usec surrounded only VisualDetails.apply. Synchronous headless construction elapsed time, not frame time."
+  },
+  "pixel_ray_repair": {
+    "capture_camera": "inspection_nose_left, 1280x720, perspective 30 deg, camera (-0.45, 0.05, -0.55), target (0, -0.01, -0.2)",
+    "pixel": [
+      918,
+      292
+    ],
+    "host": "fuselage_core",
+    "source_face": "surface 0, triangle 585",
+    "source_material": "white",
+    "final_material": "black",
+    "first_hit_distance_m": 0.63364762067795,
+    "final_pixel_rgba": [
+      42,
+      42,
+      45,
+      255
+    ],
+    "geometry_positions_and_winding_changed": false
+  },
+  "verification": {
+    "tt20_visual_isolation_checks": 184,
+    "tt20_visual_isolation_failures": 0,
+    "render_detail_meshes": 32,
+    "visual_detail_generator_check": "passed"
+  },
+  "capture": {
+    "path": "docs/research/timber-integration/TT-20/paint-repair/inspection_nose_left.png",
+    "sha256": "fee6f20ef036532fadc2f09aaaf2cfb3cc90cf2f46443272779e60a73c6dde51b",
+    "manifest_path": "docs/research/timber-integration/TT-20/paint-repair/manifest.json",
+    "manifest_sha256": "c6fc59faa6a54eb8c741daafb01896519d901807300c143d81ea9439fedd1ec90"
+  }
+}

@@ -13,6 +13,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_basis_and_labor_matrix()
 	_test_identity_binding_and_json_roundtrip()
+	_test_offer_metadata_compatibility()
 	_test_supersession_and_ambiguity()
 	_test_malformed_optional_data()
 	print("economy repair details: %d checks, %d failed" % [_checks, _failures])
@@ -84,6 +85,21 @@ func _test_identity_binding_and_json_roundtrip() -> void:
 	mismatched_aircraft.repair_choices[0].provenance.aircraft_id = "another-aircraft"
 	_check("choice provenance aircraft must match the report identity",
 		RepairDetails.normalize(mismatched_aircraft).is_empty())
+
+
+func _test_offer_metadata_compatibility() -> void:
+	var fixture := _repair_fixture("paid", "cash", "offer-metadata")
+	var report: Dictionary = fixture.ledger.report.duplicate(true)
+	var line := _line(report, COMPONENT_ID)
+	line["product_name"] = "Illustrative product name"
+	line["product_brand"] = "Illustrative brand"
+	line["product_sku"] = "EXAMPLE-SKU"
+	line["package_description"] = "One repair kit"
+	line["sold_package_quantity"] = 1
+	line["offer_amount_minor"] = 1299
+	_check("frozen offer metadata does not invalidate selected repair details",
+		RepairDetails.normalize(report).size() == 1
+		and RepairDetails.normalize(report)[0].repair_minor == 4549)
 
 
 func _test_supersession_and_ambiguity() -> void:

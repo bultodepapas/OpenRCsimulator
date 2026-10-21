@@ -1,0 +1,115 @@
+{
+  "takeoff": {
+    "baseline_report": "../TT-20/takeoff/report.json",
+    "baseline_report_sha256": "bbba9f3d3f0184bc18ce1b93a3d3447ff44e8e7a1019bfeaaed0ce93951c5a15",
+    "captured_states": [
+      {
+        "tick": 4,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 484,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 964,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 1444,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 2164,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 2640,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      }
+    ],
+    "final_tick": 2640,
+    "final_state_exact": true,
+    "shutdown": {
+      "elapsed_usec": 72380,
+      "remaining_playbacks": 0,
+      "timeout_usec": 1000000,
+      "tracked_playbacks": 10
+    }
+  },
+  "crash": {
+    "baseline_report": "../TT-20/crash-c4/report.json",
+    "baseline_report_sha256": "0bb28c200dc54ae691135fe1b3ab12f9d50938acac35f32b72639ab33f9fd509",
+    "captured_states": [
+      {
+        "tick": 4,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 38,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 38,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 38,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 38,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      },
+      {
+        "tick": 38,
+        "same_tick": true,
+        "exact_state": true,
+        "exact_compressions": true,
+        "exact_commands": true
+      }
+    ],
+    "final_tick": 38,
+    "final_state_exact": true,
+    "shutdown": {
+      "elapsed_usec": 27491,
+      "remaining_playbacks": 0,
+      "timeout_usec": 1000000,
+      "tracked_playbacks": 10
+    },
+    "crash_decision_report_exact": true
+  }
+}

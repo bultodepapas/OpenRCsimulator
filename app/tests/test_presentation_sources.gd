@@ -2,7 +2,7 @@ extends SceneTree
 
 const PresentationSources := preload("res://render/presentation_sources.gd")
 const PACKAGE_PROOF_PATH := "res://data/aircraft_customization_package.json"
-const PACKAGE_PROOF_FORMAT := "openrc-aircraft-presentation-package v1"
+const PACKAGE_PROOF_FORMAT := "openrc-aircraft-presentation-package v2"
 const TEMP_ROOT := "user://presentation-source-tests"
 
 var _checks := 0
@@ -45,23 +45,28 @@ func _run_parent() -> void:
 
 func _test_development_records() -> void:
 	var records := PresentationSources.current_records()
-	_check("the closed source set has seven ordered records", records.size() == PresentationSources.SOURCE_PATHS.size() and records.size() == 7, str(records))
-	var valid: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN)
+	_check("the v2 closed source set has ten ordered records", records.size() == PresentationSources.SOURCE_PATHS_V2.size() and records.size() == 10, str(records))
+	var legacy_records := PresentationSources.current_records(1)
+	_check("v1 seven-path source reader remains available", legacy_records.size() == 7
+		and PresentationSources.validate(legacy_records, PresentationSources.ENGINE_VERSION_PIN, 1).get("ok", false))
+	_check("proof version cannot silently select another inventory", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 1).get("ok", true))
+	_check("unknown proof versions reject", not PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 3).get("ok", true))
+	var valid: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 2)
 	_check("current LF-normalized source pins validate in development", bool(valid.get("ok", false)), str(valid))
 	var stale := records.duplicate(true)
 	var stale_hash := str(stale[0].sha256)
 	stale[0].sha256 = ("0" if stale_hash.substr(0, 1) != "0" else "1") + stale_hash.substr(1)
-	var rejected: Dictionary = PresentationSources.validate(stale, PresentationSources.ENGINE_VERSION_PIN)
+	var rejected: Dictionary = PresentationSources.validate(stale, PresentationSources.ENGINE_VERSION_PIN, 2)
 	_check("stale source hash is refused", not bool(rejected.get("ok", true)) and _has_code(rejected, "PRESENTATION_SOURCE_HASH_MISMATCH"), str(rejected))
-	rejected = PresentationSources.validate(records, "4.7.3")
+	rejected = PresentationSources.validate(records, "4.7.3", 2)
 	_check("changed presentation engine pin is refused", not bool(rejected.get("ok", true)), str(rejected))
 	var wrong_order := records.duplicate(true)
 	wrong_order[0].path = "res://render/not-registered.gd"
-	rejected = PresentationSources.validate(wrong_order, PresentationSources.ENGINE_VERSION_PIN)
+	rejected = PresentationSources.validate(wrong_order, PresentationSources.ENGINE_VERSION_PIN, 2)
 	_check("unregistered presentation source is refused", not bool(rejected.get("ok", true)), str(rejected))
 	var extra_record := records.duplicate(true)
 	extra_record.append(records[0].duplicate(true))
-	rejected = PresentationSources.validate(extra_record, PresentationSources.ENGINE_VERSION_PIN)
+	rejected = PresentationSources.validate(extra_record, PresentationSources.ENGINE_VERSION_PIN, 2)
 	_check("extra presentation sources are refused", not bool(rejected.get("ok", true)), str(rejected))
 
 
@@ -79,8 +84,8 @@ func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
 	if error != OK:
 		return ""
 	var files: Dictionary = {}
-	for index in PresentationSources.SOURCE_PATHS.size():
-		var source_path := str(PresentationSources.SOURCE_PATHS[index])
+	for index in PresentationSources.SOURCE_PATHS_V2.size():
+		var source_path := str(PresentationSources.SOURCE_PATHS_V2[index])
 		var proof_path: String = PresentationSources.expected_proof_path(source_path)
 		var absolute_source := ProjectSettings.globalize_path(source_path)
 		var proof_source := absolute_source
@@ -95,7 +100,7 @@ func _build_pack(temp_dir: String, case_name: String, fault: String) -> String:
 	if fault == "extra_source":
 		files["res://render/unregistered.gd"] = "res://data/aircraft_customization_proofs/unregistered.bin"
 	elif fault == "wrong_destination":
-		files[str(PresentationSources.SOURCE_PATHS[0])] = "res://data/aircraft_customization_proofs/wrong.bin"
+		files[str(PresentationSources.SOURCE_PATHS_V2[0])] = "res://data/aircraft_customization_proofs/wrong.bin"
 	if fault != "missing_marker":
 		var marker_text := JSON.stringify({"format": PACKAGE_PROOF_FORMAT, "files": files}, "\t", true) + "\n"
 		var marker_source := _write_source(temp_dir, case_name + "-marker", marker_text.to_utf8_buffer())
@@ -143,7 +148,7 @@ func _run_case(case_name: String, pack_path: String) -> void:
 		return
 	_check("export sentinel exists in overlay: " + case_name, FileAccess.file_exists("res://project.binary"))
 	var records := PresentationSources.current_records()
-	var result: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN)
+	var result: Dictionary = PresentationSources.validate(records, PresentationSources.ENGINE_VERSION_PIN, 2)
 	if case_name == "valid":
 		_check("source proof validator accepts PCK authoring bytes", bool(result.get("ok", false)), str(result))
 	elif case_name == "bad_proof":

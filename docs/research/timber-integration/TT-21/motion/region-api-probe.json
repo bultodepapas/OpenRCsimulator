@@ -1,0 +1,110 @@
+{
+	"aabb_after_region_update": {
+		"position": [
+			-1.0,
+			0.0,
+			0.0
+		],
+		"size": [
+			2.0,
+			1.0,
+			0.00000999999974737875
+		]
+	},
+	"duplicate_arrays_match_updated_positions": false,
+	"duplicate_vertices_after_region_update": [
+		[
+			-1.0,
+			0.0,
+			0.0
+		],
+		[
+			1.0,
+			0.0,
+			0.0
+		],
+		[
+			0.0,
+			1.0,
+			0.0
+		]
+	],
+	"engine_version": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"flags": 34426851329,
+	"initial_vertices": [
+		[
+			-1.0,
+			0.0,
+			0.0
+		],
+		[
+			1.0,
+			0.0,
+			0.0
+		],
+		[
+			0.0,
+			1.0,
+			0.0
+		]
+	],
+	"mesh_aabb_changed": false,
+	"original_aabb": {
+		"position": [
+			-1.0,
+			0.0,
+			0.0
+		],
+		"size": [
+			2.0,
+			1.0,
+			0.00000999999974737875
+		]
+	},
+	"requested_vertices": [
+		[
+			-1.0,
+			0.0,
+			2.0
+		],
+		[
+			1.0,
+			0.0,
+			2.0
+		],
+		[
+			0.0,
+			1.0,
+			2.0
+		]
+	],
+	"schema": "tt21-arraymesh-region-api-probe-v1",
+	"surface_arrays_match_updated_positions": false,
+	"surface_get_arrays_after_region_update": [
+		[
+			-1.0,
+			0.0,
+			0.0
+		],
+		[
+			1.0,
+			0.0,
+			0.0
+		],
+		[
+			0.0,
+			1.0,
+			0.0
+		]
+	]
+}

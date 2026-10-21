@@ -1,13 +1,14 @@
 # Scenery tools
 
-Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)). Each writes committed files that it can also check with `--check`. No RNG anywhere: same input, same bytes.
+Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)). Layout and legacy JSON generators check committed output bytes with `--check`. The parked-aircraft checker validates resource contents, source identities, textures and ground contact. Placements use integer hashes rather than runtime RNG.
 
 | Tool | What it does | Command |
 | --- | --- | --- |
 | `place.py` | Lays out the default field's scenery and writes `app/data/scenery/default.json` (`openrc-scenery v1`). Stdlib Python, integer hashes. It rebuilds the L6b treeline's tree heights and skyline so that landmarks go where the pilot can see them (`--report` prints the visibility table) | `python3 tools/scenery/place.py [--check] [--report]` |
 | `bake_countryside.py` | LU-28 crop parcels, roads and yards; static spatial batches follow the existing visual horizon. Run after `place.py`. Layout is estimated and supplies no physical terrain or tire friction. | `python3 tools/scenery/bake_countryside.py [--check]` |
 | `bake_models.gd` | Converts the third-party CC0 models (Quaternius cars, cow, sheep) into `openrc-scenery-model v1` JSON in `app/data/scenery/models/`. Checks each download's SHA-256, poses skinned meshes at their rest, puts the front to −Z, scales to the catalog size, reduces with meshoptimizer, and marks the car paint | `godot --headless --path app --script $PWD/tools/scenery/bake_models.gd -- --src=<downloads> [--check]` |
-| `bake_fleet.gd` | Snapshots the four catalog aircraft through the model teams' builder (read-only), reduces each to about 2,200–3,800 triangles and bakes triangle colours. Re-run after a model team changes an aircraft | `godot --headless --path app --script $PWD/tools/scenery/bake_fleet.gd [-- --check]` |
+| `bake_parked_aircraft.gd` | Production parked fleet: snapshots five current aircraft and the Stik maintenance configuration, preserves authored materials and generates static mesh LODs plus matching collision metadata. Re-run after a source model changes. Requires a real renderer to retain texture image data. | `godot --rendering-driver opengl3 --path app --script $PWD/tools/scenery/bake_parked_aircraft.gd [-- --check]` |
+| `bake_fleet.gd` | Legacy vertex-colour snapshots retained for model-format checks; the Club field uses the material-preserving resources above. | `godot --headless --path app --script $PWD/tools/scenery/bake_fleet.gd` |
 | `scenario.sh` + `scenario_report.py` | The runway scenario (`app/scenery/runway_scenario.gd`, pilot in `takeoff_pilot.gd`): airplane at the threshold, scripted takeoff, five cameras × 12 instants, manifest, sync checks, comparison with the previous run (heatmaps, verdict), filmstrips, `report.html`, history timeline. Also run by `app/capture.sh` | `tools/scenery/scenario.sh [root] [-- --aircraft=<id> --scenery=off]` |
 | `capture.sh` | Renders every view of `app/scenery/postcards.gd` with scenery off and twice on, then `check_views.py` checks per-view budgets (pilot views: ≤ +40 draws, ≤ +150 k primitives; 0 shadow-pass draws) and byte repeats | `tools/scenery/capture.sh [out-dir]` (needs `xvfb-run`) |
 | `landscape_metrics.py` | The landscape-improvement metrics on two capture folders (before, after): grass hue/saturation, far-band spread, pilot box, top-down repetition (three off-runway views), crown seam, front-lit vs backlit crowns ([evidence](../../docs/research/landscape-improvement-2026-10-07/implementation/README.md)) | `.tools/visual-venv/bin/python tools/scenery/landscape_metrics.py <before> <after>` |
@@ -32,3 +33,20 @@ road/driveway connections, farm gates, winding and protected flight-area geometr
 Native views in `capture_landscape_upgrade.gd` include `plain_overview`,
 `plain_east`, `plain_farm`, `plain_farm_gate`, `plain_village`, `plain_highway`
 and `plain_crop`. [Captures, research and measured cost](../../docs/research/landscape-upgrade/LU-28/README.md).
+
+SC-09-R1 parked placements use the existing `fleet` group with optional unit-tagged
+`scale` (`1`, 0.25–1.5) and `elevation` (`m`, 0–1.5), plus `configuration`
+(`assembled`, or `service` for the Ugly Stik). Heights are receiver tops above field
+datum: grass 0, shelter slab 0.10, worktable 0.90, foam supports 1.12 m.
+The same normalized placements drive the visible mesh and float64 collision inventory.
+The legacy `collides: false` field keeps rendering nodes passive; it does not disable
+the simulator contacts built separately by `collision_world.gd`.
+Each generated mesh is static, shared between copies, and has no aircraft controller.
+Copies are grouped by aircraft, configuration and shelter in eight MultiMesh batches.
+Embedded textures use S3TC for the existing desktop export targets, with shared identical
+image payloads and unchanged texture dimensions. Re-run the native resource checker after baking.
+Grass and slab contact shadows follow sun updates; bench shadows are clipped to the worktop.
+The generated JSON under `app/assets/scenery/aircraft/` must remain in all export filters.
+Capture views `hangar_west`, `hangar_east`, `hangar_micro`, `hangar_bench` and
+`hangar_service`, `hangar_ready` and `hangar_east_bench` are available through
+`app/scenery/capture_views.gd`.

@@ -1,4 +1,9 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# AUD-15 recording recipes compare generated metadata byte-for-byte on Windows and Linux.
+/app/assets/audio/powertrains/*.json text eol=lf
+/app/assets/audio/powertrains/LICENSE.txt text eol=lf
+/app/assets/audio/landing_gear/*.json text eol=lf
+/app/assets/audio/landing_gear/LICENSE.txt text eol=lf
 # Grass placement is compared byte-for-byte with its LF generator output.
 /app/data/fields/grass.json text eol=lf
 # Downloaded vegetation and generated tree-color buffers carry exact file hashes.
@@ -104,6 +109,12 @@
 /assets/aircraft/turbo-lumber-evolution/source-manifest.json text eol=lf
 /assets/aircraft/turbo-lumber-evolution/mesh-measurements.json text eol=lf
 /assets/aircraft/turbo-lumber-evolution/geometry.json text eol=lf
+# TT-20's generator compares exact output bytes on native Windows and Linux.
+/app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd text eol=lf
+/app/assets/aircraft/turbo-lumber-evolution/visual-upgrade/PROVENANCE.json text eol=lf
+# Native visual evidence retains its recorded file hashes across checkouts.
+/docs/research/timber-integration/TT-20/*.csv -text
+/docs/research/timber-integration/TT-20/checks/*.log -text whitespace=cr-at-eol
 
 # Authorized Bisonte runtime bundle preserves the exact reviewed author bytes.
 /app/vehicles/ground/mt8_rig.gd -text
@@ -156,3 +167,12 @@
 /docs/research/radio-input/D6-JETI-00/** -text -whitespace
 /docs/research/radio-input/D6-JETI-01/** -text whitespace=cr-at-eol
 /docs/research/radio-input/D6-JETI-01/**/*.log -whitespace
+
+# AFC-02 qualification binds these exact source bytes on every platform.
+/app/data/fields/default.json text eol=crlf
+/app/ai/companions/pilot.gd text eol=lf
+/app/data/ai/companions/**/*.json text eol=lf
+# AFC receipts bind captured reports, samples and native engine logs byte-for-byte.
+/docs/research/ai-companions/**/*.json -text
+/docs/research/ai-companions/**/*.csv -text
+/docs/research/ai-companions/**/*.log -text -whitespace

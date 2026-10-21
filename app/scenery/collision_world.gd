@@ -5,6 +5,7 @@ extends RefCounted
 const Treeline := preload("res://render/treeline.gd")
 const Prefabs := preload("res://scenery/prefabs.gd")
 const Models := preload("res://scenery/models.gd")
+const ParkedAircraft := preload("res://scenery/parked_aircraft.gd")
 const Palette := preload("res://scenery/palette.gd")
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const SupportSurfaces := preload("res://scenery/support_surfaces.gd")
@@ -123,20 +124,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 			for index: int in group.get("placements", []).size():
 				var placement: Dictionary = group.placements[index]
 				var aircraft_id := str(placement.get("aircraft", ""))
-				if not Models.FLEET.values().has(aircraft_id):
-					continue
-				var model_key: Variant = Models.FLEET.find_key(aircraft_id)
-				if model_key == null or not Models.CATALOG.has(model_key):
-					continue
-				var model_key_text := str(model_key)
-				var model_arrays: Dictionary = Models.arrays(model_key_text)
-				if model_arrays.is_empty():
-					continue
-				var size: Vector3 = model_arrays.get("size", Models.CATALOG[model_key].size)
-				var center_down := -(Models.parked_base_height(model_key_text) + size.y * 0.5)
-				_add_box_at_down(proxies, "fleet:%s:%02d:%s" % [group_id, index, aircraft_id], "parked_aircraft", "airframe",
-					"light_airframe_impulse", float(placement.north), float(placement.east), center_down, size.x, size.y, size.z,
-					float(placement.heading))
+				_add_parked_aircraft(proxies, group_id, index, aircraft_id, placement)
 			continue
 		if str(group.get("type", "")) in ["hedge", "fence"]:
 			_add_line_obstacles(proxies, group)
@@ -217,7 +205,7 @@ static func _assign_damage_profiles(proxies: Array[Dictionary]) -> void:
 		var profile := "none"
 		match str(proxy.kind):
 			"fence": profile = "wire" if proxy.part == "wire" else "wood"
-			"parked_aircraft", "aircraft_support": profile = "foam" if proxy.kind == "parked_aircraft" else "wood"
+			"aircraft_support": profile = "wood"
 			"equipment": profile = "straw" if proxy.part in ["round_bale", "bale_stack"] else "wood"
 			"fixture": profile = "wood" if proxy.part == "club_sign" else "metal"
 			"vehicle", "lamp": profile = "metal"
@@ -225,6 +213,68 @@ static func _assign_damage_profiles(proxies: Array[Dictionary]) -> void:
 			"tree_trunk": profile = "wood_mark"
 			"tree_foliage": profile = "foliage" if proxy.part == "bush" else "foliage_mark"
 		proxy.damage_profile = profile
+
+
+## Static aircraft scenery uses its authored collision parts, not one filled aircraft-sized box.
+## Its base is local y=0; the placement adds the chosen scale and elevation in scalar NED space.
+static func _add_parked_aircraft(proxies: Array[Dictionary], group_id: String, index: int,
+		aircraft_id: String, placement: Dictionary) -> void:
+	var configuration := str(placement.get("configuration", "assembled"))
+	var info: Dictionary = ParkedAircraft.info(aircraft_id, configuration)
+	if info.is_empty() or not _positive_xyz(info.get("size")):
+		return
+	var parts: Variant = info.get("collision_parts", [])
+	if typeof(parts) != TYPE_ARRAY:
+		return
+	var scale_value: Variant = placement.get("scale", 1.0)
+	var elevation_value: Variant = placement.get("elevation", 0.0)
+	if not _finite_number(scale_value) or float(scale_value) <= 0.0 or not _finite_number(elevation_value):
+		return
+	var scale := float(scale_value)
+	var elevation := float(elevation_value)
+	var north := float(placement.get("north", NAN))
+	var east := float(placement.get("east", NAN))
+	var heading := float(placement.get("heading", NAN))
+	if not _finite_all([north, east, heading]):
+		return
+	var placement_id := "fleet:%s:%02d:%s" % [group_id, index, aircraft_id]
+	for part_index: int in parts.size():
+		var part_value: Variant = parts[part_index]
+		if typeof(part_value) != TYPE_DICTIONARY:
+			continue
+		var part: Dictionary = part_value
+		var center: Variant = part.get("center", [])
+		var size: Variant = part.get("size", [])
+		if not _finite_xyz(center) or not _positive_xyz(size):
+			continue
+		_placement_box(proxies, "%s:part:%02d" % [placement_id, part_index], "parked_aircraft",
+			"airframe_%02d" % part_index, "light_airframe_impulse", north, east, heading,
+			center as Array, size as Array, scale, elevation)
+		var proxy: Dictionary = proxies.back()
+		proxy["damage_id"] = placement_id
+		proxy["damage_profile"] = "none" # a parked aircraft is fixed scenery; only the flying aircraft is affected
+
+
+static func _finite_xyz(value: Variant) -> bool:
+	if typeof(value) != TYPE_ARRAY or (value as Array).size() != 3:
+		return false
+	for component: Variant in value:
+		if not _finite_number(component):
+			return false
+	return true
+
+
+static func _positive_xyz(value: Variant) -> bool:
+	if not _finite_xyz(value):
+		return false
+	for component: Variant in value:
+		if float(component) <= 0.0:
+			return false
+	return true
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value))
 
 
 static func _add_flightline_barrier(proxies: Array[Dictionary], field: Dictionary) -> void:
@@ -470,6 +520,16 @@ static func _add_local_box(proxies: Array[Dictionary], id: String, kind: String,
 	var center: PackedFloat64Array = _placement_point(north, east, heading, local_x, local_z)
 	_add_box_at_down(proxies, id, kind, part, response, center[0], center[1], -center_up,
 		width, height, length, heading)
+
+
+static func _placement_box(proxies: Array[Dictionary], id: String, kind: String, part: String, response: String,
+		north: float, east: float, heading: float, local_center: Array, local_size: Array,
+		scale: float, elevation: float) -> void:
+	var center: PackedFloat64Array = _placement_point(north, east, heading,
+		float(local_center[0]) * scale, float(local_center[2]) * scale)
+	_add_box_at_down(proxies, id, kind, part, response, center[0], center[1],
+		-(elevation + float(local_center[1]) * scale),
+		float(local_size[0]) * scale, float(local_size[1]) * scale, float(local_size[2]) * scale, heading)
 
 
 static func _add_avanti_cradle(proxies: Array[Dictionary], id: String, north: float, east: float,

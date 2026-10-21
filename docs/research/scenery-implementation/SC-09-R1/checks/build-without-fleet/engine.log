@@ -1,0 +1,60 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371956894562431 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _initialize (D:/OpenRC-task-evidence/hangar-upgrade-2026-10-20/profile_build.gd:13)
+{
+  "stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 12,
+    "botanical_plants": 229,
+    "botanical_triangles": 61292,
+    "build_ms": 1031.795,
+    "cells": 60,
+    "fleet": 0,
+    "fleet_batch_surfaces": 0,
+    "fleet_batches": 0,
+    "fleet_surfaces": 0,
+    "fleet_triangles": 0,
+    "flowers": 0,
+    "instances": 170,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 82,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 6.733,
+      "botanicals": 31.334,
+      "cell_meshes": 36.808,
+      "fence": 46.435,
+      "hedge": 9.779,
+      "instances": 172.302,
+      "meshes": 112.864,
+      "patch": 69.469,
+      "population": 88.785,
+      "shelter_material": 72.227,
+      "shelter_meshes": 2.329,
+      "track": 2.424,
+      "vegetation": 293.34,
+      "woodland_edges": 41.584
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 0,
+    "woodland_edge_plants": 0,
+    "woodland_edge_triangles": 0
+  },
+  "with_fleet": false
+}

@@ -1,0 +1,37 @@
+{
+  "format": "openrc-companions-performance-source-receipt v1",
+  "captured_utc": "2026-10-20T20:08:52.394711+00:00",
+  "observed_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "note": "The shared worktree contained unrelated uncommitted track changes. Working-tree source hashes in the accepted profile define the measured implementation.",
+  "capture_id": "2d7f768f-fc24-4830-840c-ac9473cf0108",
+  "engine": "Godot 4.7.2-stable (official)",
+  "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+  "profile_sha256": "58f12a813cec7e0a99ebd4bd15202c09973ea96382c644262d2f1c671724f125",
+  "probe_sha256": "acdeea57b30789301c6015add59a7a9f77658184b52b22932c5770edfd3405ef",
+  "checked_runner_sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+  "checked_report_sha256": "fe3cdf758cba4a4d4deb50b631a1b8c8a3ee70ea0aedd76cecf68d2287dee82c",
+  "engine_log_sha256": "4cadac7e5114e0d3f04f30cf707bef761c847e66e1e59f742ea4a48dae60eb20",
+  "working_tree_source_sha256": {
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+    "app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/ai/companions/config.gd": "2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b",
+    "app/ai/companions/manager.gd": "164cdf8a2dbd33849055d72b6bcc1c9a3c612a79c9df47583bd3c3f3832312d3",
+    "app/ai/companions/agent.gd": "75e384873f5342232954c85913281cebedf20871c42cf8bf0f2e2300e42bec68",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+    "app/scenery/collision_world.gd": "9f601b43a1eee5925036298d7fd3f2c0a241a8f69685ab05b8c6aa2fac8f5894",
+    "app/sim/environment.gd": "14f172a6179ec8c0537850d1b8c0bf79e554a910ca6079a1089f6e15fad4c2b0",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+  },
+  "accepted_profile": "baseline-profile-valid.json",
+  "accepted_runner_report": "checks/baseline-profile-valid-ccs77g17/report.json",
+  "accepted_engine_log": "checks/baseline-profile-valid-ccs77g17/engine.log",
+  "rejected_initial_attempt": {
+    "profile": "baseline-profile.json",
+    "runner_report": "checks/baseline-profile-c87zelpd/report.json",
+    "reason": "Empty packed arrays were passed to HashingContext.update and the measured tick count included warm-up ticks. The run is retained for audit and is not accepted as baseline evidence."
+  }
+}

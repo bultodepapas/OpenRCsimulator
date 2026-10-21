@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+{"after_samples_us":[1.7872,1.8134,1.92165,1.7952,1.73855,1.60675,1.8356,1.5836,1.7023,1.8334,1.822],"after_us":1.7952,"before_samples_us":[6.25265,6.22725,6.6673,6.0986,6.1051,6.05255,5.6245,5.97395,5.9753,5.59595,5.78205],"before_us":6.05255,"mode":"lights_fixed"}
+{"after_samples_us":[6.95935,7.33855,6.978,7.3338,7.1311,6.8908,6.84035,6.96795,7.16165,7.59065,5.77515],"after_us":6.978,"before_samples_us":[5.86875,6.23315,6.1085,6.2977,6.16505,6.08075,6.1307,6.11255,6.2512,6.9102,6.60065],"before_us":6.16505,"mode":"lights_changing"}
+{"after_samples_us":[4.0445,4.22935,3.4541,3.4954,3.49145,3.49145,3.53,3.4834,3.4388,3.46165,3.64805],"after_us":3.49145,"before_samples_us":[6.28155,5.0172,4.9205,5.3998,5.2655,5.28165,5.0419,5.0965,4.9077,4.9039,5.08725],"before_us":5.08725,"mode":"storm_fixed"}
+{"after_samples_us":[4.60195,4.5669,4.6923,5.18985,5.0075,5.08145,5.49715,5.39185,4.5673,4.7826,4.8064],"after_us":4.8064,"before_samples_us":[5.3016,5.14935,5.08425,5.4039,5.5633,5.39525,5.21265,5.1711,5.0424,5.19595,5.21575],"before_us":5.21265,"mode":"storm_changing"}
+{"after_samples_us":[1.5762,1.26995,1.2955,1.3399,1.3105,1.31285,1.35705,1.38915,1.31565,1.25725,1.38915],"after_us":1.31565,"before_samples_us":[1.94785,1.9587,1.88955,1.87515,1.92795,1.91245,1.93425,1.99365,1.8975,2.23635,2.02485],"before_us":1.93425,"mode":"flash_clear"}
+{"after_samples_us":[2.3292,2.23955,2.23505,2.22325,2.5686,3.2886,2.23285,2.20845,2.1827,2.1979,2.48535],"after_us":2.23505,"before_samples_us":[2.18305,2.17275,2.30305,2.26575,2.24795,2.3986,2.2704,2.26125,2.1418,2.2185,2.21205],"before_us":2.24795,"mode":"flash_changing"}
+ERROR: Texture with GL ID of 25: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 26: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 27: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 28: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)

@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9f732823-8ec1-4e91-8406-38fa9f863d40",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\botanical\\botanical_grid_probe.gd",
+    "--",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\botanical\\botanical_habitats.before.gd",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\botanical\\exclusion-grid-probe.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T16:55:10.933531+00:00",
+  "label": "botanical-grid",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\botanical\\checks\\botanical-grid-a9asqlue\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\botanical\\checks\\botanical-grid-a9asqlue\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "BOTANICAL_GRID_PROBE_COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.781,
+  "log_bytes": 2897,
+  "log_sha256": "581a8fa0dfe89c298daf805ba2b993ee9e73a3ea0b8103304104c5a4171846a3"
+}

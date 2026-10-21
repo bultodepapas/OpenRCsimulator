@@ -1,0 +1,43 @@
+{
+  "asset": "Barrier tape on weighted posts",
+  "author": "Innerscene",
+  "license": "CC0 1.0 Universal",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "asset_url": "https://www.innerscene.com/tools/library/3d-parts/barrier-tape-on-weighted-posts-03228818",
+  "download_url": "https://www.innerscene.com/api/library/barrier-tape-on-weighted-posts-03228818/download",
+  "downloaded_utc": "2026-10-20T16:50:55Z",
+  "source_file": "barrier-tape-on-weighted-posts.glb",
+  "source_bytes": 227616,
+  "source_sha256": "15a154de039ef4d3769e103ebd9bf90648be44b2c1be935e6751f96ccfd9299c",
+  "runtime_file": "app/assets/landscape/track-tape-barrier/barrier-tape-on-weighted-posts.glb",
+  "runtime_sha256": "15a154de039ef4d3769e103ebd9bf90648be44b2c1be935e6751f96ccfd9299c",
+  "source_dimensions_m": {
+    "x_length": 3.34975195,
+    "y_height": 1.0,
+    "z_depth": 0.34987596
+  },
+  "local_bounds_m": {
+    "min": [-1.674752, 0.0, -0.17493798],
+    "max": [1.675, 1.0, 0.17493798]
+  },
+  "geometry": {
+    "meshes": 23,
+    "nodes": 24,
+    "primitives": 24,
+    "position_vertex_count_sum": 4580,
+    "triangles": 4816,
+    "node_transforms": 0
+  },
+  "materials": [
+    {"name": "Original 2K black", "alpha_mode": "OPAQUE", "double_sided": true, "base_color_texture": "black_2k", "metallic_factor": 0.0, "roughness_factor": 0.7},
+    {"name": "Original 2K yellow", "alpha_mode": "OPAQUE", "double_sided": true, "base_color_texture": "yellow_2k", "metallic_factor": 0.0, "roughness_factor": 0.7},
+    {"name": "Original hazard ribbon 2K", "alpha_mode": "OPAQUE", "double_sided": true, "base_color_texture": "tape", "metallic_factor": 0.0, "roughness_factor": 0.7}
+  ],
+  "embedded_textures": [
+    {"name": "black_2k", "mime_type": "image/png", "width": 2048, "height": 2048, "bytes": 16918},
+    {"name": "yellow_2k", "mime_type": "image/png", "width": 2048, "height": 2048, "bytes": 16914},
+    {"name": "tape", "mime_type": "image/png", "width": 2048, "height": 51, "bytes": 2809}
+  ],
+  "generator": "Khronos glTF Blender I/O v5.2.40",
+  "runtime_processing": "None; runtime file is byte-identical to the downloaded source."
+}

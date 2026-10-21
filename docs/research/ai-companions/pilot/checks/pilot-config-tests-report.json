@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d974d16a-dec2-42cd-a6fe-ba02b9cb60bb",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_config.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T18:56:28.453815+00:00",
+  "label": "config-args-tests",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\companions-pilot-qualification\\config-args-tests-xxgpsk14\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\companions-pilot-qualification\\config-args-tests-xxgpsk14\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companion config:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.328,
+  "log_bytes": 1061,
+  "log_sha256": "238b520a8a2ec6284dcfe8bc8e5931c7f2a47140d535b013cfb4d808d22453ea"
+}

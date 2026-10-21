@@ -1,0 +1,171 @@
+{
+  "schema": "openrc-timber-visual-details v1",
+  "aircraft_id": "turbo-lumber-evolution",
+  "source_glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "material_profiles": {
+    "foam": {
+      "meshes": ["aileron_left", "aileron_right", "elevator", "fin_fixed", "flap_left", "flap_right", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed", "cowl"],
+      "materials": ["white"],
+      "roughness": 0.9,
+      "specular": 0.16,
+      "metallic": 0.0,
+      "normal_scale": 0.035,
+      "world_tiling_per_m": 3.0,
+      "texture": "foam"
+    },
+    "paint": {
+      "materials": ["red", "black", "dark_grey"],
+      "grow_meshes": ["elevator", "fin_fixed", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"],
+      "grow_amount_m": 0.0004,
+      "roughness": 0.92,
+      "specular": 0.17,
+      "metallic": 0.0,
+      "normal_scale": 0.024,
+      "world_tiling_per_m": 3.0,
+      "texture": "foam"
+    },
+    "cowl_black_finish": {
+      "meshes": ["cowl"],
+      "materials": ["black"],
+      "grow_meshes": ["cowl"],
+      "grow_amount_m": 0.0004,
+      "roughness": 0.97,
+      "specular": 0.08,
+      "metallic": 0.0,
+      "normal_scale": 0.012,
+      "world_tiling_per_m": 3.0,
+      "texture": "foam"
+    },
+    "glass_decal": {
+      "materials": ["glass"],
+      "roughness": 0.62,
+      "specular": 0.22,
+      "metallic": 0.0,
+      "opacity": 1.0
+    },
+    "metal": {
+      "materials": ["metal"],
+      "roughness": 0.3,
+      "specular": 0.55,
+      "metallic": 0.72
+    },
+    "plastic_hub": {
+      "materials": ["light_grey"],
+      "roughness": 0.62,
+      "specular": 0.22,
+      "metallic": 0.08
+    },
+    "rubber": {
+      "meshes": ["wheel_left", "wheel_right", "tailwheel"],
+      "materials": ["foam"],
+      "roughness": 0.98,
+      "specular": 0.08,
+      "metallic": 0.0,
+      "normal_scale": 0.08,
+      "world_tiling_per_m": 14.0,
+      "texture": "rubber"
+    }
+  },
+  "surface_details": {
+    "fuselage_label": {
+      "host": "fuselage_core",
+      "text": "TURBO LUMBER EVOLUTION",
+      "target_yz_root": [-0.016, 0.06],
+      "max_width_m": 0.17,
+      "surface_offset_m": 0.00025,
+      "font_size": 28,
+      "color": "#282c2f",
+      "sides": ["left", "right"]
+    },
+    "main_gear_springs": {
+      "host": "gear_cables",
+      "travel_fraction": [0.42, 0.64],
+      "coil_radius_m": 0.00425,
+      "wire_radius_m": 0.00065,
+      "turns": 8,
+      "segments_per_turn": 12
+    },
+    "main_wheel_hub_fasteners": {
+      "hosts": ["wheel_left", "wheel_right"],
+      "count": 6,
+      "circle_radius_m": 0.0087,
+      "head_radius_m": 0.00145,
+      "head_depth_m": 0.0012,
+      "axial_center_m": 0.018
+    }
+  },
+  "paint_seam_repair": {
+    "meshes": ["cowl", "fin_fixed", "fuselage_core", "wing_left_fixed", "wing_right_fixed"],
+    "materials": ["red", "black", "dark_grey"],
+    "max_projection_distance_m": 0.002,
+    "min_normal_dot": 0.82,
+    "smooth_normals_meshes": ["cowl", "fin_fixed"],
+    "smooth_normal_materials": ["white", "black", "red"],
+    "authored_paint_regions": [
+      {
+        "mesh": "fuselage_core",
+        "paint_material": "black",
+        "root_bounds_min": [-0.0443, 0.0125, -0.0853],
+        "root_bounds_max": [-0.0308, 0.0199, -0.0519],
+        "normal_axis_root": [0.0, 1.0, 0.0],
+        "min_normal_axis_dot": 0.85,
+        "require_all_vertices_inside": true,
+        "allow_authored_override": true
+      }
+    ]
+  },
+  "fracture_details": {
+    "wing_left": {
+      "host": "wing_left_fixed",
+      "cut_x_m": 0.0040323841,
+      "outline_x_m": 0.0036,
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684,
+      "spar_radius_m": 0.0048,
+      "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008
+    },
+    "wing_right": {
+      "host": "wing_right_fixed",
+      "cut_x_m": -0.0040323846,
+      "outline_x_m": -0.0036,
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684,
+      "spar_radius_m": 0.0048,
+      "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008
+    }
+  },
+  "free_textures": {
+    "foam": {
+      "id": "Polystyrene",
+      "source_url": "https://polyhaven.com/a/polystyrene",
+      "download": "1K Normal GL and Roughness JPEG maps",
+      "license": "CC0 1.0",
+      "usage": "Low-strength normal and roughness maps on foam-painted airframe surfaces; aged diffuse color is intentionally unused.",
+      "maps": {
+        "normal": "source-textures/Polystyrene/polystyrene_nor_gl_1k.jpg",
+        "roughness": "source-textures/Polystyrene/polystyrene_rough_1k.jpg"
+      },
+      "runtime_maps": {
+        "normal": "polystyrene_nor_gl_1k.jpg",
+        "roughness": "polystyrene_rough_1k.jpg"
+      }
+    },
+    "rubber": {
+      "id": "Rubber002",
+      "source_url": "https://ambientcg.com/view?id=Rubber002",
+      "download": "Rubber002_1K-JPG.zip",
+      "license": "CC0 1.0",
+      "usage": "Low-strength normal and roughness maps on the three authored foam tire surfaces; source albedo is intentionally unused.",
+      "maps": {
+        "normal": "source-textures/Rubber002_1K-JPG_NormalGL.jpg",
+        "roughness": "source-textures/Rubber002_1K-JPG_Roughness.jpg"
+      },
+      "runtime_maps": {
+        "normal": "Rubber002_1K-JPG_NormalGL.jpg",
+        "roughness": "Rubber002_1K-JPG_Roughness.jpg"
+      }
+    }
+  }
+}

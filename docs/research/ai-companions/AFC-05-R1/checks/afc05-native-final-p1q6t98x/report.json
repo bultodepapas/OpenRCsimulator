@@ -1,0 +1,243 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "820e290c-6f35-4627-a366-c89bdf572411",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/capture_companions.gd",
+    "--",
+    "--labels",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-05-R1/native-final"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:30:56.930843+00:00",
+  "label": "afc05-native-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-05-R1\\checks\\afc05-native-final-p1q6t98x\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-05-R1\\checks\\afc05-native-final-p1q6t98x\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 18,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 4,
+      "message": "Parse Error: Preload file \"res://scenery/parked_aircraft.gd\" does not exist.",
+      "context": [
+        "   at: GDScript::reload (res://scenery/scenery_loader.gd:10)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 8,
+      "message": "Parse Error: Cannot infer the type of \"info\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (res://scenery/scenery_loader.gd:302)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 12,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://scenery/scenery.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 16,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://render/field_projected_shadows.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 20,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://render/field.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 24,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://landscapes/club_field/landscape.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 28,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://landscapes/catalog.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 32,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://app_state/preferences.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 36,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://ui/home.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 40,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://app_root.gd:0)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 44,
+      "message": "Failed to load script \"res://app_root.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:40)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 48,
+      "message": "Invalid call. Nonexistent function 'load_from' in base 'GDScript'.",
+      "context": [
+        "   at: attach (res://scenery/scenery.gd:174)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] attach (res://scenery/scenery.gd:174)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 61,
+      "message": "Invalid call. Nonexistent function 'load_from' in base 'GDScript'.",
+      "context": [
+        "   at: build (res://render/world/world.gd:327)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/world/world.gd:327)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 69,
+      "message": "Invalid access to property or key 'environment' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _init (res://ui/home_scene.gd:92)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _init (res://ui/home_scene.gd:92)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 76,
+      "message": "Invalid call. Nonexistent function 'load_from' in base 'GDScript'.",
+      "context": [
+        "   at: attach (res://scenery/scenery.gd:174)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] attach (res://scenery/scenery.gd:174)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 90,
+      "message": "Invalid call. Nonexistent function 'load_from' in base 'GDScript'.",
+      "context": [
+        "   at: build (res://render/world/world.gd:327)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/world/world.gd:327)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 99,
+      "message": "Invalid access to property or key 'conditions' on a base object of type 'Dictionary'.",
+      "context": [
+        "   at: _build_world (res://main.gd:2344)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _build_world (res://main.gd:2344)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 107,
+      "message": "Invalid access to property or key 'agents' on a base object of type 'Nil'.",
+      "context": [
+        "   at: _run (res://../research/ai-companions/capture_companions.gd:69)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/ai-companions/capture_companions.gd:69)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "COMPANION CAPTURES COMPLETE"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 180.766,
+  "log_bytes": 6533,
+  "log_sha256": "40f4ef1f0c5565fe7d08c05bc13a1644b39a27daa4831ce402bc83c03f1262ba"
+}

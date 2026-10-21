@@ -12,6 +12,9 @@ const ClubShed = preload("res://scenery/club_shed.gd")
 const PitChair = preload("res://scenery/pit_chair.gd")
 const People = preload("res://scenery/people.gd")
 const Vegetation = preload("res://scenery/vegetation.gd")
+const PIT_ROOF_FACE := Color(1.0, 0.0, 1.0)
+const PIT_ROOF_UNDER := Color(0.0, 1.0, 1.0)
+const PIT_SLAB_FACE := Color(1.0, 1.0, 0.0)
 
 ## id → size (w × h × l, m), tier (landmark | standard | ornament), shadow, evidence. `size` is the expected bounding box
 ## of the built mesh within ±10 % (test). Flight-box props must stay ≤ 1.5 m tall (loader rule).
@@ -91,25 +94,48 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	var depth := 5.0
 	var front_h := 3.2
 	var back_h := 2.7
-	var post := _c("wood")
-	# The slab top catches a little more light than its exposed edge; this uses the
-	# existing top-face colour channel and adds no surface or draw.
-	k.block(Vector3(length + 0.6, 0.1, depth + 0.6), Vector3(0, 0, 0), _c("concrete"), _c("concrete").lightened(0.06))
+	# The yellow top-face tag selects the existing CC0 concrete material. The
+	# exposed edge retains its quieter plain-concrete tone in the same mesh.
+	k.block(Vector3(length + 0.6, 0.1, depth + 0.6), Vector3(0, 0, 0), _c("concrete"), PIT_SLAB_FACE)
 	# Fine saw cuts divide the existing slab without adding a raised border.
 	for joint in 4:
 		var joint_x := -length * 0.5 + length * (joint + 1) / 5.0
 		k.block(Vector3(0.014, 0.004, depth + 0.5), Vector3(joint_x, 0.1, 0), _c("concrete_dark"))
 	for i in 9:
 		var x := -length * 0.5 + i * length / 8.0
-		var timber := post.lightened(0.04 + 0.08 * Palette.hash01(seed, i, 31))
-		k.block(Vector3(0.16, front_h, 0.16), Vector3(x, 0.1, -depth * 0.5 + 0.1), timber, timber.lightened(0.025))
-		k.block(Vector3(0.16, back_h, 0.16), Vector3(x, 0.1, depth * 0.5 - 0.1), timber, timber.lightened(0.025))
-		# knee braces and a rafter
-		k.beam(Vector3(x, front_h - 0.6, -depth * 0.5 + 0.1), Vector3(x + 0.5, front_h + 0.05, -depth * 0.5 + 0.1), 0.08, _c("wood_dark"))
-		k.beam(Vector3(x, front_h + 0.12, -depth * 0.5), Vector3(x, back_h + 0.12, depth * 0.5), 0.1, _c("wood_dark"))
-	k.beam(Vector3(-length * 0.5, front_h + 0.05, -depth * 0.5 + 0.1), Vector3(length * 0.5, front_h + 0.05, -depth * 0.5 + 0.1), 0.2, post)
-	k.beam(Vector3(-length * 0.5, back_h + 0.05, depth * 0.5 - 0.1), Vector3(length * 0.5, back_h + 0.05, depth * 0.5 - 0.1), 0.2, post)
-	# Corrugated roof: a sheet plus ribs; overhangs 0.4 m front/back, 0.3 m at the ends.
+		var brace_direction := 1.0 if i < 4 else -1.0
+		# Blue tags select lengthwise photographed timber only for these structural posts.
+		var timber := Color(0.0, 0.0, 0.90 + 0.10 * Palette.hash01(seed, i, 31))
+		for post_z: float in [-depth * 0.5 + 0.1, depth * 0.5 - 0.1]:
+			var post_height := (front_h if post_z < 0.0 else back_h) - 0.04
+			k.block(Vector3(0.16, post_height, 0.16),
+				Vector3(x, 0.14, post_z), timber, timber)
+			# A raised steel standoff keeps the timber clear of standing water on the slab.
+			k.box(Vector3(0.21, 0.015, 0.21), Vector3(x, 0.1075, post_z), _c("steel_dark"))
+			for face: float in [-1.0, 1.0]:
+				k.box(Vector3(0.16, 0.16, 0.008), Vector3(x, 0.195, post_z + face * 0.083), _c("steel"))
+				# Flush bolt heads read at close range without building hidden box faces.
+				var bolt_z := post_z + face * 0.088
+				if face > 0.0:
+					k.quad(Vector3(x - 0.009, 0.221, bolt_z), Vector3(x + 0.009, 0.221, bolt_z),
+						Vector3(x + 0.009, 0.239, bolt_z), Vector3(x - 0.009, 0.239, bolt_z), _c("steel_dark"))
+				else:
+					k.quad(Vector3(x + 0.009, 0.221, bolt_z), Vector3(x - 0.009, 0.221, bolt_z),
+						Vector3(x - 0.009, 0.239, bolt_z), Vector3(x + 0.009, 0.239, bolt_z), _c("steel_dark"))
+			# Both post rows transfer longitudinal loads into their rails. The lean
+			# changes at the centre rather than repeating one rake for 28 m.
+			var frame_h := front_h if post_z < 0.0 else back_h
+			var brace_timber := Color(1.0, 0.5, 0.0) if brace_direction > 0.0 else Color(0.0, 0.5, 1.0)
+			k.beam(Vector3(x, frame_h - 0.6, post_z),
+				Vector3(x + brace_direction * 0.5, frame_h + 0.05, post_z),
+				0.08, brace_timber)
+			_pit_roof_joint(k, x, frame_h + 0.05, post_z, brace_direction)
+		# A transverse rafter spans the two longitudinal rails at each frame.
+		# The rafter bears on the lengthwise rails and stays below the roof sheet.
+		k.beam(Vector3(x, front_h + 0.05, -depth * 0.5), Vector3(x, back_h + 0.05, depth * 0.5), 0.14, Color(0.0, 0.77, 0.0))
+	k.beam(Vector3(-length * 0.5, front_h + 0.05, -depth * 0.5 + 0.1), Vector3(length * 0.5, front_h + 0.05, -depth * 0.5 + 0.1), 0.2, Color(0.88, 0.0, 0.0))
+	k.beam(Vector3(-length * 0.5, back_h + 0.05, depth * 0.5 - 0.1), Vector3(length * 0.5, back_h + 0.05, depth * 0.5 - 0.1), 0.2, Color(0.85, 0.0, 0.0))
+	# Folded standing-seam roof overhangs 0.4 m front/back and 0.3 m at the ends.
 	var y0 := front_h + 0.2
 	var y1 := back_h + 0.2
 	var hx := length * 0.5 + 0.3
@@ -118,19 +144,80 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 	var slope := (y1 - y0) / (depth)
 	var yf := y0 - 0.4 * slope
 	var yb := y1 + 0.4 * slope
-	k.quad(Vector3(-hx, yf, z0), Vector3(-hx, yb, z1), Vector3(hx, yb, z1), Vector3(hx, yf, z0), _c("roof_metal"))
-	k.quad(Vector3(-hx, yf - 0.05, z0), Vector3(hx, yf - 0.05, z0), Vector3(hx, yb - 0.05, z1), Vector3(-hx, yb - 0.05, z1), _c("roof_metal_dark").darkened(0.25))
-	var ribs := int(length / 0.75)
-	for i in ribs + 1:
-		var x := -hx + i * (2.0 * hx) / ribs
-		k.beam(Vector3(x, yf + 0.02, z0), Vector3(x, yb + 0.02, z1), 0.035, _c("roof_metal").lightened(0.06))
-	k.quad(Vector3(-hx, yf - 0.22, z0), Vector3(hx, yf - 0.22, z0), Vector3(hx, yf, z0), Vector3(-hx, yf, z0), _c("trim")) # fascia
-	k.beam(Vector3(-hx, yb - 0.12, z1 + 0.05), Vector3(hx, yb - 0.12, z1 + 0.05), 0.12, _c("roof_metal_dark")) # gutter
-	# Sloped barge boards and short gutter returns finish the open roof ends.
+	# Folded standing seams are part of the sheet, with sloping shoulders and a
+	# closed crest. The photograph contributes finer corrugation and fasteners.
+	var panels := int(roundf((2.0 * hx) / 0.75))
+	var panel_width := (2.0 * hx) / float(panels)
+	for panel in panels:
+		var x0 := -hx + panel * panel_width
+		var x1 := x0 + panel_width
+		var x_profile := [x0, x0 + 0.012, x0 + 0.030, x1 - 0.030, x1 - 0.012, x1]
+		var rise_profile := [0.028, 0.028, 0.0, 0.0, 0.028, 0.028]
+		for section in 5:
+			var left_x: float = x_profile[section]
+			var right_x: float = x_profile[section + 1]
+			var left_rise: float = rise_profile[section]
+			var right_rise: float = rise_profile[section + 1]
+			k.quad(Vector3(left_x, yf + left_rise, z0), Vector3(left_x, yb + left_rise, z1),
+				Vector3(right_x, yb + right_rise, z1), Vector3(right_x, yf + right_rise, z0), PIT_ROOF_FACE)
+	k.quad(Vector3(-hx, yf - 0.05, z0), Vector3(hx, yf - 0.05, z0),
+		Vector3(hx, yb - 0.05, z1), Vector3(-hx, yb - 0.05, z1), PIT_ROOF_UNDER)
+	for purlin_z: float in [-1.55, 0.0, 1.55]:
+		var purlin_y := lerpf(yf, yb, (purlin_z - z0) / (z1 - z0)) - 0.10
+		k.beam(Vector3(-length * 0.5, purlin_y, purlin_z),
+			Vector3(length * 0.5, purlin_y, purlin_z), 0.10, Color(0.81, 0.0, 0.0))
+	k.quad(Vector3(-hx, yf - 0.22, z0), Vector3(hx, yf - 0.22, z0), Vector3(hx, yf, z0), Vector3(-hx, yf, z0), Color(0.90, 0.0, 0.0)) # fascia
+	var gutter_col := _c("roof_metal_dark").darkened(0.25)
+	# Folded front drip lip conceals the open sheet edge above the timber fascia.
+	k.quad(Vector3(hx, yf - 0.045, z0 - 0.003), Vector3(-hx, yf - 0.045, z0 - 0.003),
+		Vector3(-hx, yf + 0.018, z0 - 0.003), Vector3(hx, yf + 0.018, z0 - 0.003), gutter_col)
+	# Three thin folded steel strips form an open low-side gutter, not a solid rail.
+	var outlet_x := length * 0.5 - 0.04
+	var gutter_z := z1 + 0.04
+	var bottom_limits := [-hx, -outlet_x - 0.045, -outlet_x + 0.045,
+		outlet_x - 0.045, outlet_x + 0.045, hx]
+	for segment in 3:
+		var start_x: float = bottom_limits[segment * 2]
+		var stop_x: float = bottom_limits[segment * 2 + 1]
+		k.box(Vector3(stop_x - start_x, 0.012, 0.13),
+			Vector3((start_x + stop_x) * 0.5, yb - 0.135, gutter_z), gutter_col, true)
+	# Narrow bottom rails leave two 90 mm square outlet holes, one at each end.
 	for side: float in [-1.0, 1.0]:
-		var end_x := side * (hx - 0.05)
-		k.beam(Vector3(end_x, yf + 0.02, z0 + 0.02), Vector3(end_x, yb + 0.02, z1 - 0.02), 0.035, _c("roof_metal_dark"))
-		k.beam(Vector3(end_x, yb - 0.12, z1 - 0.06), Vector3(end_x, yb - 0.12, z1 + 0.05), 0.06, _c("roof_metal_dark"))
+		for rail_z: float in [-0.055, 0.055]:
+			k.box(Vector3(0.09, 0.012, 0.02),
+				Vector3(side * outlet_x, yb - 0.135, gutter_z + rail_z), gutter_col, true)
+	k.box(Vector3(2.0 * hx, 0.105, 0.012), Vector3(0, yb - 0.083, z1 - 0.025), gutter_col, true)
+	k.box(Vector3(2.0 * hx, 0.105, 0.012), Vector3(0, yb - 0.083, z1 + 0.10), gutter_col, true)
+	# Rake caps fold over the sheet and down both exposed ends. The channels
+	# terminate at outlet/downpipe assemblies attached to the back corner posts.
+	for side: float in [-1.0, 1.0]:
+		var outer_x := side * hx
+		var inner_x := side * (hx - 0.10)
+		if side > 0.0:
+			k.quad(Vector3(inner_x, yf + 0.035, z0), Vector3(inner_x, yb + 0.035, z1),
+				Vector3(outer_x, yb + 0.035, z1), Vector3(outer_x, yf + 0.035, z0), gutter_col)
+			k.quad(Vector3(outer_x + 0.003, yf - 0.065, z0), Vector3(outer_x + 0.003, yf + 0.035, z0),
+				Vector3(outer_x + 0.003, yb + 0.035, z1), Vector3(outer_x + 0.003, yb - 0.065, z1), gutter_col)
+		else:
+			k.quad(Vector3(outer_x, yf + 0.035, z0), Vector3(outer_x, yb + 0.035, z1),
+				Vector3(inner_x, yb + 0.035, z1), Vector3(inner_x, yf + 0.035, z0), gutter_col)
+			k.quad(Vector3(outer_x - 0.003, yb - 0.065, z1), Vector3(outer_x - 0.003, yb + 0.035, z1),
+				Vector3(outer_x - 0.003, yf + 0.035, z0), Vector3(outer_x - 0.003, yf - 0.065, z0), gutter_col)
+		k.box(Vector3(0.012, 0.105, 0.13), Vector3(side * (hx - 0.006), yb - 0.083, z1 + 0.04), gutter_col, true)
+		var pipe_x := side * outlet_x
+		var pipe_z := depth * 0.5 + 0.04
+		_pit_pipe_segment(k, Vector3(pipe_x, yb - 0.105, gutter_z),
+			Vector3(pipe_x, yb - 0.24, pipe_z), 0.034, gutter_col)
+		_pit_pipe_segment(k, Vector3(pipe_x, yb - 0.24, pipe_z),
+			Vector3(pipe_x, 0.20, pipe_z), 0.034, gutter_col)
+		# The outlet discharges beyond the slab edge rather than onto the pit floor.
+		_pit_pipe_segment(k, Vector3(pipe_x, 0.20, pipe_z),
+			Vector3(pipe_x, 0.17, pipe_z + 0.40), 0.034, gutter_col)
+		for band_y: float in [0.85, 2.15]:
+			k.cylinder(0.043, 0.043, 0.025, 8,
+				Vector3(pipe_x, band_y - 0.0125, pipe_z), _c("steel"), false)
+			k.beam(Vector3(pipe_x, band_y, pipe_z - 0.025),
+				Vector3(pipe_x, band_y, depth * 0.5 - 0.015), 0.025, _c("steel_dark"))
 	# Furniture under the roof: tables along the back, stands, boxes, chairs, coolers. Seeded variety.
 	for i in 6:
 		var tx := -length * 0.5 + 2.4 + i * 4.6
@@ -149,6 +236,49 @@ static func _pit_shelter(k: MeshKit, seed: int) -> Array:
 		k.block(Vector3(0.75, 0.32, 0.32), Vector3(bx, 0.1, -1.4), Palette.pick([_c("box_black"), _c("box_orange"), _c("wood_light")], seed, i, 1))
 		k.block(Vector3(0.14, 0.3, 0.14), Vector3(bx + 0.55, 0.1, -1.35), Palette.pick([_c("fuel_red"), _c("fuel_green")], seed, i, 2))
 	return []
+
+
+## A folded seat plate and flush fasteners tie the rafter, rail, and post
+## together. The small strap marks the brace termination on the rail face.
+static func _pit_roof_joint(k: MeshKit, x: float, y: float, post_z: float, brace_direction: float) -> void:
+	var outward := -1.0 if post_z < 0.0 else 1.0
+	var plate_z := post_z + outward * 0.103
+	k.box(Vector3(0.15, 0.12, 0.006), Vector3(x, y, plate_z), _c("steel"))
+	var bolt_z := post_z + outward * 0.107
+	for bolt_x: float in [-0.043, 0.043]:
+		_pit_face_quad(k, x + bolt_x, y - 0.008, bolt_z,
+			0.018, 0.018, outward, _c("steel_dark"))
+	var brace_x := x + brace_direction * 0.5
+	var strap_z := post_z + outward * 0.105
+	_pit_face_quad(k, brace_x, y - 0.025, strap_z,
+		0.075, 0.11, outward, _c("steel"))
+	_pit_face_quad(k, brace_x, y - 0.03, strap_z + outward * 0.001,
+		0.016, 0.016, outward, _c("steel_dark"))
+
+
+static func _pit_face_quad(k: MeshKit, x: float, y: float, z: float,
+		width: float, height: float, outward: float, color: Color) -> void:
+	var left := x - width * 0.5
+	var right := x + width * 0.5
+	var bottom := y - height * 0.5
+	var top := y + height * 0.5
+	if outward < 0.0:
+		k.quad(Vector3(right, bottom, z), Vector3(left, bottom, z),
+			Vector3(left, top, z), Vector3(right, top, z), color)
+	else:
+		k.quad(Vector3(left, bottom, z), Vector3(right, bottom, z),
+			Vector3(right, top, z), Vector3(left, top, z), color)
+
+
+static func _pit_pipe_segment(k: MeshKit, a: Vector3, b: Vector3, radius: float, color: Color) -> void:
+	var delta := b - a
+	var axis := delta.normalized()
+	var side := axis.cross(Vector3.UP if absf(axis.dot(Vector3.UP)) < 0.95 else Vector3.RIGHT).normalized()
+	var forward := side.cross(axis)
+	var saved := k.xf
+	k.xf = saved * Transform3D(Basis(side, axis, forward), a)
+	k.cylinder(radius, radius, delta.length(), 8, Vector3.ZERO, color, false)
+	k.xf = saved
 
 
 static func _pit_table(k: MeshKit, at: Vector3, seed: int, service: String = "") -> void:
@@ -233,6 +363,16 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	k.xf = saved
 	_pavilion_wall_course(k, w, d)
 	k.hip_roof(w, d, h + 0.15, 1.8, 0.5, _c("roof_slate"))
+	# Thin capped ridges give the slate a constructed termination above the roof skin.
+	var hip_ridge_half := 5.0 - 3.5 * 0.98
+	var ridge_left := Vector3(-hip_ridge_half, 4.70, 0)
+	var ridge_right := Vector3(hip_ridge_half, 4.70, 0)
+	var ridge_col := _c("roof_slate").lightened(0.18)
+	k.beam(ridge_left, ridge_right, 0.075, ridge_col)
+	for p: Vector3 in [Vector3(-5.0, 2.88, -3.5), Vector3(-5.0, 2.88, 3.5)]:
+		k.beam(p, ridge_left, 0.067, ridge_col)
+	for p: Vector3 in [Vector3(5.0, 2.88, -3.5), Vector3(5.0, 2.88, 3.5)]:
+		k.beam(p, ridge_right, 0.067, ridge_col)
 	# Eave boards follow the existing hip roof, staying inside its overhang.
 	var eave_x := w * 0.5 + 0.5 - 0.05
 	var eave_z := d * 0.5 + 0.5 - 0.05
@@ -255,6 +395,11 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 		Vector3(w * 0.5 + 0.2, 2.62, vz1 - 0.2), _c("roof_metal_dark"))
 	k.quad(Vector3(-w * 0.5 - 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.91, vz0),
 		Vector3(-w * 0.5 - 0.2, 2.91, vz0), _c("wood_light"))
+	# Raised longitudinal seams at realistic sheet spacing on the lean-to roof.
+	for i in 12:
+		var seam_x := -4.18 + float(i) * 0.76
+		k.beam(Vector3(seam_x, 2.655, vz1 - 0.18),
+			Vector3(seam_x, 2.985, vz0 - 0.02), 0.017, _c("roof_metal_dark").lightened(0.16))
 	# The veranda's front fascia and slim side barge trim close the exposed sheet edges.
 	k.beam(Vector3(-4.62, 2.64, vz1 - 0.16), Vector3(4.62, 2.64, vz1 - 0.16), 0.08, _c("wood_light"))
 	for side: float in [-1.0, 1.0]:

@@ -11,9 +11,13 @@ const P51Geometry = preload("res://aircraft/p51d_geometry.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const EngineSound = preload("res://render/engine_sound.gd")
+const PowertrainAudio = preload("res://audio/powertrain_audio.gd")
+const GroundAudio = preload("res://audio/ground_audio.gd")
+const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
+var ground_audio: GroundAudio
 var _last_tick: int = -1
 var _windsock: WeakRef
 var last_update_usec: int = 0
@@ -35,7 +39,11 @@ func configure(scene: Node3D) -> void:
 			soundscape.air_absorption = false
 	var propulsion: Dictionary = flight.session.aircraft.model.propulsion
 	var glow_family: String = _glow_family(propulsion)
-	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family)
+	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family,
+		PowertrainAudio.profile_for(flight.aircraft_id, propulsion))
+	ground_audio = GroundAudio.new()
+	ground_audio.configure(self, soundscape.output_bus())
+	ground_audio.bind_soundscape(soundscape)
 	var field_node: Node3D = flight.get("_field_node") as Node3D
 	if field_node != null:
 		var cues: Array = field_node.get_meta("wind_cues", [])
@@ -93,6 +101,12 @@ func snapshot() -> Dictionary:
 	var s: PackedFloat64Array = session.sim.state
 	var attitude: PackedFloat64Array = M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var velocity: Vector3 = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))))
+	# Engine/propeller emitter at the installed thrust line, not the imported mesh's origin.
+	var offset: PackedFloat64Array = prop.get("offset", PackedFloat64Array([0.0, 0.0, 0.0]))
+	var source_arm: PackedFloat64Array = M.v3(-offset[0], offset[1], -offset[2])
+	var source_ned: PackedFloat64Array = M.add(s.slice(RB.POS, RB.POS + 3), M.q_rotate(attitude, source_arm))
+	var source_velocity: Vector3 = velocity + Frames.ned_to_render(M.q_rotate(attitude,
+		M.cross(s.slice(RB.RATE, RB.RATE + 3), source_arm)))
 	# AUD-10: jet velocity V_j = gross thrust / mass flow from the accepted state (read-only pure functions), and the
 	# exhaust direction (opposite the thrust axis) for directivity. Static V_j at maximum rpm normalizes it.
 	var jet_velocity: float = 0.0
@@ -121,7 +135,7 @@ func snapshot() -> Dictionary:
 		airspeed = air.V,
 		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
 		wind_speed = wind.length(), wind_direction = wind,
-		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
+		source = Frames.ned_to_render(source_ned), listener = flight._camera.global_position, source_velocity = source_velocity,
 		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
@@ -166,6 +180,12 @@ static func propeller_blade_count(aircraft_id: String) -> int:
 func _on_resetting() -> void:
 	_last_tick = -1
 	soundscape.reset_observer()
+	if ground_audio != null:
+		ground_audio.reset()
+
+
+func contact_snapshot() -> Array[Dictionary]:
+	return GroundAudioModel.snapshot_contacts(flight.session, flight.field)
 
 
 func _process(delta: float) -> void:
@@ -176,5 +196,10 @@ func _process(delta: float) -> void:
 	if tick < _last_tick:
 		soundscape.reset_observer()
 	_last_tick = tick
-	soundscape.update_sound(snapshot(), delta)
+	var sound_snapshot: Dictionary = snapshot()
+	soundscape.update_sound(sound_snapshot, delta)
+	var ground_contacts: Array[Dictionary] = contact_snapshot()
+	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
+	ground_audio.update_contacts(tick, bool(sound_snapshot.get("paused", false)), ground_contacts,
+		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
 	last_update_usec = Time.get_ticks_usec() - started

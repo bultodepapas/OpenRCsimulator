@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   default normalized scenery loads
+ok   normalized building, pit and gravel groups produce footprints
+ok   pavilion mask uses slab dimensions and veranda offset
+ok   grass centers under the pavilion door/slab are excluded
+ok   grass centers in the open runway field remain eligible for scenery mask
+ok   normalized pit placement masks its concrete slab
+ok   normalized gravel apron masks grass centers
+ok   a custom translated/rotated pavilion is discovered
+ok   rotated rectangle follows N/E scenery heading
+ok   rotated door remains over its slab and grass is omitted there
+ok   clearance excludes centers 0.39 m beyond a rotated slab edge
+ok   clearance allows centers 0.41 m beyond a rotated slab edge
+ok   normalized gravel patch is preserved as a polygon
+ok   gravel patch interior excludes grass
+ok   gravel patch margin blocks at 0.39 m
+ok   gravel patch margin releases beyond 0.4 m
+ok   normalized gravel track expands to a buffered polygon
+ok   gravel track width and clearance exclude grass
+ok   gravel track releases centers beyond width plus clearance
+ok   empty/off scenery yields no masks
+ok   unrelated vehicle props do not become building masks
+ok   empty mask never excludes grass
+ok   scenery-off field builds without a scenery exclusion node
+ok   scenery-off field retains grass centers under the default pavilion slab
+FAIL scenery-off field keeps the unmasked grass count actual=4533 expected=4533
+WARNING: Tree wind is disabled for maple_tree because source material -9223371920974542894 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:398)
+       [4] attach (res://scenery/scenery.gd:175)
+       [5] build (res://render/field.gd:98)
+       [6] _test_field_builder_mask_integration (res://tests/test_landscape_scenery_grass_mask.gd:148)
+       [7] _initialize (res://tests/test_landscape_scenery_grass_mask.gd:33)
+ok   enabled full-field build attaches normalized grass exclusions to Scenery
+ok   enabled full-field build removes centers under concrete while scenery-off retains them
+ok   legacy NearGrass clipping consumes the attached exclusion array
+FAIL production NearGrass batches only downloaded clumps allowed by attached exclusions actual=150 expected=150 unmasked=150 clear=true row_ids_match=false changed_by_masks=true meshes=150 masks=31
+ok   translated field geometry validates
+ok   translated default-id field remains valid but is scenery-ineligible
+ok   ineligible translated field attaches no default scenery or ghost mask
+FAIL ineligible field's grass remains at the old default building coordinates grass centers under old pavilion footprint=285
+LU-18 field integration: off=4533 clumps, on=4227 clumps, 306 default-footprint centers removed, translated no-scenery=285
+LU-18 scenery grass mask: 34 checks, 3 failures

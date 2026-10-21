@@ -4,6 +4,7 @@ extends RefCounted
 const GRAVEL_SHADER := preload("res://scenery/gravel.gdshader")
 const PALETTE := preload("res://scenery/palette.gd")
 const TRACK_FURNITURE := preload("res://vehicles/ground/track_furniture.gd")
+const TRACK_SERVICE := preload("res://vehicles/ground/track_service_detail.gd")
 const MARK_PAINT := preload("res://vehicles/ground/track_mark_paint.gdshader")
 const TRACK_BARRIER := preload("res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb")
 const TRACK_TYRE := preload("res://assets/landscape/track-tyre/old-tyre-1k.glb")
@@ -90,6 +91,7 @@ static func build(course: Dictionary, road: Callable, ground_material: ShaderMat
 	_add_walls(root, track)
 	_add_tyre_stacks(root, road)
 	TRACK_FURNITURE.add(root, track, road)
+	TRACK_SERVICE.add(root, track, road)
 	return root
 
 

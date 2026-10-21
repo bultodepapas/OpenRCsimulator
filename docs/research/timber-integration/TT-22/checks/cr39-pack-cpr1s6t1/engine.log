@@ -1,0 +1,55 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   reset with the same route and identity reuses the validated catalog load
+ok   a ledger cannot mutate the cached dossier
+ok   a different physical identity reloads and is refused
+ok   recipe book stays loaded across resets
+ok   Lumber dossier loads with authored contact bindings
+ok   hull probe maps to its economic part
+ok   scenery impact maps through its hull probe
+ok   unmapped contact has no part binding
+ok   mapped contact opens a pending part inspection
+ok   repeat contact on a pending part is not a new revision
+ok   contact never downgrades a confirmed replacement
+ok   contact keeps an existing receipt decision; the structural note stays owned by observe()
+ok   report names the inspected part instead of only a generic note
+ok   stale dossier names the out-of-date cause
+ok   other load failures keep the generic unavailable reason
+ok   quote from a held calculation equals a recomputed quote
+ok   terminal report flushes
+ok   archive is compact JSON
+ok   compact archive round-trips through validation
+ok   terminal Stik crash without a prop strike archives its 0..ceiling range
+ok   terminal crash headline shows a provisional loss ceiling
+ok   known prop cost becomes the floor of the provisional range
+ok   without a ceiling the existing unknown labels remain
+ok   provisional loss headline is translated
+ok   current sidecar binds the Stik exactly
+ok   generated signature matches the current physical source
+ok   text-only and unpriced edits keep the signature
+ok   a changed item name invalidates the signature
+ok   a changed item mass invalidates the signature
+ok   a removed item invalidates the signature
+ok   a new contact invalidates the signature
+ok   a changed propulsion kind invalidates the signature
+ok   a missing signature never matches
+ok   jensen-das-ugly-stik-60 loads its current dossier
+ok   jensen-das-ugly-stik-60 maps probe_wing_left_tip to covered_airframe_and_installation_hardware
+ok   stik-glow-fs64v-4t loads its current dossier
+ok   stik-glow-fs64v-4t maps contact_nose to covered_airframe_and_installation_hardware
+ok   gp-extra-300s-60 loads its current dossier
+ok   gp-extra-300s-60 maps probe_wing_right_te to wing_main
+ok   p51d-mustang-120 loads its current dossier
+ok   p51d-mustang-120 maps probe_scoop_bottom to belly_scoop
+ok   sebart-avanti-s-a200-p100rx loads its current dossier
+ok   sebart-avanti-s-a200-p100rx maps contact_nose to gear_nose
+ok   turbo-lumber-evolution loads its current dossier
+ok   turbo-lumber-evolution maps probe_belly_nose to fuselage_main
+ok   electric prop strike prices the Lumber propeller once
+ok   Lumber blade strike prices only the EFL5962 prop at 799 cents
+ok   Lumber blade strike does not automatically bill the separate spinner
+ok   Lumber spinner stays inspection-only until separate damage is established
+ok   Lumber product identity and package price survive report archive validation
+ok   registered Turbo Lumber pack bytes bind only through the validated variant path
+ok   registered pack valuation preserves its distinct binding assumption
+CR-39 economics: 52 checks, 0 failed

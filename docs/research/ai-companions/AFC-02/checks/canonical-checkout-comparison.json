@@ -1,0 +1,159 @@
+{
+  "format": "openrc-afc02-canonical-checkout-comparison v1",
+  "step": "AFC-02",
+  "captured_utc": "2026-10-20T20:24:58.387821+00:00",
+  "observed_main_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "method": "Copied the current .gitattributes, the five listed source/profile files, and all solver GDScript inputs into a disposable Git repository. Committed only there, then created fresh no-hardlinks clones with core.autocrlf=true and false set before checkout.",
+  "disposable_commit": "64d8ccfcb4a345cecc6d15bbdaf804207d8a3b1c",
+  "gitattributes_blob": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+  "main_index_sha256_before": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_sha256_after": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_unchanged": true,
+  "profiled_source_files": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": {
+      "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "bytes": 60211
+    },
+    "app/data/fields/default.json": {
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "bytes": 158788
+    },
+    "app/ai/companions/pilot.gd": {
+      "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+      "bytes": 21319
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "sha256": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+      "bytes": 1319
+    },
+    "app/data/ai/companions/fields/club-default.json": {
+      "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+      "bytes": 3341
+    }
+  },
+  "solver_source_file_count": 133,
+  "current_worktree_solver_raw_identity_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+  "current_worktree_solver_canonical_identity_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+  "current_worktree_files_changed_by_lf_normalization": 79,
+  "checkout_results": {
+    "true": {
+      "core_autocrlf": "true",
+      "commit": "64d8ccfcb4a345cecc6d15bbdaf804207d8a3b1c",
+      "gitattributes_blob": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+      "focused_files": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": {
+          "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "bytes": 60211
+        },
+        "app/data/fields/default.json": {
+          "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "bytes": 158788
+        },
+        "app/ai/companions/pilot.gd": {
+          "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+          "bytes": 21319
+        },
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+          "sha256": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+          "bytes": 1319
+        },
+        "app/data/ai/companions/fields/club-default.json": {
+          "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+          "bytes": 3341
+        }
+      },
+      "attributes": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": [
+          "app/data/aircraft/jensen_ugly_stik_60.json: text: set",
+          "app/data/aircraft/jensen_ugly_stik_60.json: eol: crlf"
+        ],
+        "app/data/fields/default.json": [
+          "app/data/fields/default.json: text: set",
+          "app/data/fields/default.json: eol: crlf"
+        ],
+        "app/ai/companions/pilot.gd": [
+          "app/ai/companions/pilot.gd: text: set",
+          "app/ai/companions/pilot.gd: eol: lf"
+        ],
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": [
+          "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: text: set",
+          "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: eol: lf"
+        ],
+        "app/data/ai/companions/fields/club-default.json": [
+          "app/data/ai/companions/fields/club-default.json: text: set",
+          "app/data/ai/companions/fields/club-default.json: eol: lf"
+        ]
+      },
+      "solver_raw_identity_sha256": "939bea1dfdbeaf3a9a153354adee93c5e1b8d4dc4e93ff46041fb7d3179ec48c",
+      "solver_source_file_count": 133,
+      "canonical_solver_identity_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+      "files_changed_by_lf_normalization": 133
+    },
+    "false": {
+      "core_autocrlf": "false",
+      "commit": "64d8ccfcb4a345cecc6d15bbdaf804207d8a3b1c",
+      "gitattributes_blob": "fcf1b9f1701498db3be8cc7cbcb7f7dfffdb9ede",
+      "focused_files": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": {
+          "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "bytes": 60211
+        },
+        "app/data/fields/default.json": {
+          "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "bytes": 158788
+        },
+        "app/ai/companions/pilot.gd": {
+          "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+          "bytes": 21319
+        },
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+          "sha256": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+          "bytes": 1319
+        },
+        "app/data/ai/companions/fields/club-default.json": {
+          "sha256": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+          "bytes": 3341
+        }
+      },
+      "attributes": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": [
+          "app/data/aircraft/jensen_ugly_stik_60.json: text: set",
+          "app/data/aircraft/jensen_ugly_stik_60.json: eol: crlf"
+        ],
+        "app/data/fields/default.json": [
+          "app/data/fields/default.json: text: set",
+          "app/data/fields/default.json: eol: crlf"
+        ],
+        "app/ai/companions/pilot.gd": [
+          "app/ai/companions/pilot.gd: text: set",
+          "app/ai/companions/pilot.gd: eol: lf"
+        ],
+        "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": [
+          "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: text: set",
+          "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json: eol: lf"
+        ],
+        "app/data/ai/companions/fields/club-default.json": [
+          "app/data/ai/companions/fields/club-default.json: text: set",
+          "app/data/ai/companions/fields/club-default.json: eol: lf"
+        ]
+      },
+      "solver_raw_identity_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+      "solver_source_file_count": 133,
+      "canonical_solver_identity_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+      "files_changed_by_lf_normalization": 79
+    }
+  },
+  "focused_source_hashes_match_between_clones": true,
+  "focused_source_hashes_match_current_worktree": true,
+  "gitattributes_match_between_clones": true,
+  "canonical_solver_identity_matches_all_checkouts": true,
+  "raw_solver_identity_matches_between_clones": false,
+  "profile_metadata_at_capture": {
+    "aircraft_profile_sha256": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+    "solver": {
+      "normalization": "utf8-lf",
+      "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e"
+    }
+  },
+  "retained_checkout_root": ".tools/afc02-canonical-checkout-i48shodj"
+}

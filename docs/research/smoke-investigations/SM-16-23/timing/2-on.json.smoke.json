@@ -1,0 +1,38 @@
+{
+	"crash": false,
+	"emitting_frames": 4075,
+	"harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+	"holds": {},
+	"observed_frames_including_warmup": 4077,
+	"pause_reason": "",
+	"peak_capacity": 720,
+	"smoke": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 720,
+			"configured": true,
+			"fault": "",
+			"resolved_rates_hz": {
+				"show_tailpipe": {
+					"bore_radius_m": 0.025,
+					"capacity": 720,
+					"density": 0.4,
+					"requested_hz": 240.0,
+					"resolved_hz": 240.0
+				}
+			},
+			"saturated": false,
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_tailpipe": 720
+			},
+			"source_emitters": 0
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v2",
+		"requested": true,
+		"source_running": true
+	},
+	"unattended_focus_resumes": 1
+}

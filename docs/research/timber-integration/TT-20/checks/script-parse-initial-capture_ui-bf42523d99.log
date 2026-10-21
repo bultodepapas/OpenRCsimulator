@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Too many arguments for "_smooth_normal_lookup()" call. Expected at most 1 but received 3.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:108)
+SCRIPT ERROR: Parse Error: Function "_surface_triangle_normal()" not found in base self.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:131)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "normal" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:131)
+SCRIPT ERROR: Parse Error: Function "_surface_triangle_normal()" not found in base self.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:155)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "normal" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:155)
+SCRIPT ERROR: Parse Error: Function "_fully_covered_paint()" not found in base self.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:156)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "target_material" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://aircraft/timber_visual_details.gd:156)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/airplane.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://ui/home_scene.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/capture_ui.gd:0)
+ERROR: Failed to load script "res://tests/capture_ui.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "16e24359-3f86-4f25-8aa5-a4f6dce8749c",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "..\\tools\\scenery\\bake_parked_aircraft.gd",
+    "--",
+    "--check"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:49:58.558973+00:00",
+  "label": "parked-aircraft-final-semantic-check",
+  "log": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\p51-collision-rebake-final\\parked-aircraft-final-semantic-check-qvkwzb9w\\engine.log",
+  "report": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\p51-collision-rebake-final\\parked-aircraft-final-semantic-check-qvkwzb9w\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.516,
+  "log_bytes": 725,
+  "log_sha256": "2ea1bd00f08e2d67ab393286db4c27112ac4fe88747f234473c4dbbf2066c6ea"
+}

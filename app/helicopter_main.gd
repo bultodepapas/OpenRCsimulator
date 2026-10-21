@@ -23,6 +23,8 @@ const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const Preferences = preload("res://app_state/preferences.gd")
 const ControllerActions = preload("res://input/controller_actions.gd")
 const Prompts = preload("res://ui/controller_prompts.gd")
+const HelicopterAudio = preload("res://audio/helicopter_audio.gd")
+const SmokeSystem = preload("res://render/smoke/smoke_system.gd")
 signal pause_requested
 ## UI-31 (UI-30 PS-7): R uses the shell's restart transaction, like the airplane route.
 signal restart_requested
@@ -69,6 +71,13 @@ var _rotor_envelope_flags: Dictionary={
  "within_small_flap_angle_range": false,
 }
 var _injected_user_args: Variant=null
+var _soundscape_audio: Node
+
+## HX-700 is a visual surrogate for the X-Cell reference. No verified engine
+## outlet or show mount has been authored; rotor RPM cannot establish combustion.
+## Keep the shared capability boundary explicit without guessing a physical exit.
+func smoke_capabilities() -> Dictionary:
+ return SmokeSystem.capabilities({}, "HX-700/X-Cell engine and outlet pairing is not established.")
 
 func _ready() -> void:
  var args: Dictionary=_user_args()
@@ -133,6 +142,10 @@ func _ready() -> void:
  _night_kit.set_mode(str(args.get("heli-lights","auto")))
  _crash_presentation.set_night_kit(_night_kit)
  _build_hud()
+ if str(args.get("soundscape","on")) != "off" and not args.has("trace") and not args.has("capture"):
+  _soundscape_audio=HelicopterAudio.new()
+  add_child(_soundscape_audio)
+  _soundscape_audio.configure(self)
  print("HELICOPTER READY: ",session.aircraft.qualification)
  if args.has("trace"):
   _write_trace(args)

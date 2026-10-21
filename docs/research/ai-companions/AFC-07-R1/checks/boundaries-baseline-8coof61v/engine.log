@@ -1,0 +1,19 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL runway cannot grant before request exists
+FAIL runway grants at request time
+FAIL valid runway state still roundtrips
+FAIL activity cannot grant before request exists
+FAIL activity grants at request time
+FAIL preempted completion cannot precede grant
+FAIL retirement cannot precede grant
+FAIL duplicate weighted IDs refuse without consuming RNG
+SCRIPT ERROR: Invalid call. Nonexistent 'bool' constructor.
+   at: choose_weighted_activity (res://activity_quota_scheduler.gd:46)
+   GDScript backtrace (most recent call first):
+       [0] choose_weighted_activity (res://activity_quota_scheduler.gd:46)
+       [1] _initialize (res://test_scheduler_boundaries.gd:49)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: _initialize (res://test_scheduler_boundaries.gd:49)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://test_scheduler_boundaries.gd:49)

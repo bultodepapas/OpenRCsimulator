@@ -1,0 +1,20 @@
+{
+  "asset": "Utility Box 01",
+  "author": "James Ray Cock",
+  "license": "CC0 1.0",
+  "license_url": "https://polyhaven.com/license",
+  "cc0_legal_code_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "asset_url": "https://polyhaven.com/a/utility_box_01",
+  "source_manifest": "assets/source-deliveries/utility-box-01-polyhaven/source-manifest.json",
+  "runtime_model": "utility_box_01_1k.gltf",
+  "runtime_processing": "None. Model, shared geometry buffer, and 1K textures are byte-identical copies from the official Poly Haven package.",
+  "runtime_package_bytes": 1977061,
+  "local_bounds_m_y_up": {
+    "min": [-0.2600001097, 0.0, -0.2099999934],
+    "max": [0.2600001097, 1.1203334332, 0.2220000029],
+    "dimensions": [0.5200002193, 1.1203334332, 0.4319999963]
+  },
+  "triangles": 4404,
+  "suggested_single_instance_scene_scale": 0.6,
+  "suggested_dimensions_at_scale_m": [0.3120001316, 0.6722000599, 0.2591999978]
+}

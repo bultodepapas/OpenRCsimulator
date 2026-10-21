@@ -1,0 +1,103 @@
+{
+  "format": "openrc-ai-field v1",
+  "id": "club-default",
+  "field_source": {
+    "path": "res://data/fields/default.json",
+    "format": "openrc-field v1",
+    "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "field_id": "default"
+  },
+  "runway_id": "runway",
+  "circuit": {
+    "shape": "circle",
+    "side": "north",
+    "center_north": {
+      "value": 199.0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Default field runway center plus twice the 80 m circuit radius and twice the 12 m runway width; derived by the source-bound Stik pilot route factors."
+    },
+    "center_east": {
+      "value": 0.0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Copied from the normalized default field runway center_east."
+    },
+    "radius": {
+      "value": 80.0,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Maximum of 0.8 times the 100 m runway length and 4.0 times its 12 m width, from the source-bound Stik pilot."
+    },
+    "base_agl": {
+      "value": 35.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Current Stik pilot base circuit altitude; passed the calm and gentle-practice 120 s matrix."
+    },
+    "slot_agl_step": {
+      "value": 20.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Current Stik pilot altitude spacing between airborne admission slots; passed the 1–3 aircraft matrix."
+    },
+    "roster_count": {"min": 1, "max": 3}
+  },
+  "qualification": {
+    "status": "passed",
+    "scenarios": ["calm", "gentle-practice"],
+    "counts": [1, 2, 3],
+    "duration_s": {
+      "value": 120.0,
+      "unit": "s",
+      "kind": "measured",
+      "source": "Six pilot-matrix scenarios, each completing 28,800 physics ticks at 240 Hz."
+    },
+    "observed": {
+      "min_agl": {
+        "value": 34.31,
+        "unit": "m",
+        "kind": "measured",
+        "source": "Minimum local terrain clearance across the six companion pilot matrix scenarios."
+      },
+      "max_agl": {
+        "value": 75.01,
+        "unit": "m",
+        "kind": "measured",
+        "source": "Maximum local terrain clearance across the six companion pilot matrix scenarios."
+      },
+      "min_tas": {
+        "value": 14.57,
+        "unit": "m/s",
+        "kind": "measured",
+        "source": "Minimum TAS across the six companion pilot matrix scenarios."
+      },
+      "max_tas": {
+        "value": 15.50,
+        "unit": "m/s",
+        "kind": "measured",
+        "source": "Maximum TAS across the six companion pilot matrix scenarios."
+      },
+      "max_radial_error": {
+        "value": 4.05,
+        "unit": "m",
+        "kind": "measured",
+        "source": "Maximum absolute radial error across the six companion pilot matrix scenarios."
+      },
+      "min_player_separation": {
+        "value": 122.31,
+        "unit": "m",
+        "kind": "measured",
+        "source": "Minimum player-to-companion center separation across the six companion pilot matrix scenarios."
+      },
+      "min_pair_separation": {
+        "value": 121.74,
+        "unit": "m",
+        "kind": "measured",
+        "source": "Minimum companion-to-companion center separation in the tested multi-aircraft scenarios."
+      }
+    },
+    "evidence": "docs/research/ai-companions/pilot/README.md"
+  },
+  "static_route_clearance": "requires_session_check"
+}

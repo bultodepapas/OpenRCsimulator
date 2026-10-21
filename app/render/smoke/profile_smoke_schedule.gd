@@ -30,8 +30,11 @@ func configure(profile_entries: Array[Dictionary], slot_info: Dictionary) -> boo
 			_fault = "invalid slot kind"
 			return false
 		var runtime_entry := entry.duplicate(true)
+		var descriptor: Dictionary = registration if registration is Dictionary else {}
+		runtime_entry["activation_policy"] = str(descriptor.get("activation_policy", "source_running" if kind == "source" else "independent_request"))
+		runtime_entry["source_id"] = str(descriptor.get("source_id", "$propulsion"))
 		runtime_entry["kind"] = kind
-		if kind == "source":
+		if kind == "source" or str(runtime_entry.activation_policy) == "source_and_request":
 			if registration is not Dictionary or str(registration.get("source_kind", "")).is_empty():
 				_fault = "source slot has no accepted source kind"
 				return false
@@ -46,6 +49,9 @@ func configure(profile_entries: Array[Dictionary], slot_info: Dictionary) -> boo
 			"activation_tick": -1,
 			"output_level": 0.0,
 			"output_color": _base_color(runtime_entry),
+			"palette_segment": -1,
+			"output_wash": Vector3.ZERO,
+			"wash_mps": Vector3.ZERO,
 		}
 	return true
 
@@ -64,11 +70,27 @@ func reset() -> void:
 			"activation_tick": -1,
 			"output_level": 0.0,
 			"output_color": _base_color(entry),
+			"palette_segment": -1,
+			"output_wash": Vector3.ZERO,
+			"wash_mps": Vector3.ZERO,
 		}
 
 
-func rebase(tick: int) -> void:
+func cancel_bursts() -> void:
+	for state: Dictionary in _runtime.values():
+		state.burst_until = -1
+		state.burst_level = 0.0
+
+
+func rebase(tick: int, freeze: bool = false) -> void:
 	if tick >= 0:
+		if freeze and _last_tick >= 0 and tick > _last_tick:
+			var shift := tick - _last_tick
+			for state: Dictionary in _runtime.values():
+				if int(state.activation_tick) >= 0:
+					state.activation_tick += shift
+				if int(state.burst_until) >= 0:
+					state.burst_until += shift
 		_last_tick = tick
 
 
@@ -83,9 +105,6 @@ func advance(start_tick: int, end_tick: int, request: Variant, source_sample: Va
 		return _latch_failure("interval outside 0..24 tick bounds")
 	if _last_tick >= 0 and start_tick != _last_tick:
 		return _latch_failure("non-contiguous tick interval; reset required")
-	if end_tick == start_tick:
-		_last_tick = end_tick
-		return {"ok": true, "events": {}, "event_log": [], "interval_ticks": 0}
 
 	var next_runtime: Dictionary = _runtime.duplicate(true)
 	var all_events: Dictionary = {}
@@ -100,9 +119,10 @@ func advance(start_tick: int, end_tick: int, request: Variant, source_sample: Va
 		if changes_result.has("initial"):
 			var initial: Dictionary = changes_result.initial
 			current.signal_level = float(initial.level)
-			if str(entry.kind) == "source":
+			if initial.has("kind"):
 				current.source_kind = str(initial.kind)
 				current.source_running = bool(initial.running)
+			current.wash_mps = initial.get("wash_mps", Vector3.ZERO)
 		if changes.size() > MAX_INPUT_CHANGES:
 			return _latch_failure("more than 25 input changes in one interval")
 		var per_slot: Array[Dictionary] = []
@@ -111,25 +131,36 @@ func advance(start_tick: int, end_tick: int, request: Variant, source_sample: Va
 			while input_index < changes.size() and int(changes[input_index].tick) == tick:
 				var change: Dictionary = changes[input_index]
 				current.signal_level = float(change.level)
-				if str(entry.kind) == "source":
+				if change.has("kind"):
 					current.source_kind = str(change.kind)
 					current.source_running = bool(change.running)
+				current.wash_mps = change.get("wash_mps", Vector3.ZERO)
 				input_index += 1
 			var output := _evaluate(entry, current, tick)
 			var color: Color = output.color
 			var level := float(output.level)
-			if tick == start_tick or not _same_output(current.output_level, current.output_color, level, color):
+			var palette_segment := int(output.get("palette_segment", -1))
+			var color_changed := not _same_output(current.output_level, current.output_color, level, color)
+			if str(entry.get("palette_mode", "step")) == "smooth":
+				color_changed = not is_equal_approx(float(current.output_level), level) or (level > 0.0 and palette_segment != int(current.palette_segment))
+			color_changed = color_changed or (level > 0.0 and not (current.get("output_wash", Vector3.ZERO) as Vector3).is_equal_approx(current.wash_mps))
+			if tick == start_tick or color_changed:
 				var item := {
 					"tick": tick,
 					"offset_s": float(tick - start_tick) / TICKS_PER_SECOND,
 					"level": level,
 					"color": color,
+					"next_color": output.get("next_color", color),
+					"transition_s": output.get("transition_s", 0.0),
+					"wash_mps": current.wash_mps,
 				}
 				per_slot.append(item)
 				if tick > start_tick:
 					event_log.append({"slot": slot, "tick": tick, "level": level, "color": color})
 			current.output_level = level
 			current.output_color = color
+			current.palette_segment = palette_segment
+			current.output_wash = current.wash_mps
 		if input_index != changes.size():
 			return _latch_failure("input change escaped the interval")
 		if per_slot.size() > MAX_EVENTS_PER_EMITTER:
@@ -144,7 +175,16 @@ func advance(start_tick: int, end_tick: int, request: Variant, source_sample: Va
 
 func _input_changes(entry: Dictionary, start_tick: int, end_tick: int, request: Variant,
 		source_sample: Variant, current: Dictionary) -> Dictionary:
-	var raw: Variant = source_sample if str(entry.kind) == "source" else _request_for_slot(request, str(entry.slot))
+	var source: Variant = source_sample
+	if source_sample is Dictionary and source_sample.get("sources") is Dictionary:
+		source = source_sample.sources.get(str(entry.get("source_id", "$propulsion")), {"kind": "", "running": false, "level": 0.0})
+	var raw: Variant = source if str(entry.kind) == "source" else _request_for_slot(request, str(entry.slot))
+	if str(entry.get("activation_policy", "")) == "source_and_request":
+		return _gated_show_changes(entry, start_tick, end_tick, raw, source, current)
+	return _read_changes(entry, start_tick, end_tick, raw, current)
+
+
+func _read_changes(entry: Dictionary, start_tick: int, end_tick: int, raw: Variant, current: Dictionary) -> Dictionary:
 	if raw is Dictionary and raw.has("changes"):
 		var changes_raw: Variant = raw.changes
 		if not changes_raw is Array:
@@ -153,7 +193,7 @@ func _input_changes(entry: Dictionary, start_tick: int, end_tick: int, request: 
 			return {"ok": false, "error": "more than 25 input changes in one interval"}
 		var output: Array[Dictionary] = []
 		var initial := {"level": float(current.signal_level), "kind": str(current.source_kind),
-			"running": bool(current.source_running)}
+			"running": bool(current.source_running), "wash_mps": current.get("wash_mps", Vector3.ZERO)}
 		if raw.has("level"):
 			var initial_level := _finite_level(raw.level)
 			if initial_level < 0.0:
@@ -164,6 +204,7 @@ func _input_changes(entry: Dictionary, start_tick: int, end_tick: int, request: 
 				return {"ok": false, "error": "source sample requires running state"}
 			initial.kind = str(raw.kind)
 			initial.running = bool(raw.running)
+		initial.wash_mps = _wash(raw.get("wash_mps", Vector3.ZERO))
 		var last_tick := start_tick - 1
 		for raw_change: Variant in changes_raw:
 			if not raw_change is Dictionary:
@@ -177,31 +218,33 @@ func _input_changes(entry: Dictionary, start_tick: int, end_tick: int, request: 
 			var level := _finite_level(change.get("level", NAN))
 			if level < 0.0:
 				return {"ok": false, "error": "change level must be finite and in 0..1"}
-			var normalized := {"tick": int(change.tick), "level": level, "kind": "", "running": false}
+			var normalized := {"tick": int(change.tick), "level": level, "kind": "", "running": false, "wash_mps": Vector3.ZERO}
 			if str(entry.kind) == "source":
 				if not change.has("kind") or typeof(change.get("running")) != TYPE_BOOL:
 					return {"ok": false, "error": "source changes require kind and running"}
 				normalized.kind = str(change.kind)
 				normalized.running = bool(change.running)
+			normalized.wash_mps = _wash(change.get("wash_mps", initial.wash_mps))
 			output.append(normalized)
 		return {"ok": true, "changes": output, "initial": initial}
 	if raw is Dictionary:
 		var level := _finite_level(raw.get("level", NAN))
 		if level < 0.0:
 			return {"ok": false, "error": "snapshot level must be finite and in 0..1"}
-		var change := {"tick": start_tick, "level": level, "kind": "", "running": false}
+		var change := {"tick": start_tick, "level": level, "kind": "", "running": false, "wash_mps": Vector3.ZERO}
 		if str(entry.kind) == "source":
 			if typeof(raw.get("running")) != TYPE_BOOL or not raw.has("kind"):
 				return {"ok": false, "error": "source sample requires kind and running"}
 			change.kind = str(raw.kind)
 			change.running = bool(raw.running)
+		change.wash_mps = _wash(raw.get("wash_mps", Vector3.ZERO))
 		return {"ok": true, "changes": [change]}
 	if str(entry.kind) == "source":
 		return {"ok": false, "error": "source sample must include accepted kind and running state"}
 	var scalar_level := _finite_level(raw)
 	if scalar_level < 0.0:
 		return {"ok": false, "error": "request must be finite and in 0..1"}
-	return {"ok": true, "changes": [{"tick": start_tick, "level": scalar_level, "kind": "", "running": false}]}
+	return {"ok": true, "changes": [{"tick": start_tick, "level": scalar_level, "kind": "", "running": false, "wash_mps": Vector3.ZERO}]}
 
 
 func _evaluate(entry: Dictionary, state: Dictionary, tick: int) -> Dictionary:
@@ -218,7 +261,7 @@ func _evaluate(entry: Dictionary, state: Dictionary, tick: int) -> Dictionary:
 		if str(entry.mode) == "burst":
 			state.burst_until = tick + _seconds_to_ticks(float(entry.burst_s))
 			state.burst_level = signal_level
-	if signal_level <= 0.0 and str(entry.kind) == "source":
+	if signal_level <= 0.0 and (str(entry.kind) == "source" or str(entry.get("activation_policy", "")) == "source_and_request"):
 		state.burst_until = -1
 	var mode := str(entry.mode)
 	var level := 0.0
@@ -235,19 +278,71 @@ func _evaluate(entry: Dictionary, state: Dictionary, tick: int) -> Dictionary:
 				if phase < duty_ticks:
 					level = signal_level
 	state._previous_signal_level = signal_level
-	var color := _color_at(entry, tick, int(state.activation_tick))
-	return {"level": level, "color": color}
+	var color_record := _color_record(entry, tick, int(state.activation_tick))
+	color_record["level"] = level
+	return color_record
 
 
-func _color_at(entry: Dictionary, tick: int, activation_tick: int) -> Color:
+func _color_record(entry: Dictionary, tick: int, activation_tick: int) -> Dictionary:
 	var palette: Array = entry.get("palette", [])
-	if palette.is_empty():
-		return _parse_color(str(entry.color))
-	if palette.size() == 1 or float(entry.step_s) <= 0.0 or activation_tick < 0:
-		return _parse_color(str(palette[0]))
+	var base := _parse_color(str(entry.color)) if palette.is_empty() else _parse_color(str(palette[0]))
+	if palette.size() < 2 or float(entry.step_s) <= 0.0 or activation_tick < 0:
+		return {"color": base, "next_color": base, "transition_s": 0.0, "palette_segment": -1}
 	var step_ticks := _seconds_to_ticks(float(entry.step_s))
-	var index := posmod(floori(float(maxi(0, tick - activation_tick)) / step_ticks), palette.size())
-	return _parse_color(str(palette[index]))
+	var elapsed := maxi(0, tick - activation_tick) + roundi(float(entry.get("phase_offset_s", 0.0)) * TICKS_PER_SECOND)
+	var segment := floori(float(elapsed) / step_ticks)
+	var index := posmod(segment, palette.size())
+	var color := _parse_color(str(palette[index]))
+	if str(entry.get("palette_mode", "step")) != "smooth":
+		return {"color": color, "next_color": color, "transition_s": 0.0, "palette_segment": segment}
+	var next := _parse_color(str(palette[(index + 1) % palette.size()]))
+	var remainder := posmod(elapsed, step_ticks)
+	# Particle COLOR is consumed by the stock material as sRGB vertex color.
+	# Interpolate in linear RGB, then convert once at the renderer boundary.
+	var linear := color.srgb_to_linear().lerp(next.srgb_to_linear(), float(remainder) / step_ticks)
+	return {"color": linear.linear_to_srgb(), "next_color": next,
+		"transition_s": float(step_ticks - remainder) / TICKS_PER_SECOND, "palette_segment": segment}
+
+
+func _gated_show_changes(entry: Dictionary, start_tick: int, end_tick: int,
+		request: Variant, source: Variant, current: Dictionary) -> Dictionary:
+	var request_entry := entry.duplicate()
+	request_entry.kind = "show"
+	var source_entry := entry.duplicate()
+	source_entry.kind = "source"
+	var request_result := _read_changes(request_entry, start_tick, end_tick, request, current)
+	if not request_result.ok:
+		return request_result
+	var source_result := _read_changes(source_entry, start_tick, end_tick, source, current)
+	if not source_result.ok:
+		return source_result
+	var request_state: Dictionary = request_result.get("initial", {"level": float(current.signal_level)}).duplicate()
+	var source_state: Dictionary = source_result.get("initial", {"kind": "", "running": false, "level": 0.0}).duplicate()
+	var request_index := 0
+	var source_index := 0
+	var changes: Array[Dictionary] = []
+	for tick in range(start_tick, end_tick + 1):
+		var changed := tick == start_tick
+		while request_index < request_result.changes.size() and int(request_result.changes[request_index].tick) == tick:
+			request_state = request_result.changes[request_index]
+			request_index += 1
+			changed = true
+		while source_index < source_result.changes.size() and int(source_result.changes[source_index].tick) == tick:
+			source_state = source_result.changes[source_index]
+			source_index += 1
+			changed = true
+		if changed:
+			var allowed := bool(source_state.get("running", false)) and str(source_state.get("kind", "")) == str(entry.get("source_kind", ""))
+			changes.append({"tick": tick, "level": float(request_state.level) if allowed else 0.0,
+				"kind": str(source_state.get("kind", "")), "running": allowed,
+				"wash_mps": source_state.get("wash_mps", Vector3.ZERO)})
+	return {"ok": true, "changes": changes}
+
+
+func _wash(value: Variant) -> Vector3:
+	if value is Vector3 and value.is_finite():
+		return value.limit_length(100.0)
+	return Vector3.ZERO
 
 
 func _request_for_slot(request: Variant, slot: String) -> Variant:

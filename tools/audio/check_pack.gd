@@ -34,5 +34,24 @@ func _initialize() -> void:
 				okay = okay and wav.mix_rate == 22050 and not wav.stereo and wav.format == AudioStreamWAV.FORMAT_16_BITS
 				okay = okay and wav.data.size() / 2 == int(entry.sample_count)
 				count += 1
-	print("Exported audio: %d/33 sources, manifests and MIT/CC0 notices: %s" % [count, "PASS" if okay and count == 33 else "FAIL"])
-	quit(0 if okay and count == 33 else 1)
+	okay = okay and count == 33
+	var new_count: int = 0
+	for folder: String in ["powertrains", "landing_gear"]:
+		var base: String = "res://assets/audio/" + folder + "/"
+		var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(base + "manifest.json"))
+		okay = okay and manifest is Dictionary and not FileAccess.get_file_as_string(base + "LICENSE.txt").is_empty()
+		if not manifest is Dictionary:
+			continue
+		for entry: Dictionary in manifest.get("assets", []):
+			var wav := load(base + str(entry.file)) as AudioStreamWAV
+			okay = okay and wav != null
+			if wav != null:
+				okay = okay and not wav.stereo and wav.format == AudioStreamWAV.FORMAT_16_BITS
+				okay = okay and wav.mix_rate == int(entry.sample_rate_hz) and wav.data.size() / 2 == int(entry.sample_count)
+				new_count += 1
+	var banks: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/powertrains/BANKS.json"))
+	okay = okay and banks is Dictionary and banks.has_all(["gasoline", "electric", "turbine", "rotor"])
+	okay = okay and new_count == 10 # six engine loops plus three rolling loops and one impact
+	print("Exported audio: %d original/ambience + %d powertrain/gear sources and notices: %s" %
+		[count, new_count, "PASS" if okay else "FAIL"])
+	quit(0 if okay else 1)

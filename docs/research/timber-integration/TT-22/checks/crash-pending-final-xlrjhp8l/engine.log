@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+CRASH at 37.1 m/s (sink 28.7 m/s, airframe contact (hull point 8), point speed 37.1 m/s at detected tick) - [R] restart
+CRASH CAUSE: Steep high-speed dive into the ground path -51°, 37.9 m/s
+TT-20 production review: crash, 6 captures, 0 failures

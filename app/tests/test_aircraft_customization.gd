@@ -36,8 +36,9 @@ func _test_fleet_bindings_and_mounts() -> void:
 		var checked: Dictionary = Customization.validate_bindings(bindings,
 			str(airplane.get("visual_family", "")), str(airplane.get("model_manifest_sha256", "")))
 		_check(id + " bindings validate", checked.get("ok", false), str(checked.get("errors", [])))
-		_check(id + " binds the v2 presentation source closure",
-			int(bindings.get("version", 0)) == 2 and str(bindings.get("presentation_engine_version", "")) == "4.7.2"
+		_check(id + " binds the v3 presentation source closure",
+			int(bindings.get("version", 0)) == 3 and int(bindings.get("source_proof_version", 0)) == 2
+			and str(bindings.get("presentation_engine_version", "")) == "4.7.2"
 			and bindings.get("presentation_sources", []) == PresentationSources.current_records())
 		_check(id + " exposes body, wing and tail paint", _slot_ids(bindings.get("paint_slots", [])) == ["body", "tail", "wing"]
 			or _slot_ids(bindings.get("paint_slots", [])) == ["body", "tail", "wing", "wing_tip"])
@@ -60,15 +61,18 @@ func _test_fleet_bindings_and_mounts() -> void:
 		for endpoint: Dictionary in bindings.get("smoke_slots", []):
 			if endpoint.kind == "show":
 				show_ids.append(str(endpoint.id))
-		_check(id + " declares paired wing and tail show mounts",
-			show_ids == ["show_tail", "show_wing_tip_left", "show_wing_tip_right"])
+		var expected_show_ids := ["show_tail", "show_wing_tip_left", "show_wing_tip_right"]
+		if id in ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "p51d-mustang-120"]:
+			expected_show_ids.push_front("show_exhaust")
+		if id == "sebart-avanti-s-a200-p100rx": expected_show_ids.insert(1, "show_tailpipe")
+		_check(id + " declares authored show mounts", show_ids == expected_show_ids)
 		var transforms: Dictionary = Customization.smoke_transforms(airplane)
-		var expected_count := 4 if bindings.get("smoke_slots", []).size() == 4 else 3
+		var expected_count: int = bindings.get("smoke_slots", []).size()
 		_check(id + " resolves only authored smoke endpoints", transforms.size() == expected_count, str(transforms.keys()))
 		airplane.root.transform = Transform3D(Basis(Vector3.UP, 0.31), Vector3(2.0, 1.0, -3.0))
 		transforms = Customization.smoke_transforms(airplane)
 		for endpoint: Dictionary in bindings.get("smoke_slots", []):
-			if endpoint.kind == "show":
+			if endpoint.kind == "show" and not endpoint.has("anchor_id"):
 				var expected_position: Vector3 = airplane.root.transform * _vector(endpoint.position_m)
 				var expected_direction: Vector3 = (airplane.root.transform.basis * _vector(endpoint.direction)).normalized()
 				var actual: Transform3D = transforms.get(str(endpoint.id), Transform3D.IDENTITY)

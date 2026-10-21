@@ -1,0 +1,950 @@
+{
+  "format": "openrc-afc04r2-verification v1",
+  "verified_utc": "2026-10-20T22:18:50.784544+00:00",
+  "scope": "Narrow conflicting avoidance/recovery target repair; no moving-encounter qualification or physical validation",
+  "sources": [
+    {
+      "path": "app/ai/companions/pilot.gd",
+      "bytes": 21717,
+      "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    },
+    {
+      "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "bytes": 1319,
+      "sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008"
+    },
+    {
+      "path": "app/tests/test_companions_clearance.gd",
+      "bytes": 4149,
+      "sha256": "6bb0682335cc35118ff1668d7667ca958c6713bf983cbfa571a82a7a954df780"
+    },
+    {
+      "path": "research/ai-companions/encounter_probe.gd",
+      "bytes": 49059,
+      "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+    },
+    {
+      "path": "research/ai-companions/pilot_probe.gd",
+      "bytes": 24165,
+      "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+    }
+  ],
+  "baseline_pilot": {
+    "commit": "545d74bd1d1fda29bd77a46b470af5085f830dfd",
+    "path": "app/ai/companions/pilot.gd",
+    "git_blob": "1994a3f14f9ab03e5cfc07bd14ac73d1c35b2b9f",
+    "sha256": "51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3"
+  },
+  "profile_qualification": {
+    "status": "qualified_for_narrow_scope",
+    "activities": [
+      "circuits"
+    ],
+    "skill": "experienced",
+    "start_modes": [
+      "airborne"
+    ],
+    "unqualified_modes": [
+      "ground",
+      "takeoff",
+      "runway",
+      "landing"
+    ],
+    "roster_count": {
+      "min": 1,
+      "max": 3
+    },
+    "evidence": "docs/research/ai-companions/pilot/README.md"
+  },
+  "exact_replays": [
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 7004,
+      "sha256": "7aa26830622b75a96a23c026f9fc6206e08e14799bee3aa49a86ac1f5f6031a7",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2438,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 7003,
+      "sha256": "06385c2568f3f94059109c6c257a373eb06422cc9c0ed3aa1b828321bfdd7509",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2422,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 7004,
+      "sha256": "7aa26830622b75a96a23c026f9fc6206e08e14799bee3aa49a86ac1f5f6031a7",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2438,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-coupled/replay.json",
+      "bytes": 6954,
+      "sha256": "282748422531752f88003d0fa5ae985826c3efc19ae27c165cb650536c8109c6",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2438,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "bytes": 6841,
+      "sha256": "a3ec0cc16beec400933b65559992128264f1cc4e3308a936e752a83e0536b4b3",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 7003,
+      "sha256": "06385c2568f3f94059109c6c257a373eb06422cc9c0ed3aa1b828321bfdd7509",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2422,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-coupled/replay.json",
+      "bytes": 6951,
+      "sha256": "e6aacebdbe5ebc084d4dcc4178251f557299ba94574f7986c1003e48e772e76b",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2422,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "bytes": 6838,
+      "sha256": "d369a83daf671107cb914959e966695e59b1446cc0962a14569c4f9c621cdb1b",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 6786,
+      "sha256": "68bf746c43ee8e91f49180a959349121afb50a8cab8d2163949413a0b2546d19",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-coupled/replay.json",
+      "bytes": 6798,
+      "sha256": "1a177a815b8d816018baa8df68ba7c1ac7b66c1c74f52f2bf3ce0b33680c3167",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "bytes": 6842,
+      "sha256": "1acc3a6da97730850d0b72bb6ec283de41484d1cfd8f70038ee56e2030362fa4",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 6785,
+      "sha256": "3a79702fe0c2e1967765f65adba6f654bc0f98f591035dc5ffc95ee6956fd9c3",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-coupled/replay.json",
+      "bytes": 6795,
+      "sha256": "2b026a77255116a7728b1c3c4e3a3fad5091335819f01491d909460e1ab955ad",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "bytes": 6839,
+      "sha256": "3fb8c2173d15b19ff89bed5bf092dbfb822227d923c799029b7bc7fa55a9e12e",
+      "status": "ok",
+      "mode": "exact",
+      "complete": true,
+      "solver_changed": false,
+      "final_tick": 2880,
+      "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+    }
+  ],
+  "paired_tape_comparisons": [
+    {
+      "case_id": "seed-20261020-crossing-right",
+      "full_player_tapes_byte_equal": true,
+      "coupled_player_tapes_match_exogenous_prefix": true,
+      "baseline_ai_replay_byte_equal_after_install": true,
+      "comparison_report": {
+        "path": "docs/research/ai-companions/AFC-04-R2/seed-20261020-crossing-right-player-comparison.json",
+        "bytes": 1441,
+        "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+      }
+    },
+    {
+      "case_id": "seed-20261021-crossing-left",
+      "full_player_tapes_byte_equal": true,
+      "coupled_player_tapes_match_exogenous_prefix": true,
+      "baseline_ai_replay_byte_equal_after_install": true,
+      "comparison_report": {
+        "path": "docs/research/ai-companions/AFC-04-R2/seed-20261021-crossing-left-player-comparison.json",
+        "bytes": 1441,
+        "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+      }
+    }
+  ],
+  "circuit_matrix": {
+    "passed_checks": 148,
+    "csv_equality": [
+      {
+        "current": {
+          "path": "docs/research/ai-companions/AFC-04-R2/circuit-matrix/scenario_metrics.csv",
+          "bytes": 954,
+          "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+        },
+        "original": {
+          "path": "docs/research/ai-companions/pilot/scenario_metrics.csv",
+          "bytes": 954,
+          "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+        },
+        "byte_equal": true
+      },
+      {
+        "current": {
+          "path": "docs/research/ai-companions/AFC-04-R2/circuit-matrix/flight_samples_1hz.csv",
+          "bytes": 196250,
+          "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+        },
+        "original": {
+          "path": "docs/research/ai-companions/pilot/flight_samples_1hz.csv",
+          "bytes": 196250,
+          "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+        },
+        "byte_equal": true
+      }
+    ]
+  },
+  "focused_checks": {
+    "passed_checks": 318,
+    "suites": [
+      {
+        "suite": "clearance",
+        "checks": 20,
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-clearance-c9zgv0zj/report.json",
+        "bytes": 1287,
+        "sha256": "1730ccce75ccc5a5a33fdc0514d55d8b12cf4cd7c5cde04b89dad61d870855bf"
+      },
+      {
+        "suite": "encounters",
+        "checks": 191,
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-encounters-nbaf6ews/report.json",
+        "bytes": 1293,
+        "sha256": "626c262e4e828146017c9497e42aec294facfa2f20a710d5e785543e0f608eba"
+      },
+      {
+        "suite": "pilot",
+        "checks": 24,
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-pilot-pylljjgu/report.json",
+        "bytes": 1268,
+        "sha256": "e5b38876a4f9ba5c5bc7dd9bc92325cba1e553f76218394d532e5915ec0ff118"
+      },
+      {
+        "suite": "profiles",
+        "checks": 30,
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-profiles-iwyg_kep/report.json",
+        "bytes": 1300,
+        "sha256": "5b9640bc764eef3588bcdcad7cc2b101ae3d52394c1a8112116cdb83bbcf8692"
+      },
+      {
+        "suite": "manager",
+        "checks": 53,
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-manager-xtehjc1w/report.json",
+        "bytes": 1280,
+        "sha256": "7bd072fda3916d65994b12a8174e8d4ebe1ba2380f9e3f25c75e4d11f0a06c26"
+      }
+    ]
+  },
+  "recovery_60s": {
+    "report": {
+      "path": "docs/research/ai-companions/AFC-04-R2/recovery-60s/report.json",
+      "bytes": 20167,
+      "sha256": "064f887e7bafc34171591e538c05222daead9cc5aa613420d6fdece1919c4e2b"
+    },
+    "valid_complete_cases": 7,
+    "repeat_exact": true,
+    "separation_gate_passed": false,
+    "cases": [
+      {
+        "case_id": "seed-20261020-head-on",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.3632958634191,
+          "player": 34.9930207050975
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1693449206895,
+          "player": 8.7297700210401e-12
+        },
+        "min_separation_to_player_m": 11.8458660495292,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261020-crossing-left",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.4127325930064,
+          "player": 34.9930111865258
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1264660581453,
+          "player": 9.98547921170069e-12
+        },
+        "min_separation_to_player_m": 11.5782328828606,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261020-crossing-right",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.3976901486757,
+          "player": 34.9930181145764
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1631141461766,
+          "player": 1.00293293739142e-11
+        },
+        "min_separation_to_player_m": 4.12658419490564,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261021-head-on",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.4687759779117,
+          "player": 34.9930185468682
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1216586293206,
+          "player": 1.14915329648168e-11
+        },
+        "min_separation_to_player_m": 11.5595320394932,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261021-crossing-left",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.5008251118999,
+          "player": 34.9930260423411
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.1143776866091,
+          "player": 1.08684620235461e-11
+        },
+        "min_separation_to_player_m": 3.85955877521716,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261021-crossing-right",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.5090125319834,
+          "player": 34.993036578002
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.0892431545469,
+          "player": 1.08676647478695e-11
+        },
+        "min_separation_to_player_m": 11.3870406500411,
+        "min_separation_to_peer_m": null,
+        "separation_gate_passed": false
+      },
+      {
+        "case_id": "seed-20261020-parallel-two-threats",
+        "ticks": 14400,
+        "valid_run": true,
+        "min_agl_m_by_role": {
+          "ai": 34.4514455534617,
+          "peer": 25.9930110129773,
+          "player": 34.9930088190483
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 26.3437330366384,
+          "peer": 9.69447358973808e-12,
+          "player": 9.69447358973808e-12
+        },
+        "min_separation_to_player_m": 10.1899185229682,
+        "min_separation_to_peer_m": 8.96105333088507,
+        "separation_gate_passed": false
+      }
+    ]
+  },
+  "expected_baseline_failures": {
+    "crossings": {
+      "report": {
+        "path": "docs/research/ai-companions/AFC-04-R2/baseline/report.json",
+        "bytes": 15058,
+        "sha256": "5da86c52864ce9f8c8cc7ce657f7bdd428f5fe60d6b171091553581b3b011569"
+      },
+      "cases": [
+        {
+          "case_id": "seed-20261020-crossing-right",
+          "ticks": 2438,
+          "ai_crash": {
+            "impact": "<RefCounted#-9223371897067010326>",
+            "sink": 19.6757449000641,
+            "speed": 29.0566698555432,
+            "ticks_left": 360,
+            "why": "airframe contact (hull point 2), point speed 28.9 m/s at detected tick"
+          },
+          "failure_reason": "ai crash at tick 2438: airframe contact (hull point 2), point speed 28.9 m/s at detected tick",
+          "min_separation_to_player_m": 7.30630339103288
+        },
+        {
+          "case_id": "seed-20261021-crossing-left",
+          "ticks": 2422,
+          "ai_crash": {
+            "impact": "<RefCounted#-9223371869116168466>",
+            "sink": 23.4841756776338,
+            "speed": 29.0420550583695,
+            "ticks_left": 360,
+            "why": "airframe contact (hull point 3), point speed 28.9 m/s at detected tick"
+          },
+          "failure_reason": "ai crash at tick 2422: airframe contact (hull point 3), point speed 28.9 m/s at detected tick",
+          "min_separation_to_player_m": 7.15605900483947
+        }
+      ]
+    },
+    "final_clearance_suite": {
+      "checks": 20,
+      "failed": 4,
+      "receipt": {
+        "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-before-n90nbyzq/report.json",
+        "bytes": 1245,
+        "sha256": "de1a7829f41d2162c3d09a3c1bb2ac50e02194f030f1491bea5b3bd4b3fa415e"
+      }
+    }
+  },
+  "limitations": [
+    "Two repaired crossings worsen player separation to 4.12658419490564 and 3.85955877521716 m.",
+    "The target floor does not guarantee actual clearance, future terrain avoidance, or general upset recovery.",
+    "All surveyed moving intercepts still fail the 30 m player separation gate.",
+    "No new aircraft, activities, population counts, performance or endurance qualification."
+  ],
+  "artifact_manifest": [
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261020-crossing-right-ai/flight.csv",
+      "bytes": 2089084,
+      "sha256": "a74ff0c883de188ef4f04932ebaf0d988a3c938ee2d0b8e61755bab4cd1dcf02"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261020-crossing-right-ai/godot.log",
+      "bytes": 329,
+      "sha256": "8ff7a793775f29873684ce07a98568d5917b04e0456363a26c269a374486644c"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 7004,
+      "sha256": "7aa26830622b75a96a23c026f9fc6206e08e14799bee3aa49a86ac1f5f6031a7"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261021-crossing-left-ai/flight.csv",
+      "bytes": 2089211,
+      "sha256": "c649ce72ba241972a90fb494591415a1cb26ed8703a9013c53dddea598ab2786"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261021-crossing-left-ai/godot.log",
+      "bytes": 329,
+      "sha256": "83bb1648949057b3eb7fd32f131e5f237af35f956bea62e5bcc009b9851780df"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-after-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 7003,
+      "sha256": "06385c2568f3f94059109c6c257a373eb06422cc9c0ed3aa1b828321bfdd7509"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-ai/flight.csv",
+      "bytes": 2089084,
+      "sha256": "a74ff0c883de188ef4f04932ebaf0d988a3c938ee2d0b8e61755bab4cd1dcf02"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-ai/godot.log",
+      "bytes": 329,
+      "sha256": "8ff7a793775f29873684ce07a98568d5917b04e0456363a26c269a374486644c"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 7004,
+      "sha256": "7aa26830622b75a96a23c026f9fc6206e08e14799bee3aa49a86ac1f5f6031a7"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-coupled/flight.csv",
+      "bytes": 1957354,
+      "sha256": "dad274292fda6894e6faa06a096eb81d7c27579c4a924818394b2f06d86d9727"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-coupled/godot.log",
+      "bytes": 208,
+      "sha256": "6c3ceb6ef0371b974fd9d544dfb67f830a035c1280ccd8b3cc99a7f4d553f8e9"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-coupled/replay.json",
+      "bytes": 6954,
+      "sha256": "282748422531752f88003d0fa5ae985826c3efc19ae27c165cb650536c8109c6"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-exogenous/flight.csv",
+      "bytes": 2311688,
+      "sha256": "be8f58fb8c837ab7d9e7abe6a42a58ad460e30df279ba086142ae9243bef1d71"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-exogenous/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "bytes": 6841,
+      "sha256": "a3ec0cc16beec400933b65559992128264f1cc4e3308a936e752a83e0536b4b3"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-ai/flight.csv",
+      "bytes": 2089211,
+      "sha256": "c649ce72ba241972a90fb494591415a1cb26ed8703a9013c53dddea598ab2786"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-ai/godot.log",
+      "bytes": 329,
+      "sha256": "83bb1648949057b3eb7fd32f131e5f237af35f956bea62e5bcc009b9851780df"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 7003,
+      "sha256": "06385c2568f3f94059109c6c257a373eb06422cc9c0ed3aa1b828321bfdd7509"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-coupled/flight.csv",
+      "bytes": 1945569,
+      "sha256": "289d5197c05b21883f3641bfecb03a87884b16736989b66d2304247364adde25"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-coupled/godot.log",
+      "bytes": 208,
+      "sha256": "8d54835f1a6cf061ba2650b35d6b4686b1d283453b87e0f844545b45c170257f"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-coupled/replay.json",
+      "bytes": 6951,
+      "sha256": "e6aacebdbe5ebc084d4dcc4178251f557299ba94574f7986c1003e48e772e76b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-exogenous/flight.csv",
+      "bytes": 2314948,
+      "sha256": "46cc0b73dd67f91a36f6beb20ddd90224c3978b5f1fe168a9c39dd04fa506223"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-exogenous/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/replay-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "bytes": 6838,
+      "sha256": "d369a83daf671107cb914959e966695e59b1446cc0962a14569c4f9c621cdb1b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/report.json",
+      "bytes": 15058,
+      "sha256": "5da86c52864ce9f8c8cc7ce657f7bdd428f5fe60d6b171091553581b3b011569"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl",
+      "bytes": 6674396,
+      "sha256": "fa7ef3fac64bb2ae4035a98a6963711e7c7d59957efd47b27aca4c460b94c132"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl",
+      "bytes": 6673496,
+      "sha256": "5a74097741564e859cf86559f4802121877aa1fc80bb4c4524d9f6c5cca0ac1e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl",
+      "bytes": 7020060,
+      "sha256": "0ab055ac39b92781c5bc628563d58f308b9095cc8f0e1ec597e93d333a19a87e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl",
+      "bytes": 6661852,
+      "sha256": "b0fa4edf1ccd2f43f9570f9e55539ca2a7834c73d57556cb29e3162e63a102ec"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl",
+      "bytes": 6660952,
+      "sha256": "01639c19dc412f163fe8533eba18488bd8e594bae10500cc2b82dd5421259822"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl",
+      "bytes": 7020056,
+      "sha256": "e4acdf8cbb67cb88fc929dbe209c8823bc928eea1541c7f18e1468c20bb0c157"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/baseline/trajectory.csv",
+      "bytes": 85961,
+      "sha256": "a4eeae92b5433d1d83aaf9c1d94d40bbac79240f38e2722499827088453efbd2"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-ai/flight.csv",
+      "bytes": 2605459,
+      "sha256": "39cd64c81b44bcd750b32fe65e2db8883787212d114bc2b086cdd5a0577d98a9"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-ai/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-ai/replay.json",
+      "bytes": 6786,
+      "sha256": "68bf746c43ee8e91f49180a959349121afb50a8cab8d2163949413a0b2546d19"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-coupled/flight.csv",
+      "bytes": 2311688,
+      "sha256": "be8f58fb8c837ab7d9e7abe6a42a58ad460e30df279ba086142ae9243bef1d71"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-coupled/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-coupled/replay.json",
+      "bytes": 6798,
+      "sha256": "1a177a815b8d816018baa8df68ba7c1ac7b66c1c74f52f2bf3ce0b33680c3167"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-exogenous/flight.csv",
+      "bytes": 2311688,
+      "sha256": "be8f58fb8c837ab7d9e7abe6a42a58ad460e30df279ba086142ae9243bef1d71"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-exogenous/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261020-crossing-right-player-exogenous/replay.json",
+      "bytes": 6842,
+      "sha256": "1acc3a6da97730850d0b72bb6ec283de41484d1cfd8f70038ee56e2030362fa4"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-ai/flight.csv",
+      "bytes": 2620908,
+      "sha256": "c86605c40013f2fa23d000145d94892c43ec8989b5bc2c97db52fdedc4356f8e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-ai/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-ai/replay.json",
+      "bytes": 6785,
+      "sha256": "3a79702fe0c2e1967765f65adba6f654bc0f98f591035dc5ffc95ee6956fd9c3"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-coupled/flight.csv",
+      "bytes": 2314948,
+      "sha256": "46cc0b73dd67f91a36f6beb20ddd90224c3978b5f1fe168a9c39dd04fa506223"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-coupled/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-coupled/replay.json",
+      "bytes": 6795,
+      "sha256": "2b026a77255116a7728b1c3c4e3a3fad5091335819f01491d909460e1ab955ad"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-exogenous/flight.csv",
+      "bytes": 2314948,
+      "sha256": "46cc0b73dd67f91a36f6beb20ddd90224c3978b5f1fe168a9c39dd04fa506223"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-exogenous/godot.log",
+      "bytes": 208,
+      "sha256": "f69362f992dea2df7eaeb6b617d488b4f1949c31f5c04bc6efedee6eaaac6e7e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/replay-seed-20261021-crossing-left-player-exogenous/replay.json",
+      "bytes": 6839,
+      "sha256": "3fb8c2173d15b19ff89bed5bf092dbfb822227d923c799029b7bc7fa55a9e12e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/report.json",
+      "bytes": 14254,
+      "sha256": "09adece2fd0ffd17c76621a95f9b07ceabde9987e894a22a8810c1abf8905d7a"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261020-crossing-right-ai.orfl",
+      "bytes": 7020016,
+      "sha256": "031e0a8a8bacc2df85a2c3655d3d5ceecf3915131016b95d868e59c2ef550f1d"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261020-crossing-right-player-coupled.orfl",
+      "bytes": 7020016,
+      "sha256": "7af31a663ed6b692987a62e854e56f796367a587a484833318d4206579487c90"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261020-crossing-right-player-exogenous.orfl",
+      "bytes": 7020060,
+      "sha256": "d5a927d18fd0c25840b670c68f35732cdba1840be34820c3acf8dd1d31a746db"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261021-crossing-left-ai.orfl",
+      "bytes": 7020020,
+      "sha256": "e6c144e37464822b1ef4e8b453d705f4373b4967e83cc0d8fe1486789c9b977a"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261021-crossing-left-player-coupled.orfl",
+      "bytes": 7020016,
+      "sha256": "6d0b77b946e34a5cf1b266ca590fb2de2d00108f1f3c55877f7f5c704cd372b0"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/seed-20261021-crossing-left-player-exogenous.orfl",
+      "bytes": 7020056,
+      "sha256": "dd3a75715357cc34e7f0c225cbef224e78ff0b60329cd152b65badd4e0b1e953"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/candidate/trajectory.csv",
+      "bytes": 102496,
+      "sha256": "fa58ebd01741a99a5dad3afe4095e33ad39d4014f046e62a273071b76a3901ab"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-candidate-heading-148_5o87/engine.log",
+      "bytes": 2177,
+      "sha256": "6fac03270de47f01164af1ab7c75d88e53d4c6e269c9938b0c579323673809b1"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-candidate-heading-148_5o87/report.json",
+      "bytes": 1388,
+      "sha256": "6eefa4a85365a09217efd8dd6e701f90fb406d768b34ea716b73f7f2b0735ccd"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-circuit-matrix-027vmke6/engine.log",
+      "bytes": 21897,
+      "sha256": "631c65526cf1d610903de229c35c017c2276e4433445892d658cb45358863bff"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-circuit-matrix-027vmke6/report.json",
+      "bytes": 1457,
+      "sha256": "7283188d24f9609344326483612127faf98a4042c973820ed3dc103184d66685"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-after-sxgxer3g/engine.log",
+      "bytes": 117,
+      "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-after-sxgxer3g/report.json",
+      "bytes": 1355,
+      "sha256": "953605c8907a7c96ec24845849f41f329bfc00d38e62b8ee37716f92ca085e75"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-baseline-ydsco70o/engine.log",
+      "bytes": 392,
+      "sha256": "5924662f8e1399e2321949e30117b4ecffbcc86291b4b8b7ca3b31dd27c946ac"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-baseline-ydsco70o/report.json",
+      "bytes": 1251,
+      "sha256": "6896fe3698f79dc794a012e5f54cc8f4481cd0303cf9df4ff88f854c5da7d002"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-before-n90nbyzq/engine.log",
+      "bytes": 396,
+      "sha256": "83d42aaecf0300a7123c84511d0eb71eb260d03bb028f97b78487d23eda639d4"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-before-n90nbyzq/report.json",
+      "bytes": 1245,
+      "sha256": "de1a7829f41d2162c3d09a3c1bb2ac50e02194f030f1491bea5b3bd4b3fa415e"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-candidate-64pz_zzn/engine.log",
+      "bytes": 117,
+      "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-clearance-candidate-64pz_zzn/report.json",
+      "bytes": 1367,
+      "sha256": "a375cfb17dcaac724a34b27022dddf45a3130873cb18beb4922bb7457f68f47d"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-crossing-baseline-bm9d87ax/engine.log",
+      "bytes": 5087,
+      "sha256": "ada0e0007036f1a8411d6224d4b1328bbfa8a1a5ad9cc1bb480dbd44b5bcb691"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-crossing-baseline-bm9d87ax/report.json",
+      "bytes": 1469,
+      "sha256": "f7ef894aac07af65d32b13637fc8b8f0eb7409617bf510fe92b07a2f45082fca"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-crossing-candidate-9ctwdint/engine.log",
+      "bytes": 4691,
+      "sha256": "cf9d0d4aed47f33a91e4f2a99a03a286ab181f90ebef09da89601863c088516b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-crossing-candidate-9ctwdint/report.json",
+      "bytes": 1476,
+      "sha256": "c623187c1906474dfa4502fe428717df504e8478d347799d14ff760cdeb2f3b8"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-encounter-recovery-60s-751h0wml/engine.log",
+      "bytes": 2062,
+      "sha256": "27978959e2b39e5460ffc04650656558e6d3df7ab41196a647afa662388279fa"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-encounter-recovery-60s-751h0wml/report.json",
+      "bytes": 1508,
+      "sha256": "7d7ef6dcb270c6b6b853f7ffbd1f1e8ced097a81ba813c9d0ec1561a816a12d8"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-clearance-c9zgv0zj/engine.log",
+      "bytes": 117,
+      "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-clearance-c9zgv0zj/report.json",
+      "bytes": 1287,
+      "sha256": "1730ccce75ccc5a5a33fdc0514d55d8b12cf4cd7c5cde04b89dad61d870855bf"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-encounters-nbaf6ews/engine.log",
+      "bytes": 119,
+      "sha256": "ae3a42e65ac3e90a457e52aa0172b2a75e268c4997943a6a9a918b455082c0e3"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-encounters-nbaf6ews/report.json",
+      "bytes": 1293,
+      "sha256": "626c262e4e828146017c9497e42aec294facfa2f20a710d5e785543e0f608eba"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-manager-xtehjc1w/engine.log",
+      "bytes": 1432,
+      "sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-manager-xtehjc1w/report.json",
+      "bytes": 1280,
+      "sha256": "7bd072fda3916d65994b12a8174e8d4ebe1ba2380f9e3f25c75e4d11f0a06c26"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-pilot-pylljjgu/engine.log",
+      "bytes": 1451,
+      "sha256": "76630d6afd22aa98e994411797e4db22c1d072fcbe28f8dad1bb64fc9c2688af"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-pilot-pylljjgu/report.json",
+      "bytes": 1268,
+      "sha256": "e5b38876a4f9ba5c5bc7dd9bc92325cba1e553f76218394d532e5915ec0ff118"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-profiles-iwyg_kep/engine.log",
+      "bytes": 1872,
+      "sha256": "2026b782b3e4b08daafea2dc798cf0c7021f15200522415b5b8847cba3715ba9"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/checks/afc04r2-integrated-profiles-iwyg_kep/report.json",
+      "bytes": 1300,
+      "sha256": "5b9640bc764eef3588bcdcad7cc2b101ae3d52394c1a8112116cdb83bbcf8692"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/circuit-matrix/flight_samples_1hz.csv",
+      "bytes": 196250,
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/circuit-matrix/scenario_metrics.csv",
+      "bytes": 954,
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/recovery-60s/report.json",
+      "bytes": 20167,
+      "sha256": "064f887e7bafc34171591e538c05222daead9cc5aa613420d6fdece1919c4e2b"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/recovery-60s/trajectory.csv",
+      "bytes": 1916764,
+      "sha256": "f6e9ffb6ac2fcb96856d2361eb93427807d0d86ed8239007798df19f85007fcf"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/seed-20261020-crossing-right-player-comparison.json",
+      "bytes": 1441,
+      "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-04-R2/seed-20261021-crossing-left-player-comparison.json",
+      "bytes": 1441,
+      "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+    }
+  ]
+}

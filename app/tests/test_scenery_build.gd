@@ -17,7 +17,8 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_TRIANGLES := 725000 # LU-30: imported towers/insulators + conductors; native evidence in LU-30, 715023 measured
+const BUDGET_NON_FLEET_TRIANGLES := 725000 # Keep the existing field allowance; SC-09-R1 tracks the new static fleet separately.
+const BUDGET_FLEET_TRIANGLES := 350000 # Full near meshes, before per-view automatic LOD; native evidence in SC-09-R1.
 const BUDGET_BUILD_MS := 800.0 # provisional ceiling includes cold source import/parsing (native sample: 714 ms); 150 ms target is reported, not gated
 
 var _failures := 0
@@ -87,7 +88,14 @@ func _test_build() -> void:
 	var stats: Dictionary = root.get_meta("stats")
 	print("     stats: ", stats)
 	_check("instances built (> 120)", int(stats.instances) > 120)
-	_check("the parked fleet: 4 aircraft", int(stats.fleet) == 4)
+	_check("the parked fleet: 13 aircraft across ready, grass and service bays", int(stats.fleet) == 13)
+	var parked_fleet := root.get_node("ParkedAircraft")
+	_check("parked aircraft are eight static batches with no active scripts",
+		parked_fleet.process_mode == Node.PROCESS_MODE_DISABLED and parked_fleet.get_child_count() == 8
+		and parked_fleet.get_children().all(func(child: Node) -> bool:
+			return child is MultiMeshInstance3D and child.get_script() == null and child.get_child_count() == 0))
+	_check("repeated aircraft share draws within each shelter",
+		int(stats.fleet_batch_surfaces) < int(stats.fleet_surfaces) and int(stats.fleet_batch_surfaces) <= 180)
 	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0}
 	var motion_node: Node = root.get_node("Motion")
 	for part: Node in motion_node.get_children():
@@ -139,13 +147,64 @@ func _test_build() -> void:
 		if c is MeshInstance3D and str(c.name).begins_with("cell_"):
 			cell_surfaces += (c as MeshInstance3D).mesh.get_surface_count()
 	_check("one surface per cell (one shared material)", cell_surfaces == int(stats.cells))
+	var shelter_nodes: Array[MeshInstance3D] = []
+	for child: Node in root.get_children():
+		if child is MeshInstance3D and str(child.name).begins_with("PitShelter_"):
+			shelter_nodes.append(child as MeshInstance3D)
+	_check("two open shelters each retain one independent damage-aware surface",
+		shelter_nodes.size() == 2 and int(stats.get("pit_shelter_surfaces", -1)) == 2)
+	for shelter_mesh: MeshInstance3D in shelter_nodes:
+		var material := shelter_mesh.mesh.surface_get_material(0) as ShaderMaterial
+		var ranges: Array = shelter_mesh.get_meta("damage_ranges", [])
+		_check("%s keeps its roof, timber, slab and furniture in one PBR surface" % shelter_mesh.name,
+			shelter_mesh.mesh.get_surface_count() == 1 and material != null
+			and material.shader == load("res://scenery/pit_shelter_roof.gdshader")
+			and material.get_shader_parameter("roof_albedo") is Texture2D
+			and material.get_shader_parameter("wood_albedo") is Texture2D
+			and material.get_shader_parameter("slab_albedo") is Texture2D
+			and ranges.size() == 1 and str(ranges[0].id).begins_with("prop:pit-shelters:"))
+	var building_roofs: Node3D = root.get_node_or_null("BuildingRoofs")
+	var roof_count := building_roofs.get_child_count() if building_roofs != null else 0
+	var fitted_roofs := roof_count >= 20
+	if building_roofs != null:
+		for roof_node: Node in building_roofs.get_children():
+			var roof := roof_node as MeshInstance3D
+			if roof == null or roof.mesh == null or roof.mesh.get_surface_count() != 1:
+				fitted_roofs = false
+				break
+			var arrays := roof.mesh.surface_get_arrays(0)
+			var material := roof.mesh.surface_get_material(0) as ShaderMaterial
+			if arrays[Mesh.ARRAY_TEX_UV].size() != arrays[Mesh.ARRAY_VERTEX].size() \
+					or material == null or material.shader != load("res://scenery/building_roofs.gdshader") \
+					or not (material.get_shader_parameter("albedo_map") is Texture2D) \
+					or not roof.has_meta("damage_motion_id"):
+				fitted_roofs = false
+				break
+	_check("building roofs have fitted UVs, PBR maps and damage ids", fitted_roofs,
+		"roof nodes=%d" % roof_count)
+	var fleet_triangles := _triangles(root.get_node("ParkedAircraft"))
 	var tris := _triangles(root)
+	_check("static modern fleet stays below 350k full-detail triangles", fleet_triangles > 0 and fleet_triangles <= BUDGET_FLEET_TRIANGLES, str(fleet_triangles))
 	print("     triangles: %d, build %.1f ms" % [tris, stats.build_ms])
-	_check("triangles within the scenery budget (%d)" % BUDGET_TRIANGLES, tris <= BUDGET_TRIANGLES, str(tris))
+	_check("non-fleet geometry stays within its existing budget (%d)" % BUDGET_NON_FLEET_TRIANGLES,
+		tris - fleet_triangles <= BUDGET_NON_FLEET_TRIANGLES, "non-fleet=%d fleet=%d" % [tris - fleet_triangles, fleet_triangles])
 	_check("build time under %.0f ms on this CPU" % BUDGET_BUILD_MS, float(stats.build_ms) < BUDGET_BUILD_MS, str(stats.build_ms))
 	for c in root.get_children():
 		if c is GeometryInstance3D and (c as GeometryInstance3D).cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 			_check("no engine shadow casting (0 shadow-pass draws)", false, str(c.name))
+	if building_roofs != null and roof_count > 0:
+		var first_id: String = building_roofs.get_child(0).get_meta("damage_motion_id")
+		Scenery.apply_damage(root, {first_id: {state = "broken"}})
+		var hidden := true
+		for roof_node: Node in building_roofs.get_children():
+			if roof_node.get_meta("damage_motion_id") == first_id and (roof_node as Node3D).visible:
+				hidden = false
+		Scenery.apply_damage(root, {})
+		var restored := true
+		for roof_node: Node in building_roofs.get_children():
+			if roof_node.get_meta("damage_motion_id") == first_id and not (roof_node as Node3D).visible:
+				restored = false
+		_check("roof skins hide with a broken building and restore on reset", hidden and restored)
 	root.free()
 
 

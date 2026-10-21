@@ -1,0 +1,94 @@
+{
+  "format": "openrc-ai-companions-profile-receipt v1",
+  "step": "AFC-02",
+  "captured_utc": "2026-10-20T20:16:11.498645+00:00",
+  "observed_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "note": "Working-tree file hashes define these inputs. The check validates source-bound profile data and refusal behavior; existing pilot-matrix evidence remains the separate flight-behavior record.",
+  "qualification": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "field_profile_id": "club-default",
+    "activities": [
+      "circuits"
+    ],
+    "skill": "experienced",
+    "start_modes": [
+      "airborne"
+    ],
+    "roster_count": {
+      "min": 1,
+      "max": 3
+    },
+    "engine_version": "4.7.2",
+    "route": {
+      "shape": "circle",
+      "side": "north",
+      "center_north_m": 199.0,
+      "center_east_m": 0.0,
+      "radius_m": 80.0,
+      "base_agl_m": 35.0,
+      "slot_agl_step_m": 20.0,
+      "static_route_clearance": "pending"
+    },
+    "performance_unknown": [
+      "stall_speed",
+      "approach_speed",
+      "cruise_speed",
+      "entry_speed"
+    ],
+    "unqualified_modes": [
+      "ground",
+      "takeoff",
+      "runway",
+      "landing"
+    ],
+    "qualification_limit": "Software profile qualification only; exported builds without source files fail closed. This does not establish new physical validation."
+  },
+  "identity": {
+    "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "controller_sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+    "solver_identity_method": "FlightLog.solver_identity(): SHA-256 over sorted resource paths and exact bytes for GDScript files under res://physics, res://sim, and res://failures.",
+    "solver_source_file_count": 133
+  },
+  "source_sha256": {
+    "app/ai/companions/profile_loader.gd": "a2fb521aaa99fe105b08152eb854c80d2e0f47eb2d10c2ce6db0dd08c51d9ba6",
+    "app/tests/test_companions_profiles.gd": "961bce674c6fd7b91cd1fc62542592434e9adcb71e7b91a836fe5d8131af0eb3",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "2db3f1c864947c38dabc77d53a80ea89c6836d2b63034ac3b00a5a08d0beee60",
+    "app/data/ai/companions/fields/club-default.json": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/sim/flight_log.gd": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d"
+  },
+  "check": {
+    "label": "afc02-profile-loader-test",
+    "capture_id": "bdf3e495-a4d9-4b89-b332-aa8705ae8481",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_companions_profiles.gd"
+    ],
+    "engine": "Godot 4.7.2 stable, headless, Dummy audio driver",
+    "ok": true,
+    "process_exit": 0,
+    "complete": true,
+    "diagnostic_counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "profile_assertions": {
+      "checks": 23,
+      "failed": 0
+    },
+    "report_path": "checks/profile-validation-report.json",
+    "report_sha256": "e01adcf79c30fadc0bed446b92850e19e3577458102ac8e20ae54192740bf8c2",
+    "engine_log_path": "checks/profile-validation-engine.log",
+    "engine_log_sha256": "ab0b58cd8b8467476bddb87cb3e9ee58743d75742a5e7deb74a5276cbaec89a0"
+  }
+}

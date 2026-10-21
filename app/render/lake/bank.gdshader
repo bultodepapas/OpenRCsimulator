@@ -1,7 +1,11 @@
 // LU-25: dry turf, damp soil and submerged bed on the physically sampled basin.
+// LU-22-R1: reuse the field's licensed dirt maps on the exposed bank, with a
+// broken grass-to-soil transition away from the exact water-contact edge.
 shader_type spatial;
 render_mode cull_back, diffuse_burley;
 #include "res://render/grass_surface.gdshaderinc"
+#include "res://render/turf_detail.gdshaderinc"
+#include "res://render/rc_ground_detail.gdshaderinc"
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
 uniform vec3 sun_dir = vec3(0.0, 0.707, 0.707);
 uniform vec3 sun_lin = vec3(3.14159);
@@ -32,15 +36,76 @@ bool inside_bank(vec2 p) {
 void vertex() { world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
 void fragment() {
  vec3 turf = rough_grass_colour(world_pos.xz);
- float earth = smoothstep(-5.0, -0.7, UV.x);
- float wet = smoothstep(-1.8, 0.6, UV.x);
- vec3 soil = mix(vec3(0.48,0.39,0.245), vec3(0.32,0.335,0.225), wet);
- soil *= 0.85 + 0.25 * clamp(turf.g * 3.0, 0.0, 1.0);
+ // UV.x is signed distance to the water polygon (positive in water). Keep
+ // the material fully damp at the true shoreline; vary only the inland edge.
+ float boundary_noise = (filtered_vnoise(world_pos.xz / 2.8 + 43.0) - 0.5) * 1.2;
+ float earth = smoothstep(-5.0, -0.7, UV.x + boundary_noise);
+ float wet = smoothstep(-1.8, 0.6, UV.x + boundary_noise * 0.28);
+ vec3 soil = mix(vec3(0.40,0.36,0.29), vec3(0.27,0.29,0.25), wet);
+ float sediment = 0.55 * filtered_vnoise(world_pos.xz / 3.8 + 71.0)
+  + 0.45 * filtered_vnoise(world_pos.xz / 12.0 + 9.0);
+ soil *= (0.85 + 0.25 * clamp(turf.g * 3.0, 0.0, 1.0)) * mix(0.82, 1.16, sediment);
+ vec3 base_normal = normalize(NORMAL);
+ float d = distance(world_pos, CAMERA_POSITION_WORLD);
+ vec2 gx = dFdx(world_pos.xz);
+ vec2 gy = dFdy(world_pos.xz);
+ // The outer basin still represents field grass. Use the same world-space
+ // grass samples and distance fade as the adjoining ground to remove its seam.
+ float grass_photo_weight = grass_photo_enabled ? rc_near_weight(gx, gy, d) : 0.0;
+ float detail_weight = turf_weight(gx, gy, d) * (1.0 - grass_photo_weight);
+ vec3 turf_normal = base_normal;
+ float turf_roughness = 1.0;
+ if (detail_weight > 0.001) {
+  vec3 detail = turf_sample(world_pos.xz, gx, gy);
+  turf *= 1.0 + (detail.b - 0.5) * 0.9 * detail_weight;
+  vec2 slope = (detail.rg * 2.0 - 1.0) * 0.65 * detail_weight;
+  vec3 perturbation = (VIEW_MATRIX * vec4(slope.x, 0.0, slope.y, 0.0)).xyz;
+  perturbation -= turf_normal * dot(turf_normal, perturbation);
+  turf_normal = normalize(turf_normal + perturbation);
+ }
+ if (grass_photo_weight > 0.001) {
+  vec2 uv_a;
+  vec2 uv_b;
+  float blend;
+  rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, blend);
+  vec3 grass_color;
+  vec3 grass_normal;
+  float grass_roughness;
+  rc_grass_sample(uv_a, uv_b, gx / 1.4, gy / 1.4, blend,
+   grass_color, grass_normal, grass_roughness);
+  vec3 grass_mean = OUTPUT_IS_SRGB ? RC_GRASS_MEAN_SRGB : RC_GRASS_MEAN_LINEAR;
+  turf *= mix(vec3(1.0), clamp(grass_color / grass_mean, vec3(0.25), vec3(2.4)),
+   grass_photo_weight * 0.7);
+  turf_normal = rc_project_normal(turf_normal, grass_normal, VIEW_MATRIX,
+   grass_photo_weight * 0.65);
+  turf_roughness = mix(1.0, max(grass_roughness, 0.78), grass_photo_weight);
+ }
+ float photo_weight = rc_near_weight(gx, gy, d) * earth;
+ vec3 photo_normal = vec3(0.5, 0.5, 1.0);
+ float photo_roughness = 1.0;
+ if (photo_weight > 0.001) {
+  vec2 uv_a;
+  vec2 uv_b;
+  float blend;
+  rc_uvs(world_pos.xz, 2.0, uv_a, uv_b, blend);
+  vec3 photo_color;
+  rc_dirt_sample(uv_a, uv_b, gx * 0.5, gy * 0.5, blend,
+   photo_color, photo_normal, photo_roughness);
+  vec3 mean_color = OUTPUT_IS_SRGB ? vec3(0.38622, 0.32281, 0.24576)
+   : vec3(0.12699, 0.08668, 0.04947);
+  soil *= mix(vec3(1.0), clamp(photo_color / mean_color, vec3(0.62), vec3(1.48)),
+   photo_weight * 0.9);
+ }
  ALBEDO = mix(turf, soil, earth);
- ROUGHNESS = mix(1.0, 0.85, wet);
+ NORMAL = normalize(mix(turf_normal, base_normal, earth));
+ ROUGHNESS = mix(turf_roughness, mix(0.94, 0.82, wet), earth);
+ ROUGHNESS = mix(ROUGHNESS, clamp(photo_roughness, 0.75, 1.0), photo_weight * 0.55);
  SPECULAR = 0.1 * wet;
+ if (photo_weight > 0.001) {
+  NORMAL = normalize(mix(NORMAL,
+   rc_project_normal(base_normal, photo_normal, VIEW_MATRIX, 0.38), photo_weight));
+ }
  vec3 ray = world_pos - CAMERA_POSITION_WORLD;
- float d = length(ray);
  vec3 v = ray / max(d, 1e-3);
  float h = max(length(v.xz), 1e-4);
  float az = max(dot(v.xz / h, normalize(lobe_dir.xz + vec2(1e-6,0.0))), 0.0);

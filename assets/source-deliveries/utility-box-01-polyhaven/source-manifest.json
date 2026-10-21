@@ -1,0 +1,92 @@
+{
+  "asset": "Utility Box 01",
+  "asset_id": "utility_box_01",
+  "author": "James Ray Cock",
+  "license": "CC0 1.0",
+  "license_url": "https://polyhaven.com/license",
+  "cc0_legal_code_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "asset_url": "https://polyhaven.com/a/utility_box_01",
+  "api_info_url": "https://api.polyhaven.com/info/utility_box_01",
+  "api_files_url": "https://api.polyhaven.com/files/utility_box_01",
+  "api_files_hash": "af6d53ad17db23473c84e6ccf3f09270e76d3583",
+  "downloaded_utc": "2026-10-20T16:59:07Z",
+  "polyhaven_reported_dimensions_mm": [
+    520.0002193450928,
+    431.999996304512,
+    1120.3334331512451
+  ],
+  "polyhaven_reported_polycount": 4404,
+  "source_files": [
+    {
+      "path": "utility_box_01_1k.gltf",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/utility_box_01/utility_box_01_1k.gltf",
+      "bytes": 2766,
+      "source_md5": "a9154d210827ea508c59cb5917ca1d0f",
+      "sha256": "5b9f8c45f2640c9dd831dc3450529e45b24c987208ddcf73010fe717ce8c454e"
+    },
+    {
+      "path": "utility_box_01.bin",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/utility_box_01/utility_box_01.bin",
+      "bytes": 142552,
+      "source_md5": "5fa84789b367c3f04786e3ba92333c50",
+      "sha256": "e4249eb754d7802154eed36bb12070dc24c90fc331f355d60ef7570d61fc0f5c"
+    },
+    {
+      "path": "textures/utility_box_01_diff_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/utility_box_01/utility_box_01_diff_1k.jpg",
+      "bytes": 558681,
+      "source_md5": "3e76f9da5032c98ed48e1b3e4cad2511",
+      "sha256": "6a703a4cdf20c3fc3d0400fa815e5a1834836c96c207bdb57ba9e4a5db3a5532"
+    },
+    {
+      "path": "textures/utility_box_01_nor_gl_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/utility_box_01/utility_box_01_nor_gl_1k.jpg",
+      "bytes": 557001,
+      "source_md5": "688a6e1925ad7bbcd562cb714165330e",
+      "sha256": "1c4e377906c13e864c9c7ffbd31a7d86075f28b948bf54872d6ad3ab38a08124"
+    },
+    {
+      "path": "textures/utility_box_01_arm_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/utility_box_01/utility_box_01_arm_1k.jpg",
+      "bytes": 716061,
+      "source_md5": "f2b9e218e14b40108b5b84344c3d26ec",
+      "sha256": "e65428774e94b6a8aeb7a23802e0af8f1568952ea79e21a7a3475b957e34956b"
+    }
+  ],
+  "runtime_asset": {
+    "path": "app/assets/landscape/track-timing-cabinet/utility_box_01_1k.gltf",
+    "format": "glTF 2.0 with external buffer and JPEG maps",
+    "runtime_files_are_byte_identical_source_copies": true,
+    "generator": "Khronos glTF Blender I/O v3.6.27",
+    "orientation": "glTF right-handed, +Y up",
+    "node_transforms": 0,
+    "node": "utility_box_01_box",
+    "mesh": "Cube.028",
+    "primitives": 1,
+    "position_vertices": 3629,
+    "indices": 13212,
+    "triangles": 4404,
+    "local_bounds_m": {
+      "min": [-0.2600001097, 0.0, -0.2099999934],
+      "max": [0.2600001097, 1.1203334332, 0.2220000029],
+      "dimensions": [0.5200002193, 1.1203334332, 0.4319999963]
+    },
+    "material": {
+      "name": "utility_box_01",
+      "double_sided": true,
+      "base_color_map": "textures/utility_box_01_diff_1k.jpg",
+      "normal_map": "textures/utility_box_01_nor_gl_1k.jpg",
+      "metallic_roughness_map": "textures/utility_box_01_arm_1k.jpg",
+      "arm_red_occlusion_channel_is_bound": false
+    },
+    "maps": [
+      {"name": "diffuse", "file": "textures/utility_box_01_diff_1k.jpg", "size": "1024x1024 RGB JPEG", "bytes": 558681},
+      {"name": "normal_gl", "file": "textures/utility_box_01_nor_gl_1k.jpg", "size": "1024x1024 RGB JPEG", "bytes": 557001},
+      {"name": "arm", "file": "textures/utility_box_01_arm_1k.jpg", "size": "1024x1024 RGB JPEG", "bytes": 716061}
+    ],
+    "package_bytes": 1977061,
+    "suggested_scene_scale": 0.6,
+    "suggested_dimensions_at_scale_m": [0.3120001316, 0.6722000599, 0.2591999978],
+    "processing": "None; the official glTF and referenced files are directly usable and byte-identical to the downloaded source."
+  }
+}
