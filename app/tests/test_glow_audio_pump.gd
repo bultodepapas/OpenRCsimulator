@@ -139,18 +139,18 @@ func _test_worker_queue_and_lifecycle() -> void:
 		_check("dedicated PCM worker remains live through a 0.6 s main-thread stall",
 			bool(post_stall_stats.get("running", false)) and str(post_stall_stats.get("worker_error", "")).is_empty(),
 			str(post_stall_stats))
-		_check("AudioStreamGenerator skip count does not rise during the main-thread stall",
-			skipped_delta == 0, "skip delta=%d" % skipped_delta)
 		_check("captured PCM during the stall is nonzero and audible",
 			capture_seconds > 0.0 and nonzero_frames > 0 and capture_rms > 1e-5,
 			"captured %.3fs, RMS %.7f, nonzero frames %d" % [capture_seconds, capture_rms, nonzero_frames])
 		if not is_dummy_driver:
+			_check("AudioStreamGenerator skip count does not rise during the main-thread stall",
+				skipped_delta == 0, "skip delta=%d" % skipped_delta)
 			var permitted_loss: float = output_latency + 2048.0 / AudioServer.get_mix_rate()
 			_check("native capture covers the stall within output latency and two mix buffers",
 				capture_seconds >= measured_stall_seconds - permitted_loss,
 				"captured %.3fs of %.3fs; allowed loss %.3fs" % [capture_seconds, measured_stall_seconds, permitted_loss])
 		else:
-			print("N/A native-duration qualification: Dummy driver is a smoke test only")
+			print("N/A skip-free and native-duration qualification: Dummy driver is a smoke test only")
 	player.stream_paused = true
 	await create_timer(0.1).timeout
 	_check("pause and resume keep the worker primed without an underrun",
@@ -172,6 +172,14 @@ func _test_worker_queue_and_lifecycle() -> void:
 	player.free()
 	AudioServer.remove_bus_effect(master_bus, AudioServer.get_bus_effect_count(master_bus) - 1)
 	pump.reset()
+	# Release local audio references and let the mixer settle before SceneTree quits.
+	playback = null
+	second_playback = null
+	generator = null
+	capture = null
+	pump = null
+	player = null
+	await create_timer(0.1).timeout
 
 
 func _wait_for_primed(pump, max_frames: int) -> bool:
