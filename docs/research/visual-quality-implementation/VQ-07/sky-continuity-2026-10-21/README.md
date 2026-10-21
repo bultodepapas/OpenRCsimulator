@@ -124,6 +124,9 @@ Final presentation-context coverage has 26 checks: existing restore behavior,
 detach/re-add, older-world disposal, direct/queued destruction, weak resource
 release, stale context rejection and replacement of the owner's Environment.
 Native High moon continuity still passes 33 checks; lighting edits pass 57.
+The existing screen-stack suite completes five Home/flight/Pause/Help/End cycles
+at the same 758-node Home count. The final 26-check lifetime suite passes both
+headless and native High execution.
 Checked receipts, probe sources and final package identity are under
 `shutdown-followup/`. The first scripted pause/camera/lifecycle probes passed
 their route arguments through `app.user_args`, but World resolves sky arguments
@@ -147,3 +150,11 @@ The updated local unsigned Windows trial is
 with its sibling DLL. High remains experimental. Continue with native pacing
 attribution and moving aircraft/reflection comparisons; retain verbose shutdown
 logs when the original failure recurs instead of changing unrelated owners.
+The first packaged native 1 s + 5 s collector completed while focus loss had
+paused simulation at tick zero: it is not flow or active-flight evidence. Its
+immediate exit retained the lake MP3 stream/playback pair. A separate scripted
+smoke check avoids focus-dependent input; neither short route qualifies pacing
+or normal interactive package lifecycle.
+That scripted-fixed render completes 299 frames at 1280×720 in actual Forward+;
+physics ticks are deliberately disabled. Its exit has the existing seven Texture
+RID warning and four ObjectDB objects, so it is not a clean-shutdown claim.
