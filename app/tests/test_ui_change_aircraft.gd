@@ -82,5 +82,4 @@ func _run() -> void:
 	_check("trial Pause offers Return to Workshop, not Change aircraft", app.pause_menu != null
 		and not app.pause_menu.change_aircraft_button.visible
 		and app.pause_menu.identity_label.text.begins_with(tr("Workshop trial")), app.pause_menu.identity_label.text if app.pause_menu != null else "")
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
