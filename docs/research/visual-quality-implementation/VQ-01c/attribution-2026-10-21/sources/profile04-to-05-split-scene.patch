@@ -1,0 +1,17 @@
+--- profile04/app/app_root.gd
++++ profile05/app/app_root.gd
+@@ -750,7 +750,13 @@
+ 	if Catalog.is_rotorcraft(aircraft_id):
+ 		var helicopter_script: Script = load(route_path) as Script
+ 		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
+-	return load(route_path).instantiate()
++	var load_begin: int = Time.get_ticks_usec()
++	var scene: PackedScene = load(route_path)
++	Phase2LoadingProfile.record("flight_scene.load", load_begin, Time.get_ticks_usec())
++	var instantiate_begin: int = Time.get_ticks_usec()
++	var instance: Node = scene.instantiate()
++	Phase2LoadingProfile.record("flight_scene.instantiate", instantiate_begin, Time.get_ticks_usec())
++	return instance
+ 
+ 
+ func open_settings(from: Control = null) -> void:

@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b19611c8-c3b7-4212-8ac1-59cc46d1a54f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "tmp/graphics-phase2-2026-10-21/control/app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--aircraft=jensen-das-ugly-stik-60",
+    "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/startup-03-frames.json",
+    "--warmup=2",
+    "--t=15"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T15:51:24.512632+00:00",
+  "label": "startup-03",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\native\\startup-03-4zpjuifh\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\native\\startup-03-4zpjuifh\\report.json",
+  "timeout_seconds": 75.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 28.187,
+  "log_bytes": 1398,
+  "log_sha256": "00ea7d50d76b2107dc7ba970d466cdefb5a0c621763ee94d492ecfd4bace12dd"
+}

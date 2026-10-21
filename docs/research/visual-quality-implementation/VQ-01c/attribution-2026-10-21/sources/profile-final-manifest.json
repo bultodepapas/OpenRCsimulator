@@ -1,0 +1,197 @@
+{
+  "format": "openrc-loading-profile-snapshot v1",
+  "created_utc": "2026-10-21T15:59:53.143515+00:00",
+  "control_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\control\\app",
+  "profile_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\profile-final\\app",
+  "profiled_probe": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\profile-final\\profiled_loading_probe.gd",
+  "span_meta_key": "openrc_loading_profile_spans",
+  "span_limit": 512,
+  "functions": [
+    {
+      "path": "main.gd",
+      "header": "func _ready() -> void:",
+      "name": "_ready",
+      "args": "",
+      "result_type": null,
+      "span_name": "main._ready",
+      "static": false
+    },
+    {
+      "path": "main.gd",
+      "header": "func _build_world() -> bool:",
+      "name": "_build_world",
+      "args": "",
+      "result_type": "bool",
+      "span_name": "main._build_world",
+      "static": false
+    },
+    {
+      "path": "ui/home_scene.gd",
+      "header": "func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:",
+      "name": "_init",
+      "args": "aircraft, field_path, selected_lighting, selected_night_options, selected_sky, landscape_id",
+      "result_type": null,
+      "span_name": "home_scene._init",
+      "static": false
+    },
+    {
+      "path": "ui/home_scene.gd",
+      "header": "func show_aircraft(id: String) -> bool:",
+      "name": "show_aircraft",
+      "args": "id",
+      "result_type": "bool",
+      "span_name": "home_scene.show_aircraft",
+      "static": false
+    },
+    {
+      "path": "render/world/world.gd",
+      "header": "static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:",
+      "name": "build",
+      "args": "parent, field, build_field, conditions, lighting, night_options",
+      "result_type": "Dictionary",
+      "span_name": "world.build",
+      "static": true
+    },
+    {
+      "path": "render/airplane.gd",
+      "header": "static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:",
+      "name": "build",
+      "args": "id, propeller_diameter_m, expected_presentation",
+      "result_type": "Dictionary",
+      "span_name": "airplane_builder.build",
+      "static": true
+    },
+    {
+      "path": "physics/aircraft_data.gd",
+      "header": "static func load_file(path: String) -> Dictionary:",
+      "name": "load_file",
+      "args": "path",
+      "result_type": "Dictionary",
+      "span_name": "aircraft_data.load_file",
+      "static": true
+    },
+    {
+      "path": "data/field_loader.gd",
+      "header": "static func load_from(path: String = DEFAULT_PATH) -> Dictionary:",
+      "name": "load_from",
+      "args": "path",
+      "result_type": "Dictionary",
+      "span_name": "field_loader.load_from",
+      "static": true
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func setup(path := Scenarios.AIRCRAFT, expected_id: String = \"\", frozen_data: Dictionary = {}) -> void:",
+      "name": "setup",
+      "args": "path, expected_id, frozen_data",
+      "result_type": null,
+      "span_name": "flight_session.setup",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:",
+      "name": "set_field",
+      "args": "field, table_path",
+      "result_type": "bool",
+      "span_name": "flight_session.set_field",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func set_collision_world(world: Dictionary) -> bool:",
+      "name": "set_collision_world",
+      "args": "world",
+      "result_type": "bool",
+      "span_name": "flight_session.set_collision_world",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func reset(preserve_radio_readiness := false) -> void:",
+      "name": "reset",
+      "args": "preserve_radio_readiness",
+      "result_type": null,
+      "span_name": "flight_session.reset",
+      "static": false
+    },
+    {
+      "path": "render/shadow.gd",
+      "header": "static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:",
+      "name": "bind_model",
+      "args": "shadow, model, shape",
+      "result_type": null,
+      "span_name": "shadow.bind_model",
+      "static": true
+    }
+  ],
+  "hashes": {
+    "app/data/field_loader.gd": {
+      "control_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "profile_sha256": "829241376ea06c16f5b4fb545ff3258fc6057ff4e86b14e1144f9a9f48090c45",
+      "control_bytes": 60929,
+      "profile_bytes": 61313
+    },
+    "app/main.gd": {
+      "control_sha256": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217",
+      "profile_sha256": "0654dd0821db0da8f91117f8f66c8c31a612e6ceeedd3dc83ef5d3873f466f58",
+      "control_bytes": 148832,
+      "profile_bytes": 149374
+    },
+    "app/phase2_loading_profile.gd": {
+      "control_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "profile_sha256": "505f982da9a13e4a449c8d1d7183b484dc420be1e6833dac66595f38eddee2c5",
+      "control_bytes": 0,
+      "profile_bytes": 386
+    },
+    "app/physics/aircraft_data.gd": {
+      "control_sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd",
+      "profile_sha256": "3b4473f92f72c44039e5a5450ff54d7e5e679b1311776f5abcae78c0a244b361",
+      "control_bytes": 141590,
+      "profile_bytes": 141966
+    },
+    "app/project.godot": {
+      "control_sha256": "60596306ecfbd528abdb9a7aaa8c531b3ba6fda2d3f2793a848f83a43478daf1",
+      "profile_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99",
+      "control_bytes": 2257,
+      "profile_bytes": 2198
+    },
+    "app/render/airplane.gd": {
+      "control_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+      "profile_sha256": "655d7aefd69bc0226e0a2ba61d2246671d7898fb2dac5bcad118ca6301cb7644",
+      "control_bytes": 11328,
+      "profile_bytes": 11808
+    },
+    "app/render/shadow.gd": {
+      "control_sha256": "bb469bfb2bfa73d901ad2bc459691ae7f2730478f75ccef8a3176204bdf13313",
+      "profile_sha256": "9ea001393152a9202c9f9ce4b2bc0112cc9af0ffee3ac5fb993744473366d816",
+      "control_bytes": 6889,
+      "profile_bytes": 7265
+    },
+    "app/render/world/world.gd": {
+      "control_sha256": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
+      "profile_sha256": "bb8062183b47cf408d5137870bb1991a5e8799b16338aa4456ec9b1bda709aa3",
+      "control_bytes": 47899,
+      "profile_bytes": 48448
+    },
+    "app/sim/flight_session.gd": {
+      "control_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+      "profile_sha256": "a9b3f04230e78dc92ef8ccb1a165e6b2b0076d7d1c4ffdc1316b9f166f1ab0cf",
+      "control_bytes": 235678,
+      "profile_bytes": 237003
+    },
+    "app/ui/home_scene.gd": {
+      "control_sha256": "aee9a49c726807d77b4f22d336711eb1d4f166a3aba6cff6726807a44490cc16",
+      "profile_sha256": "0dfc4071b31ee4542b01e0d2fac62f030826aba599bb81105d4c6b82cefb3f3a",
+      "control_bytes": 11478,
+      "profile_bytes": 12371
+    },
+    "profiled_loading_probe.gd": {
+      "control_sha256": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97",
+      "profile_sha256": "f37654552dde4f7c7f7dfb29fe858dbb3e64ccd13d9c5fc0788681fd3008b4f1",
+      "control_bytes": 9134,
+      "profile_bytes": 9271
+    }
+  },
+  "note": "Function bodies and call order are preserved; each selected call is timed by a wrapper that records after return."
+}

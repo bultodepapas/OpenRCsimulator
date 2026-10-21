@@ -5,6 +5,12 @@ The first implemented repair restores the real Home/Fly loading probe after Home
 deferred launch changed its timing contract. Current measurements prioritize launch
 reliability and first-load construction. They do not justify adding rendering cost.
 
+Follow-up: [startup/loading attribution](../attribution-2026-10-21/README.md) and the
+[rejected scene-warmup experiment](../loading/scene-warmup-2026-10-21/README.md)
+execute the first two investigation items below. Their dated results supersede the
+next-action recommendation here; this baseline's measurements and failed qualification
+remain unchanged.
+
 ## Identity and limits
 
 Runtime baseline: `22396c6edc86bc5e8ec8d2ef3040207602924290`, initially clean.

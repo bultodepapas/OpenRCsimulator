@@ -1,0 +1,12 @@
+{
+  "head": "210018c5367defe04677cdc937d45e869bafc4b9",
+  "tracked_inputs_checked_per_tree": 3840,
+  "differences": {
+    "production": [],
+    "load-control": [],
+    "load-warmup": [
+      "app/app_root.gd"
+    ]
+  },
+  "scope": "tracked app, assets/aircraft and tools; ignored import/native cache not qualified"
+}

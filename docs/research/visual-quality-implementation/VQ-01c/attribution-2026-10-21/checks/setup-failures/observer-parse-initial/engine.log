@@ -1,0 +1,8 @@
+ERROR: Error loading GDExtension configuration file: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: parse_gdextension_file (core/extension/gdextension_library_loader.cpp:282)
+ERROR: GDExtension dynamic library not found: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: open_library (core/extension/gdextension.cpp:810)
+ERROR: Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: load_extensions (core/extension/gdextension_manager.cpp:333)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+

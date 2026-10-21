@@ -1,0 +1,64 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:96)
+       [9] _phase2_impl_build (res://render/world/world.gd:297)
+       [10] build (res://render/world/world.gd:236)
+       [11] _phase2_impl__init (res://ui/home_scene.gd:97)
+       [12] _init (res://ui/home_scene.gd:64)
+       [13] show_home (res://app_root.gd:320)
+       [14] _ready (res://app_root.gd:256)
+       [15] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-linked/profiled_loading_probe.gd:62)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _phase2_impl_build (res://render/airplane.gd:61)
+       [1] build (res://render/airplane.gd:36)
+       [2] _phase2_impl_show_aircraft (res://ui/home_scene.gd:143)
+       [3] show_aircraft (res://ui/home_scene.gd:138)
+       [4] _phase2_impl__init (res://ui/home_scene.gd:100)
+       [5] _init (res://ui/home_scene.gd:64)
+       [6] show_home (res://app_root.gd:320)
+       [7] _ready (res://app_root.gd:256)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-linked/profiled_loading_probe.gd:62)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _phase2_impl_build (res://render/airplane.gd:61)
+       [1] build (res://render/airplane.gd:36)
+       [2] _phase2_impl__build_world (res://main.gd:2362)
+       [3] _build_world (res://main.gd:2358)
+       [4] _phase2_impl__ready (res://main.gd:534)
+       [5] _ready (res://main.gd:321)
+       [6] start_flight (res://app_root.gd:651)
+       [7] _on_fly (res://ui/home.gd:1536)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _phase2_impl_build (res://render/airplane.gd:61)
+       [1] build (res://render/airplane.gd:36)
+       [2] _phase2_impl_show_aircraft (res://ui/home_scene.gd:143)
+       [3] show_aircraft (res://ui/home_scene.gd:138)
+       [4] _phase2_impl__init (res://ui/home_scene.gd:100)
+       [5] _init (res://ui/home_scene.gd:64)
+       [6] _rebuild_home_scene (res://app_root.gd:1860)
+       [7] start_flight (res://app_root.gd:669)
+       [8] _on_fly (res://ui/home.gd:1536)
+ERROR: Home Fly rejected: returned to ready state without a flight
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-linked/profiled_loading_probe.gd:215)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-linked/profiled_loading_probe.gd:84)
+       [2] _wait_for_flight (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-linked/profiled_loading_probe.gd:165)
+loading probe failure cleanup: {"audio_released":true,"elapsed_usec":291703,"remaining_playbacks":0,"settings_removed":true,"timeout_usec":1000000,"tracked_playbacks":2}

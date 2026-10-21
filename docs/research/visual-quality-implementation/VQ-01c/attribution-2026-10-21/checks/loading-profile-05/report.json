@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9b62f8ca-1c9b-49e4-b1a8-750c21ac8609",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "tmp/graphics-phase2-2026-10-21/profile-deep/app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-deep/profiled_loading_probe.gd",
+    "--",
+    "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/loading-profile-05.json",
+    "--cycles=2"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T16:06:46.798762+00:00",
+  "label": "loading-profile-05",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\native\\loading-profile-05-ldtv30_2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\native\\loading-profile-05-ldtv30_2\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 16.844,
+  "log_bytes": 1846,
+  "log_sha256": "117d718cf050214e4a11fe43e55b2e63b3efaa202321e82d85be87415a58d9d9"
+}
