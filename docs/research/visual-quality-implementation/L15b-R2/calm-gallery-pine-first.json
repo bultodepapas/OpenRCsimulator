@@ -1,0 +1,44 @@
+{
+  "a": "gal-p-off",
+  "b": "gal-p-on",
+  "renderer": "gl_compatibility",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "views": {
+    "landscapelab_pine": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "landscapelab_quercus": {
+      "pixel_exact": false,
+      "changed_px": 263,
+      "changed_px_over_2_levels": 25,
+      "max_level_difference": 38
+    },
+    "maple_tree": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "back": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "underside": {
+      "pixel_exact": false,
+      "changed_px": 48,
+      "changed_px_over_2_levels": 2,
+      "max_level_difference": 8
+    },
+    "overhead": {
+      "pixel_exact": false,
+      "changed_px": 1,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 1
+    }
+  }
+}

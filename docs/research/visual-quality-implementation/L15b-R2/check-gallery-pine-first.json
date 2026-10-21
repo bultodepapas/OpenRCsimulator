@@ -1,0 +1,18 @@
+{
+  "assets": [
+    "landscapelab_pine",
+    "landscapelab_quercus",
+    "maple_tree"
+  ],
+  "checks": {
+    "native_compatibility": true,
+    "explicit_wind_control": true,
+    "all_calm_sources_pixel_exact": false,
+    "wind_off_clock_control_static": true,
+    "repeat_pixel_exact": true,
+    "clock_wrap_pixel_exact": true,
+    "wind_moves": true,
+    "wind_reversal_changes_image": true
+  },
+  "passed": false
+}

@@ -252,7 +252,9 @@ func _capture(view: Dictionary, id: String, clock: float, wind: Vector3) -> bool
 func _motion() -> bool:
 	var route := str(args.motion)
 	var count := int(args.get("frames", "192"))
-	if route not in ["oak-approach", "card-orbit", "forest-pan"] or count < 24 or count > 480:
+	var wind_mps := float(args.get("wind_mps", "5"))
+	if route not in ["oak-approach", "card-orbit", "forest-pan", "car-park-wind"] or count < 24 or count > 480 \
+			or not is_finite(wind_mps) or wind_mps < 0.0 or wind_mps > 20.0:
 		return false
 	var loaded: Dictionary = Loader.load_from(str(args.get("field", Loader.DEFAULT_PATH)))
 	var treeline: Dictionary = {}
@@ -264,7 +266,7 @@ func _motion() -> bool:
 	var card: Vector3 = Frames.ned_to_render([float(first[0]) + float(loaded.field.pilot.north),
 		float(first[1]) + float(loaded.field.pilot.east), -float(identity.height) * 0.55])
 	report["scope"] = "Offline prescribed camera motion through production trees at 24 samples/s; no aircraft simulation or native frame pacing. Geometry/render counters qualify only the captured route."
-	report["motion"] = {route = route, fps = 24, frames = count, card_north_east = first,
+	report["motion"] = {route = route, fps = 24, frames = count, wind_mps = wind_mps, card_north_east = first,
 		card_identity = identity, tree_mesh_lod_threshold_pixels = viewport.mesh_lod_threshold}
 	for index in count:
 		var phase := float(index) / float(count - 1)
@@ -283,7 +285,14 @@ func _motion() -> bool:
 				view.eye = Vector3(0.0, 1.7, 0.0)
 				var angle := deg_to_rad(-35.0 + 70.0 * phase)
 				view.at = view.eye + Vector3(sin(angle), 0.03, -cos(angle)) * 500.0
-		if not await _capture(view, view.id, float(index) / 24.0, Vector3(5.0, 0.0, 0.0)):
+			"car-park-wind":
+				# L15b-R2: fixed postcard camera; only the clock advances, so close downloaded
+				# trees (Quercus, pine, static maple) show their own sway and flutter.
+				var source: Dictionary = Postcards.VIEWS["car_park"]
+				view.eye = Frames.ned_to_render(source.eye)
+				view.at = Frames.ned_to_render(source.at)
+				view.fov = float(source.fov)
+		if not await _capture(view, view.id, float(index) / 24.0, Vector3(wind_mps, 0.0, 0.0)):
 			return false
 	return true
 

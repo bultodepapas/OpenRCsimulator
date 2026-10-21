@@ -1,0 +1,30 @@
+{
+  "route": {
+    "card_identity": {
+      "height": 24.2121212121212,
+      "species": 1,
+      "yaw": 1.4121607856035
+    },
+    "card_north_east": [
+      -560.0,
+      -37.25,
+      0.0
+    ],
+    "fps": 24,
+    "frames": 48,
+    "route": "car-park-wind",
+    "tree_mesh_lod_threshold_pixels": 1.0,
+    "wind_mps": 8.0
+  },
+  "frames": 48,
+  "consecutive_changed_px_over_2": {
+    "min": 20584,
+    "median": 23931,
+    "max": 26499
+  },
+  "union_changed_px_over_2": 124396,
+  "union_changed_px_below_row": {
+    "420": 6193
+  },
+  "first_frame_vs_calm_over_2": 107928
+}

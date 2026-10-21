@@ -1,0 +1,44 @@
+{
+  "a": "field-off",
+  "b": "field-on",
+  "renderer": "gl_compatibility",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "views": {
+    "pilot_north": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "car_park": {
+      "pixel_exact": false,
+      "changed_px": 604,
+      "changed_px_over_2_levels": 45,
+      "max_level_difference": 182
+    },
+    "postcard_meadow": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "aerial_overview": {
+      "pixel_exact": false,
+      "changed_px": 54,
+      "changed_px_over_2_levels": 36,
+      "max_level_difference": 25
+    },
+    "forest_overview": {
+      "pixel_exact": true,
+      "changed_px": 0,
+      "changed_px_over_2_levels": 0,
+      "max_level_difference": 0
+    },
+    "oak_close": {
+      "pixel_exact": false,
+      "changed_px": 117,
+      "changed_px_over_2_levels": 22,
+      "max_level_difference": 106
+    }
+  }
+}

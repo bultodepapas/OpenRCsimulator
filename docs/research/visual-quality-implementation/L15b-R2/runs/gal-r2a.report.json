@@ -1,0 +1,699 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"arguments": {
+		"ids": "landscapelab_quercus,landscapelab_pine,maple_tree",
+		"mode": "gallery",
+		"out": "/tmp/claude-1000/-home-bulto-OpenRCsimulator/1bc5aefa-8de4-455d-a77f-ff62850a5eb7/scratchpad/gal-r2a",
+		"wind": "on"
+	},
+	"assets": [
+		{
+			"conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+			"dependencies": [],
+			"description": "Mature broadleaf Quercus tree",
+			"embedded_images": [
+				{
+					"bytes": 848136.0,
+					"index": 0.0,
+					"mime_type": "image/png",
+					"name": "Image_4",
+					"sha256": "ebbb008c5dc660aa456e4efcf6eae7adc8467e86db3a2d8dfdabade6fa6cebf4",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 2528904.0,
+					"index": 1.0,
+					"mime_type": "image/png",
+					"name": "Image_2",
+					"sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 1217770.0,
+					"index": 2.0,
+					"mime_type": "image/png",
+					"name": "Image_3-Image_0",
+					"sha256": "92ab95d1900720d615ee6cf6038b7b3af2ceba2ed7ee41bc52a1a24f2f65a58b",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 2458044.0,
+					"index": 3.0,
+					"mime_type": "image/png",
+					"name": "Image_1",
+					"sha256": "21462e7dbd2724f5414675731c26d20bf5c7f7ce93d8764514f09bde581d29dc",
+					"storage": "glb_embedded"
+				}
+			],
+			"extensions_used": [
+				"KHR_texture_transform"
+			],
+			"grounded_bounds_m": {
+				"ground_offset": 0.0,
+				"height": 59.555878,
+				"max": [
+					26.347387,
+					59.555878,
+					24.630487
+				],
+				"min": [
+					-25.538609,
+					0.0,
+					-26.160007
+				],
+				"size": [
+					51.885996,
+					59.555878,
+					50.790495
+				]
+			},
+			"id": "landscapelab_quercus",
+			"lod": {
+				"godot_import_generate": true,
+				"source_supplied": false
+			},
+			"normalized_bounds_1m": {
+				"ground_offset_after_scale": 0.0,
+				"height": 1.0,
+				"max": [
+					0.442397767,
+					1.0,
+					0.413569381
+				],
+				"min": [
+					-0.4288176,
+					0.0,
+					-0.439251481
+				],
+				"normalization_scale": 0.016790953956,
+				"size": [
+					0.871215368,
+					1.0,
+					0.852820862
+				]
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+			"source_bounds_m": {
+				"ground_offset": 0.0,
+				"height": 59.555878,
+				"max": [
+					26.347387,
+					59.555878,
+					24.630487
+				],
+				"min": [
+					-25.538609,
+					0.0,
+					-26.160007
+				],
+				"size": [
+					51.885996,
+					59.555878,
+					50.790495
+				]
+			},
+			"source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
+			"source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus.glb",
+			"source_format": "glTF 2.0 binary (GLB)",
+			"source_git_blob_sha1": "e625adef3ae04e455037c4db4d39d7f486f0a498",
+			"source_id": "landscapelab_tree_2026",
+			"source_material_conventions": [
+				{
+					"alpha_cutoff": 0.5,
+					"alpha_mode": "MASK",
+					"double_sided": true,
+					"name": "leaves"
+				},
+				{
+					"alpha_cutoff": null,
+					"alpha_mode": "OPAQUE",
+					"double_sided": false,
+					"name": "branches"
+				}
+			],
+			"source_material_names": [
+				"leaves",
+				"branches"
+			],
+			"source_materials": 2.0,
+			"source_name": "Quercus",
+			"source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+			"source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+			"source_surfaces": 2.0,
+			"source_triangles": 7016.0,
+			"source_upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb"
+		},
+		{
+			"conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+			"dependencies": [],
+			"description": "Mature pine tree",
+			"embedded_images": [
+				{
+					"bytes": 2195944.0,
+					"index": 0.0,
+					"mime_type": "image/png",
+					"name": "Image_2",
+					"sha256": "85b5350621792705d9cc475326d97d82fcd19985270a517f2e4232f72460462a",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 1281883.0,
+					"index": 1.0,
+					"mime_type": "image/png",
+					"name": "Image_3-Image_0",
+					"sha256": "e8fac2f0115961e0c7357b400cedf9131e660c3b25e50ddb16f9ad49103c01c6",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 1985412.0,
+					"index": 2.0,
+					"mime_type": "image/png",
+					"name": "Image_1",
+					"sha256": "5ee8ccff7394ea5c20d678e45ae2164b42faf4b9aacdb937c4adb98b97e8efe8",
+					"storage": "glb_embedded"
+				},
+				{
+					"bytes": 1098120.0,
+					"index": 3.0,
+					"mime_type": "image/png",
+					"name": "Image_4",
+					"sha256": "8af0ed5d783f8cef1ef1a86272901da43327e01167213dabba3b795b9d4a90ba",
+					"storage": "glb_embedded"
+				}
+			],
+			"extensions_used": [
+				"KHR_texture_transform"
+			],
+			"grounded_bounds_m": {
+				"ground_offset": 0.0,
+				"height": 41.153725,
+				"max": [
+					7.767775,
+					41.153725,
+					7.985003
+				],
+				"min": [
+					-7.928009,
+					0.0,
+					-8.131644
+				],
+				"size": [
+					15.695783,
+					41.153725,
+					16.116648
+				]
+			},
+			"id": "landscapelab_pine",
+			"lod": {
+				"godot_import_generate": true,
+				"source_supplied": false
+			},
+			"normalized_bounds_1m": {
+				"ground_offset_after_scale": 0.0,
+				"height": 1.0,
+				"max": [
+					0.18875022,
+					1.0,
+					0.194028694
+				],
+				"min": [
+					-0.192643767,
+					0.0,
+					-0.197591939
+				],
+				"normalization_scale": 0.02429913715,
+				"size": [
+					0.381393987,
+					1.0,
+					0.391620633
+				]
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+			"source_bounds_m": {
+				"ground_offset": 0.0,
+				"height": 41.153725,
+				"max": [
+					7.767775,
+					41.153725,
+					7.985003
+				],
+				"min": [
+					-7.928009,
+					0.0,
+					-8.131644
+				],
+				"size": [
+					15.695783,
+					41.153725,
+					16.116648
+				]
+			},
+			"source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
+			"source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/pine_joined.glb",
+			"source_format": "glTF 2.0 binary (GLB)",
+			"source_git_blob_sha1": "8634899c22a9e4a7bf8d3fc94930ed560d340dd0",
+			"source_id": "landscapelab_tree_2026",
+			"source_material_conventions": [
+				{
+					"alpha_cutoff": null,
+					"alpha_mode": "OPAQUE",
+					"double_sided": false,
+					"name": "branches.001"
+				},
+				{
+					"alpha_cutoff": 0.206521735,
+					"alpha_mode": "MASK",
+					"double_sided": true,
+					"name": "leaves.001"
+				}
+			],
+			"source_material_names": [
+				"branches.001",
+				"leaves.001"
+			],
+			"source_materials": 2.0,
+			"source_name": "Pine",
+			"source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+			"source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+			"source_surfaces": 2.0,
+			"source_triangles": 4246.0,
+			"source_upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb"
+		},
+		{
+			"dependencies": [
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png"
+			],
+			"description": "Mature broadleaf maple, supplier LOD1",
+			"grounded_bounds_m": {
+				"max": [
+					6.485837,
+					18.327101,
+					8.867838
+				],
+				"min": [
+					-6.125969,
+					0.0,
+					-8.464957
+				],
+				"size": [
+					12.611806,
+					18.327101,
+					17.332795
+				]
+			},
+			"id": "maple_tree",
+			"lod": {
+				"alternate_source_lods_included": [],
+				"godot_import_generate": true,
+				"imported_supplied_levels": [
+					"LOD1"
+				],
+				"source_lod": "LOD1",
+				"source_supplied": true
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.002659,
+				"height": 18.327101,
+				"max": [
+					6.485837,
+					18.324442,
+					8.867838
+				],
+				"min": [
+					-6.125969,
+					-0.002659,
+					-8.464957
+				],
+				"size": [
+					12.611806,
+					18.327101,
+					17.332795
+				]
+			},
+			"source_conversion_proof_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+			"source_dependency_sha256": {
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+				"assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+			},
+			"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+			"source_format": "glTF 2.0 converted from supplier FBX",
+			"source_id": "lolipop_maple_2026",
+			"source_materials": 2.0,
+			"source_name": "Acer_large_3_LOD1",
+			"source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+			"source_surfaces": 2.0,
+			"source_triangles": 5541.0,
+			"textures": [
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+					"uri": "textures/maple_bark_ao-maple_bark_roughness.png"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+					"uri": "textures/maple_bark_basecolor.jpg"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+					"uri": "textures/maple_bark_normal.png"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+					"uri": "textures/maple_leaves_ao-maple_leaves_roughness.png"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+					"uri": "textures/maple_leaves_basecolor.png"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png",
+					"uri": "textures/maple_leaves_normal.png"
+				}
+			]
+		}
+	],
+	"batch_count": 3,
+	"captures": [
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "landscapelab_quercus",
+			"sha256": "19ce78ce157f1fe3591dfaaeb539147d0bbe16de0fc322e5a72dddfc53bcec94",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				24.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 10,
+				"primitives": 4246,
+				"shadow_draws": 0
+			},
+			"eye": [
+				24.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "landscapelab_pine",
+			"sha256": "9dddc8f97cdfb2aa9bc27739256e5467405fd28191336473d593be6e16b95e6b",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				48.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 10,
+				"primitives": 5541,
+				"shadow_draws": 0
+			},
+			"eye": [
+				48.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "maple_tree",
+			"sha256": "128819af7a87ab801ab76f5bbb9ff4719ea8b04a966469146cc7b482725526ff",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 4,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				-20.0
+			],
+			"fov": 36.0,
+			"id": "back",
+			"sha256": "f97d1cceb6944c9aafbc538fae77a2e5c5ee8a20bdeb900689043e08cacf07e7",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 4,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.5,
+				12.0
+			],
+			"fov": 50.0,
+			"id": "underside",
+			"sha256": "824639d532fb9afaaa40a40f1ba3876f37792467055f6379716f05d2eb1046e2",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				25.0,
+				0.00999999977648258
+			],
+			"fov": 40.0,
+			"id": "overhead",
+			"sha256": "2df03d493b093a65d5871bd5fa4a16d2962ac217ae6f03ead14543e66818db2d",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_start",
+			"sha256": "9250409aa2ac0bc9ba8bf2093f1b80ccd5cb9639fe6c72269758403a76e75d69",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_one",
+			"sha256": "4ba398d0df501070f16b8499efc6768f0d49bd499fcc1ee4a2ac820e6c759fbc",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_repeat",
+			"sha256": "4ba398d0df501070f16b8499efc6768f0d49bd499fcc1ee4a2ac820e6c759fbc",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1024.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_wrap",
+			"sha256": "9250409aa2ac0bc9ba8bf2093f1b80ccd5cb9639fe6c72269758403a76e75d69",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 7016,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_reverse",
+			"sha256": "9b902095e5e2e1a21e02a1d882c951869417c49abace930aff8d577826de8150",
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 257.731,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 66110093,
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "gallery",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+	"viewport": [
+		1280,
+		720
+	]
+}

@@ -1,0 +1,188 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"arguments": {
+		"mode": "field",
+		"out": "/tmp/claude-1000/-home-bulto-OpenRCsimulator/1bc5aefa-8de4-455d-a77f-ff62850a5eb7/scratchpad/field-on",
+		"wind": "on"
+	},
+	"captures": [
+		{
+			"at": [
+				0.0,
+				8.0,
+				-300.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 98,
+				"primitives": 244572,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				1.70000004768372,
+				0.0
+			],
+			"fov": 50.0,
+			"id": "pilot_north",
+			"sha256": "8eba5ebccd198c424aa3fb109e5d720a9aade95e804c1ffb87709ceb0b11bf9b",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "car_park",
+			"sha256": "9943d48d5aa2d3026ea81a3f6715a61be47582e004c9209d364004939ca0b6bd",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				150.0,
+				1.0,
+				-140.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 105,
+				"primitives": 185927,
+				"shadow_draws": 0
+			},
+			"eye": [
+				40.0,
+				6.0,
+				-30.0
+			],
+			"fov": 40.0,
+			"id": "postcard_meadow",
+			"sha256": "d9d43b2a6bc5e8d67369d0712b7bcf1ce5f092031cf49f6da7ef38eb2a45407c",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0,
+				20.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 334,
+				"primitives": 386269,
+				"shadow_draws": 0
+			},
+			"eye": [
+				160.0,
+				140.0,
+				-140.0
+			],
+			"fov": 50.0,
+			"id": "aerial_overview",
+			"sha256": "fad306dcbcc7f5393eaaf421572a1f0a45dda6d973d0a91c59a5e8001714d887",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0,
+				-100.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 210,
+				"primitives": 418303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				1900.0,
+				1250.0
+			],
+			"fov": 70.0,
+			"id": "forest_overview",
+			"sha256": "e79666f6b8eee59b572a9c37f8b85d6c29e66b4f4588b6f8453af26acedc4d07",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				10.5,
+				5.0,
+				32.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 274,
+				"primitives": 362711,
+				"shadow_draws": 0
+			},
+			"eye": [
+				27.0,
+				7.0,
+				49.0
+			],
+			"fov": 42.0,
+			"id": "oak_close",
+			"sha256": "781780f3d3ffd4bafaf01fc36881e63bebda722068be236adbe24ee06c0fd498",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 2377.906,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 108077714,
+	"field_sha256": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"imported_tree_batches": 3,
+	"imported_tree_instances": 17,
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "field",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+	"viewport": [
+		1280,
+		720
+	]
+}

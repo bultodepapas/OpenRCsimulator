@@ -1,0 +1,568 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"arguments": {
+		"ids": "common_tree_1,pine_1,common_tree_3",
+		"mode": "gallery",
+		"out": "/tmp/claude-1000/-home-bulto-OpenRCsimulator/1bc5aefa-8de4-455d-a77f-ff62850a5eb7/scratchpad/gal-head-off",
+		"wind": "off"
+	},
+	"assets": [
+		{
+			"buffer_derivation": {
+				"derivation_count": 9034.0,
+				"method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+				"path": "models/CommonTree_1.bin",
+				"runtime_buffer_sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1",
+				"source_buffer_sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
+				"source_entry": "glTF/CommonTree_1.bin"
+			},
+			"dependencies": [
+				"glTF/Bark_NormalTree.png",
+				"glTF/Bark_NormalTree_Normal.png",
+				"glTF/CommonTree_1.bin",
+				"glTF/CommonTree_1.gltf",
+				"glTF/Leaves_NormalTree_C.png"
+			],
+			"description": "mature broadleaf tree",
+			"grounded_bounds_m": {
+				"max": [
+					2.116964,
+					7.264785,
+					2.353195
+				],
+				"min": [
+					-2.194459,
+					0.0,
+					-2.224519
+				],
+				"size": [
+					4.311423,
+					7.264785,
+					4.577714
+				]
+			},
+			"id": "common_tree_1",
+			"lod": {
+				"godot_import_generate": true,
+				"source_supplied": false
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/CommonTree_1.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.242772,
+				"height": 7.264785,
+				"max": [
+					2.116964,
+					7.022013,
+					2.353195
+				],
+				"min": [
+					-2.194459,
+					-0.242772,
+					-2.224519
+				],
+				"size": [
+					4.311423,
+					7.264785,
+					4.577714
+				]
+			},
+			"source_entry": "glTF/CommonTree_1.gltf",
+			"source_format": "glTF 2.0",
+			"source_id": "quaternius_standard",
+			"source_materials": 2.0,
+			"source_name": "CommonTree_1",
+			"source_sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+			"source_surfaces": 2.0,
+			"source_triangles": 6265.0,
+			"textures": [
+				{
+					"source_entry": "glTF/Bark_NormalTree.png",
+					"uri": "Bark_NormalTree.png"
+				},
+				{
+					"source_entry": "glTF/Bark_NormalTree_Normal.png",
+					"uri": "Bark_NormalTree_Normal.png"
+				},
+				{
+					"source_entry": "glTF/Leaves_NormalTree_C.png",
+					"uri": "Leaves_NormalTree_C.png"
+				}
+			]
+		},
+		{
+			"buffer_derivation": {
+				"derivation_count": 4948.0,
+				"method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+				"path": "models/Pine_1.bin",
+				"runtime_buffer_sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365",
+				"source_buffer_sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
+				"source_entry": "glTF/Pine_1.bin"
+			},
+			"dependencies": [
+				"glTF/Bark_NormalTree.png",
+				"glTF/Bark_NormalTree_Normal.png",
+				"glTF/Leaf_Pine_C.png",
+				"glTF/Pine_1.bin",
+				"glTF/Pine_1.gltf"
+			],
+			"description": "mature pine tree",
+			"grounded_bounds_m": {
+				"max": [
+					2.495879,
+					7.316918,
+					2.061471
+				],
+				"min": [
+					-2.448819,
+					0.0,
+					-2.476933
+				],
+				"size": [
+					4.944698,
+					7.316918,
+					4.538403
+				]
+			},
+			"id": "pine_1",
+			"lod": {
+				"godot_import_generate": true,
+				"source_supplied": false
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/Pine_1.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.235089,
+				"height": 7.316918,
+				"max": [
+					2.495879,
+					7.081829,
+					2.061471
+				],
+				"min": [
+					-2.448819,
+					-0.235089,
+					-2.476933
+				],
+				"size": [
+					4.944698,
+					7.316918,
+					4.538403
+				]
+			},
+			"source_entry": "glTF/Pine_1.gltf",
+			"source_format": "glTF 2.0",
+			"source_id": "quaternius_standard",
+			"source_materials": 2.0,
+			"source_name": "Pine_1",
+			"source_sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+			"source_surfaces": 2.0,
+			"source_triangles": 3947.0,
+			"textures": [
+				{
+					"source_entry": "glTF/Bark_NormalTree.png",
+					"uri": "Bark_NormalTree.png"
+				},
+				{
+					"source_entry": "glTF/Bark_NormalTree_Normal.png",
+					"uri": "Bark_NormalTree_Normal.png"
+				},
+				{
+					"source_entry": "glTF/Leaf_Pine_C.png",
+					"uri": "Leaf_Pine_C.png"
+				}
+			]
+		},
+		{
+			"buffer_derivation": {
+				"derivation_count": 5281.0,
+				"method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+				"path": "models/CommonTree_3.bin",
+				"runtime_buffer_sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3",
+				"source_buffer_sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
+				"source_entry": "glTF/CommonTree_3.bin"
+			},
+			"dependencies": [
+				"glTF/Bark_NormalTree.png",
+				"glTF/Bark_NormalTree_Normal.png",
+				"glTF/CommonTree_3.bin",
+				"glTF/CommonTree_3.gltf",
+				"glTF/Leaves_NormalTree_C.png"
+			],
+			"description": "upright broadleaf tree",
+			"grounded_bounds_m": {
+				"max": [
+					2.076381,
+					9.42519,
+					2.180111
+				],
+				"min": [
+					-1.986465,
+					0.0,
+					-2.060966
+				],
+				"size": [
+					4.062846,
+					9.42519,
+					4.241077
+				]
+			},
+			"id": "common_tree_3",
+			"lod": {
+				"godot_import_generate": true,
+				"source_supplied": false
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/CommonTree_3.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.242772,
+				"height": 9.42519,
+				"max": [
+					2.076381,
+					9.182418,
+					2.180111
+				],
+				"min": [
+					-1.986465,
+					-0.242772,
+					-2.060966
+				],
+				"size": [
+					4.062846,
+					9.42519,
+					4.241077
+				]
+			},
+			"source_entry": "glTF/CommonTree_3.gltf",
+			"source_format": "glTF 2.0",
+			"source_id": "quaternius_standard",
+			"source_materials": 2.0,
+			"source_name": "CommonTree_3",
+			"source_sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+			"source_surfaces": 2.0,
+			"source_triangles": 3505.0,
+			"textures": [
+				{
+					"source_entry": "glTF/Bark_NormalTree.png",
+					"uri": "Bark_NormalTree.png"
+				},
+				{
+					"source_entry": "glTF/Bark_NormalTree_Normal.png",
+					"uri": "Bark_NormalTree_Normal.png"
+				},
+				{
+					"source_entry": "glTF/Leaves_NormalTree_C.png",
+					"uri": "Leaves_NormalTree_C.png"
+				}
+			]
+		}
+	],
+	"batch_count": 3,
+	"captures": [
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "common_tree_1",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				24.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 10,
+				"primitives": 3947,
+				"shadow_draws": 0
+			},
+			"eye": [
+				24.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "pine_1",
+			"sha256": "e9c138e95d51842cd4eaee31e835c67bf3217f52b8544aac754c5dc0d00d8236",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				48.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 10,
+				"primitives": 3505,
+				"shadow_draws": 0
+			},
+			"eye": [
+				48.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "common_tree_3",
+			"sha256": "d12b7d2e5553dc93fae87bf3855d5f16fc621cdc0d82b2dda9857b6adae94212",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 4,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				-20.0
+			],
+			"fov": 36.0,
+			"id": "back",
+			"sha256": "acd447edbe1b14e75079612a1af0d37bd60ed9a4ca9c63ad097a1d706c267347",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 4,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.5,
+				12.0
+			],
+			"fov": 50.0,
+			"id": "underside",
+			"sha256": "6ceffe7f5569c0525c9457429320a6c68e80b385133365d5964588a48fd24fbf",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				25.0,
+				0.00999999977648258
+			],
+			"fov": 40.0,
+			"id": "overhead",
+			"sha256": "a82ea5ac1f2d56abe24386656f5bd91bd5fce6105b30572b5607d829431fcef7",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_start",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_one",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_repeat",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1024.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_wrap",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				5.0,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 6,
+				"primitives": 6265,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_reverse",
+			"sha256": "cbf888f3aa81150d446fa2289fdcf5a9c878e05d549e052d69fa2385599cf699",
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 290.025,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 65829055,
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "gallery",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+	"viewport": [
+		1280,
+		720
+	]
+}

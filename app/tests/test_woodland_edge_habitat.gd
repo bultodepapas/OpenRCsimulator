@@ -142,7 +142,79 @@ func _run() -> void:
 	for node: Node in [high, high_again, balanced, balanced_again, low,
 		custom_field_root, custom_scenery_root, custom_lake_root]:
 		node.free()
+	await _check_impostor_view_frames()
 	_finish()
+
+
+## Regression: the 4-view cards showed the opposite side's frame from north and south.
+## The bake's Blender azimuth a reaches Godot as the source-local direction (cos a, 0, -sin a);
+## a camera in that direction must see frame a / 90 degrees, also for a yawed instance.
+func _check_impostor_view_frames() -> void:
+	if DisplayServer.get_name() == "headless":
+		print("skip impostor view-frame readback: the Dummy renderer draws nothing")
+		return
+	var colors: Array[Color] = [Color(1, 0, 0), Color(0, 1, 0), Color(0, 0, 1), Color(1, 1, 0)]
+	var atlas := Image.create(64, 16, false, Image.FORMAT_RGBA8)
+	for frame in 4:
+		atlas.fill_rect(Rect2i(frame * 16, 0, 16, 16), colors[frame])
+	var texture := ImageTexture.create_from_image(atlas)
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(32, 32)
+	viewport.own_world_3d = true
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	var environment := Environment.new()
+	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	environment.ambient_light_color = Color.WHITE
+	var world_environment := WorldEnvironment.new()
+	world_environment.environment = environment
+	viewport.add_child(world_environment)
+	var camera := Camera3D.new()
+	viewport.add_child(camera)
+	camera.current = true
+	for shader_path: String in ["res://scenery/woodland_cards.gdshader",
+			"res://assets/landscape/vegetation/impostors/bush_common_4view.gdshader"]:
+		for yaw: float in [0.0, PI * 0.5]:
+			var material := ShaderMaterial.new()
+			material.shader = load(shader_path)
+			for uniform_name: String in ["impostor_atlas", "plain_atlas", "short_grass_atlas", "fern_atlas"]:
+				material.set_shader_parameter(uniform_name, texture)
+			var quad := QuadMesh.new()
+			quad.material = material
+			var multimesh := MultiMesh.new()
+			multimesh.transform_format = MultiMesh.TRANSFORM_3D
+			multimesh.use_colors = true
+			multimesh.use_custom_data = true
+			multimesh.mesh = quad
+			multimesh.instance_count = 1
+			var placement := Basis(Vector3.UP, yaw)
+			multimesh.set_instance_transform(0, Transform3D(placement, Vector3.ZERO))
+			multimesh.set_instance_color(0, Color.WHITE)
+			multimesh.set_instance_custom_data(0, Color(yaw / TAU, 0.0, 0.0, 1.0))
+			var card := MultiMeshInstance3D.new()
+			card.multimesh = multimesh
+			viewport.add_child(card)
+			var shown: Array[int] = []
+			for frame in 4:
+				var azimuth := deg_to_rad(90.0 * frame)
+				camera.look_at_from_position(placement * Vector3(cos(azimuth), 0.0, -sin(azimuth)) * 3.0, Vector3.ZERO)
+				for _index in 3:
+					await process_frame
+					RenderingServer.force_draw(false)
+				var pixel := viewport.get_texture().get_image().get_pixel(16, 16)
+				var nearest := -1
+				var nearest_distance := INF
+				for candidate in 4:
+					var distance := Vector3(pixel.r, pixel.g, pixel.b).normalized() \
+						.distance_to(Vector3(colors[candidate].r, colors[candidate].g, colors[candidate].b).normalized())
+					if distance < nearest_distance:
+						nearest_distance = distance
+						nearest = candidate
+				shown.append(nearest)
+			_check("%s shows bake frames 0..3 from their bake azimuths at yaw %.0f deg" % [
+				shader_path.get_file(), rad_to_deg(yaw)], shown == [0, 1, 2, 3], str(shown))
+			card.free()
+	viewport.free()
 
 
 func _shrub_layout_contract(root: Node3D) -> bool:

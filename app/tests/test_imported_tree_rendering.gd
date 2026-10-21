@@ -2,6 +2,8 @@ extends SceneTree
 
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
+const CollisionWorld := preload("res://scenery/collision_world.gd")
 const EXPECTED_TREE_LEAF_TEXTURES := {
 	"common_tree_1": "Leaves_NormalTree_C.png",
 	"common_tree_2": "Leaves_NormalTree_C.png",
@@ -20,6 +22,16 @@ const EXPECTED_MAPLE_TEXTURES := [
 	"maple_leaves_ao-maple_leaves_roughness.png",
 ]
 
+# L15b-R2 qualifies only trees with a measured collision-bounded sway limit.
+const TREE_SAMPLE_ID := "landscapelab_quercus"
+const TREE_SAMPLE_PREFIX := TREE_SAMPLE_ID + "_"
+const FIELD_CARD_LEAN_M := 0.24 # render/tree_wind.gdshaderinc TREE_WIND_LEAN_M
+const TREE_WIND_SHADERS := {
+	"double_repeat": "res://scenery/imported_tree_wind.gdshader",
+	"back_repeat": "res://scenery/imported_tree_wind_cull_back.gdshader",
+	"double_clamp": "res://scenery/imported_tree_wind_clamp.gdshader",
+}
+
 var _failures := 0
 
 
@@ -29,7 +41,8 @@ func _initialize() -> void:
 	_test_opt_in_tree_cells_and_damage()
 	_test_tree_wind_with_tree_cells()
 	_test_wind_modes_and_material_preservation()
-	_test_all_tree_sources_accept_tree_wind()
+	_test_tree_wind_qualification()
+	_test_tree_wind_stays_inside_collision_proxies()
 	_test_maple_source_materials()
 	_test_oak_blend_fails_closed_to_static_source_material()
 	_test_tree_wind_transform_guard()
@@ -45,7 +58,7 @@ func _initialize() -> void:
 func _test_opt_in_tree_cells_and_damage() -> void:
 	var batches := _sample_batches()
 	var legacy := ImportedVegetation.build(batches)
-	var expected_tree_parts := ImportedVegetation.get_parts("common_tree_1").size()
+	var expected_tree_parts := ImportedVegetation.get_parts(TREE_SAMPLE_ID).size()
 	var expected_crop_parts := ImportedVegetation.get_parts("wheat_4").size()
 	_check("default build keeps one flat batch per source part",
 		legacy.get_child_count() == expected_tree_parts + expected_crop_parts)
@@ -53,15 +66,15 @@ func _test_opt_in_tree_cells_and_damage() -> void:
 
 	for candidate_size in [64, 128, 256]:
 		var cell_root := ImportedVegetation.build(batches, false, {"tree_cell_size_m": candidate_size})
-		var expected_cells := _expected_cell_count(batches["common_tree_1"], candidate_size)
+		var expected_cells := _expected_cell_count(batches[TREE_SAMPLE_ID], candidate_size)
 		_check("%d m batching emits one batch per tree cell and source part" % candidate_size,
 			cell_root.get_child_count() == expected_cells * expected_tree_parts + expected_crop_parts)
 		_check("%d m batching preserves flat child traversal" % candidate_size,
 			_all_children_are_flat_multimeshes(cell_root))
 		_check("%d m batching preserves every tree transform" % candidate_size,
 			_tree_transform_signatures(cell_root) == _tree_transform_signatures(legacy))
-		var tint_match := _tree_state_tints_match_records(cell_root, batches["common_tree_1"], expected_tree_parts)
-		var expected_damage_entries := _damage_record_count(batches["common_tree_1"]) * expected_tree_parts
+		var tint_match := _tree_state_tints_match_records(cell_root, batches[TREE_SAMPLE_ID], expected_tree_parts)
+		var expected_damage_entries := _damage_record_count(batches[TREE_SAMPLE_ID]) * expected_tree_parts
 		_check("%d m batching preserves tree tint records" % candidate_size, tint_match)
 		_check("%d m batching preserves damage IDs and indices" % candidate_size,
 			_tree_damage_entry_count(cell_root) == expected_damage_entries)
@@ -85,8 +98,8 @@ func _test_opt_in_tree_cells_and_damage() -> void:
 
 func _test_tree_wind_with_tree_cells() -> void:
 	var batches := _sample_batches()
-	var records: Array = batches["common_tree_1"]
-	var parts := ImportedVegetation.get_parts("common_tree_1")
+	var records: Array = batches[TREE_SAMPLE_ID]
+	var parts := ImportedVegetation.get_parts(TREE_SAMPLE_ID)
 	var expected_tree_instances := records.size() * parts.size()
 	var baseline := ImportedVegetation.build(batches, false, {
 		"tree_wind": true,
@@ -97,10 +110,10 @@ func _test_tree_wind_with_tree_cells() -> void:
 	var phase_buffer_available := _tree_multimesh_buffers_available(baseline)
 	_check("wind-only baseline keeps one tree state per source record and part",
 		_tree_wind_state_matches_records(baseline, records, parts, 0, phase_buffer_available)
-		and _tree_state_bounds_count(baseline, "common_tree_1") == expected_tree_instances)
+		and _tree_state_bounds_count(baseline, TREE_SAMPLE_ID) == expected_tree_instances)
 	_check("wind-only baseline has complete expanded tree bounds",
 		_tree_wind_cull_bounds_match_state(baseline, expected_tree_instances, 0))
-	var baseline_tree_bounds := _tree_state_bounds(baseline, "common_tree_1")
+	var baseline_tree_bounds := _tree_state_bounds(baseline, TREE_SAMPLE_ID)
 	var baseline_all_bounds := ImportedVegetation.bounds(baseline)
 
 	for candidate_size in [64, 128, 256]:
@@ -117,11 +130,11 @@ func _test_tree_wind_with_tree_cells() -> void:
 		_check("%d m regrouping preserves each tree transform, tint and seed-derived wind phase" % candidate_size,
 			_tree_wind_state_matches_records(cell_root, records, parts, candidate_size, phase_buffer_available))
 		_check("%d m regrouping retains the same number of tree bounds" % candidate_size,
-			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances)
+			_tree_state_bounds_count(cell_root, TREE_SAMPLE_ID) == expected_tree_instances)
 		_check("%d m per-cell cull bounds cover all expanded tree instances" % candidate_size,
 			_tree_wind_cull_bounds_match_state(cell_root, expected_tree_instances, candidate_size))
 		_check("%d m regrouping preserves the complete expanded tree bounds" % candidate_size,
-			_aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), baseline_tree_bounds))
+			_aabb_approx_equal(_tree_state_bounds(cell_root, TREE_SAMPLE_ID), baseline_tree_bounds))
 		_check("%d m regrouping preserves total imported vegetation bounds" % candidate_size,
 			_aabb_approx_equal(ImportedVegetation.bounds(cell_root), baseline_all_bounds))
 
@@ -129,21 +142,21 @@ func _test_tree_wind_with_tree_cells() -> void:
 		var before_hide_phase_state: Array[String] = []
 		if phase_buffer_available:
 			before_hide_phase_state = _tree_wind_phase_signatures(cell_root)
-		var before_hide_tree_bounds := _tree_state_bounds(cell_root, "common_tree_1")
+		var before_hide_tree_bounds := _tree_state_bounds(cell_root, TREE_SAMPLE_ID)
 		_check("%d m wind batching has all source-part damage entries" % candidate_size,
 			damage_entries.size() == _damage_record_count(records) * parts.size())
 		_check("%d m wind tree damage hides every mapped instance" % candidate_size,
 			ImportedVegetation.set_damage_hidden(cell_root, "tree-cell-edge", true)
 			and _damage_instances_match_hidden_state(cell_root, "tree-cell-edge", true))
 		_check("%d m wind tree damage removes the hidden tree from bounds" % candidate_size,
-			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances - damage_entries.size()
-			and not _aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), before_hide_tree_bounds))
+			_tree_state_bounds_count(cell_root, TREE_SAMPLE_ID) == expected_tree_instances - damage_entries.size()
+			and not _aabb_approx_equal(_tree_state_bounds(cell_root, TREE_SAMPLE_ID), before_hide_tree_bounds))
 		_check("%d m wind tree damage restores every mapped instance" % candidate_size,
 			ImportedVegetation.set_damage_hidden(cell_root, "tree-cell-edge", false)
 			and _damage_instances_match_hidden_state(cell_root, "tree-cell-edge", false))
 		_check("%d m wind damage restoration restores bounds and seed phases" % candidate_size,
-			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances
-			and _aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), before_hide_tree_bounds)
+			_tree_state_bounds_count(cell_root, TREE_SAMPLE_ID) == expected_tree_instances
+			and _aabb_approx_equal(_tree_state_bounds(cell_root, TREE_SAMPLE_ID), before_hide_tree_bounds)
 			and _aabb_approx_equal(ImportedVegetation.bounds(cell_root), baseline_all_bounds)
 			and (not phase_buffer_available
 				or (_tree_wind_phase_signatures(cell_root) == before_hide_phase_state
@@ -156,67 +169,56 @@ func _test_wind_modes_and_material_preservation() -> void:
 	var batches := _sample_batches()
 	var source_crop_parts := ImportedVegetation.get_parts("wheat_4")
 	var tree_wind_root := ImportedVegetation.build(batches, false, {"tree_wind": true})
-	var tree_mode_shader := load("res://scenery/imported_vegetation_wind.gdshader") as Shader
-	var shader_text := FileAccess.get_file_as_string("res://scenery/imported_vegetation_wind.gdshader")
-	_check("shared wind shader does not rely on unsupported per-instance uniforms",
-		not shader_text.contains("instance uniform"))
-	_check("tree wind applies the analytic inverse-transpose normal correction",
-		shader_text.contains("source_normal.y - sway_gradient_y * dot(direction, source_normal.xz)"))
-	_check("tree wind applies the analytic Jacobian to normal-map tangents",
-		shader_text.contains("source_tangent.x + direction.x * sway_gradient_y * source_tangent.y")
-		and shader_text.contains("source_binormal.z + direction.y * sway_gradient_y * source_binormal.y"))
-	_check("zero tree-wind gradient preserves the source normal frame exactly",
-		shader_text.contains("if (sway_gradient_y != 0.0)"))
+	var include_text := FileAccess.get_file_as_string("res://scenery/imported_tree_wind.gdshaderinc")
+	var legacy_text := FileAccess.get_file_as_string("res://scenery/imported_vegetation_wind.gdshader")
+	_check("tree wind shaders do not rely on unsupported per-instance uniforms",
+		not include_text.contains("instance uniform") and not legacy_text.contains("instance uniform"))
+	_check("tree wind adds the analytic inverse-transpose normal term",
+		include_text.contains("NORMAL.y -= dot(shear, NORMAL);"))
+	_check("tree wind adds the analytic Jacobian term to normal-map tangents",
+		include_text.contains("TANGENT += shear * TANGENT.y;")
+		and include_text.contains("BINORMAL += shear * BINORMAL.y;"))
+	_check("tree wind displaces horizontally only",
+		include_text.contains("VERTEX.xz += direction * (top_sway * normalized_height * normalized_height);")
+		and not include_text.contains("VERTEX.y +=") and not include_text.contains("VERTEX +="))
+	_check("legacy all-role wind shader no longer carries a tree branch",
+		not legacy_text.contains("tree_wind_mode"))
+	for key: String in TREE_WIND_SHADERS:
+		_check("tree wind variant %s includes the shared material mirror" % key,
+			FileAccess.get_file_as_string(str(TREE_WIND_SHADERS[key])).contains(
+				'#include "res://scenery/imported_tree_wind.gdshaderinc"'))
 	var checked_tree := false
 	var checked_crop := false
 	var saw_tree_shader := false
 	var saw_tree_source_material := false
-	var saw_tree_normal_map := false
+	var saw_bark := false
+	var saw_foliage := false
+	var parts := ImportedVegetation.get_parts(TREE_SAMPLE_ID)
 	for child in tree_wind_root.get_children():
 		var instance := child as MultiMeshInstance3D
 		var asset_id := str(instance.name).get_slice("_Part_", 0)
-		if asset_id == "common_tree_1":
+		if asset_id == TREE_SAMPLE_ID:
 			checked_tree = true
 			_check("tree opt-in child is marked separately from legacy wind",
 				bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false))
 				and not bool(instance.get_meta("_imported_vegetation_wind_enabled", false)))
 			var draw_mesh := instance.multimesh.mesh
-			var parts := ImportedVegetation.get_parts("common_tree_1")
 			var part_index := int(str(instance.name).get_slice("_Part_", 1).get_slice("_", 0))
 			var source_materials: Array = parts[part_index].get("materials", [])
 			for surface_index in range(draw_mesh.get_surface_count()):
 				var output_material := draw_mesh.surface_get_material(surface_index)
-				if output_material is ShaderMaterial:
-					saw_tree_shader = true
-					var shader_material := output_material as ShaderMaterial
-					var source_material := source_materials[surface_index] as BaseMaterial3D
-					_check("tree wind material uses the compatibility-safe shader",
-						shader_material.shader == tree_mode_shader
-						and bool(shader_material.get_shader_parameter("tree_wind_mode")))
-					_check("tree wind preserves source color and texture",
-						shader_material.get_shader_parameter("albedo_color") == source_material.albedo_color
-						and shader_material.get_shader_parameter("albedo_texture") == source_material.albedo_texture)
-					_check("tree wind preserves source UV, roughness, metallic and specular values",
-						shader_material.get_shader_parameter("uv1_scale") == Vector2(source_material.uv1_scale.x, source_material.uv1_scale.y)
-						and shader_material.get_shader_parameter("uv1_offset") == Vector2(source_material.uv1_offset.x, source_material.uv1_offset.y)
-						and is_equal_approx(float(shader_material.get_shader_parameter("roughness")), source_material.roughness)
-						and is_equal_approx(float(shader_material.get_shader_parameter("metallic")), source_material.metallic)
-						and is_equal_approx(float(shader_material.get_shader_parameter("specular")), source_material.metallic_specular))
-					_check("tree wind preserves source normal-map and alpha-scissor settings",
-						bool(shader_material.get_shader_parameter("use_normal_texture"))
-							== (source_material.normal_enabled and source_material.normal_texture != null)
-						and bool(shader_material.get_shader_parameter("use_alpha_scissor"))
-							== (source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR)
-						and is_equal_approx(float(shader_material.get_shader_parameter("alpha_scissor_threshold")),
-							source_material.alpha_scissor_threshold))
-					saw_tree_normal_map = saw_tree_normal_map or bool(shader_material.get_shader_parameter("use_normal_texture"))
-					_check("tree wind keeps per-part height coordinates",
-						is_equal_approx(float(shader_material.get_shader_parameter("plant_height")),
-							float(parts[part_index].get("bounds", AABB()).size.y)))
-				else:
+				if not output_material is ShaderMaterial:
 					saw_tree_source_material = true
 					_check("unsupported tree material fails closed without replacement",
 						output_material == source_materials[surface_index])
+					continue
+				saw_tree_shader = true
+				var wind_material := output_material as ShaderMaterial
+				var source_material := source_materials[surface_index] as BaseMaterial3D
+				_check_tree_wind_material(TREE_SAMPLE_ID, surface_index, wind_material, source_material,
+					parts[part_index].get("bounds", AABB()))
+				saw_bark = saw_bark or source_material.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED
+				saw_foliage = saw_foliage or source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 			if instance.multimesh.mesh.surface_get_material(0) is ShaderMaterial:
 				var tree_aabb: AABB = instance.custom_aabb
 				_check("tree wind custom cull bounds are explicit and nonempty",
@@ -232,30 +234,45 @@ func _test_wind_modes_and_material_preservation() -> void:
 					instance.multimesh.mesh.surface_get_material(surface_index) == crop_materials[surface_index])
 	_check("tree-only wind build includes a tree batch", checked_tree)
 	_check("tree-only wind build includes a non-tree control batch", checked_crop)
-	if saw_tree_shader:
-		_check("tree wind enables imported tangent-space bark normal maps",
-			saw_tree_normal_map)
+	_check("qualified Quercus converts both its opaque bark and alpha-scissor foliage",
+		saw_tree_shader and saw_bark and saw_foliage)
 	_check("tree asset is either wholly converted or wholly fail-closed",
 		not (saw_tree_shader and saw_tree_source_material))
 	if saw_tree_shader:
 		var static_tree_root := ImportedVegetation.build(batches)
-		var static_bounds := ImportedVegetation.bounds(static_tree_root)
-		var wind_bounds := ImportedVegetation.bounds(tree_wind_root)
-		_check("tree wind expands transformed root bounds for shader sway",
-			wind_bounds.size.x > static_bounds.size.x and wind_bounds.size.z > static_bounds.size.z)
+		var static_bounds := _tree_state_bounds(static_tree_root, TREE_SAMPLE_ID)
+		var wind_bounds := _tree_state_bounds(tree_wind_root, TREE_SAMPLE_ID)
+		_check("tree wind expands only horizontal root bounds for shader sway",
+			wind_bounds.size.x > static_bounds.size.x and wind_bounds.size.z > static_bounds.size.z
+			and is_equal_approx(wind_bounds.position.y, static_bounds.position.y)
+			and is_equal_approx(wind_bounds.size.y, static_bounds.size.y))
+		var limit := float(ImportedVegetation.TREE_WIND_LEAN_LIMITS_M[TREE_SAMPLE_ID])
+		var state: Dictionary = tree_wind_root.get_meta("_imported_vegetation_state", {})
+		var growth_matches := true
+		for record: Dictionary in state.get("bounds", []):
+			if str(record.get("asset_id", "")) != TREE_SAMPLE_ID:
+				continue
+			var record_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+			var grow := limit / record_transform.basis.y.length()
+			var source_bounds: AABB = parts[0].get("bounds", AABB())
+			var record_bounds: AABB = record.get("bounds", AABB())
+			growth_matches = growth_matches \
+				and is_equal_approx(record_bounds.size.x, source_bounds.size.x + 2.0 * grow) \
+				and is_equal_approx(record_bounds.size.z, source_bounds.size.z + 2.0 * grow) \
+				and is_equal_approx(record_bounds.size.y, source_bounds.size.y)
+		_check("each tree bound grows by its own scaled crown-top limit", growth_matches)
+		var before := _tree_wind_parameter_snapshot(tree_wind_root)
 		ImportedVegetation.set_wind(tree_wind_root, 10.0, Vector2(0.0, 1.0))
-		var clamped_strength := -1.0
-		for child in tree_wind_root.get_children():
-			var instance := child as MultiMeshInstance3D
-			if bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false)):
-				var material := instance.multimesh.mesh.surface_get_material(0) as ShaderMaterial
-				clamped_strength = float(material.get_shader_parameter("wind_strength"))
-				break
-		_check("tree wind setter caps displacement to its bounded maximum",
-			clamped_strength >= 0.0 and clamped_strength <= 0.025)
+		_check("legacy set_wind leaves session-driven tree-wind materials unchanged",
+			not before.is_empty() and _tree_wind_parameter_snapshot(tree_wind_root) == before)
+		var repeat_root := ImportedVegetation.build(batches, false, {"tree_wind": true})
+		_check("tree-wind materials are shared across builds",
+			_tree_wind_parameter_snapshot(repeat_root) == before
+			and _first_tree_wind_material(repeat_root) == _first_tree_wind_material(tree_wind_root))
+		repeat_root.free()
 		static_tree_root.free()
 	var legacy_wind_root := ImportedVegetation.build(batches, true)
-	var checked_legacy_roles := {"common_tree_1": false, "wheat_4": false}
+	var checked_legacy_roles := {TREE_SAMPLE_ID: false, "wheat_4": false}
 	var legacy_wind_strengths: Dictionary = {}
 	for child in legacy_wind_root.get_children():
 		var instance := child as MultiMeshInstance3D
@@ -268,22 +285,100 @@ func _test_wind_modes_and_material_preservation() -> void:
 			_check("legacy enable_wind still covers role %s" % asset_id,
 				bool(checked_legacy_roles[asset_id]))
 	_check("legacy role-specific wind defaults remain unchanged",
-		is_equal_approx(float(legacy_wind_strengths.get("common_tree_1", -1.0)), 0.01)
+		is_equal_approx(float(legacy_wind_strengths.get(TREE_SAMPLE_ID, -1.0)), 0.01)
 		and is_equal_approx(float(legacy_wind_strengths.get("wheat_4", -1.0)), 0.0375))
 	ImportedVegetation.set_wind(legacy_wind_root, 0.0)
 	_check("legacy enable_wind remains all-role",
-		bool(checked_legacy_roles["common_tree_1"]) and bool(checked_legacy_roles["wheat_4"]))
+		bool(checked_legacy_roles[TREE_SAMPLE_ID]) and bool(checked_legacy_roles["wheat_4"]))
 	_check("legacy set_wind updates all role materials",
 		_legacy_wind_materials_have_strength(legacy_wind_root, 0.0))
 	tree_wind_root.free()
 	legacy_wind_root.free()
 
 
+## L15b-R2: every accepted source material term is carried by the matching variant.
+func _check_tree_wind_material(asset_id: String, surface_index: int, wind_material: ShaderMaterial,
+		source_material: BaseMaterial3D, part_bounds: AABB) -> void:
+	var label := "%s surface %d" % [asset_id, surface_index]
+	var expected_key := ImportedVegetation._tree_wind_shader_key(source_material)
+	_check(label + " uses the variant for its cull mode and texture repeat",
+		not expected_key.is_empty()
+		and wind_material.shader.resource_path == str(TREE_WIND_SHADERS[expected_key]))
+	_check(label + " preserves albedo color, texture, UV and vertex-color settings",
+		wind_material.get_shader_parameter("albedo_color") == source_material.albedo_color
+		and wind_material.get_shader_parameter("albedo_texture") == source_material.albedo_texture
+		and bool(wind_material.get_shader_parameter("use_albedo_texture")) == (source_material.albedo_texture != null)
+		and wind_material.get_shader_parameter("uv1_scale") == Vector2(source_material.uv1_scale.x, source_material.uv1_scale.y)
+		and wind_material.get_shader_parameter("uv1_offset") == Vector2(source_material.uv1_offset.x, source_material.uv1_offset.y)
+		and bool(wind_material.get_shader_parameter("use_vertex_color")) == source_material.vertex_color_use_as_albedo)
+	_check(label + " preserves metallic, roughness and specular values, maps and channels",
+		is_equal_approx(float(wind_material.get_shader_parameter("metallic")), source_material.metallic)
+		and wind_material.get_shader_parameter("metallic_texture") == source_material.metallic_texture
+		and bool(wind_material.get_shader_parameter("use_metallic_texture")) == (source_material.metallic_texture != null)
+		and wind_material.get_shader_parameter("metallic_texture_channel")
+			== ImportedVegetation._texture_channel_mask(source_material.metallic_texture_channel)
+		and is_equal_approx(float(wind_material.get_shader_parameter("roughness")), source_material.roughness)
+		and wind_material.get_shader_parameter("roughness_texture") == source_material.roughness_texture
+		and bool(wind_material.get_shader_parameter("use_roughness_texture")) == (source_material.roughness_texture != null)
+		and is_equal_approx(float(wind_material.get_shader_parameter("specular")), source_material.metallic_specular))
+	var normal_map := source_material.normal_enabled and source_material.normal_texture != null
+	_check(label + " preserves its normal map",
+		bool(wind_material.get_shader_parameter("use_normal_texture")) == normal_map
+		and wind_material.get_shader_parameter("normal_texture") == source_material.normal_texture
+		and is_equal_approx(float(wind_material.get_shader_parameter("normal_scale")), source_material.normal_scale))
+	var ambient_occlusion := source_material.get_feature(BaseMaterial3D.FEATURE_AMBIENT_OCCLUSION)
+	_check(label + " preserves ambient occlusion map, channel and light affect",
+		bool(wind_material.get_shader_parameter("use_ao")) == ambient_occlusion
+		and wind_material.get_shader_parameter("ao_texture") == source_material.ao_texture
+		and wind_material.get_shader_parameter("ao_texture_channel")
+			== ImportedVegetation._texture_channel_mask(source_material.ao_texture_channel)
+		and is_equal_approx(float(wind_material.get_shader_parameter("ao_light_affect")), source_material.ao_light_affect))
+	var scissor := source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	_check(label + " preserves alpha-scissor mode and threshold",
+		bool(wind_material.get_shader_parameter("use_alpha_scissor")) == scissor
+		and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
+			source_material.alpha_scissor_threshold))
+	_check(label + " bends in its own source-part height frame",
+		is_equal_approx(float(wind_material.get_shader_parameter("plant_height")), part_bounds.size.y)
+		and is_equal_approx(float(wind_material.get_shader_parameter("plant_base_y")), part_bounds.position.y))
+	_check(label + " uses its measured crown-top limit",
+		is_equal_approx(float(wind_material.get_shader_parameter("tree_lean_limit_m")),
+			float(ImportedVegetation.TREE_WIND_LEAN_LIMITS_M.get(asset_id, -1.0))))
+	_check(label + " flutters only foliage without a normal map",
+		is_equal_approx(float(wind_material.get_shader_parameter("leaf_flutter_tilt")),
+			ImportedVegetation.LEAF_FLUTTER_TILT if scissor and not normal_map else 0.0))
+	_check(label + " keeps its render priority", wind_material.render_priority == source_material.render_priority)
+
+
+func _tree_wind_parameter_snapshot(root: Node3D) -> Array[String]:
+	var snapshot: Array[String] = []
+	for child in root.get_children():
+		if not bool(child.get_meta("_imported_vegetation_tree_wind_enabled", false)):
+			continue
+		var mesh := (child as MultiMeshInstance3D).multimesh.mesh
+		for surface_index in range(mesh.get_surface_count()):
+			var material := mesh.surface_get_material(surface_index) as ShaderMaterial
+			if material == null:
+				continue
+			snapshot.append("%s|%s|%s|%s" % [material.shader.resource_path,
+				material.get_shader_parameter("tree_lean_limit_m"),
+				material.get_shader_parameter("leaf_flutter_tilt"),
+				material.get_shader_parameter("plant_height")])
+	return snapshot
+
+
+func _first_tree_wind_material(root: Node3D) -> Material:
+	for child in root.get_children():
+		if bool(child.get_meta("_imported_vegetation_tree_wind_enabled", false)):
+			return (child as MultiMeshInstance3D).multimesh.mesh.surface_get_material(0)
+	return null
+
+
 func _test_tree_wind_transform_guard() -> void:
-	var parts := ImportedVegetation.get_parts("common_tree_1")
+	var parts := ImportedVegetation.get_parts(TREE_SAMPLE_ID)
 	var separate_crown: Array[Dictionary] = [parts[0], parts[0]]
 	_check("separate source crown and stem parts retain source materials until a shared bend frame is qualified",
-		not ImportedVegetation._tree_asset_wind_supported("multipart-fixture", separate_crown, []))
+		not ImportedVegetation._tree_asset_wind_supported(TREE_SAMPLE_ID, separate_crown, []))
 	var yaw := Transform3D(Basis(Vector3.UP, 0.7), Vector3(3.0, 0.0, -2.0))
 	var tilt := Transform3D(Basis(Vector3.RIGHT, 0.1), Vector3.ZERO)
 	var nonuniform := Transform3D(Basis.from_scale(Vector3(1.0, 1.1, 1.0)), Vector3.ZERO)
@@ -294,131 +389,147 @@ func _test_tree_wind_transform_guard() -> void:
 	_check("tree wind rejects non-uniform source or placement scale",
 		not ImportedVegetation._tree_wind_transform_support_reason(nonuniform).is_empty())
 	var batches: Dictionary = {}
-	ImportedVegetation.queue(batches, "common_tree_1", tilt, 17)
+	ImportedVegetation.queue(batches, TREE_SAMPLE_ID, tilt, 17)
 	var guarded_root := ImportedVegetation.build(batches, false, {"tree_wind": true})
 	_check("tilted tree batches fail closed to source materials",
 		_not_tree_wind_enabled(guarded_root))
 	guarded_root.free()
+	var front := StandardMaterial3D.new()
+	front.cull_mode = BaseMaterial3D.CULL_FRONT
+	var back_clamp := StandardMaterial3D.new()
+	back_clamp.texture_repeat = false
+	var orm := ORMMaterial3D.new()
+	orm.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var ao_uv2 := StandardMaterial3D.new()
+	ao_uv2.ao_enabled = true
+	ao_uv2.ao_on_uv2 = true
+	for case: Array in [[front, "front-face culling"], [back_clamp, "non-repeating textures"],
+			[orm, "ORM materials"], [ao_uv2, "ambient occlusion on UV2"]]:
+		_check("tree wind rejects %s it does not mirror" % case[1],
+			ImportedVegetation._tree_material_support_reason(case[0]).contains(str(case[1])))
 
 
-func _test_all_tree_sources_accept_tree_wind() -> void:
+func _test_tree_wind_qualification() -> void:
 	var actual_tree_ids: Array[String] = []
 	for asset_value: Dictionary in ImportedVegetation.catalog().get("assets", []):
 		if str(asset_value.get("role", "")) == "tree":
 			actual_tree_ids.append(str(asset_value.get("id", "")))
 	actual_tree_ids.sort()
-	var expected_tree_ids: Array[String] = []
+	var expected_all_tree_ids: Array[String] = []
 	for asset_id: String in EXPECTED_TREE_LEAF_TEXTURES:
-		expected_tree_ids.append(asset_id)
-	expected_tree_ids.sort()
-	var expected_all_tree_ids := expected_tree_ids.duplicate()
-	expected_all_tree_ids.append("oak_tree")
-	expected_all_tree_ids.append("maple_tree")
-	expected_all_tree_ids.append("landscapelab_quercus")
-	expected_all_tree_ids.append("landscapelab_pine")
+		expected_all_tree_ids.append(asset_id)
+	expected_all_tree_ids.append_array(["oak_tree", "maple_tree", "landscapelab_quercus", "landscapelab_pine"])
 	expected_all_tree_ids.sort()
-	_check("catalog covers seven wind-qualified trees, Maple, oak, Quercus, and Pine sources",
+	_check("catalog covers seven library forms, Maple, oak, Quercus, and Pine sources",
 		actual_tree_ids == expected_all_tree_ids)
+	var qualified: Array = ImportedVegetation.TREE_WIND_LEAN_LIMITS_M.keys()
+	qualified.sort()
+	_check("only the placed downloaded Quercus and Pine carry measured sway limits",
+		qualified == ["landscapelab_pine", "landscapelab_quercus"])
 
 	var batches: Dictionary = {}
-	var expected_surfaces := 0
-	for index in range(expected_tree_ids.size()):
-		var asset_id := expected_tree_ids[index]
-		var parts := ImportedVegetation.get_parts(asset_id)
-		_check("%s has imported parts for tree-wind coverage" % asset_id, not parts.is_empty())
-		for part: Dictionary in parts:
-			var mesh: Mesh = part.get("mesh")
-			if mesh != null:
-				expected_surfaces += mesh.get_surface_count()
-		var placement := Transform3D(
-			Basis(Vector3.UP, float(index) * 0.19),
-			Vector3(float(index) * 12.0, 0.0, float(index % 2) * 6.0)
-		)
+	for index in range(actual_tree_ids.size()):
+		var asset_id := actual_tree_ids[index]
+		var placement := Transform3D(Basis(Vector3.UP, float(index) * 0.19),
+			Vector3(float(index) * 30.0, 0.0, float(index % 2) * 9.0))
+		placement = ImportedVegetation.fit_to_height(asset_id, 10.0, placement)
 		_check("%s queues as a retained source ID" % asset_id,
 			ImportedVegetation.queue(batches, asset_id, placement, 100 + index) == asset_id)
-
-	var wind_root := ImportedVegetation.build(batches, false, {
-		"tree_wind": true,
-		"tree_cell_size_m": 0,
-	})
-	var seen_tree_ids: Dictionary = {}
-	var converted_surface_counts: Dictionary = {}
-	var accepted_all := true
-	var converted_surfaces := 0
+	var wind_root := ImportedVegetation.build(batches, false, {"tree_wind": true, "tree_cell_size_m": 0})
+	var converted_surfaces: Dictionary = {}
+	var static_sources: Dictionary = {}
 	for child in wind_root.get_children():
-		if not child is MultiMeshInstance3D:
-			continue
 		var instance := child as MultiMeshInstance3D
 		var asset_id := str(instance.name).get_slice("_Part_", 0)
-		if not EXPECTED_TREE_LEAF_TEXTURES.has(asset_id):
-			continue
-		seen_tree_ids[asset_id] = true
-		_check("%s instance opts into tree-only wind" % asset_id,
-			bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false))
-			and not bool(instance.get_meta("_imported_vegetation_wind_enabled", false)))
-		var part_suffix := str(instance.name).get_slice("_Part_", 1)
-		var part_index := int(part_suffix.get_slice("_", 0))
+		var part_index := int(str(instance.name).get_slice("_Part_", 1).get_slice("_", 0))
 		var source_parts := ImportedVegetation.get_parts(asset_id)
-		if part_index < 0 or part_index >= source_parts.size():
-			accepted_all = false
-			_check("%s output part index maps to a source part" % asset_id, false)
-			continue
 		var source_materials: Array = source_parts[part_index].get("materials", [])
 		var draw_mesh: Mesh = instance.multimesh.mesh
-		_check("%s wind mesh retains its imported surface count" % asset_id,
-			draw_mesh.get_surface_count() == source_materials.size())
+		_check("%s keeps its imported surface count" % asset_id, draw_mesh.get_surface_count() == source_materials.size())
+		var tree_wind := bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false))
+		_check("%s is never marked for legacy wind" % asset_id,
+			not bool(instance.get_meta("_imported_vegetation_wind_enabled", false)))
 		for surface_index in range(mini(draw_mesh.get_surface_count(), source_materials.size())):
-			var source_value: Variant = source_materials[surface_index]
 			var output_material := draw_mesh.surface_get_material(surface_index)
-			if not source_value is BaseMaterial3D or not output_material is ShaderMaterial:
-				accepted_all = false
-				_check("%s surface %d is accepted for opt-in tree wind" % [asset_id, surface_index], false)
-				continue
-			var source_material := source_value as BaseMaterial3D
-			var wind_material := output_material as ShaderMaterial
-			converted_surfaces += 1
-			converted_surface_counts[asset_id] = int(converted_surface_counts.get(asset_id, 0)) + 1
-			_check("%s surface %d uses tree-wind mode" % [asset_id, surface_index],
-				bool(wind_material.get_shader_parameter("tree_wind_mode")))
-			_check("%s surface %d preserves imported albedo features" % [asset_id, surface_index],
-				wind_material.get_shader_parameter("albedo_texture") == source_material.albedo_texture
-				and bool(wind_material.get_shader_parameter("use_albedo_texture")) == (source_material.albedo_texture != null)
-				and wind_material.get_shader_parameter("albedo_color") == source_material.albedo_color)
-			var albedo_name := _texture_filename(source_material.albedo_texture)
-			if albedo_name == "Bark_NormalTree.png":
-				_check("%s bark keeps its source normal map and alpha scissor" % asset_id,
-					source_material.normal_enabled
-					and _texture_filename(source_material.normal_texture) == "Bark_NormalTree_Normal.png"
-					and bool(wind_material.get_shader_parameter("use_normal_texture"))
-					and wind_material.get_shader_parameter("normal_texture") == source_material.normal_texture
-					and source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-					and bool(wind_material.get_shader_parameter("use_alpha_scissor"))
-					and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
-						source_material.alpha_scissor_threshold))
-			elif albedo_name == str(EXPECTED_TREE_LEAF_TEXTURES[asset_id]):
-				_check("%s foliage keeps its expected source atlas and alpha scissor" % asset_id,
-					(not source_material.normal_enabled or source_material.normal_texture == null)
-					and not bool(wind_material.get_shader_parameter("use_normal_texture"))
-					and source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
-					and bool(wind_material.get_shader_parameter("use_alpha_scissor"))
-					and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
-						source_material.alpha_scissor_threshold))
+			if tree_wind:
+				_check("%s surface %d converts to tree wind" % [asset_id, surface_index], output_material is ShaderMaterial)
+				if output_material is ShaderMaterial:
+					_check_tree_wind_material(asset_id, surface_index, output_material as ShaderMaterial,
+						source_materials[surface_index] as BaseMaterial3D, source_parts[part_index].get("bounds", AABB()))
+					converted_surfaces[asset_id] = int(converted_surfaces.get(asset_id, 0)) + 1
 			else:
-				accepted_all = false
-				_check("%s surface %d has its expected bark or foliage atlas (texture=%s)" % [
-					asset_id, surface_index, albedo_name,
-				], false)
-	_check("tree-wind conversion covers all seven qualified source trees", seen_tree_ids.size() == 7 and accepted_all)
-	_check("tree-wind converts every source surface", converted_surfaces == expected_surfaces)
-	for asset_id: String in expected_tree_ids:
-		var source_surfaces := 0
+				_check("%s surface %d keeps its original source material" % [asset_id, surface_index],
+					output_material == source_materials[surface_index])
+				static_sources[asset_id] = true
+	for asset_id: String in actual_tree_ids:
+		var surfaces := 0
 		for part: Dictionary in ImportedVegetation.get_parts(asset_id):
-			var mesh: Mesh = part.get("mesh")
-			if mesh != null:
-				source_surfaces += mesh.get_surface_count()
-		_check("%s converts every bark and foliage surface" % asset_id,
-			int(converted_surface_counts.get(asset_id, 0)) == source_surfaces)
+			surfaces += (part.get("mesh") as Mesh).get_surface_count()
+		if asset_id in qualified:
+			_check("%s converts every bark and foliage surface" % asset_id, int(converted_surfaces.get(asset_id, 0)) == surfaces)
+		else:
+			_check("%s stays static with its source materials" % asset_id,
+				bool(static_sources.get(asset_id, false)) and not converted_surfaces.has(asset_id))
+	_check("the protected clubhouse Maple source never receives wind",
+		bool(static_sources.get("maple_tree", false)) and not converted_surfaces.has("maple_tree"))
 	wind_root.free()
+
+
+## L15b-R2: the saturated shader bend keeps every source vertex inside the unchanged
+## CollisionWorld envelopes, so close-tree wind stays render-only (no world change).
+func _test_tree_wind_stays_inside_collision_proxies() -> void:
+	for asset_id: String in ImportedVegetation.TREE_WIND_LEAN_LIMITS_M:
+		var limit := float(ImportedVegetation.TREE_WIND_LEAN_LIMITS_M[asset_id])
+		_check("%s sway limit is positive and within the field-card lean" % asset_id,
+			limit > 0.0 and limit <= FIELD_CARD_LEAN_M)
+		# The allowance grows with placed height, so the smallest placed tree is the worst case.
+		var smallest: Dictionary = {}
+		for prefab: String in ["shade_tree", "sapling"]:
+			for seed in range(512):
+				var spec := VegetationPlacement.spec(prefab, seed)
+				if str(spec.get("asset_id", "")) == asset_id \
+						and (smallest.is_empty() or float(spec.height) < float(smallest.height)):
+					smallest = spec
+		_check("%s is placed by shade-tree or sapling specs" % asset_id, not smallest.is_empty())
+		if smallest.is_empty():
+			continue
+		var parts := ImportedVegetation.get_parts(asset_id)
+		var part_bounds: AABB = parts[0].get("bounds", AABB())
+		var source_bounds: Dictionary = ImportedVegetation.get_asset(asset_id).source_bounds_m
+		var ground_offset := float(source_bounds.get("ground_offset", 0.0))
+		var scale := float(smallest.scale)
+		var height := float(smallest.height)
+		var margin := float(smallest.wind_margin)
+		var half_x := float(smallest.width) * 0.5 + margin
+		var half_z := float(smallest.depth) * 0.5 + margin
+		# CollisionWorld crown bottom: the trunk-height range, lowered for Quercus foliage.
+		var crown_bottoms: Array[float] = []
+		for trunk_hash in [0.0, 1.0]:
+			var trunk_height: float = height * (CollisionWorld.SHADE_TREE_TRUNK_HEIGHT_FRACTION
+				+ CollisionWorld.SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION * trunk_hash)
+			if asset_id == "landscapelab_quercus":
+				trunk_height = minf(trunk_height, height * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+			crown_bottoms.append(trunk_height)
+		var crown_escape_m := -INF
+		var trunk_band_sway_m := 0.0
+		var mesh: Mesh = parts[0].get("mesh")
+		for surface_index in range(mesh.get_surface_count()):
+			var vertices: PackedVector3Array = mesh.surface_get_arrays(surface_index)[Mesh.ARRAY_VERTEX]
+			for vertex: Vector3 in vertices:
+				var weight := clampf((vertex.y - part_bounds.position.y) / part_bounds.size.y, 0.0, 1.0)
+				var sway := limit * weight * weight
+				var above_ground := (vertex.y + ground_offset) * scale
+				for crown_bottom: float in crown_bottoms:
+					if above_ground >= crown_bottom:
+						crown_escape_m = maxf(crown_escape_m, maxf(
+							absf(vertex.x * scale - float(smallest.crown_offset_x)) + sway - half_x,
+							absf(vertex.z * scale - float(smallest.crown_offset_z)) + sway - half_z))
+					else:
+						trunk_band_sway_m = maxf(trunk_band_sway_m, sway)
+		_check("%s saturated sway keeps every crown vertex inside its crown proxy (escape %.4f m)" % [
+			asset_id, crown_escape_m], crown_escape_m <= 0.0)
+		_check("%s trunk-band sway stays within the trunk capsule's wind margin (%.4f m)" % [
+			asset_id, trunk_band_sway_m], trunk_band_sway_m <= margin)
 
 
 func _test_maple_source_materials() -> void:
@@ -699,7 +810,7 @@ func _sample_batches() -> Dictionary:
 		var scale := Basis.from_scale(Vector3.ONE * (1.0 + 0.1 * float(index)))
 		var transform := Transform3D(rotation * scale, positions[index])
 		var damage_id := "tree-cell-edge" if index == positions.size() - 1 else ""
-		ImportedVegetation.queue(batches, "common_tree_1", transform, index + 10, damage_id,
+		ImportedVegetation.queue(batches, TREE_SAMPLE_ID, transform, index + 10, damage_id,
 			Color(0.9 + 0.02 * float(index), 0.93, 0.96, 1.0))
 	ImportedVegetation.queue(batches, "wheat_4", Transform3D(Basis.IDENTITY, Vector3(9.0, 0.0, 9.0)), 5)
 	return batches
@@ -718,7 +829,7 @@ func _tree_transform_signatures(root: Node3D) -> Array[String]:
 	var signatures: Array[String] = []
 	for child in root.get_children():
 		var instance := child as MultiMeshInstance3D
-		if not str(instance.name).begins_with("common_tree_1_"):
+		if not str(instance.name).begins_with(TREE_SAMPLE_PREFIX):
 			continue
 		for index in range(instance.multimesh.instance_count):
 			var transform := instance.multimesh.get_instance_transform(index)
@@ -736,7 +847,7 @@ func _tree_wind_phase_signatures(root: Node3D) -> Array[String]:
 	var signatures: Array[String] = []
 	for child in root.get_children():
 		var instance := child as MultiMeshInstance3D
-		if not str(instance.name).begins_with("common_tree_1_"):
+		if not str(instance.name).begins_with(TREE_SAMPLE_PREFIX):
 			continue
 		for index in range(instance.multimesh.instance_count):
 			var transform := instance.multimesh.get_instance_transform(index)
@@ -772,14 +883,14 @@ func _transform_phase_signature(transform: Transform3D, phase: float, tint: Colo
 
 
 func _tree_wind_cull_bounds_match_state(root: Node3D, expected_instance_count: int, cell_size: int) -> bool:
-	if _tree_state_bounds_count(root, "common_tree_1") != expected_instance_count:
+	if _tree_state_bounds_count(root, TREE_SAMPLE_ID) != expected_instance_count:
 		return false
 	var has_cull_bounds := false
 	var cull_bounds := AABB()
 	var expected_cells: Dictionary = {}
 	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
 	for record: Dictionary in state.get("bounds", []):
-		if str(record.get("asset_id", "")) != "common_tree_1" or bool(record.get("hidden", false)):
+		if str(record.get("asset_id", "")) != TREE_SAMPLE_ID or bool(record.get("hidden", false)):
 			continue
 		var transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
 		var cell := Vector2i.ZERO
@@ -828,7 +939,7 @@ func _tree_wind_cull_bounds_match_state(root: Node3D, expected_instance_count: i
 			cull_bounds = cull_bounds.merge(child_bounds)
 	return has_cull_bounds and seen_cells.size() == expected_cells.size() and _aabb_approx_equal(
 		cull_bounds,
-		_tree_state_bounds(root, "common_tree_1")
+		_tree_state_bounds(root, TREE_SAMPLE_ID)
 	)
 
 
@@ -893,7 +1004,7 @@ func _damage_instances_match_hidden_state(root: Node3D, damage_id: String, hidde
 func _tree_multimesh_buffers_available(root: Node3D) -> bool:
 	var found_tree := false
 	for child in root.get_children():
-		if not child is MultiMeshInstance3D or not str(child.name).begins_with("common_tree_1_"):
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with(TREE_SAMPLE_PREFIX):
 			continue
 		found_tree = true
 		if not _multimesh_buffer_available((child as MultiMeshInstance3D).multimesh):
@@ -946,7 +1057,7 @@ func _tree_wind_groups_preserve_records(
 		return false
 	var seen: Dictionary = {}
 	for child in root.get_children():
-		if not child is MultiMeshInstance3D or not str(child.name).begins_with("common_tree_1_"):
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with(TREE_SAMPLE_PREFIX):
 			continue
 		var instance := child as MultiMeshInstance3D
 		var key := "all"
@@ -975,7 +1086,7 @@ func _tree_state_tints_match_records(root: Node3D, records: Array, part_count: i
 		expected[key] = int(expected.get(key, 0)) + part_count
 	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
 	for record: Dictionary in state.get("bounds", []):
-		if str(record.get("asset_id", "")) != "common_tree_1":
+		if str(record.get("asset_id", "")) != TREE_SAMPLE_ID:
 			continue
 		var key := _color_key(record.get("tint", Color.WHITE))
 		if not expected.has(key) or int(expected[key]) <= 0:

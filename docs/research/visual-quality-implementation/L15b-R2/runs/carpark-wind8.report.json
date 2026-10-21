@@ -1,0 +1,1300 @@
+{
+	"adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+	"api": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.2",
+	"arguments": {
+		"frames": "48",
+		"mode": "field",
+		"motion": "car-park-wind",
+		"out": "/tmp/claude-1000/-home-bulto-OpenRCsimulator/1bc5aefa-8de4-455d-a77f-ff62850a5eb7/scratchpad/carpark-wind8",
+		"wind": "on",
+		"wind_mps": "8"
+	},
+	"captures": [
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0000",
+			"sha256": "96aba84516b1f1eaba7f99f1fcea97c74a6492fd152611bd50c5a42a28468cde",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.0416666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0001",
+			"sha256": "c27ac784d89f54bb3b09f9179e3d440d931bd1f66000e037869ebfc064220ee3",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.0833333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0002",
+			"sha256": "36c93cf18fc1be7180bf839f381b069fb1b035fafd93ed495c84d5d286491eaf",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.125,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0003",
+			"sha256": "d69f88c3fc4fc9765ec8b01120664c9ba4fc66b7fd6c3e18654c420a2a58ece8",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.166666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0004",
+			"sha256": "66196d1ecd33f186ca9586e12388f160d118cd7ca58fbd0c986607a313a14d1b",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.208333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0005",
+			"sha256": "ddff24073c14fd84ae22ea6839df81ca67323524f9822fa69358afc409c5a07c",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.25,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0006",
+			"sha256": "a19ebc7d5ef0b24c04de2bcebe0b4e3c3075f9d34c61eee74a12e172bff383ae",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.291666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0007",
+			"sha256": "612d1ce6c93689192efaf17c21e4b6984127cd2226de9c197c10dd28caef30e2",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.333333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0008",
+			"sha256": "5d9c24e500bb41b0897a96b91bf511b7cc204b4ab0fe5d160f199d3f7507ed42",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.375,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0009",
+			"sha256": "14c92100a2afe8de333b130e1e7b92ffed21f61a3fcd527af90d49d5607aaef1",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.416666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0010",
+			"sha256": "185804a62c903f7d22c9941831f1bfe46bfb06ba4adc37f66d5215bfc2dfee5b",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.458333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0011",
+			"sha256": "7a7a32b3d68c756c1b31fe46f92aaba42d7336697a25e87658f8cddc4ee66d9e",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.5,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0012",
+			"sha256": "cd874dd13ff4bdfdf359aa3d9f5c24fb6998cedcb58f2672bd2b0cecba5d7c50",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.541666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0013",
+			"sha256": "5770c5007090e3ca01da7d0a99ff1a0ab7c10a2d436e4143713218d8d0da1299",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.583333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0014",
+			"sha256": "099624a9f72ad7e2d68793a042f00a7e09e5ff654fbe9341b745fd71a5879b98",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.625,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0015",
+			"sha256": "3441426aa85ac07dd7934856ac9d006a0e591ded181e238364dfe705243a6068",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.666666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0016",
+			"sha256": "f683eed884e3956845ce3c9cf338e7908b171267d5278ead7740c5fa64006e7e",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.708333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0017",
+			"sha256": "8d05f32d6ba955f24ead91722175e2c8a8711b848eeae9e32070a092610bb2b9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.75,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0018",
+			"sha256": "a8da0c71a34ff5212d0a4bdc9b4fd8bd847c45c8332877abfaf0e9fe2296db04",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.791666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0019",
+			"sha256": "0d17773686eb6e517024129bf1f9ce72e7746383ec0ae9f631aa6635244a3944",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.833333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0020",
+			"sha256": "16fc78f9573fc1d5f3d4cbc8e2299d1529e6fc2a9b60eaa205b64f89bdaba3cc",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.875,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0021",
+			"sha256": "e786d4104c94cc4853b10550031ce7c1bd9a94953b0341bc81f773db0eee2d8e",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.916666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0022",
+			"sha256": "471b8be07fd3cedade3b9a7a26c9dc892d47665687cb594e59146c3be57ce623",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 0.958333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0023",
+			"sha256": "110422c36a0bcee481f9d90c2b6b436f3153ffc69b12cbf78c11161b21cefd9b",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0024",
+			"sha256": "ac212fb015613faee81d3486fab7e996d049f23918faeb05dd9327227b49f6b0",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.04166666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0025",
+			"sha256": "bd0a2cf3c4ffd29072c6fa1b1d37bf8db9eab10961e942fcebc4b5b429dcb6f9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.08333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0026",
+			"sha256": "21c1077503c852be0d203e6e30ed16f574a735a23a4cf40c7658fda74d867370",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.125,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0027",
+			"sha256": "bcddda1e4ed4fd52527894950fa580f0147aa5037a46b1d61ec8c9776ab7d72f",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.16666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0028",
+			"sha256": "6d358a0c167101df55edd60bf5eebb27d1d070a68f52798a8a4d7632543abe8b",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.20833333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0029",
+			"sha256": "8798f9e06a161959fc5fca9721a781039dcda7b1be06d5b6dc4516f84df30e5f",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.25,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0030",
+			"sha256": "fbabddf0d00ee839cbf16bbf96a08413de31b8e28614721d9873bbd673e783a9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.29166666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0031",
+			"sha256": "0079196331f19fc6c667847c2b03f9a345bf070b7cfb3b3777c7bb494bb715ad",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.33333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0032",
+			"sha256": "77e2fdf50ce65bcaab9c0b31cc3d34bff457b40f37266df94ed2339e075deb76",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.375,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0033",
+			"sha256": "a2e1dedeecb1ed07829cc53171c526119d8446598c7ed27d14d776d12f9fb8e9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.41666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0034",
+			"sha256": "2e0d00f9146d773d2e579a2c93972fb2e00c1118846f60182898c8b4e9d43f0d",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.45833333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0035",
+			"sha256": "28871db5ae521ffca28542897d0b72c6b2104b9c873f021ce1bf5ea514a833f5",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.5,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0036",
+			"sha256": "f384d1d2f69c423c6940627a1e200b1b6495d9728ec5c91257a951a4ee34eef1",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.54166666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0037",
+			"sha256": "aa0e568f28116d2e9a9f3c4d5cccd982ccd9d083a993a59230f6154b7451a355",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.58333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0038",
+			"sha256": "940fde036439951ec4a5a8a579838668bc9068d03927f563e73ca52d840f4e13",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.625,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0039",
+			"sha256": "545c8f60e6530fc0ea5a552d6b6a0533e7141d65583f1e53aeb770672209bfdd",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.66666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0040",
+			"sha256": "63d3a840338599f26bb78f4b5127bc82620e6fa231eab20add5c3693beb1cad9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.70833333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0041",
+			"sha256": "e427af53f21d2a955b57bbafde22687900535ecf9c5e3b830b6f3d4b6a14d3ac",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.75,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0042",
+			"sha256": "a585edbb0a86a031efc6fc50741be45148b3456f029a27cd467995b14e7b6cd9",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.79166666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0043",
+			"sha256": "2484cc976ac04a2816e1dfc7e47bceb04fd13b4da50422305e2ae13920b434bb",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.83333333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0044",
+			"sha256": "af8c6f1bd7c4ec316c14ad5afefddc72c10efe788932f19221982cc54fbb1d5a",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.875,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0045",
+			"sha256": "ca6d30feda3be09ea0b224fff4d5953f4f976c26fb3f89371470fadfc4c5241f",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.91666666666667,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0046",
+			"sha256": "073a450974eb040d2b7f2517d95cabd6790bf5d8fb17ae54fd81e29e3149bcb5",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				-12.0,
+				0.5,
+				39.0
+			],
+			"clock": 1.95833333333333,
+			"counters": {
+				"draws": 136,
+				"primitives": 259678,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "frame-0047",
+			"sha256": "87f652e6ae28964743f1f788fd6c2e50e0da712e8f6b86a99982e88de20f0c14",
+			"wind": [
+				8.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 2143.153,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 108078690,
+	"field_sha256": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"imported_tree_batches": 3,
+	"imported_tree_instances": 17,
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "field",
+	"motion": {
+		"card_identity": {
+			"height": 24.2121212121212,
+			"species": 1,
+			"yaw": 1.4121607856035
+		},
+		"card_north_east": [
+			-560.0,
+			-37.25,
+			0.0
+		],
+		"fps": 24,
+		"frames": 48,
+		"route": "car-park-wind",
+		"tree_mesh_lod_threshold_pixels": 1.0,
+		"wind_mps": 8.0
+	},
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Offline prescribed camera motion through production trees at 24 samples/s; no aircraft simulation or native frame pacing. Geometry/render counters qualify only the captured route.",
+	"vegetation_catalog_sha256": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+	"viewport": [
+		1280,
+		720
+	]
+}

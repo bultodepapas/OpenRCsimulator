@@ -1,0 +1,18 @@
+{
+  "head": "eba7ce16e0989b23ee432715fdb0bfe6da0d6b6d",
+  "scope": "Working-tree files used by the retained L15b-R2 captures and probes (uncommitted change on this HEAD).",
+  "godot": "4.7.2-stable official Linux x86_64, Compatibility (opengl3) under Xvfb with Mesa llvmpipe",
+  "sha256": {
+    "app/scenery/imported_vegetation.gd": "30752a19e0d5086d0b8912c6eea358d59af828b826ff59a15d08b85660cc70aa",
+    "app/scenery/imported_tree_wind.gdshaderinc": "292511f9e4c498e9d4d5b00b6f82cf93fa3d2ec5324c46b5af8cf8f777433de2",
+    "app/scenery/imported_tree_wind.gdshader": "7a658d1a76325e3d26fb47cb496913e0cef2a22687afd2fd4fb8094b3ae3e7ff",
+    "app/scenery/imported_tree_wind_cull_back.gdshader": "5d73aa5e00836ef5b71713f6fa5d553888293f64d5c64ae2a52675739fb63fce",
+    "app/scenery/imported_tree_wind_clamp.gdshader": "6aa4215f343ed6e8f315acec25cbaed2deb412e0015b7cb7827d209c0c2befbf",
+    "app/scenery/imported_vegetation_wind.gdshader": "3635588944c2a85663d6ce822e58a0392537786d95f0bc4537c4f0eb13c35fbe",
+    "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+    "app/assets/landscape/vegetation/catalog.json": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+    "app/scenery/collision_world.gd": "7504a8e5c2a8557c7ace18fca7c9e876d0de55ef1e1c3f493e4bb10660660b0a",
+    "app/scenery/vegetation_placement.gd": "0508be49ebbdf65d2becf745a001172df9428646bbc5368ea5edc1149ae4f12d",
+    "tools/trees/quality_capture.gd": "763ad9460ca8158f1a84d84cc855687f9cf25532a4226eeade6125d23697d52f"
+  }
+}

@@ -1,0 +1,32 @@
+{
+	"landscapelab_pine": {
+		"crown_bottom_heights_m": [
+			1.13739538574219,
+			1.21749365234375
+		],
+		"limiting_vertex_height_fraction": 0.511685218723194,
+		"max_top_sway_crown_m": 0.229163540598679,
+		"max_top_sway_m": 0.229163540598679,
+		"max_top_sway_trunk_band_m": 1.65086358874185,
+		"runtime_limit_m": 0.22,
+		"scale": 0.0778527500016706,
+		"smallest_placed_height_m": 3.2039306640625,
+		"vertices_checked": 6210,
+		"wind_margin_m": 0.06
+	},
+	"landscapelab_quercus": {
+		"crown_bottom_heights_m": [
+			0.70434375,
+			0.70434375
+		],
+		"limiting_vertex_height_fraction": 0.697143954452078,
+		"max_top_sway_crown_m": 0.123454123279922,
+		"max_top_sway_m": 0.123454123279922,
+		"max_top_sway_trunk_band_m": 1.2480961140219,
+		"runtime_limit_m": 0.12,
+		"scale": 0.0537572882394581,
+		"smallest_placed_height_m": 3.2015625,
+		"vertices_checked": 9098,
+		"wind_margin_m": 0.06
+	}
+}

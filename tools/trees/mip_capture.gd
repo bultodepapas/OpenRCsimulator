@@ -85,6 +85,10 @@ func _run() -> void:
 		"res://project.godot",
 		"res://scenery/imported_vegetation.gd",
 		"res://scenery/imported_vegetation_wind.gdshader",
+		"res://scenery/imported_tree_wind.gdshaderinc",
+		"res://scenery/imported_tree_wind.gdshader",
+		"res://scenery/imported_tree_wind_cull_back.gdshader",
+		"res://scenery/imported_tree_wind_clamp.gdshader",
 		Library.CATALOG_PATH,
 	]
 	var identity := {}

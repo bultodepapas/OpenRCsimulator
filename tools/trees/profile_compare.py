@@ -25,6 +25,9 @@ OPTIONAL_IDENTITY_FILES = (
     "assets/landscape/vegetation/LICENSE_OAK.txt",
     "assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf.import",
     "assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png.import",
+    # L15b-R2 close-tree wind; absent from earlier baselines.
+    "scenery/imported_tree_wind.gdshaderinc", "scenery/imported_tree_wind.gdshader",
+    "scenery/imported_tree_wind_cull_back.gdshader", "scenery/imported_tree_wind_clamp.gdshader",
 )
 
 

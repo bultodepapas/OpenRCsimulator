@@ -16,7 +16,9 @@ void vertex() {
 	}
 	vec3 toward_camera = normalize(to_camera);
 	float local_yaw = INSTANCE_CUSTOM.x * TAU;
-	float source_view_angle = mod(atan(toward_camera.z, toward_camera.x) + local_yaw + TAU, TAU);
+	// The bake's Blender azimuth a reaches Godot as the source-local direction (cos a, 0, -sin a),
+	// so frame k = a / 90 degrees faces the camera at local atan(z, x) = -a.
+	float source_view_angle = mod(-(atan(toward_camera.z, toward_camera.x) + local_yaw) + 2.0 * TAU, TAU);
 	selected_frame = mod(floor(source_view_angle / (TAU / atlas_frames) + 0.5), atlas_frames);
 
 	vec3 right = cross(vec3(0.0, 1.0, 0.0), toward_camera);

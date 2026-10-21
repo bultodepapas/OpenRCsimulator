@@ -21,11 +21,9 @@ uniform bool use_alpha_scissor = false;
 uniform float alpha_scissor_threshold = 0.5;
 uniform float plant_height = 1.0;
 uniform float plant_base_y = 0.0;
-uniform bool tree_wind_mode = false;
 uniform vec2 wind_direction = vec2(0.8, 0.6);
 uniform float wind_strength = 0.0;
-
-const float MAX_TREE_WIND_STRENGTH = 0.025;
+// Tree wind (L15b-R2) uses imported_tree_wind*.gdshader; this shader is the legacy all-role path.
 
 void vertex() {
 	float raw_height = (VERTEX.y - plant_base_y) / max(plant_height, 0.001);
@@ -34,53 +32,11 @@ void vertex() {
 	float wind_speed = length(wind_vec.xz);
 	vec2 direction = local_wind.xz / max(length(local_wind.xz), 0.001);
 	float phase = 6.2831853 * fract((256.0 / 1024.0) * sim_clock + INSTANCE_CUSTOM.r);
-	if (tree_wind_mode) {
-		// One stable phase per queued tree, shared by all of its source parts and spatial cells.
-		phase += 6.2831853 * atan(wind_direction.y, wind_direction.x) / 6.2831853;
-	} else {
-		phase += dot(VERTEX.xz, wind_direction) * 0.7;
-	}
-	float bounded_strength = tree_wind_mode ? clamp(wind_strength, 0.0, MAX_TREE_WIND_STRENGTH) : wind_strength;
-	float phase_amplitude = sin(phase) * bounded_strength * min(wind_speed / 5.0, 1.0);
+	phase += dot(VERTEX.xz, wind_direction) * 0.7;
+	float phase_amplitude = sin(phase) * wind_strength * min(wind_speed / 5.0, 1.0);
 	float sway = phase_amplitude
 		* normalized_height * normalized_height;
 	VERTEX.xz += direction * sway;
-	if (tree_wind_mode && raw_height > 0.0 && raw_height < 1.0) {
-		// F(p) = p + (direction.x, 0, direction.y) * sway(y).
-		// Apply the inverse-transpose Jacobian to normals, and the Jacobian to
-		// the tangent frame so bark normal maps follow the same shear.
-		float sway_gradient_y = 2.0 * phase_amplitude * normalized_height / max(plant_height, 0.001);
-		if (sway_gradient_y != 0.0) {
-			vec3 source_normal = NORMAL;
-			vec3 corrected_normal = vec3(
-				source_normal.x,
-				source_normal.y - sway_gradient_y * dot(direction, source_normal.xz),
-				source_normal.z
-			);
-			NORMAL = normalize(corrected_normal);
-			if (use_normal_texture) {
-				vec3 source_tangent = TANGENT;
-				vec3 source_binormal = BINORMAL;
-				vec3 corrected_tangent = vec3(
-					source_tangent.x + direction.x * sway_gradient_y * source_tangent.y,
-					source_tangent.y,
-					source_tangent.z + direction.y * sway_gradient_y * source_tangent.y
-				);
-				vec3 corrected_binormal = vec3(
-					source_binormal.x + direction.x * sway_gradient_y * source_binormal.y,
-					source_binormal.y,
-					source_binormal.z + direction.y * sway_gradient_y * source_binormal.y
-				);
-				corrected_tangent -= NORMAL * dot(NORMAL, corrected_tangent);
-				corrected_binormal -= NORMAL * dot(NORMAL, corrected_binormal);
-				corrected_binormal -= normalize(corrected_tangent) * dot(
-					normalize(corrected_tangent), corrected_binormal
-				);
-				TANGENT = normalize(corrected_tangent);
-				BINORMAL = normalize(corrected_binormal);
-			}
-		}
-	}
 }
 
 vec3 srgb_to_linear(vec3 value) {

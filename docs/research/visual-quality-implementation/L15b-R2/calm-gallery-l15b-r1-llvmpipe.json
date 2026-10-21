@@ -1,0 +1,44 @@
+{
+  "a": "gal-head-off",
+  "b": "gal-head-on",
+  "renderer": "gl_compatibility",
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "views": {
+    "common_tree_1": {
+      "pixel_exact": false,
+      "changed_px": 30,
+      "changed_px_over_2_levels": 3,
+      "max_level_difference": 18
+    },
+    "pine_1": {
+      "pixel_exact": false,
+      "changed_px": 35,
+      "changed_px_over_2_levels": 1,
+      "max_level_difference": 3
+    },
+    "common_tree_3": {
+      "pixel_exact": false,
+      "changed_px": 76,
+      "changed_px_over_2_levels": 8,
+      "max_level_difference": 26
+    },
+    "back": {
+      "pixel_exact": false,
+      "changed_px": 21,
+      "changed_px_over_2_levels": 1,
+      "max_level_difference": 14
+    },
+    "underside": {
+      "pixel_exact": false,
+      "changed_px": 77,
+      "changed_px_over_2_levels": 8,
+      "max_level_difference": 16
+    },
+    "overhead": {
+      "pixel_exact": false,
+      "changed_px": 51,
+      "changed_px_over_2_levels": 15,
+      "max_level_difference": 212
+    }
+  }
+}
