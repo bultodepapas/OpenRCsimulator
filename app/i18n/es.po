@@ -4906,6 +4906,12 @@ msgstr "La migración del humo heredado no está disponible para este modelo."
 msgid "Flight companions"
 msgstr "Compañeros de vuelo"
 
+msgid "Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or Pause → Session options."
+msgstr "El campo del club ofrece de 1 a 3 compañeros experimentales Ugly Stik que vuelan circuitos. Están desactivados por defecto; empieza con uno. Abre Compañeros de vuelo desde Inicio → Más detalles del vuelo o Pausa → Opciones de la sesión."
+
+msgid "Apply changes sound and labels immediately. Flight settings take effect after Restart flight. Remove companions now clears the current roster; disable companions and Apply to keep them off after restarting. Aircraft-to-aircraft contact is disabled."
+msgstr "Aplicar cambia el sonido y las etiquetas de inmediato. Los ajustes de vuelo se aplican al reiniciar el vuelo. Quitar compañeros ahora elimina el grupo actual; desactiva los compañeros y pulsa Aplicar para que no vuelvan al reiniciar. El contacto entre aviones está desactivado."
+
 msgid "Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use."
 msgstr "Vuelos experimentales con compañeros. Empieza con un avión; añadir más aumenta el uso de CPU."
 

@@ -1,0 +1,243 @@
+{
+  "format": "openrc-afc-00-r5-observation-airdata-verification v1",
+  "status": "pass",
+  "complete": true,
+  "generated_utc": "2026-10-21T05:03:32Z",
+  "no_app_source_mutation": true,
+  "source_hashes_before_after_unchanged": true,
+  "candidate_contract": "Preserves airspeed_m_s and every other observation key; one wind sample feeds both wind_ned and scalar airspeed.",
+  "arithmetic_probe": {
+    "complete": true,
+    "cases": 521,
+    "bitwise_equal_cases": 521,
+    "mismatch_count": 0,
+    "signed_zero_cases": 6,
+    "signed_zero_distinguishable_in_packed_float64": true,
+    "signed_zero_distinguishable_in_var_to_bytes": true,
+    "sha256": "a0ad6398a88808775ffee059cea6b3e557193ff6579dac6237fd85947573518b"
+  },
+  "smoke": {
+    "complete": true,
+    "count": 1,
+    "ticks_per_branch": 8,
+    "status": "both baseline and candidate branches executed"
+  },
+  "flight": {
+    "report_complete": true,
+    "run_mode": "paired_flight",
+    "physics_hz": 240,
+    "ticks_per_branch": 1200,
+    "counts": [
+      1,
+      3
+    ],
+    "branch_count_gates": [
+      {
+        "count": 1,
+        "branch": "baseline",
+        "branch_complete": true,
+        "completed_ticks": 1200,
+        "player_tick_rows": 1200,
+        "requested_slots": 1,
+        "actual_slots": 1,
+        "expected_observation_and_command_rows_per_slot": 300,
+        "slot_rows": [
+          {
+            "slot": "0",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          }
+        ],
+        "counts_pass": true
+      },
+      {
+        "count": 1,
+        "branch": "candidate",
+        "branch_complete": true,
+        "completed_ticks": 1200,
+        "player_tick_rows": 1200,
+        "requested_slots": 1,
+        "actual_slots": 1,
+        "expected_observation_and_command_rows_per_slot": 300,
+        "slot_rows": [
+          {
+            "slot": "0",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          }
+        ],
+        "counts_pass": true
+      },
+      {
+        "count": 3,
+        "branch": "baseline",
+        "branch_complete": true,
+        "completed_ticks": 1200,
+        "player_tick_rows": 1200,
+        "requested_slots": 3,
+        "actual_slots": 3,
+        "expected_observation_and_command_rows_per_slot": 300,
+        "slot_rows": [
+          {
+            "slot": "0",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          },
+          {
+            "slot": "1",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          },
+          {
+            "slot": "2",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          }
+        ],
+        "counts_pass": true
+      },
+      {
+        "count": 3,
+        "branch": "candidate",
+        "branch_complete": true,
+        "completed_ticks": 1200,
+        "player_tick_rows": 1200,
+        "requested_slots": 3,
+        "actual_slots": 3,
+        "expected_observation_and_command_rows_per_slot": 300,
+        "slot_rows": [
+          {
+            "slot": "0",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          },
+          {
+            "slot": "1",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          },
+          {
+            "slot": "2",
+            "agent_ticks": 1200,
+            "observation_rows": 300,
+            "pilot_return_rows": 300,
+            "wind_rows": 300,
+            "complete_lengths": true
+          }
+        ],
+        "counts_pass": true
+      }
+    ],
+    "pair_behavior_checks": [
+      {
+        "count": 1,
+        "complete": true,
+        "player_ticks_equal": true,
+        "agent_ticks_equal": true,
+        "observations_equal": true,
+        "pilot_returns_equal": true,
+        "winds_equal": true,
+        "candidate_airdata_checks": 300,
+        "candidate_airdata_matches": 300,
+        "candidate_repeat_wind_matches": 300,
+        "candidate_after_gust_delay": 120,
+        "candidate_max_abs_wind_component_mps": 2.05701153503968,
+        "candidate_unique_winds": 300
+      },
+      {
+        "count": 3,
+        "complete": true,
+        "player_ticks_equal": true,
+        "agent_ticks_equal": true,
+        "observations_equal": true,
+        "pilot_returns_equal": true,
+        "winds_equal": true,
+        "candidate_airdata_checks": 900,
+        "candidate_airdata_matches": 900,
+        "candidate_repeat_wind_matches": 900,
+        "candidate_after_gust_delay": 360,
+        "candidate_max_abs_wind_component_mps": 2.19703942042002,
+        "candidate_unique_winds": 900
+      }
+    ],
+    "source_identity_before_after": true,
+    "profile_identity": {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+      "controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "base_controller_dependency_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+      "solver_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+      "solver_normalization": "utf8-lf",
+      "aircraft_profile_file_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+      "field_profile_file_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+      "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    "weather": "WindConfig.GENTLE_PRACTICE; 1.5 m/s mean, 0.6 m/s gust beginning at 3 s, gust-up 0.15 m/s, seeded turbulence RMS [0.15, 0.15, 0.08] m/s",
+    "duration_simulated_s": 5.0,
+    "no_timing_collected": true
+  },
+  "source_hashes": {
+    "app/ai/companions/agent.gd": "c3846b59fc59b40ffb25af2adf95f74077f150591d027d1a2512f70930a26fb8",
+    "app/ai/companions/manager.gd": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+    "app/ai/companions/pilot.gd": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "app/app_state/aircraft_catalog.gd": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+    "app/physics/wind_config.gd": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+    "app/physics/wind_field.gd": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a",
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+    "app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+    "research/ai-companions/performance/observation_airdata_candidate.gd": "3a3bc5d8f406a7f56dbc975edb93c204c881ec5b73c149f2a6db08c2eb75c2ac",
+    "research/ai-companions/performance/observation_flight_probe.gd": "ef089f06c9bfea042007453091bdbe3e0e8a0d5434dadcba575c2b9a4bad2810"
+  },
+  "fixture_asset_hashes": {
+    "app/ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "app/ai/companions/profile_loader.gd": "0e41819475ad221a075f63fd15de874abd592043851e12dd06dec393024f6279",
+    "app/ai/companions/config.gd": "e18565354e042ead4415a436c4774f9de8e201fdbb4923fed063c71d908ebf7c",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+    "app/data/ai/companions/fields/club-default.json": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74"
+  },
+  "artifact_sha256": {
+    "checks/airdata-arithmetic-v2.json": "ad2280dcb6cc915792c0fd7e8b2cd95bc6b023d1c226eca7653942b8d96a3654",
+    "checks/flight-runtime-smoke-8.json": "3e4a612c60b7438f90e7995b71037a4df9140e4d55cc8438c83b9d8e11b7888f",
+    "checks/flight-parity-1200-raw.json": "3fd3688d7be72c4dc81ee4d973013a3ac0f383b55bb5a9f5f067af185ae0913d",
+    "sources/observation_airdata_candidate.gd": "3a3bc5d8f406a7f56dbc975edb93c204c881ec5b73c149f2a6db08c2eb75c2ac",
+    "sources/observation_airdata_probe.gd": "a0ad6398a88808775ffee059cea6b3e557193ff6579dac6237fd85947573518b",
+    "sources/observation_flight_probe.gd": "ef089f06c9bfea042007453091bdbe3e0e8a0d5434dadcba575c2b9a4bad2810"
+  },
+  "raw_artifacts": [
+    "checks/airdata-arithmetic-v2.json",
+    "checks/flight-runtime-smoke-8.json",
+    "checks/flight-parity-1200-raw.json"
+  ],
+  "scope": "Bounded deterministic software parity only; no performance, broad qualification, rendered behavior or physical-validation claim."
+}

@@ -1,0 +1,1500 @@
+{
+  "format": "openrc-afc-observation-abba-offline-verification v1",
+  "complete": true,
+  "raw_sample_count": 960,
+  "raw_samples_per_arm": {
+    "production_agent": 480,
+    "candidate_subclass": 480
+  },
+  "measured_calls_per_arm": {
+    "production_agent": 491520,
+    "candidate_subclass": 491520
+  },
+  "snapshot_checks": {
+    "rounds": 240,
+    "all_byte_equal": true,
+    "all_state_unchanged": true,
+    "unique_state_fingerprints": 1,
+    "warmup_parity_passed": true
+  },
+  "source_checks": {
+    "all_source_bytes_unchanged": true,
+    "source_identity_count": 26
+  },
+  "block_mean_summary": {
+    "production_agent": {
+      "block_count": 480,
+      "mean_of_block_means_usec_per_call": 23.735298665364585,
+      "p50_block_mean_usec_per_call": 23.025390625,
+      "p95_block_mean_usec_per_call": 27.9033203125,
+      "p99_block_mean_usec_per_call": 35.9921875,
+      "min_block_mean_usec_per_call": 22.0830078125,
+      "max_block_mean_usec_per_call": 40.3076171875,
+      "percentile_method": "nearest rank: sorted[ceil(n*p)-1]"
+    },
+    "candidate_subclass": {
+      "block_count": 480,
+      "mean_of_block_means_usec_per_call": 16.795939127604168,
+      "p50_block_mean_usec_per_call": 16.1796875,
+      "p95_block_mean_usec_per_call": 21.0009765625,
+      "p99_block_mean_usec_per_call": 26.6826171875,
+      "min_block_mean_usec_per_call": 15.5419921875,
+      "max_block_mean_usec_per_call": 28.7021484375,
+      "percentile_method": "nearest rank: sorted[ceil(n*p)-1]"
+    }
+  },
+  "paired_round_ratio_summary": {
+    "paired_round_count": 240,
+    "mean_candidate_over_baseline_ratio": 0.7076070577797253,
+    "p05_candidate_over_baseline_ratio": 0.656910569105691,
+    "p50_candidate_over_baseline_ratio": 0.7033788519124174,
+    "p95_candidate_over_baseline_ratio": 0.7672834937083641,
+    "min_candidate_over_baseline_ratio": 0.6141559839145128,
+    "max_candidate_over_baseline_ratio": 1.039282591542087,
+    "percentile_method": "nearest rank across round-paired ABBA block means",
+    "definition": "((B1 elapsed + B2 elapsed) / 2) / ((A1 elapsed + A2 elapsed) / 2); equal call counts cancel"
+  },
+  "paired_round_ratios": [
+    {
+      "round": 0,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.83935546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.11669921875,
+      "candidate_over_baseline_ratio": 0.7056547300908605
+    },
+    {
+      "round": 1,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8017578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.62939453125,
+      "candidate_over_baseline_ratio": 0.7293031821491285
+    },
+    {
+      "round": 2,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.03369140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.6201171875,
+      "candidate_over_baseline_ratio": 0.7215568227587815
+    },
+    {
+      "round": 3,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.84326171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.96875,
+      "candidate_over_baseline_ratio": 0.6990573498920548
+    },
+    {
+      "round": 4,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.73046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0126953125,
+      "candidate_over_baseline_ratio": 0.7044595291287162
+    },
+    {
+      "round": 5,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.75927734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.66455078125,
+      "candidate_over_baseline_ratio": 0.77614726137607
+    },
+    {
+      "round": 6,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.76123046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.431640625,
+      "candidate_over_baseline_ratio": 0.6915315537472001
+    },
+    {
+      "round": 7,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.17431640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.26904296875,
+      "candidate_over_baseline_ratio": 0.7020290343650576
+    },
+    {
+      "round": 8,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.57958984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.36181640625,
+      "candidate_over_baseline_ratio": 0.7363069723136816
+    },
+    {
+      "round": 9,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.49853515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.095703125,
+      "candidate_over_baseline_ratio": 0.6849662337662338
+    },
+    {
+      "round": 10,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.4228515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 19.18212890625,
+      "candidate_over_baseline_ratio": 0.7259674021510145
+    },
+    {
+      "round": 11,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.1240234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0703125,
+      "candidate_over_baseline_ratio": 0.6661539084321743
+    },
+    {
+      "round": 12,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.1142578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8349609375,
+      "candidate_over_baseline_ratio": 0.6850733026321348
+    },
+    {
+      "round": 13,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.09716796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.30615234375,
+      "candidate_over_baseline_ratio": 0.7059805931970489
+    },
+    {
+      "round": 14,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9501953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.046875,
+      "candidate_over_baseline_ratio": 0.6992042891791839
+    },
+    {
+      "round": 15,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.80859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1357421875,
+      "candidate_over_baseline_ratio": 0.707441342695667
+    },
+    {
+      "round": 16,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.91943359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.83154296875,
+      "candidate_over_baseline_ratio": 0.6907475659899018
+    },
+    {
+      "round": 17,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.314453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0068359375,
+      "candidate_over_baseline_ratio": 0.6865627879701768
+    },
+    {
+      "round": 18,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.8564453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2421875,
+      "candidate_over_baseline_ratio": 0.6808301608743706
+    },
+    {
+      "round": 19,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.25927734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.80224609375,
+      "candidate_over_baseline_ratio": 0.6793954025401491
+    },
+    {
+      "round": 20,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.4443359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.82666015625,
+      "candidate_over_baseline_ratio": 0.7177281626192361
+    },
+    {
+      "round": 21,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.20556640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.1435546875,
+      "candidate_over_baseline_ratio": 0.6801495515391023
+    },
+    {
+      "round": 22,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.56103515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.62548828125,
+      "candidate_over_baseline_ratio": 0.7369115896547993
+    },
+    {
+      "round": 23,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.17041015625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.14697265625,
+      "candidate_over_baseline_ratio": 0.6968790171327419
+    },
+    {
+      "round": 24,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.53466796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.44384765625,
+      "candidate_over_baseline_ratio": 0.7297133323221598
+    },
+    {
+      "round": 25,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.208984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8759765625,
+      "candidate_over_baseline_ratio": 0.6557886244453409
+    },
+    {
+      "round": 26,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9072265625,
+      "candidate_over_baseline_ratio": 0.7030818370165746
+    },
+    {
+      "round": 27,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.37060546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.12060546875,
+      "candidate_over_baseline_ratio": 0.6897812506529052
+    },
+    {
+      "round": 28,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8583984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.25634765625,
+      "candidate_over_baseline_ratio": 0.7111761438885803
+    },
+    {
+      "round": 29,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.888671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.20703125,
+      "candidate_over_baseline_ratio": 0.7080808942742555
+    },
+    {
+      "round": 30,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.85693359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8076171875,
+      "candidate_over_baseline_ratio": 0.6915895836448698
+    },
+    {
+      "round": 31,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.19970703125,
+      "candidate_over_baseline_ratio": 0.7132997936016512
+    },
+    {
+      "round": 32,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.27294921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.48828125,
+      "candidate_over_baseline_ratio": 0.7084740784256132
+    },
+    {
+      "round": 33,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.80078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.125,
+      "candidate_over_baseline_ratio": 0.7072126092170635
+    },
+    {
+      "round": 34,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0576171875,
+      "candidate_over_baseline_ratio": 0.7092391304347826
+    },
+    {
+      "round": 35,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0224609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.037109375,
+      "candidate_over_baseline_ratio": 0.6965853658536585
+    },
+    {
+      "round": 36,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.91162109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 21.80322265625,
+      "candidate_over_baseline_ratio": 0.841445719562063
+    },
+    {
+      "round": 37,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.1396484375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8779296875,
+      "candidate_over_baseline_ratio": 0.6861785186748259
+    },
+    {
+      "round": 38,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.79931640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.50537109375,
+      "candidate_over_baseline_ratio": 0.7239414901591245
+    },
+    {
+      "round": 39,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.947265625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.337890625,
+      "candidate_over_baseline_ratio": 0.7240029361389773
+    },
+    {
+      "round": 40,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7119140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.41845703125,
+      "candidate_over_baseline_ratio": 0.7229006320677646
+    },
+    {
+      "round": 41,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.07373046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.02490234375,
+      "candidate_over_baseline_ratio": 0.6945085176171834
+    },
+    {
+      "round": 42,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.8896484375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.25,
+      "candidate_over_baseline_ratio": 0.6802109307934432
+    },
+    {
+      "round": 43,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.9765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.19482421875,
+      "candidate_over_baseline_ratio": 0.6373986388647553
+    },
+    {
+      "round": 44,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.06201171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8896484375,
+      "candidate_over_baseline_ratio": 0.688996633566937
+    },
+    {
+      "round": 45,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.04052734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.11474609375,
+      "candidate_over_baseline_ratio": 0.6994087354567995
+    },
+    {
+      "round": 46,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0263671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.21533203125,
+      "candidate_over_baseline_ratio": 0.70420713346622
+    },
+    {
+      "round": 47,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.12451171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.25146484375,
+      "candidate_over_baseline_ratio": 0.7027808864207437
+    },
+    {
+      "round": 48,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.04345703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.35205078125,
+      "candidate_over_baseline_ratio": 0.7096179518148878
+    },
+    {
+      "round": 49,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9443359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.12158203125,
+      "candidate_over_baseline_ratio": 0.7026388593317727
+    },
+    {
+      "round": 50,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6962890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.4716796875,
+      "candidate_over_baseline_ratio": 0.7257432984811325
+    },
+    {
+      "round": 51,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.76123046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.66748046875,
+      "candidate_over_baseline_ratio": 0.7322750187707819
+    },
+    {
+      "round": 52,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.73095703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.10693359375,
+      "candidate_over_baseline_ratio": 0.7085902090090864
+    },
+    {
+      "round": 53,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.97705078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.89306640625,
+      "candidate_over_baseline_ratio": 0.6916930531058079
+    },
+    {
+      "round": 54,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8076171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2119140625,
+      "candidate_over_baseline_ratio": 0.7108113894241062
+    },
+    {
+      "round": 55,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.03857421875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1650390625,
+      "candidate_over_baseline_ratio": 0.7016510183752622
+    },
+    {
+      "round": 56,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9794921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.09716796875,
+      "candidate_over_baseline_ratio": 0.7005014661510348
+    },
+    {
+      "round": 57,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.08837890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.71533203125,
+      "candidate_over_baseline_ratio": 0.7672834937083641
+    },
+    {
+      "round": 58,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.001953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.17822265625,
+      "candidate_over_baseline_ratio": 0.7033412583849877
+    },
+    {
+      "round": 59,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.63330078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.34033203125,
+      "candidate_over_baseline_ratio": 0.766142428753263
+    },
+    {
+      "round": 60,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.40966796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2763671875,
+      "candidate_over_baseline_ratio": 0.6952839830632209
+    },
+    {
+      "round": 61,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.48095703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 18.13671875,
+      "candidate_over_baseline_ratio": 0.7117754143911086
+    },
+    {
+      "round": 62,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.755859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.068359375,
+      "candidate_over_baseline_ratio": 0.7184905039875031
+    },
+    {
+      "round": 63,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.89599609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 23.79541015625,
+      "candidate_over_baseline_ratio": 1.039282591542087
+    },
+    {
+      "round": 64,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.67236328125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0654296875,
+      "candidate_over_baseline_ratio": 0.6511508242791268
+    },
+    {
+      "round": 65,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.2685546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9111328125,
+      "candidate_over_baseline_ratio": 0.6838040877995551
+    },
+    {
+      "round": 66,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.51953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1064453125,
+      "candidate_over_baseline_ratio": 0.6848114931074573
+    },
+    {
+      "round": 67,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.59765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.03662109375,
+      "candidate_over_baseline_ratio": 0.6795853335540474
+    },
+    {
+      "round": 68,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.22314453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.07861328125,
+      "candidate_over_baseline_ratio": 0.692352978280524
+    },
+    {
+      "round": 69,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.74072265625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.82275390625,
+      "candidate_over_baseline_ratio": 0.7086032784187902
+    },
+    {
+      "round": 70,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7041015625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.28564453125,
+      "candidate_over_baseline_ratio": 0.7172996688029593
+    },
+    {
+      "round": 71,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.36767578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.14599609375,
+      "candidate_over_baseline_ratio": 0.650265735819707
+    },
+    {
+      "round": 72,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.01513671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.96875,
+      "candidate_over_baseline_ratio": 0.6522644944537247
+    },
+    {
+      "round": 73,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.75244140625,
+      "candidate_over_baseline_ratio": 0.726885593220339
+    },
+    {
+      "round": 74,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.5224609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 19.64892578125,
+      "candidate_over_baseline_ratio": 0.7698679931126842
+    },
+    {
+      "round": 75,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.42529296875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.4990234375,
+      "candidate_over_baseline_ratio": 0.7043251693590412
+    },
+    {
+      "round": 76,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.96142578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05859375,
+      "candidate_over_baseline_ratio": 0.6993726741095162
+    },
+    {
+      "round": 77,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.81787109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.00244140625,
+      "candidate_over_baseline_ratio": 0.7013117630694827
+    },
+    {
+      "round": 78,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.76611328125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.14697265625,
+      "candidate_over_baseline_ratio": 0.709254691689008
+    },
+    {
+      "round": 79,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.3076171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.92236328125,
+      "candidate_over_baseline_ratio": 0.6831399002807224
+    },
+    {
+      "round": 80,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.80615234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.42529296875,
+      "candidate_over_baseline_ratio": 0.7202132442674546
+    },
+    {
+      "round": 81,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.86279296875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8837890625,
+      "candidate_over_baseline_ratio": 0.6141559839145128
+    },
+    {
+      "round": 82,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.42138671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.150390625,
+      "candidate_over_baseline_ratio": 0.6895574040486168
+    },
+    {
+      "round": 83,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.08935546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.23876953125,
+      "candidate_over_baseline_ratio": 0.7033011187007
+    },
+    {
+      "round": 84,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.5322265625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.953125,
+      "candidate_over_baseline_ratio": 0.6779267128688219
+    },
+    {
+      "round": 85,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.962890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.06396484375,
+      "candidate_over_baseline_ratio": 0.7120996006194474
+    },
+    {
+      "round": 86,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.4375,
+      "candidate_abba_paired_block_mean_usec_per_call": 19.7177734375,
+      "candidate_over_baseline_ratio": 0.7751458845208845
+    },
+    {
+      "round": 87,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.2890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2734375,
+      "candidate_over_baseline_ratio": 0.6699903505950466
+    },
+    {
+      "round": 88,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.30078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.419921875,
+      "candidate_over_baseline_ratio": 0.7046940486169321
+    },
+    {
+      "round": 89,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.54541015625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.912109375,
+      "candidate_over_baseline_ratio": 0.6758051471350657
+    },
+    {
+      "round": 90,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.75,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0322265625,
+      "candidate_over_baseline_ratio": 0.7047132554945055
+    },
+    {
+      "round": 91,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.69189453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.04833984375,
+      "candidate_over_baseline_ratio": 0.7072278527316936
+    },
+    {
+      "round": 92,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.630859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9853515625,
+      "candidate_over_baseline_ratio": 0.7063519461465435
+    },
+    {
+      "round": 93,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.69580078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05517578125,
+      "candidate_over_baseline_ratio": 0.7074073277253071
+    },
+    {
+      "round": 94,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.123046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9013671875,
+      "candidate_over_baseline_ratio": 0.6876847706731988
+    },
+    {
+      "round": 95,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7744140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0947265625,
+      "candidate_over_baseline_ratio": 0.7067021139745294
+    },
+    {
+      "round": 96,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.88671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.29345703125,
+      "candidate_over_baseline_ratio": 0.7119175627240143
+    },
+    {
+      "round": 97,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.95166015625,
+      "candidate_over_baseline_ratio": 0.6916709010840109
+    },
+    {
+      "round": 98,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.83642578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.01708984375,
+      "candidate_over_baseline_ratio": 0.7013833949838568
+    },
+    {
+      "round": 99,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.2783203125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.80517578125,
+      "candidate_over_baseline_ratio": 0.7219238998196081
+    },
+    {
+      "round": 100,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.22998046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.23876953125,
+      "candidate_over_baseline_ratio": 0.6701932571589787
+    },
+    {
+      "round": 101,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.57568359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.7607421875,
+      "candidate_over_baseline_ratio": 0.7533500403868857
+    },
+    {
+      "round": 102,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.638671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2314453125,
+      "candidate_over_baseline_ratio": 0.7169786903632128
+    },
+    {
+      "round": 103,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.08447265625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.306640625,
+      "candidate_over_baseline_ratio": 0.706389999365442
+    },
+    {
+      "round": 104,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.05615234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.14599609375,
+      "candidate_over_baseline_ratio": 0.7002901374446727
+    },
+    {
+      "round": 105,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.5166015625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.12939453125,
+      "candidate_over_baseline_ratio": 0.6858726797059923
+    },
+    {
+      "round": 106,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.90625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.3779296875,
+      "candidate_over_baseline_ratio": 0.7149982946793997
+    },
+    {
+      "round": 107,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.10791015625,
+      "candidate_over_baseline_ratio": 0.7092578259373925
+    },
+    {
+      "round": 108,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.4501953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.5517578125,
+      "candidate_over_baseline_ratio": 0.7058260109107567
+    },
+    {
+      "round": 109,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8251953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0166015625,
+      "candidate_over_baseline_ratio": 0.701707097933513
+    },
+    {
+      "round": 110,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.14599609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.80078125,
+      "candidate_over_baseline_ratio": 0.6826572157880303
+    },
+    {
+      "round": 111,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.814453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.71484375,
+      "candidate_over_baseline_ratio": 0.7326427531889393
+    },
+    {
+      "round": 112,
+      "baseline_abba_paired_block_mean_usec_per_call": 30.5126953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 22.88623046875,
+      "candidate_over_baseline_ratio": 0.7500560089614339
+    },
+    {
+      "round": 113,
+      "baseline_abba_paired_block_mean_usec_per_call": 29.76171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 22.11767578125,
+      "candidate_over_baseline_ratio": 0.7431585509909437
+    },
+    {
+      "round": 114,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.82421875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.17041015625,
+      "candidate_over_baseline_ratio": 0.7084759541331508
+    },
+    {
+      "round": 115,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.99169921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.171875,
+      "candidate_over_baseline_ratio": 0.7033788519124174
+    },
+    {
+      "round": 116,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.607421875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1787109375,
+      "candidate_over_baseline_ratio": 0.7156371490280777
+    },
+    {
+      "round": 117,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.10693359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.59228515625,
+      "candidate_over_baseline_ratio": 0.7180652114193944
+    },
+    {
+      "round": 118,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.876953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.13916015625,
+      "candidate_over_baseline_ratio": 0.7054768206266542
+    },
+    {
+      "round": 119,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9970703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.052734375,
+      "candidate_over_baseline_ratio": 0.6980338867892479
+    },
+    {
+      "round": 120,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0517578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.611328125,
+      "candidate_over_baseline_ratio": 0.7639906799406906
+    },
+    {
+      "round": 121,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.24560546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.25537109375,
+      "candidate_over_baseline_ratio": 0.6992879198437204
+    },
+    {
+      "round": 122,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.33837890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.03759765625,
+      "candidate_over_baseline_ratio": 0.68717701947821
+    },
+    {
+      "round": 123,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8505859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8349609375,
+      "candidate_over_baseline_ratio": 0.6929783324073678
+    },
+    {
+      "round": 124,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.240234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.529296875,
+      "candidate_over_baseline_ratio": 0.7112362383393562
+    },
+    {
+      "round": 125,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.64794921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.46826171875,
+      "candidate_over_baseline_ratio": 0.7271414095681608
+    },
+    {
+      "round": 126,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.80224609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.04638671875,
+      "candidate_over_baseline_ratio": 0.7037195657294589
+    },
+    {
+      "round": 127,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.2685546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 18.5830078125,
+      "candidate_over_baseline_ratio": 0.7657237133314555
+    },
+    {
+      "round": 128,
+      "baseline_abba_paired_block_mean_usec_per_call": 28.13623046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 20.212890625,
+      "candidate_over_baseline_ratio": 0.7183936969612829
+    },
+    {
+      "round": 129,
+      "baseline_abba_paired_block_mean_usec_per_call": 35.9267578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 27.13330078125,
+      "candidate_over_baseline_ratio": 0.7552393378455516
+    },
+    {
+      "round": 130,
+      "baseline_abba_paired_block_mean_usec_per_call": 29.39013671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 23.05712890625,
+      "candidate_over_baseline_ratio": 0.7845192802910734
+    },
+    {
+      "round": 131,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.37744140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 24.419921875,
+      "candidate_over_baseline_ratio": 0.9257881194350345
+    },
+    {
+      "round": 132,
+      "baseline_abba_paired_block_mean_usec_per_call": 31.23193359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 20.767578125,
+      "candidate_over_baseline_ratio": 0.6649469224395353
+    },
+    {
+      "round": 133,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.73095703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.22314453125,
+      "candidate_over_baseline_ratio": 0.6836279088907635
+    },
+    {
+      "round": 134,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.4296875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.4677734375,
+      "candidate_over_baseline_ratio": 0.6475806451612903
+    },
+    {
+      "round": 135,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.18310546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 20.7353515625,
+      "candidate_over_baseline_ratio": 0.7919362959923913
+    },
+    {
+      "round": 136,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.458984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.8017578125,
+      "candidate_over_baseline_ratio": 0.6599539700805523
+    },
+    {
+      "round": 137,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.17333984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.45703125,
+      "candidate_over_baseline_ratio": 0.7101708843422744
+    },
+    {
+      "round": 138,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.91552734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.16943359375,
+      "candidate_over_baseline_ratio": 0.7056103641516268
+    },
+    {
+      "round": 139,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0537109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.07666015625,
+      "candidate_over_baseline_ratio": 0.6973567162282374
+    },
+    {
+      "round": 140,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.15087890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05712890625,
+      "candidate_over_baseline_ratio": 0.6935861472591905
+    },
+    {
+      "round": 141,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.767578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.6943359375,
+      "candidate_over_baseline_ratio": 0.7771725143690487
+    },
+    {
+      "round": 142,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.7890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.3310546875,
+      "candidate_over_baseline_ratio": 0.7285303776683087
+    },
+    {
+      "round": 143,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.18017578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.02880859375,
+      "candidate_over_baseline_ratio": 0.691487793061319
+    },
+    {
+      "round": 144,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.24853515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.138671875,
+      "candidate_over_baseline_ratio": 0.6941801608804318
+    },
+    {
+      "round": 145,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.95166015625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.85791015625,
+      "candidate_over_baseline_ratio": 0.7344963301776407
+    },
+    {
+      "round": 146,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0888671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.162109375,
+      "candidate_over_baseline_ratio": 0.6999957704183056
+    },
+    {
+      "round": 147,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.72412109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9052734375,
+      "candidate_over_baseline_ratio": 0.6999290917295172
+    },
+    {
+      "round": 148,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.38330078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.7314453125,
+      "candidate_over_baseline_ratio": 0.6727641003153125
+    },
+    {
+      "round": 149,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.767578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.09423828125,
+      "candidate_over_baseline_ratio": 0.7068928540790941
+    },
+    {
+      "round": 150,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.1259765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.07666015625,
+      "candidate_over_baseline_ratio": 0.6951775685148431
+    },
+    {
+      "round": 151,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.69091796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.421875,
+      "candidate_over_baseline_ratio": 0.7237201695681178
+    },
+    {
+      "round": 152,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.3896484375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.359375,
+      "candidate_over_baseline_ratio": 0.7421819548244332
+    },
+    {
+      "round": 153,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.84619140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.173828125,
+      "candidate_over_baseline_ratio": 0.7079441749129068
+    },
+    {
+      "round": 154,
+      "baseline_abba_paired_block_mean_usec_per_call": 29.1953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 18.0009765625,
+      "candidate_over_baseline_ratio": 0.6165707786994916
+    },
+    {
+      "round": 155,
+      "baseline_abba_paired_block_mean_usec_per_call": 36.20849609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 25.8525390625,
+      "candidate_over_baseline_ratio": 0.7139909648708785
+    },
+    {
+      "round": 156,
+      "baseline_abba_paired_block_mean_usec_per_call": 39.484375,
+      "candidate_abba_paired_block_mean_usec_per_call": 26.234375,
+      "candidate_over_baseline_ratio": 0.664424218440839
+    },
+    {
+      "round": 157,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.900390625,
+      "candidate_abba_paired_block_mean_usec_per_call": 18.05908203125,
+      "candidate_over_baseline_ratio": 0.6713315907935816
+    },
+    {
+      "round": 158,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.66748046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.11669921875,
+      "candidate_over_baseline_ratio": 0.6809638753068845
+    },
+    {
+      "round": 159,
+      "baseline_abba_paired_block_mean_usec_per_call": 27.77587890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 19.89306640625,
+      "candidate_over_baseline_ratio": 0.7161993495649117
+    },
+    {
+      "round": 160,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.63134765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.48095703125,
+      "candidate_over_baseline_ratio": 0.643000019050159
+    },
+    {
+      "round": 161,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.345703125,
+      "candidate_over_baseline_ratio": 0.6992814171122995
+    },
+    {
+      "round": 162,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8544921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.89404296875,
+      "candidate_over_baseline_ratio": 0.6954450284151604
+    },
+    {
+      "round": 163,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.9599609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.6103515625,
+      "candidate_over_baseline_ratio": 0.6932545343386998
+    },
+    {
+      "round": 164,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.87060546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0517578125,
+      "candidate_over_baseline_ratio": 0.7018510215845769
+    },
+    {
+      "round": 165,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.3701171875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.85205078125,
+      "candidate_over_baseline_ratio": 0.6783042915047428
+    },
+    {
+      "round": 166,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.66064453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.826171875,
+      "candidate_over_baseline_ratio": 0.6983990174319636
+    },
+    {
+      "round": 167,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.603515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.18115234375,
+      "candidate_over_baseline_ratio": 0.7158688326276679
+    },
+    {
+      "round": 168,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.42724609375,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.8642578125,
+      "candidate_over_baseline_ratio": 0.677171262427312
+    },
+    {
+      "round": 169,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.1689453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.947265625,
+      "candidate_over_baseline_ratio": 0.6883034773445732
+    },
+    {
+      "round": 170,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.01220703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0361328125,
+      "candidate_over_baseline_ratio": 0.6968533174902926
+    },
+    {
+      "round": 171,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6064453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0126953125,
+      "candidate_over_baseline_ratio": 0.7083243336645212
+    },
+    {
+      "round": 172,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.75390625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9853515625,
+      "candidate_over_baseline_ratio": 0.7025321888412017
+    },
+    {
+      "round": 173,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.759765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0390625,
+      "candidate_over_baseline_ratio": 0.7047112331588432
+    },
+    {
+      "round": 174,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.908203125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1689453125,
+      "candidate_over_baseline_ratio": 0.705814647455026
+    },
+    {
+      "round": 175,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.00537109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1455078125,
+      "candidate_over_baseline_ratio": 0.7018147086914995
+    },
+    {
+      "round": 176,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.95654296875,
+      "candidate_over_baseline_ratio": 0.7030765920826162
+    },
+    {
+      "round": 177,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6376953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.89013671875,
+      "candidate_over_baseline_ratio": 0.7019326172296277
+    },
+    {
+      "round": 178,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.0263671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.27685546875,
+      "candidate_over_baseline_ratio": 0.7068790025022266
+    },
+    {
+      "round": 179,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8466796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1787109375,
+      "candidate_over_baseline_ratio": 0.7081427655481941
+    },
+    {
+      "round": 180,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.025390625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1650390625,
+      "candidate_over_baseline_ratio": 0.702052761048435
+    },
+    {
+      "round": 181,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.845703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.40234375,
+      "candidate_over_baseline_ratio": 0.7179618705651022
+    },
+    {
+      "round": 182,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.87255859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2822265625,
+      "candidate_over_baseline_ratio": 0.7118673014110967
+    },
+    {
+      "round": 183,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.93017578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.150390625,
+      "candidate_over_baseline_ratio": 0.7043291241668619
+    },
+    {
+      "round": 184,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7587890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.14208984375,
+      "candidate_over_baseline_ratio": 0.7092683973396267
+    },
+    {
+      "round": 185,
+      "baseline_abba_paired_block_mean_usec_per_call": 27.6064453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 22.83740234375,
+      "candidate_over_baseline_ratio": 0.8272489299232375
+    },
+    {
+      "round": 186,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.3623046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.89111328125,
+      "candidate_over_baseline_ratio": 0.6802031517786231
+    },
+    {
+      "round": 187,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.35888671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.068359375,
+      "candidate_over_baseline_ratio": 0.687890633165409
+    },
+    {
+      "round": 188,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.61865234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.3505859375,
+      "candidate_over_baseline_ratio": 0.7228806424454375
+    },
+    {
+      "round": 189,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.75927734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05322265625,
+      "candidate_over_baseline_ratio": 0.6756612343040342
+    },
+    {
+      "round": 190,
+      "baseline_abba_paired_block_mean_usec_per_call": 26.482421875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.3935546875,
+      "candidate_over_baseline_ratio": 0.6190353270890183
+    },
+    {
+      "round": 191,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.34375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.89599609375,
+      "candidate_over_baseline_ratio": 0.766629016064257
+    },
+    {
+      "round": 192,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.3544921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.04736328125,
+      "candidate_over_baseline_ratio": 0.6871210537319674
+    },
+    {
+      "round": 193,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.24853515625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.8955078125,
+      "candidate_over_baseline_ratio": 0.7267342952554975
+    },
+    {
+      "round": 194,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.7470703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.9375,
+      "candidate_over_baseline_ratio": 0.7132458773697413
+    },
+    {
+      "round": 195,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.28369140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.8486328125,
+      "candidate_over_baseline_ratio": 0.7236237810632274
+    },
+    {
+      "round": 196,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9833984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.15234375,
+      "candidate_over_baseline_ratio": 0.7027830890163587
+    },
+    {
+      "round": 197,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.13330078125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2666015625,
+      "candidate_over_baseline_ratio": 0.7031682039808346
+    },
+    {
+      "round": 198,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.03466796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2138671875,
+      "candidate_over_baseline_ratio": 0.7038897721250662
+    },
+    {
+      "round": 199,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.92431640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.373046875,
+      "candidate_over_baseline_ratio": 0.656910569105691
+    },
+    {
+      "round": 200,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.95458984375,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.638671875,
+      "candidate_over_baseline_ratio": 0.7684159026610793
+    },
+    {
+      "round": 201,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.77294921875,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.3037109375,
+      "candidate_over_baseline_ratio": 0.7598361885975257
+    },
+    {
+      "round": 202,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.19970703125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.09033203125,
+      "candidate_over_baseline_ratio": 0.6935575526697957
+    },
+    {
+      "round": 203,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.78466796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.93798828125,
+      "candidate_over_baseline_ratio": 0.6995049611040868
+    },
+    {
+      "round": 204,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.49462890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.15966796875,
+      "candidate_over_baseline_ratio": 0.6597229143825376
+    },
+    {
+      "round": 205,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.4765625,
+      "candidate_abba_paired_block_mean_usec_per_call": 17.46044921875,
+      "candidate_over_baseline_ratio": 0.7437396006655574
+    },
+    {
+      "round": 206,
+      "baseline_abba_paired_block_mean_usec_per_call": 24.3486328125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.9931640625,
+      "candidate_over_baseline_ratio": 0.697910399871656
+    },
+    {
+      "round": 207,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.2744140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.90966796875,
+      "candidate_over_baseline_ratio": 0.6835690009650485
+    },
+    {
+      "round": 208,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.24462890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.37646484375,
+      "candidate_over_baseline_ratio": 0.7045268354164479
+    },
+    {
+      "round": 209,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.93310546875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.38525390625,
+      "candidate_over_baseline_ratio": 0.7144803798411651
+    },
+    {
+      "round": 210,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.97998046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 19.8125,
+      "candidate_over_baseline_ratio": 0.7626064239667713
+    },
+    {
+      "round": 211,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.54443359375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.26123046875,
+      "candidate_over_baseline_ratio": 0.6906613575561501
+    },
+    {
+      "round": 212,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.1337890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.89453125,
+      "candidate_over_baseline_ratio": 0.6870699480771666
+    },
+    {
+      "round": 213,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.96142578125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.94970703125,
+      "candidate_over_baseline_ratio": 0.6946305156831473
+    },
+    {
+      "round": 214,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6181640625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2197265625,
+      "candidate_over_baseline_ratio": 0.7171106601614784
+    },
+    {
+      "round": 215,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.41552734375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.76708984375,
+      "candidate_over_baseline_ratio": 0.7160671462829736
+    },
+    {
+      "round": 216,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.8212890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05029296875,
+      "candidate_over_baseline_ratio": 0.7033035217595961
+    },
+    {
+      "round": 217,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.61376953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.28857421875,
+      "candidate_over_baseline_ratio": 0.7202945177380001
+    },
+    {
+      "round": 218,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.34814453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.11572265625,
+      "candidate_over_baseline_ratio": 0.6902356902356902
+    },
+    {
+      "round": 219,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.07861328125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.2265625,
+      "candidate_over_baseline_ratio": 0.7030995451179519
+    },
+    {
+      "round": 220,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.04638671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.93212890625,
+      "candidate_over_baseline_ratio": 0.6913070192165088
+    },
+    {
+      "round": 221,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.7998046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.005859375,
+      "candidate_over_baseline_ratio": 0.7020173898145372
+    },
+    {
+      "round": 222,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.93798828125,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.95458984375,
+      "candidate_over_baseline_ratio": 0.695553143027439
+    },
+    {
+      "round": 223,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.94140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.10009765625,
+      "candidate_over_baseline_ratio": 0.7017920994381066
+    },
+    {
+      "round": 224,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.76904296875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.29541015625,
+      "candidate_over_baseline_ratio": 0.7156827003495528
+    },
+    {
+      "round": 225,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.4296875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.99169921875,
+      "candidate_over_baseline_ratio": 0.6825400133377792
+    },
+    {
+      "round": 226,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.9013671875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.37158203125,
+      "candidate_over_baseline_ratio": 0.7148735661592256
+    },
+    {
+      "round": 227,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.50439453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05615234375,
+      "candidate_over_baseline_ratio": 0.6831127822672788
+    },
+    {
+      "round": 228,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.83740234375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.20947265625,
+      "candidate_over_baseline_ratio": 0.7097774261828911
+    },
+    {
+      "round": 229,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.873046875,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.1279296875,
+      "candidate_over_baseline_ratio": 0.7051063103065494
+    },
+    {
+      "round": 230,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.50341796875,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.7021484375,
+      "candidate_over_baseline_ratio": 0.6680793601329594
+    },
+    {
+      "round": 231,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.75537109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.05615234375,
+      "candidate_over_baseline_ratio": 0.7055983520374225
+    },
+    {
+      "round": 232,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.6298828125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.3466796875,
+      "candidate_over_baseline_ratio": 0.7223492858067578
+    },
+    {
+      "round": 233,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.56689453125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.107421875,
+      "candidate_over_baseline_ratio": 0.713763333838198
+    },
+    {
+      "round": 234,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.83251953125,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.23583984375,
+      "candidate_over_baseline_ratio": 0.7110840230106286
+    },
+    {
+      "round": 235,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.22412109375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0029296875,
+      "candidate_over_baseline_ratio": 0.6344296250411351
+    },
+    {
+      "round": 236,
+      "baseline_abba_paired_block_mean_usec_per_call": 25.8369140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 21.359375,
+      "candidate_over_baseline_ratio": 0.8266999281853574
+    },
+    {
+      "round": 237,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.74755859375,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.35791015625,
+      "candidate_over_baseline_ratio": 0.688824920324869
+    },
+    {
+      "round": 238,
+      "baseline_abba_paired_block_mean_usec_per_call": 22.68994140625,
+      "candidate_abba_paired_block_mean_usec_per_call": 16.0830078125,
+      "candidate_over_baseline_ratio": 0.7088166304417999
+    },
+    {
+      "round": 239,
+      "baseline_abba_paired_block_mean_usec_per_call": 23.43212890625,
+      "candidate_abba_paired_block_mean_usec_per_call": 15.9521484375,
+      "candidate_over_baseline_ratio": 0.6807810123153223
+    }
+  ],
+  "interpretation_limit": "This is one observation-method microbenchmark on one prepared state and host. Ratios describe paired blocks, not a causal whole-flight or render-frame speedup."
+}

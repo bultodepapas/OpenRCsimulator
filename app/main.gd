@@ -28,6 +28,7 @@ const CompanionConfig := preload("res://ai/companions/config.gd")
 const CompanionManager := preload("res://ai/companions/manager.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
+const CrashPresentationContext = preload("res://render/crash/presentation_context.gd")
 const AccidentIncident = preload("res://economy/incident.gd")
 const AccidentSettlement = preload("res://economy/settlement.gd")
 const AccidentReport = preload("res://ui/accident_report.gd")
@@ -789,8 +790,29 @@ func _ready() -> void:
 		_crash_director = CrashDirector.new()
 		_crash_director.name = "CrashDirector"
 		add_child(_crash_director)
-		_crash_director.configure(self, physics_path, str(args.get("soundscape", "on")) != "off")
-		session.crash_auto_restart = false
+		var crash_context := CrashPresentationContext.new()
+		var model_bindings := CrashPresentationContext.ModelBindings.new()
+		model_bindings.root = _airplane.get("root") as Node3D
+		model_bindings.propeller = _airplane.get("propeller") as Node3D
+		model_bindings.empty = _airplane.is_empty()
+		crash_context.session = session
+		crash_context.model_bindings = model_bindings
+		crash_context.field = field
+		crash_context.aircraft_id = aircraft_id
+		crash_context.workshop_trial = workshop_trial
+		crash_context.aircraft_data_path = physics_path
+		crash_context.cg_model = _cg_model
+		crash_context.pose_provider = Callable(self, "_current_pose")
+		crash_context.wind_provider = Callable(self, "_render_wind")
+		crash_context.shadow = _shadow
+		crash_context.sun = _sun
+		crash_context.propeller_blur = get_node_or_null("PropellerBlur") as Node3D
+		if _crash_director.configure(crash_context, str(args.get("soundscape", "on")) != "off"):
+			session.crash_auto_restart = false
+		else:
+			push_error("Main: crash presentation context was refused; crash effects are unavailable.")
+			_crash_director.queue_free()
+			_crash_director = null
 	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
 	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
 	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"

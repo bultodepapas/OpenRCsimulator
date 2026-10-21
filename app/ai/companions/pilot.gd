@@ -188,6 +188,10 @@ func _avoidance_velocity(
 		clearance = -state[AvoidanceRigidBody.POS + 2] - _field_ground_up_m
 	var baseline: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
 		nominal_bank, nominal_bank, clearance, threats)
+	# Clear traffic with no held turn returns the unchanged nominal response.
+	# Candidate scores are pure; the original later branch returned this packet.
+	if not _has_held_maneuver and float(baseline.score) >= 0.0:
+		return _unmodified_traffic_response(base_air_north, base_air_east)
 	var best_bank: float = nominal_bank
 	var best_score: float = float(baseline.score)
 	for bank_degrees: float in BANK_CHOICES_DEG:

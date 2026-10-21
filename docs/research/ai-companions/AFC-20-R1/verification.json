@@ -1,0 +1,526 @@
+{
+  "format": "openrc-afc20-r1-presentation-context-verification v1",
+  "step": "AFC-20-R1",
+  "status": "passed",
+  "scope": "Explicit typed presentation-context injection for the existing player crash/water director. Main assembles session, model bindings, field, aircraft/trial identity, CG, pose/wind providers, and optional visual references. The director no longer reads Main private fields.",
+  "scope_limits": [
+    "No companion crash directors were attached to agents.",
+    "No flight, physics, camera policy, report ownership, effect budget, or performance claim was changed or qualified.",
+    "The checked suite uses Dummy audio; crash integration reports native playback as skipped.",
+    "Software regression checks are not physical validation."
+  ],
+  "source_identity": {
+    "workspace": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "tested_source_files": [
+      {
+        "path": "app/render/crash/presentation_context.gd",
+        "sha256": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb"
+      },
+      {
+        "path": "app/render/crash/director.gd",
+        "sha256": "6d44332895d4030699a54c6cac1b7a449d4f7df83ca9fa9873d855737177f472"
+      },
+      {
+        "path": "app/main.gd",
+        "sha256": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217"
+      },
+      {
+        "path": "app/tests/test_water_director.gd",
+        "sha256": "3dbd7661a9dac008e0c9f66eef40c8f319f4e4dc4b92a3a1023f7ed6ac907d58"
+      },
+      {
+        "path": "app/tests/test_crash_integration.gd",
+        "sha256": "8f396bdcc32651835c2bccf10c7854846e8389d7c719291b54fc51461393241f"
+      },
+      {
+        "path": "app/tests/test_water_checkpoint.gd",
+        "sha256": "32e8bc9fee091311f1cd29b0d1ec7c9a5b6b43adfef156ca6081f677a40f58aa"
+      },
+      {
+        "path": "app/tests/test_crash_cause.gd",
+        "sha256": "d69f551d46515569e04c2bebd87231f5b5be3abe9cff77936aee9cd808d6e2c9"
+      },
+      {
+        "path": "app/tests/test_crash_masses.gd",
+        "sha256": "828fa8a873c9e22b84a6f60c8b481c67d1a964ac098c5c02ce1320ef6e640b57"
+      },
+      {
+        "path": "app/tests/test_prop_strike_feedback.gd",
+        "sha256": "842622a0250fe9b14c6fd75250c268c800f4531991424e93301f65bdf626cb9d"
+      },
+      {
+        "path": "app/tests/test_soft_contact_feedback.gd",
+        "sha256": "e6ca79c547860df295c55fae778869b48bd31a515290b942b7e8cb63886e9808"
+      },
+      {
+        "path": "app/tests/test_companions_session.gd",
+        "sha256": "a45381bfa359a292460ef630f749eaad967458a9f03b656ff61aa956bc52cc0c"
+      }
+    ],
+    "test_snapshot": {
+      "mirror_project": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\mirror\\app",
+      "source_copies_match_workspace": true,
+      "note": "The four edited source files and all eight test scripts listed above were copied from this workspace into the isolated mirror before the corrected suite."
+    }
+  },
+  "suite": {
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "runner": "tools/godot/run_checked.py",
+    "target_project": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\mirror\\app",
+    "audio_driver": "Dummy",
+    "timeout_seconds_per_group": 300,
+    "required_completion_text": "0 failed",
+    "groups": [
+      {
+        "name": "water_director",
+        "script": "app/tests/test_water_director.gd",
+        "checks": 22,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:57:36.146469+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\water_director\\AFC20-water_director-lrd74poa\\report.json",
+        "runner_report_sha256": "32ee1839a7f2c65620d582db9bb3ecfd1bbe6c517f8185bac9cc17e0b4f8390e",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\water_director\\AFC20-water_director-lrd74poa\\engine.log",
+        "engine_log_sha256": "d66ffe273a5752d7bd439dc8638add0e33c43572983f5e98903628ac66291bf1",
+        "elapsed_seconds": 14.89
+      },
+      {
+        "name": "crash_integration",
+        "script": "app/tests/test_crash_integration.gd",
+        "checks": 180,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:57:51.229572+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_integration\\AFC20-crash_integration-a66ig0yg\\report.json",
+        "runner_report_sha256": "465f24d113113bef01d39a8e87fdc23cc0b72d7554c7c736cf9b72f4f58ab096",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_integration\\AFC20-crash_integration-a66ig0yg\\engine.log",
+        "engine_log_sha256": "e8ea94a208fbcdfdd7ec1baf45cb711855839eabce70c188ba29472e499bee5e",
+        "elapsed_seconds": 69.578
+      },
+      {
+        "name": "water_checkpoint",
+        "script": "app/tests/test_water_checkpoint.gd",
+        "checks": 16,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:00.956290+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\water_checkpoint\\AFC20-water_checkpoint-aiygkxsd\\report.json",
+        "runner_report_sha256": "65ced61b9309a4620c97e3c4b0cd2a65bf62a941c35706be22e5d396caa0d863",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\water_checkpoint\\AFC20-water_checkpoint-aiygkxsd\\engine.log",
+        "engine_log_sha256": "e74e18a1600413d63b761bd5bd599f79d9d395f2a5349009907ab359e8d9439c",
+        "elapsed_seconds": 9.093
+      },
+      {
+        "name": "crash_cause",
+        "script": "app/tests/test_crash_cause.gd",
+        "checks": 29,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:10.210843+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_cause\\AFC20-crash_cause-1won7j1t\\report.json",
+        "runner_report_sha256": "3b4572059e7ecefccf62609355b8679d1398b02351553a3a714a5de741624342",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_cause\\AFC20-crash_cause-1won7j1t\\engine.log",
+        "engine_log_sha256": "68c3c59aba5ce4b68d7634e4a733cfaf4e30b68a4526ac5c38ebf8811fb067b5",
+        "elapsed_seconds": 10.313
+      },
+      {
+        "name": "crash_masses",
+        "script": "app/tests/test_crash_masses.gd",
+        "checks": 34,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:20.704785+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_masses\\AFC20-crash_masses-5c487xjq\\report.json",
+        "runner_report_sha256": "b3df2a079e0c13536b3e65b89e004edc4e63641ca11187ae713d133bb1b31d9e",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\crash_masses\\AFC20-crash_masses-5c487xjq\\engine.log",
+        "engine_log_sha256": "80fe76d44f993b5534de8f2e85992ad1062b9aebab5f427d1cd0f47ad31dd92f",
+        "elapsed_seconds": 11.875
+      },
+      {
+        "name": "prop_strike_feedback",
+        "script": "app/tests/test_prop_strike_feedback.gd",
+        "checks": 16,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:32.729711+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 3
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\prop_strike_feedback\\AFC20-prop_strike_feedback-vek32yhp\\report.json",
+        "runner_report_sha256": "30183ffa43459ef64fdfcb196faa7b0dc1ff7e70b1721d3c8cd84da2ca21d15a",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\prop_strike_feedback\\AFC20-prop_strike_feedback-vek32yhp\\engine.log",
+        "engine_log_sha256": "ecee80da003fbae71d879f4c78b8c0fea16a3ae585cc32643471c355ff1a021b",
+        "elapsed_seconds": 10.297
+      },
+      {
+        "name": "soft_contact_feedback",
+        "script": "app/tests/test_soft_contact_feedback.gd",
+        "checks": 23,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:43.217841+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 4
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\soft_contact_feedback\\AFC20-soft_contact_feedback-4m2ggvqn\\report.json",
+        "runner_report_sha256": "5653014468f56ae2c3c2fae241afa0863f1b708ecb028f91cbca55220478f597",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\soft_contact_feedback\\AFC20-soft_contact_feedback-4m2ggvqn\\engine.log",
+        "engine_log_sha256": "4fbf31cf58a5a28cdd0c2addc646af40ae8ec248a4d8f764cfe01627cedb834a",
+        "elapsed_seconds": 10.157
+      },
+      {
+        "name": "companions_session",
+        "script": "app/tests/test_companions_session.gd",
+        "checks": 65,
+        "failures": 0,
+        "started_utc": "2026-10-21T04:59:53.521457+00:00",
+        "process_exit": 0,
+        "complete": true,
+        "runner_ok": true,
+        "engine_diagnostics": {
+          "error": 0,
+          "warning": 0
+        },
+        "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\companions_session\\AFC20-companions_session-pn3wj_dw\\report.json",
+        "runner_report_sha256": "1ddf353bbae0086c5aa5b7824d0bf660e7df64b4efae5fdeab7c6c14d9232d7a",
+        "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-corrected-20261021\\companions_session\\AFC20-companions_session-pn3wj_dw\\engine.log",
+        "engine_log_sha256": "5098337654fc5e2c2e94ca3cc2c9968a0c094a41fe599c8a54e2266818326c03",
+        "elapsed_seconds": 3.266
+      }
+    ],
+    "totals": {
+      "groups": 8,
+      "checks": 385,
+      "failures": 0,
+      "engine_errors": 0,
+      "engine_warnings": 22
+    },
+    "warning_notes": [
+      "21 runner warning records report unsupported imported-tree materials disabling tree wind.",
+      "One warning record reports colinear target/up vectors during the soft-contact camera fixture.",
+      "Aircraft data advisory text is printed separately from run_checked engine warning/error records."
+    ]
+  },
+  "current_workspace_confirmation": {
+    "label": "afc20-root-water-director",
+    "target": "current C working tree (not the isolated D mirror)",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "res://tests/test_water_director.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-21T04:57:22.876458+00:00",
+    "checks": 22,
+    "failures": 0,
+    "process_exit": 0,
+    "complete": true,
+    "runner_ok": true,
+    "engine_diagnostics": {
+      "error": 0,
+      "warning": 3
+    },
+    "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\afc20-root-water-director-7l0u6k4i\\report.json",
+    "runner_report_sha256": "be63fbf25df7a7240bf4710d0a8999e78758a8808f043291df04775464697b62",
+    "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\afc20-root-water-director-7l0u6k4i\\engine.log",
+    "engine_log_sha256": "7ddd32abe116abf4a589746a0da6f8a0a349683498aeec19ac0bdb9bbc5f4a5b"
+  },
+  "asset_snapshot": {
+    "current_workspace_authoring_root": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\aircraft",
+    "mirror_authoring_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\mirror\\assets\\aircraft",
+    "current_workspace_authoring_tree_files": 54,
+    "current_workspace_authoring_json_files": 24,
+    "authoring_json_hash_matches": 24,
+    "authoring_jsons": [
+      {
+        "path": "avanti-s-a200/blender-geometry.json",
+        "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+        "mirror_matches": true
+      },
+      {
+        "path": "avanti-s-a200/geometry.json",
+        "sha256": "1fd48b554c5860e8aca060eeb4df2304ad9580f4e596eedddd856faaedd9c458",
+        "mirror_matches": true
+      },
+      {
+        "path": "avanti-s-a200/source/geometry_blender.json",
+        "sha256": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a",
+        "mirror_matches": true
+      },
+      {
+        "path": "avanti-s-a200/source-manifest.json",
+        "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+        "mirror_matches": true
+      },
+      {
+        "path": "customization-bindings.json",
+        "sha256": "bf2539b29884b0e23515cfd9524c29813ffea936642f84de032f031ca3c997ab",
+        "mirror_matches": true
+      },
+      {
+        "path": "extra-300s-60/appearance.json",
+        "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228",
+        "mirror_matches": true
+      },
+      {
+        "path": "extra-300s-60/geometry.json",
+        "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/articulated/construction.json",
+        "sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/articulated/export-report.json",
+        "sha256": "7b82c98eedc33daf277214c9ec0c2ecae8feb347bb177dcafbf7cb164134e9ca",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/articulated/motion-source.json",
+        "sha256": "24f99dd8c7c1c9a79e4421198c27c837e44b3aa8eed9c4dfd0b4ee0293f13db3",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/articulated/neutral-reference.json",
+        "sha256": "4eef82d44fb3869f36eaf855ddb2134c12d61907d9c804143fb7cb7f0cc18e7b",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/rotor_profiles.json",
+        "sha256": "3c410cf978494e0c30ffc8b21a28850811a9954d5e4d64639acc225b56b4c959",
+        "mirror_matches": true
+      },
+      {
+        "path": "hx-700/source-manifest.json",
+        "sha256": "3c40a147a266387566af4e89a3cec14d592c63ca9c433e56ab6095dc7d6521d0",
+        "mirror_matches": true
+      },
+      {
+        "path": "model-bindings.json",
+        "sha256": "367e78f8dcde622b43b13bc8f0f0d715ad50508b326c1c2f7ba53f45ea439170",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/appearance.json",
+        "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/geometry.json",
+        "sha256": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/source.json",
+        "sha256": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/geometry.json",
+        "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/manual.json",
+        "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/mesh-measurements.json",
+        "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/source-manifest.json",
+        "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json",
+        "sha256": "ae312f2638aea602f87bcc3f7adc223823d1fa4e24389ef8b70f0888bf7839b8",
+        "mirror_matches": true
+      },
+      {
+        "path": "ugly-stik-60/appearance.json",
+        "sha256": "4e1a803e11bfea8e21dd002e5ab0d4d31f8020b7dfd61c0f486237afa88f4e9c",
+        "mirror_matches": true
+      },
+      {
+        "path": "ugly-stik-60/geometry.json",
+        "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4",
+        "mirror_matches": true
+      }
+    ],
+    "model_registry_referenced_authoring_path_count": 13,
+    "model_registry_referenced_authoring_paths": [
+      {
+        "path": "avanti-s-a200/blender-geometry.json",
+        "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+        "mirror_matches": true
+      },
+      {
+        "path": "avanti-s-a200/source-manifest.json",
+        "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+        "mirror_matches": true
+      },
+      {
+        "path": "extra-300s-60/appearance.json",
+        "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228",
+        "mirror_matches": true
+      },
+      {
+        "path": "extra-300s-60/geometry.json",
+        "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810",
+        "mirror_matches": true
+      },
+      {
+        "path": "model-bindings.json",
+        "sha256": "367e78f8dcde622b43b13bc8f0f0d715ad50508b326c1c2f7ba53f45ea439170",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/appearance.json",
+        "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/geometry.json",
+        "sha256": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290",
+        "mirror_matches": true
+      },
+      {
+        "path": "p51d-mustang-120/source.json",
+        "sha256": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/geometry.json",
+        "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/manual.json",
+        "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/mesh-measurements.json",
+        "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70",
+        "mirror_matches": true
+      },
+      {
+        "path": "turbo-lumber-evolution/source-manifest.json",
+        "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
+        "mirror_matches": true
+      },
+      {
+        "path": "ugly-stik-60/geometry.json",
+        "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4",
+        "mirror_matches": true
+      }
+    ],
+    "runtime_model_asset_comparison": {
+      "workspace_root": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\assets\\aircraft",
+      "mirror_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\mirror\\app\\assets\\aircraft",
+      "workspace_files": 34,
+      "mirror_files": 34,
+      "hash_differences": [
+        {
+          "path": "turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd.uid",
+          "workspace_sha256": "7b49f2e6b2d0468ad10dded1cb4fd48a8666175c8cf5d75655e6462084990fa7",
+          "mirror_sha256": "24b346b1fb95258faec7552890fd4ba560e892ee52eb40e2ec9a3f71ca74aea5"
+        }
+      ],
+      "note": "The isolated mirror runtime assets originated from the private integration clone; the only detected difference from current workspace app/assets/aircraft is the listed .gd.uid sidecar. The separate current-workspace water-director run below exercises Main against current transitive files."
+    }
+  },
+  "setup_failures": [
+    {
+      "label": "AFC20-water-director-context",
+      "started_utc": "2026-10-21T04:53:45.488190+00:00",
+      "stage": "pre-fixture setup failure: external model authoring path was not at the project sibling assets/ directory expected by res://../assets resolution",
+      "process_exit": 30,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "messages": [
+        "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+        "Invalid call. Nonexistent function 'set_physics_process' in base 'Nil'."
+      ],
+      "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\AFC20-water-director-context-bdned_4j\\report.json",
+      "runner_report_sha256": "303af454c830aefb01a8dd542ec9b439cf8a66437a1fe556fd8277ba4680e04f",
+      "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\AFC20-water-director-context-bdned_4j\\engine.log",
+      "engine_log_sha256": "f212c1353c20925b5b05f123de16735fdb6dc338ad470c47ca40f0181ee52457"
+    },
+    {
+      "label": "AFC20-water_director",
+      "started_utc": "2026-10-21T04:56:36.981013+00:00",
+      "stage": "pre-fixture setup failure: external model authoring path was not at the project sibling assets/ directory expected by res://../assets resolution",
+      "process_exit": 30,
+      "engine_diagnostics": {
+        "error": 2,
+        "warning": 0
+      },
+      "messages": [
+        "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+        "Invalid call. Nonexistent function 'set_physics_process' in base 'Nil'."
+      ],
+      "runner_report": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-20261021\\water_director\\AFC20-water_director-inlp29xa\\report.json",
+      "runner_report_sha256": "48364bae844a06ca985ccb24de747a2e199ccbec2d9981852e2b47e159988456",
+      "engine_log": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\checks\\context-suite-20261021\\water_director\\AFC20-water_director-inlp29xa\\engine.log",
+      "engine_log_sha256": "18000172b5fd178bb03a1f6fc97224bbda3197edf6910301f43e91f9e53db171"
+    }
+  ],
+  "toolchain": [
+    {
+      "path": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+    },
+    {
+      "path": "tools/godot/run_checked.py",
+      "sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    }
+  ]
+}

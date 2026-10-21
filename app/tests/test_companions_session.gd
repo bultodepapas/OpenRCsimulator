@@ -3,11 +3,14 @@ extends SceneTree
 
 const Session := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const SceneryDamage := preload("res://sim/scenery_damage.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Math3D := preload("res://physics/math3d.gd")
+const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
+const STIK_ID := "jensen-das-ugly-stik-60"
 
 var _checks := 0
 var _failures := 0
@@ -30,6 +33,18 @@ func _new_session(external: bool) -> Session:
 	return session
 
 
+func _new_aircraft_session(external: bool, aircraft_id: String) -> Session:
+	var entry: Dictionary = Catalog.entry(aircraft_id)
+	var session: Session = Session.new()
+	session.input_enabled = false
+	session.setup(str(entry.get("data", "")), aircraft_id)
+	_check("%s %s session starts flyable" % [aircraft_id, "external" if external else "manual"],
+		session.is_flyable())
+	if external:
+		_check("%s external driver configures while detached" % aircraft_id, session.configure_external_driver())
+	return session
+
+
 func _packet() -> Dictionary:
 	return {roll = 0.17, pitch = -0.08, yaw = 0.11, throttle = 0.62}
 
@@ -46,12 +61,173 @@ func _same_tick(left: Session, right: Session) -> bool:
 	return left.sim.tick == right.sim.tick and left.sim.time() == right.sim.time() \
 		and _same_array(left.sim.state, right.sim.state) and _same_array(left.sim.previous, right.sim.previous) \
 		and _same_array(left.sim.aux, right.sim.aux) and _same_array(left.sim.inputs, right.sim.inputs) \
-		and _same_array(left.sim.last_loads, right.sim.last_loads) and left.commands == right.commands
+		and _same_array(left.sim.last_loads, right.sim.last_loads) \
+		and left.sim.continuous.to_byte_array() == right.sim.continuous.to_byte_array() \
+		and left.sim.modes.to_byte_array() == right.sim.modes.to_byte_array() \
+		and left.commands == right.commands and left.raw == right.raw
 
 
 func _send_tick(session: Session, packet: Dictionary = {}) -> bool:
 	var staged: Dictionary = session.prepare_external_tick(packet if not packet.is_empty() else _packet())
 	return staged.get("ok", false) and session.step_external_tick()
+
+
+func _manual_tick(session: Session, packet: Dictionary) -> bool:
+	session.commands = {roll = packet.roll, pitch = packet.pitch, yaw = packet.yaw, throttle = packet.throttle}
+	session.raw = session.commands.duplicate()
+	session.sim.inputs = session._inputs()
+	var previous_tick: int = session.sim.tick
+	if not session._session_after_input() or session.sim.paused or not session.sim.fault_reason.is_empty():
+		return false
+	session.sim.step()
+	return session.sim.tick == previous_tick + 1 and session.sim.fault_reason.is_empty()
+
+
+func _run_avanti_external_actuator_parity() -> void:
+	var manual: Session = _new_aircraft_session(false, AVANTI_ID)
+	var external: Session = _new_aircraft_session(true, AVANTI_ID)
+	var equipment_ready: bool = manual.gear_is_retractable() and external.gear_is_retractable() \
+		and manual.flaps_available() and external.flaps_available() \
+		and manual.sim.inputs.size() == 7 and external.sim.inputs.size() == 7
+	_check("Avanti parity fixture exposes retractable gear, brakes, flaps, and seven inputs", equipment_ready)
+	if not equipment_ready:
+		manual.free()
+		external.free()
+		return
+	manual.input_enabled = true
+	var requests_ok: bool = manual.set_gear_down(true) and manual.set_wheel_brake(0.5) \
+		and manual.set_flaps(1.0)
+	manual.input_enabled = false
+	_check("manual Avanti accepts matching gear, brake, and flap requests", requests_ok)
+	var packet := {roll = 0.02, pitch = -0.01, yaw = 0.0, throttle = float(manual.start.throttle)}
+	var external_packet: Dictionary = packet.duplicate(true)
+	external_packet.gear_down = true
+	external_packet.brake = 0.5
+	external_packet.flaps = 1.0
+	var staged: Dictionary = external.prepare_external_tick(external_packet)
+	var manual_first: bool = _manual_tick(manual, packet)
+	var external_first: bool = staged.get("ok", false) and external.step_external_tick()
+	_check("manual and external Avanti actuator ticks are both accepted", manual_first and external_first,
+		"stage=%s manual_tick=%s external_tick=%s" % [str(staged), str(manual_first), str(external_first)])
+	_check("first Avanti external actuator tick matches every session boundary array",
+		_same_tick(manual, external))
+	var first_gear_extension: float = float(external.gear_state().extension)
+	var first_flap_fraction: float = float(external.flap_state().actual)
+	_check("external gear and flap AUX advance from their requested targets",
+		first_gear_extension > 0.0 and first_gear_extension < 1.0 \
+		and external.gear_state().target_down and first_flap_fraction > 0.0 and first_flap_fraction < 1.0,
+		"gear=%.9f target_down=%s flap=%.9f" % [first_gear_extension,
+		str(external.gear_state().target_down), first_flap_fraction])
+	var next_packet := {roll = -0.03, pitch = 0.04, yaw = 0.01, throttle = float(manual.start.throttle)}
+	var second_stage: Dictionary = external.prepare_external_tick(next_packet)
+	var manual_second: bool = _manual_tick(manual, next_packet)
+	var external_second: bool = second_stage.get("ok", false) and external.step_external_tick()
+	_check("four-field external packet preserves omitted actuator demands", manual_second and external_second
+		and external.sim.inputs.size() == 7 and external.sim.inputs[4] == 1.0
+		and external.sim.inputs[5] == 0.5 and external.sim.inputs[6] == 1.0,
+		"stage=%s inputs=%s" % [str(second_stage), str(external.sim.inputs)])
+	_check("omitted gear, brake, and flap fields remain byte-identical to manual controls",
+		_same_tick(manual, external) and external.gear_state().extension > first_gear_extension
+		and external.flap_state().actual > first_flap_fraction)
+	manual.free()
+	external.free()
+
+
+func _run_external_actuator_packet_atomicity() -> void:
+	var external_avanti: Session = _new_aircraft_session(true, AVANTI_ID)
+	var valid_avanti := {roll = 0.01, pitch = 0.02, yaw = -0.03, throttle = 0.55,
+		gear_down = true, brake = 0.25, flaps = 0.75}
+	var valid_stage: Dictionary = external_avanti.prepare_external_tick(valid_avanti)
+	var pending_before_bad: Dictionary = external_avanti._external_pending_packet.duplicate(true)
+	var commands_before_bad: Dictionary = external_avanti.commands.duplicate(true)
+	var inputs_before_bad: PackedFloat64Array = external_avanti.sim.inputs.duplicate()
+	var bad_avanti: Dictionary = valid_avanti.duplicate(true)
+	bad_avanti.roll = -0.8
+	bad_avanti.flaps = 1.01
+	var invalid_result: Dictionary = external_avanti.prepare_external_tick(bad_avanti)
+	_check("out-of-range optional actuator rejects without replacing a valid pending packet",
+		valid_stage.get("ok", false) and not invalid_result.get("ok", true)
+		and external_avanti._external_packet_ready
+		and external_avanti._external_pending_packet == pending_before_bad
+		and external_avanti.commands == commands_before_bad
+		and _same_array(external_avanti.sim.inputs, inputs_before_bad), str(invalid_result))
+	_check("the preserved Avanti actuator packet still executes exactly as staged",
+		external_avanti.step_external_tick() and external_avanti.sim.tick == 1
+		and external_avanti.sim.inputs.size() == 7 and external_avanti.sim.inputs[4] == 1.0
+		and external_avanti.sim.inputs[5] == 0.25 and external_avanti.sim.inputs[6] == 0.75,
+		str(external_avanti.sim.inputs))
+
+	var external_stik: Session = _new_aircraft_session(true, STIK_ID)
+	var valid_stik: Dictionary = _packet()
+	var stik_stage: Dictionary = external_stik.prepare_external_tick(valid_stik)
+	var stik_pending: Dictionary = external_stik._external_pending_packet.duplicate(true)
+	var stik_commands: Dictionary = external_stik.commands.duplicate(true)
+	var stik_inputs: PackedFloat64Array = external_stik.sim.inputs.duplicate()
+	var unsupported := valid_stik.duplicate(true)
+	unsupported.gear_down = true
+	unsupported.brake = 0.5
+	unsupported.flaps = 0.5
+	var unsupported_result: Dictionary = external_stik.prepare_external_tick(unsupported)
+	var unsupported_errors: Array = unsupported_result.get("errors", [])
+	var reports_all_unsupported_fields: bool = unsupported_errors.has("gear_down is unsupported by this aircraft") \
+		and unsupported_errors.has("flaps are unsupported by this aircraft") \
+		and unsupported_errors.has("brake is unsupported without retractable landing gear")
+	_check("Stik fixture has no retractable gear or flaps", not external_stik.gear_is_retractable()
+		and not external_stik.flaps_available())
+	_check("unsupported gear, flap, and brake reasons reject atomically without replacing the valid packet",
+		stik_stage.get("ok", false) and not unsupported_result.get("ok", true)
+		and reports_all_unsupported_fields
+		and external_stik._external_packet_ready and external_stik._external_pending_packet == stik_pending
+		and external_stik.commands == stik_commands and _same_array(external_stik.sim.inputs, stik_inputs),
+		str(unsupported_result))
+	_check("the valid Stik controls still advance after unsupported equipment is rejected",
+		external_stik.step_external_tick() and external_stik.sim.tick == 1,
+		str(external_stik.sim.inputs))
+	external_avanti.free()
+	external_stik.free()
+
+
+func _run_external_runway_first_tick() -> void:
+	var loaded_field: Dictionary = FieldLoader.load_from()
+	_check("default field loads for the Stik runway parity fixture", loaded_field.get("ok", false),
+		str(loaded_field.get("errors", [])))
+	if not loaded_field.get("ok", false):
+		return
+	var field: Dictionary = loaded_field.field
+	var entry: Dictionary = Catalog.entry(STIK_ID)
+	var manual: Session = Session.new()
+	manual.start_choice = Session.START_RUNWAY
+	manual.input_enabled = false
+	manual.setup(str(entry.get("data", "")), STIK_ID)
+	var external: Session = Session.new()
+	external.start_choice = Session.START_RUNWAY
+	external.input_enabled = false
+	external.setup(str(entry.get("data", "")), STIK_ID)
+	var manual_field_ok: bool = manual.set_field(field)
+	var external_field_ok: bool = external.set_field(field)
+	manual.reset()
+	external.reset()
+	var external_configured: bool = external.configure_external_driver()
+	_check("manual and external sessions build matching explicit Stik runway starts",
+		manual_field_ok and external_field_ok and external_configured
+		and manual.start_error.is_empty() and external.start_error.is_empty()
+		and manual.trace_meta().launch_choice == "runway" and external.trace_meta().launch_choice == "runway"
+		and manual.sim.tick == 0 and external.sim.tick == 0
+		and _same_array(manual.sim.state, external.sim.state)
+		and _same_array(manual.sim.aux, external.sim.aux)
+		and _same_array(manual.sim.inputs, external.sim.inputs),
+		"manual=%s external=%s config=%s" % [manual.start_error, external.start_error, str(external_configured)])
+	var packet := {roll = 0.0, pitch = 0.02, yaw = 0.0, throttle = 0.56}
+	var staged: Dictionary = external.prepare_external_tick(packet)
+	var manual_accepted: bool = _manual_tick(manual, packet)
+	var external_accepted: bool = staged.get("ok", false) and external.step_external_tick()
+	_check("manual and external Stik runway sessions both accept the first tick",
+		manual_accepted and external_accepted and manual.sim.tick == 1 and external.sim.tick == 1,
+		"stage=%s manual_tick=%s external_tick=%s" % [str(staged), str(manual_accepted), str(external_accepted)])
+	_check("external runway-start first tick matches manual state and session arrays",
+		_same_tick(manual, external))
+	manual.free()
+	external.free()
 
 
 func _damage_world() -> Dictionary:
@@ -78,6 +254,9 @@ func _damage_snapshot() -> Dictionary:
 
 
 func _initialize() -> void:
+	_run_avanti_external_actuator_parity()
+	_run_external_actuator_packet_atomicity()
+	_run_external_runway_first_tick()
 	var manual: Session = _new_session(false)
 	var external: Session = _new_session(true)
 	var packet := _packet()

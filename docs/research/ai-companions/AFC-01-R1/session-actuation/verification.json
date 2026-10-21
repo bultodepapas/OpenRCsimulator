@@ -1,0 +1,193 @@
+{
+  "format": "openrc-afc01-session-actuation-verification v1",
+  "step": "AFC-01-R1",
+  "status": "passed",
+  "scope": "Focused software-level parity of the external session adapter for aircraft actuators and one runway-start tick.",
+  "coverage": {
+    "current_check_count": 65,
+    "current_failure_count": 0,
+    "prior_session_baseline": {
+      "source": "../../AFC-00-06/checks/session-report.json",
+      "check_count": 42,
+      "failure_count": 0
+    },
+    "additional_runtime_checks": 23,
+    "fixtures": [
+      {
+        "aircraft_id": "sebart-avanti-s-a200-p100rx",
+        "checks": [
+          "ordinary and external accepted ticks match inputs, state, previous state, AUX, last loads, continuous state, modes, time, commands, and raw controls",
+          "gear extension and flap fraction advance from requested targets",
+          "omitting optional actuator fields on a later packet preserves gear, brake, and flap demands while all boundary fields still match"
+        ]
+      },
+      {
+        "aircraft_id": "sebart-avanti-s-a200-p100rx",
+        "checks": [
+          "out-of-range flap demand rejects without replacing a pending valid packet or mutating current inputs and commands",
+          "the preserved packet still executes with its original actuator values"
+        ]
+      },
+      {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "checks": [
+          "unsupported gear, flap, and brake demands each report their own rejection reason without replacing a pending valid packet",
+          "the original four-control packet still advances"
+        ]
+      },
+      {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "checks": [
+          "manual and external sessions create the same explicit runway start",
+          "the first accepted runway-start tick matches inputs, state, previous state, AUX, last loads, continuous state, modes, time, commands, and raw controls"
+        ]
+      }
+    ],
+    "limitations": [
+      "This is deterministic software test coverage, not flight or physical validation.",
+      "Failure-onset and rollback parity is tracked separately.",
+      "Nonterminal scenery and ground-contact behavior is not exercised through the external adapter by this test."
+    ]
+  },
+  "run": {
+    "label": "AFC20-companions_session",
+    "started_utc": "2026-10-21T04:59:53.521457+00:00",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "target_project": "D:\\OpenRCsimulator-AFC-work\\evidence\\companions\\AFC-20-R1\\mirror\\app",
+    "test_source": "app/tests/test_companions_session.gd",
+    "checked_runner": "tools/godot/run_checked.py",
+    "timeout_seconds": 300.0,
+    "required_text": [
+      "0 failed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "runner_ok": true,
+    "runner_diagnostics": {
+      "errors": 0,
+      "warnings": 0
+    },
+    "printed_aircraft_data_warnings": [
+      "Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed",
+      "inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value"
+    ],
+    "artifacts": {
+      "report": "checks/current-65/run_checked-report.json",
+      "report_sha256": "1ddf353bbae0086c5aa5b7824d0bf660e7df64b4efae5fdeab7c6c14d9232d7a",
+      "engine_log": "checks/current-65/engine.log",
+      "engine_log_sha256": "5098337654fc5e2c2e94ca3cc2c9968a0c094a41fe599c8a54e2266818326c03"
+    }
+  },
+  "prior_run": {
+    "label": "AFC01-session-actuation",
+    "started_utc": "2026-10-21T04:28:09.797409+00:00",
+    "status": "passed",
+    "check_count": 65,
+    "failure_count": 0,
+    "source": {
+      "path": "sources/prior-65/test_companions_session.gd",
+      "sha256": "080728da2990f0d43a303a352640d0b545a9fc10b4fbdee7d922d5fe0650e634"
+    },
+    "artifacts": {
+      "report": "checks/prior-65/run_checked-report.json",
+      "report_sha256": "ed048be547e978653b5eea78caa2d26bf8a6b51bed509528b7a1632712d0a184",
+      "engine_log": "checks/prior-65/engine.log",
+      "engine_log_sha256": "5098337654fc5e2c2e94ca3cc2c9968a0c094a41fe599c8a54e2266818326c03"
+    },
+    "note": "Retained unchanged before strengthening _same_tick to compare continuous state, discrete modes, and raw controls."
+  },
+  "source_identity": {
+    "tested_source_copy": {
+      "path": "sources/test_companions_session.gd",
+      "sha256": "a45381bfa359a292460ef630f749eaad967458a9f03b656ff61aa956bc52cc0c"
+    },
+    "target_project_files": [
+      {
+        "path": "project.godot",
+        "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28",
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "sim/flight_session.gd",
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "also_matches_workspace_source": true,
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "sim/simulation.gd",
+        "sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+        "also_matches_workspace_source": true,
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "app_state/aircraft_catalog.gd",
+        "sha256": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e",
+        "also_matches_workspace_source": true,
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "data/field_loader.gd",
+        "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234",
+        "workspace_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+        "also_matches_workspace_source": false,
+        "content_matches_workspace_after_newline_normalization": true,
+        "note": "The D project loader hash identifies the version used for the default runway-field fixture; its text matches the current workspace copy after newline normalization.",
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "data/aircraft/sebart_avanti_s_a200.json",
+        "sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
+        "also_matches_workspace_source": true,
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "data/aircraft/jensen_ugly_stik_60.json",
+        "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "also_matches_workspace_source": true,
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "data/fields/default.json",
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "matches_latest_target_project": true
+      },
+      {
+        "path": "data/ground/surface_friction.json",
+        "sha256": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+        "matches_latest_target_project": true
+      }
+    ],
+    "toolchain": [
+      {
+        "path": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+      },
+      {
+        "path": "tools/godot/run_checked.py",
+        "sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+      }
+    ],
+    "workspace_test_source": {
+      "path": "app/tests/test_companions_session.gd",
+      "sha256": "a45381bfa359a292460ef630f749eaad967458a9f03b656ff61aa956bc52cc0c"
+    }
+  },
+  "intermediate_prior_run": {
+    "label": "AFC01-session-actuation-boundary-v2",
+    "started_utc": "2026-10-21T04:37:07.236962+00:00",
+    "status": "passed",
+    "check_count": 65,
+    "failure_count": 0,
+    "source": {
+      "path": "sources/pre-reason-coverage-65/test_companions_session.gd",
+      "sha256": "b8efb496a159a1e4dd1fc4946c2e8dd8b66ea84372a59497bf59df2942affa4e"
+    },
+    "artifacts": {
+      "report": "checks/pre-reason-coverage-65/run_checked-report.json",
+      "report_sha256": "a520b6c8daa5caab4549bbce59a4ec3e68f4a3c09ab84e8b573cccb1ca51352c",
+      "engine_log": "checks/pre-reason-coverage-65/engine.log",
+      "engine_log_sha256": "5098337654fc5e2c2e94ca3cc2c9968a0c094a41fe599c8a54e2266818326c03"
+    },
+    "note": "Preserves the 65-check run after expanding byte-exact tick comparisons but before requiring the unsupported Stik packet error list to name gear, flap, and brake independently."
+  }
+}

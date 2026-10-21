@@ -1,0 +1,166 @@
+{
+  "format": "openrc-afc-20-r1-current-tree-parser-gate v1",
+  "date": "2026-10-21",
+  "status": "passed",
+  "scope": {
+    "kind": "Current native Windows working-tree GDScript parser gate",
+    "test_workflow": "app/test.sh full parse check: every script loop only",
+    "source_tree": "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "source_snapshot": "All 1,207 app/**/*.gd scripts, excluding app/.godot/** and app/captures/**.",
+    "engine_command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--check-only",
+      "--script",
+      "res://<relative-script-path>"
+    ],
+    "runner": "tools/godot/run_checked.py, one complete checked report per script."
+  },
+  "parser_result": {
+    "expected_scripts": 1207,
+    "complete_checked_reports": 1207,
+    "unique_source_paths": 1207,
+    "unique_runner_reports": 1207,
+    "failed_scripts": 0,
+    "engine_errors": 0,
+    "engine_warnings": 0,
+    "source_snapshot_unchanged": true,
+    "started_utc": "2026-10-21T05:22:48.307389+00:00",
+    "completed_utc": "2026-10-21T05:40:47.794080+00:00"
+  },
+  "source_identity": {
+    "manifest": "source-manifest.json",
+    "manifest_sha256": "cf7de7e308d9f7a0d3c05969bec3579d13f40366ea5251b2ac00399d750e2d82",
+    "external_before_manifest_sha256": "cf7de7e308d9f7a0d3c05969bec3579d13f40366ea5251b2ac00399d750e2d82",
+    "external_after_manifest_sha256": "cf7de7e308d9f7a0d3c05969bec3579d13f40366ea5251b2ac00399d750e2d82",
+    "all_app_gd_source_hashes_match_before_and_after": true,
+    "selected_sources": {
+      "app/main.gd": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217",
+      "app/render/crash/director.gd": "6d44332895d4030699a54c6cac1b7a449d4f7df83ca9fa9873d855737177f472",
+      "app/render/crash/presentation_context.gd": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb",
+      "app/tests/test_water_director.gd": "3dbd7661a9dac008e0c9f66eef40c8f319f4e4dc4b92a3a1023f7ed6ac907d58",
+      "app/ai/companions/agent.gd": "23b118b5fab2783a1f4aaae09f6a720f36eef1cc6a6f3992e2dd77e1722140b9",
+      "app/ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+      "app/tests/test_companions_observation.gd": "d7b26b7613d15bd46c6d2a0fc4bc62229205509afdcf290331ff8c3d84f2540c"
+    }
+  },
+  "toolchain": {
+    "godot_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "runner_path": "tools/godot/run_checked.py",
+    "runner_sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+    "parser_loop_path": "app/test.sh:239-242",
+    "parser_loop_sha256": "10bf3b97bef6080c3c87b6e51eeaf0dfc7ecae5724c27665dbce39cd0b54c473"
+  },
+  "retained_external_evidence": {
+    "directory": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021",
+    "parser_summary": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\parser-results.json",
+      "sha256": "ab6def7d881390d66fc11ec2dfe6aeb58e085cf1af457ceb9ba1d697e589d38e"
+    },
+    "per_script_results": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\parser-results-rows.json",
+      "sha256": "28e9bf97c715c633713f18a497c1f237e8157fc384430b633a5d964ea49e6818"
+    },
+    "runner_reports_and_logs": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\reports",
+      "count": 1207
+    },
+    "continuation_receipt": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\continuation-results.json",
+      "sha256": "d1eec4e8bfffa745dc573a07101e8b0545a91023211097fa11a357cb9908cc82"
+    },
+    "toolchain_manifest": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\toolchain.json",
+      "sha256": "4edf62fc75faa8894eacc21ee4c1c05dee4f5d8fd566ad8e70837896c0ffac17"
+    },
+    "incomplete_attempt_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "run_partitioning": {
+    "first_phase_completed_reports": 640,
+    "continuation_worker_count": 4,
+    "resumed_scripts": 567,
+    "completed_script_paths_repeated": 0,
+    "interrupted_attempt": {
+      "index": 641,
+      "source": "app/tests/test_envelope.gd",
+      "status": "The in-flight checked runner at index 641 was terminated as part of the parser dispatcher tree switch. Its zero-byte engine log is retained without a report and is not counted. Index 641 then completed once in the four-worker continuation; no index with an earlier complete report was rerun.",
+      "partial_attempt_artifacts": [
+        {
+          "attempt_dir": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\reports\\0641-test_envelope\\app-parse-0641-e_hnfp7w",
+          "final_report_present": false,
+          "files": [
+            {
+              "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\reports\\0641-test_envelope\\app-parse-0641-e_hnfp7w\\engine.log",
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "bytes": 0
+            }
+          ]
+        }
+      ],
+      "successful_report": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\crash-context-root-20261021\\parser-full-current-20261021\\reports\\0641-test_envelope\\app-parse-0641-resume-6h0o8f7u\\report.json",
+        "sha256": "1994df13448030148b5265ddc16ada867deb3f3da23d0709b8bca527eea09f54"
+      }
+    }
+  },
+  "independent_report_audit": {
+    "reviewer": "root",
+    "result": "Passed independently.",
+    "checks": [
+      "Current app script set equals the 1,207 unique result paths.",
+      "All 1,207 runner reports are unique, complete, ok, exit 0, with zero engine errors and warnings.",
+      "All 3,621 source/report/log SHA bindings match.",
+      "Each checked-runner command contains the actual --check-only --script path corresponding to its source row.",
+      "Before and after source manifests are byte-identical."
+    ]
+  },
+  "integration_api_audit": {
+    "crash_presentation_context": {
+      "result": "No confirmed API regression found.",
+      "production_callsite": "app/main.gd:790-810 constructs and passes PresentationContext.",
+      "fixture_callsite": "app/tests/test_water_director.gd builds the explicit context and exercises configure refusal/acceptance.",
+      "audit_note": "No other direct CrashDirector configure caller was found in app/ or research GDScript. Older scene-argument configuration matches belong to the separate scenery-damage presentation class."
+    },
+    "companion_observation_helper": {
+      "result": "No confirmed API regression found.",
+      "production_callsite": "app/ai/companions/agent.gd:128-134 uses the helper inside Agent.observation().",
+      "contract": "Existing observation field names remain: id, slot, state, airspeed_m_s, wind_ned, ground_clearance_m, trim, turbulence_rms_m_s, is_player.",
+      "related_runtime_receipt": {
+        "path": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/verification.json",
+        "sha256": "c0100685c65a4055584b6b6d076f9c41aa6027e7ae5b094797297c969563bd35",
+        "status": "pass",
+        "focused_checks": 21,
+        "authoritative_air_compute_cases": 521,
+        "bitwise_matches": 521
+      }
+    },
+    "current_main_companion_shell_receipt": {
+      "path": "docs/research/ai-companions/AFC-00-R5/checks/main-shell-20261021/verification.json",
+      "sha256": "14b4ea0fc840871cdbe36962d16c07c51789aacd954c173a37d3e81011a43af6",
+      "status": "pass",
+      "checks": 49,
+      "failed": 0,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 3
+      },
+      "scope": "Separate actual Main/Home flight, Pause, restart, remove and fleet-capture integration proof; not merged into the AFC-20 suite count."
+    }
+  },
+  "related_receipt_preserved": {
+    "path": "docs/research/ai-companions/AFC-20-R1/verification.json",
+    "sha256": "037ab9a532a1babfe4dcc3a10d4c8a409371d045e829f5c94544afda7bf4df8b",
+    "note": "The prior 385-check AFC-20-R1 receipt is unchanged and remains authoritative for its focused suite."
+  },
+  "scope_limits": [
+    "No full application suite or app/test.sh integration job was run here.",
+    "No fresh-checkout parser/import test or package/export qualification is established.",
+    "No timing, physical-flight, or physical-accuracy claim is established.",
+    "The current-tree parse-only result supplements existing context and observation integration receipts; it does not merge or replace them."
+  ]
+}

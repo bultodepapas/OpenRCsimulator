@@ -1,0 +1,1435 @@
+{
+  "format": "afc-04-r6-prediction-error-receipt-v1",
+  "classification": "single deterministic fixture empirical measurement; research only; no physical validation or flight qualification",
+  "scope": {
+    "question": "Measure current reachable-bank nominal forecast residual against the actual fixed-step FlightSession path while the exact bank target remains active and unchanged.",
+    "flight_duration_s": 20,
+    "physics_hz": 240,
+    "planning_hz": 60,
+    "forecast_step_s": 0.25,
+    "forecast_horizon_s": 8.0,
+    "fixture": "seed-20261020-crossing-right",
+    "weather": "calm",
+    "field_id": "default",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "player_context": "one trim-neutral coupled player session",
+    "path_feasibility_assessed": false,
+    "path_error_m_claim": null
+  },
+  "source_identity": {
+    "clone": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021",
+    "clone_head": "63d4c479bf1e1baf5054b17f2c61e3e57c5b9fdd",
+    "pilot_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "trace_candidate_sha256": "6f9c6b76504a019b9e21c12209a63e6af8c609c6812983d087b7c88956a7de9e",
+    "circuit_base_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "profile_solver_source_set_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "profile_solver_source_set_file_count": 133,
+    "orfl_runtime_solver_identity_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+    "solver_identity_note": "The profile pins a normalized 133-source manifest hash; the ORFL runtime solver identity is a separate runtime-derived hash. They are not interchangeable.",
+    "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "aircraft_semantic_sha256": "6d468e26a1b0d41fb8f4e9d7eb6eb80e80fb909b4f4ce1f536d1a222aaac4611",
+    "collision_world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "world_match": true,
+    "source_bindings": {
+      "production_pilot": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\ai\\companions\\pilot.gd",
+        "sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+        "bytes": 24248
+      },
+      "circuit_base": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\ai\\companions\\circuit_controller.gd",
+        "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+        "bytes": 21717
+      },
+      "companion_profile": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\data\\ai\\companions\\aircraft\\jensen-das-ugly-stik-60.json",
+        "sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+        "bytes": 1466
+      },
+      "aircraft_input": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\data\\aircraft\\jensen_ugly_stik_60.json",
+        "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "bytes": 60211
+      },
+      "default_field": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\data\\fields\\default.json",
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "bytes": 158788
+      },
+      "lake_field": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\data\\fields\\lake.json",
+        "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+        "bytes": 1641
+      },
+      "mountains_field": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\data\\fields\\mountains.json",
+        "sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+        "bytes": 93377
+      },
+      "project": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\project.godot",
+        "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28",
+        "bytes": 2198
+      },
+      "rigid_body": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\physics\\rigid_body.gd",
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "bytes": 5582
+      },
+      "math3d": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\physics\\math3d.gd",
+        "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "bytes": 5005
+      },
+      "aircraft_data_loader": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\physics\\aircraft_data.gd",
+        "sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd",
+        "bytes": 141590
+      },
+      "flight_session": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\sim\\flight_session.gd",
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "bytes": 235678
+      },
+      "flight_log": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\sim\\flight_log.gd",
+        "sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+        "bytes": 12285
+      },
+      "flight_log_cli": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app\\tools\\flight_log_cli.gd",
+        "sha256": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432",
+        "bytes": 18513
+      },
+      "trace_candidate": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\predictor_flight_trace_candidate.gd",
+        "sha256": "6f9c6b76504a019b9e21c12209a63e6af8c609c6812983d087b7c88956a7de9e",
+        "bytes": 28545
+      },
+      "flight_probe": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\prediction_error_flight_probe.gd",
+        "sha256": "bfef156e96f5f9a38201ba1a3c4434d46443a601fc474029021c6982f88ba7b6",
+        "bytes": 50783
+      },
+      "analyzer": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\analyze_prediction_error.py",
+        "sha256": "ea26dca6c52fecb0403330789e3ceabe98bcdeada7c97fea094124aa06272e67",
+        "bytes": 32491
+      },
+      "checked_runner": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\tools\\godot\\run_checked.py",
+        "sha256": "7335de7267871da28c6d2cd8d49e589d0de0600ab6677f3700051adf9dd35f88",
+        "bytes": 20229
+      },
+      "godot_engine": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+        "version": "4.7.2-stable official"
+      }
+    },
+    "clone_worktree_binding_note": "The bound source files are exact working-tree bytes. Clone HEAD is provenance context only and does not replace the individual file hashes; the promoted pilot/profile were dirty relative to that HEAD."
+  },
+  "flight_pair": {
+    "baseline_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\report.json",
+    "baseline_report_sha256": "26c56765990d31bb883d87feb1375912944d843d910237d7e34ba70138357f42",
+    "trace_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\report.json",
+    "trace_report_sha256": "a4b75947abdbaf579e357b3b9d0b209f4b85afe358ad6c87803ff9e0c3dca588",
+    "baseline_pilot_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "trace_candidate_sha256": "6f9c6b76504a019b9e21c12209a63e6af8c609c6812983d087b7c88956a7de9e",
+    "state_command_sha256_baseline": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+    "state_command_sha256_trace": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+    "paired_state_and_command_fingerprint_exact": true,
+    "ticks_each": 4800,
+    "complete_each": true,
+    "planner_samples_each": 1200,
+    "avoidance_samples_each": 1186,
+    "minimum_player_separation_m_each": 59.8198811976987,
+    "separation_gate_passed_each": true,
+    "exact_replay_rows_each": 4801,
+    "exact_replays": [
+      {
+        "stream": "baseline-ai",
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.json",
+        "report_sha256": "9de6c688e58e9a3b796d2df0073ee297fb4471d230e55aef7b6a2a87253e9325",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.csv",
+        "csv_sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 4801,
+        "mode": "exact",
+        "status": "ok",
+        "source_sha256": "73c5591c0c829f0a394305668518ccdfcc125c032c7173ead5241b55a223d806"
+      },
+      {
+        "stream": "baseline-player",
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.json",
+        "report_sha256": "648263849e1306971bbc669d38ec7b8da482a3f9f4e9824b1fb80cbf22911bee",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.csv",
+        "csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 4801,
+        "mode": "exact",
+        "status": "ok",
+        "source_sha256": "727d72de3dcee9bcfbf0b4b777aa0499e1c5deb4cbd1df3e2921a00c349e7214"
+      },
+      {
+        "stream": "trace-ai",
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.json",
+        "report_sha256": "46a24e9c75ff8556247f726ce058e4ff76994c4b9855346d26a6da951103f0b3",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.csv",
+        "csv_sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 4801,
+        "mode": "exact",
+        "status": "ok",
+        "source_sha256": "cfa303daaf1e6a2345089fc09556fa4e14346f48ca427065ad3e476df5e275c2"
+      },
+      {
+        "stream": "trace-player",
+        "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.json",
+        "report_sha256": "2056b1935307dc9a171d75cfb06ab31f11ab9017e2b9fad641c031a643097eb1",
+        "csv_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.csv",
+        "csv_sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319",
+        "complete": true,
+        "solver_changed": false,
+        "rows": 4801,
+        "mode": "exact",
+        "status": "ok",
+        "source_sha256": "a3c735aed9075ce27e7d7cc0d4c85f4bb78db568e7c8ddf21a7253508746980d"
+      }
+    ],
+    "paired_replay_csv_byte_identity": {
+      "ai_baseline_equals_trace": true,
+      "player_baseline_equals_trace": true
+    },
+    "orfl_streams_byte_identical_across_pair": false,
+    "trace_candidate_change": "Research-only copy of the production pilot with bounded reachable-bank state/forecast instrumentation. No scoring, selection, hold, or response logic was intentionally changed."
+  },
+  "event_accounting": {
+    "possible_planner_ticks": 1200,
+    "target_state_events": 1200,
+    "forecast_origins_emitted": 1186,
+    "combined_events": 2386,
+    "combined_event_cap": 2400,
+    "combined_event_cap_reached": false,
+    "forecast_stride_ticks": 4,
+    "forecast_origins_with_positive_matched_horizon": 1130,
+    "same_target_replans_before_next_0_25s_sample": 1182,
+    "full_8s_future_state_data_origins": 721,
+    "full_8s_target_compatible_origins": 326,
+    "maximum_observed_matching_duration_s": 8.0,
+    "transition_extraction_source": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\traced-crossing-right-20s-i2qxhlpq\\engine.log",
+    "transitions": [
+      {
+        "tick": 0,
+        "kind": "initial_target",
+        "target_active": true,
+        "bank_target_deg": -5.0,
+        "has_held_maneuver": true,
+        "held_bank_deg": -5.0,
+        "clear_since_tick": -1,
+        "hold_until_tick": 480
+      },
+      {
+        "tick": 3220,
+        "kind": "release",
+        "target_active": false,
+        "bank_target_deg": null,
+        "has_held_maneuver": false,
+        "held_bank_deg": null,
+        "clear_since_tick": -1,
+        "hold_until_tick": -1
+      },
+      {
+        "tick": 3276,
+        "kind": "activation",
+        "target_active": true,
+        "bank_target_deg": 10.0,
+        "has_held_maneuver": true,
+        "held_bank_deg": 10.0,
+        "clear_since_tick": -1,
+        "hold_until_tick": 3756
+      },
+      {
+        "tick": 3856,
+        "kind": "bank_target_change",
+        "target_active": true,
+        "bank_target_deg": 5.0,
+        "has_held_maneuver": true,
+        "held_bank_deg": 5.0,
+        "clear_since_tick": -1,
+        "hold_until_tick": 4336
+      },
+      {
+        "tick": 4708,
+        "kind": "bank_target_change",
+        "target_active": true,
+        "bank_target_deg": 0.0,
+        "has_held_maneuver": true,
+        "held_bank_deg": 0.0,
+        "clear_since_tick": -1,
+        "hold_until_tick": 5188
+      }
+    ]
+  },
+  "command_semantics": {
+    "bank_target": "the internal _selected_bank_target_rad passed to the roll response; it is an angle target in radians, not measured aircraft bank",
+    "bank_target_formula_recomputed_from_orfl_state": {
+      "checked_active_target_commands": 1186,
+      "formula_mismatch_count": 0,
+      "formula_mismatches": []
+    },
+    "orfl_mapping": "each planner packet's returned roll equals ORFL stick_roll at the following 1-4 physics sample rows",
+    "returned_roll_mismatches": 0,
+    "returned_roll_to_orfl_comparisons": 4800,
+    "roll_command": "normalized packet.roll control returned by Pilot.command; computed as clamp(1.8 * (bank_target_rad - current_bank_rad) - 0.35 * body_p_radps, -1, 1), not a bank angle",
+    "selected_bank_target_match_failures": 0
+  },
+  "prediction_error": {
+    "horizons": [
+      {
+        "horizon_s": 0.25,
+        "sample_count": 1130,
+        "residual_3d_m": {
+          "p95": 0.05677392363594258,
+          "max": 0.0595846968750914
+        },
+        "horizontal_ne_m": {
+          "p95": 0.0567728117635653,
+          "max": 0.059584696295877614
+        },
+        "absolute_down_m": {
+          "p95": 0.0012946430523321324,
+          "max": 0.006484238928948116
+        }
+      },
+      {
+        "horizon_s": 0.5,
+        "sample_count": 1076,
+        "residual_3d_m": {
+          "p95": 0.11624853779678757,
+          "max": 0.13777283139056856
+        },
+        "horizontal_ne_m": {
+          "p95": 0.11622901656081726,
+          "max": 0.13773447257230995
+        },
+        "absolute_down_m": {
+          "p95": 0.004171833592160112,
+          "max": 0.017271204225131953
+        }
+      },
+      {
+        "horizon_s": 0.75,
+        "sample_count": 1031,
+        "residual_3d_m": {
+          "p95": 0.17736540141576634,
+          "max": 0.25086025994357386
+        },
+        "horizontal_ne_m": {
+          "p95": 0.17735785989498537,
+          "max": 0.2507043062127757
+        },
+        "absolute_down_m": {
+          "p95": 0.006186630932294435,
+          "max": 0.023631811785385537
+        }
+      },
+      {
+        "horizon_s": 1.0,
+        "sample_count": 986,
+        "residual_3d_m": {
+          "p95": 0.2395373715428486,
+          "max": 0.4108052738212757
+        },
+        "horizontal_ne_m": {
+          "p95": 0.23953305215413406,
+          "max": 0.41064550327188565
+        },
+        "absolute_down_m": {
+          "p95": 0.008852264112167774,
+          "max": 0.02987966515711804
+        }
+      },
+      {
+        "horizon_s": 1.25,
+        "sample_count": 941,
+        "residual_3d_m": {
+          "p95": 0.30120400606858894,
+          "max": 0.6059215976433951
+        },
+        "horizontal_ne_m": {
+          "p95": 0.30118905972430166,
+          "max": 0.6058124191598343
+        },
+        "absolute_down_m": {
+          "p95": 0.009997583425885637,
+          "max": 0.036135049882069836
+        }
+      },
+      {
+        "horizon_s": 1.5,
+        "sample_count": 896,
+        "residual_3d_m": {
+          "p95": 0.37705276835625723,
+          "max": 0.8193706644458815
+        },
+        "horizontal_ne_m": {
+          "p95": 0.37539890068753545,
+          "max": 0.8192812876975445
+        },
+        "absolute_down_m": {
+          "p95": 0.013037089149595005,
+          "max": 0.04065514043541896
+        }
+      },
+      {
+        "horizon_s": 1.75,
+        "sample_count": 851,
+        "residual_3d_m": {
+          "p95": 0.4902030332010081,
+          "max": 1.0333213999026187
+        },
+        "horizontal_ne_m": {
+          "p95": 0.4901987246780976,
+          "max": 1.033249126825403
+        },
+        "absolute_down_m": {
+          "p95": 0.011566637001099167,
+          "max": 0.04579164811425329
+        }
+      },
+      {
+        "horizon_s": 2.0,
+        "sample_count": 806,
+        "residual_3d_m": {
+          "p95": 0.6141780371261164,
+          "max": 1.2466919049680212
+        },
+        "horizontal_ne_m": {
+          "p95": 0.6141708369249858,
+          "max": 1.2466289902924041
+        },
+        "absolute_down_m": {
+          "p95": 0.008481612764162705,
+          "max": 0.05134259945403841
+        }
+      },
+      {
+        "horizon_s": 2.25,
+        "sample_count": 761,
+        "residual_3d_m": {
+          "p95": 0.7454210637998252,
+          "max": 1.4600094107400203
+        },
+        "horizontal_ne_m": {
+          "p95": 0.7454184682788084,
+          "max": 1.4599513128282346
+        },
+        "absolute_down_m": {
+          "p95": 0.007057037712705494,
+          "max": 0.0559217050662113
+        }
+      },
+      {
+        "horizon_s": 2.5,
+        "sample_count": 720,
+        "residual_3d_m": {
+          "p95": 0.8668565048873847,
+          "max": 1.6735758073449487
+        },
+        "horizontal_ne_m": {
+          "p95": 0.8668505128288864,
+          "max": 1.6735231052711266
+        },
+        "absolute_down_m": {
+          "p95": 0.007029199166575841,
+          "max": 0.017096667806313803
+        }
+      },
+      {
+        "horizon_s": 2.75,
+        "sample_count": 690,
+        "residual_3d_m": {
+          "p95": 1.0025001528089215,
+          "max": 1.8874870635098973
+        },
+        "horizontal_ne_m": {
+          "p95": 1.0024889742151082,
+          "max": 1.8874380517123093
+        },
+        "absolute_down_m": {
+          "p95": 0.007895761892393337,
+          "max": 0.01749720536100341
+        }
+      },
+      {
+        "horizon_s": 3.0,
+        "sample_count": 660,
+        "residual_3d_m": {
+          "p95": 1.1455255407945886,
+          "max": 2.1018035039855985
+        },
+        "horizontal_ne_m": {
+          "p95": 1.1455079834685629,
+          "max": 2.101756896880422
+        },
+        "absolute_down_m": {
+          "p95": 0.008559505466399735,
+          "max": 0.017820182910654125
+        }
+      },
+      {
+        "horizon_s": 3.25,
+        "sample_count": 630,
+        "residual_3d_m": {
+          "p95": 0.9421757177184444,
+          "max": 2.3165795233945894
+        },
+        "horizontal_ne_m": {
+          "p95": 0.9421615917816282,
+          "max": 2.3165355066654927
+        },
+        "absolute_down_m": {
+          "p95": 0.008810581240404139,
+          "max": 0.018106156572777365
+        }
+      },
+      {
+        "horizon_s": 3.5,
+        "sample_count": 600,
+        "residual_3d_m": {
+          "p95": 0.5514237284425964,
+          "max": 2.531820253965164
+        },
+        "horizontal_ne_m": {
+          "p95": 0.5513699766698409,
+          "max": 2.531778194492751
+        },
+        "absolute_down_m": {
+          "p95": 0.008069789775369422,
+          "max": 0.01571944293158367
+        }
+      },
+      {
+        "horizon_s": 3.75,
+        "sample_count": 581,
+        "residual_3d_m": {
+          "p95": 0.5293626480253589,
+          "max": 1.8618603492587729
+        },
+        "horizontal_ne_m": {
+          "p95": 0.5292807899652043,
+          "max": 1.8618385078805397
+        },
+        "absolute_down_m": {
+          "p95": 0.008420959501741265,
+          "max": 0.01084255047747007
+        }
+      },
+      {
+        "horizon_s": 4.0,
+        "sample_count": 566,
+        "residual_3d_m": {
+          "p95": 0.6161882352032452,
+          "max": 2.0308949256468845
+        },
+        "horizontal_ne_m": {
+          "p95": 0.6161127099541376,
+          "max": 2.0308721116771062
+        },
+        "absolute_down_m": {
+          "p95": 0.009039271050287567,
+          "max": 0.011406732526040742
+        }
+      },
+      {
+        "horizon_s": 4.25,
+        "sample_count": 551,
+        "residual_3d_m": {
+          "p95": 0.7093447899612382,
+          "max": 2.2022681918368856
+        },
+        "horizontal_ne_m": {
+          "p95": 0.7092748088366445,
+          "max": 2.202244467175991
+        },
+        "absolute_down_m": {
+          "p95": 0.009703863601348672,
+          "max": 0.011962292746240166
+        }
+      },
+      {
+        "horizon_s": 4.5,
+        "sample_count": 536,
+        "residual_3d_m": {
+          "p95": 0.8089356884586042,
+          "max": 2.3759736847006847
+        },
+        "horizontal_ne_m": {
+          "p95": 0.8088705593545983,
+          "max": 2.375949166729959
+        },
+        "absolute_down_m": {
+          "p95": 0.010353241143183922,
+          "max": 0.01249529286709361
+        }
+      },
+      {
+        "horizon_s": 4.75,
+        "sample_count": 521,
+        "residual_3d_m": {
+          "p95": 0.9150686379467573,
+          "max": 2.552001677070595
+        },
+        "horizontal_ne_m": {
+          "p95": 0.9150079493765539,
+          "max": 2.551976421976226
+        },
+        "absolute_down_m": {
+          "p95": 0.010896735816693592,
+          "max": 0.013009581444038076
+        }
+      },
+      {
+        "horizon_s": 5.0,
+        "sample_count": 506,
+        "residual_3d_m": {
+          "p95": 1.0281932178054987,
+          "max": 2.730343013012605
+        },
+        "horizontal_ne_m": {
+          "p95": 1.0281364028598252,
+          "max": 2.730317084127489
+        },
+        "absolute_down_m": {
+          "p95": 0.011499808884602558,
+          "max": 0.013514515853181308
+        }
+      },
+      {
+        "horizon_s": 5.25,
+        "sample_count": 491,
+        "residual_3d_m": {
+          "p95": 1.1481788079761461,
+          "max": 2.9109880971413236
+        },
+        "horizontal_ne_m": {
+          "p95": 1.1481254198010171,
+          "max": 2.9109616036048114
+        },
+        "absolute_down_m": {
+          "p95": 0.012101823304078607,
+          "max": 0.013998202062118992
+        }
+      },
+      {
+        "horizon_s": 5.5,
+        "sample_count": 476,
+        "residual_3d_m": {
+          "p95": 1.2751630684999604,
+          "max": 3.0939251212848013
+        },
+        "horizontal_ne_m": {
+          "p95": 1.2751128382856267,
+          "max": 3.0938981031711705
+        },
+        "absolute_down_m": {
+          "p95": 0.012632538369269142,
+          "max": 0.014468749738490772
+        }
+      },
+      {
+        "horizon_s": 5.75,
+        "sample_count": 461,
+        "residual_3d_m": {
+          "p95": 1.4092876748348457,
+          "max": 3.279143840919958
+        },
+        "horizontal_ne_m": {
+          "p95": 1.4092402943796296,
+          "max": 3.2791163626422866
+        },
+        "absolute_down_m": {
+          "p95": 0.013152358257457308,
+          "max": 0.014929788452327841
+        }
+      },
+      {
+        "horizon_s": 6.0,
+        "sample_count": 446,
+        "residual_3d_m": {
+          "p95": 1.5512338266329184,
+          "max": 3.4666330292337184
+        },
+        "horizontal_ne_m": {
+          "p95": 1.5511888652947665,
+          "max": 3.4666051683290164
+        },
+        "absolute_down_m": {
+          "p95": 0.013697225021859438,
+          "max": 0.015372136223241739
+        }
+      },
+      {
+        "horizon_s": 6.25,
+        "sample_count": 431,
+        "residual_3d_m": {
+          "p95": 1.7007679576216481,
+          "max": 3.656380266971095
+        },
+        "horizontal_ne_m": {
+          "p95": 1.700725212655647,
+          "max": 3.656352043512727
+        },
+        "absolute_down_m": {
+          "p95": 0.014201426970746667,
+          "max": 0.015803864110637278
+        }
+      },
+      {
+        "horizon_s": 6.5,
+        "sample_count": 416,
+        "residual_3d_m": {
+          "p95": 1.8580746355430418,
+          "max": 3.84837479143602
+        },
+        "horizontal_ne_m": {
+          "p95": 1.8580338648499182,
+          "max": 3.8483462691482306
+        },
+        "absolute_down_m": {
+          "p95": 0.014675103001318135,
+          "max": 0.016224625297610373
+        }
+      },
+      {
+        "horizon_s": 6.75,
+        "sample_count": 401,
+        "residual_3d_m": {
+          "p95": 2.0233468479393233,
+          "max": 4.042604144991472
+        },
+        "horizontal_ne_m": {
+          "p95": 2.0233078244234752,
+          "max": 4.04257537281728
+        },
+        "absolute_down_m": {
+          "p95": 0.015202793032820239,
+          "max": 0.016631527665026624
+        }
+      },
+      {
+        "horizon_s": 7.0,
+        "sample_count": 386,
+        "residual_3d_m": {
+          "p95": 2.1976100269684014,
+          "max": 4.23905585144936
+        },
+        "horizontal_ne_m": {
+          "p95": 2.1975724676650206,
+          "max": 4.239026856709233
+        },
+        "absolute_down_m": {
+          "p95": 0.015628634921874607,
+          "max": 0.017024559019695573
+        }
+      },
+      {
+        "horizon_s": 7.25,
+        "sample_count": 371,
+        "residual_3d_m": {
+          "p95": 2.3804692186261915,
+          "max": 4.43771781126485
+        },
+        "horizontal_ne_m": {
+          "p95": 2.3804329502136095,
+          "max": 4.437688633029818
+        },
+        "absolute_down_m": {
+          "p95": 0.01605571416818563,
+          "max": 0.01740630194132109
+        }
+      },
+      {
+        "horizon_s": 7.5,
+        "sample_count": 356,
+        "residual_3d_m": {
+          "p95": 2.572180470027334,
+          "max": 4.638577383471702
+        },
+        "horizontal_ne_m": {
+          "p95": 2.572145328337853,
+          "max": 4.638548065062955
+        },
+        "absolute_down_m": {
+          "p95": 0.01645529436360782,
+          "max": 0.017780254742220336
+        }
+      },
+      {
+        "horizon_s": 7.75,
+        "sample_count": 341,
+        "residual_3d_m": {
+          "p95": 2.7730104931877886,
+          "max": 4.841621556412019
+        },
+        "horizontal_ne_m": {
+          "p95": 2.77297631384446,
+          "max": 4.841592135486312
+        },
+        "absolute_down_m": {
+          "p95": 0.01686394394256041,
+          "max": 0.01814277001066955
+        }
+      },
+      {
+        "horizon_s": 8.0,
+        "sample_count": 326,
+        "residual_3d_m": {
+          "p95": 2.9844798896576634,
+          "max": 5.046837014109731
+        },
+        "horizontal_ne_m": {
+          "p95": 2.9844464882686195,
+          "max": 5.046807510763948
+        },
+        "absolute_down_m": {
+          "p95": 0.017253230221562887,
+          "max": 0.01849551721588938
+        }
+      }
+    ],
+    "all_matched_3d_m": {
+      "max_m": 5.046837014109731,
+      "p50_m": 0.22147869087538605,
+      "p95_m": 0.6876386637238535,
+      "p99_m": 2.325213240777421,
+      "sample_count_including_origin": 21127
+    },
+    "all_matched_horizontal_ne_m": {
+      "max_m": 5.046807510763948,
+      "p50_m": 0.22134776323452773,
+      "p95_m": 0.6875857883629217,
+      "p99_m": 2.3251824035098894,
+      "sample_count_including_origin": 21127
+    },
+    "all_matched_absolute_down_m": {
+      "max_m": 0.0559217050662113,
+      "p50_m": 0.003212888347682963,
+      "p95_m": 0.012832658672429179,
+      "p99_m": 0.016594652186952608,
+      "sample_count_including_origin": 21127
+    },
+    "origin_alignment_m": {
+      "first_origin_m": 4.440892098500626e-15,
+      "max_horizontal_m": 7.234986049614835e-13,
+      "max_m": 7.247535904753022e-13,
+      "max_vertical_m": 4.973799150320701e-14,
+      "p95_m": 5.833378438573445e-13,
+      "sample_count": 1186
+    },
+    "observed_max_exceeds_3m_allowance_at_horizons_s": [
+      5.5,
+      5.75,
+      6.0,
+      6.25,
+      6.5,
+      6.75,
+      7.0,
+      7.25,
+      7.5,
+      7.75,
+      8.0
+    ],
+    "interpretation": "This one fixture observes horizontal residual maxima above 3 m at 6 s and 8 s. It contradicts treating 3 m as a hard bound for these matched forecast samples. The samples overlap in one deterministic run; no population or worst-case bound follows.",
+    "path_error_m_claim": null,
+    "path_error_bound_established": false,
+    "continuous_or_between_sample_error_measured": false,
+    "path_feasibility_or_static_containment_established": false
+  },
+  "limitations": [
+    "The paired trace proves state/command fingerprint parity only for this deterministic 20-second fixture, not general controller equivalence.",
+    "Forecast residuals compare sampled nominal positions at exact 0.25-second offsets only while the selected bank target is unchanged and active; same-target replans are not censor boundaries.",
+    "The 8-second forecast data ceiling is 721 origins; only the reported target-compatible origins are used at 8 seconds. Shorter matched horizons are censored at target change/release rather than imputed.",
+    "Samples overlap within one deterministic flight and are not independent observations. Maxima and percentiles are empirical, not a safety bound.",
+    "The 240 Hz state samples and 0.25-second predictor points do not bound continuous motion between samples. This is prediction-error measurement, not path or corridor feasibility.",
+    "The simulation loader emitted the retained aircraft-data note that Jyy=0.3692 kg·m² is 2.02× the scaled UltraStick25e value; no physics/aircraft parameter was tuned for this probe."
+  ],
+  "checked_runs": [
+    {
+      "label": "baseline-crossing-right-20s",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\baseline-crossing-right-20s-0nu3qrly\\report.json",
+      "report_sha256": "bd3899e0cd9e91a2d95fc60faadeb4e85e032750b8a6de199368dd0d7fb27ad1",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\baseline-crossing-right-20s-0nu3qrly\\engine.log",
+      "engine_log_sha256": "fb8402bff16d29c882b410babe7596f8d39bb6d38b6e8c8ef97f8533b8dfb2c7",
+      "started_utc": "2026-10-21T04:27:09.870963+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\prediction_error_flight_probe.gd",
+        "--",
+        "--record-single-crossing-right",
+        "--seconds=20",
+        "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right",
+        "--pilot=res://ai/companions/pilot.gd"
+      ]
+    },
+    {
+      "label": "exact-baseline-ai",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-ai-k9sq3c5c\\report.json",
+      "report_sha256": "6b2965d5c742de71cce9a6859fcb25524072901227c197469ed46d63d67b8a16",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-ai-k9sq3c5c\\engine.log",
+      "engine_log_sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15",
+      "started_utc": "2026-10-21T04:28:18.897649+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "res://tools/flight_log_cli.gd",
+        "--",
+        "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\seed-20261020-crossing-right-ai.orfl",
+        "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.csv",
+        "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.json",
+        "--replay"
+      ]
+    },
+    {
+      "label": "exact-baseline-player",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-player-zuuy2eng\\report.json",
+      "report_sha256": "6d0d2f69d047f7e0fb4b29aedb4db455b781338c1d803dc5206df42014d933ac",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-player-zuuy2eng\\engine.log",
+      "engine_log_sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15",
+      "started_utc": "2026-10-21T04:28:27.864796+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "res://tools/flight_log_cli.gd",
+        "--",
+        "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\seed-20261020-crossing-right-player-coupled.orfl",
+        "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.csv",
+        "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.json",
+        "--replay"
+      ]
+    },
+    {
+      "label": "exact-trace-ai",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-ai-22wxhyge\\report.json",
+      "report_sha256": "b52a99f969e03c5b02532439a3c403987cb08de5bf065b1040235a1dd636bebe",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-ai-22wxhyge\\engine.log",
+      "engine_log_sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15",
+      "started_utc": "2026-10-21T04:28:37.153949+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "res://tools/flight_log_cli.gd",
+        "--",
+        "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\seed-20261020-crossing-right-ai.orfl",
+        "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.csv",
+        "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.json",
+        "--replay"
+      ]
+    },
+    {
+      "label": "exact-trace-player",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-player-cnkuwcm9\\report.json",
+      "report_sha256": "9936925fdd4f9f4cc8775d2db672eaac983cbda54169eec78c1b3d094374c5a9",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-player-cnkuwcm9\\engine.log",
+      "engine_log_sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15",
+      "started_utc": "2026-10-21T04:28:46.642095+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "res://tools/flight_log_cli.gd",
+        "--",
+        "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\seed-20261020-crossing-right-player-coupled.orfl",
+        "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.csv",
+        "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.json",
+        "--replay"
+      ]
+    },
+    {
+      "label": "production-pilot-parse",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\production-pilot-parse-zibakv3r\\report.json",
+      "report_sha256": "06b4ef8c0f744cebdc649edf21c945563cba6cb75a2127d8d7eeb5b0e4e6f558",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\production-pilot-parse-zibakv3r\\engine.log",
+      "engine_log_sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f",
+      "started_utc": "2026-10-21T04:26:50.014012+00:00",
+      "timeout_seconds": 60.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\prediction_error_flight_probe.gd",
+        "--",
+        "--parse-only",
+        "--pilot=res://ai/companions/pilot.gd"
+      ]
+    },
+    {
+      "label": "trace-candidate-parse",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-l2aaemn8\\report.json",
+      "report_sha256": "292f5d1262dd04d270971e2f93f86a368cca3b9083634b2fb4c2cdd576ed1db7",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-l2aaemn8\\engine.log",
+      "engine_log_sha256": "3fbedf86d2c9f9ac30eb808a058fd4b5e31a46e2c00289d9862e0263504e12ac",
+      "started_utc": "2026-10-21T04:25:51.164219+00:00",
+      "timeout_seconds": 60.0,
+      "exit_code": 1,
+      "ok": false,
+      "complete": true,
+      "counts": {
+        "error": 3,
+        "warning": 0
+      },
+      "reason": "process_exit",
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 3,
+          "message": "Attempt to open script 'res://research/ai-companions/avoidance/prediction_error_flight_probe.gd' resulted in error 'File not found'.",
+          "context": [
+            "   at: load_source_code (modules/gdscript/gdscript.cpp:1139)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed loading resource: res://research/ai-companions/avoidance/prediction_error_flight_probe.gd.",
+          "context": [
+            "   at: _load (core/io/resource_loader.cpp:317)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 7,
+          "message": "Can't load script: res://research/ai-companions/avoidance/prediction_error_flight_probe.gd",
+          "context": [
+            "   at: start (main/main.cpp:4370)"
+          ]
+        }
+      ],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "res://research/ai-companions/avoidance/prediction_error_flight_probe.gd",
+        "--",
+        "--parse-only",
+        "--pilot=res://research/ai-companions/avoidance/predictor_flight_trace_candidate.gd"
+      ]
+    },
+    {
+      "label": "trace-candidate-parse-parentpath",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-parentpath-ppmo1rn2\\report.json",
+      "report_sha256": "26af494a51322b1e210643da72c96a4e32ef7adf5096e39323b3c6075894c9f7",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-parentpath-ppmo1rn2\\engine.log",
+      "engine_log_sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f",
+      "started_utc": "2026-10-21T04:26:03.346054+00:00",
+      "timeout_seconds": 60.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\prediction_error_flight_probe.gd",
+        "--",
+        "--parse-only",
+        "--pilot=res://../research/ai-companions/avoidance/predictor_flight_trace_candidate.gd"
+      ]
+    },
+    {
+      "label": "traced-crossing-right-20s",
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\traced-crossing-right-20s-i2qxhlpq\\report.json",
+      "report_sha256": "4b1d4bbea46d1edbb46dada9dc9dc8dbd94325b45e044da329d5e009fc3599fe",
+      "engine_log_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\traced-crossing-right-20s-i2qxhlpq\\engine.log",
+      "engine_log_sha256": "eca55b5c0bed9c597e123149586b90714348246957c3470430444f9ff620159f",
+      "started_utc": "2026-10-21T04:27:31.886925+00:00",
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "ok": true,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "reason": "passed",
+      "diagnostics": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\avoidance\\prediction_error_flight_probe.gd",
+        "--",
+        "--record-single-crossing-right",
+        "--seconds=20",
+        "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right",
+        "--pilot=res://../research/ai-companions/avoidance/predictor_flight_trace_candidate.gd"
+      ]
+    }
+  ],
+  "retained_attempt_notes": {
+    "candidate_parse_initial_failure": {
+      "report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-l2aaemn8\\report.json",
+      "failure": "Wrong res:// root: probe script was pointed at res://research/... from the app root although research is outside app.",
+      "classification": "path/configuration retry, not a source parse failure or flight failure",
+      "successful_retry_report_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-parentpath-ppmo1rn2\\report.json"
+    },
+    "baseline_and_trace_reducers": "The original prediction-error.json and validated-v2.json are retained and indexed; final v3 adds explicit horizontal/down components and finite bank-target plus step/horizon validation."
+  },
+  "artifact_index": [
+    {
+      "role": "analysis_output",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\analysis\\prediction-error-components-v3.json",
+      "relative_path": "analysis/prediction-error-components-v3.json",
+      "bytes": 2674278,
+      "sha256": "01b43b6002fabff045f3810310f5f32b319fd50d46e9da00cf8fbeda1767d31e"
+    },
+    {
+      "role": "analysis_output",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\analysis\\prediction-error-validated-v2.json",
+      "relative_path": "analysis/prediction-error-validated-v2.json",
+      "bytes": 1201167,
+      "sha256": "89c2b313e2e192d228cf9d69252ae8c210dddd6e6d16c20374d3cdfb795617f9"
+    },
+    {
+      "role": "analysis_output",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\analysis\\prediction-error.json",
+      "relative_path": "analysis/prediction-error.json",
+      "bytes": 1200963,
+      "sha256": "2a13e37edbfdfcf8d10071ae4a48aa7008ebcac6914c4e26566ebe3de45cac7c"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\baseline-crossing-right-20s-0nu3qrly\\engine.log",
+      "relative_path": "checks/baseline-crossing-right-20s-0nu3qrly/engine.log",
+      "bytes": 1824,
+      "sha256": "fb8402bff16d29c882b410babe7596f8d39bb6d38b6e8c8ef97f8533b8dfb2c7"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\baseline-crossing-right-20s-0nu3qrly\\report.json",
+      "relative_path": "checks/baseline-crossing-right-20s-0nu3qrly/report.json",
+      "bytes": 1659,
+      "sha256": "bd3899e0cd9e91a2d95fc60faadeb4e85e032750b8a6de199368dd0d7fb27ad1"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-ai-k9sq3c5c\\engine.log",
+      "relative_path": "checks/exact-baseline-ai-k9sq3c5c/engine.log",
+      "bytes": 208,
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-ai-k9sq3c5c\\report.json",
+      "relative_path": "checks/exact-baseline-ai-k9sq3c5c/report.json",
+      "bytes": 1637,
+      "sha256": "6b2965d5c742de71cce9a6859fcb25524072901227c197469ed46d63d67b8a16"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-player-zuuy2eng\\engine.log",
+      "relative_path": "checks/exact-baseline-player-zuuy2eng/engine.log",
+      "bytes": 208,
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-baseline-player-zuuy2eng\\report.json",
+      "relative_path": "checks/exact-baseline-player-zuuy2eng/report.json",
+      "bytes": 1669,
+      "sha256": "6d0d2f69d047f7e0fb4b29aedb4db455b781338c1d803dc5206df42014d933ac"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-ai-22wxhyge\\engine.log",
+      "relative_path": "checks/exact-trace-ai-22wxhyge/engine.log",
+      "bytes": 208,
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-ai-22wxhyge\\report.json",
+      "relative_path": "checks/exact-trace-ai-22wxhyge/report.json",
+      "bytes": 1620,
+      "sha256": "b52a99f969e03c5b02532439a3c403987cb08de5bf065b1040235a1dd636bebe"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-player-cnkuwcm9\\engine.log",
+      "relative_path": "checks/exact-trace-player-cnkuwcm9/engine.log",
+      "bytes": 208,
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\exact-trace-player-cnkuwcm9\\report.json",
+      "relative_path": "checks/exact-trace-player-cnkuwcm9/report.json",
+      "bytes": 1652,
+      "sha256": "9936925fdd4f9f4cc8775d2db672eaac983cbda54169eec78c1b3d094374c5a9"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\production-pilot-parse-zibakv3r\\engine.log",
+      "relative_path": "checks/production-pilot-parse-zibakv3r/engine.log",
+      "bytes": 112,
+      "sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\production-pilot-parse-zibakv3r\\report.json",
+      "relative_path": "checks/production-pilot-parse-zibakv3r/report.json",
+      "bytes": 1496,
+      "sha256": "06b4ef8c0f744cebdc649edf21c945563cba6cb75a2127d8d7eeb5b0e4e6f558"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-l2aaemn8\\engine.log",
+      "relative_path": "checks/trace-candidate-parse-l2aaemn8/engine.log",
+      "bytes": 566,
+      "sha256": "3fbedf86d2c9f9ac30eb808a058fd4b5e31a46e2c00289d9862e0263504e12ac"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-l2aaemn8\\report.json",
+      "relative_path": "checks/trace-candidate-parse-l2aaemn8/report.json",
+      "bytes": 2439,
+      "sha256": "292f5d1262dd04d270971e2f93f86a368cca3b9083634b2fb4c2cdd576ed1db7"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-parentpath-ppmo1rn2\\engine.log",
+      "relative_path": "checks/trace-candidate-parse-parentpath-ppmo1rn2/engine.log",
+      "bytes": 112,
+      "sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\trace-candidate-parse-parentpath-ppmo1rn2\\report.json",
+      "relative_path": "checks/trace-candidate-parse-parentpath-ppmo1rn2/report.json",
+      "bytes": 1575,
+      "sha256": "26af494a51322b1e210643da72c96a4e32ef7adf5096e39323b3c6075894c9f7"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\traced-crossing-right-20s-i2qxhlpq\\engine.log",
+      "relative_path": "checks/traced-crossing-right-20s-i2qxhlpq/engine.log",
+      "bytes": 2829597,
+      "sha256": "eca55b5c0bed9c597e123149586b90714348246957c3470430444f9ff620159f"
+    },
+    {
+      "role": "checked_runner_report_or_engine_log",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\checks\\traced-crossing-right-20s-i2qxhlpq\\report.json",
+      "relative_path": "checks/traced-crossing-right-20s-i2qxhlpq/report.json",
+      "bytes": 1702,
+      "sha256": "4b1d4bbea46d1edbb46dada9dc9dc8dbd94325b45e044da329d5e009fc3599fe"
+    },
+    {
+      "role": "flight_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\report.json",
+      "relative_path": "flights/baseline-crossing-right/report.json",
+      "bytes": 5957,
+      "sha256": "26c56765990d31bb883d87feb1375912944d843d910237d7e34ba70138357f42"
+    },
+    {
+      "role": "raw_flight_recording",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\seed-20261020-crossing-right-ai.orfl",
+      "relative_path": "flights/baseline-crossing-right/seed-20261020-crossing-right-ai.orfl",
+      "bytes": 8582452,
+      "sha256": "73c5591c0c829f0a394305668518ccdfcc125c032c7173ead5241b55a223d806"
+    },
+    {
+      "role": "raw_flight_recording",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\seed-20261020-crossing-right-player-coupled.orfl",
+      "relative_path": "flights/baseline-crossing-right/seed-20261020-crossing-right-player-coupled.orfl",
+      "bytes": 8582452,
+      "sha256": "727d72de3dcee9bcfbf0b4b777aa0499e1c5deb4cbd1df3e2921a00c349e7214"
+    },
+    {
+      "role": "flight_trajectory_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\baseline-crossing-right\\trajectory.csv",
+      "relative_path": "flights/baseline-crossing-right/trajectory.csv",
+      "bytes": 85562,
+      "sha256": "5e64d2ffdfe3c2ca5c25c11d653dba18563d92c41f28fe3632e2b05d9a69cdb3"
+    },
+    {
+      "role": "flight_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\report.json",
+      "relative_path": "flights/trace-crossing-right/report.json",
+      "bytes": 6186,
+      "sha256": "a4b75947abdbaf579e357b3b9d0b209f4b85afe358ad6c87803ff9e0c3dca588"
+    },
+    {
+      "role": "raw_flight_recording",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\seed-20261020-crossing-right-ai.orfl",
+      "relative_path": "flights/trace-crossing-right/seed-20261020-crossing-right-ai.orfl",
+      "bytes": 8582452,
+      "sha256": "cfa303daaf1e6a2345089fc09556fa4e14346f48ca427065ad3e476df5e275c2"
+    },
+    {
+      "role": "raw_flight_recording",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\seed-20261020-crossing-right-player-coupled.orfl",
+      "relative_path": "flights/trace-crossing-right/seed-20261020-crossing-right-player-coupled.orfl",
+      "bytes": 8582452,
+      "sha256": "a3c735aed9075ce27e7d7cc0d4c85f4bb78db568e7c8ddf21a7253508746980d"
+    },
+    {
+      "role": "flight_trajectory_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\flights\\trace-crossing-right\\trajectory.csv",
+      "relative_path": "flights/trace-crossing-right/trajectory.csv",
+      "bytes": 85562,
+      "sha256": "5e64d2ffdfe3c2ca5c25c11d653dba18563d92c41f28fe3632e2b05d9a69cdb3"
+    },
+    {
+      "role": "exact_replay_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.csv",
+      "relative_path": "replays/baseline-ai.csv",
+      "bytes": 4406314,
+      "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+    },
+    {
+      "role": "exact_replay_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-ai.json",
+      "relative_path": "replays/baseline-ai.json",
+      "bytes": 6795,
+      "sha256": "9de6c688e58e9a3b796d2df0073ee297fb4471d230e55aef7b6a2a87253e9325"
+    },
+    {
+      "role": "exact_replay_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.csv",
+      "relative_path": "replays/baseline-player.csv",
+      "bytes": 3853991,
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "role": "exact_replay_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\baseline-player.json",
+      "relative_path": "replays/baseline-player.json",
+      "bytes": 6807,
+      "sha256": "648263849e1306971bbc669d38ec7b8da482a3f9f4e9824b1fb80cbf22911bee"
+    },
+    {
+      "role": "exact_replay_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.csv",
+      "relative_path": "replays/trace-ai.csv",
+      "bytes": 4406314,
+      "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+    },
+    {
+      "role": "exact_replay_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-ai.json",
+      "relative_path": "replays/trace-ai.json",
+      "bytes": 6792,
+      "sha256": "46a24e9c75ff8556247f726ce058e4ff76994c4b9855346d26a6da951103f0b3"
+    },
+    {
+      "role": "exact_replay_csv",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.csv",
+      "relative_path": "replays/trace-player.csv",
+      "bytes": 3853991,
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "role": "exact_replay_report",
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R6\\replays\\trace-player.json",
+      "relative_path": "replays/trace-player.json",
+      "bytes": 6804,
+      "sha256": "2056b1935307dc9a171d75cfb06ab31f11ab9017e2b9fad641c031a643097eb1"
+    }
+  ]
+}

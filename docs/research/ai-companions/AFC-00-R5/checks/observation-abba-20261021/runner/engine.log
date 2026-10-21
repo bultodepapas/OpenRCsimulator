@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+[observation-abba] finished rounds=40/240
+[observation-abba] finished rounds=80/240
+[observation-abba] finished rounds=120/240
+[observation-abba] finished rounds=160/240
+[observation-abba] finished rounds=200/240
+[observation-abba] finished rounds=240/240
+{"block_calls":1024,"calls_per_arm":491520,"complete":true,"raw_samples_per_arm":480,"rounds":240,"source_unchanged":true}
+AFC OBSERVATION ABBA TIMING COMPLETE

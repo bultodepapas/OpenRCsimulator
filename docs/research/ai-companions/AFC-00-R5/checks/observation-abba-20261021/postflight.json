@@ -1,0 +1,12 @@
+{
+  "format": "openrc-afc-observation-abba-postflight v1",
+  "captured_utc": "2026-10-21T05:12:08.3019927Z",
+  "process_inventory_after": [],
+  "process_inventory_after_empty": true,
+  "benchmark_engine_process_exit": 0,
+  "run_checked_status": "passed",
+  "run_checked_timeout_seconds": 90,
+  "raw_report": "raw/observation-abba-report.json",
+  "checked_runner_report": "runner/checked-runner-report.json",
+  "engine_log": "runner/engine.log"
+}

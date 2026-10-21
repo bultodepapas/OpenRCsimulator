@@ -1,0 +1,1453 @@
+{
+  "cases": [
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.25,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 30663,
+          "candidate_final_tick": 33319,
+          "columns": 62,
+          "common_final_tick": 30663,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1476,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\east-calm\\common-prefix.json",
+            "sha256": "dffbea3a89d62a3815cc46df4396c76c798fbd9e9687a58d1c94a8067292f8cc"
+          },
+          "rows": 30664,
+          "status": "identical"
+        },
+        "complete": true,
+        "corridor_violation": false,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": true,
+        "damage": false,
+        "duration_s": 138.829166666667,
+        "endpoint": {
+          "all_anchors": false,
+          "all_hull_clear_north": true,
+          "all_wheels_clear_north": true,
+          "all_wheels_down": true,
+          "east_m": 48.118256094075,
+          "north_m": 22.3840345481862,
+          "side_corridor_margin_m": 1.11999519230864,
+          "speed_mps": 0.0244914500802561,
+          "tick": 33319,
+          "time_s": 138.829166666667
+        },
+        "error": "",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 31616229,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\east-calm\\exact\\flight.csv",
+            "sha256": "e8edf3b151ec4f99a34b3d659fc650d11c079fb0b974ec543968757d575cf32d"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\exact\\runner\\AFC09-R2-east-calm-exact-replay-4ftlvqv5\\engine.log",
+            "relative_to_evidence_root": "cases\\east-calm\\exact\\runner\\AFC09-R2-east-calm-exact-replay-4ftlvqv5\\engine.log",
+            "sha256": "d44208ba73680ed75f452f15ec8c7207941f7ade4e9a644ca619c00336bfc204"
+          },
+          "final_tick": 33319,
+          "first_tick": 0,
+          "report": {
+            "bytes": 6840,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\east-calm\\exact\\replay.json",
+            "sha256": "94ae1d151d906543864f42348619085fb4c263dcd00a9c084960dc9121cd9739"
+          },
+          "rows": 33320,
+          "run_checked": {
+            "bytes": 1782,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\exact\\runner\\AFC09-R2-east-calm-exact-replay-4ftlvqv5\\report.json",
+            "relative_to_evidence_root": "cases\\east-calm\\exact\\runner\\AFC09-R2-east-calm-exact-replay-4ftlvqv5\\report.json",
+            "sha256": "4ff30440010c489f5e627448a12f605615a133fed6d34dfe6be09b143b079afd"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 57.75,
+          "engine_log": {
+            "bytes": 606,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\runner\\AFC09-R2-east-calm-5h7o5xjk\\engine.log",
+            "relative_to_evidence_root": "cases\\east-calm\\runner\\AFC09-R2-east-calm-5h7o5xjk\\engine.log",
+            "sha256": "ac5079cf221085e3970a51ad4dd7a4cb8fa326fec3a5cef89f7bbe5e21ab697a"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2042,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\runner\\AFC09-R2-east-calm-5h7o5xjk\\report.json",
+            "relative_to_evidence_root": "cases\\east-calm\\runner\\AFC09-R2-east-calm-5h7o5xjk\\report.json",
+            "sha256": "9ef94e2f278926ab99ed7c7ea408f11f6902a6e42e6fba48547a3fd968943b04"
+          }
+        },
+        "full_clear_gate_pass": true,
+        "full_clear_vacate_elapsed_s": 16.9583333333333,
+        "full_sortie_accepted_under_r1_plus_r2": true,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": 5.89166666666667,
+        "legacy_wheel_only_vacated": true,
+        "minimum_runway_e_end_margin_m": 1.10548453936824,
+        "raw_orfl": {
+          "bytes": 30898868,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\east-calm\\candidate.orfl",
+          "sha256": "8fddd4750bdbde4c27fc0ad253f24c98fbd78300563ba8e926c9edf8751c4162"
+        },
+        "raw_report": {
+          "bytes": 229515,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-calm\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\east-calm\\candidate-report.json",
+          "sha256": "d6c400ac6e44848ded31e3a3e35fe75bbbf465307db4532a4a79db82d7db1e8d"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "2ccf7636512f85b940332f90a4a5d69f26f590aaf245e1e4f8100b5703377e52"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 33319,
+        "vacate_timeout": false
+      },
+      "case_id": "east-calm",
+      "direction": "east",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.2740724862372,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 0,
+        "failure_class": "none",
+        "failure_summary": "all 22 checks passed",
+        "original_22_gate_pass": true,
+        "original_exact_csv": {
+          "bytes": 29172073,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "7a32d2fba1c74b2f525dc4cac5f35b86b50b9ef48966757ec2072607567c4963"
+        },
+        "original_orfl": {
+          "bytes": 28815288,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "929f3d3de4e98692b923276453cbe3b0dd2d94f1bf0cd9ffb2b885ec38191c1e"
+        },
+        "original_replay_report": {
+          "bytes": 6805,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "9986f247ffc6b0dd83c5e6669a16f33cfbedaced4d7ac69925db799b1453ae34"
+        }
+      },
+      "turbulence_seed": 0,
+      "weather_profile": "calm"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.25,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 33205,
+          "candidate_final_tick": 35629,
+          "columns": 70,
+          "common_final_tick": 33205,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1538,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\common-prefix.json",
+            "sha256": "5048d8d07697ed1547a7324cbfed3f36d167c74e768de1e9508dc23aa8b487f9"
+          },
+          "rows": 33206,
+          "status": "identical"
+        },
+        "complete": true,
+        "corridor_violation": false,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": true,
+        "damage": false,
+        "duration_s": 148.454166666667,
+        "endpoint": {
+          "all_anchors": false,
+          "all_hull_clear_north": true,
+          "all_wheels_clear_north": true,
+          "all_wheels_down": true,
+          "east_m": 10.277296030382,
+          "north_m": 22.3822651123323,
+          "side_corridor_margin_m": 38.9640837133041,
+          "speed_mps": 0.0253214929365971,
+          "tick": 35629,
+          "time_s": 148.454166666667
+        },
+        "error": "",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 41204797,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\exact\\flight.csv",
+            "sha256": "894827fcca8a5a74d133bde7fc25063a942791108b53be941740167874aa4c71"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\exact\\runner\\AFC09-R2-east-headwind-s20261015-exact-replay-obxnj7ox\\engine.log",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\exact\\runner\\AFC09-R2-east-headwind-s20261015-exact-replay-obxnj7ox\\engine.log",
+            "sha256": "5bb7ebbce48d69e304422294249adceb708846ca1981a85a8a8662def4f2855d"
+          },
+          "final_tick": 35629,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8012,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\exact\\replay.json",
+            "sha256": "085570b6215fff857746141a56db3ab5c0ac98251d686f454227a24c9b5c9f9e"
+          },
+          "rows": 35630,
+          "run_checked": {
+            "bytes": 1894,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\exact\\runner\\AFC09-R2-east-headwind-s20261015-exact-replay-obxnj7ox\\report.json",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\exact\\runner\\AFC09-R2-east-headwind-s20261015-exact-replay-obxnj7ox\\report.json",
+            "sha256": "2ead0d7e2965c652a42f759fb001d67ccfd4b19d53b9d7fb031f5ed2334fcd51"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 61.891,
+          "engine_log": {
+            "bytes": 648,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\runner\\AFC09-R2-east-headwind-s20261015-509x7w06\\engine.log",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\runner\\AFC09-R2-east-headwind-s20261015-509x7w06\\engine.log",
+            "sha256": "811be90e7810248fe02cd92387202f7ad8c95768f7a35d62f59461e084a06660"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2152,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\runner\\AFC09-R2-east-headwind-s20261015-509x7w06\\report.json",
+            "relative_to_evidence_root": "cases\\east-headwind-s20261015\\runner\\AFC09-R2-east-headwind-s20261015-509x7w06\\report.json",
+            "sha256": "c8fe0a772c48365244159e82781590824e91e5665e9a1f2eec7d085d6719d3d7"
+          }
+        },
+        "full_clear_gate_pass": true,
+        "full_clear_vacate_elapsed_s": 16.2083333333333,
+        "full_sortie_accepted_under_r1_plus_r2": true,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": 6.10833333333332,
+        "legacy_wheel_only_vacated": true,
+        "minimum_runway_e_end_margin_m": 38.9162919566455,
+        "raw_orfl": {
+          "bytes": 34993700,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\east-headwind-s20261015\\candidate.orfl",
+          "sha256": "d79d3744b4e815370ad7d848210e888b3fd0e1cefa1292cbf02f53f1579f380e"
+        },
+        "raw_report": {
+          "bytes": 244609,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-headwind-s20261015\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\east-headwind-s20261015\\candidate-report.json",
+          "sha256": "48aba06c4ab3667a274f6cfe21404c86054e5c39ec92eddb1d98ca1268dda310"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "28d5e5204f5e1592b1be980c5c9d4c9e55b43de055b2bb6f8eaf74dc0d659466"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 35629,
+        "vacate_timeout": false
+      },
+      "case_id": "east-headwind-s20261015",
+      "direction": "east",
+      "historical_r1": {
+        "approach_entry_tas_mps": 11.7811132154108,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 0,
+        "failure_class": "none",
+        "failure_summary": "all 22 checks passed",
+        "original_22_gate_pass": true,
+        "original_exact_csv": {
+          "bytes": 38483487,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "8704062b6018dce1117bba35607ec9db8f68b3a419ed3c059b7d94d330b0025c"
+        },
+        "original_orfl": {
+          "bytes": 32936988,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "6fb89cdfaf5577e34fa6fce55c7a1df2fa0f3bec51f82bafb12ffa40b35cbeae"
+        },
+        "original_replay_report": {
+          "bytes": 7980,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "3448f76eae17a9f5cb8fdc5166f5a1bff9abd06a08170628562249da046855c4"
+        }
+      },
+      "turbulence_seed": 20261015,
+      "weather_profile": "headwind"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.0,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 30778,
+          "candidate_final_tick": 30590,
+          "columns": 70,
+          "common_final_tick": 30590,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1568,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\common-prefix.json",
+            "sha256": "0190cdf1a01f4bb0634c945da8a034bc61b0204429da1841eba209d6f7b71c20"
+          },
+          "rows": 30591,
+          "status": "identical"
+        },
+        "complete": false,
+        "corridor_violation": true,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": false,
+        "damage": false,
+        "duration_s": 127.458333333333,
+        "endpoint": {},
+        "error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 35458880,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\exact\\flight.csv",
+            "sha256": "0a92be1a78760e8f85813cbea7e5241e7e2c1dbc6b5c3239956386ca24120811"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\runner\\AFC09-R2-east-north-crosswind-s20261025-exact-replay-to59dt2r\\engine.log",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\exact\\runner\\AFC09-R2-east-north-crosswind-s20261025-exact-replay-to59dt2r\\engine.log",
+            "sha256": "0e67c48f7db47c8675c0ae64c45490427c70127edae9dfdf9f6423e71e7cc11c"
+          },
+          "final_tick": 30590,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8104,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\exact\\replay.json",
+            "sha256": "03fbec94bfbdd0a0efaf6a20af34492b28e7a7f78d347ddda111aa377d6df365"
+          },
+          "rows": 30591,
+          "run_checked": {
+            "bytes": 1950,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\runner\\AFC09-R2-east-north-crosswind-s20261025-exact-replay-to59dt2r\\report.json",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\exact\\runner\\AFC09-R2-east-north-crosswind-s20261025-exact-replay-to59dt2r\\report.json",
+            "sha256": "1bca931b548feda0ba2e6c495ec6aebfa4942852d966ac3d2ef6661517ca22f0"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 64.547,
+          "engine_log": {
+            "bytes": 669,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\runner\\AFC09-R2-east-north-crosswind-s20261025-peegojtw\\engine.log",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\runner\\AFC09-R2-east-north-crosswind-s20261025-peegojtw\\engine.log",
+            "sha256": "7037c7e991896e97a18fc6e9d94dbe5555bcd4ace769c6e846bf76029f63dc7d"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2208,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\runner\\AFC09-R2-east-north-crosswind-s20261025-peegojtw\\report.json",
+            "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\runner\\AFC09-R2-east-north-crosswind-s20261025-peegojtw\\report.json",
+            "sha256": "6819967868408666884b7bfef672b0ad6f2f986d747d3fb465e747305956e0ea"
+          }
+        },
+        "full_clear_gate_pass": false,
+        "full_clear_vacate_elapsed_s": -1.0,
+        "full_sortie_accepted_under_r1_plus_r2": false,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": -1.0,
+        "legacy_wheel_only_vacated": false,
+        "minimum_runway_e_end_margin_m": -0.000185489484842094,
+        "raw_orfl": {
+          "bytes": 30718360,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\candidate.orfl",
+          "sha256": "6851b9f3713b60d4ed0465c54c8d2d5eec4e44898c99cad0cabee40234144db5"
+        },
+        "raw_report": {
+          "bytes": 211211,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\east-north-crosswind-s20261025\\candidate-report.json",
+          "sha256": "560f02a11047e1866a39ed1e9e42c7c2065bde20245e61b21949e6e62280a965"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "b8afff9a96914370248f566ab19d59c8e90b230594b3a72f4dd80e8d592c9aaa"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 30590,
+        "vacate_timeout": false
+      },
+      "case_id": "east-north-crosswind-s20261025",
+      "direction": "east",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.2843094756234,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 0,
+        "failure_class": "none",
+        "failure_summary": "all 22 checks passed",
+        "original_22_gate_pass": true,
+        "original_exact_csv": {
+          "bytes": 35668919,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "d620845b3bd40c7cbd85f277acfa00e87d1a23dcf1b397a5011f2390cc56bec0"
+        },
+        "original_orfl": {
+          "bytes": 30877740,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "183e5d4613d67a923cf035d52b207469b67116651dbbcc305997e03c6c1815ed"
+        },
+        "original_replay_report": {
+          "bytes": 7996,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "2637ed4a5898ba414602a868195176801d7b7390ab2277b1a2fdc6251ef34996"
+        }
+      },
+      "turbulence_seed": 20261025,
+      "weather_profile": "north_crosswind_0p5"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.0,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 40086,
+          "candidate_final_tick": 29627,
+          "columns": 70,
+          "common_final_tick": 29627,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1568,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\common-prefix.json",
+            "sha256": "2cf51a92b2e60b2e2da86579ee9686d9e66aa973dad1d96c4e35c786106f5918"
+          },
+          "rows": 29628,
+          "status": "identical"
+        },
+        "complete": false,
+        "corridor_violation": true,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": false,
+        "damage": false,
+        "duration_s": 123.445833333333,
+        "endpoint": {},
+        "error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 34321663,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\exact\\flight.csv",
+            "sha256": "278e07799880a72edc78e484ff6490b3ada841f95bb6c6ca76337d5f97e5c85d"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\runner\\AFC09-R2-east-south-crosswind-s20261027-exact-replay-vwnuauor\\engine.log",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\exact\\runner\\AFC09-R2-east-south-crosswind-s20261027-exact-replay-vwnuauor\\engine.log",
+            "sha256": "229d65abfad4072c0b3eaea5651e5005fb4a4b6c9485e35746bfcabec32b6898"
+          },
+          "final_tick": 29627,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8094,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\exact\\replay.json",
+            "sha256": "db74ba16f9f08ba6922729f7d7927098a3199cc7f533ae59e8df0d1656e591ce"
+          },
+          "rows": 29628,
+          "run_checked": {
+            "bytes": 1950,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\runner\\AFC09-R2-east-south-crosswind-s20261027-exact-replay-vwnuauor\\report.json",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\exact\\runner\\AFC09-R2-east-south-crosswind-s20261027-exact-replay-vwnuauor\\report.json",
+            "sha256": "d77d963775436843941a1b4ae11121cd3d5958f9e4d466f146ed43646c0243e8"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 58.453,
+          "engine_log": {
+            "bytes": 669,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\runner\\AFC09-R2-east-south-crosswind-s20261027-azw4m9wp\\engine.log",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\runner\\AFC09-R2-east-south-crosswind-s20261027-azw4m9wp\\engine.log",
+            "sha256": "d7fe821bcd2851ff967c3ea517203d141d560a529c53712f069953a7bf1761f5"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2208,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\runner\\AFC09-R2-east-south-crosswind-s20261027-azw4m9wp\\report.json",
+            "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\runner\\AFC09-R2-east-south-crosswind-s20261027-azw4m9wp\\report.json",
+            "sha256": "1426eb8d47c3d57fddf8b8d8f15d676a068305895b969960ab73134919137b9e"
+          }
+        },
+        "full_clear_gate_pass": false,
+        "full_clear_vacate_elapsed_s": -1.0,
+        "full_sortie_accepted_under_r1_plus_r2": false,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": -1.0,
+        "legacy_wheel_only_vacated": false,
+        "minimum_runway_e_end_margin_m": -0.00150276994110499,
+        "raw_orfl": {
+          "bytes": 29901264,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\candidate.orfl",
+          "sha256": "f2aebc638905475540705521b111015778b12747815d1ed7eeeb7d83ea2f1fd3"
+        },
+        "raw_report": {
+          "bytes": 205001,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\east-south-crosswind-s20261027\\candidate-report.json",
+          "sha256": "62dadb202a5c57c7efed06268befc6ddaa4a8357302e1704bc89758a1eea366f"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "279f0ca63cdf7f31a464a30d304be240320bbb34c24f496a8e53da52aef056c4"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 29627,
+        "vacate_timeout": false
+      },
+      "case_id": "east-south-crosswind-s20261027",
+      "direction": "east",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.2448782827261,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 2,
+        "failure_class": "physical_taxi_timeout",
+        "failure_summary": "physical north-side taxi failed to vacate within 45 s",
+        "original_22_gate_pass": false,
+        "original_exact_csv": {
+          "bytes": 45744203,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "0a34c1d38021b5f139697af8276ca747c513685d8467f01f9956b0855f1e6eda"
+        },
+        "original_orfl": {
+          "bytes": 38775584,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "aba2cde2048429984442cff0ebce8fa92b493d0007c906a37a824c185fcd8de2"
+        },
+        "original_replay_report": {
+          "bytes": 8057,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "7903fa30492addccac9b13a7f85feced2a574378f1bbe70f003562121f3ab778"
+        }
+      },
+      "turbulence_seed": 20261027,
+      "weather_profile": "south_crosswind_0p5"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.25,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 30582,
+          "candidate_final_tick": 33360,
+          "columns": 62,
+          "common_final_tick": 30582,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1476,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\west-calm\\common-prefix.json",
+            "sha256": "13372bb314c1bc830f36b09873b4bd246df8b9d7e53507940e010d3a4b4b234f"
+          },
+          "rows": 30583,
+          "status": "identical"
+        },
+        "complete": true,
+        "corridor_violation": false,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": true,
+        "damage": false,
+        "duration_s": 139.0,
+        "endpoint": {
+          "all_anchors": false,
+          "all_hull_clear_north": true,
+          "all_wheels_clear_north": true,
+          "all_wheels_down": true,
+          "east_m": -47.9272458336483,
+          "north_m": 22.3807736856235,
+          "side_corridor_margin_m": 1.31662224610433,
+          "speed_mps": 0.0279293774375382,
+          "tick": 33360,
+          "time_s": 139.0
+        },
+        "error": "",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 31634500,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\west-calm\\exact\\flight.csv",
+            "sha256": "9984f98b5713da00d39a79e7e69190efa94b70e1f19f85f5c7c163e3c349494f"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\exact\\runner\\AFC09-R2-west-calm-exact-replay-mc5i6vk7\\engine.log",
+            "relative_to_evidence_root": "cases\\west-calm\\exact\\runner\\AFC09-R2-west-calm-exact-replay-mc5i6vk7\\engine.log",
+            "sha256": "8358a606eacc7b5b8c11898b95de672e86753a5243b982c65ac9312d3f1cc7a6"
+          },
+          "final_tick": 33360,
+          "first_tick": 0,
+          "report": {
+            "bytes": 6841,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\west-calm\\exact\\replay.json",
+            "sha256": "03653b8310c122b2930de7ecf77b2e5ef4c3dbcab09ba4d644229ea2d2883787"
+          },
+          "rows": 33361,
+          "run_checked": {
+            "bytes": 1782,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\exact\\runner\\AFC09-R2-west-calm-exact-replay-mc5i6vk7\\report.json",
+            "relative_to_evidence_root": "cases\\west-calm\\exact\\runner\\AFC09-R2-west-calm-exact-replay-mc5i6vk7\\report.json",
+            "sha256": "c1e799b8f367c7e6fc3ed67ed13ffd889c51c43dc34b407574ae797f48070c4f"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 76.844,
+          "engine_log": {
+            "bytes": 606,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\runner\\AFC09-R2-west-calm-4c0xvmug\\engine.log",
+            "relative_to_evidence_root": "cases\\west-calm\\runner\\AFC09-R2-west-calm-4c0xvmug\\engine.log",
+            "sha256": "de1608520ffcd79cd09da90c66dee78d54af77ee1cfd018a493b9ae0caff8fc1"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2043,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\runner\\AFC09-R2-west-calm-4c0xvmug\\report.json",
+            "relative_to_evidence_root": "cases\\west-calm\\runner\\AFC09-R2-west-calm-4c0xvmug\\report.json",
+            "sha256": "122f4416fca87cf9be06221038ef455fbbd2d2227c011f09923f2100c9bc9c04"
+          }
+        },
+        "full_clear_gate_pass": true,
+        "full_clear_vacate_elapsed_s": 17.1625,
+        "full_sortie_accepted_under_r1_plus_r2": true,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": 5.58750000000001,
+        "legacy_wheel_only_vacated": true,
+        "minimum_runway_e_end_margin_m": 1.28110406182032,
+        "raw_orfl": {
+          "bytes": 30931128,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\west-calm\\candidate.orfl",
+          "sha256": "5dec443a20791869135d334b26c1a6a54db5b8d58cd093cc4f8cd1fd3ef2d9a1"
+        },
+        "raw_report": {
+          "bytes": 229786,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-calm\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\west-calm\\candidate-report.json",
+          "sha256": "34195bdbd181bc8982e14702ccce3ef847ea3d594180f37f812f6affb54bc6db"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "2ccf7636512f85b940332f90a4a5d69f26f590aaf245e1e4f8100b5703377e52"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 33360,
+        "vacate_timeout": false
+      },
+      "case_id": "west-calm",
+      "direction": "west",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.2734572360962,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 0,
+        "failure_class": "none",
+        "failure_summary": "all 22 checks passed",
+        "original_22_gate_pass": true,
+        "original_exact_csv": {
+          "bytes": 29087959,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "8bd6f3ad1aff28bde8c6d6da562a591b56ffa6bd2ded897e83cf6535623c9c01"
+        },
+        "original_orfl": {
+          "bytes": 28751784,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "b58fd8d89c8527b2d6e26d2536e45a71b0cef5f7a094423b4641f409cd927f98"
+        },
+        "original_replay_report": {
+          "bytes": 6806,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "63fa6bf4b5e7fa4a615968d7ea98f1e98f848467d74deb8756cc210d53d7516a"
+        }
+      },
+      "turbulence_seed": 0,
+      "weather_profile": "calm"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": false,
+          "reasons": [
+            "airspeed"
+          ]
+        },
+        "clear_dwell_s": 0.25,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 29776,
+          "candidate_final_tick": 32317,
+          "columns": 70,
+          "common_final_tick": 29776,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1532,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\common-prefix.json",
+            "sha256": "2e02fee625a341c07f989685f5f671ae608e52385754fcb5e0d604dfd03ed104"
+          },
+          "rows": 29777,
+          "status": "identical"
+        },
+        "complete": true,
+        "corridor_violation": false,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": true,
+        "damage": false,
+        "duration_s": 134.654166666667,
+        "endpoint": {
+          "all_anchors": false,
+          "all_hull_clear_north": true,
+          "all_wheels_clear_north": true,
+          "all_wheels_down": true,
+          "east_m": -13.9741115318518,
+          "north_m": 22.3776884949694,
+          "side_corridor_margin_m": 35.2728428624667,
+          "speed_mps": 0.0240458767279849,
+          "tick": 32317,
+          "time_s": 134.654166666667
+        },
+        "error": "",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 37250906,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\exact\\flight.csv",
+            "sha256": "269dbc13a8f44e361d399b15bcc750bc145cace285e128105e7fe92c36d9ab82"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\exact\\runner\\AFC09-R2-west-headwind-s20261039-exact-replay-3_3thvh_\\engine.log",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\exact\\runner\\AFC09-R2-west-headwind-s20261039-exact-replay-3_3thvh_\\engine.log",
+            "sha256": "2215680a14880836c5a2540addc48f07a9cf52760b5b1112063ede6a9620fa6e"
+          },
+          "final_tick": 32317,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8012,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\exact\\replay.json",
+            "sha256": "f1de8c1ad0c4de4361c5ef37a0317a37701117ed9c719a953b5ceccf01e8a79d"
+          },
+          "rows": 32318,
+          "run_checked": {
+            "bytes": 1894,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\exact\\runner\\AFC09-R2-west-headwind-s20261039-exact-replay-3_3thvh_\\report.json",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\exact\\runner\\AFC09-R2-west-headwind-s20261039-exact-replay-3_3thvh_\\report.json",
+            "sha256": "804185f2c9fd8beb5f339243567bd82a453cf3ce60e78e9bc98ef72bd918af8c"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 72.594,
+          "engine_log": {
+            "bytes": 1405,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\runner\\AFC09-R2-west-headwind-s20261039-b_hlqrgt\\engine.log",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\runner\\AFC09-R2-west-headwind-s20261039-b_hlqrgt\\engine.log",
+            "sha256": "a19a05eb31d2ce7a65fd2a0aaee606f27cb3d993185bdd5a3d3a295dea014366"
+          },
+          "exit_code": 1,
+          "process_exit": 1,
+          "reason": "process_exit",
+          "report": {
+            "bytes": 2160,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\runner\\AFC09-R2-west-headwind-s20261039-b_hlqrgt\\report.json",
+            "relative_to_evidence_root": "cases\\west-headwind-s20261039\\runner\\AFC09-R2-west-headwind-s20261039-b_hlqrgt\\report.json",
+            "sha256": "6ff988318b627bbbd474e4d6fcd23827aefd1f8b6b9f5ef443b9e62365dc3254"
+          }
+        },
+        "full_clear_gate_pass": true,
+        "full_clear_vacate_elapsed_s": 16.3708333333333,
+        "full_sortie_accepted_under_r1_plus_r2": false,
+        "harness_checks": 26,
+        "harness_failures": [
+          "approach gate enters the bounded 6 m / 12 m/s airspeed regime at the predicted ground-speed/wind offset without pose reset \u2014 [{\"airspeed_mps\":12.5342797305149,\"altitude_m\":5.9896501492647,\"bank_rad\":-0.00281678811961343,\"east_m\":123.078627598313,\"ground_speed_mps\":10.3003033369108,\"north_m\":15.0621894138042,\"phase\":\"approach\",\"sink_mps\":0.248348527790138,\"speed_mps\":10.3003033369108,\"tick\":21419,\"time_s\":89.2458333333333,\"yaw_rad\":-1.55802819800184},{\"approach_crab_angle_rad\":-0.00302287701315271,\"approach_gate_along_m\":-123.090869856792,\"approach_gate_before_threshold_m\":73.0908698567925,\"approach_gate_prediction_valid\":true,\"approach_ground_speed_estimate_mps\":10.4121159809057,\"candidate_id\":\"AFC09-C5e\",\"target_touchdown_margin_m\":5.0}]"
+        ],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": 5.78333333333333,
+        "legacy_wheel_only_vacated": true,
+        "minimum_runway_e_end_margin_m": 35.2469332038451,
+        "raw_orfl": {
+          "bytes": 32183504,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\west-headwind-s20261039\\candidate.orfl",
+          "sha256": "a9d111885c6838ab9413fe1c2458cd91e675672c0af23dd69fe5a872b0d45690"
+        },
+        "raw_report": {
+          "bytes": 224327,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-headwind-s20261039\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\west-headwind-s20261039\\candidate-report.json",
+          "sha256": "b68a39456ee285e40f37f9e50950999acd7f15ff138ab5c61b2a110a77848200"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "fd5b01e1b8e0774abfba6e987978ae04fbff9da53e2974789106c36b32a4fbb3"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 32317,
+        "vacate_timeout": false
+      },
+      "case_id": "west-headwind-s20261039",
+      "direction": "west",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.5342797305149,
+        "approach_tas_at_or_below_12_5_mps": false,
+        "failed_check_count": 1,
+        "failure_class": "approach_entry_tas",
+        "failure_summary": "approach TAS exceeded 12.5 m/s by 0.034279731 m/s",
+        "original_22_gate_pass": false,
+        "original_exact_csv": {
+          "bytes": 34421162,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "de2a1b895e02143089bdfc73364251d163d4a52a2c89b53f2e97739e02154f36"
+        },
+        "original_orfl": {
+          "bytes": 30027576,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "9233845fa8655349254db09bbb8ac9b62770499c7da2685d3b32747d6c869b33"
+        },
+        "original_replay_report": {
+          "bytes": 7977,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "fedea19061726e4877dce02a5aa26c9d96012d3451865e26cf98986973edfe00"
+        }
+      },
+      "turbulence_seed": 20261039,
+      "weather_profile": "headwind"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.25,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 30679,
+          "candidate_final_tick": 33874,
+          "columns": 70,
+          "common_final_tick": 30679,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1568,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\common-prefix.json",
+            "sha256": "763c99bf26274af60d8f2efaa07ad2426f6cb2bd4c20c61a97dddf88ea6328a7"
+          },
+          "rows": 30680,
+          "status": "identical"
+        },
+        "complete": true,
+        "corridor_violation": false,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": true,
+        "damage": false,
+        "duration_s": 141.141666666667,
+        "endpoint": {
+          "all_anchors": false,
+          "all_hull_clear_north": true,
+          "all_wheels_clear_north": true,
+          "all_wheels_down": true,
+          "east_m": -48.224740270407,
+          "north_m": 22.3793063575546,
+          "side_corridor_margin_m": 1.01839326732778,
+          "speed_mps": 0.0230147428154954,
+          "tick": 33874,
+          "time_s": 141.141666666667
+        },
+        "error": "",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 39176752,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\exact\\flight.csv",
+            "sha256": "3589e9bc4078861ab127e546a6898730c5a2de1d0792f70b5cc6a8a416dba372"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\exact\\runner\\AFC09-R2-west-north-crosswind-s20261044-exact-replay-1jt91rao\\engine.log",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\exact\\runner\\AFC09-R2-west-north-crosswind-s20261044-exact-replay-1jt91rao\\engine.log",
+            "sha256": "2414060b1839403da264eef249f9bb145a1e2e07842881884968cbfb18420910"
+          },
+          "final_tick": 33874,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8024,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\exact\\replay.json",
+            "sha256": "b3989fd8e521b611878e9744a8f02827746b1a7c026bf5efec4ef90a3ba7e734"
+          },
+          "rows": 33875,
+          "run_checked": {
+            "bytes": 1950,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\exact\\runner\\AFC09-R2-west-north-crosswind-s20261044-exact-replay-1jt91rao\\report.json",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\exact\\runner\\AFC09-R2-west-north-crosswind-s20261044-exact-replay-1jt91rao\\report.json",
+            "sha256": "b1f949e83fd1faea66e7fa967726887759cfe294827d3edc813cf20a69fa1c5f"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 70.187,
+          "engine_log": {
+            "bytes": 669,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\runner\\AFC09-R2-west-north-crosswind-s20261044-vv7qevce\\engine.log",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\runner\\AFC09-R2-west-north-crosswind-s20261044-vv7qevce\\engine.log",
+            "sha256": "08ff826bdf3c014d77d3913041f3e384c0a49f9d74ee035510cef5e111436f41"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2208,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\runner\\AFC09-R2-west-north-crosswind-s20261044-vv7qevce\\report.json",
+            "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\runner\\AFC09-R2-west-north-crosswind-s20261044-vv7qevce\\report.json",
+            "sha256": "4fb3efd60b9116662d9b8439cfb84e30d8a42c5da25fb9b7a4689bb19ac86fae"
+          }
+        },
+        "full_clear_gate_pass": true,
+        "full_clear_vacate_elapsed_s": 18.9458333333333,
+        "full_sortie_accepted_under_r1_plus_r2": true,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": 5.63333333333334,
+        "legacy_wheel_only_vacated": true,
+        "minimum_runway_e_end_margin_m": 0.992523206987364,
+        "raw_orfl": {
+          "bytes": 33504660,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\candidate.orfl",
+          "sha256": "abe8a2c6f6b2a2a84f1585669ef1fd40b4428d46ae6244069142cf4e09ad53d9"
+        },
+        "raw_report": {
+          "bytes": 233467,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-north-crosswind-s20261044\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\west-north-crosswind-s20261044\\candidate-report.json",
+          "sha256": "aed479804f8573046dd6dbaf4e923f19496e269f50cfd70c3d10c475448e5c77"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "e43fb15d72ae143aa2a7efeb0b6c91e999cd418b29349268e8f8eaa6ac0cd8ef"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 33874,
+        "vacate_timeout": false
+      },
+      "case_id": "west-north-crosswind-s20261044",
+      "direction": "west",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.2766651654021,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 0,
+        "failure_class": "none",
+        "failure_summary": "all 22 checks passed",
+        "original_22_gate_pass": true,
+        "original_exact_csv": {
+          "bytes": 35586065,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "a51d2e22d8445e714396c7f4dcf15b9ecce0202b66da9555308abccefd107d8d"
+        },
+        "original_orfl": {
+          "bytes": 30793676,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "e96d9fe43443a2d5b786bae2c11d704c4a93d1c251e9ef7cc392e64525caeb77"
+        },
+        "original_replay_report": {
+          "bytes": 7993,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "4aefed196149cdecefd751030c5b6f185649214bf5acaf372d5e671c1024807a"
+        }
+      },
+      "turbulence_seed": 20261044,
+      "weather_profile": "north_crosswind_0p5"
+    },
+    {
+      "candidate_r2": {
+        "approach_entry_readiness": {
+          "ready": true,
+          "reasons": []
+        },
+        "clear_dwell_s": 0.0,
+        "clear_reset_count": 0,
+        "common_prefix": {
+          "baseline_final_tick": 40323,
+          "candidate_final_tick": 29905,
+          "columns": 70,
+          "common_final_tick": 29905,
+          "comparison_scope": "Exact string comparison of every CSV column through min(baseline final tick, candidate final tick); no suffix comparison.",
+          "mismatched_cells": 0,
+          "mismatched_rows": 0,
+          "report": {
+            "bytes": 1568,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\common-prefix.json",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\common-prefix.json",
+            "sha256": "2b60b9d3b1aec4bdb0eea29dcd0dcfaa4c8a33881c064c39e64d8b8050616643"
+          },
+          "rows": 29906,
+          "status": "identical"
+        },
+        "complete": false,
+        "corridor_violation": true,
+        "current_all_anchors_stiction": false,
+        "current_all_wheels_down": true,
+        "current_full_footprint_clear": false,
+        "damage": false,
+        "duration_s": 124.604166666667,
+        "endpoint": {},
+        "error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "exact_replay": {
+          "complete": true,
+          "csv": {
+            "bytes": 34690347,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\flight.csv",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\exact\\flight.csv",
+            "sha256": "191bf860bcd9a031275430777b6a52eb0cfdd768f89775d8b48fbbfec7fc7917"
+          },
+          "engine_log": {
+            "bytes": 209,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\runner\\AFC09-R2-west-south-crosswind-s20261051-exact-replay-807ba7s5\\engine.log",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\exact\\runner\\AFC09-R2-west-south-crosswind-s20261051-exact-replay-807ba7s5\\engine.log",
+            "sha256": "6a0258845ae7569ebbc8a277fc39d5c9af73a763bc86e71d402a123678299b24"
+          },
+          "final_tick": 29905,
+          "first_tick": 0,
+          "report": {
+            "bytes": 8109,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\replay.json",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\exact\\replay.json",
+            "sha256": "73c3d02b8d1d909fe7784fdee6f10b754fd5bade92b35ba808f7cbaed12950e5"
+          },
+          "rows": 29906,
+          "run_checked": {
+            "bytes": 1950,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\runner\\AFC09-R2-west-south-crosswind-s20261051-exact-replay-807ba7s5\\report.json",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\exact\\runner\\AFC09-R2-west-south-crosswind-s20261051-exact-replay-807ba7s5\\report.json",
+            "sha256": "7ce1873d6fcaf5e55c0c04584bf7390952f1b1bfaf46cfdd5f8ea96fd8ef72f7"
+          },
+          "solver_changed": false,
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+        },
+        "flight_run_checked": {
+          "complete": true,
+          "counts": {
+            "error": 0,
+            "warning": 0
+          },
+          "diagnostics": [],
+          "elapsed_seconds": 51.25,
+          "engine_log": {
+            "bytes": 669,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\runner\\AFC09-R2-west-south-crosswind-s20261051-vg1mfox3\\engine.log",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\runner\\AFC09-R2-west-south-crosswind-s20261051-vg1mfox3\\engine.log",
+            "sha256": "bb9a4509f64cfd7b5ec45ea7af86571f14c8cb291e8210dc7317de7055feed02"
+          },
+          "exit_code": 0,
+          "process_exit": 0,
+          "reason": "passed",
+          "report": {
+            "bytes": 2207,
+            "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\runner\\AFC09-R2-west-south-crosswind-s20261051-vg1mfox3\\report.json",
+            "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\runner\\AFC09-R2-west-south-crosswind-s20261051-vg1mfox3\\report.json",
+            "sha256": "f62066dff2cd18bb4d0a3dee77f602fb5f29c1eac97338fe7e0ab6ba0e2f124f"
+          }
+        },
+        "full_clear_gate_pass": false,
+        "full_clear_vacate_elapsed_s": -1.0,
+        "full_sortie_accepted_under_r1_plus_r2": false,
+        "harness_checks": 26,
+        "harness_failures": [],
+        "harness_ok": true,
+        "legacy_wheel_only_vacate_elapsed_s": -1.0,
+        "legacy_wheel_only_vacated": false,
+        "minimum_runway_e_end_margin_m": -0.00219428959260171,
+        "raw_orfl": {
+          "bytes": 30137140,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\candidate.orfl",
+          "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\candidate.orfl",
+          "sha256": "e5db1fc74ecedc9dd2730e8b79c4b307d3e9d5c7672684dc9cbbf2b4f0efe5d0"
+        },
+        "raw_report": {
+          "bytes": 207274,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\candidate-report.json",
+          "relative_to_evidence_root": "cases\\west-south-crosswind-s20261051\\candidate-report.json",
+          "sha256": "18c0bc7d227f684e7b1c3fb39ad0d2d089e9a5da04cacb67bb309efbd5c16fd7"
+        },
+        "runtime_source_identity": {
+          "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+          "collision_setup_source_sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4",
+          "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "field_collision_sha256": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+          "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+          "flight_session_source_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+          "ground_start_source_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+          "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+          "lake_source_sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531",
+          "landing_maneuver_source_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+          "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+          "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "weather_config_sha256": "924d3e4b056fd7a3f39d0045ce1372bb93a91cb9c9ed7dfb4e75332eed808f20"
+        },
+        "sim_fault": "",
+        "start_error": "",
+        "tick_count": 29905,
+        "vacate_timeout": false
+      },
+      "case_id": "west-south-crosswind-s20261051",
+      "direction": "west",
+      "historical_r1": {
+        "approach_entry_tas_mps": 12.307928835499,
+        "approach_tas_at_or_below_12_5_mps": true,
+        "failed_check_count": 2,
+        "failure_class": "physical_taxi_timeout",
+        "failure_summary": "physical north-side taxi failed to vacate within 45 s",
+        "original_22_gate_pass": false,
+        "original_exact_csv": {
+          "bytes": 46025997,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\flight.csv",
+          "relative_to_evidence_root": null,
+          "sha256": "add7e5502c5bb0e4825f5d2b10fe2931f09a94eacfa762d78f80106f13116243"
+        },
+        "original_orfl": {
+          "bytes": 38976692,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051.orfl",
+          "relative_to_evidence_root": null,
+          "sha256": "707c23c47b394f15d6695deccc490f04f235582f1ce803f19f6a92f73aaba59b"
+        },
+        "original_replay_report": {
+          "bytes": 8072,
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\replay.json",
+          "relative_to_evidence_root": null,
+          "sha256": "4ee675086a5a771b3781f27d80439dc7145ed5d53f08f1b7f5eab72760389171"
+        }
+      },
+      "turbulence_seed": 20261051,
+      "weather_profile": "south_crosswind_0p5"
+    }
+  ],
+  "format": "afc09-clearance-gate-r2-verification-v1",
+  "result": {
+    "case_count": 8,
+    "combined_acceptance_rule": "R1 original 22 gates pass and R2 current full gear+hull clearance gate passes; all selected candidate ORFLs also exact-replay unchanged and have identical all-column CSVs over their common tick prefixes.",
+    "combined_full_sortie_acceptances": 4,
+    "common_prefix_comparisons_identical": 8,
+    "common_prefix_rows_total": 245035,
+    "r1_original_22_gate_passes": 5,
+    "r2_full_clear_gate_passes": 5
+  },
+  "scope": "Research-only C5e gate qualification. Flight commands, taxi commands, physics, aircraft data, and the historical R1 22 gates were unchanged.",
+  "source_identity": {
+    "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "approach_readiness_classifier": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\approach_entry_readiness.gd",
+      "sha256": "d70ffd247bb863923deb2d1087732ed4902b2d5aaf7b0cedd6695e20059db9dc"
+    },
+    "candidate_driver": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\external_sortie_driver_candidate_clearance.gd",
+      "sha256": "658212374fe2cd0b887169f9c1db87aaed60a41a2c4c280239f38d5f569ca4bd"
+    },
+    "common_prefix_comparator": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\compare_sortie_common_prefix.py",
+      "sha256": "51cd28b384e5c32b51675d81c2d2355c8250492697fa6eb6c7d7f2a805ad2862"
+    },
+    "evidence_collector": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\collect_clearance_gate_evidence.py",
+      "sha256": "bbe69056898056d37359c432d1b2ea7eceff85e12eaea44ff34ed352243ffc36"
+    },
+    "frozen_app_mirror": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R4/mirror/app",
+    "original_driver": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\external_sortie_driver.gd",
+      "sha256": "b8902dee829422974d9020781e7bd629c4d30145147aecc6b3c5f2f246fc8b6d"
+    },
+    "pilot": {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/research/ai-companions/sorties/circuit_pilot_candidate_c5e.gd",
+      "sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395"
+    },
+    "r1_verification": {
+      "bytes": 52880,
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-09-R1\\verification.json",
+      "relative_to_evidence_root": "ai-companions\\AFC-09-R1\\verification.json",
+      "sha256": "117a3c85e444345d61fcf84fd599088328b2c7d423580ca02b85cf4e8f82fbc7"
+    },
+    "run_checked_script": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\godot\\run_checked.py",
+      "sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad"
+    },
+    "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "state_check_script": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\test_taxi_exit_clearance_state.gd",
+      "sha256": "fa46f2d6e47435e010a2c2fbbbdd2ff555dffc607cc0451f71f547fc94649dc9"
+    },
+    "test_harness": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\sorties\\test_external_sortie.gd",
+      "sha256": "59092afeaf47bff0d2bc59fec31aa9f0f2431104cf231f417575f71709126a62"
+    }
+  },
+  "unit_checks": [
+    {
+      "checks": 21,
+      "driver": "external_sortie_driver_candidate_clearance.gd",
+      "engine_log": {
+        "bytes": 234,
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\state-checks\\AFC09-R2-clearance-state-gate-driver-9o28yalb\\engine.log",
+        "relative_to_evidence_root": "state-checks\\AFC09-R2-clearance-state-gate-driver-9o28yalb\\engine.log",
+        "sha256": "5faf2bf24fdcb2b6c76913d74fe94988b6739fcdda6d818017f5fe086eed9627"
+      },
+      "failed": 0,
+      "run_checked": {
+        "bytes": 1561,
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\state-checks\\AFC09-R2-clearance-state-gate-driver-9o28yalb\\report.json",
+        "relative_to_evidence_root": "state-checks\\AFC09-R2-clearance-state-gate-driver-9o28yalb\\report.json",
+        "sha256": "9b21a4366bfeb77981ddd9d82ee83080c551b4768a97942e8b5d4a139c092298"
+      }
+    },
+    {
+      "checks": 21,
+      "driver": "external_sortie_driver_candidate_taxi.gd",
+      "engine_log": {
+        "bytes": 229,
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\state-checks-default\\AFC09-R2-clearance-state-default-taxi-driver-i_k_y8la\\engine.log",
+        "relative_to_evidence_root": "state-checks-default\\AFC09-R2-clearance-state-default-taxi-driver-i_k_y8la\\engine.log",
+        "sha256": "140aedc32dcd0d3ab5651822fb63866febec4dde3fedd1407928708fe04556e8"
+      },
+      "failed": 0,
+      "run_checked": {
+        "bytes": 1465,
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\state-checks-default\\AFC09-R2-clearance-state-default-taxi-driver-i_k_y8la\\report.json",
+        "relative_to_evidence_root": "state-checks-default\\AFC09-R2-clearance-state-default-taxi-driver-i_k_y8la\\report.json",
+        "sha256": "f02b790ba771eae729c9dfe911e4eac4032f1a68284d1751282bdb039934643c"
+      }
+    }
+  ]
+}

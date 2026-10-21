@@ -1,0 +1,9 @@
+# AFC-04-R5: Predictor path binding probe
+
+This research-only probe exposes the current reachable-bank predictor's sampled own-aircraft NED points and checks those points with the existing `StaticTrajectory` helper. The candidate is an exact copy of the pinned production pilot with only an `include_trace`-gated point capture and return field; the unified diff is in [sources/predictor-trace.patch](sources/predictor-trace.patch). The production pilot and runtime behavior were not changed.
+
+The focused Godot 4.7.2 run passed 13 checks. It verified exact production/candidate result-dictionary parity with tracing disabled across three synthetic scoring inputs, parity of all prior result fields with tracing enabled, and a 33-point path over 8 seconds at 0.25-second steps. Against that identical path, the clear route and off-path-wall control passed; a small wall centered halfway between the first two samples blocked the swept segment even though both endpoints individually cleared the same inflated envelope. The synthetic predictor score remained positive in all three cases. The 40 m/s fixture speed is a geometry stress input, not a flight sample.
+
+`verification.json` records the inputs, source hashes, exact checker outcomes, and checked-run result. Exact tested candidate and harness bytes are retained under [sources](sources/), with hashes recorded in the receipt. The successful engine log and runner report are retained under `checks/`; an initial harness parse error is retained separately and was fixed before the final run. The D-drive evidence directory also retains all attempt captures.
+
+Every static assessment used `path_error_m = 0`. This checks only the sampled nominal polyline. It does not bound interpolation, prediction, or controller tracking error; it is not a flight-equivalence, physical-safety, or containment qualification. The probe does not connect the checker to production scoring or commands.

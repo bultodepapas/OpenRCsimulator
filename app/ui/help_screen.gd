@@ -103,6 +103,11 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	_update_field_conditions_text()
 	right.add_child(field_conditions_label)
 
+	if _vehicle_type == Reference.AIRPLANE:
+		page.add_child(_text("Flight companions", "SectionLabel"))
+		page.add_child(_text("Club field offers 1–3 experimental Ugly Stik companions flying circuits. They are Off by default; start with one. Open Flight companions under Home → More flight details or Pause → Session options.", "SecondaryLabel", true))
+		page.add_child(_text("Apply changes sound and labels immediately. Flight settings take effect after Restart flight. Remove companions now clears the current roster; disable companions and Apply to keep them off after restarting. Aircraft-to-aircraft contact is disabled.", "SecondaryLabel", true))
+
 	# About spans the body; the focusable scroll area exposes the full reference at small sizes.
 	page.add_child(_text("ABOUT", "SectionLabel"))
 	about_label = _text("", "SecondaryLabel", true)

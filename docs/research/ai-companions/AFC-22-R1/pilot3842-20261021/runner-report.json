@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f0224dca-70f8-4df1-901b-e6a85d4333ec",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://../research/ai-companions/checkpoints/test_fleet_checkpoint.gd"
+  ],
+  "cwd": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021",
+  "started_utc": "2026-10-21T03:47:50.651096+00:00",
+  "label": "godot",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\checkpoints\\runner-pilot3842-20261021\\godot-jav48aq_\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\checkpoints\\runner-pilot3842-20261021\\godot-jav48aq_\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "PASS offline fleet checkpoint continuation"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 41.906,
+  "log_bytes": 4635,
+  "log_sha256": "8e2fab1df5d4a996742f0589982edd8b75b148634494f2ad20d354c1fe0dd60e"
+}

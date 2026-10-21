@@ -9,6 +9,7 @@ const Builder := preload("res://render/airplane.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const Profiles := preload("res://ai/companions/profile_loader.gd")
+const ObservationAirdata := preload("res://ai/companions/observation_airdata.gd")
 
 var session: Node
 var pilot: RefCounted
@@ -126,9 +127,9 @@ func _refuse(message: String) -> Dictionary:
 
 func observation() -> Dictionary:
 	var state: PackedFloat64Array = session.sim.state.duplicate()
-	var air: Dictionary = session.air_data(state)
-	return {id = "companion-%d" % slot_id, slot = slot_id, state = state, airspeed_m_s = float(air.V),
-		wind_ned = session.wind_at(session.sim.time()),
+	var wind: PackedFloat64Array = session.wind_at(session.sim.time())
+	return {id = "companion-%d" % slot_id, slot = slot_id, state = state,
+		airspeed_m_s = ObservationAirdata.airspeed_m_s(state, wind), wind_ned = wind,
 		ground_clearance_m = -state[2] - float(session.environment.ground(state[0], state[1])[0]),
 		trim = _accepted_trim.duplicate(), turbulence_rms_m_s = _weather_rms.duplicate(), is_player = false}
 

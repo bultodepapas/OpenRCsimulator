@@ -1,0 +1,32 @@
+{
+  "format": "openrc-afc-observation-abba-preflight v1",
+  "captured_utc": "2026-10-21T05:10:23.5821635Z",
+  "scratch_root": "D:\\OpenRCsimulator-AFC-work\\observation-airdata-scratch-20261021",
+  "process_inventory_before": [],
+  "process_inventory_before_empty": true,
+  "expected_production_sha256": {
+    "agent": "c3846b59fc59b40ffb25af2adf95f74077f150591d027d1a2512f70930a26fb8",
+    "pilot": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "manager": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+    "controller": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+  },
+  "actual_production_sha256": {
+    "agent": "c3846b59fc59b40ffb25af2adf95f74077f150591d027d1a2512f70930a26fb8",
+    "pilot": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "manager": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+    "controller": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+  },
+  "pinned_production_sources_match": true,
+  "timing_source_sha256": {
+    "observation_candidate_agent.gd": "0d5566792ca55f33bd5f85fbed3186abbf23f4470f45a976999e571f2509080c",
+    "observation_airdata_candidate.gd": "3a3bc5d8f406a7f56dbc975edb93c204c881ec5b73c149f2a6db08c2eb75c2ac",
+    "observation_abba_timing_probe.gd": "7708375bffba13b0260df0bed824c15392bd1800f41e18d980d34d2a01b09bc7"
+  },
+  "checked_runner": "tools/godot/run_checked.py",
+  "checked_runner_sha256": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+  "godot_executable": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "python_version": "Python 3.11.9",
+  "host_processor": "AMD Ryzen 9 5900X 12-Core Processor            ",
+  "host_os": "Microsoft Windows 11 Pro 10.0.26100"
+}

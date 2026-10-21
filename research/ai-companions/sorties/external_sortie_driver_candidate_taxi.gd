@@ -18,7 +18,7 @@ const IDLE_HOLD_S := 1.0
 const LANDING_DWELL_S := 2.0
 const ROLLOUT_MAX_ANGULAR_SPEED_RAD_S := 0.01
 const ROLLOUT_MAX_DRIFT_M := 0.002
-const RUNWAY_CLEARANCE_M := 2.0 # research-only lateral margin beyond the loaded runway edge
+const RUNWAY_CLEARANCE_M := 2.0 # research-only northward taxi target beyond the loaded runway edge
 const VACATE_MAX_S := 45.0
 const MAX_DURATION_S := 240.0
 const TAXI_POLICY_ID := "AFC09-taxi-speed-c1"
@@ -35,6 +35,60 @@ const DEFAULT_TAXI_YAW_RATE_DAMPING := 0.0 # preserve the measured C5e yaw law f
 const DEFAULT_TAXI_SPEED_GUARD_MARGIN_MPS := 0.15
 const DEFAULT_TAXI_PROGRESS_DEADLINE_S := 8.0
 const DEFAULT_TAXI_PROGRESS_DISTANCE_M := 0.25
+
+
+static func new_clearance_state() -> Dictionary:
+	return {
+		clear_dwell_s = 0.0,
+		full_exit_clear_now = false,
+		all_wheels_down_now = false,
+		side_corridor_clear_now = true,
+		runway_vacated = false,
+		clear_reset_count = 0,
+	}
+
+
+static func advance_clearance_state(state: Dictionary, dt_s: float,
+		all_wheels_clear_north: bool, all_hull_clear_north: bool,
+		all_wheels_down: bool, lateral_footprint_margin_m: float) -> Dictionary:
+	if not is_finite(dt_s) or dt_s <= 0.0 or not is_finite(lateral_footprint_margin_m):
+		return {ok = false, error = "taxi clearance timestep and footprint margin must be finite; timestep must be positive"}
+	var full_exit_clear_now: bool = all_wheels_clear_north and all_hull_clear_north
+	var side_corridor_clear_now: bool = lateral_footprint_margin_m >= 0.0
+	var clear_dwell_s: float = float(state.get("clear_dwell_s", 0.0))
+	var was_vacated: bool = bool(state.get("runway_vacated", false))
+	var clearance_qualified_now: bool = full_exit_clear_now and all_wheels_down and side_corridor_clear_now
+	if clearance_qualified_now:
+		clear_dwell_s += dt_s
+	else:
+		if clear_dwell_s > 0.0 or was_vacated:
+			state["clear_reset_count"] = int(state.get("clear_reset_count", 0)) + 1
+		clear_dwell_s = 0.0
+	var runway_vacated: bool = clearance_qualified_now and clear_dwell_s >= 0.25
+	state["clear_dwell_s"] = clear_dwell_s
+	state["full_exit_clear_now"] = full_exit_clear_now
+	state["all_wheels_down_now"] = all_wheels_down
+	state["side_corridor_clear_now"] = side_corridor_clear_now
+	state["runway_vacated"] = runway_vacated
+	return {
+		ok = true,
+		full_exit_clear_now = full_exit_clear_now,
+		all_wheels_down_now = all_wheels_down,
+		side_corridor_clear_now = side_corridor_clear_now,
+		clear_dwell_s = clear_dwell_s,
+		runway_vacated = runway_vacated,
+		clear_reset_count = int(state.get("clear_reset_count", 0)),
+		corridor_check_required = true,
+		lateral_footprint_violation = not side_corridor_clear_now,
+	}
+
+
+static func can_complete_clearance(state: Dictionary, sortie_elapsed_s: float) -> bool:
+	return is_finite(sortie_elapsed_s) and sortie_elapsed_s >= 2.0 \
+		and bool(state.get("full_exit_clear_now", false)) \
+		and bool(state.get("all_wheels_down_now", false)) \
+		and bool(state.get("side_corridor_clear_now", false)) \
+		and bool(state.get("runway_vacated", false))
 
 
 static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURATION_S,
@@ -262,6 +316,8 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 		vacate_all_wheels_down = true,
 		vacate_all_anchors = true,
 		vacate_full_footprint_clear = false,
+		vacate_clear_dwell_s = 0.0,
+		vacate_clear_reset_count = 0,
 		vacate_lateral_footprint_violation = false,
 		vacate_min_lateral_footprint_margin_m = INF,
 		vacate_max_heading_error_rad = 0.0,
@@ -284,7 +340,7 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 	var landing_hold_max_drift_m := 0.0
 	var vacate_started := false
 	var vacate_start_time := -1.0
-	var vacate_clear_ticks := 0
+	var vacate_clearance_state: Dictionary = new_clearance_state()
 	var taxi_controller := {speed_integral = 0.0}
 	var taxi_progress_reference_north := 0.0
 	var taxi_last_progress_time_s := 0.0
@@ -461,15 +517,6 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 			out.vacate_speed_guard_hits = int(taxi_controller.get("speed_guard_hits", 0))
 			out.vacate_all_wheels_down = bool(out.vacate_all_wheels_down) and all_wheels_down
 			out.vacate_all_anchors = bool(out.vacate_all_anchors) and all_anchors
-			var full_exit_clear: bool = all_wheels_clear_north and all_hull_clear_north
-			if full_exit_clear:
-				vacate_clear_ticks += 1
-			else:
-				vacate_clear_ticks = 0
-			if float(vacate_clear_ticks) * dt >= 0.25:
-				out.runway_vacated = true
-				out.vacate_full_footprint_clear = true
-				out.vacate_time_s = session.sim.time() - vacate_start_time
 			var lateral_footprint_margin_m: float = INF
 			for wheel_index: int in wheel_contacts.size():
 				var wheel_point: PackedFloat64Array = LandingContact.contact_state(after, wheel_contacts[wheel_index].position)
@@ -478,8 +525,22 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 				var body_point: PackedFloat64Array = session.aircraft.model.crash_hull.slice(hull_index, hull_index + 3)
 				var world_point: PackedFloat64Array = LandingContact.contact_state(after, body_point)
 				lateral_footprint_margin_m = minf(lateral_footprint_margin_m, _runway_lateral_margin_for_point(world_point, runway))
+			var previously_vacated: bool = bool(out.runway_vacated)
+			var clearance_status: Dictionary = advance_clearance_state(vacate_clearance_state, dt,
+				all_wheels_clear_north, all_hull_clear_north, all_wheels_down, lateral_footprint_margin_m)
+			if not bool(clearance_status.get("ok", false)):
+				out.error = str(clearance_status.get("error", "taxi full-footprint clearance state failed"))
+				break
+			out.runway_vacated = bool(clearance_status.get("runway_vacated", false))
+			out.vacate_full_footprint_clear = bool(clearance_status.get("full_exit_clear_now", false))
+			out.vacate_clear_dwell_s = float(clearance_status.get("clear_dwell_s", 0.0))
+			out.vacate_clear_reset_count = int(clearance_status.get("clear_reset_count", 0))
+			if out.runway_vacated and not previously_vacated:
+				out.vacate_time_s = session.sim.time() - vacate_start_time
+			if not out.runway_vacated:
+				out.vacate_time_s = -1.0
 			out.vacate_min_lateral_footprint_margin_m = minf(float(out.vacate_min_lateral_footprint_margin_m), lateral_footprint_margin_m)
-			if not full_exit_clear and lateral_footprint_margin_m < 0.0:
+			if bool(clearance_status.get("lateral_footprint_violation", false)):
 				out.vacate_lateral_footprint_violation = true
 				out.error = "physical taxi footprint left the runway side corridor before the full north-side exit"
 			var vacate_elapsed_s: float = session.sim.time() - vacate_start_time
@@ -495,9 +556,11 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 			if session.sim.time() - vacate_start_time > VACATE_MAX_S and not out.runway_vacated:
 				out.vacate_timeout = true
 				out.error = "physical north-side runway vacate did not clear the loaded runway in 45 seconds"
-			if bool(out.runway_vacated) and session.sim.time() - vacate_start_time >= 2.0:
+			if can_complete_clearance(vacate_clearance_state, vacate_elapsed_s) \
+				and all_wheels_clear_north and all_hull_clear_north and all_wheels_down \
+				and str(out.error).is_empty():
 				out.vacate_end = {tick = session.sim.tick, time_s = session.sim.time(), speed_mps = speed_mps,
-				north_m = after[0], east_m = after[1], all_wheels_clear_north = all_wheels_clear_north,
+					north_m = after[0], east_m = after[1], all_wheels_clear_north = all_wheels_clear_north,
 					all_hull_clear_north = all_hull_clear_north, all_wheels_down = all_wheels_down,
 					all_anchors = all_anchors}
 				out.complete = true
@@ -533,6 +596,8 @@ static func run(eastbound: bool, log_path: String, duration_s: float = MAX_DURAT
 
 	if not bool(out.complete) and str(out.error).is_empty():
 		out.error = "sortie did not achieve a supported two-second rollout and physical runway vacate before timeout"
+	if not str(out.error).is_empty():
+		out.complete = false
 	out.terminal_damage = bool(out.terminal_damage) or not session.crash.is_empty() \
 		or not session.prop_strike.is_empty() or session.gear_collapsed(session.sim.state)
 	out.sim_fault = str(session.sim.fault_reason)

@@ -1,0 +1,233 @@
+{
+	"cases": [
+		{
+			"baseline": {
+				"agent_tick_fingerprints": {
+					"0": [
+						"3b7ccabf8e266a239f884805de8f8ef4a095c033d5052ddb690a82e1f59e71c9",
+						"b3e965598646dd2b41c5b986f8b5d28e7056a4265acf9ef63c7779c19f5441fb",
+						"96c2279f7433fc729974b074e8f76eb775b90c8987036006fa448eb16f2af7e1",
+						"54be2da62249251130245ef23cd989497d75a0160c297139b9f637ce3d04ce69",
+						"d1bd857c3a68af9f916ccfa41851cab814e5cb65a3af710867309e6bc18298eb",
+						"cd70e834aa231379fc4b9373682062acc3ae287d348f6e44e2eea63a2820e3b4",
+						"0cfa9ef54a5f11efd3704a2e4d91da999709c69b97e6ddea1c0af9b4dbaaedbc",
+						"55aaad32db49bf164f6b9a35aa41fee0a8358930091217e5b2679f59d095868c"
+					]
+				},
+				"airdata_bitwise_match_count": 2,
+				"airdata_comparison_count": 2,
+				"branch": "baseline",
+				"complete": true,
+				"completed_ticks": 8,
+				"count": 1,
+				"failure": "",
+				"max_sampled_abs_wind_m_s": 1.43421506202658,
+				"observation_fingerprints": {
+					"0": [
+						"a902ce2ff7fff31f0baede21b1f09950255dd21c7113ebffb8f912e56b78d263",
+						"b0aa08d31aa85c2ec31b3961c0fb98adb0aa0233a13dda37c374ddc91f8dd790"
+					]
+				},
+				"observations_at_or_after_gust_delay": 0,
+				"pilot_return_fingerprints": {
+					"0": [
+						{
+							"fingerprint": "b6864a8807b69c30c9e691dd96d3e56fa02f943b25513bc6619740726d1a14ed",
+							"tick": 0
+						},
+						{
+							"fingerprint": "70e9e26607fb9787c555d3e55a5e6b6b76b70b9e5fb76d075933d3ff7cd0c150",
+							"tick": 4
+						}
+					]
+				},
+				"player_tick_fingerprints": [
+					"92ff3355b5d06fb9309130c1b39f314d808d2a02a23dd61c40e0b32f448b7ea6",
+					"babdbadad8ad8fb4c8e249ca871363476c783d5a66d5af8a00d92bea54417ff4",
+					"6d9cf416371970fe64d69888be2b4a1dc16b88e9f373cb3a72fbc5483bfd49a7",
+					"6c47195cd9b12dccf06b4ca8365e184b313d5d046396952afded673259744893",
+					"2c40e6ef468940216f9967cc03cf63633213ea57003f6f1875d9c1bc2eb6fff0",
+					"8bf1552ced47ff206c1eac03ef0569c199c26bd372e903569fb999fa2ab96d13",
+					"39d7cbecf45bb6101bd4064d8495ca3081cdca953bd272f51ceb50ec7cca17b1",
+					"16e070308ec3489023f2c465aa35f5181aa58d39aec6484e8c2398fb7a12d542"
+				],
+				"repeated_wind_match_count": 2,
+				"weather_observation_summary": {
+					"gust_delay_s": 3.0,
+					"interpretation": "The fixture runs through the configured gust delay with committed deterministic turbulence. This is varied-input coverage, not weather or flight qualification.",
+					"max_sampled_abs_component_m_s": 1.43421506202658,
+					"observation_samples": 2,
+					"observations_at_or_after_gust_delay": 0,
+					"unique_wind_sample_fingerprints": 2
+				},
+				"wind_fingerprints": {
+					"0": [
+						"91485a8dd6124eb34c3a2f7c6e8a74ac8f23cf0e65a9bf9a59cb2c6bf21d49e9",
+						"02f481ccc2dcd7a342b45a280f5c723ce93299f09cb690d7aff087fa9e75f5d9"
+					]
+				}
+			},
+			"candidate": {
+				"agent_tick_fingerprints": {
+					"0": [
+						"3b7ccabf8e266a239f884805de8f8ef4a095c033d5052ddb690a82e1f59e71c9",
+						"b3e965598646dd2b41c5b986f8b5d28e7056a4265acf9ef63c7779c19f5441fb",
+						"96c2279f7433fc729974b074e8f76eb775b90c8987036006fa448eb16f2af7e1",
+						"54be2da62249251130245ef23cd989497d75a0160c297139b9f637ce3d04ce69",
+						"d1bd857c3a68af9f916ccfa41851cab814e5cb65a3af710867309e6bc18298eb",
+						"cd70e834aa231379fc4b9373682062acc3ae287d348f6e44e2eea63a2820e3b4",
+						"0cfa9ef54a5f11efd3704a2e4d91da999709c69b97e6ddea1c0af9b4dbaaedbc",
+						"55aaad32db49bf164f6b9a35aa41fee0a8358930091217e5b2679f59d095868c"
+					]
+				},
+				"airdata_bitwise_match_count": 2,
+				"airdata_comparison_count": 2,
+				"branch": "candidate",
+				"complete": true,
+				"completed_ticks": 8,
+				"count": 1,
+				"failure": "",
+				"max_sampled_abs_wind_m_s": 1.43421506202658,
+				"observation_fingerprints": {
+					"0": [
+						"a902ce2ff7fff31f0baede21b1f09950255dd21c7113ebffb8f912e56b78d263",
+						"b0aa08d31aa85c2ec31b3961c0fb98adb0aa0233a13dda37c374ddc91f8dd790"
+					]
+				},
+				"observations_at_or_after_gust_delay": 0,
+				"pilot_return_fingerprints": {
+					"0": [
+						{
+							"fingerprint": "b6864a8807b69c30c9e691dd96d3e56fa02f943b25513bc6619740726d1a14ed",
+							"tick": 0
+						},
+						{
+							"fingerprint": "70e9e26607fb9787c555d3e55a5e6b6b76b70b9e5fb76d075933d3ff7cd0c150",
+							"tick": 4
+						}
+					]
+				},
+				"player_tick_fingerprints": [
+					"92ff3355b5d06fb9309130c1b39f314d808d2a02a23dd61c40e0b32f448b7ea6",
+					"babdbadad8ad8fb4c8e249ca871363476c783d5a66d5af8a00d92bea54417ff4",
+					"6d9cf416371970fe64d69888be2b4a1dc16b88e9f373cb3a72fbc5483bfd49a7",
+					"6c47195cd9b12dccf06b4ca8365e184b313d5d046396952afded673259744893",
+					"2c40e6ef468940216f9967cc03cf63633213ea57003f6f1875d9c1bc2eb6fff0",
+					"8bf1552ced47ff206c1eac03ef0569c199c26bd372e903569fb999fa2ab96d13",
+					"39d7cbecf45bb6101bd4064d8495ca3081cdca953bd272f51ceb50ec7cca17b1",
+					"16e070308ec3489023f2c465aa35f5181aa58d39aec6484e8c2398fb7a12d542"
+				],
+				"repeated_wind_match_count": 2,
+				"weather_observation_summary": {
+					"gust_delay_s": 3.0,
+					"interpretation": "The fixture runs through the configured gust delay with committed deterministic turbulence. This is varied-input coverage, not weather or flight qualification.",
+					"max_sampled_abs_component_m_s": 1.43421506202658,
+					"observation_samples": 2,
+					"observations_at_or_after_gust_delay": 0,
+					"unique_wind_sample_fingerprints": 2
+				},
+				"wind_fingerprints": {
+					"0": [
+						"91485a8dd6124eb34c3a2f7c6e8a74ac8f23cf0e65a9bf9a59cb2c6bf21d49e9",
+						"02f481ccc2dcd7a342b45a280f5c723ce93299f09cb690d7aff087fa9e75f5d9"
+					]
+				}
+			},
+			"complete": true,
+			"count": 1,
+			"equality": {
+				"agent_tick_fingerprints_equal": true,
+				"observation_fingerprints_equal": true,
+				"pilot_return_fingerprints_equal": true,
+				"player_tick_fingerprints_equal": true,
+				"wind_fingerprints_equal": true
+			},
+			"gust_delay_coverage_required": false,
+			"input_tape_equal": true,
+			"limitation": "Exact paired behavior for this short deterministic weathered fixture only; not a broad companion flight qualification."
+		}
+	],
+	"complete": true,
+	"counts": [
+		1
+	],
+	"engine": "4.7.2-stable (official)",
+	"finished_utc": "2026-10-21T05:00:39",
+	"fixture": {
+		"aircraft_id": "jensen-das-ugly-stik-60",
+		"collision_inventory": "CollisionSetup.build(field), unchanged production scenery data",
+		"field": "default Club field",
+		"input_tape": "same deterministic player session per fresh branch; player input_enabled=false; each player and companion tick input/state is fingerprinted",
+		"lake": "res://data/fields/lake.json",
+		"pilot": "unchanged production pilot; only the Agent.observation calculation is branched outside app/",
+		"seed": 20261020,
+		"weather": "WindConfig.GENTLE_PRACTICE; companion configuration accepts its stated gust and turbulence limits"
+	},
+	"format": "openrc-afc-observation-airdata-flight-parity v1",
+	"method": "The baseline uses production Agent.observation(). The candidate proxy reconstructs the same dictionary fields, samples wind once, and uses the external scalar airspeed helper. Both pass snapshots into the unchanged Agent.prepare() and production pilot. Full pilot command dictionaries, observation bytes, applied packets, tick states, and simulation input arrays are SHA-256 fingerprinted per decision/tick. Candidate observations are also checked against both Air.compute(state, sampled wind, density) and the production session.air_data(state) scalar.",
+	"physics_hz": 240,
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"run_mode": "smoke",
+	"scope": "Bounded deterministic software parity proof for the observation output and resulting production pilot commands. No timing, speedup, rendered-frame, broad flight qualification, or physical-validation claim.",
+	"source_identity": {
+		"all_pinned_source_bytes_unchanged": true,
+		"sha256_after": {
+			"app/ai/companions/agent.gd": "c3846b59fc59b40ffb25af2adf95f74077f150591d027d1a2512f70930a26fb8",
+			"app/ai/companions/manager.gd": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+			"app/ai/companions/pilot.gd": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+			"app/app_state/aircraft_catalog.gd": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e",
+			"app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+			"app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+			"app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+			"app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+			"app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+			"app/physics/wind_config.gd": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+			"app/physics/wind_field.gd": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a",
+			"app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+			"app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+			"app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+			"app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+			"research/ai-companions/performance/observation_airdata_candidate.gd": "3a3bc5d8f406a7f56dbc975edb93c204c881ec5b73c149f2a6db08c2eb75c2ac",
+			"research/ai-companions/performance/observation_flight_probe.gd": "ef089f06c9bfea042007453091bdbe3e0e8a0d5434dadcba575c2b9a4bad2810"
+		},
+		"sha256_before": {
+			"app/ai/companions/agent.gd": "c3846b59fc59b40ffb25af2adf95f74077f150591d027d1a2512f70930a26fb8",
+			"app/ai/companions/manager.gd": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+			"app/ai/companions/pilot.gd": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+			"app/app_state/aircraft_catalog.gd": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e",
+			"app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+			"app/data/lake_loader.gd": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+			"app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+			"app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+			"app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+			"app/physics/wind_config.gd": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+			"app/physics/wind_field.gd": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a",
+			"app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+			"app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+			"app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+			"app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+			"research/ai-companions/performance/observation_airdata_candidate.gd": "3a3bc5d8f406a7f56dbc975edb93c204c881ec5b73c149f2a6db08c2eb75c2ac",
+			"research/ai-companions/performance/observation_flight_probe.gd": "ef089f06c9bfea042007453091bdbe3e0e8a0d5434dadcba575c2b9a4bad2810"
+		}
+	},
+	"started_utc": "2026-10-21T05:00:37",
+	"status": "pass",
+	"ticks_per_branch": 8,
+	"weather": {
+		"format": "openrc-weather v2",
+		"from_deg": 90.0,
+		"gust_delay_s": 3.0,
+		"gust_duration_s": 4.0,
+		"gust_mps": 0.6,
+		"gust_period_s": 14.0,
+		"gust_up_mps": 0.15,
+		"speed_mps": 1.5,
+		"turbulence_rms_mps": [
+			0.15,
+			0.15,
+			0.08
+		],
+		"turbulence_seed": 20261011,
+		"turbulence_tau_s": 3.0
+	}
+}

@@ -1,0 +1,1035 @@
+{
+  "format": "openrc-afc00r4-native-windows-promoted-pilot-baseline v1",
+  "captured_utc": "2026-10-21T04:08:47.922460+00:00",
+  "scope": "Rendered native Windows count matrix for promoted companion pilot3842 and solver qualification2f4; diagnostic per-count gate results for the neutral-trim case only. Not a platform, device, or broad support qualification.",
+  "source_identity": {
+    "private_clone": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021",
+    "git_head": "63d4c479bf1e1baf5054b17f2c61e3e57c5b9fdd",
+    "pilot_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "profile_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+    "solver_qualification_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "controller_dependency_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+    "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "default_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "mountains_field_sha256": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+    "pilot_source_pin": "app/ai/companions/pilot.gd",
+    "controller_dependency_pin": "app/ai/companions/circuit_controller.gd",
+    "profile_binding": "profile identity captured by companion flight endpoints in count1-3 frame artifacts"
+  },
+  "source_manifest": {
+    "pre": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\source-manifest-pre.json",
+      "bytes": 845519,
+      "sha256": "777a957ef373584a223f30ed4ae3dfed7a99d3b216ad1c43783ff0f0ea5c7427",
+      "evidence_external_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\source-manifest-pre.json"
+    },
+    "post": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\frozen-source-manifest.json",
+      "bytes": 847724,
+      "sha256": "bbe2a3ea146fcc695bec2e867709ce7ab5f2576a29d2d7da41157c88f38db2f8",
+      "repository_copy": "frozen-source-manifest.json",
+      "evidence_external_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\source-manifest-post.json"
+    },
+    "comparison": {
+      "changed_file_count": 0,
+      "changed_files": []
+    },
+    "tool_and_key_inputs_all_unchanged": true
+  },
+  "host": {
+    "os": "Windows 11 Pro 10.0.26100",
+    "cpu": "AMD Ryzen 9 5900X",
+    "cores": 12,
+    "logical_processors": 24,
+    "ram_gib": 64,
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "driver": "NVIDIA 617.42 (32.0.16.1742)",
+    "power_scheme": "Balanced",
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "rendering": "Compatibility/OpenGL 3.3.0; 1280x720; windowed; vsync disabled; max-fps 0"
+  },
+  "workload": {
+    "test": "current-default scenery, one live-input Stik player, production 240 Hz physics, normal companion circuits",
+    "player_input": "per-process neutral keyboard targets with accepted initial trim throttle held at 0.49999999945364",
+    "companions": "seed 20261020; normal experienced circuit pilots; incidents disabled; no labels",
+    "warmup_seconds": 10,
+    "sample_seconds": 60,
+    "count_matrix": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "focus_pause_policy": "unchanged production AppRoot policy; fixture requests focus before start and invalidates if focus is lost",
+    "simultaneous_engine_jobs_observed": "No unrelated Godot processes overlapped any accepted count0-3 run. One count1 preflight deferred launch while unrelated test_control_presentation.gd Godot processes PID24268/38544 ran in the main app; no capture started then, and valid count1 was rerun after they exited.",
+    "warning_notes": "Each run reported three existing unsupported tree-wind material warnings; engine logs also retain the existing Stik inertia advisory. Runner errors=0."
+  },
+  "count_gates": {
+    "render_targets_ms": {
+      "p95_max": 16.67,
+      "p99_max": 25.0
+    },
+    "pacing_target": "simulation/wall in [0.98,1.02]",
+    "interpretation": "These gates describe this single neutral-trim rendered workload. Passing count0/1 does not establish broad population support. Count2/3 remained active and paced but miss one or both render percentile targets; this capture does not justify higher-count performance support."
+  },
+  "cases": [
+    {
+      "case_id": "afc-neutral-trim-smoke",
+      "count": null,
+      "measurement": false,
+      "complete": true,
+      "runner": {
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "elapsed_seconds": 16.093,
+        "errors": 0,
+        "warnings": 3,
+        "required_text_missing": [],
+        "started_utc": "2026-10-21T03:59:30.439463+00:00",
+        "diagnostics": [
+          "Tree wind is disabled for landscapelab_pine because source material -9223371728942527685 is unsupported (cull mode is not disabled)",
+          "Tree wind is disabled for landscapelab_quercus because source material -9223371726727935160 is unsupported (non-repeating textures are not supported)",
+          "Tree wind is disabled for maple_tree because source material -9223371725419312304 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      "frame_capture": {
+        "capture_id": "646ce1f3-5f8f-4c39-8ee7-874b70be9dce",
+        "frames": 865,
+        "requested_warmup_s": 1.0,
+        "actual_warmup_s": 1.001668,
+        "requested_sample_s": 4.0,
+        "actual_sample_s": 4.003258,
+        "simulation_wall_ratio": null,
+        "frame_ms": {
+          "max": 10.751,
+          "p50": 4.361,
+          "p95": 6.259,
+          "p99": 8.121
+        },
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "godot": "4.7.2-stable (official)",
+        "window": "1280x720",
+        "vsync": false
+      },
+      "fixture_endpoint": {
+        "tick": 1195,
+        "time_s": 4.97916666666667,
+        "crashed": false,
+        "fault": "",
+        "paused": false,
+        "pause_reason": "",
+        "physics_enabled": true,
+        "window_focused": true,
+        "prop_strike": false,
+        "world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+        "active_flight_endpoint": true,
+        "input_adapter": "neutral keyboard targets; accepted initial trim throttle held"
+      },
+      "companions": {},
+      "raw_artifacts": {
+        "smoke-frames.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-frames.json",
+          "bytes": 276172,
+          "sha256": "eb5865cedf9228084e1274c9584a90dbd55646d219b8f4d8397453f636105cb1"
+        },
+        "smoke-fixture.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-fixture.json",
+          "bytes": 2484,
+          "sha256": "47a04a7015646e743ff6b7d1029474d7fbb4b1c7b3115b4c3a1f6fedf87586c3"
+        }
+      },
+      "fixture_check_only": true,
+      "assessment": {
+        "render_gate": "not evaluated; 1 s warmup / 4 s sample smoke only"
+      },
+      "checked_run_artifacts": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-smoke-promoted3842-agshfc9a",
+        "report": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-smoke-promoted3842-agshfc9a\\report.json",
+          "bytes": 3538,
+          "sha256": "79c6874ba8f8559ff1b9afaae05d0a5420f33ca6526ffdfb1a7a5df40272dfb6"
+        },
+        "engine_log": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-smoke-promoted3842-agshfc9a\\engine.log",
+          "bytes": 4113,
+          "sha256": "0389f534ce78df9a5d3bb6b03d1c40a0e9691fdb8514b0ae5f49bed2be2ac8c1"
+        }
+      },
+      "engine_pid": 37520
+    },
+    {
+      "case_id": "afc-neutral-trim-count-0",
+      "count": 0,
+      "measurement": true,
+      "complete": true,
+      "runner": {
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "elapsed_seconds": 82.094,
+        "errors": 0,
+        "warnings": 3,
+        "required_text_missing": [],
+        "started_utc": "2026-10-21T04:00:05.831887+00:00",
+        "diagnostics": [
+          "Tree wind is disabled for landscapelab_pine because source material -9223371728925750470 is unsupported (cull mode is not disabled)",
+          "Tree wind is disabled for landscapelab_quercus because source material -9223371726711157945 is unsupported (non-repeating textures are not supported)",
+          "Tree wind is disabled for maple_tree because source material -9223371725402535089 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      "frame_capture": {
+        "capture_id": "b0cde9a7-8364-43a2-bbc7-f2d5318ce5db",
+        "frames": 14599,
+        "requested_warmup_s": 10.0,
+        "actual_warmup_s": 10.003088,
+        "requested_sample_s": 60.0,
+        "actual_sample_s": 60.0022430000001,
+        "simulation_wall_ratio": 1.000029667546804,
+        "frame_ms": {
+          "max": 33.23,
+          "p50": 3.94,
+          "p95": 5.686,
+          "p99": 8.152
+        },
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "godot": "4.7.2-stable (official)",
+        "window": "1280x720",
+        "vsync": false
+      },
+      "fixture_endpoint": {
+        "tick": 16769,
+        "time_s": 69.8708333333333,
+        "crashed": false,
+        "fault": "",
+        "paused": false,
+        "pause_reason": "",
+        "physics_enabled": true,
+        "window_focused": true,
+        "prop_strike": false,
+        "world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+        "active_flight_endpoint": true,
+        "input_adapter": "neutral keyboard targets; accepted initial trim throttle held"
+      },
+      "companions": {
+        "requested": 0,
+        "enabled": false,
+        "active": 0,
+        "airborne": 0,
+        "crashed": 0,
+        "faulted": 0,
+        "roster_endpoints": []
+      },
+      "raw_artifacts": {
+        "count-0-frames.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-frames.json",
+          "bytes": 3606922,
+          "sha256": "7df94c99d516a31b3285e27710a9dfd76e6d6f3d6d5446e858d1e6976278fb9b"
+        },
+        "count-0-fixture.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-fixture.json",
+          "bytes": 2491,
+          "sha256": "378c5a2f59bbe95e027fc97533ea68a39af6e35a506fd5b8c67a697ac7825750"
+        },
+        "count-0-assessment.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-assessment.json",
+          "bytes": 982,
+          "sha256": "c9a2d476f8c367c3afc999baffa71e879e2b47f532e790196c93b283a7dc714c"
+        }
+      },
+      "assessment": {
+        "valid_active_workload": true,
+        "invalid_reasons": [],
+        "render_budget_pass": true,
+        "percentiles_ms": {
+          "p50": 3.94,
+          "p95": 5.686,
+          "p99": 8.152,
+          "max": 33.23
+        }
+      },
+      "count_gate": {
+        "render_thresholds_ms": {
+          "p95_max": 16.67,
+          "p99_max": 25.0
+        },
+        "p95_pass": true,
+        "p99_pass": true,
+        "simulation_wall_gate_0_98_to_1_02": true
+      },
+      "profile_identity": null,
+      "checked_run_artifacts": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-0-promoted3842-xp2i2ult",
+        "report": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-0-promoted3842-xp2i2ult\\report.json",
+          "bytes": 3553,
+          "sha256": "5c357dc3dfb7ecde75ac2bde2735eff21dc243bc2d95be0725216fcc84a899ed"
+        },
+        "engine_log": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-0-promoted3842-xp2i2ult\\engine.log",
+          "bytes": 4117,
+          "sha256": "ab9222782d769a856d53f56c6eae8b847e888d6105a9d4b0468a937792ed678e"
+        }
+      },
+      "engine_pid": 39376
+    },
+    {
+      "case_id": "afc-neutral-trim-count-1",
+      "count": 1,
+      "measurement": true,
+      "complete": true,
+      "runner": {
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "elapsed_seconds": 81.625,
+        "errors": 0,
+        "warnings": 3,
+        "required_text_missing": [],
+        "started_utc": "2026-10-21T04:02:09.798043+00:00",
+        "diagnostics": [
+          "Tree wind is disabled for landscapelab_pine because source material -9223371728942527685 is unsupported (cull mode is not disabled)",
+          "Tree wind is disabled for landscapelab_quercus because source material -9223371726727935160 is unsupported (non-repeating textures are not supported)",
+          "Tree wind is disabled for maple_tree because source material -9223371725419312304 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      "frame_capture": {
+        "capture_id": "4586bb22-4b4b-47ae-ae25-e7a27ebbf0ed",
+        "frames": 10267,
+        "requested_warmup_s": 10.0,
+        "actual_warmup_s": 10.002447,
+        "requested_sample_s": 60.0,
+        "actual_sample_s": 60.004891,
+        "simulation_wall_ratio": 1.0000002166667137,
+        "frame_ms": {
+          "max": 23.046,
+          "p50": 5.249,
+          "p95": 8.186,
+          "p99": 10.652
+        },
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "godot": "4.7.2-stable (official)",
+        "window": "1280x720",
+        "vsync": false
+      },
+      "fixture_endpoint": {
+        "tick": 16770,
+        "time_s": 69.875,
+        "crashed": false,
+        "fault": "",
+        "paused": false,
+        "pause_reason": "",
+        "physics_enabled": true,
+        "window_focused": true,
+        "prop_strike": false,
+        "world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+        "active_flight_endpoint": true,
+        "input_adapter": "neutral keyboard targets; accepted initial trim throttle held"
+      },
+      "companions": {
+        "requested": 1,
+        "enabled": true,
+        "active": 1,
+        "airborne": 1,
+        "crashed": 0,
+        "faulted": 0,
+        "roster_endpoints": [
+          {
+            "id": "companion-0",
+            "tick": 16770,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          }
+        ]
+      },
+      "raw_artifacts": {
+        "count-1-frames.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-frames.json",
+          "bytes": 2569643,
+          "sha256": "fc8831ec69c2c1c9605d023a61d686a36480982fb16f69e4ee72c8264ea8ee7c"
+        },
+        "count-1-fixture.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-fixture.json",
+          "bytes": 2482,
+          "sha256": "f4f1d391fa80640d546e1dfa093aa45dc27fa7e3c8c55b137d6cc657802c9ff9"
+        },
+        "count-1-assessment.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-assessment.json",
+          "bytes": 986,
+          "sha256": "ee715bdd5bfa15096ee913be26f28c42e4dd1888be7c73b2229c3d0dfeef8443"
+        }
+      },
+      "assessment": {
+        "valid_active_workload": true,
+        "invalid_reasons": [],
+        "render_budget_pass": true,
+        "percentiles_ms": {
+          "p50": 5.249,
+          "p95": 8.186,
+          "p99": 10.652,
+          "max": 23.046
+        }
+      },
+      "count_gate": {
+        "render_thresholds_ms": {
+          "p95_max": 16.67,
+          "p99_max": 25.0
+        },
+        "p95_pass": true,
+        "p99_pass": true,
+        "simulation_wall_gate_0_98_to_1_02": true
+      },
+      "profile_identity": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+        "engine_version": "4.7.2",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+        "format": "openrc-ai-profile-identity v1",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+        "solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd"
+      },
+      "checked_run_artifacts": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-1-promoted3842-p9mpr8jh",
+        "report": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-1-promoted3842-p9mpr8jh\\report.json",
+          "bytes": 3553,
+          "sha256": "e18d95b39c78d15b9e8c0cacbf8375b275c58df2c52c540e97f5484ef9596d85"
+        },
+        "engine_log": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-1-promoted3842-p9mpr8jh\\engine.log",
+          "bytes": 4212,
+          "sha256": "504abe374ad1eda6060eb9dfad72d3b54400debe95d3fae1361f31618693b598"
+        }
+      },
+      "engine_pid": 22732
+    },
+    {
+      "case_id": "afc-neutral-trim-count-2",
+      "count": 2,
+      "measurement": true,
+      "complete": true,
+      "runner": {
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "elapsed_seconds": 81.843,
+        "errors": 0,
+        "warnings": 3,
+        "required_text_missing": [],
+        "started_utc": "2026-10-21T04:03:46.754707+00:00",
+        "diagnostics": [
+          "Tree wind is disabled for landscapelab_pine because source material -9223371728925750470 is unsupported (cull mode is not disabled)",
+          "Tree wind is disabled for landscapelab_quercus because source material -9223371726711157945 is unsupported (non-repeating textures are not supported)",
+          "Tree wind is disabled for maple_tree because source material -9223371725402535089 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      "frame_capture": {
+        "capture_id": "1d5656ff-b351-41c4-9264-0e5c7a7fca48",
+        "frames": 4856,
+        "requested_warmup_s": 10.0,
+        "actual_warmup_s": 10.000211,
+        "requested_sample_s": 60.0,
+        "actual_sample_s": 60.0131689999999,
+        "simulation_wall_ratio": 0.9999282718119687,
+        "frame_ms": {
+          "max": 48.334,
+          "p50": 12.032,
+          "p95": 17.175,
+          "p99": 21.806
+        },
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "godot": "4.7.2-stable (official)",
+        "window": "1280x720",
+        "vsync": false
+      },
+      "fixture_endpoint": {
+        "tick": 16768,
+        "time_s": 69.8666666666667,
+        "crashed": false,
+        "fault": "",
+        "paused": false,
+        "pause_reason": "",
+        "physics_enabled": true,
+        "window_focused": true,
+        "prop_strike": false,
+        "world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+        "active_flight_endpoint": true,
+        "input_adapter": "neutral keyboard targets; accepted initial trim throttle held"
+      },
+      "companions": {
+        "requested": 2,
+        "enabled": true,
+        "active": 2,
+        "airborne": 2,
+        "crashed": 0,
+        "faulted": 0,
+        "roster_endpoints": [
+          {
+            "id": "companion-0",
+            "tick": 16768,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          },
+          {
+            "id": "companion-1",
+            "tick": 16768,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          }
+        ]
+      },
+      "raw_artifacts": {
+        "count-2-frames.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-frames.json",
+          "bytes": 1240574,
+          "sha256": "260faa92da71e92387b4655eac187d2845bcee8e8bb9798db89ee1044a1e83cf"
+        },
+        "count-2-fixture.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-fixture.json",
+          "bytes": 2492,
+          "sha256": "3deb50dae9732944eb6f4fe291531c07b2587179358f134711c6aba17b50bc18"
+        },
+        "count-2-assessment.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-assessment.json",
+          "bytes": 989,
+          "sha256": "61d60dfffe2f29ba4cd9a30f0e6b0ee0859c536934673764283580274d6c2eb9"
+        }
+      },
+      "assessment": {
+        "valid_active_workload": true,
+        "invalid_reasons": [],
+        "render_budget_pass": false,
+        "percentiles_ms": {
+          "p50": 12.032,
+          "p95": 17.175,
+          "p99": 21.806,
+          "max": 48.334
+        }
+      },
+      "count_gate": {
+        "render_thresholds_ms": {
+          "p95_max": 16.67,
+          "p99_max": 25.0
+        },
+        "p95_pass": false,
+        "p99_pass": true,
+        "simulation_wall_gate_0_98_to_1_02": true
+      },
+      "profile_identity": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+        "engine_version": "4.7.2",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+        "format": "openrc-ai-profile-identity v1",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+        "solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd"
+      },
+      "checked_run_artifacts": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-2-promoted3842-b4cvmpez",
+        "report": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-2-promoted3842-b4cvmpez\\report.json",
+          "bytes": 3553,
+          "sha256": "ecf57029112719a5a59064823ff7e02a6a453fd286cc7bed6ff833c5fad353d8"
+        },
+        "engine_log": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-2-promoted3842-b4cvmpez\\engine.log",
+          "bytes": 4307,
+          "sha256": "cd3611a4106c5e48ddc9ace93c26a8376a50f6b29afe90f7aed182d5436cecb7"
+        }
+      },
+      "engine_pid": 3792
+    },
+    {
+      "case_id": "afc-neutral-trim-count-3",
+      "count": 3,
+      "measurement": true,
+      "complete": true,
+      "runner": {
+        "ok": true,
+        "complete": true,
+        "exit_code": 0,
+        "elapsed_seconds": 82.422,
+        "errors": 0,
+        "warnings": 3,
+        "required_text_missing": [],
+        "started_utc": "2026-10-21T04:05:26.982131+00:00",
+        "diagnostics": [
+          "Tree wind is disabled for landscapelab_pine because source material -9223371728908973254 is unsupported (cull mode is not disabled)",
+          "Tree wind is disabled for landscapelab_quercus because source material -9223371726694380729 is unsupported (non-repeating textures are not supported)",
+          "Tree wind is disabled for maple_tree because source material -9223371725385757873 is unsupported (cull mode is not disabled)"
+        ]
+      },
+      "frame_capture": {
+        "capture_id": "6afc4ca8-c635-49bb-86b0-8b313ae7f0bd",
+        "frames": 1390,
+        "requested_warmup_s": 10.0,
+        "actual_warmup_s": 10.034841,
+        "requested_sample_s": 60.0,
+        "actual_sample_s": 60.001134,
+        "simulation_wall_ratio": 0.9930246667438404,
+        "frame_ms": {
+          "max": 78.063,
+          "p50": 42.065,
+          "p95": 52.017,
+          "p99": 58.687
+        },
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "godot": "4.7.2-stable (official)",
+        "window": "1280x720",
+        "vsync": false
+      },
+      "fixture_endpoint": {
+        "tick": 16604,
+        "time_s": 69.1833333333333,
+        "crashed": false,
+        "fault": "",
+        "paused": false,
+        "pause_reason": "",
+        "physics_enabled": true,
+        "window_focused": true,
+        "prop_strike": false,
+        "world_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+        "active_flight_endpoint": true,
+        "input_adapter": "neutral keyboard targets; accepted initial trim throttle held"
+      },
+      "companions": {
+        "requested": 3,
+        "enabled": true,
+        "active": 3,
+        "airborne": 3,
+        "crashed": 0,
+        "faulted": 0,
+        "roster_endpoints": [
+          {
+            "id": "companion-0",
+            "tick": 16604,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          },
+          {
+            "id": "companion-1",
+            "tick": 16604,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          },
+          {
+            "id": "companion-2",
+            "tick": 16604,
+            "crashed": false,
+            "fault": "",
+            "paused": false
+          }
+        ]
+      },
+      "raw_artifacts": {
+        "count-3-frames.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-frames.json",
+          "bytes": 406167,
+          "sha256": "a8da000dc5053a430af1b728a0f0abdd2d59c0c16e20f29fb69232ec77a189de"
+        },
+        "count-3-fixture.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-fixture.json",
+          "bytes": 2492,
+          "sha256": "343dacb250577e169a1af74921d99beaaf4e86a3f3e8d2d9009db966797b8ff6"
+        },
+        "count-3-assessment.json": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-assessment.json",
+          "bytes": 989,
+          "sha256": "df0d088f5cf6dfd55cc1502773be673f97818440688cfeccfb440e34cb9bbdfb"
+        }
+      },
+      "assessment": {
+        "valid_active_workload": true,
+        "invalid_reasons": [],
+        "render_budget_pass": false,
+        "percentiles_ms": {
+          "p50": 42.065,
+          "p95": 52.017,
+          "p99": 58.687,
+          "max": 78.063
+        }
+      },
+      "count_gate": {
+        "render_thresholds_ms": {
+          "p95_max": 16.67,
+          "p99_max": 25.0
+        },
+        "p95_pass": false,
+        "p99_pass": false,
+        "simulation_wall_gate_0_98_to_1_02": true
+      },
+      "profile_identity": {
+        "aircraft_data_format": "openrc-aircraft v2",
+        "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "aircraft_profile_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+        "controller_dependencies": {
+          "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+        },
+        "controller_path": "res://ai/companions/pilot.gd",
+        "controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+        "engine_version": "4.7.2",
+        "field_data_format": "openrc-field v1",
+        "field_data_path": "res://data/fields/default.json",
+        "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "field_profile_id": "club-default",
+        "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+        "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+        "format": "openrc-ai-profile-identity v1",
+        "solver_normalization": "utf8-lf",
+        "solver_qualification_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+        "solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd"
+      },
+      "checked_run_artifacts": {
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-3-promoted3842-2dfyyiv_",
+        "report": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-3-promoted3842-2dfyyiv_\\report.json",
+          "bytes": 3553,
+          "sha256": "b98dd0c81d69b784bf8366f0ac3d516aea799b7e76a4b243f42497399db069a1"
+        },
+        "engine_log": {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-3-promoted3842-2dfyyiv_\\engine.log",
+          "bytes": 4401,
+          "sha256": "9b310fbe793abea4d0eea78015517b9cdf5136fcaab1d374f451f6d61823655f"
+        }
+      },
+      "engine_pid": 14208
+    }
+  ],
+  "smoke": "The 1 s warmup / 4 s count0 run checked fixture launch and focus only; it is not one of the 10 s / 60 s matrix captures and has no gate result.",
+  "timing_claims": {
+    "causal_speedup": "No causal wall-time speedup claim. AFC-00-R2 used the original1d5699 pilot on a different frozen source/world snapshot; these promoted-source captures are not paired measurements. Count0 is a workload control only, and host activity is not controlled globally.",
+    "callback_cost": "This is rendered frame pacing, not the full-callback CPU timing proof or the 2 ms callback budget.",
+    "count_acceptance": "Only per-case render gate results are recorded; no supported-count ceiling is claimed."
+  },
+  "limitations": [
+    "One Windows PC, Compatibility/OpenGL backend, current-default scene and neutral-trim straight fly-away player; this is not the all-visible matrix, a radio/device qualification, or a broad aircraft/configuration/endurance test.",
+    "No CPU/GPU attribution was captured. Other OS background activity was not globally disabled.",
+    "A p95/p99 result is one capture per count, not a repeatability distribution; one passing case is not a release qualification.",
+    "The active 1–3 menu range and broad support are separate from these render count gates.",
+    "AFC-00-R2 is an older original-pilot baseline and cannot be used for causal comparison."
+  ],
+  "portable_tool_sources": {
+    "native_performance_probe.gd": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\sources\\native_performance_probe.gd",
+      "bytes": 4025,
+      "sha256": "c529284ec6e9d4cfac8d02fdbfecaacb852ef42717b91b0a48dc2425410e5e8f"
+    },
+    "native_performance_report.py": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\sources\\native_performance_report.py",
+      "bytes": 8349,
+      "sha256": "149a7da06dc942d577bb07de9fc1bb583a4417ed3977372f01726552698637fb"
+    },
+    "run_checked.py": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\sources\\run_checked.py",
+      "bytes": 20229,
+      "sha256": "7335de7267871da28c6d2cd8d49e589d0de0600ab6677f3700051adf9dd35f88"
+    }
+  },
+  "reproduction": {
+    "output_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021",
+    "command_template": "See README.md. Re-run with a new output directory, exact frozen private clone, the same checked runner, and the same 1280x720 OpenGL3, no-vsync, max-fps0, neutral fixture, count0-3; do not overwrite this evidence.",
+    "checked_runner": "Run the engine command through the pinned tools/godot/run_checked.py with a fresh output folder. Require both \"AFC native fixture complete; active endpoint=true\" and \"frame times:\"; warnings_as_errors=false as captured.",
+    "engine_command_template": ".tools\\Godot_v4.7.2-stable_win64_console.exe --path <clone>\\app --rendering-driver opengl3 --resolution 1280x720 --disable-vsync --max-fps 0 --script <clone>\\research\\ai-companions\\native_performance_probe.gd -- --quick-flight --start=airborne --companions=<count> --companions-seed=20261020 --fixture-out=<output>\\count-<count>-fixture.json --frametimes=<output>\\count-<count>-frames.json --warmup=10 --t=60 --case=afc-neutral-trim-count-<count>",
+    "reducer_command_template": "python <clone>\\research\\ai-companions\\native_performance_report.py --frames <output>\\count-<count>-frames.json --fixture <output>\\count-<count>-fixture.json --count <count> --out <output>\\count-<count>-assessment.json"
+  },
+  "artifact_hash_index": [
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-0-promoted3842-xp2i2ult\\engine.log",
+      "bytes": 4117,
+      "sha256": "ab9222782d769a856d53f56c6eae8b847e888d6105a9d4b0468a937792ed678e"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-0-promoted3842-xp2i2ult\\report.json",
+      "bytes": 3553,
+      "sha256": "5c357dc3dfb7ecde75ac2bde2735eff21dc243bc2d95be0725216fcc84a899ed"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-1-promoted3842-p9mpr8jh\\engine.log",
+      "bytes": 4212,
+      "sha256": "504abe374ad1eda6060eb9dfad72d3b54400debe95d3fae1361f31618693b598"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-1-promoted3842-p9mpr8jh\\report.json",
+      "bytes": 3553,
+      "sha256": "e18d95b39c78d15b9e8c0cacbf8375b275c58df2c52c540e97f5484ef9596d85"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-2-promoted3842-b4cvmpez\\engine.log",
+      "bytes": 4307,
+      "sha256": "cd3611a4106c5e48ddc9ace93c26a8376a50f6b29afe90f7aed182d5436cecb7"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-2-promoted3842-b4cvmpez\\report.json",
+      "bytes": 3553,
+      "sha256": "ecf57029112719a5a59064823ff7e02a6a453fd286cc7bed6ff833c5fad353d8"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-3-promoted3842-2dfyyiv_\\engine.log",
+      "bytes": 4401,
+      "sha256": "9b310fbe793abea4d0eea78015517b9cdf5136fcaab1d374f451f6d61823655f"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-count-3-promoted3842-2dfyyiv_\\report.json",
+      "bytes": 3553,
+      "sha256": "b98dd0c81d69b784bf8366f0ac3d516aea799b7e76a4b243f42497399db069a1"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-smoke-promoted3842-agshfc9a\\engine.log",
+      "bytes": 4113,
+      "sha256": "0389f534ce78df9a5d3bb6b03d1c40a0e9691fdb8514b0ae5f49bed2be2ac8c1"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R4\\checks\\native-smoke-promoted3842-agshfc9a\\report.json",
+      "bytes": 3538,
+      "sha256": "79c6874ba8f8559ff1b9afaae05d0a5420f33ca6526ffdfb1a7a5df40272dfb6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-assessment.json",
+      "bytes": 982,
+      "sha256": "c9a2d476f8c367c3afc999baffa71e879e2b47f532e790196c93b283a7dc714c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-fixture.json",
+      "bytes": 2491,
+      "sha256": "378c5a2f59bbe95e027fc97533ea68a39af6e35a506fd5b8c67a697ac7825750"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-frames.json",
+      "bytes": 3606922,
+      "sha256": "7df94c99d516a31b3285e27710a9dfd76e6d6f3d6d5446e858d1e6976278fb9b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-assessment.json",
+      "bytes": 986,
+      "sha256": "ee715bdd5bfa15096ee913be26f28c42e4dd1888be7c73b2229c3d0dfeef8443"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-fixture.json",
+      "bytes": 2482,
+      "sha256": "f4f1d391fa80640d546e1dfa093aa45dc27fa7e3c8c55b137d6cc657802c9ff9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-frames.json",
+      "bytes": 2569643,
+      "sha256": "fc8831ec69c2c1c9605d023a61d686a36480982fb16f69e4ee72c8264ea8ee7c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-assessment.json",
+      "bytes": 989,
+      "sha256": "61d60dfffe2f29ba4cd9a30f0e6b0ee0859c536934673764283580274d6c2eb9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-fixture.json",
+      "bytes": 2492,
+      "sha256": "3deb50dae9732944eb6f4fe291531c07b2587179358f134711c6aba17b50bc18"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-frames.json",
+      "bytes": 1240574,
+      "sha256": "260faa92da71e92387b4655eac187d2845bcee8e8bb9798db89ee1044a1e83cf"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-assessment.json",
+      "bytes": 989,
+      "sha256": "df0d088f5cf6dfd55cc1502773be673f97818440688cfeccfb440e34cb9bbdfb"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-fixture.json",
+      "bytes": 2492,
+      "sha256": "343dacb250577e169a1af74921d99beaaf4e86a3f3e8d2d9009db966797b8ff6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-frames.json",
+      "bytes": 406167,
+      "sha256": "a8da000dc5053a430af1b728a0f0abdd2d59c0c16e20f29fb69232ec77a189de"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-fixture.json",
+      "bytes": 2484,
+      "sha256": "47a04a7015646e743ff6b7d1029474d7fbb4b1c7b3115b4c3a1f6fedf87586c3"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-frames.json",
+      "bytes": 276172,
+      "sha256": "eb5865cedf9228084e1274c9584a90dbd55646d219b8f4d8397453f636105cb1"
+    }
+  ],
+  "raw_capture_artifacts_external": [
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-assessment.json",
+      "bytes": 982,
+      "sha256": "c9a2d476f8c367c3afc999baffa71e879e2b47f532e790196c93b283a7dc714c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-fixture.json",
+      "bytes": 2491,
+      "sha256": "378c5a2f59bbe95e027fc97533ea68a39af6e35a506fd5b8c67a697ac7825750"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-frames.json",
+      "bytes": 3606922,
+      "sha256": "7df94c99d516a31b3285e27710a9dfd76e6d6f3d6d5446e858d1e6976278fb9b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-assessment.json",
+      "bytes": 986,
+      "sha256": "ee715bdd5bfa15096ee913be26f28c42e4dd1888be7c73b2229c3d0dfeef8443"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-fixture.json",
+      "bytes": 2482,
+      "sha256": "f4f1d391fa80640d546e1dfa093aa45dc27fa7e3c8c55b137d6cc657802c9ff9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-frames.json",
+      "bytes": 2569643,
+      "sha256": "fc8831ec69c2c1c9605d023a61d686a36480982fb16f69e4ee72c8264ea8ee7c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-assessment.json",
+      "bytes": 989,
+      "sha256": "61d60dfffe2f29ba4cd9a30f0e6b0ee0859c536934673764283580274d6c2eb9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-fixture.json",
+      "bytes": 2492,
+      "sha256": "3deb50dae9732944eb6f4fe291531c07b2587179358f134711c6aba17b50bc18"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-frames.json",
+      "bytes": 1240574,
+      "sha256": "260faa92da71e92387b4655eac187d2845bcee8e8bb9798db89ee1044a1e83cf"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-assessment.json",
+      "bytes": 989,
+      "sha256": "df0d088f5cf6dfd55cc1502773be673f97818440688cfeccfb440e34cb9bbdfb"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-fixture.json",
+      "bytes": 2492,
+      "sha256": "343dacb250577e169a1af74921d99beaaf4e86a3f3e8d2d9009db966797b8ff6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-frames.json",
+      "bytes": 406167,
+      "sha256": "a8da000dc5053a430af1b728a0f0abdd2d59c0c16e20f29fb69232ec77a189de"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-fixture.json",
+      "bytes": 2484,
+      "sha256": "47a04a7015646e743ff6b7d1029474d7fbb4b1c7b3115b4c3a1f6fedf87586c3"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\smoke-frames.json",
+      "bytes": 276172,
+      "sha256": "eb5865cedf9228084e1274c9584a90dbd55646d219b8f4d8397453f636105cb1"
+    }
+  ],
+  "matrix_raw_artifacts_external": [
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-assessment.json",
+      "bytes": 982,
+      "sha256": "c9a2d476f8c367c3afc999baffa71e879e2b47f532e790196c93b283a7dc714c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-fixture.json",
+      "bytes": 2491,
+      "sha256": "378c5a2f59bbe95e027fc97533ea68a39af6e35a506fd5b8c67a697ac7825750"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-0-frames.json",
+      "bytes": 3606922,
+      "sha256": "7df94c99d516a31b3285e27710a9dfd76e6d6f3d6d5446e858d1e6976278fb9b"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-assessment.json",
+      "bytes": 986,
+      "sha256": "ee715bdd5bfa15096ee913be26f28c42e4dd1888be7c73b2229c3d0dfeef8443"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-fixture.json",
+      "bytes": 2482,
+      "sha256": "f4f1d391fa80640d546e1dfa093aa45dc27fa7e3c8c55b137d6cc657802c9ff9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-frames.json",
+      "bytes": 2569643,
+      "sha256": "fc8831ec69c2c1c9605d023a61d686a36480982fb16f69e4ee72c8264ea8ee7c"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-assessment.json",
+      "bytes": 989,
+      "sha256": "61d60dfffe2f29ba4cd9a30f0e6b0ee0859c536934673764283580274d6c2eb9"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-fixture.json",
+      "bytes": 2492,
+      "sha256": "3deb50dae9732944eb6f4fe291531c07b2587179358f134711c6aba17b50bc18"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-2-frames.json",
+      "bytes": 1240574,
+      "sha256": "260faa92da71e92387b4655eac187d2845bcee8e8bb9798db89ee1044a1e83cf"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-assessment.json",
+      "bytes": 989,
+      "sha256": "df0d088f5cf6dfd55cc1502773be673f97818440688cfeccfb440e34cb9bbdfb"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-fixture.json",
+      "bytes": 2492,
+      "sha256": "343dacb250577e169a1af74921d99beaaf4e86a3f3e8d2d9009db966797b8ff6"
+    },
+    {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-3-frames.json",
+      "bytes": 406167,
+      "sha256": "a8da000dc5053a430af1b728a0f0abdd2d59c0c16e20f29fb69232ec77a189de"
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 # Ugly Stik Companion Pilot Qualification
 
+2026-10-21 follow-up: [AFC-00-R3](../AFC-00-R3/README.md#runtime-promotion-2026-10-21)
+promotes the verified clear-trajectory early return (`3842cbdba…1f024`). The
+[AFC-02 solver bridge](../AFC-02/solver-merge-2f4f35c0/README.md) supports the
+profile's `2f4f35c0…cff4bfa` solver pin for the existing Stik scope. These changes
+preserve the circuit base and qualification limits; callback timing remains over
+budget with companions enabled.
+
 2026-10-21 migration update: [AFC-04-R4](../AFC-04-R4/README.md) verifies the
 production wind-aware bank-candidate wrapper with its 148-check circuit matrix,
 six-route moving encounters per weather and six exact crossing replays. Bounded

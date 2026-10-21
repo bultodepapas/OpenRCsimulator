@@ -1,0 +1,271 @@
+{
+  "format": "openrc-afc22-r1-pilot3842-checkpoint-supplement v1",
+  "status": "pass",
+  "created_utc": "2026-10-21T03:52:20Z",
+  "fixture": {
+    "project_root": "D:/OpenRCsimulator-AFC-work/fast-path-integration-20261021/app",
+    "private_checkout_commit": "63d4c479bf1e1baf5054b17f2c61e3e57c5b9fdd",
+    "main_checkout_commit": "46cfc027c73d6ea75d4a94fa30324621b1384ff2",
+    "engine": "4.7.2-stable (official)",
+    "engine_commit": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "capture_tick": 137,
+    "continuation_ticks": 240,
+    "physics_hz": 240,
+    "companions": 2,
+    "companion_seed": 20261020
+  },
+  "run": {
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://../research/ai-companions/checkpoints/test_fleet_checkpoint.gd"
+    ],
+    "started_utc": "2026-10-21T03:47:50.651096+00:00",
+    "elapsed_seconds": 41.906,
+    "timeout_seconds": 180.0,
+    "warnings_as_errors": true,
+    "complete": true,
+    "process_exit": 0,
+    "runner_exit": 0,
+    "error_count": 0,
+    "warning_count": 0,
+    "required_text": [
+      "PASS offline fleet checkpoint continuation"
+    ],
+    "checkpoint_checks": 79,
+    "checkpoint_failures": 0
+  },
+  "promoted_identity": {
+    "controller_path": "res://ai/companions/pilot.gd",
+    "controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "profile_json_sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+    "controller_dependencies": {
+      "res://ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    },
+    "solver_qualification_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "solver_raw_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+    "base_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "legacy_base_pilot_fallback_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "source_manifest_entries": 434,
+    "source_manifest_file_sha256": "3c13d946d3568b782a2f2bbb1d746c7240c381b529b65f5ba1a256fe8b7837ac"
+  },
+  "assertions": {
+    "profile_path_and_pilot_hash_bound": true,
+    "profile_dependency_bound": true,
+    "source_manifest_matches_pilot": true,
+    "source_manifest_matches_circuit_base": true,
+    "captured_latch_uses_current_pilot": true,
+    "retired_checkpoint_identity_rejected": true,
+    "retired_old_source_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "legacy_fallback_pin_preserved": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+  },
+  "continuation": {
+    "physical_frames_compared": 240,
+    "command_frames_compared": 240,
+    "orfl_streams": 3,
+    "rows_per_stream": 241,
+    "total_rows_compared": 723,
+    "events_compared": true,
+    "exact": true,
+    "report": {
+      "comparison_exclusions": [
+        "header.created_utc",
+        "header.metadata.created_utc",
+        "header.metadata.scenario",
+        "header.metadata.selected_start_choice",
+        "header.metadata.launch_choice",
+        "header.metadata.launch_kind",
+        "header.metadata.launch_field_id",
+        "header.metadata.launch_trim_throttle",
+        "header.metadata.launch_state",
+        "header.metadata.launch_aux",
+        "header.metadata.launch_ground_anchors",
+        "header.metadata.launch_engine_running",
+        "header.metadata.launch_error",
+        "header.metadata.launch_continuous",
+        "footer.chain_sha256 (header timestamp participates)",
+        "footer.observer_usec",
+        "footer.peak_buffer_rows"
+      ],
+      "events_compared": true,
+      "ok": true,
+      "per_stream_rows": 241,
+      "rows_compared": 723,
+      "streams": 3
+    }
+  },
+  "main_worktree_checks": {
+    "full_checkpoint_rerun": "not repeated",
+    "rationale": "Root verified the private integration checkout against the promoted main app source identity and completed current-worktree profile (37 checks) and manager (53 checks) gates; no checkpoint-relevant runtime difference remained.",
+    "promotion_receipt_path": "docs/research/ai-companions/AFC-00-R3/promotion.json",
+    "promotion_receipt_sha256": "b93af3960dcb90694f8452203a772b7c540d92403a493c8eb6ef8e1ddd6d5173",
+    "profiles": {
+      "checks": 37,
+      "report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-profiles-stjd44po/report.json",
+      "report_sha256": "7b47c17dae2de934524275e468c3957804bbf0b0c638497d25c480d87398e320"
+    },
+    "manager": {
+      "checks": 53,
+      "report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-manager-inq2qk33/report.json",
+      "report_sha256": "73d3c9c97890ba208ce5a176232604a4bc7269cdd787f5192b5bdc5f49fcf458"
+    }
+  },
+  "portable_artifacts": [
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/checkpoint-report.json",
+      "sha256": "798877b4b825106fff9e4bcfc22474bedf08a85353e159b7d51b4c30c0f33339",
+      "bytes": 55848
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/runner-report.json",
+      "sha256": "8f704dbd644b1327993f5aaac263b27334c1ff03e944f9c10204bd6d6cb1d17b",
+      "bytes": 1306
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/engine.log",
+      "sha256": "8e2fab1df5d4a996742f0589982edd8b75b148634494f2ad20d354c1fe0dd60e",
+      "bytes": 4635
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/source-hash-manifest.json",
+      "sha256": "3c13d946d3568b782a2f2bbb1d746c7240c381b529b65f5ba1a256fe8b7837ac",
+      "bytes": 49156
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/checkpoint-payload.json",
+      "sha256": "15558188c52f1d0fcf243c8b53498fd445e09a9194c0c68fba6b5b2f6c8722a8",
+      "bytes": 125182
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/decision-expected.json",
+      "sha256": "8e931c0bf813df035fe385bd800624817a2723309479debf405c79eb9325ff69",
+      "bytes": 70258
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/pilot3842-20261021/decision-restored.json",
+      "sha256": "7c36233e0020389508c6f8e41cfdb63c7b75dcb6c324dc82fc06367f0543a6e6",
+      "bytes": 70258
+    }
+  ],
+  "evidence_volume_artifacts": [
+    {
+      "label": "checkpoint-report",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/report-41618871.json",
+      "sha256": "798877b4b825106fff9e4bcfc22474bedf08a85353e159b7d51b4c30c0f33339",
+      "bytes": 55848
+    },
+    {
+      "label": "checkpoint-payload",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/fixed-roster-6529694.json",
+      "sha256": "15558188c52f1d0fcf243c8b53498fd445e09a9194c0c68fba6b5b2f6c8722a8",
+      "bytes": 125182
+    },
+    {
+      "label": "checked-runner-report",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/runner-pilot3842-20261021/godot-jav48aq_/report.json",
+      "sha256": "8f704dbd644b1327993f5aaac263b27334c1ff03e944f9c10204bd6d6cb1d17b",
+      "bytes": 1306
+    },
+    {
+      "label": "engine-log",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/runner-pilot3842-20261021/godot-jav48aq_/engine.log",
+      "sha256": "8e2fab1df5d4a996742f0589982edd8b75b148634494f2ad20d354c1fe0dd60e",
+      "bytes": 4635
+    },
+    {
+      "label": "expected-replay-manifest",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-6557432/decision-replay.json",
+      "sha256": "8e931c0bf813df035fe385bd800624817a2723309479debf405c79eb9325ff69",
+      "bytes": 70258
+    },
+    {
+      "label": "restored-replay-manifest",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-14036881/decision-replay.json",
+      "sha256": "7c36233e0020389508c6f8e41cfdb63c7b75dcb6c324dc82fc06367f0543a6e6",
+      "bytes": 70258
+    },
+    {
+      "label": "decision-expected-6557432/player.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-6557432/player.orfl",
+      "sha256": "e6dd00c3d2a79b00970cf645d0f07b6b3e1fcbb7d7f10b393713b061d91d3a95",
+      "bytes": 5004984
+    },
+    {
+      "label": "decision-expected-6557432/companion-0.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-6557432/companion-0.orfl",
+      "sha256": "a535ae0bfac3c70cdd29de474d00becbbeb187d0d96ebf35c9a3b5019ec307e5",
+      "bytes": 5005024
+    },
+    {
+      "label": "decision-expected-6557432/companion-1.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-6557432/companion-1.orfl",
+      "sha256": "74877c1d18db049d2846f0347ae9366a544816bb94906db72ac628ef23bbc880",
+      "bytes": 5005024
+    },
+    {
+      "label": "decision-restored-14036881/player.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-14036881/player.orfl",
+      "sha256": "76ea8f86a43b901760137889ce1af92512b3aee2aafd52189d8b1f39e638787c",
+      "bytes": 5004688
+    },
+    {
+      "label": "decision-restored-14036881/companion-0.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-14036881/companion-0.orfl",
+      "sha256": "70fb842e79cf71b8c75e29bf3e9cf264ec13ad68a242d86c14cae2e6890ac862",
+      "bytes": 5004688
+    },
+    {
+      "label": "decision-restored-14036881/companion-1.orfl",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-14036881/companion-1.orfl",
+      "sha256": "ef434c5d8e86de940cf5ad8155442260daf45f26bb535663b8da8abdcd04eaab",
+      "bytes": 5004688
+    }
+  ],
+  "limitations": [
+    "Research proof only; no Main/live-session restore or product checkpoint feature.",
+    "Fixed two-agent Club/Stik roster, seed 20261020, reference calm atmosphere, one source/build identity.",
+    "Clean shared world only: scenery damage, inter-aircraft contact, incidents, runway/activity reservations and world transitions are refused or absent; per-session contact history stays inside FlightSession checkpoints.",
+    "No hot admission, retirement, generation changes, settings changes, weather changes or configuration migration.",
+    "The proof-local generation value is zero because current Manager exposes no generation counter.",
+    "FlightSession restore switches to recorded-input mode and stays paused; this harness explicitly unpauses only detached offline candidates.",
+    "This is a same-process decision-continuation comparison, not a fleet journal or cross-platform replay claim."
+  ],
+  "historical_receipts_modified": false,
+  "source_artifacts": [
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/sources/test_fleet_checkpoint-pre-pilot3842.gd",
+      "sha256": "c18d1cfdfe086859ee6b4291ec4007bca527b1785d2199308ea86c0f3014fe22",
+      "bytes": 66628
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/sources/test_fleet_checkpoint-pilot3842-private-run.gd",
+      "sha256": "8b5ce77c798e4dc2c0ea3acb4f05bba7cd1d07e276aa73ce7dbdde0f8c55a856",
+      "bytes": 67850
+    },
+    {
+      "path": "docs/research/ai-companions/AFC-22-R1/sources/test_fleet_checkpoint-pilot3842-main.gd",
+      "sha256": "09277f6edc3f21293ce079cbacbcdded6e674dd1300f3aa3ae527bee6a0cf214",
+      "bytes": 66628
+    }
+  ],
+  "harness_migration": {
+    "main_source_path": "research/ai-companions/checkpoints/test_fleet_checkpoint.gd",
+    "changed_constant": "PRODUCTION_PILOT_SHA256",
+    "old_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "new_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "pre_migration_main_harness_sha256": "c18d1cfdfe086859ee6b4291ec4007bca527b1785d2199308ea86c0f3014fe22",
+    "private_run_harness_sha256": "8b5ce77c798e4dc2c0ea3acb4f05bba7cd1d07e276aa73ce7dbdde0f8c55a856",
+    "migrated_main_harness_sha256": "09277f6edc3f21293ce079cbacbcdded6e674dd1300f3aa3ae527bee6a0cf214",
+    "archived_main_harness_copy_sha256": "09277f6edc3f21293ce079cbacbcdded6e674dd1300f3aa3ae527bee6a0cf214",
+    "change_scope": "single expected pilot SHA constant only; caller path, profile controller hash/dependency, captured controller source identity, retired-checkpoint rejection, and legacy base-pilot fallback guard remain strict",
+    "private_run_equals_main_after_eol_normalization": true,
+    "private_run_manifest_sha256": "8b5ce77c798e4dc2c0ea3acb4f05bba7cd1d07e276aa73ce7dbdde0f8c55a856",
+    "private_run_source_path": "docs/research/ai-companions/AFC-22-R1/sources/test_fleet_checkpoint-pilot3842-private-run.gd",
+    "pre_migration_source_path": "docs/research/ai-companions/AFC-22-R1/sources/test_fleet_checkpoint-pre-pilot3842.gd"
+  }
+}

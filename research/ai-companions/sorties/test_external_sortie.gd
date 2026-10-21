@@ -13,6 +13,7 @@ var readiness_script: Script
 var checks := 0
 var failures: Array[String] = []
 var candidate_driver := false
+var candidate_mode := ""
 
 
 func _initialize() -> void:
@@ -21,6 +22,11 @@ func _initialize() -> void:
 		options[pair[0]] = pair[1] if pair.size() > 1 else true
 	var selected_driver: String = str(options.get("driver", ""))
 	candidate_driver = not selected_driver.is_empty()
+	candidate_mode = str(options.get("candidate_mode", "taxi" if candidate_driver else ""))
+	if candidate_driver and candidate_mode not in ["taxi", "clearance_gate"]:
+		printerr("Unknown external sortie candidate mode: " + candidate_mode)
+		quit(2)
+		return
 	if selected_driver.is_empty():
 		selected_driver = get_script().resource_path.get_base_dir().path_join("external_sortie_driver.gd")
 	driver = load(selected_driver)
@@ -65,16 +71,25 @@ func _run() -> void:
 		return
 	var taxi_override: Dictionary = _taxi_override_from_options()
 	var result: Dictionary
-	if candidate_driver:
+	if candidate_driver and candidate_mode == "taxi":
 		result = driver.run(direction == "east", log_path, duration_s, pilot_path,
 			checked_weather.config, profile, true, taxi_override)
+	elif candidate_driver:
+		result = driver.run(direction == "east", log_path, duration_s, pilot_path,
+			checked_weather.config, profile, true)
 	else:
 		result = driver.run(direction == "east", log_path, duration_s, pilot_path,
 			checked_weather.config, profile, true)
 	if not result.get("ok", false):
 		failures.append("session setup: " + str(result.get("error", "unknown failure")))
 	else:
-		_assert(bool(result.get("complete", false)), "physical takeoff, circuit, touchdown, supported rollout, and runway vacate", str(result.get("error", "")))
+		if candidate_mode == "clearance_gate":
+			_assert(result.has("candidate_clearance_gate_pass")
+				and bool(result.get("candidate_clearance_gate_pass", false)) == bool(result.get("complete", false)),
+				"full-clear candidate pass and completion state agree",
+				str([result.get("candidate_clearance_gate_pass"), result.get("complete"), result.get("error", "")]))
+		else:
+			_assert(bool(result.get("complete", false)), "physical takeoff, circuit, touchdown, supported rollout, and runway vacate", str(result.get("error", "")))
 		_assert(int(result.get("physics_hz", 0)) == 240 and float(result.get("dt_s", 0.0)) == 1.0 / 240.0,
 			"sortie uses the accepted fixed 240 Hz physics tick", str([result.get("physics_hz"), result.get("dt_s")]))
 		_assert(str(result.get("aircraft_id", "")) == ACCEPTED_STIK_ID
@@ -116,15 +131,26 @@ func _run() -> void:
 			and stable.get("all_wheels_down", false) and stable.get("all_anchors", false)
 			and stable.get("angular_speed_rad_s", INF) < 0.01 and stable.get("max_drift_m", INF) <= 0.002,
 			"supported <= 0.5 m/s rollout holds for 2 s with settled angular rate and <2 mm drift", JSON.stringify(stable))
-		_assert(bool(result.get("runway_vacated", false)), "physical taxi exit clears the loaded runway", str(result.get("vacate_end", {})))
+		if candidate_mode == "clearance_gate":
+			_assert(typeof(result.get("legacy_runway_vacated", null)) == TYPE_BOOL,
+				"original wheel-only vacate result is retained separately", str(result.get("legacy_runway_vacated")))
+		else:
+			_assert(bool(result.get("runway_vacated", false)), "physical taxi exit clears the loaded runway", str(result.get("vacate_end", {})))
 		_check_circuit(result, direction == "east")
 		if candidate_driver:
-			_check_taxi_candidate(result)
+			if candidate_mode == "clearance_gate":
+				_check_clearance_gate_candidate(result)
+			else:
+				_check_taxi_candidate(result)
 	var report: Dictionary = result.duplicate(true)
 	report.checks = checks
 	report.failures = failures.duplicate()
 	report.profile = profile
 	report.seed = seed
+	report.candidate_mode = candidate_mode
+	report.driver_path = driver.resource_path
+	report.driver_source_sha256 = FileAccess.get_sha256(driver.resource_path)
+	report.test_harness_source_sha256 = FileAccess.get_sha256(get_script().resource_path)
 	report.weather = checked_weather.config
 	report.log_sha256 = FileAccess.get_sha256(log_path) if FileAccess.file_exists(log_path) else ""
 	_write_report(output_path, report)
@@ -234,13 +260,18 @@ func _check_taxi_candidate(result: Dictionary) -> void:
 		"candidate uses the separately versioned research taxi policy", str(result.get("vacate_policy_id", "")))
 	_assert(not bool(result.get("vacate_progress_timeout", true)) and float(result.get("vacate_progress_elapsed_s", 0.0)) < 0.0,
 		"taxi progress deadline was not exhausted", str([result.get("vacate_progress_timeout"), result.get("vacate_progress_elapsed_s")]))
-	_assert(bool(result.get("vacate_all_wheels_down", false)) and bool(result.get("vacate_all_anchors", false))
-		and bool(result.get("vacate_full_footprint_clear", false)),
-		"all wheels and contact anchors remain supported while every hull point and wheel clears the north runway edge",
-		str([result.get("vacate_all_wheels_down"), result.get("vacate_all_anchors"),
-			result.get("vacate_full_footprint_clear"), result.get("vacate_end", {})]))
+	var vacate_end: Dictionary = result.get("vacate_end", {})
+	_assert(bool(result.get("vacate_all_wheels_down", false)) and bool(result.get("vacate_full_footprint_clear", false))
+		and bool(vacate_end.get("all_wheels_down", false)) and bool(vacate_end.get("all_wheels_clear_north", false))
+		and bool(vacate_end.get("all_hull_clear_north", false)),
+		"current endpoint has landing-gear support and full hull-and-wheel clearance",
+		str([result.get("vacate_all_wheels_down"), result.get("vacate_full_footprint_clear"), vacate_end]))
+	_assert(result.has("vacate_all_anchors") and typeof(result.get("vacate_all_anchors")) == TYPE_BOOL,
+		"all-anchor stiction observation is retained separately from taxi support", str(result.get("vacate_all_anchors")))
+	_assert(bool(result.get("complete", false)) and str(result.get("error", "missing error field")).is_empty(),
+		"a reported error can never coexist with candidate completion", str([result.get("complete"), result.get("error")]))
 	_assert(not bool(result.get("vacate_lateral_footprint_violation", true)),
-		"full taxi footprint stays within runway side corridor until the north-side exit",
+		"full taxi footprint stays within runway side corridor through the exit endpoint",
 		str(result.get("vacate_min_lateral_footprint_margin_m", NAN)))
 	_assert(is_finite(max_speed) and is_finite(configured_max_speed) and max_speed <= configured_max_speed + 0.1,
 		"measured ground speed stays below max-GS guard plus 0.1 m/s tolerance",
@@ -262,6 +293,34 @@ func _check_taxi_candidate(result: Dictionary) -> void:
 			nosewheel_actual_deg, result.get("vacate_max_yaw_rate_rad_s")]))
 	_assert(result.get("contact_event_history", []).is_empty() and not bool(result.get("terminal_damage", true)),
 		"taxi remains clear of contact events and damage", str([result.get("contact_event_history", []), result.get("terminal_damage")]))
+
+
+func _check_clearance_gate_candidate(result: Dictionary) -> void:
+	var passed: bool = bool(result.get("candidate_clearance_gate_pass", false))
+	var vacate_end: Dictionary = result.get("vacate_end", {})
+	_assert(str(result.get("vacate_gate_policy_id", "")) == "AFC09-C5e-full-clear-gates-r1",
+		"run uses the separately identified full-clear gate-only policy", str(result.get("vacate_gate_policy_id", "")))
+	_assert(result.has("legacy_runway_vacated") and result.has("legacy_vacate_time_s"),
+		"legacy wheel-only outcome and first-clear time remain diagnostic fields",
+		str([result.get("legacy_runway_vacated"), result.get("legacy_vacate_time_s")]))
+	if passed:
+		_assert(bool(result.get("runway_vacated", false)) and bool(result.get("vacate_full_footprint_clear", false))
+			and bool(result.get("vacate_all_wheels_down", false))
+			and bool(vacate_end.get("all_wheels_clear_north", false))
+			and bool(vacate_end.get("all_hull_clear_north", false))
+			and bool(vacate_end.get("all_wheels_down", false))
+			and float(vacate_end.get("side_corridor_margin_m", -INF)) >= 0.0
+			and float(result.get("vacate_clear_dwell_s", 0.0)) >= 0.25,
+			"candidate completion has current full clearance, wheel-down, corridor, and dwell predicates", JSON.stringify(vacate_end))
+		_assert(bool(result.get("complete", false)) and str(result.get("error", "missing error field")).is_empty(),
+			"candidate completion has no recorded error", str([result.get("complete"), result.get("error")]))
+	else:
+		_assert(not bool(result.get("complete", false)) and not str(result.get("error", "")).is_empty(),
+			"candidate gate rejection is retained as incomplete with a reason", str([result.get("complete"), result.get("error")]))
+		_assert(bool(result.get("vacate_timeout", false)) or bool(result.get("vacate_lateral_footprint_violation", false))
+			or bool(result.get("terminal_damage", false)) or not str(result.get("sim_fault", "")).is_empty(),
+			"candidate noncompletion is attributable to bounded exit timeout, corridor violation, damage, or solver fault",
+			str([result.get("vacate_timeout"), result.get("vacate_lateral_footprint_violation"), result.get("terminal_damage"), result.get("sim_fault")]))
 
 
 func _assert(condition: bool, label: String, detail: String = "") -> void:

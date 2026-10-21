@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fa9f6ba3-8f23-4569-965b-d146a8e65308",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-AFC-work/fast-path-integration-20261021/app",
+    "--script",
+    "res://../research/ai-companions/avoidance/test_predictor_static_containment.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R5/verification.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T03:56:51.989729+00:00",
+  "label": "trace-static-containment-final",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R5\\checks\\trace-static-containment-final-zqcv5i0p\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R5\\checks\\trace-static-containment-final-zqcv5i0p\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PREDICTOR STATIC CONTAINMENT:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.594,
+  "log_bytes": 2115,
+  "log_sha256": "be9e4d37cf685d008d39716d2f3d5ae88ce174902016b05b1047b39861cda304"
+}

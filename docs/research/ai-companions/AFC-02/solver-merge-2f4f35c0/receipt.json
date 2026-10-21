@@ -1,0 +1,1973 @@
+{
+  "format": "openrc-companion-solver-merge-bridge v1",
+  "step": "AFC-02-R2",
+  "date_utc": "2026-10-21",
+  "engine": "Godot 4.7.2-stable.official.ed1daf0bf Windows console",
+  "physics_hz": 240,
+  "purpose": "Bridge the full five-file merged physics source identity from frozen AFC-04-R4 using same-tape replays, controlled Stik trim probes, and a same-world closed-loop fixture override.",
+  "result": "The accepted legacy Jensen Stik has identical trims, initial state, six same-tape candidate CSVs, and six closed-loop encounter state/command traces across the five-source overlay. This is a narrow applicability bridge; profile admission and physical validation are not established by this receipt.",
+  "source_sets": {
+    "baseline": {
+      "app": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+      "normalized_source_count": 133,
+      "normalized_source_identity": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+      "flight_log_solver_identity": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+    },
+    "candidate": {
+      "app": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+      "normalized_source_count": 133,
+      "normalized_source_identity": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+      "flight_log_solver_identity": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd"
+    },
+    "normalization": "utf8-lf",
+    "source_directories": [
+      "physics",
+      "sim",
+      "failures"
+    ],
+    "normalized_changed_source_files": [
+      {
+        "path": "res://physics/aero.gd",
+        "baseline": {
+          "raw_sha256": "06dfbbcd8c96124d4d19591aaa8d940ba299258710334f3911625baae043630f",
+          "normalized_sha256": "af4f8a1df478a17a9a707525d13e7af6e5eae9485f264d765834ac68d67c5639",
+          "bytes": 49971
+        },
+        "merged": {
+          "raw_sha256": "efccc6baf1a88fc24487d6766db05c6634da047de70bd55b9a115aed0adf5531",
+          "normalized_sha256": "2cfad8b511be861cde434099e35a44571ae8797a50187315cd223cd95a62164d",
+          "bytes": 50896
+        },
+        "review_note": "Adds fuselage side force and crossflow drag from body_cy_beta and body_crossflow_area; both optional inputs are absent from the accepted legacy Jensen Stik."
+      },
+      {
+        "path": "res://physics/aircraft_data.gd",
+        "baseline": {
+          "raw_sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737",
+          "normalized_sha256": "c51ba9d841fc8315eb280be11b34d42d1594155c56c06934a03b16f95d85fc43",
+          "bytes": 140678
+        },
+        "merged": {
+          "raw_sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd",
+          "normalized_sha256": "3405a4ab9815722991dde403bcc448dc4b314d59e5dec25881dd75bae126cb2f",
+          "bytes": 141590
+        },
+        "review_note": "Loads and validates body_cy_beta and body_crossflow_area; both optional inputs are absent from the accepted legacy Jensen Stik."
+      },
+      {
+        "path": "res://physics/glow/installation.gd",
+        "baseline": {
+          "raw_sha256": "b82c5ccd6b9b5e14c9db9fad988ded575e49ae28ad0dac10419365c5ab1459fb",
+          "normalized_sha256": "c493262f09e0ca55baa00a33f8212cbc7bc746df6c6b51394c3a6fef4c07be4b",
+          "bytes": 36991
+        },
+        "merged": {
+          "raw_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+          "normalized_sha256": "3573998883b3198a429b84dd66357d3cc50a45a65de4aaafac4fa8e900ab6d86",
+          "bytes": 37764
+        },
+        "review_note": "Adds optional signed zero_lift_angle_rad installation data; that quantity is absent from both inspected Stik files."
+      },
+      {
+        "path": "res://physics/glow/propeller.gd",
+        "baseline": {
+          "raw_sha256": "be41703c49e65b0d059af474d4ee9a52f246f14c40f80a6e73b9be3a272ae5ad",
+          "normalized_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+          "bytes": 7058
+        },
+        "merged": {
+          "raw_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+          "normalized_sha256": "fc6972d33b83e6926196671221654026043bc746bc0a2c4f39474d998538fa60",
+          "bytes": 7754
+        },
+        "review_note": "Offsets propeller section angle by the optional zero-lift angle; the bridge fixtures have no zero-lift input."
+      },
+      {
+        "path": "res://physics/trim.gd",
+        "baseline": {
+          "raw_sha256": "2869adc042e5a4abd1a602aba8ca801ce73af14911c5431accee31da5fd05072",
+          "normalized_sha256": "1c16481c15e3bc65bf0c04aff1a478c30cbf99ccb24255d494b7d4283537722e",
+          "bytes": 20378
+        },
+        "merged": {
+          "raw_sha256": "8a8d32ef0d0a1152b062b0630f8fa1b1699951a59904ad41bfcc26ec345cafd1",
+          "normalized_sha256": "cd8f060890ecac5fd39197acbf92cec66d50f17801451c9a3006e6c302a81ec8",
+          "bytes": 20775
+        },
+        "review_note": "Bounds modern Glow level-trim line search and snaps reached throttle bounds; exercised as a branch control on the modern Stik trim probe."
+      }
+    ],
+    "source_manifest": {
+      "evidence_path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\source-manifest.json",
+      "evidence_bytes": 72332,
+      "evidence_sha256": "5d143cb534dd9527a4fee2f49e685c6c25f869d5535fd3a928a92af7b9e8445e",
+      "repository_copy": "source-manifest.json",
+      "repository_copy_sha256": "5d143cb534dd9527a4fee2f49e685c6c25f869d5535fd3a928a92af7b9e8445e"
+    },
+    "isolated_app_construction": "Full app tree copied from the immutable R4 mirror; only the five listed physics source files were overlaid from the root-owned 2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa source snapshot. No app source/data writes were made during verification.",
+    "unchanged_fixture_files": [
+      {
+        "path": "data/aircraft/jensen_ugly_stik_60.json",
+        "baseline_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "candidate_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "equal": true,
+        "bytes": 60211
+      },
+      {
+        "path": "data/aircraft/stik_glow_61fx_2t.json",
+        "baseline_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
+        "candidate_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
+        "equal": true,
+        "bytes": 59185
+      },
+      {
+        "path": "data/glow/stik_61fx_2t.json",
+        "baseline_sha256": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+        "candidate_sha256": "03d8412fa7dd579b4853264d3987a164a7c34cb558332f621ae90c98fe035c0e",
+        "equal": true,
+        "bytes": 8700
+      },
+      {
+        "path": "ai/companions/pilot.gd",
+        "baseline_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+        "candidate_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+        "equal": true,
+        "bytes": 23965
+      },
+      {
+        "path": "ai/companions/circuit_controller.gd",
+        "baseline_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+        "candidate_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+        "equal": true,
+        "bytes": 21717
+      },
+      {
+        "path": "data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "baseline_sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e",
+        "candidate_sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e",
+        "equal": true,
+        "bytes": 1524
+      },
+      {
+        "path": "data/ai/companions/fields/club-default.json",
+        "baseline_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+        "candidate_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+        "equal": true,
+        "bytes": 3356
+      },
+      {
+        "path": "data/fields/default.json",
+        "baseline_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "candidate_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "equal": true,
+        "bytes": 158788
+      },
+      {
+        "path": "data/fields/lights.json",
+        "baseline_sha256": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+        "candidate_sha256": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+        "equal": true,
+        "bytes": 19296
+      },
+      {
+        "path": "data/scenery/default.json",
+        "baseline_sha256": "46c64bf12dc5ae886189cb574773f0b90fab158614e77969c1eee789e9db4900",
+        "candidate_sha256": "46c64bf12dc5ae886189cb574773f0b90fab158614e77969c1eee789e9db4900",
+        "equal": true,
+        "bytes": 28175
+      },
+      {
+        "path": "scenery/collision_world.gd",
+        "baseline_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "candidate_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+        "equal": true,
+        "bytes": 37095
+      },
+      {
+        "path": "scenery/scenery_loader.gd",
+        "baseline_sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd",
+        "candidate_sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd",
+        "equal": true,
+        "bytes": 16829
+      },
+      {
+        "path": "scenery/scenery.gd",
+        "baseline_sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b",
+        "candidate_sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b",
+        "equal": true,
+        "bytes": 35211
+      },
+      {
+        "path": "tools/flight_log_cli.gd",
+        "baseline_sha256": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432",
+        "candidate_sha256": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432",
+        "equal": true,
+        "bytes": 18513
+      }
+    ],
+    "flight_log_identity_note": "FlightLog solver identity (21c675… / 8213b7…) is its own source fingerprint scope and must not be confused with the profile loader's normalized 133-file identity (1526… / 2f4…).",
+    "research_and_runtime_scripts": [
+      {
+        "path": "research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd",
+        "sha256": "cf9926476a1568c26aca00192be10af317e6ea45f46520b6971daf508602c0f9"
+      },
+      {
+        "path": "research/ai-companions/avoidance/solver_merge_source_manifest.py",
+        "sha256": "1dbf902d52cc654149e0daf0176adfaebf69bfbe81611611d729db4386c11c97"
+      },
+      {
+        "path": "research/ai-companions/avoidance/build_solver_merge_bridge_receipt.py",
+        "sha256": "40310ffad6dd904085542d85403cb34128464820b311267911d06e7dd6617414"
+      },
+      {
+        "path": "app/tools/flight_log_cli.gd",
+        "sha256": "4f25cc66af6546043aacd79cdd8689e2cdecc271933b72e26fdbfa03c2957432"
+      },
+      {
+        "path": "D evidence/closed-loop-probe/encounter_probe.gd",
+        "sha256": "66cb9bfa54d0c9430428de0381fda2e54657e0c060a91590331630bea415ca56"
+      }
+    ]
+  },
+  "accepted_companion_and_profile_boundary": {
+    "accepted_aircraft_id": "jensen-das-ugly-stik-60",
+    "accepted_aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+    "accepted_aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "accepted_aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "accepted_aircraft_profile_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "frozen_profile_solver_pin": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "candidate_profile_admission": "Not tested by this isolated bridge. Its frozen R4 profile still pins 1526…f33b7e, so it is stale for the candidate 2f4f35…cff4bfa normalized identity. The closed-loop survey intentionally overrides the pilot source and does not call qualification-profile admission.",
+    "scope": "Only the accepted jensen-das-ugly-stik-60 companion is in scope. The modern stik-glow-61fx-2t is only a trim-line-search branch control."
+  },
+  "trim_and_initial_state_comparison": {
+    "method": "Trim.solve(level, 15.0 m/s) with unchanged aircraft JSON on each source snapshot; compare all returned trim fields and all 13 initial-state components.",
+    "baseline_report": {
+      "path": "trim/baseline.json",
+      "bytes": 2436,
+      "sha256": "6fc7fc6d9250dbf3ab301f73422022fcef40e5b88b3fa6f69cb15c17838bfd41"
+    },
+    "merged_report": {
+      "path": "trim/merged.json",
+      "bytes": 2436,
+      "sha256": "9374cc2b8fe8897711ef570bbe61c8b034f3d64588f9fb50ce49ba2c7c867161"
+    },
+    "frozen_pilot_load_report": {
+      "path": "trim/merged-with-baseline-pilot.json",
+      "bytes": 2701,
+      "sha256": "8b0444d7770d652709868137df16f28e0a033ad59d061ed1aefb41a41414fc33"
+    },
+    "frozen_pilot_load": {
+      "can_instantiate": true,
+      "is_script": true,
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd",
+      "sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+    },
+    "baseline_flight_log_solver_identity": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "merged_flight_log_solver_identity": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+    "aircraft": [
+      {
+        "model_id": "jensen-das-ugly-stik-60",
+        "speed_mps": 15.0,
+        "baseline_trim_ok": true,
+        "merged_trim_ok": true,
+        "trim_results_identical": true,
+        "iterations": 4,
+        "residual": 1.460233528890739e-13,
+        "throttle": 0.2825616452245841,
+        "rpm": 5159.1071759800525,
+        "thrust": 3.083065526607788,
+        "bounded_glow_trim_branch_active": false,
+        "modern_glow_installation_present": false,
+        "zero_lift_angle_rad": "absent",
+        "initial_state_components": 13,
+        "initial_state": [
+          0.0,
+          0.0,
+          -100.0,
+          14.959760772465627,
+          -0.03171751409814058,
+          1.097520674018512,
+          0.9993296789344573,
+          0.0,
+          0.0366086437983486,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_state_json_sha256": "9f75c8100cd650e1f728c3c43aff660da3c479003b34b8132a26b11e4c2dec0e",
+        "initial_state_identical": true
+      },
+      {
+        "model_id": "stik-glow-61fx-2t",
+        "speed_mps": 15.0,
+        "baseline_trim_ok": true,
+        "merged_trim_ok": true,
+        "trim_results_identical": true,
+        "iterations": 5,
+        "residual": 5.744875327863054e-15,
+        "throttle": 0.09878481105230576,
+        "rpm": 7023.587825943981,
+        "thrust": 3.151646247017178,
+        "bounded_glow_trim_branch_active": true,
+        "modern_glow_installation_present": true,
+        "zero_lift_angle_rad": "absent",
+        "initial_state_components": 13,
+        "initial_state": [
+          0.0,
+          0.0,
+          -100.0,
+          14.953614024702294,
+          -0.02813302118715255,
+          1.1784040620032794,
+          0.999227040023382,
+          0.0,
+          0.03931058999952124,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "initial_state_json_sha256": "32381e4447a8e1d3df7689f434f7772ae22fdeb39e0e2d1f36a1a063cd9dc4a0",
+        "initial_state_identical": true
+      }
+    ],
+    "interpretation": "Legacy Jensen has no modern Glow installation and does not activate the bounded modern-Glow trim branch. Modern Stik activates that branch; both model trims and initial states still match exactly in this specific level-trim case. zero_lift_angle_rad is absent on both, so the new propeller offset is not exercised.",
+    "runner_checks": [
+      {
+        "label": "stik-trim-baseline",
+        "ok": false,
+        "reason": "process_exit",
+        "process_exit": 1,
+        "elapsed_seconds": 0.234,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\baseline.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-baseline-2y575qxi/report.json",
+          "bytes": 2281,
+          "sha256": "656b4c1388110fa5da4ab14cbaa9bb1e92810f2b6acaa489cd8c34bb2f157bd8"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-baseline-2y575qxi/engine.log",
+          "bytes": 490,
+          "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: Expected indented block after \"for\" block.",
+            "context": [
+              "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd:71)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "STIK SOLVER MERGE TRIM PROBE COMPLETE"
+        ]
+      },
+      {
+        "label": "stik-trim-merged",
+        "ok": false,
+        "reason": "process_exit",
+        "process_exit": 1,
+        "elapsed_seconds": 0.312,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\merged.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-merged-oh4afulz/report.json",
+          "bytes": 2265,
+          "sha256": "991fae7c31b48829a1e21c0ff0d48c18186c5ecaa0db6a5311aa9606234d80b1"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-merged-oh4afulz/engine.log",
+          "bytes": 490,
+          "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: Expected indented block after \"for\" block.",
+            "context": [
+              "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd:71)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "STIK SOLVER MERGE TRIM PROBE COMPLETE"
+        ]
+      },
+      {
+        "label": "stik-trim-baseline-r2",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 2.359,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\baseline.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-baseline-r2-ta0ausd2/report.json",
+          "bytes": 1536,
+          "sha256": "3b1efa84f018edf7061fa3364104c3aff31e18adb0dca9088aacb017f2e67f0f"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-baseline-r2-ta0ausd2/engine.log",
+          "bytes": 209,
+          "sha256": "f8fb1208e1e8978afd15d7e4da2e623ad4d5eca861552e0e1ed371562a9123eb"
+        },
+        "diagnostics": [],
+        "missing_required_text": []
+      },
+      {
+        "label": "stik-trim-merged-r2",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 2.453,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\merged.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-merged-r2-dqem2foa/report.json",
+          "bytes": 1520,
+          "sha256": "489bc7151eb27f8c53fac7f2a6c086082597a04fd974f47c88875483a833511e"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-merged-r2-dqem2foa/engine.log",
+          "bytes": 207,
+          "sha256": "06da256632765708cb20e09df59c0b58ab28366baad3ea5fb3f8a4c0a6aa17fb"
+        },
+        "diagnostics": [],
+        "missing_required_text": []
+      },
+      {
+        "label": "test-external-baseline-pilot-load",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 2.61,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\merged-with-baseline-pilot.json",
+          "--external-pilot=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd"
+        ],
+        "report": {
+          "path": "runner/test-external-baseline-pilot-load-kad4e4om/report.json",
+          "bytes": 1705,
+          "sha256": "b8111a85acd72b353b951060be3a08971709b4c897f5ebd17e4f6922c1eace2a"
+        },
+        "engine_log": {
+          "path": "runner/test-external-baseline-pilot-load-kad4e4om/engine.log",
+          "bytes": 227,
+          "sha256": "89c023214ad46804d3ea482386f3fda531898ce55763e5e49a81ebea103e4ad9"
+        },
+        "diagnostics": [],
+        "missing_required_text": []
+      }
+    ]
+  },
+  "same_tape_replay_comparison": {
+    "method": "Reuse the six retained calm 20-second R4 ORFLs and their exact baseline replay CSVs. Run flight_log_cli.gd in explicit --candidate mode on the 2f4 isolated app; this is post-conditioning baseline state plus recorded input tape, without pilot/controller adaptation or a new trim.",
+    "retained_r4_exact_receipt": {
+      "repository_path": "docs/research/ai-companions/AFC-04-R4/data/crossing-exact-replay-verification.json",
+      "bytes": 10744,
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    "baseline_solver_identity": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "merged_current_solver_identity": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+    "all_candidate_reports_complete": true,
+    "all_candidate_reports_solver_changed": true,
+    "all_six_candidate_csvs_byte_identical_to_retained_exact_baseline": true,
+    "replays": [
+      {
+        "stem": "seed-20261020-crossing-right-ai",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-ai.orfl",
+          "bytes": 8526224,
+          "sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64"
+        },
+        "input_orfl_sha256_from_r4_receipt": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/flight.csv",
+            "bytes": 4406314,
+            "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/replay.json",
+            "bytes": 6787,
+            "sha256": "2df6998a73a0d36a6978a83b11f20122c3ae969812fc54a7ed3f1e09054d4c63"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-ai/flight.csv",
+            "bytes": 4406314,
+            "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261020-crossing-right-ai/replay.json",
+            "bytes": 7044,
+            "sha256": "ece69d2de281bfb218ad21534d9613fc981defc7a08b9c38c2098e93beffb410"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261020-crossing-right-ai",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.86,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-ai.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-ai\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-ai\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-ai-rnnxhls8/report.json",
+              "bytes": 2141,
+              "sha256": "0f92c4ff92dc5d766f98dc95993fff17954c596beb89820aa3e3a3f037eeaf77"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-ai-rnnxhls8/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/flight.csv",
+            "bytes": 4406314,
+            "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-ai/flight.csv",
+            "bytes": 4406314,
+            "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      },
+      {
+        "stem": "seed-20261020-crossing-right-player-coupled",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-coupled.orfl",
+          "bytes": 8526224,
+          "sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a"
+        },
+        "input_orfl_sha256_from_r4_receipt": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+            "bytes": 6799,
+            "sha256": "0a50ce25b262c1fdb34c3af68fe74f4ad5a4155cc1d8c7fa86310795f8a5cbde"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+            "bytes": 7056,
+            "sha256": "aff7ed7dc2fce26f6c390f95dfe0c49628aafd969a53aa3dd00e3660a9abe27e"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261020-crossing-right-player-coupled",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.875,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-coupled.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-player-coupled\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-player-coupled\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-c-tx60yh0q/report.json",
+              "bytes": 2202,
+              "sha256": "748fef7d051b5f5e0a20a70c6a4f84597eec3826dd02a46a55cb2dde76583fd8"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-c-tx60yh0q/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      },
+      {
+        "stem": "seed-20261020-crossing-right-player-exogenous",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-exogenous.orfl",
+          "bytes": 8526268,
+          "sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b"
+        },
+        "input_orfl_sha256_from_r4_receipt": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+            "bytes": 6843,
+            "sha256": "64acf3addc0f727c4726938d304ecc3de390a2cd019370b2d9fee1b27c858568"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+            "bytes": 7100,
+            "sha256": "476c51221683ca2679ad93816d4c8d96fe1b86ec5ac6fd6401f21859dda1606d"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261020-crossing-right-player-exogenous",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.766,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261020-crossing-right-player-exogenous.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-player-exogenous\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261020-crossing-right-player-exogenous\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-e-np4nmcfo/report.json",
+              "bytes": 2210,
+              "sha256": "3484ed35e9cf5badf2dd77d74a785f9ea8900c0c6a0b4739121614ae3f98d6ed"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-e-np4nmcfo/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+            "bytes": 3853991,
+            "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      },
+      {
+        "stem": "seed-20261021-crossing-left-ai",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-ai.orfl",
+          "bytes": 8526228,
+          "sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8"
+        },
+        "input_orfl_sha256_from_r4_receipt": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/flight.csv",
+            "bytes": 4400837,
+            "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/replay.json",
+            "bytes": 6786,
+            "sha256": "f2f7f1b2f5765d09c62056eeace5c13a3569d41a438e940b93637ddf8e0257c3"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-ai/flight.csv",
+            "bytes": 4400837,
+            "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261021-crossing-left-ai/replay.json",
+            "bytes": 7043,
+            "sha256": "5210aa0ff113d69382b88cc11d23297193dcb517240363e0100af67b2a1075da"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261021-crossing-left-ai",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.75,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-ai.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-ai\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-ai\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-ai-6e1vrqoj/report.json",
+              "bytes": 2135,
+              "sha256": "0defd328f4cb347e032db46127fb1bf472621f4e9e850ece2ad21aa90de401db"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-ai-6e1vrqoj/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/flight.csv",
+            "bytes": 4400837,
+            "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-ai/flight.csv",
+            "bytes": 4400837,
+            "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      },
+      {
+        "stem": "seed-20261021-crossing-left-player-coupled",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-coupled.orfl",
+          "bytes": 8526224,
+          "sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0"
+        },
+        "input_orfl_sha256_from_r4_receipt": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+            "bytes": 6796,
+            "sha256": "3539907b936db6b1e550dd92131cb6059b4996ee6fb207f68acc6dff34af058a"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+            "bytes": 7053,
+            "sha256": "3037ad4994eadee4e7f709876b10ce70bbd7f8a3eba20c978d90b2d20104c802"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261021-crossing-left-player-coupled",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.859,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-coupled.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-player-coupled\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-player-coupled\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-co-awqlu16u/report.json",
+              "bytes": 2198,
+              "sha256": "ccf51516a2d1caaf863eecaac9729d0ee303e9f5bf68dcbb62de6ba3acb82502"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-co-awqlu16u/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      },
+      {
+        "stem": "seed-20261021-crossing-left-player-exogenous",
+        "input_orfl": {
+          "path": "AFC-04-R4/crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-exogenous.orfl",
+          "bytes": 8526264,
+          "sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380"
+        },
+        "input_orfl_sha256_from_r4_receipt": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380",
+        "reused_exact_baseline": {
+          "mode": "exact",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": false,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "report": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+            "bytes": 6840,
+            "sha256": "fe1ac416b4bd54c26041e065b09dc39b7468ada47054cc56ae36c197e693c6aa"
+          }
+        },
+        "merged_candidate": {
+          "mode": "candidate",
+          "status": "ok",
+          "complete": true,
+          "solver_changed": true,
+          "baseline_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+          "current_solver_sha256": "8213b759c5bd746369c57cb76bfa38f21f004532bcf4d8cc9b3a1fa44fca89dd",
+          "rows": 4801,
+          "csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "report": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+            "bytes": 7097,
+            "sha256": "573e4014a1ebb42facc00849af74f589d519031bc301efc397e788a0464b78f3"
+          },
+          "runner": {
+            "label": "solver-merge-candidate-seed-20261021-crossing-left-player-exogenous",
+            "ok": true,
+            "reason": "passed",
+            "process_exit": 0,
+            "elapsed_seconds": 6.844,
+            "command": [
+              "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+              "--headless",
+              "--path",
+              "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+              "--script",
+              "res://tools/flight_log_cli.gd",
+              "--",
+              "--log=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\seed-20261021-crossing-left-player-exogenous.orfl",
+              "--csv=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-player-exogenous\\flight.csv",
+              "--report=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\candidate-replays\\seed-20261021-crossing-left-player-exogenous\\replay.json",
+              "--replay",
+              "--candidate=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+            ],
+            "report": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-ex-nb1dgnz3/report.json",
+              "bytes": 2206,
+              "sha256": "99676c6bd23d6b412effec20e0194eb7c094ffa48e0c08466b1a2a74acc3fdaa"
+            },
+            "engine_log": {
+              "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-ex-nb1dgnz3/engine.log",
+              "bytes": 212,
+              "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+            },
+            "diagnostics": [],
+            "missing_required_text": []
+          }
+        },
+        "comparison": {
+          "baseline_csv": {
+            "path": "AFC-04-R4/crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "candidate_csv": {
+            "path": "candidate-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+            "bytes": 3856728,
+            "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+          },
+          "rows_including_header": 4802,
+          "byte_identical": true,
+          "different_cell_count": 0,
+          "comparison": "CSV rows compared column-by-column; numeric changes would be counted as different cells."
+        }
+      }
+    ],
+    "interpretation": "The same-tape CSV parity is scoped to these six recordings. Candidate reports correctly say solver_changed=true despite byte-identical outputs; the affected optional data branches are absent or inactive for this accepted model and tape."
+  },
+  "closed_loop_fixture_comparison": {
+    "method": "Rerun the bounded six-stream calm crossing probe using the frozen R4 pilot SHA on both source snapshots. Candidate app is the five-file overlay on the immutable R4 world. This is a fixture-level controller rerun with an external pilot override, not profile admission.",
+    "probe_source_sha256": "66cb9bfa54d0c9430428de0381fda2e54657e0c060a91590331630bea415ca56",
+    "pilot_source_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "pilot_resource": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd",
+    "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "field_id": "default",
+    "baseline_report": {
+      "path": "closed-loop/baseline/report.json",
+      "bytes": 14729,
+      "sha256": "a2272190478bc2b72ee0d411ea83d8dfebb77981d5e99b8b7d7017ea958c335e"
+    },
+    "merged_report": {
+      "path": "closed-loop/isolated-merged/report.json",
+      "bytes": 14820,
+      "sha256": "cdb179d0d6d274b5a81a909642abdaa830a4c0c23bbd32d654a8762bf71bcfa9"
+    },
+    "baseline_runner": {
+      "label": "solver-merge-closed-loop-baseline",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "elapsed_seconds": 40.734,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop-probe\\encounter_probe.gd",
+        "--",
+        "--record-crossings",
+        "--seconds=20",
+        "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop\\baseline",
+        "--pilot=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd"
+      ],
+      "report": {
+        "path": "runner/solver-merge-closed-loop-baseline-aoqk7w3b/report.json",
+        "bytes": 1753,
+        "sha256": "b35a19daf780d560c754038e55e2ec20fbaa010526de262ca105ee868acda44d"
+      },
+      "engine_log": {
+        "path": "runner/solver-merge-closed-loop-baseline-aoqk7w3b/engine.log",
+        "bytes": 5068,
+        "sha256": "ec0d11f9b431adf5f0509cd28aca0bbbb81b3b8d071f24f743cfd281d80d0ba9"
+      },
+      "diagnostics": [],
+      "missing_required_text": []
+    },
+    "merged_runner": {
+      "label": "solver-merge-closed-loop-isolated-candidate",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "elapsed_seconds": 41.547,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+        "--script",
+        "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop-probe\\encounter_probe.gd",
+        "--",
+        "--record-crossings",
+        "--seconds=20",
+        "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop\\isolated-merged",
+        "--pilot=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd"
+      ],
+      "report": {
+        "path": "runner/solver-merge-closed-loop-isolated-candidate-cocc7v_i/report.json",
+        "bytes": 1818,
+        "sha256": "ef7bf951f300973204f3e67e5e5103f9a92d44c719dd67d553bd88c61306ab1d"
+      },
+      "engine_log": {
+        "path": "runner/solver-merge-closed-loop-isolated-candidate-cocc7v_i/engine.log",
+        "bytes": 5201,
+        "sha256": "673ea7e5778e728d0dd122c6a2b62721273a5d75be676e966b0971fb962103ab"
+      },
+      "diagnostics": [],
+      "missing_required_text": []
+    },
+    "baseline_trajectory_csv": {
+      "path": "closed-loop/baseline/trajectory.csv",
+      "bytes": 170737,
+      "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+    },
+    "merged_trajectory_csv": {
+      "path": "closed-loop/isolated-merged/trajectory.csv",
+      "bytes": 170737,
+      "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+    },
+    "trajectory_csv_byte_identical": true,
+    "baseline_valid_complete_runs": true,
+    "merged_valid_complete_runs": true,
+    "baseline_deterministic_repeat": {
+      "case": "crossing-right",
+      "exact_state_command_match": true,
+      "first_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+      "repeat_complete": true,
+      "repeat_run": {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 1186,
+        "case": "crossing-right",
+        "case_id": "seed-20261020-crossing-right",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": -1.5707963267949,
+        "intruder_heading_rad": 1.15464021246239,
+        "intruder_start_east_m": -9.14649575368902,
+        "intruder_start_north_m": 194.957523602079,
+        "min_agl_m_by_role": {
+          "ai": 34.9144056800297,
+          "player": 34.9930181145764
+        },
+        "min_center_separation_m": 59.8198811976987,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 59.8198811976987,
+        "nominal_intercept_east_m": 73.1719660295122,
+        "nominal_intercept_north_m": 231.339811183368,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0213006379365482,
+          "roll": 0.949526166367166,
+          "throttle": 0.285665559577922,
+          "yaw": 0.167268257965685
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 10.3545066257186,
+          "player": 3.67424495565672e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 1200,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": -9.14649575368902,
+          "heading_rad": 1.15464021246239,
+          "north": 194.957523602079
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 4800,
+        "route_radius_m": 80.0,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+        "ticks": 4800,
+        "valid_run": true
+      },
+      "repeat_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d"
+    },
+    "merged_deterministic_repeat": {
+      "case": "crossing-right",
+      "exact_state_command_match": true,
+      "first_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+      "repeat_complete": true,
+      "repeat_run": {
+        "ai_crash": {},
+        "ai_fault": "",
+        "ai_refusal": "",
+        "avoidance_samples": 1186,
+        "case": "crossing-right",
+        "case_id": "seed-20261020-crossing-right",
+        "circuit_direction": "increasing",
+        "complete": true,
+        "expected_initial_target_height_m": 35.0,
+        "failure_reason": "",
+        "finite_metrics": true,
+        "first_avoidance_tick": 0,
+        "fixture_parameters": {},
+        "flight_logs": {},
+        "geometry_kind": "nominal_route_intercept",
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "intruder_heading_offset_rad": -1.5707963267949,
+        "intruder_heading_rad": 1.15464021246239,
+        "intruder_start_east_m": -9.14649575368902,
+        "intruder_start_north_m": 194.957523602079,
+        "min_agl_m_by_role": {
+          "ai": 34.9144056800297,
+          "player": 34.9930181145764
+        },
+        "min_center_separation_m": 59.8198811976987,
+        "min_separation_to_peer_m": null,
+        "min_separation_to_player_m": 59.8198811976987,
+        "nominal_intercept_east_m": 73.1719660295122,
+        "nominal_intercept_north_m": 231.339811183368,
+        "nominal_intercept_time_s": 6.0,
+        "peak_abs_axes": {
+          "pitch": 0.0213006379365482,
+          "roll": 0.949526166367166,
+          "throttle": 0.285665559577922,
+          "yaw": 0.167268257965685
+        },
+        "peak_bank_deg_by_role": {
+          "ai": 10.3545066257186,
+          "player": 3.67424495565672e-12
+        },
+        "peer_crash": {},
+        "peer_fault": "",
+        "peer_refusal": "",
+        "pilot_refusal": "",
+        "planner_samples": 1200,
+        "player_crash": {},
+        "player_fault": "",
+        "player_initial_spawn_spec": {
+          "altitude_m": 35.0,
+          "east": -9.14649575368902,
+          "heading_rad": 1.15464021246239,
+          "north": 194.957523602079
+        },
+        "player_refusal": "",
+        "production_spawn_admission": false,
+        "requested_ticks": 4800,
+        "route_radius_m": 80.0,
+        "seed": 20261020,
+        "separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+        "separation_gate_passed": true,
+        "state_command_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+        "ticks": 4800,
+        "valid_run": true
+      },
+      "repeat_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d"
+    },
+    "separation_gate_m": 30.0,
+    "separation_gate_passed_for_all_cases": true,
+    "cases": [
+      {
+        "case_id": "seed-20261020-crossing-right",
+        "ticks": 4800,
+        "state_command_sha256": "6897a937b4c3aa83e4840c9956d2eabc933941ca87e57c0a0f7167d35fe2392d",
+        "minimum_player_separation_m": 59.8198811976987,
+        "minimum_agl_m_by_role": {
+          "ai": 34.9144056800297,
+          "player": 34.9930181145764
+        },
+        "expected_initial_target_height_m": 35.0,
+        "initial_commanded_target_height_m": 35.0021910623372,
+        "initial_target_height_error_m": 0.00219106233716104,
+        "initial_target_height_matches_nominal": false,
+        "separation_gate_passed": true
+      },
+      {
+        "case_id": "seed-20261021-crossing-left",
+        "ticks": 4800,
+        "state_command_sha256": "6471b84927b2af02b11da017c3597d362e590016cb19af5a3c7879a4dc104f8d",
+        "minimum_player_separation_m": 58.4649428929333,
+        "minimum_agl_m_by_role": {
+          "ai": 34.9167134888043,
+          "player": 34.9930394253665
+        },
+        "expected_initial_target_height_m": 35.0,
+        "initial_commanded_target_height_m": 35.0021910625166,
+        "initial_target_height_error_m": 0.00219106251655887,
+        "initial_target_height_matches_nominal": false,
+        "separation_gate_passed": true
+      }
+    ],
+    "raw_target_height_diagnostic": "Both case flags initial_target_height_matches_nominal=false are retained. The local-terrain floor commands 35.002191… m against nominal 35.0 m (about 2.191 mm); no separation or AGL threshold is relaxed.",
+    "qualification_claimed": false,
+    "excluded_full_clone_run": {
+      "classification": "superseded_environment_mismatch",
+      "report": {
+        "path": "closed-loop/merged/report.json",
+        "bytes": 14703,
+        "sha256": "c56f122412ee76834d14247fa3dd00d9cc004c4511bc1c1784b03845ba0d583e"
+      },
+      "trajectory_csv": {
+        "path": "closed-loop/merged/trajectory.csv",
+        "bytes": 170737,
+        "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+      },
+      "collision_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+      "r4_collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "r4_lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+      "excluded_reason": "The whole current-main clone carried unrelated scenery/collision-source changes. Its collision-world identity differs from R4, so this run is not used as a same-world solver comparison. It is retained as a setup diagnostic.",
+      "verified_world_file_differences": [
+        {
+          "path": "data/scenery/default.json",
+          "r4_sha256": "46c64bf12dc5ae886189cb574773f0b90fab158614e77969c1eee789e9db4900",
+          "full_clone_sha256": "f871d9917cdd7d240c173651b6a75a2083c1363006c4546e24ae7b0bf2b4264e"
+        },
+        {
+          "path": "scenery/collision_world.gd",
+          "r4_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f",
+          "full_clone_sha256": "54c7d9002897abcf2875b35c0b0ecaaefb67b38f7fb99b25be1c2879658a9d44"
+        },
+        {
+          "path": "scenery/scenery_loader.gd",
+          "r4_sha256": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd",
+          "full_clone_sha256": "7b07f2ecc47ffed2ef4d1ce7ca552f58bb14625666df30c6105ca017a682f541"
+        },
+        {
+          "path": "scenery/scenery.gd",
+          "r4_sha256": "04fa2029e7f45994c814e22ee6f1641af98ba88b3ae33c7f59c491dc39da919b",
+          "full_clone_sha256": "a40ffb1932aa8cb61483e111412b9f807b1b3ef2ee74372c95464eb98431292c"
+        }
+      ],
+      "runner": {
+        "label": "solver-merge-closed-loop-merged",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 40.844,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop-probe\\encounter_probe.gd",
+          "--",
+          "--record-crossings",
+          "--seconds=20",
+          "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop\\merged",
+          "--pilot=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd"
+        ],
+        "report": {
+          "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/report.json",
+          "bytes": 1737,
+          "sha256": "15137fad1d288423cb1ca2db6664ffd729ebdf79ffd84b9df3fccdf57e3d8817"
+        },
+        "engine_log": {
+          "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/engine.log",
+          "bytes": 5030,
+          "sha256": "8800d721f5b749ff162a6a4c251f664e71603e1772b99ab813ffe711c4743c6f"
+        },
+        "diagnostics": [],
+        "missing_required_text": []
+      }
+    }
+  },
+  "failed_or_superseded_attempts": [
+    {
+      "classification": "trim_probe_parse_setup_failure",
+      "baseline_runner": {
+        "label": "stik-trim-baseline",
+        "ok": false,
+        "reason": "process_exit",
+        "process_exit": 1,
+        "elapsed_seconds": 0.234,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\baseline.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-baseline-2y575qxi/report.json",
+          "bytes": 2281,
+          "sha256": "656b4c1388110fa5da4ab14cbaa9bb1e92810f2b6acaa489cd8c34bb2f157bd8"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-baseline-2y575qxi/engine.log",
+          "bytes": 490,
+          "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: Expected indented block after \"for\" block.",
+            "context": [
+              "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd:71)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "STIK SOLVER MERGE TRIM PROBE COMPLETE"
+        ]
+      },
+      "merged_runner": {
+        "label": "stik-trim-merged",
+        "ok": false,
+        "reason": "process_exit",
+        "process_exit": 1,
+        "elapsed_seconds": 0.312,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\avoidance\\solver_merge_stik_trim_probe.gd",
+          "--",
+          "--output=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\trim\\merged.json"
+        ],
+        "report": {
+          "path": "runner/stik-trim-merged-oh4afulz/report.json",
+          "bytes": 2265,
+          "sha256": "991fae7c31b48829a1e21c0ff0d48c18186c5ecaa0db6a5311aa9606234d80b1"
+        },
+        "engine_log": {
+          "path": "runner/stik-trim-merged-oh4afulz/engine.log",
+          "bytes": 490,
+          "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+        },
+        "diagnostics": [
+          {
+            "severity": "error",
+            "kind": "SCRIPT ERROR",
+            "line": 3,
+            "message": "Parse Error: Expected indented block after \"for\" block.",
+            "context": [
+              "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd:71)"
+            ]
+          },
+          {
+            "severity": "error",
+            "kind": "ERROR",
+            "line": 5,
+            "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/avoidance/solver_merge_stik_trim_probe.gd\" with error \"Parse error\".",
+            "context": [
+              "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+            ]
+          }
+        ],
+        "missing_required_text": [
+          "STIK SOLVER MERGE TRIM PROBE COMPLETE"
+        ]
+      },
+      "reason": "The first probe edit had an empty for-block at line 71 (expected indented block). Both runs exited 1 before executing a simulation; corrected reruns are separately retained and passed."
+    },
+    {
+      "classification": "environment_mismatch_excluded",
+      "runner": {
+        "label": "solver-merge-closed-loop-merged",
+        "ok": true,
+        "reason": "passed",
+        "process_exit": 0,
+        "elapsed_seconds": 40.844,
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+          "--script",
+          "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop-probe\\encounter_probe.gd",
+          "--",
+          "--record-crossings",
+          "--seconds=20",
+          "--out=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\closed-loop\\merged",
+          "--pilot=D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\ai\\companions\\pilot.gd"
+        ],
+        "report": {
+          "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/report.json",
+          "bytes": 1737,
+          "sha256": "15137fad1d288423cb1ca2db6664ffd729ebdf79ffd84b9df3fccdf57e3d8817"
+        },
+        "engine_log": {
+          "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/engine.log",
+          "bytes": 5030,
+          "sha256": "8800d721f5b749ff162a6a4c251f664e71603e1772b99ab813ffe711c4743c6f"
+        },
+        "diagnostics": [],
+        "missing_required_text": []
+      },
+      "report": {
+        "path": "closed-loop/merged/report.json",
+        "bytes": 14703,
+        "sha256": "c56f122412ee76834d14247fa3dd00d9cc004c4511bc1c1784b03845ba0d583e"
+      },
+      "collision_identity": "7e2d10b2fc9c75615cb2fd0f4d8b7682e9819b5409b0a74dc1c9fd8cbfb4884b",
+      "r4_collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+      "reason": "The whole current-main clone carried unrelated scenery/collision-source changes. Its collision-world identity differs from R4, so this run is not used as a same-world solver comparison. It is retained as a setup diagnostic."
+    }
+  ],
+  "limits": [
+    "This receipt is a source-applicability and behavior bridge, not physical validation or release qualification.",
+    "No production qualification profile was updated or admitted in this isolated fixture; the profile remains pinned to 1526…f33b7e.",
+    "The six ORFL candidate replays are open-loop same-tape comparisons. They do not run the companion controller.",
+    "The closed-loop report uses frozen pilot 363942…259ed via explicit fixture override; it does not prove candidate profile loading or controller behavior under the root-owned new pilot.",
+    "The optional body-side-force inputs, modern Glow installation, and zero-lift-angle fields are absent from the accepted legacy Jensen Stik. The modern Stik trim result is only a narrow branch control.",
+    "No new moving-traffic/performance/long-endurance claim is made by this bridge."
+  ],
+  "artifact_inventory": {
+    "evidence_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021",
+    "includes": "All retained bridge evidence files under the D evidence root, including failed runner logs/reports and superseded full-clone outputs; excludes only the copied isolated app tree, whose 133 source hashes are in source-manifest.json.",
+    "files": [
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-ai-rnnxhls8/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-ai-rnnxhls8/report.json",
+        "bytes": 2141,
+        "sha256": "0f92c4ff92dc5d766f98dc95993fff17954c596beb89820aa3e3a3f037eeaf77"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-c-tx60yh0q/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-c-tx60yh0q/report.json",
+        "bytes": 2202,
+        "sha256": "748fef7d051b5f5e0a20a70c6a4f84597eec3826dd02a46a55cb2dde76583fd8"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-e-np4nmcfo/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261020-crossing-right-player-e-np4nmcfo/report.json",
+        "bytes": 2210,
+        "sha256": "3484ed35e9cf5badf2dd77d74a785f9ea8900c0c6a0b4739121614ae3f98d6ed"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-ai-6e1vrqoj/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-ai-6e1vrqoj/report.json",
+        "bytes": 2135,
+        "sha256": "0defd328f4cb347e032db46127fb1bf472621f4e9e850ece2ad21aa90de401db"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-co-awqlu16u/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-co-awqlu16u/report.json",
+        "bytes": 2198,
+        "sha256": "ccf51516a2d1caaf863eecaac9729d0ee303e9f5bf68dcbb62de6ba3acb82502"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-ex-nb1dgnz3/engine.log",
+        "bytes": 212,
+        "sha256": "5b0202268f1add98ed4828bfc695e4e71de34f7d09e1e88b3b64b155e5f6650a"
+      },
+      {
+        "path": "candidate-replays/runner/solver-merge-candidate-seed-20261021-crossing-left-player-ex-nb1dgnz3/report.json",
+        "bytes": 2206,
+        "sha256": "99676c6bd23d6b412effec20e0194eb7c094ffa48e0c08466b1a2a74acc3fdaa"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-ai/flight.csv",
+        "bytes": 4406314,
+        "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-ai/replay.json",
+        "bytes": 7044,
+        "sha256": "ece69d2de281bfb218ad21534d9613fc981defc7a08b9c38c2098e93beffb410"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+        "bytes": 3853991,
+        "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+        "bytes": 7056,
+        "sha256": "aff7ed7dc2fce26f6c390f95dfe0c49628aafd969a53aa3dd00e3660a9abe27e"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+        "bytes": 3853991,
+        "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+      },
+      {
+        "path": "candidate-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+        "bytes": 7100,
+        "sha256": "476c51221683ca2679ad93816d4c8d96fe1b86ec5ac6fd6401f21859dda1606d"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-ai/flight.csv",
+        "bytes": 4400837,
+        "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-ai/replay.json",
+        "bytes": 7043,
+        "sha256": "5210aa0ff113d69382b88cc11d23297193dcb517240363e0100af67b2a1075da"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+        "bytes": 3856728,
+        "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+        "bytes": 7053,
+        "sha256": "3037ad4994eadee4e7f709876b10ce70bbd7f8a3eba20c978d90b2d20104c802"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+        "bytes": 3856728,
+        "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+      },
+      {
+        "path": "candidate-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+        "bytes": 7097,
+        "sha256": "573e4014a1ebb42facc00849af74f589d519031bc301efc397e788a0464b78f3"
+      },
+      {
+        "path": "closed-loop/baseline/report.json",
+        "bytes": 14729,
+        "sha256": "a2272190478bc2b72ee0d411ea83d8dfebb77981d5e99b8b7d7017ea958c335e"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261020-crossing-right-ai.orfl",
+        "bytes": 8526224,
+        "sha256": "0754772f1d590302b11254ce5f0b26bd9554f7fa156029f88098e36820d0b39e"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261020-crossing-right-player-coupled.orfl",
+        "bytes": 8526224,
+        "sha256": "a0fa22d2e75e785294f8c19d473673fbe41d779def115b0eed5f0aafa780ecfa"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261020-crossing-right-player-exogenous.orfl",
+        "bytes": 8526268,
+        "sha256": "da7f66faf2f024779ae5f09864494890b431f8528d6e24d4eadd7fdb4ed55203"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261021-crossing-left-ai.orfl",
+        "bytes": 8526228,
+        "sha256": "8af9c7866be4cf7f6a6147f7b655773ddc27fc34a99b39239e15303359d84ce4"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261021-crossing-left-player-coupled.orfl",
+        "bytes": 8526224,
+        "sha256": "792ad836466bcecad79fd427c3a2b2d1f35a221bb8d303394c30db030ec65151"
+      },
+      {
+        "path": "closed-loop/baseline/seed-20261021-crossing-left-player-exogenous.orfl",
+        "bytes": 8526264,
+        "sha256": "09e086bcc2ea145a7c511f7510e862c0f7b8688691a7d0bf32409a7051554821"
+      },
+      {
+        "path": "closed-loop/baseline/trajectory.csv",
+        "bytes": 170737,
+        "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+      },
+      {
+        "path": "closed-loop/isolated-merged/report.json",
+        "bytes": 14820,
+        "sha256": "cdb179d0d6d274b5a81a909642abdaa830a4c0c23bbd32d654a8762bf71bcfa9"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261020-crossing-right-ai.orfl",
+        "bytes": 8526224,
+        "sha256": "41cc948c85e31537712863ee3e21f4b6b9cc68888c3099620058a22a37acef70"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261020-crossing-right-player-coupled.orfl",
+        "bytes": 8526224,
+        "sha256": "ce2336c7b1e9bc8a629bd04ad5cff02410a5f2be3bc1eb1e97b19d14167e33a4"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261020-crossing-right-player-exogenous.orfl",
+        "bytes": 8526268,
+        "sha256": "4fbd84edd865c4ad5601ff9f397a9f1ae5343437d3df7cbbe3659579970156eb"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261021-crossing-left-ai.orfl",
+        "bytes": 8526228,
+        "sha256": "cae49bf9ecc7d3f1d1efaa5931e7791a74e15b916e2e45e5c693ba930aa1a1a6"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261021-crossing-left-player-coupled.orfl",
+        "bytes": 8526224,
+        "sha256": "0ca984228484a1d9bfe7e100149055c703edc4da4370cc79ca8133a7008e14bd"
+      },
+      {
+        "path": "closed-loop/isolated-merged/seed-20261021-crossing-left-player-exogenous.orfl",
+        "bytes": 8526264,
+        "sha256": "43fafc009da7033faef27c21f1f6a59a8c0431601659322b6535d53035b3b5cb"
+      },
+      {
+        "path": "closed-loop/isolated-merged/trajectory.csv",
+        "bytes": 170737,
+        "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+      },
+      {
+        "path": "closed-loop/merged/report.json",
+        "bytes": 14703,
+        "sha256": "c56f122412ee76834d14247fa3dd00d9cc004c4511bc1c1784b03845ba0d583e"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261020-crossing-right-ai.orfl",
+        "bytes": 8582452,
+        "sha256": "17323501d6dbcce52e08dc59900c6a0a1f61d49491c1e191c5964a22159ace8f"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261020-crossing-right-player-coupled.orfl",
+        "bytes": 8582452,
+        "sha256": "7e8409ddd0d6d49bfdda048999644741a81b14756195130b518f15b58d2593c8"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261020-crossing-right-player-exogenous.orfl",
+        "bytes": 8582496,
+        "sha256": "0f8a5b5dce9fe787f0f2db7a75288a0682c37d53e1f3b6db934f3b4d2c5ee716"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261021-crossing-left-ai.orfl",
+        "bytes": 8582456,
+        "sha256": "67a7715da8b2560200f7236ccb35f729f4d2a49b642538325dcbe002133d731d"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261021-crossing-left-player-coupled.orfl",
+        "bytes": 8582452,
+        "sha256": "cdcd4daf03b379ccb9b1d11f67697146ca674807ca93f8ce92edbf1fbcc3f710"
+      },
+      {
+        "path": "closed-loop/merged/seed-20261021-crossing-left-player-exogenous.orfl",
+        "bytes": 8582492,
+        "sha256": "1b5741a87aa80680cca94113fed1bef894d1bf6762b262bc3765a8d1b7bc0d9e"
+      },
+      {
+        "path": "closed-loop/merged/trajectory.csv",
+        "bytes": 170737,
+        "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+      },
+      {
+        "path": "closed-loop-probe/encounter_probe.gd",
+        "bytes": 49201,
+        "sha256": "66cb9bfa54d0c9430428de0381fda2e54657e0c060a91590331630bea415ca56"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-baseline-aoqk7w3b/engine.log",
+        "bytes": 5068,
+        "sha256": "ec0d11f9b431adf5f0509cd28aca0bbbb81b3b8d071f24f743cfd281d80d0ba9"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-baseline-aoqk7w3b/report.json",
+        "bytes": 1753,
+        "sha256": "b35a19daf780d560c754038e55e2ec20fbaa010526de262ca105ee868acda44d"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-isolated-candidate-cocc7v_i/engine.log",
+        "bytes": 5201,
+        "sha256": "673ea7e5778e728d0dd122c6a2b62721273a5d75be676e966b0971fb962103ab"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-isolated-candidate-cocc7v_i/report.json",
+        "bytes": 1818,
+        "sha256": "ef7bf951f300973204f3e67e5e5103f9a92d44c719dd67d553bd88c61306ab1d"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/engine.log",
+        "bytes": 5030,
+        "sha256": "8800d721f5b749ff162a6a4c251f664e71603e1772b99ab813ffe711c4743c6f"
+      },
+      {
+        "path": "runner/solver-merge-closed-loop-merged-ldz2xavi/report.json",
+        "bytes": 1737,
+        "sha256": "15137fad1d288423cb1ca2db6664ffd729ebdf79ffd84b9df3fccdf57e3d8817"
+      },
+      {
+        "path": "runner/stik-trim-baseline-2y575qxi/engine.log",
+        "bytes": 490,
+        "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+      },
+      {
+        "path": "runner/stik-trim-baseline-2y575qxi/report.json",
+        "bytes": 2281,
+        "sha256": "656b4c1388110fa5da4ab14cbaa9bb1e92810f2b6acaa489cd8c34bb2f157bd8"
+      },
+      {
+        "path": "runner/stik-trim-baseline-r2-ta0ausd2/engine.log",
+        "bytes": 209,
+        "sha256": "f8fb1208e1e8978afd15d7e4da2e623ad4d5eca861552e0e1ed371562a9123eb"
+      },
+      {
+        "path": "runner/stik-trim-baseline-r2-ta0ausd2/report.json",
+        "bytes": 1536,
+        "sha256": "3b1efa84f018edf7061fa3364104c3aff31e18adb0dca9088aacb017f2e67f0f"
+      },
+      {
+        "path": "runner/stik-trim-merged-oh4afulz/engine.log",
+        "bytes": 490,
+        "sha256": "10f12744bd8d8211d1c8d1eddedbdbde257156fd626ce1cc01a67b2b05fb52f4"
+      },
+      {
+        "path": "runner/stik-trim-merged-oh4afulz/report.json",
+        "bytes": 2265,
+        "sha256": "991fae7c31b48829a1e21c0ff0d48c18186c5ecaa0db6a5311aa9606234d80b1"
+      },
+      {
+        "path": "runner/stik-trim-merged-r2-dqem2foa/engine.log",
+        "bytes": 207,
+        "sha256": "06da256632765708cb20e09df59c0b58ab28366baad3ea5fb3f8a4c0a6aa17fb"
+      },
+      {
+        "path": "runner/stik-trim-merged-r2-dqem2foa/report.json",
+        "bytes": 1520,
+        "sha256": "489bc7151eb27f8c53fac7f2a6c086082597a04fd974f47c88875483a833511e"
+      },
+      {
+        "path": "runner/test-external-baseline-pilot-load-kad4e4om/engine.log",
+        "bytes": 227,
+        "sha256": "89c023214ad46804d3ea482386f3fda531898ce55763e5e49a81ebea103e4ad9"
+      },
+      {
+        "path": "runner/test-external-baseline-pilot-load-kad4e4om/report.json",
+        "bytes": 1705,
+        "sha256": "b8111a85acd72b353b951060be3a08971709b4c897f5ebd17e4f6922c1eace2a"
+      },
+      {
+        "path": "source-manifest.json",
+        "bytes": 72332,
+        "sha256": "5d143cb534dd9527a4fee2f49e685c6c25f869d5535fd3a928a92af7b9e8445e"
+      },
+      {
+        "path": "trim/baseline.json",
+        "bytes": 2436,
+        "sha256": "6fc7fc6d9250dbf3ab301f73422022fcef40e5b88b3fa6f69cb15c17838bfd41"
+      },
+      {
+        "path": "trim/merged-with-baseline-pilot.json",
+        "bytes": 2701,
+        "sha256": "8b0444d7770d652709868137df16f28e0a033ad59d061ed1aefb41a41414fc33"
+      },
+      {
+        "path": "trim/merged.json",
+        "bytes": 2436,
+        "sha256": "9374cc2b8fe8897711ef570bbe61c8b034f3d64588f9fb50ce49ba2c7c867161"
+      }
+    ]
+  }
+}

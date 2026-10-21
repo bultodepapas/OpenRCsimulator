@@ -1,0 +1,1362 @@
+{
+  "format": "openrc-solver-source-manifest v1",
+  "normalization": "utf8-lf",
+  "source_directories": [
+    "physics",
+    "sim",
+    "failures"
+  ],
+  "baseline": {
+    "app_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app",
+    "source_count": 133,
+    "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "files": {
+      "res://failures/catalog.gd": {
+        "raw_sha256": "1126203bbdfd8352931d231b6b63e6f1307052a7bcd582523705d2352da5e60c",
+        "normalized_sha256": "0244b68714d52712c382280c5af385f371e49af6d6f767fd3b9c537f56483099",
+        "bytes": 8762
+      },
+      "res://failures/config.gd": {
+        "raw_sha256": "14542cbec6aa6b379adbca035aef11b413d8a364514fce3148c8b9da5ccc09cb",
+        "normalized_sha256": "b989737c5c41853838ec3e71de3d65dbb78f5a72157529d43709871a3a3e7c1b",
+        "bytes": 2059
+      },
+      "res://failures/runtime.gd": {
+        "raw_sha256": "2c6dfc6858f78bdcfafa85d56cab528ad622635f7b28aa63efc2c386d4a69ad8",
+        "normalized_sha256": "e92c61f83612dcf8f42963c7b5fd8e22606ffc79c86fa182885666e1c8e4b873",
+        "bytes": 27151
+      },
+      "res://physics/aero.gd": {
+        "raw_sha256": "06dfbbcd8c96124d4d19591aaa8d940ba299258710334f3911625baae043630f",
+        "normalized_sha256": "af4f8a1df478a17a9a707525d13e7af6e5eae9485f264d765834ac68d67c5639",
+        "bytes": 49971
+      },
+      "res://physics/air_data.gd": {
+        "raw_sha256": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+        "normalized_sha256": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+        "bytes": 1784
+      },
+      "res://physics/aircraft_contact_contract.gd": {
+        "raw_sha256": "25821831c966893d40666653b13e579a8d458d11c17378eb1fde6b062098e929",
+        "normalized_sha256": "84a46a225b368b8a40bb37e5f3b5714b822983f054ae0480f791ef46c20a5734",
+        "bytes": 35886
+      },
+      "res://physics/aircraft_contract.gd": {
+        "raw_sha256": "b80151fa8588f9d4d2dfbaf75eaf6f930679b02f92b5e05769f24d8098b3dd36",
+        "normalized_sha256": "e0ffe623baa2e4c670e34a1a69efb26d58a7c80af7e213126d92002b53dcad2a",
+        "bytes": 18748
+      },
+      "res://physics/aircraft_data.gd": {
+        "raw_sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737",
+        "normalized_sha256": "c51ba9d841fc8315eb280be11b34d42d1594155c56c06934a03b16f95d85fc43",
+        "bytes": 140678
+      },
+      "res://physics/aircraft_modules.gd": {
+        "raw_sha256": "1bd163625fcbeb6d5b57d49e2e63aa2845dc2339cb96046b11fb16d05fe4c3fc",
+        "normalized_sha256": "c9bc118fdcb9b749e37be2a9a1afbfbd63caf9a987303a3c3fb0af393decefd1",
+        "bytes": 17716
+      },
+      "res://physics/atmosphere.gd": {
+        "raw_sha256": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+        "normalized_sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+        "bytes": 8311
+      },
+      "res://physics/battery/battery_data.gd": {
+        "raw_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+        "normalized_sha256": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+        "bytes": 16188
+      },
+      "res://physics/battery/esc_supervisor.gd": {
+        "raw_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+        "normalized_sha256": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+        "bytes": 5408
+      },
+      "res://physics/battery/pack_ecm.gd": {
+        "raw_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+        "normalized_sha256": "e8864ec2f991d711813851ee02f1075917a1dbe3d81668d60850c22a79333aa8",
+        "bytes": 12802
+      },
+      "res://physics/control_actuators.gd": {
+        "raw_sha256": "83df22694634c930b35ac8d187c9f19c8da4f94ff25c77f4096aef33ae6d2cd5",
+        "normalized_sha256": "1bfa36515ad25280fe6c4b4dcb5efa2c87014be02e2f0f2378986f1a7ff71e6d",
+        "bytes": 1939
+      },
+      "res://physics/control_surfaces.gd": {
+        "raw_sha256": "c13215f7186aa827eb4a47e198d3fee04509631e585453fbf69850b3bc50aa93",
+        "normalized_sha256": "d370870c45efbda072870b56da92b020f1ae782a846dd71b8cb3050c095d1067",
+        "bytes": 3223
+      },
+      "res://physics/cruise_trim.gd": {
+        "raw_sha256": "50c227cd7d5d57b96cc84f8f7ce6d37666c2e90907f90bda25577443cfd81213",
+        "normalized_sha256": "dea935adbc1ddc1f55a37dd92b6f1d2a3606fc843b4d279fef290728fbe4b2b6",
+        "bytes": 10231
+      },
+      "res://physics/dynamics.gd": {
+        "raw_sha256": "950c79bda30feeee727d24a17e84a0ed0a527e221159168951b3920c1ec7d4fe",
+        "normalized_sha256": "970264b49e4fa30d6d107490a9f3e7e48fc2a73dbf399789261edbc6f8243b73",
+        "bytes": 7429
+      },
+      "res://physics/effective_mass.gd": {
+        "raw_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+        "normalized_sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+        "bytes": 8286
+      },
+      "res://physics/electric_battery_step.gd": {
+        "raw_sha256": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "normalized_sha256": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409",
+        "bytes": 13792
+      },
+      "res://physics/electric_motor.gd": {
+        "raw_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+        "normalized_sha256": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+        "bytes": 4926
+      },
+      "res://physics/electric_stop.gd": {
+        "raw_sha256": "24fb4cdaccb1b34c1e76e4ee4bff75581ae231ccd643b4989d2b52db29a1bf7b",
+        "normalized_sha256": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab",
+        "bytes": 1347
+      },
+      "res://physics/electric_supply.gd": {
+        "raw_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+        "normalized_sha256": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+        "bytes": 15485
+      },
+      "res://physics/event_bracket.gd": {
+        "raw_sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc",
+        "normalized_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+        "bytes": 1409
+      },
+      "res://physics/event_step.gd": {
+        "raw_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+        "normalized_sha256": "92a5a1ed9d0505efb6b0db4397543a923b6088f22cdf2155c84ca56559141cc3",
+        "bytes": 7092
+      },
+      "res://physics/fixed_datum_body.gd": {
+        "raw_sha256": "3cfcf98c4a83f7973ee2e57be0ed3c51cd172afe60dd13f24f7a190a3b276c59",
+        "normalized_sha256": "942cd9af68236f3b8f4b7a4fda70bb6281bad1f6d93d8c78a16689d2f7848f1c",
+        "bytes": 1634
+      },
+      "res://physics/flaps.gd": {
+        "raw_sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d",
+        "normalized_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+        "bytes": 1247
+      },
+      "res://physics/flight_modes.gd": {
+        "raw_sha256": "4c2c9618ddc98bc65d3b97e1c29700bd6436fc81b895d2fc00e67065ed60fc0e",
+        "normalized_sha256": "f38479967502a8735598c9a03e1c641f7809542e497c655bd5d3458b2406e7d1",
+        "bytes": 6439
+      },
+      "res://physics/fuel_properties.gd": {
+        "raw_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+        "normalized_sha256": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+        "bytes": 8955
+      },
+      "res://physics/generalized_coordinates.gd": {
+        "raw_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+        "normalized_sha256": "7867bf12a92c07f6deb272977ac33516a522142801cddbe813c7e1b927f4c4bf",
+        "bytes": 9692
+      },
+      "res://physics/glow/carburetor.gd": {
+        "raw_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+        "normalized_sha256": "a09ccf8997001d4887517d8393d8fca9f401a997d2b40083a7a527ff29e71222",
+        "bytes": 8089
+      },
+      "res://physics/glow/flight.gd": {
+        "raw_sha256": "a181a37d6312d4899ddd976fb14e1ae938384a37b1114d66c9d5c21531b1481d",
+        "normalized_sha256": "3b77c5060b93fb7f197665ea7e69688c9f701cb1471b8cc54cae050bd1230cc6",
+        "bytes": 45480
+      },
+      "res://physics/glow/four_stroke.gd": {
+        "raw_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+        "normalized_sha256": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+        "bytes": 16957
+      },
+      "res://physics/glow/fuel_feed.gd": {
+        "raw_sha256": "0f3bb52b2593590088cc6ec6961b82be79a11885e80cff1febf474fe8c229049",
+        "normalized_sha256": "ead485223eb1dab9376c8368c77a80cf683ea7952c8a52d526c6a77c22b4d9ed",
+        "bytes": 13687
+      },
+      "res://physics/glow/fuel_mass.gd": {
+        "raw_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+        "normalized_sha256": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+        "bytes": 4600
+      },
+      "res://physics/glow/installation.gd": {
+        "raw_sha256": "b82c5ccd6b9b5e14c9db9fad988ded575e49ae28ad0dac10419365c5ab1459fb",
+        "normalized_sha256": "c493262f09e0ca55baa00a33f8212cbc7bc746df6c6b51394c3a6fef4c07be4b",
+        "bytes": 36991
+      },
+      "res://physics/glow/lifecycle.gd": {
+        "raw_sha256": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+        "normalized_sha256": "8cd07c65e6616f00fe2d701c00072e918e7dc884fc511b6bb20acbc637ab1e93",
+        "bytes": 35620
+      },
+      "res://physics/glow/operating_point.gd": {
+        "raw_sha256": "092f415233a6a3154fffe68269fd5ebcca285b1e73f69bc5d39b0b6f5fbc7228",
+        "normalized_sha256": "bde850136dca7de8fa3fe43cd5f41cfa44ebe74c320ee84426dffb0290559c54",
+        "bytes": 3334
+      },
+      "res://physics/glow/profile.gd": {
+        "raw_sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524",
+        "normalized_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+        "bytes": 11686
+      },
+      "res://physics/glow/propeller.gd": {
+        "raw_sha256": "be41703c49e65b0d059af474d4ee9a52f246f14c40f80a6e73b9be3a272ae5ad",
+        "normalized_sha256": "68cc348bfa09f3599971184062eda861a891a05ff41702748f9ec4e091710a37",
+        "bytes": 7058
+      },
+      "res://physics/glow/source.gd": {
+        "raw_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+        "normalized_sha256": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+        "bytes": 9738
+      },
+      "res://physics/glow/thermal.gd": {
+        "raw_sha256": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+        "normalized_sha256": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65",
+        "bytes": 5345
+      },
+      "res://physics/glow/two_stroke.gd": {
+        "raw_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+        "normalized_sha256": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+        "bytes": 16115
+      },
+      "res://physics/glow/vibration.gd": {
+        "raw_sha256": "6a0213536d813d598eadb4086075b7913e57cc5b70f963560025cffba6ab1de7",
+        "normalized_sha256": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11",
+        "bytes": 10664
+      },
+      "res://physics/ground_contact.gd": {
+        "raw_sha256": "bd585612c3735d9dbb30e4ffdea5505cafa657996d7ae7a6f50688093a8242bf",
+        "normalized_sha256": "c60516f6e8540bd9040e75a247cc3471366b2cbdb1b3a44faf6181c4afbe56cd",
+        "bytes": 26286
+      },
+      "res://physics/ground_effect.gd": {
+        "raw_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+        "normalized_sha256": "6a894daae49ce8be335b6628549df9ef7886a2b379adb90ea2441e631dae0555",
+        "bytes": 4776
+      },
+      "res://physics/ground_start.gd": {
+        "raw_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "normalized_sha256": "b3b73d4b3ef33ebaa74ec50fe92f5c15f6799d7c7d5a0946de76591adb0ae3b3",
+        "bytes": 48130
+      },
+      "res://physics/ground_surfaces.gd": {
+        "raw_sha256": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536",
+        "normalized_sha256": "2de5d88c683c1fd487c3c9e7d5e0971018dd79c786645db4c729196159ce50bc",
+        "bytes": 4721
+      },
+      "res://physics/ground_terrain.gd": {
+        "raw_sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a",
+        "normalized_sha256": "fa07e665a912aa8f397bfa1dc2a7c1a2ab309f0788a9ea8e7ebd195d13b4744f",
+        "bytes": 11642
+      },
+      "res://physics/ground_vehicle/airfield_course.gd": {
+        "raw_sha256": "f42aab538e849f4662a0ac22380451952d816e663305bafbdb1ba4bff18184d4",
+        "normalized_sha256": "3d441a46b7344ab17a78d187e95acffa0589acc4b44a21b37f743b75bc676db1",
+        "bytes": 22005
+      },
+      "res://physics/ground_vehicle/airfield_track.gd": {
+        "raw_sha256": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+        "normalized_sha256": "13dac138e7228145fa55fd7db44102c4ae942d6e6a148cedb0199904b0b03629",
+        "bytes": 10877
+      },
+      "res://physics/ground_vehicle/course.gd": {
+        "raw_sha256": "e54394854d359bc34117bc01ec304881abf950d7997bb6804cec5834c7b30a22",
+        "normalized_sha256": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+        "bytes": 25222
+      },
+      "res://physics/ground_vehicle/four_corner.gd": {
+        "raw_sha256": "f41fe08767a08c7303fdb3fbe8120cf33a666378bf4885a8063be0ee4315faba",
+        "normalized_sha256": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f",
+        "bytes": 16485
+      },
+      "res://physics/ground_vehicle/nitro_dynamics.gd": {
+        "raw_sha256": "0aac95c553385a33b209896d65983da9e2f9e3e80566e5fb3f5f91b265f5fede",
+        "normalized_sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+        "bytes": 21850
+      },
+      "res://physics/ground_vehicle/quarter_car.gd": {
+        "raw_sha256": "bf070338c21e0323fbb9c3e8f671582b67b586d4091b1ca06cbdfde93b68bd80",
+        "normalized_sha256": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad",
+        "bytes": 6388
+      },
+      "res://physics/ground_vehicle/support_bench_data.gd": {
+        "raw_sha256": "7dab08634d637824c795d96167cd2b631d55364434e346f63d3d3ba0dff5a18a",
+        "normalized_sha256": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+        "bytes": 7534
+      },
+      "res://physics/ground_vehicle/suspension_bench_data.gd": {
+        "raw_sha256": "ad6049a7e7cc64c6cd48725530b56a4bd94c5e30bcec0500fd0e6ef503d7495f",
+        "normalized_sha256": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+        "bytes": 4606
+      },
+      "res://physics/ground_vehicle/vehicle_damage.gd": {
+        "raw_sha256": "0eabeaf94e4a111bee0f8ece04be5b037beb5c18c2af18497c4b9f985326537c",
+        "normalized_sha256": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56",
+        "bytes": 22200
+      },
+      "res://physics/ground_vehicle/vehicle_data.gd": {
+        "raw_sha256": "4f52a8bb3637b3442dbd06fa3b18792e0cc24d31ea0253fedef5c09a96708a95",
+        "normalized_sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+        "bytes": 31825
+      },
+      "res://physics/ground_vehicle/vehicle_dynamics.gd": {
+        "raw_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+        "normalized_sha256": "a8d6c1d6790160ff180803ccacae997219c57b1aaa1a345c996a8abb515bb460",
+        "bytes": 103839
+      },
+      "res://physics/ground_vehicle/vehicle_environment.gd": {
+        "raw_sha256": "afef8833cc387831dd38add704a68684bdfdce9b9b556a676e533b5eb4b40a15",
+        "normalized_sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+        "bytes": 6814
+      },
+      "res://physics/ground_wheels.gd": {
+        "raw_sha256": "8cf755e7df2799203c221c46e9bf68b4e6f4c2173a741ea484a52543e07c6386",
+        "normalized_sha256": "76fbaefb1c1495493e89f947a6a017f46286719e56e9df1ebe0cb46ade353d14",
+        "bytes": 12255
+      },
+      "res://physics/hull_contact.gd": {
+        "raw_sha256": "6723a744b82f2ae171a299671df61be0f32615896cc146b514fe9c9b73a659f5",
+        "normalized_sha256": "427cf33d621d726d19a37265f7f5ca0125172466b53c915ce607e7a943dae897",
+        "bytes": 33059
+      },
+      "res://physics/hull_crossing.gd": {
+        "raw_sha256": "c57cc1d92885a0957fbad6ad6b885bd6f017621cea8044a16aacf134e69c93b1",
+        "normalized_sha256": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650",
+        "bytes": 6933
+      },
+      "res://physics/impact_snapshot.gd": {
+        "raw_sha256": "606c9f7ab59974f548504abfc302804bb47e673c82a3e5560258371c0b2f0807",
+        "normalized_sha256": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+        "bytes": 5933
+      },
+      "res://physics/integrator.gd": {
+        "raw_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+        "normalized_sha256": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+        "bytes": 2366
+      },
+      "res://physics/lake_surface.gd": {
+        "raw_sha256": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224",
+        "normalized_sha256": "42e43853b6e85d218fd35198c8f89ad3fe9e04405edd2e74ebd57b19227db322",
+        "bytes": 35299
+      },
+      "res://physics/linearize.gd": {
+        "raw_sha256": "f7bb02f2b625317e1db7daa456adc6140cb8ddd2fe9ea07b3756c176634bd0cd",
+        "normalized_sha256": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+        "bytes": 4610
+      },
+      "res://physics/liquid_fuel.gd": {
+        "raw_sha256": "68a1a1a5fb65cc8c4ab5c7ccfbe094dc393dabf71e7cae4561e1700bebb7068f",
+        "normalized_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+        "bytes": 9850
+      },
+      "res://physics/mass_inventory.gd": {
+        "raw_sha256": "3bdfe2a85b706b66b38f542febd064eb35270dd8022c17bf6bf01eff71efe5ea",
+        "normalized_sha256": "f31b7f4e17a6c8efb2bdf98b58cc44cf3a00245aa556eebbd9689665eff73664",
+        "bytes": 24455
+      },
+      "res://physics/math3d.gd": {
+        "raw_sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "normalized_sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+        "bytes": 5005
+      },
+      "res://physics/multirotor/airframe.gd": {
+        "raw_sha256": "15c3e15747a45e971796f67f8d0a17548f5e925788e67e9250bc7b65aa9893bf",
+        "normalized_sha256": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+        "bytes": 647
+      },
+      "res://physics/multirotor/plant.gd": {
+        "raw_sha256": "5000405eb2babca0912fa1e0ace3ecc5365f66bf05293b6a9cb7f78d31b6437c",
+        "normalized_sha256": "3364a773516360959bbce155edfb80d2e006a5edd0dc1396a8b0d0c994b38aef",
+        "bytes": 6595
+      },
+      "res://physics/multirotor/powertrain.gd": {
+        "raw_sha256": "57906c99708bf8cf03f967efafaebf23141d60510d9580b0ef23728a31444125",
+        "normalized_sha256": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+        "bytes": 1093
+      },
+      "res://physics/multirotor/rotor.gd": {
+        "raw_sha256": "4b36fdb9ecb392046c283527567288c981c32dd254722f13e74f8bb442a32bbf",
+        "normalized_sha256": "7ecac47974f6d9661c5f45a19689150100cc550d52c0017795dc7fa806101167",
+        "bytes": 2432
+      },
+      "res://physics/physical_identity.gd": {
+        "raw_sha256": "e578a847667a0c3c21e56637151e056f0fa6d9b80075feb15a214f594ce8cb51",
+        "normalized_sha256": "45784e2c21d4d82c45e3fc68a141546304af185278f37280fd9691bc603414be",
+        "bytes": 6534
+      },
+      "res://physics/propulsion.gd": {
+        "raw_sha256": "d03fc8d0ebfd1f63cdf3040850175e3f6f6b478a9e2e2d5e38569cfcd3c29903",
+        "normalized_sha256": "7186f0f921e76a665fee33927f411ccb4522824574be22fac595080a7ba77f63",
+        "bytes": 35016
+      },
+      "res://physics/resource_event_step.gd": {
+        "raw_sha256": "6e7384ac28c73c85fc088eeecdc5d00fa6df582dcba21ef427fba1f1b44ad618",
+        "normalized_sha256": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+        "bytes": 18526
+      },
+      "res://physics/retractable_gear.gd": {
+        "raw_sha256": "cfaef50a1071b177ff46e2bf579a9fe2f1d54c485903b309af013c9979174a23",
+        "normalized_sha256": "5de7a013900104aee80186ab0935e4340a752f85ef00fe6e8c04008789d84f83",
+        "bytes": 3599
+      },
+      "res://physics/rigid_body.gd": {
+        "raw_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "normalized_sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+        "bytes": 5582
+      },
+      "res://physics/rotor_coupling.gd": {
+        "raw_sha256": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "normalized_sha256": "8fe7b7eecc1151d50de78e11b598c5083a6c39bab4b268ba8fb4a3151f96d5ae",
+        "bytes": 4658
+      },
+      "res://physics/rotorcraft/aerodynamic_stage.gd": {
+        "raw_sha256": "14f95f87e9b6320be081a616ade24820c10dd3087f03aaccc5179d88d4b078a7",
+        "normalized_sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+        "bytes": 9825
+      },
+      "res://physics/rotorcraft/airframe.gd": {
+        "raw_sha256": "eae69ed1447264abf6baf440c6e8781b082581d440a96ae583ebeab6f2fa6c7c",
+        "normalized_sha256": "3b621913524ddf502b801f794c84c13366ce777dd4dca9efc28d340781078832",
+        "bytes": 14657
+      },
+      "res://physics/rotorcraft/drive.gd": {
+        "raw_sha256": "d039c9fde7624e4808bf62237cfef6f6ebb225d2177224cffba5f1e2b24098e9",
+        "normalized_sha256": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+        "bytes": 6318
+      },
+      "res://physics/rotorcraft/dynamic_inflow.gd": {
+        "raw_sha256": "8694f3dc9aea87ded464885d346968421765fd71b127af38bf6776bb392e89e9",
+        "normalized_sha256": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975",
+        "bytes": 2593
+      },
+      "res://physics/rotorcraft/electronics.gd": {
+        "raw_sha256": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+        "normalized_sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+        "bytes": 20448
+      },
+      "res://physics/rotorcraft/flight_dynamics.gd": {
+        "raw_sha256": "6fe5947b61ce3f1231a2baa4ea1fb339c6369dde9690c9ed4f677ab45f265a69",
+        "normalized_sha256": "5ba3df0b9ea867a615a8d93e53a5a3ce207559d26f17867e5667cb3d8de26514",
+        "bytes": 22731
+      },
+      "res://physics/rotorcraft/geared_coupling.gd": {
+        "raw_sha256": "9a298f0f65b64ed620d18e2e296d5f9679af2d7e6028bdea80f7211bf562dad2",
+        "normalized_sha256": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+        "bytes": 8016
+      },
+      "res://physics/rotorcraft/ground_start.gd": {
+        "raw_sha256": "1a1b6aa12ff4f755e5acbe03ad354ca31e21dcd60701450abf2ab6a193bf38db",
+        "normalized_sha256": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b",
+        "bytes": 14835
+      },
+      "res://physics/rotorcraft/hx700_flex_bench.gd": {
+        "raw_sha256": "b56c02961e95d9580fa324a9fe5b0a5c98209950439040a9134a216ca58c5ab5",
+        "normalized_sha256": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef",
+        "bytes": 3804
+      },
+      "res://physics/rotorcraft/impact_detector.gd": {
+        "raw_sha256": "b5d5b828118e9fa926103c10e0255859c7347c33b109fe0f31736308e1dade07",
+        "normalized_sha256": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6",
+        "bytes": 57717
+      },
+      "res://physics/rotorcraft/inflow.gd": {
+        "raw_sha256": "82253bcd67b660dba709481104441f1fd3bfed55f8679244d444c4769d31923c",
+        "normalized_sha256": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d",
+        "bytes": 9090
+      },
+      "res://physics/rotorcraft/lifecycle.gd": {
+        "raw_sha256": "bd3315b0e5255623997660a90b487b0df414a12a8eb8a27ce73ea24f536b526b",
+        "normalized_sha256": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+        "bytes": 2830
+      },
+      "res://physics/rotorcraft/main_rotor.gd": {
+        "raw_sha256": "2afbabdae1b981296da9662e866933ca6272e704bd56d8c08dec01dfef87c8cb",
+        "normalized_sha256": "7387c530f86e1e8a1ef0c33d42e0f3f1796d0df52b43ff1ef8e6c70a7a5c8b87",
+        "bytes": 20581
+      },
+      "res://physics/rotorcraft/main_rotor_stage.gd": {
+        "raw_sha256": "c131f192077e44ea659734394a01db3b076d867f6f81bd732e111edd72fa5316",
+        "normalized_sha256": "c94e0951df0400b71d8ef33c5e53007d11f2cdb8b6c97fa692f6c8ad81ac921d",
+        "bytes": 6942
+      },
+      "res://physics/rotorcraft/performance_context.gd": {
+        "raw_sha256": "4cc05a8f4f2390920cae51af47cd3eb454e35986dee9663f06cbc44f863e117a",
+        "normalized_sha256": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+        "bytes": 3757
+      },
+      "res://physics/rotorcraft/simulation_step_adapter.gd": {
+        "raw_sha256": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+        "normalized_sha256": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c",
+        "bytes": 8393
+      },
+      "res://physics/rotorcraft/skid_contact.gd": {
+        "raw_sha256": "b750134a35bef06d3cd4d5a56918118929a370f21d580dfa5b013b6173fd5c87",
+        "normalized_sha256": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc",
+        "bytes": 11788
+      },
+      "res://physics/rotorcraft/swash.gd": {
+        "raw_sha256": "af8682f94096f1b804e1c9e96e922aedcf0aebc03a57430c6542ac7d0c3b0135",
+        "normalized_sha256": "f8f8aaacb7c1592ae2fce4e1d96b5868693501edd18a4b2ebdf0c845c8003944",
+        "bytes": 13682
+      },
+      "res://physics/rotorcraft/tail_rotor.gd": {
+        "raw_sha256": "a1b925a56333202ea145570d4c288718206611d3acf065eec0e8788c66c35f15",
+        "normalized_sha256": "bddf7219cfe66250d0f8744496f371cb7981f4dc67b1bae4382322b321993357",
+        "bytes": 17717
+      },
+      "res://physics/rotorcraft/trim.gd": {
+        "raw_sha256": "c6d57c62e7e23fa5623be2fb241c2d77ce246128ffeb6ee35fcae8dc1ff79d53",
+        "normalized_sha256": "7013bcd37be312dc30656b59dfdd6b487a7fc8f0f23fc89ba19b5f1e60992c9c",
+        "bytes": 13563
+      },
+      "res://physics/rotorcraft_data.gd": {
+        "raw_sha256": "f8d3561c223bc263d0aa9a368998a0eb23ec516278efc3a4ae7b88b6aa8b39ee",
+        "normalized_sha256": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe",
+        "bytes": 12737
+      },
+      "res://physics/slipstream.gd": {
+        "raw_sha256": "a151f7d11bfd14ccc6a024b67c7851682495c7263d422d755d58de2c8bbe53cf",
+        "normalized_sha256": "3adbb2a72035d872edb117785d0c94174df3bf56a652b467db8857ac64b829ff",
+        "bytes": 30803
+      },
+      "res://physics/swirl_loads.gd": {
+        "raw_sha256": "c092fb282f27bba33131f8f33ffb6bef445b725c13f262a22c505c8f426f37e5",
+        "normalized_sha256": "2303bfcb6bdd33810b6db052ed581111bc7b3dda6fb69bb8b6cb0b32afb83dcf",
+        "bytes": 17972
+      },
+      "res://physics/trim.gd": {
+        "raw_sha256": "2869adc042e5a4abd1a602aba8ca801ce73af14911c5431accee31da5fd05072",
+        "normalized_sha256": "1c16481c15e3bc65bf0c04aff1a478c30cbf99ccb24255d494b7d4283537722e",
+        "bytes": 20378
+      },
+      "res://physics/turbine.gd": {
+        "raw_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+        "normalized_sha256": "0f3c9cecab831ed6894637bb92c50bb15e0139127165ec6b8c857f0ba528b8a2",
+        "bytes": 10683
+      },
+      "res://physics/wash_transport.gd": {
+        "raw_sha256": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d",
+        "normalized_sha256": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+        "bytes": 2239
+      },
+      "res://physics/wheel_profiles.gd": {
+        "raw_sha256": "c9e60b71c547332b3f33818d6b91097bffb8c492fadba14eda6ec6a4a5cd2c76",
+        "normalized_sha256": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5",
+        "bytes": 12532
+      },
+      "res://physics/wind_config.gd": {
+        "raw_sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+        "normalized_sha256": "610fd468b5e7bfe2919bb853d039be9a4fcc35bea97d8f9c773ebabfa7a300da",
+        "bytes": 12178
+      },
+      "res://physics/wind_field.gd": {
+        "raw_sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a",
+        "normalized_sha256": "ccb2e2bf1edd8b741ff206cbf47b0f6fa38071f47e852ab20b407f94ea6bd1d8",
+        "bytes": 5602
+      },
+      "res://physics/wind_turbulence.gd": {
+        "raw_sha256": "edc55a08df419f50e28b9ec7f4dc83f8f2b58a795658c8485ae1a9384c52e270",
+        "normalized_sha256": "460fca93f7df0ef3ff2dbb6d3cdd5ca8e6f6f16bf7124a513d872aa8f49375cc",
+        "bytes": 6755
+      },
+      "res://physics/wing_polar.gd": {
+        "raw_sha256": "94fc21a35e2e4009e60f5fe421e5ac92bd9c8e1918245280ade9291421b55b79",
+        "normalized_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+        "bytes": 5518
+      },
+      "res://sim/aircraft_contact_events.gd": {
+        "raw_sha256": "1351735a4b6fd8931836370ae243a549fb88203f6845140eef21ed70dcad8682",
+        "normalized_sha256": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90",
+        "bytes": 23088
+      },
+      "res://sim/aircraft_propulsion_runtime.gd": {
+        "raw_sha256": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+        "normalized_sha256": "f1df9fba77eb400d1db8ffa0a96cc84758f1c67e08aa2d0a677b38d8205bec75",
+        "bytes": 10679
+      },
+      "res://sim/checkpoint_json.gd": {
+        "raw_sha256": "b668e4029af172a233aaec0a87feb7972360ab97ce933fcfd91452cfab393849",
+        "normalized_sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc",
+        "bytes": 1786
+      },
+      "res://sim/environment.gd": {
+        "raw_sha256": "14f172a6179ec8c0537850d1b8c0bf79e554a910ca6079a1089f6e15fad4c2b0",
+        "normalized_sha256": "db4c90cbbbf8d7f8b31485f6a9fb0ebae278e8b12314623022f795867034b148",
+        "bytes": 4465
+      },
+      "res://sim/flight_log.gd": {
+        "raw_sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+        "normalized_sha256": "ea2dcff656b37c9291a3deb1df0d39a73db2f54a6dcd694b880830e27d3c5243",
+        "bytes": 12285
+      },
+      "res://sim/flight_session.gd": {
+        "raw_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "normalized_sha256": "fbf9dced4d4dbf15ae57ef0f9b0f6f49ca38d807230d46de5eea9dabd6d1c273",
+        "bytes": 235678
+      },
+      "res://sim/fuel_sample.gd": {
+        "raw_sha256": "ae2d2be8085e5738519d4dcbdb6511fcf30325cb34874211dd17ad5d5eb15fdc",
+        "normalized_sha256": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+        "bytes": 5900
+      },
+      "res://sim/ground_vehicle/session.gd": {
+        "raw_sha256": "a81cb2d3974ce574552eff2f99e107d1e7fd5989a1ffe6ca77c035a466e3f1bc",
+        "normalized_sha256": "24d9d8a05208e18d0d955ab8c127e99e87e375048b371f886982b895a133b1be",
+        "bytes": 97917
+      },
+      "res://sim/helicopter_flight_session.gd": {
+        "raw_sha256": "9dbe8ae8853be819993064ee7fea9a1e0926d2e28dc8c74d288a5a25fb66cf0c",
+        "normalized_sha256": "1c867248374526fc72f5233f310be479c5d9c0c72ca7f6986fd32ff6939c2cd0",
+        "bytes": 38073
+      },
+      "res://sim/lake_collision.gd": {
+        "raw_sha256": "33bf35155a0b539f2137f7425e96d3f35314382d388f1ede212812d77b6d5e36",
+        "normalized_sha256": "df431f011907fc319d3dd872194da3d0a8aa99b2435b4dc154c233befd12e953",
+        "bytes": 29609
+      },
+      "res://sim/landing_maneuver.gd": {
+        "raw_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "normalized_sha256": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
+        "bytes": 3054
+      },
+      "res://sim/liquid_fuel_flight.gd": {
+        "raw_sha256": "0793be9a7849a2b9192b39752aa3f630305dda138534e774ec2a6dab064dbcf9",
+        "normalized_sha256": "a1e01b7ecfd01535d3e0fc530dd950070aace20137368993db4a534da737298a",
+        "bytes": 7287
+      },
+      "res://sim/maneuvers.gd": {
+        "raw_sha256": "69d79416cfab9778aada3d699a24c9605fe795e468b9b010faeba913af18750e",
+        "normalized_sha256": "bb72f1c2bf57647071291ee97076fd549d530519c97165e729d99ab057b8813f",
+        "bytes": 6960
+      },
+      "res://sim/recorder.gd": {
+        "raw_sha256": "55615078511e22538789bc22e0c18a3ad36bb3117c867fe1916c1e273e9c2c16",
+        "normalized_sha256": "6cda992eb30ed7008edb61d13ceb2ced2a259d6f8ef1ad48d37381271e34dd56",
+        "bytes": 2122
+      },
+      "res://sim/rotorcraft_recorder.gd": {
+        "raw_sha256": "3fc951fc8c341c3f6c47febf70eae34b2cd8be011c05d7e7bd55b86f9e5b287d",
+        "normalized_sha256": "2e7b5bdb10045c331ae1b276f325b4de8673f5eb3e48aab62e7241b62b9fdf01",
+        "bytes": 4740
+      },
+      "res://sim/scenarios.gd": {
+        "raw_sha256": "ed4dcebae1ec5b11368160fbbb064cec1a6fd84916ac5011797267cf5db074bc",
+        "normalized_sha256": "756b95412911c5f1b0c5774d1f0901909e0b157731ca624663f72442df3458a8",
+        "bytes": 1945
+      },
+      "res://sim/scenery_collision.gd": {
+        "raw_sha256": "1dc331b1fdbe3580f8ddacf29e8bdbdaeba5b781f3e30066f60ee209915a900a",
+        "normalized_sha256": "c5750fca165bd3549bdfbfe37ede2c3c20e6439b3682a34488e8904dda67dbcb",
+        "bytes": 36630
+      },
+      "res://sim/scenery_damage.gd": {
+        "raw_sha256": "93cec17f714616a5f966774c57e7b8a1330bd91ff8ab87f6bd906c1fcd3442b7",
+        "normalized_sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+        "bytes": 1302
+      },
+      "res://sim/scripted.gd": {
+        "raw_sha256": "540537392f683002b43172314fe0596e8be9d38829584a3796f9f3e47fcd1801",
+        "normalized_sha256": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+        "bytes": 617
+      },
+      "res://sim/simulation.gd": {
+        "raw_sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+        "normalized_sha256": "91715305e968e747c7515af39a57ce32409a51b1c306c9cab9401cf56a89bbb2",
+        "bytes": 32823
+      },
+      "res://sim/trace.gd": {
+        "raw_sha256": "3cebba7f662f092692c78893c7317cc7abdd19bc10931506327351fb8f6da1e4",
+        "normalized_sha256": "a7e7fed38aa6d8d067a257b79085d97dc17306abaf3de4f6899b7eeba25be4cf",
+        "bytes": 86529
+      },
+      "res://sim/vehicle_model.gd": {
+        "raw_sha256": "42cb000f789c7381837d449313fc78f99cc7b876f9e383a0bbb08aae7bd2f434",
+        "normalized_sha256": "55c45e2eba4ce5336770ece22107265e0c9159d4a0d139a1fe1d13e70d64db55",
+        "bytes": 8243
+      }
+    }
+  },
+  "candidate": {
+    "app_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\solver-merge-bridge-20261021\\isolated-merged\\app",
+    "source_count": 133,
+    "sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "files": {
+      "res://failures/catalog.gd": {
+        "raw_sha256": "1126203bbdfd8352931d231b6b63e6f1307052a7bcd582523705d2352da5e60c",
+        "normalized_sha256": "0244b68714d52712c382280c5af385f371e49af6d6f767fd3b9c537f56483099",
+        "bytes": 8762
+      },
+      "res://failures/config.gd": {
+        "raw_sha256": "14542cbec6aa6b379adbca035aef11b413d8a364514fce3148c8b9da5ccc09cb",
+        "normalized_sha256": "b989737c5c41853838ec3e71de3d65dbb78f5a72157529d43709871a3a3e7c1b",
+        "bytes": 2059
+      },
+      "res://failures/runtime.gd": {
+        "raw_sha256": "2c6dfc6858f78bdcfafa85d56cab528ad622635f7b28aa63efc2c386d4a69ad8",
+        "normalized_sha256": "e92c61f83612dcf8f42963c7b5fd8e22606ffc79c86fa182885666e1c8e4b873",
+        "bytes": 27151
+      },
+      "res://physics/aero.gd": {
+        "raw_sha256": "efccc6baf1a88fc24487d6766db05c6634da047de70bd55b9a115aed0adf5531",
+        "normalized_sha256": "2cfad8b511be861cde434099e35a44571ae8797a50187315cd223cd95a62164d",
+        "bytes": 50896
+      },
+      "res://physics/air_data.gd": {
+        "raw_sha256": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+        "normalized_sha256": "9f318e03423c7e5438a73d0feef031382a6cd325608724500b6465fa9e5cfd9b",
+        "bytes": 1784
+      },
+      "res://physics/aircraft_contact_contract.gd": {
+        "raw_sha256": "25821831c966893d40666653b13e579a8d458d11c17378eb1fde6b062098e929",
+        "normalized_sha256": "84a46a225b368b8a40bb37e5f3b5714b822983f054ae0480f791ef46c20a5734",
+        "bytes": 35886
+      },
+      "res://physics/aircraft_contract.gd": {
+        "raw_sha256": "b80151fa8588f9d4d2dfbaf75eaf6f930679b02f92b5e05769f24d8098b3dd36",
+        "normalized_sha256": "e0ffe623baa2e4c670e34a1a69efb26d58a7c80af7e213126d92002b53dcad2a",
+        "bytes": 18748
+      },
+      "res://physics/aircraft_data.gd": {
+        "raw_sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd",
+        "normalized_sha256": "3405a4ab9815722991dde403bcc448dc4b314d59e5dec25881dd75bae126cb2f",
+        "bytes": 141590
+      },
+      "res://physics/aircraft_modules.gd": {
+        "raw_sha256": "1bd163625fcbeb6d5b57d49e2e63aa2845dc2339cb96046b11fb16d05fe4c3fc",
+        "normalized_sha256": "c9bc118fdcb9b749e37be2a9a1afbfbd63caf9a987303a3c3fb0af393decefd1",
+        "bytes": 17716
+      },
+      "res://physics/atmosphere.gd": {
+        "raw_sha256": "9e1be6def471318dceb55b561c13d0c043a7f132f78bd125f0a570dfb003f369",
+        "normalized_sha256": "800bc5b098b4e51c4758e3a0cf1e505e9ab0cc451fbbca102b3a0094e2bf89be",
+        "bytes": 8311
+      },
+      "res://physics/battery/battery_data.gd": {
+        "raw_sha256": "ee129d086883a7f652b3c0c681aaddce2d68b911d45c26e371732cdd85505d0b",
+        "normalized_sha256": "d0649c7113284496c3257a10313e697f201452c514d28a098c179eba090efc3c",
+        "bytes": 16188
+      },
+      "res://physics/battery/esc_supervisor.gd": {
+        "raw_sha256": "20c0fc8f3b0d5c0a408acfc32376ecac772974b098f674e594b8da8a43cb07a5",
+        "normalized_sha256": "df32dc65f89501f8ebe07c173abe821a8a5c569c79c97bbd003c9629b2e58c5d",
+        "bytes": 5408
+      },
+      "res://physics/battery/pack_ecm.gd": {
+        "raw_sha256": "5fc20700f028d214e8e97caade261c910cdc8ee560e983cb57074077ae44ddda",
+        "normalized_sha256": "e8864ec2f991d711813851ee02f1075917a1dbe3d81668d60850c22a79333aa8",
+        "bytes": 12802
+      },
+      "res://physics/control_actuators.gd": {
+        "raw_sha256": "83df22694634c930b35ac8d187c9f19c8da4f94ff25c77f4096aef33ae6d2cd5",
+        "normalized_sha256": "1bfa36515ad25280fe6c4b4dcb5efa2c87014be02e2f0f2378986f1a7ff71e6d",
+        "bytes": 1939
+      },
+      "res://physics/control_surfaces.gd": {
+        "raw_sha256": "c13215f7186aa827eb4a47e198d3fee04509631e585453fbf69850b3bc50aa93",
+        "normalized_sha256": "d370870c45efbda072870b56da92b020f1ae782a846dd71b8cb3050c095d1067",
+        "bytes": 3223
+      },
+      "res://physics/cruise_trim.gd": {
+        "raw_sha256": "50c227cd7d5d57b96cc84f8f7ce6d37666c2e90907f90bda25577443cfd81213",
+        "normalized_sha256": "dea935adbc1ddc1f55a37dd92b6f1d2a3606fc843b4d279fef290728fbe4b2b6",
+        "bytes": 10231
+      },
+      "res://physics/dynamics.gd": {
+        "raw_sha256": "950c79bda30feeee727d24a17e84a0ed0a527e221159168951b3920c1ec7d4fe",
+        "normalized_sha256": "970264b49e4fa30d6d107490a9f3e7e48fc2a73dbf399789261edbc6f8243b73",
+        "bytes": 7429
+      },
+      "res://physics/effective_mass.gd": {
+        "raw_sha256": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+        "normalized_sha256": "3ef462e14bc65ebcf4a99a78b8a064b9ec07715aaba60cd1fe30ab7453f9949f",
+        "bytes": 8286
+      },
+      "res://physics/electric_battery_step.gd": {
+        "raw_sha256": "039299ca7f93f0dfab6e6826109521ece74b79285068dc2acff46e52dbee9044",
+        "normalized_sha256": "abc7c83fa52b01120e9baaefef453564f5044b18a198127c3c5b2134f7472409",
+        "bytes": 13792
+      },
+      "res://physics/electric_motor.gd": {
+        "raw_sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8",
+        "normalized_sha256": "4abd3455f49d59dc26e51843225a617fcb36f0c74ff4fabc81d2f1a015b5de10",
+        "bytes": 4926
+      },
+      "res://physics/electric_stop.gd": {
+        "raw_sha256": "24fb4cdaccb1b34c1e76e4ee4bff75581ae231ccd643b4989d2b52db29a1bf7b",
+        "normalized_sha256": "b77284044eb4f890d8f83b5b282a12e0f36272b11ecd596d2b9512d1ae6b24ab",
+        "bytes": 1347
+      },
+      "res://physics/electric_supply.gd": {
+        "raw_sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977",
+        "normalized_sha256": "ebe6a97d19194bc397ab91cefa4a4afcb1a174b64b53efd741f8b41e22c81229",
+        "bytes": 15485
+      },
+      "res://physics/event_bracket.gd": {
+        "raw_sha256": "898b8556741b98f12416f1c4e5297b833f78be788f8b6c968138fdb437a031bc",
+        "normalized_sha256": "92e5bd10e7eb49c0e69d16cab49dcaae12a5c253b6c2a305770896e754300ddf",
+        "bytes": 1409
+      },
+      "res://physics/event_step.gd": {
+        "raw_sha256": "08949fd4adbf54c0a0d36e0c7a854f28c8eabfe23f380ddf5f2bbbfc6ccf9d85",
+        "normalized_sha256": "92a5a1ed9d0505efb6b0db4397543a923b6088f22cdf2155c84ca56559141cc3",
+        "bytes": 7092
+      },
+      "res://physics/fixed_datum_body.gd": {
+        "raw_sha256": "3cfcf98c4a83f7973ee2e57be0ed3c51cd172afe60dd13f24f7a190a3b276c59",
+        "normalized_sha256": "942cd9af68236f3b8f4b7a4fda70bb6281bad1f6d93d8c78a16689d2f7848f1c",
+        "bytes": 1634
+      },
+      "res://physics/flaps.gd": {
+        "raw_sha256": "bf3f1ac5afc0b414d978f9f630afb12ba956635d66cf27c65d87d392ebb76b7d",
+        "normalized_sha256": "9dbbc35cb2e3edef04359c31fe18a91dd0f4d8b23732cc31b69176afe1cdbff9",
+        "bytes": 1247
+      },
+      "res://physics/flight_modes.gd": {
+        "raw_sha256": "4c2c9618ddc98bc65d3b97e1c29700bd6436fc81b895d2fc00e67065ed60fc0e",
+        "normalized_sha256": "f38479967502a8735598c9a03e1c641f7809542e497c655bd5d3458b2406e7d1",
+        "bytes": 6439
+      },
+      "res://physics/fuel_properties.gd": {
+        "raw_sha256": "2c5c5ba5ca96a32c793f1f8a4e39f3c057865ce22f1914152d7c0f93fd348cc4",
+        "normalized_sha256": "eabd2f37920f83936e869d28b1be5975d8d329e98906fe52b0da4af5cdece014",
+        "bytes": 8955
+      },
+      "res://physics/generalized_coordinates.gd": {
+        "raw_sha256": "77209df7653c3127e546a03bfebd6281cb133f19c89460e94fc4d7b0566840c8",
+        "normalized_sha256": "7867bf12a92c07f6deb272977ac33516a522142801cddbe813c7e1b927f4c4bf",
+        "bytes": 9692
+      },
+      "res://physics/glow/carburetor.gd": {
+        "raw_sha256": "d3fe00763772ca36a9b86e240c7dfb0de6b239350b0930d6000651534956fd7c",
+        "normalized_sha256": "a09ccf8997001d4887517d8393d8fca9f401a997d2b40083a7a527ff29e71222",
+        "bytes": 8089
+      },
+      "res://physics/glow/flight.gd": {
+        "raw_sha256": "a181a37d6312d4899ddd976fb14e1ae938384a37b1114d66c9d5c21531b1481d",
+        "normalized_sha256": "3b77c5060b93fb7f197665ea7e69688c9f701cb1471b8cc54cae050bd1230cc6",
+        "bytes": 45480
+      },
+      "res://physics/glow/four_stroke.gd": {
+        "raw_sha256": "159eb8e01b4d3c486aa547dde941d625a64e54c34dc786f50641ad3c5e25c0b7",
+        "normalized_sha256": "a9d9a4151713955e2a3247349527f5181a0821b10770f4ae6f196ed1b3e22978",
+        "bytes": 16957
+      },
+      "res://physics/glow/fuel_feed.gd": {
+        "raw_sha256": "0f3bb52b2593590088cc6ec6961b82be79a11885e80cff1febf474fe8c229049",
+        "normalized_sha256": "ead485223eb1dab9376c8368c77a80cf683ea7952c8a52d526c6a77c22b4d9ed",
+        "bytes": 13687
+      },
+      "res://physics/glow/fuel_mass.gd": {
+        "raw_sha256": "476309443d7a1295e65e63fa51591122dd4bd494eec5aa5ffd7254ed29e76535",
+        "normalized_sha256": "43187d7495fcc2f1d19acfc511c8de8a7512b87cf094616e87ff4c2e47cb4f55",
+        "bytes": 4600
+      },
+      "res://physics/glow/installation.gd": {
+        "raw_sha256": "0b1531329e804be0fa4bd78629e6d1c254c35453006065428621cfbaa91c74bc",
+        "normalized_sha256": "3573998883b3198a429b84dd66357d3cc50a45a65de4aaafac4fa8e900ab6d86",
+        "bytes": 37764
+      },
+      "res://physics/glow/lifecycle.gd": {
+        "raw_sha256": "a2fe9b02aa06acf61ed8534fc6d89e1244e1c96c30ba9c4df271f06805569d14",
+        "normalized_sha256": "8cd07c65e6616f00fe2d701c00072e918e7dc884fc511b6bb20acbc637ab1e93",
+        "bytes": 35620
+      },
+      "res://physics/glow/operating_point.gd": {
+        "raw_sha256": "092f415233a6a3154fffe68269fd5ebcca285b1e73f69bc5d39b0b6f5fbc7228",
+        "normalized_sha256": "bde850136dca7de8fa3fe43cd5f41cfa44ebe74c320ee84426dffb0290559c54",
+        "bytes": 3334
+      },
+      "res://physics/glow/profile.gd": {
+        "raw_sha256": "c52f639f3f28382bdd5a3bd8b30789d76e8ae6eb11864b5bd09eb0bff3855524",
+        "normalized_sha256": "ea77427d916a75163ac66bbb6361d0339aeae6572d77989fab996df58ddba522",
+        "bytes": 11686
+      },
+      "res://physics/glow/propeller.gd": {
+        "raw_sha256": "fd6785d513962daa30ca5994f126ddfbf94e21466394b8482737e3d7428799a1",
+        "normalized_sha256": "fc6972d33b83e6926196671221654026043bc746bc0a2c4f39474d998538fa60",
+        "bytes": 7754
+      },
+      "res://physics/glow/source.gd": {
+        "raw_sha256": "8ef5d987bf7f50470297bbd6832ccb51d4096e625e8301ad11fadd2362ada2d8",
+        "normalized_sha256": "57f729133ee2ab08843ab5adcdf06c1ca5bbed845f25655340118e5011dd0338",
+        "bytes": 9738
+      },
+      "res://physics/glow/thermal.gd": {
+        "raw_sha256": "46aab9a1c172e3bfc7b2a18402b635e9faa02462b9f38af70a0cc85edfae1bd8",
+        "normalized_sha256": "597c51aec355366decafe6d70668f61156ca77f69330b72f554a34b98bb48e65",
+        "bytes": 5345
+      },
+      "res://physics/glow/two_stroke.gd": {
+        "raw_sha256": "92a06de9d8612771caf925aa0827f8bf1334dcb946314c3b80a8000f5e05eab6",
+        "normalized_sha256": "10dc8b59d92e5335c7d5167adb9c4f29978618591db8fe8928ba21e45480b622",
+        "bytes": 16115
+      },
+      "res://physics/glow/vibration.gd": {
+        "raw_sha256": "6a0213536d813d598eadb4086075b7913e57cc5b70f963560025cffba6ab1de7",
+        "normalized_sha256": "d36c8159cca6a79aebea17676917b6e68b409fbc0028471f8a8071d9ac547a11",
+        "bytes": 10664
+      },
+      "res://physics/ground_contact.gd": {
+        "raw_sha256": "bd585612c3735d9dbb30e4ffdea5505cafa657996d7ae7a6f50688093a8242bf",
+        "normalized_sha256": "c60516f6e8540bd9040e75a247cc3471366b2cbdb1b3a44faf6181c4afbe56cd",
+        "bytes": 26286
+      },
+      "res://physics/ground_effect.gd": {
+        "raw_sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98",
+        "normalized_sha256": "6a894daae49ce8be335b6628549df9ef7886a2b379adb90ea2441e631dae0555",
+        "bytes": 4776
+      },
+      "res://physics/ground_start.gd": {
+        "raw_sha256": "e64223071c375da2cb500f78e334b70280cfaaff8a1abcccf5623e496574b473",
+        "normalized_sha256": "b3b73d4b3ef33ebaa74ec50fe92f5c15f6799d7c7d5a0946de76591adb0ae3b3",
+        "bytes": 48130
+      },
+      "res://physics/ground_surfaces.gd": {
+        "raw_sha256": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536",
+        "normalized_sha256": "2de5d88c683c1fd487c3c9e7d5e0971018dd79c786645db4c729196159ce50bc",
+        "bytes": 4721
+      },
+      "res://physics/ground_terrain.gd": {
+        "raw_sha256": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a",
+        "normalized_sha256": "fa07e665a912aa8f397bfa1dc2a7c1a2ab309f0788a9ea8e7ebd195d13b4744f",
+        "bytes": 11642
+      },
+      "res://physics/ground_vehicle/airfield_course.gd": {
+        "raw_sha256": "f42aab538e849f4662a0ac22380451952d816e663305bafbdb1ba4bff18184d4",
+        "normalized_sha256": "3d441a46b7344ab17a78d187e95acffa0589acc4b44a21b37f743b75bc676db1",
+        "bytes": 22005
+      },
+      "res://physics/ground_vehicle/airfield_track.gd": {
+        "raw_sha256": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+        "normalized_sha256": "13dac138e7228145fa55fd7db44102c4ae942d6e6a148cedb0199904b0b03629",
+        "bytes": 10877
+      },
+      "res://physics/ground_vehicle/course.gd": {
+        "raw_sha256": "e54394854d359bc34117bc01ec304881abf950d7997bb6804cec5834c7b30a22",
+        "normalized_sha256": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+        "bytes": 25222
+      },
+      "res://physics/ground_vehicle/four_corner.gd": {
+        "raw_sha256": "f41fe08767a08c7303fdb3fbe8120cf33a666378bf4885a8063be0ee4315faba",
+        "normalized_sha256": "1c5107890b587bbea988534cd50f3515545c9faec88b46c70bb9813adcb3ca6f",
+        "bytes": 16485
+      },
+      "res://physics/ground_vehicle/nitro_dynamics.gd": {
+        "raw_sha256": "0aac95c553385a33b209896d65983da9e2f9e3e80566e5fb3f5f91b265f5fede",
+        "normalized_sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+        "bytes": 21850
+      },
+      "res://physics/ground_vehicle/quarter_car.gd": {
+        "raw_sha256": "bf070338c21e0323fbb9c3e8f671582b67b586d4091b1ca06cbdfde93b68bd80",
+        "normalized_sha256": "8ff27ae9d66f50f2b6f60b6532f01d27944037a8fa54ff5d951e8e81d8ba37ad",
+        "bytes": 6388
+      },
+      "res://physics/ground_vehicle/support_bench_data.gd": {
+        "raw_sha256": "7dab08634d637824c795d96167cd2b631d55364434e346f63d3d3ba0dff5a18a",
+        "normalized_sha256": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+        "bytes": 7534
+      },
+      "res://physics/ground_vehicle/suspension_bench_data.gd": {
+        "raw_sha256": "ad6049a7e7cc64c6cd48725530b56a4bd94c5e30bcec0500fd0e6ef503d7495f",
+        "normalized_sha256": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+        "bytes": 4606
+      },
+      "res://physics/ground_vehicle/vehicle_damage.gd": {
+        "raw_sha256": "0eabeaf94e4a111bee0f8ece04be5b037beb5c18c2af18497c4b9f985326537c",
+        "normalized_sha256": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56",
+        "bytes": 22200
+      },
+      "res://physics/ground_vehicle/vehicle_data.gd": {
+        "raw_sha256": "4f52a8bb3637b3442dbd06fa3b18792e0cc24d31ea0253fedef5c09a96708a95",
+        "normalized_sha256": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+        "bytes": 31825
+      },
+      "res://physics/ground_vehicle/vehicle_dynamics.gd": {
+        "raw_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+        "normalized_sha256": "a8d6c1d6790160ff180803ccacae997219c57b1aaa1a345c996a8abb515bb460",
+        "bytes": 103839
+      },
+      "res://physics/ground_vehicle/vehicle_environment.gd": {
+        "raw_sha256": "afef8833cc387831dd38add704a68684bdfdce9b9b556a676e533b5eb4b40a15",
+        "normalized_sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+        "bytes": 6814
+      },
+      "res://physics/ground_wheels.gd": {
+        "raw_sha256": "8cf755e7df2799203c221c46e9bf68b4e6f4c2173a741ea484a52543e07c6386",
+        "normalized_sha256": "76fbaefb1c1495493e89f947a6a017f46286719e56e9df1ebe0cb46ade353d14",
+        "bytes": 12255
+      },
+      "res://physics/hull_contact.gd": {
+        "raw_sha256": "6723a744b82f2ae171a299671df61be0f32615896cc146b514fe9c9b73a659f5",
+        "normalized_sha256": "427cf33d621d726d19a37265f7f5ca0125172466b53c915ce607e7a943dae897",
+        "bytes": 33059
+      },
+      "res://physics/hull_crossing.gd": {
+        "raw_sha256": "c57cc1d92885a0957fbad6ad6b885bd6f017621cea8044a16aacf134e69c93b1",
+        "normalized_sha256": "81a326470188b0d249e512150352e9fb2b4a2bea467650e9356c9d719c15c650",
+        "bytes": 6933
+      },
+      "res://physics/impact_snapshot.gd": {
+        "raw_sha256": "606c9f7ab59974f548504abfc302804bb47e673c82a3e5560258371c0b2f0807",
+        "normalized_sha256": "ead4ce710cd26ad0c20a1188d5232ebd62351662880c29c645be904869c01dd0",
+        "bytes": 5933
+      },
+      "res://physics/integrator.gd": {
+        "raw_sha256": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+        "normalized_sha256": "ada6b75172260aa642f1e47581ededa617ae872619b0871dd63179c65e669311",
+        "bytes": 2366
+      },
+      "res://physics/lake_surface.gd": {
+        "raw_sha256": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224",
+        "normalized_sha256": "42e43853b6e85d218fd35198c8f89ad3fe9e04405edd2e74ebd57b19227db322",
+        "bytes": 35299
+      },
+      "res://physics/linearize.gd": {
+        "raw_sha256": "f7bb02f2b625317e1db7daa456adc6140cb8ddd2fe9ea07b3756c176634bd0cd",
+        "normalized_sha256": "860bde6efd3f0904a8fbadbac192e5cbfee7e160d34ad87b0f3a8742891431b1",
+        "bytes": 4610
+      },
+      "res://physics/liquid_fuel.gd": {
+        "raw_sha256": "68a1a1a5fb65cc8c4ab5c7ccfbe094dc393dabf71e7cae4561e1700bebb7068f",
+        "normalized_sha256": "4941c07c9bdd819b92cb7415e2816e55eb8b5f7a081df3dee789c2cb91bc798a",
+        "bytes": 9850
+      },
+      "res://physics/mass_inventory.gd": {
+        "raw_sha256": "3bdfe2a85b706b66b38f542febd064eb35270dd8022c17bf6bf01eff71efe5ea",
+        "normalized_sha256": "f31b7f4e17a6c8efb2bdf98b58cc44cf3a00245aa556eebbd9689665eff73664",
+        "bytes": 24455
+      },
+      "res://physics/math3d.gd": {
+        "raw_sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "normalized_sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+        "bytes": 5005
+      },
+      "res://physics/multirotor/airframe.gd": {
+        "raw_sha256": "15c3e15747a45e971796f67f8d0a17548f5e925788e67e9250bc7b65aa9893bf",
+        "normalized_sha256": "50787469821ef326206a42d37eb604edcaf9a4d9b529b2bf5896c79e8be1a9af",
+        "bytes": 647
+      },
+      "res://physics/multirotor/plant.gd": {
+        "raw_sha256": "5000405eb2babca0912fa1e0ace3ecc5365f66bf05293b6a9cb7f78d31b6437c",
+        "normalized_sha256": "3364a773516360959bbce155edfb80d2e006a5edd0dc1396a8b0d0c994b38aef",
+        "bytes": 6595
+      },
+      "res://physics/multirotor/powertrain.gd": {
+        "raw_sha256": "57906c99708bf8cf03f967efafaebf23141d60510d9580b0ef23728a31444125",
+        "normalized_sha256": "027ab3cc2cf3f446d70eec96a7c7f00d7781a1e15230fce2b50a6ef6df53d39b",
+        "bytes": 1093
+      },
+      "res://physics/multirotor/rotor.gd": {
+        "raw_sha256": "4b36fdb9ecb392046c283527567288c981c32dd254722f13e74f8bb442a32bbf",
+        "normalized_sha256": "7ecac47974f6d9661c5f45a19689150100cc550d52c0017795dc7fa806101167",
+        "bytes": 2432
+      },
+      "res://physics/physical_identity.gd": {
+        "raw_sha256": "e578a847667a0c3c21e56637151e056f0fa6d9b80075feb15a214f594ce8cb51",
+        "normalized_sha256": "45784e2c21d4d82c45e3fc68a141546304af185278f37280fd9691bc603414be",
+        "bytes": 6534
+      },
+      "res://physics/propulsion.gd": {
+        "raw_sha256": "d03fc8d0ebfd1f63cdf3040850175e3f6f6b478a9e2e2d5e38569cfcd3c29903",
+        "normalized_sha256": "7186f0f921e76a665fee33927f411ccb4522824574be22fac595080a7ba77f63",
+        "bytes": 35016
+      },
+      "res://physics/resource_event_step.gd": {
+        "raw_sha256": "6e7384ac28c73c85fc088eeecdc5d00fa6df582dcba21ef427fba1f1b44ad618",
+        "normalized_sha256": "f19951bf468ad3c9f45197c7427600922c555ffcb0d8b3fb622c1c02aab819f7",
+        "bytes": 18526
+      },
+      "res://physics/retractable_gear.gd": {
+        "raw_sha256": "cfaef50a1071b177ff46e2bf579a9fe2f1d54c485903b309af013c9979174a23",
+        "normalized_sha256": "5de7a013900104aee80186ab0935e4340a752f85ef00fe6e8c04008789d84f83",
+        "bytes": 3599
+      },
+      "res://physics/rigid_body.gd": {
+        "raw_sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+        "normalized_sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce",
+        "bytes": 5582
+      },
+      "res://physics/rotor_coupling.gd": {
+        "raw_sha256": "507175715731d92f34e5af469f257766d2f7003d48a394d93513bd7330d64a8b",
+        "normalized_sha256": "8fe7b7eecc1151d50de78e11b598c5083a6c39bab4b268ba8fb4a3151f96d5ae",
+        "bytes": 4658
+      },
+      "res://physics/rotorcraft/aerodynamic_stage.gd": {
+        "raw_sha256": "14f95f87e9b6320be081a616ade24820c10dd3087f03aaccc5179d88d4b078a7",
+        "normalized_sha256": "65370bdeb2231d1eaebfdb5cd83bf347b4addc0b368a3fb0f1435d8dbc42c0bd",
+        "bytes": 9825
+      },
+      "res://physics/rotorcraft/airframe.gd": {
+        "raw_sha256": "eae69ed1447264abf6baf440c6e8781b082581d440a96ae583ebeab6f2fa6c7c",
+        "normalized_sha256": "3b621913524ddf502b801f794c84c13366ce777dd4dca9efc28d340781078832",
+        "bytes": 14657
+      },
+      "res://physics/rotorcraft/drive.gd": {
+        "raw_sha256": "d039c9fde7624e4808bf62237cfef6f6ebb225d2177224cffba5f1e2b24098e9",
+        "normalized_sha256": "d411ec84cf16d4f72ac63e4b66c21eb5785071da569157a8f309fd9f7933371e",
+        "bytes": 6318
+      },
+      "res://physics/rotorcraft/dynamic_inflow.gd": {
+        "raw_sha256": "8694f3dc9aea87ded464885d346968421765fd71b127af38bf6776bb392e89e9",
+        "normalized_sha256": "cf5f381cf4f1a4de4efe844e9c3a4b1c4f6d1a780973f768431940fccb02b975",
+        "bytes": 2593
+      },
+      "res://physics/rotorcraft/electronics.gd": {
+        "raw_sha256": "0f9be04b3b9593c0342fc5fa5f5eb54a92bda23daf8f705bcff5cad5b0e6e27e",
+        "normalized_sha256": "e29d958fe447495f935d822a451e8732e2d5abd9e6c46b06b41eab28cb07aa4f",
+        "bytes": 20448
+      },
+      "res://physics/rotorcraft/flight_dynamics.gd": {
+        "raw_sha256": "6fe5947b61ce3f1231a2baa4ea1fb339c6369dde9690c9ed4f677ab45f265a69",
+        "normalized_sha256": "5ba3df0b9ea867a615a8d93e53a5a3ce207559d26f17867e5667cb3d8de26514",
+        "bytes": 22731
+      },
+      "res://physics/rotorcraft/geared_coupling.gd": {
+        "raw_sha256": "9a298f0f65b64ed620d18e2e296d5f9679af2d7e6028bdea80f7211bf562dad2",
+        "normalized_sha256": "c5157438d057090328582a664c3a05f87fb1a1c89c316413b9448e085634ccc1",
+        "bytes": 8016
+      },
+      "res://physics/rotorcraft/ground_start.gd": {
+        "raw_sha256": "1a1b6aa12ff4f755e5acbe03ad354ca31e21dcd60701450abf2ab6a193bf38db",
+        "normalized_sha256": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b",
+        "bytes": 14835
+      },
+      "res://physics/rotorcraft/hx700_flex_bench.gd": {
+        "raw_sha256": "b56c02961e95d9580fa324a9fe5b0a5c98209950439040a9134a216ca58c5ab5",
+        "normalized_sha256": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef",
+        "bytes": 3804
+      },
+      "res://physics/rotorcraft/impact_detector.gd": {
+        "raw_sha256": "b5d5b828118e9fa926103c10e0255859c7347c33b109fe0f31736308e1dade07",
+        "normalized_sha256": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6",
+        "bytes": 57717
+      },
+      "res://physics/rotorcraft/inflow.gd": {
+        "raw_sha256": "82253bcd67b660dba709481104441f1fd3bfed55f8679244d444c4769d31923c",
+        "normalized_sha256": "8b33aaf47d5515f8074d1041b1749b21860e3c008c4744ba72c4570b38c8a29d",
+        "bytes": 9090
+      },
+      "res://physics/rotorcraft/lifecycle.gd": {
+        "raw_sha256": "bd3315b0e5255623997660a90b487b0df414a12a8eb8a27ce73ea24f536b526b",
+        "normalized_sha256": "49ea5e610107d1f3618a6bc4e7738b3b29e1fc55bb9dfdf497d7615f7a73256c",
+        "bytes": 2830
+      },
+      "res://physics/rotorcraft/main_rotor.gd": {
+        "raw_sha256": "2afbabdae1b981296da9662e866933ca6272e704bd56d8c08dec01dfef87c8cb",
+        "normalized_sha256": "7387c530f86e1e8a1ef0c33d42e0f3f1796d0df52b43ff1ef8e6c70a7a5c8b87",
+        "bytes": 20581
+      },
+      "res://physics/rotorcraft/main_rotor_stage.gd": {
+        "raw_sha256": "c131f192077e44ea659734394a01db3b076d867f6f81bd732e111edd72fa5316",
+        "normalized_sha256": "c94e0951df0400b71d8ef33c5e53007d11f2cdb8b6c97fa692f6c8ad81ac921d",
+        "bytes": 6942
+      },
+      "res://physics/rotorcraft/performance_context.gd": {
+        "raw_sha256": "4cc05a8f4f2390920cae51af47cd3eb454e35986dee9663f06cbc44f863e117a",
+        "normalized_sha256": "f5aabb613725d0961072cceafb877ba01f136806d5602f578f8b46b5e4d2b6e0",
+        "bytes": 3757
+      },
+      "res://physics/rotorcraft/simulation_step_adapter.gd": {
+        "raw_sha256": "88c852f1d5eb6fd066efbffffa3ac42d6cf2e9fa4464579dbe1c420ed6f8c81c",
+        "normalized_sha256": "1655d08242b70ff2646a5813d61f46d46fafa705b4e9db0feed9dc0002a0d13c",
+        "bytes": 8393
+      },
+      "res://physics/rotorcraft/skid_contact.gd": {
+        "raw_sha256": "b750134a35bef06d3cd4d5a56918118929a370f21d580dfa5b013b6173fd5c87",
+        "normalized_sha256": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc",
+        "bytes": 11788
+      },
+      "res://physics/rotorcraft/swash.gd": {
+        "raw_sha256": "af8682f94096f1b804e1c9e96e922aedcf0aebc03a57430c6542ac7d0c3b0135",
+        "normalized_sha256": "f8f8aaacb7c1592ae2fce4e1d96b5868693501edd18a4b2ebdf0c845c8003944",
+        "bytes": 13682
+      },
+      "res://physics/rotorcraft/tail_rotor.gd": {
+        "raw_sha256": "a1b925a56333202ea145570d4c288718206611d3acf065eec0e8788c66c35f15",
+        "normalized_sha256": "bddf7219cfe66250d0f8744496f371cb7981f4dc67b1bae4382322b321993357",
+        "bytes": 17717
+      },
+      "res://physics/rotorcraft/trim.gd": {
+        "raw_sha256": "c6d57c62e7e23fa5623be2fb241c2d77ce246128ffeb6ee35fcae8dc1ff79d53",
+        "normalized_sha256": "7013bcd37be312dc30656b59dfdd6b487a7fc8f0f23fc89ba19b5f1e60992c9c",
+        "bytes": 13563
+      },
+      "res://physics/rotorcraft_data.gd": {
+        "raw_sha256": "f8d3561c223bc263d0aa9a368998a0eb23ec516278efc3a4ae7b88b6aa8b39ee",
+        "normalized_sha256": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe",
+        "bytes": 12737
+      },
+      "res://physics/slipstream.gd": {
+        "raw_sha256": "a151f7d11bfd14ccc6a024b67c7851682495c7263d422d755d58de2c8bbe53cf",
+        "normalized_sha256": "3adbb2a72035d872edb117785d0c94174df3bf56a652b467db8857ac64b829ff",
+        "bytes": 30803
+      },
+      "res://physics/swirl_loads.gd": {
+        "raw_sha256": "c092fb282f27bba33131f8f33ffb6bef445b725c13f262a22c505c8f426f37e5",
+        "normalized_sha256": "2303bfcb6bdd33810b6db052ed581111bc7b3dda6fb69bb8b6cb0b32afb83dcf",
+        "bytes": 17972
+      },
+      "res://physics/trim.gd": {
+        "raw_sha256": "8a8d32ef0d0a1152b062b0630f8fa1b1699951a59904ad41bfcc26ec345cafd1",
+        "normalized_sha256": "cd8f060890ecac5fd39197acbf92cec66d50f17801451c9a3006e6c302a81ec8",
+        "bytes": 20775
+      },
+      "res://physics/turbine.gd": {
+        "raw_sha256": "a7577b8d2ddfe7daec69cf2992e8c566688f5b6c89cf6461c5b462abeb1ca702",
+        "normalized_sha256": "0f3c9cecab831ed6894637bb92c50bb15e0139127165ec6b8c857f0ba528b8a2",
+        "bytes": 10683
+      },
+      "res://physics/wash_transport.gd": {
+        "raw_sha256": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d",
+        "normalized_sha256": "53fb4f225c3e535566266b8d8042c36f572fff10d3f8d6ff1f10fe77ab0ee637",
+        "bytes": 2239
+      },
+      "res://physics/wheel_profiles.gd": {
+        "raw_sha256": "c9e60b71c547332b3f33818d6b91097bffb8c492fadba14eda6ec6a4a5cd2c76",
+        "normalized_sha256": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5",
+        "bytes": 12532
+      },
+      "res://physics/wind_config.gd": {
+        "raw_sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+        "normalized_sha256": "610fd468b5e7bfe2919bb853d039be9a4fcc35bea97d8f9c773ebabfa7a300da",
+        "bytes": 12178
+      },
+      "res://physics/wind_field.gd": {
+        "raw_sha256": "db80f80b47dbec99a93e7392de339e63e435b8a9fcfa67f750fa8dbb0a3dec4a",
+        "normalized_sha256": "ccb2e2bf1edd8b741ff206cbf47b0f6fa38071f47e852ab20b407f94ea6bd1d8",
+        "bytes": 5602
+      },
+      "res://physics/wind_turbulence.gd": {
+        "raw_sha256": "edc55a08df419f50e28b9ec7f4dc83f8f2b58a795658c8485ae1a9384c52e270",
+        "normalized_sha256": "460fca93f7df0ef3ff2dbb6d3cdd5ca8e6f6f16bf7124a513d872aa8f49375cc",
+        "bytes": 6755
+      },
+      "res://physics/wing_polar.gd": {
+        "raw_sha256": "94fc21a35e2e4009e60f5fe421e5ac92bd9c8e1918245280ade9291421b55b79",
+        "normalized_sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be",
+        "bytes": 5518
+      },
+      "res://sim/aircraft_contact_events.gd": {
+        "raw_sha256": "1351735a4b6fd8931836370ae243a549fb88203f6845140eef21ed70dcad8682",
+        "normalized_sha256": "76532d5d4879a781abacc87298ccff9f6a1b0615499b64e52079064aa7110d90",
+        "bytes": 23088
+      },
+      "res://sim/aircraft_propulsion_runtime.gd": {
+        "raw_sha256": "9fce4984366708ce7433e6501460dbf479deb9960f1839082541cb86c8e10444",
+        "normalized_sha256": "f1df9fba77eb400d1db8ffa0a96cc84758f1c67e08aa2d0a677b38d8205bec75",
+        "bytes": 10679
+      },
+      "res://sim/checkpoint_json.gd": {
+        "raw_sha256": "b668e4029af172a233aaec0a87feb7972360ab97ce933fcfd91452cfab393849",
+        "normalized_sha256": "145bd071bb19d3e1c4f65bce79471bdf926dc4f28dd41b2503f0302f988f50fc",
+        "bytes": 1786
+      },
+      "res://sim/environment.gd": {
+        "raw_sha256": "14f172a6179ec8c0537850d1b8c0bf79e554a910ca6079a1089f6e15fad4c2b0",
+        "normalized_sha256": "db4c90cbbbf8d7f8b31485f6a9fb0ebae278e8b12314623022f795867034b148",
+        "bytes": 4465
+      },
+      "res://sim/flight_log.gd": {
+        "raw_sha256": "f6265c11441bf02ccc3639afc42ca18c2cbfdab7bd63a8ca9f1491726411385d",
+        "normalized_sha256": "ea2dcff656b37c9291a3deb1df0d39a73db2f54a6dcd694b880830e27d3c5243",
+        "bytes": 12285
+      },
+      "res://sim/flight_session.gd": {
+        "raw_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+        "normalized_sha256": "fbf9dced4d4dbf15ae57ef0f9b0f6f49ca38d807230d46de5eea9dabd6d1c273",
+        "bytes": 235678
+      },
+      "res://sim/fuel_sample.gd": {
+        "raw_sha256": "ae2d2be8085e5738519d4dcbdb6511fcf30325cb34874211dd17ad5d5eb15fdc",
+        "normalized_sha256": "5b35b612ba1f4c3258916327586cbf8683dd7669b5886236d0366cc04e2cb5cd",
+        "bytes": 5900
+      },
+      "res://sim/ground_vehicle/session.gd": {
+        "raw_sha256": "a81cb2d3974ce574552eff2f99e107d1e7fd5989a1ffe6ca77c035a466e3f1bc",
+        "normalized_sha256": "24d9d8a05208e18d0d955ab8c127e99e87e375048b371f886982b895a133b1be",
+        "bytes": 97917
+      },
+      "res://sim/helicopter_flight_session.gd": {
+        "raw_sha256": "9dbe8ae8853be819993064ee7fea9a1e0926d2e28dc8c74d288a5a25fb66cf0c",
+        "normalized_sha256": "1c867248374526fc72f5233f310be479c5d9c0c72ca7f6986fd32ff6939c2cd0",
+        "bytes": 38073
+      },
+      "res://sim/lake_collision.gd": {
+        "raw_sha256": "33bf35155a0b539f2137f7425e96d3f35314382d388f1ede212812d77b6d5e36",
+        "normalized_sha256": "df431f011907fc319d3dd872194da3d0a8aa99b2435b4dc154c233befd12e953",
+        "bytes": 29609
+      },
+      "res://sim/landing_maneuver.gd": {
+        "raw_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+        "normalized_sha256": "c2062693cb1fc5440168e08ec981be8e11f00b7c9a4f99157ec355c414bc0ae0",
+        "bytes": 3054
+      },
+      "res://sim/liquid_fuel_flight.gd": {
+        "raw_sha256": "0793be9a7849a2b9192b39752aa3f630305dda138534e774ec2a6dab064dbcf9",
+        "normalized_sha256": "a1e01b7ecfd01535d3e0fc530dd950070aace20137368993db4a534da737298a",
+        "bytes": 7287
+      },
+      "res://sim/maneuvers.gd": {
+        "raw_sha256": "69d79416cfab9778aada3d699a24c9605fe795e468b9b010faeba913af18750e",
+        "normalized_sha256": "bb72f1c2bf57647071291ee97076fd549d530519c97165e729d99ab057b8813f",
+        "bytes": 6960
+      },
+      "res://sim/recorder.gd": {
+        "raw_sha256": "55615078511e22538789bc22e0c18a3ad36bb3117c867fe1916c1e273e9c2c16",
+        "normalized_sha256": "6cda992eb30ed7008edb61d13ceb2ced2a259d6f8ef1ad48d37381271e34dd56",
+        "bytes": 2122
+      },
+      "res://sim/rotorcraft_recorder.gd": {
+        "raw_sha256": "3fc951fc8c341c3f6c47febf70eae34b2cd8be011c05d7e7bd55b86f9e5b287d",
+        "normalized_sha256": "2e7b5bdb10045c331ae1b276f325b4de8673f5eb3e48aab62e7241b62b9fdf01",
+        "bytes": 4740
+      },
+      "res://sim/scenarios.gd": {
+        "raw_sha256": "ed4dcebae1ec5b11368160fbbb064cec1a6fd84916ac5011797267cf5db074bc",
+        "normalized_sha256": "756b95412911c5f1b0c5774d1f0901909e0b157731ca624663f72442df3458a8",
+        "bytes": 1945
+      },
+      "res://sim/scenery_collision.gd": {
+        "raw_sha256": "1dc331b1fdbe3580f8ddacf29e8bdbdaeba5b781f3e30066f60ee209915a900a",
+        "normalized_sha256": "c5750fca165bd3549bdfbfe37ede2c3c20e6439b3682a34488e8904dda67dbcb",
+        "bytes": 36630
+      },
+      "res://sim/scenery_damage.gd": {
+        "raw_sha256": "93cec17f714616a5f966774c57e7b8a1330bd91ff8ab87f6bd906c1fcd3442b7",
+        "normalized_sha256": "150f43b3673075c7241c80050b2d611bd86c31b13302d04f326b38727a419d48",
+        "bytes": 1302
+      },
+      "res://sim/scripted.gd": {
+        "raw_sha256": "540537392f683002b43172314fe0596e8be9d38829584a3796f9f3e47fcd1801",
+        "normalized_sha256": "ff5de80fdc0957b7205dd886aeb6f6b5410c64df1d24ddbbb31633e919c618bf",
+        "bytes": 617
+      },
+      "res://sim/simulation.gd": {
+        "raw_sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+        "normalized_sha256": "91715305e968e747c7515af39a57ce32409a51b1c306c9cab9401cf56a89bbb2",
+        "bytes": 32823
+      },
+      "res://sim/trace.gd": {
+        "raw_sha256": "3cebba7f662f092692c78893c7317cc7abdd19bc10931506327351fb8f6da1e4",
+        "normalized_sha256": "a7e7fed38aa6d8d067a257b79085d97dc17306abaf3de4f6899b7eeba25be4cf",
+        "bytes": 86529
+      },
+      "res://sim/vehicle_model.gd": {
+        "raw_sha256": "42cb000f789c7381837d449313fc78f99cc7b876f9e383a0bbb08aae7bd2f434",
+        "normalized_sha256": "55c45e2eba4ce5336770ece22107265e0c9159d4a0d139a1fe1d13e70d64db55",
+        "bytes": 8243
+      }
+    }
+  },
+  "normalized_source_changes": [
+    "res://physics/aero.gd",
+    "res://physics/aircraft_data.gd",
+    "res://physics/glow/installation.gd",
+    "res://physics/glow/propeller.gd",
+    "res://physics/trim.gd"
+  ],
+  "missing_from_candidate": [],
+  "added_to_candidate": []
+}

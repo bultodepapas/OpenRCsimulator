@@ -1,0 +1,31 @@
+diff --git a/app/ai/companions/pilot.gd b/research/ai-companions/avoidance/predictor_trace_candidate.gd
+index 7f4efa6d..4c5f80d7 100644
+--- a/app/ai/companions/pilot.gd
++++ b/research/ai-companions/avoidance/predictor_trace_candidate.gd
+@@ -365,6 +365,9 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
+ 	var minimum_by_threat := PackedFloat64Array()
+ 	minimum_by_threat.resize(threats.size())
+ 	var distance_traces: Array[PackedFloat64Array] = []
++	var predicted_own_positions_ned := PackedFloat64Array()
++	if include_trace:
++		predicted_own_positions_ned.append_array(PackedFloat64Array([own_north, own_east, own_down]))
+ 	for threat_index in threats.size():
+ 		minimum_by_threat[threat_index] = INF
+ 		if include_trace:
+@@ -389,6 +392,8 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
+ 			var remaining_clearance: float = clearance - (own_down - state[AvoidanceRigidBody.POS + 2])
+ 			minimum_terrain_margin = minf(minimum_terrain_margin,
+ 				remaining_clearance - TERRAIN_CLEARANCE_M - TERRAIN_UNCERTAINTY_M)
++			if include_trace:
++				predicted_own_positions_ned.append_array(PackedFloat64Array([own_north, own_east, own_down]))
+ 		var offset: int = sample_index * 3
+ 		for threat_index in threats.size():
+ 			var positions: PackedFloat64Array = threats[threat_index].positions
+@@ -418,6 +423,7 @@ func _score_bank(state: PackedFloat64Array, own_velocity: PackedFloat64Array, ow
+ 		"minimum_peer_distance_m": minimum_peer_distance}
+ 	if include_trace:
+ 		result["distance_traces_m"] = distance_traces
++		result["predicted_own_positions_ned"] = predicted_own_positions_ned
+ 	return result
+ 
+ 

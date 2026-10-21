@@ -1,0 +1,74 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2da6ce93-0cf4-4c35-9858-319613f750a6",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_ui_help.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T04:25:01.783968+00:00",
+  "label": "afc-help-shell",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\help-20261021\\checks\\afc-help-shell-t_csa41g\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\help-20261021\\checks\\afc-help-shell-t_csa41g\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "all UI help checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 8,
+      "message": "Tree wind is disabled for landscapelab_pine because source material -9223371804305782317 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 25,
+      "message": "Tree wind is disabled for landscapelab_quercus because source material -9223371802024080924 is unsupported (non-repeating textures are not supported)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 42,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371800614794765 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 23.297,
+  "log_bytes": 5428,
+  "log_sha256": "a578c29673ba9713ed0992e13aafa9f785c76e46e65cb869c9149649f6ae1f47"
+}

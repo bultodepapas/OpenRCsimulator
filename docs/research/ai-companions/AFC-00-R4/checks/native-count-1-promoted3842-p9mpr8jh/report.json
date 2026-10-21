@@ -1,0 +1,89 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4586bb22-4b4b-47ae-ae25-e7a27ebbf0ed",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\app",
+    "--rendering-driver",
+    "opengl3",
+    "--resolution",
+    "1280x720",
+    "--disable-vsync",
+    "--max-fps",
+    "0",
+    "--script",
+    "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021\\research\\ai-companions\\native_performance_probe.gd",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--companions=1",
+    "--companions-seed=20261020",
+    "--fixture-out=D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-fixture.json",
+    "--frametimes=D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\count-1-frames.json",
+    "--warmup=10",
+    "--t=60",
+    "--case=afc-neutral-trim-count-1"
+  ],
+  "cwd": "D:\\OpenRCsimulator-AFC-work\\fast-path-integration-20261021",
+  "started_utc": "2026-10-21T04:02:09.798043+00:00",
+  "label": "native-count-1-promoted3842",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\checks\\native-count-1-promoted3842-p9mpr8jh\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-promoted3842-2f4-20261021\\checks\\native-count-1-promoted3842-p9mpr8jh\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AFC native fixture complete; active endpoint=true",
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for landscapelab_pine because source material -9223371728942527685 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 22,
+      "message": "Tree wind is disabled for landscapelab_quercus because source material -9223371726727935160 is unsupported (non-repeating textures are not supported)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 40,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371725419312304 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 81.625,
+  "log_bytes": 4212,
+  "log_sha256": "504abe374ad1eda6060eb9dfad72d3b54400debe95d3fae1361f31618693b598"
+}

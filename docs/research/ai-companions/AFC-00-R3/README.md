@@ -1,11 +1,11 @@
 # AFC-00-R3 — Reachable-clear fast-path equivalence
 
-This receipt evaluates the research-only early return in
-`research/ai-companions/performance/reachable_clear_candidate.gd`. The production
-pilot remains pinned to SHA-256
+The original receipt evaluates the early return in
+`research/ai-companions/performance/reachable_clear_candidate.gd`. At that
+checkpoint the production pilot was SHA-256
 `363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed`; the candidate
-was injected only into detached test fixtures, and the accepted profile identity
-remained on production.
+was injected only into detached test fixtures, and the profile stayed on that
+production identity. The later runtime promotion is recorded separately below.
 
 The static differential passed 11 checks over 1,280 command/state pairs with no
 failures. It found 130 clear comparisons and 766 held-maneuver comparisons, with
@@ -79,10 +79,10 @@ controller SHA `1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c
 and candidate SHA
 `3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024`. That
 snapshot used profile-solver qualification
-`1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e`. The current
-main profile carries the separate AFC-02 merged solver source SHA
+`1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e`. At the time,
+the main profile carried the separate AFC-02 merged solver source SHA
 `b9911cc9166e1cb8c523cfa61c2b4fb17dd0ac727384d9622ebf00afd9f16f30`; this
-diagnostic does not qualify that solver merge. See the
+diagnostic did not qualify that solver merge. See the
 [AFC-02 solver-merge receipt](../AFC-02/solver-merge-15f6efc7/receipt.json).
 
 The exact production pilot was retained byte-for-byte at
@@ -98,3 +98,25 @@ The [source-byte checkout check](source-byte-checkout.json) verifies the retaine
 baseline, candidate and original differential harness in disposable Git clones
 with both `core.autocrlf=true` and `false`. Explicit `-text` rules preserve all
 three source hashes; no main-worktree index operation was used.
+
+## Runtime promotion, 2026-10-21
+
+The [promotion receipt](promotion.json) binds the exact tested candidate bytes
+(`3842cbdba…1f024`) to the runtime pilot and aircraft profile. The only controller
+change is the early return when the nominal trajectory is clear and no avoidance
+turn is held. The inherited circuit controller remains unchanged. A source review
+confirms the skipped bank scores have no mutations for this concrete controller.
+
+The profile also binds merged solver identity `2f4f35c0…cff4bfa`, supported by the
+separate [solver bridge](../AFC-02/solver-merge-2f4f35c0/README.md). Root independently
+rehash-checked 87 bridge artifacts and all six paired CSVs. A private integration
+checkout with the promoted pilot/profile passed six groups: 290 numbered assertions
+plus the shell check. The initial stale-solver-pin failure remains in the receipt.
+The current-worktree profile and manager checks also pass all 90 assertions with
+no engine errors; the promoted file hashes still match afterward. The manager
+log retains the existing aircraft-data inertia warning.
+
+The narrow airborne Stik scope and 1–3 experimental ceiling remain unchanged.
+No physics law, flight target, avoidance threshold, activity or timing gate changed.
+The two-second optimization proof and separate 20-second solver-bridge crossings
+retain their original limits; they do not establish endurance or physical realism.

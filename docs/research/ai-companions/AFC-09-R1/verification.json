@@ -47,8 +47,114 @@
       "east seed 20261027",
       "west seed 20261051"
     ],
-    "taxi_trace_observation": "At +3 s, both south-crosswind cases have fallen to 0.075/0.165 m/s with steering command and actual rudder servo near ±0.53/±0.57, throttle 0.232/0.223, RPM 4569/4481; by +5 s they remain near 0.02–0.03 m/s while throttle is about 0.237 and RPM about 4780. The passing west north-crosswind case reaches 1.714 m/s at +3 s, with command/servo 0.099, throttle 0.069, RPM 3427, and completes the footprint exit in 5.633 s.",
-    "causal_limit": "The south-profile ORFLs show a positive northward wind component near +0.5 m/s, while the passing north-profile case shows about -0.5 m/s. This direction-correlated result does not establish wind compensation or a single cause; it is evidence of a low-speed/high-steering interaction needing a controlled ground-speed sweep."
+    "taxi_trace_observation": "At +3 s, both south-crosswind cases have fallen to 0.075/0.165 m/s with steering command and actual rudder servo near ±0.53/±0.57, throttle 0.232/0.223, RPM 4569/4481; by +5 s they remain near 0.02–0.03 m/s while throttle is about 0.237 and RPM about 4780. The passing west north-crosswind case reaches 1.714 m/s at +3 s, with command/servo 0.099, throttle 0.069, RPM 3427, and completes the original wheel-clear vacate check in 5.633 s.",
+    "causal_limit": "The south-profile ORFLs show a positive northward wind component near +0.5 m/s, while the passing north-profile case shows about -0.5 m/s. This direction-correlated result does not establish wind compensation or a single cause; it is evidence of a low-speed/high-steering interaction needing a controlled ground-speed sweep.",
+    "runway_end_transition_observation": "In both south-crosswind failures, the three gear points crossed the runway end before the 45 s timeout. At that surface transition the modeled rolling factor changes from 2.5 on runway to 7.5 on rough grass. The traces then show loss of taxi speed. This is an observed sequence, not a controlled demonstration that the terrain transition alone caused the timeouts."
+  },
+  "historical_clearance_gate_limit": {
+    "original_22_gate_rule": "All three gear points must be north of the runway edge +0.5 m for at least 0.25 s; the driver then sets a sticky runway_vacated flag, which is not reset on re-entry. The separately qualified two-second landing-stability dwell is already complete when vacate starts; final completion then requires the sticky runway_vacated flag and at least 2.0 s elapsed since vacate start.",
+    "hull_clearance_required": false,
+    "reentry_resets_clear_dwell": false,
+    "interpretation": "The 5/8 historical result is against the original 22 gates only. Exact-replay reconstruction found no wheel-clear re-entry in the eight retained cases, but confirmed that none of the six physically completed paths cleared every accepted crash-hull point.",
+    "source_audit": "research/ai-companions/sorties/external_sortie_driver.gd and test_external_sortie.gd; original gate behavior was not changed."
+  },
+  "geometry_diagnostics": {
+    "touchdown_to_stable_stop": {
+      "measurement": "Absolute east-west coordinate difference between touchdown and stable-stop CG in the exact replay CSV; this is not a curved ground-track distance.",
+      "cases": [
+        {"direction": "east", "weather_profile": "calm", "seed": 0, "distance_m": 91.496, "stable_stop_east_m": 46.026},
+        {"direction": "east", "weather_profile": "headwind", "seed": 20261015, "distance_m": 54.630, "stable_stop_east_m": 8.130},
+        {"direction": "east", "weather_profile": "north_crosswind_0p5", "seed": 20261025, "distance_m": 92.465, "stable_stop_east_m": 47.176},
+        {"direction": "east", "weather_profile": "south_crosswind_0p5", "seed": 20261027, "distance_m": 93.304, "stable_stop_east_m": 48.800},
+        {"direction": "west", "weather_profile": "calm", "seed": 0, "distance_m": 91.458, "stable_stop_east_m": -46.019},
+        {"direction": "west", "weather_profile": "headwind", "seed": 20261039, "distance_m": 57.576, "stable_stop_east_m": -12.031},
+        {"direction": "west", "weather_profile": "north_crosswind_0p5", "seed": 20261044, "distance_m": 91.908, "stable_stop_east_m": -46.329},
+        {"direction": "west", "weather_profile": "south_crosswind_0p5", "seed": 20261051, "distance_m": 93.279, "stable_stop_east_m": -48.632}
+      ]
+    },
+    "approach_touchdown_reference": {
+      "measurement": "Approach TAS is the measured final-entry gate value. Touchdown CG position and body-velocity magnitude come from the exact CSV row at the report touchdown tick; stable-stop coordinates and speed come from the retained report. Values are rounded for readability.",
+      "cases": [
+        {"direction": "east", "weather_profile": "calm", "seed": 0, "approach_gate_tas_mps": 12.2741, "touchdown_tick": 21430, "touchdown_time_s": 89.2917, "touchdown_cg_east_m": -45.470, "touchdown_cg_north_m": 14.641, "touchdown_tas_mps": 10.810, "touchdown_ground_speed_mps": 10.810, "stable_stop_east_m": 46.026, "stable_stop_speed_mps": 0.0002},
+        {"direction": "east", "weather_profile": "headwind", "seed": 20261015, "approach_gate_tas_mps": 11.7811, "touchdown_tick": 26816, "touchdown_time_s": 111.7333, "touchdown_cg_east_m": -46.500, "touchdown_cg_north_m": 14.486, "touchdown_tas_mps": 10.722, "touchdown_ground_speed_mps": 9.397, "stable_stop_east_m": 8.130, "stable_stop_speed_mps": 0.0011},
+        {"direction": "east", "weather_profile": "north_crosswind_0p5", "seed": 20261025, "approach_gate_tas_mps": 12.2843, "touchdown_tick": 21282, "touchdown_time_s": 88.6750, "touchdown_cg_east_m": -45.289, "touchdown_cg_north_m": 13.688, "touchdown_tas_mps": 10.754, "touchdown_ground_speed_mps": 10.708, "stable_stop_east_m": 47.176, "stable_stop_speed_mps": 0.0001},
+        {"direction": "east", "weather_profile": "south_crosswind_0p5", "seed": 20261027, "approach_gate_tas_mps": 12.2449, "touchdown_tick": 21363, "touchdown_time_s": 89.0125, "touchdown_cg_east_m": -44.504, "touchdown_cg_north_m": 15.695, "touchdown_tas_mps": 10.884, "touchdown_ground_speed_mps": 10.819, "stable_stop_east_m": 48.800, "stable_stop_speed_mps": 0.0000},
+        {"direction": "west", "weather_profile": "calm", "seed": 0, "approach_gate_tas_mps": 12.2735, "touchdown_tick": 21430, "touchdown_time_s": 89.2917, "touchdown_cg_east_m": 45.440, "touchdown_cg_north_m": 15.359, "touchdown_tas_mps": 10.810, "touchdown_ground_speed_mps": 10.810, "stable_stop_east_m": -46.019, "stable_stop_speed_mps": 0.0002},
+        {"direction": "west", "weather_profile": "headwind", "seed": 20261039, "approach_gate_tas_mps": 12.5343, "touchdown_tick": 23233, "touchdown_time_s": 96.8042, "touchdown_cg_east_m": 45.544, "touchdown_cg_north_m": 14.995, "touchdown_tas_mps": 10.849, "touchdown_ground_speed_mps": 9.430, "stable_stop_east_m": -12.031, "stable_stop_speed_mps": 0.0009},
+        {"direction": "west", "weather_profile": "north_crosswind_0p5", "seed": 20261044, "approach_gate_tas_mps": 12.2767, "touchdown_tick": 21359, "touchdown_time_s": 88.9958, "touchdown_cg_east_m": 45.579, "touchdown_cg_north_m": 14.309, "touchdown_tas_mps": 10.768, "touchdown_ground_speed_mps": 10.780, "stable_stop_east_m": -46.329, "stable_stop_speed_mps": 0.0002},
+        {"direction": "west", "weather_profile": "south_crosswind_0p5", "seed": 20261051, "approach_gate_tas_mps": 12.3079, "touchdown_tick": 21536, "touchdown_time_s": 89.7333, "touchdown_cg_east_m": 44.648, "touchdown_cg_north_m": 16.550, "touchdown_tas_mps": 10.924, "touchdown_ground_speed_mps": 10.880, "stable_stop_east_m": -48.632, "stable_stop_speed_mps": 0.0002}
+      ]
+    },
+    "runway_end_crossings_in_south_crosswind_timeouts": {
+      "time_origin": "Physical taxi start, relative time in seconds; values derived from the exact-replay flight CSV and normalized landing-gear contact positions.",
+      "east_seed_20261027": {
+        "gear_crossings_s": {"nose": 1.591667, "main_right": 1.783333, "main_left": 2.020833},
+        "nose_crossing_ground_speed_mps": 1.29884,
+        "nose_crossing_throttle_command": 0.11027,
+        "nose_crossing_yaw_servo_normalized": -0.531081,
+        "nose_crossing_rpm": 3852.8
+      },
+      "west_seed_20261051": {
+        "gear_crossings_s": {"nose": 1.7625, "main_left": 1.916667, "main_right": 2.3},
+        "nose_crossing_ground_speed_mps": 1.38909,
+        "nose_crossing_throttle_command": 0.10114,
+        "nose_crossing_yaw_servo_normalized": 0.568919,
+        "nose_crossing_rpm": 3766.3
+      },
+      "limit": "The six other selected cases did not cross the runway end with landing gear during the recorded taxi phase."
+    },
+    "proposed_2m_stake_margin_at_stable_stop": {
+      "status": "diagnostic geometry only; not an original 22-gate requirement or an accepted arrival constraint",
+      "east_south_crosswind_min_full_footprint_to_stake_m": 1.764339,
+      "west_south_crosswind_min_full_footprint_to_stake_m": 1.905397
+    }
+  },
+  "research_classifier_and_candidate_clearance_checks": {
+    "entry_readiness": {
+      "status": "reporting-only; no go-around behavior",
+      "checks": 99,
+      "failed": 0,
+      "ground_speed_rule": "Rejects non-finite and negative scalar ground-speed input; zero is accepted. Negative rejection is stricter than the original finite-only gate, and no physical norm-derived ground speed was negative.",
+      "test_source_sha256": "712ec055e619e6052f41733f298d5223ef271b10a705ed1d969256547dce98fe",
+      "report": "D:/OpenRCsimulator-AFC-work/evidence/sorties/research/AFC09-clearance-state/checks/entry-readiness-negative-gs-t6ckkqi9/report.json"
+    },
+    "taxi_clearance_state": {
+      "status": "candidate state-machine unit test only; no physical taxi rerun",
+      "checks": 21,
+      "failed": 0,
+      "behavior": "Full gear and hull clearance, all wheels down, and a nonnegative side-corridor margin must hold for a continuous 0.25 s. Any failure resets dwell; the side-corridor check stays active through the exit endpoint; completion checks current gear/hull clearance, wheel support, side margin, and the two-second minimum. Any recorded error blocks completion and final normalization refuses error-plus-complete.",
+      "candidate_driver_sha256": "81368a88b859d823db09f38c015f9a12039674e9d28ce5bd343259f449a556a4",
+      "test_source_sha256": "e8a2a85081385695080a3a874ce3516cf7fe7d6b6d22e65b3e03414dba416eed",
+      "report": "D:/OpenRCsimulator-AFC-work/evidence/sorties/research/AFC09-clearance-state/checks/taxi-clearance-state-21check-final-tppezdma/report.json",
+      "report_sha256": "28ef03c1181a9bfcd41d70c894fffda1c9873ef16ecc1f99aecf455d0b50dbf9"
+    }
+  },
+  "historical_full_airframe_reanalysis": {
+    "status": "read-only reconstruction from the eight retained exact-replay CSVs; historical 22-gate results were not changed",
+    "report": "D:/OpenRCsimulator-AFC-work/evidence/sorties/research/AFC09-clearance-state/checks/historical-exit-reanalysis-final.json",
+    "report_sha256": "74321970dac0e971406cf17005c1dd5769dfbf28a88fe35d22612e7a3cdc2b87",
+    "analysis_source": "research/ai-companions/sorties/reanalyse_historical_exit_clearance.gd",
+    "analysis_source_sha256": "3ea43856fdb46dfac918e984e29ad3db3920ed56e86443e351555df75ca401bad",
+    "aircraft_model_source_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "exact_replay_cases_verified": 8,
+    "source_csv_and_report_hashes_verified": 8,
+    "historical_sticky_wheel_clear_recomputed_matches": 8,
+    "solver_ticks": 0,
+    "historical_22_gate_result_unchanged": true,
+    "summary": {
+      "historical_physical_completions": 6,
+      "completed_cases_with_gear_points_clear_and_geometrically_down": 6,
+      "completed_cases_with_all_hull_points_clear": 0,
+      "cases_ever_reaching_full_gear_and_hull_clear": 0,
+      "completed_cases_with_60_ticks_wheels_clear_hull_not_clear": 6,
+      "wheel_only_clear_reentries_after_vacate": 0,
+      "maximum_candidate_clear_dwell_s_in_any_case": 0.0,
+      "taxi_timeouts": 2,
+      "south_timeout_best_full_clearance_margin_m": {"east_seed_20261027": -5.8444, "west_seed_20261051": -5.0548},
+      "south_timeout_minimum_side_corridor_margin_m": {"east_seed_20261027": -1.7355, "west_seed_20261051": -1.5653},
+      "east_north_crosswind_minimum_side_corridor_margin_m": -0.0126,
+      "interpretation": "For the six physically completed paths, the least-forward point among all gear and hull points remained 0.493 to 0.546 m south of the historical edge+0.5 m clearance plane. The two timed-out paths remained 5.055 to 5.844 m short at their best. Geometric wheel-down is the logged anchor predicate, not evidence of per-wheel support force; the CSV does not report normal force or stiction."
+    }
   },
   "excluded_setup_attempt": {
     "classification": "setup_failure_excluded_replaced_by_r1",
@@ -103,7 +209,7 @@
         "source_orfl_sha256": "929f3d3de4e98692b923276453cbe3b0dd2d94f1bf0cd9ffb2b885ec38191c1e",
         "replay_report": {
           "file": "AFC09-c5e-east-calm-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-calm-exact\\neplay.json",
           "bytes": 6805,
           "sha256": "9986f247ffc6b0dd83c5e6669a16f33cfbedaced4d7ac69925db799b1453ae34"
         },
@@ -181,7 +287,7 @@
         "source_orfl_sha256": "6fb89cdfaf5577e34fa6fce55c7a1df2fa0f3bec51f82bafb12ffa40b35cbeae",
         "replay_report": {
           "file": "AFC09-c5e-east-headwind-s20261015-r1-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-headwind-s20261015-r1-exact\\neplay.json",
           "bytes": 7980,
           "sha256": "3448f76eae17a9f5cb8fdc5166f5a1bff9abd06a08170628562249da046855c4"
         },
@@ -259,7 +365,7 @@
         "source_orfl_sha256": "183e5d4613d67a923cf035d52b207469b67116651dbbcc305997e03c6c1815ed",
         "replay_report": {
           "file": "AFC09-c5e-east-north-crosswind-0p5-s20261025-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-north-crosswind-0p5-s20261025-exact\\neplay.json",
           "bytes": 7996,
           "sha256": "2637ed4a5898ba414602a868195176801d7b7390ab2277b1a2fdc6251ef34996"
         },
@@ -337,7 +443,7 @@
         "source_orfl_sha256": "aba2cde2048429984442cff0ebce8fa92b493d0007c906a37a824c185fcd8de2",
         "replay_report": {
           "file": "AFC09-c5e-east-south-crosswind-0p5-s20261027-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-east-south-crosswind-0p5-s20261027-exact\\neplay.json",
           "bytes": 8057,
           "sha256": "7903fa30492addccac9b13a7f85feced2a574378f1bbe70f003562121f3ab778"
         },
@@ -415,7 +521,7 @@
         "source_orfl_sha256": "b58fd8d89c8527b2d6e26d2536e45a71b0cef5f7a094423b4641f409cd927f98",
         "replay_report": {
           "file": "AFC09-c5e-west-calm-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-calm-exact\\neplay.json",
           "bytes": 6806,
           "sha256": "63fa6bf4b5e7fa4a615968d7ea98f1e98f848467d74deb8756cc210d53d7516a"
         },
@@ -493,7 +599,7 @@
         "source_orfl_sha256": "9233845fa8655349254db09bbb8ac9b62770499c7da2685d3b32747d6c869b33",
         "replay_report": {
           "file": "AFC09-c5e-west-headwind-s20261039-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-headwind-s20261039-exact\\neplay.json",
           "bytes": 7977,
           "sha256": "fedea19061726e4877dce02a5aa26c9d96012d3451865e26cf98986973edfe00"
         },
@@ -571,7 +677,7 @@
         "source_orfl_sha256": "e96d9fe43443a2d5b786bae2c11d704c4a93d1c251e9ef7cc392e64525caeb77",
         "replay_report": {
           "file": "AFC09-c5e-west-north-crosswind-0p5-s20261044-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-north-crosswind-0p5-s20261044-exact\\neplay.json",
           "bytes": 7993,
           "sha256": "4aefed196149cdecefd751030c5b6f185649214bf5acaf372d5e671c1024807a"
         },
@@ -649,7 +755,7 @@
         "source_orfl_sha256": "707c23c47b394f15d6695deccc490f04f235582f1ce803f19f6a92f73aaba59b",
         "replay_report": {
           "file": "AFC09-c5e-west-south-crosswind-0p5-s20261051-exact/replay.json",
-          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\replay.json",
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5e-west-south-crosswind-0p5-s20261051-exact\\neplay.json",
           "bytes": 8072,
           "sha256": "4ee675086a5a771b3781f27d80439dc7145ed5d53f08f1b7f5eab72760389171"
         },
@@ -695,6 +801,15 @@
   "c5f_single_case_followup": {
     "classification": "exploratory_only_not_accepted",
     "behavior_change": "Only final_join_speed_gain changed from 0.16 to 0.20; fixed bias remains zero. This was an isolated retune against the single C5e west-headwind +0.0343 m/s miss, so its one-case pass does not qualify the envelope.",
+    "approach_gate_comparison": {
+      "same_weather_seed_and_gate_prediction": true,
+      "gate_position_target_m": 123.090869856792,
+      "gate_tas_limit_mps": 12.5,
+      "c5e": {"tick": 21419, "time_s": 89.2458333333333, "tas_mps": 12.5342797305149, "altitude_m": 5.9896501492647, "north_m": 15.0621894138042, "east_m": 123.078627598313},
+      "c5f": {"tick": 21430, "time_s": 89.2916666666667, "tas_mps": 12.3303562036278, "altitude_m": 5.9856647570778, "north_m": 15.0724532858274, "east_m": 123.05804138819},
+      "tas_change_mps": -0.2039235268871,
+      "explanation_limit": "The paired single-case report shows the higher final-join TAS feedback gain reached the same predicted gate location with lower measured TAS, inside the unchanged 12.5 m/s ceiling. It does not demonstrate envelope-wide readiness or establish general performance across weather/seed cases."
+    },
     "pilot_sha256": "111ad447048f50ee242ecadf4981d8efdc2e6aaf4827ad4dd51697138381d7e0",
     "report": {
       "file": "AFC09-c5f-west-headwind-s20261039-dmirror.json",
@@ -717,7 +832,7 @@
       "current_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
       "replay_report": {
         "file": "AFC09-c5f-west-headwind-s20261039-dmirror-exact/replay.json",
-        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror-exact\\replay.json",
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\AFC09-c5f-west-headwind-s20261039-dmirror-exact\\neplay.json",
         "bytes": 7981,
         "sha256": "02efa7b89109e3630b05384150e3ad63dc15cb659e7e651ba4adccee6a790816"
       },

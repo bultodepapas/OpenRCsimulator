@@ -1,0 +1,356 @@
+{
+  "format": "afc08-r1-r2-runway-end-geometry-v2",
+  "date": "2026-10-21",
+  "scope": "Corrected read-only reconstruction of three R2 end-corridor rejections from exact-replay CSVs. The first pass incorrectly treated the rear-axle turning radius as a CG radius; it is retained below as superseded. No Godot run, app-source change, physics change, or R1/R2 rewrite.",
+  "gate_context": {
+    "r1_original_22_gate_results": "historical; not relabeled by this analysis",
+    "r2_full_clear_passes": 5,
+    "r2_joint_r1_r2_passes": 4,
+    "r2_end_corridor_rejections": 3,
+    "corridor_east_bounds_m": [
+      -50.0,
+      50.0
+    ],
+    "r2_margin_definition": "Accepted-tick transformed hull and gear footprint margin; not continuous collision certification."
+  },
+  "method": {
+    "loaded_inventory_mass_kg": 2.8786621383897963,
+    "loaded_cg_le_m": [
+      0.10939243735198129,
+      0.0,
+      0.00020837596465402724
+    ],
+    "footprint_point_count": 11,
+    "rear_axle_x_body_m": -0.10560756264801871,
+    "wheelbase_m": 0.35127600000000003,
+    "nosewheel_max_steering_deg": 20.0,
+    "point_transform": "Exact source geometry: all 8 crash-hull points plus all 3 landing-gear contacts, translated from LE coordinates to body FRD relative to loaded CG, then rotated by replay quaternion.",
+    "continuous_nominal_arc": "No-slip constant-steer quarter-turn about the rear axle from exact accepted taxi-start yaw to north. Rear-axle east starts at CG east + rear_axle_x_body*sin(yaw0); radius is wheelbase/tan(steer). Every hull and gear point is offset from the rear axle and its east-coordinate extrema are evaluated analytically. The steering angle is the peak measured servo position in the first 2 taxi seconds times configured 20 degree maximum; full lock is separate. This is nominal kinematics, not dynamic, terrain, obstacle, or swept-collision certification.",
+    "analytic_extrema_crosscheck": {
+      "dense_samples_per_arc": 100001,
+      "max_absolute_margin_difference_m": 3.3587355119379936e-11,
+      "checks": 3,
+      "result": "analytic rear-axle extrema agree with an independent uniform-parameter dense sampling check for all three cases"
+    }
+  },
+  "sources": {
+    "aircraft_authoring_json": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\app\\data\\aircraft\\jensen_ugly_stik_60.json",
+      "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    },
+    "r2_gate_only_driver": {
+      "path": "research/ai-companions/sorties/external_sortie_driver_candidate_clearance.gd",
+      "sha256": "658212374fe2cd0b887169f9c1db87aaed60a41a2c4c280239f38d5f569ca4bd"
+    },
+    "r2_verification": {
+      "path": "docs/research/ai-companions/AFC-09-R2/verification.json",
+      "sha256": "abcebdca7c8a01c9b591f7f234ae82e14181cfa16a81c6b25d36ae25e67b61e6"
+    },
+    "corrected_geometry_analyzer": {
+      "path": "research/ai-companions/sorties/analyze_r2_corridor_geometry.py",
+      "sha256": "57384b45e7e167611f71e96cab474af70cf62ef7a6a067506494f737a82962c8"
+    },
+    "superseded_geometry_analyzer": {
+      "path": "research/ai-companions/sorties/analyze_r2_corridor_geometry_cg_origin_superseded.py",
+      "sha256": "c7576533b1d4ed73c31712d5e986b35edddaca3448835eab8dc9ca59fc11dce9"
+    },
+    "landing_maneuver_sha256": "262e96c23fb5860f8dc04add3b486d2cd6a06c2164ca38be3619c020f36d91db",
+    "flight_session_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "ground_contact_sha256": "bd585612c3735d9dbb30e4ffdea5505cafa657996d7ae7a6f50688093a8242bf",
+    "c5e_pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+    "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3"
+  },
+  "superseded_previous_cg_origin_analysis": {
+    "status": "Superseded because the old calculation used the rear-axle turn radius about the CG. Raw CSV breach reconstruction and exact R2 gate minima are unchanged.",
+    "old_geometry_json_sha256": "e295d0df254e5471b60ef5a4b0eb22999d21f8a82a33525c298beac4336733a3",
+    "old_analyzer_sha256": "c7576533b1d4ed73c31712d5e986b35edddaca3448835eab8dc9ca59fc11dce9",
+    "retained_old_source_path": "research/ai-companions/sorties/analyze_r2_corridor_geometry_cg_origin_superseded.py",
+    "old_measured_servo_arc_margins_m": {
+      "east_north": 0.20524506150687927,
+      "east_south": -1.4268055009766272,
+      "west_south": -1.152026620167794
+    },
+    "old_full_20deg_arc_margins_m": {
+      "east_north": 1.1053644814052885,
+      "east_south": -0.5227080802816756,
+      "west_south": -0.365809316937514
+    },
+    "old_minimum_shift_including_0p5m_margin_m": 1.9268055009766272
+  },
+  "cases": [
+    {
+      "case_id": "east-north-crosswind-s20261025",
+      "result": {
+        "flight_report_complete": false,
+        "flight_error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "landing_dwell_complete": true,
+        "approach_entry_ready": true,
+        "strict_corridor_min_margin_m": -0.000185489484842094,
+        "first_breach_tick": 30590,
+        "first_breach_elapsed_since_taxi_start_s": 5.1500000000003325,
+        "first_breach_point": "right_wing_tip",
+        "first_breach_point_east_m": 50.00018548948484,
+        "full_sortie_gate_accepted": false
+      },
+      "taxi_start": {
+        "tick": 29354,
+        "north_m": 14.780624221699897,
+        "east_m": 47.17588320647756,
+        "yaw_deg": 89.5031013235059,
+        "all_wheels_down": true,
+        "all_anchors_stiction": true,
+        "footprint_margin_at_start_m": 2.385069236547274,
+        "runway_end_center_room_m": 2.8241167935224425
+      },
+      "at_first_breach": {
+        "cg_north_m": 20.828499947805685,
+        "cg_east_m": 49.23863507679172,
+        "yaw_deg": 0.7481228440309788,
+        "course_deg": 1.4117177922939346,
+        "ground_speed_mps": 1.8720391985187108,
+        "yaw_rate_radps": 0.0010627913986669623,
+        "yaw_command_with_trim": -0.0006592331768374288,
+        "yaw_servo_position": -0.0006592331768374288,
+        "implied_nose_steer_deg": -0.013184663536748575,
+        "throttle_command": 0.05251094853378643,
+        "engine_rpm": 3229.158671228101
+      },
+      "geometry": {
+        "measured_early_peak_yaw_servo": -0.5310813401958567,
+        "measured_peak_yaw_servo_tick": 29373,
+        "measured_servo_rear_axle_arc_radius_m": 1.8731161619264265,
+        "measured_servo_rear_axle_arc_min_end_margin_m": 0.3100471021409916,
+        "measured_servo_rear_axle_arc_limiting_point": "right_wing_tip",
+        "full_20deg_rear_axle_arc_radius_m": 0.965122877996342,
+        "full_20deg_rear_axle_arc_min_end_margin_m": 1.2097447476268357,
+        "full_20deg_rear_axle_arc_limiting_point": "right_wing_tip"
+      },
+      "replay": {
+        "complete": true,
+        "solver_changed": false,
+        "final_tick": 30590,
+        "rows": 30591
+      },
+      "artifacts": {
+        "candidate_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\candidate-report.json",
+          "bytes": 211211,
+          "sha256": "560f02a11047e1866a39ed1e9e42c7c2065bde20245e61b21949e6e62280a965"
+        },
+        "candidate_orfl": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\candidate.orfl",
+          "bytes": 30718360,
+          "sha256": "6851b9f3713b60d4ed0465c54c8d2d5eec4e44898c99cad0cabee40234144db5"
+        },
+        "exact_csv": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\flight.csv",
+          "bytes": 35458880,
+          "sha256": "0a92be1a78760e8f85813cbea7e5241e7e2c1dbc6b5c3239956386ca24120811"
+        },
+        "exact_replay_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-north-crosswind-s20261025\\exact\\replay.json",
+          "bytes": 8104,
+          "sha256": "03fbec94bfbdd0a0efaf6a20af34492b28e7a7f78d347ddda111aa377d6df365"
+        }
+      },
+      "report_source_identities": {
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "driver_source_sha256": "658212374fe2cd0b887169f9c1db87aaed60a41a2c4c280239f38d5f569ca4bd",
+        "test_harness_source_sha256": "59092afeaf47bff0d2bc59fec31aa9f0f2431104cf231f417575f71709126a62",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "weather_config_sha256": "b8afff9a96914370248f566ab19d59c8e90b230594b3a72f4dd80e8d592c9aaa",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      }
+    },
+    {
+      "case_id": "east-south-crosswind-s20261027",
+      "result": {
+        "flight_report_complete": false,
+        "flight_error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "landing_dwell_complete": true,
+        "approach_entry_ready": true,
+        "strict_corridor_min_margin_m": -0.00150276994110499,
+        "first_breach_tick": 29627,
+        "first_breach_elapsed_since_taxi_start_s": 1.42083333333332,
+        "first_breach_point": "spinner",
+        "first_breach_point_east_m": 50.001502769941105,
+        "full_sortie_gate_accepted": false
+      },
+      "taxi_start": {
+        "tick": 29286,
+        "north_m": 14.629383606119205,
+        "east_m": 48.799726681412814,
+        "yaw_deg": 89.75414914548675,
+        "all_wheels_down": true,
+        "all_anchors_stiction": true,
+        "footprint_margin_at_start_m": 0.7611519403940648,
+        "runway_end_center_room_m": 1.200273318587186
+      },
+      "at_first_breach": {
+        "cg_north_m": 14.809806796931621,
+        "cg_east_m": 49.591990612576495,
+        "yaw_deg": 68.883762860176,
+        "course_deg": 66.1082602658153,
+        "ground_speed_mps": 1.2097756472939447,
+        "yaw_rate_radps": -0.5979007752146515,
+        "yaw_command_with_trim": -0.5310813401958567,
+        "yaw_servo_position": -0.5310813401958567,
+        "implied_nose_steer_deg": -10.621626803917135,
+        "throttle_command": 0.1192548797704703,
+        "engine_rpm": 3950.767994674883
+      },
+      "geometry": {
+        "measured_early_peak_yaw_servo": -0.5310813401958567,
+        "measured_peak_yaw_servo_tick": 29304,
+        "measured_servo_rear_axle_arc_radius_m": 1.8731161619264265,
+        "measured_servo_rear_axle_arc_min_end_margin_m": -1.3220004610749214,
+        "measured_servo_rear_axle_arc_limiting_point": "right_wing_tip",
+        "full_20deg_rear_axle_arc_radius_m": 0.965122877996342,
+        "full_20deg_rear_axle_arc_min_end_margin_m": -0.41832442891669785,
+        "full_20deg_rear_axle_arc_limiting_point": "right_wing_tip"
+      },
+      "replay": {
+        "complete": true,
+        "solver_changed": false,
+        "final_tick": 29627,
+        "rows": 29628
+      },
+      "artifacts": {
+        "candidate_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\candidate-report.json",
+          "bytes": 205001,
+          "sha256": "62dadb202a5c57c7efed06268befc6ddaa4a8357302e1704bc89758a1eea366f"
+        },
+        "candidate_orfl": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\candidate.orfl",
+          "bytes": 29901264,
+          "sha256": "f2aebc638905475540705521b111015778b12747815d1ed7eeeb7d83ea2f1fd3"
+        },
+        "exact_csv": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\flight.csv",
+          "bytes": 34321663,
+          "sha256": "278e07799880a72edc78e484ff6490b3ada841f95bb6c6ca76337d5f97e5c85d"
+        },
+        "exact_replay_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\east-south-crosswind-s20261027\\exact\\replay.json",
+          "bytes": 8094,
+          "sha256": "db74ba16f9f08ba6922729f7d7927098a3199cc7f533ae59e8df0d1656e591ce"
+        }
+      },
+      "report_source_identities": {
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "driver_source_sha256": "658212374fe2cd0b887169f9c1db87aaed60a41a2c4c280239f38d5f569ca4bd",
+        "test_harness_source_sha256": "59092afeaf47bff0d2bc59fec31aa9f0f2431104cf231f417575f71709126a62",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "weather_config_sha256": "279f0ca63cdf7f31a464a30d304be240320bbb34c24f496a8e53da52aef056c4",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      }
+    },
+    {
+      "case_id": "west-south-crosswind-s20261051",
+      "result": {
+        "flight_report_complete": false,
+        "flight_error": "physical taxi footprint left the runway side corridor before the full north-side exit",
+        "landing_dwell_complete": true,
+        "approach_entry_ready": true,
+        "strict_corridor_min_margin_m": -0.00219428959260171,
+        "first_breach_tick": 29905,
+        "first_breach_elapsed_since_taxi_start_s": 1.5958333333336725,
+        "first_breach_point": "spinner",
+        "first_breach_point_east_m": -50.0021942895926,
+        "full_sortie_gate_accepted": false
+      },
+      "taxi_start": {
+        "tick": 29522,
+        "north_m": 15.209546597534574,
+        "east_m": -48.63150722889263,
+        "yaw_deg": -90.42620159675334,
+        "all_wheels_down": true,
+        "all_anchors_stiction": true,
+        "footprint_margin_at_start_m": 0.9294015105115889,
+        "runway_end_center_room_m": 1.3684927711073698
+      },
+      "at_first_breach": {
+        "cg_north_m": 15.494364857414215,
+        "cg_east_m": -49.61581316736396,
+        "yaw_deg": -61.65963670246671,
+        "course_deg": -58.853667582509324,
+        "ground_speed_mps": 1.311837528545863,
+        "yaw_rate_radps": 0.6812730689796133,
+        "yaw_command_with_trim": 0.5689186598041434,
+        "yaw_servo_position": 0.5689186598041434,
+        "implied_nose_steer_deg": 11.378373196082867,
+        "throttle_command": 0.1090463716516236,
+        "engine_rpm": 3853.958178584847
+      },
+      "geometry": {
+        "measured_early_peak_yaw_servo": 0.5689186598041434,
+        "measured_peak_yaw_servo_tick": 29541,
+        "measured_servo_rear_axle_arc_radius_m": 1.7455350428757204,
+        "measured_servo_rear_axle_arc_min_end_margin_m": -1.0472642043653408,
+        "measured_servo_rear_axle_arc_limiting_point": "left_wing_tip",
+        "full_20deg_rear_axle_arc_radius_m": 0.965122877996342,
+        "full_20deg_rear_axle_arc_min_end_margin_m": -0.26142728288894546,
+        "full_20deg_rear_axle_arc_limiting_point": "left_wing_tip"
+      },
+      "replay": {
+        "complete": true,
+        "solver_changed": false,
+        "final_tick": 29905,
+        "rows": 29906
+      },
+      "artifacts": {
+        "candidate_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\candidate-report.json",
+          "bytes": 207274,
+          "sha256": "18c0bc7d227f684e7b1c3fb39ad0d2d089e9a5da04cacb67bb309efbd5c16fd7"
+        },
+        "candidate_orfl": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\candidate.orfl",
+          "bytes": 30137140,
+          "sha256": "e5db1fc74ecedc9dd2730e8b79c4b307d3e9d5c7672684dc9cbbf2b4f0efe5d0"
+        },
+        "exact_csv": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\flight.csv",
+          "bytes": 34690347,
+          "sha256": "191bf860bcd9a031275430777b6a52eb0cfdd768f89775d8b48fbbfec7fc7917"
+        },
+        "exact_replay_report": {
+          "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\sorties\\research\\AFC09-clearance-gate-R2\\cases\\west-south-crosswind-s20261051\\exact\\replay.json",
+          "bytes": 8109,
+          "sha256": "73c3d02b8d1d909fe7784fdee6f10b754fd5bade92b35ba808f7cbaed12950e5"
+        }
+      },
+      "report_source_identities": {
+        "pilot_sha256": "ab03aa2ff54061e0a4110ccedacfac4369c8491fcafe1411637fd9caedb08395",
+        "driver_source_sha256": "658212374fe2cd0b887169f9c1db87aaed60a41a2c4c280239f38d5f569ca4bd",
+        "test_harness_source_sha256": "59092afeaf47bff0d2bc59fec31aa9f0f2431104cf231f417575f71709126a62",
+        "aircraft_input_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+        "solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+        "weather_config_sha256": "924d3e4b056fd7a3f39d0045ce1372bb93a91cb9c9ed7dfb4e75332eed808f20",
+        "field_source_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+        "collision_world_source_sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      }
+    }
+  ],
+  "candidate_basis": {
+    "worst_south_case": "east-south-crosswind-s20261027",
+    "worst_south_measured_servo_rear_axle_arc_margin_m": -1.3220004610749214,
+    "declared_nominal_full_footprint_margin_m": 0.5,
+    "minimum_upstream_shift_m": 1.8220004610749214,
+    "selected_predicted_target_shift_m": 2.0,
+    "projected_east_south_nominal_arc_margin_after_2m_m": 0.6779995389250786,
+    "projected_west_south_nominal_arc_margin_after_2m_m": 0.9527357956346592,
+    "interpretation": "The 2 m predicted target shift remains above the corrected minimum (corrected worst south arc deficit plus a declared 0.5 m full-footprint margin). Projected margins assume the actual taxi-start trajectory shifts fully upstream by 2 m. The pilot constant moves an approach prediction/gate; it does not translate aircraft pose or guarantee touchdown/stop displacement."
+  },
+  "limitations": [
+    "Taxi-start footprint is inside the 2 m nominal margin, but east-south starts with only 0.761152 m of runway-end footprint margin; no stop/turn route is certified from that pose.",
+    "R2 tests accepted-tick footprint points and can miss between-tick crossings.",
+    "The nominal arc omits dynamic yaw, tire slip, terrain rolling resistance, scenery/prop clearance, and pilot/runway-service exclusions.",
+    "R1 historical 22-gate results remain separate and do not assert full hull-clear exit."
+  ]
+}

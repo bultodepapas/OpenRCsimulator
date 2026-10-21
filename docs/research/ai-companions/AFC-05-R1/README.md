@@ -77,3 +77,17 @@ The user selected Windows first: Windows 11 Pro build 26100, Ryzen 9 5900X,
 Linux/macOS native checks and independent RC pilot review remain external release
 gates. The feature remains experimental; this increment does not close AFC-05,
 AFC-06 or AFC-28's full later-phase scope.
+
+## Current companion Help, 2026-10-21
+
+Fixed-wing Help now explains where to find companions, the default-Off 1–3 Stik
+circuit scope, immediate presentation changes, restart-based flight settings,
+removal and disabled aircraft contact. English and Spanish copy uses the existing
+scrollable Help page; helicopter Help retains its own content.
+
+The existing Home/Pause Help suite passes all 38 checks, including Spanish
+translation coverage, keyboard scrolling, viewport containment and return focus.
+[The receipt](help-20261021/verification.json) retains source identities, the
+draft parse, import and full shell logs. Its three existing tree-material warnings
+and aircraft-inertia advisories are preserved. This headless 1280×720 run does
+not replace native captures or the full scaling matrix.

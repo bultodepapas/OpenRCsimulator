@@ -1,0 +1,52 @@
+{
+  "format": "openrc-afc-help-verification-v1",
+  "checked_utc": "2026-10-21T04:28:44.910469+00:00",
+  "scope": "Current fixed-wing companion Help: discovery paths, default Off, experimental 1-3 circuits, Apply/restart/remove semantics and disabled aircraft contact; English and Spanish.",
+  "source": [
+    {
+      "path": "app/ui/help_screen.gd",
+      "sha256": "c9bbc5626471147fca9e9446e0c707145cc8d0a87eafe6a17dc4f9c41ab6e2b8"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "f821eb5af272d75e5c9d79d8f7522c7ff4e2a8d4dc0750321246b00227a117ba"
+    },
+    {
+      "path": "app/tests/test_ui_help.gd",
+      "sha256": "9a17e3cc778d9a8545c01001b666f88fc10b7885d0e2a4919787bb9c082eb6e8"
+    },
+    {
+      "path": "app/project.godot",
+      "sha256": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+    }
+  ],
+  "checks": [
+    {
+      "report": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-draft-parse-hp222kp8/report.json",
+      "sha256": "7ff7050ccc5f49e791b80084253e02a562a27a14f5a0e61cb99b814350369ede",
+      "log": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-draft-parse-hp222kp8/engine.log",
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "ok": true
+    },
+    {
+      "report": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-import-36fanb8v/report.json",
+      "sha256": "767f22a0f54c4d9b13449f39774508a2c27fd508cf7a9d904ab6fe210fa8905c",
+      "log": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-import-36fanb8v/engine.log",
+      "log_sha256": "e3fcb1a855a4a2163c066e2a2c79454bc23a3f0fe9ff98a4df95d8ccd8744378",
+      "ok": true
+    },
+    {
+      "report": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-shell-t_csa41g/report.json",
+      "sha256": "56ec59afb3a9947092bec700106ca438c641c2c3574f23c2751192dfd6552b30",
+      "log": "docs/research/ai-companions/AFC-05-R1/help-20261021/checks/afc-help-shell-t_csa41g/engine.log",
+      "log_sha256": "a578c29673ba9713ed0992e13aafa9f785c76e46e65cb869c9149649f6ae1f47",
+      "ok": true
+    }
+  ],
+  "help_assertions_passed": 38,
+  "limitations": [
+    "Headless existing 1280x720 Help suite; no new native capture or full text-scale matrix.",
+    "Three existing tree-material wind warnings and existing aircraft-inertia advisories are retained.",
+    "Future activity/model/incident settings and broader AFC-28 scope remain open."
+  ]
+}

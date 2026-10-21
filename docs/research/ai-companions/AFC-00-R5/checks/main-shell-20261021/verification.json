@@ -1,0 +1,40 @@
+{
+  "format": "openrc-afc-main-shell-integration v1",
+  "date": "2026-10-21",
+  "status": "pass",
+  "scope": "Combined Main crash context and optimized companion observations through the existing Home/flight/Pause/restart/remove/capture test. Headless Dummy audio; no performance or native playback qualification.",
+  "checks": 49,
+  "failed": 0,
+  "checked_runner_report": {
+    "path": "docs/research/ai-companions/AFC-00-R5/checks/main-shell-20261021/report.json",
+    "sha256": "07170a8b4d39240b4264acf733c78bb370c32fb6456bb787cec85fe8b6d33ffb"
+  },
+  "engine_log": {
+    "path": "docs/research/ai-companions/AFC-00-R5/checks/main-shell-20261021/engine.log",
+    "sha256": "e201456ae889ff5ff494c1c07e4040659dc3387bbd717272da089849672fb6fb"
+  },
+  "diagnostics": {
+    "error": 0,
+    "warning": 3
+  },
+  "warnings": "Three existing unsupported vegetation-wind material warnings. Aircraft data inertia messages are retained in the raw log.",
+  "source_sha256": {
+    "app/main.gd": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217",
+    "app/app_root.gd": "a96eed74b41f0549515c61888a47af2237a2bdb79dd915a4a0e627b48940374f",
+    "app/render/crash/director.gd": "6d44332895d4030699a54c6cac1b7a449d4f7df83ca9fa9873d855737177f472",
+    "app/render/crash/presentation_context.gd": "a87281cabf0879f68d330b42b32d550f64cee6b9626b2a62cb82749c46f47cbb",
+    "app/ai/companions/agent.gd": "23b118b5fab2783a1f4aaae09f6a720f36eef1cc6a6f3992e2dd77e1722140b9",
+    "app/ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+    "app/ai/companions/manager.gd": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+    "app/ai/companions/pilot.gd": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "app/ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "app/ai/companions/profile_loader.gd": "0e41819475ad221a075f63fd15de874abd592043851e12dd06dec393024f6279",
+    "app/tests/test_companions_shell.gd": "aebdfe88135ad3daa1fd22a6f89b0e28b6e4f35415ee28b9fc6c8c59ded1388e",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+  },
+  "related_runtime_receipt": {
+    "path": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/verification.json",
+    "sha256": "c0100685c65a4055584b6b6d076f9c41aa6027e7ae5b094797297c969563bd35"
+  }
+}

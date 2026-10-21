@@ -5,6 +5,7 @@ const MainScene = preload("res://main.tscn")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
 const Director = preload("res://render/crash/director.gd")
+const PresentationContext = preload("res://render/crash/presentation_context.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const RB = preload("res://physics/rigid_body.gd")
 
@@ -43,7 +44,52 @@ func _run() -> void:
 	director.name = "WaterDirectorFixtureNode"
 	root.add_child(director)
 	var aircraft_data: String = str(Catalog.entry(str(flight.get("aircraft_id"))).get("data", ""))
-	director.configure(flight, aircraft_data, true)
+	var declined: Variant = Director.new()
+	root.add_child(declined)
+	var empty_context := PresentationContext.new()
+	_check("director rejects an incomplete context before allocating presentation children",
+		not declined.configure(empty_context, true) and declined.get_child_count() == 0 and not declined._configured)
+	declined.update(0.1)
+	declined.reset()
+	_check("declined director stays inert without claiming the session reset signal",
+		not declined.active and declined.get_child_count() == 0
+			and not flight.session.resetting.is_connected(Callable(declined, "reset")))
+	declined.free()
+	var context := PresentationContext.new()
+	var model_bindings := PresentationContext.ModelBindings.new()
+	model_bindings.root = flight._airplane.root
+	model_bindings.propeller = flight._airplane.get("propeller") as Node3D
+	model_bindings.empty = flight._airplane.is_empty()
+	context.session = flight.session
+	context.model_bindings = model_bindings
+	context.field = flight.field
+	context.aircraft_id = str(flight.get("aircraft_id"))
+	context.workshop_trial = flight.get("workshop_trial")
+	context.aircraft_data_path = aircraft_data
+	context.cg_model = flight._cg_model
+	context.pose_provider = Callable(flight, "_current_pose")
+	context.wind_provider = Callable(flight, "_render_wind")
+	context.shadow = flight._shadow
+	context.sun = flight.get("_sun") as DirectionalLight3D
+	context.propeller_blur = flight.get_node_or_null("PropellerBlur") as Node3D
+	var malformed_trial_director: Variant = Director.new()
+	root.add_child(malformed_trial_director)
+	var valid_trial: Dictionary = context.workshop_trial
+	context.workshop_trial = {"raw_bytes": "not bytes"}
+	_check("director declines malformed trial bytes before allocating presentation children",
+		not malformed_trial_director.configure(context, true)
+			and malformed_trial_director.get_child_count() == 0 and not malformed_trial_director._configured)
+	context.workshop_trial = valid_trial
+	malformed_trial_director.update(0.1)
+	malformed_trial_director.reset()
+	malformed_trial_director.free()
+	_check("main-assembled presentation context has required providers and bindings", context.is_valid())
+	_check("director accepts one explicit context before allocating its pools",
+		director.configure(context, true) and director._configured)
+	var configured_child_count: int = director.get_child_count()
+	_check("configured director refuses replacement without duplicating reset ownership",
+		not director.configure(context, true) and director.get_child_count() == configured_child_count
+			and _reset_connection_count(flight.session, director) == 1)
 	_check("director creates and configures one water-effects child",
 		director.water_effects != null and director.water_effects.get_parent() == director
 			and director.water_effects._configured)
@@ -113,8 +159,11 @@ func _run() -> void:
 		is_equal_approx(director._impact_point.y, -0.2) and not director._water_active)
 
 	flight.session.reset()
-	flight.free()
+	var session_ref: Node = flight.session
+	var director_reset: Callable = Callable(director, "reset")
 	director.free()
+	_check("director free releases its session reset listener", not session_ref.resetting.is_connected(director_reset))
+	flight.free()
 	camera.free()
 	await process_frame
 	await process_frame
@@ -134,3 +183,11 @@ func _impact(session: Node, trigger: String, point: PackedFloat64Array,
 	snapshot.speed_mps = sqrt(velocity[0] * velocity[0] + velocity[1] * velocity[1] + velocity[2] * velocity[2])
 	snapshot.down_speed_mps = velocity[2]
 	return snapshot
+
+
+func _reset_connection_count(session: Node, target: Node) -> int:
+	var count := 0
+	for connection: Dictionary in session.resetting.get_connections():
+		if connection.get("callable") == Callable(target, "reset"):
+			count += 1
+	return count

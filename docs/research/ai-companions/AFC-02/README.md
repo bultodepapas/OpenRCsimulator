@@ -245,3 +245,20 @@ the disposable clone regenerated them through Git, and the settlement generator'
 The receipt preserves both failures, an intermediate runner-marker failure and
 the final passing runs. Retained source snapshots use `-text` to preserve their
 original evidence bytes. Linux/macOS, export and pilot-review gates remain open.
+
+## Five-source solver merge and controller promotion, 2026-10-21
+
+The [five-source bridge](solver-merge-2f4f35c0/README.md) covers normalized solver
+identity `2f4f35c0…cff4bfa`, including the earlier optional body-side-force changes
+and subsequent Glow installation, propeller and bounded-trim changes. The accepted
+Jensen Stik has none of the added optional inputs. Its trim and initial state match;
+all six retained calm crossing tapes produce byte-identical candidate CSVs, and
+the same-world closed-loop fixture matches its baseline. Candidate replays report
+`solver_changed=true`; they are not exact replay of the changed solver.
+
+The bridge deliberately keeps the frozen R4 pilot/profile and does not establish
+loader admission. The separate [promotion receipt](../AFC-00-R3/promotion.json)
+records the actual runtime pilot/profile updates and focused integration checks.
+The runtime pilot is now `3842cbdba…1f024`, with the unchanged inherited circuit
+base. Its pure-score early return has independent differential and flight evidence.
+The source guards remain strict, and no aircraft/activity/count scope is expanded.

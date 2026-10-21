@@ -1,0 +1,14 @@
+{
+	"bitwise_equal_cases": 521,
+	"cases": 521,
+	"comparison": "Air.compute(state, wind, 1.225).V versus the research helper; PackedFloat64Array byte comparison per scalar.",
+	"complete": true,
+	"format": "openrc-afc-observation-airdata-arithmetic v2",
+	"limitation": "Arithmetic check only; gust/turbulence and observation/command parity are covered separately by the short paired flight probe. No timing or physical qualification.",
+	"mismatch_count": 0,
+	"mismatches": [],
+	"signed_zero_cases": 6,
+	"signed_zero_distinguishable_in_packed_float64": true,
+	"signed_zero_distinguishable_in_var_to_bytes": true,
+	"status": "pass"
+}

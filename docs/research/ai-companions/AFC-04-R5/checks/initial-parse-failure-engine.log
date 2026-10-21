@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Expected statement, found "Indent" instead.
+   at: GDScript::reload (res://../research/ai-companions/avoidance/test_predictor_static_containment.gd:144)
+ERROR: Failed to load script "res://../research/ai-companions/avoidance/test_predictor_static_containment.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

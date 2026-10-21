@@ -12,6 +12,8 @@ On interactive flights, crash-hull points are soft contacts ([E3d1](research/cra
 
 Static landscape contacts are implemented through [LU-05](research/landscape-upgrade/LU-05/collision-report.md). [CR-17a](research/crash-damage-investigations/CR-17a/README.md) adds committed local scenery damage, matching fence/flightline-barrier geometry, material-specific aftermath and checkpoint/reset behavior. The source float64 inventory remains immutable; a per-flight damage mask removes broken pieces from later contacts. Large structures retain collision. Proxy dimensions and failure cutoffs remain gameplay estimates; sparse hull coverage, tree lodging and nearby query cost remain open.
 
+The director receives an explicit [presentation context](../app/render/crash/presentation_context.gd): session, model bindings, field, aircraft data and pose/wind providers, with optional shadow, sun and propeller blur. Main assembles this context and keeps player camera/report ownership. Invalid configuration allocates no presentation children; replacement configuration is refused and the director disconnects its reset listener when leaving the tree. [AFC-20-R1](research/ai-companions/AFC-20-R1/README.md) records the player crash/water/prop-strike/contact regressions. Companion attachment and fleet-wide effect budgets remain open; this refactor does not enable companion crash effects.
+
 Experimental delivery evidence:
 
 | Slice | Result |

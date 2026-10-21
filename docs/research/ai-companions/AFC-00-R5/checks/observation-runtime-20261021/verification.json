@@ -1,0 +1,216 @@
+{
+  "format": "openrc-afc-00-r5-observation-airdata-runtime-verification v1",
+  "generated_utc": "2026-10-21T05:23:04Z",
+  "status": "pass",
+  "scope": "Runtime parity and focused companion regressions for the promoted observation airdata helper; supporting observation-method microbenchmark only.",
+  "runtime_change": {
+    "agent_observation": "Duplicates state once, samples wind once, computes airspeed_m_s via the tested scalar helper whose SHA-256 is recorded under source_sha256, and reuses that wind array as wind_ned. All observation fields remain present.",
+    "helper_contract": "Copies Air.compute scalar conjugate-quaternion grouping and calls Math3D.sqrt_; no q_rotate substitution.",
+    "pilot_controller_profile_physics_unchanged_by_this_change": true,
+    "exact_runtime_sources_snapshotted": true,
+    "app_to_snapshot_byte_equal": true
+  },
+  "focused_observation_test": {
+    "checks": 21,
+    "failed": 0,
+    "authoritative_air_compute_cases": 521,
+    "bitwise_matches": 521,
+    "signed_zero_cases": 6,
+    "positive_negative_zero_bytes_distinct": true,
+    "cases": [
+      {
+        "companions": 1,
+        "flight_ticks": 1200,
+        "manager_batches": 300,
+        "roster_count": 1,
+        "sample_rows": 300,
+        "samples_per_agent": [
+          300
+        ],
+        "byte_mismatches": 0,
+        "production_agent_script": true,
+        "observations_at_or_after_gust_delay": 120,
+        "flight_complete": true
+      },
+      {
+        "companions": 3,
+        "flight_ticks": 1200,
+        "manager_batches": 300,
+        "roster_count": 3,
+        "sample_rows": 900,
+        "samples_per_agent": [
+          300,
+          300,
+          300
+        ],
+        "byte_mismatches": 0,
+        "production_agent_script": true,
+        "observations_at_or_after_gust_delay": 360,
+        "flight_complete": true
+      }
+    ],
+    "comparison": "For each scheduled batch on real admitted sessions, actual production Agent.observation() dictionaries are byte-compared with the prior state/session.air_data/wind_at construction; scheduled rows are checked per aircraft and count."
+  },
+  "regressions": {
+    "observation": {
+      "report": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/focused/observation-focused-m3oe0mi3/report.json",
+      "report_sha256": "75f842b8345da667f5d85e51dfef164e3b8de195e3462d4aa1a4a0543872e664",
+      "engine_log": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/focused/observation-focused-m3oe0mi3/engine.log",
+      "engine_log_sha256": "2b72cebb286ece0b0a436b924e357a8918d725db88c261851c430e336407d242",
+      "label": "observation-focused",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_observation.gd"
+      ],
+      "started_utc": "2026-10-21T05:20:15.045785+00:00",
+      "elapsed_seconds": 17.187,
+      "timeout_seconds": 90.0,
+      "exit_code": 0,
+      "complete": true,
+      "ok": true,
+      "engine_diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "AFC COMPANION OBSERVATION TEST COMPLETE"
+      ]
+    },
+    "manager": {
+      "report": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/manager/companions-manager-4z_1mnpb/report.json",
+      "report_sha256": "6c7c32d872f8e35f46d9fa942289f6886ad3898b7a865908107a2e4557fa66ff",
+      "engine_log": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/manager/companions-manager-4z_1mnpb/engine.log",
+      "engine_log_sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f",
+      "label": "companions-manager",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_manager.gd"
+      ],
+      "started_utc": "2026-10-21T05:20:37.883535+00:00",
+      "elapsed_seconds": 27.234,
+      "timeout_seconds": 90.0,
+      "exit_code": 0,
+      "complete": true,
+      "ok": true,
+      "engine_diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "companions manager:"
+      ]
+    },
+    "recording": {
+      "report": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/recording/companions-recording-_lz27emj/report.json",
+      "report_sha256": "d6d101021bf56af827e831f0d9ba83d5d5c85e565b022fbed63d4855a1ade2bc",
+      "engine_log": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/recording/companions-recording-_lz27emj/engine.log",
+      "engine_log_sha256": "435427b85a868269d473abe1fe5c58df6f815cb64ff302de414224b53da628de",
+      "label": "companions-recording",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_record.gd"
+      ],
+      "started_utc": "2026-10-21T05:21:10.130484+00:00",
+      "elapsed_seconds": 26.594,
+      "timeout_seconds": 120.0,
+      "exit_code": 0,
+      "complete": true,
+      "ok": true,
+      "engine_diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "companions record:"
+      ]
+    },
+    "profiles": {
+      "report": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/profiles/companions-profiles-91pmccpx/report.json",
+      "report_sha256": "a5b45a78860aef0c4572562f3b530b49f2319f438032c8ecb1ede476cfd78b47",
+      "engine_log": "docs/research/ai-companions/AFC-00-R5/checks/observation-runtime-20261021/profiles/companions-profiles-91pmccpx/engine.log",
+      "engine_log_sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519",
+      "label": "companions-profiles",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "started_utc": "2026-10-21T05:21:40.398454+00:00",
+      "elapsed_seconds": 5.062,
+      "timeout_seconds": 90.0,
+      "exit_code": 0,
+      "complete": true,
+      "ok": true,
+      "engine_diagnostic_counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "required_text": [
+        "AFC-02 companion profile validation:"
+      ]
+    }
+  },
+  "timing_support": {
+    "receipt": "docs/research/ai-companions/AFC-00-R5/checks/observation-abba-20261021/receipt.json",
+    "receipt_sha256": "b74e1a99586da62a8fa09a83e66925be0261d2f5c835f5ac4c5f464e3ab7a971",
+    "raw_report": "docs/research/ai-companions/AFC-00-R5/checks/observation-abba-20261021/raw/observation-abba-report.json",
+    "raw_report_sha256": "492bfd8c02c147d5ebbeb127bd3024101a109a2e826c7a2e52eac25f085ec593",
+    "measured_rounds": 240,
+    "raw_blocks_per_arm": {
+      "production_agent": 480,
+      "candidate_subclass": 480
+    },
+    "calls_per_block": 1024,
+    "measured_calls_per_arm": {
+      "production_agent": 491520,
+      "candidate_subclass": 491520
+    },
+    "baseline_mean_block_usec_per_call": 23.7352986653646,
+    "candidate_mean_block_usec_per_call": 16.7959391276042,
+    "paired_ratio_median_candidate_over_baseline": 0.7033788519124174,
+    "snapshot_byte_equal_all_rounds": true,
+    "state_unchanged_all_rounds": true,
+    "source_bytes_unchanged": true,
+    "limit": "One Windows host, one frozen prepared state, one method-level microbenchmark. This is not a causal full callback, manager, frame, flight, fleet, or target-hardware speedup claim."
+  },
+  "source_sha256": {
+    "app/ai/companions/agent.gd": "23b118b5fab2783a1f4aaae09f6a720f36eef1cc6a6f3992e2dd77e1722140b9",
+    "app/ai/companions/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+    "app/tests/test_companions_observation.gd": "d7b26b7613d15bd46c6d2a0fc4bc62229205509afdcf290331ff8c3d84f2540c",
+    "app/ai/companions/manager.gd": "68bdacfb4c840cdb9b509c9c767b63bd818dd4699d268c58cfdecbdded086892",
+    "app/ai/companions/pilot.gd": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "app/ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "app/physics/air_data.gd": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/physics/wind_config.gd": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5",
+    "tools/godot/run_checked.py": "6f37981cf2cf716f947e8d6b8cc3dc6902527270a3f4437ae2c4db0421fdd5ad",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    "docs/research/ai-companions/AFC-00-R5/sources/runtime-20261021/agent.gd": "23b118b5fab2783a1f4aaae09f6a720f36eef1cc6a6f3992e2dd77e1722140b9",
+    "docs/research/ai-companions/AFC-00-R5/sources/runtime-20261021/observation_airdata.gd": "ec7fe1badbbec72364a6b3eff6dc8f50c40a76cf60c918c73ebce026bf9569c8",
+    "docs/research/ai-companions/AFC-00-R5/sources/runtime-20261021/test_companions_observation.gd": "d7b26b7613d15bd46c6d2a0fc4bc62229205509afdcf290331ff8c3d84f2540c"
+  },
+  "runner_policy": "Each regression used tools/godot/run_checked.py with an explicit completion marker; all returned exit 0, complete=true, and zero Godot ERROR/WARNING diagnostics. Inertia advisory and intentionally injected recorder failure logs are app/test output, not Godot diagnostic records."
+}

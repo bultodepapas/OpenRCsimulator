@@ -1,0 +1,240 @@
+{
+  "format": "openrc-afc-clear-fast-path-promotion v1",
+  "created_utc": "2026-10-21T03:48:16.684334+00:00",
+  "source_git_head_before": "46cfc027c73d6ea75d4a94fa30324621b1384ff2",
+  "scope": "Promote the pure-score early return and bind the existing narrow airborne Stik scope to the independently bridged solver identity. No count, activity, flight-law or timing acceptance expansion.",
+  "before": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/ai/companions/pilot.gd",
+      "sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+      "bytes": 23965
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "sha256": "7859506369306cdd4321422aacd3a485a4773abfc1c7a96ddd0f1ddbd8ea0aa1",
+      "bytes": 1466
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_companions_profiles.gd",
+      "sha256": "ca31d973bd6e0dc6af6b5a023274b99b4014d9c34dfcb48987faaaefe9e73235",
+      "bytes": 13547
+    }
+  ],
+  "controller_before_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+  "controller_after_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+  "base_controller_unchanged_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+  "solver": {
+    "sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "source_count": 133,
+    "normalization": "utf8-lf"
+  },
+  "solver_bridge": {
+    "path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-02/solver-merge-2f4f35c0/receipt.json",
+    "sha256": "fd51995b8e51650576ac001dad928eaa4a359bfa99c75dfbfc9b506228f60b97",
+    "bytes": 95191
+  },
+  "bridge_independent_rehash": {
+    "distinct_raw_artifacts": 87,
+    "mismatches": 0,
+    "byte_identical_csv_pairs": 6
+  },
+  "software_equivalence": {
+    "path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-00-R3/verification.json",
+    "sha256": "ca7cc6974b8f4fe4df89851ea70e091a02a7cadc388aaec1a866f5d658726119",
+    "bytes": 65399
+  },
+  "callback_diagnostic": {
+    "path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-00-R3/callback-timing-supplement.json",
+    "sha256": "370599dd7f8ab43d17bb3cea972aa818cdb8c25d0312bb5078a7f1c49c89afe8",
+    "bytes": 36811
+  },
+  "private_integration": {
+    "root": "D:/OpenRCsimulator-AFC-work/fast-path-integration-20261021",
+    "git_commit": "63d4c479bf1e1baf5054b17f2c61e3e57c5b9fdd",
+    "checks": [
+      {
+        "label": "profiles-final",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/profiles-final-6pzs7w6u/report.json",
+          "sha256": "f5123bb7f8ddc05919844c7c12c066332a54923311c11ef9baf06680e013a13c",
+          "bytes": 1378
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/profiles-final-6pzs7w6u/engine.log",
+          "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519",
+          "bytes": 2252
+        },
+        "required_text": [
+          "AFC-02 companion profile validation: 37 checks, 0 failed"
+        ],
+        "warnings": 0
+      },
+      {
+        "label": "pilot",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/pilot-kvmvyd6q/report.json",
+          "sha256": "d49183e1d57035d5c92458f777f6fe2dbe67fb42a10bb22e880707acc62572d1",
+          "bytes": 1327
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/pilot-kvmvyd6q/engine.log",
+          "sha256": "f4cf926ff6299db70be51d4b0f4122f02cb4f3b6e0be511c379030e148af1726",
+          "bytes": 1451
+        },
+        "required_text": [
+          "companion pilot: 24 checks, 0 failed"
+        ],
+        "warnings": 0
+      },
+      {
+        "label": "clearance",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/clearance-mdke3s70/report.json",
+          "sha256": "66ce4b88bdc00a1537dff3f0ba9b3c0399a9e0568f97608bbcf1968715e8566b",
+          "bytes": 1347
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/clearance-mdke3s70/engine.log",
+          "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b",
+          "bytes": 117
+        },
+        "required_text": [
+          "companion clearance: 20 checks, 0 failed"
+        ],
+        "warnings": 0
+      },
+      {
+        "label": "manager",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/manager-pl1egk7c/report.json",
+          "sha256": "30361f8cbbe511fc4699b728a1569798647b3b3383fc9021161f59dd38fd381d",
+          "bytes": 1340
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/manager-pl1egk7c/engine.log",
+          "sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f",
+          "bytes": 1432
+        },
+        "required_text": [
+          "companions manager: 53 checks, 0 failed"
+        ],
+        "warnings": 0
+      },
+      {
+        "label": "record",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/record-5v5bs5lv/report.json",
+          "sha256": "c973dee81a17269921d93c94ca00aec106aca0772aa9e98b0816a8e038e04189",
+          "bytes": 1337
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/record-5v5bs5lv/engine.log",
+          "sha256": "81ba2fa2307acbc9848b3a9da9e6d94ace4a6a8989a2745e2918f1c010cdc7ce",
+          "bytes": 16539
+        },
+        "required_text": [
+          "companions record: 156 checks, 0 failed"
+        ],
+        "warnings": 0
+      },
+      {
+        "label": "shell",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/shell-94wp17cj/report.json",
+          "sha256": "ff39f9185bd80ca3c1c4479fe098743ca4f71e48c9d200df8ec5f92ced33e2cb",
+          "bytes": 2801
+        },
+        "log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/shell-94wp17cj/engine.log",
+          "sha256": "44dea23b46019eb5f23e9ed0ae11b440266418546e0f052f5738a94a690ea0ff",
+          "bytes": 7745
+        },
+        "required_text": [
+          "Companions shell: 0 failed"
+        ],
+        "warnings": 3
+      }
+    ],
+    "numbered_assertions": 290,
+    "shell": "0 failed; three existing tree-wind warnings",
+    "profile_initial_failure": {
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/integration/checks/profiles-cewnrlvv/report.json",
+      "sha256": "d000c18d24357289cf4c18e1dca9fa903d0fc2cbd18d8edaa531b8a1b384dbb0",
+      "bytes": 1394
+    },
+    "initial_failure_scope": "Stale b991 solver pin and incorrect required marker; not acceptance evidence. Final private source/profile pins match the promoted bytes exactly.",
+    "normalized_app_script_differences_before_promotion": [
+      "app/ai/companions/pilot.gd",
+      "app/tests/test_companions_profiles.gd",
+      "app/tests/test_extra_post_stall.gd"
+    ],
+    "difference_scope": "Pilot/profile-test changes are the exact reviewed promotion. The unrelated Extra post-stall test changed after the private clone; no runtime script difference is hidden.",
+    "identity_limit": "This is a post-run source comparison with the preserved private checkout, not a source manifest captured by each checked runner before its run."
+  },
+  "limitations": [
+    "Six replay pairs are explicit candidate runs with solver_changed=true; they do not become exact replay or physical validation.",
+    "The optimization equivalence fixture is two simulated seconds; the separate frozen-pilot solver bridge covers two 20-second calm crossings and their deterministic repeat.",
+    "The shared-host callback timings fail the 2 ms enabled-count target and support no causal speedup or supported-count claim.",
+    "Static avoidance constraints, recovery/endurance, later features, native platform and independent pilot gates remain open.",
+    "External controller subclasses with observable _score_bank side effects are not qualified by the concrete-controller purity proof."
+  ],
+  "after": [
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/ai/companions/pilot.gd",
+      "sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "bytes": 24248
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+      "sha256": "94b21e16a73d18100c91707a7b4dee998e5888c889fd77cb74f40646b4066f1e",
+      "bytes": 1466
+    },
+    {
+      "path": "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_companions_profiles.gd",
+      "sha256": "eaee5e8a711c1b04f5b2ec395e95ab40808b3d28176d406fb0021493c5797492",
+      "bytes": 13547
+    }
+  ],
+  "current_worktree_checks": {
+    "checked_utc": "2026-10-21T03:50:26.661904+00:00",
+    "numbered_assertions": 90,
+    "results": [
+      {
+        "label": "promoted-profiles",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-profiles-stjd44po/report.json",
+          "sha256": "7b47c17dae2de934524275e468c3957804bbf0b0c638497d25c480d87398e320"
+        },
+        "engine_log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-profiles-stjd44po/engine.log",
+          "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519"
+        },
+        "checks": 37,
+        "engine_error_count": 0,
+        "engine_warning_count": 0,
+        "required_text": [
+          "AFC-02 companion profile validation: 37 checks, 0 failed"
+        ]
+      },
+      {
+        "label": "promoted-manager",
+        "report": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-manager-inq2qk33/report.json",
+          "sha256": "73d3c9c97890ba208ce5a176232604a4bc7269cdd787f5192b5bdc5f49fcf458"
+        },
+        "engine_log": {
+          "path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/promotion-checks/promoted-manager-inq2qk33/engine.log",
+          "sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f"
+        },
+        "checks": 53,
+        "engine_error_count": 0,
+        "engine_warning_count": 0,
+        "required_text": [
+          "companions manager: 53 checks, 0 failed"
+        ]
+      }
+    ],
+    "promoted_files_rehashed_without_drift": true,
+    "note": "Manager output retains the aircraft data inertia warning; checked runner reported no engine errors. No timing acceptance asserted."
+  }
+}

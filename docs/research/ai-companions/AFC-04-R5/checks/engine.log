@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   real field, Stik, surface table and lake load
+ok   normalized surface table builds
+ok   checker accepts real terrain and empty synthetic scenery context
+ok   trace disabled returns the production result dictionary exactly
+ok   trace-disabled result matches production: crosswind_turn
+ok   trace-disabled result matches production: descending_candidate
+ok   opt-in trace preserves all prior traced result fields exactly
+ok   opt-in predictor trace has 33 sampled NED points
+ok   clear control route passes the static checker  { &"ok": true, &"clear": true, &"identity": "bf0d1d4bf8ced023a97f77b848ad7d2dde509a8f47be5f58ff9240cad21ac814", &"terrain_margin_m": 99.999999, &"indexed_proxies": 0, &"candidate_proxies": 0, &"segment_checks": 0 }
+ok   both sampled endpoints individually clear the same inflated wall  first={ &"ok": true, &"clear": true, &"identity": "75edf9ee68d55996aaa66d073ab802cd201ff0c2c913b55f6a804476d90c3c0c", &"terrain_margin_m": 99.999999, &"indexed_proxies": 1, &"candidate_proxies": 0, &"segment_checks": 0 } second={ &"ok": true, &"clear": true, &"identity": "75edf9ee68d55996aaa66d073ab802cd201ff0c2c913b55f6a804476d90c3c0c", &"terrain_margin_m": 99.999999, &"indexed_proxies": 1, &"candidate_proxies": 0, &"segment_checks": 0 }
+ok   wall centered between first two samples blocks the same segment  { &"ok": true, &"clear": false, &"reason": "static_obstacle", &"proxy_id": "trace-on-path-wall", &"identity": "75edf9ee68d55996aaa66d073ab802cd201ff0c2c913b55f6a804476d90c3c0c", &"terrain_margin_m": 99.999999 }
+ok   off-path wall leaves the identical path clear  { &"ok": true, &"clear": true, &"identity": "2a807f2937601bb3134750bdfc1ed5967035de004af45ff5e7680a4d2931ae91", &"terrain_margin_m": 99.999999, &"indexed_proxies": 0, &"candidate_proxies": 0, &"segment_checks": 0 }
+ok   predictor score remains acceptable with no traffic in all three checker fixtures
+PREDICTOR STATIC CONTAINMENT: 13 checks, 0 failed; output=D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R5/verification.json

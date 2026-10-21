@@ -1,0 +1,133 @@
+{
+  "format": "openrc-afc01-session-failures-verification-v1",
+  "checked_utc": "2026-10-21T04:34:25.164993+00:00",
+  "checks": 24,
+  "failures": 0,
+  "authoritative_run": {
+    "path": "checks/afc-failure-seam-reviewed-igxr9bml/report.json",
+    "sha256": "8108a4b3d29979e622a9e18763cd9efabbd370f25d41c59e08b35762580c8799",
+    "log_path": "checks/afc-failure-seam-reviewed-igxr9bml/engine.log",
+    "log_sha256": "d7d6d68709c08b48199cc0dfa6dae37654520adee2a20cbe092d607f1e6eddfc",
+    "ok": true,
+    "label": "afc-failure-seam-reviewed",
+    "elapsed_seconds": 12.922
+  },
+  "runs": [
+    {
+      "path": "checks/afc-failure-seam-draft-parse-r2-69har86y/report.json",
+      "sha256": "d3931c3132298efe9fc7d4a67b39f1ed14bf0d4737a27adb01fcc830fde30f56",
+      "log_path": "checks/afc-failure-seam-draft-parse-r2-69har86y/engine.log",
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "ok": true,
+      "label": "afc-failure-seam-draft-parse-r2",
+      "elapsed_seconds": 2.907
+    },
+    {
+      "path": "checks/afc-failure-seam-draft-parse-xqcgnt93/report.json",
+      "sha256": "ffceba197ac27efcc34f54eb43ecd1c120e9a41a67a523ab600dfa6cacbe1d39",
+      "log_path": "checks/afc-failure-seam-draft-parse-xqcgnt93/engine.log",
+      "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "ok": true,
+      "label": "afc-failure-seam-draft-parse",
+      "elapsed_seconds": 2.641
+    },
+    {
+      "path": "checks/afc-failure-seam-final-d628iprd/report.json",
+      "sha256": "b7168175e8987875eccc987af22e2309508a66ee0d5f6b63b589858a70b8a80d",
+      "log_path": "checks/afc-failure-seam-final-d628iprd/engine.log",
+      "log_sha256": "d7d6d68709c08b48199cc0dfa6dae37654520adee2a20cbe092d607f1e6eddfc",
+      "ok": true,
+      "label": "afc-failure-seam-final",
+      "elapsed_seconds": 12.64
+    },
+    {
+      "path": "checks/afc-failure-seam-r2-66d5sk8w/report.json",
+      "sha256": "105e0a9d2c3f5628315ce8b0269d35809c087630ecc06f475c5cad2a4cd30ecb",
+      "log_path": "checks/afc-failure-seam-r2-66d5sk8w/engine.log",
+      "log_sha256": "d7d6d68709c08b48199cc0dfa6dae37654520adee2a20cbe092d607f1e6eddfc",
+      "ok": true,
+      "label": "afc-failure-seam-r2",
+      "elapsed_seconds": 12.375
+    },
+    {
+      "path": "checks/afc-failure-seam-reviewed-igxr9bml/report.json",
+      "sha256": "8108a4b3d29979e622a9e18763cd9efabbd370f25d41c59e08b35762580c8799",
+      "log_path": "checks/afc-failure-seam-reviewed-igxr9bml/engine.log",
+      "log_sha256": "d7d6d68709c08b48199cc0dfa6dae37654520adee2a20cbe092d607f1e6eddfc",
+      "ok": true,
+      "label": "afc-failure-seam-reviewed",
+      "elapsed_seconds": 12.922
+    },
+    {
+      "path": "checks/afc-failure-seam-upf7aa7q/report.json",
+      "sha256": "f6bf648ef7974fb5cf4273355a86a48a58d29ecec9cfb77915b940e8cdde01d7",
+      "log_path": "checks/afc-failure-seam-upf7aa7q/engine.log",
+      "log_sha256": "9561ae20faba3133f8b2c954369ca49082be466fe8ad32e4091b5336f38c4a67",
+      "ok": false,
+      "label": "afc-failure-seam",
+      "elapsed_seconds": 11.391
+    }
+  ],
+  "source": [
+    {
+      "path": "app/tests/test_companions_session_failures.gd",
+      "sha256": "7826e5534fea0793ed1b8685d813969aa4481ddec8a1bdb3fbe6cdab9b20e9eb"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+    },
+    {
+      "path": "app/sim/simulation.gd",
+      "sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d"
+    },
+    {
+      "path": "app/failures/runtime.gd",
+      "sha256": "e92c61f83612dcf8f42963c7b5fd8e22606ffc79c86fa182885666e1c8e4b873"
+    },
+    {
+      "path": "app/failures/catalog.gd",
+      "sha256": "1126203bbdfd8352931d231b6b63e6f1307052a7bcd582523705d2352da5e60c"
+    },
+    {
+      "path": "app/app_state/aircraft_catalog.gd",
+      "sha256": "a29152e8c6f854661b3f0e1d08839500cad8773e0449c9050e1b6e8f41e1a69e"
+    },
+    {
+      "path": "app/project.godot",
+      "sha256": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4"
+    }
+  ],
+  "retained_sources": [
+    {
+      "path": "sources/accepted-test.gd",
+      "sha256": "7826e5534fea0793ed1b8685d813969aa4481ddec8a1bdb3fbe6cdab9b20e9eb"
+    },
+    {
+      "path": "sources/initial-test-checkpoint-assumptions.gd",
+      "sha256": "b775f46e6ce09045a0c74f596d03ecdef5973266dbc950900fc1c198bc75dc24"
+    }
+  ],
+  "solver_source_verification": {
+    "reference": "docs/research/ai-companions/AFC-02/solver-merge-2f4f35c0/source-manifest.json",
+    "reference_sha256": "5d143cb534dd9527a4fee2f49e685c6c25f869d5535fd3a928a92af7b9e8445e",
+    "normalized_source_count": 133,
+    "normalized_solver_sha256": "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa",
+    "post_run_source_mismatches": [],
+    "scope": "Post-run source comparison against the previously retained promoted solver source set; no runtime source changes in this increment."
+  },
+  "scope": [
+    "4800-tick real seeded roll-jam onset (20 simulated seconds), reached by both ordinary and external paths.",
+    "Every one of 4799 pre-onset frames matches physical state, controls, failure snapshot and contact journal.",
+    "Accepted onset and opposing input preserve exact actuator/physical parity and one failure notice per session.",
+    "Restored external sessions remain paused until explicit resume.",
+    "Injected post-tick malformed body rejects the external onset, preserves committed fields, emits no onset event, consumes the staged packet once, and permits exact recovery after restore/resume."
+  ],
+  "earlier_failure": "Initial test incorrectly assumed checkpoint restore resumed flight and that a faulted kernel could produce a checkpoint. Its 23-check/2-failure source and receipt remain retained; runtime behavior was correct.",
+  "limits": [
+    "Software session-seam verification only; no physical failure/recovery qualification.",
+    "The real onset is reached without editing physics or failure state; the rejection fixture deliberately injects a test-only malformed post-tick result.",
+    "Contact lifecycle, prop-strike continuation, additional failure types and start modes remain separate gaps.",
+    "Existing aircraft-inertia advisories are retained; final runner reports zero engine errors/warnings."
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c9bfe2bc-72b0-4d8c-9bbd-b411e70616ef",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-AFC-work/fast-path-integration-20261021/app",
+    "--script",
+    "res://../research/ai-companions/avoidance/test_predictor_static_containment.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R5/verification.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T03:56:05.416845+00:00",
+  "label": "trace-static-containment",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R5\\checks\\trace-static-containment-v37dd_z1\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R5\\checks\\trace-static-containment-v37dd_z1\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "PREDICTOR STATIC CONTAINMENT:"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Expected statement, found \"Indent\" instead.",
+      "context": [
+        "   at: GDScript::reload (res://../research/ai-companions/avoidance/test_predictor_static_containment.gd:144)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed to load script \"res://../research/ai-companions/avoidance/test_predictor_static_containment.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "PREDICTOR STATIC CONTAINMENT:"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.219,
+  "log_bytes": 458,
+  "log_sha256": "b6c17856b48bf63e56fd04ab8cec0e92ea91a815d89dee7bc10ca4cc419e598c"
+}

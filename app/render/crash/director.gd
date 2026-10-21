@@ -18,13 +18,14 @@ const Telemetry = preload("res://render/overlays/telemetry.gd")
 const GroundTerrain = preload("res://physics/ground_terrain.gd")
 const AirplaneBuilder = preload("res://render/airplane.gd")
 const WaterEffects = preload("res://render/lake/water_effects.gd")
+const PresentationContext = preload("res://render/crash/presentation_context.gd")
 const WATER_CHECKPOINT_VERSION := 1
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["version", "age_s", "event_count", "impact_point_world", "report", "effects"]
 const WATER_REPORT_FIELDS: Array[String] = ["trigger", "surface", "component", "speed_mps", "impact_depth_m", "water_level_down_m", "tick", "contact_point_world", "lake_id", "water_effects_started", "water_audio_enabled"]
 const FUEL_SOURCE_KINDS: Array[String] = ["glow_fuel", "gasoline", "kerosene"]
 const FUEL_FAMILY_SOURCES := {"glow": "glow_fuel", "gasoline": "gasoline", "kerosene": "kerosene"}
 
-var flight: Node3D
+var context: PresentationContext
 var wreck: Wreck
 var effects: Effects
 var audio: CrashAudio
@@ -61,23 +62,26 @@ var _water_shadow: MeshInstance3D
 var _water_shadow_was_visible := false
 var _water_blur: Node3D
 var _water_blur_was_processing := false
+var _configured := false
 ## CR-01e: the last CrashCause.HISTORY_S of flight, sampled every SAMPLE_INTERVAL_S of sim time (oldest first).
 var history: Array = []
 const TOUCH_TRAIL_S := 0.12
 const TOUCH_SLIDE_MPS := 1.5
 
-func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> void:
-	flight = scene
+func configure(next_context: PresentationContext, audio_enabled: bool = true) -> bool:
+	if _configured or next_context == null or not next_context.is_valid():
+		return false
+	context = next_context
 	_audio_enabled = audio_enabled
 	wreck = Wreck.new()
 	add_child(wreck)
-	wreck.prepare(flight._airplane.root)
-	scuffs.prepare(flight._airplane.root)
+	wreck.prepare(context.model_bindings.root)
+	scuffs.prepare(context.model_bindings.root)
 	wreck.secondary_impact.connect(_secondary)
 	effects = Effects.new()
 	add_child(effects)
 	effects.prepare()
-	effects.set_debris_colors(airframe_colors(flight._airplane.root))
+	effects.set_debris_colors(airframe_colors(context.model_bindings.root))
 	audio = CrashAudio.new()
 	add_child(audio)
 	audio.setup()
@@ -87,9 +91,9 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	_configure_water_effects()
 	# Declared inventory state, not a fuel-burn simulation. CR-22b: energy is read from the explicit
 	# energy_source tag, never inferred from a name or the propulsion kind.
-	var trial: Dictionary = flight.get("workshop_trial") if flight.get("workshop_trial") is Dictionary else {}
-	var raw: Variant = JSON.parse_string(trial.raw_bytes.get_string_from_utf8()) if not trial.is_empty() else JSON.parse_string(FileAccess.get_file_as_string(data_path))
-	var datum: Vector2 = AirplaneBuilder.datum(str(flight.get("aircraft_id"))) * float(trial.get("scale", 1.0))
+	var trial: Dictionary = context.workshop_trial
+	var raw: Variant = JSON.parse_string(trial.raw_bytes.get_string_from_utf8()) if not trial.is_empty() else JSON.parse_string(FileAccess.get_file_as_string(context.aircraft_data_path))
+	var datum: Vector2 = AirplaneBuilder.datum(context.aircraft_id) * float(trial.get("scale", 1.0))
 	if raw is Dictionary:
 		for item: Dictionary in raw.get("inventory",[]):
 			inventory_boxes.append(inventory_box(item, datum))
@@ -97,15 +101,45 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 			if not kind.is_empty():
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
 	_kerosene_fuel_kg = float(energy_sources.get("kerosene", 0.0))
-	flight.session.resetting.connect(reset)
-	shader_warmup = ShaderWarmup.prepare(self, effects, wreck._shadows[0], flight.get("_sun") as DirectionalLight3D)
+	_connect_reset_signal()
+	shader_warmup = ShaderWarmup.prepare(self, effects, wreck._shadows[0], context.sun)
+	_configured = true
+	return true
+
+
+func _enter_tree() -> void:
+	if _configured:
+		_connect_reset_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_reset_signal()
+
+
+func _connect_reset_signal() -> void:
+	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
+			and not context.session.resetting.is_connected(reset):
+		context.session.resetting.connect(reset)
+
+
+func _disconnect_reset_signal() -> void:
+	if context != null and is_instance_valid(context.session) and context.session.has_signal("resetting") \
+			and context.session.resetting.is_connected(reset):
+		context.session.resetting.disconnect(reset)
+
+
+func _hide_source_shadow() -> void:
+	if context != null and is_instance_valid(context.shadow):
+		context.shadow.visible = false
 
 func update(delta: float) -> void:
+	if not _configured or context == null:
+		return
 	var began := Time.get_ticks_usec()
-	if flight.session.crash.is_empty():
+	if context.session.crash.is_empty():
 		if _water_checkpoint_latched and _water_active:
-			var paused: bool = not flight.session.holds.is_empty()
-			flight._shadow.visible = false
+			var paused: bool = not context.session.holds.is_empty()
+			_hide_source_shadow()
 			water_effects.update(delta, paused)
 			if not paused:
 				_age += minf(delta, 0.1)
@@ -126,10 +160,10 @@ func update(delta: float) -> void:
 		_start()
 	if not active:
 		return
-	var paused: bool = not flight.session.holds.is_empty()
+	var paused: bool = not context.session.holds.is_empty()
 	if _water_active:
 		# Main refreshes the source shadow each frame; aftermath follows user holds, not the crash physics hold.
-		flight._shadow.visible = false
+		_hide_source_shadow()
 		water_effects.update(delta, paused)
 		if not paused:
 			_age += minf(delta, 0.1)
@@ -137,7 +171,7 @@ func update(delta: float) -> void:
 		return
 	# Main refreshes the source-airplane shadow each frame before this call.
 	# Only the moving wreck's own contact shadows belong in the aftermath.
-	flight._shadow.visible = false
+	_hide_source_shadow()
 	wreck.set_paused(paused)
 	effects.update(delta,paused)
 	audio.update(delta,paused,effects.fire_strength() if _audio_enabled else 0.0)
@@ -147,7 +181,7 @@ func update(delta: float) -> void:
 
 func _start() -> void:
 	var began := Time.get_ticks_usec()
-	var impact: RefCounted = flight.session.crash.get("impact")
+	var impact: RefCounted = context.session.crash.get("impact")
 	if impact == null:
 		return
 	var s: PackedFloat64Array = impact.detected_state
@@ -169,21 +203,21 @@ func _start() -> void:
 		_impact_point.y = 0.025
 	var normal_speed := maxf(0.0,point_velocity[2])
 	var tangent_speed := sqrt(point_velocity[0]*point_velocity[0]+point_velocity[1]*point_velocity[1])
-	var model: Dictionary = flight.session.aircraft.model
+	var model: Dictionary = context.session.aircraft.model
 	var named := component_for(str(impact.trigger), int(impact.point_index), impact.body_point,
 		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
 	var component: String = named.component
-	var surface := surface_at(flight.field,point[0],point[1])
+	var surface := surface_at(context.field,point[0],point[1])
 	# Prefer the swept-contact sample used by a dynamic scenery/water response. Its
 	# within-step inventory is linearly interpolated and remains an approximation.
 	# Static hull/gear snapshots have no sample, so finite-fuel reports use the accepted endpoint.
-	var endpoint_live: Dictionary = flight.session.mass_properties() if flight.session.has_method("mass_properties") else {}
+	var endpoint_live: Dictionary = context.session.mass_properties() if context.session.has_method("mass_properties") else {}
 	var selected_mass: Dictionary = _select_mass_sample(impact, endpoint_live)
 	var live: Dictionary = selected_mass.get("sample", {})
 	var mass_sample_basis := str(selected_mass.get("basis", "unavailable"))
 	var mass_is_dynamic := bool(selected_mass.get("dynamic", false))
 	var live_ok: bool = live.get("ok", false)
-	var mass := float(live.mass_kg) if live_ok else float(flight.session.sim.mass)
+	var mass := float(live.mass_kg) if live_ok else float(context.session.sim.mass)
 	# CR-08b: the struck point engages only its effective mass; a gear-limit snapshot has no
 	# contact point, so it keeps the whole mass (reported by the estimator's mass_basis).
 	var effective_mass := -1.0
@@ -192,7 +226,7 @@ func _start() -> void:
 			# The contact arm is measured from the live CG, not the fixed datum (R05-B).
 			effective_mass = float(EffectiveMass.at_point_properties(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), live).effective_mass_kg)
 		else:
-			effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, flight.session.sim.inertia)
+			effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, context.session.sim.inertia)
 	# The CG's own normal velocity bounds the slapdown that follows a first contact off the CG.
 	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,1.0,v_ned[2])
 	if impact.trigger == "scenery":
@@ -203,7 +237,7 @@ func _start() -> void:
 		report["obstacle_id"] = str(impact.obstacle_id)
 		report["response_class"] = str(impact.response_class)
 		report["mass_basis"] = "rigid-body effective mass at the swept contact; material transfer remains estimated"
-		_scenery_contacts = SceneryBodies.build_near(flight.session.collision_world(true), point)
+		_scenery_contacts = SceneryBodies.build_near(context.session.collision_world(true), point)
 		add_child(_scenery_contacts)
 	report["trigger"] = impact.trigger
 	# E3d1: the soft-contact rule ends a flight only at C2 energy (transfer-free), so it never shows as a scrape.
@@ -220,7 +254,7 @@ func _start() -> void:
 		report["kinematics"] = "swept contact at time of impact"
 		report["sample_time"] = "tick_fraction_%.9f" % float(impact.time_fraction)
 	report["mass_kg"] = mass
-	report["cg_model"] = flight._cg_model
+	report["cg_model"] = context.cg_model
 	report["cg_offset_body_m"] = live.cg_body_m.duplicate() if live_ok else PackedFloat64Array([0.0, 0.0, 0.0])
 	report["mass_sample_basis"] = mass_sample_basis
 	if live.has("sample_boundary"):
@@ -247,7 +281,7 @@ func _start() -> void:
 		fuel_sample = endpoint_live
 		fuel_sample_basis = "accepted-endpoint-approximation"
 	report["fuel_sample_basis"] = fuel_sample_basis
-	var tanks: Array = flight.session.aircraft.model.get("fuel_system", {}).get("tanks", [])
+	var tanks: Array = context.session.aircraft.model.get("fuel_system", {}).get("tanks", [])
 	var sources: Dictionary = _energy_sources_at_sample(fuel_sample, energy_sources, tanks)
 	var fuel_by_kind_kg: Dictionary = {}
 	for kind: String in FUEL_SOURCE_KINDS:
@@ -265,13 +299,13 @@ func _start() -> void:
 	report["tank_rupture_kind"] = "estimated: C4, or C3 central impact >=600 J; uncalibrated"
 	report["tick"] = impact.tick
 	report["inventory_boxes"] = inventory_boxes
-	report["prop_broken"] = not flight.session.prop_strike.is_empty()
+	report["prop_broken"] = not context.session.prop_strike.is_empty()
 	# CR-01e: why it happened, from the recorded history (card line and one log line).
-	var envelope: Dictionary = flight.session.aircraft.model.get("envelope", {})
+	var envelope: Dictionary = context.session.aircraft.model.get("envelope", {})
 	report["cause"] = CrashCause.classify(history, {
 		trigger = str(impact.trigger), obstacle_kind = str(impact.get("obstacle_kind")) if impact.get("obstacle_kind") != null else "",
 		component_group = str(report.get("component_group", "")), speed_mps = float(report.get("speed_mps", 0.0)),
-	}, {stall_alpha_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else INF, start_speed = float(flight.session.aircraft.model.start_speed)})
+	}, {stall_alpha_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else INF, start_speed = float(context.session.aircraft.model.start_speed)})
 	if report.prop_broken:
 		(report.cause.factors as Array).append("after a prop strike")
 	print("CRASH CAUSE: ", CrashCause.line(report.cause))
@@ -279,15 +313,15 @@ func _start() -> void:
 	report["contact_point_world"] = _impact_point
 	var velocity := Frames.ned_to_render(Array(v_ned))
 	var angular := Frames.ned_to_render(Array(M.q_rotate(q,s.slice(RB.RATE,RB.RATE+3))))
-	var pose: Dictionary = flight._current_pose()
-	var root_pose := Frames.root_transform(pose.basis,pose.pos,flight._cg_model)
+	var pose: Dictionary = context.current_pose()
+	var root_pose := Frames.root_transform(pose.basis,pose.pos,context.cg_model)
 	wreck.start(root_pose,velocity,angular,report)
-	flight._airplane.root.visible = false
-	flight._shadow.visible = false
-	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
-	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
-	effects.start(_impact_point,velocity,report,_kerosene_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
-	report["energy"] = Effects.energy_outcome(sources, report, bool(flight.session.engine_running), hot)
+	context.model_bindings.root.visible = false
+	_hide_source_shadow()
+	var turbine: bool = context.session.aircraft.model.propulsion.get("kind","") == "turbine"
+	var hot: bool = turbine and context.session.engine_running and context.session.sim.aux[0] > 0
+	effects.start(_impact_point,velocity,report,_kerosene_fuel_kg,hot,context.render_wind(context.session.sim.time()))
+	report["energy"] = Effects.energy_outcome(sources, report, bool(context.session.engine_running), hot)
 	report["energy_sources"] = sources.duplicate()
 	effects.apply_energy(report.energy)
 	if _audio_enabled:
@@ -318,9 +352,9 @@ static func component_for(trigger: String, point_index: int, body_point: PackedF
 
 
 func _configure_water_effects() -> bool:
-	if water_effects == null or flight == null or flight.session == null:
+	if water_effects == null or context == null or context.session == null:
 		return false
-	var lake: Dictionary = flight.session.lake_context()
+	var lake: Dictionary = context.session.lake_context()
 	if lake.is_empty():
 		_water_configured = false
 		_water_lake_identity = ""
@@ -336,12 +370,12 @@ func _configure_water_effects() -> bool:
 func _start_water(impact: RefCounted, point_ned: PackedFloat64Array,
 		point_velocity_ned: PackedFloat64Array, began_usec: int) -> void:
 	_impact_point = Frames.ned_to_render(Array(point_ned))
-	var lake: Dictionary = flight.session.lake_context()
+	var lake: Dictionary = context.session.lake_context()
 	var mean_down := float(lake.get("water_level_down_m", point_ned[2]))
 	var depth := maxf(0.0, point_ned[2] - mean_down)
 	var speed := sqrt(point_velocity_ned[0] * point_velocity_ned[0]
 		+ point_velocity_ned[1] * point_velocity_ned[1] + point_velocity_ned[2] * point_velocity_ned[2])
-	var effects_started := _configure_water_effects() and water_effects.begin(impact, flight._airplane.root)
+	var effects_started := _configure_water_effects() and water_effects.begin(impact, context.model_bindings.root)
 	if audio != null:
 		audio.reset() # water uses its own single licensed splash voice, never dry impact layers
 	if effects != null:
@@ -440,12 +474,12 @@ func prepare_water_restore(raw: Variant) -> Dictionary:
 ## Restore visuals only; WaterEffects.restore deliberately leaves the splash player stopped.
 func restore_water_checkpoint(raw: Variant) -> bool:
 	var prepared: Dictionary = prepare_water_restore(raw)
-	if prepared.is_empty() or flight == null or flight._airplane.is_empty():
+	if prepared.is_empty() or context == null or context.model_bindings == null or not context.model_bindings.has_aircraft():
 		return false
 	reset()
 	if not _configure_water_effects():
 		return false
-	var aircraft_root: Node3D = flight._airplane.root
+	var aircraft_root: Node3D = context.model_bindings.root
 	if not water_effects.restore(prepared.effects, aircraft_root):
 		return false
 	_impact_point = prepared.impact_point_world
@@ -467,11 +501,11 @@ func restore_water_checkpoint(raw: Variant) -> bool:
 
 
 func _suppress_water_aircraft_presentation() -> void:
-	if is_instance_valid(flight._shadow):
-		_water_shadow = flight._shadow
+	if context != null and is_instance_valid(context.shadow):
+		_water_shadow = context.shadow
 		_water_shadow_was_visible = _water_shadow.visible
 		_water_shadow.visible = false
-	_water_blur = flight.get_node_or_null("PropellerBlur") as Node3D
+	_water_blur = context.propeller_blur
 	if is_instance_valid(_water_blur) and _water_blur.has_method("update"):
 		_water_blur_was_processing = _water_blur.is_processing()
 		_water_blur.set_process(false)
@@ -501,16 +535,16 @@ static func _finite_vector3(value: Vector3) -> bool:
 ## E3d2: blade fragments, a crack and the engine dying once per strike; the blades break off (US-V11: stubs remain
 ## where the model declares them, otherwise the whole propeller disappears).
 func _prop_strike_feedback() -> void:
-	var strike: Dictionary = flight.session.prop_strike
+	var strike: Dictionary = context.session.prop_strike
 	if strike.is_empty() or int(strike.tick) == _prop_strike_tick:
 		return
 	_prop_strike_tick = int(strike.tick)
 	var point := Frames.ned_to_render(Array(strike.point_ned))
 	var velocity := Frames.ned_to_render(Array(strike.velocity_ned))
-	effects.prop_break(point, velocity, surface_at(flight.field, strike.point_ned[0], strike.point_ned[1]))
+	effects.prop_break(point, velocity, surface_at(context.field, strike.point_ned[0], strike.point_ned[1]))
 	if _audio_enabled:
 		audio.prop_strike(point)
-	var propeller: Variant = flight._airplane.get("propeller")
+	var propeller: Variant = context.model_bindings.propeller
 	if propeller is Node3D and is_instance_valid(propeller):
 		_broken_propeller = PropBreak.break_blades(propeller)
 
@@ -518,7 +552,7 @@ func _prop_strike_feedback() -> void:
 ## CR-01e: one history sample per SAMPLE_INTERVAL_S of sim time, from the HUD's 64-bit telemetry. A restart or a
 ## rewind (time going backwards) clears the history; a paused session adds nothing.
 func _record_sample() -> void:
-	var session: Node = flight.session
+	var session: Node = context.session
 	if session.sim == null or not session.aircraft.get("ok", false):
 		return
 	var t: float = session.sim.time()
@@ -638,14 +672,14 @@ static func airframe_colors(root: Node) -> Array:
 ## (not the lake: its records carry normal_ned) also scuffs the airframe. Reads the session feed only.
 func _touch_feedback() -> void:
 	# A render frame is not a new contact observation; holds must not replay its burst/audio.
-	if flight.session.sim.paused or not flight.session.holds.is_empty():
+	if context.session.sim.paused or not context.session.holds.is_empty():
 		return
-	var contacts: Array = flight.session.soft_contacts
+	var contacts: Array = context.session.soft_contacts
 	if contacts.is_empty():
 		_touch_marks.clear()
 		_touch_feedback_tick = -1
 		return
-	var tick: int = flight.session.sim.tick
+	var tick: int = context.session.sim.tick
 	if tick == _touch_feedback_tick:
 		return
 	if tick < _touch_feedback_tick:
@@ -655,13 +689,13 @@ func _touch_feedback() -> void:
 	for contact: Dictionary in contacts:
 		var point := Frames.ned_to_render(Array(contact.point_ned))
 		var velocity := Frames.ned_to_render(Array(contact.velocity_ned))
-		var surface := surface_at(flight.field, contact.point_ned[0], contact.point_ned[1])
+		var surface := surface_at(context.field, contact.point_ned[0], contact.point_ned[1])
 		var slide := float(contact.slide_speed_mps)
 		if bool(contact.new):
 			var strength := clampf(float(contact.normal_speed_mps) / 3.0, 0.1, 1.0)
 			effects.touch(point, velocity, strength, surface)
 			if not contact.has("normal_ned"):
-				scuffs.add(flight._airplane.root, point, velocity, strength, surface)
+				scuffs.add(context.model_bindings.root, point, velocity, strength, surface)
 			if _audio_enabled:
 				audio.touch(point, strength, slide > TOUCH_SLIDE_MPS, surface)
 			_touch_marks[contact.index] = now
@@ -736,13 +770,13 @@ func reset() -> void:
 	_water_shadow_was_visible = false
 	if is_instance_valid(_water_blur):
 		_water_blur.set_process(_water_blur_was_processing)
-		if _water_blur.has_method("update") and flight != null and flight.session != null \
-				and flight.session.sim != null:
-			_water_blur.call("update", float(flight.session.sim.aux[0]))
+		if _water_blur.has_method("update") and context != null and is_instance_valid(context.session) \
+				and context.session.sim != null:
+			_water_blur.call("update", float(context.session.sim.aux[0]))
 	_water_blur = null
 	_water_blur_was_processing = false
-	if is_instance_valid(flight) and not flight._airplane.is_empty():
-		flight._airplane.root.visible = true
+	if context != null and context.model_bindings != null and context.model_bindings.has_aircraft():
+		context.model_bindings.root.visible = true
 
 func stats() -> Dictionary:
 	var water_state: Dictionary = water_effects.checkpoint() if water_effects != null else {}
@@ -750,7 +784,9 @@ func stats() -> Dictionary:
 	water_state["droplet_pool_size"] = water_effects._droplet_multimesh.instance_count \
 		if water_effects != null and water_effects._droplet_multimesh != null else 0
 	return {active=active, water_active=_water_active, water_event_count=_water_event_count,
-		impact_usec=impact_usec, update_usec=last_update_usec, effects=effects.stats(), wreck=wreck.stats(),
+		impact_usec=impact_usec, update_usec=last_update_usec,
+		effects=effects.stats() if is_instance_valid(effects) else {},
+		wreck=wreck.stats() if is_instance_valid(wreck) else {},
 		shader_warmup=shader_warmup.duplicate(),
 		water=water_state, report=report.duplicate(true)}
 
