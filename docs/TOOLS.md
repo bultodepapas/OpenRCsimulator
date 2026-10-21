@@ -109,6 +109,7 @@ replace CI, physical validation or maintainer approval.
 3. Add `docs/releases/<tag>.md`. A `vX.Y.Z` tag must match `app/project.godot`; `git describe` supplies package identity. `app/export.sh` takes no version argument.
 4. Push the reviewed commit and tag. CI exports on `main`, `v*` tags and manual dispatch. After checks and release notes pass, `vX.Y.Z` tags publish official releases; suffixed tags publish prereleases.
 5. Verify all three archives and checksums. Linux execution and structural pack checks do not replace native OS, GPU, radio or pilot acceptance.
+6. Update the [project website](../site/README.md#preview-and-maintain) from the published tag and assets, then verify the English and Spanish download and checksum links on the public page.
 
 [Exported runway smoke and pilot card](research/menu-investigations/UI-06c/README.md) cover the Linux/Xvfb keyboard route, recorded traces, CLI parity and isolated preferences.
 

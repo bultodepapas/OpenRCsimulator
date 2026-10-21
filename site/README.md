@@ -6,7 +6,7 @@ WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simula
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target the v0.1.7 release snapshot; the site distinguishes a stable software release from the simulator's early-alpha status and experimental aircraft and vehicle models.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 
@@ -34,7 +34,7 @@ The [browser model pipeline](MODELS.md) exports the six actual visual hierarchie
 
 From the repository root: `python -m http.server 4173 --bind 127.0.0.1 --directory site`. Open `http://127.0.0.1:4173/`. The page uses relative asset URLs and works at GitHub's project subpath.
 
-Regenerate images with Pillow 12.3.0 and `python site/prepare_assets.py`. Edit copy in `index.html` and its matching English translation in `main.js`. Update platform downloads, version and sizes together after a release. Keep source-state claims separate from release contents and preserve experimental labels.
+Regenerate images with Pillow 12.3.0 and `python site/prepare_assets.py`. Edit copy in `index.html` and its matching English translation in `main.js`. Update platform download links, version, checksums and sizes together after a release. Keep source-state claims separate from release contents and preserve experimental labels.
 
 Additional WEB-02 copy and theme behavior live in `details.js`, presentation in `details.css`, and the orbit renderer in `viewer.js`. `main.js` owns catalogue/language/field selection. Keep all translations in sync with `data-i18n`, including dynamic viewer labels.
 
@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=stable-v012-20261016`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=release-v017-20261020`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 
@@ -152,3 +152,7 @@ The README and partner section credit Savox, SonicModell and Hitec within their 
 Verification: JavaScript syntax checks passed. Browser checks at 1280×900 and 390×900, both languages × both themes, found three decoded logos, no missing translations and no horizontal overflow. Desktop/day and mobile/night captures were visually reviewed. Console: zero errors or warnings. The eight partner captures are retained in [site media evidence](../docs/media/site/).
 
 WEB-06 support-strip refinement: centered the support content at a maximum 1280 px, enlarged development credits, replaced the single tiny Savox introduction with all three official logos and a clear partner link. Verified 3714, 1280 and 390 px widths × ES/EN × day/night: no overflow, missing translations or failed logo decodes. Desktop and mobile night captures were visually reviewed; [desktop](../docs/media/site/support-desktop.png) and [mobile](../docs/media/site/support-mobile.png) captures are retained.
+
+## WEB-07 — v0.1.7 release page preparation, 2026-10-20
+
+Prepared Spanish and English release copy from `docs/releases/v0.1.7.md`. The page links the three platform archives, `SHA256SUMS`, first-launch guide and release notes to tag v0.1.7. It identifies the release as stable software for an early-alpha simulator, retains the open Stik sideslip and R02 yaw checks, and removes the superseded P51-22 pending-acceptance claim. ZIP signing and macOS notarization limits are stated accurately. The v0.1.7 release tag and assets are not public yet, so those external URLs remain unverified and the site is not ready to publish. JavaScript syntax and local URL/version consistency were checked; no browser or deployment check was run.
