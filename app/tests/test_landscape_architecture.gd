@@ -8,18 +8,18 @@ const PitChair = preload("res://scenery/pit_chair.gd")
 # Recorded full-prefab totals from the simple-prefab baseline before LU-11.
 const LEGACY_BASELINE_TRIANGLES := {"pavilion": 816, "pit_shelter": 1830}
 const BASELINE_MIN := {
-	"pavilion": Vector3(-5.0, 0.0, -6.2),
+	"pavilion": Vector3(-5.034, 0.0, -6.2),
 	"pit_shelter": Vector3(-14.3175, 0.0, -2.901742),
 }
 const BASELINE_MAX := {
-	"pavilion": Vector3(5.0, 4.65, 3.5),
+	"pavilion": Vector3(5.034, 4.739, 3.534),
 	"pit_shelter": Vector3(14.5317, 3.477413, 3.01),
 }
 const SHELTER_SEED := 1234
 const SHELTER_CHAIR_SLOTS := 5
 const DEFAULT_SHELTER_CHAIR_COUNT := 4
-const TRIANGLE_BUDGET := 5600 # Pavilion and two shelters' structure, including folded roofs, drainage, post shoes and frame joints; furniture is held constant.
-const CHAIR_TRIANGLE_BUDGET := 700 # Per-chair implementation budget; the full-scene 650k ceiling remains in vegetation tests.
+const TRIANGLE_BUDGET := 5800 # Includes the pavilion hip caps and veranda seams added after SC-08-R7; furniture is held constant.
+const CHAIR_TRIANGLE_BUDGET := 700 # Per-chair implementation budget; field, fleet and lake have separate scene ceilings.
 
 var _failures := 0
 
@@ -63,7 +63,7 @@ func _initialize() -> void:
 		for axis in 3:
 			inside_baseline = inside_baseline and bounds.position[axis] >= expected_min[axis] - 0.002
 			inside_baseline = inside_baseline and bounds.end[axis] <= expected_max[axis] + 0.002
-		_check("%s stays within its recorded, offset-aware LU-11 mesh bounds" % id, inside_baseline,
+		_check("%s stays within its recorded mesh bounds" % id, inside_baseline,
 			"min=%s max=%s" % [bounds.position, bounds.end])
 		_check("%s remains deterministic for the same seed" % id,
 			kit.verts == repeat_kit.verts and kit.norms == repeat_kit.norms and kit.cols == repeat_kit.cols)
@@ -110,7 +110,7 @@ func _initialize() -> void:
 	var pavilion_delta: int = int(builds.pavilion.triangles) - LEGACY_BASELINE_TRIANGLES.pavilion
 	var shelter_delta: int = int(builds.pit_shelter.triangles) - structural_shelter_baseline
 	var default_layout_delta := pavilion_delta + 2 * shelter_delta
-	_check("structural additions stay under the 5.6k default-layout triangle budget",
+	_check("structural additions stay under the 5.8k default-layout triangle budget",
 		default_layout_delta > 0 and default_layout_delta <= TRIANGLE_BUDGET,
 		"pavilion +%d, each shelter +%d, default total +%d" % [pavilion_delta, shelter_delta, default_layout_delta])
 	print("     structural additions: pavilion +%d, shelter +%d each, default total +%d (budget %d)" % [

@@ -17,3 +17,13 @@ The [accepted capture manifest](accepted/capture.json) records nine fixed Godot 
 The [intermediate capture](candidate/capture.json) records the slab material before the timber-joint work, isolating its visual contribution in [post foot](candidate/post_foot.png) and [context](candidate/context.png).
 
 `test_landscape_architecture.gd` passes deterministic geometry, material tags and bounds. `test_landscape_collision.gd` passes 51 checks, `test_landscape_collision_support.gd` passes, and `test_scenery_destruction.gd` passes 78 checks. `test_scenery_build.gd` passes the one-surface/material/damage and triangle checks; its pre-existing 800 ms cold-build gate still fails (1,234.1 ms in this run). The native capture reported 1,637.1 ms in a separate, concurrently busy run, so these timings are diagnostics rather than a controlled comparison. The gate remains open; no threshold was raised. Gate SC target-device frame-time and owner readability acceptance remain open in the [scenery plan](../../../SCENERY-PLAN.md).
+
+## Subsequent pavilion roof completion (v0.1.7 release check)
+
+After this R7 capture, commit `2f812615` added five hip caps and veranda roof
+seams; `147be977` reduced the seam count from 18 to 12. The current pavilion is
+3,836 triangles and extends to X ±5.03209 m, Y 4.7375 m, Z 3.531777 m. These
+details add 204 triangles to the R7 structure reference. The architecture check
+now bounds the actual roof and allows 5,800 structural triangles for the pavilion
+and two shelters; the measured total is 5,780. The separate 725,000 non-fleet
+field limit remains unchanged and measures 724,884 in the v0.1.7 check.
