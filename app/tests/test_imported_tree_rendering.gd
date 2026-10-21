@@ -314,8 +314,10 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 	var expected_all_tree_ids := expected_tree_ids.duplicate()
 	expected_all_tree_ids.append("oak_tree")
 	expected_all_tree_ids.append("maple_tree")
+	expected_all_tree_ids.append("landscapelab_quercus")
+	expected_all_tree_ids.append("landscapelab_pine")
 	expected_all_tree_ids.sort()
-	_check("catalog covers seven wind-qualified trees plus the Maple and oak sources",
+	_check("catalog covers seven wind-qualified trees, Maple, oak, Quercus, and Pine sources",
 		actual_tree_ids == expected_all_tree_ids)
 
 	var batches: Dictionary = {}

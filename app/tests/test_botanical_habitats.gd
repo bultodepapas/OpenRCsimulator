@@ -86,11 +86,16 @@ func _test_imported_habitats(root: Node3D) -> void:
 	var candidate_geometry_valid := true
 	var candidate_heights_valid := true
 	var candidate_triangles := 0
+	var source_placement_counts: Dictionary = {}
+	var source_triangle_totals: Dictionary = {}
 	for plant_value: Variant in plants:
 		if not plant_value is Dictionary:
 			continue
 		var plant: Dictionary = plant_value
 		var asset_id := str(plant.get("asset_id", ""))
+		var plant_triangles := int(plant.get("source_triangles", 0))
+		source_placement_counts[asset_id] = int(source_placement_counts.get(asset_id, 0)) + 1
+		source_triangle_totals[asset_id] = int(source_triangle_totals.get(asset_id, 0)) + plant_triangles
 		if candidate_counts.has(asset_id):
 			candidate_counts[asset_id] = int(candidate_counts[asset_id]) + 1
 			var catalog_asset := ImportedVegetation.get_asset(asset_id)
@@ -115,19 +120,36 @@ func _test_imported_habitats(root: Node3D) -> void:
 		tints_valid = tints_valid and tint.r >= 0.86 and tint.r <= 1.0 \
 			and tint.g >= 0.86 and tint.g <= 1.0 and tint.b >= 0.86 and tint.b <= 1.0 \
 			and is_equal_approx(tint.a, 1.0)
+	var source_ids: Array = source_placement_counts.keys()
+	source_ids.sort()
+	var source_summary := PackedStringArray()
+	for source_id: String in source_ids:
+		source_summary.append("%s=%d placements/%d triangles" % [source_id,
+			int(source_placement_counts[source_id]), int(source_triangle_totals[source_id])])
+	print("botanical metrics: plants=%d triangles=%d/%d batches=%d/%d sources=[%s]" % [
+		plants.size(), triangle_total, budget, batches, batch_limit, ", ".join(source_summary)])
+	print("botanical source bounds: fern=%s Empodium=%s" % [
+		str(ImportedVegetation.get_asset(Habitats.FERN_ASSET_ID).get("source_bounds_m", {})),
+		str(ImportedVegetation.get_asset(Habitats.FLOWER_ASSET_ID).get("source_bounds_m", {}))])
 	_check("production attaches downloaded habitat batches", root != null and not plants.is_empty()
 		and root.get_children().all(func(child: Node) -> bool: return child is MultiMeshInstance3D))
 	_check("source geometry stays within the provisional triangle budget",
-		triangle_total > 0 and budget == 90000 and triangle_total <= budget)
+		triangle_total > 0 and budget == 90000 and triangle_total <= budget,
+		"triangles=%d budget=%d" % [triangle_total, budget])
 	_check("shore habitats contain 28 reeds, 24 low source plants and four green shrubs",
 		reeds == 28 and dry_bank_plants == 24 and green_shrubs == 4,
 		"reeds=%d dry-bank=%d shrubs=%d" % [reeds, dry_bank_plants, green_shrubs])
 	_check("source vegetation carries bounded subtle instance tints", tints_valid)
 	_check("source meshes share no more than 24 runtime batches", batch_limit == 24 and batches <= batch_limit
-		and batches == root.get_child_count())
+		and batches == root.get_child_count(), "batches=%d limit=%d" % [batches, batch_limit])
 	_check("accepted fern and Empodium source IDs are used in the built habitat",
 		int(candidate_counts.get(Habitats.FERN_ASSET_ID, 0)) > 0
 		and int(candidate_counts.get(Habitats.FLOWER_ASSET_ID, 0)) > 0)
+	_check("budget trim preserves 285 placements, 11 ferns, seven blooms and 37 small tufts",
+		plants.size() == 285
+		and int(candidate_counts.get(Habitats.FERN_ASSET_ID, 0)) == 11
+		and int(candidate_counts.get(Habitats.FLOWER_ASSET_ID, 0)) == 7
+		and int(source_placement_counts.get("grass_lolipop_small", 0)) == 37)
 	_check("accepted candidate source triangles fit the 90,000 triangle scene cap",
 		candidate_geometry_valid and candidate_triangles > 0 and candidate_triangles <= Habitats.MAX_ADDED_TRIANGLES)
 	_check("fern and Empodium use the requested 0.22-0.42 m and 0.14-0.24 m ranges",

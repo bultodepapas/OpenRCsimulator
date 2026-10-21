@@ -34,8 +34,9 @@ recording skeleton, not the full fleet checkpoint/event journal specified below;
 decision replay, shared-world replay and recording latency qualification remain open.
 
 Keep Phase 0/1 release gates open: every retained three-companion run exceeds the
-proposed 2 ms p95 complete-callback budget on the shared development host. Target
-rendered performance, broad aircraft/encounter qualification, full fleet replay,
+proposed 2 ms p95 complete-callback budget. The first Windows rendered baseline
+also misses the frame budget at counts two and three; three falls behind wall time.
+Broad aircraft/encounter qualification, full fleet replay,
 the full endurance matrix and all later phases remain pending. The phase tables below
 retain their full target scope; they must not be interpreted as completed by this
 initial slice.
@@ -44,8 +45,12 @@ The user selected this Windows machine as the first qualification target:
 Windows 11 Pro build 26100, Ryzen 9 5900X, 64 GiB RAM, GeForce RTX 3090,
 Godot 4.7.2 Compatibility renderer. Native Linux/macOS qualification and independent
 RC pilot review remain explicit external release gates. Identifying the host does
-not qualify any count: retain uninstrumented rendered measurements on this host
-before unlocking presets. Shared development-host runs remain diagnostic.
+not qualify any count. [AFC-00-R2](docs/research/ai-companions/AFC-00-R2/README.md)
+retains the original controller's 0–3 native baseline: p95 frame times
+7.364/11.124/21.691/59.904 ms, with a 0.958 simulation/wall ratio at count three.
+The new controller, full rendered workload matrix, callback budget and repeated
+runs remain open before unlocking presets. Shared development-host runs remain
+diagnostic.
 
 ## 1. Product outcome and scope
 
@@ -703,7 +708,7 @@ profile/field JSON and `research/ai-companions/`. No new gameplay scene yet.
 
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
-| AFC-00 | Register prefix/paths and this plan in docs/README; record source/engine/data identities, target hardware and baseline costs. Audit existing tick ordering, global/static caches, weather clocks, resource mutation, contacts and input callbacks. Extend the existing complete-session probe with an offline 1/2/4-session feasibility harness in `research/ai-companions/`. | Partial: registered track, retained baseline/player replay, full-callback 0–3 costs and exclusive attribution in AFC-00-06/AFC-00-R1. User selected the Windows 5900X/RTX 3090 host above. Full solvers dominate; isolated rendered pacing and the proposed fleet budget remain open. |
+| AFC-00 | Register prefix/paths and this plan in docs/README; record source/engine/data identities, target hardware and baseline costs. Audit existing tick ordering, global/static caches, weather clocks, resource mutation, contacts and input callbacks. Extend the existing complete-session probe with an offline 1/2/4-session feasibility harness in `research/ai-companions/`. | Partial: registered track, retained baseline/player replay, full-callback 0–3 costs and exclusive attribution in AFC-00-06/AFC-00-R1. [Windows native baseline](docs/research/ai-companions/AFC-00-R2/README.md) records the selected 5900X/RTX 3090 host: original-controller counts two/three miss the render budget; three also misses clock pacing. Full solvers dominate. Promoted-controller measurements, complete regimes/repeats and callback budget remain open. |
 | AFC-01 | Extract the explicit FlightSession external-driver, controllerless and non-device command seams described in §3. Keep legacy default scheduling and input policy. Prove gear/flaps/brakes/failures still run with AI input disabled. | Partial: 42 session checks and 10,000-tick external/manual equality in the manager fixture; paired player log candidate has 2,401 identical rows. Broader equipment/contact/start-mode parity remains required. |
 | AFC-02 | Add config/profile/field validators and offline profile qualification harness. Establish Stik circuit envelope and derive a Club traffic layout, exclusions and airborne admission slots. Implement fleet-record skeleton and bounded diagnostics outside product UI. | Partial: strict config, source-bound Stik/Club profiles, physics-rate and fresh-clone identity checks, 120 s calm/gentle 1–3 matrix and deterministic repeat. Continuous nominal static-corridor admission checks real geometry and exclusions; malformed/obstructed launches are atomic refusals. Opt-in fixed-roster capture now links bounded per-session logs with a manifest, final summary and lifecycle/failure monitoring. Full-trajectory containment, general keepouts, wider qualification, fleet checkpoint/decision replay and recording latency remain open. |
 
@@ -735,7 +740,7 @@ clock, pilot, guidance, controller, index, avoidance and world-state scripts;
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-03 | Compose manager/agent nodes and one session per agent; keep clock ownership explicit. Implement initial airborne join slots, ID/generation lifecycle, visibility-safe admission, common weather-time origin and the player-authored scenery-mask bridge. | Partial: manager/agent nodes, fixed launch slots, common snapshots, scenery-mask bridge; 47 manager checks, 653 lifecycle checks, and one 20-minute headless flight after 50 lifecycle cycles (10 visual/audio) in AFC-03-R1. Hot admission, generation reuse and nonzero-time weather joins remain open. |
-| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: float64 circle guidance and closest-approach response; strongest-threat selection repaired in [R1](docs/research/ai-companions/AFC-04-R1/README.md), conflicting descent/recovery targets repaired in [R2](docs/research/ai-companions/AFC-04-R2/README.md). R2 passes 318 focused checks and the 148-check circuit matrix with byte-identical CSVs. All seven surveyed encounters complete 60 s without crashes, but all six moving intercepts still miss 30 m; the two repaired crossings worsen to 4.13/3.86 m. Reachable avoidance, general recovery and phase endurance gates remain open. |
+| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: [R1](docs/research/ai-companions/AFC-04-R1/README.md) and [R2](docs/research/ai-companions/AFC-04-R2/README.md) retain the earlier response repairs and failed separation cases. [R3](docs/research/ai-companions/AFC-04-R3/README.md) qualifies a wind-aware bank-candidate controller in research: 148 circuit checks, six moving encounters per weather all above 30 m, and exact baseline/candidate crossing logs. The wrapper is now integrated with a source-bound unchanged circuit base, bounded optional diagnostics and local-terrain target floor; final production dynamic qualification is underway. Static constraints, qualified prediction bounds, infeasible-case recovery, endurance and cost gates remain open. |
 | AFC-05 | Bind aircraft views through the real builder and float64 render boundary. Add limited spatial engine sources, pilot-camera preservation, optional labels and crash/fault cleanup fallback. | Partial: existing model builder, CG/render boundary, bounded engine voice and fault/crash freeze; native captures and 10 visual/audio lifecycle cycles retained. Live engine volume/mute and optional depth-tested, distance-limited labels now pass 13 presentation checks without altering physics or held commands. Full crash presentation and target-renderer performance remain open. |
 | AFC-06 | Add minimal Home/Pause controls: enabled, count, circuits, skill restricted to Experienced, seed, recall/remove. Persist only supported settings. Add explicit CLI `--companions=<0..3>` and `--companions-seed=<u32>` for deterministic developer launches; defaults remain Off. | Partial: default-Off Home/Pause settings, 1–3 count, seed, persistence, restart apply, Remove now and CLI. Apply changes sound/labels immediately; Cancel and persistence failure preserve/restore the live settings. Current companion strings have Spanish translations. Dialog/shell tests and 276 English/Spanish layout/focus checks pass; recall, hot flight-setting edits and full settings remain open. |
 
@@ -756,18 +761,15 @@ profile and solver-fault isolation; selected existing UI, field and log regressi
 
 ### Phase 2 — Runway life and complete sorties
 
-**Entry blocker, updated by AFC-04-R2:** finish reachable moving-encounter avoidance
-and recovery before implementing this phase. The two failing crossing tapes,
-full-duration exogenous player tapes, exact replays and bounded altitude-target
-repair are retained in [R2](docs/research/ai-companions/AFC-04-R2/README.md).
-That repair removes the two terrain crashes through 60 s but worsens their
-separation, so it does not close encounter qualification. Next evaluate bank/climb
-responses against every threat and terrain, add the planned reaction margin and
-maneuver hold/release policy, and test low-clearance recovery with traffic overhead.
-Retain baseline tapes, exact replay and closed-loop comparison for each candidate.
-Require crash-free post-encounter recovery, passing separation results and the
-existing circuit matrix before qualifying encounter avoidance. The 60-second
-survey does not close the multi-seed endurance or performance gates.
+**Runtime entry blocker:** finish moving-encounter avoidance, containment and
+recovery qualification before enabling runway traffic. Isolated runway and sortie
+research can proceed against the unchanged physical model. [R2](docs/research/ai-companions/AFC-04-R2/README.md)
+retains the earlier failed crossing tapes; [R3](docs/research/ai-companions/AFC-04-R3/README.md)
+retains the bank-candidate response, reaction margin, hold/release policy and passing
+six-route surveys. Final production migration checks, static constraints and
+low-clearance recovery with traffic overhead remain open. Retain baseline tapes,
+exact replay and closed-loop comparison for each candidate. The 60-second survey
+does not close the multi-seed endurance or performance gates.
 
 **Outcome:** companions taxi, take off, join, land, vacate and repeat while other
 companions remain airborne. Dependencies: stable MVP plus ground/field owners and
@@ -780,7 +782,7 @@ ground/air transition.
 
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
-| AFC-07 | Implement runway reservation/occupancy states, approach/departure volumes, player requests, implicit player occupancy, queue fairness and blocked-runway state. | Partial: isolated coordinator and independent priority/blocker tests pass; [AFC-07 R1](docs/research/ai-companions/AFC-07-R1/README.md). Actual protected-volume observations, live manager integration and player request controls remain pending. |
+| AFC-07 | Implement runway reservation/occupancy states, approach/departure volumes, player requests, implicit player occupancy, queue fairness and blocked-runway state. | Partial: isolated coordinator and independent priority/blocker tests pass; [AFC-07 R1](docs/research/ai-companions/AFC-07-R1/README.md). A strict per-request tailwind limit revokes unsafe grants during direction hysteresis; 19 additional checks pass. Actual protected-volume observations, live manager integration and player request controls remain pending. |
 | AFC-08 | Author and validate Club staging/taxi edges and hold-short locations against visible scenery/collision proxies. Implement physical taxi and line-up with edge reservations and timeout recovery. | Pending: `test_companions_taxi.gd`; footprint clearance, deadlock/blocked edge, inability to turn, and no in-place rotation. |
 | AFC-09 | Qualify takeoff/climb, arrival/flare/rollout, early abort and go-around using current Stik physics. Use existing research drivers for measurements; implement production state machines in the new pilot/maneuver files. | Pending: `test_companions_sortie.gd`; complete rollout metrics and unchanged aircraft data. |
 | AFC-10 | Add energy reserve/return policy, sortie turnaround, recall, population increase/decrease and takeoff/landing activity controls. Reserve enough modeled endurance for two circuits and one go-around; deny a sortie when the profile cannot establish this. | Pending: fuel/battery reserve, depleted/ideal-energy distinctions, lineup readiness and population lifecycle evidence. |
@@ -815,7 +817,7 @@ AppRoot/scenario/UI integration with the NR owner.
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-11 | Qualify Turbo Lumber, Extra, P-51, Jet and Stik powertrain variants individually. Add profile inheritance only for proven common controller fields; bind every resolved profile to its exact source hash. | Pending: `test_companions_profiles.gd`; per-model speed/turn/energy/equipment matrices; explicit unsupported activity reasons. |
-| AFC-12 | Upgrade avoidance with intent trajectories, model-specific reachable turns, hysteresis, player priority and overtaking preparation. Maintain brute-force oracle and dense/fast crossing fixtures. | Partial: standalone bounded swept-bounds index passes 102 checks, including an independent continuous-motion oracle over 80 seeded 32-aircraft sets with zero omitted conflicts; [AFC-12 R1](docs/research/ai-companions/AFC-12-R1/README.md). The continuous static path checker additionally passes 38 checks, real-world geometric corridors and a 1,280,000-segment-check maximum-work fixture; [AFC-12 R2](docs/research/ai-companions/AFC-12-R2/README.md). Runtime integration, qualified motion bounds, actual minimum-clearance/containment and callback-cost gates remain open. |
+| AFC-12 | Upgrade avoidance with intent trajectories, model-specific reachable turns, hysteresis, player priority and overtaking preparation. Maintain brute-force oracle and dense/fast crossing fixtures. | Partial: standalone bounded swept-bounds index passes 102 checks, including an independent continuous-motion oracle over 80 seeded 32-aircraft sets with zero omitted conflicts; [AFC-12 R1](docs/research/ai-companions/AFC-12-R1/README.md). The continuous static path checker additionally passes 40 checks, real-world geometric corridors, a 360-path sparse-cell versus full-scan oracle and a 1,280,000-segment-check maximum-work fixture; [AFC-12 R2](docs/research/ai-companions/AFC-12-R2/README.md). Runtime integration, qualified motion bounds, actual minimum-clearance/containment and callback-cost gates remain open. |
 | AFC-13 | Add activity scheduler, independent skill/quirks, model weights/maxima, fair slot allocation and full aircraft/activity settings. Keep incidents Off for this gate. | Partial: isolated seeded activity choices, quota leases, eligibility and strict checkpoint tests pass; [AFC-07 R1](docs/research/ai-companions/AFC-07-R1/README.md). Deterministic multi-model roster, feasible-flight fairness, mixed-pilot control and full UI/persistence remain pending. |
 | AFC-14 | Qualify airborne traffic at Green paradise; make field-specific activity availability explicit. Add opt-in Natural Random composition with independent seeds and resolved briefing identity. Keep Workshop/rotorcraft/ground routes excluded. | Pending: landscape switching, unsupported ground-operation refusal, NR repeatability and no companions in unrelated activities. |
 
@@ -881,7 +883,7 @@ avoids making completed fleet recording a prerequisite of its own implementation
 | AFC-19 | Implement fleet-wide incident timing, eligibility/cooldowns, bounded mistake episodes and supported per-aircraft hardware-failure adapters. Add incident controls and clear opportunity-versus-outcome wording. | Partial: isolated fixed-tick opportunity scheduler, independent filtered/rate checks, exact Off, cooldowns, bounded episode deadlines and lossless RNG restore pass; [AFC-07 R1](docs/research/ai-companions/AFC-07-R1/README.md). Physical mistake/recovery/failure adapters, runtime journal and controls remain pending. |
 | AFC-20 | Extract explicit crash presentation context; reuse impact/wreck/audio/effects with global budgets. Separate companion events from player UI/reports and retain continuing-flight prop-strike behavior. | Pending: `test_companions_crashes.gd`; multiple incidents without focus/camera/report theft or duplicate events. |
 | AFC-21 | Implement shared world damage publication, settled wreck occupancy, blocked-runway cleanup, delayed respawn and bounded resource retirement. | Pending: `test_companions_world.gd`; one damaged obstacle view for all sessions, safe cleanup, no collision proxy left after removal. |
-| AFC-22 | Complete fleet checkpoint/journal and both replay modes, including incidents, admission decisions, world changes and global/local time origins. Wire diagnostics to existing flight-log tooling. | Partial: [AFC-22 R1](docs/research/ai-companions/AFC-22-R1/README.md) retains a 53-check offline proof: two real companions restored at common tick 137 and 240 continuation ticks matched physical and controller frames exactly; strict source/context checks and transactional refusal are covered. Live restore, ORFL decision replay, journalled incidents/admission/world events and mid-incident continuation remain open. |
+| AFC-22 | Complete fleet checkpoint/journal and both replay modes, including incidents, admission decisions, world changes and global/local time origins. Wire diagnostics to existing flight-log tooling. | Partial: [AFC-22 R1](docs/research/ai-companions/AFC-22-R1/README.md) retains detached restore and ORFL decision replay. The post-migration proof passes 79 checks: 723 stream rows/events and 240 physical/controller continuation frames after tick 137; nondefault avoidance latch restore, old-source refusal and valid-checksum state/control/event tampering are covered. Live restore, journalled incidents/admission/world events and mid-incident continuation remain open. |
 | AFC-23 | Implement and qualify optional moving-aircraft terminal contacts with swept proxies and joint event commit. Include the player only when contact is explicitly enabled. | Pending: `test_companions_contacts.gd`; opposing/parallel/wingtip/rotating/fast contacts, time ordering and failed-commit rollback. |
 
 **Acceptance:** at least 30 injected opportunities per incident family demonstrate

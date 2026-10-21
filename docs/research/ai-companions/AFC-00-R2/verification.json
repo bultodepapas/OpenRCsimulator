@@ -1,0 +1,587 @@
+{
+  "format": "openrc-afc00r2-windows-baseline v1",
+  "captured_utc": "2026-10-21T00:24:19.816051+00:00",
+  "scope": "Frozen original pilot1d5699fa before reachable-controller promotion; one straight trimmed player fly-away case per count,10s warmup+60s sample. Counts not release qualified.",
+  "hardware": {
+    "os": "Windows 11 Pro 10.0.26100",
+    "cpu": "AMD Ryzen 9 5900X",
+    "cores": 12,
+    "logical_processors": 24,
+    "ram_visible_kib": 66995304,
+    "gpu": "GeForce RTX 3090",
+    "driver": "617.42 (32.0.16.1742)",
+    "display": "3840x2160 @120Hz; additional USB virtual display1920x1080 @60Hz",
+    "power_scheme": "Balanced 381b4222-f694-41f0-9685-ff5bb260df2e",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "rendering": "Compatibility OpenGL3.3;1280x720;vsync disabled;max-fps0"
+  },
+  "source_manifest": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-00-R2\\frozen-source-manifest.json",
+    "bytes": 737098,
+    "sha256": "6aeaf91e96ca0bbb4fa64c5f17cf9a8e43925794b242997eb43a0d756a9c658c"
+  },
+  "pilot_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+  "native_fixture": {
+    "path": "D:\\OpenRCsimulator-AFC-work\\windows-baseline-20261020\\research\\ai-companions\\native_performance_probe.gd",
+    "bytes": 3941,
+    "sha256": "0eddedb359837a379eba520a897a8d7f0b91322f9078e7175535f466bb76cdb6"
+  },
+  "reducer": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\ai-companions\\native_performance_report.py",
+    "bytes": 4618,
+    "sha256": "a11d6e7ab7d75a897dd065a5a5f7282c49e01449af01d148dddda580d4946983"
+  },
+  "cases": [
+    {
+      "count": 0,
+      "frames": 12189,
+      "actual_sample_s": 60.002769,
+      "actual_warmup_s": 10.002118,
+      "frame_ms": {
+        "max": 22.125,
+        "p50": 4.535,
+        "p95": 7.364,
+        "p99": 10.146
+      },
+      "simulation_wall_ratio": 1.0000892128745522,
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "render_budget_pass": true,
+      "aircraft_endpoint": {
+        "enabled": false,
+        "roster": []
+      },
+      "raw_frames": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-0.json",
+        "bytes": 3018704,
+        "sha256": "915d9e9c21c7aab8e814c14843cf4421c2a8942fa6daaf43d3ac9127229e8b2b"
+      },
+      "fixture": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-0-fixture.json",
+        "bytes": 2465,
+        "sha256": "2cc5b3b760fb0b55e1727c16001ef7d5bb7271221c1f9ea8abda42637e9e0a8e"
+      },
+      "assessment": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-0-assessment.json",
+        "bytes": 941,
+        "sha256": "4372b03e13aac094fd423fd676309854f795be805433235255ac98138c200241"
+      }
+    },
+    {
+      "count": 1,
+      "frames": 8152,
+      "actual_sample_s": 60.00029,
+      "actual_warmup_s": 10.005109,
+      "frame_ms": {
+        "max": 42.683,
+        "p50": 7.084,
+        "p95": 11.124,
+        "p99": 17.119
+      },
+      "simulation_wall_ratio": 0.9999407397253512,
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "render_budget_pass": true,
+      "aircraft_endpoint": {
+        "enabled": true,
+        "roster": [
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-0",
+            "paused": false,
+            "tick": 16767,
+            "time_s": 69.8625,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          }
+        ],
+        "status": {
+          "active": 1,
+          "airborne": 1,
+          "airspace_report": {
+            "aircraft_radius_m": 0.898964440234366,
+            "center_east_m": 0.0,
+            "center_north_m": 199.0,
+            "collision_enabled": true,
+            "collision_world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262",
+            "corridors": [
+              {
+                "center_height_m": 35.0,
+                "max_height_m": 39.8989644402344,
+                "min_height_m": 30.1010355597656,
+                "slot": 0
+              }
+            ],
+            "count": 1,
+            "exclusion_margin_m": 30.0,
+            "geometry_sha256": "7ad0639d3714d37994d17bf49abb5600648a0db50addce6fc71afc06317a2c8d",
+            "ground_upper_m": 0.007,
+            "identity": "8f6672a104ab572a3f043ca4ce98bc902ae24a0db01a8b52e44ec0301af11073",
+            "inner_radius_m": 67.1010355597656,
+            "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+            "minimum_vertical_gap_after_allowances_m": 6.86740897130034,
+            "obstacle_clearance_m": 2.0,
+            "outer_radius_m": 92.8989644402344,
+            "policy": "openrc-ai-static-circuit v1",
+            "protected_proxy_count": 62,
+            "proxy_count": 6092,
+            "radial_allowance_m": 10.0,
+            "radius_m": 80.0,
+            "scope": "nominal_circuit_corridor",
+            "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+            "vertical_allowance_m": 2.0
+          },
+          "config": {
+            "activity": "circuits",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "count": 1,
+            "enabled": true,
+            "engine_volume": 1.0,
+            "incidents_enabled": false,
+            "label_distance_m": 250.0,
+            "pilot": "experienced",
+            "seed": 20261020,
+            "show_labels": false
+          },
+          "crashed": 0,
+          "error": "",
+          "faulted": 0,
+          "last_tick_usec": 931,
+          "observation_batches": 4192,
+          "profile_identity": {
+            "aircraft_data_format": "openrc-aircraft v2",
+            "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+            "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+            "aircraft_profile_sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008",
+            "controller_path": "res://ai/companions/pilot.gd",
+            "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+            "engine_version": "4.7.2",
+            "field_data_format": "openrc-field v1",
+            "field_data_path": "res://data/fields/default.json",
+            "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+            "field_profile_id": "club-default",
+            "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+            "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+            "format": "openrc-ai-profile-identity v1",
+            "solver_normalization": "utf8-lf",
+            "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+            "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+          },
+          "recording": {
+            "active": false,
+            "complete": false,
+            "directory": "",
+            "error": ""
+          },
+          "removed": false,
+          "requested": 1,
+          "seed": 20261020,
+          "ticks": 16767
+        }
+      },
+      "raw_frames": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-1.json",
+        "bytes": 2043495,
+        "sha256": "171d76fbcadc12f2852245a316deb1747c85d5579b0415846d29ed0bfa0a5f82"
+      },
+      "fixture": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-1-fixture.json",
+        "bytes": 2456,
+        "sha256": "9dcf9eadaaaecd72d44769ab67e259f62b4845837accf7f40ff55d434d2c4f5b"
+      },
+      "assessment": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-1-assessment.json",
+        "bytes": 942,
+        "sha256": "0293ef2302003415acefc5cd4868c710002be6b41e5eaf3d12e47ce6787c9995"
+      }
+    },
+    {
+      "count": 2,
+      "frames": 3914,
+      "actual_sample_s": 60.0151589999999,
+      "actual_warmup_s": 10.00076,
+      "frame_ms": {
+        "max": 66.651,
+        "p50": 14.564,
+        "p95": 21.691,
+        "p99": 33.988
+      },
+      "simulation_wall_ratio": 0.9997510934347914,
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "render_budget_pass": false,
+      "aircraft_endpoint": {
+        "enabled": true,
+        "roster": [
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-0",
+            "paused": false,
+            "tick": 16762,
+            "time_s": 69.8416666666667,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          },
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-1",
+            "paused": false,
+            "tick": 16762,
+            "time_s": 69.8416666666667,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          }
+        ],
+        "status": {
+          "active": 2,
+          "airborne": 2,
+          "airspace_report": {
+            "aircraft_radius_m": 0.898964440234366,
+            "center_east_m": 0.0,
+            "center_north_m": 199.0,
+            "collision_enabled": true,
+            "collision_world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262",
+            "corridors": [
+              {
+                "center_height_m": 35.0,
+                "max_height_m": 39.8989644402344,
+                "min_height_m": 30.1010355597656,
+                "slot": 0
+              },
+              {
+                "center_height_m": 55.0,
+                "max_height_m": 59.8989644402344,
+                "min_height_m": 50.1010355597656,
+                "slot": 1
+              }
+            ],
+            "count": 2,
+            "exclusion_margin_m": 30.0,
+            "geometry_sha256": "7ad0639d3714d37994d17bf49abb5600648a0db50addce6fc71afc06317a2c8d",
+            "ground_upper_m": 0.007,
+            "identity": "a372e61c75f75ea76f2713cda8b0fcef61e3d4355829a0c8055d57dd82e21093",
+            "inner_radius_m": 67.1010355597656,
+            "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+            "minimum_vertical_gap_after_allowances_m": 6.86740897130034,
+            "obstacle_clearance_m": 2.0,
+            "outer_radius_m": 92.8989644402344,
+            "policy": "openrc-ai-static-circuit v1",
+            "protected_proxy_count": 62,
+            "proxy_count": 6092,
+            "radial_allowance_m": 10.0,
+            "radius_m": 80.0,
+            "scope": "nominal_circuit_corridor",
+            "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+            "vertical_allowance_m": 2.0
+          },
+          "config": {
+            "activity": "circuits",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "count": 2,
+            "enabled": true,
+            "engine_volume": 1.0,
+            "incidents_enabled": false,
+            "label_distance_m": 250.0,
+            "pilot": "experienced",
+            "seed": 20261020,
+            "show_labels": false
+          },
+          "crashed": 0,
+          "error": "",
+          "faulted": 0,
+          "last_tick_usec": 1666,
+          "observation_batches": 4191,
+          "profile_identity": {
+            "aircraft_data_format": "openrc-aircraft v2",
+            "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+            "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+            "aircraft_profile_sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008",
+            "controller_path": "res://ai/companions/pilot.gd",
+            "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+            "engine_version": "4.7.2",
+            "field_data_format": "openrc-field v1",
+            "field_data_path": "res://data/fields/default.json",
+            "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+            "field_profile_id": "club-default",
+            "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+            "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+            "format": "openrc-ai-profile-identity v1",
+            "solver_normalization": "utf8-lf",
+            "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+            "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+          },
+          "recording": {
+            "active": false,
+            "complete": false,
+            "directory": "",
+            "error": ""
+          },
+          "removed": false,
+          "requested": 2,
+          "seed": 20261020,
+          "ticks": 16762
+        }
+      },
+      "raw_frames": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-2.json",
+        "bytes": 1013242,
+        "sha256": "af4a798a7cd1f402b734e051978954a1e68c8735f29401d94fb449832aee26a2"
+      },
+      "fixture": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-2-fixture.json",
+        "bytes": 2465,
+        "sha256": "13dfeda0a49f590810cf3bf7af43e304c062b9e1591098aab2aca809c6a0b83d"
+      },
+      "assessment": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-2-assessment.json",
+        "bytes": 944,
+        "sha256": "9dfbc03136154341e7c17c36a320b53f195ae3fd6133ec717586bd58352982f4"
+      }
+    },
+    {
+      "count": 3,
+      "frames": 1286,
+      "actual_sample_s": 60.008624,
+      "actual_warmup_s": 10.018057,
+      "frame_ms": {
+        "max": 105.802,
+        "p50": 46.679,
+        "p95": 59.904,
+        "p99": 92.094
+      },
+      "simulation_wall_ratio": 0.9581682449052575,
+      "valid_active_workload": false,
+      "invalid_reasons": [
+        "simulation did not maintain wall time within 2 percent"
+      ],
+      "render_budget_pass": false,
+      "aircraft_endpoint": {
+        "enabled": true,
+        "roster": [
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-0",
+            "paused": false,
+            "tick": 16086,
+            "time_s": 67.025,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          },
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-1",
+            "paused": false,
+            "tick": 16086,
+            "time_s": 67.025,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          },
+          {
+            "crashed": false,
+            "failure": "",
+            "fault": "",
+            "id": "companion-2",
+            "paused": false,
+            "tick": 16086,
+            "time_s": 67.025,
+            "world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262"
+          }
+        ],
+        "status": {
+          "active": 3,
+          "airborne": 3,
+          "airspace_report": {
+            "aircraft_radius_m": 0.898964440234366,
+            "center_east_m": 0.0,
+            "center_north_m": 199.0,
+            "collision_enabled": true,
+            "collision_world_identity": "c3f8182e4dff86ed450e80b308b39d9a15934819cc18ae4b0e0779ddf28fb262",
+            "corridors": [
+              {
+                "center_height_m": 35.0,
+                "max_height_m": 39.8989644402344,
+                "min_height_m": 30.1010355597656,
+                "slot": 0
+              },
+              {
+                "center_height_m": 55.0,
+                "max_height_m": 59.8989644402344,
+                "min_height_m": 50.1010355597656,
+                "slot": 1
+              },
+              {
+                "center_height_m": 75.0,
+                "max_height_m": 79.8989644402344,
+                "min_height_m": 70.1010355597656,
+                "slot": 2
+              }
+            ],
+            "count": 3,
+            "exclusion_margin_m": 30.0,
+            "geometry_sha256": "7ad0639d3714d37994d17bf49abb5600648a0db50addce6fc71afc06317a2c8d",
+            "ground_upper_m": 0.007,
+            "identity": "5ff69e03285043823d99e481d193234f34210bf77f0fefbd8ac15217997377f8",
+            "inner_radius_m": 67.1010355597656,
+            "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+            "minimum_vertical_gap_after_allowances_m": 6.86740897130034,
+            "obstacle_clearance_m": 2.0,
+            "outer_radius_m": 92.8989644402344,
+            "policy": "openrc-ai-static-circuit v1",
+            "protected_proxy_count": 62,
+            "proxy_count": 6092,
+            "radial_allowance_m": 10.0,
+            "radius_m": 80.0,
+            "scope": "nominal_circuit_corridor",
+            "surfaces_sha256": "16a10df8f7ce00463f99b27e9cc2ae82bbc64f1db0d0bd3e677c28dace7a88fa",
+            "vertical_allowance_m": 2.0
+          },
+          "config": {
+            "activity": "circuits",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "count": 3,
+            "enabled": true,
+            "engine_volume": 1.0,
+            "incidents_enabled": false,
+            "label_distance_m": 250.0,
+            "pilot": "experienced",
+            "seed": 20261020,
+            "show_labels": false
+          },
+          "crashed": 0,
+          "error": "",
+          "faulted": 0,
+          "last_tick_usec": 2680,
+          "observation_batches": 4022,
+          "profile_identity": {
+            "aircraft_data_format": "openrc-aircraft v2",
+            "aircraft_data_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+            "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+            "aircraft_id": "jensen-das-ugly-stik-60",
+            "aircraft_profile_path": "res://data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+            "aircraft_profile_sha256": "279e65e7cc6aec22a4ee11d754cd098971941df16e22037c6791b0ed27512008",
+            "controller_path": "res://ai/companions/pilot.gd",
+            "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+            "engine_version": "4.7.2",
+            "field_data_format": "openrc-field v1",
+            "field_data_path": "res://data/fields/default.json",
+            "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+            "field_profile_id": "club-default",
+            "field_profile_path": "res://data/ai/companions/fields/club-default.json",
+            "field_profile_sha256": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+            "format": "openrc-ai-profile-identity v1",
+            "solver_normalization": "utf8-lf",
+            "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+            "solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+          },
+          "recording": {
+            "active": false,
+            "complete": false,
+            "directory": "",
+            "error": ""
+          },
+          "removed": false,
+          "requested": 3,
+          "seed": 20261020,
+          "ticks": 16086
+        }
+      },
+      "raw_frames": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-3.json",
+        "bytes": 381303,
+        "sha256": "a51e1676f7c07e2ca5d2edd2cd85a0fa210c8910c07fffd4921f92b3c816d2ed"
+      },
+      "fixture": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-3-fixture.json",
+        "bytes": 2454,
+        "sha256": "c9edb9121305df7a30f0a96d8094c9f239816d78600eeb6f9fe7bafbc3b8b735"
+      },
+      "assessment": {
+        "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\count-3-assessment.json",
+        "bytes": 1012,
+        "sha256": "cd782d7af359294edc7032ad8be6cd044f8abd037b495c5294707ee60a347910"
+      }
+    }
+  ],
+  "accepted_engine_checks": [
+    "checks\\native-count-0-inmsexs9\\report.json",
+    "checks\\native-count-1-x6xrnxhq\\report.json",
+    "checks\\native-count-2-vjahchh7\\report.json",
+    "checks\\native-count-3-z9wk8clu\\report.json"
+  ],
+  "callback_diagnostic": {
+    "artifact": {
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r2-20261020\\callback-profile.json",
+      "bytes": 17005,
+      "sha256": "90a4284d6650cc030947111026cbdd80036a8ea956dc18708ed3052c49b6a1c9"
+    },
+    "scope": "Instrumented headless diagnostic; short agent parse checks overlapped, not isolated target acceptance. All2640ticks accepted/count; fingerprints retained.",
+    "rows": [
+      {
+        "count": 0,
+        "complete": true,
+        "finished_total_ticks": 2640,
+        "complete_callback": {
+          "max_usec": 3114,
+          "mean_usec": 1165.35291666667,
+          "p50_usec": 1224,
+          "p95_usec": 1487,
+          "samples": 2400
+        }
+      },
+      {
+        "count": 1,
+        "complete": true,
+        "finished_total_ticks": 2640,
+        "complete_callback": {
+          "max_usec": 3641,
+          "mean_usec": 2208.395,
+          "p50_usec": 2078,
+          "p95_usec": 2968,
+          "samples": 2400
+        }
+      },
+      {
+        "count": 2,
+        "complete": true,
+        "finished_total_ticks": 2640,
+        "complete_callback": {
+          "max_usec": 5925,
+          "mean_usec": 3122.76583333333,
+          "p50_usec": 2786,
+          "p95_usec": 4483,
+          "samples": 2400
+        }
+      },
+      {
+        "count": 3,
+        "complete": true,
+        "finished_total_ticks": 2640,
+        "complete_callback": {
+          "max_usec": 12224,
+          "mean_usec": 4267.71833333333,
+          "p50_usec": 3801,
+          "p95_usec": 5957,
+          "samples": 2400
+        }
+      }
+    ]
+  },
+  "isolation": "All AFC agent engine/subprocess jobs held for native matrix. No Godot processes observed before launch; OS/background services unchanged. No CPU/GPU instrumentation in this native matrix.",
+  "open_gates": [
+    "complete-callback2ms-p95/3ms-p99",
+    "all-visible/cold/warm/runway/contact/crash workload matrix",
+    "new controller measurement",
+    "repeat and observer-cost controls",
+    "nativeLinux/macOS",
+    "independentRCpilotreview"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6fe5614f-3ec5-4816-82d0-085c9c1c747c",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-AFC-work/windows-baseline-20261020/app",
+    "--rendering-driver",
+    "opengl3",
+    "--resolution",
+    "1280x720",
+    "--disable-vsync",
+    "--max-fps",
+    "0",
+    "--script",
+    "D:/OpenRCsimulator-AFC-work/windows-baseline-20261020/research/ai-companions/native_performance_probe.gd",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--companions=2",
+    "--companions-seed=20261020",
+    "--fixture-out=D:/OpenRCsimulator-AFC-work/evidence/performance/windows-baseline-r3-20261020/count-2-fixture.json",
+    "--frametimes=D:/OpenRCsimulator-AFC-work/evidence/performance/windows-baseline-r3-20261020/count-2.json",
+    "--warmup=10",
+    "--t=60",
+    "--case=afc-neutral-trim-count-2"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T00:18:41.221288+00:00",
+  "label": "native-count-2",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\checks\\native-count-2-vjahchh7\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\performance\\windows-baseline-r3-20261020\\checks\\native-count-2-vjahchh7\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AFC native fixture complete; active endpoint=true",
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371726107178115 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 83.547,
+  "log_bytes": 1988,
+  "log_sha256": "d918237d9a865482e244ccef32e7c57bd04c71243d8c2090fdacdb3cb0c450f8"
+}

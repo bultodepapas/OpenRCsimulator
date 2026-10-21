@@ -1,0 +1,119 @@
+{
+  "format": "openrc-tree-source-recipe v1",
+  "recipe_id": "realistic-trees-2026-10-20-v1",
+  "species": [
+    {
+      "id": "CommonTree_1",
+      "source_asset_id": "landscapelab:quercus",
+      "source_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\quercus.glb",
+      "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "dependencies": [],
+      "bark_material_name": "branches",
+      "foliage_material_name": "leaves",
+      "pinned_files": [
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\LICENSE_LANDSCAPELAB.txt",
+          "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+          "role": "license"
+        },
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\README.md",
+          "sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+          "role": "source-provenance"
+        }
+      ],
+      "provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Quercus tree asset"
+      }
+    },
+    {
+      "id": "CommonTree_3",
+      "source_asset_id": "lolipop:acer_large_3_lod1",
+      "source_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\derived\\lolipop_maple_2026\\maple_large_3_lod1.gltf",
+      "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "dependencies": [
+        {
+          "uri": "maple_large_3_lod1.bin",
+          "sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f"
+        },
+        {
+          "uri": "textures/maple_bark_ao-maple_bark_roughness.png",
+          "sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9"
+        },
+        {
+          "uri": "textures/maple_bark_basecolor.jpg",
+          "sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31"
+        },
+        {
+          "uri": "textures/maple_bark_normal.png",
+          "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905"
+        },
+        {
+          "uri": "textures/maple_leaves_ao-maple_leaves_roughness.png",
+          "sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329"
+        },
+        {
+          "uri": "textures/maple_leaves_basecolor.png",
+          "sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b"
+        },
+        {
+          "uri": "textures/maple_leaves_normal.png",
+          "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+        }
+      ],
+      "bark_material_name": "Maple_Bark_PBR",
+      "foliage_material_name": "Maple_Leaves_PBR",
+      "pinned_files": [
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\lolipop_maple_2026\\LICENSE_MAPLE.txt",
+          "sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+          "role": "license"
+        },
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\derived\\lolipop_maple_2026\\conversion_manifest.json",
+          "sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+          "role": "conversion-manifest"
+        }
+      ],
+      "provenance": {
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "license": "CC BY 4.0",
+        "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+        "source_revision": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
+        "source_title": "Maple trees pack (lowpoly, game ready, LODs)"
+      }
+    },
+    {
+      "id": "Pine_1",
+      "source_asset_id": "landscapelab:pine",
+      "source_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\pine_joined.glb",
+      "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "dependencies": [],
+      "bark_material_name": "branches.001",
+      "foliage_material_name": "leaves.001",
+      "pinned_files": [
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\LICENSE_LANDSCAPELAB.txt",
+          "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+          "role": "license"
+        },
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\landscapelab_tree_2026\\README.md",
+          "sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+          "role": "source-provenance"
+        }
+      ],
+      "provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Joined pine tree asset"
+      }
+    }
+  ]
+}

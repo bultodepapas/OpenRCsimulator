@@ -11,13 +11,15 @@ const GroundSurfaces := preload("res://physics/ground_surfaces.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Grass := preload("res://render/near_grass.gd")
 
+const REALISTIC_FERN_ID := "polyhaven_fern_02_a"
+const REALISTIC_FLOWER_ID := "polyhaven_flower_empodium_a"
 const ALLOWED_ASSETS := {
 	"grass_common_short": true,
 	"grass_common_tall": true,
 	"grass_wispy_tall": true,
-	"fern_1": true,
+	"polyhaven_fern_02_a": true,
 	"clover_1": true,
-	"flower_3_group": true,
+	"polyhaven_flower_empodium_a": true,
 	"flower_4_group": true,
 	"corn_4": true,
 	"wheat_4": true,
@@ -27,8 +29,8 @@ const ALLOWED_ASSETS := {
 	"grass_lolipop_tall": true,
 	"forest_leafy_shrub": true,
 }
-const FLOWER_ASSETS := ["clover_1", "flower_3_group", "flower_4_group"]
-const GRASS_ASSETS := ["grass_common_short", "grass_common_tall", "grass_wispy_tall", "fern_1"]
+const FLOWER_ASSETS := ["clover_1", "polyhaven_flower_empodium_a", "flower_4_group"]
+const GRASS_ASSETS := ["grass_common_short", "grass_common_tall", "grass_wispy_tall", "polyhaven_fern_02_a"]
 
 var _failures := 0
 var _checks := 0
@@ -132,8 +134,12 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 				heights_valid = heights_valid and float(plant.height_m) >= 0.72 and float(plant.height_m) <= 1.0
 			elif asset_id in FLOWER_ASSETS or asset_id in GRASS_ASSETS:
 				shore_bank_plant_count += 1
-				if asset_id in FLOWER_ASSETS:
+				if asset_id == REALISTIC_FLOWER_ID:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.14 and float(plant.height_m) <= 0.24
+				elif asset_id in FLOWER_ASSETS:
 					heights_valid = heights_valid and float(plant.height_m) >= 0.3 and float(plant.height_m) <= 0.65
+				elif asset_id == REALISTIC_FERN_ID:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.22 and float(plant.height_m) <= 0.42
 				else:
 					heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
 		else:
@@ -144,15 +150,23 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 			if asset_id in FLOWER_ASSETS:
 				flower_count += 1
 				flowers_seen[asset_id] = true
-				heights_valid = heights_valid and float(plant.height_m) >= 0.3 and float(plant.height_m) <= 0.65
+				if asset_id == REALISTIC_FLOWER_ID:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.14 and float(plant.height_m) <= 0.24
+				else:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.3 and float(plant.height_m) <= 0.65
 			elif asset_id in GRASS_ASSETS:
 				grasses_seen[asset_id] = true
-				heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
+				if asset_id == REALISTIC_FERN_ID:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.22 and float(plant.height_m) <= 0.42
+				else:
+					heights_valid = heights_valid and float(plant.height_m) >= 0.2 and float(plant.height_m) <= 0.5
 			elif asset_id == "corn_4" or asset_id == "wheat_4":
 				crop_count += 1
 				corn_count += 1 if asset_id == "corn_4" else 0
 				wheat_count += 1 if asset_id == "wheat_4" else 0
 	_check("field, club and meadow use only downloaded grass, fern, clover and flower groups", grasses_seen.size() == 4 and flowers_seen.size() == 3)
+	_check("accepted recipe uses both realistic fern and open-flower sources",
+		assets_seen.has("polyhaven_fern_02_a") and assets_seen.has("polyhaven_flower_empodium_a"))
 	_check("downloaded flower clusters replace the removed synthetic meadow", flower_count >= 45 and flower_count <= 60)
 	_check("two downloaded crop plots coexist with 24 farm-margin accents",
 		crop_count >= 70 and farm_accent_count == 24 and zone_counts.get("farm", 0) == crop_count + farm_accent_count)
@@ -174,10 +188,10 @@ func _test_layout(field: Dictionary, scenery: Dictionary, lake: Dictionary, plan
 	_check("uniform target heights stay in natural ranges", heights_valid)
 	_check("imported plants stay below the 90k provisional triangle budget", triangle_total <= 90000,
 		"%d triangles" % triangle_total)
-	_check("original habitat recipe retains 83,650 triangles",
-		triangle_total - accent_triangles == 83650, "%d original triangles" % (triangle_total - accent_triangles))
+	_check("original habitat recipe retains 87,669 triangles",
+		triangle_total - accent_triangles == 87669, "%d original triangles" % (triangle_total - accent_triangles))
 	_check("downloaded grass and shrub accents add exactly 1,986 triangles",
-		accent_triangles == 1986 and triangle_total == 85636, "%d accent triangles; %d total" % [accent_triangles, triangle_total])
+		accent_triangles == 1986 and triangle_total == 89655, "%d accent triangles; %d total" % [accent_triangles, triangle_total])
 	_check("zone metadata can distinguish club, edge, meadow, farm and shore", ["club", "edge", "meadow", "farm", "shore"].all(func(zone: String) -> bool: return zone_counts.has(zone)))
 	_check("recipe has all expected zones", zone_counts.get("club", 0) > 0 and zone_counts.get("edge", 0) > 0 \
 		and zone_counts.get("meadow", 0) > 0 and zone_counts.get("farm", 0) > 0 and zone_counts.get("shore", 0) > 0)

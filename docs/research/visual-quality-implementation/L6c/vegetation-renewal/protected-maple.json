@@ -1,0 +1,116 @@
+{
+  "protected_placement": "prop:shade-trees:06",
+  "north_m": -32,
+  "east_m": 10.5,
+  "heading_degrees": 247.1,
+  "height_m": 14,
+  "seed": 793949324,
+  "files": [
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.bin",
+      "length_bytes": 321256,
+      "sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+      "final_sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+      "length_bytes": 5315,
+      "sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "final_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf.import",
+      "length_bytes": 1218,
+      "sha256": "bcfcd8604c4f98116b8b006a99bb0f4817e77f11e40f340463465ae12f78fabb",
+      "final_sha256": "bcfcd8604c4f98116b8b006a99bb0f4817e77f11e40f340463465ae12f78fabb",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png",
+      "length_bytes": 6115692,
+      "sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+      "final_sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png.import",
+      "length_bytes": 1345,
+      "sha256": "e98ddd8c0a252147f7855a1e7addea6110133b45b453cec90b7622dd078a4a83",
+      "final_sha256": "e98ddd8c0a252147f7855a1e7addea6110133b45b453cec90b7622dd078a4a83",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg",
+      "length_bytes": 2981274,
+      "sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+      "final_sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_basecolor.jpg.import",
+      "length_bytes": 1275,
+      "sha256": "c027640e7de71f6bd7305a2a7c5d0be603c2dcd451d3ffd538c9c22b4ef0b15c",
+      "final_sha256": "c027640e7de71f6bd7305a2a7c5d0be603c2dcd451d3ffd538c9c22b4ef0b15c",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png",
+      "length_bytes": 28222851,
+      "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+      "final_sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_bark_normal.png.import",
+      "length_bytes": 1260,
+      "sha256": "cdd51382060552132bc8185fe09987c104d84e90c0f445108e11a9e818cd11b0",
+      "final_sha256": "cdd51382060552132bc8185fe09987c104d84e90c0f445108e11a9e818cd11b0",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "length_bytes": 3097706,
+      "sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+      "final_sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png.import",
+      "length_bytes": 1364,
+      "sha256": "673d94cf4aa2671a605cb21c8e492c4cc462f832b297bc2029cab9f222d61dc3",
+      "final_sha256": "673d94cf4aa2671a605cb21c8e492c4cc462f832b297bc2029cab9f222d61dc3",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png",
+      "length_bytes": 1757295,
+      "sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+      "final_sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_basecolor.png.import",
+      "length_bytes": 1286,
+      "sha256": "eccceb7c8c89d06a9563b58d4ef82a67ba8b62b6b121468acc972fabfc8c69bb",
+      "final_sha256": "eccceb7c8c89d06a9563b58d4ef82a67ba8b62b6b121468acc972fabfc8c69bb",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png",
+      "length_bytes": 2586783,
+      "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4",
+      "final_sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4",
+      "unchanged": true
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/maple_tree/textures/maple_leaves_normal.png.import",
+      "length_bytes": 1270,
+      "sha256": "133cb517d0ff5b1d6ae033aa0165ca8e8d32465c10e14a86dc1501fe43bc5822",
+      "final_sha256": "133cb517d0ff5b1d6ae033aa0165ca8e8d32465c10e14a86dc1501fe43bc5822",
+      "unchanged": true
+    }
+  ],
+  "all_files_unchanged": true
+}

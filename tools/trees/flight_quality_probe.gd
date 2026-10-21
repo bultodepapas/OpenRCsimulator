@@ -109,6 +109,10 @@ func _run() -> void:
 	# seam before _ready; select no device and retain the keyboard command path.
 	scene.external_controller_selection = true
 	root.add_child(scene)
+	# The route owns inputs, including pause/reset/camera shortcuts. Desktop
+	# typing must not mutate a timed run. FlightSession input stays enabled and
+	# continues through read_raw -> Commands; only live UI events are excluded.
+	_disable_live_input(scene)
 	if scene.get("session") == null or scene.get("_rig") == null or scene.get("_camera") == null:
 		_fail("main scene did not initialize a physics flight, camera rig and camera")
 		return
@@ -146,6 +150,29 @@ func _run() -> void:
 		if not performance_samples.configure(0.0, 1.0):
 			_fail("could not initialize smoke sampler")
 			return
+		# Exercise the production smoke-assignment shortcut, which would pause
+		# this aircraft if desktop event isolation were accidentally removed.
+		_exercise_desktop_isolation.call_deferred()
+
+
+func _exercise_desktop_isolation() -> void:
+	var event := InputEventKey.new()
+	event.physical_keycode = KEY_J
+	event.keycode = KEY_J
+	event.pressed = true
+	Input.parse_input_event(event)
+	event = event.duplicate()
+	event.pressed = false
+	Input.parse_input_event(event)
+
+
+func _disable_live_input(node: Node) -> void:
+	node.set_process_input(false)
+	node.set_process_unhandled_input(false)
+	node.set_process_unhandled_key_input(false)
+	node.set_process_shortcut_input(false)
+	for child in node.get_children():
+		_disable_live_input(child)
 
 
 func _process_observation(delta: float) -> void:

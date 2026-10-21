@@ -12,6 +12,9 @@ var failures := 0
 const TEST_TRUNK_RADIUS_FRACTION := 0.05
 const TEST_TRUNK_HEIGHT_FRACTION := 0.355
 const TEST_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
+const QUERCUS_SOURCE_LEAF_MIN_FRACTION := 0.22363892800355822 # indexed leaf-triangle bound: 13.3190126/59.5558777
+# Lowest alpha-visible leaf triangle centroid relative to source-bounds centre, normalized by source height (x, y, z).
+const QUERCUS_LOWEST_VISIBLE_LEAF_CENTROID_FRACTIONS := [0.03102491517, 0.29289864531, 0.16599591254]
 
 
 func _initialize() -> void:
@@ -52,10 +55,14 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var crown_height := float(tree_spec.height) - float(trunk.bounds_down_max - trunk.bounds_down_min)
 	# The trunk occupies the deterministic lower stem envelope; imported bounds size both parts.
 	var expected_trunk_height := float(tree_spec.height) * (TEST_TRUNK_HEIGHT_FRACTION
 		+ TEST_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(31, 2))
+	var expected_crown_bottom_height := expected_trunk_height
+	if str(tree_spec.asset_id) == "landscapelab_quercus":
+		expected_crown_bottom_height = minf(expected_crown_bottom_height,
+			float(tree_spec.height) * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+	var crown_height := float(tree_spec.height) - expected_crown_bottom_height
 	var expected_radius := minf(float(tree_spec.width), float(tree_spec.depth)) \
 		* TEST_TRUNK_RADIUS_FRACTION + float(tree_spec.wind_margin)
 	_check("trunk width comes from source bounds with its wind allowance",
@@ -68,11 +75,15 @@ func _initialize() -> void:
 		and is_equal_approx(float(crown.half_z), float(tree_spec.depth) * 0.5 + float(tree_spec.wind_margin))
 		and is_equal_approx(float(crown.half_down), crown_height * 0.5)
 		and is_equal_approx(float(crown.bounds_down_min), -float(tree_spec.height))
-		and is_equal_approx(float(crown.bounds_down_max), -expected_trunk_height))
+		and is_equal_approx(float(crown.bounds_down_max), -expected_crown_bottom_height))
 	_check("shade-tree damage keys remain stable by source placement and part",
 		str(trunk.damage_id) == "prop:garden:17:trunk" and str(crown.damage_id) == "prop:garden:17:crown")
 	var expected_sapling_trunk_height := float(sapling_spec.height) * (TEST_TRUNK_HEIGHT_FRACTION
 		+ TEST_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(12, 2))
+	var expected_sapling_crown_bottom_height := expected_sapling_trunk_height
+	if str(sapling_spec.asset_id) == "landscapelab_quercus":
+		expected_sapling_crown_bottom_height = minf(expected_sapling_crown_bottom_height,
+			float(sapling_spec.height) * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
 	var expected_sapling_radius := minf(float(sapling_spec.width), float(sapling_spec.depth)) \
 		* TEST_TRUNK_RADIUS_FRACTION + float(sapling_spec.wind_margin)
 	_check("sapling stem is bounded from its imported size and wind allowance",
@@ -82,8 +93,10 @@ func _initialize() -> void:
 	_check("sapling crown spans its imported uniform-height bounds",
 		is_equal_approx(float(sapling_crown.half_x), float(sapling_spec.width) * 0.5 + float(sapling_spec.wind_margin))
 		and is_equal_approx(float(sapling_crown.half_z), float(sapling_spec.depth) * 0.5 + float(sapling_spec.wind_margin))
+		and is_equal_approx(float(sapling_crown.half_down),
+			(float(sapling_spec.height) - expected_sapling_crown_bottom_height) * 0.5)
 		and is_equal_approx(float(sapling_crown.bounds_down_min), -float(sapling_spec.height))
-		and is_equal_approx(float(sapling_crown.bounds_down_max), -expected_sapling_trunk_height))
+		and is_equal_approx(float(sapling_crown.bounds_down_max), -expected_sapling_crown_bottom_height))
 	_check("sapling damage keys retain the source placement group and part",
 		str(sapling_trunk.damage_id) == "prop:saplings:41:trunk"
 		and str(sapling_crown.damage_id) == "prop:saplings:41:crown")
@@ -129,7 +142,7 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 				source_seeds[asset_id] = {seed = seed, prefab = prefab}
 			if source_seeds.size() == expected_tree_ids.size():
 				break
-	_check("mature and sapling aliases expose every retained collision source", source_seeds.size() == 8
+	_check("mature and sapling aliases expose every retained collision source", source_seeds.size() == 3
 		and source_seeds.size() == expected_tree_ids.size())
 	var source_ids: Array = expected_tree_ids.keys()
 	source_ids.sort()
@@ -166,6 +179,38 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 					covers_source = covers_source and n >= float(crown.bounds_north_min) and n <= float(crown.bounds_north_max) \
 						and e >= float(crown.bounds_east_min) and e <= float(crown.bounds_east_max)
 			_check("asymmetric maple crown bounds cover its rotated source footprint", covers_source)
+		elif asset_id == "landscapelab_quercus":
+			var quercus := VegetationPlacement.spec(str(source_seeds[asset_id].prefab), int(source_seeds[asset_id].seed))
+			var height := float(quercus.height)
+			_check("Quercus crown contains the full pinned leaf-triangle lower bound",
+				float(crown.bounds_down_max) >= -height * QUERCUS_SOURCE_LEAF_MIN_FRACTION)
+			var trunk_id := "tree:%s:tree-variants:00:trunk" % str(source_seeds[asset_id].prefab).replace("_", "-")
+			var trunk := _proxy(built.world, trunk_id)
+			var lower_foliage_up_fraction := float(QUERCUS_LOWEST_VISIBLE_LEAF_CENTROID_FRACTIONS[1])
+			var local_leaf_x := height * float(QUERCUS_LOWEST_VISIBLE_LEAF_CENTROID_FRACTIONS[0])
+			var local_leaf_z := height * float(QUERCUS_LOWEST_VISIBLE_LEAF_CENTROID_FRACTIONS[2])
+			var heading_radians := deg_to_rad(37.0)
+			var heading_cos := cos(heading_radians)
+			var heading_sin := sin(heading_radians)
+			var lower_foliage_north := float(crown.north) - (heading_sin * local_leaf_x + heading_cos * local_leaf_z)
+			var lower_foliage_east := float(crown.east) + (heading_cos * local_leaf_x - heading_sin * local_leaf_z)
+			var lower_foliage_down := -height * lower_foliage_up_fraction
+			var trunk_north_offset := lower_foliage_north - north
+			var trunk_east_offset := lower_foliage_east - east
+			var off_axis_distance := sqrt(trunk_north_offset * trunk_north_offset
+				+ trunk_east_offset * trunk_east_offset)
+			var expected_trunk_height := height * (TEST_TRUNK_HEIGHT_FRACTION
+				+ TEST_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(int(source_seeds[asset_id].seed), 2))
+			_check("Quercus witness lies below the old crown edge and outside its trunk capsule",
+				not trunk.is_empty() and lower_foliage_up_fraction < expected_trunk_height / height
+				and off_axis_distance > float(trunk.get("radius", INF)))
+			var lower_foliage_hit: SceneryCollision.Event = _sweep(built.world,
+				lower_foliage_north, lower_foliage_east, lower_foliage_down,
+				_crown_sweep_half_length(crown))
+			_check("Quercus lower off-axis foliage sweep hits the soft crown",
+				lower_foliage_hit != null and lower_foliage_hit.obstacle_id == crown_id
+				and lower_foliage_hit.obstacle_part == "crown"
+				and lower_foliage_hit.response_class == "soft_foliage_impulse" and not lower_foliage_hit.terminal)
 		var hit: SceneryCollision.Event = _sweep(built.world, north, east, float(crown.down),
 			_crown_sweep_half_length(crown))
 		_check("%s crown responds as soft foliage without trunk contact" % asset_id,

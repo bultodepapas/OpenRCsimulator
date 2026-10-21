@@ -1,8 +1,8 @@
 # Downloaded vegetation asset pipeline
 
-`build_library.py` extracts a pinned selection of source geometry without creating plant geometry. It retains source archives and license evidence under `assets/landscape/vegetation/source/`, preserves original dependencies and records reviewed conversions, and writes `catalog.json` with hashes, bounds and geometry counts. The default output is `app/assets/landscape/vegetation/` and contains 24 assets, including nine reviewed tree forms.
+`build_library.py` extracts a pinned selection of source geometry without creating plant geometry. It retains source archives and license evidence under `assets/landscape/vegetation/source/`, preserves original dependencies and records reviewed conversions, and writes `catalog.json` with hashes, bounds and geometry counts. The default output is `app/assets/landscape/vegetation/` and contains 28 assets, including 11 reviewed tree forms.
 
-The runtime library contains 9 trees, 3 shrubs, 6 grass/herb assets, 3 flowering assets, 2 crops and 1 reed clump. Quaternius's Stylized Nature MegaKit Standard supplies seven trees, shrubs, grass, herbs and flowers under CC0-1.0. The separately licensed OpenGameArt oak, LOLIPOP maple/grass and dasy444 shrub are described below. A second Quaternius CC0 pack supplies mature corn and wheat; Aredon's CC0 low-poly reed supplies the reed clump. Source pages, hashes and license evidence are recorded in the catalog and source notices.
+The runtime library contains 11 trees, 3 shrubs, 7 grass/herb assets, 4 flowering assets, 2 crops and 1 reed clump. Quaternius's Stylized Nature MegaKit Standard supplies seven trees, shrubs, grass, herbs and flowers under CC0-1.0. The separately licensed OpenGameArt oak, LOLIPOP maple and grass, dasy444 shrub, LandscapeLab trees and Poly Haven understory additions are described below. A second Quaternius CC0 pack supplies mature corn and wheat; Aredon's CC0 low-poly reed supplies the reed clump. Source pages, hashes and license evidence are recorded in the catalog and source notices.
 
 ```powershell
 python tools/landscape/vegetation/build_library.py
@@ -31,7 +31,9 @@ Godot 4.7.2 imports the preserved glTF sources directly and generates mesh LODs 
 
 `ImportedVegetation.get_parts(id)` exposes shared source meshes, effective source materials, part transforms and bounds. Call `queue(batches, id, placement, seed, damage_id)` and `build(batches)` to produce one `MultiMeshInstance3D` per imported source part. The library default keeps source materials. `build(batches, false, {tree_wind = true, tree_cell_size_m = 0})` enables the qualified tree-only shader. The legacy second `true` argument retains its all-role behavior for existing callers.
 
-Production scenery keeps seven mature alias slots, with the first slot selecting the downloaded maple; the weighted sapling alias retains its two source variants. This yields eight source forms across the same 17 placements. The seven Quaternius sources support imported-tree wind; the maple retains its static PBR material. `--tree_wind=off` / `OPENRC_TREE_WIND=off` restores static imported trees; it does not disable the separate field-card wind. The shader preserves the reviewed albedo/normal maps, UV transforms, vertex colors, scalar PBR values and alpha scissor. It follows `sim_clock` and `wind_vec`, fixes the root and updates the normal/tangent frame. Unsupported material features, tilted/nonuniform transforms or separate stem/crown meshes retain source materials. Source textures and other plant roles are not rewritten by this option.
+The seven mature alias slots remain stable, and the weighted sapling alias still chooses from two source variants. Compatible imported trees can use the qualified tree-only wind shader; `--tree_wind=off` / `OPENRC_TREE_WIND=off` restores static imported trees without disabling separate field-card wind. The shader preserves reviewed albedo/normal maps, UV transforms, vertex colors, scalar PBR values and alpha scissor. It follows `sim_clock` and `wind_vec`, fixes the root and updates the normal/tangent frame. Unsupported material features, tilted/nonuniform transforms or separate stem/crown meshes retain source materials. Source textures and other plant roles are not rewritten by this option. The realistic LandscapeLab trees currently use the static imported PBR path described below.
+
+Current close-tree placement has four maples, five LandscapeLab Quercus (oak) trees and eight LandscapeLab pines: 17 instances and 91,212 source triangles. The mature aliases now select the maple and the two LandscapeLab forms; sapling aliases use Quercus and pine. The new realistic trees use the static imported PBR path. For the LandscapeLab draws, runtime duplicates each imported `StandardMaterial3D` and sets metallic to 0.0 because the supplier GLBs mark dielectric bark and foliage as 0.5; source resources, textures, alpha and roughness remain unchanged. The older note about eight source forms describes the superseded placement set. See the [renewal evidence](../../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md) for source, atlas and placement checks and remaining acceptance gates.
 
 Tree spatial cells are optional: `--tree_cell_size_m=64`, `128` or `256` (or `OPENRC_TREE_CELL_SIZE_M`); `0` retains source-part batching. Instance transforms, colors, phases and damage IDs survive regrouping. No density increase is enabled. `set_wind()` adjusts only wind-enabled builds with per-build materials. `set_damage_hidden()` hides/restores all parts for a damage ID, and `bounds()` reports the live aggregate bounds; tree wind also expands render-culling bounds. See the [native comparison and remaining gates](../../../docs/research/visual-quality-implementation/L6a-R1/README.md).
 
@@ -52,6 +54,30 @@ The retained Quaternius bark maps use the [qualified bark-only mip policy](../..
 `maple_tree` uses LOLIPOP's supplied `Acer_large_3_LOD1` under CC BY 4.0: 5,541 triangles, two PBR surfaces and six 2K maps. The club tree remains 14 m; three additional placements at the farm and southwest forest vary from 10.01 to 11.52 m. The previous oak remains available in the library. `convert_maple.py` preserves supplied topology and records original/derived hashes; `build_library.py` validates its manifest. Six tracked texture settings enable VRAM compression. Five maps use mipmaps; the leaf color/alpha atlas stays unmipped to retain canopy coverage at distance. Both normals use normal-map mode. Export presets include `LICENSE_MAPLE.txt`.
 
 See [source intake, conversion commands, native views, checks and the remaining cold-build limitation](../../../docs/research/visual-quality-implementation/L6c/house-tree/README.md).
+
+## LandscapeLab trees and Poly Haven understory (L6c vegetation renewal)
+
+The downloaded LandscapeLab Quercus and Pine models are pinned to commit `dfdde034c3547f9876967653d98827bd5348e52e` and licensed CC BY-SA 4.0. The table records source-space geometry before placement scaling.
+
+| Source asset | License | Source triangles / surfaces | Source height |
+| --- | --- | ---: | ---: |
+| Quercus (`landscapelab_quercus`) | CC BY-SA 4.0 | 7,016 / 2 | 59.556 m |
+| Pine (`landscapelab_pine`) | CC BY-SA 4.0 | 4,246 / 2 | 41.154 m |
+| Fern 02 A (`polyhaven_fern_02_a`) | CC0-1.0 | 784 / 1 | 0.287 m |
+| Flower Empodium A (`polyhaven_flower_empodium_a`) | CC0-1.0 | 758 / 1 | 0.267 m |
+
+LandscapeLab source and derived GLBs retain the supplied mesh geometry, transforms, material names, textures and alpha conventions. The offline atlas adapter applies a grounded root wrapper to normalize each tree to 1 m without editing source geometry. The imported-vegetation library keeps source dimensions; runtime placement computes a uniform instance scale from the grounded source bounds and requested height. Poly Haven conversion preserves the supplied plant meshes and records the paired base-color/alpha inputs and conversion hashes. No plant geometry is generated. These source checks do not establish visual, performance or full-scene acceptance; photographic understory layout and its triangle allocation remain in progress.
+
+Run the source converters and library checks from the repository root:
+
+```powershell
+python tools/landscape/vegetation/convert_landscapelab_trees.py --check
+python tools/landscape/vegetation/convert_realistic_understory.py --check
+python tools/landscape/vegetation/build_library.py --check
+python tools/landscape/vegetation/test_build_library.py
+```
+
+The LandscapeLab conversion manifest and per-source notices are under `assets/landscape/vegetation/derived/landscapelab_tree_2026/` and `assets/landscape/vegetation/source/landscapelab_tree_2026/`; the Poly Haven receipts and conversion proofs are under `assets/landscape/vegetation/source/realistic_understory_2026/` and `assets/landscape/vegetation/derived/realistic_understory_2026/`. See the dated [vegetation-renewal research record](../../../docs/research/vegetation-renewal-2026-10-20.md) and its [current evidence report](../../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md).
 
 ## Downloaded map accents (L6c)
 

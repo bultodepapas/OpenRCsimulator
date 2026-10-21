@@ -47,12 +47,12 @@ the companion clock.
 | Setting or behavior | Available now |
 | --- | --- |
 | Field | Club field only; normal fixed-wing flights |
-| Qualification | Exact aircraft, field, pilot and solver source identities; Godot 4.7.2 at 240 Hz. Changed or unavailable sources and other tick rates refuse admission |
+| Qualification | Exact aircraft, field, pilot, circuit-base dependency and solver source identities; Godot 4.7.2 at 240 Hz. Changed or unavailable sources and other tick rates refuse admission |
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
 | Presentation | Immediate engine volume/mute; optional depth-tested labels with a distance limit; English/Spanish controls |
-| Avoidance | Predicted closest approach biases heading/altitude; descending targets stay above the recovery band. Moving-encounter separation remains unqualified |
+| Avoidance | Wind-aware bank candidates with reaction/response allowance and maneuver hold/release. Horizontal avoidance retains a local-terrain altitude target floor; general containment/recovery remains unqualified |
 | Aircraft contact | Disabled; overlapping airplanes do not exchange contact forces |
 | Terrain/scenery | Launch checks the nominal circuit corridor against actual session terrain, lake and collision proxies; ordinary contact/crash checks remain active. Only the player changes shared scenery damage |
 | Crash/fault fallback | That companion stops, its voice is silenced, and status identifies it; restart or Remove clears it |
@@ -64,16 +64,21 @@ pilot difficulty choices, incidents, comic scenarios and busy-skies presets are
 still planned. No control advertises them as available. No model, physics law,
 solver frequency or golden flight was retuned to make this slice work.
 
-The moving-traffic survey still misses the 30 m player separation target in all
-six head-on/crossing cases. AFC-04-R2 removes the conflicting descent/recovery
-demands behind two earlier terrain crashes: all seven surveyed cases now complete
-60 seconds without a crash or simulation fault. This reduces vertical separation
-in the two repaired crossings; minimum player distance worsens to 4.13/3.86 m.
-The 35 m local-terrain altitude target floor is not a guaranteed flight-path
-clearance. Reachable conflict resolution and general recovery remain experimental.
+The [reachable-controller research survey](research/ai-companions/AFC-04-R3/README.md)
+passes the 30 m player-separation target in six head-on/crossing cases per weather,
+each flown for 60 seconds. The intentionally conflicting two-threat spawn is
+reported separately and fails separation. Earlier failed crossing tapes remain
+retained. The source-bound controller is integrated; final migration flight checks
+are underway. Its 3 m prediction uncertainty is an engineering allowance, not a
+qualified error bound. The 35 m local-terrain altitude target floor is not a
+guaranteed flight-path clearance. Static candidate constraints, general recovery
+and multi-seed endurance remain open.
 
 The measured three-companion CPU workload misses the plan's initial fleet budget.
-This is not a 60 fps or target-hardware qualification. A one-companion, 20-minute
+The [Windows native baseline](research/ai-companions/AFC-00-R2/README.md) also misses
+the frame budget at counts two and three; three falls behind wall time. That run
+uses the earlier controller and a straight player departure, so neither the
+replacement controller nor an all-visible workload is qualified. A one-companion, 20-minute
 headless flight completed all 288,000 ticks with stable node/object/resource counts
 after 50 lifecycle cycles, including 10 visual/audio cycles. The three-companion
 multi-seed endurance matrix, rendered soaks, finite-fuel recovery, fleet replay,
@@ -146,6 +151,7 @@ reconstruct shared-world events or establish exact fleet equivalence.
 | `app/ai/companions/fleet_record.gd` | Fixed-roster capture manifest, common-clock monitoring and bounded existing per-session writers |
 | `app/data/ai/companions/aircraft/`, `fields/` | Source-bound Stik/Club profiles and measured circuit scope |
 | `app/ai/companions/pilot.gd` | Float64 guidance, control demands and proximity response |
+| `app/ai/companions/circuit_controller.gd` | Source-bound original circuit guidance and legacy low-speed fallback |
 | `app/ai/companions/manager.gd` | Stable tick snapshots, population ownership, scenery-mask publication |
 | `app/ai/companions/agent.gd` | One external-driver session and its render/audio adapter |
 | `app/sim/flight_session.gd` | Validated external commands, spawn and single-tick seam |
@@ -165,13 +171,20 @@ step never advances companions. Player damage is mirrored after all AI finish th
 tick, for use at the next boundary. Remove disconnects all three player observers;
 reconfiguring the same manager reconnects them once.
 
-The current linear closest-approach policy selects one strongest threat. Replacing
-it replaces both lateral and vertical responses; a weaker threat cannot leave a
-stale altitude demand. Equal severity retains the first observation in the
-manager's stable order. This is not simultaneous conflict resolution, reachable
-trajectory prediction or a recovery guarantee.
+The current controller predicts eight seconds at 0.25-second intervals using
+air-relative banked turns plus wind displacement. It scores eleven bank choices
+from −25° to +25° plus the nominal turn against all prepared threats. A 0.9-second
+reaction allowance, 0.75-second bank-response ramp, two-second minimum hold and
+one-second clear interval limit late reactions and oscillation. No-traffic circuit
+commands remain in the unchanged base. Invalid/low-speed predictions retain the
+legacy response. These are approximate forecasts; the predicted vertical rate is
+held only over the reaction interval, and neither model-error bounds nor arbitrary
+player maneuvers are qualified. Diagnostic traces are optional, bounded and off by
+default. Controller latch state is explicit for research checkpoint continuation.
 
 Profiles are validated once per manager launch, before replacing a live roster.
+They bind both the wrapper and the actual inherited circuit script; a missing,
+extra or mismatched dependency refuses admission.
 Each newly loaded companion verifies its accepted aircraft data against that
 qualification. The field comparison includes normalized geometry, so retaining
 the `default` ID after editing the field cannot reuse the qualification. The
@@ -224,4 +237,10 @@ are recorded in [AFC-12 R1](research/ai-companions/AFC-12-R1/README.md). Its bou
 allocation and zero omitted synthetic conflicts do not establish a supported
 aircraft count or replace flight qualification.
 
-The [static trajectory checker](research/ai-companions/AFC-12-R2/README.md) passes 38 geometric checks, including the real field and bounded maximum workload. It remains a reusable helper pending controller/context binding; it does not qualify maneuver containment.
+The [static trajectory checker](research/ai-companions/AFC-12-R2/README.md) passes 40 geometric checks, including the real field, sparse-index/full-scan agreement and bounded maximum workload. It remains a reusable helper pending controller/context binding; it does not qualify maneuver containment.
+
+The [offline checkpoint and decision-replay proof](research/ai-companions/AFC-22-R1/README.md)
+passes 79 post-migration checks, including exact physical/controller continuation,
+nondefault avoidance latch restore, source mismatch and rechecksummed log tampering.
+It is a research harness; the live application still has no fleet restore UI or
+shared-world incident journal.

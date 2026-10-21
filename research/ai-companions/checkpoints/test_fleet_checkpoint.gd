@@ -26,6 +26,11 @@ const CAPTURE_TICK := 137
 const CONTINUATION_TICKS := 240
 const COMPANION_COUNT := 2
 const COMPANION_SEED := 20261020
+const PRODUCTION_PILOT_SOURCE_PATH := "res://ai/companions/pilot.gd"
+const CIRCUIT_CONTROLLER_SOURCE_PATH := "res://ai/companions/circuit_controller.gd"
+const PRODUCTION_PILOT_SHA256 := "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+const CIRCUIT_CONTROLLER_SHA256 := "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+const RETIRED_CHECKPOINT_PATH := "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/fixed-roster-5256622.json"
 const TEST_SOURCE_PATH := "res://../research/ai-companions/checkpoints/test_fleet_checkpoint.gd"
 const CANDIDATE_SOURCE_PATH := "res://../research/ai-companions/checkpoints/fleet_checkpoint_candidate.gd"
 const PROBE_SOURCE_PATH := "res://../research/ai-companions/checkpoints/controller_probe.gd"
@@ -60,6 +65,8 @@ var _report_path := ""
 var _source_hashes: Dictionary = {}
 var _report: Dictionary = {}
 var _decision_replay_comparison: Dictionary = {}
+var _production_controller_latch: Dictionary = {}
+var _migration_identity_refusal: Dictionary = {}
 
 
 func _initialize() -> void:
@@ -121,6 +128,16 @@ func _run() -> void:
 	if not baseline.get("ok", false):
 		_finish()
 		return
+	var profile_identity: Dictionary = baseline.manager.status().get("profile_identity", {})
+	var expected_controller_dependencies := {CIRCUIT_CONTROLLER_SOURCE_PATH: CIRCUIT_CONTROLLER_SHA256}
+	_check("post-migration profile binds the R2 pilot and mandatory circuit-base dependency",
+		profile_identity.get("controller_path") == PRODUCTION_PILOT_SOURCE_PATH
+		and profile_identity.get("controller_sha256") == PRODUCTION_PILOT_SHA256
+		and profile_identity.get("controller_dependencies") == expected_controller_dependencies
+		and _source_hashes.get(PRODUCTION_PILOT_SOURCE_PATH, "") == PRODUCTION_PILOT_SHA256
+		and _source_hashes.get(CIRCUIT_CONTROLLER_SOURCE_PATH, "") == CIRCUIT_CONTROLLER_SHA256,
+		str({"profile": profile_identity, "manifest_pilot": _source_hashes.get(PRODUCTION_PILOT_SOURCE_PATH, ""),
+			"manifest_base": _source_hashes.get(CIRCUIT_CONTROLLER_SOURCE_PATH, "")}))
 	var baseline_player: FlightSession = baseline.player
 	for tick in CAPTURE_TICK:
 		if not _step_player(baseline_player, _control_for_tick(tick)):
@@ -131,6 +148,13 @@ func _run() -> void:
 	_check("capture lands between four-tick pilot updates", CAPTURE_TICK % 4 != 0)
 	_check("baseline has an aligned healthy common tick", _aligned_fixture(baseline, CAPTURE_TICK),
 		"player=%d accepted=%d" % [baseline_player.sim.tick, baseline.manager.accepted_ticks])
+	_production_controller_latch = _seed_production_controller_latch(baseline.manager.agents[0])
+	_check("current pilot snapshot captures a nondefault held-maneuver latch from its source-bound method pair",
+		_production_controller_latch.get("ok", false), str(_production_controller_latch.get("reason", "")))
+	if not _production_controller_latch.get("ok", false):
+		_dispose_fixture(baseline)
+		_finish()
+		return
 	var record_result: Dictionary = _draft_record(baseline)
 	_check("clean fixed-roster boundary is capturable", record_result.get("ok", false),
 		str(record_result.get("reason", "")))
@@ -139,6 +163,14 @@ func _run() -> void:
 		_finish()
 		return
 	var record: Dictionary = record_result.record
+	var captured_latch: Dictionary = record.roster[0].agent_state.controller_state
+	_check("checkpoint stores the current production controller's nondefault latch and current pilot source identity",
+		captured_latch.get("format") == "controller-method-state v1"
+		and captured_latch.get("script_path") == PRODUCTION_PILOT_SOURCE_PATH
+		and captured_latch.get("source_sha256") == PRODUCTION_PILOT_SHA256
+		and captured_latch.get("state", {}).get("has_held_maneuver", false)
+		and var_to_bytes(captured_latch.get("state", {})) == var_to_bytes(_production_controller_latch.get("state", {})),
+		str(captured_latch))
 	var encoded: String = CheckpointJson.encode(record)
 	_check("lossless native checkpoint carrier encodes", not encoded.is_empty(),
 		"encoded bytes=%d" % encoded.to_utf8_buffer().size())
@@ -205,6 +237,11 @@ func _run() -> void:
 		_dispose_fixture(baseline)
 		_finish()
 		return
+	var restored_latch: Dictionary = Candidate.capture_controller_state(restored.manager.agents[0], _source_hashes)
+	_check("fresh candidate restores the production held-maneuver latch before its next decision",
+		restored_latch.get("ok", false)
+		and var_to_bytes(restored_latch.get("state", {})) == var_to_bytes(captured_latch),
+		str(restored_latch.get("reason", restored_latch.get("state", {}))))
 	var paused_tick: int = restored.player.sim.tick
 	var paused_agents: Array[int] = []
 	for agent: Node in restored.manager.agents:
@@ -271,9 +308,14 @@ func _run() -> void:
 			"checkpoint_source_root": ProjectSettings.globalize_path("res://../research/ai-companions/checkpoints").simplify_path(),
 			"controller_path": str(record.profile_identity.get("controller_path", "")),
 			"controller_sha256": str(record.profile_identity.get("controller_sha256", "")),
+			"controller_dependencies": record.profile_identity.get("controller_dependencies", {}).duplicate(true),
+			"circuit_controller_path": CIRCUIT_CONTROLLER_SOURCE_PATH,
+			"circuit_controller_sha256": _source_hashes.get(CIRCUIT_CONTROLLER_SOURCE_PATH, ""),
 			"reachable_pilot_source_path": REACHABLE_PILOT_SOURCE_PATH,
 			"reachable_pilot_source_sha256": _source_hashes.get(REACHABLE_PILOT_SOURCE_PATH, ""),
 		},
+		"production_controller_latch": _production_controller_latch.duplicate(true),
+		"retired_checkpoint_refusal": _migration_identity_refusal.duplicate(true),
 		"limitations": record.limitations.duplicate(true),
 	}
 	_dispose_fixture(restored)
@@ -477,6 +519,23 @@ func _run_decision_negative_cases(record: Dictionary, expected_paths: Dictionary
 			not file_binding.get("ok", true) and not semantic_binding.get("ok", true),
 			str({"manifest": file_binding.get("reason", ""), "tape": semantic_binding.get("reason", "")}))
 
+	var state_directory: String = _evidence_directory("decision-tampered-state")
+	var state_copy: String = state_directory.path_join("companion-0.orfl")
+	var state_rewrite: Dictionary = _rewrite_orfl(expected_paths["companion-0"], state_copy, "state")
+	var state_info: Dictionary = FlightLogReader.inspect(state_copy, false) if state_rewrite.get("ok", false) else {"ok": false}
+	_check("tampered physical-state fixture remains a complete, internally checksummed ORFL",
+		state_rewrite.get("changed", false) and state_info.get("ok", false) and state_info.get("complete", false),
+		str(state_info.get("error", "")))
+	if state_info.get("ok", false):
+		var changed_state: Dictionary = expected_paths.duplicate(true)
+		changed_state["companion-0"] = state_copy
+		var state_comparison: Dictionary = FleetReplay.compare_stream_sets(expected_paths,
+			changed_state, manifest, record)
+		_check("replay comparison detects a rechecksummed post-capture physical-state divergence",
+			not state_comparison.get("ok", true)
+			and str(state_comparison.get("reason", "")).contains("state"),
+			str(state_comparison.get("reason", "")))
+
 	var event_directory: String = _evidence_directory("decision-tampered-event")
 	var event_copy: String = event_directory.path_join("companion-1.orfl")
 	var event_rewrite: Dictionary = _rewrite_orfl(expected_paths["companion-1"], event_copy, "event")
@@ -532,7 +591,128 @@ func _run_decision_negative_cases(record: Dictionary, expected_paths: Dictionary
 	_check("tampered source identity is refused before any session or manager mutation",
 		not source_result.get("ok", true) and before == after
 		and str(source_result.get("reason", "")).contains("source/data identity"), str(source_result.get("reason", "")))
+	_run_retired_checkpoint_identity_case(source_fixture)
 	_dispose_fixture(source_fixture)
+
+
+func _run_retired_checkpoint_identity_case(fixture: Dictionary) -> void:
+	var old_bytes: PackedByteArray = FileAccess.get_file_as_bytes(RETIRED_CHECKPOINT_PATH)
+	var old_sha256: String = _hash_bytes(old_bytes)
+	var decoded: Dictionary = CheckpointJson.decode(old_bytes.get_string_from_utf8()) if not old_bytes.is_empty() else {"ok": false}
+	_check("immutable 53-check baseline checkpoint is available for migration refusal", decoded.get("ok", false)
+		and old_sha256 == "c3ff04c90efe84950b0d8698fba48637bb81fa4bdf7853d5da3efeaf9fca78a9",
+		str({"path": RETIRED_CHECKPOINT_PATH, "bytes": old_bytes.size(), "sha256": old_sha256,
+			"reason": decoded.get("reason", "")}))
+	if not decoded.get("ok", false):
+		_migration_identity_refusal = {"ok": false, "reason": "retired checkpoint could not be decoded"}
+		return
+	var old_record: Dictionary = decoded.snapshot
+	var old_profile: Dictionary = old_record.get("profile_identity", {})
+	var current_profile: Dictionary = fixture.manager.status().get("profile_identity", {})
+	var old_agent_state: Dictionary = old_record.roster[0].agent_state
+	var old_controller_state: Dictionary = old_agent_state.get("controller_state", {})
+	var old_dependencies: Dictionary = old_profile.get("controller_dependencies", {})
+	var current_dependencies: Dictionary = current_profile.get("controller_dependencies", {})
+	var current_hash: String = str(_source_hashes.get(PRODUCTION_PILOT_SOURCE_PATH, ""))
+	var identity_differs: bool = old_profile.get("controller_sha256", "") != current_hash \
+			and current_hash == PRODUCTION_PILOT_SHA256 \
+			and current_dependencies == {CIRCUIT_CONTROLLER_SOURCE_PATH: CIRCUIT_CONTROLLER_SHA256} \
+			and old_controller_state.get("source_sha256", "") != current_hash
+	_check("retired checkpoint and controller locals carry the old pilot identity, while current profile requires the R2 pilot plus circuit base",
+		identity_differs, str({"old_profile": old_profile, "old_controller_state": old_controller_state,
+			"current_profile": current_profile, "old_dependencies": old_dependencies}))
+	var before: PackedByteArray = var_to_bytes([fixture.player.checkpoint(), fixture.manager.accepted_ticks,
+		fixture.manager.observation_batches, fixture.manager.agents.map(func(agent: Node) -> Array:
+			return [agent.session.checkpoint(), agent.pilot.call("snapshot_state")])])
+	var refusal: Dictionary = Candidate.validate_record(old_record, fixture, _field, _world,
+		_source_hashes, CONTINUATION_TICKS)
+	var after: PackedByteArray = var_to_bytes([fixture.player.checkpoint(), fixture.manager.accepted_ticks,
+		fixture.manager.observation_batches, fixture.manager.agents.map(func(agent: Node) -> Array:
+			return [agent.session.checkpoint(), agent.pilot.call("snapshot_state")])])
+	var controller_state_refused: bool = not Candidate._agent_state_valid(fixture.manager.agents[0],
+		old_agent_state, _source_hashes)
+	var rebased_record: Dictionary = old_record.duplicate(true)
+	var current_status: Dictionary = fixture.manager.status()
+	rebased_record.field_id = str(_field.get("id", ""))
+	rebased_record.field_sha256 = FileAccess.get_sha256("res://data/fields/default.json")
+	rebased_record.world_identity = str(_world.get("identity", ""))
+	rebased_record.source_hashes = _source_hashes.duplicate(true)
+	rebased_record.config = current_status.config.duplicate(true)
+	rebased_record.profile_identity = current_status.profile_identity.duplicate(true)
+	rebased_record.airspace_report = current_status.airspace_report.duplicate(true)
+	rebased_record.environment_context = Candidate._environment_context(fixture)
+	var rebased_before: PackedByteArray = var_to_bytes([fixture.player.checkpoint(), fixture.manager.accepted_ticks,
+		fixture.manager.observation_batches, fixture.manager.agents.map(func(agent: Node) -> Array:
+			return [agent.session.checkpoint(), agent.pilot.call("snapshot_state")])])
+	var rebased_refusal: Dictionary = Candidate.validate_record(rebased_record, fixture, _field, _world,
+		_source_hashes, CONTINUATION_TICKS)
+	var rebased_after: PackedByteArray = var_to_bytes([fixture.player.checkpoint(), fixture.manager.accepted_ticks,
+		fixture.manager.observation_batches, fixture.manager.agents.map(func(agent: Node) -> Array:
+			return [agent.session.checkpoint(), agent.pilot.call("snapshot_state")])])
+	var profile_state_refused: bool = not rebased_refusal.get("ok", true) \
+			and str(rebased_refusal.get("reason", "")).contains("controller state") \
+			and rebased_before == rebased_after
+	_check("old checkpoint and its old mutable-controller snapshot are refused under the new identity before mutation",
+		not refusal.get("ok", true) and controller_state_refused and before == after
+		and profile_state_refused,
+		str({"record_refusal": refusal.get("reason", ""), "controller_state_refused": controller_state_refused,
+			"rebased_profile_state_refusal": rebased_refusal.get("reason", ""),
+			"profile_state_refused": profile_state_refused, "unchanged": before == after and rebased_before == rebased_after}))
+	_migration_identity_refusal = {
+		"ok": not refusal.get("ok", true) and controller_state_refused and before == after and profile_state_refused,
+		"old_checkpoint_path": RETIRED_CHECKPOINT_PATH,
+		"old_checkpoint_sha256": old_sha256,
+		"old_controller_sha256": old_profile.get("controller_sha256", ""),
+		"old_controller_state_sha256": old_controller_state.get("source_sha256", ""),
+		"current_controller_sha256": current_hash,
+		"old_controller_dependencies": old_dependencies,
+		"current_controller_dependencies": current_dependencies,
+		"record_refusal_reason": refusal.get("reason", ""),
+		"rebased_old_controller_state_refusal_reason": rebased_refusal.get("reason", ""),
+		"old_controller_state_refused": controller_state_refused,
+		"rebased_old_controller_state_refused": profile_state_refused,
+	}
+
+
+func _seed_production_controller_latch(agent: Node) -> Dictionary:
+	var pilot: Object = agent.pilot
+	if not pilot.has_method("snapshot_state") or not pilot.has_method("restore_state"):
+		return {"ok": false, "reason": "current production pilot lacks the paired state protocol"}
+	var initial: Variant = pilot.call("snapshot_state")
+	if not initial is Dictionary or not initial.has("planning_tick") \
+			or typeof(initial.planning_tick) != TYPE_INT or initial.planning_tick < 0:
+		return {"ok": false, "reason": "current pilot returned an invalid initial snapshot"}
+	var seeded: Dictionary = initial.duplicate(true)
+	seeded.has_held_maneuver = true
+	seeded.held_bank_rad = deg_to_rad(5.0)
+	seeded.hold_until_tick = int(seeded.planning_tick) + CONTINUATION_TICKS + 240
+	seeded.clear_since_tick = -1
+	var restore_result: Variant = pilot.call("restore_state", seeded)
+	if not restore_result is Dictionary or typeof(restore_result.get("ok")) != TYPE_BOOL or not restore_result.ok:
+		return {"ok": false, "reason": "production pilot refused the valid held-maneuver snapshot"}
+	var captured: Dictionary = Candidate.capture_controller_state(agent, _source_hashes)
+	var captured_state: Dictionary = captured.get("state", {})
+	var valid_capture: bool = captured.get("ok", false) \
+		and captured_state.get("format") == "controller-method-state v1" \
+		and captured_state.get("script_path") == PRODUCTION_PILOT_SOURCE_PATH \
+		and captured_state.get("source_sha256") == PRODUCTION_PILOT_SHA256 \
+		and var_to_bytes(captured_state.get("state", {})) == var_to_bytes(seeded)
+	var malformed_refused: bool = _run_production_controller_malformed_snapshot_case(pilot, seeded)
+	_check("production pilot rejects malformed snapshot tick without changing its held latch",
+		malformed_refused,
+		"planning_tick must remain an integer")
+	return {"ok": valid_capture and malformed_refused, "state": seeded,
+		"source_sha256": captured_state.get("source_sha256", ""),
+		"reason": "" if valid_capture else str(captured.get("reason", "production snapshot did not match the seeded latch"))}
+
+
+func _run_production_controller_malformed_snapshot_case(pilot: Object, saved: Dictionary) -> bool:
+	var malformed: Dictionary = saved.duplicate(true)
+	malformed.planning_tick = float(saved.planning_tick)
+	var before: PackedByteArray = var_to_bytes(pilot.call("snapshot_state"))
+	var result: Variant = pilot.call("restore_state", malformed)
+	return result is Dictionary and typeof(result.get("ok")) == TYPE_BOOL and not result.ok \
+			and before == var_to_bytes(pilot.call("snapshot_state"))
 
 
 func _evidence_directory(label: String) -> String:
@@ -561,6 +741,15 @@ func _rewrite_orfl(source_path: String, destination: String, mutation: String) -
 					var raw: PackedFloat64Array = row.raw.duplicate()
 					raw[0] = clampf(raw[0] + 0.01, -1.0, 1.0)
 					row.raw = raw
+					value.rows[row_index] = row
+					changed = true
+		if mutation == "state" and value.get("kind") == "block":
+			for row_index in value.rows.size():
+				var row: Dictionary = value.rows[row_index]
+				if row.tick == CAPTURE_TICK + 1:
+					var state: PackedFloat64Array = row.state.duplicate()
+					state[0] += 0.01
+					row.state = state
 					value.rows[row_index] = row
 					changed = true
 		if mutation == "event" and value.get("kind") == "block":

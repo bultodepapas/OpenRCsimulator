@@ -1,15 +1,23 @@
 # Ugly Stik Companion Pilot Qualification
 
-2026-10-20 current qualification: [AFC-04-R2](../AFC-04-R2/README.md) requalified
+2026-10-20 migration update: [AFC-04-R3](../AFC-04-R3/README.md) retains the
+wind-aware bank-candidate controller's 148-check circuit matrix, six-route moving
+encounters per weather and exact recorded crossing replays. The runtime now uses
+that wrapper with bounded optional diagnostics and a local-terrain target floor.
+Final production migration flight checks remain in progress. The immutable circuit
+base is still SHA `1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c`;
+the profile binds both sources. This entry point retains historical evidence;
+it must not be read as general avoidance, endurance or performance qualification.
+
+The preceding [AFC-04-R2](../AFC-04-R2/README.md) requalified
 the narrow separated-circuit scope after bounding descending avoidance targets
 above terrain recovery. Its 148-check matrix passed, with both CSVs byte-identical
 to the original evidence below; 318 focused integration checks also passed.
-The current pilot SHA-256 is
+That pilot SHA-256 was
 `1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c`.
-The profile retains this fixed evidence entry point; original run identities below
-remain historical. The 60-second moving-encounter survey completes without a
+Original run identities below remain historical. Its 60-second moving-encounter survey completed without a
 crash, but every case still misses player separation; the two repaired crossings
-have worse minimum separation. Moving encounters remain outside the qualified scope.
+had worse minimum separation. Those failed cases remain retained for comparison.
 
 The preceding [AFC-04-R1](../AFC-04-R1/README.md) repaired strongest-threat
 selection and passed the same matrix with byte-identical CSVs. That source

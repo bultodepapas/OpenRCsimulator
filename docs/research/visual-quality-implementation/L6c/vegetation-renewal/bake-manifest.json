@@ -1,0 +1,269 @@
+{
+  "bake": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "godot": "4.7.2-stable (official)",
+    "recipe_id": "realistic-trees-2026-10-20-v1",
+    "renderer": "gl_compatibility",
+    "species": [
+      {
+        "atlas_rect_px": [
+          0,
+          0,
+          512,
+          512
+        ],
+        "bark_material_name": "branches",
+        "derived_sha256": "b12968deb0ae766a207ce6852fd2d6849d5641ab4ec1d24996af9e570c2f3f87",
+        "foliage_material_name": "leaves",
+        "frame_size_m": 1.125001,
+        "id": "CommonTree_1",
+        "normalization": {
+          "bottom_center_world_y_up": [
+            0.404389381408691,
+            0.0,
+            -0.76476001739502
+          ],
+          "height_m": 1.0,
+          "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+          "scale": 0.0167909539555435,
+          "source_bounds_world_y_up": {
+            "max": [
+              26.3473873138428,
+              59.5558776855469,
+              24.6304874420166
+            ],
+            "min": [
+              -25.5386085510254,
+              0.0,
+              -26.1600074768066
+            ]
+          },
+          "source_height_m": 59.5558776855469
+        },
+        "pivot_y_m": 0.5,
+        "source_asset_id": "landscapelab:quercus",
+        "source_material_names": [
+          "branches",
+          "leaves"
+        ],
+        "source_provenance": {
+          "creator": "LandscapeLab Assets contributors",
+          "license": "CC BY-SA 4.0",
+          "license_file": "licenses/CommonTree_1.txt",
+          "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+          "source_title": "Quercus tree asset",
+          "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb"
+        },
+        "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e"
+      },
+      {
+        "atlas_rect_px": [
+          512,
+          0,
+          512,
+          512
+        ],
+        "bark_material_name": "Maple_Bark_PBR",
+        "derived_sha256": "f29d41f5495de3de176fb87acd20e3b45813767fed0b032dc98774ffb2149e52",
+        "foliage_material_name": "Maple_Leaves_PBR",
+        "frame_size_m": 1.125001,
+        "id": "CommonTree_3",
+        "normalization": {
+          "bottom_center_world_y_up": [
+            0.179934024810791,
+            -0.00265942118130624,
+            0.201440334320068
+          ],
+          "height_m": 1.0,
+          "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+          "scale": 0.0545640023449906,
+          "source_bounds_world_y_up": {
+            "max": [
+              6.48583698272705,
+              18.32444190979,
+              8.86783790588379
+            ],
+            "min": [
+              -6.12596893310547,
+              -0.00265942118130624,
+              -8.46495723724365
+            ]
+          },
+          "source_height_m": 18.3271013309713
+        },
+        "pivot_y_m": 0.5,
+        "source_asset_id": "lolipop:acer_large_3_lod1",
+        "source_material_names": [
+          "Maple_Bark_PBR",
+          "Maple_Leaves_PBR"
+        ],
+        "source_provenance": {
+          "creator": "LOLIPOP (@lolipop_1707)",
+          "license": "CC BY 4.0",
+          "license_file": "licenses/CommonTree_3.txt",
+          "source_revision": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
+          "source_title": "Maple trees pack (lowpoly, game ready, LODs)",
+          "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+        },
+        "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
+      },
+      {
+        "atlas_rect_px": [
+          0,
+          512,
+          512,
+          512
+        ],
+        "bark_material_name": "branches.001",
+        "derived_sha256": "f7dc570e64e41975f77d747e8f65bf56ac70bab4dc6337f99311836365e62faf",
+        "foliage_material_name": "leaves.001",
+        "frame_size_m": 1.125001,
+        "id": "Pine_1",
+        "normalization": {
+          "bottom_center_world_y_up": [
+            -0.0801169872283936,
+            0.0,
+            -0.0733203887939453
+          ],
+          "height_m": 1.0,
+          "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+          "scale": 0.0242991371500089,
+          "source_bounds_world_y_up": {
+            "max": [
+              7.76777458190918,
+              41.1537246704102,
+              7.98500347137451
+            ],
+            "min": [
+              -7.92800855636597,
+              0.0,
+              -8.1316442489624
+            ]
+          },
+          "source_height_m": 41.1537246704102
+        },
+        "pivot_y_m": 0.5,
+        "source_asset_id": "landscapelab:pine",
+        "source_material_names": [
+          "branches.001",
+          "leaves.001"
+        ],
+        "source_provenance": {
+          "creator": "LandscapeLab Assets contributors",
+          "license": "CC BY-SA 4.0",
+          "license_file": "licenses/Pine_1.txt",
+          "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+          "source_title": "Joined pine tree asset",
+          "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb"
+        },
+        "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8"
+      }
+    ]
+  },
+  "format": "openrc-tree-bake v2",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "inputs_sha256": {
+    ".gitattributes": "7335a5986090e882df95fc8c0ac55c68727fb9a06297392fc84ce0c90b544604",
+    "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\atlas-repeat\\source-recipe.json": "8f786a428a1aeaf11f403e350c7f2d09443e1bcbe80c9f06750c1cd5d3ab9a58",
+    "assets/landscape/trees/source/Bark_NormalTree.png": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+    "assets/landscape/trees/source/Bark_NormalTree_Normal.png": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+    "assets/landscape/trees/source/CommonTree_1.bin": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
+    "assets/landscape/trees/source/CommonTree_1.gltf": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+    "assets/landscape/trees/source/CommonTree_3.bin": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
+    "assets/landscape/trees/source/CommonTree_3.gltf": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+    "assets/landscape/trees/source/Leaf_Pine_C.png": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+    "assets/landscape/trees/source/Leaves_NormalTree_C.png": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+    "assets/landscape/trees/source/License_Standard.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+    "assets/landscape/trees/source/Pine_1.bin": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
+    "assets/landscape/trees/source/Pine_1.gltf": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+    "assets/landscape/trees/source/upstream-provenance.json": "f38b9a7bb532a5cb2d300ab8de0e45a54d394287c5f686dd57eb1514bffb84d1",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/conversion_manifest.json": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+    "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4",
+    "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+    "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+    "assets/landscape/vegetation/source/landscapelab_tree_2026/pine_joined.glb": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+    "assets/landscape/vegetation/source/landscapelab_tree_2026/quercus.glb": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+    "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+    "tools/trees/adapt.mjs": "6066dd5971ad59a4ec2769a291d962cc3e677952bcf765b80321de390d65335d",
+    "tools/trees/bake.gd": "3390fb0f5a8f5f428c38abfa40591f0fc94e804169b977bbe963409ee2d85aa5",
+    "tools/trees/build.py": "85e2b7daeb465896439e3d64679b1dc31f8355f5c8cfadfd18139690deb6b7d2",
+    "tools/trees/capture_wind.gd": "88fb7e1ada5b1ac811a47ed0ddd9b0c9327dfb4fda2eb2848a1d9734f21811f9",
+    "tools/trees/check_imported_pack.gd": "0f4b5c60d020a585394abb3f17113473d1d1ef99c78aae27a24fb507954d28a8",
+    "tools/trees/check_quality_capture.py": "d440daaa192e2034b82e7bb0d84e8a63e446976245d4455de7559b643a1df612",
+    "tools/trees/check_review.py": "36bb279781570041531b1babf1adf7548a69d7a1dcb4e80d28ff696d4548dd11",
+    "tools/trees/check_wind.py": "82e99bbfc2afffcf59fa11b276be3c63840f50d9241ab395f7834349d259f56f",
+    "tools/trees/fix_atlas.gd": "ed5115ef19e096fdb7e2b51c0905e329739fe9c61bba57e61d335f9b4032818b",
+    "tools/trees/flight_process_census.py": "b2c830d15f549ac1a2043e4677860404ea4f851434015e910d9539bf6cd13b3e",
+    "tools/trees/flight_quality.py": "c1bb5ace40680a12fd20e9daa0bbbab93c7c17e3a04f19e00d86a941e63a1406",
+    "tools/trees/flight_quality_common.py": "dbb240a0428a7c49804ded1c04939e062ee69556200d764c5d523f66854be0b6",
+    "tools/trees/flight_quality_probe.gd": "35c4c9789cf65921edf8454cd93a0bb117beccccf9aa0264365f9871253a9002",
+    "tools/trees/habitat_diagnostics.py": "0cb719ff962fdefda897d39417b830511af503bcedbcadc4908373604cc0cbc4",
+    "tools/trees/inspect_cards.gd": "224924f27604b2ade1f299d1a0a7f61887cae6fc2b53b598d436a2655a89811a",
+    "tools/trees/inspect_scene.gd": "0d3fe6ec791e4446650eb2e9ba9d55ac2aff20bc8e661394baec4e480027825d",
+    "tools/trees/mip_capture.gd": "12bdb408d7dcef57d76fa1d79d4c901c61d38d85ed33fc9d92f8ac59b98ac9fa",
+    "tools/trees/mip_compare.py": "a21703d274eaaa1e2d7000c5e779e35069cbb6a19c70d89745e0868bd4dab49a",
+    "tools/trees/package-lock.json": "f515137545e06ea4b7217a3756cc9955c3aef4bf8b0dc6ba3eb810b514ade4d1",
+    "tools/trees/palette_probe.gd": "78ae77f6b999e17f12d50ec64f66bb22d61d95a07b58c7415a480dda4babbe8c",
+    "tools/trees/place.py": "7c8bc8be811951b09f2127d2eb028b8528664826788701682183188cf61b2058",
+    "tools/trees/place_woodland_edges.py": "3b9ae680d8ce461f5a9dac6ba1d34f36c6fe30057e23e0890795c7cf6e30931b",
+    "tools/trees/process_atlas.py": "2aaefbff5dc1407e1176d19b61f63638ee583f41d6865c58757a7aeb22a16a49",
+    "tools/trees/profile_compare.py": "5fc16ccc0d7b0b5a478beb744c8658f8d6579cf67bcfa19961e5e577c1b1968b",
+    "tools/trees/quality_capture.gd": "cf6819f14f7f588b2eba01e8482f7b57e6d65ad66b409174d7f7a249654e33a4",
+    "tools/trees/readability_capture.gd": "a5ec0c63df33deae7f2f8e31a5281cd64771bdb1672e50d827a866ad37042243",
+    "tools/trees/readability_compare.py": "29e2b64a8ac999f980e70f4cf0cde5d00b2289a0c27ea22ad75b3102cb2b9cc5",
+    "tools/trees/review.gd": "60ba99845bd2046826e14ed4b636f5ab86889367066d9f0b8a73a132720ef0a4",
+    "tools/trees/source_gallery.gd": "d350328cb4b9a7866b60c7593baeb0dd13a5d8b388bdfaa2f5b0c141a185a21b",
+    "tools/trees/temporal_quality.py": "f777db75118171d5b4dc5241afb131ee310252e9be95335b45fcb161f075821e",
+    "tools/trees/test_adapt_recipe.py": "e940676e08d6909e7439b7dfe110bcc52a109f13f7ddcf712a86ef0be164f055",
+    "tools/trees/test_flight_quality.py": "153bc1c58953155f8526dfaf48449e4bea8986ba83d03d4f53e51280e1147283",
+    "tools/trees/test_habitat_diagnostics.py": "bdc860b40965671636be9d487a255d7738463c3eb7a8794e0a88765c9e956ae9",
+    "tools/trees/test_place.py": "c9ba9d74f3f0c154be9eb4b5c1c1fee3ca4df6f3ca21d4884618f374031b39ae",
+    "tools/trees/test_place_woodland_edges.py": "8396a9c08c62bfd64420fd1172c6a0375ce97973ddae1d347464f15989ccb0d9",
+    "tools/trees/test_process_atlas.py": "2b8c92ee6c4ff73a73678c2fde06db1103d4c893cbb5c158527e1ae219df0915",
+    "tools/trees/validate_sources.mjs": "fa6be39d469964f9c773f58ba96b5536add10816f0edec13cfc9a9967e2de9cb",
+    "tools/trees/verify_bakes.py": "b17d6eb6bcb11ba79397db5a5a436e0a083a08ca348906e7c4465c64c960cac1",
+    "tools/trees/world_replay.gd": "885d926a038b6dcf0b9697ebaa683fe967998839f703fbf55c1e1f053ffc4181"
+  },
+  "outputs_sha256": {
+    "atlas\\atlas-analysis.json": "aa0dc158aa071ca83173d16d3d9b0a774fadc3d27d7c3576af492c68b9e3b9f4",
+    "atlas\\atlas.png": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
+    "atlas\\catalog.json": "797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e",
+    "atlas\\foliage_mask.png": "6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f",
+    "atlas\\mip-00.png": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
+    "atlas\\mip-01.png": "91dd79365a00eb38b5291ee9c710804546cdac8947ee8f0e5cc548116fba46b1",
+    "atlas\\mip-02.png": "29f6fd67acfb335a3421b2c21a888e416161b0f6b7d7c665ce3b653a1e1aed3a",
+    "atlas\\mip-03.png": "7a92af766482c2d7f894faea5a3944f20556d74a3ac0a501d2698724802a9475",
+    "atlas\\mip-04.png": "37f511e236410fa60e6e921f58a59a943dd55b946b62d297483e41b338babd05",
+    "atlas\\mip-05.png": "35550e70c6ea274de379862d47ea7ecbbb1212ab4b3e28de502e1ef7690dcd4b",
+    "atlas\\mip-06.png": "e51d08fae0deef61f6a80a996cce6b2b4dae08803244d444e885cc5be6faea5b",
+    "atlas\\mip-07.png": "2fbd2938c32d41326fe536c5840bd1d4f5b17c1b22a64b8bf026d8b3de7dacc4",
+    "atlas\\mip-08.png": "a57c61acd14e9a984d68fae60113dd2241b6639af3bd31aaadf59cb84b742b74",
+    "atlas\\mip-09.png": "409202e1f320ecb75bce5294a5152c5f48dd19ff94d6538bfec43c316e9d549b",
+    "atlas\\mip-10.png": "ffc5bdb7bdee2fdc526ee6d102487c4ece3ca8ab2198d5f80205fd38d10d99a9",
+    "atlas\\mip-analysis.json": "d4e0465979b9b4b402b871d317451fb655493cf19718794ed3ae7b3dc23e511f",
+    "derived\\CommonTree_1-reference.glb": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+    "derived\\CommonTree_1-source-validation.json": "ce7ff3c7f9802ee6b2956f8a1fd33ea441e430706f4d9a507365ba7638d238e8",
+    "derived\\CommonTree_1.glb": "b12968deb0ae766a207ce6852fd2d6849d5641ab4ec1d24996af9e570c2f3f87",
+    "derived\\CommonTree_3-reference.glb": "78ae471a97a1bcf6f0503a38b363cc7b0fd49fb54d968a8a46b770217cba34c9",
+    "derived\\CommonTree_3-source-validation.json": "90421dd460c82683b9132b844858386fc4fc1f1edc3d820cfcbf06e97e752654",
+    "derived\\CommonTree_3.glb": "f29d41f5495de3de176fb87acd20e3b45813767fed0b032dc98774ffb2149e52",
+    "derived\\Pine_1-reference.glb": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+    "derived\\Pine_1-source-validation.json": "89add59b95b1213662d743cdca48fa8540a6be026674c1663165986502807666",
+    "derived\\Pine_1.glb": "f7dc570e64e41975f77d747e8f65bf56ac70bab4dc6337f99311836365e62faf",
+    "derived\\bake-recipe.json": "789dd906c5f1fe42b2a65a8055cba200baf8d78701afc3955f044be45f7b10b2",
+    "derived\\licenses\\CommonTree_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+    "derived\\licenses\\CommonTree_3.txt": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+    "derived\\licenses\\Pine_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+    "derived\\validation.json": "3fa68c145fddee4cf4d72ee1b6da8c98c1ab8cc164685b2f3d05ab1ffdbe4e9b"
+  },
+  "recipe_id": "realistic-trees-2026-10-20-v1",
+  "runtime_alpha_reference": null,
+  "source_recipe_sha256": "8f786a428a1aeaf11f403e350c7f2d09443e1bcbe80c9f06750c1cd5d3ab9a58"
+}

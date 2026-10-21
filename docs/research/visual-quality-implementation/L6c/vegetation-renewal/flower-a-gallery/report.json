@@ -1,0 +1,432 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"arguments": {
+		"asset_height_m": "0.2",
+		"ids": "polyhaven_flower_empodium_a",
+		"mode": "gallery",
+		"out": "D:/OpenRCsimulator-vegetation-renewal-2026-10-20/flower-a-gallery",
+		"wind": "off"
+	},
+	"assets": [
+		{
+			"dependencies": [
+				"assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.bin",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.gltf",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg"
+			],
+			"description": "Downloaded Flower Empodium candidate",
+			"grounded_bounds_m": {
+				"max": [
+					0.102077,
+					0.267072,
+					0.073787
+				],
+				"min": [
+					-0.115286,
+					0.0,
+					-0.176978
+				],
+				"size": [
+					0.217364,
+					0.267072,
+					0.250766
+				]
+			},
+			"id": "polyhaven_flower_empodium_a",
+			"lod": {
+				"alternate_source_lods_included": [],
+				"godot_import_generate": true,
+				"imported_supplied_levels": [
+					"LOD0"
+				],
+				"note": "The selected open-flower source node is labeled LOD0; no alternate level is present in this glTF.",
+				"source_lod": "LOD0",
+				"source_supplied": true
+			},
+			"material_alpha": {
+				"alpha_packing": {
+					"fractional_alpha_fraction": 0.03312778,
+					"fractional_alpha_pixel_count": 34737.0,
+					"height": 1024.0,
+					"mask_coverage_fraction": 0.1217823,
+					"output_bit_depth": 8.0,
+					"pixel_count": 1048576.0,
+					"pixels_at_or_above_mask_cutoff_0_5": 127698.0,
+					"scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+					"source_bit_depth": 16.0,
+					"source_mode": "I;16",
+					"width": 1024.0
+				},
+				"alpha_source": "flower_empodium/textures/flower_empodium_alpha_1k.png",
+				"double_sided": true,
+				"mode_change": "Source BLEND changed to MASK at 0.5 to assess foliage alpha scissor and avoid blended overdraw; fractional coverage below the cutoff is discarded. This staged candidate is not visually qualified.",
+				"output_alpha_cutoff": 0.5,
+				"output_alpha_mode": "MASK",
+				"source_alpha_cutoff": null,
+				"source_alpha_mode": "BLEND"
+			},
+			"role": "flower",
+			"scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.002294,
+				"height": 0.267072,
+				"max": [
+					0.102077,
+					0.264778,
+					0.073787
+				],
+				"min": [
+					-0.115286,
+					-0.002294,
+					-0.176978
+				],
+				"size": [
+					0.217364,
+					0.267072,
+					0.250766
+				]
+			},
+			"source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_a.json",
+			"source_conversion_proof_sha256": "76e3c6d0f68ff15bff0907fac173a24d79f9935b82c40b30b078fc3abbffc511",
+			"source_dependency_sha256": {
+				"assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.bin": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
+				"assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+			},
+			"source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.gltf",
+			"source_format": "glTF 2.0",
+			"source_geometry": {
+				"geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+				"output_node_transform": "identity; supplier side-by-side gallery translation removed",
+				"position_accessor_max": [
+					0.102077223360538,
+					0.26477786898613,
+					0.0737872719764709
+				],
+				"position_accessor_min": [
+					-0.115286432206631,
+					-0.00229401490651071,
+					-0.176978394389153
+				],
+				"source_accessor_indices": {
+					"NORMAL": 1.0,
+					"POSITION": 0.0,
+					"TEXCOORD_0": 2.0,
+					"indices": 3.0
+				},
+				"source_gallery_translation_m": [
+					-0.568126022815704,
+					0.0,
+					0.0
+				],
+				"source_mesh_index": 0.0,
+				"source_mesh_name": "Plane.040",
+				"source_node_index": 0.0,
+				"source_triangles": 758.0,
+				"uv0_max": [
+					0.759176,
+					0.954139
+				],
+				"uv0_min": [
+					-0.00137,
+					0.012407
+				],
+				"uv_accessor_count": 657.0,
+				"vertex_count": 657.0
+			},
+			"source_id": "polyhaven_flower_empodium",
+			"source_materials": 1.0,
+			"source_metadata": {
+				"authors": {
+					"Jenelle van Heerden": "Photography",
+					"Rico Cilliers": "modeling"
+				},
+				"publisher_dimensions": [
+					1322.84265756607,
+					284.094154834747,
+					268.351511796936
+				],
+				"publisher_polycount": 5820.0,
+				"title": "Flower Empodium"
+			},
+			"source_name": "flower_empodium_a_LOD0",
+			"source_sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e",
+			"source_surfaces": 1.0,
+			"source_triangles": 758.0,
+			"textures": [
+				{
+					"source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+					"uri": "textures/flower_empodium_a_base_color_alpha_1k.png"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg",
+					"uri": "textures/flower_empodium_a_nor_gl_1k.jpg"
+				},
+				{
+					"source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+					"uri": "textures/flower_empodium_a_arm_1k.jpg"
+				}
+			],
+			"visual_qualification": "Not performed; staged source candidate only."
+		}
+	],
+	"batch_count": 1,
+	"captures": [
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "polyhaven_flower_empodium_a",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				-0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "back",
+			"sha256": "70593eaf12b7aa5af18bd86fb32af7783e925bfa9c31d63b33bcd2b0847038df",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.00999999977648258,
+				0.239999994635582
+			],
+			"fov": 50.0,
+			"id": "underside",
+			"sha256": "a95c6b02a3e550faf0859ad2f8bb1a4685f30004158202f5976eb17489657ce6",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.5,
+				0.000199999994947575
+			],
+			"fov": 40.0,
+			"id": "overhead",
+			"sha256": "91ba1e26eac4dcf60585d7b76c93f67063c30321b4ef06198a025c8ab0a5f866",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "wind_start",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "wind_one",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "wind_repeat",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 1024.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "wind_wrap",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"at": [
+				0.0,
+				0.0999999940395355,
+				0.0
+			],
+			"clock": 1.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 758,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.0999999940395355,
+				0.399999976158142
+			],
+			"fov": 36.0,
+			"id": "wind_reverse",
+			"sha256": "d770babaa985d8a8572a02b64dff53ec848e42f6ba45c34ccdf8051948b3e06b",
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 35.678,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 65952335,
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "gallery",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "a645cbd5264bb773d500f29b132401286ac174c02d5d873fca8c962fa0421160",
+	"viewport": [
+		1280,
+		720
+	]
+}

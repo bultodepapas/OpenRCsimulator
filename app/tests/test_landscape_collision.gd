@@ -95,13 +95,20 @@ func _test_thin_lamp_continuous_sweep() -> void:
 func _test_tree_response_types() -> void:
 	var canopy_world := _world([[5.0, 0.0, 0.0]], [], [])
 	var hull := PackedFloat64Array([0.0, 0.0, 0.0])
-	var crown_half_extent := 0.0
+	var crown: Dictionary = {}
 	for proxy: Dictionary in canopy_world.proxies:
 		if str(proxy.part) == "crown":
-			crown_half_extent = maxf(float(proxy.half_x), float(proxy.half_z))
+			crown = proxy
+			break
+	_check("synthetic field tree exposes its species-specific flexible crown", not crown.is_empty()
+		and crown.shape == "box" and crown.kind == "tree_foliage" and crown.response_class == "soft_foliage_impulse")
+	var crown_half_extent := maxf(float(crown.get("half_x", 0.0)), float(crown.get("half_z", 0.0)))
 	var sweep_half_length := sqrt(2.0) * crown_half_extent + 1.0
-	var canopy_start := _state(5.0 - sweep_half_length, 0.0, -6.0, 8.0, 0.0, 0.0)
-	var canopy_end := _state(5.0 + sweep_half_length, 0.0, -6.0, 8.0, 0.0, 0.0)
+	var crown_north := float(crown.get("north", 5.0))
+	var crown_east := float(crown.get("east", 0.0))
+	var crown_down := float(crown.get("down", -6.0))
+	var canopy_start := _state(crown_north - sweep_half_length, crown_east, crown_down, 8.0, 0.0, 0.0)
+	var canopy_end := _state(crown_north + sweep_half_length, crown_east, crown_down, 8.0, 0.0, 0.0)
 	var canopy_hits: Array[Collision.Event] = Collision.contacts(canopy_start, canopy_end, hull, canopy_world, 2, mass, inertia)
 	_check("tree crown is a low-severity entering response", not canopy_hits.is_empty() and not canopy_hits[0].terminal
 		and canopy_hits[0].response_class == "soft_foliage_impulse")
