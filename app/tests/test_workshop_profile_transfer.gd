@@ -90,6 +90,15 @@ func _test_refusals_and_legacy_marking() -> void:
 	var target_bindings: Dictionary = _bindings_fixture("target-family", "b", false)
 	var source_profile: Dictionary = _source_profile(source_bindings)
 	var target_profile: Dictionary = _target_profile(target_bindings)
+	var stock_legacy: Dictionary = Presentation.defaults(target_bindings, Presentation.LEGACY_VERSION)
+	var promoted: Dictionary = Transfer.propose(source_profile, source_bindings, stock_legacy, target_bindings)
+	_check("stock legacy target can be reviewed in the current format without changing its source",
+		promoted.get("ok", false) and promoted.get("promoted_legacy_target", false)
+		and int(promoted.profile.version) == Presentation.VERSION and int(stock_legacy.version) == Presentation.LEGACY_VERSION)
+	var edited_legacy: Dictionary = stock_legacy.duplicate(true)
+	edited_legacy.visual_seed = 9
+	_check("authored legacy target still requires explicit migration", not Transfer.propose(
+		source_profile, source_bindings, edited_legacy, target_bindings).get("ok", false))
 	var malformed: Dictionary = source_profile.duplicate(true)
 	malformed["unknown"] = true
 	_check("unknown profile fields reject before any proposal", not Transfer.propose(

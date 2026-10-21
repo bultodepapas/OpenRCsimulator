@@ -2358,6 +2358,8 @@ func _review_profile_transfer() -> void:
 	_transfer_base_id = _base_id
 	_transfer_proposal = result.profile.duplicate(true)
 	var lines := PackedStringArray([tr("From %s · revision %d") % [str(loaded.variant.name), int(loaded.variant.revision)], tr("Only listed compatible settings will change. Physical adjustments stay unchanged.")])
+	if bool(result.get("promoted_legacy_target", false)):
+		lines.append(tr("This stock appearance profile will use the current format when applied."))
 	for group: String in ["applied", "skipped"]:
 		lines.append("")
 		lines.append(tr("Settings to apply" if group == "applied" else "Settings skipped"))

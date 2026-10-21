@@ -4256,6 +4256,9 @@ msgstr "De %s · revisión %d"
 msgid "Only listed compatible settings will change. Physical adjustments stay unchanged."
 msgstr "Solo cambiarán los ajustes compatibles indicados. Los ajustes físicos se conservan."
 
+msgid "This stock appearance profile will use the current format when applied."
+msgstr "Al aplicar, este perfil de apariencia original usará el formato actual."
+
 msgid "Settings to apply"
 msgstr "Ajustes que se aplicarán"
 
