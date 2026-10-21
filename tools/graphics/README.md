@@ -62,3 +62,20 @@ Use the existing native flight collector separately, without concurrent tests,
 exports or captures. `restart_probe.gd` requires an editor binary; release templates
 ignore its `--script` route. It is not a packaged-release probe. Packaged restart
 must be exercised through the actual menu.
+
+`flow_probe.gd` diagnoses moving moon/stars and twilight at a fixed 60 Hz clock,
+20× world time, 1920×1080 and 4× MSAA. Run with an editor binary and a native
+renderer, selecting either profile through `launch.py`:
+
+```powershell
+python tools/graphics/launch.py --profile high --script ../tools/graphics/flow_probe.gd -- --out=D:/captures/high-flow
+```
+
+Use a new absolute output directory. Each case warms for 10 seconds, records
+481 draws and 120 draws at a paused clock, then replays selected times for PNGs
+outside the timing sample. Check `complete`, actual profile/renderer, size and
+sample counts before comparing reports. CPU/GPU queries can lag. This is an
+offscreen production World diagnostic without aircraft or flight simulation;
+it does not qualify flight pacing, pilot readability or reflection quality.
+Flowing High uses Godot's realtime 256-pixel sky filtering to allow continuity;
+frozen worlds retain quality filtering. [Evidence and tradeoffs](../../docs/research/visual-quality-implementation/VQ-07/sky-continuity-2026-10-21/README.md).

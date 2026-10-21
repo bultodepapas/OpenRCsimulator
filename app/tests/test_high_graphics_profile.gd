@@ -43,6 +43,7 @@ func _initialize() -> void:
 
 	_test_protected_environment_and_physics()
 	_test_atmosphere_reapplication(native_forward_plus)
+	_test_flow_policy(native_forward_plus)
 
 	if had_profile_env:
 		OS.set_environment(PROFILE_ENV, saved_profile_env)
@@ -62,6 +63,21 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	if not ok:
 		_failures += 1
 		printerr("FAIL %s %s" % [label, detail])
+
+
+func _test_flow_policy(native_high: bool) -> void:
+	var env := Environment.new()
+	_check("missing sky never permits frame sky writes", not HighGraphics.supports_frame_sky(env))
+	env.sky = Sky.new()
+	env.sky.process_mode = Sky.PROCESS_MODE_QUALITY
+	_check("quality sky never permits High frame sky writes", not HighGraphics.supports_frame_sky(env))
+	HighGraphics.configure_flow_sky(env)
+	_check("flow filtering requires active native High", env.sky.process_mode ==
+		(Sky.PROCESS_MODE_REALTIME if native_high else Sky.PROCESS_MODE_QUALITY))
+	_check("flow radiance uses the stock 256 size", env.sky.radiance_size == Sky.RADIANCE_SIZE_256)
+	_check("frame sky permission follows actual active policy", HighGraphics.supports_frame_sky(env) == native_high)
+	HighGraphics.apply_environment(env)
+	_check("environment reapplication preserves flow filtering", HighGraphics.supports_frame_sky(env) == native_high)
 
 
 func _near(actual: float, expected: float, tolerance := 1.0e-5) -> bool:

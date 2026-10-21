@@ -1,0 +1,51 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0bc5c15b-f6e0-4fe5-ac59-4276a8e5a685",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--script",
+    "res://tests/test_world_moon_flow.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:27:54.867341+00:00",
+  "label": "moon-flow-high",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\moon-flow-high-941ryg3z\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\moon-flow-high-941ryg3z\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.328,
+  "log_bytes": 1350,
+  "log_sha256": "9c59cb5844c8fd1e99ff3ed57ea6476b22baaefe6fdd0e825087ae7be2336186"
+}

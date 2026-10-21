@@ -1,0 +1,72 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2134cb7d-6483-44ab-ae28-5aad2f5d12cf",
+  "command": [
+    "D:/OpenRCsimulator-scratch/high-followup-20261021/release/OpenRC Simulator.exe",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--fullscreen",
+    "--resolution",
+    "1920x1080",
+    "--max-fps",
+    "0",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--battery=ideal",
+    "--date=2026-09-26",
+    "--time=20:30",
+    "--time_scale=20",
+    "--frametimes=D:/OpenRCsimulator-scratch/sky-continuity-20261021/flight-before.json",
+    "--warmup=10",
+    "--t=60",
+    "--frame-diagnostics"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:37:29.443145+00:00",
+  "label": "flight-before",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\flight-before-ak29rua5\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\flight-before-ak29rua5\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "frame times: p50 16.65 ms, p95 18.32 ms, p99 21.45 ms over 3588 frames (complete=true) \u2192 D:/OpenRCsimulator-scratch/sky-continuity-20261021/flight-before.json"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 17,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 78.859,
+  "log_bytes": 1166,
+  "log_sha256": "c7b757ba3a55bec3ad4fdd6c22a4055ade1b4548c0a00c12839d3d52cb881fbb"
+}

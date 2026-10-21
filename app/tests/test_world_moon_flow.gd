@@ -1,7 +1,8 @@
 # FW-MOON-03b (FW-MOON-01 decision): with time flowing, the moon's disc and the stars move every frame between the
 # 30 s sky steps instead of jumping 0.12° per step. The per-frame values are a pure function of the simulation clock,
 # meet the stepped state at every step, reuse the next step's state exactly, and are written only while the
-# environment does not use the sky's radiance; frozen sessions, pauses and "no moon" leave the uniforms alone; the
+# environment does not use the sky's radiance or High explicitly uses realtime filtering; frozen sessions,
+# pauses and "no moon" leave the relevant uniforms alone; the
 # disc stays out of the radiance cubemap pass. FW-MOON-06d: in twilight the slow sky terms follow per frame too.
 # Run: godot --headless --path . --script res://tests/test_world_moon_flow.gd
 extends SceneTree
@@ -13,6 +14,7 @@ const Atmosphere := preload("res://render/atmosphere.gd")
 const Ephemeris := preload("res://render/world/ephemeris.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
+const HighGraphics := preload("res://render/high_graphics_profile.gd")
 
 const FPS := 60.0
 ## Full moon 25° high in the east-north-east at the reference field (FW-MOON-00 survey), time flowing ×20.
@@ -157,7 +159,10 @@ func _initialize() -> void:
 	var stars: Node3D = holder.get_node_or_null("Stars")
 	_check("flowing night with stars and a moon above the horizon", stars != null and float(Atmosphere.state.moon_elevation_deg) > 15.0
 		and Atmosphere.state.moon_lin != Vector3.ZERO, str(Atmosphere.state.get("moon_elevation_deg")))
-	_check("the flowing environment leaves the radiance unused", World.radiance_unused(env))
+	_check("flow sky uses its renderer-specific radiance policy", World.radiance_unused(env) if not HighGraphics.active()
+		else env.reflected_light_source == Environment.REFLECTION_SOURCE_SKY and HighGraphics.supports_frame_sky(env))
+	_check("only flowing High uses realtime filtering", env.sky.process_mode ==
+		(Sky.PROCESS_MODE_REALTIME if HighGraphics.active() else Sky.PROCESS_MODE_QUALITY))
 
 	# 4.5 s of flight at ×20 = three 30 s sky steps.
 	var frames := _play(mat, stars, 0.0, 4.5)
@@ -215,12 +220,15 @@ func _initialize() -> void:
 	World.flow_frame(5.0)
 	_check("a paused clock moves nothing", not World.flow_frame(5.0))
 
-	# A route that uses the radiance must not write per-frame sky uniforms.
+	# QUALITY radiance must never acquire per-frame sky writes, even in High.
 	var before: Vector3 = mat.get_shader_parameter("moon_dir")
+	var mode_before := env.sky.process_mode
+	env.sky.process_mode = Sky.PROCESS_MODE_QUALITY
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
 	_check("no per-frame writes while the sky's radiance is used", not World.flow_frame(5.1)
 		and mat.get_shader_parameter("moon_dir") == before)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.sky.process_mode = mode_before
 
 	# No moon: the disc stays invisible between the steps (FW-MOON-06d writes the whole frame sky); the stars still turn.
 	var off := MoonConfig.defaults()
@@ -240,7 +248,8 @@ func _initialize() -> void:
 
 	# Frozen sessions never move.
 	var frozen := Node3D.new()
-	World.build(frozen, field, Callable(), Conditions.resolve(PackedStringArray(["--date=2026-10-25", "--time=21:00"])))
+	var frozen_world := World.build(frozen, field, Callable(), Conditions.resolve(PackedStringArray(["--date=2026-10-25", "--time=21:00"])))
+	_check("frozen world keeps quality radiance", frozen_world.environment.sky.process_mode == Sky.PROCESS_MODE_QUALITY)
 	_check("frozen time: no per-frame motion", not World.flow_frame(1.0) and not World.flow_frame(2.0))
 	frozen.free()
 	Atmosphere.state = {}

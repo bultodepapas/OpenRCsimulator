@@ -1,0 +1,17 @@
+{
+  "trace_exact": true,
+  "png_exact": {
+    "moon-000.png": true,
+    "moon-045.png": true,
+    "moon-089.png": true,
+    "moon-090.png": true,
+    "moon-091.png": true,
+    "moon-180.png": true,
+    "twilight-000.png": true,
+    "twilight-045.png": true,
+    "twilight-089.png": true,
+    "twilight-090.png": true,
+    "twilight-091.png": true,
+    "twilight-180.png": true
+  }
+}

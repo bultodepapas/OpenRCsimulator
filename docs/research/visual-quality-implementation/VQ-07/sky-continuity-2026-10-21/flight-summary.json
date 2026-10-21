@@ -1,0 +1,26 @@
+{
+  "before": {
+    "wall_ms": {
+      "max": 38.728,
+      "p50": 16.65,
+      "p95": 18.323,
+      "p99": 21.448
+    },
+    "root_gpu_ms_p95": 5.19600009918213,
+    "root_cpu_ms_p95": 0.667999982833862,
+    "aligned_simulation_wall_ratio": 1.0000442605879851,
+    "frames": 3588
+  },
+  "after": {
+    "wall_ms": {
+      "max": 38.117,
+      "p50": 16.666,
+      "p95": 18.272,
+      "p99": 22.082
+    },
+    "root_gpu_ms_p95": 5.68100023269653,
+    "root_cpu_ms_p95": 0.857999980449677,
+    "aligned_simulation_wall_ratio": 0.9999603043746114,
+    "frames": 3589
+  }
+}

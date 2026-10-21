@@ -1,0 +1,53 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b92c006-79e2-4565-b5f0-c43a89e1304a",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "gl_compatibility",
+    "--script",
+    "../tools/graphics/flow_probe.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-scratch/sky-continuity-20261021/standard-before"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:26:45.537302+00:00",
+  "label": "standard-before",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\standard-before-bc_c24dy\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\standard-before-bc_c24dy\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "flow probe complete: moon and twilight"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 30.953,
+  "log_bytes": 1012,
+  "log_sha256": "505793a6145215a882488d5a37ce18330b46f575b1e5c82af6683744da6cef0c"
+}

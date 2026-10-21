@@ -64,3 +64,15 @@ static func apply_sun(sun: DirectionalLight3D) -> void:
 	sun.directional_shadow_split_3 = 0.50
 	# Approximate solar angular diameter; stock PCSS provides contact-hardening penumbrae.
 	sun.light_angular_distance = 0.53
+
+## Only a flowing High world pays for dynamic radiance filtering. Frozen worlds
+## retain QUALITY; realtime filtering uses Godot's required 256-pixel cubemap.
+static func configure_flow_sky(env: Environment) -> void:
+	if not active() or env.sky == null:
+		return
+	env.sky.radiance_size = Sky.RADIANCE_SIZE_256
+	env.sky.process_mode = Sky.PROCESS_MODE_REALTIME
+
+static func supports_frame_sky(env: Environment) -> bool:
+	return active() and env.sky != null and env.sky.process_mode == Sky.PROCESS_MODE_REALTIME \
+		and env.sky.radiance_size == Sky.RADIANCE_SIZE_256

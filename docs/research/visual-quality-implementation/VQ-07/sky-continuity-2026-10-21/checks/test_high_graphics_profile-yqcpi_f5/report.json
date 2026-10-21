@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "2cac6fbb-0992-49a2-a0f6-2869ae1ab75e",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_high_graphics_profile.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:32:04.846375+00:00",
+  "label": "test_high_graphics_profile",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\test_high_graphics_profile-yqcpi_f5\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\test_high_graphics_profile-yqcpi_f5\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.406,
+  "log_bytes": 265,
+  "log_sha256": "402902ac73d7f15dd6fa58641775b3ccd312d57f8d139d5bbbb7ef2707ca865a"
+}

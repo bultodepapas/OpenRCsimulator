@@ -1,0 +1,439 @@
+{
+  "format": "openrc-vq-evidence-manifest v1",
+  "scope": "experimental High continuity repair; no performance or lifecycle qualification",
+  "source_identity": "source-build-identity.json",
+  "artifacts": {
+    "checks/flight-after-9o9e9wo7/engine.log": {
+      "sha256": "e89f29f71c79ec5c996c1fed48580314aa25fcc7a52e53788c38080953c2c07d",
+      "bytes": 1165
+    },
+    "checks/flight-after-9o9e9wo7/report.json": {
+      "sha256": "0824f7b5e92b2645177970a6fd0dba860b3f4934072431a699a6b3aa5121d21f",
+      "bytes": 2371
+    },
+    "checks/flight-before-ak29rua5/engine.log": {
+      "sha256": "c7b757ba3a55bec3ad4fdd6c22a4055ade1b4548c0a00c12839d3d52cb881fbb",
+      "bytes": 1166
+    },
+    "checks/flight-before-ak29rua5/report.json": {
+      "sha256": "f59b8c3b60057ed069f6a06d8f7fef87a2eaef25a946b12852afee7d47996ac6",
+      "bytes": 2350
+    },
+    "checks/high-after-r_0p7056/engine.log": {
+      "sha256": "92fe1fc800bc92339c463e4361ec51e2a2e84fa13a186b35412d5cdb95d31189",
+      "bytes": 1474
+    },
+    "checks/high-after-r_0p7056/report.json": {
+      "sha256": "c709e7b70c1a3e8c909779e618adf5f59f9d1ce07b78aa4189bd72a59e8ad9d3",
+      "bytes": 1953
+    },
+    "checks/high-before-uy7otg0j/engine.log": {
+      "sha256": "5d98c5957c010988f9c9d2612bdd460e9154e28ca3fa256b870bf4b4d7bf2225",
+      "bytes": 1474
+    },
+    "checks/high-before-uy7otg0j/report.json": {
+      "sha256": "6f0f71ea6245f0a80800013588565ed2f5b85c237cbd05313551c4324755811c",
+      "bytes": 1956
+    },
+    "checks/high-profile-native-0fwgrhhd/engine.log": {
+      "sha256": "0e34701e912727118fb90d2d73e623f7d5ea5cf771890e6218d55538f2ec13c2",
+      "bytes": 294
+    },
+    "checks/high-profile-native-0fwgrhhd/report.json": {
+      "sha256": "3b798416dd4004f3b92c36c125cf78f3eb55c2c0c9e51c4ddefc0c0282f62412",
+      "bytes": 1189
+    },
+    "checks/moon-flow-high-941ryg3z/engine.log": {
+      "sha256": "9c59cb5844c8fd1e99ff3ed57ea6476b22baaefe6fdd0e825087ae7be2336186",
+      "bytes": 1350
+    },
+    "checks/moon-flow-high-941ryg3z/report.json": {
+      "sha256": "fa847037dfcc422d6fdcf3c4e77fd8ee858667d735e504394d282fb2126d75a0",
+      "bytes": 1597
+    },
+    "checks/presentation-context-final-xacl8ptu/engine.log": {
+      "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e",
+      "bytes": 124
+    },
+    "checks/presentation-context-final-xacl8ptu/report.json": {
+      "sha256": "3c93396b9b6fb51ecc402bbd98d7a56f7eede7dd9ec8021ccb5a1c7979aa6db1",
+      "bytes": 1187
+    },
+    "checks/standard-after-_b5kott9/engine.log": {
+      "sha256": "5fd3fb615683d8e63b830810059254b41f1c7bd2d21d3513714ef3b0cdab1c78",
+      "bytes": 1012
+    },
+    "checks/standard-after-_b5kott9/report.json": {
+      "sha256": "1822a330562f232f8810e2a41541af522c139b4d6e56065af65e70ae51e3dc18",
+      "bytes": 1720
+    },
+    "checks/standard-before-bc_c24dy/engine.log": {
+      "sha256": "505793a6145215a882488d5a37ce18330b46f575b1e5c82af6683744da6cef0c",
+      "bytes": 1012
+    },
+    "checks/standard-before-bc_c24dy/report.json": {
+      "sha256": "c85d727392b2f4fa07d100aa8c3bb3229a929cebdd23083e764f5b2092b1c3e6",
+      "bytes": 1724
+    },
+    "checks/test_high_graphics_profile-yqcpi_f5/engine.log": {
+      "sha256": "402902ac73d7f15dd6fa58641775b3ccd312d57f8d139d5bbbb7ef2707ca865a",
+      "bytes": 265
+    },
+    "checks/test_high_graphics_profile-yqcpi_f5/report.json": {
+      "sha256": "1c0748a4fc38f17773e16f0aa6b84f5e45ba9621c7a3e0cd406bfec6aef5e274",
+      "bytes": 1170
+    },
+    "checks/test_world_flow-gjndvwqj/engine.log": {
+      "sha256": "bf067563201197de59f47a2cbd18f2da80df9b55a85abf62275d9f977512b842",
+      "bytes": 1061
+    },
+    "checks/test_world_flow-gjndvwqj/report.json": {
+      "sha256": "ebaacfb94aa1521bcda12e2ac9115d2a52eba214f57e9c34512188e268a071eb",
+      "bytes": 1961
+    },
+    "checks/test_world_moon_flow-qxbkm7i4/engine.log": {
+      "sha256": "ff427802ab42e6cdff75b516330a7a18fce27efc367888d59415d3bf0aa45ff3",
+      "bytes": 776
+    },
+    "checks/test_world_moon_flow-qxbkm7i4/report.json": {
+      "sha256": "21fe937d642300545bce65536590f58b7c947908381ecdec4b2e08d78d0aa1f3",
+      "bytes": 1585
+    },
+    "checks/test_world_presentation_context-f7e1s269/engine.log": {
+      "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e",
+      "bytes": 124
+    },
+    "checks/test_world_presentation_context-f7e1s269/report.json": {
+      "sha256": "2ccf7b8bd39acf7d95c6ef95cdbdb2c9e77812e5140838fabe449c9bca38ce54",
+      "bytes": 1226
+    },
+    "checks/visual-after-exit-yt5cl6tm/engine.log": {
+      "sha256": "c5aa4d0830ed9ebed20804f67d82417d57730ce859a0fe00a43119dc4099e1e0",
+      "bytes": 226206
+    },
+    "checks/visual-after-exit-yt5cl6tm/report.json": {
+      "sha256": "f4a47a3cf7b2822018be028b524b1d325f45f892b38e088e82273d04159849ca",
+      "bytes": 14735
+    },
+    "checks/visual-after-input-u7uw0sn1/engine.log": {
+      "sha256": "d85feb26217824dd2fc436f8aabf296fdc70a3f45d716541d907f53ed5667a7e",
+      "bytes": 226466
+    },
+    "checks/visual-after-input-u7uw0sn1/report.json": {
+      "sha256": "22497a8c6f6577f21c3315c159802319db52e5099fd76c0eb437ad966f2db385",
+      "bytes": 14740
+    },
+    "checks/visual-before-exit-99s_rjde/engine.log": {
+      "sha256": "f6ba5028257e62b45de12b1e854cf735f856430696f0cfb40003e5418f537100",
+      "bytes": 226207
+    },
+    "checks/visual-before-exit-99s_rjde/report.json": {
+      "sha256": "2725f5b019268b3935baa79019d54470da8fce92fd97252a620dba1cecf3f923",
+      "bytes": 14739
+    },
+    "checks/visual-before-input-g_67krtu/engine.log": {
+      "sha256": "5bcda95373cf3a03d9ba2ea41c6e5ac0e52208bb1449ee273943879e670ae0a0",
+      "bytes": 226209
+    },
+    "checks/visual-before-input-g_67krtu/report.json": {
+      "sha256": "406e30f46d3c8a2759afc78e0bfc005ad31d3e7a2e3d47e916cea91abfe841ad",
+      "bytes": 14743
+    },
+    "checks/visual-flight-o_vfgkej/engine.log": {
+      "sha256": "a31eb0dda34f23a0aa91b7a4ed9cf3ef3d12b20eb64063f5f16ad1a087200e0e",
+      "bytes": 1416
+    },
+    "checks/visual-flight-o_vfgkej/report.json": {
+      "sha256": "94d47bc32fb302e51f79312e6fed7b764522f3f9f949d0699647c86410dd86f3",
+      "bytes": 2853
+    },
+    "checks/windows-export-ig2dxym7/engine.log": {
+      "sha256": "a00d18b8fdac5d6c6c1145efffc19f21a0cfbac079ffc02bfadcf8a10af5bb5d",
+      "bytes": 223106
+    },
+    "checks/windows-export-ig2dxym7/report.json": {
+      "sha256": "c67e921cd0b36d8c664f7dd65536547d594e42ebba2330fe9ecd6fa42afd2a2c",
+      "bytes": 1624
+    },
+    "flight-after-diagnosis.json": {
+      "sha256": "9a9601152b9e7ecf429c21c11eceff32596ba946a6fa41515ab69fa33fc115a1",
+      "bytes": 21577
+    },
+    "flight-after.json": {
+      "sha256": "7e455fac25b02dd923334bdea5546a782915a4dda53ae681e5d668d98ecf2fd0",
+      "bytes": 1601199
+    },
+    "flight-before-diagnosis.json": {
+      "sha256": "0f7aa422b4e601103e5421b05b976294627150372a396d0ee7f9eba87f636692",
+      "bytes": 21508
+    },
+    "flight-before-observed.png": {
+      "sha256": "4e3d7150fe356d3b8a34fcda6da56a65b33ddf9f0e6639033400dc33bfa7c443",
+      "bytes": 86574
+    },
+    "flight-before.json": {
+      "sha256": "c28a7655dcb5a3b8c05345676dc09bc0d8f4b8db3f713b6a753c5b5841769826",
+      "bytes": 1601340
+    },
+    "flight-summary.json": {
+      "sha256": "0b112a0714f3a3604302eb4bdd66ff9fccfccaa28e79ba07c10ef8d5d92ba98c",
+      "bytes": 597
+    },
+    "high-after/moon-000.png": {
+      "sha256": "b3751d07b0f7457bfcd5ee3deabc5b97e9d1de952b36fa3a0d9f8c648fe758aa",
+      "bytes": 103302
+    },
+    "high-after/moon-045.png": {
+      "sha256": "f6de06fdce19de111c4f527da26765b6ba6f988c46210f99845eb0fc7bb11215",
+      "bytes": 103422
+    },
+    "high-after/moon-089.png": {
+      "sha256": "dcb85cf5d7b70c138846a90ac30cfdd28f48023668cd310dcf8ceb352228ba55",
+      "bytes": 104010
+    },
+    "high-after/moon-090.png": {
+      "sha256": "52668c095b97f4f3321b22d96721ac11c08c2aeb531aa1a0a72b3130af112115",
+      "bytes": 104110
+    },
+    "high-after/moon-091.png": {
+      "sha256": "4e86eb636c3181155e7791f606a85952b8dde71c5b9640fb76555a883c7a2b3c",
+      "bytes": 104762
+    },
+    "high-after/moon-180.png": {
+      "sha256": "8b1612cbc8c312898c884ae7a60e1f98dac74c090afdf0f0dc974caf78216d09",
+      "bytes": 107536
+    },
+    "high-after/report.json": {
+      "sha256": "31f9f27a87dd341365867e32735aff2955b1497b46bc9e40c69ba969dbcb5e65",
+      "bytes": 285619
+    },
+    "high-after/twilight-000.png": {
+      "sha256": "7bc644c77a31ad1402d88b4f55e79596a6015b876f22a44c29d74aca813a6dcc",
+      "bytes": 395730
+    },
+    "high-after/twilight-045.png": {
+      "sha256": "33eef62e204045d925ca8f1657d93a5c792f55ecfe2effee55383fce7d0c1773",
+      "bytes": 381568
+    },
+    "high-after/twilight-089.png": {
+      "sha256": "30a18c1c80904d0eea555dff959f1d309d910dee00604f07a7b629520606ab85",
+      "bytes": 372429
+    },
+    "high-after/twilight-090.png": {
+      "sha256": "f4b6ade7cb96997b57f77613f5f3cff6f758e9906abab04a2959d76189f83ca3",
+      "bytes": 372346
+    },
+    "high-after/twilight-091.png": {
+      "sha256": "56267654da28c87c9f2cff8a0e07339282a5aef6983ac3605a549d67c1b9e1fe",
+      "bytes": 371837
+    },
+    "high-after/twilight-180.png": {
+      "sha256": "5e75c82e281064b7655754c09a50ccf9002c4fa64c73edcb8041c76fe158a4ca",
+      "bytes": 349848
+    },
+    "high-before/moon-000.png": {
+      "sha256": "17af8ea1006f604b7a25141384d30cd509539fc8ed15eb9ed56a666be8f8f23b",
+      "bytes": 103303
+    },
+    "high-before/moon-045.png": {
+      "sha256": "1bd3270763cf416409a8fc69ecd501a431583c27f8de1502a98c68f39070374e",
+      "bytes": 103263
+    },
+    "high-before/moon-089.png": {
+      "sha256": "4d80d34c3e36eaeb1259519606c9456c859ae2876a1ca7c07cabd3e108eb15ba",
+      "bytes": 103250
+    },
+    "high-before/moon-090.png": {
+      "sha256": "03fcd35a85201e315cf23ccec05741c34e84e606ca397756d50dbbd47419a5a1",
+      "bytes": 104113
+    },
+    "high-before/moon-091.png": {
+      "sha256": "55bc72fa78431c3bc8efc01c87ecc43e736b310b8bd7cb09cdfca10eb4093e93",
+      "bytes": 104584
+    },
+    "high-before/moon-180.png": {
+      "sha256": "d36b3c0bcdd4e12475d981085087333b63ba94391e14c4a2703674d80325b946",
+      "bytes": 107536
+    },
+    "high-before/report.json": {
+      "sha256": "9e7f9f9aa85629a2326ca1c6441c17d9594c7308587f6187f289313b1c38cd70",
+      "bytes": 243828
+    },
+    "high-before/twilight-000.png": {
+      "sha256": "e7429e60ada268628140cbfa62ddfa8ac261668d19ea0026308914b3c7dd2860",
+      "bytes": 395697
+    },
+    "high-before/twilight-045.png": {
+      "sha256": "463d069773319bed9832e9b9dc9f0746f3bb149e40cb1ce6b19b41e29cbb7d19",
+      "bytes": 395734
+    },
+    "high-before/twilight-089.png": {
+      "sha256": "7aa3333fe0f2aac3000575d89a87987ccca1b0a9b51823883a1d4c05c2101925",
+      "bytes": 395887
+    },
+    "high-before/twilight-090.png": {
+      "sha256": "457c9fc5c0e97d2931ed9753bf4e5436a679bda5164bef81e5a66016cca82621",
+      "bytes": 372254
+    },
+    "high-before/twilight-091.png": {
+      "sha256": "da31c2270dac8bd9baf182f5258cde58d1f0c27ae947be4531239ae44c4478f1",
+      "bytes": 372229
+    },
+    "high-before/twilight-180.png": {
+      "sha256": "41fc0e598ef3027388651bada3762b9b8ae71af3c52f4c7254a1c7a309eb2d40",
+      "bytes": 349739
+    },
+    "probe-summary.json": {
+      "sha256": "a639ee969284004880f58004fc8cb97d1b132ede705f0d1b398b0cc9ecf55962",
+      "bytes": 3119
+    },
+    "README.md": {
+      "sha256": "d33bb8ac89f49318cc26d72b8270398a9c84cf5140ce00955a09c41f81b4fc22",
+      "bytes": 6134
+    },
+    "reduce_probe.py": {
+      "sha256": "70206178a46d507cadf699bf9fb1ab1b5634122cfa1f4069f13524fa11e25474",
+      "bytes": 2993
+    },
+    "source-build-identity.json": {
+      "sha256": "ecd062a69034852d18ef53ccb52dc72a5e97be7a72516db174b6518b97170749",
+      "bytes": 2148
+    },
+    "standard-after/moon-000.png": {
+      "sha256": "5cda3034e6a77315d63f12a563dcfbe7d5d2879cec78490cd5291643e759608b",
+      "bytes": 761476
+    },
+    "standard-after/moon-045.png": {
+      "sha256": "d827c04e088de11c744195fb6088d0a6e385df3cc1019e70a6dce85ee0870b9b",
+      "bytes": 764781
+    },
+    "standard-after/moon-089.png": {
+      "sha256": "18c91265d52b55c13dcb0b42af9e7e12251e3f4c613c5efbd15eae1e73c565e5",
+      "bytes": 765177
+    },
+    "standard-after/moon-090.png": {
+      "sha256": "6a6306f187b88e24ae226cdae676ede5b6ee2d8474841a89ab9fbf0eb28da399",
+      "bytes": 765989
+    },
+    "standard-after/moon-091.png": {
+      "sha256": "08ca956d488bf59b48311d60cb63428939af181525f5d18b894698b7cda59a98",
+      "bytes": 765871
+    },
+    "standard-after/moon-180.png": {
+      "sha256": "71fc304878d65fc0e2a8d90aea3af484d45a1167178cdc5797090feb560778cc",
+      "bytes": 772809
+    },
+    "standard-after/report.json": {
+      "sha256": "12ff476b47a7f4b0437bd85c6385fdd6ad3df9e29fe79bf59018f0bf7ab942ad",
+      "bytes": 286113
+    },
+    "standard-after/twilight-000.png": {
+      "sha256": "b4fe9067f500c017198283422684855b696c140682b68f164427a020c827f3c3",
+      "bytes": 676328
+    },
+    "standard-after/twilight-045.png": {
+      "sha256": "9f58d4dc870545708e32392b9677d3956c888b139a8b7e1a021483558aa9bf61",
+      "bytes": 677431
+    },
+    "standard-after/twilight-089.png": {
+      "sha256": "ec531dd4f7e3183cc2d05a74c19fbfb546ed5b36a5960816a7cea419a931d8e1",
+      "bytes": 634933
+    },
+    "standard-after/twilight-090.png": {
+      "sha256": "d5e509fffc4bb3fcb182ddbbf1ffe77b792f6643ac7f849d705061f313df3f72",
+      "bytes": 634706
+    },
+    "standard-after/twilight-091.png": {
+      "sha256": "9149d17f32304f90f34675954858f1b502a9129255362bb55d60f36a1a95e4b1",
+      "bytes": 633269
+    },
+    "standard-after/twilight-180.png": {
+      "sha256": "c1e974cfa1a9ad0c07f0a1e87f2a8e8c97a5cd89a9adf4f890b88f9fdc6f5ac8",
+      "bytes": 586869
+    },
+    "standard-before/moon-000.png": {
+      "sha256": "5cda3034e6a77315d63f12a563dcfbe7d5d2879cec78490cd5291643e759608b",
+      "bytes": 761476
+    },
+    "standard-before/moon-045.png": {
+      "sha256": "d827c04e088de11c744195fb6088d0a6e385df3cc1019e70a6dce85ee0870b9b",
+      "bytes": 764781
+    },
+    "standard-before/moon-089.png": {
+      "sha256": "18c91265d52b55c13dcb0b42af9e7e12251e3f4c613c5efbd15eae1e73c565e5",
+      "bytes": 765177
+    },
+    "standard-before/moon-090.png": {
+      "sha256": "6a6306f187b88e24ae226cdae676ede5b6ee2d8474841a89ab9fbf0eb28da399",
+      "bytes": 765989
+    },
+    "standard-before/moon-091.png": {
+      "sha256": "08ca956d488bf59b48311d60cb63428939af181525f5d18b894698b7cda59a98",
+      "bytes": 765871
+    },
+    "standard-before/moon-180.png": {
+      "sha256": "71fc304878d65fc0e2a8d90aea3af484d45a1167178cdc5797090feb560778cc",
+      "bytes": 772809
+    },
+    "standard-before/report.json": {
+      "sha256": "2599270d6cfb29e7a61cde36fb5c2d55559cdd15b923f0fc9fac74fb68ad64f6",
+      "bytes": 263652
+    },
+    "standard-before/twilight-000.png": {
+      "sha256": "b4fe9067f500c017198283422684855b696c140682b68f164427a020c827f3c3",
+      "bytes": 676328
+    },
+    "standard-before/twilight-045.png": {
+      "sha256": "9f58d4dc870545708e32392b9677d3956c888b139a8b7e1a021483558aa9bf61",
+      "bytes": 677431
+    },
+    "standard-before/twilight-089.png": {
+      "sha256": "ec531dd4f7e3183cc2d05a74c19fbfb546ed5b36a5960816a7cea419a931d8e1",
+      "bytes": 634933
+    },
+    "standard-before/twilight-090.png": {
+      "sha256": "d5e509fffc4bb3fcb182ddbbf1ffe77b792f6643ac7f849d705061f313df3f72",
+      "bytes": 634706
+    },
+    "standard-before/twilight-091.png": {
+      "sha256": "9149d17f32304f90f34675954858f1b502a9129255362bb55d60f36a1a95e4b1",
+      "bytes": 633269
+    },
+    "standard-before/twilight-180.png": {
+      "sha256": "c1e974cfa1a9ad0c07f0a1e87f2a8e8c97a5cd89a9adf4f890b88f9fdc6f5ac8",
+      "bytes": 586869
+    },
+    "standard-parity.json": {
+      "sha256": "51067aa44ffc891814a92554f8626f3b0a966d9a8addc4253f9638c366f655e7",
+      "bytes": 400
+    },
+    "visual-after-exit.json": {
+      "sha256": "7a774885ebe5854d6856a52f6b5ec855f5361414f4b7e0e74a3157e64f7ab3c2",
+      "bytes": 546197
+    },
+    "visual-after-input.json": {
+      "sha256": "631c5186750ad3ac2a711652a0f775c1f4d1e2c7070445d5bb54a67d27864f3c",
+      "bytes": 547967
+    },
+    "visual-before-exit.json": {
+      "sha256": "086a0611c25eba7043e12636474916332e761910a4cb2cea28c9cecdacfdc254",
+      "bytes": 545798
+    },
+    "visual-before-input.json": {
+      "sha256": "5cb26fe7996bf670200c40b3f8cda680a2250f4647c096026f8fd5ab838d90b8",
+      "bytes": 547308
+    },
+    "visual-before-input.png": {
+      "sha256": "dbff886aefb699c6aeaec1d50dbe04cbca96854a940aae2f545551f1bd45461a",
+      "bytes": 121744
+    },
+    "visual-flight-pilot.png": {
+      "sha256": "f5dea11f1e2b4cfa24e0aa15a97de7b81c322256958d7cb523bb3abb536d1a87",
+      "bytes": 115763
+    },
+    "visual-flight.json": {
+      "sha256": "cf693610d0aeb1225b149d5cd43c45c0f54dc3b35969a1256896e106e5758e29",
+      "bytes": 545625
+    }
+  }
+}

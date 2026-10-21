@@ -1,0 +1,39 @@
+{
+  "base_commit": "6943058dd0e059395e325480573e475e1087ffd6",
+  "baseline_source_sha256": {
+    "app/render/high_graphics_profile.gd": "e6da515a01742944dbff2266e6207e0d4a75b28ae0067bb5be8507bcaef78122",
+    "app/render/world/world.gd": "9b4e488d689496e2018ed984b45848e6d29ab5bcdc3f0122a29beaa425df2784",
+    "app/tests/test_high_graphics_profile.gd": "1eb6da443ca38586d3c9d6d71791fc6bac9aab6e519947426d75c2d7fff8b1f6",
+    "app/tests/test_world_moon_flow.gd": "4a2ca42f6eeacffa1749220c569177b67bd33a9a0eb1161a6482a15e5af8f45d"
+  },
+  "candidate_source_sha256": {
+    "app/render/high_graphics_profile.gd": "83a1edf365cf69a396899a29f638e051a283320a112e832d68eb0cfdfe15c07a",
+    "app/render/world/world.gd": "3b12844e6ae005c8e46c5399d7d9462e44ad3d58cc7edd7430f4aede0fe1f447",
+    "app/tests/test_high_graphics_profile.gd": "05a7246474904e9869ac88f885eceb62459cd9fdea86ec1a5564bc6ee634fa8f",
+    "app/tests/test_world_moon_flow.gd": "7b8ec189fc7886cc61c734b656d58b79028e68511671a19080c9687a3bbf0f4e",
+    "tools/graphics/flow_probe.gd": "cafafa4bbe239081e4bc140750ddd30ba45f877f2256445fa241b03cc7720c11"
+  },
+  "binaries": {
+    "before": {
+      "D:\\OpenRCsimulator-scratch\\high-followup-20261021\\release\\OpenRC Simulator.exe": {
+        "sha256": "8ef393612dbf2a214d0b3831481592b62b760d96930d14435d6c6e27e06859d2",
+        "bytes": 444981824
+      },
+      "D:\\OpenRCsimulator-scratch\\high-followup-20261021\\release\\openrc_ground_vehicle.dll": {
+        "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "bytes": 460800
+      }
+    },
+    "after": {
+      "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\release\\OpenRC Simulator.exe": {
+        "sha256": "8c5809263ba0d6005004712273b435031f5e082ead95b3c6f448af60b879ca03",
+        "bytes": 444982288
+      },
+      "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\release\\openrc_ground_vehicle.dll": {
+        "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "bytes": 460800
+      }
+    }
+  },
+  "scope": "local manual Windows trial; no release qualification"
+}
