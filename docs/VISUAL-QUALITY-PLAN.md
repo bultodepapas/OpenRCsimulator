@@ -12,6 +12,8 @@ Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality
 
 The [global implementation sequence](plans/global-performance-visual-quality.md#3-order-dependencies-and-reviewable-deliveries) selects the current performance/visual delivery and resolves its research ideas. VQ-01c measurement tools and the read-only VQ-02a inventory foundation are implemented; their acceptance gaps remain below. VQ-07 and additional postprocessing remain outside that delivery.
 
+The [advanced graphics plan](plans/advanced-graphics.md), added 2026-10-21, owns the proposed VQ-07a…h comparison steps and conditional High-profile decision. Its [source audit](research/advanced-graphics-2026-10-21/README.md) preserves the supplied research and independent checks. It does not expand the current Compatibility delivery or change the parent-step status below.
+
 ## Current implementation
 
 The app uses Godot 4.7.2 with the Compatibility renderer. A validated field and shared builder serve Home and flight. The visual capture harness records case, renderer, backend and frame-time context; llvmpipe results establish repeatability, not target-GPU performance. See [VQ-01a](research/visual-quality-implementation/VQ-01a/README.md), [VQ-01b](research/visual-quality-implementation/VQ-01b/README.md), and the landscape implementation evidence.
@@ -35,7 +37,7 @@ VQ-04a-F2 adds a moving windsock silhouette in one 512² map, sharing the visibl
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |
 | VQ-06a/b | Apply renderer quality settings and expose saved presets through the menu. | Open with the UI-22…24 theme/display/Settings work; include repeated apply, invalid settings, restore and frame-time evidence. |
 | VQ-06c | Integrate the selected changes and qualify the exact packaged visual/performance slice with DT/L/FW/CAM. | Planned after selected probe outcomes and qualified settings; does not close unavailable native/pilot gates or the whole DT program. |
-| VQ-07 | Compare Forward+ in an isolated build. | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
+| VQ-07 | Compare Forward+ in an isolated build; [VQ-07a…h execution plan](plans/advanced-graphics.md#4-vq-07-isolated-renderer-comparison). | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
 
 ## Evidence and acceptance
 

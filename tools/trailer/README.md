@@ -1,6 +1,6 @@
 # Cinematic trailer tools
 
-TRA-02…07 presentation tools for the English film **Every Input Matters** (current cut: 58 seconds).
+TRA-02…07 presentation tools for the English film **Every Input Matters** (current cut: 58 seconds; [2026-10-21 runtime refresh](../../docs/research/cinematic-trailer/refresh-2026-10-21.md)).
 See the [production plan](../../docs/plans/cinematic-trailer.md) and its linked evidence for scope and results.
 No tool here edits the simulation kernel, aircraft data, damage assessment or prices.
 
@@ -43,7 +43,7 @@ It deliberately has no simulation session and is always labeled as a cinematic f
 The export folder contains `timeline.json`, `sources/`, `evidence/`, `licenses/`, and an `editor/`
 snapshot. Source paths in the timeline are relative to that JSON. Each shot specifies source start,
 exact frame count, game-audio source/gain, and English graphics. Duration is the sum of shot frames
-divided by 60; revision 6 contains 3,480 frames. Older one-minute manifests remain supported.
+divided by 60; revision 6 and the current refresh contain 3,480 frames. Older one-minute manifests remain supported.
 The formation is stored as a lossless FFV1 source; ordinary takes retain their original MJPEG/PCM AVI.
 
 The tested editor uses Python, **Pillow 12.3.0** and **FFmpeg/ffprobe 9.0.2 essentials**. Barlow Condensed
@@ -100,6 +100,8 @@ The last fade-out frame reaches black. The title card begins at 54 2/3 seconds; 
 at 58 seconds. See the [ending evidence](../../docs/research/cinematic-trailer/revision-6-2026-10-17.md).
 `output_filename` can name the export; otherwise the editor derives its duration in the filename.
 Supply a music stem with the corresponding duration and intended ending fade.
+
+The 2026-10-21 refresh reruns every simulator picture scene and the formation on the current source tree, retaining revision 6's 58-second timeline. The current crash happens later than the old take; derive its approach, impact and report cuts from the new capture instead of copying old source offsets. Detect the report's first visible and first reset frames in the decoded AVI before making the clean FFV1 source. The [refresh evidence](../../docs/research/cinematic-trailer/refresh-2026-10-21.md) records the accepted boundaries and delivery.
 
 Output checks cover resolution, 60 fps, the manifest's frame count/duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
