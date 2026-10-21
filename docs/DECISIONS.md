@@ -691,3 +691,17 @@ Fresh-buffer ordering closes that gap without a synchronization stall or another
 draw pass. Camera-dependent alpha crossings remain a visual qualification gate.
 [Exact backend source](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/particles_storage.cpp#L734-L778)
 and [native comparison](research/smoke-investigations/SM-16-23/README.md).
+
+### 2026-10-21 — Cambered section in the Glow propeller surrogate; installed engine left to the profile owner (EX-14f)
+
+Give the 12-annulus surrogate an optional zero-lift angle and fit it, with the
+chord, to measured APC Sport data (`fit_section.py`). The symmetric section is
+kept byte-identical. One physical parameter removes the static over-rev and
+the near-hover at half throttle, and moves level flight from 18,283 to
+15,539 rpm. The Extra adopts it. Do not derate the 61FX profile for the
+installed muffler inside an aircraft step. The only anchors are a secondhand
+dyno figure and one rig point, and the NITRO dossier reserved that variant for
+the profile owner. The cost is a known top-speed overshoot (47 m/s), recorded
+with the coherent alternative (40.8 m/s at 13,524 rpm). Revisit when a tach
+reading of the installed engine exists.
+[Evidence](research/extra-300-realism/EX-14/README.md#ex-14f--propeller-section-camber).

@@ -1,6 +1,6 @@
 # EX-14: Extra 300S realism pass against the weighed build and owner reports
 
-2026-10-20 · EX-14a/c/d/e, with shared steps NITRO-61FX-R1 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
+2026-10-20/21 · EX-14a/c/d/e/f, with shared steps NITRO-61FX-R1 and D10-R3 · **Status: delivered as software; the aircraft stays experimental.** Owner: [Extra aircraft guide](../../../EXTRA-300-PLAN.md).
 
 Goal: make the GPMA0236 Extra 300S .60 fly like the real RC model. The targets come from the only magazine flight report of this kit, from five named owners on its build thread, and from comparable 60-size Extras. Each change below is a mechanism with its own source. None is a gain tuned to pass a maneuver. Software verification here does not establish physical validation (EX-09).
 
@@ -48,6 +48,7 @@ No source gives a measured speed, roll rate, knife-edge mix or spin rate for a 6
 | EX-14c | The Glow shaft composes with the quasi-static tail slipstream (Selig wash factor, swirl, Ribner sidewash), McCormick propeller normal force and P-factor. The stage hands the wake its own hub thrust and torque; the smooth and transported wakes stay refused (the Glow layout has no wash states). The Extra derives the tables from its Glow propeller surrogate (σ 0.071) and four tail pieces from its geometry, including the rudder below the fuselage top line, behind the tail post | Shared: `slipstream.gd` (new `stage_loads`), `dynamics.gd`, `glow/flight.gd`, `glow/installation.gd`; Extra generator |
 | D10-R3 / EX-14d | Opt-in `aero.surfaces.body_cy_beta` and `body_crossflow_area`: the fuselage side force in the local law at the ARP. It is Allen–Perkins in form: a slender-body term ½ρ·S·CYβ_B·u·v plus crossflow drag −½ρ·η·c_d·S_side·√(v²+w²)·v, not faded. With `body_cy_beta` the loader requires the oracle's `CYb` = fin + body. Extra values: CYβ_B −0.124/rad (its DATCOM body term; Letko × K_i gives −0.116), η 0.65, c_d 1.4, S_side 0.172 m² | Shared: `aero.gd`, `aircraft_data.gd`, v1/v2 schema, contract, [AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md); Extra generator; `test_body_side_force.gd` |
 | EX-14e | Ground effect (shared M5-GE-1 law) with constants fitted to an image-method VLM of the Extra's wing and tail. The VLM reuses the P-51 P51-20 solver unchanged: induced c 17.2, e 1.21 (rms 0.006); tail c 19.2, e 1.33 (rms 0.013). The low wing sits at x 0.133 on its wheels | `research/extra-300/ex14/ground_effect_vlm.py` → `vlm_ground_effect.json`; Extra generator; CI check |
+| [EX-14f](#ex-14f--propeller-section-camber) | Optional cambered-section zero-lift angle in the Glow propeller surrogate, fitted to measured APC Sport 11×6 data and adopted by the Extra's installation | NITRO: `glow/propeller.gd`, `glow/installation.gd`, installation schema, Python mirrors, `fit_section.py`, `build_installations.py`; `test_glow_propeller_camber.gd` |
 
 Regenerated through their pipelines:
 - Workshop descriptor;
@@ -146,15 +147,50 @@ The fuselage crossflow term (D10-R3) causes it. A snap is flown at α ≈ 27°, 
 
 **61FX Stik, full card at zero tolerance: 0 changes** ([compare-stik-61fx.md](ft/compare-stik-61fx.md)). The other glow airframe on the changed profile, `dynamics.gd`, `slipstream.gd` and Glow paths is bit-identical; none of its card flights passes 20,000 rpm. Its regression dive in `test_glow_dive_support.gd` does pass 20,000 rpm, and it faulted before R1.
 
+## EX-14f — propeller section camber
+
+**Diagnosis.** The Glow propeller is a 12-annulus blade-element surrogate with a symmetric section, `cl = a·sin(2α)/2`. Measured against the UIUC APC Sport 11×6 (already the Stik's tables), it differs in two ways:
+- It reaches zero thrust at the geometric pitch ratio (J 0.50 on a 12×6). The real props keep thrust to about 1.4× it: measured 0.77 (11×6), APC's computed 12×6 0.68.
+- It absorbs only 81 % of the real static power, which implies a static figure of merit of 0.88.
+
+So at speed the engine had to over-rev to make any thrust: level Vmax at 18,283 rpm, above the O.S. 17,000 and APC 15,833 rpm limits. At the APC 12×6's own figures that point needs 2.65 kW, against a 1.4 kW rating. On the ground it over-revved too: 12,550 rpm and 56 N (T/W 1.5), so the airplane hung on its prop at half throttle.
+
+**Law (shared, opt-in).**
+- `propeller.zero_lift_angle_rad` (−0.3…0) shifts lift and the flat-plate blend to the angle from the zero-lift line, α − α₀. Absent or 0 is byte-identical.
+- It runs through `propeller.gd`, the installation validator and JSON schema, and the Python mirrors (`calibration_report.py`, `cycle_oracle.py`).
+- [test_glow_propeller_camber.gd](../../../../app/tests/test_glow_propeller_camber.gd) has 10 checks: byte identity, refusals, zero-thrust J, the actuator-disk bound over 30 points, and the runtime equal to the Python mirror (0 relative error). All 17 glow programs pass unchanged.
+
+**Fit.** [fit_section.py](../../../../research/glow-engines/fit_section.py) writes [section_fits.json](../../../../research/glow-engines/section_fits.json) and is checked by `--check`. It fits c/D and α₀ to the measured 11×6 knots in the repository: **c/D 0.0507, α₀ −5.86°**, normalized RMS 0.038, against 0.547 for the best symmetric section.
+- The static figure of merit becomes 0.56.
+- On the 12×6 the shaft power stays ≥ 33.9 % above the ideal actuator-disk power (NITRO-02 asks ≥ 5 %).
+- The Extra's 12×6 takes it by c/D transfer: chord 15.5 mm, α₀ −0.102 rad.
+- Cross-check against APC's own 12×6 Sport file, corrected by APC's measured bias on the 11×6/11×7 ([sources](propeller-sources.json)): Ct within ±5 % at J 0.4–0.6, static Ct 11 % low, Cp 6–13 % high.
+
+**Engine side: A / B / C on the same tests.** Production is now B (the owner committed it as `0f71655a`). C uses an evidence-only installed-engine hypothesis. Its indicated-efficiency factor puts brake torque on Gierke's 0.679 N·m at 13,000 rpm and near Glassock's 11,000 rpm point, falling past the peak (0.59 at 16,000 rpm). C is not in the repository.
+
+| | A: symmetric prop, catalog engine (EX-14) | **B: cambered prop, catalog engine (production)** | C: cambered prop, installed hypothesis | Anchor |
+| --- | --- | --- | --- | --- |
+| Static (cambered 12×6 balance) | 12,550 rpm, 56.1 N | 11,284 rpm, 38.7 N | 10,245 rpm, 31.9 N | 10,400 (Pitts) – 11,500 rpm; Glassock rig 10,791 rpm, 41.6 N |
+| Level Vmax at rpm | 41.0 m/s at 18,283 | 47.0 m/s at 15,539 | **40.8 m/s at 13,524** | no measurement; estimated 41–42 m/s at 13,700–14,800 rpm with a Gierke-anchored engine |
+| Full throttle at 22 m/s | 17,925 rpm | 14,290 rpm | 12,684 rpm | |
+| Best full-throttle climb (m/s) | 15.4 / 15.8 / 16.8 | 9.7 / 11.0 / 12.3 | 7.5 / 8.6 / 9.1 | .61FX clearly weaker than a .91 four-stroke |
+| Takeoff ground roll / lift-off time | 14.3 m / 3.1 s | 19.1 m / 3.7 s | 23.3 m / 4.2 s | |
+| Height after 30 s at 50 % throttle (hands off) | +209 m | +177 m | +140 m | |
+| Rudder-free takeoff swing | −9.6° | −9.9° | −9.1° | left (manual) |
+
+B is more realistic than A on ground rpm, static thrust, hover, in-flight rpm (and engine pitch) and climb. Its top speed is about 15 % high. C is consistent with every anchor, but it rests on a secondhand dyno figure and a hypothesized fall-off. The NITRO dossier reserved that choice for the profile owner, so it is not adopted. Adopting C means:
+- a muffler-installed MAX-61FX profile variant generated by `build_profiles.py` for the Extra's installation (the Stik's 61FX keeps the catalog profile);
+- one tach reading to replace the hypothesis.
+
+FT_B_PLACEHOLDER
+
 ## Open findings (ranked)
 
-1. **The propulsion looks too strong at high rpm and at half throttle.** This is NITRO with the Extra installation.
-   - Level Vmax 41 m/s needs 18,290 rpm, above O.S.'s 17,000 rpm practical limit and APC's 15,833 rpm limit.
-   - A 12×6 cannot exceed its pitch speed by much: 15,833 rpm × 6 in is 40 m/s.
-   - At ½ throttle the up-line does not decay, so thrust is close to weight. Owners say even a Saito 100 lacks solid hover power, and a .61FX was clearly weaker than a .91 four-stroke.
-   - The installation predicts 12,550 rpm static against the 10,400 (Pitts muffler) to 12,000 rpm reported.
-   - The prototype ran a Pitts muffler, and the profile carries catalog power with no installed loss.
-   - Needed: tach and thrust readings of a 61FX + APC 12×6 with the Pitts muffler, and torque beyond 16,000 rpm.
+1. **The engine is stronger than an installed .61FX.** This is NITRO's decision ([EX-14f](#ex-14f--propeller-section-camber)).
+   - The camber fix removed the impossible 18,000 rpm level flight and the half-throttle hover.
+   - It also exposed the catalog-power profile: with a realistic prop, level Vmax rises to 47 m/s. The only installed measurements are Gierke (secondhand: 1.24 hp at 13,000 rpm with the stock muffler) and Glassock (710 W at 11,000 rpm on a rig). Both point to about 75–80 % of the profile's torque in the 11,000–13,000 rpm band.
+   - The prototype's Pitts-style muffler is more restrictive still, but no source quantifies it.
+   - Needed: a tach and thrust reading of the airplane's own 61FX on the 12×6, static and on a full-throttle level pass, with the muffler noted.
 2. **The stall drops a wing; the real airplane mushes.**
    - The battery's power-off stall banks 78° in the first second, and a held stall enters a spin.
    - Owners: "very very mild … mushes forward", with reluctant spin entries.
@@ -174,6 +210,7 @@ The fuselage crossflow term (D10-R3) causes it. A snap is flown at α ≈ 27°, 
 
 ```bash
 python3 research/glow-engines/build_profiles.py --check
+python3 research/glow-engines/fit_section.py --check && python3 research/glow-engines/build_installations.py --check
 python3 research/extra-300/ex14/ground_effect_vlm.py --check
 python3 research/extra-300/ex05/derive_physics.py --check
 python3 research/aircraft-editor/build_descriptors.py --check

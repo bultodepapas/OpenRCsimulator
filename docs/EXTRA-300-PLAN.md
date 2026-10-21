@@ -32,7 +32,7 @@ Original delivery results retain their dated scope. Neither old passing counts n
 | EX-11 | Select/fly/pause/restart/end integration | Recheck changed shared input/session/product paths. |
 | EX-12 | Export/performance qualification | Current clean-checkout fleet packages, per-aircraft smoke, relevant uninterrupted suite and target hardware. |
 | EX-13 | Further aerobatic/ground extensions | Deferred; require scoped shared mechanisms, data and lifecycle/qualification proof. |
-| EX-14 | Realism pass against the RCM-weighed build and owner reports: measured mass (14a), Glow propwash/P-factor/normal force (14c), fuselage side force (14d, shared D10-R3), ground effect (14e); NITRO-61FX-R1 dive support | Propulsion strength at high rpm and half throttle, the mild-stall polar, the knife-edge margin and the left-hammerhead torque roll remain open. [EX-14 evidence](research/extra-300-realism/EX-14/README.md). |
+| EX-14 | Realism pass against the RCM-weighed build and owner reports: measured mass (14a), Glow propwash/P-factor/normal force (14c), fuselage side force (14d, shared D10-R3), ground effect (14e), cambered propeller section fitted to measured APC data (14f); NITRO-61FX-R1 dive support | Installed-engine power (catalog profile gives Vmax 47 m/s; a muffler-installed variant is the profile owner's decision), the mild-stall polar, the knife-edge margin and the left-hammerhead torque roll remain open. [EX-14 evidence](research/extra-300-realism/EX-14/README.md). |
 
 ## Current model limits
 
