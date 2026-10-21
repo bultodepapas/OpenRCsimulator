@@ -65,6 +65,13 @@ normal `0.05` setting retains the club appearance, while zero disables the
 stripes for the guarded comparison. The raw-wave and no-stripes controls remain
 part of the full visual gate.
 
+The local pinned-Godot Linux Compatibility rerun [completed](v0.1.7-stripe-summary.json):
+the 12 native images repeated byte for byte, both negative controls were
+rejected, and filtered/raw temporal error was 0.001981/0.007236 at 100 m and
+0.002865/0.014009 at 300 m. The nearby threshold retained stripe detail.
+These are software-renderer regression measurements, not target-GPU or pilot
+acceptance.
+
 - [PBRT: texture sampling and antialiasing](https://pbr-book.org/4ed/Textures_and_Materials/Texture_Sampling_and_Antialiasing): filtering and supersampling principles.
 - [PBRT: image reconstruction](https://pbr-book.org/4ed/Sampling_and_Reconstruction/Image_Reconstruction): box-filter limitations.
 - [Godot Camera3D](https://docs.godotengine.org/en/stable/classes/class_camera3d.html): cropped frustum API; signatures checked against the pinned 4.7.2 engine.
