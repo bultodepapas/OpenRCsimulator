@@ -35,7 +35,7 @@ static func spec(prefab: String, seed: int, group_id: String = "") -> Dictionary
 	# source bounds as rendering when centering the coarse collision envelope.
 	var crown_x := 0.0
 	var crown_z := 0.0
-	if asset_id in ["maple_tree", "landscapelab_quercus", "landscapelab_pine"]:
+	if asset_id == "maple_tree" or str(asset.get("source_id", "")) == "landscapelab_tree_2026":
 		crown_x = (float(bounds.min[0]) + float(bounds.max[0])) * 0.5 * scale
 		crown_z = (float(bounds.min[2]) + float(bounds.max[2])) * 0.5 * scale
 	return {asset_id = asset_id, height = height, scale = scale,
