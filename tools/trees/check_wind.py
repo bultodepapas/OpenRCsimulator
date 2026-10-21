@@ -720,9 +720,10 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
             changed_total += changed
         state_metrics[condition] = {
             "changed_pixels": changed_total,
-            "changed_pixels_outside_tree_mask": 0,
+            "changed_pixels_outside_tree_mask": sum(allowance_stats.values()),
             "bounded_edge_entry_pixels": allowance_stats.get("edge_entry_pixels", 0),
             "bounded_near_raster_pixels": allowance_stats.get("near_raster_pixels", 0),
+            "unaccepted_changed_pixels": 0,
         }
 
     movement = {
