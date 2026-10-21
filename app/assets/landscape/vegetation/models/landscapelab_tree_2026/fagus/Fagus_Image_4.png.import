@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7sxj0be06fvs"
-path="res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.ctex"
+path.s3tc="res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.s3tc.ctex"
+path.etc2="res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "3100646fbcb1ff9f0031374d3508ca91"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus_Image_4.png"
-dest_files=["res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.ctex"]
+dest_files=["res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.s3tc.ctex", "res://.godot/imported/Fagus_Image_4.png-6290c7fcc8e46fea60ee9046d887769c.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

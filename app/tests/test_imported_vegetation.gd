@@ -62,7 +62,7 @@ func _test_catalog_and_parts() -> void:
 	_check("all pinned sources are cataloged", data.get("sources", []).size() == 10)
 
 	var assets: Array = data.get("assets", [])
-	_check("28 assets are cataloged", assets.size() == 28)
+	_check("30 assets are cataloged", assets.size() == 30)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
