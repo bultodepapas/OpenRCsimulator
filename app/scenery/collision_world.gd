@@ -20,9 +20,15 @@ const TREE_TRUNK_HEIGHT_FRACTION := 0.34
 const SHADE_TREE_TRUNK_RADIUS_FRACTION := 0.05
 const SHADE_TREE_TRUNK_HEIGHT_FRACTION := 0.355
 const SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
-# Quercus leaf triangles reach 13.3190126/59.5558777 = 0.223639 of source height.
-# Round the lower proxy edge down to 0.22 so the complete source leaves stay covered.
-const LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION := 0.22
+# Lowest indexed leaf-triangle vertex over source height, rounded down so the complete
+# source leaves stay covered: Quercus 13.3190126/59.5558777 = 0.223639, Fagus
+# 0.1272657/1.0192933 = 0.124857, Quercus 2 22.9070053/71.8539352 = 0.318800.
+# Pine leaves start at 0.409726, above the generic trunk-top crown edge.
+const LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS := {
+	"landscapelab_quercus": 0.22,
+	"landscapelab_fagus": 0.12,
+	"landscapelab_quercus2": 0.31,
+}
 const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.3701171875, 0.3017578125, 0.1669921875] # realistic atlas occupied pixel centres at alpha 0.5
 const FIELD_TREE_CARD_FRAME_SIZE_M := 1.125001 # source frame size multiplied by Treeline.identity.height in shader
 const FIELD_TREE_WIND_LEAN_M := 0.24 # maximum lean in render/tree_wind.gdshaderinc (L15b)
@@ -337,8 +343,8 @@ static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, p
 	_add_capsule(proxies, "tree:%s:%s:trunk" % [id_prefab, id], "tree_trunk", "trunk", "hard_terminal",
 		north, east, -trunk_height * 0.5, trunk_radius, trunk_half)
 	var crown_bottom_height := trunk_height
-	if str(vegetation.get("asset_id", "")) == "landscapelab_quercus":
-		crown_bottom_height = minf(crown_bottom_height, height * LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+	var crown_bottom_fraction := float(LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS.get(str(vegetation.get("asset_id", "")), 1.0))
+	crown_bottom_height = minf(crown_bottom_height, height * crown_bottom_fraction)
 	var crown_height := maxf(0.001, height - crown_bottom_height)
 	var crown_center := _placement_point(north, east, heading,
 		float(vegetation.get("crown_offset_x", 0.0)), float(vegetation.get("crown_offset_z", 0.0)))

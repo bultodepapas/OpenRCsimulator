@@ -2274,7 +2274,7 @@
   },
   "source_sha256_normalized_text": {
     "app/assets/landscape/trees/catalog.json": "46d43e9394fc30f9f6d48dd3990b696f49ce4c31cc1938cc70231931a3745733",
-    "app/assets/landscape/vegetation/catalog.json": "0dabc15caf2989a6130d275fb8072dbe1b7c6715d8c1132c6321078ad79ab6bc",
+    "app/assets/landscape/vegetation/catalog.json": "a4c1e6b48db3f8458615d684629c6f70bfeac70ad59d9b899fcae2ff87ba0440",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
     "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json": "a217d565f3f44f48eb06a67e5ed28f2ef3ad9cc99b64e8e0b6d64214d816e5a5",
@@ -2287,11 +2287,11 @@
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
     "app/render/treeline.gd": "4713a0674f8e3fb39305fa16fcfa6695a9f8736629b939c5f8686500d2c087f8",
     "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
-    "app/scenery/imported_vegetation.gd": "30752a19e0d5086d0b8912c6eea358d59af828b826ff59a15d08b85660cc70aa",
+    "app/scenery/imported_vegetation.gd": "0ca58595cb8fb7e1371fac53a15f48796dcfc817d252feecce6b2b48cea45f58",
     "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
     "app/scenery/prefabs.gd": "4556c3b00475a16254ed7a83e58c3572e6f2f2cbccde7b3ca24150c1cb22e16c",
-    "app/scenery/vegetation_placement.gd": "0508be49ebbdf65d2becf745a001172df9428646bbc5368ea5edc1149ae4f12d",
+    "app/scenery/vegetation_placement.gd": "bcb32a8e613e8365dc48a4549aea0d3c88cfe709b39b7b6077932a8141b3377a",
     "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
   },
   "source_triangle_budget": 472,

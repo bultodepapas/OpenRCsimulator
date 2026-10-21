@@ -3,6 +3,35 @@ extends SceneTree
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+# LU-34: downloaded close-tree and understory maps follow the reviewed maple policy: GPU-compressed
+# (S3TC desktop, ETC2 for Apple/mobile), normal maps flagged, original mip choice. Lossless imports
+# cost 113-142 ms cold decode per tree and four times the texture memory with no visible gain.
+const VRAM_TEXTURES := {
+	"res://assets/landscape/vegetation/models/Leaves.png": false, # Quaternius clover/flower/fern leaves, 16 -> 4 MiB
+	"res://assets/landscape/vegetation/models/Flowers.png": false, # Quaternius flower heads, 3.8 -> 0.9 MiB
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus2/quercus2_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus2/quercus2_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus2/quercus2_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus2/quercus2_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg": true,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg": true,
+}
 
 var _failures := 0
 
@@ -12,6 +41,7 @@ func _initialize() -> void:
 	_test_fit_and_aliases()
 	_test_default_sapling_group()
 	_test_batch_build_and_damage()
+	_test_vram_texture_policy()
 	if _failures == 0:
 		print("imported vegetation tests passed")
 		quit(0)
@@ -23,7 +53,7 @@ func _initialize() -> void:
 func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
-	_check("eleven retained tree variants", counts.get("trees", 0) == 11)
+	_check("thirteen retained tree variants", counts.get("trees", 0) == 13)
 	_check("three downloaded shrubs", counts.get("shrubs", 0) == 3)
 	_check("seven downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 7)
 	_check("four downloaded flowering assets", counts.get("flowers", 0) == 4)
@@ -32,7 +62,7 @@ func _test_catalog_and_parts() -> void:
 	_check("all pinned sources are cataloged", data.get("sources", []).size() == 10)
 
 	var assets: Array = data.get("assets", [])
-	_check("28 assets are cataloged", assets.size() == 28)
+	_check("30 assets are cataloged", assets.size() == 30)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -103,7 +133,7 @@ func _test_catalog_and_parts() -> void:
 	_check("Maple source meshes retain 5,541 triangles and two material surfaces",
 		maple_triangles == 5541 and maple_surfaces == 2)
 	_check("Maple source materials stay attached to their imported surfaces", maple_material_mapping_valid)
-	for asset_id in ["landscapelab_quercus", "landscapelab_pine"]:
+	for asset_id in ["landscapelab_quercus", "landscapelab_pine", "landscapelab_fagus", "landscapelab_quercus2"]:
 		for part: Dictionary in ImportedVegetation.get_parts(asset_id):
 			var source_mesh: Mesh = part.mesh
 			for surface_index in source_mesh.get_surface_count():
@@ -125,9 +155,9 @@ func _test_fit_and_aliases() -> void:
 		var id := ImportedVegetation.resolve_id("shade_tree", seed)
 		mature_forms[id] = true
 		_check("tree aliases share the same deterministic source", id == ImportedVegetation.resolve_id("tree", seed))
-	_check("mature aliases retain protected Maple and use realistic oak/pine replacements",
-		mature_forms.size() == 3
-		and mature_forms.has("maple_tree")
+	_check("mature aliases retain protected Maple and use realistic oak/beech/pine replacements",
+		mature_forms.size() == 4
+		and mature_forms.has("maple_tree") and mature_forms.has("landscapelab_fagus")
 		and mature_forms.has("landscapelab_quercus") and mature_forms.has("landscapelab_pine")
 		and not mature_forms.has(""))
 	var maple := VegetationPlacement.spec("shade_tree", 793949324)
@@ -137,10 +167,10 @@ func _test_fit_and_aliases() -> void:
 		and int(maple.get("triangles", 0)) == 5541
 		and absf(float(maple.get("width", 0.0)) - 9.63) < 0.05
 		and absf(float(maple.get("depth", 0.0)) - 13.24) < 0.05)
-	_check("sapling alias uses downloaded oak and pine variants",
-		ImportedVegetation.resolve_id("sapling", 0) == "landscapelab_quercus"
+	_check("sapling alias uses the downloaded young oak and pine variants",
+		ImportedVegetation.resolve_id("sapling", 0) == "landscapelab_quercus2"
 		and ImportedVegetation.resolve_id("sapling", 1) == "landscapelab_pine"
-		and ImportedVegetation.resolve_id("sapling", 2) == "landscapelab_pine")
+		and ImportedVegetation.resolve_id("sapling", 2) == "landscapelab_quercus2")
 	var sapling_assets: Dictionary = {}
 	var sapling_heights_valid := true
 	for seed in 32:
@@ -150,7 +180,7 @@ func _test_fit_and_aliases() -> void:
 			and float(sapling.get("height", 99.0)) <= 4.8 and float(sapling.get("triangles", 0)) > 0
 	_check("sapling placement keeps natural height and source triangle metadata", sapling_heights_valid)
 	_check("saplings sample both downloaded realistic variants", sapling_assets.size() == 2 \
-		and sapling_assets.has("landscapelab_quercus") and sapling_assets.has("landscapelab_pine"))
+		and sapling_assets.has("landscapelab_quercus2") and sapling_assets.has("landscapelab_pine"))
 	_check("bush alias resolves deterministically", ImportedVegetation.resolve_id("bush", 5) == "bush_common_flowers")
 	_check("unknown alias is rejected", ImportedVegetation.resolve_id("missing_plant", 0).is_empty())
 	var source: Dictionary = ImportedVegetation.get_asset("common_tree_3")
@@ -258,12 +288,33 @@ func _test_default_sapling_group() -> void:
 			var plant: Dictionary = VegetationPlacement.spec("sapling", int(placement.seed))
 			assets[str(plant.get("asset_id", ""))] = true
 			valid = valid and float(placement.north) < 0.0 \
-				and plant.get("asset_id", "") in ["landscapelab_quercus", "landscapelab_pine"] \
+				and plant.get("asset_id", "") in ["landscapelab_quercus2", "landscapelab_pine"] \
 				and float(plant.get("height", 0.0)) >= 3.2 and float(plant.get("height", 99.0)) <= 4.8
 		_check("sapling rows stay behind the club and fit downloaded sources proportionally", valid)
-		_check("sapling rows exercise both downloaded source variants", assets.has("landscapelab_quercus") and assets.has("landscapelab_pine"))
+		_check("sapling rows exercise both downloaded source variants", assets.has("landscapelab_quercus2") and assets.has("landscapelab_pine"))
 	_check("default layout contains its downloaded saplings group", found)
 	_check("three additional maples reach the farm and forest", landscape_maples == 3)
+
+
+func _test_vram_texture_policy() -> void:
+	for path: String in VRAM_TEXTURES:
+		var config := ConfigFile.new()
+		var loaded := config.load(path + ".import") == OK
+		_check(path.get_file() + " pins its import recipe", loaded)
+		if not loaded:
+			continue
+		var metadata: Variant = config.get_value("remap", "metadata", {})
+		_check(path.get_file() + " imports GPU-compressed for desktop and Apple/mobile",
+			config.get_value("params", "compress/mode", -1) == 2
+			and config.get_value("params", "compress/high_quality", true) == false
+			and metadata is Dictionary and bool((metadata as Dictionary).get("vram_texture", false))
+			and str(config.get_value("remap", "path.s3tc", "")).ends_with(".s3tc.ctex")
+			and str(config.get_value("remap", "path.etc2", "")).ends_with(".etc2.ctex"))
+		_check(path.get_file() + " flags normal maps only",
+			config.get_value("params", "compress/normal_map", -1) == (1 if VRAM_TEXTURES[path] else 0))
+		var texture := load(path) as Texture2D
+		_check(path.get_file() + " loads as an imported compressed texture",
+			texture is CompressedTexture2D and texture.get_width() > 0)
 
 
 func _check(label: String, condition: bool, detail: String = "") -> void:

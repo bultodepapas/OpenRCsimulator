@@ -418,14 +418,15 @@ func _test_tree_wind_qualification() -> void:
 	var expected_all_tree_ids: Array[String] = []
 	for asset_id: String in EXPECTED_TREE_LEAF_TEXTURES:
 		expected_all_tree_ids.append(asset_id)
-	expected_all_tree_ids.append_array(["oak_tree", "maple_tree", "landscapelab_quercus", "landscapelab_pine"])
+	expected_all_tree_ids.append_array(["oak_tree", "maple_tree", "landscapelab_quercus", "landscapelab_pine",
+		"landscapelab_fagus", "landscapelab_quercus2"])
 	expected_all_tree_ids.sort()
-	_check("catalog covers seven library forms, Maple, oak, Quercus, and Pine sources",
+	_check("catalog covers seven library forms, Maple, oak, Quercus, Pine, Fagus and Quercus 2 sources",
 		actual_tree_ids == expected_all_tree_ids)
 	var qualified: Array = ImportedVegetation.TREE_WIND_LEAN_LIMITS_M.keys()
 	qualified.sort()
-	_check("only the placed downloaded Quercus and Pine carry measured sway limits",
-		qualified == ["landscapelab_pine", "landscapelab_quercus"])
+	_check("only the placed downloaded LandscapeLab trees carry measured sway limits",
+		qualified == ["landscapelab_fagus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_quercus2"])
 
 	var batches: Dictionary = {}
 	for index in range(actual_tree_ids.size()):
@@ -502,13 +503,13 @@ func _test_tree_wind_stays_inside_collision_proxies() -> void:
 		var margin := float(smallest.wind_margin)
 		var half_x := float(smallest.width) * 0.5 + margin
 		var half_z := float(smallest.depth) * 0.5 + margin
-		# CollisionWorld crown bottom: the trunk-height range, lowered for Quercus foliage.
+		# CollisionWorld crown bottom: the trunk-height range, lowered for low broadleaf foliage.
 		var crown_bottoms: Array[float] = []
 		for trunk_hash in [0.0, 1.0]:
 			var trunk_height: float = height * (CollisionWorld.SHADE_TREE_TRUNK_HEIGHT_FRACTION
 				+ CollisionWorld.SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION * trunk_hash)
-			if asset_id == "landscapelab_quercus":
-				trunk_height = minf(trunk_height, height * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+			trunk_height = minf(trunk_height,
+				height * float(CollisionWorld.LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS.get(asset_id, 1.0)))
 			crown_bottoms.append(trunk_height)
 		var crown_escape_m := -INF
 		var trunk_band_sway_m := 0.0

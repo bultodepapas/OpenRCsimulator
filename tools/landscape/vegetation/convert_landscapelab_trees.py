@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and copy the pinned LandscapeLab Quercus and Pine GLBs unchanged."""
+"""Validate and copy the pinned LandscapeLab Quercus, Quercus 2, Fagus and Pine GLBs unchanged."""
 
 from __future__ import annotations
 
@@ -24,9 +24,11 @@ LICENSE_URL = "https://creativecommons.org/licenses/by-sa/4.0/"
 SOURCE_README = "README.md"
 SOURCE_README_BYTES = 1_718
 SOURCE_README_SHA256 = "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276"
-SOURCE_LICENSE_NOTICE = "LICENSE_LANDSCAPELAB.txt"
-SOURCE_LICENSE_NOTICE_BYTES = 1_038
-SOURCE_LICENSE_NOTICE_SHA256 = "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+# The vegetation library notice covers all four trees. LICENSE_LANDSCAPELAB.txt stays the
+# Quercus and Pine notice pinned by the far-tree atlas recipe (tools/trees/build.py).
+SOURCE_LICENSE_NOTICE = "LICENSE_LANDSCAPELAB_LIBRARY.txt"
+SOURCE_LICENSE_NOTICE_BYTES = 1_421
+SOURCE_LICENSE_NOTICE_SHA256 = "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99"
 SOURCE_PREFIX = "assets/landscape/vegetation/source/landscapelab_tree_2026/"
 DERIVED_PREFIX = "assets/landscape/vegetation/derived/landscapelab_tree_2026/"
 RUNTIME_PREFIX = "models/landscapelab_tree_2026/"
@@ -60,6 +62,41 @@ SOURCE_ASSETS = (
         "bounds_min": [-7.928009, 0.0, -8.131644],
         "bounds_max": [7.767775, 41.153725, 7.985003],
     },
+    {
+        "id": "landscapelab_fagus",
+        "source_name": "Fagus",
+        "source_path": "Fagus.glb",
+        "upstream_path": "Natural/Plants/Trees/Fagus/Fagus.glb",
+        "derived_name": "Fagus.glb",
+        "source_bytes": 7_239_640,
+        "source_sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+        "git_blob_sha1": "475e8693fc696f349b54ec573c93dbcda8dde76d",
+        "triangles": 9_312,
+        "surfaces": 2,
+        "bounds_min": [-0.331169, 0.0, -0.354286],
+        "bounds_max": [0.353193, 1.019293, 0.436789],
+        # Upstream Fagus/LICENSE.md credits the leaf photographs (Krzysztof Golik, CC BY-SA).
+        "license_evidence": {
+            "path": "LICENSE_Fagus.md",
+            "upstream_path": "Natural/Plants/Trees/Fagus/LICENSE.md",
+            "bytes": 308,
+            "sha256": "37024abfefe49fec375d961ebe9cb49d4ae61cf2d59b320fa7bb8f5dced8971e",
+        },
+    },
+    {
+        "id": "landscapelab_quercus2",
+        "source_name": "Quercus 2",
+        "source_path": "quercus2.glb",
+        "upstream_path": "Natural/Plants/Trees/Quercus/quercus2.glb",
+        "derived_name": "quercus2.glb",
+        "source_bytes": 7_286_744,
+        "source_sha256": "e668ac1f03de63f1222754798802fae06620c3c0cac9993869bcaa87d33e0c6d",
+        "git_blob_sha1": "030f1f3208a48fa97a1dda01120fc890cbd22f2b",
+        "triangles": 11_144,
+        "surfaces": 2,
+        "bounds_min": [-18.882233, 0.0, -12.980942],
+        "bounds_max": [15.270918, 71.853935, 17.931725],
+    },
 )
 
 class ConversionError(RuntimeError):
@@ -92,14 +129,30 @@ def _checked_slice(data: bytes, offset: int, length: int, label: str) -> bytes:
 
 
 def _identity_node(gltf: dict) -> None:
+    """Accept one mesh node reached from the scene's single root through transform-free nodes."""
     nodes = gltf.get("nodes", [])
     scenes = gltf.get("scenes", [])
     scene_index = gltf.get("scene", 0)
-    if len(nodes) != 1 or not scenes or scene_index >= len(scenes):
-        raise ConversionError("expected one scene node with an identity transform")
-    if scenes[scene_index].get("nodes") != [0] or nodes[0].get("mesh") != 0:
-        raise ConversionError("expected the source mesh to be the scene's only root node")
-    node = nodes[0]
+    if not nodes or not scenes or scene_index >= len(scenes):
+        raise ConversionError("expected one scene node chain with identity transforms")
+    roots = scenes[scene_index].get("nodes")
+    if not isinstance(roots, list) or len(roots) != 1:
+        raise ConversionError("expected the scene to have exactly one root node")
+    chain = [roots[0]]
+    while isinstance(chain[-1], int) and 0 <= chain[-1] < len(nodes) and "mesh" not in nodes[chain[-1]]:
+        children = nodes[chain[-1]].get("children", [])
+        if len(children) != 1 or children[0] in chain:
+            raise ConversionError("a parent node must have exactly one child on the way to the mesh")
+        chain.append(children[0])
+    if not isinstance(chain[-1], int) or not 0 <= chain[-1] < len(nodes) or nodes[chain[-1]].get("mesh") != 0:
+        raise ConversionError("expected the scene root chain to end at the source mesh")
+    if len(chain) != len(nodes) or nodes[chain[-1]].get("children"):
+        raise ConversionError("expected no nodes outside the root-to-mesh chain")
+    for node in (nodes[index] for index in chain):
+        _require_identity(node)
+
+
+def _require_identity(node: dict) -> None:
     identity_values = {
         "matrix": [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0],
         "translation": [0.0, 0.0, 0.0],
@@ -345,7 +398,7 @@ def inspect_glb(data: bytes, source_name: str) -> dict:
         "embedded_images": declared_image_records,
         "dependencies": [],
         "extensions_used": sorted(gltf.get("extensionsUsed", [])),
-        "source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+        "source_node_transform": "identity (including any transform-free parent nodes); source Y axis is vertical and source origin is grounded",
     }
 
 
@@ -376,6 +429,18 @@ def _manifest() -> tuple[dict, dict[str, bytes]]:
             raise ConversionError(f"{source}: measured geometry differs from its reviewed facts")
         output_name = spec["derived_name"]
         outputs[output_name] = data
+        asset_license = {}
+        if "license_evidence" in spec:
+            evidence = spec["license_evidence"]
+            evidence_bytes = (SOURCE_DIR / evidence["path"]).read_bytes() if (SOURCE_DIR / evidence["path"]).is_file() else b""
+            if len(evidence_bytes) != evidence["bytes"] or sha256_bytes(evidence_bytes) != evidence["sha256"]:
+                raise ConversionError(f"{spec['source_name']}: per-asset license evidence changed from its reviewed pin")
+            asset_license = {"asset_license_evidence": {
+                "path": SOURCE_PREFIX + evidence["path"],
+                "upstream_path": evidence["upstream_path"],
+                "bytes": evidence["bytes"],
+                "sha256": evidence["sha256"],
+            }}
         assets.append(
             {
                 "id": spec["id"],
@@ -390,6 +455,7 @@ def _manifest() -> tuple[dict, dict[str, bytes]]:
                 "derived_sha256": sha256_bytes(data),
                 "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
                 **metadata,
+                **asset_license,
             }
         )
     manifest = {

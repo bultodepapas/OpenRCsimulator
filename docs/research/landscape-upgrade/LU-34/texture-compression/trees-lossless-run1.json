@@ -1,0 +1,53 @@
+{
+  "pine_joined.glb": {
+    "load_ms": 132.497,
+    "textures": {
+      "pine_joined_Image_1.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      },
+      "pine_joined_Image_2.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      },
+      "pine_joined_Image_3-Image_0.png": {
+        "bytes": 4194303,
+        "format": 4,
+        "mips": 10
+      },
+      "pine_joined_Image_4.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      }
+    }
+  },
+  "quercus.glb": {
+    "load_ms": 113.462,
+    "textures": {
+      "quercus_Image_1.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      },
+      "quercus_Image_2.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      },
+      "quercus_Image_3-Image_0.png": {
+        "bytes": 4194303,
+        "format": 4,
+        "mips": 10
+      },
+      "quercus_Image_4.png": {
+        "bytes": 5592404,
+        "format": 5,
+        "mips": 10
+      }
+    }
+  },
+  "renderer_texture_mem_added_bytes": 41943030.0
+}

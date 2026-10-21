@@ -13,6 +13,13 @@ const TEST_TRUNK_RADIUS_FRACTION := 0.05
 const TEST_TRUNK_HEIGHT_FRACTION := 0.355
 const TEST_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
 const QUERCUS_SOURCE_LEAF_MIN_FRACTION := 0.22363892800355822 # indexed leaf-triangle bound: 13.3190126/59.5558777
+# Lowest indexed leaf-triangle vertex over source height for every LandscapeLab tree (pine is above the trunk top).
+const LANDSCAPELAB_SOURCE_LEAF_MIN_FRACTIONS := {
+	"landscapelab_quercus": 13.3190126 / 59.5558777,
+	"landscapelab_fagus": 0.1272657 / 1.0192933,
+	"landscapelab_quercus2": 22.9070053 / 71.8539352,
+	"landscapelab_pine": 16.8617477 / 41.1537247,
+}
 # Lowest alpha-visible leaf triangle centroid relative to source-bounds centre, normalized by source height (x, y, z).
 const QUERCUS_LOWEST_VISIBLE_LEAF_CENTROID_FRACTIONS := [0.03102491517, 0.29289864531, 0.16599591254]
 
@@ -58,10 +65,8 @@ func _initialize() -> void:
 	# The trunk occupies the deterministic lower stem envelope; imported bounds size both parts.
 	var expected_trunk_height := float(tree_spec.height) * (TEST_TRUNK_HEIGHT_FRACTION
 		+ TEST_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(31, 2))
-	var expected_crown_bottom_height := expected_trunk_height
-	if str(tree_spec.asset_id) == "landscapelab_quercus":
-		expected_crown_bottom_height = minf(expected_crown_bottom_height,
-			float(tree_spec.height) * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+	var expected_crown_bottom_height := minf(expected_trunk_height,
+		float(tree_spec.height) * _crown_bottom_fraction(str(tree_spec.asset_id)))
 	var crown_height := float(tree_spec.height) - expected_crown_bottom_height
 	var expected_radius := minf(float(tree_spec.width), float(tree_spec.depth)) \
 		* TEST_TRUNK_RADIUS_FRACTION + float(tree_spec.wind_margin)
@@ -80,10 +85,8 @@ func _initialize() -> void:
 		str(trunk.damage_id) == "prop:garden:17:trunk" and str(crown.damage_id) == "prop:garden:17:crown")
 	var expected_sapling_trunk_height := float(sapling_spec.height) * (TEST_TRUNK_HEIGHT_FRACTION
 		+ TEST_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(12, 2))
-	var expected_sapling_crown_bottom_height := expected_sapling_trunk_height
-	if str(sapling_spec.asset_id) == "landscapelab_quercus":
-		expected_sapling_crown_bottom_height = minf(expected_sapling_crown_bottom_height,
-			float(sapling_spec.height) * CollisionWorld.LANDSCAPELAB_QUERCUS_CROWN_BOTTOM_FRACTION)
+	var expected_sapling_crown_bottom_height := minf(expected_sapling_trunk_height,
+		float(sapling_spec.height) * _crown_bottom_fraction(str(sapling_spec.asset_id)))
 	var expected_sapling_radius := minf(float(sapling_spec.width), float(sapling_spec.depth)) \
 		* TEST_TRUNK_RADIUS_FRACTION + float(sapling_spec.wind_margin)
 	_check("sapling stem is bounded from its imported size and wind allowance",
@@ -142,7 +145,7 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 				source_seeds[asset_id] = {seed = seed, prefab = prefab}
 			if source_seeds.size() == expected_tree_ids.size():
 				break
-	_check("mature and sapling aliases expose every retained collision source", source_seeds.size() == 3
+	_check("mature and sapling aliases expose every retained collision source", source_seeds.size() == 5
 		and source_seeds.size() == expected_tree_ids.size())
 	var source_ids: Array = expected_tree_ids.keys()
 	source_ids.sort()
@@ -166,6 +169,10 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 		_check("%s has a physical crown proxy" % asset_id, not crown.is_empty())
 		if crown.is_empty():
 			continue
+		if LANDSCAPELAB_SOURCE_LEAF_MIN_FRACTIONS.has(asset_id):
+			var placed := VegetationPlacement.spec(str(source_seeds[asset_id].prefab), int(source_seeds[asset_id].seed))
+			_check("%s crown contains its full pinned leaf-triangle lower bound" % asset_id,
+				float(crown.bounds_down_max) >= -float(placed.height) * float(LANDSCAPELAB_SOURCE_LEAF_MIN_FRACTIONS[asset_id]))
 		if asset_id == "maple_tree":
 			var maple := VegetationPlacement.spec(str(source_seeds[asset_id].prefab), int(source_seeds[asset_id].seed))
 			var source_bounds: Dictionary = ImportedVegetation.get_asset(asset_id).source_bounds_m
@@ -216,6 +223,10 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 		_check("%s crown responds as soft foliage without trunk contact" % asset_id,
 			hit != null and hit.obstacle_id == crown_id and hit.obstacle_part == "crown"
 			and hit.response_class == "soft_foliage_impulse" and not hit.terminal)
+
+
+func _crown_bottom_fraction(asset_id: String) -> float:
+	return float(CollisionWorld.LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS.get(asset_id, 1.0))
 
 
 func _crown_sweep_half_length(crown: Dictionary) -> float:

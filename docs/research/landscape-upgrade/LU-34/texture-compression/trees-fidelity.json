@@ -1,0 +1,44 @@
+{
+ "pine_joined_front": {
+  "plant_pixels": 34293,
+  "silhouette_iou": 0.9942,
+  "psnr_db": 25.96,
+  "mean_abs_level_difference": 3.983,
+  "pixels_over_16_levels_percent": 2.14
+ },
+ "pine_joined_side": {
+  "plant_pixels": 33710,
+  "silhouette_iou": 0.9942,
+  "psnr_db": 25.61,
+  "mean_abs_level_difference": 3.28,
+  "pixels_over_16_levels_percent": 1.667
+ },
+ "pine_joined_under": {
+  "plant_pixels": 52188,
+  "silhouette_iou": 0.9952,
+  "psnr_db": 26.34,
+  "mean_abs_level_difference": 3.724,
+  "pixels_over_16_levels_percent": 1.933
+ },
+ "quercus_front": {
+  "plant_pixels": 133360,
+  "silhouette_iou": 0.9974,
+  "psnr_db": 29.42,
+  "mean_abs_level_difference": 3.639,
+  "pixels_over_16_levels_percent": 2.386
+ },
+ "quercus_side": {
+  "plant_pixels": 141358,
+  "silhouette_iou": 0.9979,
+  "psnr_db": 29.91,
+  "mean_abs_level_difference": 3.41,
+  "pixels_over_16_levels_percent": 2.13
+ },
+ "quercus_under": {
+  "plant_pixels": 235783,
+  "silhouette_iou": 0.9979,
+  "psnr_db": 29.81,
+  "mean_abs_level_difference": 3.73,
+  "pixels_over_16_levels_percent": 3.523
+ }
+}

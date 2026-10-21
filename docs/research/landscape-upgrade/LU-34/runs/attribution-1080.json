@@ -1,0 +1,3452 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "field_sha256": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
+  "format": "openrc-view-attribution v1",
+  "godot": "4.7.2-stable (official)",
+  "groups": {
+    "field_Countryside": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 6380,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 6380
+    },
+    "field_DistantRidges": {
+      "full_detail_meshes_over_5000": [
+        "Ridge3:6912",
+        "Ridge2:6912",
+        "Ridge1:6912",
+        "Ridge0:6912"
+      ],
+      "full_detail_triangles": 27648,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 27648
+    },
+    "field_FlightCueShadows": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 0
+    },
+    "field_Lake": {
+      "full_detail_meshes_over_5000": [
+        "Water:19008",
+        "Basin:25944"
+      ],
+      "full_detail_triangles": 44952,
+      "lod_triangles": 20272,
+      "nodes": 1,
+      "shadow_caster_triangles": 7980,
+      "source_triangles": 65224
+    },
+    "field_NearGrass": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 49579,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 49579
+    },
+    "field_flightline_barrier": {
+      "full_detail_meshes_over_5000": [
+        "Barrier:38120"
+      ],
+      "full_detail_triangles": 38840,
+      "lod_triangles": 42761,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 81601
+    },
+    "field_pilot_station": {
+      "full_detail_meshes_over_5000": [
+        "Station:6124"
+      ],
+      "full_detail_triangles": 6124,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 6124
+    },
+    "field_rough": {
+      "full_detail_meshes_over_5000": [
+        "rough:84960"
+      ],
+      "full_detail_triangles": 84960,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 84960
+    },
+    "field_treeline": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 10080,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 10080
+    },
+    "field_windsock": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 5266,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 5266
+    },
+    "scenery_AirfieldDetail": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 4482,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 4482
+    },
+    "scenery_Birds": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 24,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 24
+    },
+    "scenery_BotanicalHabitats": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 500,
+      "lod_triangles": 89155,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 89655
+    },
+    "scenery_BuildingRoofs": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 100,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 100
+    },
+    "scenery_ImportedVegetationBatches": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 101167,
+      "nodes": 1,
+      "shadow_caster_triangles": 101167,
+      "source_triangles": 101167
+    },
+    "scenery_Motion": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 296,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 296
+    },
+    "scenery_ParkedAircraft": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 273421,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 273421
+    },
+    "scenery_Population": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 371573,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 371573
+    },
+    "scenery_PopulationContacts": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 1391,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 1391
+    },
+    "scenery_WoodlandEdges": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 472,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 472
+    },
+    "scenery_cells": {
+      "full_detail_meshes_over_5000": [
+        "cell_-2_-1:8270",
+        "cell_-1_-1:15552",
+        "cell_-1_0:16408",
+        "cell_1000000_1001000:20314",
+        "cell_1000000_1002000:27509",
+        "cell_1000000_1003000:26613",
+        "cell_1000000_1004000:7975",
+        "cell_1002000_1001000:7720"
+      ],
+      "full_detail_triangles": 168031,
+      "lod_triangles": 0,
+      "nodes": 60,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 168031
+    },
+    "scenery_contact_shadows": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 702,
+      "lod_triangles": 0,
+      "nodes": 24,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 702
+    },
+    "scenery_hedges": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 848,
+      "lod_triangles": 0,
+      "nodes": 2,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 848
+    },
+    "scenery_pit_shelters": {
+      "full_detail_meshes_over_5000": [
+        "PitShelter_prop_pit-shelters_00:6402",
+        "PitShelter_prop_pit-shelters_01:5694"
+      ],
+      "full_detail_triangles": 12096,
+      "lod_triangles": 0,
+      "nodes": 2,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 12096
+    },
+    "world_AirfieldLighting": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 8462,
+      "lod_triangles": 17924,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 26386
+    },
+    "world_Campfire": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 305,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 305,
+      "source_triangles": 305
+    },
+    "world_FieldLights": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 240,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 192,
+      "source_triangles": 240
+    },
+    "world_SunGlare": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 0
+    }
+  },
+  "memory": {
+    "buffer_bytes": 45808310,
+    "texture_bytes": 563259506,
+    "video_bytes": 609067816
+  },
+  "mesh_lod_threshold": 1.0,
+  "renderer": "gl_compatibility",
+  "scenery_sha256": "2200edd9baa87bb275025c295164e9f6aac8781eab28896f49fe4a66a0587130",
+  "viewport": [
+    1920.0,
+    1080.0
+  ],
+  "views": {
+    "aerial_overview": {
+      "complete": {
+        "draws": 367,
+        "objects": 370,
+        "primitives": 438160
+      },
+      "complete_repeat": {
+        "draws": 367,
+        "objects": 370,
+        "primitives": 438160
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 435636
+        },
+        "field_DistantRidges": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        },
+        "field_FlightCueShadows": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        },
+        "field_Lake": {
+          "draws": 364,
+          "objects": 367,
+          "primitives": 393158
+        },
+        "field_NearGrass": {
+          "draws": 364,
+          "objects": 367,
+          "primitives": 437159
+        },
+        "field_flightline_barrier": {
+          "draws": 361,
+          "objects": 364,
+          "primitives": 398467
+        },
+        "field_pilot_station": {
+          "draws": 365,
+          "objects": 368,
+          "primitives": 432034
+        },
+        "field_rough": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 353200
+        },
+        "field_treeline": {
+          "draws": 362,
+          "objects": 365,
+          "primitives": 431890
+        },
+        "field_windsock": {
+          "draws": 363,
+          "objects": 366,
+          "primitives": 432892
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        },
+        "scenery_Birds": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 350,
+          "objects": 352,
+          "primitives": 431484
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 360,
+          "objects": 363,
+          "primitives": 438132
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 337,
+          "objects": 340,
+          "primitives": 387053
+        },
+        "scenery_Motion": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 438000
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 188,
+          "objects": 189,
+          "primitives": 358294
+        },
+        "scenery_Population": {
+          "draws": 318,
+          "objects": 321,
+          "primitives": 395090
+        },
+        "scenery_PopulationContacts": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 436769
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 438128
+        },
+        "scenery_cells": {
+          "draws": 357,
+          "objects": 360,
+          "primitives": 392582
+        },
+        "scenery_contact_shadows": {
+          "draws": 362,
+          "objects": 365,
+          "primitives": 437998
+        },
+        "scenery_hedges": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        },
+        "scenery_pit_shelters": {
+          "draws": 365,
+          "objects": 368,
+          "primitives": 426064
+        },
+        "world_AirfieldLighting": {
+          "draws": 351,
+          "objects": 354,
+          "primitives": 432054
+        },
+        "world_Campfire": {
+          "draws": 363,
+          "objects": 366,
+          "primitives": 437550
+        },
+        "world_FieldLights": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 437728
+        },
+        "world_SunGlare": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 438160
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 347,
+        "objects": 350,
+        "primitives": 409339
+      }
+    },
+    "birds_watch": {
+      "complete": {
+        "draws": 67,
+        "objects": 67,
+        "primitives": 197969
+      },
+      "complete_repeat": {
+        "draws": 67,
+        "objects": 67,
+        "primitives": 197969
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 64,
+          "objects": 64,
+          "primitives": 197037
+        },
+        "field_DistantRidges": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 184145
+        },
+        "field_FlightCueShadows": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "field_Lake": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "field_NearGrass": {
+          "draws": 64,
+          "objects": 64,
+          "primitives": 196866
+        },
+        "field_flightline_barrier": {
+          "draws": 61,
+          "objects": 61,
+          "primitives": 157971
+        },
+        "field_pilot_station": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "field_rough": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 113009
+        },
+        "field_treeline": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 195257
+        },
+        "field_windsock": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_Birds": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 197945
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 61,
+          "objects": 61,
+          "primitives": 194945
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 57,
+          "objects": 57,
+          "primitives": 172854
+        },
+        "scenery_Motion": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_Population": {
+          "draws": 56,
+          "objects": 56,
+          "primitives": 186003
+        },
+        "scenery_PopulationContacts": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 196578
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 197937
+        },
+        "scenery_cells": {
+          "draws": 58,
+          "objects": 58,
+          "primitives": 189853
+        },
+        "scenery_contact_shadows": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "scenery_hedges": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 197457
+        },
+        "scenery_pit_shelters": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "world_AirfieldLighting": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 193757
+        },
+        "world_Campfire": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        },
+        "world_FieldLights": {
+          "draws": 59,
+          "objects": 59,
+          "primitives": 197921
+        },
+        "world_SunGlare": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 197969
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 61,
+        "objects": 61,
+        "primitives": 182641
+      }
+    },
+    "car_park": {
+      "complete": {
+        "draws": 147,
+        "objects": 148,
+        "primitives": 297212
+      },
+      "complete_repeat": {
+        "draws": 147,
+        "objects": 148,
+        "primitives": 297212
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 139,
+          "objects": 140,
+          "primitives": 295178
+        },
+        "field_DistantRidges": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "field_FlightCueShadows": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "field_Lake": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "field_NearGrass": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 296264
+        },
+        "field_flightline_barrier": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "field_pilot_station": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "field_rough": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 212252
+        },
+        "field_treeline": {
+          "draws": 144,
+          "objects": 145,
+          "primitives": 292910
+        },
+        "field_windsock": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "scenery_Birds": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 296273
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 130,
+          "objects": 131,
+          "primitives": 297144
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 129,
+          "objects": 130,
+          "primitives": 246803
+        },
+        "scenery_Motion": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 108,
+          "objects": 108,
+          "primitives": 261716
+        },
+        "scenery_Population": {
+          "draws": 117,
+          "objects": 118,
+          "primitives": 237187
+        },
+        "scenery_PopulationContacts": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 295821
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 297180
+        },
+        "scenery_cells": {
+          "draws": 136,
+          "objects": 137,
+          "primitives": 250194
+        },
+        "scenery_contact_shadows": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 297140
+        },
+        "scenery_hedges": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "scenery_pit_shelters": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 290810
+        },
+        "world_AirfieldLighting": {
+          "draws": 142,
+          "objects": 143,
+          "primitives": 294108
+        },
+        "world_Campfire": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        },
+        "world_FieldLights": {
+          "draws": 142,
+          "objects": 143,
+          "primitives": 297202
+        },
+        "world_SunGlare": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 297212
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 135,
+        "objects": 136,
+        "primitives": 263606
+      }
+    },
+    "fleet_close": {
+      "complete": {
+        "draws": 141,
+        "objects": 142,
+        "primitives": 266799
+      },
+      "complete_repeat": {
+        "draws": 141,
+        "objects": 142,
+        "primitives": 266799
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 133,
+          "objects": 134,
+          "primitives": 264161
+        },
+        "field_DistantRidges": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "field_FlightCueShadows": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "field_Lake": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "field_NearGrass": {
+          "draws": 138,
+          "objects": 139,
+          "primitives": 265696
+        },
+        "field_flightline_barrier": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 266797
+        },
+        "field_pilot_station": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "field_rough": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 181839
+        },
+        "field_treeline": {
+          "draws": 137,
+          "objects": 138,
+          "primitives": 261549
+        },
+        "field_windsock": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "scenery_Birds": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 136,
+          "objects": 136,
+          "primitives": 265190
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 266795
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 123,
+          "objects": 124,
+          "primitives": 216390
+        },
+        "scenery_Motion": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 99,
+          "objects": 100,
+          "primitives": 250465
+        },
+        "scenery_Population": {
+          "draws": 105,
+          "objects": 106,
+          "primitives": 202872
+        },
+        "scenery_PopulationContacts": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 265408
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 139,
+          "objects": 140,
+          "primitives": 266657
+        },
+        "scenery_cells": {
+          "draws": 135,
+          "objects": 136,
+          "primitives": 239033
+        },
+        "scenery_contact_shadows": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 266745
+        },
+        "scenery_hedges": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "scenery_pit_shelters": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 260397
+        },
+        "world_AirfieldLighting": {
+          "draws": 138,
+          "objects": 139,
+          "primitives": 262039
+        },
+        "world_Campfire": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        },
+        "world_FieldLights": {
+          "draws": 134,
+          "objects": 135,
+          "primitives": 266753
+        },
+        "world_SunGlare": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 266799
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 129,
+        "objects": 130,
+        "primitives": 233193
+      }
+    },
+    "pilot_east": {
+      "complete": {
+        "draws": 81,
+        "objects": 82,
+        "primitives": 269028
+      },
+      "complete_repeat": {
+        "draws": 81,
+        "objects": 82,
+        "primitives": 269028
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 267242
+        },
+        "field_DistantRidges": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 262116
+        },
+        "field_FlightCueShadows": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "field_Lake": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "field_NearGrass": {
+          "draws": 78,
+          "objects": 79,
+          "primitives": 267925
+        },
+        "field_flightline_barrier": {
+          "draws": 75,
+          "objects": 76,
+          "primitives": 229030
+        },
+        "field_pilot_station": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "field_rough": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 184068
+        },
+        "field_treeline": {
+          "draws": 78,
+          "objects": 79,
+          "primitives": 266196
+        },
+        "field_windsock": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_Birds": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 73,
+          "objects": 73,
+          "primitives": 265956
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 71,
+          "objects": 72,
+          "primitives": 243913
+        },
+        "scenery_Motion": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 268892
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_Population": {
+          "draws": 74,
+          "objects": 75,
+          "primitives": 261148
+        },
+        "scenery_PopulationContacts": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 267637
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 268996
+        },
+        "scenery_cells": {
+          "draws": 63,
+          "objects": 64,
+          "primitives": 177255
+        },
+        "scenery_contact_shadows": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 269010
+        },
+        "scenery_hedges": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "scenery_pit_shelters": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "world_AirfieldLighting": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 267152
+        },
+        "world_Campfire": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        },
+        "world_FieldLights": {
+          "draws": 72,
+          "objects": 73,
+          "primitives": 268884
+        },
+        "world_SunGlare": {
+          "draws": 81,
+          "objects": 82,
+          "primitives": 269028
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 72,
+        "objects": 73,
+        "primitives": 249358
+      }
+    },
+    "pilot_north": {
+      "complete": {
+        "draws": 115,
+        "objects": 117,
+        "primitives": 260380
+      },
+      "complete_repeat": {
+        "draws": 115,
+        "objects": 117,
+        "primitives": 260380
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 108,
+          "objects": 110,
+          "primitives": 258960
+        },
+        "field_DistantRidges": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 232732
+        },
+        "field_FlightCueShadows": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "field_Lake": {
+          "draws": 102,
+          "objects": 104,
+          "primitives": 214986
+        },
+        "field_NearGrass": {
+          "draws": 112,
+          "objects": 114,
+          "primitives": 259277
+        },
+        "field_flightline_barrier": {
+          "draws": 109,
+          "objects": 111,
+          "primitives": 220382
+        },
+        "field_pilot_station": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "field_rough": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 175420
+        },
+        "field_treeline": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 255550
+        },
+        "field_windsock": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "scenery_Birds": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 260356
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 96,
+          "objects": 97,
+          "primitives": 253516
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 260356
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 108,
+          "objects": 109,
+          "primitives": 243685
+        },
+        "scenery_Motion": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "scenery_Population": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 258822
+        },
+        "scenery_PopulationContacts": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 260348
+        },
+        "scenery_cells": {
+          "draws": 95,
+          "objects": 97,
+          "primitives": 236084
+        },
+        "scenery_contact_shadows": {
+          "draws": 109,
+          "objects": 111,
+          "primitives": 260164
+        },
+        "scenery_hedges": {
+          "draws": 113,
+          "objects": 115,
+          "primitives": 259532
+        },
+        "scenery_pit_shelters": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "world_AirfieldLighting": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 255958
+        },
+        "world_Campfire": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        },
+        "world_FieldLights": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 260332
+        },
+        "world_SunGlare": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260380
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 107,
+        "objects": 109,
+        "primitives": 249142
+      }
+    },
+    "pilot_south": {
+      "complete": {
+        "draws": 149,
+        "objects": 150,
+        "primitives": 295333
+      },
+      "complete_repeat": {
+        "draws": 149,
+        "objects": 150,
+        "primitives": 295333
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 293009
+        },
+        "field_DistantRidges": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "field_FlightCueShadows": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "field_Lake": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "field_NearGrass": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 294230
+        },
+        "field_flightline_barrier": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 295331
+        },
+        "field_pilot_station": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "field_rough": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 210373
+        },
+        "field_treeline": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 290083
+        },
+        "field_windsock": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 144,
+          "objects": 145,
+          "primitives": 292709
+        },
+        "scenery_Birds": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 142,
+          "objects": 142,
+          "primitives": 292587
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 143,
+          "objects": 144,
+          "primitives": 295309
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 117,
+          "objects": 118,
+          "primitives": 232706
+        },
+        "scenery_Motion": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 295173
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "scenery_Population": {
+          "draws": 102,
+          "objects": 103,
+          "primitives": 227213
+        },
+        "scenery_PopulationContacts": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 293942
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 295191
+        },
+        "scenery_cells": {
+          "draws": 141,
+          "objects": 142,
+          "primitives": 250091
+        },
+        "scenery_contact_shadows": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 295279
+        },
+        "scenery_hedges": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        },
+        "scenery_pit_shelters": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 283237
+        },
+        "world_AirfieldLighting": {
+          "draws": 144,
+          "objects": 145,
+          "primitives": 289717
+        },
+        "world_Campfire": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 294723
+        },
+        "world_FieldLights": {
+          "draws": 139,
+          "objects": 140,
+          "primitives": 295093
+        },
+        "world_SunGlare": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 295333
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 127,
+        "objects": 128,
+        "primitives": 255217
+      }
+    },
+    "pilot_west": {
+      "complete": {
+        "draws": 66,
+        "objects": 67,
+        "primitives": 175571
+      },
+      "complete_repeat": {
+        "draws": 66,
+        "objects": 67,
+        "primitives": 175571
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 61,
+          "objects": 62,
+          "primitives": 174503
+        },
+        "field_DistantRidges": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 168659
+        },
+        "field_FlightCueShadows": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "field_Lake": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "field_NearGrass": {
+          "draws": 63,
+          "objects": 64,
+          "primitives": 174468
+        },
+        "field_flightline_barrier": {
+          "draws": 60,
+          "objects": 61,
+          "primitives": 135573
+        },
+        "field_pilot_station": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "field_rough": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 90611
+        },
+        "field_treeline": {
+          "draws": 63,
+          "objects": 64,
+          "primitives": 170153
+        },
+        "field_windsock": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 175569
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_Birds": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 59,
+          "objects": 59,
+          "primitives": 172825
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 58,
+          "objects": 59,
+          "primitives": 175539
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 60,
+          "objects": 61,
+          "primitives": 158948
+        },
+        "scenery_Motion": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_Population": {
+          "draws": 59,
+          "objects": 60,
+          "primitives": 167691
+        },
+        "scenery_PopulationContacts": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 174180
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 64,
+          "objects": 65,
+          "primitives": 175429
+        },
+        "scenery_cells": {
+          "draws": 62,
+          "objects": 63,
+          "primitives": 170211
+        },
+        "scenery_contact_shadows": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_hedges": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "scenery_pit_shelters": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "world_AirfieldLighting": {
+          "draws": 64,
+          "objects": 65,
+          "primitives": 173685
+        },
+        "world_Campfire": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        },
+        "world_FieldLights": {
+          "draws": 58,
+          "objects": 59,
+          "primitives": 175523
+        },
+        "world_SunGlare": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175571
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 62,
+        "objects": 63,
+        "primitives": 164489
+      }
+    },
+    "postcard_club": {
+      "complete": {
+        "draws": 359,
+        "objects": 362,
+        "primitives": 421295
+      },
+      "complete_repeat": {
+        "draws": 359,
+        "objects": 362,
+        "primitives": 421295
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 352,
+          "objects": 355,
+          "primitives": 419919
+        },
+        "field_DistantRidges": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        },
+        "field_FlightCueShadows": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        },
+        "field_Lake": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        },
+        "field_NearGrass": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 420192
+        },
+        "field_flightline_barrier": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 381297
+        },
+        "field_pilot_station": {
+          "draws": 357,
+          "objects": 360,
+          "primitives": 415169
+        },
+        "field_rough": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 336335
+        },
+        "field_treeline": {
+          "draws": 357,
+          "objects": 360,
+          "primitives": 417839
+        },
+        "field_windsock": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 416027
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 354,
+          "objects": 357,
+          "primitives": 419430
+        },
+        "scenery_Birds": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 350,
+          "objects": 352,
+          "primitives": 418373
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 421251
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 329,
+          "objects": 332,
+          "primitives": 368130
+        },
+        "scenery_Motion": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 421135
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 180,
+          "objects": 181,
+          "primitives": 323257
+        },
+        "scenery_Population": {
+          "draws": 310,
+          "objects": 313,
+          "primitives": 367308
+        },
+        "scenery_PopulationContacts": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 419904
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 421263
+        },
+        "scenery_cells": {
+          "draws": 349,
+          "objects": 352,
+          "primitives": 374455
+        },
+        "scenery_contact_shadows": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 421205
+        },
+        "scenery_hedges": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        },
+        "scenery_pit_shelters": {
+          "draws": 357,
+          "objects": 360,
+          "primitives": 409199
+        },
+        "world_AirfieldLighting": {
+          "draws": 343,
+          "objects": 346,
+          "primitives": 413961
+        },
+        "world_Campfire": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 420685
+        },
+        "world_FieldLights": {
+          "draws": 347,
+          "objects": 350,
+          "primitives": 420863
+        },
+        "world_SunGlare": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 421295
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 339,
+        "objects": 342,
+        "primitives": 391445
+      }
+    },
+    "postcard_farm": {
+      "complete": {
+        "draws": 86,
+        "objects": 88,
+        "primitives": 203071
+      },
+      "complete_repeat": {
+        "draws": 86,
+        "objects": 88,
+        "primitives": 203071
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 82,
+          "objects": 84,
+          "primitives": 201951
+        },
+        "field_DistantRidges": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 189247
+        },
+        "field_FlightCueShadows": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "field_Lake": {
+          "draws": 73,
+          "objects": 75,
+          "primitives": 157383
+        },
+        "field_NearGrass": {
+          "draws": 83,
+          "objects": 85,
+          "primitives": 201968
+        },
+        "field_flightline_barrier": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 203069
+        },
+        "field_pilot_station": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "field_rough": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 118111
+        },
+        "field_treeline": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 200953
+        },
+        "field_windsock": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_Birds": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 67,
+          "objects": 68,
+          "primitives": 195631
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 203059
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 182058
+        },
+        "scenery_Motion": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_Population": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "scenery_PopulationContacts": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 201680
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 203039
+        },
+        "scenery_cells": {
+          "draws": 76,
+          "objects": 78,
+          "primitives": 183531
+        },
+        "scenery_contact_shadows": {
+          "draws": 81,
+          "objects": 83,
+          "primitives": 202909
+        },
+        "scenery_hedges": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 202735
+        },
+        "scenery_pit_shelters": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "world_AirfieldLighting": {
+          "draws": 82,
+          "objects": 84,
+          "primitives": 198789
+        },
+        "world_Campfire": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        },
+        "world_FieldLights": {
+          "draws": 78,
+          "objects": 80,
+          "primitives": 203023
+        },
+        "world_SunGlare": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 203071
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 76,
+        "objects": 78,
+        "primitives": 187465
+      }
+    },
+    "postcard_meadow": {
+      "complete": {
+        "draws": 117,
+        "objects": 119,
+        "primitives": 203805
+      },
+      "complete_repeat": {
+        "draws": 117,
+        "objects": 119,
+        "primitives": 203805
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 110,
+          "objects": 112,
+          "primitives": 201869
+        },
+        "field_DistantRidges": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 189981
+        },
+        "field_FlightCueShadows": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "field_Lake": {
+          "draws": 104,
+          "objects": 106,
+          "primitives": 158213
+        },
+        "field_NearGrass": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "field_flightline_barrier": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "field_pilot_station": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "field_rough": {
+          "draws": 116,
+          "objects": 118,
+          "primitives": 118845
+        },
+        "field_treeline": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 201687
+        },
+        "field_windsock": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_Birds": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 97,
+          "objects": 98,
+          "primitives": 195751
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 113,
+          "objects": 115,
+          "primitives": 203781
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 110,
+          "objects": 111,
+          "primitives": 187038
+        },
+        "scenery_Motion": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203737
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_Population": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_PopulationContacts": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203663
+        },
+        "scenery_cells": {
+          "draws": 91,
+          "objects": 93,
+          "primitives": 180583
+        },
+        "scenery_contact_shadows": {
+          "draws": 99,
+          "objects": 101,
+          "primitives": 203193
+        },
+        "scenery_hedges": {
+          "draws": 116,
+          "objects": 118,
+          "primitives": 203469
+        },
+        "scenery_pit_shelters": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "world_AirfieldLighting": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 197691
+        },
+        "world_Campfire": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        },
+        "world_FieldLights": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203769
+        },
+        "world_SunGlare": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203805
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 109,
+        "objects": 111,
+        "primitives": 192493
+      }
+    },
+    "postcard_pavilion": {
+      "complete": {
+        "draws": 244,
+        "objects": 246,
+        "primitives": 342757
+      },
+      "complete_repeat": {
+        "draws": 244,
+        "objects": 246,
+        "primitives": 342757
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 237,
+          "objects": 239,
+          "primitives": 341381
+        },
+        "field_DistantRidges": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "field_FlightCueShadows": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "field_Lake": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "field_NearGrass": {
+          "draws": 241,
+          "objects": 243,
+          "primitives": 341654
+        },
+        "field_flightline_barrier": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 342755
+        },
+        "field_pilot_station": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "field_rough": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 257797
+        },
+        "field_treeline": {
+          "draws": 241,
+          "objects": 243,
+          "primitives": 338221
+        },
+        "field_windsock": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 239,
+          "objects": 241,
+          "primitives": 340133
+        },
+        "scenery_Birds": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 237,
+          "objects": 238,
+          "primitives": 340011
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 233,
+          "objects": 235,
+          "primitives": 342713
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 207,
+          "objects": 209,
+          "primitives": 274190
+        },
+        "scenery_Motion": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 342597
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 290097
+        },
+        "scenery_Population": {
+          "draws": 202,
+          "objects": 204,
+          "primitives": 278221
+        },
+        "scenery_PopulationContacts": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 341366
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 342725
+        },
+        "scenery_cells": {
+          "draws": 235,
+          "objects": 237,
+          "primitives": 297159
+        },
+        "scenery_contact_shadows": {
+          "draws": 242,
+          "objects": 244,
+          "primitives": 342685
+        },
+        "scenery_hedges": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "scenery_pit_shelters": {
+          "draws": 243,
+          "objects": 245,
+          "primitives": 336355
+        },
+        "world_AirfieldLighting": {
+          "draws": 238,
+          "objects": 240,
+          "primitives": 337051
+        },
+        "world_Campfire": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        },
+        "world_FieldLights": {
+          "draws": 234,
+          "objects": 236,
+          "primitives": 342517
+        },
+        "world_SunGlare": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 342757
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 220,
+        "objects": 222,
+        "primitives": 297906
+      }
+    },
+    "postcard_pits": {
+      "complete": {
+        "draws": 348,
+        "objects": 351,
+        "primitives": 492743
+      },
+      "complete_repeat": {
+        "draws": 348,
+        "objects": 351,
+        "primitives": 492743
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 341,
+          "objects": 344,
+          "primitives": 489835
+        },
+        "field_DistantRidges": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "field_FlightCueShadows": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "field_Lake": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "field_NearGrass": {
+          "draws": 345,
+          "objects": 348,
+          "primitives": 491640
+        },
+        "field_flightline_barrier": {
+          "draws": 347,
+          "objects": 350,
+          "primitives": 492741
+        },
+        "field_pilot_station": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "field_rough": {
+          "draws": 347,
+          "objects": 350,
+          "primitives": 407783
+        },
+        "field_treeline": {
+          "draws": 345,
+          "objects": 348,
+          "primitives": 489719
+        },
+        "field_windsock": {
+          "draws": 344,
+          "objects": 347,
+          "primitives": 487475
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 343,
+          "objects": 346,
+          "primitives": 490878
+        },
+        "scenery_Birds": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 341,
+          "objects": 343,
+          "primitives": 490377
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 345,
+          "objects": 348,
+          "primitives": 492731
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 314,
+          "objects": 317,
+          "primitives": 428316
+        },
+        "scenery_Motion": {
+          "draws": 346,
+          "objects": 349,
+          "primitives": 492549
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 169,
+          "objects": 170,
+          "primitives": 387521
+        },
+        "scenery_Population": {
+          "draws": 306,
+          "objects": 309,
+          "primitives": 428149
+        },
+        "scenery_PopulationContacts": {
+          "draws": 347,
+          "objects": 350,
+          "primitives": 491352
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 345,
+          "objects": 348,
+          "primitives": 492491
+        },
+        "scenery_cells": {
+          "draws": 331,
+          "objects": 334,
+          "primitives": 358374
+        },
+        "scenery_contact_shadows": {
+          "draws": 345,
+          "objects": 348,
+          "primitives": 492653
+        },
+        "scenery_hedges": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        },
+        "scenery_pit_shelters": {
+          "draws": 346,
+          "objects": 349,
+          "primitives": 480647
+        },
+        "world_AirfieldLighting": {
+          "draws": 333,
+          "objects": 336,
+          "primitives": 485185
+        },
+        "world_Campfire": {
+          "draws": 344,
+          "objects": 347,
+          "primitives": 492133
+        },
+        "world_FieldLights": {
+          "draws": 336,
+          "objects": 339,
+          "primitives": 492311
+        },
+        "world_SunGlare": {
+          "draws": 348,
+          "objects": 351,
+          "primitives": 492743
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 324,
+        "objects": 327,
+        "primitives": 451631
+      }
+    },
+    "runway_threshold": {
+      "complete": {
+        "draws": 267,
+        "objects": 269,
+        "primitives": 376298
+      },
+      "complete_repeat": {
+        "draws": 267,
+        "objects": 269,
+        "primitives": 376298
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 259,
+          "objects": 261,
+          "primitives": 374686
+        },
+        "field_DistantRidges": {
+          "draws": 265,
+          "objects": 267,
+          "primitives": 362474
+        },
+        "field_FlightCueShadows": {
+          "draws": 267,
+          "objects": 269,
+          "primitives": 376298
+        },
+        "field_Lake": {
+          "draws": 267,
+          "objects": 269,
+          "primitives": 376298
+        },
+        "field_NearGrass": {
+          "draws": 264,
+          "objects": 266,
+          "primitives": 375195
+        },
+        "field_flightline_barrier": {
+          "draws": 261,
+          "objects": 263,
+          "primitives": 336300
+        },
+        "field_pilot_station": {
+          "draws": 265,
+          "objects": 267,
+          "primitives": 370172
+        },
+        "field_rough": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 291338
+        },
+        "field_treeline": {
+          "draws": 263,
+          "objects": 265,
+          "primitives": 370130
+        },
+        "field_windsock": {
+          "draws": 263,
+          "objects": 265,
+          "primitives": 371030
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 262,
+          "objects": 264,
+          "primitives": 374433
+        },
+        "scenery_Birds": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 376274
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 258,
+          "objects": 259,
+          "primitives": 372604
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 256,
+          "objects": 258,
+          "primitives": 376254
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 235,
+          "objects": 237,
+          "primitives": 318887
+        },
+        "scenery_Motion": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 376138
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 172,
+          "objects": 173,
+          "primitives": 326696
+        },
+        "scenery_Population": {
+          "draws": 228,
+          "objects": 230,
+          "primitives": 333942
+        },
+        "scenery_PopulationContacts": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 374907
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 265,
+          "objects": 267,
+          "primitives": 376156
+        },
+        "scenery_cells": {
+          "draws": 257,
+          "objects": 259,
+          "primitives": 330368
+        },
+        "scenery_contact_shadows": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 376280
+        },
+        "scenery_hedges": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 375786
+        },
+        "scenery_pit_shelters": {
+          "draws": 266,
+          "objects": 268,
+          "primitives": 369896
+        },
+        "world_AirfieldLighting": {
+          "draws": 252,
+          "objects": 254,
+          "primitives": 369044
+        },
+        "world_Campfire": {
+          "draws": 267,
+          "objects": 269,
+          "primitives": 376298
+        },
+        "world_FieldLights": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 375866
+        },
+        "world_SunGlare": {
+          "draws": 267,
+          "objects": 269,
+          "primitives": 376298
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 247,
+        "objects": 249,
+        "primitives": 342507
+      }
+    },
+    "runway_zoom_100": {
+      "complete": {
+        "draws": 152,
+        "objects": 153,
+        "primitives": 349067
+      },
+      "complete_repeat": {
+        "draws": 152,
+        "objects": 153,
+        "primitives": 349067
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 348343
+        },
+        "field_DistantRidges": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 335243
+        },
+        "field_FlightCueShadows": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        },
+        "field_Lake": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        },
+        "field_NearGrass": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 347964
+        },
+        "field_flightline_barrier": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 309069
+        },
+        "field_pilot_station": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 342941
+        },
+        "field_rough": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 264107
+        },
+        "field_treeline": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 346313
+        },
+        "field_windsock": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 343799
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 147,
+          "objects": 148,
+          "primitives": 346443
+        },
+        "scenery_Birds": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 349043
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 143,
+          "objects": 143,
+          "primitives": 345373
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 349059
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 120,
+          "objects": 121,
+          "primitives": 286440
+        },
+        "scenery_Motion": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 348907
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        },
+        "scenery_Population": {
+          "draws": 103,
+          "objects": 104,
+          "primitives": 270241
+        },
+        "scenery_PopulationContacts": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 347676
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 349035
+        },
+        "scenery_cells": {
+          "draws": 143,
+          "objects": 144,
+          "primitives": 310585
+        },
+        "scenery_contact_shadows": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 349013
+        },
+        "scenery_hedges": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 348555
+        },
+        "scenery_pit_shelters": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        },
+        "world_AirfieldLighting": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 343623
+        },
+        "world_Campfire": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        },
+        "world_FieldLights": {
+          "draws": 140,
+          "objects": 141,
+          "primitives": 348635
+        },
+        "world_SunGlare": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 349067
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 131,
+        "objects": 132,
+        "primitives": 309160
+      }
+    },
+    "runway_zoom_300": {
+      "complete": {
+        "draws": 326,
+        "objects": 328,
+        "primitives": 412840
+      },
+      "complete_repeat": {
+        "draws": 326,
+        "objects": 328,
+        "primitives": 412840
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 323,
+          "objects": 325,
+          "primitives": 412036
+        },
+        "field_DistantRidges": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 399016
+        },
+        "field_FlightCueShadows": {
+          "draws": 326,
+          "objects": 328,
+          "primitives": 412840
+        },
+        "field_Lake": {
+          "draws": 326,
+          "objects": 328,
+          "primitives": 412840
+        },
+        "field_NearGrass": {
+          "draws": 323,
+          "objects": 325,
+          "primitives": 411737
+        },
+        "field_flightline_barrier": {
+          "draws": 320,
+          "objects": 322,
+          "primitives": 372842
+        },
+        "field_pilot_station": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 406714
+        },
+        "field_rough": {
+          "draws": 325,
+          "objects": 327,
+          "primitives": 327880
+        },
+        "field_treeline": {
+          "draws": 322,
+          "objects": 324,
+          "primitives": 408256
+        },
+        "field_windsock": {
+          "draws": 322,
+          "objects": 324,
+          "primitives": 407572
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 326,
+          "objects": 328,
+          "primitives": 412840
+        },
+        "scenery_Birds": {
+          "draws": 325,
+          "objects": 327,
+          "primitives": 412816
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 317,
+          "objects": 318,
+          "primitives": 410020
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 323,
+          "objects": 325,
+          "primitives": 412828
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 296,
+          "objects": 298,
+          "primitives": 359675
+        },
+        "scenery_Motion": {
+          "draws": 325,
+          "objects": 327,
+          "primitives": 412680
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 171,
+          "objects": 172,
+          "primitives": 342932
+        },
+        "scenery_Population": {
+          "draws": 277,
+          "objects": 279,
+          "primitives": 355915
+        },
+        "scenery_PopulationContacts": {
+          "draws": 325,
+          "objects": 327,
+          "primitives": 411449
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 325,
+          "objects": 327,
+          "primitives": 412808
+        },
+        "scenery_cells": {
+          "draws": 312,
+          "objects": 314,
+          "primitives": 364742
+        },
+        "scenery_contact_shadows": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 412768
+        },
+        "scenery_hedges": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 411992
+        },
+        "scenery_pit_shelters": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 400744
+        },
+        "world_AirfieldLighting": {
+          "draws": 311,
+          "objects": 313,
+          "primitives": 403260
+        },
+        "world_Campfire": {
+          "draws": 322,
+          "objects": 324,
+          "primitives": 412230
+        },
+        "world_FieldLights": {
+          "draws": 314,
+          "objects": 316,
+          "primitives": 412408
+        },
+        "world_SunGlare": {
+          "draws": 326,
+          "objects": 328,
+          "primitives": 412840
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 306,
+        "objects": 308,
+        "primitives": 382990
+      }
+    },
+    "top_140": {
+      "complete": {
+        "draws": 32,
+        "objects": 33,
+        "primitives": 116549
+      },
+      "complete_repeat": {
+        "draws": 32,
+        "objects": 33,
+        "primitives": 116549
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 31,
+          "objects": 32,
+          "primitives": 116469
+        },
+        "field_DistantRidges": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_FlightCueShadows": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_Lake": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_NearGrass": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_flightline_barrier": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_pilot_station": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "field_rough": {
+          "draws": 31,
+          "objects": 32,
+          "primitives": 31589
+        },
+        "field_treeline": {
+          "draws": 31,
+          "objects": 32,
+          "primitives": 115703
+        },
+        "field_windsock": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_Birds": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 24,
+          "objects": 24,
+          "primitives": 114861
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 16,
+          "objects": 17,
+          "primitives": 88103
+        },
+        "scenery_Motion": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_Population": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_PopulationContacts": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 31,
+          "objects": 32,
+          "primitives": 116517
+        },
+        "scenery_cells": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_contact_shadows": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_hedges": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "scenery_pit_shelters": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "world_AirfieldLighting": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        },
+        "world_Campfire": {
+          "draws": 30,
+          "objects": 31,
+          "primitives": 116244
+        },
+        "world_FieldLights": {
+          "draws": 30,
+          "objects": 31,
+          "primitives": 116357
+        },
+        "world_SunGlare": {
+          "draws": 32,
+          "objects": 33,
+          "primitives": 116549
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 14,
+        "objects": 15,
+        "primitives": 93147
+      }
+    },
+    "top_140_b": {
+      "complete": {
+        "draws": 49,
+        "objects": 50,
+        "primitives": 155053
+      },
+      "complete_repeat": {
+        "draws": 49,
+        "objects": 50,
+        "primitives": 155053
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 154873
+        },
+        "field_DistantRidges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_FlightCueShadows": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_Lake": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_NearGrass": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_flightline_barrier": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_pilot_station": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "field_rough": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 70093
+        },
+        "field_treeline": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 154339
+        },
+        "field_windsock": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_Birds": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 44,
+          "objects": 44,
+          "primitives": 153836
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 37,
+          "objects": 38,
+          "primitives": 121447
+        },
+        "scenery_Motion": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_Population": {
+          "draws": 29,
+          "objects": 30,
+          "primitives": 126102
+        },
+        "scenery_PopulationContacts": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 153662
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 155021
+        },
+        "scenery_cells": {
+          "draws": 47,
+          "objects": 48,
+          "primitives": 151113
+        },
+        "scenery_contact_shadows": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 154999
+        },
+        "scenery_hedges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "scenery_pit_shelters": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "world_AirfieldLighting": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "world_Campfire": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        },
+        "world_FieldLights": {
+          "draws": 45,
+          "objects": 46,
+          "primitives": 155045
+        },
+        "world_SunGlare": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 155053
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 43,
+        "objects": 44,
+        "primitives": 138250
+      }
+    },
+    "top_140_c": {
+      "complete": {
+        "draws": 80,
+        "objects": 81,
+        "primitives": 168169
+      },
+      "complete_repeat": {
+        "draws": 80,
+        "objects": 81,
+        "primitives": 168169
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_DistantRidges": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_FlightCueShadows": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_Lake": {
+          "draws": 67,
+          "objects": 68,
+          "primitives": 122815
+        },
+        "field_NearGrass": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_flightline_barrier": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_pilot_station": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "field_rough": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 83209
+        },
+        "field_treeline": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 166939
+        },
+        "field_windsock": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_Birds": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 163559
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 64,
+          "objects": 65,
+          "primitives": 139845
+        },
+        "scenery_Motion": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_Population": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_PopulationContacts": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 168137
+        },
+        "scenery_cells": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 165565
+        },
+        "scenery_contact_shadows": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 167611
+        },
+        "scenery_hedges": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "scenery_pit_shelters": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "world_AirfieldLighting": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        },
+        "world_Campfire": {
+          "draws": 78,
+          "objects": 79,
+          "primitives": 167864
+        },
+        "world_FieldLights": {
+          "draws": 78,
+          "objects": 79,
+          "primitives": 167977
+        },
+        "world_SunGlare": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 168169
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 58,
+        "objects": 59,
+        "primitives": 144753
+      }
+    },
+    "turbines_zoom": {
+      "complete": {
+        "draws": 50,
+        "objects": 51,
+        "primitives": 148148
+      },
+      "complete_repeat": {
+        "draws": 50,
+        "objects": 51,
+        "primitives": 148148
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 147238
+        },
+        "field_DistantRidges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 141236
+        },
+        "field_FlightCueShadows": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "field_Lake": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "field_NearGrass": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "field_flightline_barrier": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "field_pilot_station": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "field_rough": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 63188
+        },
+        "field_treeline": {
+          "draws": 48,
+          "objects": 49,
+          "primitives": 146030
+        },
+        "field_windsock": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_Birds": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 42,
+          "objects": 42,
+          "primitives": 145076
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 44,
+          "objects": 45,
+          "primitives": 131525
+        },
+        "scenery_Motion": {
+          "draws": 46,
+          "objects": 47,
+          "primitives": 148012
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_Population": {
+          "draws": 44,
+          "objects": 45,
+          "primitives": 141800
+        },
+        "scenery_PopulationContacts": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 146757
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 148116
+        },
+        "scenery_cells": {
+          "draws": 43,
+          "objects": 44,
+          "primitives": 124416
+        },
+        "scenery_contact_shadows": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_hedges": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "scenery_pit_shelters": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "world_AirfieldLighting": {
+          "draws": 47,
+          "objects": 48,
+          "primitives": 146282
+        },
+        "world_Campfire": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        },
+        "world_FieldLights": {
+          "draws": 42,
+          "objects": 43,
+          "primitives": 148100
+        },
+        "world_SunGlare": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 148148
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 46,
+        "objects": 47,
+        "primitives": 137066
+      }
+    }
+  }
+}

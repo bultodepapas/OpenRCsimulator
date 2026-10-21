@@ -183,7 +183,7 @@
     },
     {
       "id": "landscapelab_tree_2026",
-      "title": "LandscapeLab Assets — Quercus and Pine",
+      "title": "LandscapeLab Assets — Quercus, Quercus 2, Fagus and Pine",
       "author": "LandscapeLab Assets contributors",
       "url": "https://github.com/boku-ilen/landscapelab-assets",
       "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
@@ -191,10 +191,10 @@
       "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
       "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
       "license_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
-      "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-      "runtime_notice_sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+      "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB_LIBRARY.txt",
+      "runtime_notice_sha256": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99",
       "conversion_proof": "assets/landscape/vegetation/derived/landscapelab_tree_2026/conversion_manifest.json",
-      "conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
+      "conversion_proof_sha256": "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82",
       "source": {
         "repository": "https://github.com/boku-ilen/landscapelab-assets",
         "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
@@ -204,9 +204,9 @@
         "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
         "license_evidence_bytes": 1718,
         "license_evidence_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
-        "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-        "runtime_notice_bytes": 1038,
-        "runtime_notice_sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+        "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB_LIBRARY.txt",
+        "runtime_notice_bytes": 1421,
+        "runtime_notice_sha256": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99"
       }
     },
     {
@@ -348,19 +348,19 @@
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform; LandscapeLab Quercus and Pine preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata; Poly Haven fern and flower derivatives preserve selected source mesh primitives and binary geometry while removing only gallery transforms",
+    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform; LandscapeLab trees preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata; Poly Haven fern and flower derivatives preserve selected source mesh primitives and binary geometry while removing only gallery transforms",
     "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
     "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping; LandscapeLab materials and embedded textures are preserved byte-for-byte, including their source MASK foliage conventions; understory textures preserve supplier maps; fern MASK 0.5 is retained and Flower Empodium BLEND is staged as MASK 0.5 with alpha packing recorded"
   },
   "counts": {
-    "trees": 11,
+    "trees": 13,
     "shrubs": 3,
     "grass_and_herbs": 7,
     "flowers": 4,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 28,
-    "source_triangles_one_of_each": 63804
+    "total_assets": 30,
+    "source_triangles_one_of_each": 84260
   },
   "files": [
     {
@@ -383,9 +383,9 @@
     },
     {
       "path": "LICENSE_LANDSCAPELAB.txt",
-      "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
-      "bytes": 1038,
-      "sha256": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+      "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB_LIBRARY.txt",
+      "bytes": 1421,
+      "sha256": "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99"
     },
     {
       "path": "LICENSE_MAPLE.txt",
@@ -640,6 +640,12 @@
       "sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
     },
     {
+      "path": "models/landscapelab_tree_2026/fagus/Fagus.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/Fagus.glb",
+      "bytes": 7239640,
+      "sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff"
+    },
+    {
       "path": "models/landscapelab_tree_2026/pine/pine_joined.glb",
       "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/pine_joined.glb",
       "bytes": 6788748,
@@ -650,6 +656,12 @@
       "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus.glb",
       "bytes": 7389596,
       "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e"
+    },
+    {
+      "path": "models/landscapelab_tree_2026/quercus2/quercus2.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus2.glb",
+      "bytes": 7286744,
+      "sha256": "e668ac1f03de63f1222754798802fae06620c3c0cac9993869bcaa87d33e0c6d"
     },
     {
       "path": "models/Leaf_Pine_C.png",
@@ -2464,7 +2476,7 @@
       "source_git_blob_sha1": "e625adef3ae04e455037c4db4d39d7f486f0a498",
       "source_upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
       "source_format": "glTF 2.0 binary (GLB)",
-      "source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
+      "source_conversion_proof_sha256": "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82",
       "source_triangles": 7016,
       "source_surfaces": 2,
       "source_materials": 2,
@@ -2582,7 +2594,7 @@
       "extensions_used": [
         "KHR_texture_transform"
       ],
-      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+      "source_node_transform": "identity (including any transform-free parent nodes); source Y axis is vertical and source origin is grounded",
       "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
       "lod": {
         "source_supplied": false,
@@ -2601,7 +2613,7 @@
       "source_git_blob_sha1": "8634899c22a9e4a7bf8d3fc94930ed560d340dd0",
       "source_upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
       "source_format": "glTF 2.0 binary (GLB)",
-      "source_conversion_proof_sha256": "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11",
+      "source_conversion_proof_sha256": "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82",
       "source_triangles": 4246,
       "source_surfaces": 2,
       "source_materials": 2,
@@ -2719,7 +2731,287 @@
       "extensions_used": [
         "KHR_texture_transform"
       ],
-      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+      "source_node_transform": "identity (including any transform-free parent nodes); source Y axis is vertical and source origin is grounded",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "landscapelab_fagus",
+      "source_id": "landscapelab_tree_2026",
+      "source_name": "Fagus",
+      "description": "Mature broadleaf beech tree (Fagus)",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/fagus/Fagus.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/Fagus.glb",
+      "source_sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+      "source_git_blob_sha1": "475e8693fc696f349b54ec573c93dbcda8dde76d",
+      "source_upstream_path": "Natural/Plants/Trees/Fagus/Fagus.glb",
+      "source_format": "glTF 2.0 binary (GLB)",
+      "source_conversion_proof_sha256": "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82",
+      "source_triangles": 9312,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "branches",
+        "leaves"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "branches",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        },
+        {
+          "name": "leaves",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.5,
+          "double_sided": true
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -0.331169,
+          0.0,
+          -0.354286
+        ],
+        "max": [
+          0.353193,
+          1.019293,
+          0.436789
+        ],
+        "size": [
+          0.684362,
+          1.019293,
+          0.791074
+        ],
+        "height": 1.019293,
+        "ground_offset": 0.0
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.331169,
+          0.0,
+          -0.354286
+        ],
+        "max": [
+          0.353193,
+          1.019293,
+          0.436789
+        ],
+        "size": [
+          0.684362,
+          1.019293,
+          0.791074
+        ],
+        "height": 1.019293,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.324900134,
+          0.0,
+          -0.347579812
+        ],
+        "max": [
+          0.346508144,
+          1.0,
+          0.428520943
+        ],
+        "size": [
+          0.671408278,
+          1.0,
+          0.776100755
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.981071877838,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2528904,
+          "sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f"
+        },
+        {
+          "index": 1,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1217770,
+          "sha256": "92ab95d1900720d615ee6cf6038b7b3af2ceba2ed7ee41bc52a1a24f2f65a58b"
+        },
+        {
+          "index": 2,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2458044,
+          "sha256": "21462e7dbd2724f5414675731c26d20bf5c7f7ce93d8764514f09bde581d29dc"
+        },
+        {
+          "index": 3,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 632924,
+          "sha256": "829d75ba7f583f9adb538caafd6b45a0b0aac51e106caf482b4904eb45332bb7"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity (including any transform-free parent nodes); source Y axis is vertical and source origin is grounded",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      },
+      "asset_license_evidence": {
+        "path": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_Fagus.md",
+        "upstream_path": "Natural/Plants/Trees/Fagus/LICENSE.md",
+        "bytes": 308,
+        "sha256": "37024abfefe49fec375d961ebe9cb49d4ae61cf2d59b320fa7bb8f5dced8971e"
+      }
+    },
+    {
+      "id": "landscapelab_quercus2",
+      "source_id": "landscapelab_tree_2026",
+      "source_name": "Quercus 2",
+      "description": "Young open-grown oak tree (Quercus)",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus2/quercus2.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus2.glb",
+      "source_sha256": "e668ac1f03de63f1222754798802fae06620c3c0cac9993869bcaa87d33e0c6d",
+      "source_git_blob_sha1": "030f1f3208a48fa97a1dda01120fc890cbd22f2b",
+      "source_upstream_path": "Natural/Plants/Trees/Quercus/quercus2.glb",
+      "source_format": "glTF 2.0 binary (GLB)",
+      "source_conversion_proof_sha256": "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82",
+      "source_triangles": 11144,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "branches",
+        "leaves"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "branches",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        },
+        {
+          "name": "leaves",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.5,
+          "double_sided": true
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -18.882233,
+          0.0,
+          -12.980942
+        ],
+        "max": [
+          15.270918,
+          71.853935,
+          17.931725
+        ],
+        "size": [
+          34.153151,
+          71.853935,
+          30.912666
+        ],
+        "height": 71.853935,
+        "ground_offset": 0.0
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -18.882233,
+          0.0,
+          -12.980942
+        ],
+        "max": [
+          15.270918,
+          71.853935,
+          17.931725
+        ],
+        "size": [
+          34.153151,
+          71.853935,
+          30.912666
+        ],
+        "height": 71.853935,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.26278634,
+          0.0,
+          -0.180657353
+        ],
+        "max": [
+          0.212527231,
+          1.0,
+          0.249558002
+        ],
+        "size": [
+          0.475313571,
+          1.0,
+          0.430215356
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.013917122237,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2528904,
+          "sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f"
+        },
+        {
+          "index": 1,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1217843,
+          "sha256": "21176aaea3f1a65e7ab70338ae06eb0ae905c90437f686de914d5d94895f8a9a"
+        },
+        {
+          "index": 2,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2219628,
+          "sha256": "08a40ea06778d48d5600ab891bdf8a2498d727ecc080909e46847e4251f8d057"
+        },
+        {
+          "index": 3,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 662648,
+          "sha256": "b2f426ea8bcf1694a5363e3ce05b7324d4b98419b0299c78cb4c7ead28c797e1"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity (including any transform-free parent nodes); source Y axis is vertical and source origin is grounded",
       "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
       "lod": {
         "source_supplied": false,

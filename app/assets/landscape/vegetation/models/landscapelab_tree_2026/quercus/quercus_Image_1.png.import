@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0nch80dwvql4"
-path="res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.ctex"
+path.s3tc="res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.s3tc.ctex"
+path.etc2="res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "436c6b0f5bd6298ef5a2ea6460289902"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png"
-dest_files=["res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.ctex"]
+dest_files=["res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.s3tc.ctex", "res://.godot/imported/quercus_Image_1.png-195f64ac8d2858a2c1ccdd8b3b2273a2.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

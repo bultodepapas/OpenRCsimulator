@@ -18,18 +18,21 @@ const TREE_WIND_SHADER_PATHS := {
 const TREE_WIND_LEAN_LIMITS_M := {
 	"landscapelab_quercus": 0.12,
 	"landscapelab_pine": 0.22,
+	"landscapelab_fagus": 0.13,
+	"landscapelab_quercus2": 0.15,
 }
 # Foliage normal tilt at full flutter; shading only, so it cannot change any envelope.
 const LEAF_FLUTTER_TILT := 0.12
 
 const ALIASES := {
 	# Keep the seven alias slots: slot zero protects all four existing maples,
-	# including the clubhouse specimen. Replace only the stylized sources.
-	# Pine in slot three retains a mixed young grove within the shared scenery
-	# source budget; the prominent car-park oak in slot five stays broadleaf.
-	"shade_tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
-	"tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
-	"sapling": ["landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine"],
+	# including the clubhouse specimen. Beech (Fagus) in slots two and four adds a
+	# second broadleaf species; pine in slots three and six keeps the mixed grove,
+	# and the prominent car-park oak in slot five stays Quercus. Saplings use the
+	# young open-grown Quercus 2 rather than a scaled-down mature oak.
+	"shade_tree": ["maple_tree", "landscapelab_quercus", "landscapelab_fagus", "landscapelab_pine", "landscapelab_fagus", "landscapelab_quercus", "landscapelab_pine"],
+	"tree": ["maple_tree", "landscapelab_quercus", "landscapelab_fagus", "landscapelab_pine", "landscapelab_fagus", "landscapelab_quercus", "landscapelab_pine"],
+	"sapling": ["landscapelab_quercus2", "landscapelab_pine", "landscapelab_quercus2", "landscapelab_pine"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",
@@ -378,7 +381,8 @@ static func _record_groups(records: Array, cell_size: int) -> Array[Dictionary]:
 
 static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary], records: Array) -> bool:
 	if float(TREE_WIND_LEAN_LIMITS_M.get(asset_id, 0.0)) <= 0.0:
-		_warn_tree_wind_once(asset_id + ":limit", "Tree wind is disabled for %s: no measured collision-bounded sway limit" % asset_id)
+		# Static by design (protected maples, oak, library-only forms): not a warning-worthy failure.
+		print_verbose("Tree wind is disabled for %s: no measured collision-bounded sway limit" % asset_id)
 		return false
 	# The reviewed trees contain one mesh with bark/foliage surfaces. Independent
 	# part-local height ramps would pull separately modeled crowns off their stems.
@@ -614,9 +618,9 @@ static func _part(
 			var override_material := mesh_instance.get_active_material(surface_index)
 			if override_material != null:
 				material = override_material
-		if str(asset.get("id", "")) in ["landscapelab_quercus", "landscapelab_pine"] \
+		if str(asset.get("source_id", "")) == "landscapelab_tree_2026" \
 				and material is StandardMaterial3D:
-			# The supplier GLBs assign metallicFactor=0.5 to bark and foliage.
+			# Every supplier GLB assigns metallicFactor=0.5 to bark and foliage.
 			# These are dielectric surfaces. Keep downloaded resources untouched;
 			# the cached draw material retains their textures, alpha and roughness.
 			material = material.duplicate() as StandardMaterial3D

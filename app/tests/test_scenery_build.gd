@@ -17,7 +17,7 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_NON_FLEET_TRIANGLES := 725000 # Keep the existing field allowance; SC-09-R1 tracks the new static fleet separately.
+const SourceBudget = preload("res://tests/scene_source_budget.gd") # LU-34 per-subsystem allowances
 const BUDGET_FLEET_TRIANGLES := 350000 # Full near meshes, before per-view automatic LOD; native evidence in SC-09-R1.
 const BUDGET_BUILD_MS := 800.0 # Warm scene-construction gate. Cold source import/parsing remains a measured performance target.
 
@@ -186,8 +186,9 @@ func _test_build() -> void:
 	var tris := _triangles(root)
 	_check("static modern fleet stays below 350k full-detail triangles", fleet_triangles > 0 and fleet_triangles <= BUDGET_FLEET_TRIANGLES, str(fleet_triangles))
 	print("     triangles: %d, build %.1f ms" % [tris, stats.build_ms])
-	_check("non-fleet geometry stays within its existing budget (%d)" % BUDGET_NON_FLEET_TRIANGLES,
-		tris - fleet_triangles <= BUDGET_NON_FLEET_TRIANGLES, "non-fleet=%d fleet=%d" % [tris - fleet_triangles, fleet_triangles])
+	var source_failures := SourceBudget.failures(root)
+	_check("every scenery subsystem stays within its LU-34 source allowance", source_failures.is_empty(),
+		", ".join(source_failures) + " " + str(SourceBudget.counts(root)))
 	print("     cold build %.1f ms (%.0f ms target remains open; source import and runner load included)" % [
 		float(stats.build_ms), BUDGET_BUILD_MS])
 	for c in root.get_children():

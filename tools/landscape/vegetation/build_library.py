@@ -94,9 +94,11 @@ MAPLE_GLTF = "maple_large_3_lod1.gltf"
 LANDSCAPELAB_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/landscapelab_tree_2026"
 LANDSCAPELAB_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/landscapelab_tree_2026"
 LANDSCAPELAB_MANIFEST = LANDSCAPELAB_DERIVED_DIR / "conversion_manifest.json"
-LANDSCAPELAB_MANIFEST_SHA256 = "b09401f9f1e394ebba83555bf98d6434e9dfeee4faaaaa85e80ea77976564d11"
+LANDSCAPELAB_MANIFEST_SHA256 = "520a6362a8e354ef6571ea754fe45b98baf4fa355dcebd5a7aec21ee44f8ae82"
 LANDSCAPELAB_REVISION = "dfdde034c3547f9876967653d98827bd5348e52e"
+# Runtime notice path; its source is the four-tree library notice named by the manifest.
 LANDSCAPELAB_NOTICE = "LICENSE_LANDSCAPELAB.txt"
+LANDSCAPELAB_NOTICE_SOURCE = "LICENSE_LANDSCAPELAB_LIBRARY.txt"
 LANDSCAPELAB_ASSETS = {
     "landscapelab_quercus": {
         "source_name": "Quercus",
@@ -114,6 +116,24 @@ LANDSCAPELAB_ASSETS = {
         "bytes": 6_788_748,
         "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
         "triangles": 4_246,
+        "surfaces": 2,
+    },
+    "landscapelab_fagus": {
+        "source_name": "Fagus",
+        "filename": "Fagus.glb",
+        "runtime_subdir": "fagus",
+        "bytes": 7_239_640,
+        "sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+        "triangles": 9_312,
+        "surfaces": 2,
+    },
+    "landscapelab_quercus2": {
+        "source_name": "Quercus 2",
+        "filename": "quercus2.glb",
+        "runtime_subdir": "quercus2",
+        "bytes": 7_286_744,
+        "sha256": "e668ac1f03de63f1222754798802fae06620c3c0cac9993869bcaa87d33e0c6d",
+        "triangles": 11_144,
         "surfaces": 2,
     },
 }
@@ -1002,7 +1022,7 @@ def catalog_for(
 
 
 def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -> None:
-    """Install the pinned, self-contained Quercus and Pine GLBs byte-for-byte."""
+    """Install the pinned, self-contained LandscapeLab tree GLBs byte-for-byte."""
     if not LANDSCAPELAB_MANIFEST.is_file():
         raise BuildError(f"missing LandscapeLab tree conversion manifest: {LANDSCAPELAB_MANIFEST}")
     manifest_bytes = LANDSCAPELAB_MANIFEST.read_bytes()
@@ -1024,7 +1044,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
 
     manifest_assets = manifest.get("assets", [])
     if [item.get("id") for item in manifest_assets] != list(LANDSCAPELAB_ASSETS):
-        raise BuildError("LandscapeLab tree manifest must contain the reviewed Quercus and Pine assets")
+        raise BuildError("LandscapeLab tree manifest must contain the reviewed Quercus, Pine, Fagus and Quercus 2 assets")
 
     readme_rel = source.get("license_evidence")
     notice_rel = source.get("runtime_notice")
@@ -1032,8 +1052,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
     if (
         not isinstance(readme_rel, str)
         or not readme_rel.startswith(expected_source_prefix)
-        or not isinstance(notice_rel, str)
-        or not notice_rel.startswith(expected_source_prefix)
+        or notice_rel != expected_source_prefix + LANDSCAPELAB_NOTICE_SOURCE
     ):
         raise BuildError("LandscapeLab license evidence must remain inside its pinned source directory")
     readme_path = output_path(ROOT, readme_rel)
@@ -1052,6 +1071,8 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
     descriptions = {
         "landscapelab_quercus": "Mature broadleaf Quercus tree",
         "landscapelab_pine": "Mature pine tree",
+        "landscapelab_fagus": "Mature broadleaf beech tree (Fagus)",
+        "landscapelab_quercus2": "Young open-grown oak tree (Quercus)",
     }
     for item in manifest_assets:
         asset_id = item["id"]
@@ -1073,6 +1094,19 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
             or item.get("dependencies") != []
         ):
             raise BuildError(f"LandscapeLab tree manifest entry changed from its reviewed pin: {asset_id}")
+
+        asset_license = item.get("asset_license_evidence")
+        if asset_license is not None:
+            license_rel = asset_license.get("path") if isinstance(asset_license, dict) else None
+            if not isinstance(license_rel, str) or not license_rel.startswith(expected_source_prefix):
+                raise BuildError(f"LandscapeLab asset license evidence must remain inside its source directory: {asset_id}")
+            license_path = output_path(ROOT, license_rel)
+            if (
+                not license_path.is_file()
+                or license_path.stat().st_size != asset_license.get("bytes")
+                or sha256_file(license_path) != asset_license.get("sha256")
+            ):
+                raise BuildError(f"LandscapeLab asset license evidence changed from its manifest: {asset_id}")
 
         source_path = output_path(ROOT, source_rel)
         derived_path = output_path(LANDSCAPELAB_DERIVED_DIR, derived_rel)
@@ -1105,7 +1139,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
             "bytes": len(derived_bytes),
             "sha256": expected["sha256"],
         })
-        catalog["assets"].append({
+        catalog_asset = {
             "id": asset_id,
             "source_id": "landscapelab_tree_2026",
             "source_name": expected["source_name"],
@@ -1124,7 +1158,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
             "source_material_names": item["source_material_names"],
             "source_material_conventions": item["source_material_conventions"],
             "source_bounds_m": item["source_bounds_m"],
-            # Both pinned GLBs already have their root at ground level. Keep
+            # Every pinned GLB already has its root at ground level. Keep
             # the same catalog bounds contract as the other supplied plants.
             "grounded_bounds_m": item["source_bounds_m"],
             "normalized_bounds_1m": item["normalized_bounds_1m"],
@@ -1134,7 +1168,10 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
             "source_node_transform": item["source_node_transform"],
             "conversion": item["conversion"],
             "lod": {"source_supplied": False, "godot_import_generate": True},
-        })
+        }
+        if asset_license is not None:
+            catalog_asset["asset_license_evidence"] = asset_license
+        catalog["assets"].append(catalog_asset)
 
     notice_bytes = notice_path.read_bytes()
     library_files[LANDSCAPELAB_NOTICE] = notice_bytes
@@ -1146,7 +1183,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
     })
     catalog["sources"].append({
         "id": "landscapelab_tree_2026",
-        "title": "LandscapeLab Assets — Quercus and Pine",
+        "title": "LandscapeLab Assets — Quercus, Quercus 2, Fagus and Pine",
         "author": "LandscapeLab Assets contributors",
         "url": source["repository"],
         "revision": LANDSCAPELAB_REVISION,
@@ -1166,7 +1203,7 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
         item["triangles"] for item in LANDSCAPELAB_ASSETS.values()
     )
     catalog["files"].sort(key=lambda item: item["path"].lower())
-    catalog["import"]["geometry_policy"] += "; LandscapeLab Quercus and Pine preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata"
+    catalog["import"]["geometry_policy"] += "; LandscapeLab trees preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata"
     catalog["import"]["shared_material_policy"] += "; LandscapeLab materials and embedded textures are preserved byte-for-byte, including their source MASK foliage conventions"
 
 
