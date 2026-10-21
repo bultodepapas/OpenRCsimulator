@@ -1,0 +1,1025 @@
+{
+  "format": "openrc-afc-callback-timing-supplement v1",
+  "status": "complete_shared_host_diagnostic_only",
+  "scope": "Separate research callback timing diagnostic. It does not extend the two-second flight-equivalence evidence into a longer flight qualification and does not establish causal wall-time speedup or target-hardware acceptance.",
+  "run": {
+    "raw_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-shared-host-1/callback-timing.json",
+    "raw_report_sha256": "8a4d6ed28294d274a61dfd6d8de83aba63005ee0d78872e6c514613fcf69ef75",
+    "raw_report_bytes": 2314518,
+    "runner_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-shared-host-1/runner/callback-paired-shared-host-1-uiii3i7b/report.json",
+    "runner_report_sha256": "e386ad26d102e107eeee6997a20a65930886a8af83a4dc0c7b767895c5ab2ef7",
+    "runner_log_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-shared-host-1/runner/callback-paired-shared-host-1-uiii3i7b/engine.log",
+    "runner_log_sha256": "59b3d4da48b4837ba1ce2748cb8ff49d39bb8f1ec879a25efbeec99beb853dfa",
+    "runner_started_utc": "2026-10-21T03:22:05.086775Z",
+    "probe_started_utc": "2026-10-21T03:22:10Z",
+    "probe_finished_utc": "2026-10-21T03:23:33Z",
+    "runner_elapsed_seconds": 88.5,
+    "runner_status": "passed",
+    "probe_source_path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/research/ai-companions/performance/callback_timing_probe.gd",
+    "probe_source_sha256": "81bb40b748e08d9f289f258269b4f01f6ac5cc03275ca11e7fa445e1f3a273b1",
+    "raw_samples_serialized": true,
+    "buckets_checked_for_per_tick_sum": true,
+    "independently_recomputed_raw_sum_mismatches": 0
+  },
+  "hardware": {
+    "os": "Microsoft Windows 11 Pro",
+    "os_version": "10.0.26100",
+    "os_architecture": "64-bit",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+    "engine": "4.7.2-stable (official)",
+    "physics_hz": 240
+  },
+  "protocol": {
+    "warmup_ticks_per_branch": 240,
+    "measured_ticks_per_branch": 2400,
+    "total_ticks_per_branch": 2640,
+    "branch_count": 8,
+    "companion_counts": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "order": "Alternating by count: even counts production then candidate; odd counts candidate then production.",
+    "fixture": "Default Jensen Ugly Stik 60, default Club field/collision inventory/lake, calm production weather defaults, seed 20261020; detached controller fixtures; no rendering/audio/realtime pacing.",
+    "percentiles": "Nearest-rank p50/p95/p99 are reported per bucket. Compare complete_callback p95 directly with the 2 ms fleet budget; marginal bucket p95 values cannot be summed because their ranks need not correspond to the same ticks.",
+    "overhead": "Raw profiler-envelope and wrapper-shim samples are included. Timed agent proxies and wrapped manager callbacks add diagnostic timer reads inside callback time; values are neither subtracted nor corrected."
+  },
+  "complete": true,
+  "every_branch_exact_ticks": true,
+  "all_raw_bucket_sample_counts_2400": true,
+  "all_state_and_command_fingerprints_match": true,
+  "all_manager_profile_identities_remain_production": true,
+  "source_bytes_before_after_identical": true,
+  "source_identity": {
+    "snapshot_path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020",
+    "snapshot_commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+    "source_map_in_raw_report": true,
+    "production_controller_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "production_base_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "candidate_controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+    "manager_profile_controller_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "selected_source_sha256": {
+      "app/project.godot": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28",
+      "app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+      "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+      "app/physics/rigid_body.gd": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3",
+      "app/physics/integrator.gd": "4cc0738fb5e17e8cfbe6f180fb49d0c73c156c8a9b5a2f7e9140fb29be625d83",
+      "app/physics/dynamics.gd": "950c79bda30feeee727d24a17e84a0ed0a527e221159168951b3920c1ec7d4fe",
+      "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "e67990354f2368a6a000adbc5a51e0cd9bb8517f3df466131f2fb4f4e2533293",
+      "app/data/ai/companions/fields/club-default.json": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+      "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "app/data/fields/mountains.json": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+      "research/ai-companions/performance/callback_timing_probe.gd": "81bb40b748e08d9f289f258269b4f01f6ac5cc03275ca11e7fa445e1f3a273b1"
+    },
+    "measured_snapshot_profile_solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "current_main_profile_merged_solver_sha256": "b9911cc9166e1cb8c523cfa61c2b4fb17dd0ac727384d9622ebf00afd9f16f30",
+    "solver_distinction": "Timing is bound to the frozen D snapshot carrying the 1526… qualification. The current main profile carries the AFC-02 merged solver source SHA b991…; this timing run does not qualify that solver merge."
+  },
+  "complete_callback_p95_usec_by_count": [
+    {
+      "companion_count": 0,
+      "production_usec": 3751,
+      "candidate_usec": 1529,
+      "production_over_2000us": true,
+      "candidate_over_2000us": false,
+      "ai_callbacks_present": false
+    },
+    {
+      "companion_count": 1,
+      "production_usec": 4919,
+      "candidate_usec": 3948,
+      "production_over_2000us": true,
+      "candidate_over_2000us": true,
+      "ai_callbacks_present": true
+    },
+    {
+      "companion_count": 2,
+      "production_usec": 6562,
+      "candidate_usec": 5041,
+      "production_over_2000us": true,
+      "candidate_over_2000us": true,
+      "ai_callbacks_present": true
+    },
+    {
+      "companion_count": 3,
+      "production_usec": 8706,
+      "candidate_usec": 7099,
+      "production_over_2000us": true,
+      "candidate_over_2000us": true,
+      "ai_callbacks_present": true
+    }
+  ],
+  "per_count_full_bucket_statistics": [
+    {
+      "companion_count": 0,
+      "branch_order": [
+        "production",
+        "candidate"
+      ],
+      "complete": true,
+      "profile_identity_equal": true,
+      "profile_identity_matches_pinned_production": true,
+      "state_and_command_fingerprints_match": true,
+      "production": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 0,
+        "manager_observation_batches": 0,
+        "observation_calls_measured": 0,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 21782,
+            "mean_usec": 1801.51958333333,
+            "p50_usec": 1461,
+            "p95_usec": 3751,
+            "p99_usec": 6584,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 78,
+            "mean_usec": 1.62208333333333,
+            "p50_usec": 1,
+            "p95_usec": 3,
+            "p99_usec": 3,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 163,
+            "mean_usec": 1.36708333333333,
+            "p50_usec": 1,
+            "p95_usec": 2,
+            "p99_usec": 3,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 165,
+            "mean_usec": 2.98916666666667,
+            "p50_usec": 2,
+            "p95_usec": 5,
+            "p99_usec": 6,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 8107,
+            "mean_usec": 156.214166666667,
+            "p50_usec": 122,
+            "p95_usec": 236,
+            "p99_usec": 948,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 21659,
+            "mean_usec": 1642.31625,
+            "p50_usec": 1328,
+            "p95_usec": 3368,
+            "p99_usec": 6167,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 21782,
+            "mean_usec": 1801.85083333333,
+            "p50_usec": 1461,
+            "p95_usec": 3752,
+            "p99_usec": 6586,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 3,
+            "mean_usec": 0.33125,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      },
+      "candidate": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 0,
+        "manager_observation_batches": 0,
+        "observation_calls_measured": 0,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 0,
+            "mean_usec": 0.0,
+            "p50_usec": 0,
+            "p95_usec": 0,
+            "p99_usec": 0,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 2349,
+            "mean_usec": 1206.34041666667,
+            "p50_usec": 1222,
+            "p95_usec": 1529,
+            "p99_usec": 1615,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 25,
+            "mean_usec": 1.07875,
+            "p50_usec": 1,
+            "p95_usec": 2,
+            "p99_usec": 2,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 17,
+            "mean_usec": 0.812916666666667,
+            "p50_usec": 1,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 26,
+            "mean_usec": 1.89166666666667,
+            "p50_usec": 2,
+            "p95_usec": 3,
+            "p99_usec": 4,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 417,
+            "mean_usec": 103.980416666667,
+            "p50_usec": 107,
+            "p95_usec": 134,
+            "p99_usec": 153,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 2205,
+            "mean_usec": 1100.46833333333,
+            "p50_usec": 1113,
+            "p95_usec": 1396,
+            "p99_usec": 1472,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 2349,
+            "mean_usec": 1206.61291666667,
+            "p50_usec": 1222,
+            "p95_usec": 1529,
+            "p99_usec": 1616,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 3,
+            "mean_usec": 0.2725,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      }
+    },
+    {
+      "companion_count": 1,
+      "branch_order": [
+        "candidate",
+        "production"
+      ],
+      "complete": true,
+      "profile_identity_equal": true,
+      "profile_identity_matches_pinned_production": true,
+      "state_and_command_fingerprints_match": true,
+      "production": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 600,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 3087,
+            "mean_usec": 14.4416666666667,
+            "p50_usec": 0,
+            "p95_usec": 54,
+            "p99_usec": 65,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 4486,
+            "mean_usec": 210.844166666667,
+            "p50_usec": 24,
+            "p95_usec": 778,
+            "p99_usec": 1193,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 15557,
+            "mean_usec": 1499.8925,
+            "p50_usec": 1378,
+            "p95_usec": 2229,
+            "p99_usec": 4403,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 19701,
+            "mean_usec": 3230.30916666667,
+            "p50_usec": 2954,
+            "p95_usec": 4919,
+            "p99_usec": 8459,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 15591,
+            "mean_usec": 1721.10458333333,
+            "p50_usec": 1491,
+            "p95_usec": 2703,
+            "p99_usec": 4917,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 3100,
+            "mean_usec": 20.8725,
+            "p50_usec": 5,
+            "p95_usec": 66,
+            "p99_usec": 83,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 1028,
+            "mean_usec": 16.79875,
+            "p50_usec": 15,
+            "p95_usec": 27,
+            "p99_usec": 55,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 8694,
+            "mean_usec": 132.9575,
+            "p50_usec": 118,
+            "p95_usec": 182,
+            "p99_usec": 351,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 17637,
+            "mean_usec": 1355.37458333333,
+            "p50_usec": 1230,
+            "p95_usec": 1960,
+            "p99_usec": 3893,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 19702,
+            "mean_usec": 3230.67041666667,
+            "p50_usec": 2954,
+            "p95_usec": 4919,
+            "p99_usec": 8459,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 6,
+            "mean_usec": 0.36125,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      },
+      "candidate": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 600,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 151,
+            "mean_usec": 12.5645833333333,
+            "p50_usec": 0,
+            "p95_usec": 53,
+            "p99_usec": 66,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 11919,
+            "mean_usec": 80.0125,
+            "p50_usec": 23,
+            "p95_usec": 238,
+            "p99_usec": 337,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 26796,
+            "mean_usec": 1469.24291666667,
+            "p50_usec": 1352,
+            "p95_usec": 1842,
+            "p99_usec": 4213,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 60587,
+            "mean_usec": 3033.13875,
+            "p50_usec": 2793,
+            "p95_usec": 3948,
+            "p99_usec": 10161,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 27052,
+            "mean_usec": 1557.87666666667,
+            "p50_usec": 1440,
+            "p95_usec": 2023,
+            "p99_usec": 4684,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 168,
+            "mean_usec": 18.03375,
+            "p50_usec": 4,
+            "p95_usec": 65,
+            "p99_usec": 82,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 133,
+            "mean_usec": 14.0904166666667,
+            "p50_usec": 13,
+            "p95_usec": 23,
+            "p99_usec": 35,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 2969,
+            "mean_usec": 119.48125,
+            "p50_usec": 118,
+            "p95_usec": 150,
+            "p99_usec": 235,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 59005,
+            "mean_usec": 1337.74708333333,
+            "p50_usec": 1207,
+            "p95_usec": 1610,
+            "p99_usec": 3473,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 60587,
+            "mean_usec": 3033.44,
+            "p50_usec": 2793,
+            "p95_usec": 3948,
+            "p99_usec": 10161,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 3,
+            "mean_usec": 0.30125,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      }
+    },
+    {
+      "companion_count": 2,
+      "branch_order": [
+        "production",
+        "candidate"
+      ],
+      "complete": true,
+      "profile_identity_equal": true,
+      "profile_identity_matches_pinned_production": true,
+      "state_and_command_fingerprints_match": true,
+      "production": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 1200,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 174,
+            "mean_usec": 20.9770833333333,
+            "p50_usec": 0,
+            "p95_usec": 93,
+            "p99_usec": 104,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 2301,
+            "mean_usec": 484.289166666667,
+            "p50_usec": 42,
+            "p95_usec": 2044,
+            "p99_usec": 2124,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 5684,
+            "mean_usec": 2649.95958333333,
+            "p50_usec": 2775,
+            "p95_usec": 3083,
+            "p99_usec": 3297,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 8075,
+            "mean_usec": 4485.2175,
+            "p50_usec": 4308,
+            "p95_usec": 6562,
+            "p99_usec": 6865,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 5847,
+            "mean_usec": 3147.81208333333,
+            "p50_usec": 2912,
+            "p95_usec": 5025,
+            "p99_usec": 5266,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 309,
+            "mean_usec": 28.57,
+            "p50_usec": 6,
+            "p95_usec": 108,
+            "p99_usec": 123,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 155,
+            "mean_usec": 21.15625,
+            "p50_usec": 20,
+            "p95_usec": 32,
+            "p99_usec": 43,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 268,
+            "mean_usec": 114.8975,
+            "p50_usec": 124,
+            "p95_usec": 140,
+            "p99_usec": 168,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 2146,
+            "mean_usec": 1193.93791666667,
+            "p50_usec": 1275,
+            "p95_usec": 1393,
+            "p99_usec": 1555,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 8076,
+            "mean_usec": 4485.54666666667,
+            "p50_usec": 4308,
+            "p95_usec": 6562,
+            "p99_usec": 6866,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 3,
+            "mean_usec": 0.329166666666667,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      },
+      "candidate": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 1200,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 178,
+            "mean_usec": 19.87625,
+            "p50_usec": 0,
+            "p95_usec": 92,
+            "p99_usec": 104,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 1027,
+            "mean_usec": 147.593333333333,
+            "p50_usec": 41,
+            "p95_usec": 561,
+            "p99_usec": 601,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 5655,
+            "mean_usec": 2511.02791666667,
+            "p50_usec": 2565,
+            "p95_usec": 3058,
+            "p99_usec": 3394,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 9262,
+            "mean_usec": 3936.03166666667,
+            "p50_usec": 4022,
+            "p95_usec": 5041,
+            "p99_usec": 5453,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 6242,
+            "mean_usec": 2670.71041666667,
+            "p50_usec": 2734,
+            "p95_usec": 3504,
+            "p99_usec": 3797,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 195,
+            "mean_usec": 26.6116666666667,
+            "p50_usec": 5,
+            "p95_usec": 106,
+            "p99_usec": 123,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 136,
+            "mean_usec": 18.8245833333333,
+            "p50_usec": 18,
+            "p95_usec": 29,
+            "p99_usec": 39,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 396,
+            "mean_usec": 107.830833333333,
+            "p50_usec": 114,
+            "p95_usec": 136,
+            "p99_usec": 165,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 3152,
+            "mean_usec": 1130.87875,
+            "p50_usec": 1161,
+            "p95_usec": 1385,
+            "p99_usec": 1523,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 9263,
+            "mean_usec": 3936.325,
+            "p50_usec": 4022,
+            "p95_usec": 5041,
+            "p99_usec": 5453,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 8,
+            "mean_usec": 0.293333333333333,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      }
+    },
+    {
+      "companion_count": 3,
+      "branch_order": [
+        "candidate",
+        "production"
+      ],
+      "complete": true,
+      "profile_identity_equal": true,
+      "profile_identity_matches_pinned_production": true,
+      "state_and_command_fingerprints_match": true,
+      "production": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 1800,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 326,
+            "mean_usec": 26.3741666666667,
+            "p50_usec": 0,
+            "p95_usec": 115,
+            "p99_usec": 133,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 6281,
+            "mean_usec": 812.842083333333,
+            "p50_usec": 49,
+            "p95_usec": 3461,
+            "p99_usec": 3622,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 11464,
+            "mean_usec": 3533.68458333333,
+            "p50_usec": 3700,
+            "p95_usec": 4072,
+            "p99_usec": 6022,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 19212,
+            "mean_usec": 5555.96833333333,
+            "p50_usec": 5043,
+            "p95_usec": 8706,
+            "p99_usec": 9246,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 17419,
+            "mean_usec": 4361.14875,
+            "p50_usec": 3802,
+            "p95_usec": 7316,
+            "p99_usec": 7753,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 401,
+            "mean_usec": 34.03875,
+            "p50_usec": 6,
+            "p95_usec": 129,
+            "p99_usec": 149,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 162,
+            "mean_usec": 22.2866666666667,
+            "p50_usec": 21,
+            "p95_usec": 33,
+            "p99_usec": 51,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 355,
+            "mean_usec": 102.229166666667,
+            "p50_usec": 109,
+            "p95_usec": 124,
+            "p99_usec": 172,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 3608,
+            "mean_usec": 1058.55166666667,
+            "p50_usec": 1112,
+            "p95_usec": 1229,
+            "p99_usec": 1723,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 19213,
+            "mean_usec": 5556.25833333333,
+            "p50_usec": 5043,
+            "p95_usec": 8706,
+            "p99_usec": 9246,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 2,
+            "mean_usec": 0.29,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      },
+      "candidate": {
+        "complete": true,
+        "completed_total_ticks": 2640,
+        "completed_warmup_ticks": 240,
+        "measured_ticks": 2400,
+        "tick_accounting_exact": true,
+        "manager_accepted_ticks": 2640,
+        "manager_observation_batches": 660,
+        "observation_calls_measured": 1800,
+        "callback_bucket_statistics": {
+          "ai_observation": {
+            "max_usec": 433,
+            "mean_usec": 27.9783333333333,
+            "p50_usec": 0,
+            "p95_usec": 128,
+            "p99_usec": 156,
+            "samples": 2400
+          },
+          "ai_plan_prepare": {
+            "max_usec": 2402,
+            "mean_usec": 266.27875,
+            "p50_usec": 54,
+            "p95_usec": 1011,
+            "p99_usec": 1816,
+            "samples": 2400
+          },
+          "ai_stepping": {
+            "max_usec": 11404,
+            "mean_usec": 3679.90833333333,
+            "p50_usec": 3797,
+            "p95_usec": 4681,
+            "p99_usec": 6794,
+            "samples": 2400
+          },
+          "complete_callback": {
+            "max_usec": 14727,
+            "mean_usec": 5212.7575,
+            "p50_usec": 5177,
+            "p95_usec": 7099,
+            "p99_usec": 9385,
+            "samples": 2400
+          },
+          "manager_after": {
+            "max_usec": 11687,
+            "mean_usec": 3962.64166666667,
+            "p50_usec": 3907,
+            "p95_usec": 5518,
+            "p99_usec": 7213,
+            "samples": 2400
+          },
+          "manager_before": {
+            "max_usec": 485,
+            "mean_usec": 36.49125,
+            "p50_usec": 7,
+            "p95_usec": 145,
+            "p99_usec": 176,
+            "samples": 2400
+          },
+          "manager_overhead": {
+            "max_usec": 206,
+            "mean_usec": 24.9675,
+            "p50_usec": 23,
+            "p95_usec": 41,
+            "p99_usec": 62,
+            "samples": 2400
+          },
+          "player_session_guard": {
+            "max_usec": 962,
+            "mean_usec": 106.725416666667,
+            "p50_usec": 110,
+            "p95_usec": 144,
+            "p99_usec": 199,
+            "samples": 2400
+          },
+          "player_solver": {
+            "max_usec": 4654,
+            "mean_usec": 1106.89916666667,
+            "p50_usec": 1140,
+            "p95_usec": 1428,
+            "p99_usec": 2027,
+            "samples": 2400
+          }
+        },
+        "measurement_envelope_statistics": {
+          "profiler_envelope": {
+            "max_usec": 14727,
+            "mean_usec": 5213.09083333333,
+            "p50_usec": 5178,
+            "p95_usec": 7100,
+            "p99_usec": 9386,
+            "samples": 2400
+          },
+          "wrapper_shim": {
+            "max_usec": 17,
+            "mean_usec": 0.333333333333333,
+            "p50_usec": 0,
+            "p95_usec": 1,
+            "p99_usec": 2,
+            "samples": 2400
+          }
+        }
+      }
+    }
+  ],
+  "shared_host": {
+    "isolated_window_claimed": false,
+    "overlapping_process": "Godot vegetation performance benchmark PID 37872, D:/OpenRCsimulator-vegetation-renewal-2026-10-20/baseline/app running tools/trees/flight_quality_probe.gd --mode=performance --probe-warmup=10 --probe-sample=60",
+    "benchmark_started_utc": "2026-10-21T03:21:36Z",
+    "observed_active_utc": "2026-10-21T03:22:15Z",
+    "not_present_by_utc": "2026-10-21T03:24:03Z",
+    "overlap": "The benchmark was confirmed active during the callback run; its exact exit time within the observation interval is unknown. Treat this as shared-host data.",
+    "noise_control": "At companion count 0 no companion controller callbacks run, yet production/candidate complete-callback p95 differed 3751 vs 1529 microseconds. This is a direct noise control and rules out a causal speedup claim from this run."
+  },
+  "fleet_budget": {
+    "threshold_usec": 2000,
+    "comparison": "Direct complete_callback p95",
+    "result": "Candidate p95 exceeded 2 ms at counts 1, 2, and 3. Count 0 was below 2 ms but has no AI callbacks and serves only as a noise control."
+  },
+  "failed_initial_attempt": {
+    "run_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-1",
+    "runner_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-1/callback-runner-report.json",
+    "runner_report_sha256": "6e6e4eb8c36a6860fee57e179594ce1cbd26a5cb5c2d6d4f52b27a436b517004",
+    "engine_log_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-1/callback-engine.log",
+    "engine_log_sha256": "e4cbfc1233641d2f661f47fcf4d0fd589b35dbeeafe6c545d0a9a18f292a8b90",
+    "exact_source_copy_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-1/callback_timing_probe_used.gd",
+    "source_sha256": "f290a85906a1c16ad290fa11cdce1e250f8d51569248a352977ef15bf7d0d9ff",
+    "runner_started_utc": "2026-10-21T03:04:50.258077Z",
+    "failure": "Runtime typed-array assignment at probe line 115; the SceneTree did not exit after the script error, so run_checked timed out at 900 seconds. No timing report/cases were emitted; this failed attempt is retained and excluded."
+  },
+  "smoke": {
+    "report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-2/callback-smoke.json",
+    "report_sha256": "72a5848caba9da87a38e51654c50d3a0c334e3a84ee868bb6e2cdbbe507bb6094",
+    "runner_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-2/runner-smoke/callback-smoke-all-branches-r9ya_1kf/report.json",
+    "runner_report_sha256": "7886d1604802f54ff2bf674aea03d42f30469121a79c7db2203369e02516f31c",
+    "runner_log_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-timing-window-2/runner-smoke/callback-smoke-all-branches-r9ya_1kf/engine.log",
+    "runner_log_sha256": "8cc3db0ed03a0031e575adac52b166a6deff82f69f7b67266652f19cb35e76bd",
+    "probe_source_sha256": "81bb40b748e08d9f289f258269b4f01f6ac5cc03275ca11e7fa445e1f3a273b1",
+    "result": "All 8 branches completed 1 warmup and 4 measured ticks with matching actor state/command fingerprints; smoke is runtime validation, not timing evidence."
+  },
+  "corrected_parse": {
+    "runner_report_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-probe-parse-corrected/callback-probe-parse-corrected-wxj3mpko/report.json",
+    "runner_report_sha256": "e94d83ee2a1cdcfbef3cdc95a767ff6a37bcc15e94d44fd4e24b35b158d222ff",
+    "runner_log_path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/callback-probe-parse-corrected/callback-probe-parse-corrected-wxj3mpko/engine.log",
+    "runner_log_sha256": "f24edd0c233d568c3923dac4af9a445b3e018ac7bf617e330d247dfdf95e3adf",
+    "probe_source_sha256": "81bb40b748e08d9f289f258269b4f01f6ac5cc03275ca11e7fa445e1f3a273b1",
+    "result": "Passed warnings-as-errors parse-only."
+  },
+  "limits": [
+    "This is a software callback diagnostic, not physical validation or rendered-frame pacing.",
+    "Shared-host overlap and the count-zero noise control prevent causal wall-time attribution.",
+    "No timing acceptance is claimed for companion counts 1–3 against the 2 ms complete-callback p95 budget.",
+    "Per-bucket p95 values are not additive; use the directly measured complete-callback p95.",
+    "Source identity is the frozen D snapshot; the current main merged solver source SHA is distinct."
+  ]
+}

@@ -1,0 +1,789 @@
+{
+  "case_comparisons": {
+    "seed-20261020-crossing-right": {
+      "delta_initial_target_height_r4_minus_r3_m": 0.00219106233719657,
+      "delta_min_separation_r4_minus_r3_m": 9.14477482965026e-05,
+      "player_initial_spawn_spec_equal": true,
+      "r3_initial_commanded_target_height_m": 35.0,
+      "r3_initial_target_height_matches_nominal": true,
+      "r3_min_separation_to_player_m": 59.8197897499504,
+      "r3_separation_gate_passed": true,
+      "r3_valid_complete": true,
+      "r4_expected_initial_target_height_m": 35.0,
+      "r4_initial_commanded_target_height_m": 35.0021910623372,
+      "r4_initial_target_height_error_m": 0.00219106233716104,
+      "r4_initial_target_height_matches_nominal": false,
+      "r4_min_separation_to_player_m": 59.8198811976987,
+      "r4_separation_gate_passed": true,
+      "r4_valid_complete": true
+    },
+    "seed-20261021-crossing-left": {
+      "delta_initial_target_height_r4_minus_r3_m": 0.002191062516601505,
+      "delta_min_separation_r4_minus_r3_m": -0.0003094362073952084,
+      "player_initial_spawn_spec_equal": true,
+      "r3_initial_commanded_target_height_m": 35.0,
+      "r3_initial_target_height_matches_nominal": true,
+      "r3_min_separation_to_player_m": 58.4652523291407,
+      "r3_separation_gate_passed": true,
+      "r3_valid_complete": true,
+      "r4_expected_initial_target_height_m": 35.0,
+      "r4_initial_commanded_target_height_m": 35.0021910625166,
+      "r4_initial_target_height_error_m": 0.00219106251655887,
+      "r4_initial_target_height_matches_nominal": false,
+      "r4_min_separation_to_player_m": 58.4649428929333,
+      "r4_separation_gate_passed": true,
+      "r4_valid_complete": true
+    }
+  },
+  "comparison_valid": true,
+  "failures": [],
+  "format": "afc-04-r4-r3-calm-crossing-comparison-v1",
+  "reports": {
+    "r3_candidate": {
+      "classification": "encounter_survey",
+      "deterministic_repeat_exact": true,
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-04-R3\\crossings\\candidate\\report.json",
+      "sha256": "34dd6f45ea0e9065f9dc0d1fecf672085f44fe3439ee65af06d1e8e3f10f988a"
+    },
+    "r4_production": {
+      "classification": "encounter_survey",
+      "deterministic_repeat_exact": true,
+      "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    }
+  },
+  "scope_note": "The two reports share calm weather, probe, route seeds, field, collision world and lake. Differences are observed source/version deltas for these fixtures, not a claim of universal R2 equivalence or physical validation.",
+  "source_identities": {
+    "common_probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+    "controller_source_changed": true,
+    "r3_candidate_pilot_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "r4_production_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "world_identities_equal": true
+  },
+  "target_height_interpretation": "Retain R4's initial_target_height_matches_nominal=false flags as reported diagnostics. The R4 local-terrain clearance floor raises the target above nominal 35 m; its exact per-route value is included above. This comparison does not call the result equivalent.",
+  "trajectory": {
+    "aggregate_numeric_deltas": {
+      "agl_m": {
+        "compared_values": 804,
+        "different_values": 400,
+        "max_abs_delta": 0.0012265599999992105,
+        "maximum_delta": 0.0012265599999992105,
+        "mean_delta_r4_minus_r3": 0.00036946116915421404,
+        "minimum_delta": 0.0,
+        "p95_abs_delta": 0.0011204399999940051,
+        "rms_delta": 0.0005650144007560021
+      },
+      "altitude_m": {
+        "compared_values": 804,
+        "different_values": 400,
+        "max_abs_delta": 0.0011675599999989572,
+        "maximum_delta": 0.0011675599999989572,
+        "mean_delta_r4_minus_r3": 0.0003686536194030362,
+        "minimum_delta": 0.0,
+        "p95_abs_delta": 0.0011176399999968112,
+        "rms_delta": 0.0005635110592453162
+      },
+      "bank_rad": {
+        "compared_values": 804,
+        "different_values": 399,
+        "max_abs_delta": 2.3700000000015375e-06,
+        "maximum_delta": 1.3900000000038881e-06,
+        "mean_delta_r4_minus_r3": -1.9276119402989106e-07,
+        "minimum_delta": -2.3700000000015375e-06,
+        "p95_abs_delta": 1.0200000000043508e-06,
+        "rms_delta": 4.5748664445056986e-07
+      },
+      "distance_to_ai_m": {
+        "compared_values": 804,
+        "different_values": 399,
+        "max_abs_delta": 0.0010562500000048658,
+        "maximum_delta": 0.0010562500000048658,
+        "mean_delta_r4_minus_r3": 2.1244402985400028e-06,
+        "minimum_delta": -0.0005880799999999908,
+        "p95_abs_delta": 0.0007219799999944598,
+        "rms_delta": 0.0003081101721753713
+      },
+      "east_m": {
+        "compared_values": 804,
+        "different_values": 400,
+        "max_abs_delta": 0.0013441099999909056,
+        "maximum_delta": 0.0003747100000168757,
+        "mean_delta_r4_minus_r3": -0.00010663075870604745,
+        "minimum_delta": -0.0013441099999909056,
+        "p95_abs_delta": 0.0011571799999785526,
+        "rms_delta": 0.0004199910770809776
+      },
+      "north_m": {
+        "compared_values": 804,
+        "different_values": 399,
+        "max_abs_delta": 0.0012244300000361363,
+        "maximum_delta": 0.0012244300000361363,
+        "mean_delta_r4_minus_r3": 4.3511990050467204e-05,
+        "minimum_delta": -0.0005864400000064052,
+        "p95_abs_delta": 0.0008408400000234906,
+        "rms_delta": 0.00034561366404349444
+      },
+      "pitch": {
+        "compared_values": 804,
+        "different_values": 402,
+        "max_abs_delta": 0.000518,
+        "maximum_delta": 0.000518,
+        "mean_delta_r4_minus_r3": -4.0758706467661725e-06,
+        "minimum_delta": -0.000454,
+        "p95_abs_delta": 0.00028500000000000053,
+        "rms_delta": 0.00011999690605464205
+      },
+      "pitch_rad": {
+        "compared_values": 804,
+        "different_values": 400,
+        "max_abs_delta": 5.874000000000157e-05,
+        "maximum_delta": 5.874000000000157e-05,
+        "mean_delta_r4_minus_r3": 1.882636815920204e-06,
+        "minimum_delta": -5.234000000001182e-05,
+        "p95_abs_delta": 2.512999999999821e-05,
+        "rms_delta": 1.0956924637526647e-05
+      },
+      "q_radps": {
+        "compared_values": 804,
+        "different_values": 400,
+        "max_abs_delta": 0.0004941100000000001,
+        "maximum_delta": 0.0004941100000000001,
+        "mean_delta_r4_minus_r3": -8.718781094527464e-07,
+        "minimum_delta": -0.0004748500000000002,
+        "p95_abs_delta": 0.00021965000000000005,
+        "rms_delta": 9.238096456416746e-05
+      },
+      "roll": {
+        "compared_values": 804,
+        "different_values": 318,
+        "max_abs_delta": 5.999999999999062e-06,
+        "maximum_delta": 5.999999999999062e-06,
+        "mean_delta_r4_minus_r3": 3.3084577114435547e-07,
+        "minimum_delta": -3.0000000000030003e-06,
+        "p95_abs_delta": 2.999999999999531e-06,
+        "rms_delta": 1.142790509784298e-06
+      },
+      "target_height_m": {
+        "compared_values": 402,
+        "different_values": 192,
+        "max_abs_delta": 0.006811050000003149,
+        "maximum_delta": 0.006811050000003149,
+        "mean_delta_r4_minus_r3": 0.0010870381094527416,
+        "minimum_delta": 0.0,
+        "p95_abs_delta": 0.004470759999996687,
+        "rms_delta": 0.0019146693727149784
+      },
+      "throttle": {
+        "compared_values": 804,
+        "different_values": 368,
+        "max_abs_delta": 8.000000000008e-06,
+        "maximum_delta": 8.000000000008e-06,
+        "mean_delta_r4_minus_r3": 1.4601990049745823e-06,
+        "minimum_delta": -5.000000000032756e-06,
+        "p95_abs_delta": 6.999999999979245e-06,
+        "rms_delta": 2.8824395416810716e-06
+      },
+      "time_s": {
+        "compared_values": 804,
+        "different_values": 0,
+        "max_abs_delta": 0.0,
+        "maximum_delta": 0.0,
+        "mean_delta_r4_minus_r3": 0.0,
+        "minimum_delta": 0.0,
+        "p95_abs_delta": 0.0,
+        "rms_delta": 0.0
+      },
+      "yaw": {
+        "compared_values": 804,
+        "different_values": 313,
+        "max_abs_delta": 4.299999999998749e-05,
+        "maximum_delta": 4.299999999998749e-05,
+        "mean_delta_r4_minus_r3": 1.8283582089550916e-07,
+        "minimum_delta": -2.1000000000000185e-05,
+        "p95_abs_delta": 9.000000000002062e-06,
+        "rms_delta": 4.317181916654913e-06
+      }
+    },
+    "groups": {
+      "seed-20261020-crossing-right/ai": {
+        "categorical_mismatches": {},
+        "numeric_deltas": {
+          "agl_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0012265599999992105,
+            "maximum_delta": 0.0012265599999992105,
+            "mean_delta_r4_minus_r3": 0.0007828326368159447,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0011799199999984467,
+            "rms_delta": 0.0008525685716032611
+          },
+          "altitude_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0011675599999989572,
+            "maximum_delta": 0.0011675599999989572,
+            "mean_delta_r4_minus_r3": 0.0007811250248756532,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.001160069999997404,
+            "rms_delta": 0.0008502921105393386
+          },
+          "bank_rad": {
+            "compared_values": 201,
+            "different_values": 199,
+            "max_abs_delta": 1.2000000000067512e-06,
+            "maximum_delta": 8.10000000017741e-07,
+            "mean_delta_r4_minus_r3": -4.849751243778961e-07,
+            "minimum_delta": -1.2000000000067512e-06,
+            "p95_abs_delta": 1.1199999999933485e-06,
+            "rms_delta": 6.579267905255326e-07
+          },
+          "distance_to_ai_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "east_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0013441099999909056,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": -0.0006724125373120948,
+            "minimum_delta": -0.0013441099999909056,
+            "p95_abs_delta": 0.001310359999990851,
+            "rms_delta": 0.0007977365203498257
+          },
+          "north_m": {
+            "compared_values": 201,
+            "different_values": 199,
+            "max_abs_delta": 0.0012244300000361363,
+            "maximum_delta": 0.0012244300000361363,
+            "mean_delta_r4_minus_r3": 0.00045818776119596296,
+            "minimum_delta": -1.1800000265793642e-06,
+            "p95_abs_delta": 0.0011222599999882732,
+            "rms_delta": 0.0005960021320984828
+          },
+          "pitch": {
+            "compared_values": 201,
+            "different_values": 201,
+            "max_abs_delta": 0.000518,
+            "maximum_delta": 0.000518,
+            "mean_delta_r4_minus_r3": -9.68656716417909e-06,
+            "minimum_delta": -0.000308,
+            "p95_abs_delta": 0.00035400000000000004,
+            "rms_delta": 0.0001699451038084291
+          },
+          "pitch_rad": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 2.8409999999992608e-05,
+            "maximum_delta": 2.8409999999992608e-05,
+            "mean_delta_r4_minus_r3": 4.293830845770586e-06,
+            "minimum_delta": -1.932999999999796e-05,
+            "p95_abs_delta": 1.8409999999996485e-05,
+            "rms_delta": 8.932912090015968e-06
+          },
+          "q_radps": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.00023270000000000235,
+            "maximum_delta": 0.00023270000000000235,
+            "mean_delta_r4_minus_r3": -1.7045771144278632e-06,
+            "minimum_delta": -0.00022132999999999875,
+            "p95_abs_delta": 0.00015788999999999994,
+            "rms_delta": 7.528227181582153e-05
+          },
+          "roll": {
+            "compared_values": 201,
+            "different_values": 164,
+            "max_abs_delta": 3.0000000000030003e-06,
+            "maximum_delta": 3.000000000000398e-06,
+            "mean_delta_r4_minus_r3": 7.960199004971975e-07,
+            "minimum_delta": -3.0000000000030003e-06,
+            "p95_abs_delta": 3.000000000000398e-06,
+            "rms_delta": 1.648155912056557e-06
+          },
+          "target_height_m": {
+            "compared_values": 201,
+            "different_values": 103,
+            "max_abs_delta": 0.006811050000003149,
+            "maximum_delta": 0.006811050000003149,
+            "mean_delta_r4_minus_r3": 0.0011697755223881341,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.004763070000002756,
+            "rms_delta": 0.0020108237621847304
+          },
+          "throttle": {
+            "compared_values": 201,
+            "different_values": 180,
+            "max_abs_delta": 7.000000000034756e-06,
+            "maximum_delta": 7.000000000034756e-06,
+            "mean_delta_r4_minus_r3": 3.268656716415794e-06,
+            "minimum_delta": -1.0000000000287557e-06,
+            "p95_abs_delta": 6.999999999979245e-06,
+            "rms_delta": 3.951824315791391e-06
+          },
+          "time_s": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "yaw": {
+            "compared_values": 201,
+            "different_values": 137,
+            "max_abs_delta": 8.999999999998592e-06,
+            "maximum_delta": 8.999999999998592e-06,
+            "mean_delta_r4_minus_r3": 2.3383084577106393e-07,
+            "minimum_delta": -8.999999999998592e-06,
+            "p95_abs_delta": 7.000000000000062e-06,
+            "rms_delta": 2.77425979550127e-06
+          }
+        },
+        "row_count": 201
+      },
+      "seed-20261020-crossing-right/player": {
+        "categorical_mismatches": {},
+        "numeric_deltas": {
+          "agl_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "altitude_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "bank_rad": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "distance_to_ai_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0010562500000048658,
+            "maximum_delta": 0.0010562500000048658,
+            "mean_delta_r4_minus_r3": 0.00033289890547296243,
+            "minimum_delta": -1.903999999797179e-05,
+            "p95_abs_delta": 0.0009771200000017188,
+            "rms_delta": 0.00048482397403302595
+          },
+          "east_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "north_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "pitch": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "pitch_rad": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "q_radps": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "roll": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "throttle": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "time_s": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "yaw": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          }
+        },
+        "row_count": 201
+      },
+      "seed-20261021-crossing-left/ai": {
+        "categorical_mismatches": {},
+        "numeric_deltas": {
+          "agl_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0010561599999974192,
+            "maximum_delta": 0.0010561599999974192,
+            "mean_delta_r4_minus_r3": 0.0006950120398009114,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0009559299999963855,
+            "rms_delta": 0.0007416818205679792
+          },
+          "altitude_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0010330500000037546,
+            "maximum_delta": 0.0010330500000037546,
+            "mean_delta_r4_minus_r3": 0.0006934894527364916,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0009477900000049999,
+            "rms_delta": 0.0007397176368869882
+          },
+          "bank_rad": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 2.3700000000015375e-06,
+            "maximum_delta": 1.3900000000038881e-06,
+            "mean_delta_r4_minus_r3": -2.860696517416681e-07,
+            "minimum_delta": -2.3700000000015375e-06,
+            "p95_abs_delta": 1.2100000000014877e-06,
+            "rms_delta": 6.358525440000539e-07
+          },
+          "distance_to_ai_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "east_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0003747100000168757,
+            "maximum_delta": 0.0003747100000168757,
+            "mean_delta_r4_minus_r3": 0.000245889502487905,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.00036438000000771353,
+            "rms_delta": 0.0002630331983052927
+          },
+          "north_m": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0005864400000064052,
+            "maximum_delta": 3.0499999752464646e-06,
+            "mean_delta_r4_minus_r3": -0.00028413980099409417,
+            "minimum_delta": -0.0005864400000064052,
+            "p95_abs_delta": 0.0005527300000380819,
+            "rms_delta": 0.00035010952233314145
+          },
+          "pitch": {
+            "compared_values": 201,
+            "different_values": 201,
+            "max_abs_delta": 0.00046799999999999967,
+            "maximum_delta": 0.00046799999999999967,
+            "mean_delta_r4_minus_r3": -6.616915422885593e-06,
+            "minimum_delta": -0.000454,
+            "p95_abs_delta": 0.00033799999999999976,
+            "rms_delta": 0.00016945704925522734
+          },
+          "pitch_rad": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 5.874000000000157e-05,
+            "maximum_delta": 5.874000000000157e-05,
+            "mean_delta_r4_minus_r3": 3.2367164179102297e-06,
+            "minimum_delta": -5.234000000001182e-05,
+            "p95_abs_delta": 4.406999999999328e-05,
+            "rms_delta": 2.001049403792421e-05
+          },
+          "q_radps": {
+            "compared_values": 201,
+            "different_values": 200,
+            "max_abs_delta": 0.0004941100000000001,
+            "maximum_delta": 0.0004941100000000001,
+            "mean_delta_r4_minus_r3": -1.7829353233831228e-06,
+            "minimum_delta": -0.0004748500000000002,
+            "p95_abs_delta": 0.00035734000000000026,
+            "rms_delta": 0.00016872922095912326
+          },
+          "roll": {
+            "compared_values": 201,
+            "different_values": 154,
+            "max_abs_delta": 5.999999999999062e-06,
+            "maximum_delta": 5.999999999999062e-06,
+            "mean_delta_r4_minus_r3": 5.273631840802244e-07,
+            "minimum_delta": -3.0000000000000187e-06,
+            "p95_abs_delta": 2.9999999999999645e-06,
+            "rms_delta": 1.5834969802829537e-06
+          },
+          "target_height_m": {
+            "compared_values": 201,
+            "different_values": 89,
+            "max_abs_delta": 0.006656259999999747,
+            "maximum_delta": 0.006656259999999747,
+            "mean_delta_r4_minus_r3": 0.001004300696517349,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.004387839999999699,
+            "rms_delta": 0.0018134236711421807
+          },
+          "throttle": {
+            "compared_values": 201,
+            "different_values": 188,
+            "max_abs_delta": 8.000000000008e-06,
+            "maximum_delta": 8.000000000008e-06,
+            "mean_delta_r4_minus_r3": 2.572139303482536e-06,
+            "minimum_delta": -5.000000000032756e-06,
+            "p95_abs_delta": 7.000000000034756e-06,
+            "rms_delta": 4.197250936375641e-06
+          },
+          "time_s": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "yaw": {
+            "compared_values": 201,
+            "different_values": 176,
+            "max_abs_delta": 4.299999999998749e-05,
+            "maximum_delta": 4.299999999998749e-05,
+            "mean_delta_r4_minus_r3": 4.975124378109728e-07,
+            "minimum_delta": -2.1000000000000185e-05,
+            "p95_abs_delta": 1.7999999999999787e-05,
+            "rms_delta": 8.176534803511451e-06
+          }
+        },
+        "row_count": 201
+      },
+      "seed-20261021-crossing-left/player": {
+        "categorical_mismatches": {},
+        "numeric_deltas": {
+          "agl_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "altitude_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "bank_rad": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "distance_to_ai_m": {
+            "compared_values": 201,
+            "different_values": 199,
+            "max_abs_delta": 0.0005880799999999908,
+            "maximum_delta": 1.6499999873076376e-06,
+            "mean_delta_r4_minus_r3": -0.00032440114427880243,
+            "minimum_delta": -0.0005880799999999908,
+            "p95_abs_delta": 0.0005578500000069653,
+            "rms_delta": 0.00038035933930241796
+          },
+          "east_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "north_m": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "pitch": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "pitch_rad": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "q_radps": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "roll": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "throttle": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "time_s": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          },
+          "yaw": {
+            "compared_values": 201,
+            "different_values": 0,
+            "max_abs_delta": 0.0,
+            "maximum_delta": 0.0,
+            "mean_delta_r4_minus_r3": 0.0,
+            "minimum_delta": 0.0,
+            "p95_abs_delta": 0.0,
+            "rms_delta": 0.0
+          }
+        },
+        "row_count": 201
+      }
+    },
+    "header_equal": true,
+    "matched_key_rows": 804,
+    "missing_r3_keys": [],
+    "missing_r4_keys": [],
+    "r3_csv": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-04-R3\\crossings\\candidate\\trajectory.csv",
+    "r3_csv_sha256": "663f060b731480584fcdf8a7801674f2c1806a5682f62669ce3ce7aba481e0d2",
+    "r3_data_rows": 804,
+    "r4_csv": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\crossings-calm-20s-r4-20261021\\trajectory.csv",
+    "r4_csv_sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2",
+    "r4_data_rows": 804
+  },
+  "weather": {
+    "matched": true,
+    "r3": "calm",
+    "r4": "calm"
+  }
+}

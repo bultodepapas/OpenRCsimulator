@@ -4,12 +4,12 @@ extends SceneTree
 const FieldLoader := preload("res://data/field_loader.gd")
 const Math3D := preload("res://physics/math3d.gd")
 const Body := preload("res://physics/rigid_body.gd")
-const BaselinePath := "res://ai/companions/pilot.gd"
+const BaselinePath := "res://../research/ai-companions/performance/reachable_clear_baseline.gd"
 const CandidatePath := "res://../research/ai-companions/performance/reachable_clear_candidate.gd"
 const ExpectedBaseline := "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
 const Trim := {V = 15.0, throttle = 0.45}
 
-class BaselineCounter extends "res://ai/companions/pilot.gd":
+class BaselineCounter extends "res://../research/ai-companions/performance/reachable_clear_baseline.gd":
 	var scores := 0
 	func _score_bank(state: PackedFloat64Array, velocity: PackedFloat64Array, speed: float,
 			bank: float, nominal: float, candidate: float, clearance: float,

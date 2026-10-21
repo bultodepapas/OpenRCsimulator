@@ -1,0 +1,993 @@
+{
+  "accepted_test_results": {
+    "calm_60s_comparison": {
+      "bytes": 106405,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-calm-survey-delta.json",
+      "sha256": "0a7a38d8a458ee3b597ec7792ab5e98e2fa42f9bdc770246fb3e89d6f39641d4"
+    },
+    "calm_60s_report": {
+      "bytes": 20316,
+      "path": "encounters-calm-60s-20261021/report.json",
+      "sha256": "a05b894ea8ad5288238883fab9c6998d45bc4953a461cd4c3fcf401aadc84182"
+    },
+    "controller_unit_check_total": 237,
+    "controller_unit_checks": {
+      "clearance": {
+        "checks": 20,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.5,
+        "engine_log": {
+          "bytes": 117,
+          "path": "qualification/checks/clearance/r4-clearance-nvcygacn/engine.log",
+          "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+        },
+        "failed_checks": 0,
+        "label": "r4-clearance",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1230,
+          "path": "qualification/checks/clearance/r4-clearance-nvcygacn/report.json",
+          "sha256": "cff9350861be715ca50617cb94aa1d492dfb4d758b34b325f8d5f7470f4e7002"
+        }
+      },
+      "pilot": {
+        "checks": 24,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 0.532,
+        "engine_log": {
+          "bytes": 1451,
+          "path": "qualification/checks/pilot/r4-pilot-270idf1_/engine.log",
+          "sha256": "f4cf926ff6299db70be51d4b0f4122f02cb4f3b6e0be511c379030e148af1726"
+        },
+        "failed_checks": 0,
+        "label": "r4-pilot",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1205,
+          "path": "qualification/checks/pilot/r4-pilot-270idf1_/report.json",
+          "sha256": "069fb7cee35c8ed97660776aa7f8d74e52b86ba67331c36924d838da193f29db"
+        }
+      },
+      "profiles": {
+        "checks": 37,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 6.0,
+        "engine_log": {
+          "bytes": 2252,
+          "path": "qualification/checks/profiles/r4-profiles-755005i1/engine.log",
+          "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519"
+        },
+        "failed_checks": 0,
+        "label": "r4-profiles",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1241,
+          "path": "qualification/checks/profiles/r4-profiles-755005i1/report.json",
+          "sha256": "0df786e57e049da9637b0f9e4cbdd4e31d861f61f6d69f8a8c34c44df694fe51"
+        }
+      },
+      "record": {
+        "checks": 156,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "elapsed_seconds": 33.829,
+        "engine_log": {
+          "bytes": 15801,
+          "path": "qualification/checks/record/r4-record-f2gaje5i/engine.log",
+          "sha256": "cffc106ceed527f62ace5adb6af34c640c118ef5df00f4733b5e62664ec12767"
+        },
+        "failed_checks": 0,
+        "label": "r4-record",
+        "ok": true,
+        "process_exit": 0,
+        "reason": "passed",
+        "report": {
+          "bytes": 1215,
+          "path": "qualification/checks/record/r4-record-f2gaje5i/report.json",
+          "sha256": "ad4a98e268c1abb59f8f3cd254905482918f0a1dd85d4ee4e05f88a80e0af08e"
+        }
+      }
+    },
+    "crossing_20s_report": {
+      "bytes": 14401,
+      "path": "crossings-calm-20s-r4-20261021/report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    },
+    "crossing_comparison": {
+      "bytes": 29757,
+      "path": "comparisons/final/r3-r4-calm-crossing-20s.json",
+      "sha256": "a0cb940e22ca64931e8a0d9c4bf860eebabfcaf46e6ced576ed04de8e18067cc"
+    },
+    "crossing_replay_verification": {
+      "bytes": 10744,
+      "path": "crossing-replay-verification.json",
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    "gentle_60s_comparison": {
+      "bytes": 107256,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-gentle-survey-delta.json",
+      "sha256": "8dab337e90437390cdb9a7fbcfdd41d6b6d7a6e1c54636926ba3e3f9405cd2e5"
+    },
+    "gentle_60s_report": {
+      "bytes": 20247,
+      "path": "encounters-gentle-production-60s-20261021/report.json",
+      "sha256": "6be03c37c3d072ce05f91ea1693400b0b1cb79ebc7b96bc1986662e1a32d1bb4"
+    },
+    "import": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 8
+      },
+      "elapsed_seconds": 87.312,
+      "engine_log": {
+        "bytes": 162222,
+        "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/engine.log",
+        "sha256": "64fc8949564ce95522c719d56778c2e2d3c86bb78ef79f613e5e1fed95b0ceb0"
+      },
+      "label": "afc04-r4-dedicated-mirror-import",
+      "ok": true,
+      "process_exit": 0,
+      "reason": "passed",
+      "report": {
+        "bytes": 3827,
+        "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/report.json",
+        "sha256": "adedbcf69cfdadebe2226e6d40a3510dbf90a4aae906ecf6979817cf66344830"
+      }
+    },
+    "pilot_matrix": {
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 581.593,
+      "engine_log": {
+        "bytes": 21885,
+        "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/engine.log",
+        "sha256": "766ad6b109ca83152d79f72f34868cd6f1d0864f9772698252e70e4f38a6251e"
+      },
+      "label": "afc04-r4-current-pilot-matrix",
+      "ok": true,
+      "process_exit": 0,
+      "reason": "passed",
+      "report": {
+        "bytes": 1480,
+        "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/report.json",
+        "sha256": "3fde545915215b53c6b71fc47e1a073c578c4a73bf9f39a2d7847d676df3b6b0"
+      }
+    }
+  },
+  "all_retained_evidence_artifacts": [
+    {
+      "bytes": 29757,
+      "path": "comparisons/final/r3-r4-calm-crossing-20s.json",
+      "sha256": "a0cb940e22ca64931e8a0d9c4bf860eebabfcaf46e6ced576ed04de8e18067cc"
+    },
+    {
+      "bytes": 106405,
+      "path": "comparisons/final/r3-r4-calm.json",
+      "sha256": "0a7a38d8a458ee3b597ec7792ab5e98e2fa42f9bdc770246fb3e89d6f39641d4"
+    },
+    {
+      "bytes": 107256,
+      "path": "comparisons/final/r3-r4-gentle.json",
+      "sha256": "8dab337e90437390cdb9a7fbcfdd41d6b6d7a6e1c54636926ba3e3f9405cd2e5"
+    },
+    {
+      "bytes": 98905,
+      "path": "comparisons/r3-r4-calm.json",
+      "sha256": "cb726a164f23056f69e0408f99ff90a51944c867898bb8b416ff1622a60b9fde"
+    },
+    {
+      "bytes": 99721,
+      "path": "comparisons/r3-r4-gentle.json",
+      "sha256": "fecd17d015aefc5f78ed7b6f9acba3f72afaedca57d19394f3548e60b5fad6ff"
+    },
+    {
+      "bytes": 10744,
+      "path": "crossing-replay-verification.json",
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    {
+      "bytes": 14401,
+      "path": "crossings-calm-20s-r4-20261021/report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-ai.orfl",
+      "sha256": "4668efc317eeadf8980f13b11fc014157b4f1f4434160d65490695396b74bf64"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-coupled.orfl",
+      "sha256": "5f11f522e99fc0d95a6016b352de31f9957b869098915a235488cd5e7b78790a"
+    },
+    {
+      "bytes": 8526268,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261020-crossing-right-player-exogenous.orfl",
+      "sha256": "a2baac3f74ce8dda58406557852e14de9796edf2be6021d82cc2025ffcd17d8b"
+    },
+    {
+      "bytes": 8526228,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-ai.orfl",
+      "sha256": "f84b1b035bf501bde10cf739c2f15e466dc23626b9768618c11b816682421dc8"
+    },
+    {
+      "bytes": 8526224,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-coupled.orfl",
+      "sha256": "99e0d0aad0acc8473f8cf8e4aba31cb9743bbd5ff87a88d55120537424335bf0"
+    },
+    {
+      "bytes": 8526264,
+      "path": "crossings-calm-20s-r4-20261021/seed-20261021-crossing-left-player-exogenous.orfl",
+      "sha256": "19c35700a26ab03c64808a2ed4b5db9b8af35b95d76e7054c0c78cc9b4823380"
+    },
+    {
+      "bytes": 170737,
+      "path": "crossings-calm-20s-r4-20261021/trajectory.csv",
+      "sha256": "658459ddddde39913fed87a1b459f60984de08cd4256cf0a3b248422e86cadf2"
+    },
+    {
+      "bytes": 4406314,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/flight.csv",
+      "sha256": "f618e89c3ce01fc2450b5abce2fd62e0ade31f13c40099ca0eaa0ce4a7129ebc"
+    },
+    {
+      "bytes": 6787,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-ai/replay.json",
+      "sha256": "2df6998a73a0d36a6978a83b11f20122c3ae969812fc54a7ed3f1e09054d4c63"
+    },
+    {
+      "bytes": 3853991,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/flight.csv",
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "bytes": 6799,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+      "sha256": "0a50ce25b262c1fdb34c3af68fe74f4ad5a4155cc1d8c7fa86310795f8a5cbde"
+    },
+    {
+      "bytes": 3853991,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/flight.csv",
+      "sha256": "850293f31518f53768b1dbe79055bc38c6b496c6ab4ba923f7661d2cf412f319"
+    },
+    {
+      "bytes": 6843,
+      "path": "crossings-calm-20s-r4-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+      "sha256": "64acf3addc0f727c4726938d304ecc3de390a2cd019370b2d9fee1b27c858568"
+    },
+    {
+      "bytes": 4400837,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/flight.csv",
+      "sha256": "d5f0a9b35189a60cb6b5cd79ab51bf2b8e9aa69163881a05524f7ec16b234e7e"
+    },
+    {
+      "bytes": 6786,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-ai/replay.json",
+      "sha256": "f2f7f1b2f5765d09c62056eeace5c13a3569d41a438e940b93637ddf8e0257c3"
+    },
+    {
+      "bytes": 3856728,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/flight.csv",
+      "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+    },
+    {
+      "bytes": 6796,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+      "sha256": "3539907b936db6b1e550dd92131cb6059b4996ee6fb207f68acc6dff34af058a"
+    },
+    {
+      "bytes": 3856728,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/flight.csv",
+      "sha256": "776523fbb47959c3c20aec41c6f1afa334769d084785455387b3d3b16d266e76"
+    },
+    {
+      "bytes": 6840,
+      "path": "crossings-calm-20s-r4-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+      "sha256": "fe1ac416b4bd54c26041e065b09dc39b7468ada47054cc56ae36c197e693c6aa"
+    },
+    {
+      "bytes": 20316,
+      "path": "encounters-calm-60s-20261021/report.json",
+      "sha256": "a05b894ea8ad5288238883fab9c6998d45bc4953a461cd4c3fcf401aadc84182"
+    },
+    {
+      "bytes": 1917180,
+      "path": "encounters-calm-60s-20261021/trajectory.csv",
+      "sha256": "dc4656a6bc7ea47e2a20f03bb8f67c255404a2a798eeb7e76df725be690368f9"
+    },
+    {
+      "bytes": 20247,
+      "path": "encounters-gentle-production-60s-20261021/report.json",
+      "sha256": "6be03c37c3d072ce05f91ea1693400b0b1cb79ebc7b96bc1986662e1a32d1bb4"
+    },
+    {
+      "bytes": 1916331,
+      "path": "encounters-gentle-production-60s-20261021/trajectory.csv",
+      "sha256": "e95f49062e7c48220d4033ea7a1316551e995c3e4d7d1bf7202228c991f42c5e"
+    },
+    {
+      "bytes": 2383,
+      "path": "pilot-matrix-20261021/README.md",
+      "sha256": "8d338a6e7c14f747bfa0709b9b74f7006f84bfe0c2f25a88370c5621e87cb866"
+    },
+    {
+      "bytes": 196250,
+      "path": "pilot-matrix-20261021/flight_samples_1hz.csv",
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2"
+    },
+    {
+      "bytes": 954,
+      "path": "pilot-matrix-20261021/scenario_metrics.csv",
+      "sha256": "4d36b98a23fe0a18c82873dbb6b8dd1a98390da8e6d49d566dbe6bb73b8d734f"
+    },
+    {
+      "bytes": 117,
+      "path": "qualification/checks/clearance/r4-clearance-nvcygacn/engine.log",
+      "sha256": "af480322558e772ab3097dee9df4e420f9dcaafcca55cf82aefa0dbdd710648b"
+    },
+    {
+      "bytes": 1230,
+      "path": "qualification/checks/clearance/r4-clearance-nvcygacn/report.json",
+      "sha256": "cff9350861be715ca50617cb94aa1d492dfb4d758b34b325f8d5f7470f4e7002"
+    },
+    {
+      "bytes": 1451,
+      "path": "qualification/checks/pilot/r4-pilot-270idf1_/engine.log",
+      "sha256": "f4cf926ff6299db70be51d4b0f4122f02cb4f3b6e0be511c379030e148af1726"
+    },
+    {
+      "bytes": 1205,
+      "path": "qualification/checks/pilot/r4-pilot-270idf1_/report.json",
+      "sha256": "069fb7cee35c8ed97660776aa7f8d74e52b86ba67331c36924d838da193f29db"
+    },
+    {
+      "bytes": 2252,
+      "path": "qualification/checks/profiles/r4-profiles-755005i1/engine.log",
+      "sha256": "3e4d2105bd136cf81e18113b0373eed9e88c8e215c10b8bf36889bf7dfc78519"
+    },
+    {
+      "bytes": 1241,
+      "path": "qualification/checks/profiles/r4-profiles-755005i1/report.json",
+      "sha256": "0df786e57e049da9637b0f9e4cbdd4e31d861f61f6d69f8a8c34c44df694fe51"
+    },
+    {
+      "bytes": 15801,
+      "path": "qualification/checks/record/r4-record-f2gaje5i/engine.log",
+      "sha256": "cffc106ceed527f62ace5adb6af34c640c118ef5df00f4733b5e62664ec12767"
+    },
+    {
+      "bytes": 1215,
+      "path": "qualification/checks/record/r4-record-f2gaje5i/report.json",
+      "sha256": "ad4a98e268c1abb59f8f3cd254905482918f0a1dd85d4ee4e05f88a80e0af08e"
+    },
+    {
+      "bytes": 12155,
+      "path": "qualification/pre-copy-identity.json",
+      "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+    },
+    {
+      "bytes": 7738,
+      "path": "qualification/run-source-identity.json",
+      "sha256": "4619bd3b4ec09e540b7bf3ee59438c597aec8bb526aeb00187c283fe9e53ca22"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-ai/afc04-r4-exact-seed-20261020-crossing-right-ai-a4_5d9w0/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2007,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-ai/afc04-r4-exact-seed-20261020-crossing-right-ai-a4_5d9w0/report.json",
+      "sha256": "a13b8b019eeffcfe7ed0d059a91a68edc60683cfeb1fb5d4f79968debccdab73"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-coupled/afc04-r4-exact-seed-20261020-crossing-right-player-coupled-w7jbbseq/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2104,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-coupled/afc04-r4-exact-seed-20261020-crossing-right-player-coupled-w7jbbseq/report.json",
+      "sha256": "3383a2439d2323192018d8b331ed2ef55e3ea5aae85aab63e5615e0cde68eb1c"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-exogenous/afc04-r4-exact-seed-20261020-crossing-right-player-exogenous-iu5of2l_/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2120,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261020-crossing-right-player-exogenous/afc04-r4-exact-seed-20261020-crossing-right-player-exogenous-iu5of2l_/report.json",
+      "sha256": "e2d8ff830a6d441f3e130fe17fb7108b6ff47c17dec16258ddbf799722efc7eb"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-ai/afc04-r4-exact-seed-20261021-crossing-left-ai-ifo3dpdv/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2000,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-ai/afc04-r4-exact-seed-20261021-crossing-left-ai-ifo3dpdv/report.json",
+      "sha256": "6272e7d371e6ed4be9a921e34b6dd9135d0da361dbb37583a24c583dcf43fba9"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-coupled/afc04-r4-exact-seed-20261021-crossing-left-player-coupled-565xck5x/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2096,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-coupled/afc04-r4-exact-seed-20261021-crossing-left-player-coupled-565xck5x/report.json",
+      "sha256": "e969327f68b64da4043356d70214484948d46e8572a7cda5e9a53b53b3c34348"
+    },
+    {
+      "bytes": 208,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-exogenous/afc04-r4-exact-seed-20261021-crossing-left-player-exogenous-loe2m8bw/engine.log",
+      "sha256": "b1619b306dd17c174e99b0528621b4bf66b5a7d6005ee84fb91a48952471cd15"
+    },
+    {
+      "bytes": 2112,
+      "path": "qualification/runner/crossings-calm20-replays/seed-20261021-crossing-left-player-exogenous/afc04-r4-exact-seed-20261021-crossing-left-player-exogenous-loe2m8bw/report.json",
+      "sha256": "57745587a14f0808be6f8f6fcd7be6c4b37d657f85eadb228274095af95a96d2"
+    },
+    {
+      "bytes": 4861,
+      "path": "qualification/runner/crossings-calm20/afc04-r4-calm-crossings-20s-j5_y1crw/engine.log",
+      "sha256": "b5f1bfb6cd05f88f1f20684faa2931fe11e360883de19ef27ed2d7f2d82635c7"
+    },
+    {
+      "bytes": 1636,
+      "path": "qualification/runner/crossings-calm20/afc04-r4-calm-crossings-20s-j5_y1crw/report.json",
+      "sha256": "eb2a5f4bd5cb22bd4f37a4429bfc4f4ac35be0a9c0876b0f1557504be350cbff"
+    },
+    {
+      "bytes": 3973,
+      "path": "qualification/runner/encounters-calm/afc04-r4-final-calm-60s-encounters-pbqyabt4/engine.log",
+      "sha256": "3cfb303f78489a0378f93cfc5a8793d7d7a259c44e28d915e9c8e89e0d5562ff"
+    },
+    {
+      "bytes": 4509,
+      "path": "qualification/runner/encounters-calm/afc04-r4-final-calm-60s-encounters-pbqyabt4/report.json",
+      "sha256": "a52d4cbe4bad6d9006dd99f752a22021a323755a2ee50c109688a05222238243"
+    },
+    {
+      "bytes": 2079,
+      "path": "qualification/runner/encounters-gentle-final/afc04-r4-production-gentle-60s-oy0mizz5/engine.log",
+      "sha256": "5c23dc0730738edafb290df80a10cae0aaa1fc8bdd5557569245a452d4a01d33"
+    },
+    {
+      "bytes": 1650,
+      "path": "qualification/runner/encounters-gentle-final/afc04-r4-production-gentle-60s-oy0mizz5/report.json",
+      "sha256": "11079068619fb2b799af367b7ffd917ad3de7258298f3ad13b062ea1d3ed8aaf"
+    },
+    {
+      "bytes": 112,
+      "path": "qualification/runner/encounters-gentle-parse/afc04-r4-gentle-probe-parse-vv2egrr1/engine.log",
+      "sha256": "8affb7df5202e852c2744433bd6b5c59b4eb98d040da76997d273d5b84b9b67f"
+    },
+    {
+      "bytes": 1423,
+      "path": "qualification/runner/encounters-gentle-parse/afc04-r4-gentle-probe-parse-vv2egrr1/report.json",
+      "sha256": "9e66a50dcc646014f5d3fb2bd648fd09642e194778a81ac5854d71fe34829406"
+    },
+    {
+      "bytes": 0,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-final-gentle-60s-encounters-2datzom6/engine.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "bytes": 19680,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/engine.log",
+      "sha256": "b9c7d34031c09d9abb1029cf81b8b74fd6a2140e45967f1e22c62d5255acbefc"
+    },
+    {
+      "bytes": 7465,
+      "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/report.json",
+      "sha256": "9a56264f0e03e4dfe172057f2a66f448db6a384e04a39428a57b0be1da990e36"
+    },
+    {
+      "bytes": 162222,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/engine.log",
+      "sha256": "64fc8949564ce95522c719d56778c2e2d3c86bb78ef79f613e5e1fed95b0ceb0"
+    },
+    {
+      "bytes": 3827,
+      "path": "qualification/runner/import/afc04-r4-dedicated-mirror-import-b96g3lzu/report.json",
+      "sha256": "adedbcf69cfdadebe2226e6d40a3510dbf90a4aae906ecf6979817cf66344830"
+    },
+    {
+      "bytes": 21885,
+      "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/engine.log",
+      "sha256": "766ad6b109ca83152d79f72f34868cd6f1d0864f9772698252e70e4f38a6251e"
+    },
+    {
+      "bytes": 1480,
+      "path": "qualification/runner/pilot-matrix/afc04-r4-current-pilot-matrix-hdbeiz1w/report.json",
+      "sha256": "3fde545915215b53c6b71fc47e1a073c578c4a73bf9f39a2d7847d676df3b6b0"
+    }
+  ],
+  "copied_track_data_artifacts": {
+    "crossing_comparator": {
+      "bytes": 16750,
+      "path": "research/ai-companions/avoidance/compare_r3_r4_crossing_surveys.py",
+      "sha256": "c68ed5c815dd66cf983b634cd44adae78843eec9e5f61efb4781d6b7307e860e"
+    },
+    "crossing_comparison": {
+      "bytes": 29757,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-calm-crossings-20s-comparison.json",
+      "sha256": "a0cb940e22ca64931e8a0d9c4bf860eebabfcaf46e6ced576ed04de8e18067cc"
+    },
+    "crossing_replay_verification": {
+      "bytes": 10744,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/crossing-exact-replay-verification.json",
+      "sha256": "c2eccef9d24a7a16863e38c3c2c04763f064f7884cfb434e0a9373a829a50fe9"
+    },
+    "crossing_report": {
+      "bytes": 14401,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/encounter-crossings-calm-20s-r4-report.json",
+      "sha256": "9d1cbbd4f9ed43005c5671ad302b48a99056949c340f4a986db84783d485cc20"
+    },
+    "external-aircraft-authoring-manifest.json": {
+      "bytes": 4464,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/external-aircraft-authoring-manifest.json",
+      "sha256": "b959fced4480021d5a69d91fde22151603291533e2dc518033d63a82787b49f2"
+    },
+    "pre-copy-identity.json": {
+      "bytes": 12155,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/pre-copy-identity.json",
+      "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+    },
+    "r3-r4-calm-survey-delta.json": {
+      "bytes": 106405,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-calm-survey-delta.json",
+      "sha256": "0a7a38d8a458ee3b597ec7792ab5e98e2fa42f9bdc770246fb3e89d6f39641d4"
+    },
+    "r3-r4-gentle-survey-delta.json": {
+      "bytes": 107256,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-gentle-survey-delta.json",
+      "sha256": "8dab337e90437390cdb9a7fbcfdd41d6b6d7a6e1c54636926ba3e3f9405cd2e5"
+    },
+    "r3-r4-route-delta-summary.json": {
+      "bytes": 13834,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/r3-r4-route-delta-summary.json",
+      "sha256": "8de1e63154545ab3f7f8f7fe3705d035a52c9327dbb785b444501771da72f815"
+    },
+    "receipt_builder": {
+      "bytes": 36659,
+      "path": "research/ai-companions/avoidance/build_r4_verification_bundle.py",
+      "sha256": "82f8d3d4a24fbabdfc6530c2589478c21be6ae3ca42a74926bf1ba0aa163b558"
+    },
+    "replay_verifier": {
+      "bytes": 13315,
+      "path": "research/ai-companions/avoidance/verify_r4_crossing_replays.py",
+      "sha256": "aa357692f1c12c0877968292faf1f5c9ca774fe7c6953ded223c33c88854aa83"
+    },
+    "run-source-identity.json": {
+      "bytes": 7738,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/run-source-identity.json",
+      "sha256": "4619bd3b4ec09e540b7bf3ee59438c597aec8bb526aeb00187c283fe9e53ca22"
+    },
+    "survey_comparator": {
+      "bytes": 16263,
+      "path": "research/ai-companions/avoidance/compare_r3_r4_surveys.py",
+      "sha256": "aea770b8388b5047119496d2709baec52f08999dfb7b62d77cf49049783d000d"
+    }
+  },
+  "evidence_root": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R4",
+  "external_aircraft_authoring_snapshot": {
+    "all_hashes_match": true,
+    "file_count": 24,
+    "files": [
+      {
+        "bytes": 422506,
+        "path": "avanti-s-a200/blender-geometry.json",
+        "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d"
+      },
+      {
+        "bytes": 8654,
+        "path": "avanti-s-a200/geometry.json",
+        "sha256": "1fd48b554c5860e8aca060eeb4df2304ad9580f4e596eedddd856faaedd9c458"
+      },
+      {
+        "bytes": 37695,
+        "path": "avanti-s-a200/source/geometry_blender.json",
+        "sha256": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a"
+      },
+      {
+        "bytes": 1883,
+        "path": "avanti-s-a200/source-manifest.json",
+        "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f"
+      },
+      {
+        "bytes": 31830,
+        "path": "customization-bindings.json",
+        "sha256": "bf2539b29884b0e23515cfd9524c29813ffea936642f84de032f031ca3c997ab"
+      },
+      {
+        "bytes": 2040,
+        "path": "extra-300s-60/appearance.json",
+        "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228"
+      },
+      {
+        "bytes": 12551,
+        "path": "extra-300s-60/geometry.json",
+        "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810"
+      },
+      {
+        "bytes": 48198,
+        "path": "hx-700/articulated/construction.json",
+        "sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
+      },
+      {
+        "bytes": 7062,
+        "path": "hx-700/articulated/export-report.json",
+        "sha256": "7b82c98eedc33daf277214c9ec0c2ecae8feb347bb177dcafbf7cb164134e9ca"
+      },
+      {
+        "bytes": 140858,
+        "path": "hx-700/articulated/motion-source.json",
+        "sha256": "24f99dd8c7c1c9a79e4421198c27c837e44b3aa8eed9c4dfd0b4ee0293f13db3"
+      },
+      {
+        "bytes": 39681,
+        "path": "hx-700/articulated/neutral-reference.json",
+        "sha256": "4eef82d44fb3869f36eaf855ddb2134c12d61907d9c804143fb7cb7f0cc18e7b"
+      },
+      {
+        "bytes": 3480,
+        "path": "hx-700/rotor_profiles.json",
+        "sha256": "3c410cf978494e0c30ffc8b21a28850811a9954d5e4d64639acc225b56b4c959"
+      },
+      {
+        "bytes": 3435,
+        "path": "hx-700/source-manifest.json",
+        "sha256": "3abdac36e576afa43a468d2e34d45f182927e9f796ee691dc7d2fbf010c30bbc"
+      },
+      {
+        "bytes": 17597,
+        "path": "model-bindings.json",
+        "sha256": "367e78f8dcde622b43b13bc8f0f0d715ad50508b326c1c2f7ba53f45ea439170"
+      },
+      {
+        "bytes": 1642,
+        "path": "p51d-mustang-120/appearance.json",
+        "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6"
+      },
+      {
+        "bytes": 27439,
+        "path": "p51d-mustang-120/geometry.json",
+        "sha256": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290"
+      },
+      {
+        "bytes": 32191,
+        "path": "p51d-mustang-120/source.json",
+        "sha256": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0"
+      },
+      {
+        "bytes": 75415,
+        "path": "turbo-lumber-evolution/geometry.json",
+        "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681"
+      },
+      {
+        "bytes": 3360,
+        "path": "turbo-lumber-evolution/manual.json",
+        "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795"
+      },
+      {
+        "bytes": 464717,
+        "path": "turbo-lumber-evolution/mesh-measurements.json",
+        "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70"
+      },
+      {
+        "bytes": 27437,
+        "path": "turbo-lumber-evolution/source-manifest.json",
+        "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74"
+      },
+      {
+        "bytes": 5507,
+        "path": "turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json",
+        "sha256": "c0bafb02374edc40556a96e84d2e61690950518ee5443c71fad885d3c5a33f4d"
+      },
+      {
+        "bytes": 7016,
+        "path": "ugly-stik-60/appearance.json",
+        "sha256": "4e1a803e11bfea8e21dd002e5ab0d4d31f8020b7dfd61c0f486237afa88f4e9c"
+      },
+      {
+        "bytes": 11738,
+        "path": "ugly-stik-60/geometry.json",
+        "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4"
+      }
+    ],
+    "manifest": {
+      "bytes": 4464,
+      "path": "docs/research/ai-companions/AFC-04-R4/data/external-aircraft-authoring-manifest.json",
+      "sha256": "b959fced4480021d5a69d91fde22151603291533e2dc518033d63a82787b49f2"
+    }
+  },
+  "failure_and_incomplete_artifacts": [
+    {
+      "classification": "setup_failure_missing_import_cache",
+      "controller_behavior_evaluated": false,
+      "engine_log": {
+        "bytes": 19680,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/engine.log",
+        "sha256": "b9c7d34031c09d9abb1029cf81b8b74fd6a2140e45967f1e22c62d5255acbefc"
+      },
+      "error_count": 115,
+      "note": "Missing imported scenery resources in the pre-import C-mirror/cache attempt. The dedicated frozen D-mirror import later passed with zero errors and eight warnings.",
+      "reason": "engine_error",
+      "runner_report": {
+        "bytes": 7465,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-gentle-probe-parse-05zl_58h/report.json",
+        "sha256": "9a56264f0e03e4dfe172057f2a66f448db6a384e04a39428a57b0be1da990e36"
+      }
+    },
+    {
+      "classification": "incomplete_no_output",
+      "controller_behavior_evaluated": false,
+      "engine_log": {
+        "bytes": 0,
+        "path": "qualification/runner/encounters-gentle/afc04-r4-final-gentle-60s-encounters-2datzom6/engine.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "note": "Retained empty log; no run report or survey output was produced. The completed gentle-practice 60-second survey is recorded separately.",
+      "report": null
+    },
+    {
+      "artifacts": [
+        {
+          "bytes": 98905,
+          "path": "comparisons/r3-r4-calm.json",
+          "sha256": "cb726a164f23056f69e0408f99ff90a51944c867898bb8b416ff1622a60b9fde"
+        },
+        {
+          "bytes": 99721,
+          "path": "comparisons/r3-r4-gentle.json",
+          "sha256": "fecd17d015aefc5f78ed7b6f9acba3f72afaedca57d19394f3548e60b5fad6ff"
+        }
+      ],
+      "classification": "superseded_preliminary_comparison_invalid_key_mapping",
+      "controller_behavior_evaluated": false,
+      "note": "Earlier comparison outputs used incorrect row-key mapping and are excluded from acceptance; corrected same-weather comparisons are under comparisons/final and hashed in the artifact manifest."
+    }
+  ],
+  "format": "afc-04-r4-provenance-receipt-v1",
+  "interpretation_limits": [
+    "The six nominal encounter routes per weather each run for 60 simulated seconds; this does not establish long endurance.",
+    "The separate two-threat fixture is explicitly not production-spawn admitted and fails the 30 m separation gate; its failure remains in the report.",
+    "The 120-second matrix covers one, two, and three companions in calm and gentle-practice; no larger fleet or broad weather claim is made.",
+    "The six ORFL exact replays validate recorded simulation samples against an unchanged solver; they do not execute or requalify the companion controller.",
+    "R3/R4 comparisons are limited to retained fixtures and matched weather/world/probe; no universal equivalence or physical validation claim is made.",
+    "Elapsed wall times were measured on a shared host during unrelated vegetation work and are diagnostic only; no isolated performance conclusion is made."
+  ],
+  "mirror_root": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/AFC-04-R4/mirror",
+  "source_identity": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "base_circuit_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "calm_encounter_probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+    "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "field_id": "default",
+    "flightlog_solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+    "identity_manifests": {
+      "engine": {
+        "bytes": 198152,
+        "path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+        "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+      },
+      "pre_copy_identity": {
+        "bytes": 12155,
+        "path": "qualification/pre-copy-identity.json",
+        "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+      },
+      "run_source_identity": {
+        "bytes": 7738,
+        "path": "qualification/run-source-identity.json",
+        "sha256": "4619bd3b4ec09e540b7bf3ee59438c597aec8bb526aeb00187c283fe9e53ca22"
+      }
+    },
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "main_commit_at_snapshot": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+    "mirror_commit": "2966595b1f243be3905e2699b71c0283195ae306",
+    "physics_hz": 240,
+    "planning_hz": 60,
+    "production_pilot_sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed",
+    "profile_solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "r3_candidate_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "raw_physics_source_hashes": [
+      {
+        "bytes": 49971,
+        "path": "app/physics/aero.gd",
+        "sha256": "06dfbbcd8c96124d4d19591aaa8d940ba299258710334f3911625baae043630f"
+      },
+      {
+        "bytes": 140678,
+        "path": "app/physics/aircraft_data.gd",
+        "sha256": "791036668ccde803f6e93bd37da75e56d01853d6d59a2512bf50acdc58dd3737"
+      }
+    ],
+    "verified_frozen_manifest_files": [
+      {
+        "bytes": 21717,
+        "path": "app/ai/companions/circuit_controller.gd",
+        "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+      },
+      {
+        "bytes": 20,
+        "path": "app/ai/companions/circuit_controller.gd.uid",
+        "sha256": "67f040209fa311b1eec3991ce219247d7332a8f12eaba578944ea233fc30c1db"
+      },
+      {
+        "bytes": 23965,
+        "path": "app/ai/companions/pilot.gd",
+        "sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+      },
+      {
+        "bytes": 20,
+        "path": "app/ai/companions/pilot.gd.uid",
+        "sha256": "48c310ba71243b532a057032e7bb74d090f48bcb35e4e2ef733a26470fe3d29a"
+      },
+      {
+        "bytes": 33508,
+        "path": "app/ai/companions/profile_loader.gd",
+        "sha256": "0e41819475ad221a075f63fd15de874abd592043851e12dd06dec393024f6279"
+      },
+      {
+        "bytes": 20,
+        "path": "app/ai/companions/profile_loader.gd.uid",
+        "sha256": "1227766f0f5328f89493df0f5d4bb7ddb29010e0fc6f197732d2d0b51e6d0f4d"
+      },
+      {
+        "bytes": 11634,
+        "path": "app/ai/companions/fleet_record.gd",
+        "sha256": "02eea8e73a5ab9d0c6a3335ed51ac747482bfe6fa8c1f84c4b3a3b66ab825917"
+      },
+      {
+        "bytes": 19,
+        "path": "app/ai/companions/fleet_record.gd.uid",
+        "sha256": "2cdd11f52cf3d61ea816b910e8731c7d711076a02d3e39b8bb4941a87ec99069"
+      },
+      {
+        "bytes": 1524,
+        "path": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+        "sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e"
+      },
+      {
+        "bytes": 13320,
+        "path": "app/tests/test_companions_profiles.gd",
+        "sha256": "c7aa9318105ad3564662b5a14d9bb39c8bbfac31f823aa3382a82e0f142cc946"
+      },
+      {
+        "bytes": 20,
+        "path": "app/tests/test_companions_profiles.gd.uid",
+        "sha256": "4a34d48b6f06aa7923d75632a57dda633d70c48c78316d7ea75ee04f8a1f3a5c"
+      },
+      {
+        "bytes": 11907,
+        "path": "app/tests/test_companions_pilot.gd",
+        "sha256": "ce1a30f9c52b668ba4e92a86b02a6e9b5aab300a5e663c57236b11d1e94084fd"
+      },
+      {
+        "bytes": 20,
+        "path": "app/tests/test_companions_pilot.gd.uid",
+        "sha256": "2118c048f326c633addcc306bd3e2dea432f419d1206ceadd9c63ab3a453afad"
+      },
+      {
+        "bytes": 3982,
+        "path": "app/tests/test_companions_clearance.gd",
+        "sha256": "0e546ce72685e65e73b5b61e8a9f2b4083156f6f95f550aa26d41bf4ffb90b26"
+      },
+      {
+        "bytes": 20,
+        "path": "app/tests/test_companions_clearance.gd.uid",
+        "sha256": "00376a32322bffda0528d2c33b00d58c6da1409ae3a04a49ccc9a5253f201e1f"
+      },
+      {
+        "bytes": 36925,
+        "path": "app/tests/test_companions_record.gd",
+        "sha256": "b7ca697cdfc67538ae5cae4dc1b2c0305cb5fa529f0bced0714e552c965d4925"
+      },
+      {
+        "bytes": 20,
+        "path": "app/tests/test_companions_record.gd.uid",
+        "sha256": "2372db8d81cda3bb24eb917bd7b9166c2a8549c81c744470d4be5742c1489010"
+      },
+      {
+        "bytes": 2198,
+        "path": "app/project.godot",
+        "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28"
+      },
+      {
+        "bytes": 5582,
+        "path": "app/physics/rigid_body.gd",
+        "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+      },
+      {
+        "bytes": 5005,
+        "path": "app/physics/math3d.gd",
+        "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+      },
+      {
+        "bytes": 12178,
+        "path": "app/physics/wind_config.gd",
+        "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+      },
+      {
+        "bytes": 235678,
+        "path": "app/sim/flight_session.gd",
+        "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+      },
+      {
+        "bytes": 158788,
+        "path": "app/data/fields/default.json",
+        "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+      },
+      {
+        "bytes": 1641,
+        "path": "app/data/fields/lake.json",
+        "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+      },
+      {
+        "bytes": 62128,
+        "path": "app/data/field_loader.gd",
+        "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+      },
+      {
+        "bytes": 19121,
+        "path": "app/data/lake_loader.gd",
+        "sha256": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d"
+      },
+      {
+        "bytes": 1961,
+        "path": "app/scenery/collision_setup.gd",
+        "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+      },
+      {
+        "bytes": 37095,
+        "path": "app/scenery/collision_world.gd",
+        "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+      },
+      {
+        "bytes": 24165,
+        "path": "research/ai-companions/pilot_probe.gd",
+        "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+      },
+      {
+        "bytes": 49059,
+        "path": "research/ai-companions/encounter_probe.gd",
+        "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+      }
+    ]
+  },
+  "status": "qualified_with_retained_scope-limited_failure_and_diagnostics",
+  "verification_json": {
+    "bytes": 60715,
+    "path": "docs/research/ai-companions/AFC-04-R4/data/verification.json",
+    "sha256": "1a93fe323b6326db5c14e8c83398237e968a66c9320ded25508b0f646d08b8b3"
+  }
+}
