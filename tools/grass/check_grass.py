@@ -48,7 +48,7 @@ IMPORTED_GRASS_TOTAL = 150
 ENHANCED_IMPORTED_GRASS_TRIANGLES = 37_720
 IMPORTED_GRASS_TRIANGLE_BUDGET = 50_000
 IMPORTED_GRASS_SHADER_PATH = "res://scenery/imported_grass.gdshader"
-IMPORTED_FLOWER_IDS = ("clover_1", "flower_3_group", "flower_4_group")
+IMPORTED_FLOWER_IDS = ("clover_1", "flower_4_group", "polyhaven_flower_empodium_a")
 RUNTIME_SUFFIXES = {
     ".cfg", ".gd", ".gdshader", ".gdshaderinc", ".gdextension", ".godot", ".gltf", ".glb",
     ".import", ".json", ".mp3", ".ogg", ".po", ".png", ".res", ".svg", ".tscn", ".tres",
