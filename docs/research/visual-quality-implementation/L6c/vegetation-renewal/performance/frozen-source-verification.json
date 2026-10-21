@@ -1,0 +1,14 @@
+{
+  "baseline": {
+    "before_sha256": "eb87dc5eab6da91d2b2d3c34ccec749e8bd707aaeffd178427569bf3a381b260",
+    "after_sha256": "eb87dc5eab6da91d2b2d3c34ccec749e8bd707aaeffd178427569bf3a381b260",
+    "unchanged": true,
+    "files": 3512
+  },
+  "candidate": {
+    "before_sha256": "a8bcb4052c98e4de5f64adfa13ea3392531e6cc55f61c8829f57511614396fed",
+    "after_sha256": "a8bcb4052c98e4de5f64adfa13ea3392531e6cc55f61c8829f57511614396fed",
+    "unchanged": true,
+    "files": 3555
+  }
+}

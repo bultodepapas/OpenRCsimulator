@@ -1,0 +1,16 @@
+[
+  {
+    "source": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\paired-720",
+    "status": "incomplete",
+    "error": "pair-03-1-baseline failed: Godot exited with status 1; frame report is incomplete: flight paused during quality route; reason=; focus=true; holds=[]; flight paused, crashed or faulted during the sample; actual measurement duration differs from its request by more than 0.5 s",
+    "completed_pairs": 2,
+    "qualification": "excluded; incomplete pre-fix series"
+  },
+  {
+    "source": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\paired-1080",
+    "status": "incomplete",
+    "error": "pair-01-1-baseline failed: actual root viewport size differs from the requested native dimensions",
+    "completed_pairs": 0,
+    "qualification": "excluded; incomplete pre-fix series"
+  }
+]

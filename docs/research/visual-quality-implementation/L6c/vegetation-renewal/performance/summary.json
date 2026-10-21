@@ -1,0 +1,641 @@
+{
+  "scope": "Native active neutral-input flight, fixed pilot camera, 4x MSAA, 60 Hz cap; not every flight route or hardware tier.",
+  "resolutions": {
+    "720": {
+      "status": "collected",
+      "qualified_series_complete": true,
+      "accepted_pairs": 5,
+      "qualification_note": "Five complete pairs collected; scope and host contention limits still apply.",
+      "comparison_summary": {
+        "candidate_frame_targets": {
+          "all_p95_at_or_below_18ms": true,
+          "all_p99_at_or_below_25ms": true,
+          "p95_ms_max": 17.886,
+          "p99_ms_max": 19.737
+        },
+        "candidate_simulation_wall_ratio": {
+          "all_within_0_99_1_01": true,
+          "median": 1.000035534596
+        },
+        "frame_max_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 1.2959999999999994,
+          "median": 0.41300000000000026,
+          "min": -13.805999999999997
+        },
+        "frame_p50_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 0.0070000000000014495,
+          "median": 0.0,
+          "min": -0.007999999999999119
+        },
+        "frame_p95_delta_ms": {
+          "all_at_or_below_plus_0_5ms": true,
+          "max": 0.21600000000000108,
+          "median": 0.14700000000000202,
+          "min": -0.05799999999999983
+        },
+        "frame_p99_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 1.4399999999999977,
+          "median": 0.013999999999999346,
+          "min": -0.5310000000000024
+        },
+        "note": "These comparisons expose the plan's targets; they do not certify hardware coverage, readability or owner acceptance.",
+        "pairs": 5
+      },
+      "runs": [
+        {
+          "run_id": "pair-01-1-baseline",
+          "build": "baseline",
+          "frames": 3595,
+          "frame_ms": {
+            "max": 27.37,
+            "p50": 16.665,
+            "p95": 17.672,
+            "p99": 19.536
+          },
+          "wall_frame_ms": {
+            "max": 27.37,
+            "p50": 16.665,
+            "p95": 17.672,
+            "p99": 19.536
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 47.978396013680694,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00010116023236,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-01-2-candidate",
+          "build": "candidate",
+          "frames": 3599,
+          "frame_ms": {
+            "max": 27.428,
+            "p50": 16.657,
+            "p95": 17.886,
+            "p99": 19.55
+          },
+          "wall_frame_ms": {
+            "max": 27.428,
+            "p50": 16.657,
+            "p95": 17.886,
+            "p99": 19.55
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 48.50493918866481,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 0.999938075521458,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-02-1-candidate",
+          "build": "candidate",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 28.681,
+            "p50": 16.663,
+            "p95": 17.681,
+            "p99": 18.864
+          },
+          "wall_frame_ms": {
+            "max": 28.681,
+            "p50": 16.663,
+            "p95": 17.681,
+            "p99": 18.864
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 50.29127027366833,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00006027029896,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-02-2-baseline",
+          "build": "baseline",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 27.385,
+            "p50": 16.663,
+            "p95": 17.534,
+            "p99": 18.624
+          },
+          "wall_frame_ms": {
+            "max": 27.385,
+            "p50": 16.663,
+            "p95": 17.534,
+            "p99": 18.624
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 51.2252073553706,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00002121711682,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-03-1-baseline",
+          "build": "baseline",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 22.922,
+            "p50": 16.661,
+            "p95": 17.538,
+            "p99": 18.297
+          },
+          "wall_frame_ms": {
+            "max": 22.922,
+            "p50": 16.661,
+            "p95": 17.538,
+            "p99": 18.297
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 51.86669682619038,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00004053497635,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-03-2-candidate",
+          "build": "candidate",
+          "frames": 3595,
+          "frame_ms": {
+            "max": 23.335,
+            "p50": 16.668,
+            "p95": 17.754,
+            "p99": 19.737
+          },
+          "wall_frame_ms": {
+            "max": 23.335,
+            "p50": 16.668,
+            "p95": 17.754,
+            "p99": 19.737
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 48.31731499300089,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 0.999998710933735,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-04-attempt-02-1-candidate",
+          "build": "candidate",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 19.811,
+            "p50": 16.655,
+            "p95": 17.621,
+            "p99": 18.127
+          },
+          "wall_frame_ms": {
+            "max": 19.811,
+            "p50": 16.655,
+            "p95": 17.621,
+            "p99": 18.127
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 53.85786908348867,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00005111927971,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-04-attempt-02-2-baseline",
+          "build": "baseline",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 33.617,
+            "p50": 16.658,
+            "p95": 17.641,
+            "p99": 18.658
+          },
+          "wall_frame_ms": {
+            "max": 33.617,
+            "p50": 16.658,
+            "p95": 17.641,
+            "p99": 18.658
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 50.216208676244946,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 0.999969137698118,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-05-attempt-02-1-baseline",
+          "build": "baseline",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 20.048,
+            "p50": 16.654,
+            "p95": 17.524,
+            "p99": 18.242
+          },
+          "wall_frame_ms": {
+            "max": 20.048,
+            "p50": 16.654,
+            "p95": 17.524,
+            "p99": 18.242
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 52.95348036749716,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00004275182764,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        },
+        {
+          "run_id": "pair-05-attempt-02-2-candidate",
+          "build": "candidate",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 20.547,
+            "p50": 16.661,
+            "p95": 17.466,
+            "p99": 18.086
+          },
+          "wall_frame_ms": {
+            "max": 20.547,
+            "p50": 16.661,
+            "p95": 17.466,
+            "p99": 18.086
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 53.42181568880011,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.000035534596,
+          "viewport": {
+            "height": 720,
+            "width": 1280
+          }
+        }
+      ],
+      "contention": {
+        "samples": 176,
+        "samples_with_headless_godot": 161,
+        "samples_with_multiple_native_godot": 0,
+        "cpu_percent_median": 19.2,
+        "cpu_percent_max": 100.0
+      },
+      "excluded_run_ids": [
+        "pair-04-1-candidate",
+        "pair-05-1-baseline"
+      ],
+      "cpu_render_ms_p95": {
+        "baseline": {
+          "median": 1.59599995613098,
+          "min": 1.42299997806549,
+          "max": 2.06599998474121
+        },
+        "candidate": {
+          "median": 1.875,
+          "min": 1.32799994945526,
+          "max": 2.16400003433228
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": {
+          "median": 3.45900011062622,
+          "min": 2.57500004768372,
+          "max": 4.57000017166138
+        },
+        "candidate": {
+          "median": 3.38199996948242,
+          "min": 2.50399994850159,
+          "max": 3.67300009727478
+        }
+      },
+      "draw_calls_visible_p95": {
+        "baseline": {
+          "median": 107.0,
+          "min": 107.0,
+          "max": 108.0
+        },
+        "candidate": {
+          "median": 106.0,
+          "min": 106.0,
+          "max": 106.0
+        }
+      },
+      "primitives_visible_p95": {
+        "baseline": {
+          "median": 248925.0,
+          "min": 248925.0,
+          "max": 249045.0
+        },
+        "candidate": {
+          "median": 249064.0,
+          "min": 249064.0,
+          "max": 249064.0
+        }
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "candidate": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "primitives_shadow_p95": {
+        "baseline": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "candidate": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "memory_bytes_p95": {
+        "cpu_static_bytes": {
+          "baseline": 228304231.0,
+          "candidate": 228271279.0
+        },
+        "video_bytes": {
+          "baseline": 712855032.0,
+          "candidate": 707231898.0
+        },
+        "texture_bytes": {
+          "baseline": 642806482.0,
+          "candidate": 645602672.0
+        },
+        "buffer_bytes": {
+          "baseline": 70048550.0,
+          "candidate": 61629226.0
+        }
+      }
+    },
+    "1080": {
+      "status": "incomplete",
+      "qualified_series_complete": false,
+      "accepted_pairs": 2,
+      "qualification_note": "Not qualified. Focus interruptions prevented five complete pairs; user requested finishing with 720p evidence.",
+      "comparison_summary": {
+        "candidate_frame_targets": {
+          "all_p95_at_or_below_18ms": true,
+          "all_p99_at_or_below_25ms": true,
+          "p95_ms_max": 17.714,
+          "p99_ms_max": 18.597
+        },
+        "candidate_simulation_wall_ratio": {
+          "all_within_0_99_1_01": true,
+          "median": 1.000031559387185
+        },
+        "frame_max_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 0.2530000000000001,
+          "median": -3.0600000000000005,
+          "min": -6.373000000000001
+        },
+        "frame_p50_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 0.003999999999997783,
+          "median": -0.004000000000001336,
+          "min": -0.012000000000000455
+        },
+        "frame_p95_delta_ms": {
+          "all_at_or_below_plus_0_5ms": true,
+          "max": 0.09499999999999886,
+          "median": -0.15399999999999991,
+          "min": -0.4029999999999987
+        },
+        "frame_p99_delta_ms": {
+          "all_at_or_below_plus_0_5ms": null,
+          "max": 0.370000000000001,
+          "median": -0.2680000000000007,
+          "min": -0.9060000000000024
+        },
+        "note": "These comparisons expose the plan's targets; they do not certify hardware coverage, readability or owner acceptance.",
+        "pairs": 2
+      },
+      "runs": [
+        {
+          "run_id": "pair-01-attempt-04-1-baseline",
+          "build": "baseline",
+          "frames": 3599,
+          "frame_ms": {
+            "max": 28.604,
+            "p50": 16.67,
+            "p95": 17.889,
+            "p99": 19.097
+          },
+          "wall_frame_ms": {
+            "max": 28.604,
+            "p50": 16.67,
+            "p95": 17.889,
+            "p99": 19.097
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 49.3338520435491,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 0.999969444567753,
+          "viewport": {
+            "height": 1080,
+            "width": 1920
+          }
+        },
+        {
+          "run_id": "pair-01-attempt-04-2-candidate",
+          "build": "candidate",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 28.857,
+            "p50": 16.658,
+            "p95": 17.486,
+            "p99": 18.191
+          },
+          "wall_frame_ms": {
+            "max": 28.857,
+            "p50": 16.658,
+            "p95": 17.486,
+            "p99": 18.191
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 52.016882368155265,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00003916820075,
+          "viewport": {
+            "height": 1080,
+            "width": 1920
+          }
+        },
+        {
+          "run_id": "pair-02-1-candidate",
+          "build": "candidate",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 24.587,
+            "p50": 16.668,
+            "p95": 17.714,
+            "p99": 18.597
+          },
+          "wall_frame_ms": {
+            "max": 24.587,
+            "p50": 16.668,
+            "p95": 17.714,
+            "p99": 18.597
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 51.83144988402713,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00002395057362,
+          "viewport": {
+            "height": 1080,
+            "width": 1920
+          }
+        },
+        {
+          "run_id": "pair-02-2-baseline",
+          "build": "baseline",
+          "frames": 3601,
+          "frame_ms": {
+            "max": 30.96,
+            "p50": 16.664,
+            "p95": 17.619,
+            "p99": 18.227
+          },
+          "wall_frame_ms": {
+            "max": 30.96,
+            "p50": 16.664,
+            "p95": 17.619,
+            "p99": 18.227
+          },
+          "one_percent_low_fps_from_slowest_mean_wall": 51.877534433713485,
+          "frames_over_50ms_wall": 0,
+          "simulation_wall_ratio": 1.00002046708556,
+          "viewport": {
+            "height": 1080,
+            "width": 1920
+          }
+        }
+      ],
+      "contention": {
+        "samples": 148,
+        "samples_with_headless_godot": 41,
+        "samples_with_multiple_native_godot": 0,
+        "cpu_percent_median": 15.0,
+        "cpu_percent_max": 100.0
+      },
+      "excluded_run_ids": [
+        "pair-01-1-baseline",
+        "pair-01-2-candidate",
+        "pair-01-attempt-02-1-baseline",
+        "pair-01-attempt-03-1-baseline",
+        "pair-03-1-baseline",
+        "pair-03-attempt-02-1-baseline",
+        "pair-03-attempt-02-2-candidate",
+        "pair-03-attempt-03-1-baseline"
+      ],
+      "cpu_render_ms_p95": {
+        "baseline": {
+          "median": 1.84999996423721,
+          "min": 1.4190000295639,
+          "max": 2.28099989891052
+        },
+        "candidate": {
+          "median": 1.78099995851517,
+          "min": 1.35000002384186,
+          "max": 2.21199989318848
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": {
+          "median": 2.9135000705719,
+          "min": 2.90000009536743,
+          "max": 2.92700004577637
+        },
+        "candidate": {
+          "median": 2.476499915122985,
+          "min": 2.06699991226196,
+          "max": 2.88599991798401
+        }
+      },
+      "draw_calls_visible_p95": {
+        "baseline": {
+          "median": 107.0,
+          "min": 107.0,
+          "max": 107.0
+        },
+        "candidate": {
+          "median": 106.0,
+          "min": 106.0,
+          "max": 106.0
+        }
+      },
+      "primitives_visible_p95": {
+        "baseline": {
+          "median": 249001.0,
+          "min": 249001.0,
+          "max": 249001.0
+        },
+        "candidate": {
+          "median": 249140.0,
+          "min": 249140.0,
+          "max": 249140.0
+        }
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "candidate": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "primitives_shadow_p95": {
+        "baseline": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        },
+        "candidate": {
+          "median": 0.0,
+          "min": 0.0,
+          "max": 0.0
+        }
+      },
+      "memory_bytes_p95": {
+        "cpu_static_bytes": {
+          "baseline": 228123645.0,
+          "candidate": 227910349.0
+        },
+        "video_bytes": {
+          "baseline": 768151032.0,
+          "candidate": 771048666.0
+        },
+        "texture_bytes": {
+          "baseline": 698102482.0,
+          "candidate": 700898672.0
+        },
+        "buffer_bytes": {
+          "baseline": 70048550.0,
+          "candidate": 70149994.0
+        }
+      }
+    }
+  }
+}
