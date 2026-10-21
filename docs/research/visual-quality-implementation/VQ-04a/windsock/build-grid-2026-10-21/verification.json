@@ -1,0 +1,213 @@
+{
+  "artifact_hashes_verified": 112,
+  "source_verification": {
+    "production": [
+      "app/render/windsock.gd",
+      "app/tests/test_windsock.gd",
+      "tools/ground/README.md",
+      "tools/ground/compare_windsock_optimization.gd"
+    ],
+    "snapshot": [
+      "app/project.godot",
+      "app/render/windsock.gd"
+    ]
+  },
+  "checks": [
+    {
+      "label": "candidate-parse",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "capture-baseline",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "capture-candidate",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "collector-export",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "collector-native-01",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-02",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-03",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-04",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-05",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-06",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-07",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "comparator-parse",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "diagnostic-export",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "diagnostic-native-01",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-02",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-03",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-04",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-05",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-06",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-07",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "expected-uv-mutation",
+      "ok": false,
+      "expected_failure": true,
+      "warnings": 0
+    },
+    {
+      "label": "geometry-and-build",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test-draft-parse",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test_field_integration",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test_field_projected_shadows",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "test_flight_cue_shadows",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test_windsock",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 1
+    },
+    {
+      "label": "test_windsock_data",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test_windsock_motion",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    },
+    {
+      "label": "test_windsock_shadow",
+      "ok": true,
+      "expected_failure": false,
+      "warnings": 0
+    }
+  ],
+  "eligible_pairs": [
+    2,
+    3,
+    4,
+    5,
+    7
+  ],
+  "excluded_pairs": [
+    1,
+    6
+  ],
+  "component_comparison_passed": true,
+  "pixel_exact_native_images": 18,
+  "runtime_parses": true,
+  "full_app_suite_run": false,
+  "ordinary_export_qualification": false
+}

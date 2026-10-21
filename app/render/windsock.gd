@@ -58,21 +58,39 @@ static func build(cue: Dictionary) -> Node3D:
 	var cloth: RefCounted = MeshKit.new()
 	var uvs := PackedVector2Array()
 	var smooth_normals := PackedVector3Array()
+	# Adjacent triangles share samples, including their finite-difference normals.
+	# Keep both seam endpoints: angle TAU and angle zero have distinct UVs.
+	var row_size: int = SIDES + 1
+	var sample_count: int = (SECTIONS + 1) * row_size
+	var points := PackedVector3Array()
+	var sample_normals := PackedVector3Array()
+	var sample_uvs := PackedVector2Array()
+	points.resize(sample_count)
+	sample_normals.resize(sample_count)
+	sample_uvs.resize(sample_count)
+	for section: int in range(SECTIONS + 1):
+		var s: float = length_m * float(section) / float(SECTIONS)
+		for side_index: int in row_size:
+			var angle: float = TAU * float(side_index) / float(SIDES)
+			var index: int = section * row_size + side_index
+			points[index] = mount + cloth_point(s, angle, cue)
+			# Preserve the original Vector2 rounding before normal and UV evaluation.
+			var sample := Vector2(s, angle)
+			sample_normals[index] = _cloth_normal(sample.x, sample.y, cue)
+			sample_uvs[index] = Vector2(sample.x / length_m, sample.y / TAU)
 	for section: int in SECTIONS:
-		var s0: float = length_m * float(section) / float(SECTIONS)
-		var s1: float = length_m * float(section + 1) / float(SECTIONS)
 		var band: int = section / (SECTIONS / BANDS)
 		var colour: Color = ORANGE if band % 2 == 0 else WHITE
 		for side_index: int in SIDES:
-			var a: float = TAU * float(side_index) / float(SIDES)
-			var b: float = TAU * float(side_index + 1) / float(SIDES)
-			cloth.quad(mount + cloth_point(s0, a, cue), mount + cloth_point(s0, b, cue),
-				mount + cloth_point(s1, b, cue), mount + cloth_point(s1, a, cue), colour)
-			# MeshKit emits a,c,b / a,d,c; store UVs in the same vertex order.
-			for uv: Vector2 in [Vector2(s0, a), Vector2(s1, b), Vector2(s0, b),
-				Vector2(s0, a), Vector2(s1, a), Vector2(s1, b)]:
-				uvs.append(Vector2(uv.x / length_m, uv.y / TAU))
-				smooth_normals.append(_cloth_normal(uv.x, uv.y, cue))
+			var a: int = section * row_size + side_index
+			var b: int = a + 1
+			var d: int = a + row_size
+			var c: int = d + 1
+			cloth.quad(points[a], points[b], points[c], points[d], colour)
+			# MeshKit emits a,c,b / a,d,c; retain the unindexed triangle order.
+			for index: int in [a, c, b, a, d, c]:
+				uvs.append(sample_uvs[index])
+				smooth_normals.append(sample_normals[index])
 	var fabric := _instance("Fabric", cloth, true)
 	var arrays: Array = fabric.mesh.surface_get_arrays(0)
 	arrays[Mesh.ARRAY_TEX_UV] = uvs

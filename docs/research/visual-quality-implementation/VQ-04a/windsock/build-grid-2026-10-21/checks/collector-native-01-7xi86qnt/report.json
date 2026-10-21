@@ -1,0 +1,59 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7ac9d8dd-c21a-4d22-b164-475141f220e5",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\collector\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--output=D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-01.json",
+    "--cycles=2"
+  ],
+  "cwd": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\empty-host",
+  "started_utc": "2026-10-21T17:01:07.194159+00:00",
+  "label": "collector-native-01",
+  "log": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-01-7xi86qnt\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-01-7xi86qnt\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "loading probe: 2 Home/Fly cycles"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.062,
+  "log_bytes": 629,
+  "log_sha256": "50a1088334fef14487b9413961da6881b8f36eeea71ace0c3cc47de3fbd593b3"
+}

@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "395e85c7-9ee3-44ef-827c-bccbf36fa782",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-scratch/windsock-grid-20261021-8b808672/snapshot/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/ground/compare_windsock_optimization.gd",
+    "--",
+    "--baseline=D:/OpenRCsimulator-scratch/windsock-grid-20261021-8b808672/provenance/windsock-original.gd",
+    "--out=D:/OpenRCsimulator-scratch/windsock-grid-20261021-8b808672/runs/geometry-and-build.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:04:33.128390+00:00",
+  "label": "geometry-and-build",
+  "log": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\geometry-and-build-ldoyv27p\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\geometry-and-build-ldoyv27p\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "3010 checks, 0 mismatches"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.406,
+  "log_bytes": 218,
+  "log_sha256": "3409f78e6a4d9798551b93e32a144856199fde3888f886f6c28569c7bf553381"
+}

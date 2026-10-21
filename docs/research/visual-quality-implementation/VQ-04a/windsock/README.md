@@ -49,6 +49,29 @@ The comparison passes 2,400 exact motion-state cases, 600 exact rendered-state c
 
 Full application tests and owner playtest were not repeated in this pass. No GPU saving or whole-flight frame-budget improvement is established. Reproduce the paired benchmark with [the ground tool instructions](../../../../../tools/ground/README.md#windsock-cpu-comparison-vq-04a-f3).
 
+## VQ-04a-F4: faster cloth construction
+
+2026-10-21. Implemented in `app/render/windsock.gd`: sample the cloth's 61×33 grid once per build and reuse points, normals and UVs when emitting the original triangles. This removes repeated finite-difference normal evaluation: 53,760 point evaluations become 10,065 (**81.3% fewer**). Both seam endpoints and the original intermediate Vector2 rounding are preserved. The temporary arrays are bounded to 2,013 entries each and released after construction; meshes, materials and motion models still belong to each cue. There is no persistent cache, new asset, physics change or deferred first-use work.
+
+Baseline: clean `8b8086727b6fa543c6eed49d19fc695bc49c0df2`, pinned Godot 4.7.2, Ryzen 9 5900X / RTX 3090, Windows Compatibility. Ten alternating headless component pairs measure mean construction **73.323 → 23.213 ms (68.3% reduction)**. The existing comparator now checks every populated surface array byte-for-byte for Fabric, Support and Basket at default, minimum, maximum and non-round dimensions, in addition to its motion/render/bounds checks. All **3,010 cases pass**. A disposable UV mutation produces eight mismatches and a nonzero exit, confirming that the new geometry check rejects changed output. [Raw comparison](build-grid-2026-10-21/runs/geometry-and-build.json).
+
+Actual release-template Home/Fly collectors compare the frozen renderer with the candidate; neither contains construction timers. Seven alternating process pairs were attempted, each with two Fly/return cycles. Pairs 1 and 6 contain focus-paused flight and are retained but excluded, leaving five active pairs. Native timing, exports, tests and captures were serialized. Caches/background host activity remain uncontrolled; process-fresh is not cache-cold. [All pairs and reduction](build-grid-2026-10-21/runs/loading-summary.json).
+
+| Complete measured interval | Baseline median | Candidate median | Median paired reduction |
+| --- | ---: | ---: | ---: |
+| First Home, from resource load | 3,844 ms | 3,800 ms | 2.1% |
+| First Fly draw | 2,148 ms | 2,113 ms | 2.1% |
+| Return to Home after first flight | 844 ms | 787 ms | 6.5% |
+| Second Fly draw | 1,440 ms | 1,389 ms | 3.6% |
+| Return Home + second Fly | 2,286 ms | 2,170 ms | **5.1%** |
+| First Home from load + first Fly | 6,022 ms | 5,949 ms | 1.6% |
+
+The paired percentages are medians of per-pair ratios, not ratios of the two medians. Every eligible warm combined pair improves by 95–124 ms. Adopt this small arithmetic-reuse change for the recurring transition improvement and exact output preservation. The first-path >5% goal is **not** met; initial Home/Fly targets and native frame-pacing qualification remain open. These results do not establish a flight FPS gain or a physical-display qualification.
+
+Verification after integration: all seven focused suites pass (windsock geometry/data/motion, moving/legacy cue shadows, field projected shadows and Home/Fly field integration). The latter confirms separate mutable resources, matching field geometry/materials and one active scene/session. All **18 native motion-view images are byte-identical** to the baseline; [image hashes](build-grid-2026-10-21/runs/visual-parity.json). All 14 loading processes complete bounded cleanup with zero reported orphan nodes and no ObjectDB exit warning; this does not close the prior ordinary-release shutdown issue or a long lifecycle gate. Full `app/test.sh`, other platforms, physical validation and owner pilot acceptance were not run.
+
+[Verification](build-grid-2026-10-21/verification.json) and [artifact manifest](build-grid-2026-10-21/evidence-manifest.json) retain exact sources, checked logs, release hashes, source preservation, images' capture manifests and reduction recipes. Of 3,840 frozen source inputs, only the renderer, its geometry test, the comparison tool and its instructions change; aircraft, simulation and assets remain unchanged. Both exported native DLLs match the pinned build receipt. Large files use deterministic gzip. Binary exports and all raw images remain on the recorded D: scratch path. Recipes in `provenance/` derive the repository from their intended `<repo>/tmp/` location; the two release variants are named `collector` (baseline) and `diagnostic` (candidate).
+
 ## Reproduce and sources
 
 Use the pinned engine from the repository root:

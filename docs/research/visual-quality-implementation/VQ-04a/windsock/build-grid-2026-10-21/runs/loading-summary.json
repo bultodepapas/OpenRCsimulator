@@ -1,0 +1,245 @@
+{
+  "method": "five active paired processes, each with one warm repeat; pairs1/6 retained but excluded for pause",
+  "pairs": [
+    {
+      "pair": 1,
+      "eligible": false,
+      "baseline": {
+        "home": 3985.415,
+        "home_engine": 6713.815,
+        "first_fly": 2221.547,
+        "warm_fly": 1612.781,
+        "return_home": 901.136,
+        "cold_combined": 6206.962,
+        "warm_combined": 2513.917
+      },
+      "candidate": {
+        "home": 4054.204,
+        "home_engine": 6754.177,
+        "first_fly": 2262.342,
+        "warm_fly": 1511.109,
+        "return_home": 849.318,
+        "cold_combined": 6316.546,
+        "warm_combined": 2360.427
+      }
+    },
+    {
+      "pair": 2,
+      "eligible": true,
+      "baseline": {
+        "home": 3887.421,
+        "home_engine": 6527.053,
+        "first_fly": 2134.23,
+        "warm_fly": 1439.952,
+        "return_home": 847.196,
+        "cold_combined": 6021.651,
+        "warm_combined": 2287.148
+      },
+      "candidate": {
+        "home": 3849.084,
+        "home_engine": 6711.64,
+        "first_fly": 2116.992,
+        "warm_fly": 1388.736,
+        "return_home": 781.627,
+        "cold_combined": 5966.076,
+        "warm_combined": 2170.363
+      }
+    },
+    {
+      "pair": 3,
+      "eligible": true,
+      "baseline": {
+        "home": 3829.948,
+        "home_engine": 6412.598,
+        "first_fly": 2159.977,
+        "warm_fly": 1434.977,
+        "return_home": 841.341,
+        "cold_combined": 5989.925,
+        "warm_combined": 2276.318
+      },
+      "candidate": {
+        "home": 3843.819,
+        "home_engine": 6423.242,
+        "first_fly": 2113.264,
+        "warm_fly": 1391.155,
+        "return_home": 790.211,
+        "cold_combined": 5957.083,
+        "warm_combined": 2181.366
+      }
+    },
+    {
+      "pair": 4,
+      "eligible": true,
+      "baseline": {
+        "home": 3844.352,
+        "home_engine": 6411.18,
+        "first_fly": 2190.67,
+        "warm_fly": 1440.326,
+        "return_home": 840.227,
+        "cold_combined": 6035.022,
+        "warm_combined": 2280.553
+      },
+      "candidate": {
+        "home": 3762.817,
+        "home_engine": 6367.293,
+        "first_fly": 2110.19,
+        "warm_fly": 1390.521,
+        "return_home": 787.032,
+        "cold_combined": 5873.007,
+        "warm_combined": 2177.553
+      }
+    },
+    {
+      "pair": 5,
+      "eligible": true,
+      "baseline": {
+        "home": 3811.26,
+        "home_engine": 6447.308,
+        "first_fly": 2147.663,
+        "warm_fly": 1442.553,
+        "return_home": 843.983,
+        "cold_combined": 5958.923,
+        "warm_combined": 2286.536
+      },
+      "candidate": {
+        "home": 3704.25,
+        "home_engine": 6381.05,
+        "first_fly": 2103.106,
+        "warm_fly": 1374.4,
+        "return_home": 789.481,
+        "cold_combined": 5807.356,
+        "warm_combined": 2163.881
+      }
+    },
+    {
+      "pair": 6,
+      "eligible": false,
+      "baseline": {
+        "home": 3936.577,
+        "home_engine": 6571.457,
+        "first_fly": 2142.359,
+        "warm_fly": 1432.473,
+        "return_home": 844.425,
+        "cold_combined": 6078.936,
+        "warm_combined": 2276.898
+      },
+      "candidate": {
+        "home": 3869.723,
+        "home_engine": 6448.929,
+        "first_fly": 2185.343,
+        "warm_fly": 1438.608,
+        "return_home": 818.211,
+        "cold_combined": 6055.066,
+        "warm_combined": 2256.819
+      }
+    },
+    {
+      "pair": 7,
+      "eligible": true,
+      "baseline": {
+        "home": 3908.269,
+        "home_engine": 6490.327,
+        "first_fly": 2136.342,
+        "warm_fly": 1436.836,
+        "return_home": 848.723,
+        "cold_combined": 6044.611,
+        "warm_combined": 2285.559
+      },
+      "candidate": {
+        "home": 3799.519,
+        "home_engine": 6407.94,
+        "first_fly": 2149.603,
+        "warm_fly": 1377.308,
+        "return_home": 784.297,
+        "cold_combined": 5949.122,
+        "warm_combined": 2161.605
+      }
+    }
+  ],
+  "summary": {
+    "home": {
+      "baseline_median_ms": 3844.352,
+      "candidate_median_ms": 3799.519,
+      "median_paired_reduction_pct": 2.120903600918955,
+      "paired_delta_ms": [
+        -38.33699999999999,
+        13.871000000000095,
+        -81.53499999999985,
+        -107.01000000000022,
+        -108.75
+      ]
+    },
+    "home_engine": {
+      "baseline_median_ms": 6447.308,
+      "candidate_median_ms": 6407.94,
+      "median_paired_reduction_pct": 0.6845385716826017,
+      "paired_delta_ms": [
+        184.58700000000044,
+        10.644000000000233,
+        -43.887000000000626,
+        -66.25799999999981,
+        -82.38700000000063
+      ]
+    },
+    "first_fly": {
+      "baseline_median_ms": 2147.663,
+      "candidate_median_ms": 2113.264,
+      "median_paired_reduction_pct": 2.0746737267438973,
+      "paired_delta_ms": [
+        -17.23799999999983,
+        -46.71299999999974,
+        -80.48000000000002,
+        -44.55699999999979,
+        13.260999999999967
+      ]
+    },
+    "warm_fly": {
+      "baseline_median_ms": 1439.952,
+      "candidate_median_ms": 1388.736,
+      "median_paired_reduction_pct": 3.5567852261741986,
+      "paired_delta_ms": [
+        -51.215999999999894,
+        -43.822000000000116,
+        -49.805000000000064,
+        -68.15300000000002,
+        -59.52800000000002
+      ]
+    },
+    "return_home": {
+      "baseline_median_ms": 843.983,
+      "candidate_median_ms": 787.032,
+      "median_paired_reduction_pct": 6.457713010807084,
+      "paired_delta_ms": [
+        -65.56900000000007,
+        -51.129999999999995,
+        -53.194999999999936,
+        -54.50199999999995,
+        -64.42599999999993
+      ]
+    },
+    "cold_combined": {
+      "baseline_median_ms": 6021.651,
+      "candidate_median_ms": 5949.122,
+      "median_paired_reduction_pct": 1.5797377200948015,
+      "paired_delta_ms": [
+        -55.57499999999982,
+        -32.84200000000055,
+        -162.01500000000033,
+        -151.567,
+        -95.48899999999958
+      ]
+    },
+    "warm_combined": {
+      "baseline_median_ms": 2285.559,
+      "candidate_median_ms": 2170.363,
+      "median_paired_reduction_pct": 5.106140923105995,
+      "paired_delta_ms": [
+        -116.78500000000031,
+        -94.95200000000023,
+        -103.0,
+        -122.6550000000002,
+        -123.95400000000018
+      ]
+    }
+  }
+}

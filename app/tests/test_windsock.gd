@@ -83,6 +83,15 @@ func _initialize() -> void:
 		var tangent := Vector3(tangents[i*4], tangents[i*4+1], tangents[i*4+2])
 		mapped = mapped and tangent.is_finite() and absf(tangent.dot(normals[i])) < 0.001 and absf(tangent.length() - 1.0) < 0.001
 	_check("finite sleeve UVs and orthonormal tangent frame", mapped)
+	var seam_preserved := vertices.size() == Windsock.SECTIONS * Windsock.SIDES * 6
+	for section: int in Windsock.SECTIONS:
+		var first_vertex: int = section * Windsock.SIDES * 6
+		var seam_vertex: int = first_vertex + (Windsock.SIDES - 1) * 6 + 1
+		seam_preserved = seam_preserved and uvs[first_vertex].y == 0.0 and uvs[seam_vertex].y == 1.0
+	_check("cloth preserves both texture seam endpoints and full topology", seam_preserved)
+	_check("cloth materials and motion models belong to each cue",
+		material != second.get_node("Fabric").mesh.surface_get_material(0)
+		and first.get_meta("windsock_motion") != second.get_meta("windsock_motion"))
 	_check("independent deterministic builds", fabric.mesh != second.get_node("Fabric").mesh
 		and vertices.to_byte_array() == second.get_node("Fabric").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array())
 	first.free()

@@ -1,0 +1,22 @@
+{
+  "collector": {
+    "OpenRC Simulator.exe": {
+      "bytes": 444973064,
+      "sha256": "c819341fe19dc00aab516cb5438210d1007f34ef33fe3745725cc12649a9e889"
+    },
+    "openrc_ground_vehicle.dll": {
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "diagnostic": {
+    "OpenRC Simulator.exe": {
+      "bytes": 444973480,
+      "sha256": "fc6952fc8912bfead4565a0e5a056a0273a3776c637a486fde6d4315d0d71320"
+    },
+    "openrc_ground_vehicle.dll": {
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  }
+}

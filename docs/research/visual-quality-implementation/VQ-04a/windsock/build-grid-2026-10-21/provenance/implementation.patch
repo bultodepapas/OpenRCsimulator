@@ -1,0 +1,354 @@
+diff --git a/app/render/windsock.gd b/app/render/windsock.gd
+index 368b7004..98a42c1b 100644
+--- a/app/render/windsock.gd
++++ b/app/render/windsock.gd
+@@ -58,21 +58,39 @@ static func build(cue: Dictionary) -> Node3D:
+ 	var cloth: RefCounted = MeshKit.new()
+ 	var uvs := PackedVector2Array()
+ 	var smooth_normals := PackedVector3Array()
++	# Adjacent triangles share samples, including their finite-difference normals.
++	# Keep both seam endpoints: angle TAU and angle zero have distinct UVs.
++	var row_size: int = SIDES + 1
++	var sample_count: int = (SECTIONS + 1) * row_size
++	var points := PackedVector3Array()
++	var sample_normals := PackedVector3Array()
++	var sample_uvs := PackedVector2Array()
++	points.resize(sample_count)
++	sample_normals.resize(sample_count)
++	sample_uvs.resize(sample_count)
++	for section: int in range(SECTIONS + 1):
++		var s: float = length_m * float(section) / float(SECTIONS)
++		for side_index: int in row_size:
++			var angle: float = TAU * float(side_index) / float(SIDES)
++			var index: int = section * row_size + side_index
++			points[index] = mount + cloth_point(s, angle, cue)
++			# Preserve the original Vector2 rounding before normal and UV evaluation.
++			var sample := Vector2(s, angle)
++			sample_normals[index] = _cloth_normal(sample.x, sample.y, cue)
++			sample_uvs[index] = Vector2(sample.x / length_m, sample.y / TAU)
+ 	for section: int in SECTIONS:
+-		var s0: float = length_m * float(section) / float(SECTIONS)
+-		var s1: float = length_m * float(section + 1) / float(SECTIONS)
+ 		var band: int = section / (SECTIONS / BANDS)
+ 		var colour: Color = ORANGE if band % 2 == 0 else WHITE
+ 		for side_index: int in SIDES:
+-			var a: float = TAU * float(side_index) / float(SIDES)
+-			var b: float = TAU * float(side_index + 1) / float(SIDES)
+-			cloth.quad(mount + cloth_point(s0, a, cue), mount + cloth_point(s0, b, cue),
+-				mount + cloth_point(s1, b, cue), mount + cloth_point(s1, a, cue), colour)
+-			# MeshKit emits a,c,b / a,d,c; store UVs in the same vertex order.
+-			for uv: Vector2 in [Vector2(s0, a), Vector2(s1, b), Vector2(s0, b),
+-				Vector2(s0, a), Vector2(s1, a), Vector2(s1, b)]:
+-				uvs.append(Vector2(uv.x / length_m, uv.y / TAU))
+-				smooth_normals.append(_cloth_normal(uv.x, uv.y, cue))
++			var a: int = section * row_size + side_index
++			var b: int = a + 1
++			var d: int = a + row_size
++			var c: int = d + 1
++			cloth.quad(points[a], points[b], points[c], points[d], colour)
++			# MeshKit emits a,c,b / a,d,c; retain the unindexed triangle order.
++			for index: int in [a, c, b, a, d, c]:
++				uvs.append(sample_uvs[index])
++				smooth_normals.append(sample_normals[index])
+ 	var fabric := _instance("Fabric", cloth, true)
+ 	var arrays: Array = fabric.mesh.surface_get_arrays(0)
+ 	arrays[Mesh.ARRAY_TEX_UV] = uvs
+diff --git a/app/tests/test_windsock.gd b/app/tests/test_windsock.gd
+index 921f9e2a..850ef66e 100644
+--- a/app/tests/test_windsock.gd
++++ b/app/tests/test_windsock.gd
+@@ -83,6 +83,15 @@ func _initialize() -> void:
+ 		var tangent := Vector3(tangents[i*4], tangents[i*4+1], tangents[i*4+2])
+ 		mapped = mapped and tangent.is_finite() and absf(tangent.dot(normals[i])) < 0.001 and absf(tangent.length() - 1.0) < 0.001
+ 	_check("finite sleeve UVs and orthonormal tangent frame", mapped)
++	var seam_preserved := vertices.size() == Windsock.SECTIONS * Windsock.SIDES * 6
++	for section: int in Windsock.SECTIONS:
++		var first_vertex: int = section * Windsock.SIDES * 6
++		var seam_vertex: int = first_vertex + (Windsock.SIDES - 1) * 6 + 1
++		seam_preserved = seam_preserved and uvs[first_vertex].y == 0.0 and uvs[seam_vertex].y == 1.0
++	_check("cloth preserves both texture seam endpoints and full topology", seam_preserved)
++	_check("cloth materials and motion models belong to each cue",
++		material != second.get_node("Fabric").mesh.surface_get_material(0)
++		and first.get_meta("windsock_motion") != second.get_meta("windsock_motion"))
+ 	_check("independent deterministic builds", fabric.mesh != second.get_node("Fabric").mesh
+ 		and vertices.to_byte_array() == second.get_node("Fabric").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array())
+ 	first.free()
+diff --git a/tools/ground/compare_windsock_optimization.gd b/tools/ground/compare_windsock_optimization.gd
+index eba67df2..5126beb9 100644
+--- a/tools/ground/compare_windsock_optimization.gd
++++ b/tools/ground/compare_windsock_optimization.gd
+@@ -10,6 +10,7 @@ const TAPE_TICKS: int = 2400
+ const RENDER_EVERY_TICKS: int = 4
+ const TIMING_BATCHES: int = 30
+ const TICKS_PER_BATCH: int = 240
++const BUILD_TIMING_PAIRS: int = 10
+ const DETAIL_LIMIT: int = 48
+ 
+ var _baseline: Variant
+@@ -20,6 +21,7 @@ var _mismatches: Array[Dictionary] = []
+ var _render_checks: int = 0
+ var _motion_checks: int = 0
+ var _bounds_checks: int = 0
++var _static_mesh_cases: int = 0
+ 
+ 
+ func _initialize() -> void:
+@@ -61,11 +63,13 @@ func _run() -> void:
+ 	var cue: Dictionary = cues[0]
+ 	var baseline_model: Node3D = _baseline.build(cue.duplicate(true))
+ 	var candidate_model: Node3D = Candidate.build(cue.duplicate(true))
++	var static_mesh_report: Dictionary = _compare_static_meshes(cue, baseline_model, candidate_model)
+ 	_run_equivalence(baseline_model, candidate_model)
+ 	baseline_model.free()
+ 	candidate_model.free()
+ 	var bounds_report: Dictionary = _compare_bounds(cue)
+ 	var timing_report: Dictionary = _measure_paired(cue)
++	var build_timing_report: Dictionary = _measure_build_paired(cue)
+ 	var report := {
+ 		"format": "openrc-windsock-optimization-compare v1",
+ 		"passed": _mismatch_count == 0,
+@@ -88,12 +92,16 @@ func _run() -> void:
+ 			"motion_state_ticks": _motion_checks,
+ 			"rendered_frames": _render_checks,
+ 			"direct_bounds_cases": _bounds_checks,
++			"static_mesh_cases": _static_mesh_cases,
++			"build_timing_pairs": BUILD_TIMING_PAIRS,
+ 			"mismatches": _mismatch_count,
+ 			"mismatch_details_limit": DETAIL_LIMIT,
+ 		},
+ 		"mismatches": _mismatches,
++		"static_mesh": static_mesh_report,
+ 		"direct_bounds": bounds_report,
+ 		"timing": timing_report,
++		"build_timing": build_timing_report,
+ 		"sources_sha256": {
+ 			"baseline_renderer": FileAccess.get_sha256(_baseline_path),
+ 			"candidate_renderer": FileAccess.get_sha256("res://render/windsock.gd"),
+@@ -111,10 +119,140 @@ func _run() -> void:
+ 	file.store_string(JSON.stringify(report, "\t") + "\n")
+ 	file.close()
+ 	print("Windsock comparison: %d checks, %d mismatches; wrote %s" % [
+-		_motion_checks + _render_checks + _bounds_checks, _mismatch_count, _out_path])
++		_motion_checks + _render_checks + _bounds_checks + _static_mesh_cases,
++		_mismatch_count, _out_path])
+ 	quit(0 if _mismatch_count == 0 else 1)
+ 
+ 
++func _compare_static_meshes(
++		cue: Dictionary, baseline_default: Node3D, candidate_default: Node3D) -> Dictionary:
++	var cases: Array[Dictionary] = []
++	cases.append(_compare_static_mesh_case("default", baseline_default, candidate_default))
++	var fixtures: Array[Dictionary] = [
++		{"name": "minimum_valid_dimensions", "length": 0.5, "pole_height": 2.0,
++			"throat_diameter": 0.1, "tail_diameter": 0.05},
++		{"name": "maximum_valid_dimensions", "length": 5.0, "pole_height": 10.0,
++			"throat_diameter": 1.0, "tail_diameter": 0.99},
++		{"name": "non_round_valid_dimensions", "length": 1.234567, "pole_height": 3.6,
++			"throat_diameter": 0.314159, "tail_diameter": 0.12345},
++	]
++	for fixture: Dictionary in fixtures:
++		var fixture_cue: Dictionary = cue.duplicate(true)
++		fixture_cue.length = fixture.length
++		fixture_cue.pole_height = fixture.pole_height
++		fixture_cue.throat_diameter = fixture.throat_diameter
++		fixture_cue.tail_diameter = fixture.tail_diameter
++		var baseline_root: Node3D = _baseline.build(fixture_cue.duplicate(true))
++		var candidate_root: Node3D = Candidate.build(fixture_cue.duplicate(true))
++		cases.append(_compare_static_mesh_case(str(fixture.name), baseline_root, candidate_root))
++		baseline_root.free()
++		candidate_root.free()
++	return {"cases": cases, "case_count": cases.size()}
++
++
++func _compare_static_mesh_case(
++		case_name: String, baseline_root: Node3D, candidate_root: Node3D) -> Dictionary:
++	var mismatch_start: int = _mismatch_count
++	for node_name: String in ["Fabric", "Support", "Basket"]:
++		var context := {"case": case_name, "mesh": node_name}
++		var baseline_instance: MeshInstance3D = baseline_root.get_node_or_null(node_name) as MeshInstance3D
++		var candidate_instance: MeshInstance3D = candidate_root.get_node_or_null(node_name) as MeshInstance3D
++		_compare_value("static_mesh.instance_present", baseline_instance != null,
++			candidate_instance != null, context)
++		if baseline_instance == null or candidate_instance == null:
++			continue
++		_compare_value("static_mesh.instance_transform",
++			_transform_value(baseline_instance.transform), _transform_value(candidate_instance.transform), context)
++		_compare_value("static_mesh.instance_custom_aabb",
++			_aabb_value(baseline_instance.custom_aabb), _aabb_value(candidate_instance.custom_aabb), context)
++		var baseline_mesh: Mesh = baseline_instance.mesh
++		var candidate_mesh: Mesh = candidate_instance.mesh
++		_compare_value("static_mesh.mesh_present", baseline_mesh != null,
++			candidate_mesh != null, context)
++		if baseline_mesh == null or candidate_mesh == null:
++			continue
++		_compare_value("static_mesh.mesh_aabb",
++			_aabb_value(baseline_mesh.get_aabb()), _aabb_value(candidate_mesh.get_aabb()), context)
++		var baseline_surface_count: int = baseline_mesh.get_surface_count()
++		var candidate_surface_count: int = candidate_mesh.get_surface_count()
++		_compare_value("static_mesh.surface_count", baseline_surface_count,
++			candidate_surface_count, context)
++		for surface_index: int in range(maxi(baseline_surface_count, candidate_surface_count)):
++			var surface_context: Dictionary = context.duplicate(true)
++			surface_context.surface = surface_index
++			var baseline_has_surface: bool = surface_index < baseline_surface_count
++			var candidate_has_surface: bool = surface_index < candidate_surface_count
++			_compare_value("static_mesh.surface_present", baseline_has_surface,
++				candidate_has_surface, surface_context)
++			if not baseline_has_surface or not candidate_has_surface:
++				continue
++			_compare_value("static_mesh.primitive_type",
++				baseline_mesh.surface_get_primitive_type(surface_index),
++				candidate_mesh.surface_get_primitive_type(surface_index), surface_context)
++			var baseline_arrays: Array = baseline_mesh.surface_get_arrays(surface_index)
++			var candidate_arrays: Array = candidate_mesh.surface_get_arrays(surface_index)
++			_compare_value("static_mesh.surface_array_slots", baseline_arrays.size(),
++				candidate_arrays.size(), surface_context)
++			var baseline_vertices: Variant = _surface_array(baseline_arrays, Mesh.ARRAY_VERTEX)
++			var candidate_vertices: Variant = _surface_array(candidate_arrays, Mesh.ARRAY_VERTEX)
++			var baseline_indices: Variant = _surface_array(baseline_arrays, Mesh.ARRAY_INDEX)
++			var candidate_indices: Variant = _surface_array(candidate_arrays, Mesh.ARRAY_INDEX)
++			_compare_value("static_mesh.vertex_count", _packed_array_count(baseline_vertices),
++				_packed_array_count(candidate_vertices), surface_context)
++			_compare_value("static_mesh.index_count", _packed_array_count(baseline_indices),
++				_packed_array_count(candidate_indices), surface_context)
++			for array_index: int in range(maxi(baseline_arrays.size(), candidate_arrays.size())):
++				var array_context: Dictionary = surface_context.duplicate(true)
++				array_context.array = array_index
++				var baseline_value: Variant = baseline_arrays[array_index] \
++					if array_index < baseline_arrays.size() else null
++				var candidate_value: Variant = candidate_arrays[array_index] \
++					if array_index < candidate_arrays.size() else null
++				_compare_value("static_mesh.array_type", typeof(baseline_value),
++					typeof(candidate_value), array_context)
++				_compare_value("static_mesh.array_element_count", _packed_array_count(baseline_value),
++					_packed_array_count(candidate_value), array_context)
++				var baseline_bytes: PackedByteArray = _surface_array_bytes(baseline_value)
++				var candidate_bytes: PackedByteArray = _surface_array_bytes(candidate_value)
++				if baseline_bytes != candidate_bytes:
++					_compare_value("static_mesh.array_bytes",
++						_byte_summary(baseline_bytes), _byte_summary(candidate_bytes), array_context, true)
++	_static_mesh_cases += 1
++	return {"case": case_name, "exact": _mismatch_count == mismatch_start}
++
++
++func _surface_array(arrays: Array, index: int) -> Variant:
++	return arrays[index] if index < arrays.size() else null
++
++
++func _packed_array_count(value: Variant) -> int:
++	if value is PackedByteArray or value is PackedInt32Array or value is PackedInt64Array \
++			or value is PackedFloat32Array or value is PackedFloat64Array \
++			or value is PackedStringArray or value is PackedVector2Array \
++			or value is PackedVector3Array or value is PackedVector4Array \
++			or value is PackedColorArray:
++		return value.size()
++	return -1
++
++
++func _surface_array_bytes(value: Variant) -> PackedByteArray:
++	if value is PackedByteArray:
++		return value
++	if value is PackedInt32Array or value is PackedInt64Array \
++			or value is PackedFloat32Array or value is PackedFloat64Array \
++			or value is PackedVector2Array or value is PackedVector3Array \
++			or value is PackedVector4Array or value is PackedColorArray:
++		return value.to_byte_array()
++	return var_to_bytes(value)
++
++
++func _byte_summary(bytes: PackedByteArray) -> Dictionary:
++	var hash := HashingContext.new()
++	hash.start(HashingContext.HASH_SHA256)
++	hash.update(bytes)
++	return {"byte_count": bytes.size(), "sha256": hash.finish().hex_encode()}
++
++
+ func _run_equivalence(baseline_model: Node3D, candidate_model: Node3D) -> void:
+ 	for tick: int in range(1, TAPE_TICKS + 1):
+ 		var time_s: float = float(tick) / float(PHYSICS_HZ)
+@@ -242,6 +380,43 @@ func _measure_paired(cue: Dictionary) -> Dictionary:
+ 	}
+ 
+ 
++func _measure_build_paired(cue: Dictionary) -> Dictionary:
++	var warm_baseline: Node3D = _baseline.build(cue.duplicate(true))
++	var warm_candidate: Node3D = Candidate.build(cue.duplicate(true))
++	warm_baseline.free()
++	warm_candidate.free()
++	var samples: Array[Dictionary] = []
++	for pair: int in BUILD_TIMING_PAIRS:
++		var first: String = "baseline" if pair % 2 == 0 else "candidate"
++		var baseline_usec: int
++		var candidate_usec: int
++		if first == "baseline":
++			baseline_usec = _measure_build(_baseline, cue)
++			candidate_usec = _measure_build(Candidate, cue)
++		else:
++			candidate_usec = _measure_build(Candidate, cue)
++			baseline_usec = _measure_build(_baseline, cue)
++		samples.append({"pair": pair, "first": first,
++			"baseline_build_usec": baseline_usec, "candidate_build_usec": candidate_usec,
++			"candidate_minus_baseline_usec": candidate_usec - baseline_usec})
++	return {
++		"method": "10 alternating-order within-process pairs; one default-cue build per sample; cue copies and root disposal outside timers",
++		"fixture": "validated default field windsock",
++		"pairs": BUILD_TIMING_PAIRS,
++		"construction": _summarize_build_timing(samples),
++	}
++
++
++func _measure_build(script: Variant, cue: Dictionary) -> int:
++	var build_cue: Dictionary = cue.duplicate(true)
++	var began: int = Time.get_ticks_usec()
++	var root: Node3D = script.build(build_cue)
++	var elapsed: int = Time.get_ticks_usec() - began
++	if root != null:
++		root.free()
++	return elapsed
++
++
+ func _measure_active(script: Variant, model: Node3D, start_tick: int) -> int:
+ 	var began: int = Time.get_ticks_usec()
+ 	for offset: int in TICKS_PER_BATCH:
+@@ -274,6 +449,28 @@ func _summarize_timing(samples: Array[Dictionary]) -> Dictionary:
+ 	}
+ 
+ 
++func _summarize_build_timing(samples: Array[Dictionary]) -> Dictionary:
++	var baseline_values: Array[float] = []
++	var candidate_values: Array[float] = []
++	for sample: Dictionary in samples:
++		baseline_values.append(float(sample.baseline_build_usec))
++		candidate_values.append(float(sample.candidate_build_usec))
++	return {
++		"baseline": _build_summary(baseline_values),
++		"candidate": _build_summary(candidate_values),
++		"raw_paired_builds": samples,
++	}
++
++
++func _build_summary(values: Array[float]) -> Dictionary:
++	var summary: Dictionary = _summary(values)
++	return {
++		"mean_build_usec": summary.mean_batch_usec,
++		"median_build_usec": summary.median_batch_usec,
++		"raw_build_usec": summary.raw_batch_usec,
++	}
++
++
+ func _summary(values: Array[float]) -> Dictionary:
+ 	var sorted: Array[float] = values.duplicate()
+ 	sorted.sort()
+@@ -325,8 +522,10 @@ func _compare_snapshots(label: String, baseline: Dictionary, candidate: Dictiona
+ 		_compare_value(label + "." + str(field), baseline[field], candidate.get(field), context)
+ 
+ 
+-func _compare_value(label: String, baseline: Variant, candidate: Variant, context: Dictionary) -> void:
+-	if baseline == candidate:
++func _compare_value(
++		label: String, baseline: Variant, candidate: Variant, context: Dictionary,
++		force_mismatch: bool = false) -> void:
++	if not force_mismatch and baseline == candidate:
+ 		return
+ 	_mismatch_count += 1
+ 	if _mismatches.size() < DETAIL_LIMIT:

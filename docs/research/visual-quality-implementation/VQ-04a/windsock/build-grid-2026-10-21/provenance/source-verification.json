@@ -1,0 +1,17 @@
+{
+  "frozen_head": "8b8086727b6fa543c6eed49d19fc695bc49c0df2",
+  "tracked_inputs": 3840,
+  "changes": {
+    "production": [
+      "app/render/windsock.gd",
+      "app/tests/test_windsock.gd",
+      "tools/ground/README.md",
+      "tools/ground/compare_windsock_optimization.gd"
+    ],
+    "snapshot": [
+      "app/project.godot",
+      "app/render/windsock.gd"
+    ]
+  },
+  "physics_aircraft_assets_unchanged": true
+}
