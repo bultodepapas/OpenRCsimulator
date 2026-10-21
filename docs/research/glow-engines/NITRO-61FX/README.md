@@ -184,7 +184,7 @@ Required builder changes, for the owner of `build_installations.py`, not made he
 | --- | --- |
 | Primary text of Gierke, MAN May 2003 (torque/hp vs rpm, fuel, muffler, props) | Not acquired; highest-value public source |
 | Tach-measured static rpm of the actual 61FX + APC 12×6 (reamed), fuel, plug, muffler, temperature, pressure | Not acquired; it would replace the transferred chord |
-| Measured APC 12×6 Sport Ct/Cp (or APC PER3 file) | Not acquired (apcprop.com 403) |
+| Measured APC 12×6 Sport Ct/Cp (or APC PER3 file) | APC's computed PER3_12x6 obtained via the Wayback Machine (2026-10-20); no measured 12×6 Sport exists at UIUC ([EX-14f sources](../../extra-300-realism/EX-14/propeller-sources.json)) |
 | Full text of Dias et al. (servo/engine split, rpm range, fuel) | Metadata only this pass |
 | E-4010 mass; weighed engine + silencer | Not acquired |
 | Throttle steps, idle/stall boundary, flow, head temperature, sound, vibration, flight telemetry | Not acquired |
@@ -198,3 +198,17 @@ The Extra 300S flies faster than the Stik. In the flight-test knife-edge (FT-05 
 `build_profiles.py` now appends two inferred windmill knots, 24,000 and 32,000 rpm, to the MAX-61FX candidate only. Indicated efficiency is exactly 0 at both. Brake torque there equals minus friction and pumping, so the engine stops accelerating beyond 24,000 rpm, and a dive windmills inside the support up to the 32,000 rpm pitch speed (81 m/s). Delivery 0.75 / 0.60 and trapping 0.62 / 0.55 continue the falling trend of the tuned range. All of these are estimates, not measurements. Every knot up to 20,000 rpm is byte-identical, so flights that stayed below 20,000 rpm are unchanged (the FT-05 knife-edge cases that did are bit-identical). `max_rpm` becomes 32,000. The 17,000 rpm practical limit and the APC 15,833 rpm structural limit remain the telemetry flags. The aircraft's own `max_rpm`, which the engine audio uses, is unchanged.
 
 [`test_glow_dive_support.gd`](../../../../app/tests/test_glow_dive_support.gd) holds a −80° full-throttle dive for 12 s from 30 m/s on both 61FX airframes. The Extra peaks at 56.0 m/s and 21,447 rpm, the Stik at 49.5 m/s and 20,072 rpm, with 10 checks and no fault. On a disposable copy with the previous profile, 6 of the 10 checks fail: the Extra faults after 1,111 of 2,881 ticks and the Stik after 1,890. Every glow and fuel test program passes (17 programs). The windmilling engine above 17,000 rpm is a numerical support assumption; it is not validated engine behavior.
+
+## 2026-10-21 — Propeller section camber and the installed-engine question (EX-14f)
+
+The installation's symmetric-section surrogate stops making thrust at the geometric pitch ratio. It absorbs 81 % of the measured static power of the APC Sport 11×6. So the 12×6 installations over-rev: the transferred chord's 12,550 rpm static recorded above, and 18,283 rpm in the Extra's level flight.
+
+The optional `propeller.zero_lift_angle_rad`, fitted by `research/glow-engines/fit_section.py` to the measured 11×6 knots (c/D 0.0507, −5.86°, normalized RMS 0.038 against 0.547 symmetric), corrects both. The Extra's installation uses it: 11,284 rpm static and 38.7 N, Vmax at 15,539 rpm. The Stik installations do not use it yet.
+
+With the catalog-rated profile, a realistic prop takes the Extra to 47 m/s. An evidence-only installed-muffler curve anchored on Gierke (1.24 hp at 13,000 rpm, secondhand) and Glassock (710 W at 11,000 rpm, rig) gives 40.8 m/s at 13,524 rpm and 10,245 rpm static. The A/B/C table and its sources are in the [Extra's EX-14f evidence](../../extra-300-realism/EX-14/README.md#ex-14f--propeller-section-camber).
+
+**Profile owner's decision (open):**
+- whether to generate a muffler-installed MAX-61FX variant for the Extra's installation;
+- whether the Stik's 61FX installation adopts the cambered section.
+
+The cheapest evidence that would settle both is one tachometer reading of the airplane's own engine on its 12×6, static and on a full-throttle level pass.
