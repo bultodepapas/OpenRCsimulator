@@ -6,6 +6,7 @@ const BuildingRoofs = preload("res://scenery/building_roofs.gd")
 func _initialize() -> void:
 	var count := 0
 	var triangles := 0
+	var checked_maps := {}
 	for item: Array in [["pavilion", 7, 2], ["shed", 1, 1], ["barn", 2, 1],
 			["farmhouse", 3, 1], ["village_house", 23, 1], ["church", 4, 1]]:
 		var id := "prop:roof-check:%d" % count
@@ -28,6 +29,15 @@ func _initialize() -> void:
 					or not (material.get_shader_parameter("arm_map") is Texture2D):
 				_fail("missing UVs, normals or PBR maps")
 				return
+			# The roof shader samples every map with mipmap filtering; an import without mips aliases.
+			for map_name: String in ["albedo_map", "normal_map", "arm_map"]:
+				var map: Texture2D = material.get_shader_parameter(map_name)
+				if not checked_maps.has(map):
+					checked_maps[map] = true
+					var image := map.get_image()
+					if image == null or not image.has_mipmaps():
+						_fail(map.resource_path + " is imported without mipmaps")
+						return
 			for i in range(0, verts.size(), 3):
 				var facing := (verts[i + 2] - verts[i]).cross(verts[i + 1] - verts[i]).dot(normals[i])
 				if facing <= 0.0 or not is_finite(uvs[i].x) or not is_finite(uvs[i].y):
@@ -39,7 +49,8 @@ func _initialize() -> void:
 	if not BuildingRoofs.create("bench", Transform3D.IDENTITY, 0, "unused").is_empty():
 		_fail("non-building prefab received a roof")
 		return
-	print("PASS building roofs: %d surfaces, %d triangles, PBR maps and clockwise faces" % [count, triangles])
+	print("PASS building roofs: %d surfaces, %d triangles, %d mipmapped PBR maps and clockwise faces"
+		% [count, triangles, checked_maps.size()])
 	quit()
 
 func _fail(message: String) -> void:

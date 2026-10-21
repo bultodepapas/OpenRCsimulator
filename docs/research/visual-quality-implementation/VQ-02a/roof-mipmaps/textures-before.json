@@ -1,0 +1,104 @@
+{
+  "rows": [
+    {
+      "path": "res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg",
+      "size": [
+        1024,
+        1024
+      ],
+      "format": 4,
+      "compressed": false,
+      "mipmaps": 0,
+      "bytes": 3145728
+    },
+    {
+      "path": "res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg",
+      "size": [
+        2048,
+        2048
+      ],
+      "format": 17,
+      "compressed": true,
+      "mipmaps": 11,
+      "bytes": 2796216
+    },
+    {
+      "path": "res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png",
+      "size": [
+        2048,
+        2048
+      ],
+      "format": 17,
+      "compressed": true,
+      "mipmaps": 11,
+      "bytes": 2796216
+    },
+    {
+      "path": "res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg",
+      "size": [
+        2048,
+        2048
+      ],
+      "format": 17,
+      "compressed": true,
+      "mipmaps": 11,
+      "bytes": 2796216
+    }
+  ],
+  "roof_bytes": 18874368
+}
