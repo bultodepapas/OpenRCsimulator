@@ -1,0 +1,38 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-ai.orfl
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-coupled.orfl
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-ai.orfl (4800 ticks)
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-coupled.orfl (4800 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-exogenous.orfl
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-exogenous.orfl (4800 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-ai.orfl
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-coupled.orfl
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-ai.orfl (4800 ticks)
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-coupled.orfl (4800 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+Flight log REC: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-exogenous.orfl
+Flight log saved: D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-exogenous.orfl (4800 ticks)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+COMPANION ENCOUNTER SURVEY REPORT D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/report.json
+COMPANION ENCOUNTER SURVEY LOGS {"seed-20261020-crossing-right":{"ai":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-ai.orfl","rows_written":4801,"sha256":"f0a7a7eea000c257fc1ba78fa5e93ffb7df09ac88cc0e10e48c0096da3b8fd00","stop_error":0,"verified":true},"player":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-coupled.orfl","rows_written":4801,"sha256":"25c7c951ed46329a21b3c78e5dea9760193490d0fa1e479dd16d70898ed01b29","stop_error":0,"verified":true}},"seed-20261020-crossing-right-exogenous":{"player-exogenous":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261020-crossing-right-player-exogenous.orfl","rows_written":4801,"sha256":"2e0af50d716bb169876a0bc4fbc7f4194d2d8b0285b2edbc3be8da2fddc1c05f","stop_error":0,"verified":true}},"seed-20261021-crossing-left":{"ai":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-ai.orfl","rows_written":4801,"sha256":"14b642358eae834afd237c88eb8ba1a6e615a0396904d3c3fda3108600c32156","stop_error":0,"verified":true},"player":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-coupled.orfl","rows_written":4801,"sha256":"0b357a553b94007d8eeb6cef22cd338894e396a35e10001ecd6159aa67d42150","stop_error":0,"verified":true}},"seed-20261021-crossing-left-exogenous":{"player-exogenous":{"path":"D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020/seed-20261021-crossing-left-player-exogenous.orfl","rows_written":4801,"sha256":"e861aa89ee7834e2c00f41dcb398936b19302f94a7d9c76788f24aaa289167b6","stop_error":0,"verified":true}}}
+COMPANION ENCOUNTER SURVEY VALID_RUNS true DETERMINISTIC_REPEAT true SEPARATION_GATES false
+COMPANION ENCOUNTER SURVEY COMPLETE

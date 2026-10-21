@@ -184,6 +184,9 @@ func _run() -> void:
 			"manifest bytes=%d" % manifest_text.to_utf8_buffer().size())
 		if manifest_decoded.get("ok", false):
 			decision_manifest = manifest_decoded.snapshot
+		var initial_binding := FleetReplay.validate_manifest(decision_manifest, record, expected_paths)
+		_check("baseline ORFL bytes still match the manifest before candidate replay",
+			initial_binding.get("ok", false), str(initial_binding.get("reason", "")))
 	var restored: Dictionary = _new_fixture("restored-candidate")
 	if not restored.get("ok", false):
 		_dispose_fixture(baseline)

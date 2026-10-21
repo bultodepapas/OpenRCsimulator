@@ -22,6 +22,9 @@ func _run() -> void:
 		printerr("Native fixture requires --quick-flight --start=airborne --fixture-out=<new JSON>.")
 		quit(2)
 		return
+	# Request focus once before launch; subsequent focus losses retain the normal
+	# pause policy and make the measurement invalid instead of silently resuming.
+	root.grab_focus()
 	_app = AppRoot.new()
 	_app.user_args = args
 	root.add_child(_app)
@@ -55,7 +58,8 @@ func _endpoint() -> Dictionary:
 	var session: Node = _app.flight.session
 	return {tick = session.sim.tick, time_s = session.sim.time(), state = Array(session.sim.state),
 		commands = session.commands.duplicate(), inputs = Array(session.sim.inputs),
-		paused = session.sim.paused, fault = session.sim.fault_reason,
+		paused = session.sim.paused, pause_reason = session.pause_reason, holds = session.holds.duplicate(true),
+		window_focused = root.has_focus(), fault = session.sim.fault_reason,
 		crashed = not session.crash.is_empty(), prop_strike = not session.prop_strike.is_empty(),
 		input_enabled = session.input_enabled, physics_enabled = session.physics_enabled,
 		world_identity = session.collision_world().get("identity", "")}

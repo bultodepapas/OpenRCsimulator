@@ -27,10 +27,10 @@ back to all proxies. Limits are 10,000 proxies and 129 points. Error allowance
 must bound interpolation, tracking and prediction error over the whole path;
 zero describes only the supplied polyline.
 
-The integrated check passes **38 checks, zero errors or warnings**:
+The integrated check passes **40 checks, zero errors or warnings**:
 
 ```powershell
-python tools/godot/run_checked.py --warnings-as-errors --timeout 90 --require-text "static trajectory: 38 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_companions_trajectory.gd
+python tools/godot/run_checked.py --warnings-as-errors --timeout 90 --require-text "static trajectory: 40 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_companions_trajectory.gd
 ```
 
 Coverage includes fast between-point crossings, tangency, parallel and stationary
@@ -40,6 +40,13 @@ independent sampled-point oracle found 58 intersections across 600 seeded
 segments with zero omissions. A second oracle exercises complete assessments
 across 250 paths and 12 generated obstacles. Sampling is a supplementary oracle,
 not a proof of every continuous intersection.
+
+A follow-up differential oracle compares the rebuilt spatial index against an
+all-proxy scan at positive and negative 32 m cell boundaries. Across 360 paths
+and 36 sparse boxes it finds 96 blocked paths, 264 clear paths with successful
+index pruning, and zero result/proxy-identity mismatches. The existing oversized
+inventory and query cases also exercise the conservative fallback. Original
+38-check receipts remain preserved alongside this source-bound follow-up.
 
 Both 33-point and 129-point nominal circuit paths clear the current full field
 (6,092 proxies, world identity in the retained log) with a 0.5 m geometric

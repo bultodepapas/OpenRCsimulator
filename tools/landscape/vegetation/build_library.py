@@ -91,6 +91,31 @@ MAPLE_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/lolipop_maple_20
 MAPLE_MANIFEST = MAPLE_DERIVED_DIR / "conversion_manifest.json"
 MAPLE_GLTF = "maple_large_3_lod1.gltf"
 
+LANDSCAPELAB_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/landscapelab_tree_2026"
+LANDSCAPELAB_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/landscapelab_tree_2026"
+LANDSCAPELAB_MANIFEST = LANDSCAPELAB_DERIVED_DIR / "conversion_manifest.json"
+LANDSCAPELAB_MANIFEST_SHA256 = "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d"
+LANDSCAPELAB_REVISION = "dfdde034c3547f9876967653d98827bd5348e52e"
+LANDSCAPELAB_NOTICE = "LICENSE_LANDSCAPELAB.txt"
+LANDSCAPELAB_ASSETS = {
+    "landscapelab_quercus": {
+        "source_name": "Quercus",
+        "filename": "quercus.glb",
+        "bytes": 7_389_596,
+        "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+        "triangles": 7_016,
+        "surfaces": 2,
+    },
+    "landscapelab_pine": {
+        "source_name": "Pine",
+        "filename": "pine_joined.glb",
+        "bytes": 6_788_748,
+        "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+        "triangles": 4_246,
+        "surfaces": 2,
+    },
+}
+
 SOURCE_NOTICES = {
     CROPS_NOTICE: (
         "Downloaded source: LowPoly Crops Pack\n"
@@ -941,6 +966,7 @@ def catalog_for(
         "assets": assets,
     }
     add_maple(catalog, pending_files)
+    add_landscapelab_tree_pack(catalog, pending_files)
     add_converted_plant_pack(catalog, pending_files, "lolipop_grass_2026",
         {"grass_lolipop_small": 26, "grass_lolipop_tall": 20}, "LICENSE_GRASS.txt",
         "grass", "LOLIPOP", "Grass pack (lowpoly, game-ready)")
@@ -948,6 +974,168 @@ def catalog_for(
         {"forest_leafy_shrub": 144}, "LICENSE_FOREST.txt", "shrub", "dasy444",
         "A forest (3) with a road at night for game — selected shrub")
     return catalog, pending_files
+
+
+def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -> None:
+    """Install the pinned, self-contained Quercus and Pine GLBs byte-for-byte."""
+    if not LANDSCAPELAB_MANIFEST.is_file():
+        raise BuildError(f"missing LandscapeLab tree conversion manifest: {LANDSCAPELAB_MANIFEST}")
+    manifest_bytes = LANDSCAPELAB_MANIFEST.read_bytes()
+    if sha256_bytes(manifest_bytes) != LANDSCAPELAB_MANIFEST_SHA256:
+        raise BuildError("LandscapeLab tree conversion manifest changed from its reviewed pin")
+    try:
+        manifest = json.loads(manifest_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BuildError(f"invalid LandscapeLab tree conversion manifest: {exc}") from exc
+
+    source = manifest.get("source", {})
+    if (
+        manifest.get("format") != "openrc-landscapelab-vegetation-conversion v1"
+        or manifest.get("geometry_created") is not False
+        or source.get("revision") != LANDSCAPELAB_REVISION
+        or source.get("license") != "CC BY-SA 4.0"
+    ):
+        raise BuildError("LandscapeLab tree conversion manifest does not match its reviewed source contract")
+
+    manifest_assets = manifest.get("assets", [])
+    if [item.get("id") for item in manifest_assets] != list(LANDSCAPELAB_ASSETS):
+        raise BuildError("LandscapeLab tree manifest must contain the reviewed Quercus and Pine assets")
+
+    readme_rel = source.get("license_evidence")
+    notice_rel = source.get("runtime_notice")
+    expected_source_prefix = LANDSCAPELAB_SOURCE_DIR.relative_to(ROOT).as_posix() + "/"
+    if (
+        not isinstance(readme_rel, str)
+        or not readme_rel.startswith(expected_source_prefix)
+        or not isinstance(notice_rel, str)
+        or not notice_rel.startswith(expected_source_prefix)
+    ):
+        raise BuildError("LandscapeLab license evidence must remain inside its pinned source directory")
+    readme_path = output_path(ROOT, readme_rel)
+    notice_path = output_path(ROOT, notice_rel)
+    if (
+        not readme_path.is_file()
+        or readme_path.stat().st_size != source.get("license_evidence_bytes")
+        or sha256_file(readme_path) != source.get("license_evidence_sha256")
+        or not notice_path.is_file()
+        or notice_path.stat().st_size != source.get("runtime_notice_bytes")
+        or sha256_file(notice_path) != source.get("runtime_notice_sha256")
+    ):
+        raise BuildError("LandscapeLab license evidence or runtime notice changed from its manifest")
+
+    source_prefix = LANDSCAPELAB_DERIVED_DIR.relative_to(ROOT).as_posix()
+    runtime_prefix = "models/landscapelab_tree_2026/"
+    descriptions = {
+        "landscapelab_quercus": "Mature broadleaf Quercus tree",
+        "landscapelab_pine": "Mature pine tree",
+    }
+    for item in manifest_assets:
+        asset_id = item["id"]
+        expected = LANDSCAPELAB_ASSETS[asset_id]
+        filename = expected["filename"]
+        source_rel = item.get("source_entry")
+        derived_rel = item.get("derived_path")
+        if (
+            item.get("source_name") != expected["source_name"]
+            or item.get("source_bytes") != expected["bytes"]
+            or item.get("derived_bytes") != expected["bytes"]
+            or item.get("source_sha256") != expected["sha256"]
+            or item.get("derived_sha256") != expected["sha256"]
+            or item.get("source_triangles") != expected["triangles"]
+            or item.get("source_surfaces") != expected["surfaces"]
+            or not isinstance(source_rel, str)
+            or source_rel != LANDSCAPELAB_SOURCE_DIR.relative_to(ROOT).as_posix() + "/" + filename
+            or derived_rel != filename
+            or item.get("dependencies") != []
+        ):
+            raise BuildError(f"LandscapeLab tree manifest entry changed from its reviewed pin: {asset_id}")
+
+        source_path = output_path(ROOT, source_rel)
+        derived_path = output_path(LANDSCAPELAB_DERIVED_DIR, derived_rel)
+        if (
+            not source_path.is_file()
+            or not derived_path.is_file()
+            or source_path.stat().st_size != expected["bytes"]
+            or derived_path.stat().st_size != expected["bytes"]
+        ):
+            raise BuildError(f"missing or truncated LandscapeLab GLB for {asset_id}")
+        source_bytes = source_path.read_bytes()
+        derived_bytes = derived_path.read_bytes()
+        if (
+            sha256_bytes(source_bytes) != expected["sha256"]
+            or sha256_bytes(derived_bytes) != expected["sha256"]
+            or source_bytes != derived_bytes
+        ):
+            raise BuildError(f"LandscapeLab runtime GLB is not the pinned byte-for-byte source: {asset_id}")
+
+        runtime_path = runtime_prefix + filename
+        library_files[runtime_path] = derived_bytes
+        catalog["files"].append({
+            "path": runtime_path,
+            "source_entry": source_prefix + "/" + filename,
+            "bytes": len(derived_bytes),
+            "sha256": expected["sha256"],
+        })
+        catalog["assets"].append({
+            "id": asset_id,
+            "source_id": "landscapelab_tree_2026",
+            "source_name": expected["source_name"],
+            "description": descriptions[asset_id],
+            "role": "tree",
+            "scene": "res://assets/landscape/vegetation/" + runtime_path,
+            "source_entry": source_prefix + "/" + filename,
+            "source_sha256": expected["sha256"],
+            "source_git_blob_sha1": item["git_blob_sha1"],
+            "source_upstream_path": item["upstream_path"],
+            "source_format": "glTF 2.0 binary (GLB)",
+            "source_conversion_proof_sha256": LANDSCAPELAB_MANIFEST_SHA256,
+            "source_triangles": item["source_triangles"],
+            "source_surfaces": item["source_surfaces"],
+            "source_materials": item["source_materials"],
+            "source_material_names": item["source_material_names"],
+            "source_material_conventions": item["source_material_conventions"],
+            "source_bounds_m": item["source_bounds_m"],
+            "normalized_bounds_1m": item["normalized_bounds_1m"],
+            "embedded_images": item["embedded_images"],
+            "dependencies": [],
+            "extensions_used": item["extensions_used"],
+            "source_node_transform": item["source_node_transform"],
+            "conversion": item["conversion"],
+            "lod": {"source_supplied": False, "godot_import_generate": True},
+        })
+
+    notice_bytes = notice_path.read_bytes()
+    library_files[LANDSCAPELAB_NOTICE] = notice_bytes
+    catalog["files"].append({
+        "path": LANDSCAPELAB_NOTICE,
+        "source_entry": notice_rel,
+        "bytes": len(notice_bytes),
+        "sha256": sha256_bytes(notice_bytes),
+    })
+    catalog["sources"].append({
+        "id": "landscapelab_tree_2026",
+        "title": "LandscapeLab Assets — Quercus and Pine",
+        "author": "LandscapeLab Assets contributors",
+        "url": source["repository"],
+        "revision": LANDSCAPELAB_REVISION,
+        "license": "CC BY-SA 4.0",
+        "license_url": source["license_url"],
+        "license_evidence": readme_rel,
+        "license_sha256": source["license_evidence_sha256"],
+        "runtime_notice": notice_rel,
+        "runtime_notice_sha256": source["runtime_notice_sha256"],
+        "conversion_proof": LANDSCAPELAB_MANIFEST.relative_to(ROOT).as_posix(),
+        "conversion_proof_sha256": LANDSCAPELAB_MANIFEST_SHA256,
+        "source": source,
+    })
+    catalog["counts"]["trees"] += len(LANDSCAPELAB_ASSETS)
+    catalog["counts"]["total_assets"] += len(LANDSCAPELAB_ASSETS)
+    catalog["counts"]["source_triangles_one_of_each"] += sum(
+        item["triangles"] for item in LANDSCAPELAB_ASSETS.values()
+    )
+    catalog["files"].sort(key=lambda item: item["path"].lower())
+    catalog["import"]["geometry_policy"] += "; LandscapeLab Quercus and Pine preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata"
+    catalog["import"]["shared_material_policy"] += "; LandscapeLab materials and embedded textures are preserved byte-for-byte, including their source MASK foliage conventions"
 
 
 def add_converted_plant_pack(catalog: dict, library_files: dict[str, bytes], source_id: str,

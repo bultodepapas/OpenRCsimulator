@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9b379737-8bfb-427c-9bbd-3dcc7b4fa71b",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "research/ai-companions/traffic",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://test_scheduler_boundaries.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:58:47.512203+00:00",
+  "label": "traffic-tailwind-boundaries",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic\\traffic-tailwind-boundaries-ycui3k9p\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic\\traffic-tailwind-boundaries-ycui3k9p\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "scheduler boundaries: 20 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 118,
+  "log_sha256": "77c5fb8537e93d5c74d3097803f0779ee5fe4bf5c787be323741d63ebfbe5a43"
+}

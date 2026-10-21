@@ -202,9 +202,11 @@ static func validate_manifest(manifest: Dictionary, record: Dictionary, paths: D
 		if actual_bytes < 1 or actual_bytes > MAX_STREAM_BYTES:
 			return {ok = false, reason = "%s ORFL file size is outside bounds" % stable_id}
 		total_bytes += actual_bytes
+		var actual_sha256: String = FileAccess.get_sha256(path)
 		if total_bytes > MAX_TOTAL_STREAM_BYTES or actual_bytes != entry.bytes \
-				or FileAccess.get_sha256(path) != entry.sha256:
-			return {ok = false, reason = "%s ORFL bytes changed after manifest creation" % stable_id}
+				or actual_sha256 != entry.sha256:
+			return {ok = false, reason = "%s ORFL bytes changed after manifest creation (size=%d/%d sha_match=%s total=%d)" \
+				% [stable_id, actual_bytes, entry.bytes, actual_sha256 == entry.sha256, total_bytes]}
 		var checked := _inspect_stream(path, stable_id, record.capture_tick, manifest.final_tick,
 			record.future_player_tape.size() + 1)
 		if not checked.ok:
@@ -306,7 +308,7 @@ static func restore_and_replay(fixture: Dictionary, expected_paths: Dictionary, 
 	if not failure.is_empty():
 		return {ok = false, reason = failure, physical = physical, commands = commands,
 			capture = finish}
-	var compared := compare_stream_sets(expected_paths, finish.paths, finish.manifest, record)
+	var compared := compare_stream_sets(expected_paths, finish.paths, manifest, record)
 	if not compared.ok:
 		return {ok = false, reason = compared.reason, physical = physical, commands = commands,
 			capture = finish, comparison = compared}
@@ -353,10 +355,14 @@ static func compare_stream_sets(expected_paths: Dictionary, actual_paths: Dictio
 		right.close()
 		var left_info := Reader.inspect(str(expected_paths[stable_id]), false)
 		var right_info := Reader.inspect(str(actual_paths[stable_id]), false)
-		if not left_info.ok or not right_info.ok \
-				or not _headers_equivalent(left_info.header, right_info.header) \
-				or not _footers_equivalent(left_info.footer, right_info.footer):
-			return {ok = false, reason = "%s ORFL header/footer fields differ" % stable_id}
+		if not left_info.ok or not right_info.ok:
+			return {ok = false, reason = "%s ORFL header/footer could not be inspected" % stable_id}
+		if not _headers_equivalent(left_info.header, right_info.header):
+			return {ok = false, reason = "%s ORFL header differs at %s" % [stable_id,
+				_first_dictionary_difference(_normalized_header(left_info.header), _normalized_header(right_info.header), "header")]}
+		if not _footers_equivalent(left_info.footer, right_info.footer):
+			return {ok = false, reason = "%s ORFL footer differs at %s" % [stable_id,
+				_first_dictionary_difference(_normalized_footer(left_info.footer), _normalized_footer(right_info.footer), "footer")]}
 		if not left_info.ok or not right_info.ok or not _events_equal(left_info.events, right_info.events):
 			return {ok = false, reason = "%s ORFL event streams differ" % stable_id}
 		if left_info.events_omitted != 0 or right_info.events_omitted != 0:
@@ -726,32 +732,51 @@ static func _events_equal(left: Array, right: Array) -> bool:
 
 
 static func _headers_equivalent(left: Dictionary, right: Dictionary) -> bool:
-	var expected := left.duplicate(true)
-	var actual := right.duplicate(true)
+	return var_to_bytes(_normalized_header(left)) == var_to_bytes(_normalized_header(right))
+
+
+static func _normalized_header(value: Dictionary) -> Dictionary:
+	var normalized := value.duplicate(true)
 	# Capture wall-clock time is intentionally not part of deterministic simulation identity.
-	expected.erase("created_utc")
-	actual.erase("created_utc")
-	var expected_metadata: Dictionary = expected.get("metadata", {}).duplicate(true)
-	var actual_metadata: Dictionary = actual.get("metadata", {}).duplicate(true)
+	normalized.erase("created_utc")
+	var metadata: Dictionary = normalized.get("metadata", {}).duplicate(true)
 	# FlightSession deliberately clears source-launch provenance on restore; physical profile data still compares.
-	for key: String in ["scenario", "selected_start_choice", "launch_choice", "launch_kind", "launch_field_id",
+	for key: String in ["created_utc", "scenario", "selected_start_choice", "launch_choice", "launch_kind", "launch_field_id",
 		"launch_trim_throttle", "launch_state", "launch_aux", "launch_ground_anchors",
 		"launch_engine_running", "launch_error"]:
-		expected_metadata.erase(key)
-		actual_metadata.erase(key)
-	expected.metadata = expected_metadata
-	actual.metadata = actual_metadata
-	return var_to_bytes(expected) == var_to_bytes(actual)
+		metadata.erase(key)
+	normalized.metadata = metadata
+	return normalized
 
 
 static func _footers_equivalent(left: Dictionary, right: Dictionary) -> bool:
-	var expected := left.duplicate(true)
-	var actual := right.duplicate(true)
+	return var_to_bytes(_normalized_footer(left)) == var_to_bytes(_normalized_footer(right))
+
+
+static func _normalized_footer(value: Dictionary) -> Dictionary:
+	var normalized := value.duplicate(true)
 	# Packet-chain hashes include the differing header timestamp. Observer cost and buffer peaks are measurements.
 	for key: String in ["chain_sha256", "observer_usec", "peak_buffer_rows"]:
-		expected.erase(key)
-		actual.erase(key)
-	return var_to_bytes(expected) == var_to_bytes(actual)
+		normalized.erase(key)
+	return normalized
+
+
+static func _first_dictionary_difference(expected: Dictionary, actual: Dictionary, label: String,
+		depth: int = 0) -> String:
+	if depth >= 4:
+		return "%s nested value" % label
+	for key: Variant in expected:
+		if not actual.has(key):
+			return "%s.%s (missing in candidate)" % [label, str(key)]
+		if var_to_bytes(expected[key]) == var_to_bytes(actual[key]):
+			continue
+		if expected[key] is Dictionary and actual[key] is Dictionary:
+			return _first_dictionary_difference(expected[key], actual[key], "%s.%s" % [label, str(key)], depth + 1)
+		return "%s.%s" % [label, str(key)]
+	for key: Variant in actual:
+		if not expected.has(key):
+			return "%s.%s (unexpected in candidate)" % [label, str(key)]
+	return "%s serialization" % label
 
 
 static func _hash(bytes: PackedByteArray) -> String:

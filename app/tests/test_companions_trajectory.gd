@@ -123,6 +123,34 @@ func _run() -> void:
 			complete_hits += 1
 			if assessment.clear: complete_omissions += 1
 	_check("complete assessment includes sampled occupied geometry", complete_hits > 0 and complete_omissions == 0 and clear_paths > 0)
+	# Differential broad-phase oracle: exact positive/negative 32 m boundaries,
+	# sparse remote cells, and a forced all-proxy scan of the identical geometry.
+	var sparse: Array = []
+	for n: float in [-2048.0, -65.0, -64.0, -32.0, 0.0, 32.0, 64.0, 65.0, 2048.0]:
+		for e: float in [-2048.0, -1024.0, 1024.0, 2048.0]:
+			sparse.append(_box("cell-%d" % sparse.size(), "building", "wall", n, e, -64.0))
+	var indexed := Checker.new()
+	var all_scan := Checker.new()
+	_check("sparse index contexts configure", indexed.configure(field, _world(sparse), surfaces.rects, {}, model).ok
+		and all_scan.configure(field, _world(sparse), surfaces.rects, {}, model).ok)
+	all_scan._query_world.bins = {} # Deliberate fallback oracle, never production input.
+	var mismatches := 0
+	var pruned := 0
+	var blocked := 0
+	for fixture: int in 360:
+		var proxy: Dictionary = sparse[fixture % sparse.size()]
+		var e: float = float(proxy.east) + float(fixture % 10) * 2.0
+		var path := PackedFloat64Array([proxy.north - 16.0, e, -64.0, proxy.north + 16.0, e, -64.0])
+		var error_m := float(fixture % 3) * 0.25
+		var fast: Dictionary = indexed.assess(path, error_m)
+		var exhaustive: Dictionary = all_scan.assess(path, error_m)
+		if fast.clear != exhaustive.clear or fast.get("reason", "") != exhaustive.get("reason", "") \
+				or fast.get("proxy_id", "") != exhaustive.get("proxy_id", ""):
+			mismatches += 1
+		if not fast.clear: blocked += 1
+		if fast.clear and fast.indexed_proxies < sparse.size(): pruned += 1
+	_check("sparse cell boundary index agrees with exhaustive scan", mismatches == 0 and blocked > 0 and pruned > 0)
+	print("trajectory sparse index: 360 paths, %d blocked, %d pruned clear, %d mismatches" % [blocked, pruned, mismatches])
 	var scenery := SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field)
 	var lights := FieldLights.load_from()
 	_check("production scenery and lights load", scenery.ok and lights.ok)

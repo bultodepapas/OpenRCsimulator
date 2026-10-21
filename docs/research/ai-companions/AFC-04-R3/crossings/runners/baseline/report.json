@@ -1,0 +1,101 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "eeb248d4-8f81-41b5-a374-fd3abe2eb388",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/encounter_probe.gd",
+    "--",
+    "--record-crossings",
+    "--seconds=20",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/avoidance/baseline-crossings-20s-r2-20261020"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+  "started_utc": "2026-10-20T23:58:20.123838+00:00",
+  "label": "afc04-r2-baseline-crossings-20s",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-r2-baseline-crossings-20s-tz90vlby\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-r2-baseline-crossings-20s-tz90vlby\\report.json",
+  "timeout_seconds": 600.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "COMPANION ENCOUNTER SURVEY COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 6
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 7,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 9,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 11,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 13,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 42.344,
+  "log_bytes": 6655,
+  "log_sha256": "11b513d543bfb7cb34f944ec03d86249d79d087863fee8584820b243cbeefa5e"
+}

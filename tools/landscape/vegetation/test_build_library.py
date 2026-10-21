@@ -132,9 +132,10 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertIn(library.OAK_ASSET_ID, candidate_ids)
             self.assertIn("maple_tree", candidate_ids)
             self.assertIn("maple_tree", installed_ids)
-            self.assertEqual(catalog["counts"]["total_assets"], 24)
-            self.assertEqual(catalog["counts"]["trees"], 9)
-            self.assertEqual(len(catalog["sources"]), 7)
+            self.assertTrue({"landscapelab_quercus", "landscapelab_pine"}.issubset(installed_ids))
+            self.assertEqual(catalog["counts"]["total_assets"], 26)
+            self.assertEqual(catalog["counts"]["trees"], 11)
+            self.assertEqual(len(catalog["sources"]), 8)
 
             candidates = {
                 asset["id"]: asset
@@ -160,6 +161,86 @@ class BuildLibraryTests(unittest.TestCase):
                             self.assertNotEqual(library_files[output_name], source_bytes)
                         else:
                             self.assertEqual(library_files[output_name], source_bytes)
+
+    def test_landscapelab_tree_catalog_preserves_pinned_glbs_and_material_metadata(self) -> None:
+        with (
+            ZipFile(library.ARCHIVE) as standard,
+            ZipFile(library.CROPS_ARCHIVE) as crops,
+            ZipFile(library.REED_ARCHIVE) as reeds,
+            library.open_oak_conversion_archive() as oak,
+        ):
+            catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
+
+        self.assertEqual(catalog["counts"]["total_assets"], 26)
+        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(len(catalog["sources"]), 8)
+        self.assertEqual(
+            library.sha256_file(library.LANDSCAPELAB_MANIFEST),
+            library.LANDSCAPELAB_MANIFEST_SHA256,
+        )
+
+        expected = {
+            "landscapelab_quercus": {
+                "filename": "quercus.glb",
+                "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+                "triangles": 7016,
+                "surfaces": 2,
+                "materials": ["leaves", "branches"],
+                "height": 59.555878,
+                "normalized_scale": 0.016790953956,
+            },
+            "landscapelab_pine": {
+                "filename": "pine_joined.glb",
+                "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+                "triangles": 4246,
+                "surfaces": 2,
+                "materials": ["branches.001", "leaves.001"],
+                "height": 41.153725,
+                "normalized_scale": 0.02429913715,
+            },
+        }
+        assets = {asset["id"]: asset for asset in catalog["assets"]}
+        self.assertTrue(set(expected).issubset(assets))
+        for asset_id, facts in expected.items():
+            with self.subTest(asset=asset_id):
+                asset = assets[asset_id]
+                runtime_path = "models/landscapelab_tree_2026/" + facts["filename"]
+                source_path = library.LANDSCAPELAB_SOURCE_DIR / facts["filename"]
+                derived_path = library.LANDSCAPELAB_DERIVED_DIR / facts["filename"]
+                source_bytes = source_path.read_bytes()
+                self.assertEqual(source_bytes, derived_path.read_bytes())
+                self.assertEqual(hashlib.sha256(source_bytes).hexdigest(), facts["sha256"])
+                self.assertEqual(library_files[runtime_path], source_bytes)
+                self.assertEqual(asset["source_sha256"], facts["sha256"])
+                self.assertEqual(asset["role"], "tree")
+                self.assertEqual(asset["source_triangles"], facts["triangles"])
+                self.assertEqual(asset["source_surfaces"], facts["surfaces"])
+                self.assertEqual(asset["source_material_names"], facts["materials"])
+                self.assertEqual(asset["source_bounds_m"]["height"], facts["height"])
+                self.assertEqual(
+                    asset["normalized_bounds_1m"]["normalization_scale"],
+                    facts["normalized_scale"],
+                )
+                self.assertEqual(asset["normalized_bounds_1m"]["min"][1], 0.0)
+                self.assertEqual(asset["normalized_bounds_1m"]["max"][1], 1.0)
+                self.assertEqual(asset["dependencies"], [])
+
+        quercus = assets["landscapelab_quercus"]["source_material_conventions"]
+        self.assertEqual(quercus[0]["alpha_mode"], "MASK")
+        self.assertEqual(quercus[0]["alpha_cutoff"], 0.5)
+        self.assertTrue(quercus[0]["double_sided"])
+        pine = assets["landscapelab_pine"]["source_material_conventions"]
+        pine_leaves = next(material for material in pine if material["name"] == "leaves.001")
+        self.assertEqual(pine_leaves["alpha_mode"], "MASK")
+        self.assertAlmostEqual(pine_leaves["alpha_cutoff"], 0.206521735)
+        self.assertTrue(pine_leaves["double_sided"])
+
+        source = next(item for item in catalog["sources"] if item["id"] == "landscapelab_tree_2026")
+        self.assertEqual(source["revision"], library.LANDSCAPELAB_REVISION)
+        self.assertEqual(source["license"], "CC BY-SA 4.0")
+        self.assertEqual(source["conversion_proof_sha256"], library.LANDSCAPELAB_MANIFEST_SHA256)
+        self.assertEqual(library_files[library.LANDSCAPELAB_NOTICE],
+                         (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE).read_bytes())
 
     def test_all_quaternius_tree_buffers_clamp_only_reviewed_color_components(self) -> None:
         with ZipFile(library.ARCHIVE) as standard, ZipFile(library.CROPS_ARCHIVE) as crops, ZipFile(
