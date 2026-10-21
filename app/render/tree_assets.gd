@@ -1,5 +1,6 @@
-# L6a: validated runtime adapter for baked Quaternius tree cards. Source meshes stay in the offline pipeline;
-# close tree scenes belong to L8 after a <=1k-triangle LOD has been approved.
+# L6a/L6c: runtime adapter for cards baked from downloaded oak, maple and pine.
+# Historical slot IDs remain stable; catalog source_asset_id records the actual source.
+# The separate close scenery population is not a camera-relative mesh/card LOD system.
 # Card meshes and materials are per-call resources so callers can own or edit them safely.
 extends RefCounted
 

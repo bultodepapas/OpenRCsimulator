@@ -20,11 +20,14 @@ const TREE_TRUNK_HEIGHT_FRACTION := 0.34
 const SHADE_TREE_TRUNK_RADIUS_FRACTION := 0.05
 const SHADE_TREE_TRUNK_HEIGHT_FRACTION := 0.355
 const SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION := 0.025
-const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.2294921875, 0.1708984375, 0.2900390625] # raw atlas ratios at alpha 0.5
+const FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS := [0.3701171875, 0.3017578125, 0.1669921875] # realistic atlas occupied pixel centres at alpha 0.5
 const FIELD_TREE_CARD_FRAME_SIZE_M := 1.125001 # source frame size multiplied by Treeline.identity.height in shader
 const FIELD_TREE_WIND_LEAN_M := 0.24 # maximum lean in render/tree_wind.gdshaderinc (L15b)
-const TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTION := 0.34 # preserve old crown y envelope around its measured center
-const TREE_CROWN_CENTER_FRACTION := 0.66
+# Oak, maple and pine foliage extents measured from the source-material mask.
+# Rounded outward by at least half a texel; keep source-dependent crowns below
+# their actual lower branches instead of reusing the former stylized envelopes.
+const TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS := [0.366, 0.404, 0.289]
+const TREE_CROWN_CENTER_FRACTIONS := [0.612061, 0.598877, 0.704346]
 
 const BUILDINGS: Array[String] = ["pavilion", "shed", "barn", "silo", "farmhouse", "church", "village_house"]
 const VEHICLES: Array[String] = ["car_sedan", "car_hatch", "car_suv", "car_sport", "tractor"]
@@ -305,11 +308,11 @@ static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, nort
 	var species_index := clampi(species, 0, FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS.size() - 1)
 	var horizontal_half_extent := height * FIELD_TREE_CARD_FRAME_SIZE_M \
 		* float(FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS[species_index]) + FIELD_TREE_WIND_LEAN_M
-	var vertical_half_extent := height * TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTION
+	var vertical_half_extent := height * float(TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS[species_index])
 	# The box bounds every occupied atlas row, including near the top and the broad low Pine crown.
 	# It deliberately encloses the gaps between the crossed cards; wind is a further radial .24 m allowance.
 	_add_box_at_down(proxies, "tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
-		north, east, base_down - height * TREE_CROWN_CENTER_FRACTION,
+		north, east, base_down - height * float(TREE_CROWN_CENTER_FRACTIONS[species_index]),
 		horizontal_half_extent * 2.0, vertical_half_extent * 2.0, horizontal_half_extent * 2.0,
 		rad_to_deg(-yaw))
 

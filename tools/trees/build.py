@@ -91,7 +91,7 @@ def realistic_recipe() -> dict:
                 ],
                 'provenance': {
                     'creator': 'LandscapeLab Assets contributors', 'license': 'CC BY-SA 4.0',
-                    'source_url': 'https://github.com/boku-ilen/landscapelab',
+                    'source_url': 'https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb',
                     'source_revision': 'dfdde034c3547f9876967653d98827bd5348e52e',
                     'source_title': 'Quercus tree asset',
                 },
@@ -122,7 +122,7 @@ def realistic_recipe() -> dict:
                 ],
                 'provenance': {
                     'creator': 'LandscapeLab Assets contributors', 'license': 'CC BY-SA 4.0',
-                    'source_url': 'https://github.com/boku-ilen/landscapelab',
+                    'source_url': 'https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb',
                     'source_revision': 'dfdde034c3547f9876967653d98827bd5348e52e',
                     'source_title': 'Joined pine tree asset',
                 },

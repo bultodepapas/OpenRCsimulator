@@ -96,17 +96,16 @@ def convert_field_images() -> None:
 
 
 def convert_brand_images() -> None:
-    """Preserve official PNG originals; size transparent web copies for 3x display."""
-    for variant in ("Black", "White"):
-        source = ASSET_DIR / "brands" / "savox" / f"TeamSavox-Logo-Mono-{variant}.png"
-        destination = source.with_suffix(".webp")
-        with Image.open(source) as opened:
-            require_supported_source_mode(opened, source)
-            image = opened.copy()
-            image.thumbnail((MAX_BRAND_WIDTH, MAX_BRAND_WIDTH), Image.Resampling.LANCZOS)
-            image.save(destination, format="WEBP", lossless=True, exact=True, method=6, **metadata_for_webp(opened))
-            size = image.size
-        report(source, destination, size, "resized lossless WebP")
+    """Preserve official PNG originals; size the used black web copy for 3x display."""
+    source = ASSET_DIR / "brands" / "savox" / "TeamSavox-Logo-Mono-Black.png"
+    destination = source.with_suffix(".webp")
+    with Image.open(source) as opened:
+        require_supported_source_mode(opened, source)
+        image = opened.copy()
+        image.thumbnail((MAX_BRAND_WIDTH, MAX_BRAND_WIDTH), Image.Resampling.LANCZOS)
+        image.save(destination, format="WEBP", lossless=True, exact=True, method=6, **metadata_for_webp(opened))
+        size = image.size
+    report(source, destination, size, "resized lossless WebP")
 
 
 def main() -> int:

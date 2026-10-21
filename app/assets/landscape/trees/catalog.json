@@ -13,11 +13,49 @@
         512,
         512
       ],
-      "bark_material_name": "Bark_NormalTree",
-      "foliage_material_name": "Leaves_NormalTree",
+      "bark_material_name": "branches",
+      "derived_sha256": "b12968deb0ae766a207ce6852fd2d6849d5641ab4ec1d24996af9e570c2f3f87",
+      "foliage_material_name": "leaves",
       "frame_size_m": 1.125001,
       "id": "CommonTree_1",
-      "pivot_y_m": 0.5
+      "normalization": {
+        "bottom_center_world_y_up": [
+          0.404389381408691,
+          0.0,
+          -0.76476001739502
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.0167909539555435,
+        "source_bounds_world_y_up": {
+          "max": [
+            26.3473873138428,
+            59.5558776855469,
+            24.6304874420166
+          ],
+          "min": [
+            -25.5386085510254,
+            0.0,
+            -26.1600074768066
+          ]
+        },
+        "source_height_m": 59.5558776855469
+      },
+      "pivot_y_m": 0.5,
+      "source_asset_id": "landscapelab:quercus",
+      "source_material_names": [
+        "branches",
+        "leaves"
+      ],
+      "source_provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "license_file": "licenses/CommonTree_1.txt",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Quercus tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb"
+      },
+      "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e"
     },
     {
       "atlas_rect_px": [
@@ -26,11 +64,49 @@
         512,
         512
       ],
-      "bark_material_name": "Bark_NormalTree",
-      "foliage_material_name": "Leaves_NormalTree",
+      "bark_material_name": "Maple_Bark_PBR",
+      "derived_sha256": "f29d41f5495de3de176fb87acd20e3b45813767fed0b032dc98774ffb2149e52",
+      "foliage_material_name": "Maple_Leaves_PBR",
       "frame_size_m": 1.125001,
       "id": "CommonTree_3",
-      "pivot_y_m": 0.5
+      "normalization": {
+        "bottom_center_world_y_up": [
+          0.179934024810791,
+          -0.00265942118130624,
+          0.201440334320068
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.0545640023449906,
+        "source_bounds_world_y_up": {
+          "max": [
+            6.48583698272705,
+            18.32444190979,
+            8.86783790588379
+          ],
+          "min": [
+            -6.12596893310547,
+            -0.00265942118130624,
+            -8.46495723724365
+          ]
+        },
+        "source_height_m": 18.3271013309713
+      },
+      "pivot_y_m": 0.5,
+      "source_asset_id": "lolipop:acer_large_3_lod1",
+      "source_material_names": [
+        "Maple_Bark_PBR",
+        "Maple_Leaves_PBR"
+      ],
+      "source_provenance": {
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "license": "CC BY 4.0",
+        "license_file": "licenses/CommonTree_3.txt",
+        "source_revision": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
+        "source_title": "Maple trees pack (lowpoly, game ready, LODs)",
+        "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+      },
+      "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
     },
     {
       "atlas_rect_px": [
@@ -39,11 +115,50 @@
         512,
         512
       ],
-      "bark_material_name": "Bark_NormalTree",
-      "foliage_material_name": "Leaves_Pine",
+      "bark_material_name": "branches.001",
+      "derived_sha256": "f7dc570e64e41975f77d747e8f65bf56ac70bab4dc6337f99311836365e62faf",
+      "foliage_material_name": "leaves.001",
       "frame_size_m": 1.125001,
       "id": "Pine_1",
-      "pivot_y_m": 0.5
+      "normalization": {
+        "bottom_center_world_y_up": [
+          -0.0801169872283936,
+          0.0,
+          -0.0733203887939453
+        ],
+        "height_m": 1.0,
+        "method": "scene root wrapper; original geometry, node TRS/matrices and material identities retained",
+        "scale": 0.0242991371500089,
+        "source_bounds_world_y_up": {
+          "max": [
+            7.76777458190918,
+            41.1537246704102,
+            7.98500347137451
+          ],
+          "min": [
+            -7.92800855636597,
+            0.0,
+            -8.1316442489624
+          ]
+        },
+        "source_height_m": 41.1537246704102
+      },
+      "pivot_y_m": 0.5,
+      "source_asset_id": "landscapelab:pine",
+      "source_material_names": [
+        "branches.001",
+        "leaves.001"
+      ],
+      "source_provenance": {
+        "creator": "LandscapeLab Assets contributors",
+        "license": "CC BY-SA 4.0",
+        "license_file": "licenses/Pine_1.txt",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_title": "Joined pine tree asset",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb"
+      },
+      "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8"
     }
-  ]
+  ],
+  "recipe_id": "realistic-trees-2026-10-20-v1"
 }

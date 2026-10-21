@@ -1,0 +1,190 @@
+{
+  "format": "openrc-afc22-r1-decision-replay-receipt v1",
+  "proof_status": "pass",
+  "check_count": 69,
+  "failure_count": 0,
+  "capture_tick": 137,
+  "continuation_ticks": 240,
+  "physics_hz": 240,
+  "engine": "4.7.2-stable (official)",
+  "fixture": {
+    "project_root": "D:/OpenRCsimulator-AFC-work/windows-baseline-20261020/app",
+    "checkpoint_source_root": "D:/OpenRCsimulator-AFC-work/windows-baseline-20261020/research/ai-companions/checkpoints",
+    "controller_path": "res://ai/companions/pilot.gd",
+    "controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "reachable_pilot_source_path": "res://../research/ai-companions/avoidance/reachable_pilot_r2.gd",
+    "reachable_pilot_source_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "source_hash_entries": 432,
+    "source_hash_manifest_is_embedded_in": "report-32556214.json",
+    "profile_normalized_solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "solver_raw_source_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef"
+  },
+  "decision_replay": {
+    "streams": 3,
+    "rows_per_stream": 241,
+    "rows_compared": 723,
+    "events_compared": true,
+    "physical_frames_compared": 240,
+    "command_and_controller_frames_compared": 240,
+    "exact_comparison_exclusions": [
+      {
+        "path": "header.created_utc",
+        "reason": "Recording wall-clock timestamp differs between the uninterrupted and restored recording."
+      },
+      {
+        "path": "header.metadata.created_utc",
+        "reason": "Recording wall-clock metadata differs between the two recording branches."
+      },
+      {
+        "path": "header.metadata.scenario",
+        "reason": "Scenario label is launch/session provenance; it does not drive post-capture simulation."
+      },
+      {
+        "path": "header.metadata.selected_start_choice",
+        "reason": "The original UI start selection is provenance for the pre-capture start path."
+      },
+      {
+        "path": "header.metadata.launch_choice",
+        "reason": "The original launch selection is provenance for the pre-capture start path."
+      },
+      {
+        "path": "header.metadata.launch_kind",
+        "reason": "The original launch kind is provenance for the pre-capture start path."
+      },
+      {
+        "path": "header.metadata.launch_field_id",
+        "reason": "The original launch field identifier is provenance; the restored branch is separately bound to the exact field/profile/world identity."
+      },
+      {
+        "path": "header.metadata.launch_trim_throttle",
+        "reason": "This is the original launch throttle setting; current accepted state and all replay rows remain compared."
+      },
+      {
+        "path": "header.metadata.launch_state",
+        "reason": "The original launch-state payload is provenance for setup before the captured checkpoint."
+      },
+      {
+        "path": "header.metadata.launch_aux",
+        "reason": "The original auxiliary launch controls are provenance for setup before the captured checkpoint."
+      },
+      {
+        "path": "header.metadata.launch_ground_anchors",
+        "reason": "Ground-launch anchor data is provenance for setup before the captured checkpoint."
+      },
+      {
+        "path": "header.metadata.launch_engine_running",
+        "reason": "The original launch engine flag is provenance for setup before the captured checkpoint."
+      },
+      {
+        "path": "header.metadata.launch_error",
+        "reason": "The original launch validation result is provenance for setup before the captured checkpoint."
+      },
+      {
+        "path": "header.metadata.launch_continuous",
+        "reason": "This launch-mode flag is presentation/provenance metadata only. It is removed only from header metadata equality; no physical state, accepted tick, control row, ORFL sample, event, or controller decision is normalized. Those remain compared exactly."
+      },
+      {
+        "path": "footer.chain_sha256",
+        "reason": "The packet-chain digest includes the differing header timestamp. ORFL packet integrity is still validated, and all recorded rows/events are compared."
+      },
+      {
+        "path": "footer.observer_usec",
+        "reason": "This field measures recorder observer time, not simulation state."
+      },
+      {
+        "path": "footer.peak_buffer_rows",
+        "reason": "This field measures recorder buffer use, not simulation state."
+      }
+    ],
+    "excluded_categories": [
+      "accepted state and tick",
+      "normalized commands and raw controls",
+      "physical ORFL samples",
+      "controller decisions",
+      "events",
+      "world/profile/source identity",
+      "all other header/footer fields"
+    ],
+    "negative_meaningful_metadata_case": "A rechecksummed change to header.metadata.configuration was rejected at header.metadata.configuration; the allowlist did not conceal the neighboring meaningful field."
+  },
+  "artifacts_remain_on_evidence_volume": [
+    {
+      "role": "full test report including checks, limitations, environment, and complete source hash map",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/report-32556214.json",
+      "bytes": 53737,
+      "sha256": "11a9ee53d43ef786c2c6414ef4e29c24557b43a59befce4b8f14df75706056be"
+    },
+    {
+      "role": "lossless fixed-roster checkpoint payload",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/fixed-roster-5256622.json",
+      "bytes": 125766,
+      "sha256": "c3ff04c90efe84950b0d8698fba48637bb81fa4bdf7853d5da3efeaf9fca78a9"
+    },
+    {
+      "role": "runner report",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/runner-frozen-20261020/godot-587c10pg/report.json",
+      "bytes": 1293,
+      "sha256": "6e9423cf233d7ed9e9a86e3f8bc8143a54b2140a3cba571e1d49844207b8586a"
+    },
+    {
+      "role": "native engine log",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/runner-frozen-20261020/godot-587c10pg/engine.log",
+      "bytes": 4635,
+      "sha256": "cecf99c1fe2840b62cc4115c0ae7edc08ffd7b1bfe89ff2fa2203952494e5d19"
+    },
+    {
+      "role": "uninterrupted baseline stream manifest",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-5281081/decision-replay.json",
+      "bytes": 69918,
+      "sha256": "f67009115af4d244342e1bfe4cd54d8ad96a72516633e9952fac83bd3c786a7b"
+    },
+    {
+      "role": "restored-branch stream manifest",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-11653113/decision-replay.json",
+      "bytes": 69918,
+      "sha256": "74edead70f99da282b2ac59b286492b88cfad8379b94511e6be4bbe272945cda"
+    },
+    {
+      "role": "uninterrupted baseline player ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-5281081/player.orfl",
+      "bytes": 5000580,
+      "sha256": "a2b10c446ca28ed46c63f77762ff2aaec2443705c96e697e5b68549078e544cc"
+    },
+    {
+      "role": "uninterrupted baseline companion-0 ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-5281081/companion-0.orfl",
+      "bytes": 5000620,
+      "sha256": "d4e8287783b0dcae1289f363a04d2b131d0f50d12f9bb5040b857a1ea1f056a7"
+    },
+    {
+      "role": "uninterrupted baseline companion-1 ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-expected-5281081/companion-1.orfl",
+      "bytes": 5000620,
+      "sha256": "28631ffc349426fd482539162201a2b186955a715b362cf4f03fb2e00e95a2e8"
+    },
+    {
+      "role": "restored-branch player ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-11653113/player.orfl",
+      "bytes": 5000284,
+      "sha256": "25fa1f99fc03b838177328619b26a48af71845c0f6489961e33bef016c835d6c"
+    },
+    {
+      "role": "restored-branch companion-0 ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-11653113/companion-0.orfl",
+      "bytes": 5000284,
+      "sha256": "553a7b134fdff12e523004725a81b58d444a00dfc877224ab57811a6212d49fe"
+    },
+    {
+      "role": "restored-branch companion-1 ORFL",
+      "path": "D:/OpenRCsimulator-AFC-work/evidence/checkpoints/decision-restored-11653113/companion-1.orfl",
+      "bytes": 5000284,
+      "sha256": "c4e5e0417191fda0d6d7354b5d15e19cd8a2e1c082ef8afde764a3fef4fa4608"
+    }
+  ],
+  "limits": [
+    "Offline research proof only; no Main/live-session restore or product checkpoint feature.",
+    "The proof uses a frozen old-pilot snapshot and does not bind the subsequently promoted production pilot; new production source requires a new proof and identity.",
+    "Fixed two-agent Club/Stik roster and one build/profile/world identity; no hot admission or retirement, generation change, weather/configuration migration, shared-world transition, or event journal.",
+    "No cross-platform replay or physical-realism claim."
+  ]
+}

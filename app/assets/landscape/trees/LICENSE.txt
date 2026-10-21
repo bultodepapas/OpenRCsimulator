@@ -1,22 +1,46 @@
-This is the standard FREE version of the Stylized Nature MegaKit, which only contains 
-a portion of the models (68/116). You can buy the PRO version which has all the models,
-or the SOURCE version which has all the models and also includes Unity(URP), Unreal Engine and Godot projects
-with the stylized shader already set up.
+Current tree atlas and foliage mask
+===================================
 
-You can get the other versions from the website https://quaternius.com
+The current tree atlas and its atlas-aligned foliage material mask are a combined
+adaptation of the sources listed below. They are distributed under the Creative
+Commons Attribution-ShareAlike 4.0 International license (CC BY-SA 4.0):
 
--------------------------------------------------------
-License:
-CC0 1.0 Universal (CC0 1.0) 
-Public Domain Dedication
-https://creativecommons.org/publicdomain/zero/1.0/
+https://creativecommons.org/licenses/by-sa/4.0/
 
-------------------------------------------------------
-Models by @Quaternius
-Consider supporting me on Patreon!
+Attribution for included source assets
+--------------------------------------
 
-https://www.patreon.com/quaternius
+LandscapeLab Assets contributors — Quercus tree and joined pine tree.
+Source repository: https://github.com/boku-ilen/landscapelab-assets
+Pinned revision: dfdde034c3547f9876967653d98827bd5348e52e
+Quercus: https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb
+Pine: https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e/Natural/Plants/Trees/Pine/pine_joined.glb
+Source license: CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/
 
--------------------------------------------------------
-Join the Discord Server:
-https://discord.gg/vJqnRUYRfT
+LOLIPOP (@lolipop_1707) — “Maple trees pack (lowpoly, game ready, LODs),”
+selected model Acer_large_3_LOD1.
+Source: https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0
+Source license: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/
+
+Changes made
+------------
+
+The source trees are normalized to a 1 m height with a scene-root scale and
+translation wrapper for the offline bake. The source geometry and material
+identities are retained by that wrapper. The selected maple model was extracted
+from its source pack, converted to glTF with its supplied textures, and given a
+stem-ground origin. The bake renders the three sources into atlas tiles and
+derives the aligned foliage material mask from their source materials.
+
+The Maple source remains credited under its original CC BY 4.0 notice; the
+combined atlas and mask carry the CC BY-SA 4.0 terms required by the included
+LandscapeLab material. These credits do not imply endorsement by the creators.
+Per-slot source notices are in `licenses/`.
+
+Historical source
+-----------------
+
+The earlier tree atlas used Quaternius's Stylized Nature MegaKit Standard,
+recorded as CC0-1.0 for the exact downloaded archive in
+`assets/landscape/PROVENANCE.json`. That archive is historical provenance for
+the retired atlas; it is not a source of the current tree atlas.

@@ -251,8 +251,8 @@
       "license_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
       "runtime_notice": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
       "runtime_notice_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
-      "conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_d.json",
-      "conversion_proof_sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243",
+      "conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_a.json",
+      "conversion_proof_sha256": "76e3c6d0f68ff15bff0907fac173a24d79f9935b82c40b30b078fc3abbffc511",
       "source": {
         "api_files": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_files.json",
         "api_info": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_info.json",
@@ -360,7 +360,7 @@
     "crops": 2,
     "reeds": 1,
     "total_assets": 28,
-    "source_triangles_one_of_each": 63406
+    "source_triangles_one_of_each": 63804
   },
   "files": [
     {
@@ -850,16 +850,16 @@
       "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1"
     },
     {
-      "path": "models/realistic_understory_2026/flower_empodium_d.bin",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin",
+      "path": "models/realistic_understory_2026/flower_empodium_a.bin",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.bin",
       "bytes": 101936,
       "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
     },
     {
-      "path": "models/realistic_understory_2026/flower_empodium_d.gltf",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
-      "bytes": 7224,
-      "sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41"
+      "path": "models/realistic_understory_2026/flower_empodium_a.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.gltf",
+      "bytes": 7220,
+      "sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e"
     },
     {
       "path": "models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
@@ -880,20 +880,20 @@
       "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
     },
     {
-      "path": "models/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+      "path": "models/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
       "bytes": 267088,
       "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
     },
     {
-      "path": "models/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+      "path": "models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
       "bytes": 394831,
       "sha256": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515"
     },
     {
-      "path": "models/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
+      "path": "models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg",
       "bytes": 346423,
       "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
     }
@@ -2505,6 +2505,25 @@
         "height": 59.555878,
         "ground_offset": 0.0
       },
+      "grounded_bounds_m": {
+        "min": [
+          -25.538609,
+          0.0,
+          -26.160007
+        ],
+        "max": [
+          26.347387,
+          59.555878,
+          24.630487
+        ],
+        "size": [
+          51.885996,
+          59.555878,
+          50.790495
+        ],
+        "height": 59.555878,
+        "ground_offset": 0.0
+      },
       "normalized_bounds_1m": {
         "min": [
           -0.4288176,
@@ -2605,6 +2624,25 @@
         }
       ],
       "source_bounds_m": {
+        "min": [
+          -7.928009,
+          0.0,
+          -8.131644
+        ],
+        "max": [
+          7.767775,
+          41.153725,
+          7.985003
+        ],
+        "size": [
+          15.695783,
+          41.153725,
+          16.116648
+        ],
+        "height": 41.153725,
+        "ground_offset": 0.0
+      },
+      "grounded_bounds_m": {
         "min": [
           -7.928009,
           0.0,
@@ -2848,100 +2886,100 @@
       "visual_qualification": "Not performed; staged source candidate only."
     },
     {
-      "id": "polyhaven_flower_empodium_d",
+      "id": "polyhaven_flower_empodium_a",
       "source_id": "polyhaven_flower_empodium",
-      "source_name": "flower_empodium_d_LOD0",
+      "source_name": "flower_empodium_a_LOD0",
       "description": "Downloaded Flower Empodium candidate",
       "role": "flower",
-      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_d.gltf",
-      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
-      "source_sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.gltf",
+      "source_sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e",
       "source_dependency_sha256": {
-        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.bin": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
       },
       "source_format": "glTF 2.0",
-      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_d.json",
-      "source_conversion_proof_sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243",
-      "source_triangles": 360,
+      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_a.json",
+      "source_conversion_proof_sha256": "76e3c6d0f68ff15bff0907fac173a24d79f9935b82c40b30b078fc3abbffc511",
+      "source_triangles": 758,
       "source_surfaces": 1,
       "source_materials": 1,
       "source_bounds_m": {
-        "ground_offset": 0.00331,
-        "height": 0.168005,
+        "ground_offset": 0.002294,
+        "height": 0.267072,
         "max": [
-          0.096003,
-          0.164695,
-          0.10281
+          0.102077,
+          0.264778,
+          0.073787
         ],
         "min": [
-          -0.098079,
-          -0.00331,
-          -0.091466
+          -0.115286,
+          -0.002294,
+          -0.176978
         ],
         "size": [
-          0.194082,
-          0.168005,
-          0.194275
+          0.217364,
+          0.267072,
+          0.250766
         ]
       },
       "grounded_bounds_m": {
         "max": [
-          0.096003,
-          0.168005,
-          0.10281
+          0.102077,
+          0.267072,
+          0.073787
         ],
         "min": [
-          -0.098079,
+          -0.115286,
           0.0,
-          -0.091466
+          -0.176978
         ],
         "size": [
-          0.194082,
-          0.168005,
-          0.194275
+          0.217364,
+          0.267072,
+          0.250766
         ]
       },
       "source_geometry": {
         "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
         "output_node_transform": "identity; supplier side-by-side gallery translation removed",
         "position_accessor_max": [
-          0.09600304812192917,
-          0.16469475626945496,
-          0.1028098613023758
+          0.10207722336053848,
+          0.26477786898612976,
+          0.07378727197647095
         ],
         "position_accessor_min": [
-          -0.09807941317558289,
-          -0.003309954423457384,
-          -0.09146563708782196
+          -0.1152864322066307,
+          -0.0022940149065107107,
+          -0.17697839438915253
         ],
         "source_accessor_indices": {
-          "NORMAL": 13,
-          "POSITION": 12,
-          "TEXCOORD_0": 14,
-          "indices": 15
+          "NORMAL": 1,
+          "POSITION": 0,
+          "TEXCOORD_0": 2,
+          "indices": 3
         },
         "source_gallery_translation_m": [
-          0.2840630114078522,
+          -0.5681260228157043,
           0.0,
           0.0
         ],
-        "source_mesh_index": 3,
-        "source_mesh_name": "Plane.001",
-        "source_node_index": 3,
-        "source_triangles": 360,
+        "source_mesh_index": 0,
+        "source_mesh_name": "Plane.040",
+        "source_node_index": 0,
+        "source_triangles": 758,
         "uv0_max": [
-          0.924251,
-          0.855721
+          0.759176,
+          0.954139
         ],
         "uv0_min": [
           -0.00137,
           0.012407
         ],
-        "uv_accessor_count": 300,
-        "vertex_count": 300
+        "uv_accessor_count": 657,
+        "vertex_count": 657
       },
       "material_alpha": {
         "alpha_packing": {
@@ -2967,24 +3005,24 @@
       },
       "textures": [
         {
-          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
-          "uri": "textures/flower_empodium_d_base_color_alpha_1k.png"
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+          "uri": "textures/flower_empodium_a_base_color_alpha_1k.png"
         },
         {
-          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
-          "uri": "textures/flower_empodium_d_nor_gl_1k.jpg"
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg",
+          "uri": "textures/flower_empodium_a_nor_gl_1k.jpg"
         },
         {
-          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
-          "uri": "textures/flower_empodium_d_arm_1k.jpg"
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+          "uri": "textures/flower_empodium_a_arm_1k.jpg"
         }
       ],
       "dependencies": [
-        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
-        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg"
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.bin",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_a.gltf",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg"
       ],
       "lod": {
         "alternate_source_lods_included": [],
@@ -2992,7 +3030,7 @@
         "imported_supplied_levels": [
           "LOD0"
         ],
-        "note": "The selected source node is labeled LOD0; no alternate level is present in this glTF.",
+        "note": "The selected open-flower source node is labeled LOD0; no alternate level is present in this glTF.",
         "source_lod": "LOD0",
         "source_supplied": true
       },

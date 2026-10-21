@@ -1,92 +1,187 @@
 {
-  "format": "openrc-landscape-provenance v1",
-  "step": "L6a",
-  "author": "Quaternius",
-  "source": {
-    "source": "https://quaternius.itch.io/stylized-nature-megakit",
-    "sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
-    "bytes": 104088529,
-    "upload_id": "11055123",
-    "pack": "Quaternius Stylized Nature MegaKit Standard",
-    "retrieved": "2026-10-06",
-    "license": "CC0-1.0 as embedded in this exact archive, License_Standard.txt",
-    "species": [
-      "CommonTree_1",
-      "CommonTree_3",
-      "Pine_1"
-    ],
-    "files": [
+  "format": "openrc-landscape-provenance v2",
+  "current": {
+    "status": "promoted from the independent repeat bake; current runtime hashes captured after promotion",
+    "workstream": "vegetation-renewal-2026-10-20",
+    "derived_by": "OpenRCsimulator tree atlas pipeline",
+    "recipe_id": "realistic-trees-2026-10-20-v1",
+    "source_recipe": {
+      "generator": "tools/trees/build.py",
+      "selection": "--recipe realistic",
+      "recipe_id": "realistic-trees-2026-10-20-v1",
+      "sha256": "8f786a428a1aeaf11f403e350c7f2d09443e1bcbe80c9f06750c1cd5d3ab9a58",
+      "sha256_source": "source_recipe_sha256 in the promoted repeat-bake manifest"
+    },
+    "stable_slots": [
       {
-        "entry": "License_Standard.txt",
-        "path": "License_Standard.txt",
-        "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+        "id": "CommonTree_1",
+        "source_asset_id": "landscapelab:quercus",
+        "source_title": "Quercus tree asset"
       },
       {
-        "entry": "glTF/Bark_NormalTree.png",
-        "path": "Bark_NormalTree.png",
-        "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
+        "id": "CommonTree_3",
+        "source_asset_id": "lolipop:acer_large_3_lod1",
+        "source_title": "Acer_large_3_LOD1 maple"
       },
       {
-        "entry": "glTF/Bark_NormalTree_Normal.png",
-        "path": "Bark_NormalTree_Normal.png",
-        "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
-      },
-      {
-        "entry": "glTF/CommonTree_1.bin",
-        "path": "CommonTree_1.bin",
-        "sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae"
-      },
-      {
-        "entry": "glTF/CommonTree_1.gltf",
-        "path": "CommonTree_1.gltf",
-        "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
-      },
-      {
-        "entry": "glTF/CommonTree_3.bin",
-        "path": "CommonTree_3.bin",
-        "sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49"
-      },
-      {
-        "entry": "glTF/CommonTree_3.gltf",
-        "path": "CommonTree_3.gltf",
-        "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
-      },
-      {
-        "entry": "glTF/Leaf_Pine_C.png",
-        "path": "Leaf_Pine_C.png",
-        "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
-      },
-      {
-        "entry": "glTF/Leaves_NormalTree_C.png",
-        "path": "Leaves_NormalTree_C.png",
-        "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
-      },
-      {
-        "entry": "glTF/Pine_1.bin",
-        "path": "Pine_1.bin",
-        "sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2"
-      },
-      {
-        "entry": "glTF/Pine_1.gltf",
-        "path": "Pine_1.gltf",
-        "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+        "id": "Pine_1",
+        "source_asset_id": "landscapelab:pine",
+        "source_title": "Joined pine tree asset"
       }
-    ]
+    ],
+    "sources": [
+      {
+        "slot": "CommonTree_1",
+        "source_asset_id": "landscapelab:quercus",
+        "creator": "LandscapeLab Assets contributors",
+        "title": "Quercus tree asset",
+        "upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
+        "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/quercus.glb",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Quercus/quercus.glb",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "license_notice": "app/assets/landscape/trees/licenses/CommonTree_1.txt"
+      },
+      {
+        "slot": "CommonTree_3",
+        "source_asset_id": "lolipop:acer_large_3_lod1",
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "title": "Maple trees pack (lowpoly, game ready, LODs)",
+        "selected_model": "Acer_large_3_LOD1",
+        "source_path": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+        "source_url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+        "source_archive_sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a",
+        "conversion_manifest_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+        "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "license_notice": "app/assets/landscape/trees/licenses/CommonTree_3.txt"
+      },
+      {
+        "slot": "Pine_1",
+        "source_asset_id": "landscapelab:pine",
+        "creator": "LandscapeLab Assets contributors",
+        "title": "Joined pine tree asset",
+        "upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
+        "source_path": "assets/landscape/vegetation/source/landscapelab_tree_2026/pine_joined.glb",
+        "source_url": "https://github.com/boku-ilen/landscapelab-assets/blob/dfdde034c3547f9876967653d98827bd5348e52e/Natural/Plants/Trees/Pine/pine_joined.glb",
+        "source_revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "license_notice": "app/assets/landscape/trees/licenses/Pine_1.txt"
+      }
+    ],
+    "proof": "docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md",
+    "runtime_sha256": {
+      "app/assets/landscape/trees/LICENSE.txt": "3382eb7d8b585705659d6ebba79ec1264e34d7640d2df66fa95f83174f9b0a9d",
+      "app/assets/landscape/trees/atlas.png": "6555b190842896867c8699e2c08294a396940ad8acdf3e90df1c9245b30e202e",
+      "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+      "app/assets/landscape/trees/catalog.json": "797e2830d05efd715e60b3f964c7122e899792ffe209e39b38a62bd95394ab4e",
+      "app/assets/landscape/trees/foliage_mask.png": "6ca74c2cf8f596d4fe127d7183c0250cf868e001f6dedda6fa08f0adb562619f",
+      "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa",
+      "app/assets/landscape/trees/licenses/CommonTree_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922",
+      "app/assets/landscape/trees/licenses/CommonTree_3.txt": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+      "app/assets/landscape/trees/licenses/Pine_1.txt": "f05b5077b3793eb19f9184cbbce49d777d8183aa862af50de9ae1833578f3922"
+    },
+    "bake_manifest_sha256": "8e132f3531e690884d1bfd88aa81c57bebd5659c0352ce7c996452c95a291d98",
+    "hash_status": "Runtime files were hashed after atlas-repeat promotion; bake manifest and generated source-recipe hashes are from atlas-repeat."
   },
-  "recipe": "tools/trees/README.md",
-  "proof": "docs/research/visual-quality-implementation/L6a/README.md",
-  "scope": "Runtime ships the atlas, source-material foliage mask, catalog and license; detailed source GLBs/textures remain offline bake inputs, not L8 close meshes.",
-  "runtime_sha256": {
-    "app/assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
-    "app/assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
-    "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
-    "app/assets/landscape/trees/catalog.json": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a",
-    "app/assets/landscape/trees/foliage_mask.png": "cfc8f109896a25a60327d827798fe27dca86155d950678ec02440087c8010b1a",
-    "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa"
-  },
-  "bake_manifest_sha256": "cde702dfb7dd63af0487a394e05b6b2c86dc633c917aec29329276deec38bacd",
-  "offline_triangle_limit": 10000,
-  "runtime_triangles_per_tree": 6,
-  "runtime_surfaces_per_tree": 1,
-  "close_lod_triangle_limit_pending_L8": 1000
+  "historical": {
+    "status": "historical; describes the retired Quaternius-based tree atlas before the vegetation renewal",
+    "record": {
+      "format": "openrc-landscape-provenance v1",
+      "step": "L6a",
+      "author": "Quaternius",
+      "source": {
+        "source": "https://quaternius.itch.io/stylized-nature-megakit",
+        "sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+        "bytes": 104088529,
+        "upload_id": "11055123",
+        "pack": "Quaternius Stylized Nature MegaKit Standard",
+        "retrieved": "2026-10-06",
+        "license": "CC0-1.0 as embedded in this exact archive, License_Standard.txt",
+        "species": [
+          "CommonTree_1",
+          "CommonTree_3",
+          "Pine_1"
+        ],
+        "files": [
+          {
+            "entry": "License_Standard.txt",
+            "path": "License_Standard.txt",
+            "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+          },
+          {
+            "entry": "glTF/Bark_NormalTree.png",
+            "path": "Bark_NormalTree.png",
+            "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
+          },
+          {
+            "entry": "glTF/Bark_NormalTree_Normal.png",
+            "path": "Bark_NormalTree_Normal.png",
+            "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
+          },
+          {
+            "entry": "glTF/CommonTree_1.bin",
+            "path": "CommonTree_1.bin",
+            "sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae"
+          },
+          {
+            "entry": "glTF/CommonTree_1.gltf",
+            "path": "CommonTree_1.gltf",
+            "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+          },
+          {
+            "entry": "glTF/CommonTree_3.bin",
+            "path": "CommonTree_3.bin",
+            "sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49"
+          },
+          {
+            "entry": "glTF/CommonTree_3.gltf",
+            "path": "CommonTree_3.gltf",
+            "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
+          },
+          {
+            "entry": "glTF/Leaf_Pine_C.png",
+            "path": "Leaf_Pine_C.png",
+            "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
+          },
+          {
+            "entry": "glTF/Leaves_NormalTree_C.png",
+            "path": "Leaves_NormalTree_C.png",
+            "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
+          },
+          {
+            "entry": "glTF/Pine_1.bin",
+            "path": "Pine_1.bin",
+            "sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2"
+          },
+          {
+            "entry": "glTF/Pine_1.gltf",
+            "path": "Pine_1.gltf",
+            "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+          }
+        ]
+      },
+      "recipe": "tools/trees/README.md",
+      "proof": "docs/research/visual-quality-implementation/L6a/README.md",
+      "scope": "Runtime ships the atlas, source-material foliage mask, catalog and license; detailed source GLBs/textures remain offline bake inputs, not L8 close meshes.",
+      "runtime_sha256": {
+        "app/assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+        "app/assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+        "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
+        "app/assets/landscape/trees/catalog.json": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a",
+        "app/assets/landscape/trees/foliage_mask.png": "cfc8f109896a25a60327d827798fe27dca86155d950678ec02440087c8010b1a",
+        "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa"
+      },
+      "bake_manifest_sha256": "cde702dfb7dd63af0487a394e05b6b2c86dc633c917aec29329276deec38bacd",
+      "offline_triangle_limit": 10000,
+      "runtime_triangles_per_tree": 6,
+      "runtime_surfaces_per_tree": 1,
+      "close_lod_triangle_limit_pending_L8": 1000
+    }
+  }
 }

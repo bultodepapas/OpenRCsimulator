@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6j84jq52o7"
-path="res://.godot/imported/flower_empodium_d_arm_1k.jpg-5b0eb15fa95d01ef096d0ce59df01193.ctex"
+uid="uid://ckxu00qnlommx"
+path="res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg"
-dest_files=["res://.godot/imported/flower_empodium_d_arm_1k.jpg-5b0eb15fa95d01ef096d0ce59df01193.ctex"]
+source_file="res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg"
+dest_files=["res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.ctex"]
 
 [params]
 

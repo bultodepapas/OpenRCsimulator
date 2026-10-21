@@ -15,7 +15,7 @@
   "nodes": [
     {
       "mesh": 0,
-      "name": "flower_empodium_d_LOD0"
+      "name": "flower_empodium_a_LOD0"
     }
   ],
   "materials": [
@@ -40,15 +40,15 @@
   ],
   "meshes": [
     {
-      "name": "Plane.001",
+      "name": "Plane.040",
       "primitives": [
         {
           "attributes": {
-            "POSITION": 12,
-            "NORMAL": 13,
-            "TEXCOORD_0": 14
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
           },
-          "indices": 15,
+          "indices": 3,
           "material": 0
         }
       ]
@@ -72,17 +72,17 @@
     {
       "mimeType": "image/jpeg",
       "name": "flower_empodium_nor_gl",
-      "uri": "textures/flower_empodium_d_nor_gl_1k.jpg"
+      "uri": "textures/flower_empodium_a_nor_gl_1k.jpg"
     },
     {
       "mimeType": "image/png",
       "name": "flower_empodium_diff-flower_empodium_alpha",
-      "uri": "textures/flower_empodium_d_base_color_alpha_1k.png"
+      "uri": "textures/flower_empodium_a_base_color_alpha_1k.png"
     },
     {
       "mimeType": "image/jpeg",
       "name": "flower_empodium_rough",
-      "uri": "textures/flower_empodium_d_arm_1k.jpg"
+      "uri": "textures/flower_empodium_a_arm_1k.jpg"
     }
   ],
   "accessors": [
@@ -388,7 +388,7 @@
   "buffers": [
     {
       "byteLength": 101936,
-      "uri": "flower_empodium_d.bin"
+      "uri": "flower_empodium_a.bin"
     }
   ]
 }

@@ -76,6 +76,21 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 			if euler.size() == 3:
 				packet.roll = clampf(1.8 * (_selected_bank_target_rad - euler[2])
 					- 0.35 * state[AvoidanceRigidBody.RATE], -1.0, 1.0)
+	# The retained base applies its local-terrain floor only to a requested
+	# avoidance descent. Horizontal-only avoidance still needs that floor when
+	# actual terrain is above the circuit's field datum. Preserve its pitch law.
+	if bool(packet.get("ok", false)) and bool(packet.get("avoidance_active", false)) \
+			and is_finite(_planning_clearance_m):
+		var state: PackedFloat64Array = snapshot.state
+		var height: float = -state[AvoidanceRigidBody.POS + 2]
+		var floor_height: float = height - _planning_clearance_m + BASE_HEIGHT_AGL_M
+		if float(packet.target_height_m) < floor_height:
+			var velocity: PackedFloat64Array = AvoidanceMath.q_rotate(state.slice(AvoidanceRigidBody.ATT, AvoidanceRigidBody.ATT + 4),
+				state.slice(AvoidanceRigidBody.VEL, AvoidanceRigidBody.VEL + 3))
+			var target_down: float = -clampf((floor_height - height) * 0.12, -1.5, 1.5)
+			packet.target_height_m = floor_height
+			packet.pitch = clampf(0.8 * (velocity[2] - target_down)
+				- 0.5 * state[AvoidanceRigidBody.RATE + 1], -1.0, 1.0)
 	if diagnostics_enabled and tick == 0 and not _last_decision.is_empty() and _plan_diagnostic_count < MAX_PLAN_DIAGNOSTICS:
 		_plan_diagnostic_count += 1
 		print("AFC_REACHABLE_INITIAL " + JSON.stringify(_last_decision))

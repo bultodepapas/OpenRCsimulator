@@ -24,6 +24,10 @@ While recording, the initial `visual_context` stays frozen and `visual_timeline`
 
 The core regression passes 54 checks, including active recording edits with steady wind, turbulence, nonstandard physical atmosphere and the coupled P-51 shaft model ([log](core.log)). The serializer preserves frozen physical headers while explicitly merging visual event fields; testing only the public metadata dictionary missed this branch. The full `app/test.sh` run passed all 153 GDScript programs and integration blocks ([compressed log](full.log.gz)). After the final native-popup adjustment, the five affected UI tests were rerun. The native keyboard probe exposed stale focus links after a preset enabled astronomical controls; direct handler calls had not exercised that navigation path. Successful presets now rebuild the dialog focus chain. The rendered probe uses the real production Main at a fixed physical pose and camera, with scenery both off and on. It checks first-frame settling, repeated day/night pixel equality, changed day/night output and exact preservation of the physical checkpoint.
 
+Each scenery mode retains one `legacy-before.png` and one `night-applied.png`. The `legacy-applied.png` and `night-repeated.png` copies were byte-identical to those retained captures and are omitted; the reports preserve the exact-pixel checks. The `capture_edit.gd` commands below regenerate the full sequence.
+
+The checked-in `SHA256SUMS` snapshot retains historical hashes for the omitted copies; those paths no longer exist, and its `README.md` hash predates this note.
+
 ```bash
 xvfb-run -a "$(app/get-godot.sh)" --path app --audio-driver Dummy \
   --script "$PWD/research/time-of-day/tod-08b/capture_edit.gd" \

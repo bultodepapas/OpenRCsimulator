@@ -42,6 +42,10 @@ The production field is supported; scripted/capture routes and the legacy atmosp
 
 [Machine-readable checks](check-summary.json) retain source hashes. The [rendered probe and artifacts](../../../../research/time-of-day/tod-08a/README.md) preserve reproduction commands and checksums. Headless Main checks cover failed preparation, mismatched records, detached history, restart, frozen recording metadata, exact physical continuation, and real v1/v2/v3/v4 checkpoints including turbulence, custom atmosphere and the P-51 coupled shaft.
 
+Each scenery mode retains only its distinct `legacy-before.png` and `night-restored.png` captures. The `legacy-restored.png` and `night-repeated.png` copies were byte-identical to those retained images and are omitted; the reports preserve the exact-pixel checks. The [probe](../../../../research/time-of-day/tod-08a/capture_restore.gd) regenerates the full sequence.
+
+The checked-in `SHA256SUMS` snapshots retain historical hashes for the omitted copies; those paths no longer exist.
+
 The Linux release template does not expose a `--script` option ([help output](export-help.txt)); its smoke exercises real launch/trace routes and packaging, not an external checkpoint harness. The checkpoint interface is exercised against the pinned source engine. No target-GPU performance or pilot acceptance is claimed.
 
 ```sh

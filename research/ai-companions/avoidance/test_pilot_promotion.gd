@@ -58,7 +58,8 @@ func _run() -> void:
 	var candidate = candidate_script.new()
 	var circuit = base_script.new()
 	_check("production diagnostics default off", _diagnostics_default_off(production))
-	_check("research R2 diagnostics default off", _diagnostics_default_off(candidate))
+	_check("research R2 initializes without a held maneuver",
+		_latch_is_clear(candidate.call("snapshot_state")))
 	_check("production wrapper configures", _configure(production, field))
 	_check("research R2 wrapper configures", _configure(candidate, field))
 	_check("immutable circuit base configures", _configure(circuit, field))
@@ -128,6 +129,13 @@ func _diagnostics_default_off(target: Object) -> bool:
 func _set_diagnostics(target: Object, enabled: bool) -> bool:
 	if not _has_property(target, "diagnostics_enabled"):
 		return false
+	target.set("diagnostics_enabled", enabled)
+	return bool(target.get("diagnostics_enabled")) == enabled
+
+
+func _set_optional_diagnostics(target: Object, enabled: bool) -> bool:
+	if not _has_property(target, "diagnostics_enabled"):
+		return true
 	target.set("diagnostics_enabled", enabled)
 	return bool(target.get("diagnostics_enabled")) == enabled
 
@@ -240,7 +248,8 @@ func _no_traffic_trace_matches(wrapper_script: Script, base_script: Script,
 		field: Dictionary, snapshot: Dictionary) -> bool:
 	var wrapper = wrapper_script.new()
 	var base = base_script.new()
-	if not _set_diagnostics(wrapper, false) or not _configure(wrapper, field) or not _configure(base, field):
+	if not _set_optional_diagnostics(wrapper, false) \
+			or not _configure(wrapper, field) or not _configure(base, field):
 		return false
 	for tick: int in [0, 4, 8, 240, 720]:
 		var wrapper_packet: Dictionary = wrapper.call("command", snapshot, tick, [])
@@ -255,7 +264,8 @@ func _diagnostic_pair_parity(production_script: Script, candidate_script: Script
 		field: Dictionary, pose: Dictionary, environment: Dictionary, diagnostics: bool) -> bool:
 	var production = production_script.new()
 	var candidate = candidate_script.new()
-	if not _set_diagnostics(production, diagnostics) or not _set_diagnostics(candidate, diagnostics):
+	if not _set_diagnostics(production, diagnostics) \
+			or not _set_optional_diagnostics(candidate, diagnostics):
 		return false
 	if not _configure(production, field) or not _configure(candidate, field):
 		return false
@@ -276,7 +286,7 @@ func _traffic_clear_reacquire(production_script: Script, candidate_script: Scrip
 		field: Dictionary, pose: Dictionary, environment: Dictionary) -> bool:
 	var production = production_script.new()
 	var candidate = candidate_script.new()
-	if not _set_diagnostics(production, false) or not _set_diagnostics(candidate, false):
+	if not _set_diagnostics(production, false) or not _set_optional_diagnostics(candidate, false):
 		return false
 	if not _configure(production, field) or not _configure(candidate, field):
 		return false
@@ -293,9 +303,12 @@ func _diagnostics_toggle_parity(production_script: Script, candidate_script: Scr
 	var production_on = production_script.new()
 	var candidate_off = candidate_script.new()
 	var candidate_on = candidate_script.new()
-	for pair: Array in [[production_off, false], [production_on, true],
-			[candidate_off, false], [candidate_on, true]]:
+	for pair: Array in [[production_off, false], [production_on, true]]:
 		if not _set_diagnostics(pair[0], bool(pair[1])) or not _configure(pair[0], field):
+			return false
+	for pair: Array in [[candidate_off, false], [candidate_on, true]]:
+		if not _set_optional_diagnostics(pair[0], bool(pair[1])) \
+				or not _configure(pair[0], field):
 			return false
 	var snapshot: Dictionary = _snapshot(pose, environment)
 	var traces := [
@@ -311,7 +324,7 @@ func _checkpoint_continuation(production_script: Script, candidate_script: Scrip
 		field: Dictionary, pose: Dictionary, environment: Dictionary) -> bool:
 	var production = production_script.new()
 	var candidate = candidate_script.new()
-	if not _set_diagnostics(production, false) or not _set_diagnostics(candidate, false):
+	if not _set_diagnostics(production, false) or not _set_optional_diagnostics(candidate, false):
 		return false
 	if not _configure(production, field) or not _configure(candidate, field):
 		return false
@@ -325,7 +338,8 @@ func _checkpoint_continuation(production_script: Script, candidate_script: Scrip
 		return false
 	var production_restored = production_script.new()
 	var candidate_restored = candidate_script.new()
-	if not _set_diagnostics(production_restored, false) or not _set_diagnostics(candidate_restored, false):
+	if not _set_diagnostics(production_restored, false) \
+			or not _set_optional_diagnostics(candidate_restored, false):
 		return false
 	if not _configure(production_restored, field) or not _configure(candidate_restored, field):
 		return false
@@ -353,7 +367,7 @@ func _reconfigure_clears_latch(production_script: Script, candidate_script: Scri
 		field: Dictionary, pose: Dictionary, environment: Dictionary) -> bool:
 	var production = production_script.new()
 	var candidate = candidate_script.new()
-	if not _set_diagnostics(production, false) or not _set_diagnostics(candidate, false):
+	if not _set_diagnostics(production, false) or not _set_optional_diagnostics(candidate, false):
 		return false
 	if not _configure(production, field) or not _configure(candidate, field):
 		return false

@@ -16,17 +16,18 @@ uniform sampler2D atlas : source_color, filter_linear_mipmap_anisotropic, repeat
 // Data mask baked from the source glTF material IDs; intentionally no source_color hint.
 uniform sampler2D foliage_mask : filter_linear_mipmap_anisotropic, repeat_disable;
 uniform vec3 frame_sizes = vec3(1.125001);
-// Per species (CommonTree_1, CommonTree_3, Pine_1), fractions of the tree height, measured from the atlas (report 02).
-const vec3 CROWN_CENTRE = vec3(0.71, 0.67, 0.63);
-const vec3 CROWN_HALF_W = vec3(0.26, 0.20, 0.34);
-const vec3 CROWN_HALF_H = vec3(0.29, 0.34, 0.34);
+// Stable slots now contain downloaded oak, maple and pine. Fractions measured
+// from the realistic atlas's source-material foliage mask (2026-10-20 bake).
+const vec3 CROWN_CENTRE = vec3(0.612061, 0.598877, 0.704346);
+const vec3 CROWN_HALF_W = vec3(0.416383, 0.339478, 0.187867);
+const vec3 CROWN_HALF_H = vec3(0.366, 0.404, 0.289);
 uniform float up_bias = 0.5;
 uniform float underside = -0.5;
 uniform float backlight = 0.4;
 uniform float base_dark = 0.65;
-uniform float leaf_saturation = 0.6;
+uniform float leaf_saturation = 0.95;
 uniform float leaf_gain = 1.0;
-uniform float bark_gain = 0.65;
+uniform float bark_gain = 1.0;
 
 varying vec3 crown_view;
 varying vec2 crown_radius;
@@ -84,7 +85,7 @@ void fragment() {
     // Material identity comes from the source-derived mask. Color variation only reaches foliage;
     // trunks keep their source bark grade even when their trees share a tinted forest patch.
     float foliage = texture(foliage_mask, UV).r;
-    vec3 bark = luma * bark_gain * vec3(1.22, 0.96, 0.70);
+    vec3 bark = c * bark_gain; // retain the downloaded bark texture's actual hue
     vec3 leaves = mix(vec3(luma), c, leaf_saturation) * leaf_gain;
     vec3 graded = mix(bark, leaves, foliage);
     ALBEDO = graded * mix(vec3(1.0), foliage_tint, foliage) * mix(base_dark, 1.0, smoothstep(0.0, 0.25, height_frac));

@@ -27,17 +27,39 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 	_check("tree atlas image loads for occupied-alpha measurement", atlas != null and atlas.get_width() == 1024)
 	if atlas == null or atlas.get_width() != 1024:
 		return
+	var mask_path := ProjectSettings.globalize_path(TreeAssets.FOLIAGE_MASK_PATH)
+	var foliage_mask := Image.load_from_file(mask_path)
+	_check("tree foliage material mask loads for vertical coverage measurement",
+		foliage_mask != null and foliage_mask.get_width() == 1024 and foliage_mask.get_height() == 1024)
+	if foliage_mask == null or foliage_mask.get_width() != 1024 or foliage_mask.get_height() != 1024:
+		return
 	var expected_ids := ["CommonTree_1", "CommonTree_3", "Pine_1"]
 	var configured: Array = CollisionWorld.FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS
 	var positions: Array = _one_position_per_species(expected_ids.size())
 	_check("deterministic identity search finds all field-tree species", positions.size() == expected_ids.size())
 	if positions.size() != expected_ids.size():
 		return
+	var foliage_bounds_by_species: Array[Dictionary] = []
 	for species_index: int in expected_ids.size():
 		var entry: Dictionary = catalog_result.catalog.species[species_index]
 		var rect: Array = entry.atlas_rect_px
 		var alpha_bounds := _alpha_bounds(atlas, int(rect[0]), int(rect[1]), int(rect[2]), int(rect[3]),
 			TreeAssets.ALPHA_CUTOFF)
+		var foliage_bounds := _foliage_bounds(atlas, foliage_mask, int(rect[0]), int(rect[1]),
+			int(rect[2]), int(rect[3]), TreeAssets.ALPHA_CUTOFF, float(entry.pivot_y_m), float(entry.frame_size_m))
+		foliage_bounds_by_species.append(foliage_bounds)
+		var crown_center_fraction := float(CollisionWorld.TREE_CROWN_CENTER_FRACTIONS[species_index])
+		var crown_half_fraction := float(CollisionWorld.TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS[species_index])
+		_check("%s foliage mask and atlas alpha identify top and bottom occupied rows" % expected_ids[species_index],
+			int(foliage_bounds.top_row) >= 0 and int(foliage_bounds.bottom_row) > int(foliage_bounds.top_row)
+			and int(foliage_bounds.pixel_count) > 0)
+		_check("%s per-species vertical crown contains both foliage-mask alpha extrema" % expected_ids[species_index],
+			float(foliage_bounds.min_up_fraction) >= crown_center_fraction - crown_half_fraction - 0.00001
+			and float(foliage_bounds.max_up_fraction) <= crown_center_fraction + crown_half_fraction + 0.00001)
+		if species_index < 2:
+			# The former shared 0.66 +/- 0.34 crown began at 0.32 tree-height and missed these lower foliage pixels.
+			_check("%s measured lower foliage extends below the former 0.32-height crown edge" % expected_ids[species_index],
+				float(foliage_bounds.min_up_fraction) < 0.32)
 		_check("%s alpha half-width is measured from occupied atlas pixels" % expected_ids[species_index],
 			is_equal_approx(float(configured[species_index]), float(alpha_bounds.max_half_fraction)))
 		_check("%s frame multiplier matches the card builder" % expected_ids[species_index],
@@ -53,6 +75,7 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 		var rect: Array = entry.atlas_rect_px
 		var alpha_bounds := _alpha_bounds(atlas, int(rect[0]), int(rect[1]), int(rect[2]), int(rect[3]),
 			TreeAssets.ALPHA_CUTOFF)
+		var foliage_bounds: Dictionary = foliage_bounds_by_species[species_index]
 		var field := _field_with_trees([point])
 		var built: Dictionary = CollisionWorld.build(field, {groups = []})
 		_check("species %s world builds" % expected_ids[species_index], built.ok)
@@ -70,9 +93,9 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 		var radius := height * frame_size * float(configured[species_index]) + CollisionWorld.FIELD_TREE_WIND_LEAN_M
 		_check("species %s crown uses a yaw-safe conservative box" % expected_ids[species_index], crown.shape == "box"
 			and crown.kind == "tree_foliage" and crown.response_class == "soft_foliage_impulse")
-		_check("species %s crown has measured horizontal and preserved vertical extents" % expected_ids[species_index],
+		_check("species %s crown has measured horizontal and source-specific vertical extents" % expected_ids[species_index],
 			is_equal_approx(float(crown.half_x), radius) and is_equal_approx(float(crown.half_z), radius)
-			and is_equal_approx(float(crown.half_down), height * CollisionWorld.TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTION))
+			and is_equal_approx(float(crown.half_down), height * float(CollisionWorld.TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS[species_index])))
 		_check("species %s tree identity includes wind allowance" % expected_ids[species_index],
 			float(crown.bounds_north_max) > float(crown.north) + height * frame_size * float(configured[species_index]))
 
@@ -80,7 +103,7 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 		var inside_new_only := (old_radius + radius) * 0.5
 		var base_north := float(point[0])
 		var base_east := float(point[1])
-		var down := -height * CollisionWorld.TREE_CROWN_CENTER_FRACTION
+		var down := -height * float(CollisionWorld.TREE_CROWN_CENTER_FRACTIONS[species_index])
 		var sweep_extent := radius * 2.0 + 1.0
 		var start := _state(base_north - sweep_extent, base_east + inside_new_only, down, 4.0, 0.0, 0.0)
 		var finish := _state(base_north + sweep_extent, base_east + inside_new_only, down, 4.0, 0.0, 0.0)
@@ -111,6 +134,27 @@ func _test_tree_canopy_bounds_and_contacts() -> void:
 			_check("species %s crown remains covered off-axis at its %s occupied alpha height" %
 				[expected_ids[species_index], height_label], sample_hit != null
 				and sample_hit.obstacle_part == "crown" and not sample_hit.terminal)
+		for edge_index: int in 2:
+			var is_bottom_edge := edge_index == 0
+			var edge_name := "bottom" if is_bottom_edge else "top"
+			var edge_row := int(foliage_bounds.bottom_row) if is_bottom_edge else int(foliage_bounds.top_row)
+			var edge_up_fraction := float(foliage_bounds.min_up_fraction) if is_bottom_edge \
+				else float(foliage_bounds.max_up_fraction)
+			var edge_half_fraction := float(foliage_bounds.bottom_half_fraction) if is_bottom_edge \
+				else float(foliage_bounds.top_half_fraction)
+			var edge_down := -height * edge_up_fraction
+			var edge_east_offset := height * frame_size * edge_half_fraction \
+				+ CollisionWorld.FIELD_TREE_WIND_LEAN_M * 0.5
+			var edge_start := _state(base_north - sweep_extent, base_east + edge_east_offset,
+				edge_down, 4.0, 0.0, 0.0)
+			var edge_finish := _state(base_north + sweep_extent, base_east + edge_east_offset,
+				edge_down, 4.0, 0.0, 0.0)
+			var edge_hit := Collision.first_hit(edge_start, edge_finish, PackedFloat64Array([0.0, 0.0, 0.0]),
+				built.world, species_index + 30 + edge_index, 2.0,
+				PackedFloat64Array([1.0, 1.2, 1.4, 0.0, 0.0, 0.0]))
+			_check("species %s collision sweep covers the %s foliage-mask alpha row %d" %
+				[expected_ids[species_index], edge_name, edge_row], edge_hit != null
+				and edge_hit.obstacle_part == "crown" and not edge_hit.terminal)
 
 
 func _test_pavilion_parts_and_open_bays() -> void:
@@ -216,6 +260,44 @@ func _alpha_bounds(atlas: Image, x0: int, y0: int, width: int, height: int, cuto
 			widest_half_fraction = row_half
 	return {max_half_fraction = max_half_fraction, widest_row = widest_row,
 		widest_half_fraction = widest_half_fraction, top_row = top_row, top_half_fraction = top_half_fraction}
+
+
+func _foliage_bounds(atlas: Image, foliage_mask: Image, x0: int, y0: int, width: int, height: int,
+		cutoff: float, pivot_y: float, frame_size: float) -> Dictionary:
+	var top_row := -1
+	var bottom_row := -1
+	var top_half_fraction := 0.0
+	var bottom_half_fraction := 0.0
+	var pixel_count := 0
+	var center_x := float(x0) + float(width) * 0.5
+	for local_y: int in height:
+		var row_half := 0.0
+		for x: int in range(x0, x0 + width):
+			var atlas_pixel := atlas.get_pixel(x, y0 + local_y)
+			var mask_pixel := foliage_mask.get_pixel(x, y0 + local_y)
+			if atlas_pixel.a >= cutoff and mask_pixel.r >= 0.5 and mask_pixel.a >= cutoff:
+				pixel_count += 1
+				row_half = maxf(row_half, absf(float(x) + 0.5 - center_x) / float(width))
+		if row_half <= 0.0:
+			continue
+		if top_row < 0:
+			top_row = local_y
+			top_half_fraction = row_half
+		bottom_row = local_y
+		bottom_half_fraction = row_half
+	return {
+		top_row = top_row,
+		bottom_row = bottom_row,
+		top_half_fraction = top_half_fraction,
+		bottom_half_fraction = bottom_half_fraction,
+		min_up_fraction = _up_fraction_at_row(bottom_row, height, pivot_y, frame_size),
+		max_up_fraction = _up_fraction_at_row(top_row, height, pivot_y, frame_size),
+		pixel_count = pixel_count,
+	}
+
+
+func _up_fraction_at_row(row: int, image_height: int, pivot_y: float, frame_size: float) -> float:
+	return pivot_y + frame_size * 0.5 - frame_size * (float(row) + 0.5) / float(image_height)
 
 
 func _field_with_trees(positions: Array) -> Dictionary:

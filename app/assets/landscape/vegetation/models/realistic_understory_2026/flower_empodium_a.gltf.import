@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dqgpjbeysb45s"
-path="res://.godot/imported/flower_empodium_d.gltf-96a81f46d0185cf9dbc43d94597b3de8.scn"
+uid="uid://dvo6f55iwpc0v"
+path="res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn"
 
 [deps]
 
-source_file="res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_d.gltf"
-dest_files=["res://.godot/imported/flower_empodium_d.gltf-96a81f46d0185cf9dbc43d94597b3de8.scn"]
+source_file="res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf"
+dest_files=["res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn"]
 
 [params]
 

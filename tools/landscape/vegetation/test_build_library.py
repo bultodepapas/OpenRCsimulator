@@ -271,15 +271,17 @@ class BuildLibraryTests(unittest.TestCase):
                 "role": "herb",
                 "triangles": 784,
                 "source_sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+                "proof_sha256": "6b159c4a1acfcb39158590776a0d1b74d74ea969e342c06784b5c76a6ce6d36c",
                 "source_mode": "MASK",
                 "output_mode": "MASK",
             },
-            "polyhaven_flower_empodium_d": {
+            "polyhaven_flower_empodium_a": {
                 "source_id": "polyhaven_flower_empodium",
-                "source_name": "flower_empodium_d_LOD0",
+                "source_name": "flower_empodium_a_LOD0",
                 "role": "flower",
-                "triangles": 360,
-                "source_sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+                "triangles": 758,
+                "source_sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e",
+                "proof_sha256": "76e3c6d0f68ff15bff0907fac173a24d79f9935b82c40b30b078fc3abbffc511",
                 "source_mode": "BLEND",
                 "output_mode": "MASK",
             },
@@ -295,6 +297,7 @@ class BuildLibraryTests(unittest.TestCase):
                 self.assertEqual(asset["source_triangles"], facts["triangles"])
                 self.assertEqual(asset["source_sha256"], facts["source_sha256"])
                 self.assertEqual(asset["source_conversion_proof"], variant["source_conversion_proof"])
+                self.assertEqual(asset["source_conversion_proof_sha256"], facts["proof_sha256"])
                 self.assertEqual(
                     asset["source_conversion_proof_sha256"],
                     hashlib.sha256((library.ROOT / variant["source_conversion_proof"]).read_bytes()).hexdigest(),
@@ -319,7 +322,7 @@ class BuildLibraryTests(unittest.TestCase):
                 self.assertTrue(alpha["double_sided"])
                 self.assertEqual(asset["visual_qualification"], "Not performed; staged source candidate only.")
 
-        flower_alpha = assets["polyhaven_flower_empodium_d"]["material_alpha"]
+        flower_alpha = assets["polyhaven_flower_empodium_a"]["material_alpha"]
         self.assertIn("Source BLEND changed to MASK", flower_alpha["mode_change"])
         for source_id in ("polyhaven_fern_02", "polyhaven_flower_empodium"):
             source = next(item for item in catalog["sources"] if item["id"] == source_id)

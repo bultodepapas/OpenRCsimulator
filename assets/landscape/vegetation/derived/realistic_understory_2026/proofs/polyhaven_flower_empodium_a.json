@@ -1,0 +1,182 @@
+{
+  "bounds": {
+    "grounded_bounds_m": {
+      "max": [
+        0.102077,
+        0.267072,
+        0.073787
+      ],
+      "min": [
+        -0.115286,
+        0.0,
+        -0.176978
+      ],
+      "size": [
+        0.217364,
+        0.267072,
+        0.250766
+      ]
+    },
+    "source_bounds_m": {
+      "ground_offset": 0.002294,
+      "height": 0.267072,
+      "max": [
+        0.102077,
+        0.264778,
+        0.073787
+      ],
+      "min": [
+        -0.115286,
+        -0.002294,
+        -0.176978
+      ],
+      "size": [
+        0.217364,
+        0.267072,
+        0.250766
+      ]
+    }
+  },
+  "candidate_id": "polyhaven_flower_empodium_a",
+  "conversion_policy": [
+    "retain the selected supplier mesh primitive and binary buffer bytes",
+    "remove only the gallery node translation",
+    "pack the supplier 16-bit grayscale alpha into the supplier diffuse RGB as RGBA8",
+    "preserve supplied normal and ARM texture bytes",
+    "no modeling, retopology, decimation, vertex edits or texture painting"
+  ],
+  "format": "openrc-vegetation-conversion-proof v1",
+  "license": "CC0-1.0",
+  "lod": {
+    "alternate_source_lods_included": [],
+    "godot_import_generate": true,
+    "imported_supplied_levels": [
+      "LOD0"
+    ],
+    "note": "The selected open-flower source node is labeled LOD0; no alternate level is present in this glTF.",
+    "source_lod": "LOD0",
+    "source_supplied": true
+  },
+  "material_alpha": {
+    "alpha_packing": {
+      "fractional_alpha_fraction": 0.03312778,
+      "fractional_alpha_pixel_count": 34737,
+      "height": 1024,
+      "mask_coverage_fraction": 0.1217823,
+      "output_bit_depth": 8,
+      "pixel_count": 1048576,
+      "pixels_at_or_above_mask_cutoff_0_5": 127698,
+      "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+      "source_bit_depth": 16,
+      "source_mode": "I;16",
+      "width": 1024
+    },
+    "alpha_source": "flower_empodium/textures/flower_empodium_alpha_1k.png",
+    "double_sided": true,
+    "mode_change": "Source BLEND changed to MASK at 0.5 to assess foliage alpha scissor and avoid blended overdraw; fractional coverage below the cutoff is discarded. This staged candidate is not visually qualified.",
+    "output_alpha_cutoff": 0.5,
+    "output_alpha_mode": "MASK",
+    "source_alpha_cutoff": null,
+    "source_alpha_mode": "BLEND"
+  },
+  "outputs": [
+    {
+      "bytes": 101936,
+      "path": "flower_empodium_a.bin",
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+    },
+    {
+      "bytes": 7220,
+      "path": "flower_empodium_a.gltf",
+      "sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e"
+    },
+    {
+      "bytes": 267088,
+      "path": "textures/flower_empodium_a_arm_1k.jpg",
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+    },
+    {
+      "bytes": 394831,
+      "path": "textures/flower_empodium_a_base_color_alpha_1k.png",
+      "sha256": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515"
+    },
+    {
+      "bytes": 346423,
+      "path": "textures/flower_empodium_a_nor_gl_1k.jpg",
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+    }
+  ],
+  "selected_geometry": {
+    "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+    "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+    "position_accessor_max": [
+      0.10207722336053848,
+      0.26477786898612976,
+      0.07378727197647095
+    ],
+    "position_accessor_min": [
+      -0.1152864322066307,
+      -0.0022940149065107107,
+      -0.17697839438915253
+    ],
+    "source_accessor_indices": {
+      "NORMAL": 1,
+      "POSITION": 0,
+      "TEXCOORD_0": 2,
+      "indices": 3
+    },
+    "source_gallery_translation_m": [
+      -0.5681260228157043,
+      0.0,
+      0.0
+    ],
+    "source_mesh_index": 0,
+    "source_mesh_name": "Plane.040",
+    "source_node_index": 0,
+    "source_triangles": 758,
+    "uv0_max": [
+      0.759176,
+      0.954139
+    ],
+    "uv0_min": [
+      -0.00137,
+      0.012407
+    ],
+    "uv_accessor_count": 657,
+    "vertex_count": 657
+  },
+  "source_id": "polyhaven_flower_empodium",
+  "source_inputs": [
+    {
+      "bytes": 8859,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/flower_empodium_1k.gltf",
+      "sha256": "3f39d6b7dba6de81014f5ce41e43ac1204a45bfe146cbb425515103c4c5e9798"
+    },
+    {
+      "bytes": 101936,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/flower_empodium.bin",
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+    },
+    {
+      "bytes": 173921,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_diff_1k.jpg",
+      "sha256": "eca8de7f24d5612d918ddd02339698f9c44b00ad5a9d2fb61d6acda267786129"
+    },
+    {
+      "bytes": 111029,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_alpha_1k.png",
+      "sha256": "41aa40a0f570160ca64e8d99e49b4eecdc852158a6b021545831f0d654b0529e"
+    },
+    {
+      "bytes": 346423,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg",
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+    },
+    {
+      "bytes": 267088,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_arm_1k.jpg",
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+    }
+  ],
+  "source_page": "https://polyhaven.com/a/flower_empodium"
+}

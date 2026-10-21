@@ -125,7 +125,11 @@ func _check_encounters(pilot: RefCounted, pose: Dictionary, snapshot: Dictionary
 		north + 30.0 * forward[0] - 20.0 * right_north,
 		east + 30.0 * forward[1] - 20.0 * right_east,
 		down, wrapf(heading + PI / 2.0, -PI, PI), 15.0)
+	# These are separate encounter fixtures. The reachable controller holds its
+	# chosen maneuver, so reset before each instead of replaying tick0 on a latch.
+	pilot.configure(0, 1, SEED, TRIM, field)
 	var cross_right: Dictionary = pilot.command(snapshot, 0, [_traffic("companion-1", 1, false, cross_right_state)])
+	pilot.configure(0, 1, SEED, TRIM, field)
 	var cross_left: Dictionary = pilot.command(snapshot, 0, [_traffic("companion-1", 1, false, cross_left_state)])
 	var right_response: float = float(cross_right.get("roll", 0.0)) - float(baseline.get("roll", 0.0))
 	var left_response: float = float(cross_left.get("roll", 0.0)) - float(baseline.get("roll", 0.0))
@@ -135,12 +139,14 @@ func _check_encounters(pilot: RefCounted, pose: Dictionary, snapshot: Dictionary
 
 	var faster_behind_state: PackedFloat64Array = _traffic_state(
 		north - 30.0 * forward[0], east - 30.0 * forward[1], down, heading, 20.0)
+	pilot.configure(0, 1, SEED, TRIM, field)
 	var faster_behind: Dictionary = pilot.command(snapshot, 0,
 		[_traffic("companion-2", 2, false, faster_behind_state)])
 	_check("faster aircraft closing from behind activates avoidance", _avoids(faster_behind)
 		and not _same_roll(faster_behind, baseline))
 
 	var own_traffic: Dictionary = _traffic("companion-0", 0, false, own_state)
+	pilot.configure(0, 1, SEED, TRIM, field)
 	var self_packet: Dictionary = pilot.command(snapshot, 0, [own_traffic])
 	_check("self entry keyed by id and slot is ignored", not self_packet.get("avoidance_active", true)
 		and _same_roll(self_packet, baseline))

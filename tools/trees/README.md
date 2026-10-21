@@ -1,17 +1,29 @@
 # L6a tree authoring pipeline
 
-For the current downloaded-tree/forest improvement, see the [implementation evidence](../../docs/research/visual-quality-implementation/L6a-R1/README.md). The sections below distinguish the established card baker from the imported-tree comparison tools.
+The [vegetation-renewal evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md) records the realistic source recipe and its accepted atlas proof. This guide owns the bake procedure; the current source choices do not change the card runtime contract.
 
-The three Quaternius sources in this card pipeline are **offline authoring geometry**. This field-tree route ships the 1024² albedo atlas, JSON catalog and license. Each field tree is three crossed quads (six triangles, one lit alpha-scissor surface). Separate close scenery uses the [downloaded vegetation library](../landscape/vegetation/README.md); these are different populations, not a mesh/card LOD transition. L6b/L7 own distribution and L6c owns flight readability. The source GLBs are not approved as L8 close-range LODs.
+The explicit `--recipe realistic` source set keeps the existing catalog slot IDs stable and records a distinct `source_asset_id` for each asset:
+
+| Stable tree slot | Source asset ID | Source |
+| --- | --- | --- |
+| `CommonTree_1` | `landscapelab:quercus` | LandscapeLab Quercus |
+| `CommonTree_3` | `lolipop:acer_large_3_lod1` | LOLIPOP Acer maple |
+| `Pine_1` | `landscapelab:pine` | LandscapeLab joined pine |
+
+The adapter wraps each selected scene to normalize its height to 1 m and put its stem at the grounded origin. The wrapper preserves the supplied mesh geometry, node transforms and material identities; it does not generate new plant geometry. The field runtime still uses three crossed atlas quads per tree (six triangles, one lit alpha-scissor surface). Close scenery remains the separate [downloaded vegetation library](../landscape/vegetation/README.md), not a mesh/card LOD transition. L6b/L7 own distribution and L6c owns flight readability. The source GLBs are not approved as L8 close-range LODs.
+
+`--recipe legacy` remains the default and reproduces the historical Quaternius card atlas. That legacy recipe is retained for comparison and reproducibility; its source and CC0 record are marked historic in [landscape provenance](../../assets/landscape/PROVENANCE.json).
 
 ```sh
 npm ci --prefix tools/trees
 PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" -m unittest discover -s tools/trees -p 'test_*.py'
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-A --match-atlas app/assets/landscape/trees/atlas.png
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-B --match-atlas app/assets/landscape/trees/atlas.png
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-realistic-A --recipe realistic --match-atlas app/assets/landscape/trees/atlas.png
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-realistic-B --recipe realistic --match-atlas app/assets/landscape/trees/atlas.png
 ```
 
-Requires pinned Godot 4.7.2 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies source hashes, validates glTF/GLB, normalizes tree height to 1 m, decodes both GLBs with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
+The legacy bake remains available with `--recipe legacy` (also the default). Use `--recipe realistic` for the pinned replacement inputs. `--match-atlas` still checks mask alignment against the selected runtime color atlas; it does not replace or recolor that atlas. For a full source-set change, review the source/derived comparisons and repeat-bake evidence before promotion.
+
+Requires pinned Godot 4.7.2 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies all recipe source hashes and dependencies, validates glTF/GLB inputs, normalizes tree height to 1 m, decodes each selected scene with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
 
 Normalization preserves topology, UVs, normals, textures and alpha cutoff. The upstream glTF has COLOR_0 components up to 1.00016785; the adapter permits only that reviewed small excursion (<=1.0002) and clamps it to 1. Any other source validation error is refused. The remaining Khronos warning is generated tangent space on the normal-mapped bark; Godot's importer ensures tangents. This is irrelevant to the unshaded albedo bake, and retained in the lit diagnostic.
 
@@ -19,9 +31,11 @@ Source and derived decoders explicitly use lossless images, generated mipmaps, f
 
 Each 1024² binary-alpha raw image is resolved to a 512² tile with alpha-weighted RGB and coverage alpha. Margins must be >=16 px. Acceptance is silhouette IoU >=0.995, RGB MAE <=0.05/255 and <=0.1% common opaque pixels differing by >2 channel levels. High per-pixel errors at rare leaf occlusion boundaries are reported, not hidden; float32 normalization changes a few raster edge samples. A source or palette change still needs human review. Runtime import is lossless, straight alpha, fix-alpha-border and mipmaps, with 3D auto-compression disabled.
 
-After inspecting source/derived, mips and repeat hashes, promote the generated color atlas only when it is byte-identical to the frozen runtime atlas. For a mask-only palette change, use `--match-atlas app/assets/landscape/trees/atlas.png`; this checks the baked silhouette against the existing atlas and sets the mask's final alpha channel to the runtime alpha exactly. It fills the few runtime-only edge texels from the nearest material-ID label in the source-derived mask and rejects silhouette IoU below 0.995. Copy only the accepted `foliage_mask.png` and catalog metadata into `app/assets/landscape/trees/`; retain the exact source license. Refresh `assets/landscape/PROVENANCE.json` and proof reports. Do not overwrite imported assets during a running editor/test.
+For a new source set, inspect the source/derived comparisons, mips and independent repeat hashes before promotion. After that source set becomes the runtime recipe, a reproducibility bake must reproduce its runtime color atlas byte-for-byte. For a mask-only palette change, use `--match-atlas app/assets/landscape/trees/atlas.png`; this checks the baked silhouette against the existing atlas and sets the mask's final alpha channel to the runtime alpha exactly. It fills the few runtime-only edge texels from the nearest material-ID label in the source-derived mask and rejects silhouette IoU below 0.995. Promote only the reviewed atlas, foliage mask, catalog, aggregate license and three per-slot notices in `app/assets/landscape/trees/`. Refresh `assets/landscape/PROVENANCE.json` and proof reports after the promoted runtime hashes are final. Do not overwrite imported assets during a running editor/test.
 
-The generated `foliage_mask.png` shares the color atlas UVs. Its red channel encodes each source glTF surface material by exact name (`Leaves_NormalTree` / `Leaves_Pine` versus `Bark_NormalTree`); it is derived from the unmodified source material assignment and alpha texture, not painted or inferred from RGB. The bake rejects unknown identities and requires raw mask alpha to match the adapted albedo coverage byte-for-byte. The atlas processor alpha-weights the aligned mask downsample, leaving silhouette edges fractional. Runtime samples red as linear data and applies the forest palette variation to foliage only. Copy this generated mask alongside the atlas; its fourth tile remains transparent.
+The generated `foliage_mask.png` shares the color atlas UVs. Its red channel encodes source glTF surface materials by exact material name, derived from the source assignments and alpha textures rather than painted or inferred from RGB. The realistic recipe preserves these names: `branches` / `leaves` for Quercus, `Maple_Bark_PBR` / `Maple_Leaves_PBR` for Maple, and `branches.001` / `leaves.001` for Pine. The legacy recipe retains its original `Bark_NormalTree`, `Leaves_NormalTree` and `Leaves_Pine` names. The bake rejects unknown identities and requires raw mask alpha to match the adapted albedo coverage byte-for-byte. The atlas processor alpha-weights the aligned mask downsample, leaving silhouette edges fractional. Runtime samples red as linear data and applies the forest palette variation to foliage only. The fourth tile remains transparent.
+
+The [L6b-R2 mask verifier](../../docs/research/visual-quality-implementation/L6b-R2/foliage-mask/fixtures/verify_mask.py) remains tied to that report's retained Quaternius atlas, mask and build manifest. It is historical evidence, not a gate for the renewed runtime bundle; its fixture and hashes are preserved unchanged. Use the current-runtime hashes in [vegetation-renewal evidence](../../docs/research/visual-quality-implementation/L6c/vegetation-renewal/README.md) for the renewed atlas.
 
 ```sh
 app/test.sh

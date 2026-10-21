@@ -121,7 +121,7 @@ LANDSCAPELAB_ASSETS = {
 UNDERSTORY_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/realistic_understory_2026"
 UNDERSTORY_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/realistic_understory_2026"
 UNDERSTORY_MANIFEST = UNDERSTORY_DERIVED_DIR / "conversion_manifest.json"
-UNDERSTORY_MANIFEST_SHA256 = "cd7b74c5157930cbf03181968673b326212df5d4d9f6b8249f52bdffedc41de1"
+UNDERSTORY_MANIFEST_SHA256 = "ab4ea6f54327eb4e8501c90c472a0ca71be8e8a9ab1ed5eeaa12a62c4dd93514"
 UNDERSTORY_NOTICE = "LICENSE_UNDERSTORY.txt"
 UNDERSTORY_ASSETS = {
     "polyhaven_fern_02_a": {
@@ -131,12 +131,12 @@ UNDERSTORY_ASSETS = {
         "triangles": 784,
         "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
     },
-    "polyhaven_flower_empodium_d": {
+    "polyhaven_flower_empodium_a": {
         "source_id": "polyhaven_flower_empodium",
-        "source_name": "flower_empodium_d_LOD0",
+        "source_name": "flower_empodium_a_LOD0",
         "role": "flower",
-        "triangles": 360,
-        "sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+        "triangles": 758,
+        "sha256": "3b310bc6483f6c0e3131bb47ec406c1fe14324e5fc06dddbacaaeb590831c88e",
     },
 }
 
@@ -1124,6 +1124,9 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
             "source_material_names": item["source_material_names"],
             "source_material_conventions": item["source_material_conventions"],
             "source_bounds_m": item["source_bounds_m"],
+            # Both pinned GLBs already have their root at ground level. Keep
+            # the same catalog bounds contract as the other supplied plants.
+            "grounded_bounds_m": item["source_bounds_m"],
             "normalized_bounds_1m": item["normalized_bounds_1m"],
             "embedded_images": item["embedded_images"],
             "dependencies": [],
@@ -1219,7 +1222,7 @@ def add_realistic_understory_pack(catalog: dict, library_files: dict[str, bytes]
         expected = UNDERSTORY_ASSETS[asset_id]
         runtime_model = variant.get("runtime_model_relative_path")
         expected_model = runtime_prefix + (
-            "fern_02_a.gltf" if asset_id == "polyhaven_fern_02_a" else "flower_empodium_d.gltf"
+            "fern_02_a.gltf" if asset_id == "polyhaven_fern_02_a" else "flower_empodium_a.gltf"
         )
         if (
             variant.get("source_id") != expected["source_id"]
