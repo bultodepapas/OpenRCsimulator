@@ -5,6 +5,8 @@
 shader_type spatial;
 render_mode cull_back;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 global uniform float sim_clock;
 global uniform vec3 wind_vec;
 
@@ -16,7 +18,7 @@ uniform float idle_wind = 3.0; // m/s the flag shows while the simulation has no
 varying vec3 v_col;
 
 void vertex() {
-	v_col = COLOR.rgb; // already linear in Compatibility (measured, see flowers.gdshader)
+	v_col = vertex_color_to_linear(COLOR.rgb);
 	if (mode == 0) {
 		float a = -TAU * fract(rate * sim_clock + phase);
 		mat2 r = mat2(vec2(cos(a), sin(a)), vec2(-sin(a), cos(a)));

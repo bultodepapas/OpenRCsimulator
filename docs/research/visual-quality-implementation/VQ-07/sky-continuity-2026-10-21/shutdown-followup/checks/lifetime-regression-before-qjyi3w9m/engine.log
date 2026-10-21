@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL freeing the active world releases flow references 
+FAIL discarded worlds release environments 
+FAIL discarded worlds release sky materials 
+world presentation context checks=22 failures=3

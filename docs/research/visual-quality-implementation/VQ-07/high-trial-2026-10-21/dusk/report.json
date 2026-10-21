@@ -1,0 +1,210 @@
+{
+	"arguments": {
+		"aircraft": "p51d-mustang-120",
+		"hour": 17.8,
+		"out": "D:/OpenRCsimulator-scratch/high-graphics-20261021/high-dusk",
+		"seconds": 0.0,
+		"view": "all",
+		"width": 1920
+	},
+	"cases": [
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [
+				0.0,
+				38.0,
+				-0.5
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				7.0,
+				32.0,
+				-2.0
+			],
+			"counters": {
+				"draw_calls": 212,
+				"primitives": 207358
+			},
+			"id": "aircraftground",
+			"image": "D:/OpenRCsimulator-scratch/high-graphics-20261021/high-dusk/aircraftground.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				0.0,
+				38.0,
+				-0.5
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				0.0,
+				0.0,
+				-1.7
+			],
+			"counters": {
+				"draw_calls": 268,
+				"primitives": 321144
+			},
+			"id": "pilot",
+			"image": "D:/OpenRCsimulator-scratch/high-graphics-20261021/high-dusk/pilot.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-8.0,
+				-13.0,
+				-2.5
+			],
+			"counters": {
+				"draw_calls": 184,
+				"primitives": 282730
+			},
+			"id": "pavilion",
+			"image": "D:/OpenRCsimulator-scratch/high-graphics-20261021/high-dusk/pavilion.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-22.0,
+				0.0,
+				-1.5
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.0,
+				-5.0
+			],
+			"counters": {
+				"draw_calls": 94,
+				"primitives": 184517
+			},
+			"id": "lake",
+			"image": "D:/OpenRCsimulator-scratch/high-graphics-20261021/high-dusk/lake.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			]
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"environment": {
+		"fog_density": 0.000170086961588822,
+		"fog_enabled": true,
+		"glow_enabled": false,
+		"reflected_light_source": 2,
+		"ssao_enabled": true,
+		"tonemap_exposure": 0.600000023841858,
+		"tonemap_mode": 3
+	},
+	"format": "openrc-graphics-capture v1",
+	"gpu": {
+		"api": "1.4.351",
+		"name": "NVIDIA GeForce RTX 3090"
+	},
+	"lighting": {
+		"engine_shadows": true,
+		"hour": 17.8,
+		"snapshot": {
+			"cloud_cirrus_strength": 0.12,
+			"cloud_cluster_strength": 0.35,
+			"cloud_color": "(0.9264, 0.8726, 0.8125, 1.0)",
+			"cloud_coverage": 0.35,
+			"cloud_deck_m": 1500.0,
+			"cloud_drift_cells_per_s": "(0.004, 0.0015)",
+			"cloud_scale": 6.0,
+			"cloud_seed": 1253,
+			"cloud_shadow_strength": 0.22,
+			"cloud_silver_strength": 0.166381210162909,
+			"cloud_update_s": 1.0,
+			"disc_cloud_occlusion": true,
+			"disc_elevation_deg": 4.84970714616642,
+			"exposure": 0.6,
+			"gradient_curve": 2.6,
+			"haze": "(0.7973, 0.8291, 0.843, 1.0)",
+			"haze_energy": 1.0,
+			"rim_end_m": 20000.0,
+			"rim_start_m": 16000.0,
+			"shadow_energy_compat": 0.85,
+			"shadow_max_distance_m": 300.0,
+			"shadow_strength": 0.584811398820635,
+			"solar": {
+				"azimuth_deg": 270.051700649934,
+				"direction_ned": [
+					0.000899117988644747,
+					-0.996421749379557,
+					-0.0845156136475794
+				],
+				"elevation_deg": 4.84817134709145,
+				"errors": [],
+				"hour_angle_deg": 85.1518266885541,
+				"julian_date": 2461120.24166667,
+				"ok": true
+			},
+			"sun_azimuth_deg": 270.051700649934,
+			"sun_color": "(1.0, 0.6237, 0.4011, 1.0)",
+			"sun_diameter_deg": 0.53,
+			"sun_elevation_deg": 4.84970714616642,
+			"sun_energy": 0.647038039522423,
+			"sun_scatter": 0.785,
+			"visibility_m": 23000.0,
+			"white": 1.0,
+			"zenith": "(0.2515, 0.3791, 0.5739, 1.0)"
+		},
+		"sun_azimuth_deg": 270.051700649934,
+		"sun_direction_render": [
+			-0.996419489383698,
+			0.0845423191785812,
+			-0.000899115926586092
+		],
+		"sun_elevation_deg": 4.84970714616642,
+		"sun_energy": 0.549982333594059,
+		"sun_shadow_enabled": true
+	},
+	"msaa_3d": 2,
+	"offscreen": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"renderer": "forward_plus",
+	"viewport": [
+		1920,
+		1080
+	]
+}

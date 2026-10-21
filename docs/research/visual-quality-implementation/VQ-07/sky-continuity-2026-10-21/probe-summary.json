@@ -1,0 +1,95 @@
+{
+  "high-before": {
+    "moon": {
+      "moon_delta_deg_max": 0.117587949781558,
+      "stars_delta_deg_max": 0.125343374434311,
+      "zenith_log_delta_max": 0.00157684730901017,
+      "wall_ms_p95": 0.935,
+      "render_cpu_ms_p95": 0.208000004291534,
+      "render_gpu_ms_p95": 0.526000022888184
+    },
+    "twilight": {
+      "moon_delta_deg_max": 0.120015788546806,
+      "stars_delta_deg_max": 0.125343948063823,
+      "zenith_log_delta_max": 0.219942922473398,
+      "wall_ms_p95": 1.738,
+      "render_cpu_ms_p95": 0.263000011444092,
+      "render_gpu_ms_p95": 1.47399997711182
+    }
+  },
+  "high-after": {
+    "moon": {
+      "moon_delta_deg_max": 0.00130942905607377,
+      "stars_delta_deg_max": 0.00139903933292149,
+      "zenith_log_delta_max": 0.00157684730901017,
+      "wall_ms_p95": 3.047,
+      "render_cpu_ms_p95": 0.25900000333786,
+      "render_gpu_ms_p95": 1.50199997425079,
+      "paused_gpu_ms_p95": 0.546999990940094
+    },
+    "twilight": {
+      "moon_delta_deg_max": 0.0013347084474695,
+      "stars_delta_deg_max": 0.00139823923278931,
+      "zenith_log_delta_max": 0.00244619699379184,
+      "wall_ms_p95": 3.208,
+      "render_cpu_ms_p95": 0.308999985456467,
+      "render_gpu_ms_p95": 1.52900004386902,
+      "paused_gpu_ms_p95": 1.47800004482269
+    }
+  },
+  "standard-before": {
+    "moon": {
+      "moon_delta_deg_max": 0.00130942905607377,
+      "stars_delta_deg_max": 0.00139903933292149,
+      "zenith_log_delta_max": 0.00157684730901017,
+      "wall_ms_p95": 2.175,
+      "render_cpu_ms_p95": 0.546999990940094,
+      "render_gpu_ms_p95": 1.13100004196167
+    },
+    "twilight": {
+      "moon_delta_deg_max": 0.0013347084474695,
+      "stars_delta_deg_max": 0.00139823923278931,
+      "zenith_log_delta_max": 0.00244619699379184,
+      "wall_ms_p95": 2.746,
+      "render_cpu_ms_p95": 0.869000017642975,
+      "render_gpu_ms_p95": 1.48000001907349
+    }
+  },
+  "standard-after": {
+    "moon": {
+      "moon_delta_deg_max": 0.00130942905607377,
+      "stars_delta_deg_max": 0.00139903933292149,
+      "zenith_log_delta_max": 0.00157684730901017,
+      "wall_ms_p95": 1.947,
+      "render_cpu_ms_p95": 0.564999997615814,
+      "render_gpu_ms_p95": 0.654999971389771,
+      "paused_gpu_ms_p95": 0.625
+    },
+    "twilight": {
+      "moon_delta_deg_max": 0.0013347084474695,
+      "stars_delta_deg_max": 0.00139823923278931,
+      "zenith_log_delta_max": 0.00244619699379184,
+      "wall_ms_p95": 2.771,
+      "render_cpu_ms_p95": 0.996999979019165,
+      "render_gpu_ms_p95": 1.34599995613098,
+      "paused_gpu_ms_p95": 1.08899998664856
+    }
+  },
+  "standard_parity": {
+    "trace_exact": true,
+    "png_exact": {
+      "moon-000.png": true,
+      "moon-045.png": true,
+      "moon-089.png": true,
+      "moon-090.png": true,
+      "moon-091.png": true,
+      "moon-180.png": true,
+      "twilight-000.png": true,
+      "twilight-045.png": true,
+      "twilight-089.png": true,
+      "twilight-090.png": true,
+      "twilight-091.png": true,
+      "twilight-180.png": true
+    }
+  }
+}

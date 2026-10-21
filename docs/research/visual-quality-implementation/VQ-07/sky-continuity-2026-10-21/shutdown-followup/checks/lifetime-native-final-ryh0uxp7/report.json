@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "baee138d-7a21-42ec-aac8-70199d4f2a19",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_world_presentation_context.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T21:04:55.949568+00:00",
+  "label": "lifetime-native-final",
+  "log": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\lifetime-native-final-ryh0uxp7\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\lifetime-native-final-ryh0uxp7\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "checks=26 failures=0"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.734,
+  "log_bytes": 330,
+  "log_sha256": "2b08d403d70af0ad6e755d58965f9a888bbadfe0f281dfb31fda3681bbfcc604"
+}

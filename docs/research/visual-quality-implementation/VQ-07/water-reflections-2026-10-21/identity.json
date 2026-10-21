@@ -1,0 +1,22 @@
+{
+  "head": "2f5afb121a87ec526682714497d2b03ac86a4b5d",
+  "sources": {
+    "app\\render\\lake\\water_material.gd": "04af2047224e40edc57e714233a4ac8733453419adb4ad1e2d210c34c18f4f92",
+    "app\\tests\\test_high_graphics_profile.gd": "7ce44e0c648dbdfdd757ccde578ef12658796e859ed9c398a9c6c482244d0781",
+    "tools\\graphics\\capture.gd": "1e694a3e1d8eff0a6d445202172addeb4190e21b56882ca70a85a3e70b494bd4",
+    "app\\render\\lake\\water.gdshader": "bb79fff249437fb2cfecff4ebe12085d5bd22dff80ab36f064bc6ce5e5579bf0",
+    "app\\render\\lake\\lake_reflection.gd": "55e3c2dfbb303d4883817a689933ad59182c193d76039d7677ed6da3dd10d0ac",
+    "app\\render\\high_graphics_profile.gd": "83a1edf365cf69a396899a29f638e051a283320a112e832d68eb0cfdfe15c07a"
+  },
+  "scope": "local working-tree trial; concurrent engine-upgrade documentation excluded from this change",
+  "package": {
+    "D:\\OpenRCsimulator-scratch\\reflection-20261021\\release\\OpenRC Simulator.exe": {
+      "sha256": "0003b8121347716a783bf5acac9c76b2a079dbfdff0684262b8508e415ca63a1",
+      "bytes": 444982928
+    },
+    "D:\\OpenRCsimulator-scratch\\reflection-20261021\\release\\openrc_ground_vehicle.dll": {
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+      "bytes": 460800
+    }
+  }
+}

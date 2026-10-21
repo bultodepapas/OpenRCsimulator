@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode cull_disabled, diffuse_burley, specular_schlick_ggx;
 
 #include "res://render/windsock_deformation.gdshaderinc"
+#include "res://scenery/vertex_color_linear.gdshaderinc"
 
 uniform sampler2D fabric_color : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D fabric_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -23,6 +24,7 @@ void vertex() {
 
 
 void fragment() {
+	vec3 cloth_color = vertex_color_to_linear(COLOR.rgb);
 	// Arc-length coordinates keep the existing free fabric maps locked to the cloth.
 	float circumference_here = mix(circumference_m, PI * tail_diameter_m, UV.x);
 	vec2 metres = vec2(UV.x * length_m, UV.y * circumference_here);
@@ -38,11 +40,11 @@ void fragment() {
 	float support_tape = 1.0 - smoothstep(0.007, 0.014, abs(UV.x - 0.375) * length_m);
 	float dash = smoothstep(0.15, 0.45, sin(metres.x * 720.0));
 	float stitches = (1.0 - smoothstep(0.0005, 0.0017, panel_distance)) * dash;
-	vec3 cloth = COLOR.rgb * clamp(0.99 + (grain - 0.58) * 0.16, 0.90, 1.05);
+	vec3 cloth = cloth_color * clamp(0.99 + (grain - 0.58) * 0.16, 0.90, 1.05);
 	// Preserve weave and seam contrast under the field's strong direct sun.
-	cloth *= mix(1.0, 0.68, step(COLOR.r * 0.9, COLOR.g));
+	cloth *= mix(1.0, 0.68, step(cloth_color.r * 0.9, cloth_color.g));
 	cloth *= 1.0 - seam * 0.11 - hem * 0.15;
-	cloth = mix(cloth, COLOR.rgb * 0.88, support_tape * 0.28);
+	cloth = mix(cloth, cloth_color * 0.88, support_tape * 0.28);
 	ALBEDO = mix(cloth, vec3(0.59, 0.52, 0.42), stitches * 0.16);
 	ROUGHNESS = clamp(0.78 + texture(fabric_roughness, weave).r * 0.20, 0.78, 1.0);
 	NORMAL_MAP = texture(fabric_normal, weave).rgb;

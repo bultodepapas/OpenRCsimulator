@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 uniform sampler2D wood_color : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D wood_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D wood_roughness : filter_linear_mipmap_anisotropic, repeat_enable;
@@ -24,11 +26,13 @@ varying float is_fitting;
 varying float fitting_tone;
 
 void vertex() {
-	is_wood = step(COLOR.b * 1.3, COLOR.r);
-	is_fitting = (1.0 - step(0.25, COLOR.g)) * (1.0 - is_wood);
-	fitting_tone = clamp((COLOR.b - 0.40) / 0.16, 0.0, 1.0);
+	// MeshKit's material tags must have the same values on both renderers.
+	vec3 mesh_color = vertex_color_to_linear(COLOR.rgb);
+	is_wood = step(mesh_color.b * 1.3, mesh_color.r);
+	is_fitting = (1.0 - step(0.25, mesh_color.g)) * (1.0 - is_wood);
+	fitting_tone = clamp((mesh_color.b - 0.40) / 0.16, 0.0, 1.0);
 	height_m = VERTEX.y;
-	board_variation = clamp((COLOR.r - 0.72) / 0.18, 0.0, 1.0);
+	board_variation = clamp((mesh_color.r - 0.72) / 0.18, 0.0, 1.0);
 	// Model-space mapping survives the damage batch's vertex/normal/colour rebuild.
 	// Wood060 is a lengthwise-grain 1.15 m tile; red offsets each board.
 	vec3 n = NORMAL;
@@ -50,8 +54,10 @@ void fragment() {
 	float sunbleach = clamp(0.12 + board_variation * 0.25 + upward * 0.12 + patches * 0.12, 0.0, 0.58);
 	// The scan is very dark and high contrast at this scale. Toned, partly
 	// silvered timber keeps its real grain without bright orange stippling.
-	vec3 wood = mix(timber, vec3(0.29, 0.26, 0.22), 0.60);
-	wood = mix(wood, vec3(0.32, 0.31, 0.28), sunbleach * 0.36);
+	// These sRGB-authored albedo palette colors need decoding for RD.
+	// Numeric literals have no source_color hint; leave GL's accepted recipe intact.
+	vec3 wood = mix(timber, vertex_color_to_linear(vec3(0.29, 0.26, 0.22)), 0.60);
+	wood = mix(wood, vertex_color_to_linear(vec3(0.32, 0.31, 0.28)), sunbleach * 0.36);
 	wood *= 1.27;
 	float damp = 1.0 - smoothstep(0.02, 0.22 + patches * 0.12, height_m);
 	wood *= mix(vec3(1.0), vec3(0.67, 0.72, 0.61), damp * 0.32);

@@ -1,0 +1,69 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "32f68aab-4507-4f0f-8436-a04dcc19eedd",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--max-fps",
+    "0",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--battery=ideal",
+    "--frametimes=D:/OpenRCsimulator-scratch/high-graphics-20261021/bare-forward-flight-01.json",
+    "--warmup=10",
+    "--t=60"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:02:12.650636+00:00",
+  "label": "bare-forward-flight-01",
+  "log": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\bare-forward-flight-01-jfk_bdpw\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\bare-forward-flight-01-jfk_bdpw\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 31,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 81.844,
+  "log_bytes": 1853,
+  "log_sha256": "6ee027e395b64118eb15429c4a3c6861c9458c553dfc437bce0b4c138b4d3553"
+}

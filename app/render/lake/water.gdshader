@@ -2,10 +2,10 @@
 // Source: assets/landscape/lake/water-source/boujie_water.gdshader
 // Commit: 25f3c2da458e0a4f65bdb5903dc068b050930c06
 //
-// Finite freshwater surface for Godot 4.7.2 Compatibility/OpenGL. The basin
-// renderer supplies UV2.x as signed nearest-shore distance in metres and a
-// horizontal mesh at the mean water level. Water geometry uses only the shared
-// lake-physics analytic height; no Gerstner or horizontal vertex displacement.
+// Finite freshwater surface for Godot 4.7.2. The basin renderer supplies UV2.x
+// as signed nearest-shore distance in metres and a horizontal mesh at the mean
+// water level. Water geometry uses only the shared lake-physics analytic
+// height; no Gerstner or horizontal vertex displacement.
 shader_type spatial;
 render_mode blend_mix, depth_draw_always, cull_back, diffuse_burley, specular_schlick_ggx;
 
@@ -110,8 +110,13 @@ void vertex() {
 
 float view_depth_at(vec2 screen_uv, mat4 inverse_projection) {
 	float raw_depth = textureLod(depth_texture, screen_uv, 0.0).r;
-	// Compatibility is OpenGL: depth texture [0,1] maps to NDC Z [-1,1].
+	// Compatibility is OpenGL: depth [0,1] maps to NDC Z [-1,1]. Forward+ and
+	// Mobile use [0,1] directly; their projection matrices include reverse Z.
+#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 	vec3 ndc = vec3(screen_uv * 2.0 - 1.0, raw_depth * 2.0 - 1.0);
+#else
+	vec3 ndc = vec3(screen_uv * 2.0 - 1.0, raw_depth);
+#endif
 	vec4 view_position = inverse_projection * vec4(ndc, 1.0);
 	return -view_position.z / max(view_position.w, 1e-6);
 }

@@ -1,0 +1,13 @@
+{
+	"graphics": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": "standard"
+	},
+	"home": true,
+	"ok": true,
+	"pid": 48080,
+	"preferences_unchanged": true,
+	"stage": 2
+}

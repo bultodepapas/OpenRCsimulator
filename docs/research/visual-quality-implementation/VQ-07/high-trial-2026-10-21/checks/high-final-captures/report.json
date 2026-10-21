@@ -1,0 +1,64 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "493c63f9-c0a2-4f88-880c-10009f27aa72",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/capture.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-scratch/high-graphics-20261021/high-final",
+    "--aircraft=p51d-mustang-120",
+    "--width=1920"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:15:57.008870+00:00",
+  "label": "high-final-captures",
+  "log": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\high-final-captures-n3f05uby\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\high-final-captures-n3f05uby\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 27,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.203,
+  "log_bytes": 1548,
+  "log_sha256": "6afe2f602998407c1c8541b5f8ae86d1a7a4a0a0a08077a9fa334599d34d614a"
+}

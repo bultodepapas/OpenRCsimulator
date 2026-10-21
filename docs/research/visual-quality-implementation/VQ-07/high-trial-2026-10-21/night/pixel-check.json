@@ -1,0 +1,51 @@
+{
+  "tool": "Pillow 12.3.0",
+  "scope": "sky ROI excluding HUD and terrain, sRGB code values; regression screen, not photometry",
+  "results": {
+    "standard-world-night": {
+      "roi_xyxy": [
+        640,
+        0,
+        1280,
+        600
+      ],
+      "mean_srgb_luminance": 0.13351022665441176,
+      "white_fraction": 0.0
+    },
+    "high-world-night": {
+      "roi_xyxy": [
+        640,
+        0,
+        1280,
+        600
+      ],
+      "mean_srgb_luminance": 0.9856570380412583,
+      "white_fraction": 0.8594244791666666
+    },
+    "high-world-night-fixed": {
+      "roi_xyxy": [
+        640,
+        0,
+        1280,
+        600
+      ],
+      "mean_srgb_luminance": 0.1293971071629902,
+      "white_fraction": 0.00021875
+    },
+    "high-world-night-final": {
+      "roi_xyxy": [
+        640,
+        0,
+        1280,
+        600
+      ],
+      "mean_srgb_luminance": 0.1279275326000817,
+      "white_fraction": 0.0
+    }
+  },
+  "criteria": {
+    "mean_srgb_luminance_max": 0.2,
+    "white_fraction_max": 0.01
+  },
+  "final_pass": true
+}

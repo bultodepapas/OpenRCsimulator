@@ -1,0 +1,79 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c7f4a94a-7f0c-46f0-b33b-59390c6997a5",
+  "command": [
+    "D:/OpenRCsimulator-scratch/high-shutdown-20261021/release/OpenRC Simulator.exe",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--",
+    "--scripted",
+    "--start=airborne",
+    "--battery=ideal",
+    "--date=2026-09-26",
+    "--time=18:00",
+    "--time_scale=20",
+    "--frametimes=D:/OpenRCsimulator-scratch/high-shutdown-20261021/packaged-scripted-final.json",
+    "--warmup=1",
+    "--t=5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T21:07:02.066565+00:00",
+  "label": "packaged-scripted-final",
+  "log": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\packaged-scripted-final-b5q0lkq7\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-shutdown-20261021\\logs\\packaged-scripted-final-b5q0lkq7\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "complete=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "frame times: p50 16.67 ms, p95 17.91 ms, p99 34.57 ms over 299 frames (complete=true) \u2192 D:/OpenRCsimulator-scratch/high-shutdown-20261021/packaged-scripted-final.json"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 17,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 19,
+      "message": "4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2536)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 14.406,
+  "log_bytes": 1307,
+  "log_sha256": "70725e4398aea4226431ef855f6dd1a4d1887ff612ac3ebf866d7614e68ddc62"
+}

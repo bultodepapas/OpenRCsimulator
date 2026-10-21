@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "cd26f0d7-f4e5-4228-9c86-3785c5d38bcf",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_world_presentation_context.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:32:18.527591+00:00",
+  "label": "test_world_presentation_context",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\test_world_presentation_context-f7e1s269\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\test_world_presentation_context-f7e1s269\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "0 failed"
+  ],
+  "reason": "missing_required_text",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 2.609,
+  "log_bytes": 124,
+  "log_sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e"
+}

@@ -20,6 +20,7 @@ func _check(label: String, condition: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var baseline: Dictionary = World.presentation_context()
+	await _test_flow_lifetime()
 	var field := {"id": "presentation-context-test", "runway": "", "surfaces": []}
 	var previous_owner := Node3D.new()
 	previous_owner.name = "PreviousFlowWorld"
@@ -97,3 +98,43 @@ func _initialize() -> void:
 
 func _empty_field() -> void:
 	pass
+
+
+func _lifetime_world() -> Dictionary:
+	var owner := Node3D.new()
+	var built := World.build(owner, {id = "flow-lifetime-test", runway = "", surfaces = []},
+		Callable(self, "_empty_field"), Conditions.resolve(PackedStringArray([
+			"--time=21:00", "--date=2026-10-25", "--time_scale=20"])))
+	return {owner = owner, environment = weakref(built.environment),
+		material = weakref(built.environment.sky.sky_material)}
+
+
+func _test_flow_lifetime() -> void:
+	var first := _lifetime_world()
+	root.add_child(first.owner)
+	root.remove_child(first.owner)
+	_check("detaching a retained world preserves its flow", World._flow.get("environment") == first.environment.get_ref())
+	root.add_child(first.owner)
+	var second := _lifetime_world()
+	first.owner.free()
+	_check("freeing an older world preserves the active world", World._flow.get("environment") == second.environment.get_ref())
+	second.owner.free() # also covers a world that never entered the scene tree
+	_check("freeing the active world releases flow references", World._flow.is_empty())
+	_check("discarded worlds release environments", first.environment.get_ref() == null and second.environment.get_ref() == null)
+	_check("discarded worlds release sky materials", first.material.get_ref() == null and second.material.get_ref() == null)
+	var queued := _lifetime_world()
+	root.add_child(queued.owner)
+	var discarded_context := World.presentation_context()
+	queued.owner.queue_free()
+	await process_frame
+	await process_frame
+	_check("queued destruction clears active flow", World._flow.is_empty())
+	_check("queued destruction releases environment and material", queued.environment.get_ref() == null and queued.material.get_ref() == null)
+	_check("a discarded world's context cannot restart its flow", not World.restore_presentation_context(discarded_context))
+	var replaced := _lifetime_world()
+	for child: Node in replaced.owner.get_children():
+		if child is WorldEnvironment:
+			child.environment = Environment.new()
+	replaced.owner.free()
+	_check("replacing the owner's resource still releases its original flow", World._flow.is_empty()
+		and replaced.environment.get_ref() == null and replaced.material.get_ref() == null)

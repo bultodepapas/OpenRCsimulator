@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d0e05a2c-d8e4-4d1f-ae37-447cd2a992b5",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_windsock_motion.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:58:57.122547+00:00",
+  "label": "test_windsock_motion",
+  "log": "D:\\OpenRCsimulator-scratch\\high-followup-20261021\\logs\\test_windsock_motion-h0cqt8xl\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-followup-20261021\\logs\\test_windsock_motion-h0cqt8xl\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.062,
+  "log_bytes": 2132,
+  "log_sha256": "0eb557dd49c515edbec598fbcda38a82cedab2460a9bbe845c3bb68efebe5d76"
+}

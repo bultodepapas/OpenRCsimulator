@@ -1,0 +1,19 @@
+{
+	"graphics": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": ""
+	},
+	"home": true,
+	"ok": true,
+	"pid": 2868,
+	"preferences_unchanged": true,
+	"production_restart_arguments": [
+		"--path",
+		"C:/DEVELOPMENT/OpenRCsimulator/app/",
+		"--rendering-method",
+		"forward_plus"
+	],
+	"stage": 0
+}

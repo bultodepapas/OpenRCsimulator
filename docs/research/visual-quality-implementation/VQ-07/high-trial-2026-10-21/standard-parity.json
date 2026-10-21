@@ -1,0 +1,65 @@
+{
+  "comparison": "12 fixed L4c native Compatibility images, 1920x1080",
+  "pairs": [
+    {
+      "image": "antisun-000.png",
+      "baseline_sha256": "24ec91d5da254277bbd300a12b91024dcad2d701b97a3b18f887d297c8d8cf6c",
+      "candidate_sha256": "24ec91d5da254277bbd300a12b91024dcad2d701b97a3b18f887d297c8d8cf6c"
+    },
+    {
+      "image": "antisun-120.png",
+      "baseline_sha256": "8982089475b87ba3f1225e4f7ecc7e88b198d1d31c446271e06b9ae190d474eb",
+      "candidate_sha256": "8982089475b87ba3f1225e4f7ecc7e88b198d1d31c446271e06b9ae190d474eb"
+    },
+    {
+      "image": "cross-000.png",
+      "baseline_sha256": "95d3aff8795ab680d8dc5557e4e91a9fa50df758815bea425f06275d0fd4ee0d",
+      "candidate_sha256": "95d3aff8795ab680d8dc5557e4e91a9fa50df758815bea425f06275d0fd4ee0d"
+    },
+    {
+      "image": "cross-120.png",
+      "baseline_sha256": "3deeb163f0889e6b03179b7a324420e18589a26c82ad1bd7ad399e1869f4ce0c",
+      "candidate_sha256": "3deeb163f0889e6b03179b7a324420e18589a26c82ad1bd7ad399e1869f4ce0c"
+    },
+    {
+      "image": "ground-000.png",
+      "baseline_sha256": "3814265ecd33d42c6c377419a9195a0888e2bdb74f4689b998373663e6bd6765",
+      "candidate_sha256": "3814265ecd33d42c6c377419a9195a0888e2bdb74f4689b998373663e6bd6765"
+    },
+    {
+      "image": "ground-120.png",
+      "baseline_sha256": "38d7953921752a169c115a2a7b71d8c2939146fb1c3ad8597430377ff3067988",
+      "candidate_sha256": "38d7953921752a169c115a2a7b71d8c2939146fb1c3ad8597430377ff3067988"
+    },
+    {
+      "image": "horizon-000.png",
+      "baseline_sha256": "88353a310fb2641f47c430a35dcb6b585ad3079f18aac12f0604226fd496ad6d",
+      "candidate_sha256": "88353a310fb2641f47c430a35dcb6b585ad3079f18aac12f0604226fd496ad6d"
+    },
+    {
+      "image": "horizon-120.png",
+      "baseline_sha256": "1fb8c8a449ad0955170e63b3d938fd6bd2d45cec28d93c46ea1fd5d0a4ee9d8b",
+      "candidate_sha256": "1fb8c8a449ad0955170e63b3d938fd6bd2d45cec28d93c46ea1fd5d0a4ee9d8b"
+    },
+    {
+      "image": "sun-000.png",
+      "baseline_sha256": "454780d47acbf8bf09f1d12659ded902bad290f55a430fc4fb52b7eab96ba049",
+      "candidate_sha256": "454780d47acbf8bf09f1d12659ded902bad290f55a430fc4fb52b7eab96ba049"
+    },
+    {
+      "image": "sun-120.png",
+      "baseline_sha256": "3ffdcfb26aba971311db67d17ef576382a87c758d33832bff59fadba03ec5eba",
+      "candidate_sha256": "3ffdcfb26aba971311db67d17ef576382a87c758d33832bff59fadba03ec5eba"
+    },
+    {
+      "image": "zenith-000.png",
+      "baseline_sha256": "dc99e5d797be21afa47c9ea2b99a64f82dec49a6ccf3bd42637d9c28f31ed263",
+      "candidate_sha256": "dc99e5d797be21afa47c9ea2b99a64f82dec49a6ccf3bd42637d9c28f31ed263"
+    },
+    {
+      "image": "zenith-120.png",
+      "baseline_sha256": "b888b0ed53784ac92773d163b1e04496d0a846a887ac5f70bd6f06619c688041",
+      "candidate_sha256": "b888b0ed53784ac92773d163b1e04496d0a846a887ac5f70bd6f06619c688041"
+    }
+  ]
+}

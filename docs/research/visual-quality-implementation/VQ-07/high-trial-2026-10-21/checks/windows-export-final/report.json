@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "46b8d021-f4c5-420e-97ba-003aea60f194",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--editor",
+    "--export-release",
+    "Windows",
+    "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\release\\OpenRC Simulator.exe"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:26:42.164721+00:00",
+  "label": "windows-export-final",
+  "log": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\windows-export-final-cvw3vhnx\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\windows-export-final-cvw3vhnx\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 12,
+      "message": "build_info: OPENRC_BUILD_* not set (export by hand?): the build says \"export-manual\"",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _export_begin (res://addons/build_info/export_plugin.gd:18)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.75,
+  "log_bytes": 222706,
+  "log_sha256": "a5b6dc1a6de8835267a95cf1d40fd287be912a1fabe11cafe5abd92ee9ba08f8"
+}

@@ -1,0 +1,32 @@
+{
+  "aircraftground.png": {
+    "exact": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "flightline.png": {
+    "exact": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "lake.png": {
+    "exact": false,
+    "changed_pixels": 1061,
+    "max_channel_delta": 1
+  },
+  "pavilion.png": {
+    "exact": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "pilot.png": {
+    "exact": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  },
+  "windsock.png": {
+    "exact": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0
+  }
+}

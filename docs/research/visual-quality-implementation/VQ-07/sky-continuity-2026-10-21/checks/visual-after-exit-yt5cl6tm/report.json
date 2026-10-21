@@ -1,0 +1,272 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8ca807d8-84a6-4580-a39f-b1371f47b0af",
+  "command": [
+    "D:/OpenRCsimulator-scratch/sky-continuity-20261021/release/OpenRC Simulator.exe",
+    "--verbose",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--fullscreen",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--battery=ideal",
+    "--date=2026-09-26",
+    "--time=18:00",
+    "--time_scale=20",
+    "--frametimes=D:/OpenRCsimulator-scratch/sky-continuity-20261021/visual-after-exit.json",
+    "--warmup=0",
+    "--t=30"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T20:43:35.665248+00:00",
+  "label": "visual-after-exit",
+  "log": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\visual-after-exit-yt5cl6tm\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\sky-continuity-20261021\\logs\\visual-after-exit-yt5cl6tm\\report.json",
+  "timeout_seconds": 70.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "complete=true"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 63
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 6,
+      "message": "GENERAL - Message Id Number: 0 | Message Id Name: Loader Message",
+      "context": [
+        "\twindows_read_data_files_in_registry: Registry lookup failed to get layer manifest files.",
+        "\tObjects - 1",
+        "\t\tObject[0] - VK_OBJECT_TYPE_INSTANCE, Handle 1932272376592"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 433,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg remapped: res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 438,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' remapped 'res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb remapped: res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 485,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 490,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 498,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 503,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 511,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg remapped: res://assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 523,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 528,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 536,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 541,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 552,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 557,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' remapped 'res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg remapped: res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 591,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg' remapped 'res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png remapped: res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 596,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png' remapped 'res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png' at thread -1",
+        "Loading resource: res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg remapped: res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 601,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg' remapped 'res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg remapped: res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 606,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg' remapped 'res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png remapped: res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 611,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png' remapped 'res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png' at thread -1",
+        "Loading resource: res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg remapped: res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 616,
+      "message": "Image format RGB8 not supported by hardware, converting to RGBA8.",
+      "context": [
+        "   at: _validate_texture_format (servers/rendering/renderer_rd/storage_rd/texture_storage.cpp:2855)",
+        "Completed load for: 'res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg' remapped 'res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg' at thread -1",
+        "Loading resource: res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg remapped: res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 39.86,
+  "log_bytes": 226206,
+  "log_sha256": "c5aa4d0830ed9ebed20804f67d82417d57730ce859a0fe00a43119dc4099e1e0"
+}

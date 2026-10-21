@@ -55,6 +55,7 @@ const ScenarioConfig = preload("res://scenarios/scenario_config.gd")
 const NaturalRandomScreen = preload("res://ui/natural_random_screen.gd")
 const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
@@ -62,6 +63,8 @@ const UiSurface := preload("res://ui/screen.gd")
 const MenuSounds := preload("res://ui/menu_audio.gd")
 var menu_audio: Node
 var _popup_realign_pending := false
+## Test seam. Production restart is temporary: a normal launch always retains Compatibility.
+var graphics_restart: Callable = Callable(self, "_perform_graphics_restart")
 var display_preferences: DisplayPreferences
 var _display_window_mode := "windowed"
 var _display_resolution := "auto"
@@ -771,7 +774,29 @@ func open_settings(from: Control = null) -> void:
 	settings.route_requested.connect(func(route: String, opener: Control) -> void:
 		if route == "controls": open_controls(opener)
 		elif route == "about": open_help(opener))
+	settings.set_graphics_restart_available(_can_restart_graphics())
+	settings.graphics_restart_requested.connect(_request_graphics_restart)
 	screens.push("settings", settings, from)
+
+
+func _can_restart_graphics() -> bool:
+	return has_home and flight == null and ground_vehicle == null and _workshop_screens.is_empty() \
+		and not _exit_request_active
+
+
+func _request_graphics_restart(profile: String) -> void:
+	if profile not in ["standard", "high"] or not _can_restart_graphics():
+		return
+	graphics_restart.call(profile)
+
+
+func _perform_graphics_restart(profile: String) -> void:
+	# No profile preference or pending marker: failed initialization cannot create a restart loop.
+	# Only Home can enter here, so no flight log or Workshop draft can be discarded.
+	OS.set_environment(HighGraphics.ENVIRONMENT_KEY, profile)
+	OS.set_restart_on_exit(true, HighGraphics.restart_arguments(profile, OS.has_feature("editor"),
+		ProjectSettings.globalize_path("res://")))
+	get_tree().quit()
 
 
 func _capture_display_window_state() -> Dictionary:

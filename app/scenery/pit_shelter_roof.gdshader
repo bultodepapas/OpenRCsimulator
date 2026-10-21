@@ -6,6 +6,8 @@
 shader_type spatial;
 render_mode cull_back;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 uniform sampler2D roof_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D roof_normal : hint_normal, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D roof_arm : repeat_enable, filter_linear_mipmap_anisotropic;
@@ -60,20 +62,23 @@ varying vec2 slab_uv_local;
 varying float slab_surface_tag;
 
 void vertex() {
+	// Match Compatibility's linearized MeshKit stream before interpreting its
+	// material tags and tone seed. Alpha remains a separate, non-color channel.
+	vec3 mesh_color = vertex_color_to_linear(COLOR.rgb);
 	// Exact magenta top faces (1,0,1) and cyan underside faces (0,1,1).
-	bool roof_top_tag = COLOR.r == 1.0 && COLOR.g == 0.0 && COLOR.b == 1.0;
-	bool roof_under_tag = COLOR.r == 0.0 && COLOR.g == 1.0 && COLOR.b == 1.0;
-	bool slab_tag = COLOR.r == 1.0 && COLOR.g == 1.0 && COLOR.b == 0.0;
+	bool roof_top_tag = mesh_color.r == 1.0 && mesh_color.g == 0.0 && mesh_color.b == 1.0;
+	bool roof_under_tag = mesh_color.r == 0.0 && mesh_color.g == 1.0 && mesh_color.b == 1.0;
+	bool slab_tag = mesh_color.r == 1.0 && mesh_color.g == 1.0 && mesh_color.b == 0.0;
 	// Timber tags: red (tone,0,0) means X grain, green (0,tone,0) means Z,
 	// and blue (0,0,tone) means Y. The low threshold tolerates Compatibility's
 	// linearized sRGB vertex colours while remaining separate from ordinary tints.
-	bool wood_x_tag = COLOR.r >= 0.45 && COLOR.g < 0.02 && COLOR.b < 0.02;
-	bool wood_z_tag = COLOR.r < 0.02 && COLOR.g >= 0.45 && COLOR.b < 0.02;
-	bool wood_y_tag = COLOR.r < 0.02 && COLOR.g < 0.02 && COLOR.b >= 0.45;
+	bool wood_x_tag = mesh_color.r >= 0.45 && mesh_color.g < 0.02 && mesh_color.b < 0.02;
+	bool wood_z_tag = mesh_color.r < 0.02 && mesh_color.g >= 0.45 && mesh_color.b < 0.02;
+	bool wood_y_tag = mesh_color.r < 0.02 && mesh_color.g < 0.02 && mesh_color.b >= 0.45;
 	// Pure red/blue endpoints keep the two diagonal markers distinct from
 	// ordinary prop colours, roof markers, and the yellow concrete slab.
-	bool wood_diag_pos_tag = COLOR.r == 1.0 && COLOR.b == 0.0 && COLOR.g > 0.15 && COLOR.g < 0.6;
-	bool wood_diag_neg_tag = COLOR.r == 0.0 && COLOR.b == 1.0 && COLOR.g > 0.15 && COLOR.g < 0.6;
+	bool wood_diag_pos_tag = mesh_color.r == 1.0 && mesh_color.b == 0.0 && mesh_color.g > 0.15 && mesh_color.g < 0.6;
+	bool wood_diag_neg_tag = mesh_color.r == 0.0 && mesh_color.b == 1.0 && mesh_color.g > 0.15 && mesh_color.g < 0.6;
 	bool wood_tag = wood_x_tag || wood_z_tag || wood_y_tag || wood_diag_pos_tag || wood_diag_neg_tag;
 
 	roof_surface_tag = float(roof_top_tag || roof_under_tag);
@@ -89,7 +94,7 @@ void vertex() {
 	} else if (wood_diag_neg_tag) {
 		wood_grain_axis = 4.0;
 	}
-	float wood_tone = max(COLOR.r, max(COLOR.g, COLOR.b));
+	float wood_tone = max(mesh_color.r, max(mesh_color.g, mesh_color.b));
 	wood_seed = clamp((wood_tone - 0.5) * 2.0, 0.0, 1.0);
 
 	// Face normals decide which finish is visible, while vertex markers restrict
@@ -143,9 +148,8 @@ vec3 normal_from_uv(vec3 base_normal, vec2 uv_dx, vec2 uv_dy,
 }
 
 void fragment() {
-	// Compatibility already linearizes MeshKit's sRGB COLOR attribute. The
-	// default branch therefore matches StandardMaterial3D vertex_color_is_srgb.
-	ALBEDO = COLOR.rgb;
+	// Untagged scenery keeps its MeshKit palette color in linear space.
+	ALBEDO = vertex_color_to_linear(COLOR.rgb);
 	ROUGHNESS = 0.88;
 	METALLIC = 0.0;
 	SPECULAR = 0.3;

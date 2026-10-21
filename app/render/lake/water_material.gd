@@ -9,6 +9,7 @@ const WATER_SHADER: Shader = preload("res://render/lake/water.gdshader")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Spec = preload("res://spec.gd")
+const HighGraphics = preload("res://render/high_graphics_profile.gd")
 
 const MAX_WAVES := 2
 const MAX_AMPLITUDE_M := 0.06
@@ -189,7 +190,10 @@ static func _default_number(parameter: String) -> float:
 		"shore_foam_end_m":
 			return 0.48
 		"water_roughness":
-			return 0.22
+			# VQ-07: the native Forward+ probe filter erases the shoreline silhouettes
+			# at the Compatibility default. Keep some blur; this is a visual calibration,
+			# not a universal BRDF conversion. Explicit material/lighting values still win.
+			return 0.06 if HighGraphics.active() else 0.22
 		"water_specular":
 			return 0.76
 	return 0.0

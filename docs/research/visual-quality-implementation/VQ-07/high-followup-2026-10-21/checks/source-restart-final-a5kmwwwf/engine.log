@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"standard","gpu":"NVIDIA GeForce RTX 3090","renderer":"gl_compatibility","requested":"standard"}
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:327)
+       [12] _ready (res://app_root.gd:263)
+       [13] _run (res://../tools/graphics/restart_probe.gd:39)

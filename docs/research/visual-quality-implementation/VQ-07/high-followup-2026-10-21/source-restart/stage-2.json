@@ -1,0 +1,15 @@
+{
+	"editor_binary": true,
+	"executable": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+	"graphics": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": "standard"
+	},
+	"home": true,
+	"ok": true,
+	"pid": 11740,
+	"preferences_unchanged": true,
+	"stage": 2
+}

@@ -202,6 +202,8 @@ controls independently of automatic hardware presets; it does not qualify a new
 Performance/High/Ultra profile or establish a target-hardware speedup. Defaults
 remain unchanged. Native macOS/Linux behavior and per-GPU readability/cost remain gates.
 
+The later owner-selected [VQ-07 temporary High trial](../research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md) adds a Home restart into experimental Forward+. It is separate from the qualified Compatibility preset work below; no renderer preference is saved, and native cost/platform qualification remains open.
+
 Define pure validated profile data and a presentation-only apply boundary. A module such as `app/render/quality_profile.gd` is **proposed**, not implemented; placement follows the existing UI registry boundary. Reuse SC-24 tiers after checking obstacle visibility and collision identity.
 
 | Setting | Balanced | Performance candidate | Rule |
