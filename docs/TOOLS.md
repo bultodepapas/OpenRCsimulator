@@ -107,7 +107,8 @@ replace CI, physical validation or maintainer approval.
 1. Review the selected diff and retain proof beside the owning research evidence.
 2. Run applicable schema/generator, offline, app and visual checks. Export from an isolated Linux checkout; keep unrelated files out of `dist/`.
 3. Add `docs/releases/<tag>.md`. A `vX.Y.Z` tag must match `app/project.godot`; `git describe` supplies package identity. `app/export.sh` takes no version argument.
-4. Push the reviewed commit and tag. CI exports on `main`, `v*` tags and manual dispatch. After checks and release notes pass, `vX.Y.Z` tags publish official releases; suffixed tags publish prereleases.
+4. Create the annotated tag on the reviewed commit and push the commit and tag together (for example, `git push --atomic origin HEAD:main refs/tags/vX.Y.Z`). The tag must be visible when `main` exports: `app/export.sh` uses `git describe` and rejects a previous tag that differs from `app/project.godot`.
+   CI exports on `main`, `v*` tags and manual dispatch. After checks and release notes pass, `vX.Y.Z` tags publish official releases; suffixed tags publish prereleases.
 5. Verify all three archives and checksums. Linux execution and structural pack checks do not replace native OS, GPU, radio or pilot acceptance.
 6. Update the [project website](../site/README.md#preview-and-maintain) from the published tag and assets, then verify the English and Spanish download and checksum links on the public page.
 
