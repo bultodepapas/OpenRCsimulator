@@ -1,10 +1,14 @@
 # Advanced graphics and visual-quality upgrade plan
 
-2026-10-21 · Planning only · Owner: Visual quality (VQ), with L/LU/SC, FW/TOD/SUN, aircraft, SM/CR, UI and DT owners.
+2026-10-21 · Implementation-planning revision · Owner: Visual quality (VQ), with L/LU/SC, FW/TOD/SUN, aircraft, SM/CR, UI and DT owners.
 
 Make OpenRC look substantially more convincing while flying: recognizable aircraft materials, stable vegetation, coherent sunlight and atmosphere, convincing ground contact, and smooth motion. Use modern rendering where it improves those outcomes. “AAA quality” is an ambition, not an acceptance metric or a promise of a particular technology.
 
-**Recommended order:** finish the current Compatibility improvements → qualify a representative scene → compare Forward+ on the same engine → select a few proven effects → consider an optional High desktop profile. RTX, neural rendering and frame generation remain independent experiments.
+**Execution order:** freeze a usable baseline → resolve attributed pacing/loading blockers → prioritize the selected Compatibility work in its owning order. A bounded, isolated Forward+ study may then answer parity/cost questions; only justified candidates advance to combined qualification and accepted settings. Retain Compatibility whenever the renderer study fails its stop/go gates. RTX, neural rendering and frame generation remain deferred.
+
+**Next executable action:** refresh VQ-01c/d evidence on the current source/package and a named native host; rank its actual failures before changing appearance. Existing tools and partial evidence are available, but native pacing, loading and owner readability acceptance remain open. The immediate deliverable is a comparable baseline and one chosen repair, not another rendering feature.
+
+Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 3](#priority-and-expected-return) to choose dependency-ready work, and [section 6](#6-measurement-and-acceptance) to decide whether it succeeds.
 
 ## 1. Scope and authority
 
@@ -48,7 +52,8 @@ Execute through the [existing implementation sequence](global-performance-visual
 | Existing owner steps | Next useful outcome | Constraint |
 | --- | --- | --- |
 | VQ-01c/d, DT-01/10a/11a | Current source/package baseline, moving visibility reference and attributed loading/frame stalls | Read-only source research can proceed immediately; acceptance needs native measurements and owner flight |
-| VQ-02a/b, aircraft owners | Correct demonstrated import/channel/filter errors, then one aircraft material or marking repair; trial stock normal-aware roughness import only for a suitable texture pair and observed sparkle | Retain existing livery and generators; review perceived material in motion, not maximum gloss; no blanket metallic, clearcoat or 4K conversion |
+| LU-10-R1, DT-11a, H/UI/session owners | Repair one reproduced dominant query, construction or first-draw cost before spending more frame time | Follow global sequence rows 03/04; prove complete-workload gain and unchanged state/output; component savings cannot be summed into a startup claim |
+| VQ-02a/b, aircraft owners | Correct demonstrated import/channel/filter errors, then one aircraft material or marking repair; trial stock normal-aware roughness import only for a suitable texture pair and observed sparkle | Retain existing livery and generators; review perceived material in motion; no added clearcoat lobe or blanket metallic/4K conversion |
 | L9e-R1 and grass/tree plans | Stable ground detail and foliage in motion; inspect LOD silhouette, wind-expanded bounds and night illumination during existing batching trials | Reconcile later [grass](grass-quality.md) and [tree](tree-forest-quality.md) work before applying an older probe; preserve population/contacts and reuse accepted assets |
 | VQ-04b, L/FW/TOD/SUN | Better contact/light coherence where the current comparison identifies a defect | Preserve projected shadows as the reference; existing sun/night controls keep their owners |
 | L15a/c, FW-81-R1 | Coherent windsock/foliage movement and smooth clouds | Visual clock/transport changes cannot modify physical wind or weather |
@@ -57,19 +62,54 @@ Execute through the [existing implementation sequence](global-performance-visual
 
 Download-first intake: inspect retained packs first, then suitable free materials/HDRIs/models from [Poly Haven](https://polyhaven.com/license) or [ambientCG](https://docs.ambientcg.com/license/), both publishing CC0 assets. Record the exact asset URL, author, download date, license, hash, resolution, scale, channel layout and import recipe. Adapt the smallest suitable download; author replacement content only when a documented need has no suitable free source. A photographic sky with a baked sun is useful as a reference, but must not silently replace dynamic time-of-day lighting.
 
+### Priority and expected return
+
+ROI here means a useful improvement per total engineering and runtime cost, not a financial forecast. Resolve correctness, unreadable flight cues and release-blocking pacing/loading first. Among dependency-ready candidates, prefer frequent pilot-view benefit, wider target-hardware reach, stronger evidence and lower implementation/verification/maintenance cost. An attractive close-up alone has low return for flight. Preserve the global sequence: import audit precedes ground/foliage comparisons, which inform final aircraft/background acceptance.
+
+| Work | Expected return and evidence confidence | Cost/risk and scheduling rule |
+| --- | --- | --- |
+| Current baseline and one attributed performance repair | Highest enabling value; recorded acceptance gaps, but current bottleneck still needs confirmation | Reuse collectors; budget diagnosis before code. Do this first; a failed benchmark is not spare visual headroom. |
+| Demonstrated import/filter error | High when it affects repeated flight views; confidence becomes high only after reproduction | Usually narrow asset/import scope; include reimport, memory and generator checks. Correct inputs before artistic tuning. |
+| Foliage/ground stability in motion | Potentially high because it occupies much of the pilot view; benefit conditional on the actual defect | Medium validation burden across distance, wind and light; use retained assets and current LOD/batching studies. |
+| One aircraft finish/marking repair | High for attitude/marking loss; moderate for cosmetic finish | Small surface scope, but owner motion review is essential. No fleet-wide rollout from one successful aircraft. |
+| Shadow/probe tuning | Moderate, rising to high for a demonstrated landing or lighting cue failure | Test cheap allocation/source corrections first; PCSS/SSR add cost and history/maintenance risk. |
+| Forward+ parity/cost study | High information value if it can answer a renderer decision; visual return unknown | Bounded isolated work; higher verification and multi-renderer maintenance cost. Stop before effects if parity/cost fails. |
+| Sky subpasses, volumetrics, GI, impostors | Uncertain until an attributed cost or visible gap remains | Larger integration and lifecycle burden; conditional, one candidate at a time. |
+| Vendor forks/frame generation or a new tool stack | Low immediate return to the current acceptance gaps | High platform, maintenance and qualification burden; deferred. Reuse available tools. |
+
+These are planning judgments, not measured gains. For each attempted candidate record total engineer time including failed trials, integration and tests; measured frame/load/memory deltas; the cue actually improved; and any new renderer-specific code, asset pipeline or platform checks. Re-rank after each accepted result. Do not use a numeric ROI score to override a correctness/readability failure or hide uncertain benefits.
+
 ## 4. VQ-07: isolated renderer comparison
 
-Use separate checkouts/import caches and private preferences. Pin the same official engine and assets on both sides. Do not combine an engine upgrade, scenery replacement and renderer change in one comparison. An independent prototype can start once a reproducible snapshot is available; inherited baseline failures stay recorded and block the relevant release gate.
+Use separate checkouts/import caches and private preferences. Pin the same official engine and assets on both sides. Do not combine an engine upgrade, scenery replacement and renderer change in one comparison. The active Compatibility sequence has priority. Read-only preparation may proceed now; a disposable VQ-07 study starts only with VQ-07a's comparable source/host/tapes and recorded outcomes for relevant baseline repairs. It must not displace those repairs. Unavailable pilot/platform acceptance may remain open during isolated research, but cannot be waived for adoption. Completing every unrelated FW/SM/trailer feature is not an entry condition.
+
+```mermaid
+flowchart TD
+    A[Current baseline and attributed repairs] --> B[Compatibility work in global order]
+    A --> C[VQ-07a/b isolated parity study]
+    B --> D[Required Compatibility qualification]
+    C -->|Parity passes| E[VQ-07c native cost and headroom]
+    C -->|Parity fails| R[VQ-07g retain or defer; no High]
+    E -->|No headroom| R
+    E -->|Pass and named need| F[Selected d/e/f candidates]
+    E -->|No useful need| R
+    F --> G[VQ-07g combined candidate decision]
+    G -->|No useful qualified combination| R
+    G -->|Advance| H[Settings, recovery and final package gates]
+    D --> H
+```
+
+The parallel branch represents an isolated experiment, not permission to ship around the Compatibility qualification. On one developer's schedule, current repairs retain priority. The final package gate is rerun after settings/export integration; the pre-UI g decision is not shipping acceptance.
 
 | ID | Work | Proof/status |
 | --- | --- | --- |
-| VQ-07a | Freeze the comparison manifest, target-host identities, scenes, motion tapes, camera states and baseline failures. Reuse VQ-01c/d tools; record actual renderer/backend and presentation settings. | **Pending.** Reproducible running-application captures, not editor-preview lighting; private experimental startup and actual fallback recorded. |
-| VQ-07b | Establish Forward+ visual/functional parity with advanced effects off. Fix one demonstrated renderer assumption per patch in the isolated copy. | **Pending; after a.** Sky/ground/fog/light consistency, correct water depth, complete materials, shadows and alpha effects; no new shader/runtime errors; unchanged accepted simulation state. |
-| VQ-07c | Measure bare renderer cost and first-use pipeline behavior. Attribute main/shadow passes, transparency, sky/radiance and loading before adding effects; reuse free profilers when needed. | **Pending; after b.** Paired native timing, loading, VRAM and pipeline events with declared cache conditions; decision whether this hardware has useful headroom. If not, retain Compatibility on it. |
-| VQ-07d | Compare edge stability and reconstruction: native MSAA, native SMAA, native TAA, native FSR2, then reduced-resolution FSR2. | **Pending; after c.** Lossless moving comparisons, silhouette/attitude review, real frame cost and history-reset behavior. Keep native rendering if reconstruction harms the aircraft. |
-| VQ-07e | Compare directional shadows and reflections, then a single indirect-light candidate only if a remaining defect justifies it. | **Pending; after c.** Separate outcomes for PCSS, probe/SSR and optional SSAO/SSIL/GI; no combined “all effects” comparison. |
+| VQ-07a | Freeze the comparison manifest, target-host identities, scenes, motion tapes, camera states and baseline failures. Reuse VQ-01c/d tools; record actual renderer/backend and presentation settings. | **Pending.** Comparable repeated reference runs and runtime clips. If collection is unreliable, repair collection before b; a known target miss may be recorded but cannot qualify an effect. |
+| VQ-07b | Establish Forward+ visual/functional parity with advanced effects off. Fix one demonstrated renderer assumption per patch in the isolated copy. | **Pending; after a.** Correct color/depth/materials/alpha and unchanged simulation; no new runtime errors. Unresolved parity at the timebox ends d/e/f and routes directly to g's retain/defer decision. |
+| VQ-07c | Measure bare renderer cost and first-use behavior; attribute main/shadow passes, transparency and sky/radiance. Freeze a total effect budget on a named target. | **Pending; after b.** Paired native timing/load/memory evidence. If native gates or useful headroom fail, skip d/e/f on that target and record why in g; a different High target requires its own a/c evidence. |
+| VQ-07d | Screen native MSAA/SMAA/TAA/FSR2 for a named edge/history defect, then qualify only useful finalists. Reduced-resolution FSR2 requires a demonstrated scaling need. | **Conditional; after c.** Reuse VQ-01d clips/tapes; motion readability, real cost and reset proof. No improvement means retain native baseline AA; do not run every scale by default. |
+| VQ-07e | For an owner-confirmed gap, compare shadow allocation/probes first, then one justified PCSS, SSR or indirect-light candidate. | **Conditional; after c.** Reuse projected-shadow/environment references and VQ-04b's comparison contract; pin AA to baseline or accepted d result. No gap means skip. Each effect needs its own outcome. |
 | VQ-07f | Evaluate bounded atmosphere and effect improvements when FW/SM/CR identify a gap. FW-85 retains the cloud-backend decision. | **Conditional; after c.** Same authoritative inputs, readable pilot circuit, pause/reset/cut behavior, bounded particles/overdraw and cost. Volumetric clouds are not required. |
-| VQ-07g | Integrate only accepted candidates; produce the project-level renderer/High-profile decision and a tested fallback package. | **Pending; after d/e and any selected f.** Combined native acceptance, platform ledger, reproducible export and documented adopt/retain/defer decision in DECISIONS. Passing isolated effects is insufficient. |
+| VQ-07g | Record the renderer decision; if advancing, integrate accepted candidates and qualify the exact combination before proposing High settings. | **Pending; after selected outcomes, including early rejection.** Retain/defer can close the study with no new profile. Adoption needs combined native/pilot/platform evidence and recovery; selected effects passing alone is insufficient. |
 | VQ-07h | Review vendor technologies in disposable projects, only after the native path has a decision and a named unresolved need. | **Deferred, optional.** Pinned SDK/fork sample, license/build/API/hardware assessment, latency and image evidence. Not required to close VQ-07a…g. |
 
 ### VQ-07b: concrete migration hazards
@@ -88,11 +128,9 @@ Godot documents different shader colour/depth conventions and compositor availab
 
 ### VQ-07d: preserve a small moving aircraft
 
-Start at 1080p, with 720p as the accessibility/regression case and 1440p as an optional higher-resolution case. Compare each AA method separately, with other effects and sharpening fixed. FSR2 supplies its own temporal AA; do not count a simultaneous TAA setting as another independent treatment. At scale 1.0 it is a quality experiment with extra cost. Test scales 0.85 and 0.75 before 0.67; each is a candidate, not a promised preset. Record actual internal dimensions. [Godot scaling documentation](https://docs.godotengine.org/en/4.7/tutorials/3d/resolution_scaling.html)
+Keep the current Compatibility target at **720p/60**. Screen Forward+ at that resolution first; **1080p/60 is a separately named High target** requiring its own VQ-07c baseline/headroom. Qualify AA finalists on their intended target and check 720p regressions; 1440p is optional until advertised. Compare methods separately with other effects/sharpening fixed. FSR2 supplies temporal AA itself. Native scale 1.0 is a quality experiment with extra cost; try 0.85, then 0.75 only if scaling is needed and the preceding result remains readable. Stop at the first unacceptable silhouette/attitude loss; 0.67 needs an explicit remaining case. Record actual internal dimensions. [Godot scaling documentation](https://docs.godotengine.org/en/4.7/tutorials/3d/resolution_scaling.html)
 
-Inspect rolling/inverted aircraft, thin wings, distant liveries, propellers, transparent canopy/smoke, vegetation crossings and specular highlights. Test camera cuts, pause/resume, reset, teleport and visual-checkpoint restore so stale temporal history cannot leave trails. Evaluate attitude recognition separately from merely detecting a dot. SMAA is an additional spatial comparison from the [4.7 AA documentation](https://docs.godotengine.org/en/4.7/tutorials/3d/3d_antialiasing.html); it is not a cure for temporal/specular shimmer.
-
-Label the observed defect before selecting a treatment: geometric edge breakup, specular sparkle, LOD silhouette loss, dither pattern, texture-animation trails or pose jitter. Where used, include animated UVs and dithered LOD transitions in the tape. Inspect transitions with the aircraft crossing the treeline, not just an empty landscape. Older upstream reports provide reproduction ideas, not proof of defects in 4.7.2; retain exact-version results, including non-reproduction. [R12, R16–R17, R21–R22](../research/advanced-graphics-2026-10-21/round-2.md)
+Label the defect before selecting a treatment: geometric edges, specular sparkle, LOD loss, dither, texture-history trails or pose jitter. Use section 6's motion/history cases and distinguish attitude recognition from detecting a dot. SMAA is a spatial candidate, not a cure for every shimmer; older upstream reports suggest tests, not established 4.7.2 defects. Record non-reproduction as well as failures. [AA methods](https://docs.godotengine.org/en/4.7/tutorials/3d/3d_antialiasing.html), [R12, R16–R17, R21–R22](../research/advanced-graphics-2026-10-21/round-2.md)
 
 ### VQ-07e/f: spend headroom selectively
 
@@ -107,11 +145,9 @@ Label the observed defect before selecting a treatment: geometric edge breakup, 
 
 Built-in GPU trails are renderer-dependent; they do not justify replacing the accepted smoke system. Dust requires suitable surface/contact state. Heat haze requires an installed propulsion source. Condensation and new water effects stay deferred until their owning tracks define credible triggers. No graphics setting invents humidity, tire friction, engine forces or damage.
 
-SSR requires an exact-runtime transparency test: the 4.6 overhaul samples prior-frame color, so the older “transparent materials are never reflected” rule is insufficient. Compare alpha sources with/without an opaque depth surface, a moving occluder and camera cuts. [Upstream evidence, R11](../research/advanced-graphics-2026-10-21/round-2.md#r11--lake-reflections-and-the-changed-ssr-path)
+SSR must pass section 6's alpha/depth/history cases: the prior-frame implementation makes the old blanket transparency exclusion insufficient. GPU particles require exact-version first-emission/resource-change/reset checks under SM/CR; issue status alone does not establish a defect or a fix. [R11](../research/advanced-graphics-2026-10-21/round-2.md#r11--lake-reflections-and-the-changed-ssr-path), [R13](../research/advanced-graphics-2026-10-21/round-2.md#r13--version-specific-first-particle-emission)
 
-For existing or candidate GPU particles, test first emission after instantiation/re-entry, relevant resource changes and reset, with renderer logs. One upstream initialization issue is partially fixed but remains open; a separate old TAA particle report is closed. Neither status substitutes for a 4.7.2 result. Keep this within SM/CR lifecycle coverage. [R13](../research/advanced-graphics-2026-10-21/round-2.md#r13--version-specific-first-particle-emission)
-
-Sky work stays conditional on attributed cost or a visible defect. Preserve the CPU-supplied clock and deterministic restore; do not blindly replace the current QUALITY radiance mode. A stock lower-resolution cloud subpass keeps aircraft and sharp sky features at full resolution and does not authorize a split scene-viewport architecture. Check convergence, reflections, storms and, where the supported camera reaches them, cloud-layer crossings. Bruneton's available atmosphere reference is an optional diagnostic, not a replacement commitment. [R08, R18, R25](../research/advanced-graphics-2026-10-21/round-2.md)
+For conditional sky work, preserve the CPU visual clock and deterministic restore. Do not blindly replace QUALITY radiance mode. A stock cloud subpass keeps aircraft/sharp sky features full-resolution; it does not authorize a split scene viewport. Use section 6's lifecycle/visibility gates. Bruneton's reference is diagnostic, not a replacement commitment. [R08, R18, R25](../research/advanced-graphics-2026-10-21/round-2.md)
 
 ## 5. Quality profiles and safe adoption
 
@@ -127,13 +163,66 @@ VQ-07g must explicitly resolve whether to maintain a second renderer. Evidence o
 
 Reuse the [global measurement contract](global-performance-visual-quality.md#4-measurement-and-acceptance-contract) and [performance tools](../../research/performance/README.md). All numbers below are gates/proposals, not measurements from this research.
 
+### Experiment contract and decision rules
+
+Before implementation, add a compact candidate record to the owning step's evidence, not another tracker. State: **observed problem and reproduction; one mechanism/files/owner; baseline and target host/profile; primary success measure and protected cues; cost/effort limit; checks, rollback and final outcome**. Missing measurement capability is a task to resolve, not permission to estimate a pass.
+
+- **Optimization succeeds** only when gain exceeds paired-run variation and reaches the global plan's 5% threshold for the declared affected complete workload, or removes a named reproducible hitch/memory defect. Declare that workload before the trial. A faster isolated constructor is attribution, not faster Home/Fly or flight.
+- **Visual improvement succeeds** when the predeclared defect is repeatably reduced in its intended pilot view, owner review supports the change and all correctness/readability/cost guards pass. Define the observable result before coding; “looks better” without a matched motion case is insufficient. A visual change need not improve speed by 5%, but cannot exceed its allocated budget.
+- **Inconclusive means retain for now.** If paired deltas change sign, variation covers the benefit, or blinded review is tied, inspect confounders and allow one predeclared repeat campaign. Do not keep sampling or tuning until a favorable result appears. Record failed and discarded runs with reasons.
+- **Baseline failures remain failures.** Reproduced inherited faults may allow isolated diagnosis, but block the acceptance they affect. Do not claim improvement from a control with a different renderer, stale assets, missing effects or an invalid run. New state, shader, readiness or readability regressions stop the candidate immediately.
+
+Keep two identities: the **frozen delivery baseline** for total regression/cost, and the **latest accepted control** for one candidate's incremental effect. Rebase the control after a shared change and rerun affected comparisons; do not reset the combined +0.5 ms allowance on every merge. At VQ-07c, declare per-target limits for frame tails, loading and memory, reserve margin for observed variation, then allocate only the remaining headroom. No positive measured margin means no added effect. Percentiles, component savings and effect costs are not additive: remeasure the combined configuration.
+
+### Test funnel: cheap rejection before expensive qualification
+
+| Stage | Smallest useful work | Exit and escalation |
+| --- | --- | --- |
+| Valid inputs | Source/package/engine identities; license/import inputs; parse/import and affected existing checks; verify actual renderer/AA settings | Stop on invalid data, new engine/shader errors or silent renderer fallback. Drafts parse outside `app/` before integration. |
+| Focused screen | One reproduced defect, matched A/B runtime views/clip and an effect-off control where meaningful; only the affected lifecycle transitions | Reject no-benefit or visibly harmful candidates. Short captures/timings diagnose; they do not qualify performance or pilot use. |
+| Finalist comparison | Full native paired sampling below, plus affected owner checks and blinded readability review; loading repetitions if construction/import/first-use is affected | Record adopt/retain/defer with raw evidence. A failed candidate does not enter the combined profile. |
+| Combined regression | Latest accepted changes together; full applicable app/visual checks, cross-feature stress cases, 20-cycle lifecycle and total profile cost | Passing candidates can fail together. Remove the last harmful addition and remeasure the affected combination. |
+| Package qualification | Actual exported package, startup/recovery, required target platforms, DT cycles/soak and owner circuit | Only this closes the corresponding shipping gates. Missing hardware/pilot work stays open; no release claim from fixtures. |
+
+Reuse existing checks; add a focused regression only for a new behavior/bug or an otherwise untested contract. Do not create tests that merely mirror a shader constant or asset edit. Run required checks after integration, then broaden only for a changed dependency, failure or unresolved risk. Keep timed runs exclusive on the host; captures and profilers run separately.
+
+### Coverage follows the changed behavior
+
+Use a small representative set to screen; finalists get affected boundary cases and combined delivery gets the full owning matrix. Do not multiply every aircraft × weather × resolution × AA × camera for every edit.
+
+| Changed behavior | Mandatory focused cases before acceptance |
+| --- | --- |
+| Material/import | Affected aircraft close and at 20/50/100 m in motion; relevant bright/dark background and day/dusk; verify channels, scale, markings, memory and first import/load |
+| Vegetation/LOD/batching | Low pilot pass through transition distances, aircraft against treeline, maximum qualified wind and night lamps; preserve placements/colliders; check bounds and main/shadow cost |
+| Renderer/color/depth | Home/Workshop/Fly; sky-ground horizon, lake shore, opaque/alpha crossings, contact shadows and night exposure; actual renderer identity and shared vehicle initialization/reset |
+| Temporal AA/scaling | Small rolling aircraft, markings/propeller/smoke, disocclusion and applicable animated UV/dither; zoom/cut, pause/resume and reset/restore; supported refresh cases |
+| Shadows/reflections | Low-sun runway/gear/fence and far useful range; day/dusk probe refresh; water/alpha with moving occluder and screen edges; avoid double shadow paths |
+| Sky/effects | Named weather gap plus no-effect control, worst qualified smoke/storm, first emission, pause/reset/restore and reflected sky; reachable cloud boundary only when in scope |
+| Preferences/startup | First launch, repeated apply, restart, invalid/unwritable settings, failed renderer initialization and known-good recovery; same controller/physical-world identity |
+
+A renderer change always requires broad parity coverage. A one-material edit does not inherit every sky/particle case unless it changes their shared path. For combined High, stress at least small aircraft + foliage + chosen AA, low sun + shadows + reflections, and night/storm + transparent effects, followed by the owning full flight matrix. Record unaffected cases as not applicable with the reason; never label them passed without execution.
+
+### Reuse tools within their limits
+
+| Existing entrypoint / authoritative instructions | Use and limitation |
+| --- | --- |
+| [Checked Godot runner](../../tools/godot/README.md), [app commands](../TOOLS.md#app-and-release-commands) | Reject zero-exit engine errors and incomplete collections. `app/test.sh` covers parsing and app contracts; run full applicable checks at integration. Offline tool changes use `research/test-tools.sh`. |
+| [Visibility runner and packager](../../research/performance/README.md#moving-visibility-reference-vq-01d--cam-22) | Reuse case definitions and metadata validation. Current fixture is Compatibility-only, prescribed poses with frozen shader time; no physics, shadows, moving propeller, HUD or night. It cannot qualify Forward+ temporal history unchanged. |
+| [Shadow tools](../../tools/shadows/README.md), [tree tools](../../tools/trees/README.md), [atmosphere tools](../../tools/atmosphere/README.md) | Reuse relevant oracles, inputs and guards after checking renderer/version and baseline preconditions. Existing Compatibility/static fixtures are not Forward+ or full-flight proof. Do not run an old before-feature verifier against arbitrary snapshots. |
+| [Native frame evidence](../../research/performance/README.md#native-frame-evidence), [loading probe](../../research/performance/README.md#homefly-loading-and-lake-geometry) | Use `--frametimes` for native samples; `--frame-diagnostics` separately for attribution; real Home/Fly route for load cost. CPU callback probes measure different work and cannot replace these. |
+| [App capture/export commands](../TOOLS.md#app-and-release-commands) | `app/capture.sh` is a broad integration check, not a per-knob screen. `app/export.sh` recreates `dist/`: use an isolated checkout. Native execution of exports remains mandatory. Bash workflows on Windows use the documented WSL setup; native GPU trials stay native. |
+
+VQ-07a/b must identify the missing Forward+ capture/history coverage and extend only that bounded capability in the isolated experiment, asserting actual renderer, active effects, completion and source identity. Reuse definitions and validators, not historical image artifacts as a new control. Do not claim the current capture suite already covers the experimental renderer.
+
+### Numerical and human acceptance
+
 | Dimension | Required evidence |
 | --- | --- |
 | Controlled comparison | Same aircraft/assets, world, inputs/ticks, camera/FOV/zoom, sky/time, resolution and host/driver. Keep visual capture overhead outside timed runs. |
-| Sampling | Existing minimum: 10 s warmup + 60 s sample, three alternating A/B pairs. Extend for periodic effects; report each run and variation. Loading: five fresh-process and five warm repetitions, with cache conditions declared. |
+| Sampling | Existing minimum: 10 s warmup + 60 s sample, three alternating A/B pairs. Extend for periodic effects; retain per-run distributions and paired deltas, keeping aircraft/conditions separate. Loading: five fresh-process and five warm repetitions, with cache conditions declared. |
 | Frame pacing | Existing 60 Hz gate: process-loop p95 ≤18 ms, p99 ≤25 ms; simulation/wall ratio 0.99–1.01. Report uncapped throughput separately against 16.67 ms. Attribute recurring gameplay intervals >50 ms. |
 | Visual cost | Active Compatibility delivery retains its combined +0.5 ms frame-p95 ceiling. Proposed High targets 1080p/60 on named hardware with the same pacing gate; freeze its total measured headroom in VQ-07c before selecting effects. It cannot borrow unused physics budget or justify a Compatibility regression. |
-| CPU/GPU and memory | Separate complete-session CPU, render CPU, GPU timings where available, draw/primitive counts, peak/resident VRAM and process memory. Missing GPU timers remain missing, not estimates from FPS. |
+| CPU/GPU and memory | Separate complete-session CPU, render CPU, GPU timings where available, draw/primitive counts, allocated render-resource counters, actual residency if available and process RAM. Godot allocation counters are not physical VRAM residency; missing measurements remain missing, not estimates from FPS. |
 | Loading and compilation | Preserve current Home ≤5 s process-cold/≤3 s warm and Fly ≤2 s goals; distinguish construction, import and first draw. Fresh process is not necessarily cold shader cache. Inspect first night/storm/smoke appearance and first profile application. Qualify actual exports, including separate empty-cache macOS runs when advertised; use isolated caches, not destructive global cache clearing. |
 | Simulation preservation | Same accepted checkpoint/state/input results on the pinned runtime under existing exact/tolerance contracts. Keep 240 Hz, float64 kernel, collision world and aircraft definitions unchanged. Never re-record goldens for graphics. |
 | Readability | Randomized matched clips and owner circuit with bright/dark aircraft at close range, 20/50/100 m and the existing farther acceptance range. No new repeatable loss of attitude, subject or landing cue. Record projected size and aids. |
@@ -152,22 +241,30 @@ Every accepted experiment retains a manifest, raw measurements, logs/errors, rep
 
 VQ-07h is optional and separate from delivery. Native FSR2 is the first reconstruction experiment. AFMF is a user-driver experiment, not an OpenRC integration. Newer FSR, DLSS/DLAA/Reflex and NVIDIA's Godot path-tracing fork require exact SDK/fork pins, compatible API/OS/GPU evidence, redistribution terms and a maintenance assessment before a simulator prototype.
 
-The supplied brief has two corrected claims: Streamline's current DLSS-G documentation includes Vulkan support, with narrower D3D12-only restrictions for Dynamic MFG and VSync with FG; DLSS 5's initial announcement was March 16, 2026. AMD FSR SDK 2.3's Vulkan limitation also must be distinguished from the older FSR3.1 implementation. [Verified vendor findings and primary links](../research/advanced-graphics-2026-10-21/README.md#vendor-claims-and-corrections)
-
-Run vendor samples before attempting engine integration. Report real rendered FPS, displayed/generated FPS, simulation rate and measured latency separately. Check fast rolls, small aircraft, transparent trails and UI. Neural rendering must preserve silhouette, markings and state cues; attractive invented detail cannot establish simulator fidelity. No vendor feature is a prerequisite for High, and frame generation cannot rescue a failed native-performance gate.
+Retained [vendor findings and corrections](../research/advanced-graphics-2026-10-21/README.md#vendor-claims-and-corrections) govern exact-version/API intake. Run existing samples first. Separate real/displayed/generated frames, simulation rate and measured latency; preserve silhouette, markings and state cues. No vendor feature is required for High, and frame generation cannot rescue a failed native-performance gate.
 
 ## 8. First work packages and stopping rules
 
-1. **Baseline package:** reconcile current VQ/L/FW/SM evidence, freeze source and representative views, complete VQ-07a. Deliver the comparison inputs and failure ledger.
-2. **Parity package:** VQ-07b plus VQ-07c, one renderer adaptation per patch. Deliver paired native clips/timing and a decision to continue or retain Compatibility.
-3. **Quality package:** VQ-07d, then separately shadows/reflections under VQ-07e. Only investigate VQ-07f where its owner has a remaining gap. Deliver an individual result for each selected candidate.
-4. **Adoption package:** VQ-07g and, only following its decision, the scoped VQ-06/UI/DT High extension. Deliver exact tested packages, recovery proof and the platform/pilot ledger.
+These are execution checkpoints under existing step IDs, not new tasks for every research idea. Timeboxes below are **initial review limits for one developer**, not promised completion times. At a limit, stop expanding the candidate and record retain/defer or a smaller revised scope with evidence and a new bound. Never weaken a test to fit a timebox. Hardware/pilot waiting is recorded separately from engineer effort.
 
-Planning allowance for one developer: baseline refresh **2–4 engineering days**, parity/cost study **3–6**, selected AA/light trials **4–8**, and profile/recovery/package work **4–8 after a positive decision**. These are estimates, exclude unresolved baseline repairs and hardware/pilot availability, and must be revised after VQ-07c. Conditional atmosphere/vendor work has no committed delivery date.
+| Order / owner | Entry → concrete deliverable | First review limit and next decision |
+| --- | --- | --- |
+| 1. VQ-01c/d, DT; input to VQ-07a | Current source and known target → valid reference runs, refreshed motion cases, failure/measurement gaps and ranked bottlenecks | **1 engineering day for triage.** Choose one attributable blocker or collection repair; estimate the remaining campaign. Do not start appearance tuning while the control is unreliable. |
+| 2. LU/DT/H, then current VQ/L/FW owners | Reproduced blocker → one mechanism, relevant parity proof and complete-workload comparison. Remaining global rows 03–14 continue in their own order; they need not all finish before isolated checkpoint 3 | **2 days per repair before review.** Retain only a qualifying result. Refresh affected controls; owner prerequisites still gate dependent adoption. This is not a two-day promise for the entire current delivery. |
+| 3. VQ-07a/b | Comparable repaired snapshot and available host → isolated bare Forward+ with required color/depth/alpha and capture parity | **3 days before renderer review.** If parity requires broad rewrites or remains unproven, stop effects and send retain/defer to g. Record unavailable qualification separately. |
+| 4. VQ-07c | Passing parity → paired native 720p baseline, separately named 1080p High trial if wanted, load/memory evidence and total headroom | **2 days before cost review.** No native margin means no added effects on that target. Do not try to conceal a failed gate with frame generation. |
+| 5. VQ-07d/e and selected f | Positive budget and one named gap → one screened candidate, then finalist evidence | **Half a day for an initial screen; 2 days before reviewing a finalist's remaining work.** First High slice: at most two added choices, normally one AA treatment and one useful lighting/effect change. Skip absent triggers; no mandatory feature count. |
+| 6. VQ-07g with VQ-06/UI/DT | Selected outcomes → combined private profile decision; only a beneficial, passing candidate proceeds to settings/recovery and exact package qualification | Estimate after c and scope selection. If no renderer/profile qualifies, close retain/defer without new UI. If it qualifies, run final checks again after settings/export integration before shipping. |
 
-Stop a candidate when benefit is not visible in its intended view, when cost consumes the declared budget, or when readability/state/recovery regresses. Retaining the baseline is a valid completed experiment. VQ-07a…g closes with documented outcomes and an explicit renderer decision; shipping High additionally requires its native/pilot/platform gates. Optional vendor work does not hold that decision open.
+Within the first checkpoint, reuse the existing collectors, freeze identities and run an unchanged repeat before selecting a repair. Inspect process logs and workload completion before reducing timings. Produce a short owner-linked list of the top failures, the chosen hypothesis and the first A/B case; unresolved measurements receive explicit owners. No new general harness or dashboard is a deliverable.
 
-When this plan is completed or superseded, consolidate adopted behavior into VQ and the owning guides, retain dated evidence and decisions, then remove this coordination plan under the repository's documentation conventions.
+**Work in progress:** one runtime candidate per developer; at most two isolated candidates across owners with distinct files. Reading, asset provenance and offline reduction may overlap; native timing and shared-file integration stay serialized. Merge one accepted mechanism at a time, rebase the next candidate and rerun tests affected by that merge. Avoid speculative UI and cross-renderer abstractions before a positive c/g decision.
+
+**Rollback and closure:** each candidate is a separable patch or scoped configuration change with a known-good fallback; keep original source/import recipes and use source generators for any reverted generated output. Reject on new correctness/readability faults, absent useful benefit or exceeded cost; defer when evidence/hardware is missing. A failed b/c can close the study through g with d/e/f marked not run and a reason. For adoption, all selected candidates and their combination need proof; no-change decisions are valid completed experiments. Retained unsupported branches do not ship enabled.
+
+At each checkpoint answer two questions in the evidence: **Did it solve the stated problem? Was the engineering/runtime/maintenance cost justified?** Record actual effort and remaining acceptance, then choose the next dependency-ready item by section 3. This prevents feature count, sunk effort or research novelty from determining the schedule.
+
+When completed or superseded, consolidate adopted behavior into VQ and the owning guides, retain dated evidence and decisions, then remove this coordination plan under repository conventions.
 
 ## 9. Disposition of the 25 follow-up investigations
 
