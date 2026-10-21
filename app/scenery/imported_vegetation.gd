@@ -378,7 +378,8 @@ static func _record_groups(records: Array, cell_size: int) -> Array[Dictionary]:
 
 static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary], records: Array) -> bool:
 	if float(TREE_WIND_LEAN_LIMITS_M.get(asset_id, 0.0)) <= 0.0:
-		_warn_tree_wind_once(asset_id + ":limit", "Tree wind is disabled for %s: no measured collision-bounded sway limit" % asset_id)
+		# Static by design (protected maples, oak, library-only forms): not a warning-worthy failure.
+		print_verbose("Tree wind is disabled for %s: no measured collision-bounded sway limit" % asset_id)
 		return false
 	# The reviewed trees contain one mesh with bark/foliage surfaces. Independent
 	# part-local height ramps would pull separately modeled crowns off their stems.

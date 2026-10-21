@@ -113,7 +113,7 @@ These are targets, not achieved measurements. Keep stricter owning-track limits;
 | Correctness | Existing oracle/trace/checkpoint contracts pass on the pinned runtime; exact where already promised, established tolerance elsewhere. No new goldens or relaxed guards. |
 | Visibility | No new repeatable loss of subject, orientation or landing cue in fixed clips and owner circuit. Compare orientation accuracy/response time; small samples are acceptance evidence, not population statistics. |
 | Lifecycle | No unexplained growth after warmup in 20 Home/Fly/Workshop/reset cycles; caches bounded by bytes/count and invalidation. DT-12 separately requires **50 Home/flight cycles and a 30-minute soak**. |
-| Resources | Retain LU's 650k source-geometry cap and provenance checks. Record visible primitives/textures/VRAM separately. No unsupported minimum VRAM claim. |
+| Resources | [LU-34](../research/landscape-upgrade/LU-34/README.md) replaces the pooled source-geometry cap: drawn primitives/draws per view class and subsystem, shadow casters, full-detail meshes and texture memory (`tools/scenery/budget.sh`), plus per-subsystem source allowances. Keep provenance checks. No unsupported minimum VRAM claim. |
 
 Visibility uses two existing aircraft with contrasting appearance, fixed flight/camera inputs, 20/50/100 m plus the existing farther acceptance range, sky/tree/cloud backgrounds and day/dusk/night coverage. Randomize A/B order and repeat uncertain comparisons. Log projected span/chord, FOV, zoom and assistance; detecting a dot and recognizing attitude are different. Extend L6c/CAM kits. Gate L/2/FW acceptance still needs an actual owner flight.
 

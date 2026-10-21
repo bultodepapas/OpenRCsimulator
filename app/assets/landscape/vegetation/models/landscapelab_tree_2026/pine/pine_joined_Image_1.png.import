@@ -3,9 +3,11 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3h3qq4hrrhq0"
-path="res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.ctex"
+path.s3tc="res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.s3tc.ctex"
+path.etc2="res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 generator_parameters={
 "md5": "2a707f21dbeb59587329c5a0e8354de2"
@@ -14,11 +16,11 @@ generator_parameters={
 [deps]
 
 source_file="res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png"
-dest_files=["res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.ctex"]
+dest_files=["res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.s3tc.ctex", "res://.godot/imported/pine_joined_Image_1.png-7b69e0b66a339b4c5b58dffd34cf0bb0.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0

@@ -751,3 +751,22 @@ Make leaf flutter shading-only, so it cannot escape an envelope. Keep the
 maples (protected), the BLEND oak and unmeasured trees static. Revisit after
 the owner reviews the motion or approves a new world identity.
 [Evidence](research/visual-quality-implementation/L15b-R2/README.md).
+
+### 2026-10-21 — Budget scenery by measured drawn cost, not one source-triangle pool (LU-34)
+
+With the owner's request to analyse and optimise the scenery limit, replace the
+single 725,000 non-fleet source-triangle pool. Gate per view class at the
+1280×720 qualification viewport on drawn primitives and draw calls, shadow pass
+included, with per-subsystem allocations, an approved shadow-caster list, a
+generated-LOD rule for visible meshes over 5,000 triangles and a texture-memory
+ceiling (`tools/scenery/budget.sh`, `scene_budget.json`). Keep per-subsystem
+source allowances for vertex memory and load work. The pool counted geometry
+the renderer mostly culls or reduces: people and cars used 51% of it but draw
+1,558 primitives in the forward pilot view. Meanwhile it ignored draw calls, full-detail field
+meshes, 489 MiB of textures against 43.7 MiB of buffers, and texture decode
+as the dominant cold-load cost. Totals are the worst measured view +10%;
+close vegetation carries a declared growth allowance for species variety.
+Recalibrate the totals when DT-01a measures the M1-class floor. Apply the
+reviewed GPU-compressed texture policy to the downloaded trees, understory and
+`Leaves.png`.
+[Evidence](research/landscape-upgrade/LU-34/README.md).

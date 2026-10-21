@@ -3,25 +3,27 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ckxu00qnlommx"
-path="res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.ctex"
+path.s3tc="res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.s3tc.ctex"
+path.etc2="res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.etc2.ctex"
 metadata={
-"vram_texture": false
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
+"vram_texture": true
 }
 
 [deps]
 
 source_file="res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.ctex"]
+dest_files=["res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.s3tc.ctex", "res://.godot/imported/flower_empodium_a_nor_gl_1k.jpg-56bf35db6a79e2ad9a8fb7abea8d21f8.etc2.ctex"]
 
 [params]
 
-compress/mode=0
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
-compress/normal_map=0
+compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=false
 mipmaps/limit=-1

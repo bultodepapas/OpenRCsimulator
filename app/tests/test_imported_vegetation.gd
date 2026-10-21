@@ -3,6 +3,26 @@ extends SceneTree
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
+# LU-34: downloaded close-tree and understory maps follow the reviewed maple policy: GPU-compressed
+# (S3TC desktop, ETC2 for Apple/mobile), normal maps flagged, original mip choice. Lossless imports
+# cost 113-142 ms cold decode per tree and four times the texture memory with no visible gain.
+const VRAM_TEXTURES := {
+	"res://assets/landscape/vegetation/models/Leaves.png": false, # Quaternius clover/flower/fern leaves, 16 -> 4 MiB
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_1.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_2.png": true,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_3-Image_0.png": false,
+	"res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined_Image_4.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg": true,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_arm_1k.jpg": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png": false,
+	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg": true,
+}
 
 var _failures := 0
 
@@ -12,6 +32,7 @@ func _initialize() -> void:
 	_test_fit_and_aliases()
 	_test_default_sapling_group()
 	_test_batch_build_and_damage()
+	_test_vram_texture_policy()
 	if _failures == 0:
 		print("imported vegetation tests passed")
 		quit(0)
@@ -264,6 +285,27 @@ func _test_default_sapling_group() -> void:
 		_check("sapling rows exercise both downloaded source variants", assets.has("landscapelab_quercus") and assets.has("landscapelab_pine"))
 	_check("default layout contains its downloaded saplings group", found)
 	_check("three additional maples reach the farm and forest", landscape_maples == 3)
+
+
+func _test_vram_texture_policy() -> void:
+	for path: String in VRAM_TEXTURES:
+		var config := ConfigFile.new()
+		var loaded := config.load(path + ".import") == OK
+		_check(path.get_file() + " pins its import recipe", loaded)
+		if not loaded:
+			continue
+		var metadata: Variant = config.get_value("remap", "metadata", {})
+		_check(path.get_file() + " imports GPU-compressed for desktop and Apple/mobile",
+			config.get_value("params", "compress/mode", -1) == 2
+			and config.get_value("params", "compress/high_quality", true) == false
+			and metadata is Dictionary and bool((metadata as Dictionary).get("vram_texture", false))
+			and str(config.get_value("remap", "path.s3tc", "")).ends_with(".s3tc.ctex")
+			and str(config.get_value("remap", "path.etc2", "")).ends_with(".etc2.ctex"))
+		_check(path.get_file() + " flags normal maps only",
+			config.get_value("params", "compress/normal_map", -1) == (1 if VRAM_TEXTURES[path] else 0))
+		var texture := load(path) as Texture2D
+		_check(path.get_file() + " loads as an imported compressed texture",
+			texture is CompressedTexture2D and texture.get_width() > 0)
 
 
 func _check(label: String, condition: bool, detail: String = "") -> void:

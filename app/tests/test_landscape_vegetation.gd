@@ -18,7 +18,7 @@ const VegetationPlacement = preload("res://scenery/vegetation_placement.gd")
 
 const TREE_XZ_LIMIT := 3.84 # baseline max half-extent across the measured seed sample; catalog width remains 8 m.
 const TREE_TOP_LIMIT := 10.0 # measured baseline top is below 10.0 m; catalog/collision height remains 10.5 m.
-const NON_FLEET_TRIANGLE_LIMIT := 725000 # LU-30 field allowance; SC-09-R1 budgets the parked fleet separately.
+const SourceBudget = preload("res://tests/scene_source_budget.gd") # LU-34 per-subsystem allowances
 const FLEET_TRIANGLE_LIMIT := 350000 # SC-09-R1 full-detail static aircraft allowance.
 const LAKE_CONTEXT_TRIANGLE_LIMIT := 30000 # Explicit allowance for lake-context habitat geometry.
 
@@ -247,9 +247,9 @@ func _test_complete_scenery_budget() -> void:
 		source_tree_counts == {landscapelab_quercus = 3, landscapelab_pine = 10, maple_tree = 4}
 		and source_tree_triangles == 85672,
 		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
-	_check("field scenery excluding the parked fleet stays within the LU-30 allowance",
-		field_only_triangles - fleet_triangles <= NON_FLEET_TRIANGLE_LIMIT,
-		"field=%d fleet=%d non-fleet=%d" % [field_only_triangles, fleet_triangles, field_only_triangles - fleet_triangles])
+	var source_failures := SourceBudget.failures(field_only) + SourceBudget.failures(built)
+	_check("every scenery subsystem stays within its LU-34 source allowance, with and without lake context",
+		source_failures.is_empty(), ", ".join(source_failures))
 	_check("parked aircraft stay within the SC-09-R1 full-detail allowance",
 		fleet_triangles > 0 and fleet_triangles <= FLEET_TRIANGLE_LIMIT,
 		"fleet=%d" % fleet_triangles)

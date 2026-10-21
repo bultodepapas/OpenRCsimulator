@@ -1,0 +1,43 @@
+{
+  "fern_02_a.gltf": {
+    "load_ms": 5.035,
+    "textures": {
+      "fern_02_a_arm_1k.jpg": {
+        "bytes": 524288,
+        "format": 17,
+        "mips": 0
+      },
+      "fern_02_a_base_color_alpha_1k.png": {
+        "bytes": 1048576,
+        "format": 19,
+        "mips": 0
+      },
+      "fern_02_a_nor_gl_1k.jpg": {
+        "bytes": 1048576,
+        "format": 21,
+        "mips": 0
+      }
+    }
+  },
+  "flower_empodium_a.gltf": {
+    "load_ms": 3.182,
+    "textures": {
+      "flower_empodium_a_arm_1k.jpg": {
+        "bytes": 524288,
+        "format": 17,
+        "mips": 0
+      },
+      "flower_empodium_a_base_color_alpha_1k.png": {
+        "bytes": 1048576,
+        "format": 19,
+        "mips": 0
+      },
+      "flower_empodium_a_nor_gl_1k.jpg": {
+        "bytes": 1048576,
+        "format": 21,
+        "mips": 0
+      }
+    }
+  },
+  "renderer_texture_mem_added_bytes": 6990640.0
+}

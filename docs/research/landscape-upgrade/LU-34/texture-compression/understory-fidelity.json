@@ -1,0 +1,44 @@
+{
+ "fern_02_a_front": {
+  "plant_pixels": 169520,
+  "silhouette_iou": 0.9966,
+  "psnr_db": 30.67,
+  "mean_abs_level_difference": 2.968,
+  "pixels_over_16_levels_percent": 0.481
+ },
+ "fern_02_a_side": {
+  "plant_pixels": 191767,
+  "silhouette_iou": 0.9966,
+  "psnr_db": 29.11,
+  "mean_abs_level_difference": 2.414,
+  "pixels_over_16_levels_percent": 0.42
+ },
+ "fern_02_a_under": {
+  "plant_pixels": 219960,
+  "silhouette_iou": 0.9966,
+  "psnr_db": 29.55,
+  "mean_abs_level_difference": 2.586,
+  "pixels_over_16_levels_percent": 0.435
+ },
+ "flower_empodium_a_front": {
+  "plant_pixels": 34957,
+  "silhouette_iou": 0.9969,
+  "psnr_db": 28.64,
+  "mean_abs_level_difference": 3.373,
+  "pixels_over_16_levels_percent": 1.081
+ },
+ "flower_empodium_a_side": {
+  "plant_pixels": 40773,
+  "silhouette_iou": 0.9973,
+  "psnr_db": 29.49,
+  "mean_abs_level_difference": 2.624,
+  "pixels_over_16_levels_percent": 0.589
+ },
+ "flower_empodium_a_under": {
+  "plant_pixels": 51698,
+  "silhouette_iou": 0.997,
+  "psnr_db": 28.92,
+  "mean_abs_level_difference": 3.226,
+  "pixels_over_16_levels_percent": 0.925
+ }
+}
