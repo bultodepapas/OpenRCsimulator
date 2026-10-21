@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="14" failures="0" errors="0" skipped="0" time="700.486000"><testcase classname="OpenRC.GodotCommand" name="res://tests/test_frame_samples.gd [frame-collector-tests-0f7zcxef]" time="1.485000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: frame-collector-tests-0f7zcxef/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="metadata-cap37 [metadata-cap37-l01v2fd1]" time="9.219000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: metadata-cap37-l01v2fd1/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 27.02 ms, p95 698.92 ms, p99 698.92 ms over 16 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/metadata-cap37.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="metadata-headless [metadata-headless-m1x5_jik]" time="6.312000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: metadata-headless-m1x5_jik/report.json and engine.log
+log:3 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.66 ms, p95 16.96 ms, p99 16.98 ms over 31 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/metadata-headless.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="metadata-no-vsync [metadata-no-vsync-7lt0nv5q]" time="8.750000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=2
+
+Evidence: metadata-no-vsync-7lt0nv5q/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 2.38 ms, p95 8.26 ms, p99 16.31 ms over 126 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/metadata-no-vsync.json
+log:8 WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-capped-diagnostic-01 [release-capped-diagnostic-01-2ycnher6]" time="78.344000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-capped-diagnostic-01-2ycnher6/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.26 ms, p95 29.72 ms, p99 31.31 ms over 3601 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/diagnostic-01.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-capped-run-04 [release-capped-run-04-lqpj6p6s]" time="78.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-capped-run-04-lqpj6p6s/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.47 ms, p95 26.20 ms, p99 31.33 ms over 3600 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-04.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-default-run-01 [release-default-run-01-0ml18ay_]" time="78.438000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-default-run-01-0ml18ay_/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.67 ms, p95 17.59 ms, p99 18.18 ms over 3599 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release-default/run-01.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-default-run-02 [release-default-run-02-5o0whm1p]" time="78.235000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-default-run-02-5o0whm1p/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.67 ms, p95 17.38 ms, p99 17.78 ms over 3601 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release-default/run-02.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-default-run-03 [release-default-run-03-sb7wrxuv]" time="77.844000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-default-run-03-sb7wrxuv/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.67 ms, p95 17.40 ms, p99 17.79 ms over 3602 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release-default/run-03.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-export [release-export-aqpeiceb]" time="34.016000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: release-export-aqpeiceb/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-run-01 [release-run-01-sale0o6r]" time="82.843000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-run-01-sale0o6r/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.43 ms, p95 27.59 ms, p99 30.34 ms over 3601 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-01.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-run-02 [release-run-02-ig8u51tm]" time="79.328000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: release-run-02-ig8u51tm/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.51 ms, p95 25.82 ms, p99 31.48 ms over 3601 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-02.json</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="release-run-03 [release-run-03-g00opoiq]" time="79.125000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=2
+
+Evidence: release-run-03-g00opoiq/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.63 ms, p95 22.70 ms, p99 30.43 ms over 3600 frames (complete=true) → D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-03.json
+log:8 WARNING: 19 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="updated-export [updated-export-v0mdfuf7]" time="7.860000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: updated-export-v0mdfuf7/report.json and engine.log</system-out></testcase></testsuite>

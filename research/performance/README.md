@@ -247,9 +247,24 @@ Use the existing app logger, with one foreground flight at a time:
 
 ```powershell
 & .tools/Godot_v4.7.2-stable_win64_console.exe --path app `
-  --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- `
+  --audio-driver Dummy --resolution 1280x720 --max-fps 0 -- `
   --frametimes=C:/absolute/new/run-1.json --warmup=10 --t=60
 ```
+
+This control uses the shipped uncapped engine setting with normal VSync. Retain
+`--max-fps 60` as a separately labelled capped comparison when reproducing earlier
+campaigns; never pool the two. The [2026-10-21 release comparison](../../docs/research/visual-quality-implementation/VQ-01c/pacing-2026-10-21/README.md)
+shows why the distinction matters on this host. The diagnostic example above
+deliberately uses the historical capped condition.
+
+New frame reports record `max_fps`, `vsync_mode`, display server, screen index and
+reported refresh rate at collection end. These are settings/observations, not
+continuous configuration tracking or physical-display qualification. A headless
+VSync enum does not imply presentation; its screen/refresh values are -1.
+The reducer rejects mixed caps/modes, mixed known/unknown configuration and
+partially specified configuration at campaign level. Historical reports lacking
+both fields retain numeric compatibility with `pacing_configuration_complete=false`;
+unknown never means uncapped. Keep their checked command lines as separate evidence.
 
 Retain combined stdout/stderr as `run-1.log`, repeat with new filenames, and record
 display refresh, VSync, power plan, driver and source/package identity. Dummy audio

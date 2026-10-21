@@ -133,6 +133,16 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
         if not isinstance(value, str) or not value.strip():
             errors.append(f"{key} must be a non-empty string")
 
+    # Additive v2 metadata: unknown in historical reports, never inferred as uncapped.
+    if "max_fps" in report and (not _is_int(report["max_fps"]) or report["max_fps"] < 0):
+        errors.append("max_fps must be a non-negative integer")
+    if "vsync_mode" in report:
+        mode = report["vsync_mode"]
+        if not _is_int(mode) or mode not in (0, 1, 2, 3):
+            errors.append("vsync_mode must be an integer from 0 through 3")
+        elif "vsync" in report and (type(report["vsync"]) is not bool or report["vsync"] != (mode != 0)):
+            errors.append("vsync must agree with vsync_mode")
+
     input_enabled = report.get("input_enabled")
     if type(input_enabled) is not bool:
         errors.append("input_enabled must be a boolean")
@@ -498,6 +508,10 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "duration_eligibility": duration,
         "metrics": derived,
         "pacing_gate": pacing,
+        "pacing_configuration": {
+            "max_fps": report.get("max_fps") if report is not None else None,
+            "vsync_mode": report.get("vsync_mode") if report is not None else None,
+        },
         "performance_pass": performance_pass,
         "hardware_acceptance": "not_claimed",
     }
@@ -532,7 +546,22 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         campaign_reasons.append(f"campaign has fewer than {minimum_runs} runs")
     if runs and not all(run["performance_pass"] for run in runs):
         campaign_reasons.append("one or more runs failed an individual performance gate")
-    performance_pass = len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
+    configurations = [run["pacing_configuration"] for run in runs]
+    configuration_consistent = bool(configurations) and all(item == configurations[0] for item in configurations)
+    configuration_complete = bool(configurations) and all(
+        item["max_fps"] is not None and item["vsync_mode"] is not None for item in configurations
+    )
+    legacy_configuration = bool(configurations) and all(
+        item["max_fps"] is None and item["vsync_mode"] is None for item in configurations
+    )
+    if configurations and not configuration_consistent:
+        campaign_reasons.append("runs have different or mixed known/unknown FPS caps or VSync modes")
+    if configurations and not configuration_complete and not legacy_configuration:
+        campaign_reasons.append("non-legacy pacing configuration requires both FPS cap and VSync mode")
+    performance_pass = (
+        len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
+        and configuration_consistent and (configuration_complete or legacy_configuration)
+    )
     summary = {
         "format": SUMMARY_FORMAT,
         "complete": True,
@@ -544,6 +573,8 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         "active_flight_qualifier_count": sum(run["active_flight_qualifier"] for run in runs),
         "duration_eligible_count": sum(bool(run["duration_eligibility"] and run["duration_eligibility"]["eligible"]) for run in runs),
         "performance_pass": performance_pass,
+        "pacing_configuration_consistent": configuration_consistent,
+        "pacing_configuration_complete": configuration_complete,
         "performance_pass_count": sum(run["performance_pass"] for run in runs),
         "run_count": len(runs),
         "minimum_runs": minimum_runs,

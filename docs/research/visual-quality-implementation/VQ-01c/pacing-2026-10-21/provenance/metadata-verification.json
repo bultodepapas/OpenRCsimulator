@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "complete": true,
+      "max_fps": 37,
+      "vsync_mode": 1,
+      "vsync": true,
+      "display_server": "Windows",
+      "screen_index": 0,
+      "screen_refresh_hz": 60.0
+    },
+    {
+      "complete": true,
+      "max_fps": 0,
+      "vsync_mode": 0,
+      "vsync": false,
+      "display_server": "Windows",
+      "screen_index": 0,
+      "screen_refresh_hz": 60.0
+    },
+    {
+      "complete": true,
+      "max_fps": 60,
+      "vsync_mode": 1,
+      "vsync": true,
+      "display_server": "headless",
+      "screen_index": -1,
+      "screen_refresh_hz": -1.0
+    }
+  ],
+  "correction": "Initial harness incorrectly expected headless VSync enum 0; observed enum 1 is a setting, not an active display. Corrected expected enum, retained original captures; no runtime change or rerun."
+}
