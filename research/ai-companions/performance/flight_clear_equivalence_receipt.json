@@ -1,0 +1,138 @@
+{
+	"format": "openrc-clear-fast-path-flight-receipt v1",
+	"proof_status": "pass",
+	"scope": "Research-only software equivalence; no wall-clock benchmark, speedup, or physical-flight claim.",
+	"app_snapshot": {
+		"path": "D:/OpenRCsimulator-AFC-work/fresh-validation-20261020/app",
+		"git_commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+		"engine": "Godot 4.7.2-stable official",
+		"hashed_source_and_data_paths": 428,
+		"source_map": "The complete 428-path map is in the hashed flight-equivalence report; the harness verified the map unchanged before and after the run.",
+		"godot_diagnostic_errors": 0,
+		"godot_diagnostic_warnings": 0,
+		"console_note": "Six aircraft data warning lines reported Jyy 0.3692 kg m2 is 2.02x the scaled UltraStick25e value. No Godot WARNING/ERROR diagnostics were emitted."
+	},
+	"source_identity": {
+		"production_controller": {
+			"path": "res://ai/companions/pilot.gd",
+			"sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+		},
+		"required_base_dependency": {
+			"path": "res://ai/companions/circuit_controller.gd",
+			"sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+		},
+		"solver_sha256": "21c675a567d7a28a07c2e417fd12581ea7346cf2423cb9d839f1de4f24af46c3",
+		"solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+		"candidate": {
+			"path": "res://../research/ai-companions/performance/reachable_clear_candidate.gd",
+			"sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+			"scope": "Injected into detached test fixtures only; the accepted profile identity remains pinned to the production pilot."
+		},
+		"flight_harness_sha256": "a1c1e6ebadef87a6cc20b8d385913d4cf04bc1995eb0aa61c4e354088c948ddf",
+		"change_review": "The candidate differs from pilot.gd by one four-line early return after the nominal baseline score. For an unheld controller with a nonnegative score, it returns the same unmodified traffic response that production returns after evaluating alternate bank scores."
+	},
+	"fixture": {
+		"physics_hz": 240,
+		"accepted_ticks": 480,
+		"input_tape_sha256": "dfd02e4f6bcf5f1c379e456c144a3d2d72c8cb7f8b3f47a94a3e0f79f8fcfadf",
+		"input_tape_file": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/flight-equivalence-3/flight-input-tape.json",
+		"agent_count": 2,
+		"agent_seed": 20261020,
+		"world_identity_baseline": "6fd2b6dadd624eec4c4ffba06d5e771032ceeab46419586705ef3585f599b294",
+		"world_identity_candidate": "6fd2b6dadd624eec4c4ffba06d5e771032ceeab46419586705ef3585f599b294",
+		"scenario": "Detached real player and two companion FlightSessions, full Club scenery collision world and field lights, near_runway lake context, default weather, and the same scripted player controls at each common tick."
+	},
+	"result": {
+		"checks": 24,
+		"failures": 0,
+		"byte_exact_common_ticks": 480,
+		"compared_frames": [
+			"player and companion state, previous state, inputs, aux, continuous, modes, loads, contact events, and scenery damage",
+			"player commands, raw controls, trims, requested controls, and agent command/session controls",
+			"controller snapshot state, held-maneuver latch, tick/wind/clearance, decision diagnostics, and manager accepted ticks/batches/damage flag"
+		],
+		"first_difference_tick": -1,
+		"clear_decisions": 240,
+		"bank_score_calls_skipped": 2640,
+		"expected_skipped_per_clear_decision": 11,
+		"timing_collected": false,
+		"orfl": {
+			"baseline_complete": true,
+			"candidate_complete": true,
+			"rows_per_stream": 481,
+			"final_tick": 480,
+			"solver_identity_matches": true
+		},
+		"baseline_exact_replay": {
+			"status": "ok",
+			"complete": true,
+			"mode": "exact",
+			"solver_changed": false,
+			"rows": 481,
+			"final_tick": 480
+		},
+		"replayed_baseline_vs_candidate_player_csv": {
+			"status": "ok",
+			"rows": 481,
+			"ticks": [0, 480],
+			"first_divergence": null,
+			"max_position_difference_m": 0.0,
+			"max_velocity_difference_mps": 0.0,
+			"max_attitude_difference_rad": 0.0,
+			"max_angular_rate_difference_radps": 0.0
+		}
+	},
+	"static_differential": {
+		"path": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path/differential-1.json",
+		"sha256": "eadb1688def3c0caa406bf80ba989a731e84043a31e7154bb3c4ddd78330c4ef",
+		"checks": 11,
+		"failures": 0,
+		"pairs": 1280,
+		"clear_pairs": 130,
+		"held_pairs": 766,
+		"score_evaluations_skipped": 1430
+	},
+	"audit": {
+		"score_purity": "_score_bank uses its input and controller planning wind to compute local values and returns a result without writing controller state. Both paths return before diagnostic updates for unheld nonnegative scores, so decision and diagnostic state stays equal.",
+		"coverage": "No-traffic and filtered-empty traffic retain the super path. Held maneuvers and negative scores retain the original evaluation path. The candidate guard only matches the existing unheld, nonnegative-score early-return condition.",
+		"subclass_limit": "A subclass that overrides _score_bank with observable side effects would observe fewer calls. The equivalence claim covers the concrete production controller behavior plus the test-only score-count instrumentation."
+	},
+	"limits": [
+		"Software equivalence only; deterministic score-call savings are not a wall-clock speedup measurement.",
+		"One 480-tick, two-second calm-default scripted flight fixture, one Club world, and a two-agent roster.",
+		"Candidate controller remains research-only and was not activated in an accepted profile.",
+		"The in-memory harness compares full session/controller/manager frames. The ORFL CSV differential separately compares the recorded position, velocity, attitude, and angular-rate channels.",
+		"The console emitted six aircraft data warnings described above; these were identical across branches and are retained as context."
+	],
+	"artifacts": {
+		"evidence_root": "D:/OpenRCsimulator-AFC-work/evidence/performance/clear-fast-path",
+		"flight_report": {
+			"path": "flight-equivalence-3/flight-equivalence.json",
+			"sha256": "aee4f4ecf8d00fdc54458ebf597da39e235312cff8dcf121a86877655003f8a9"
+		},
+		"input_tape": {
+			"path": "flight-equivalence-3/flight-input-tape.json",
+			"sha256": "6ccdebbdfafa29cd11ae22b81311e55c825226321e4c1cd305ad269eb73af7ed"
+		},
+		"runner_report": {
+			"path": "runner-flight-3/clear-fast-path-flight-zjoqkbrj/report.json",
+			"sha256": "879c37f7c1205ca33491559506cfaa9add542877d3cd77461fe3a6f85d1415d2"
+		},
+		"runner_log": {
+			"path": "runner-flight-3/clear-fast-path-flight-zjoqkbrj/engine.log",
+			"sha256": "758da088dd6e757c52abb06e6ecd2be709c148e8105472f6010751604a5966db"
+		},
+		"baseline_player_orfl": "b33123dca28d3a26f7820d27c80fff7d0cad38d51d853cc9cc13d9967efd15fe",
+		"baseline_companion_0_orfl": "e1221c638b7d767d082d7617b1d5965ed3874793153f0b702cf1c3c93f0de758",
+		"baseline_companion_1_orfl": "ebdf6a57e5969400767cad849a1fad6fc8511b48a00971f99c68a170f5b5e748",
+		"candidate_player_orfl": "c386af1bbd502a0f4f9673586b8403427d807a9889bee2370cd5ec75bd26d402",
+		"candidate_companion_0_orfl": "2acaae785aa9375507975660ce31f16003935dff347b6b118bffd75186983f62",
+		"candidate_companion_1_orfl": "72d85db3869b22a80016bf4c1fd48ceff451c2831fc0aaa5cebe753fabcdca44",
+		"baseline_replay_report": "ed0850a49752a45bc7d56e70357933590302618913b394b2971311eb0a4b26a9",
+		"candidate_export_report": "02e8eb9d1fe3f8fa74f3c80f9904cb6553b7e107942b20eca94f643060fe7cea",
+		"player_csv_differential": {
+			"path": "flight-equivalence-3/player-replay-vs-candidate.csv-differential.json",
+			"sha256": "cd62b804aa02935d7875733071b7a6e27d5e87886d17adb7fd3d3a8ae3213e4c"
+		}
+	}
+}

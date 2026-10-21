@@ -43,7 +43,16 @@ The shared scenery aftermath layer caps contacts at the nearest 160 proxies and 
 
 ## Native visual review
 
-The actual helicopter route was captured with Godot 4.7.2, Compatibility/OpenGL 3.3 and an RTX 3090: six fixtures at noon and midnight, each at 0.04, 0.24, 0.8 and 2 seconds after impact. The [48-frame manifest](captures/captures.json) records contact reports and wreck/effect statistics; [verification](captures/verification.json) binds runtime/harness hashes and checks engine errors, pause/resume, source visibility, accepted-state immutability and reset.
+The actual helicopter route was captured with Godot 4.7.2, Compatibility/OpenGL 3.3 and an RTX 3090: six fixtures at noon and midnight, each at 0.04, 0.24, 0.8 and 2 seconds after impact. The [48-case manifest](captures/captures.json) records contact reports and wreck/effect statistics; [verification](captures/verification.json) binds runtime/harness hashes and checks engine errors, pause/resume, source visibility, accepted-state immutability and reset.
+
+Four 2.0-second PNGs were exact SHA-256 duplicates of their 0.8-second counterparts. The duplicate stills were removed; all 48 case records, including the distinct 2.0-second statistics, and the original capture/source verification records remain. Review the retained 0.8-second image for each pair:
+
+| Removed 2.0-second still | Retained 0.8-second still | SHA-256 |
+| --- | --- | --- |
+| `12-main-2000.png` | `12-main-0800.png` | `748135e51b521b265947c2278bc9c237a7ddabfb9c063392492f49004f4a8ee0` |
+| `12-hard-2000.png` | `12-hard-0800.png` | `d33a39a51c039d011ca968ce71ed4a00544da383d246ce4d6478bffc93d9d722` |
+| `00-main-2000.png` | `00-main-0800.png` | `f40dc75878a036bc2aeada1a2227c0834046d63371b08e1231a888e3dad2a9399` |
+| `00-hard-2000.png` | `00-hard-0800.png` | `b6b73fe9324d376c26df3cd10048fe7aa15d0b4cc35cef9485678c0208060fb6` |
 
 | Fixture | Outcome exercised | Review frame |
 | --- | --- | --- |

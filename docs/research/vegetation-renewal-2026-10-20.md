@@ -313,7 +313,7 @@ The 1024² atlas and material-ID mask preserve the three existing runtime slot I
 
 ### Runtime integration
 
-- All four close maple placements remain, including the protected clubhouse hero. The 13 former non-maple close-tree placements now use five oak and eight pine instances: 17 close trees total and 91,212 source triangles.
+- All four close maple placements remain, including the protected clubhouse hero. The 13 former non-maple close-tree placements now use three oak and ten pine instances: 17 close trees total and 85,672 source triangles.
 - The field forest still has 1,680 crossed-card trees in the existing eight sector MultiMeshes. The atlas changed; the card count and batching contract did not.
 - Photographic Fern and Empodium A integration is still in progress under a 90,000-source-triangle allocation. Their source/download/license checks passed; final allocation and visual adjustment are not yet accepted.
 - Close oblique views still expose the field cards' planarity. There is no shipped camera-dependent mesh/card LOD solution or accepted close-field transition.

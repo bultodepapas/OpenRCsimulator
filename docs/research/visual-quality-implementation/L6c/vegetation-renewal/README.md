@@ -21,7 +21,7 @@ The comparison shows the main improvement in branching, textured bark, irregular
 | Layer | Implementation | Geometry / population |
 | --- | --- | --- |
 | Protected trees | LOLIPOP `maple_tree` remains in alias slot zero; no model, map, import, material, tint, height or placement change | Four maples; clubhouse seed `793949324`, N −32, E 10.5, heading 247.1°, height 14 m |
-| Close trees | LandscapeLab Quercus and joined pine replace the 13 weaker non-maple trees one for one | Five Quercus, eight pine; all 17 trees total 91,212 source triangles |
+| Close trees | LandscapeLab Quercus and joined pine replace the 13 weaker non-maple trees one for one | Three Quercus, ten pine; all 17 trees total 85,672 source triangles |
 | Field forest | Existing three atlas slots now use Quercus, the retained maple source, and pine | Same 1,680 trees, six triangles each, eight sector MultiMeshes; species counts 588 / 531 / 561 |
 | Understory | Poly Haven Fern 02 A and open-bloom Flower Empodium A, mixed with retained grass and shrubs | 285 botanical placements; 11 ferns and seven Empodium; 89,655 / 90,000 source triangles; 14 / 24 batches |
 

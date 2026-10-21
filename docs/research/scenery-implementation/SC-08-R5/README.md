@@ -20,7 +20,7 @@ Godot 4.7.2 Compatibility on RTX 3090, 1280 × 720 with 4× MSAA. The fixed scri
 | Roof | [image](before/roof.png) | [image](accepted/roof.png) |
 | Underside | [image](before/underside.png) | [image](accepted/underside.png) |
 | Eave connection | — | [close view](accepted/eave_detail.png) |
-| Post foot | — | [close view](accepted/post_foot.png) |
+| Post foot | — | [same image as the R6 close view](../SC-08-R6/accepted/post_foot.png) |
 | End | [image](before/end.png) | [image](accepted/end.png) |
 | Context | [image](before/context.png) | [image](accepted/context.png) |
 
