@@ -141,25 +141,32 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			return _numerical_failure("singular or nonfinite Jacobian (no trim near this condition)", mode, V, iterations)
 		if bounded_glow_level:
 			var step_scale: float = 1.0
+			var bound := NAN # the throttle limit a full bounded step lands on exactly
 			if dx[2] > 0.0 and x[2] + dx[2] > 1.0:
 				step_scale = (1.0 - x[2]) / dx[2]
+				bound = 1.0
 			elif dx[2] < 0.0 and x[2] + dx[2] < 0.0:
 				step_scale = (0.0 - x[2]) / dx[2]
+				bound = 0.0
 			step_scale = clampf(step_scale, 0.0, 1.0)
+			var bounded_scale: float = step_scale
 			var accepted_step: bool = false
 			while step_scale >= 1e-8:
 				var candidate: PackedFloat64Array = x.duplicate()
 				for k in N:
 					candidate[k] += step_scale * dx[k]
+				if not is_nan(bound) and step_scale == bounded_scale:
+					candidate[2] = bound # x + ((b - x)/dx)·dx is not b in floating point
 				if candidate[2] >= 0.0 and candidate[2] <= 1.0 and _all_finite(candidate):
 					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio)
 					var candidate_norm: float = _norm(candidate_residual)
+					# Accept only a decreasing step; otherwise halve it (the residual must stay the iterate's own).
 					if is_finite(candidate_norm) and candidate_norm < residual_norm:
 						x = candidate
-					r = candidate_residual
-					residual_norm = candidate_norm
-					accepted_step = true
-					break
+						r = candidate_residual
+						residual_norm = candidate_norm
+						accepted_step = true
+						break
 				step_scale *= 0.5
 			if not accepted_step:
 				return _result(false, "glow trim stalled: no finite residual-decreasing step within throttle [0,1]", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
