@@ -110,7 +110,7 @@ The [incomplete 1080p series](performance/1080/series.json) retains two complete
 ## Remaining acceptance work
 
 - Qualify a bounded near-forest mesh representation and its transition before calling close or overhead field-tree views realistic. The current orbit is retained evidence of the unresolved card geometry.
-- Extend material-feature support before enabling wind deformation on the new close trees. Their supplied PBR appearance currently takes precedence over an incompatible wind shader.
+- Extend material-feature support before enabling wind deformation on the new close trees. Their supplied PBR appearance currently takes precedence over an incompatible wind shader. *2026-10-21: implemented by [L15b-R2](../../L15b-R2/README.md); native-host parity and timing remain open there.*
 - Resolve the shared complete-scene geometry and scenery-build time gates without increasing their thresholds. The passing botanical and non-fleet limits do not supersede those gates.
 - Run the remaining dense-forest, chase, low-sun, lake/meadow and lifecycle profiles, followed by representative lower-end hardware and human flight-readability review. No measurement here substitutes for those results.
 

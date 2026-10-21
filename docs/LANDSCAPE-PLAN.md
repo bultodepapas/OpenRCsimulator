@@ -62,6 +62,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 | L7-R1, L7-R2 | Same-count woodland composition, then measured batching/density changes with explicit world identity. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
 | L8a, L8b | Optional downloaded mesh/LOD/card qualification; existing impostor tooling only for a demonstrated residual need. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
 | L15b-R1 | Imported-tree wind qualification, preserving field cards and shared grass consumers. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
+| L15b-R2 | Close downloaded-tree wind within unchanged collision proxies; delivered 2026-10-21. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 
 ## Landscape integration
 

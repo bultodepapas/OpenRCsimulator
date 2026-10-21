@@ -739,3 +739,16 @@ skidding spiral, because the model's spin is already an accelerating spiral
 dive. Revisit after spin physics with rotation and separation dynamics
 (D10-R4, D8b-R2d-v3).
 [Evidence](research/extra-300-realism/EX-14/README.md#ex-14h--post-stall-wing-polar).
+
+### 2026-10-21 — Close downloaded trees sway inside their existing collision proxies (L15b-R2)
+
+Give the close LandscapeLab Quercus and pine trees the field cards' wind law,
+expressed in metres, through a shader that mirrors their StandardMaterial3D
+features. Bound each asset's crown-top sway so that every displaced vertex of
+its smallest placed tree stays inside the unchanged crown box and trunk
+capsule (Quercus 0.12 m, pine 0.22 m). Do not enlarge the 0.06 m wind margin
+to the cards' 0.24 m lean, because that would change the collision world.
+Make leaf flutter shading-only, so it cannot escape an envelope. Keep the
+maples (protected), the BLEND oak and unmeasured trees static. Revisit after
+the owner reviews the motion or approves a new world identity.
+[Evidence](research/visual-quality-implementation/L15b-R2/README.md).
