@@ -158,7 +158,7 @@ func _check_circuit(result: Dictionary, eastbound: bool) -> void:
 	var expected_east: float = float(result.get("runway_center_east_m", 0.0)) + gate_along * (1.0 if eastbound else -1.0)
 	var expected_heading: float = wrapf(heading + float(pilot_diagnostics.get("approach_crab_angle_rad", 0.0)), -PI, PI)
 	var actual_east: float = float(approach.get("east_m", INF))
-	var gate_prediction_valid: bool = pilot_diagnostics.is_empty() or bool(pilot_diagnostics.get("approach_gate_prediction_valid", false))
+	var gate_prediction_valid: Variant = pilot_diagnostics.get("approach_gate_prediction_valid", false)
 	var entry_classification: Dictionary = readiness_script.classify({
 		altitude_m = approach.get("altitude_m", NAN),
 		airspeed_mps = approach.get("airspeed_mps", NAN),

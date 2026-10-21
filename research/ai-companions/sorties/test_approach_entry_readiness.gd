@@ -69,6 +69,10 @@ func _run() -> void:
 	wrapped_heading.expected_heading_rad = -PI + 0.01
 	wrapped_heading.yaw_rad = PI - 0.01
 	_assert(bool(readiness_script.classify(wrapped_heading).ready), "heading error wraps across ±π")
+	var wrapped_heading_reverse := nominal.duplicate(true)
+	wrapped_heading_reverse.expected_heading_rad = PI - 0.01
+	wrapped_heading_reverse.yaw_rad = -PI + 0.01
+	_assert(bool(readiness_script.classify(wrapped_heading_reverse).ready), "heading error wraps across ±π in the reverse direction")
 
 	var invalid_prediction := nominal.duplicate(true)
 	invalid_prediction.gate_prediction_valid = false
@@ -76,7 +80,7 @@ func _run() -> void:
 	var missing_prediction := nominal.duplicate(true)
 	missing_prediction.erase("gate_prediction_valid")
 	_assert_rejected_result(missing_prediction, "gate_prediction", "missing gate prediction is refused")
-	for malformed_prediction: Variant in [1, 0, "true", "false", null]:
+	for malformed_prediction: Variant in [1, 0, NAN, INF, -INF, "true", "false", null]:
 		var malformed := nominal.duplicate(true)
 		malformed.gate_prediction_valid = malformed_prediction
 		_assert_rejected_result(malformed, "gate_prediction", "non-boolean gate prediction is refused")
