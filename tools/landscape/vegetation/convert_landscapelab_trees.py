@@ -24,6 +24,9 @@ LICENSE_URL = "https://creativecommons.org/licenses/by-sa/4.0/"
 SOURCE_README = "README.md"
 SOURCE_README_BYTES = 1_718
 SOURCE_README_SHA256 = "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276"
+SOURCE_LICENSE_NOTICE = "LICENSE_LANDSCAPELAB.txt"
+SOURCE_LICENSE_NOTICE_BYTES = 848
+SOURCE_LICENSE_NOTICE_SHA256 = "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
 SOURCE_PREFIX = "assets/landscape/vegetation/source/landscapelab_tree_2026/"
 DERIVED_PREFIX = "assets/landscape/vegetation/derived/landscapelab_tree_2026/"
 RUNTIME_PREFIX = "models/landscapelab_tree_2026/"
@@ -59,28 +62,22 @@ SOURCE_ASSETS = (
     },
 )
 
-RUNTIME_LICENSE = (
-    "LandscapeLab Assets — Quercus and Pine\n"
-    "\n"
-    "Source project: LandscapeLab Assets (repository maintained by boku-ilen)\n"
-    f"Source revision: {REVISION}\n"
-    f"Source repository: {COMMIT_URL}\n"
-    "Assets: Natural/Plants/Trees/Quercus/quercus.glb; "
-    "Natural/Plants/Trees/Pine/pine_joined.glb\n"
-    f"License: {LICENSE_NAME} ({LICENSE_URL})\n"
-    f"License evidence: {SOURCE_PREFIX}{SOURCE_README}\n"
-    "The pinned repository README applies CC BY-SA 4.0 by default; neither selected asset has an additional LICENSE file.\n"
-    "The pinned repository does not identify individual creators for these two files.\n"
-    "Changes: none. Runtime models are byte-for-byte copies of the supplied GLBs.\n"
-).encode("utf-8")
-
-
 class ConversionError(RuntimeError):
     """Raised when the pinned source or derived-copy contract fails."""
 
 
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def read_license_notice() -> bytes:
+    path = SOURCE_DIR / SOURCE_LICENSE_NOTICE
+    if not path.is_file():
+        raise ConversionError(f"missing LandscapeLab attribution notice: {path}")
+    data = path.read_bytes()
+    if len(data) != SOURCE_LICENSE_NOTICE_BYTES or sha256_bytes(data) != SOURCE_LICENSE_NOTICE_SHA256:
+        raise ConversionError("LandscapeLab attribution/license notice changed from its reviewed pin")
+    return data
 
 
 def git_blob_sha1(data: bytes) -> str:
@@ -342,7 +339,7 @@ def inspect_glb(data: bytes, source_name: str) -> dict:
             "max": [round(value, 6) for value in bounds_max],
             "size": [round(value, 6) for value in size],
             "height": round(raw_height, 6),
-            "ground_offset": round(-bounds_min[1], 6),
+            "ground_offset": round(max(0.0, -bounds_min[1]), 6),
         },
         "normalized_bounds_1m": normalized,
         "embedded_images": declared_image_records,
@@ -356,6 +353,7 @@ def _manifest() -> tuple[dict, dict[str, bytes]]:
     readme = (SOURCE_DIR / SOURCE_README).read_bytes()
     if len(readme) != SOURCE_README_BYTES or sha256_bytes(readme) != SOURCE_README_SHA256:
         raise ConversionError("pinned LandscapeLab README/license evidence changed")
+    license_notice = read_license_notice()
 
     assets = []
     outputs: dict[str, bytes] = {}
@@ -405,6 +403,9 @@ def _manifest() -> tuple[dict, dict[str, bytes]]:
             "license_evidence": SOURCE_PREFIX + SOURCE_README,
             "license_evidence_bytes": len(readme),
             "license_evidence_sha256": sha256_bytes(readme),
+            "runtime_notice": SOURCE_PREFIX + SOURCE_LICENSE_NOTICE,
+            "runtime_notice_bytes": len(license_notice),
+            "runtime_notice_sha256": sha256_bytes(license_notice),
         },
         "geometry_created": False,
         "method": "retain the pinned self-contained glTF binary unchanged; inspect its accessors and embedded materials/textures",

@@ -10,7 +10,13 @@ exact owner generation. `observe_player()` handles advisory requests, approach
 priority and implicit player occupancy. `update_wind()` accepts a signed headwind
 component (positive favors direction +1), crosswind and gust magnitudes; direction
 changes require 2,400 consistent ticks and remain locked while occupied or while
-a committed arrival waits. `report_clearance()` requires both swept-footprint and
+a committed arrival waits. Each request carries a finite, nonnegative
+`max_tailwind_mps` (last optional argument, default zero). Tailwind is checked
+against the effective request direction at grant time and whenever wind changes;
+an invalid reservation is revoked and queued immediately, even during direction
+hysteresis. An occupied runway remains physically blocked. The caller must use
+an aircraft's qualified envelope; this helper does not establish one. Snapshot
+version v4 requires this bound explicitly. `report_clearance()` requires both swept-footprint and
 protected-path clearance. `report_runway_wreck()` retains every blocker until
 `clear_wreck_and_occupancy()` commits removal of the matching wreck identity.
 Reservations expire; occupied and blocked states do not. Request, queue, wreck,
@@ -60,6 +66,7 @@ and Poisson checks from the repository root:
 ```powershell
 python tools/godot/run_checked.py --warnings-as-errors --timeout 90 --require-text "PASS traffic scheduler draft checks" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_traffic_schedulers.gd
 python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "scheduler boundaries: 20 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_scheduler_boundaries.gd
+python tools/godot/run_checked.py --warnings-as-errors --timeout 60 --require-text "runway tailwind: 19 checks, 0 failed" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path research/ai-companions/traffic --audio-driver Dummy --script res://test_runway_tailwind.gd
 ```
 
 The source-bound review receipt is [AFC-07 R1](../../../docs/research/ai-companions/AFC-07-R1/README.md).

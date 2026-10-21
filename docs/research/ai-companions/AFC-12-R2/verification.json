@@ -144,5 +144,17 @@
       "bytes": 1247,
       "sha256": "3f45442a5b812e07a777aabea95904f180ee3ee78dabccf22151b88a079e61e3"
     }
-  ]
+  ],
+  "index_boundary_followup": {
+    "verified_utc": "2026-10-21T00:00:50.338301+00:00",
+    "source_receipt_scope": "Collected after follow-up test; original receipts preserved.",
+    "sources": {
+      "app/ai/companions/static_trajectory.gd": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2",
+      "app/tests/test_companions_trajectory.gd": "1d72aebef2d874ea93ab7d5b3c77489089f0cb6a17b0d58cc8abe23838e45700",
+      "app/scenery/collision_world.gd": "09343d14f9cf0b38a770832d1056d143da39f78772ac54a1047ec4504944b7e9"
+    },
+    "accepted_reports": [
+      "checks/static-index-boundaries-so5o27eh/report.json"
+    ]
+  }
 }

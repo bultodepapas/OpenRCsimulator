@@ -1,11 +1,43 @@
 [
   {
     "asset": "fern_02",
+    "path": "fern_02.bin",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/fern_02/fern_02.bin",
+    "size_bytes": 176176,
+    "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c",
+    "api_md5": "c061e9255f7d36ae9ce0e92ef3e100b2"
+  },
+  {
+    "asset": "fern_02",
     "path": "fern_02_1k.gltf",
     "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/fern_02/fern_02_1k.gltf",
     "size_bytes": 6899,
     "sha256": "33974295ee19670af4877705fc7d91f33f42d6302f0d44a625e072271223031f",
     "api_md5": "cf276874d37bfb73c299504a6b355b77"
+  },
+  {
+    "asset": "fern_02",
+    "path": "polyhaven_files.json",
+    "url": "https://api.polyhaven.com/files/fern_02",
+    "size_bytes": 40446,
+    "sha256": "77b5ef582de1d60c0aa84c17e0f2fcfa3564b55d863a49da34c5168c9c2120e5",
+    "api_md5": null
+  },
+  {
+    "asset": "fern_02",
+    "path": "polyhaven_info.json",
+    "url": "https://api.polyhaven.com/info/fern_02",
+    "size_bytes": 1424,
+    "sha256": "e7c727ba89d9961de223f8f1625d175c37edb5699af6d7766cd065ad42782678",
+    "api_md5": null
+  },
+  {
+    "asset": "fern_02",
+    "path": "textures/fern_02_alpha_1k.png",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/fern_02/fern_02_alpha_1k.png",
+    "size_bytes": 114589,
+    "sha256": "ea3c64284c7ebdeedf484d2d816eae92825ec526140c3bb83859ddc7a64001f9",
+    "api_md5": "1421e5e36946c23a7ddcc907de89025c"
   },
   {
     "asset": "fern_02",
@@ -32,12 +64,12 @@
     "api_md5": "43aed63dff79554f6064627515afd9d7"
   },
   {
-    "asset": "fern_02",
-    "path": "fern_02.bin",
-    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/fern_02/fern_02.bin",
-    "size_bytes": 176176,
-    "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c",
-    "api_md5": "c061e9255f7d36ae9ce0e92ef3e100b2"
+    "asset": "flower_empodium",
+    "path": "flower_empodium.bin",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/flower_empodium/flower_empodium.bin",
+    "size_bytes": 101936,
+    "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+    "api_md5": "d13a97f2e5ab33746ea149300ed93a4a"
   },
   {
     "asset": "flower_empodium",
@@ -46,6 +78,30 @@
     "size_bytes": 8859,
     "sha256": "3f39d6b7dba6de81014f5ce41e43ac1204a45bfe146cbb425515103c4c5e9798",
     "api_md5": "af2d2eb97cd38ada73eea72dbd12591d"
+  },
+  {
+    "asset": "flower_empodium",
+    "path": "polyhaven_files.json",
+    "url": "https://api.polyhaven.com/files/flower_empodium",
+    "size_bytes": 32834,
+    "sha256": "9ed2b40ce10f047ff19e99750b992f6c047b7305a7f068775708ef0ab2d23317",
+    "api_md5": null
+  },
+  {
+    "asset": "flower_empodium",
+    "path": "polyhaven_info.json",
+    "url": "https://api.polyhaven.com/info/flower_empodium",
+    "size_bytes": 1345,
+    "sha256": "01a62c40d0f748b789d288ed2970df51a70028af0b581d36b83ca5434092639f",
+    "api_md5": null
+  },
+  {
+    "asset": "flower_empodium",
+    "path": "textures/flower_empodium_alpha_1k.png",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/flower_empodium/flower_empodium_alpha_1k.png",
+    "size_bytes": 111029,
+    "sha256": "41aa40a0f570160ca64e8d99e49b4eecdc852158a6b021545831f0d654b0529e",
+    "api_md5": "d7dc98ecc635eaca688f8d7214452ccd"
   },
   {
     "asset": "flower_empodium",
@@ -62,14 +118,6 @@
     "size_bytes": 173921,
     "sha256": "eca8de7f24d5612d918ddd02339698f9c44b00ad5a9d2fb61d6acda267786129",
     "api_md5": "16ba75adf653c6cfcfa84794bed24a06"
-  },
-  {
-    "asset": "flower_empodium",
-    "path": "flower_empodium.bin",
-    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/flower_empodium/flower_empodium.bin",
-    "size_bytes": 101936,
-    "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
-    "api_md5": "d13a97f2e5ab33746ea149300ed93a4a"
   },
   {
     "asset": "flower_empodium",

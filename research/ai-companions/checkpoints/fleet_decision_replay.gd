@@ -202,9 +202,11 @@ static func validate_manifest(manifest: Dictionary, record: Dictionary, paths: D
 		if actual_bytes < 1 or actual_bytes > MAX_STREAM_BYTES:
 			return {ok = false, reason = "%s ORFL file size is outside bounds" % stable_id}
 		total_bytes += actual_bytes
+		var actual_sha256: String = FileAccess.get_sha256(path)
 		if total_bytes > MAX_TOTAL_STREAM_BYTES or actual_bytes != entry.bytes \
-				or FileAccess.get_sha256(path) != entry.sha256:
-			return {ok = false, reason = "%s ORFL bytes changed after manifest creation" % stable_id}
+				or actual_sha256 != entry.sha256:
+			return {ok = false, reason = "%s ORFL bytes changed after manifest creation (size=%d/%d sha_match=%s total=%d)" \
+				% [stable_id, actual_bytes, entry.bytes, actual_sha256 == entry.sha256, total_bytes]}
 		var checked := _inspect_stream(path, stable_id, record.capture_tick, manifest.final_tick,
 			record.future_player_tape.size() + 1)
 		if not checked.ok:
@@ -306,7 +308,7 @@ static func restore_and_replay(fixture: Dictionary, expected_paths: Dictionary, 
 	if not failure.is_empty():
 		return {ok = false, reason = failure, physical = physical, commands = commands,
 			capture = finish}
-	var compared := compare_stream_sets(expected_paths, finish.paths, finish.manifest, record)
+	var compared := compare_stream_sets(expected_paths, finish.paths, manifest, record)
 	if not compared.ok:
 		return {ok = false, reason = compared.reason, physical = physical, commands = commands,
 			capture = finish, comparison = compared}

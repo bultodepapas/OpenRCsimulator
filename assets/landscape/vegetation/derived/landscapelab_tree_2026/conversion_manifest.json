@@ -1,0 +1,244 @@
+{
+  "format": "openrc-landscapelab-vegetation-conversion v1",
+  "source": {
+    "repository": "https://github.com/boku-ilen/landscapelab-assets",
+    "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+    "commit_url": "https://github.com/boku-ilen/landscapelab-assets/tree/dfdde034c3547f9876967653d98827bd5348e52e",
+    "license": "CC BY-SA 4.0",
+    "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
+    "license_evidence_bytes": 1718,
+    "license_evidence_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+    "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
+    "runtime_notice_bytes": 848,
+    "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+  },
+  "geometry_created": false,
+  "method": "retain the pinned self-contained glTF binary unchanged; inspect its accessors and embedded materials/textures",
+  "assets": [
+    {
+      "id": "landscapelab_quercus",
+      "source_name": "Quercus",
+      "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/quercus.glb",
+      "upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
+      "git_blob_sha1": "e625adef3ae04e455037c4db4d39d7f486f0a498",
+      "source_bytes": 7389596,
+      "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "derived_path": "quercus.glb",
+      "derived_bytes": 7389596,
+      "derived_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "source_triangles": 7016,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "leaves",
+        "branches"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "leaves",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.5,
+          "double_sided": true
+        },
+        {
+          "name": "branches",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -25.538609,
+          0.0,
+          -26.160007
+        ],
+        "max": [
+          26.347387,
+          59.555878,
+          24.630487
+        ],
+        "size": [
+          51.885996,
+          59.555878,
+          50.790495
+        ],
+        "height": 59.555878,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.4288176,
+          0.0,
+          -0.439251481
+        ],
+        "max": [
+          0.442397767,
+          1.0,
+          0.413569381
+        ],
+        "size": [
+          0.871215368,
+          1.0,
+          0.852820862
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.016790953956,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 848136,
+          "sha256": "ebbb008c5dc660aa456e4efcf6eae7adc8467e86db3a2d8dfdabade6fa6cebf4"
+        },
+        {
+          "index": 1,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2528904,
+          "sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f"
+        },
+        {
+          "index": 2,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1217770,
+          "sha256": "92ab95d1900720d615ee6cf6038b7b3af2ceba2ed7ee41bc52a1a24f2f65a58b"
+        },
+        {
+          "index": 3,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2458044,
+          "sha256": "21462e7dbd2724f5414675731c26d20bf5c7f7ce93d8764514f09bde581d29dc"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded"
+    },
+    {
+      "id": "landscapelab_pine",
+      "source_name": "Pine",
+      "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/pine_joined.glb",
+      "upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
+      "git_blob_sha1": "8634899c22a9e4a7bf8d3fc94930ed560d340dd0",
+      "source_bytes": 6788748,
+      "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "derived_path": "pine_joined.glb",
+      "derived_bytes": 6788748,
+      "derived_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "source_triangles": 4246,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "branches.001",
+        "leaves.001"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "branches.001",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        },
+        {
+          "name": "leaves.001",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.206521735,
+          "double_sided": true
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -7.928009,
+          0.0,
+          -8.131644
+        ],
+        "max": [
+          7.767775,
+          41.153725,
+          7.985003
+        ],
+        "size": [
+          15.695783,
+          41.153725,
+          16.116648
+        ],
+        "height": 41.153725,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.192643767,
+          0.0,
+          -0.197591939
+        ],
+        "max": [
+          0.18875022,
+          1.0,
+          0.194028694
+        ],
+        "size": [
+          0.381393987,
+          1.0,
+          0.391620633
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.02429913715,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2195944,
+          "sha256": "85b5350621792705d9cc475326d97d82fcd19985270a517f2e4232f72460462a"
+        },
+        {
+          "index": 1,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1281883,
+          "sha256": "e8fac2f0115961e0c7357b400cedf9131e660c3b25e50ddb16f9ad49103c01c6"
+        },
+        {
+          "index": 2,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1985412,
+          "sha256": "5ee8ccff7394ea5c20d678e45ae2164b42faf4b9aacdb937c4adb98b97e8efe8"
+        },
+        {
+          "index": 3,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1098120,
+          "sha256": "8af0ed5d783f8cef1ef1a86272901da43327e01167213dabba3b795b9d4a90ba"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded"
+    }
+  ]
+}

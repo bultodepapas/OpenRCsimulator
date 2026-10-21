@@ -33,3 +33,11 @@ Open integration gates: actual runway/taxi/protected-volume observations,
 qualified flight and recovery state machines, current-tick intent submission,
 full fleet journal/restore, bounded event consumption and player request UI.
 The current production circuits and Incidents Off configuration are unchanged.
+
+The tailwind follow-up adds **19 passing checks** and repeats both existing
+suites with zero engine errors or warnings. It closes a reservation gap during
+the ten-second wind-direction dwell: an aircraft's tailwind limit now revokes an
+invalid reservation immediately. Tests cover both directions, exact limits,
+stale tickets, queued requests after reversal, and atomic rejection of malformed
+snapshots/limits. The v4 source and runner receipts are appended separately to
+`verification.json`; the original v3 evidence remains unchanged.
