@@ -71,9 +71,11 @@ The focused [test index](checks/results.json) retains final logs, including fail
 | Landscape collision / vegetation proxies | 52 / 32 checks pass, including low Quercus foliage coverage |
 | Separate scenery-build geometry limits | Pass: non-fleet 724,884 / 725,000; fleet 273,421 / 350,000 |
 | Complete-scene LU-21 geometry limit | **Fail:** baseline 1,012,235, final 1,024,645 against 650,000; final adds 12,410 (1.23%). The shared baseline already exceeded this limit. |
-| Cold scenery build | **Fail:** baseline 947.59 ms, final recorded run 1,453.8 ms against 800 ms. These captures had concurrent work and do not isolate vegetation loading cost. |
+| Cold scenery build | **Fail:** serial follow-up baseline 902.745 ms, candidate 913.668 ms against 800 ms (+10.923 ms). Earlier contended captures were 947.59 / 1,453.8 ms. These are fresh-process scenery construction checks, not cold OS-cache or full Home/Fly loading measurements. |
 
 The scenery-build and complete-scene tests use different counted configurations; their totals are not interchangeable. No budget or loading threshold was increased to obtain a pass.
+
+The [serial check receipts](checks/serial/) retain the follow-up build pair, native tree test and workspace import. A first native workspace run correctly failed the error-log gate because its four new model import caches were missing, despite the tree assertions completing. A normal headless editor import rebuilt those caches; the subsequent native run passed with 31,991 checks and no engine errors. All 15 protected-maple file hashes still matched afterward, and the workspace's 56 changed runtime files matched the frozen candidate byte for byte.
 
 ## Motion and export evidence
 

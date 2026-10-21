@@ -1,0 +1,189 @@
+{
+  "format": "afc-04-r4-run-source-identity-v1",
+  "created_utc": "2026-10-21T00:25:38.463909+00:00",
+  "pre_copy_receipt": {
+    "path": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\qualification\\pre-copy-identity.json",
+    "sha256": "940e8a8a728388a1f91e2962f4b6ace5245aad105b0159472b10e4347b79ac61"
+  },
+  "main_commit": "16a6d9566e1fac0ca7ac96ce6e085beb9fe2c643",
+  "mirror_commit": "2966595b1f243be3905e2699b71c0283195ae306",
+  "mirror_root": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\afc04-isolated",
+  "engine": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "bytes": 198152,
+    "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "copied_paths": [
+    "app/ai/companions/circuit_controller.gd",
+    "app/ai/companions/circuit_controller.gd.uid",
+    "app/ai/companions/pilot.gd",
+    "app/ai/companions/pilot.gd.uid",
+    "app/ai/companions/profile_loader.gd",
+    "app/ai/companions/profile_loader.gd.uid",
+    "app/ai/companions/fleet_record.gd",
+    "app/ai/companions/fleet_record.gd.uid",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+    "app/tests/test_companions_profiles.gd",
+    "app/tests/test_companions_profiles.gd.uid",
+    "app/tests/test_companions_pilot.gd",
+    "app/tests/test_companions_pilot.gd.uid",
+    "app/tests/test_companions_clearance.gd",
+    "app/tests/test_companions_clearance.gd.uid",
+    "app/tests/test_companions_record.gd",
+    "app/tests/test_companions_record.gd.uid"
+  ],
+  "unchanged_context_paths": [
+    "app/project.godot",
+    "app/physics/rigid_body.gd",
+    "app/physics/math3d.gd",
+    "app/physics/wind_config.gd",
+    "app/sim/flight_session.gd",
+    "app/data/fields/default.json",
+    "app/data/fields/lake.json",
+    "app/data/field_loader.gd",
+    "app/data/lake_loader.gd",
+    "app/scenery/collision_setup.gd",
+    "app/scenery/collision_world.gd",
+    "research/ai-companions/pilot_probe.gd",
+    "research/ai-companions/encounter_probe.gd"
+  ],
+  "files": {
+    "app/ai/companions/circuit_controller.gd": {
+      "bytes": 21717,
+      "sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+    },
+    "app/ai/companions/circuit_controller.gd.uid": {
+      "bytes": 20,
+      "sha256": "67f040209fa311b1eec3991ce219247d7332a8f12eaba578944ea233fc30c1db"
+    },
+    "app/ai/companions/pilot.gd": {
+      "bytes": 23965,
+      "sha256": "363942b4b7d67f85333233f0c6000890ca984e5b76a8ccabe7973f70218259ed"
+    },
+    "app/ai/companions/pilot.gd.uid": {
+      "bytes": 20,
+      "sha256": "48c310ba71243b532a057032e7bb74d090f48bcb35e4e2ef733a26470fe3d29a"
+    },
+    "app/ai/companions/profile_loader.gd": {
+      "bytes": 33508,
+      "sha256": "0e41819475ad221a075f63fd15de874abd592043851e12dd06dec393024f6279"
+    },
+    "app/ai/companions/profile_loader.gd.uid": {
+      "bytes": 20,
+      "sha256": "1227766f0f5328f89493df0f5d4bb7ddb29010e0fc6f197732d2d0b51e6d0f4d"
+    },
+    "app/ai/companions/fleet_record.gd": {
+      "bytes": 11634,
+      "sha256": "02eea8e73a5ab9d0c6a3335ed51ac747482bfe6fa8c1f84c4b3a3b66ab825917"
+    },
+    "app/ai/companions/fleet_record.gd.uid": {
+      "bytes": 19,
+      "sha256": "2cdd11f52cf3d61ea816b910e8731c7d711076a02d3e39b8bb4941a87ec99069"
+    },
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": {
+      "bytes": 1524,
+      "sha256": "95219f1ce7b2a3569595fdca56e539d46c69342f04c5fc344468b32b2554863e"
+    },
+    "app/tests/test_companions_profiles.gd": {
+      "bytes": 13320,
+      "sha256": "c7aa9318105ad3564662b5a14d9bb39c8bbfac31f823aa3382a82e0f142cc946"
+    },
+    "app/tests/test_companions_profiles.gd.uid": {
+      "bytes": 20,
+      "sha256": "4a34d48b6f06aa7923d75632a57dda633d70c48c78316d7ea75ee04f8a1f3a5c"
+    },
+    "app/tests/test_companions_pilot.gd": {
+      "bytes": 11907,
+      "sha256": "ce1a30f9c52b668ba4e92a86b02a6e9b5aab300a5e663c57236b11d1e94084fd"
+    },
+    "app/tests/test_companions_pilot.gd.uid": {
+      "bytes": 20,
+      "sha256": "2118c048f326c633addcc306bd3e2dea432f419d1206ceadd9c63ab3a453afad"
+    },
+    "app/tests/test_companions_clearance.gd": {
+      "bytes": 3982,
+      "sha256": "0e546ce72685e65e73b5b61e8a9f2b4083156f6f95f550aa26d41bf4ffb90b26"
+    },
+    "app/tests/test_companions_clearance.gd.uid": {
+      "bytes": 20,
+      "sha256": "00376a32322bffda0528d2c33b00d58c6da1409ae3a04a49ccc9a5253f201e1f"
+    },
+    "app/tests/test_companions_record.gd": {
+      "bytes": 36925,
+      "sha256": "b7ca697cdfc67538ae5cae4dc1b2c0305cb5fa529f0bced0714e552c965d4925"
+    },
+    "app/tests/test_companions_record.gd.uid": {
+      "bytes": 20,
+      "sha256": "2372db8d81cda3bb24eb917bd7b9166c2a8549c81c744470d4be5742c1489010"
+    },
+    "app/project.godot": {
+      "bytes": 2198,
+      "sha256": "8403e66f315e5568823da00ca9e656d7143c2cd1b404a526ee636500e4a91f28"
+    },
+    "app/physics/rigid_body.gd": {
+      "bytes": 5582,
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    "app/physics/math3d.gd": {
+      "bytes": 5005,
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    "app/physics/wind_config.gd": {
+      "bytes": 12178,
+      "sha256": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+    },
+    "app/sim/flight_session.gd": {
+      "bytes": 235678,
+      "sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263"
+    },
+    "app/data/fields/default.json": {
+      "bytes": 158788,
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    "app/data/fields/lake.json": {
+      "bytes": 1641,
+      "sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+    },
+    "app/data/field_loader.gd": {
+      "bytes": 62128,
+      "sha256": "df8f12b409df6759f0158cd1dc16a05eb2aba5a5f5d6cd0893edba3fc80e0234"
+    },
+    "app/data/lake_loader.gd": {
+      "bytes": 19121,
+      "sha256": "751d7854d4140c131b9cf63cee9a8b1f17810464a9daecceee8df9b8f55a738d"
+    },
+    "app/scenery/collision_setup.gd": {
+      "bytes": 1961,
+      "sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+    },
+    "app/scenery/collision_world.gd": {
+      "bytes": 37095,
+      "sha256": "2313378ba9f20ca38f2767785f40f3f14c15443875e094e5e19f8c3866b5161f"
+    },
+    "research/ai-companions/pilot_probe.gd": {
+      "bytes": 24165,
+      "sha256": "dedc0a4aba428dfa12fead0c735e231733f094a9fdb14304e16a6d8497fdda32"
+    },
+    "research/ai-companions/encounter_probe.gd": {
+      "bytes": 49059,
+      "sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+    }
+  },
+  "verification_errors": [],
+  "expected_context": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+    "field_id": "default",
+    "lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "physics_hz": 240,
+    "planning_hz": 60,
+    "probe_records": "Both runs report the same collision and lake identities.",
+    "weather": "calm"
+  },
+  "frozen_r2_baseline": {
+    "candidate_sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8",
+    "baseline_pilot_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "probe_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+    "evidence": "docs/research/ai-companions/AFC-04-R3/crossings/source-bound-receipt.json"
+  }
+}

@@ -9,6 +9,9 @@ Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md
 [moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md),
 [avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md), and
 [sound, labels and accessible controls](research/ai-companions/AFC-05-R1/README.md).
+The [fresh Windows checkout receipt](research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
+records 1,200 successful script parses and all 16 companion regression groups;
+its source snapshot and checkout corrections are explicit.
 
 ## Use
 

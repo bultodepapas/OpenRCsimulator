@@ -74,6 +74,14 @@
       "non_fleet_limit_triangles": 725000,
       "final_fleet_triangles": 273421,
       "fleet_limit_triangles": 350000
+    },
+    "serial_followup": {
+      "baseline_ms": 902.745,
+      "candidate_ms": 913.668,
+      "limit_ms": 800,
+      "baseline_log": "serial/baseline-scenery-build-kdp5zf0z/engine.log",
+      "candidate_log": "serial/candidate-scenery-build-ibfcrpjw/engine.log",
+      "result": "Both fail the unchanged 800 ms threshold; geometry budgets pass."
     }
   },
   {
@@ -97,5 +105,21 @@
     "seconds": 1.032,
     "evidence": "test_vegetation_collision_proxies.log",
     "result": "32 checks passed, including the Quercus lower-crown witness"
+  },
+  {
+    "test": "workspace_asset_import",
+    "returncode": 0,
+    "evidence": "serial/workspace-import-yxgms3w6/engine.log",
+    "report": "serial/workspace-import-yxgms3w6/report.json"
+  },
+  {
+    "test": "native_test_treeline",
+    "returncode": 0,
+    "checks": 31991,
+    "failed": 0,
+    "evidence": "serial/native-treeline-imported-fbpnwb1f/engine.log",
+    "report": "serial/native-treeline-imported-fbpnwb1f/report.json",
+    "prior_attempt": "serial/native-treeline-acxfp11y/report.json",
+    "prior_attempt_note": "Rejected by error-log gate because workspace import caches were missing; editor import resolved it."
   }
 ]

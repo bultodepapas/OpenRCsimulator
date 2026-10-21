@@ -1,0 +1,258 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "51718e52-c1d2-4806-a458-1db5b0afd430",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_treeline.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T03:03:46.313619+00:00",
+  "label": "native-treeline",
+  "log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\checks\\serial\\native-treeline-acxfp11y\\engine.log",
+  "report": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\checks\\serial\\native-treeline-acxfp11y\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 20,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 4,
+      "message": "Cannot open file 'res://.godot/imported/pine_joined.glb-2be10caba11144d983761db44a019dde.scn'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1156)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 14,
+      "message": "Failed loading resource: res://.godot/imported/pine_joined.glb-2be10caba11144d983761db44a019dde.scn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 24,
+      "message": "Failed loading resource: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 34,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 44,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:555)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 54,
+      "message": "Cannot open file 'res://.godot/imported/quercus.glb-26fcdbe4bae21572fa6e6eef18288140.scn'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1156)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 64,
+      "message": "Failed loading resource: res://.godot/imported/quercus.glb-26fcdbe4bae21572fa6e6eef18288140.scn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 74,
+      "message": "Failed loading resource: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 84,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 94,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:555)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 104,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371865223853846 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:436)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 114,
+      "message": "Cannot open file 'res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1156)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 125,
+      "message": "Failed loading resource: res://.godot/imported/flower_empodium_a.gltf-422d0c5f39e5e065806d1322a1d3e177.scn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 136,
+      "message": "Failed loading resource: res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 147,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 158,
+      "message": "Imported vegetation scene did not load: res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_a.gltf",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:555)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 169,
+      "message": "Cannot open file 'res://.godot/imported/fern_02_a.gltf-07ff9db8da1094c7b571c2ded286fb0f.scn'.",
+      "context": [
+        "   at: load (core/io/resource_format_binary.cpp:1156)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 180,
+      "message": "Failed loading resource: res://.godot/imported/fern_02_a.gltf-07ff9db8da1094c7b571c2ded286fb0f.scn.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 191,
+      "message": "Failed loading resource: res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 202,
+      "message": "Error loading resource: 'res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf'.",
+      "context": [
+        "   at: load (core/core_bind.cpp:82)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _load_parts (res://scenery/imported_vegetation.gd:553)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 13.703,
+  "log_bytes": 13682,
+  "log_sha256": "1027d273935e31f3ff38c918242c2e1df5a7d8182e9e31d6332b39a79610e738"
+}

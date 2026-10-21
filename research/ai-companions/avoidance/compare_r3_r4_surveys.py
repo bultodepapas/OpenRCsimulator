@@ -21,8 +21,8 @@ ROUTE_CASES = {
     "seed-20261021-crossing-right",
 }
 NON_ADMITTED_CASES = {"seed-20261020-parallel-two-threats"}
-ROUTE_ROW_KEYS = ("seed", "case", "role", "tick")
-NON_NUMERIC_COLUMNS = {"case", "seed", "circuit_direction", "tick", "time_s", "role",
+ROUTE_ROW_KEYS = ("case", "role", "tick")
+NON_NUMERIC_COLUMNS = {"case", "seed", "circuit_direction", "tick", "role",
                        "avoidance_active", "recovering_clearance"}
 
 
@@ -56,9 +56,28 @@ def flatten_numbers(value: Any, prefix: str = "") -> dict[str, int | float]:
     return result
 
 
+def flatten_categories(value: Any, prefix: str = "") -> dict[str, str | bool]:
+    result: dict[str, str | bool] = {}
+    if isinstance(value, dict):
+        for key, child in value.items():
+            if key == "flight_logs":
+                continue
+            path = f"{prefix}.{key}" if prefix else str(key)
+            result.update(flatten_categories(child, path))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            path = f"{prefix}[{index}]"
+            result.update(flatten_categories(child, path))
+    elif type(value) in (str, bool):
+        result[prefix] = value
+    return result
+
+
 def compare_case_metrics(old: dict[str, Any], new: dict[str, Any]) -> dict[str, Any]:
     old_numbers = flatten_numbers(old)
     new_numbers = flatten_numbers(new)
+    old_categories = flatten_categories(old)
+    new_categories = flatten_categories(new)
     keys = sorted(set(old_numbers) | set(new_numbers))
     changed = []
     for key in keys:
@@ -68,13 +87,20 @@ def compare_case_metrics(old: dict[str, Any], new: dict[str, Any]) -> dict[str, 
         elif old_numbers[key] != new_numbers[key]:
             changed.append({"field": key, "r3": old_numbers[key], "r4": new_numbers[key],
                             "delta_r4_minus_r3": float(new_numbers[key]) - float(old_numbers[key])})
+    category_keys = sorted(set(old_categories) | set(new_categories))
+    changed_categories = [
+        {"field": key, "r3": old_categories.get(key), "r4": new_categories.get(key)}
+        for key in category_keys
+        if old_categories.get(key) != new_categories.get(key)
+    ]
+    changed_numeric_count = sum("delta_r4_minus_r3" in item for item in changed)
+    numeric_common_count = len(set(old_numbers) & set(new_numbers))
     return {
         "r3_numeric_field_count": len(old_numbers),
         "r4_numeric_field_count": len(new_numbers),
         "changed_numeric_fields": changed,
-        "unchanged_numeric_field_count": len(set(old_numbers) & set(new_numbers)) - sum(
-            1 for item in changed if item.get("change") is None
-        ),
+        "unchanged_numeric_field_count": numeric_common_count - changed_numeric_count,
+        "changed_categorical_fields": changed_categories,
         "r3_valid_run": old.get("valid_run"),
         "r4_valid_run": new.get("valid_run"),
         "r3_complete": old.get("complete"),
@@ -102,13 +128,13 @@ def compare_case_metrics(old: dict[str, Any], new: dict[str, Any]) -> dict[str, 
     }
 
 
-def trajectory_rows(path: Path) -> tuple[list[str], dict[tuple[str, str, str, int], dict[str, str]]]:
-    rows: dict[tuple[str, str, str, int], dict[str, str]] = {}
+def trajectory_rows(path: Path) -> tuple[list[str], dict[tuple[str, str, int], dict[str, str]]]:
+    rows: dict[tuple[str, str, int], dict[str, str]] = {}
     with path.open("r", encoding="utf-8", newline="") as stream:
         reader = csv.DictReader(stream)
         header = list(reader.fieldnames or [])
         for row in reader:
-            key = (row["seed"], row["case"], row["role"], int(row["tick"]))
+            key = (row["case"], row["role"], int(row["tick"]))
             if key in rows:
                 raise ValueError(f"duplicate trajectory row in {path}: {key}")
             rows[key] = row
@@ -145,24 +171,18 @@ def csv_deltas(old_path: Path, new_path: Path) -> dict[str, Any]:
     numeric = [column for column in old_header if column not in NON_NUMERIC_COLUMNS]
     groups: dict[tuple[str, str, str], list[tuple[dict[str, str], dict[str, str]]]] = {}
     for key in sorted(common_keys):
-        seed, case, role, _tick = key
-        group_key = (seed, case, role)
+        case_id, role, _tick = key
+        group_key = (case_id, role)
         groups.setdefault(group_key, []).append((old_rows[key], new_rows[key]))
 
     aggregate: dict[str, list[float]] = {column: [] for column in numeric}
-    for (seed, case, role), aligned in groups.items():
+    for (case_id, role), aligned in groups.items():
         metrics: dict[str, Any] = {
             "row_count": len(aligned),
             "categorical_mismatches": {},
             "numeric_deltas": {},
         }
-        if case in {key.rsplit("-", 1)[-1] for key in ROUTE_CASES}:
-            # Case and seed are split in the CSV, so recover the report case ID.
-            case_id = f"seed-{seed}-{case}"
-            group_out = summary["route_groups"] if case_id in ROUTE_CASES else summary["non_admitted_fixture_groups"]
-        else:
-            case_id = f"seed-{seed}-{case}"
-            group_out = summary["route_groups"] if case_id in ROUTE_CASES else summary["non_admitted_fixture_groups"]
+        group_out = summary["route_groups"] if case_id in ROUTE_CASES else summary["non_admitted_fixture_groups"]
         for column in ("circuit_direction", "avoidance_active", "recovering_clearance"):
             mismatches = sum(1 for left, right in aligned if left[column] != right[column])
             if mismatches:
@@ -179,7 +199,8 @@ def csv_deltas(old_path: Path, new_path: Path) -> dict[str, Any]:
                 if not math.isfinite(delta):
                     raise ValueError(f"nonfinite trajectory delta in {case_id}/{role}/{column}")
                 deltas.append(delta)
-            aggregate[column].extend(deltas)
+            if case_id in ROUTE_CASES:
+                aggregate[column].extend(deltas)
             if deltas:
                 absolute = sorted(abs(value) for value in deltas)
                 p95_index = min(len(absolute) - 1, math.ceil(0.95 * len(absolute)) - 1)
@@ -206,6 +227,17 @@ def csv_deltas(old_path: Path, new_path: Path) -> dict[str, Any]:
                 "minimum_delta": min(deltas),
                 "maximum_delta": max(deltas),
             }
+    expected_route_groups = {f"{case_id}/{role}" for case_id in ROUTE_CASES for role in ("ai", "player")}
+    expected_fixture_groups = {f"{case_id}/{role}" for case_id in NON_ADMITTED_CASES
+                               for role in ("ai", "peer", "player")}
+    summary["expected_route_group_count"] = len(expected_route_groups)
+    summary["route_group_set_complete"] = set(summary["route_groups"]) == expected_route_groups
+    summary["missing_route_groups"] = sorted(expected_route_groups - set(summary["route_groups"]))
+    summary["extra_route_groups"] = sorted(set(summary["route_groups"]) - expected_route_groups)
+    summary["expected_non_admitted_group_count"] = len(expected_fixture_groups)
+    summary["non_admitted_group_set_complete"] = (
+        set(summary["non_admitted_fixture_groups"]) == expected_fixture_groups
+    )
     return summary
 
 
@@ -233,6 +265,16 @@ def compare(r3_dir: Path, r4_dir: Path) -> dict[str, Any]:
                   ("weather", "seconds", "requested_ticks", "pilot_source_sha256", "probe_source_sha256",
                    "collision_identity", "lake_identity", "valid_complete_runs",
                    "separation_gate_passed_for_all_cases")}
+    route_case_ids = sorted((r3_cases & r4_cases) & ROUTE_CASES)
+    non_admitted_case_ids = sorted((r3_cases & r4_cases) & NON_ADMITTED_CASES)
+    trajectory = csv_deltas(r3_dir / "trajectory.csv", r4_dir / "trajectory.csv")
+    comparison_valid = (
+        trajectory["header_equal"]
+        and trajectory["r3_data_rows"] == trajectory["r4_data_rows"]
+        and trajectory["matched_key_rows"] == trajectory["r3_data_rows"]
+        and trajectory["route_group_set_complete"]
+        and trajectory["non_admitted_group_set_complete"]
+    )
     return {
         "format": "afc-04-r3-r4-encounter-survey-delta-v1",
         "comparison_scope": "Same seeded six nominal route cases and separate constructed two-threat fixture; R3 retained candidate versus R4 production pilot.",
@@ -250,11 +292,13 @@ def compare(r3_dir: Path, r4_dir: Path) -> dict[str, Any]:
             and r3.get("probe_source_sha256") == r4.get("probe_source_sha256")
         ),
         "same_pilot_source": r3.get("pilot_source_sha256") == r4.get("pilot_source_sha256"),
-        "route_case_ids": sorted((r3_cases & r4_cases) & ROUTE_CASES),
-        "non_admitted_case_ids": sorted((r3_cases & r4_cases) & NON_ADMITTED_CASES),
+        "route_case_ids": route_case_ids,
+        "all_six_route_cases_present": set(route_case_ids) == ROUTE_CASES,
+        "non_admitted_case_ids": non_admitted_case_ids,
         "missing_case_ids": {"r3": sorted(r4_cases - r3_cases), "r4": sorted(r3_cases - r4_cases)},
+        "comparison_valid": comparison_valid,
         "case_metric_deltas": case_metrics,
-        "trajectory_csv": csv_deltas(r3_dir / "trajectory.csv", r4_dir / "trajectory.csv"),
+        "trajectory_csv": trajectory,
     }
 
 
@@ -280,11 +324,14 @@ def main() -> int:
         "r3_rows": trajectory["r3_data_rows"],
         "r4_rows": trajectory["r4_data_rows"],
         "matched_rows": trajectory["matched_key_rows"],
+        "route_group_set_complete": trajectory["route_group_set_complete"],
+        "comparison_valid": result["comparison_valid"],
         "route_aggregate_numeric": trajectory["route_aggregate_numeric"],
     }
     print(json.dumps(summary, sort_keys=True))
-    return 0 if result["same_world_and_probe"] and not result["missing_case_ids"]["r3"] \
-        and not result["missing_case_ids"]["r4"] else 1
+    return 0 if result["comparison_valid"] and result["same_world_and_probe"] \
+        and result["all_six_route_cases_present"] \
+        and not result["missing_case_ids"]["r3"] and not result["missing_case_ids"]["r4"] else 1
 
 
 if __name__ == "__main__":

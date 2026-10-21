@@ -1,0 +1,131 @@
+{
+  "all_hashes_match": true,
+  "file_count": 24,
+  "files": [
+    {
+      "bytes": 422506,
+      "path": "avanti-s-a200/blender-geometry.json",
+      "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d"
+    },
+    {
+      "bytes": 8654,
+      "path": "avanti-s-a200/geometry.json",
+      "sha256": "1fd48b554c5860e8aca060eeb4df2304ad9580f4e596eedddd856faaedd9c458"
+    },
+    {
+      "bytes": 37695,
+      "path": "avanti-s-a200/source/geometry_blender.json",
+      "sha256": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a"
+    },
+    {
+      "bytes": 1883,
+      "path": "avanti-s-a200/source-manifest.json",
+      "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f"
+    },
+    {
+      "bytes": 31830,
+      "path": "customization-bindings.json",
+      "sha256": "bf2539b29884b0e23515cfd9524c29813ffea936642f84de032f031ca3c997ab"
+    },
+    {
+      "bytes": 2040,
+      "path": "extra-300s-60/appearance.json",
+      "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228"
+    },
+    {
+      "bytes": 12551,
+      "path": "extra-300s-60/geometry.json",
+      "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810"
+    },
+    {
+      "bytes": 48198,
+      "path": "hx-700/articulated/construction.json",
+      "sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
+    },
+    {
+      "bytes": 7062,
+      "path": "hx-700/articulated/export-report.json",
+      "sha256": "7b82c98eedc33daf277214c9ec0c2ecae8feb347bb177dcafbf7cb164134e9ca"
+    },
+    {
+      "bytes": 140858,
+      "path": "hx-700/articulated/motion-source.json",
+      "sha256": "24f99dd8c7c1c9a79e4421198c27c837e44b3aa8eed9c4dfd0b4ee0293f13db3"
+    },
+    {
+      "bytes": 39681,
+      "path": "hx-700/articulated/neutral-reference.json",
+      "sha256": "4eef82d44fb3869f36eaf855ddb2134c12d61907d9c804143fb7cb7f0cc18e7b"
+    },
+    {
+      "bytes": 3480,
+      "path": "hx-700/rotor_profiles.json",
+      "sha256": "3c410cf978494e0c30ffc8b21a28850811a9954d5e4d64639acc225b56b4c959"
+    },
+    {
+      "bytes": 3435,
+      "path": "hx-700/source-manifest.json",
+      "sha256": "3abdac36e576afa43a468d2e34d45f182927e9f796ee691dc7d2fbf010c30bbc"
+    },
+    {
+      "bytes": 17597,
+      "path": "model-bindings.json",
+      "sha256": "367e78f8dcde622b43b13bc8f0f0d715ad50508b326c1c2f7ba53f45ea439170"
+    },
+    {
+      "bytes": 1642,
+      "path": "p51d-mustang-120/appearance.json",
+      "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6"
+    },
+    {
+      "bytes": 27439,
+      "path": "p51d-mustang-120/geometry.json",
+      "sha256": "f0523f9b97c318e9211fbaa1087e9c49debb662f13591f5019a4593cd2b7e290"
+    },
+    {
+      "bytes": 32191,
+      "path": "p51d-mustang-120/source.json",
+      "sha256": "6f72856b27ef875a1ce0c572180c7fdb9a2d08789e25beb05d8eb92d17d803b0"
+    },
+    {
+      "bytes": 75415,
+      "path": "turbo-lumber-evolution/geometry.json",
+      "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681"
+    },
+    {
+      "bytes": 3360,
+      "path": "turbo-lumber-evolution/manual.json",
+      "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795"
+    },
+    {
+      "bytes": 464717,
+      "path": "turbo-lumber-evolution/mesh-measurements.json",
+      "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70"
+    },
+    {
+      "bytes": 27437,
+      "path": "turbo-lumber-evolution/source-manifest.json",
+      "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74"
+    },
+    {
+      "bytes": 5507,
+      "path": "turbo-lumber-evolution/visual-upgrade/visual_detail_spec.json",
+      "sha256": "c0bafb02374edc40556a96e84d2e61690950518ee5443c71fad885d3c5a33f4d"
+    },
+    {
+      "bytes": 7016,
+      "path": "ugly-stik-60/appearance.json",
+      "sha256": "4e1a803e11bfea8e21dd002e5ab0d4d31f8020b7dfd61c0f486237afa88f4e9c"
+    },
+    {
+      "bytes": 11738,
+      "path": "ugly-stik-60/geometry.json",
+      "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4"
+    }
+  ],
+  "format": "afc-04-r4-external-aircraft-authoring-manifest-v1",
+  "mirror_root": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\AFC-04-R4\\mirror\\assets\\aircraft",
+  "source_snapshot": "tmp/afc04-isolated/assets/aircraft",
+  "source_snapshot_commit": "2966595b1f243be3905e2699b71c0283195ae306",
+  "verification_errors": []
+}

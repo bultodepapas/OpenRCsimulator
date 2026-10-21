@@ -6,19 +6,23 @@ from __future__ import annotations
 import argparse
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+import re
 import statistics
 import sys
 from typing import Any
 
 from flight_quality_common import (
 	DEFAULT_ENGINE,
+	PROBE,
 	REPO_ROOT,
 	contains_engine_error,
 	godot_command,
 	load_json,
 	make_fresh_directory,
 	parse_environment,
+	project_source_fingerprint,
 	resolve_repo_path,
 	run_godot,
 	sha256_file,
@@ -27,6 +31,10 @@ from flight_quality_common import (
 	validate_frame_report,
 	write_json,
 )
+
+HARNESS_FILES = ("flight_quality.py", "flight_quality_common.py", "flight_quality_probe.gd")
+LEGACY_RUNTIME_HARNESS_FILES = ("flight_quality_common.py", "flight_quality_probe.gd")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 def alternating_orders(pairs: int) -> list[tuple[str, str]]:
@@ -42,6 +50,8 @@ def parser() -> argparse.ArgumentParser:
 	root.add_argument("--candidate", required=True, help="frozen candidate app project prepared from the same app revision")
 	root.add_argument("--engine", default=str(DEFAULT_ENGINE), help="native Godot executable")
 	root.add_argument("--out", help="new output directory; defaults to a timestamped tmp/tree-completion path")
+	root.add_argument("--resume", action="store_true", help="continue an incomplete series in the existing --out directory")
+	root.add_argument("--resume-source-receipt", help="pre-run source identity receipt for a legacy series without embedded identities")
 	root.add_argument("--pairs", type=int, default=5, help="number of alternating baseline/candidate pairs (default: 5)")
 	root.add_argument("--warmup", type=float, default=10.0, help="warm-up seconds per run")
 	root.add_argument("--sample", type=float, default=60.0, help="measured seconds per run")
@@ -62,6 +72,201 @@ def default_output() -> Path:
 def frame_summary(report: dict[str, Any]) -> dict[str, float]:
 	frame_ms = report.get("frame_ms", {})
 	return {key: float(frame_ms[key]) for key in ("p50", "p95", "p99", "max") if key in frame_ms}
+
+
+def series_settings(args: argparse.Namespace) -> dict[str, Any]:
+	return {
+		"pairs": args.pairs,
+		"warmup_s": args.warmup,
+		"sample_s": args.sample,
+		"width": args.width,
+		"height": args.height,
+		"fps_cap": args.fps,
+		"timeout_s": args.timeout,
+		"vsync": "disabled; identical software cap via Godot --max-fps",
+		"weather": "calm",
+		"lighting": "2026-10-18 12:00 local simulation time",
+		"aircraft": "jensen-das-ugly-stik-60",
+		"start": "airborne, --quick-flight",
+		"camera": "pilot camera fixed at azimuth 0/elevation 5 degrees; auto-zoom off",
+		"route": "neutral tick-indexed input through FlightSession.read_raw",
+		"logger": "app/render/frame_samples.gd, invoked directly by the external research probe",
+		"render_settings": "root viewport MSAA_4X; actual viewport size is asserted against the run's requested dimensions",
+	}
+
+
+def source_identities(engine: Path, projects: dict[str, Path]) -> dict[str, Any]:
+	project_identities: dict[str, dict[str, Any]] = {}
+	for name, project in projects.items():
+		fingerprint = project_source_fingerprint(project)
+		project_identities[name] = {"sha256": fingerprint["sha256"], "files": fingerprint["files"]}
+	harness_paths = {
+		"flight_quality.py": Path(__file__).resolve(),
+		"flight_quality_common.py": Path(__file__).with_name("flight_quality_common.py").resolve(),
+		"flight_quality_probe.gd": PROBE.resolve(),
+	}
+	return {
+		"engine_sha256": sha256_file(engine),
+		"projects": project_identities,
+		"harness_sha256": {name: sha256_file(path) for name, path in harness_paths.items()},
+	}
+
+
+def source_identity_failures(expected: dict[str, Any], current: dict[str, Any]) -> list[str]:
+	failures: list[str] = []
+	if expected.get("engine_sha256") != current.get("engine_sha256"):
+		failures.append("Godot executable hash differs from the recorded source identity")
+	for build_name in ("baseline", "candidate"):
+		expected_project = expected.get("projects", {}).get(build_name, {})
+		current_project = current.get("projects", {}).get(build_name, {})
+		if expected_project.get("sha256") != current_project.get("sha256") or expected_project.get("files") != current_project.get("files"):
+			failures.append(f"{build_name} source fingerprint differs from the recorded source identity")
+	for filename in HARNESS_FILES:
+		if expected.get("harness_sha256", {}).get(filename) != current.get("harness_sha256", {}).get(filename):
+			failures.append(f"{filename} hash differs from the recorded harness identity")
+	return failures
+
+
+def legacy_receipt_failures(receipt: dict[str, Any], current: dict[str, Any]) -> list[str]:
+	"""Validate a pre-run receipt for old series files that lack embedded identities.
+
+	The resume implementation necessarily changes flight_quality.py itself. For a legacy
+	receipt, the measurement implementation identities are flight_quality_common.py and
+	flight_quality_probe.gd; the old runner hash is retained in the receipt for provenance.
+	"""
+	failures: list[str] = []
+	for build_name in ("baseline", "candidate"):
+		block = receipt.get(build_name, {})
+		current_project = current.get("projects", {}).get(build_name, {})
+		manifest = block.get("file_manifest")
+		if not isinstance(manifest, dict) or not manifest:
+			failures.append(f"source receipt has no full {build_name} file manifest")
+			continue
+		if block.get("files") != len(manifest):
+			failures.append(f"source receipt {build_name} manifest count is invalid")
+		if block.get("sha256") != current_project.get("sha256") or block.get("files") != current_project.get("files"):
+			failures.append(f"source receipt {build_name} fingerprint does not match the current project")
+	harness = receipt.get("harness", {})
+	for filename in HARNESS_FILES:
+		value = harness.get(filename)
+		if not isinstance(value, str) or not SHA256_RE.fullmatch(value):
+			failures.append(f"source receipt is missing a valid {filename} hash")
+	for filename in LEGACY_RUNTIME_HARNESS_FILES:
+		current_hash = current.get("harness_sha256", {}).get(filename)
+		if harness.get(filename) != current_hash:
+			failures.append(f"source receipt {filename} hash does not match the current measurement harness")
+	return failures
+
+
+def accepted_pair_attempts(root_report: dict[str, Any], out: Path, pair_count: int) -> dict[int, int]:
+	"""Return intact accepted pairs, validating their unchanged report artifacts and structure."""
+	comparisons = root_report.get("pairs", [])
+	runs = root_report.get("runs", [])
+	if not isinstance(comparisons, list) or not isinstance(runs, list):
+		raise ValueError("series pairs/runs history is malformed")
+	orders = alternating_orders(pair_count)
+	accepted: dict[int, int] = {}
+	for comparison in comparisons:
+		try:
+			pair_number = int(comparison["pair"])
+			attempt = int(comparison.get("attempt", 1))
+		except (KeyError, TypeError, ValueError) as error:
+			raise ValueError("accepted pair comparison is missing its pair or attempt identity") from error
+		if pair_number < 1 or pair_number > pair_count or attempt < 1 or pair_number in accepted:
+			raise ValueError("accepted pair identities are duplicated or outside the requested series")
+		pair_runs = [run for run in runs if int(run.get("pair", 0)) == pair_number and int(run.get("attempt", 1)) == attempt]
+		if len(pair_runs) != 2:
+			raise ValueError(f"accepted pair {pair_number} does not have exactly two retained runs")
+		expected_order = orders[pair_number - 1]
+		for index, (run, build_name) in enumerate(zip(pair_runs, expected_order, strict=True), start=1):
+			if run.get("build_name") != build_name or int(run.get("order_in_pair", 0)) != index:
+				raise ValueError(f"accepted pair {pair_number} run order does not match the alternating schedule")
+			if run.get("complete") is not True or run.get("failures"):
+				raise ValueError(f"accepted pair {pair_number} contains an incomplete run")
+			report_path = Path(str(run.get("report_path", "")))
+			if not report_path.is_absolute():
+				report_path = out / report_path
+			if not report_path.is_file():
+				raise ValueError(f"accepted pair {pair_number} report artifact is missing: {report_path}")
+			recorded_hash = run.get("frame_report_sha256")
+			if not isinstance(recorded_hash, str) or not SHA256_RE.fullmatch(recorded_hash) or sha256_file(report_path) != recorded_hash:
+				raise ValueError(f"accepted pair {pair_number} report artifact hash does not match its history")
+		if pair_identity_failures(pair_runs[0], pair_runs[1]):
+			raise ValueError(f"accepted pair {pair_number} run identities do not match")
+		if comparison.get("scenario_sha256") != pair_runs[0].get("scenario_sha256") or comparison.get("input_tape_sha256") != pair_runs[0].get("input_tape_sha256"):
+			raise ValueError(f"accepted pair {pair_number} comparison identity does not match its runs")
+		accepted[pair_number] = attempt
+	if sorted(accepted) != list(range(1, len(accepted) + 1)):
+		raise ValueError("accepted pairs are not a contiguous prefix of the alternating series")
+	return accepted
+
+
+def resume_contract_failures(
+	root_report: dict[str, Any],
+	*,
+	args: argparse.Namespace,
+	out: Path,
+	engine: Path,
+	projects: dict[str, Path],
+	baseline_environment: dict[str, str],
+	candidate_environment: dict[str, str],
+	current_identities: dict[str, Any],
+	receipt: dict[str, Any] | None,
+) -> list[str]:
+	failures: list[str] = []
+	if root_report.get("format") != "openrc-tree-flight-quality-series-v1":
+		failures.append("--resume output is not a recognized flight-quality series")
+	if root_report.get("status") == "collected":
+		failures.append("series is already collected; it cannot be resumed")
+	if os.path.normcase(str(Path(str(root_report.get("out", ""))).resolve())) != os.path.normcase(str(out.resolve())):
+		failures.append("--out does not match the recorded series directory")
+	if os.path.normcase(str(Path(str(root_report.get("engine", ""))).resolve())) != os.path.normcase(str(engine.resolve())):
+		failures.append("Godot executable path differs from the recorded series")
+	if root_report.get("engine_sha256") != current_identities.get("engine_sha256"):
+		failures.append("Godot executable hash differs from the recorded series")
+	recorded_projects = root_report.get("projects", {})
+	for build_name in ("baseline", "candidate"):
+		if os.path.normcase(str(Path(str(recorded_projects.get(build_name, ""))).resolve())) != os.path.normcase(str(projects[build_name].resolve())):
+			failures.append(f"{build_name} project path differs from the recorded series")
+	if root_report.get("environment_overrides") != {"baseline": baseline_environment, "candidate": candidate_environment}:
+		failures.append("environment overrides differ from the recorded series")
+	recorded_settings = root_report.get("settings", {})
+	for key, value in series_settings(args).items():
+		# Legacy v1 output did not record timeout_s; it does not change sample contents.
+		if key == "timeout_s" and key not in recorded_settings:
+			continue
+		if recorded_settings.get(key) != value:
+			failures.append(f"setting {key} differs from the recorded series")
+	stored_identities = root_report.get("source_identities")
+	if isinstance(stored_identities, dict):
+		failures.extend(source_identity_failures(stored_identities, current_identities))
+	elif receipt is None:
+		failures.append("legacy series requires --resume-source-receipt because it lacks embedded source identities")
+	else:
+		failures.extend(legacy_receipt_failures(receipt, current_identities))
+	if receipt is not None and isinstance(stored_identities, dict):
+		failures.extend(legacy_receipt_failures(receipt, current_identities))
+	return failures
+
+
+def next_pair_attempt(root_report: dict[str, Any], out: Path, pair_number: int, pair_order: tuple[str, str]) -> int:
+	runs = root_report.get("runs", [])
+	prior_attempts = [int(run.get("attempt", 1)) for run in runs if int(run.get("pair", 0)) == pair_number]
+	attempt = max(prior_attempts, default=0) + 1 if prior_attempts else 1
+	while True:
+		if attempt == 1:
+			run_ids = [f"pair-{pair_number:02d}-{index}-{build}" for index, build in enumerate(pair_order, start=1)]
+		else:
+			run_ids = [f"pair-{pair_number:02d}-attempt-{attempt:02d}-{index}-{build}" for index, build in enumerate(pair_order, start=1)]
+		if not any((out / "runs" / run_id).exists() for run_id in run_ids):
+			return attempt
+		attempt += 1
+
+
+def run_identifier(pair_number: int, attempt: int, order_index: int, build_name: str) -> str:
+	if attempt == 1:
+		return f"pair-{pair_number:02d}-{order_index}-{build_name}"
+	return f"pair-{pair_number:02d}-attempt-{attempt:02d}-{order_index}-{build_name}"
 
 
 def pair_identity_failures(left: dict[str, Any], right: dict[str, Any]) -> list[str]:

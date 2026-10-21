@@ -1,0 +1,59 @@
+[
+  {
+    "arguments": [
+      "tools/landscape/vegetation/convert_landscapelab_trees.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "source-check-1.log"
+  },
+  {
+    "arguments": [
+      "tools/landscape/vegetation/convert_realistic_understory.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "source-check-2.log"
+  },
+  {
+    "arguments": [
+      "tools/landscape/vegetation/build_library.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "log": "source-check-3.log"
+  },
+  {
+    "arguments": [
+      "tools/landscape/vegetation/test_build_library.py"
+    ],
+    "exit_code": 0,
+    "log": "source-check-4.log"
+  },
+  {
+    "arguments": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/trees",
+      "-p",
+      "test_process_atlas.py"
+    ],
+    "exit_code": 0,
+    "log": "source-check-5.log"
+  },
+  {
+    "arguments": [
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tools/trees",
+      "-p",
+      "test_adapt_recipe.py"
+    ],
+    "exit_code": 0,
+    "log": "source-check-6.log"
+  }
+]

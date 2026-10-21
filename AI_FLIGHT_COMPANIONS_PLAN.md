@@ -21,6 +21,14 @@ retaining every physics step. Its evidence lives in [AFC-02](docs/research/ai-co
 [AFC-03-R1](docs/research/ai-companions/AFC-03-R1/README.md) and
 [AFC-00-R1](docs/research/ai-companions/AFC-00-R1/README.md).
 
+The [fresh Windows checkout verification](docs/research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
+passes all 1,200 script parses and 16 companion regression groups (1,696 numbered
+assertions plus dialog/shell checks) on its recorded snapshot. The source profile
+also binds the controller's actual inherited circuit script. Two explicit Git LF
+rules repair checkout-dependent controller admission and the existing settlement
+bake's visual-profile identity. This does not close the full application test,
+packaged export, platform or physical-validation gates.
+
 AFC-02 now also checks the actual session's static scenery, terrain and lake at
 launch using a continuous nominal circuit corridor and person/shelter footprint
 exclusions. This does not prove that avoidance or recovery stays inside that
