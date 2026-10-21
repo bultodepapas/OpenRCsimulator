@@ -4,7 +4,6 @@ extends SceneTree
 
 const Profile := preload("res://render/high_graphics_profile.gd")
 const Preferences := preload("res://app_state/preferences.gd")
-const UiDriver := preload("res://tests/ui_driver.gd")
 var stage := 0
 var output := ""
 
@@ -38,13 +37,12 @@ func _run() -> void:
 	app.user_args = PackedStringArray()
 	app.preferences_path = prefs_path
 	root.add_child(app)
-	var ui := UiDriver.new(self)
-	await ui.settle()
+	await _settle()
 	app.open_settings()
-	await ui.settle()
+	await _settle()
 	var settings: CanvasLayer = app.screens.get_screen("settings")
 	settings._show_category(3)
-	await ui.settle()
+	await _settle()
 	for frame in 20:
 		await process_frame
 	await RenderingServer.frame_post_draw
@@ -52,13 +50,16 @@ func _run() -> void:
 	var expected_renderer := "forward_plus" if stage == 1 else "gl_compatibility"
 	var ok: bool = RenderingServer.get_current_rendering_method() == expected_renderer \
 		and Profile.active() == (stage == 1) and app.has_home and app.home != null \
+		and not settings._graphics_restart_button.disabled \
 		and FileAccess.get_file_as_string(prefs_path) == before
 	var report := {"stage": stage, "pid": OS.get_process_id(), "ok": ok,
 		"graphics": Profile.describe(), "home": app.home != null,
+		"executable": OS.get_executable_path(), "editor_binary": OS.has_feature("editor"),
 		"preferences_unchanged": FileAccess.get_file_as_string(prefs_path) == before}
 	if ok and stage < 2:
-		# This invokes the real product callback, including its Home-only gate.
-		app._request_graphics_restart("high" if stage == 0 else "standard")
+		# Follow the actual menu signal through preview rollback and the Home-only gate.
+		# Emit synchronously so the restart receipt can be written before the tree exits.
+		settings._graphics_restart_button.pressed.emit()
 		var args := OS.get_restart_on_exit_arguments()
 		report["production_restart_arguments"] = args.duplicate()
 		ok = OS.is_restart_on_exit_set() and args == Profile.restart_arguments(
@@ -77,3 +78,9 @@ func _run() -> void:
 		OS.set_restart_on_exit(false)
 		quit(0 if ok else 1)
 	FileAccess.open(output.path_join("stage-%d.json" % stage), FileAccess.WRITE).store_string(JSON.stringify(report, "\t"))
+
+
+func _settle() -> void:
+	# Exercise the source application without depending on a UI test helper.
+	await process_frame
+	await process_frame

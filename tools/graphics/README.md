@@ -3,6 +3,7 @@
 VQ-07 uses the existing Godot renderer and accepted assets. Standard remains the
 default. High is an opt-in, temporary Forward+ trial, not a qualified hardware
 preset. Current evidence and remaining gates: [VQ-07 trial](../../docs/research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md).
+Follow-up: [field-cue colors and Windows menu restart](../../docs/research/visual-quality-implementation/VQ-07/high-followup-2026-10-21/README.md).
 
 From Home, open **Settings → Graphics → Try High (restart)**. Keep pending display
 changes first. **Restart in Standard** returns to Compatibility. Closing the game
@@ -53,10 +54,11 @@ it verifies the editor-binary path, not packaged or macOS application relaunch.
 
 `capture.gd` uses production builders in a fixed 4× MSAA SubViewport. Run with a
 native renderer and `-- --out=<new directory> --aircraft=p51d-mustang-120`.
-`--width=1280|1920`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake`
+`--width=1280|1920`, `--hour=<0..24)` and `--view=all|aircraftground|pilot|pavilion|lake|flightline|windsock`
 select static comparisons. The `pavilion` case includes the clubhouse and pit area.
 `--seconds=<duration>` requires one view and measures after 10 s warmup without
 image readback. These offscreen static timings do not qualify flight performance.
 Use the existing native flight collector separately, without concurrent tests,
-exports or captures. `restart_probe.gd` requires source test resources and is not
-a packaged-release probe.
+exports or captures. `restart_probe.gd` requires an editor binary; release templates
+ignore its `--script` route. It is not a packaged-release probe. Packaged restart
+must be exercised through the actual menu.

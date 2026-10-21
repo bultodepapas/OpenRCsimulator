@@ -28,7 +28,7 @@ func _initialize() -> void:
 		quit(2)
 		return
 	if parsed.help:
-		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake] [--seconds N]")
+		print("Usage: --script tools/graphics/capture.gd -- --out PATH [--width 1280|1920] [--aircraft default|p51d-mustang-120] [--hour 0..24] [--view all|aircraftground|pilot|pavilion|lake|flightline|windsock] [--seconds N]")
 		quit()
 		return
 	_values = parsed.values
@@ -72,8 +72,8 @@ func _parse_args(raw: PackedStringArray) -> Dictionary:
 	if aircraft not in ["default", P51_AIRCRAFT]:
 		return {ok = false, error = "--aircraft must be default or %s" % P51_AIRCRAFT}
 	var view := str(values.get("--view", "all"))
-	if view not in ["all", "aircraftground", "pilot", "pavilion", "lake"]:
-		return {ok = false, error = "--view must be all, aircraftground, pilot, pavilion or lake"}
+	if view not in ["all", "aircraftground", "pilot", "pavilion", "lake", "flightline", "windsock"]:
+		return {ok = false, error = "--view must be all, aircraftground, pilot, pavilion, lake, flightline or windsock"}
 	if values.has("--hour"):
 		if not str(values["--hour"]).is_valid_float():
 			return {ok = false, error = "--hour must be in [0, 24)"}
@@ -230,6 +230,10 @@ func _view_cases() -> Array[Dictionary]:
 	var pilot_aircraft: Array[float] = [pilot_camera[0] + pilot_direction.x,
 		pilot_camera[1] + pilot_direction.y, pilot_camera[2] + pilot_direction.z]
 	return [
+		{"id": "flightline", "camera_ned": [8.0, -9.0, -1.2], "target_ned": [4.5, -12.0, -0.35],
+			"aircraft_ned": [], "aircraft_yaw_deg": 0.0, "aircraft_visible": false},
+		{"id": "windsock", "camera_ned": [-1.0, -8.0, -3.6], "target_ned": [-6.0, -11.0, -3.3],
+			"aircraft_ned": [], "aircraft_yaw_deg": 0.0, "aircraft_visible": false},
 		{"id": "aircraftground", "camera_ned": [7.0, 32.0, -2.0], "target_ned": [0.0, 38.0, -0.5],
 			"aircraft_ned": [0.0, 38.0, -0.5], "aircraft_yaw_deg": 0.0, "aircraft_visible": true},
 		{"id": "pilot", "camera_ned": pilot_camera, "target_ned": pilot_aircraft,

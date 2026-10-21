@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx;
+#include "res://scenery/vertex_color_linear.gdshaderinc"
 uniform sampler2D metal_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D metal_roughness : filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D concrete_color : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
@@ -16,7 +17,7 @@ void vertex() {
 }
 void fragment() {
 	float dirt = (1.0 - smoothstep(0.01, 0.08, base_height)) * 0.18;
-	vec3 steel = COLOR.rgb * 0.65;
+	vec3 steel = vertex_color_to_linear(COLOR.rgb) * 0.65;
 	vec3 pad = texture(concrete_color, UV * vec2(0.3 / 1.1, 0.3 / 0.55)).rgb * 0.67;
 	ALBEDO = mix(steel, pad, concrete) * (1.0 - dirt);
 	METALLIC = (1.0 - concrete) * 0.65;

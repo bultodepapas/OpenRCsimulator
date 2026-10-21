@@ -1,0 +1,211 @@
+{
+	"arguments": {
+		"aircraft": "default",
+		"hour": -1.0,
+		"out": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final",
+		"seconds": 0.0,
+		"view": "all",
+		"width": 1920
+	},
+	"cases": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				8.0,
+				-9.0,
+				-1.2
+			],
+			"counters": {
+				"draw_calls": 210,
+				"primitives": 311158
+			},
+			"id": "flightline",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/flightline.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				4.5,
+				-12.0,
+				-0.35
+			]
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-1.0,
+				-8.0,
+				-3.6
+			],
+			"counters": {
+				"draw_calls": 206,
+				"primitives": 289466
+			},
+			"id": "windsock",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/windsock.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-6.0,
+				-11.0,
+				-3.3
+			]
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [
+				0.0,
+				38.0,
+				-0.5
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				7.0,
+				32.0,
+				-2.0
+			],
+			"counters": {
+				"draw_calls": 325,
+				"primitives": 203655
+			},
+			"id": "aircraftground",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/aircraftground.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				0.0,
+				38.0,
+				-0.5
+			]
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				0.0,
+				0.0,
+				-1.7
+			],
+			"counters": {
+				"draw_calls": 378,
+				"primitives": 317491
+			},
+			"id": "pilot",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/pilot.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			]
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-8.0,
+				-13.0,
+				-2.5
+			],
+			"counters": {
+				"draw_calls": 201,
+				"primitives": 282710
+			},
+			"id": "pavilion",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/pavilion.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-22.0,
+				0.0,
+				-1.5
+			]
+		},
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.0,
+				-5.0
+			],
+			"counters": {
+				"draw_calls": 103,
+				"primitives": 184481
+			},
+			"id": "lake",
+			"image": "D:/OpenRCsimulator-scratch/high-followup-20261021/standard-final/lake.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			]
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"environment": {
+		"fog_density": 0.000170086961588822,
+		"fog_enabled": true,
+		"glow_enabled": false,
+		"reflected_light_source": 2,
+		"ssao_enabled": false,
+		"tonemap_exposure": 0.600000023841858,
+		"tonemap_mode": 3
+	},
+	"format": "openrc-graphics-capture v1",
+	"gpu": {
+		"api": "3.3.0 NVIDIA 617.42",
+		"name": "NVIDIA GeForce RTX 3090"
+	},
+	"lighting": {
+		"engine_shadows": true,
+		"hour": -1.0,
+		"snapshot": {},
+		"sun_azimuth_deg": 225.0,
+		"sun_direction_render": [
+			-0.5,
+			0.70710676908493,
+			0.5
+		],
+		"sun_elevation_deg": 45.0,
+		"sun_energy": 0.85,
+		"sun_shadow_enabled": true
+	},
+	"msaa_3d": 2,
+	"offscreen": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": "standard"
+	},
+	"renderer": "gl_compatibility",
+	"viewport": [
+		1920,
+		1080
+	]
+}
