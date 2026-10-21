@@ -135,7 +135,7 @@ func _check_tree_catalog_and_notices() -> String:
 		if not (provenance is Dictionary) \
 				or provenance.get("license_file", "") != "licenses/%s.txt" % id \
 				or provenance.get("license", "") != expected.license \
-				or provenance.get("source_asset_id", "") != expected.source_asset_id:
+				or entry.get("source_asset_id", "") != expected.source_asset_id:
 			return "Tree source attribution mismatch for " + id
 		var notice_path := "res://assets/landscape/trees/" + str(provenance.license_file)
 		var notice_text := _read_text(notice_path)

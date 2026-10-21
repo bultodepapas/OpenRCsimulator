@@ -10,9 +10,11 @@ const TREE_CELL_SIZES_M := [64, 128, 256]
 const ALIASES := {
 	# Keep the seven alias slots: slot zero protects all four existing maples,
 	# including the clubhouse specimen. Replace only the stylized sources.
-	"shade_tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
-	"tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
-	"sapling": ["landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus"],
+	# Pine in slot three retains a mixed young grove within the shared scenery
+	# source budget; the prominent car-park oak in slot five stays broadleaf.
+	"shade_tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
+	"tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
+	"sapling": ["landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_pine"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",

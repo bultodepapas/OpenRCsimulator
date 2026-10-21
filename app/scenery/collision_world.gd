@@ -312,7 +312,7 @@ static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, nort
 	var horizontal_half_extent := height * FIELD_TREE_CARD_FRAME_SIZE_M \
 		* float(FIELD_TREE_ALPHA_HALF_WIDTH_FRACTIONS[species_index]) + FIELD_TREE_WIND_LEAN_M
 	var vertical_half_extent := height * float(TREE_CROWN_VERTICAL_HALF_EXTENT_FRACTIONS[species_index])
-	# The box bounds every occupied atlas row, including near the top and the broad low Pine crown.
+	# The box bounds every occupied atlas row, including the low broadleaf crowns.
 	# It deliberately encloses the gaps between the crossed cards; wind is a further radial .24 m allowance.
 	_add_box_at_down(proxies, "tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
 		north, east, base_down - height * float(TREE_CROWN_CENTER_FRACTIONS[species_index]),
