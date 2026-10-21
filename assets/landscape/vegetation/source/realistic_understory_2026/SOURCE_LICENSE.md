@@ -11,4 +11,6 @@ Poly Haven states that all assets on its site are released under CC0 1.0. The tw
 - CC0 1.0 legal code copied from: https://creativecommons.org/publicdomain/zero/1.0/legalcode.en
 - Accessed: 2026-10-20.
 
-Attribution is not required under CC0; provenance is retained here for review. No artistic edits are made to the supplier source files. The derived glTF candidates are source-faithful extractions of complete supplied mesh nodes and preserve the supplier mesh primitives and UV data. Any later alpha-channel repacking must be documented as a mechanical channel conversion.
+Attribution is not required under CC0; provenance is retained here for review. Supplier glTFs, buffers, color/normal/ARM maps, and separate 16-bit alpha maps are retained unchanged. The staged candidates extract one complete supplied mesh node each, preserve its mesh primitives, accessor references, positions, normals and UVs, and remove only its side-by-side gallery translation. Conversion mechanically packs the supplied grayscale alpha samples into an RGBA8 copy of the original diffuse JPEG; each 16-bit sample is rounded linearly to 8-bit. No resampling or color editing is performed.
+
+The Fern candidate keeps its supplied MASK mode and 0.5 cutoff. Flower Empodium is staged with MASK at 0.5 instead of the supplier's BLEND mode to assess foliage alpha scissor for a bounded runtime candidate. This deliberate material adaptation thresholds fractional coverage and needs later rendered review before runtime use. The supplier files and their original BLEND material remain intact.

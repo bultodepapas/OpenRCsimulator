@@ -1,0 +1,177 @@
+{
+  "bounds": {
+    "grounded_bounds_m": {
+      "max": [
+        0.254283,
+        0.286804,
+        0.302153
+      ],
+      "min": [
+        -0.297657,
+        0.0,
+        -0.311268
+      ],
+      "size": [
+        0.551941,
+        0.286804,
+        0.613421
+      ]
+    },
+    "source_bounds_m": {
+      "ground_offset": 0.028774,
+      "height": 0.286804,
+      "max": [
+        0.254283,
+        0.25803,
+        0.302153
+      ],
+      "min": [
+        -0.297657,
+        -0.028774,
+        -0.311268
+      ],
+      "size": [
+        0.551941,
+        0.286804,
+        0.613421
+      ]
+    }
+  },
+  "candidate_id": "polyhaven_fern_02_a",
+  "conversion_policy": [
+    "retain the selected supplier mesh primitive and binary buffer bytes",
+    "remove only the gallery node translation",
+    "pack the supplier 16-bit grayscale alpha into the supplier diffuse RGB as RGBA8",
+    "preserve supplied normal and ARM texture bytes",
+    "no modeling, retopology, decimation, vertex edits or texture painting"
+  ],
+  "format": "openrc-vegetation-conversion-proof v1",
+  "license": "CC0-1.0",
+  "lod": {
+    "godot_import_generate": true,
+    "note": "The selected fern node is a supplied clump variant, not a named LOD level.",
+    "source_supplied": false
+  },
+  "material_alpha": {
+    "alpha_packing": {
+      "fractional_alpha_fraction": 0.03996468,
+      "fractional_alpha_pixel_count": 41906,
+      "height": 1024,
+      "mask_coverage_fraction": 0.15347672,
+      "output_bit_depth": 8,
+      "pixel_count": 1048576,
+      "pixels_at_or_above_mask_cutoff_0_5": 160932,
+      "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+      "source_bit_depth": 16,
+      "source_mode": "I;16",
+      "width": 1024
+    },
+    "alpha_source": "fern_02/textures/fern_02_alpha_1k.png",
+    "double_sided": true,
+    "mode_change": "Source MASK mode and cutoff are retained.",
+    "output_alpha_cutoff": 0.5,
+    "output_alpha_mode": "MASK",
+    "source_alpha_cutoff": 0.5,
+    "source_alpha_mode": "MASK"
+  },
+  "outputs": [
+    {
+      "bytes": 176176,
+      "path": "fern_02_a.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "bytes": 5700,
+      "path": "fern_02_a.gltf",
+      "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1"
+    },
+    {
+      "bytes": 280359,
+      "path": "textures/fern_02_a_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    },
+    {
+      "bytes": 886305,
+      "path": "textures/fern_02_a_base_color_alpha_1k.png",
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd"
+    },
+    {
+      "bytes": 367222,
+      "path": "textures/fern_02_a_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    }
+  ],
+  "selected_geometry": {
+    "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+    "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+    "position_accessor_max": [
+      0.25428348779678345,
+      0.2580300271511078,
+      0.3021530210971832
+    ],
+    "position_accessor_min": [
+      -0.2976571321487427,
+      -0.028773518279194832,
+      -0.31126806139945984
+    ],
+    "source_accessor_indices": {
+      "NORMAL": 9,
+      "POSITION": 8,
+      "TEXCOORD_0": 10,
+      "indices": 11
+    },
+    "source_gallery_translation_m": [
+      0.0,
+      0.0,
+      1.0000001192092896
+    ],
+    "source_mesh_index": 2,
+    "source_mesh_name": "Plane.006",
+    "source_node_index": 2,
+    "source_triangles": 784,
+    "uv0_max": [
+      0.630573,
+      0.971089
+    ],
+    "uv0_min": [
+      0.073993,
+      0.02042
+    ],
+    "uv_accessor_count": 544,
+    "vertex_count": 544
+  },
+  "source_id": "polyhaven_fern_02",
+  "source_inputs": [
+    {
+      "bytes": 6899,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/fern_02_1k.gltf",
+      "sha256": "33974295ee19670af4877705fc7d91f33f42d6302f0d44a625e072271223031f"
+    },
+    {
+      "bytes": 176176,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/fern_02.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "bytes": 315705,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_diff_1k.jpg",
+      "sha256": "a828a6e7b4c01c826911e2eac4b3afc7457dab7b3b392a31c681ed88b7d50029"
+    },
+    {
+      "bytes": 114589,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_alpha_1k.png",
+      "sha256": "ea3c64284c7ebdeedf484d2d816eae92825ec526140c3bb83859ddc7a64001f9"
+    },
+    {
+      "bytes": 367222,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    },
+    {
+      "bytes": 280359,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    }
+  ],
+  "source_page": "https://polyhaven.com/a/fern_02"
+}

@@ -171,6 +171,11 @@ func _field() -> bool:
 
 func _gallery() -> bool:
 	var ids := str(args.get("ids", "common_tree_1,common_tree_3,pine_1")).split(",")
+	var asset_height := float(args.get("asset_height_m", "10.0"))
+	if not is_finite(asset_height) or asset_height < 0.1 or asset_height > 50.0:
+		_fail("gallery asset_height_m must be between 0.1 and 50 metres")
+		return false
+	var view_scale := asset_height / 10.0
 	var batches: Dictionary = {}
 	var selected: Array[Dictionary] = []
 	for index in ids.size():
@@ -179,11 +184,12 @@ func _gallery() -> bool:
 		if asset.is_empty():
 			_fail("missing gallery asset " + id)
 			return false
-		var origin := Vector3(index * 24.0, 0, 0)
-		var placement := Library.fit_to_height(id, 10.0, Transform3D(Basis.IDENTITY, origin))
+		var origin := Vector3(index * 24.0 * view_scale, 0, 0)
+		var placement := Library.fit_to_height(id, asset_height, Transform3D(Basis.IDENTITY, origin))
 		Library.queue(batches, id, placement, 101 + index, id)
 		selected.append(asset)
-		views.append({id = id, eye = origin + Vector3(0, 5, 20), at = origin + Vector3(0, 5, 0), fov = 36.0})
+		views.append({id = id, eye = origin + Vector3(0, 5, 20) * view_scale,
+			at = origin + Vector3(0, 5, 0) * view_scale, fov = 36.0})
 	var options := {tree_wind = str(args.get("wind", "off")) == "on", tree_cell_size_m = float(args.get("cell", "0"))}
 	if options.tree_wind or options.tree_cell_size_m > 0.0:
 		# Dynamic call keeps the external probe usable against the unmodified baseline API.
@@ -194,10 +200,10 @@ func _gallery() -> bool:
 	report["assets"] = selected
 	report["batch_count"] = content.get_child_count()
 	report["vegetation_catalog_sha256"] = FileAccess.get_sha256(Library.CATALOG_PATH)
-	var target := Vector3(0, 5, 0)
-	views.append({id = "back", eye = Vector3(0, 5, -20), at = target, fov = 36.0})
-	views.append({id = "underside", eye = Vector3(0, 0.5, 12), at = target, fov = 50.0})
-	views.append({id = "overhead", eye = Vector3(0, 25, 0.01), at = target, fov = 40.0})
+	var target := Vector3(0, 5, 0) * view_scale
+	views.append({id = "back", eye = Vector3(0, 5, -20) * view_scale, at = target, fov = 36.0})
+	views.append({id = "underside", eye = Vector3(0, 0.5, 12) * view_scale, at = target, fov = 50.0})
+	views.append({id = "overhead", eye = Vector3(0, 25, 0.01) * view_scale, at = target, fov = 40.0})
 	return true
 
 

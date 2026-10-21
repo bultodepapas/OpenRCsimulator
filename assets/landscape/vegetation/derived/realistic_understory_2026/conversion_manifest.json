@@ -1,0 +1,533 @@
+{
+  "format": "openrc-realistic-understory-conversion v1",
+  "inputs": [
+    {
+      "bytes": 32223,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/CC0-1.0-legalcode.en.html",
+      "sha256": "b43732f4c1463b087cf10d4daf8d8766514b2bf8f21bc5ef50905f95be227726"
+    },
+    {
+      "bytes": 5395,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/download_manifest.json",
+      "sha256": "577cef2c1fa8f94bd0d56f5913cf9f62cf6959f138ff57e5b30a348458fddc0e"
+    },
+    {
+      "bytes": 176176,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/fern_02.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "bytes": 6899,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/fern_02_1k.gltf",
+      "sha256": "33974295ee19670af4877705fc7d91f33f42d6302f0d44a625e072271223031f"
+    },
+    {
+      "bytes": 40446,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_files.json",
+      "sha256": "77b5ef582de1d60c0aa84c17e0f2fcfa3564b55d863a49da34c5168c9c2120e5"
+    },
+    {
+      "bytes": 1424,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_info.json",
+      "sha256": "e7c727ba89d9961de223f8f1625d175c37edb5699af6d7766cd065ad42782678"
+    },
+    {
+      "bytes": 114589,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_alpha_1k.png",
+      "sha256": "ea3c64284c7ebdeedf484d2d816eae92825ec526140c3bb83859ddc7a64001f9"
+    },
+    {
+      "bytes": 280359,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    },
+    {
+      "bytes": 315705,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_diff_1k.jpg",
+      "sha256": "a828a6e7b4c01c826911e2eac4b3afc7457dab7b3b392a31c681ed88b7d50029"
+    },
+    {
+      "bytes": 367222,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/textures/fern_02_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    },
+    {
+      "bytes": 101936,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/flower_empodium.bin",
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+    },
+    {
+      "bytes": 8859,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/flower_empodium_1k.gltf",
+      "sha256": "3f39d6b7dba6de81014f5ce41e43ac1204a45bfe146cbb425515103c4c5e9798"
+    },
+    {
+      "bytes": 32834,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_files.json",
+      "sha256": "9ed2b40ce10f047ff19e99750b992f6c047b7305a7f068775708ef0ab2d23317"
+    },
+    {
+      "bytes": 1345,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_info.json",
+      "sha256": "01a62c40d0f748b789d288ed2970df51a70028af0b581d36b83ca5434092639f"
+    },
+    {
+      "bytes": 111029,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_alpha_1k.png",
+      "sha256": "41aa40a0f570160ca64e8d99e49b4eecdc852158a6b021545831f0d654b0529e"
+    },
+    {
+      "bytes": 267088,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_arm_1k.jpg",
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+    },
+    {
+      "bytes": 173921,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_diff_1k.jpg",
+      "sha256": "eca8de7f24d5612d918ddd02339698f9c44b00ad5a9d2fb61d6acda267786129"
+    },
+    {
+      "bytes": 346423,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg",
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+    },
+    {
+      "bytes": 1646,
+      "path": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d"
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 176176,
+      "path": "fern_02_a.bin",
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "bytes": 5700,
+      "path": "fern_02_a.gltf",
+      "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1"
+    },
+    {
+      "bytes": 101936,
+      "path": "flower_empodium_d.bin",
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+    },
+    {
+      "bytes": 7224,
+      "path": "flower_empodium_d.gltf",
+      "sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41"
+    },
+    {
+      "bytes": 5349,
+      "path": "proofs/polyhaven_fern_02_a.json",
+      "sha256": "6b159c4a1acfcb39158590776a0d1b74d74ea969e342c06784b5c76a6ce6d36c"
+    },
+    {
+      "bytes": 5814,
+      "path": "proofs/polyhaven_flower_empodium_d.json",
+      "sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243"
+    },
+    {
+      "bytes": 280359,
+      "path": "textures/fern_02_a_arm_1k.jpg",
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    },
+    {
+      "bytes": 886305,
+      "path": "textures/fern_02_a_base_color_alpha_1k.png",
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd"
+    },
+    {
+      "bytes": 367222,
+      "path": "textures/fern_02_a_nor_gl_1k.jpg",
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    },
+    {
+      "bytes": 267088,
+      "path": "textures/flower_empodium_d_arm_1k.jpg",
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+    },
+    {
+      "bytes": 394831,
+      "path": "textures/flower_empodium_d_base_color_alpha_1k.png",
+      "sha256": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515"
+    },
+    {
+      "bytes": 346423,
+      "path": "textures/flower_empodium_d_nor_gl_1k.jpg",
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+    }
+  ],
+  "retrieved": "2026-10-20",
+  "source_policy": "Supplier source files remain unchanged; only staged derivatives are written.",
+  "sources": [
+    {
+      "api_files": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_files.json",
+      "api_info": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_info.json",
+      "authors": {
+        "Rico Cilliers": "modeling",
+        "Rob Tuytel": "scanning"
+      },
+      "id": "polyhaven_fern_02",
+      "license": "CC0-1.0",
+      "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "license_statement_url": "https://polyhaven.com/license",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "title": "Fern 02",
+      "url": "https://polyhaven.com/a/fern_02"
+    },
+    {
+      "api_files": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_files.json",
+      "api_info": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_info.json",
+      "authors": {
+        "Jenelle van Heerden": "Photography",
+        "Rico Cilliers": "modeling"
+      },
+      "id": "polyhaven_flower_empodium",
+      "license": "CC0-1.0",
+      "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "license_statement_url": "https://polyhaven.com/license",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "title": "Flower Empodium",
+      "url": "https://polyhaven.com/a/flower_empodium"
+    }
+  ],
+  "staging_limits": [
+    "No mesh modeling, retopology, decimation, vertex edits or texture painting.",
+    "No Godot import, runtime placement, GPU capture, performance claim or visual qualification.",
+    "Flower Empodium uses a recorded BLEND-to-MASK adaptation at alpha cutoff 0.5; native visual review remains required."
+  ],
+  "tool": {
+    "pillow": "12.3.0",
+    "python": "3.11.9",
+    "script": "tools/landscape/vegetation/convert_realistic_understory.py",
+    "script_sha256": "0b80dbc9ad6f8adc58be49ddc872af5e049b3477d3caf9921f53e409211b84ec",
+    "texture_encoding": "PNG RGBA8, Pillow PNG compress_level 9, optimize false"
+  },
+  "variants": [
+    {
+      "dependencies": [
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.bin",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.gltf",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg"
+      ],
+      "grounded_bounds_m": {
+        "max": [
+          0.254283,
+          0.286804,
+          0.302153
+        ],
+        "min": [
+          -0.297657,
+          0.0,
+          -0.311268
+        ],
+        "size": [
+          0.551941,
+          0.286804,
+          0.613421
+        ]
+      },
+      "id": "polyhaven_fern_02_a",
+      "lod": {
+        "godot_import_generate": true,
+        "note": "The selected fern node is a supplied clump variant, not a named LOD level.",
+        "source_supplied": false
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.03996468,
+          "fractional_alpha_pixel_count": 41906,
+          "height": 1024,
+          "mask_coverage_fraction": 0.15347672,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 160932,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "fern_02/textures/fern_02_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source MASK mode and cutoff are retained.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": 0.5,
+        "source_alpha_mode": "MASK"
+      },
+      "role": "herb",
+      "runtime_model_relative_path": "models/realistic_understory_2026/fern_02_a.gltf",
+      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf",
+      "source_bounds_m": {
+        "ground_offset": 0.028774,
+        "height": 0.286804,
+        "max": [
+          0.254283,
+          0.25803,
+          0.302153
+        ],
+        "min": [
+          -0.297657,
+          -0.028774,
+          -0.311268
+        ],
+        "size": [
+          0.551941,
+          0.286804,
+          0.613421
+        ]
+      },
+      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_fern_02_a.json",
+      "source_conversion_proof_sha256": "6b159c4a1acfcb39158590776a0d1b74d74ea969e342c06784b5c76a6ce6d36c",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.bin": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+      },
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.gltf",
+      "source_format": "glTF 2.0",
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.25428348779678345,
+          0.2580300271511078,
+          0.3021530210971832
+        ],
+        "position_accessor_min": [
+          -0.2976571321487427,
+          -0.028773518279194832,
+          -0.31126806139945984
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 9,
+          "POSITION": 8,
+          "TEXCOORD_0": 10,
+          "indices": 11
+        },
+        "source_gallery_translation_m": [
+          0.0,
+          0.0,
+          1.0000001192092896
+        ],
+        "source_mesh_index": 2,
+        "source_mesh_name": "Plane.006",
+        "source_node_index": 2,
+        "source_triangles": 784,
+        "uv0_max": [
+          0.630573,
+          0.971089
+        ],
+        "uv0_min": [
+          0.073993,
+          0.02042
+        ],
+        "uv_accessor_count": 544,
+        "vertex_count": 544
+      },
+      "source_id": "polyhaven_fern_02",
+      "source_materials": 1,
+      "source_metadata": {
+        "authors": {
+          "Rico Cilliers": "modeling",
+          "Rob Tuytel": "scanning"
+        },
+        "publisher_dimensions": [
+          1972.5302457809448,
+          1724.0281701087952,
+          427.6947118341923
+        ],
+        "publisher_polycount": 6232,
+        "title": "Fern 02"
+      },
+      "source_name": "fern_02_a",
+      "source_sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+      "source_surfaces": 1,
+      "source_triangles": 784,
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+          "uri": "textures/fern_02_a_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+          "uri": "textures/fern_02_a_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+          "uri": "textures/fern_02_a_arm_1k.jpg"
+        }
+      ],
+      "visual_qualification": "Not performed; staged source candidate only."
+    },
+    {
+      "dependencies": [
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg"
+      ],
+      "grounded_bounds_m": {
+        "max": [
+          0.096003,
+          0.168005,
+          0.10281
+        ],
+        "min": [
+          -0.098079,
+          0.0,
+          -0.091466
+        ],
+        "size": [
+          0.194082,
+          0.168005,
+          0.194275
+        ]
+      },
+      "id": "polyhaven_flower_empodium_d",
+      "lod": {
+        "alternate_source_lods_included": [],
+        "godot_import_generate": true,
+        "imported_supplied_levels": [
+          "LOD0"
+        ],
+        "note": "The selected source node is labeled LOD0; no alternate level is present in this glTF.",
+        "source_lod": "LOD0",
+        "source_supplied": true
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.03312778,
+          "fractional_alpha_pixel_count": 34737,
+          "height": 1024,
+          "mask_coverage_fraction": 0.1217823,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 127698,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "flower_empodium/textures/flower_empodium_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source BLEND changed to MASK at 0.5 to assess foliage alpha scissor and avoid blended overdraw; fractional coverage below the cutoff is discarded. This staged candidate is not visually qualified.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": null,
+        "source_alpha_mode": "BLEND"
+      },
+      "role": "flower",
+      "runtime_model_relative_path": "models/realistic_understory_2026/flower_empodium_d.gltf",
+      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_d.gltf",
+      "source_bounds_m": {
+        "ground_offset": 0.00331,
+        "height": 0.168005,
+        "max": [
+          0.096003,
+          0.164695,
+          0.10281
+        ],
+        "min": [
+          -0.098079,
+          -0.00331,
+          -0.091466
+        ],
+        "size": [
+          0.194082,
+          0.168005,
+          0.194275
+        ]
+      },
+      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_d.json",
+      "source_conversion_proof_sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+      },
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
+      "source_format": "glTF 2.0",
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.09600304812192917,
+          0.16469475626945496,
+          0.1028098613023758
+        ],
+        "position_accessor_min": [
+          -0.09807941317558289,
+          -0.003309954423457384,
+          -0.09146563708782196
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 13,
+          "POSITION": 12,
+          "TEXCOORD_0": 14,
+          "indices": 15
+        },
+        "source_gallery_translation_m": [
+          0.2840630114078522,
+          0.0,
+          0.0
+        ],
+        "source_mesh_index": 3,
+        "source_mesh_name": "Plane.001",
+        "source_node_index": 3,
+        "source_triangles": 360,
+        "uv0_max": [
+          0.924251,
+          0.855721
+        ],
+        "uv0_min": [
+          -0.00137,
+          0.012407
+        ],
+        "uv_accessor_count": 300,
+        "vertex_count": 300
+      },
+      "source_id": "polyhaven_flower_empodium",
+      "source_materials": 1,
+      "source_metadata": {
+        "authors": {
+          "Jenelle van Heerden": "Photography",
+          "Rico Cilliers": "modeling"
+        },
+        "publisher_dimensions": [
+          1322.8426575660706,
+          284.0941548347473,
+          268.3515117969364
+        ],
+        "publisher_polycount": 5820,
+        "title": "Flower Empodium"
+      },
+      "source_name": "flower_empodium_d_LOD0",
+      "source_sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+      "source_surfaces": 1,
+      "source_triangles": 360,
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+          "uri": "textures/flower_empodium_d_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
+          "uri": "textures/flower_empodium_d_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+          "uri": "textures/flower_empodium_d_arm_1k.jpg"
+        }
+      ],
+      "visual_qualification": "Not performed; staged source candidate only."
+    }
+  ]
+}
