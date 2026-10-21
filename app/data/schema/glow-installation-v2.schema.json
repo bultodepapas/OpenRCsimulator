@@ -1170,6 +1170,40 @@
               "pattern": "\\S"
             }
           }
+        },
+        "zero_lift_angle_rad": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": -0.3,
+              "maximum": 0.0
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
         }
       }
     },

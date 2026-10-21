@@ -1,5 +1,7 @@
 ## NITRO: passive annular blade-element surrogate, including stopped/windmilling flow.
 ## All section coefficients are estimated installation inputs, never measured propeller maps.
+## EX-14f (optional): a cambered section's zero-lift angle zero_lift_angle_rad (≤ 0) shifts the lift and the flat-plate
+## blend to the angle from the zero-lift line, α − α0; absent or 0 leaves the symmetric section exactly as before.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
@@ -20,6 +22,7 @@ class PreparedEvaluator extends RefCounted:
 	var _cd0: float
 	var _induced_drag: float
 	var _blades: float
+	var _zero_lift_angle: float = 0.0
 	var _dr: float
 	var _annulus_radii: PackedFloat64Array
 	var _pitch_angles: PackedFloat64Array
@@ -35,6 +38,13 @@ class PreparedEvaluator extends RefCounted:
 		_cd0 = float(p.cd0)
 		_induced_drag = float(p.induced_drag)
 		_blades = float(p.blades)
+		if p.has("zero_lift_angle_rad"):
+			var zero_lift: Variant = p.zero_lift_angle_rad
+			if typeof(zero_lift) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(zero_lift)) \
+					or float(zero_lift) < -0.3 or float(zero_lift) > 0.0:
+				_message = "Invalid propeller parameter: zero_lift_angle_rad"
+				return
+			_zero_lift_angle = float(zero_lift)
 		var pitch_m: float = float(p.pitch_m)
 		var radius: float = 0.5 * _diameter_m
 		_dr = radius * 0.8 / 12.0
@@ -68,7 +78,7 @@ class PreparedEvaluator extends RefCounted:
 				return {ok = false, message = "Propeller section speed is invalid"}
 			var phi: float = M.atan2_(axial_speed, tangential)
 			var beta: float = _pitch_angles[i]
-			var alpha: float = beta - phi
+			var alpha: float = beta - phi - _zero_lift_angle # from the zero-lift line (exact for 0)
 			var cl: float = _lift_slope * M.sin_(2.0 * alpha) / 2.0
 			# At large alpha lift is bounded; pressure drag increases to the flat-plate limit.
 			cl = clampf(cl, -1.25, 1.25)

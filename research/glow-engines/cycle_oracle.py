@@ -555,7 +555,7 @@ def propeller_load(rpm: float, axial_speed: float, rho: float, prop: dict[str, f
         speed = math.sqrt(speed2)
         phi = math.atan2(axial_speed, tangential)
         beta = math.atan2(prop["pitch_m"], TAU * r)
-        alpha = beta - phi
+        alpha = beta - phi - prop.get("zero_lift_angle_rad", 0.0)  # EX-14f: from the zero-lift line
         cl = max(-1.25, min(1.25, prop["lift_slope"] * math.sin(2.0 * alpha) / 2.0))
         cd = prop["cd0"] + prop["induced_drag"] * cl * cl + 1.2 * math.sin(alpha) ** 2
         area_pressure = 0.5 * rho * speed2 * prop["chord_m"] * dr * prop["blades"]
@@ -581,9 +581,12 @@ def propeller_load(rpm: float, axial_speed: float, rho: float, prop: dict[str, f
 def installation_prop(path: Path) -> dict[str, float]:
     install = json.loads(path.read_text(encoding="utf-8"))
     prop = install["propeller"]
-    return {key: float(qvalue(prop, key)) for key in [
+    out = {key: float(qvalue(prop, key)) for key in [
         "diameter_m", "pitch_m", "chord_m", "blades", "lift_slope", "cd0", "induced_drag"
     ]}
+    if "zero_lift_angle_rad" in prop:  # EX-14f optional cambered section
+        out["zero_lift_angle_rad"] = float(qvalue(prop, "zero_lift_angle_rad"))
+    return out
 
 
 def candidate_mean(profile: dict[str, Any], prop: dict[str, float], rpm: float,

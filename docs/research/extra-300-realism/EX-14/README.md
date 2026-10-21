@@ -131,7 +131,18 @@ The candidate data file differs from the committed one only in the closure row's
 | Hands-off 30 s: heading / height change | 417° / −102.5 m | 394° / −80.7 m | |
 | Valid tests | 38 / 40 | 40 / 40 | |
 
-The snap stops further short with the heavier, washed airplane. This is a recorded regression of a still-unrealistic figure, not a target. The 61FX Stik pair below isolates NITRO-61FX-R1.
+The snap stops further short in EX-14. Each mechanism was removed in turn on a disposable copy (same card prerequisites, `snap_roll` only; autorotation short of 360°, right / left):
+
+| Variant | Right | Left |
+| --- | --- | --- |
+| Before EX-14 | 37° | 108° |
+| Mass only (EX-14a) | 40° | 105° |
+| EX-14 without the side force | 47° | 106° |
+| EX-14 without the wash | 73° | 137° |
+| EX-14 without ground effect | identical to full | identical to full |
+| Full EX-14 | 67° | 131° |
+
+The fuselage crossflow term (D10-R3) causes it. A snap is flown at α ≈ 27°, where √(v²+w²) gives the body about 2.2× its level-flight side-force slope. That is inside Letko & Williams' measured high-α growth for square and deep bodies (about 6× at α 28–32°). The term resists the sideslip build-up that feeds an autorotation the post-stall strips already under-predict. The sourced term is kept; the snap belongs to the separation-dynamics step (D8b-R2d-v3), and the regression is recorded here rather than tuned away. The 61FX Stik pair below isolates NITRO-61FX-R1.
 
 **61FX Stik, full card at zero tolerance: 0 changes** ([compare-stik-61fx.md](ft/compare-stik-61fx.md)). The other glow airframe on the changed profile, `dynamics.gd`, `slipstream.gd` and Glow paths is bit-identical; none of its card flights passes 20,000 rpm. Its regression dive in `test_glow_dive_support.gd` does pass 20,000 rpm, and it faulted before R1.
 

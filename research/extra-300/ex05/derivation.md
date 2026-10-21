@@ -83,8 +83,8 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | propulsion | propeller shaft axis (body FRD) | 0.9994, 0.0349, 0.008727 | geometry.json thrust frame: 0.5 deg down, 2 deg right; [cos(down)cos(right), cos(down)sin(right), sin(down)] |
 | propulsion | propeller hub (model right, up, aft m) | 0.0001396, -3.491e-05, -0.3747 | geometry.json propeller child transformed by the visual thrust_frame pivot/rotation (default YXZ) |
 | propulsion | propeller hub offset from loaded CG (LE frame) | -0.3632, 0.0001396, 0.02404 | transformed propeller hub [x_aft,y_right,z_up] minus the derived loaded inventory CG |
-| propulsion | solidity of the Glow propeller surrogate | 0.07063 | B c (0.8 R) / (pi R^2): 2 constant-chord blades over its 0.2-1.0 R annuli (app/data/glow/extra_61fx_2t.json) |
-| propulsion | C_N, C_M at J 0.3 and 0.5 (per rad) | 0.002575, 0.004099, 0.006091, 0.004071 | x rho n2 D4 and x rho n2 D5 |
+| propulsion | solidity of the Glow propeller surrogate | 0.05167 | B c (0.8 R) / (pi R^2): 2 constant-chord blades over its 0.2-1.0 R annuli (app/data/glow/extra_61fx_2t.json) |
+| propulsion | C_N, C_M at J 0.3 and 0.5 (per rad) | 0.001884, 0.002999, 0.004456, 0.002978 | x rho n2 D4 and x rho n2 D5 |
 | slipstream | fin piece above the fuselage top: root height, span, chords (m), area (m2) | 0.04726, 0.2358, 0.2573, 0.1082, 0.04369 | fuselage top at the fin ac up to the fin tip; LE/TE lines of the fin polygon |
 | slipstream | rudder piece below the fuselage top: bottom height, span, chords (m), area (m2) | -0.02875, 0.06255, 0.1225, 0.1181, 0.007696 | rudder behind the tail post, from the mid-height of its slanted bottom edge to the fuselage top line at the post; polygon area |
 | ground effect | induced c, e; tail c, e (VLM fit) | 17.16, 1.215, 19.19, 1.332 | EX-14e image-method VLM of this planform, faded runtime law; ARP 0.216 m above the main-wheel contact in a level attitude (x 0.133) |

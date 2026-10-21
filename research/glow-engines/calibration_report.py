@@ -79,6 +79,7 @@ def installation_inputs(configuration_id: str) -> dict[str, Any]:
             "cd0": float(qvalue(prop, "cd0")),
             "induced_drag": float(qvalue(prop, "induced_drag")),
             "blades": float(qvalue(prop, "blades")),
+            **({"zero_lift_angle_rad": float(qvalue(prop, "zero_lift_angle_rad"))} if "zero_lift_angle_rad" in prop else {}),
         },
         "legacy_static_rpm_reference": float(qvalue(
             aircraft["propulsion"]["engine"], "max_rpm_static"
@@ -231,8 +232,9 @@ def annular_static_prop_torque(
     cd0: float,
     induced_drag: float,
     blades: int = 2,
+    zero_lift_angle_rad: float = 0.0,
 ) -> float:
-    """Mirror the repository's 12-annulus, no-induction blade-element load law."""
+    """Mirror the repository's 12-annulus, no-induction blade-element load law (EX-14f: optional zero-lift angle)."""
     radius = 0.5 * diameter_m
     omega = rpm * TAU / 60.0
     dr = radius * 0.8 / 12.0
@@ -244,7 +246,7 @@ def annular_static_prop_torque(
         if speed_sq == 0.0:
             continue
         beta = math.atan2(pitch_m, TAU * r)
-        alpha = beta
+        alpha = beta - zero_lift_angle_rad
         cl = max(-1.25, min(1.25, lift_slope * math.sin(2.0 * alpha) / 2.0))
         cd = cd0 + induced_drag * cl * cl + 1.2 * math.sin(alpha) ** 2
         area_pressure = 0.5 * air_density_kg_m3 * speed_sq * chord_m * dr * blades
@@ -267,7 +269,7 @@ def static_balance_roots(
         engine = evaluate(profile, rpm)["brake_shaft_torque_nm"]
         propeller = annular_static_prop_torque(
             rpm, diameter_m, pitch_m, chord_m, air_density_kg_m3,
-            section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]),
+            section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]), zero_lift_angle_rad=section.get("zero_lift_angle_rad", 0.0),
         )
         return engine - propeller
 
@@ -310,7 +312,7 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
     section = installed["section"]
     prop_q = annular_static_prop_torque(
         reference_rpm, diameter, pitch, chord, reference_density,
-        section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], section["blades"],
+        section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], section["blades"], zero_lift_angle_rad=section.get("zero_lift_angle_rad", 0.0),
     )
     if prop_q <= 0.0 or engine_q <= 0.0:
         raise ValueError("single-point chord fit requires positive candidate and propeller torques")
@@ -318,7 +320,7 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
     inferred_chord = chord * scale
     fitted_prop_q = annular_static_prop_torque(
         reference_rpm, diameter, pitch, inferred_chord, reference_density,
-        section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], section["blades"],
+        section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], section["blades"], zero_lift_angle_rad=section.get("zero_lift_angle_rad", 0.0),
     )
 
     lower, upper = 2000.0, min(17000.0, float(qvalue(profile["operation"], "max_rpm")))
@@ -330,11 +332,11 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
         if h > 0.0:
             lo_q = evaluate(profile, root - h)["brake_shaft_torque_nm"] - annular_static_prop_torque(
                 root - h, diameter, pitch, inferred_chord, reference_density,
-                section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]),
+                section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]), zero_lift_angle_rad=section.get("zero_lift_angle_rad", 0.0),
             )
             hi_q = evaluate(profile, root + h)["brake_shaft_torque_nm"] - annular_static_prop_torque(
                 root + h, diameter, pitch, inferred_chord, reference_density,
-                section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]),
+                section["lift_slope_per_rad"], section["cd0"], section["induced_drag"], int(section["blades"]), zero_lift_angle_rad=section.get("zero_lift_angle_rad", 0.0),
             )
             slope = (hi_q - lo_q) / (2.0 * h)
         prop = annular_prop_performance(
@@ -413,6 +415,7 @@ def fit_single_prop_rpm_anchor(profile: dict[str, Any]) -> dict[str, Any]:
         alt_q = annular_static_prop_torque(
             reference_rpm, diameter, pitch, chord, density,
             alt["lift_slope_per_rad"], alt["cd0"], alt["induced_drag"], alt["blades"],
+            zero_lift_angle_rad=alt.get("zero_lift_angle_rad", 0.0),
         )
         variants.append({
             "case": label,
@@ -487,7 +490,7 @@ def annular_prop_performance(
         speed = math.sqrt(speed_sq)
         phi = math.atan2(axial_speed_m_s, tangential)
         beta = math.atan2(pitch_m, TAU * r)
-        alpha = beta - phi
+        alpha = beta - phi - section.get("zero_lift_angle_rad", 0.0)  # EX-14f: from the zero-lift line
         cl = max(-1.25, min(1.25, section["lift_slope_per_rad"] * math.sin(2.0 * alpha) / 2.0))
         cd = section["cd0"] + section["induced_drag"] * cl * cl + 1.2 * math.sin(alpha) ** 2
         area_pressure = 0.5 * air_density_kg_m3 * speed_sq * chord_m * dr * section["blades"]
