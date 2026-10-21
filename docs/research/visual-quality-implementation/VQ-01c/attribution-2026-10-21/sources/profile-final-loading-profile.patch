@@ -1,0 +1,272 @@
+--- control/app/data/field_loader.gd
++++ profile/app/data/field_loader.gd
+@@ -1,6 +1,7 @@
+ ## Loads an openrc-field v1 data file into a renderer-neutral, normalized dictionary.
+ ## Quantities are metres in NED coordinates; invalid input always returns an empty field.
+ extends RefCounted
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const DEFAULT_PATH: String = "res://data/fields/default.json"
+ const FORMAT: String = "openrc-field v1"
+@@ -75,6 +76,11 @@
+ 
+ ## Result shape: {ok: bool, errors: PackedStringArray, field: Dictionary}.
+ static func load_from(path: String = DEFAULT_PATH) -> Dictionary:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: Dictionary = _phase2_impl_load_from(path)
++	Phase2LoadingProfile.record("field_loader.load_from", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++static func _phase2_impl_load_from(path: String = DEFAULT_PATH) -> Dictionary:
+ 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
+ 	if file == null:
+ 		return _failure("%s: cannot open field file (error %d)" % [path, FileAccess.get_open_error()])
+--- control/app/main.gd
++++ profile/app/main.gd
+@@ -1,4 +1,5 @@
+ extends Node3D
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ ## Set by the interactive shell before the session enters the tree.
+ var external_controller_selection := false
+@@ -316,6 +317,10 @@
+ 
+ 
+ func _ready() -> void:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	_phase2_impl__ready()
++	Phase2LoadingProfile.record("main._ready", phase2_start_usec, Time.get_ticks_usec())
++func _phase2_impl__ready() -> void:
+ 	var args := _user_args()
+ 	var companion_options: Dictionary = CompanionConfig.from_args(user_args, companion_config)
+ 	if not companion_options.ok:
+@@ -2349,6 +2354,11 @@
+ 
+ 
+ func _build_world() -> bool:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: bool = _phase2_impl__build_world()
++	Phase2LoadingProfile.record("main._build_world", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++func _phase2_impl__build_world() -> bool:
+ 	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}))
+ 	if _airplane.is_empty():
+ 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
+--- control/app/phase2_loading_profile.gd
++++ profile/app/phase2_loading_profile.gd
+@@ -0,0 +1,12 @@
++extends RefCounted
++
++const META_KEY: StringName = &"openrc_loading_profile_spans"
++const MAX_SPANS: int = 512
++
++
++static func record(name: String, start_usec: int, end_usec: int) -> void:
++	var spans: Array = Engine.get_meta(META_KEY, [])
++	if spans.size() >= MAX_SPANS:
++		return
++	spans.append({"name": name, "start_usec": start_usec, "end_usec": end_usec})
++	Engine.set_meta(META_KEY, spans)
+--- control/app/physics/aircraft_data.gd
++++ profile/app/physics/aircraft_data.gd
+@@ -9,6 +9,7 @@
+ #        aero {name: float}, conventions {…}, controls {throw_deg, throw_rad: {aileron, elevator, rudder},
+ #        servo_rate (full throws per second)}, id.
+ extends RefCounted
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const M := preload("res://physics/math3d.gd")
+ const RB := preload("res://physics/rigid_body.gd")
+@@ -54,6 +55,11 @@
+ 
+ 
+ static func load_file(path: String) -> Dictionary:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: Dictionary = _phase2_impl_load_file(path)
++	Phase2LoadingProfile.record("aircraft_data.load_file", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++static func _phase2_impl_load_file(path: String) -> Dictionary:
+ 	# Hash and parse one read: never fingerprint a later revision of the file.
+ 	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(path)
+ 	if bytes.is_empty():
+--- control/app/project.godot
++++ profile/app/project.godot
+@@ -51,7 +51,3 @@
+ 
+ ; UI-04a: writes res://build_info.json into exported packs (addons/build_info; excluded from the packs themselves).
+ enabled=PackedStringArray("res://addons/build_info/plugin.cfg", "res://addons/aircraft_contract/plugin.cfg")
+-
+-[autoload]
+-
+-StartupObserver="*res://startup_observer.gd"
+--- control/app/render/airplane.gd
++++ profile/app/render/airplane.gd
+@@ -1,6 +1,7 @@
+ # Stable presentation adapter. Authored manifests select builders and bind scene nodes.
+ # Physics remains scalar/float64; Godot transforms are used only at this rendering boundary.
+ extends RefCounted
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const Catalog := preload("res://app_state/aircraft_catalog.gd")
+ const AircraftData := preload("res://physics/aircraft_data.gd")
+@@ -31,6 +32,11 @@
+ 
+ ## Returns an independently built, validated visual for a catalog physical configuration.
+ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: Dictionary = _phase2_impl_build(id, propeller_diameter_m, expected_presentation)
++	Phase2LoadingProfile.record("airplane_builder.build", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++static func _phase2_impl_build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:
+ 	var family: String = Catalog.visual_family(id)
+ 	if family.is_empty():
+ 		push_error("render/airplane.gd: unknown aircraft '%s'" % id)
+--- control/app/render/shadow.gd
++++ profile/app/render/shadow.gd
+@@ -3,6 +3,7 @@
+ # and height-softened receiver. The legacy transform/helpers remain for fallback and
+ # existing visual consumers; they never feed simulation state.
+ extends RefCounted
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const Projected = preload("res://render/projected_shadow.gd")
+ 
+@@ -41,6 +42,10 @@
+ ## A precomputed shape is valid only for the same unchanged neutral model (e.g. a static Home preview).
+ ## Dynamic/flight callers omit it and retain the existing geometry collection path.
+ static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	_phase2_impl_bind_model(shadow, model, shape)
++	Phase2LoadingProfile.record("shadow.bind_model", phase2_start_usec, Time.get_ticks_usec())
++static func _phase2_impl_bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:
+ 	var old := shadow.get_node_or_null("ProjectedShadow")
+ 	if old != null:
+ 		shadow.remove_child(old)
+--- control/app/render/world/world.gd
++++ profile/app/render/world/world.gd
+@@ -3,6 +3,7 @@
+ # evidence views and the runway scenario call it; nothing else creates the flight Environment or the sun, so a new
+ # world feature (time of day, moon, field lights) is added here once instead of at every call site.
+ extends RefCounted
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const Atmosphere := preload("res://render/atmosphere.gd")
+ const Spec := preload("res://spec.gd")
+@@ -231,6 +232,11 @@
+ ## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow.
+ ## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
+ static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: Dictionary = _phase2_impl_build(parent, field, build_field, conditions, lighting, night_options)
++	Phase2LoadingProfile.record("world.build", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++static func _phase2_impl_build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:
+ 	_night_options = resolve_night_options(night_options)
+ 	_night_profile = str(_night_options.field_lighting)
+ 	_night_owner = weakref(parent)
+--- control/app/sim/flight_session.gd
++++ profile/app/sim/flight_session.gd
+@@ -5,6 +5,7 @@
+ # (virtual stick: rate-limited, self-centering). Unplugging the radio triggers the failsafe: idle, sticks centred,
+ # visible pause; resuming is an explicit action (resume()).
+ extends Node
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const FailureConfig := preload("res://failures/config.gd")
+ const FailureRuntime := preload("res://failures/runtime.gd")
+@@ -814,6 +815,10 @@
+ 
+ 
+ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	_phase2_impl_setup(path, expected_id, frozen_data)
++	Phase2LoadingProfile.record("flight_session.setup", phase2_start_usec, Time.get_ticks_usec())
++func _phase2_impl_setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Dictionary = {}) -> void:
+ 	aircraft_path = path
+ 	expected_aircraft_id = expected_id
+ 	_frozen_aircraft = frozen_data.duplicate(true)
+@@ -1067,6 +1072,11 @@
+ ## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
+ ## flight (like invalid aircraft data). Returns false on failure; call reset() afterwards to restart on them.
+ func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: bool = _phase2_impl_set_field(field, table_path)
++	Phase2LoadingProfile.record("flight_session.set_field", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++func _phase2_impl_set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:
+ 	var table := GroundSurfaces.load_table(table_path)
+ 	var built := GroundSurfaces.build(table.table, field) if table.ok else table
+ 	if not built.ok:
+@@ -1157,6 +1167,11 @@
+ 
+ ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
+ func set_collision_world(world: Dictionary) -> bool:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: bool = _phase2_impl_set_collision_world(world)
++	Phase2LoadingProfile.record("flight_session.set_collision_world", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++func _phase2_impl_set_collision_world(world: Dictionary) -> bool:
+ 	if world.is_empty():
+ 		if sim != null and sim.tick > 0 and not _collision_world.is_empty():
+ 			return false
+@@ -2402,6 +2417,10 @@
+ 
+ ## The shell may retain an armed radio when restarting under the same device/profile ownership.
+ func reset(preserve_radio_readiness := false) -> void:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	_phase2_impl_reset(preserve_radio_readiness)
++	Phase2LoadingProfile.record("flight_session.reset", phase2_start_usec, Time.get_ticks_usec())
++func _phase2_impl_reset(preserve_radio_readiness := false) -> void:
+ 	# Shell restart cancels calibration explicitly. Direct callers must not bypass it
+ 	# or emit resetting (which would close the recorder) while the wizard is active.
+ 	if calibration != null:
+--- control/app/ui/home_scene.gd
++++ profile/app/ui/home_scene.gd
+@@ -4,6 +4,7 @@
+ # A live still render follows the current models, imported tree atlas and landscape.
+ # World (render/world/world.gd, FW-02) composes the environment, field and sun exactly as the flight does.
+ extends Node3D
++const Phase2LoadingProfile = preload("res://phase2_loading_profile.gd")
+ 
+ const Spec := preload("res://spec.gd")
+ const Frames := preload("res://render/frames.gd")
+@@ -59,6 +60,10 @@
+ 
+ ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
+ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	_phase2_impl__init(aircraft, field_path, selected_lighting, selected_night_options, selected_sky, landscape_id)
++	Phase2LoadingProfile.record("home_scene._init", phase2_start_usec, Time.get_ticks_usec())
++func _phase2_impl__init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:
+ 	name = "HomeScene"
+ 	if not Landscapes.has(landscape_id):
+ 		field_errors = PackedStringArray(["Unknown landscape: " + landscape_id])
+@@ -129,6 +134,11 @@
+ ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
+ ## Flight still builds and validates independently; replacing Home drops the cache and its resources.
+ func show_aircraft(id: String) -> bool:
++	var phase2_start_usec: int = Time.get_ticks_usec()
++	var phase2_result: bool = _phase2_impl_show_aircraft(id)
++	Phase2LoadingProfile.record("home_scene.show_aircraft", phase2_start_usec, Time.get_ticks_usec())
++	return phase2_result
++func _phase2_impl_show_aircraft(id: String) -> bool:
+ 	var retained := _preview_models.has(id)
+ 	var built: Dictionary = _preview_models[id] if retained else AirplaneBuilder.build(id)
+ 	if built.is_empty():
+--- control/profiled_loading_probe.gd
++++ profile/profiled_loading_probe.gd
+@@ -51,6 +51,7 @@
+ 		_fail("Cannot write isolated probe settings")
+ 		return
+ 	_settings_path = prefs_path
++	Engine.set_meta("openrc_loading_profile_spans", [])
+ 	var before_load := Time.get_ticks_usec()
+ 	var packed: PackedScene = load("res://app_root.tscn")
+ 	var app: Node = packed.instantiate()
+@@ -129,6 +130,7 @@
+ 	}
+ 	report["shutdown"] = await _cleanup()
+ 	report.complete = report.shutdown.audio_released and report.shutdown.settings_removed
++	report["construction_spans"] = Engine.get_meta("openrc_loading_profile_spans", [])
+ 	var file := FileAccess.open(output, FileAccess.WRITE)
+ 	if file == null:
+ 		_fail("Cannot create report")

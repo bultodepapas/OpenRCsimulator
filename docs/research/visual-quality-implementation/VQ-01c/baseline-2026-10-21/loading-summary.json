@@ -1,0 +1,190 @@
+{
+  "rows": [
+    {
+      "run": "loading-fixed-01",
+      "home_engine_s": 9.110532,
+      "home_from_load_s": 5.192319,
+      "first_fly_ready_s": 3.388223,
+      "first_fly_draw_s": 4.018166,
+      "warm_fly_draw_s": 1.918147,
+      "first_draw_paused": true,
+      "warm_draw_paused": false,
+      "return_draw_s": [
+        1.075362,
+        1.162104
+      ],
+      "orphan_nodes": [
+        0,
+        0
+      ],
+      "nodes_at_home": [
+        777,
+        777
+      ],
+      "shutdown": {
+        "audio_released": true,
+        "elapsed_usec": 331714,
+        "remaining_playbacks": 0,
+        "settings_removed": true,
+        "timeout_usec": 1000000,
+        "tracked_playbacks": 1
+      }
+    },
+    {
+      "run": "loading-fixed-03",
+      "home_engine_s": 8.760467,
+      "home_from_load_s": 4.883307,
+      "first_fly_ready_s": 3.042433,
+      "first_fly_draw_s": 3.167058,
+      "warm_fly_draw_s": 1.637286,
+      "first_draw_paused": false,
+      "warm_draw_paused": false,
+      "return_draw_s": [
+        0.969821,
+        0.950716
+      ],
+      "orphan_nodes": [
+        0,
+        0
+      ],
+      "nodes_at_home": [
+        777,
+        777
+      ],
+      "shutdown": {
+        "audio_released": true,
+        "elapsed_usec": 308615,
+        "remaining_playbacks": 0,
+        "settings_removed": true,
+        "timeout_usec": 1000000,
+        "tracked_playbacks": 1
+      }
+    },
+    {
+      "run": "loading-fixed-04",
+      "home_engine_s": 8.849,
+      "home_from_load_s": 5.049522,
+      "first_fly_ready_s": 3.761056,
+      "first_fly_draw_s": 3.905605,
+      "warm_fly_draw_s": 1.691715,
+      "first_draw_paused": false,
+      "warm_draw_paused": false,
+      "return_draw_s": [
+        1.00313,
+        1.087645
+      ],
+      "orphan_nodes": [
+        0,
+        0
+      ],
+      "nodes_at_home": [
+        777,
+        777
+      ],
+      "shutdown": {
+        "audio_released": true,
+        "elapsed_usec": 1208808,
+        "remaining_playbacks": 0,
+        "settings_removed": true,
+        "timeout_usec": 1000000,
+        "tracked_playbacks": 1
+      }
+    },
+    {
+      "run": "loading-fixed-05",
+      "home_engine_s": 9.877544,
+      "home_from_load_s": 5.61096,
+      "first_fly_ready_s": 3.360764,
+      "first_fly_draw_s": 3.468854,
+      "warm_fly_draw_s": 2.096079,
+      "first_draw_paused": true,
+      "warm_draw_paused": false,
+      "return_draw_s": [
+        1.00978,
+        1.105332
+      ],
+      "orphan_nodes": [
+        0,
+        0
+      ],
+      "nodes_at_home": [
+        777,
+        777
+      ],
+      "shutdown": {
+        "audio_released": true,
+        "elapsed_usec": 264268,
+        "remaining_playbacks": 0,
+        "settings_removed": true,
+        "timeout_usec": 1000000,
+        "tracked_playbacks": 1
+      }
+    },
+    {
+      "run": "loading-fixed-06",
+      "home_engine_s": 9.442583,
+      "home_from_load_s": 5.317214,
+      "first_fly_ready_s": 3.706697,
+      "first_fly_draw_s": 3.824116,
+      "warm_fly_draw_s": 1.86866,
+      "first_draw_paused": true,
+      "warm_draw_paused": false,
+      "return_draw_s": [
+        1.640588,
+        1.018709
+      ],
+      "orphan_nodes": [
+        0,
+        0
+      ],
+      "nodes_at_home": [
+        777,
+        777
+      ],
+      "shutdown": {
+        "audio_released": true,
+        "elapsed_usec": 283230,
+        "remaining_playbacks": 0,
+        "settings_removed": true,
+        "timeout_usec": 1000000,
+        "tracked_playbacks": 1
+      }
+    }
+  ],
+  "statistics": {
+    "home_engine_s": {
+      "n": 5,
+      "min": 8.760467,
+      "median": 9.110532,
+      "max": 9.877544
+    },
+    "home_from_load_s": {
+      "n": 5,
+      "min": 4.883307,
+      "median": 5.192319,
+      "max": 5.61096
+    },
+    "first_fly_ready_s": {
+      "n": 5,
+      "min": 3.042433,
+      "median": 3.388223,
+      "max": 3.761056
+    },
+    "first_fly_draw_s": {
+      "n": 5,
+      "min": 3.167058,
+      "median": 3.824116,
+      "max": 4.018166
+    },
+    "warm_fly_draw_s": {
+      "n": 5,
+      "min": 1.637286,
+      "median": 1.86866,
+      "max": 2.096079
+    }
+  },
+  "attempts_after_repair": 6,
+  "successful_processes": 5,
+  "unexpected_exit": "loading-fixed-02: 3221226525, no timing report; isolated settings sidecar remained",
+  "interpretation": "Observed draw timing; paused draws do not establish interactive readiness. Fresh process is not cold OS/import/driver cache."
+}

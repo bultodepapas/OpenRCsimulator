@@ -1,0 +1,39 @@
+--- original/app/project.godot
++++ collector/app/project.godot
+@@ -8,7 +8,8 @@
+ ; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
+ config/version="0.1.7"
+ ; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
+-run/main_scene="res://app_root.tscn"
++run/main_scene="res://package_probe_host.tscn"
++run/main_loop_type="PackLoadingProbe"
+ config/features=PackedStringArray("4.7")
+ 
+ [display]
+--- research/performance/loading_probe.gd
++++ collector/app/package_loading_probe.gd
+@@ -1,5 +1,6 @@
+ # VQ-01c / DT-10: real Home -> Fly -> Home loading, outside the production tree.
+ # Run with a native renderer. Engine elapsed time is not parent-process launch time.
++class_name PackLoadingProbe
+ extends SceneTree
+ 
+ const AUDIO_DRAIN_TIMEOUT_USEC := 1_000_000
+@@ -51,6 +52,7 @@
+ 		_fail("Cannot write isolated probe settings")
+ 		return
+ 	_settings_path = prefs_path
++	Engine.set_meta("package_scene_spans", [])
+ 	var before_load := Time.get_ticks_usec()
+ 	var packed: PackedScene = load("res://app_root.tscn")
+ 	var app: Node = packed.instantiate()
+@@ -127,6 +129,9 @@
+ 		"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+ 		"cycles": samples,
+ 	}
++	report["scene_spans"] = Engine.get_meta("package_scene_spans", [])
++	report["package_build"] = JSON.parse_string(FileAccess.get_file_as_string("res://build_info.json")) if FileAccess.file_exists("res://build_info.json") else null
++	report["execution"] = {"executable": OS.get_executable_path(), "editor_feature": OS.has_feature("editor"), "debug_build": OS.is_debug_build(), "project_path": ProjectSettings.globalize_path("res://")}
+ 	report["shutdown"] = await _cleanup()
+ 	report.complete = report.shutdown.audio_released and report.shutdown.settings_removed
+ 	var file := FileAccess.open(output, FileAccess.WRITE)

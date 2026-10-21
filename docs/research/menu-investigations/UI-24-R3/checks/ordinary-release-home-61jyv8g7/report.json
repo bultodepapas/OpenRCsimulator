@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "59cdb549-6b54-4ed1-b690-2944ceaf4cbe",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\graphics-settings-20261021\\release\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--quit-after",
+    "180"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T18:15:50.998883+00:00",
+  "label": "ordinary-release-home",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-settings-20261021\\checks\\ordinary-release-home-61jyv8g7\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-settings-20261021\\checks\\ordinary-release-home-61jyv8g7\\report.json",
+  "timeout_seconds": 70.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 38.109,
+  "log_bytes": 322,
+  "log_sha256": "32e48b24d1dc8c955f20b35c0fb8e306105feeccf819be716f0e69e3e59b7f25"
+}

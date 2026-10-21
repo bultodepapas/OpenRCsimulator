@@ -1,0 +1,677 @@
+{
+  "format": "openrc-windsock-grid-evidence-v1",
+  "files": [
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\artifact-identities.json",
+      "retained": "provenance/artifact-identities.json",
+      "raw_sha256": "8cf83b08a5e15c7eb2840d482462d9369313d214ea2a9820d698fd0d31fbabfb",
+      "stored_sha256": "8cf83b08a5e15c7eb2840d482462d9369313d214ea2a9820d698fd0d31fbabfb"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\capture_windsock_grid.py",
+      "retained": "provenance/capture_windsock_grid.py",
+      "raw_sha256": "74b07771f8eec2a0c5fe7bd75f9a82ef5a9046cd0a47c568199b8dc48ff515cc",
+      "stored_sha256": "74b07771f8eec2a0c5fe7bd75f9a82ef5a9046cd0a47c568199b8dc48ff515cc"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\capture_windsock_motion.gd",
+      "retained": "provenance/capture_windsock_motion.gd",
+      "raw_sha256": "aa611310c69e8dfeeb676e848b8bbd9feaf067e2e5afb617fd01d121334219be",
+      "stored_sha256": "aa611310c69e8dfeeb676e848b8bbd9feaf067e2e5afb617fd01d121334219be"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\check_windsock_mutation.py",
+      "retained": "provenance/check_windsock_mutation.py",
+      "raw_sha256": "6582dcd6171499aa9925769a69c16a8ae750fd6cb0a91443096ece7a0833788a",
+      "stored_sha256": "6582dcd6171499aa9925769a69c16a8ae750fd6cb0a91443096ece7a0833788a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\collector-build-environment.json",
+      "retained": "provenance/collector-build-environment.json",
+      "raw_sha256": "ad581d8e4f13589b2493fbbde452ee2ea72d280cbffc5d28aaf0a4c0f462c261",
+      "stored_sha256": "ad581d8e4f13589b2493fbbde452ee2ea72d280cbffc5d28aaf0a4c0f462c261"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\collector.patch",
+      "retained": "provenance/collector.patch",
+      "raw_sha256": "269f93e13b53c7d09d9cf0fbf63027dcf0680fea18acaca51a857d1ad541957a",
+      "stored_sha256": "269f93e13b53c7d09d9cf0fbf63027dcf0680fea18acaca51a857d1ad541957a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\compare_windsock_optimization.gd",
+      "retained": "provenance/compare_windsock_optimization.gd",
+      "raw_sha256": "8ccb7eba2d3332d56960dc0ddb74cddefe9b5874baa718104f5649fa04d5dfe1",
+      "stored_sha256": "8ccb7eba2d3332d56960dc0ddb74cddefe9b5874baa718104f5649fa04d5dfe1"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\diagnostic-build-environment.json",
+      "retained": "provenance/diagnostic-build-environment.json",
+      "raw_sha256": "5725ce873645b559ae87f7b40c511b55575271fcd90d7a2d3c244a363ed766b1",
+      "stored_sha256": "5725ce873645b559ae87f7b40c511b55575271fcd90d7a2d3c244a363ed766b1"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\export_presets.cfg",
+      "retained": "provenance/export_presets.cfg",
+      "raw_sha256": "ab5bb044eaa55a781a66e94d9c1ad2fe51883e484f7b8e3865950f9e4d240c92",
+      "stored_sha256": "ab5bb044eaa55a781a66e94d9c1ad2fe51883e484f7b8e3865950f9e4d240c92"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\implementation.patch",
+      "retained": "provenance/implementation.patch",
+      "raw_sha256": "181f4ea4b5e5b64c0b08a4c6640ed6540a87c1282f6ce6e8965092c3b03cac9b",
+      "stored_sha256": "181f4ea4b5e5b64c0b08a4c6640ed6540a87c1282f6ce6e8965092c3b03cac9b"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\package_loading_probe.gd",
+      "retained": "provenance/package_loading_probe.gd",
+      "raw_sha256": "defd67465c2442526a94c6519e5351c8486d826fa084b98d3ad6c39bf9f8b886",
+      "stored_sha256": "defd67465c2442526a94c6519e5351c8486d826fa084b98d3ad6c39bf9f8b886"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\package_probe_host.tscn",
+      "retained": "provenance/package_probe_host.tscn",
+      "raw_sha256": "b76389d906507687e33d9d40317ddbc28a0d8089a41fa61bdebb813c08f52f08",
+      "stored_sha256": "b76389d906507687e33d9d40317ddbc28a0d8089a41fa61bdebb813c08f52f08"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\prepare_export_collector.py",
+      "retained": "provenance/prepare_export_collector.py",
+      "raw_sha256": "2bc18e9fc35e5f39fa027b83d60cedae172f1526c6f9462ee16410a79a1af9d2",
+      "stored_sha256": "2bc18e9fc35e5f39fa027b83d60cedae172f1526c6f9462ee16410a79a1af9d2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\prepare_graphics_export.py",
+      "retained": "provenance/prepare_graphics_export.py",
+      "raw_sha256": "5644c10ef6b454cf618db64e50cc60d254d9e1f11f8181a1fb820e3ab13206ce",
+      "stored_sha256": "5644c10ef6b454cf618db64e50cc60d254d9e1f11f8181a1fb820e3ab13206ce"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\project-original.godot",
+      "retained": "provenance/project-original.godot",
+      "raw_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99",
+      "stored_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\project.godot",
+      "retained": "provenance/project.godot",
+      "raw_sha256": "5788e346c8cd8eddfcba120c676404cd79eeb2b4d6c43a876ee36b234ca94231",
+      "stored_sha256": "5788e346c8cd8eddfcba120c676404cd79eeb2b4d6c43a876ee36b234ca94231"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\README.md",
+      "retained": "provenance/README.md",
+      "raw_sha256": "ac141fcf332339268bf671bc26e7bdd52a10c8695bed1c7549dcfeed8ea53517",
+      "stored_sha256": "ac141fcf332339268bf671bc26e7bdd52a10c8695bed1c7549dcfeed8ea53517"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\reduce_windsock_grid.py",
+      "retained": "provenance/reduce_windsock_grid.py",
+      "raw_sha256": "18544c7ca69e70cc3ed1edd686483723894ea60bfc34e4d81da1d43a29bd815b",
+      "stored_sha256": "18544c7ca69e70cc3ed1edd686483723894ea60bfc34e4d81da1d43a29bd815b"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\retain_windsock_grid.py",
+      "retained": "provenance/retain_windsock_grid.py",
+      "raw_sha256": "7db360ee651438444a22fdac6b01e1f2374f2596d1214199ef70bca9bfb36036",
+      "stored_sha256": "7db360ee651438444a22fdac6b01e1f2374f2596d1214199ef70bca9bfb36036"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\run_wind_pairs.py",
+      "retained": "provenance/run_wind_pairs.py",
+      "raw_sha256": "494cd1cdecae5e976c640bd5f2f5f50912982a1ee641bd02a8588cca2094120b",
+      "stored_sha256": "494cd1cdecae5e976c640bd5f2f5f50912982a1ee641bd02a8588cca2094120b"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\source-manifest.json",
+      "retained": "provenance/source-manifest.json.gz",
+      "raw_sha256": "e8b247325c6ca549e4917344ccb09f29c707d408d11498e4ce584945a7ad33fa",
+      "stored_sha256": "bfc6019db72edf2f9eacd533af176e2e8117433b1596ba9336342d302c51d894"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\source-verification.json",
+      "retained": "provenance/source-verification.json",
+      "raw_sha256": "8b49ddfe91f1c2e7217db5921249210a99b136656ba3ed17575f01e5ae42d366",
+      "stored_sha256": "8b49ddfe91f1c2e7217db5921249210a99b136656ba3ed17575f01e5ae42d366"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\test_windsock.gd",
+      "retained": "provenance/test_windsock.gd",
+      "raw_sha256": "83633f94df75ecc017d6224567e9441138c67f2d0c3e46914e332d3a137569e4",
+      "stored_sha256": "83633f94df75ecc017d6224567e9441138c67f2d0c3e46914e332d3a137569e4"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\test_windsock_grid.py",
+      "retained": "provenance/test_windsock_grid.py",
+      "raw_sha256": "74ee6c2566df1150f2c8392f40194821ecd64369a2d9ea831417c84b25aea45c",
+      "stored_sha256": "74ee6c2566df1150f2c8392f40194821ecd64369a2d9ea831417c84b25aea45c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\wind_prepare_export_collector.py",
+      "retained": "provenance/wind_prepare_export_collector.py",
+      "raw_sha256": "2bc18e9fc35e5f39fa027b83d60cedae172f1526c6f9462ee16410a79a1af9d2",
+      "stored_sha256": "2bc18e9fc35e5f39fa027b83d60cedae172f1526c6f9462ee16410a79a1af9d2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\wind_prepare_graphics_export.py",
+      "retained": "provenance/wind_prepare_graphics_export.py",
+      "raw_sha256": "5644c10ef6b454cf618db64e50cc60d254d9e1f11f8181a1fb820e3ab13206ce",
+      "stored_sha256": "5644c10ef6b454cf618db64e50cc60d254d9e1f11f8181a1fb820e3ab13206ce"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\wind_run_graphics_export.py",
+      "retained": "provenance/wind_run_graphics_export.py",
+      "raw_sha256": "66131850e4643137e7ea107979fa8720bb0a40049eed561189f33977b8edab86",
+      "stored_sha256": "66131850e4643137e7ea107979fa8720bb0a40049eed561189f33977b8edab86"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\wind_run_package_loading.py",
+      "retained": "provenance/wind_run_package_loading.py",
+      "raw_sha256": "60fd02e5435f583444145ad0f39a32357aa937b699021b2fcb39fb4183790935",
+      "stored_sha256": "60fd02e5435f583444145ad0f39a32357aa937b699021b2fcb39fb4183790935"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\windsock-candidate.gd",
+      "retained": "provenance/windsock-candidate.gd",
+      "raw_sha256": "9b4c3d9d0a4a238a1294cda0f0ec9e1757851956b956ca5b654a1db70e1e06c3",
+      "stored_sha256": "9b4c3d9d0a4a238a1294cda0f0ec9e1757851956b956ca5b654a1db70e1e06c3"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\windsock-mutant-uv.gd",
+      "retained": "provenance/windsock-mutant-uv.gd",
+      "raw_sha256": "3ffc4cd3415a54ada2c5fe5e5b186bc2545ee33957b4383c959db2fbe10257b5",
+      "stored_sha256": "3ffc4cd3415a54ada2c5fe5e5b186bc2545ee33957b4383c959db2fbe10257b5"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\provenance\\windsock-original.gd",
+      "retained": "provenance/windsock-original.gd",
+      "raw_sha256": "a902104a6186800b4e9f7503df73c482a106aa3a3cc360fc45847dc12dfa96d0",
+      "stored_sha256": "a902104a6186800b4e9f7503df73c482a106aa3a3cc360fc45847dc12dfa96d0"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\candidate-parse-vsnn30bu\\engine.log",
+      "retained": "checks/candidate-parse-vsnn30bu/engine.log",
+      "raw_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "stored_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\candidate-parse-vsnn30bu\\report.json",
+      "retained": "checks/candidate-parse-vsnn30bu/report.json",
+      "raw_sha256": "b69a767572396e74e2d61f48d4612323e31a17540d799a2a97987132287974ab",
+      "stored_sha256": "b69a767572396e74e2d61f48d4612323e31a17540d799a2a97987132287974ab"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\capture-baseline-d4lfmbi6\\engine.log",
+      "retained": "checks/capture-baseline-d4lfmbi6/engine.log",
+      "raw_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "stored_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\capture-baseline-d4lfmbi6\\report.json",
+      "retained": "checks/capture-baseline-d4lfmbi6/report.json",
+      "raw_sha256": "8d08a43b943ccc444786c660fc970bb16fba567fa45ad7ea26c9f9be61c065a0",
+      "stored_sha256": "8d08a43b943ccc444786c660fc970bb16fba567fa45ad7ea26c9f9be61c065a0"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\capture-candidate-3gkcu12c\\engine.log",
+      "retained": "checks/capture-candidate-3gkcu12c/engine.log",
+      "raw_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6",
+      "stored_sha256": "116e1285441ae89742acab44c979fc33a896c11a572bf85c3dc459d9c4d0afc6"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\capture-candidate-3gkcu12c\\report.json",
+      "retained": "checks/capture-candidate-3gkcu12c/report.json",
+      "raw_sha256": "79844a786e39a808fb44c215fb8c02a10e82e5fe334139cadab88cf1884b0769",
+      "stored_sha256": "79844a786e39a808fb44c215fb8c02a10e82e5fe334139cadab88cf1884b0769"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-export-dqfrze_s\\engine.log",
+      "retained": "checks/collector-export-dqfrze_s/engine.log.gz",
+      "raw_sha256": "9748e1b0fdc23eea80eef7c004efeadad36c89c89787c2c4045ce844c4a2febe",
+      "stored_sha256": "462d5eb4fa0876699a378a83e4dac17992dcbcea04c974aa267b6d6a3ac7854c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-export-dqfrze_s\\report.json",
+      "retained": "checks/collector-export-dqfrze_s/report.json",
+      "raw_sha256": "e701b0fc923edf2c36dfc0b35784f1b05de6fc0bac9a8644b01dadb31abc0d29",
+      "stored_sha256": "e701b0fc923edf2c36dfc0b35784f1b05de6fc0bac9a8644b01dadb31abc0d29"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-01-7xi86qnt\\engine.log",
+      "retained": "checks/collector-native-01-7xi86qnt/engine.log",
+      "raw_sha256": "50a1088334fef14487b9413961da6881b8f36eeea71ace0c3cc47de3fbd593b3",
+      "stored_sha256": "50a1088334fef14487b9413961da6881b8f36eeea71ace0c3cc47de3fbd593b3"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-01-7xi86qnt\\report.json",
+      "retained": "checks/collector-native-01-7xi86qnt/report.json",
+      "raw_sha256": "bd06dd9239dff31d4e6dfd2a9d640e504080f3900ddcd28de770b9e5c6b812aa",
+      "stored_sha256": "bd06dd9239dff31d4e6dfd2a9d640e504080f3900ddcd28de770b9e5c6b812aa"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-02-mrdz2a62\\engine.log",
+      "retained": "checks/collector-native-02-mrdz2a62/engine.log",
+      "raw_sha256": "54f6631651dc385d4b5cf5a72e07695d6ec26cc0218a75db07b1c9eac432bcca",
+      "stored_sha256": "54f6631651dc385d4b5cf5a72e07695d6ec26cc0218a75db07b1c9eac432bcca"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-02-mrdz2a62\\report.json",
+      "retained": "checks/collector-native-02-mrdz2a62/report.json",
+      "raw_sha256": "6162ae77b2f4abf6ae406605258ed609e0a1ae7f239c9cdd6a8c5ee37756153d",
+      "stored_sha256": "6162ae77b2f4abf6ae406605258ed609e0a1ae7f239c9cdd6a8c5ee37756153d"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-03-hbiygksi\\engine.log",
+      "retained": "checks/collector-native-03-hbiygksi/engine.log",
+      "raw_sha256": "ee0fc975053f90eff4f805286dc8f7eb1776f1b6db1a83299baed3277fe93316",
+      "stored_sha256": "ee0fc975053f90eff4f805286dc8f7eb1776f1b6db1a83299baed3277fe93316"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-03-hbiygksi\\report.json",
+      "retained": "checks/collector-native-03-hbiygksi/report.json",
+      "raw_sha256": "c2fbf081ccce7e49d228d7d81affffdd8c87903db3760f595fa9b100941b5dd2",
+      "stored_sha256": "c2fbf081ccce7e49d228d7d81affffdd8c87903db3760f595fa9b100941b5dd2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-04-0uyham_4\\engine.log",
+      "retained": "checks/collector-native-04-0uyham_4/engine.log",
+      "raw_sha256": "529c0c442927aa94c6577ef071ffb595309907eb7f4e0a3841cbb982c2cbaea3",
+      "stored_sha256": "529c0c442927aa94c6577ef071ffb595309907eb7f4e0a3841cbb982c2cbaea3"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-04-0uyham_4\\report.json",
+      "retained": "checks/collector-native-04-0uyham_4/report.json",
+      "raw_sha256": "e34d6d504b96e6e5428fbe663556be2d5b6f18bb471228018261ef9f5ff2ed9c",
+      "stored_sha256": "e34d6d504b96e6e5428fbe663556be2d5b6f18bb471228018261ef9f5ff2ed9c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-05-vgw9lf7o\\engine.log",
+      "retained": "checks/collector-native-05-vgw9lf7o/engine.log",
+      "raw_sha256": "37d52c1f972e53e6b9dcaf8b991c7b87a4e23af4f99def22c371d9545e33bfb5",
+      "stored_sha256": "37d52c1f972e53e6b9dcaf8b991c7b87a4e23af4f99def22c371d9545e33bfb5"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-05-vgw9lf7o\\report.json",
+      "retained": "checks/collector-native-05-vgw9lf7o/report.json",
+      "raw_sha256": "90a2d2c70c7b9af7f9da17d62ce9cf5ff04dcfe0e4211838bf962b0bc7d85290",
+      "stored_sha256": "90a2d2c70c7b9af7f9da17d62ce9cf5ff04dcfe0e4211838bf962b0bc7d85290"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-06-ivpng1d0\\engine.log",
+      "retained": "checks/collector-native-06-ivpng1d0/engine.log",
+      "raw_sha256": "627165706bf9e19ed74b8d770e58f8cbb2c8ffcc31bfed302b88510213424c27",
+      "stored_sha256": "627165706bf9e19ed74b8d770e58f8cbb2c8ffcc31bfed302b88510213424c27"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-06-ivpng1d0\\report.json",
+      "retained": "checks/collector-native-06-ivpng1d0/report.json",
+      "raw_sha256": "375bcbd0cbc9ec4539a73924ec7ce8d91928cc86207b70748b078527200bfd4e",
+      "stored_sha256": "375bcbd0cbc9ec4539a73924ec7ce8d91928cc86207b70748b078527200bfd4e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-07-d8_51rf0\\engine.log",
+      "retained": "checks/collector-native-07-d8_51rf0/engine.log",
+      "raw_sha256": "be06eebdd3334fb772ad8c920db2759149e97b968a9db6d099f4b15fd91b93f9",
+      "stored_sha256": "be06eebdd3334fb772ad8c920db2759149e97b968a9db6d099f4b15fd91b93f9"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\collector-native-07-d8_51rf0\\report.json",
+      "retained": "checks/collector-native-07-d8_51rf0/report.json",
+      "raw_sha256": "58fb029dd68749242f7a52846cbeabef3fc67be62bfc0234653f164a103139a6",
+      "stored_sha256": "58fb029dd68749242f7a52846cbeabef3fc67be62bfc0234653f164a103139a6"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\comparator-parse-bkqff2ao\\engine.log",
+      "retained": "checks/comparator-parse-bkqff2ao/engine.log",
+      "raw_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "stored_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\comparator-parse-bkqff2ao\\report.json",
+      "retained": "checks/comparator-parse-bkqff2ao/report.json",
+      "raw_sha256": "540e790c05ef86078bd31a8fb3127446cd2bf197d94302ab1ad8fb86c989cc0e",
+      "stored_sha256": "540e790c05ef86078bd31a8fb3127446cd2bf197d94302ab1ad8fb86c989cc0e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-export-ifoicvv2\\engine.log",
+      "retained": "checks/diagnostic-export-ifoicvv2/engine.log.gz",
+      "raw_sha256": "9748e1b0fdc23eea80eef7c004efeadad36c89c89787c2c4045ce844c4a2febe",
+      "stored_sha256": "462d5eb4fa0876699a378a83e4dac17992dcbcea04c974aa267b6d6a3ac7854c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-export-ifoicvv2\\report.json",
+      "retained": "checks/diagnostic-export-ifoicvv2/report.json",
+      "raw_sha256": "90ce4de954fcd9a942bed19d5c2c17eabe300b87b457d1114e2e79176819c341",
+      "stored_sha256": "90ce4de954fcd9a942bed19d5c2c17eabe300b87b457d1114e2e79176819c341"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-01-m72nvdgd\\engine.log",
+      "retained": "checks/diagnostic-native-01-m72nvdgd/engine.log",
+      "raw_sha256": "0038bf50204d4a29a706c83ae15772c8ac03f4434f412096457b020d14d06dbb",
+      "stored_sha256": "0038bf50204d4a29a706c83ae15772c8ac03f4434f412096457b020d14d06dbb"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-01-m72nvdgd\\report.json",
+      "retained": "checks/diagnostic-native-01-m72nvdgd/report.json",
+      "raw_sha256": "c4ad418c133dfb63918291b7fd1b35af66a0fa10954ac992ae094c8b9e8602fa",
+      "stored_sha256": "c4ad418c133dfb63918291b7fd1b35af66a0fa10954ac992ae094c8b9e8602fa"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-02-uy02hbq6\\engine.log",
+      "retained": "checks/diagnostic-native-02-uy02hbq6/engine.log",
+      "raw_sha256": "14e388592ac79b340c3fc1eca23070c1bfefba2851ae6f25231e7318d5036459",
+      "stored_sha256": "14e388592ac79b340c3fc1eca23070c1bfefba2851ae6f25231e7318d5036459"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-02-uy02hbq6\\report.json",
+      "retained": "checks/diagnostic-native-02-uy02hbq6/report.json",
+      "raw_sha256": "fc417d35e49552c28ffe1dc5ca9305d8a02b6de4a94dd7668cdb4a9266c904f6",
+      "stored_sha256": "fc417d35e49552c28ffe1dc5ca9305d8a02b6de4a94dd7668cdb4a9266c904f6"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-03-gt2s9op7\\engine.log",
+      "retained": "checks/diagnostic-native-03-gt2s9op7/engine.log",
+      "raw_sha256": "52beb1a770f128353876559f78ca4689241863fe44578f988161bd23a6e141c6",
+      "stored_sha256": "52beb1a770f128353876559f78ca4689241863fe44578f988161bd23a6e141c6"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-03-gt2s9op7\\report.json",
+      "retained": "checks/diagnostic-native-03-gt2s9op7/report.json",
+      "raw_sha256": "8c0215dbbf9d678e8a4f84f7c46b26b932fa5ce232bfd94df5acf2d4230be2c1",
+      "stored_sha256": "8c0215dbbf9d678e8a4f84f7c46b26b932fa5ce232bfd94df5acf2d4230be2c1"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-04-dlphrrkb\\engine.log",
+      "retained": "checks/diagnostic-native-04-dlphrrkb/engine.log",
+      "raw_sha256": "81b050ca25d1763c26b7b71f3ddd3e43999fca63ee127f5ca2129a1b8f3eb1be",
+      "stored_sha256": "81b050ca25d1763c26b7b71f3ddd3e43999fca63ee127f5ca2129a1b8f3eb1be"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-04-dlphrrkb\\report.json",
+      "retained": "checks/diagnostic-native-04-dlphrrkb/report.json",
+      "raw_sha256": "1fa2319763ecd1bee5a4dfc3bf5825aca6e1c1c728362468502bbef88e7d2dd8",
+      "stored_sha256": "1fa2319763ecd1bee5a4dfc3bf5825aca6e1c1c728362468502bbef88e7d2dd8"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-05-ng1ikrhy\\engine.log",
+      "retained": "checks/diagnostic-native-05-ng1ikrhy/engine.log",
+      "raw_sha256": "73a49b40eafdc9a79cc2f4165fd04edba6acbb00d2c71a9494fd39905534f55f",
+      "stored_sha256": "73a49b40eafdc9a79cc2f4165fd04edba6acbb00d2c71a9494fd39905534f55f"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-05-ng1ikrhy\\report.json",
+      "retained": "checks/diagnostic-native-05-ng1ikrhy/report.json",
+      "raw_sha256": "2d332bdf5b3d5a3ce956d28affff10610ca429b16d93dd28e52dc034db132696",
+      "stored_sha256": "2d332bdf5b3d5a3ce956d28affff10610ca429b16d93dd28e52dc034db132696"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-06-ker5mryy\\engine.log",
+      "retained": "checks/diagnostic-native-06-ker5mryy/engine.log",
+      "raw_sha256": "e709d3c091962d7cefa5e1b776821dba1c15cec8151b95eb9c4a573ca922c492",
+      "stored_sha256": "e709d3c091962d7cefa5e1b776821dba1c15cec8151b95eb9c4a573ca922c492"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-06-ker5mryy\\report.json",
+      "retained": "checks/diagnostic-native-06-ker5mryy/report.json",
+      "raw_sha256": "e8e9f8c81cf8638eaacae49b1c8f9ece20a4576cf8509343726030ca27917fd2",
+      "stored_sha256": "e8e9f8c81cf8638eaacae49b1c8f9ece20a4576cf8509343726030ca27917fd2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-07-qtxu1naj\\engine.log",
+      "retained": "checks/diagnostic-native-07-qtxu1naj/engine.log",
+      "raw_sha256": "c7413ca19bb2f1230a12a3e7f2eb213d2bda306f46faeaaa7479155048c05eeb",
+      "stored_sha256": "c7413ca19bb2f1230a12a3e7f2eb213d2bda306f46faeaaa7479155048c05eeb"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\diagnostic-native-07-qtxu1naj\\report.json",
+      "retained": "checks/diagnostic-native-07-qtxu1naj/report.json",
+      "raw_sha256": "e039fb3ee60eb19cb7037e2c8e7d0c3968dcbf507143ad259635de83faad9abc",
+      "stored_sha256": "e039fb3ee60eb19cb7037e2c8e7d0c3968dcbf507143ad259635de83faad9abc"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\expected-uv-mutation-1ktu5okx\\engine.log",
+      "retained": "checks/expected-uv-mutation-1ktu5okx/engine.log",
+      "raw_sha256": "b5e1fb835cf289826681da575c326a47b44a032a2adb24eda21ec47786dcae93",
+      "stored_sha256": "b5e1fb835cf289826681da575c326a47b44a032a2adb24eda21ec47786dcae93"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\expected-uv-mutation-1ktu5okx\\report.json",
+      "retained": "checks/expected-uv-mutation-1ktu5okx/report.json",
+      "raw_sha256": "1790c6bb8ca8a624a15c78137b6d3f31683c803c41aae2cea73082e93474fb28",
+      "stored_sha256": "1790c6bb8ca8a624a15c78137b6d3f31683c803c41aae2cea73082e93474fb28"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\geometry-and-build-ldoyv27p\\engine.log",
+      "retained": "checks/geometry-and-build-ldoyv27p/engine.log",
+      "raw_sha256": "3409f78e6a4d9798551b93e32a144856199fde3888f886f6c28569c7bf553381",
+      "stored_sha256": "3409f78e6a4d9798551b93e32a144856199fde3888f886f6c28569c7bf553381"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\geometry-and-build-ldoyv27p\\report.json",
+      "retained": "checks/geometry-and-build-ldoyv27p/report.json",
+      "raw_sha256": "ea88fe84ceb8708277a8afe2e24aeec112d12117441c57b50741e962d4df65e8",
+      "stored_sha256": "ea88fe84ceb8708277a8afe2e24aeec112d12117441c57b50741e962d4df65e8"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test-draft-parse-vu3q8v_2\\engine.log",
+      "retained": "checks/test-draft-parse-vu3q8v_2/engine.log",
+      "raw_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+      "stored_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test-draft-parse-vu3q8v_2\\report.json",
+      "retained": "checks/test-draft-parse-vu3q8v_2/report.json",
+      "raw_sha256": "2f38acce44347dbbd098f732cb517618c3d0900f11fa430c4803821a218e1019",
+      "stored_sha256": "2f38acce44347dbbd098f732cb517618c3d0900f11fa430c4803821a218e1019"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_integration-bohapir2\\engine.log",
+      "retained": "checks/test_field_integration-bohapir2/engine.log",
+      "raw_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5",
+      "stored_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_integration-bohapir2\\report.json",
+      "retained": "checks/test_field_integration-bohapir2/report.json",
+      "raw_sha256": "7c130fdd3883aac6276917cdad29d63b9321f9efeecc4838cdba0fd9d4969ce4",
+      "stored_sha256": "7c130fdd3883aac6276917cdad29d63b9321f9efeecc4838cdba0fd9d4969ce4"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_projected_shadows-a05h7upo\\engine.log",
+      "retained": "checks/test_field_projected_shadows-a05h7upo/engine.log",
+      "raw_sha256": "4afa3f246925c5c1c7a538421546453bfff6007b66cc2ae35b9669ac654e7772",
+      "stored_sha256": "4afa3f246925c5c1c7a538421546453bfff6007b66cc2ae35b9669ac654e7772"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_projected_shadows-a05h7upo\\report.json",
+      "retained": "checks/test_field_projected_shadows-a05h7upo/report.json",
+      "raw_sha256": "233c4576ec6e47d964486e7a219e14bcf7905f166b76dfb13ad67b959f79694c",
+      "stored_sha256": "233c4576ec6e47d964486e7a219e14bcf7905f166b76dfb13ad67b959f79694c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_flight_cue_shadows-wv8uf3_y\\engine.log",
+      "retained": "checks/test_flight_cue_shadows-wv8uf3_y/engine.log",
+      "raw_sha256": "042014ffccbbf8593812949eabdf40ab4eca01d7193a2a2c4dfa5ca0933a9b55",
+      "stored_sha256": "042014ffccbbf8593812949eabdf40ab4eca01d7193a2a2c4dfa5ca0933a9b55"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_flight_cue_shadows-wv8uf3_y\\report.json",
+      "retained": "checks/test_flight_cue_shadows-wv8uf3_y/report.json",
+      "raw_sha256": "59ee15c1fd4a3545ff8056c6c31031e5d8cd8f12bd4aa630405683a61a4da1e8",
+      "stored_sha256": "59ee15c1fd4a3545ff8056c6c31031e5d8cd8f12bd4aa630405683a61a4da1e8"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock-mx5hoe2h\\engine.log",
+      "retained": "checks/test_windsock-mx5hoe2h/engine.log",
+      "raw_sha256": "25cd321c42f6ed2d3d9043857dedecbd40aef269a840b6f770b02fb7c1e29629",
+      "stored_sha256": "25cd321c42f6ed2d3d9043857dedecbd40aef269a840b6f770b02fb7c1e29629"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock-mx5hoe2h\\report.json",
+      "retained": "checks/test_windsock-mx5hoe2h/report.json",
+      "raw_sha256": "05eff48979d614b365a6b678ab525fdc99a77f826dd6f80856316bf63ee00b62",
+      "stored_sha256": "05eff48979d614b365a6b678ab525fdc99a77f826dd6f80856316bf63ee00b62"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_data-r02qta4f\\engine.log",
+      "retained": "checks/test_windsock_data-r02qta4f/engine.log",
+      "raw_sha256": "46d937aa096971d4b67e4861eb6e0bf9693a6c8fa45aea2074933f47a35521d2",
+      "stored_sha256": "46d937aa096971d4b67e4861eb6e0bf9693a6c8fa45aea2074933f47a35521d2"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_data-r02qta4f\\report.json",
+      "retained": "checks/test_windsock_data-r02qta4f/report.json",
+      "raw_sha256": "651795330a8ca86f94d56bafa3b0c37e098442b36338013c0d682b25c3326766",
+      "stored_sha256": "651795330a8ca86f94d56bafa3b0c37e098442b36338013c0d682b25c3326766"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_motion-oq0_gh5n\\engine.log",
+      "retained": "checks/test_windsock_motion-oq0_gh5n/engine.log",
+      "raw_sha256": "0eb557dd49c515edbec598fbcda38a82cedab2460a9bbe845c3bb68efebe5d76",
+      "stored_sha256": "0eb557dd49c515edbec598fbcda38a82cedab2460a9bbe845c3bb68efebe5d76"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_motion-oq0_gh5n\\report.json",
+      "retained": "checks/test_windsock_motion-oq0_gh5n/report.json",
+      "raw_sha256": "2b168180613b05657b2a51e8da3c0b95e97b962ffc72d8739d7235bea4557370",
+      "stored_sha256": "2b168180613b05657b2a51e8da3c0b95e97b962ffc72d8739d7235bea4557370"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_shadow-c45clp6k\\engine.log",
+      "retained": "checks/test_windsock_shadow-c45clp6k/engine.log",
+      "raw_sha256": "d50384a25e820e25b2ef8edefb061970077b23f54db78ee71cb8e19867cce656",
+      "stored_sha256": "d50384a25e820e25b2ef8edefb061970077b23f54db78ee71cb8e19867cce656"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_windsock_shadow-c45clp6k\\report.json",
+      "retained": "checks/test_windsock_shadow-c45clp6k/report.json",
+      "raw_sha256": "e28e8ab49f95fddcf76c7d4842291fa0aeebeb2a376c0c9062ab314a41454f3b",
+      "stored_sha256": "e28e8ab49f95fddcf76c7d4842291fa0aeebeb2a376c0c9062ab314a41454f3b"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-01.json",
+      "retained": "runs/collector-01.json",
+      "raw_sha256": "eb28495542ce825948a7defa7bac86ecbde2a57dffe8a141202db1e71cfb7f2c",
+      "stored_sha256": "eb28495542ce825948a7defa7bac86ecbde2a57dffe8a141202db1e71cfb7f2c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-02.json",
+      "retained": "runs/collector-02.json",
+      "raw_sha256": "5df91c676816a586b9e50dee1d68c4a1b31fe35f03ff149a85bcc8462dc5bc4f",
+      "stored_sha256": "5df91c676816a586b9e50dee1d68c4a1b31fe35f03ff149a85bcc8462dc5bc4f"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-03.json",
+      "retained": "runs/collector-03.json",
+      "raw_sha256": "c90c48b89a6bcd2cf1907e5de61f1b157676f6a129e781a1b3e8f43c46f586f9",
+      "stored_sha256": "c90c48b89a6bcd2cf1907e5de61f1b157676f6a129e781a1b3e8f43c46f586f9"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-04.json",
+      "retained": "runs/collector-04.json",
+      "raw_sha256": "2579fc9b050a255988185ddc10a2c5b9730931c2b8d92e6675b721fb572008c1",
+      "stored_sha256": "2579fc9b050a255988185ddc10a2c5b9730931c2b8d92e6675b721fb572008c1"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-05.json",
+      "retained": "runs/collector-05.json",
+      "raw_sha256": "b8f020de64045e31bc087c47d325ef29133e1407768267c72f382adef98fde61",
+      "stored_sha256": "b8f020de64045e31bc087c47d325ef29133e1407768267c72f382adef98fde61"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-06.json",
+      "retained": "runs/collector-06.json",
+      "raw_sha256": "5ba8189b042432c6e565847105f0a96c48e680b81b45bfa744b57d802c64dd91",
+      "stored_sha256": "5ba8189b042432c6e565847105f0a96c48e680b81b45bfa744b57d802c64dd91"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\collector-07.json",
+      "retained": "runs/collector-07.json",
+      "raw_sha256": "eae477e883696332fa25041717463ad84936ba1da4be6aeac4191b62a6a8f417",
+      "stored_sha256": "eae477e883696332fa25041717463ad84936ba1da4be6aeac4191b62a6a8f417"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-01.json",
+      "retained": "runs/diagnostic-01.json",
+      "raw_sha256": "326e1bc2a59137cb747f6214d31a6e1ac759d35c163b868a2f131425139c56aa",
+      "stored_sha256": "326e1bc2a59137cb747f6214d31a6e1ac759d35c163b868a2f131425139c56aa"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-02.json",
+      "retained": "runs/diagnostic-02.json",
+      "raw_sha256": "ffa88b9cad3c90b63435f401f0b855e502fdb8cc3231c590b14982d8cd1b435c",
+      "stored_sha256": "ffa88b9cad3c90b63435f401f0b855e502fdb8cc3231c590b14982d8cd1b435c"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-03.json",
+      "retained": "runs/diagnostic-03.json",
+      "raw_sha256": "649c44049ee58ec2c59c32ea14d30a41f87e85dbbe9bb2b66cd5cfca20689f7a",
+      "stored_sha256": "649c44049ee58ec2c59c32ea14d30a41f87e85dbbe9bb2b66cd5cfca20689f7a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-04.json",
+      "retained": "runs/diagnostic-04.json",
+      "raw_sha256": "b2f80358c4a839463d983d0238a20aec1baa351adc54eed2d8638d0966361af7",
+      "stored_sha256": "b2f80358c4a839463d983d0238a20aec1baa351adc54eed2d8638d0966361af7"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-05.json",
+      "retained": "runs/diagnostic-05.json",
+      "raw_sha256": "dd14a22d1988722204599ef401ec5f8b5728c1fd7cd7ec57ed6dae238e6f04dd",
+      "stored_sha256": "dd14a22d1988722204599ef401ec5f8b5728c1fd7cd7ec57ed6dae238e6f04dd"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-06.json",
+      "retained": "runs/diagnostic-06.json",
+      "raw_sha256": "dc22e427d7ede52a41fd95a6461bad8168ec4678b9352a0d8df171c4e40d6bde",
+      "stored_sha256": "dc22e427d7ede52a41fd95a6461bad8168ec4678b9352a0d8df171c4e40d6bde"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\diagnostic-07.json",
+      "retained": "runs/diagnostic-07.json",
+      "raw_sha256": "5f958f83899c51b917320bdf1898574c2694439b8f2e295918187009e57b8d8a",
+      "stored_sha256": "5f958f83899c51b917320bdf1898574c2694439b8f2e295918187009e57b8d8a"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\expected-uv-mutation.json",
+      "retained": "runs/expected-uv-mutation.json",
+      "raw_sha256": "715c80f1517ab25cbb57e1c61ac4e7cd431b12f2526c12ec710bed67b3d9058e",
+      "stored_sha256": "715c80f1517ab25cbb57e1c61ac4e7cd431b12f2526c12ec710bed67b3d9058e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\geometry-and-build.json",
+      "retained": "runs/geometry-and-build.json",
+      "raw_sha256": "012056b45493ad8c38e98372c57c3709a9687efab77df559aaf38f53ff46eb9f",
+      "stored_sha256": "012056b45493ad8c38e98372c57c3709a9687efab77df559aaf38f53ff46eb9f"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\loading-summary.json",
+      "retained": "runs/loading-summary.json",
+      "raw_sha256": "80bad5f89f692220df72e3c8727aec5e642695a44d60b610229765236147df0e",
+      "stored_sha256": "80bad5f89f692220df72e3c8727aec5e642695a44d60b610229765236147df0e"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\runs\\visual-parity.json",
+      "retained": "runs/visual-parity.json",
+      "raw_sha256": "493d84abbcb38485ad12e98610197f990083ec2f344285455ef4556ddfb1f3d9",
+      "stored_sha256": "493d84abbcb38485ad12e98610197f990083ec2f344285455ef4556ddfb1f3d9"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\captures\\baseline\\capture.json",
+      "retained": "captures/baseline-capture.json",
+      "raw_sha256": "18a397b9cb60aa01ddcdc737deea95d92fd26f5627951f34c13495558ca99aff",
+      "stored_sha256": "18a397b9cb60aa01ddcdc737deea95d92fd26f5627951f34c13495558ca99aff"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\captures\\candidate\\capture.json",
+      "retained": "captures/candidate-capture.json",
+      "raw_sha256": "63da52777d1ca425f6dad69a11eb81ef2fbf5b56bcdb30bc39dc66b9a39a2f45",
+      "stored_sha256": "63da52777d1ca425f6dad69a11eb81ef2fbf5b56bcdb30bc39dc66b9a39a2f45"
+    },
+    {
+      "source": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\captures\\candidate\\direction-reversal-before-near.png",
+      "retained": "captures/verified-near.png",
+      "raw_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "stored_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-21",
+  "revision": 7,
+  "scope": "Current-simulator picture refresh of the 58-second revision 6 edit",
+  "source_commit": "ef91916374cee18b8bc84e736f69b9623e681adf",
+  "folder": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-21-v7/",
+  "film": "OpenRC-Every-Input-Matters-58s-1080p60.mp4",
+  "sha256": "92a54df4c1dd95c7f71f7e28ce9b22bc97e0cc900c1be44e6c0ce499749ffa72",
+  "bytes": 256342579,
+  "width": 1920,
+  "height": 1080,
+  "fps": 60,
+  "frames": 3480,
+  "duration_s": 58,
+  "decoded_aac_integrated_lufs": -14.03,
+  "decoded_aac_true_peak_dbtp": -3.32,
+  "full_decode": true,
+  "captured_avi_sources": 13,
+  "formation_frames": 420,
+  "native_clean_report_frames": 180,
+  "report_hold_frames": 10,
+  "publication": false
+}

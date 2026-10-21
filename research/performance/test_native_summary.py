@@ -142,6 +142,49 @@ class NativeReportValidationTests(unittest.TestCase):
         # excluded interval and report a misleading 0.75 ratio here.
         self.assertNotAlmostEqual(derived["simulation_wall_ratio"], 0.0375 / 0.05)
 
+    def test_optional_pacing_configuration_accepts_zero_sixty_and_all_vsync_modes(self):
+        for max_fps in (0, 60):
+            for vsync_mode in range(4):
+                with self.subTest(max_fps=max_fps, vsync_mode=vsync_mode):
+                    report = valid_report()
+                    report.update(
+                        max_fps=max_fps,
+                        vsync_mode=vsync_mode,
+                        vsync=vsync_mode != 0,
+                    )
+
+                    errors, _ = validate_native_report(report)
+                    self.assertEqual(errors, [])
+
+    def test_optional_pacing_configuration_rejects_invalid_values(self):
+        invalid_values = (
+            ("max_fps", True, "max_fps must be a non-negative integer"),
+            ("max_fps", 60.0, "max_fps must be a non-negative integer"),
+            ("max_fps", "60", "max_fps must be a non-negative integer"),
+            ("max_fps", -1, "max_fps must be a non-negative integer"),
+            ("vsync_mode", True, "vsync_mode must be an integer from 0 through 3"),
+            ("vsync_mode", 1.0, "vsync_mode must be an integer from 0 through 3"),
+            ("vsync_mode", "1", "vsync_mode must be an integer from 0 through 3"),
+            ("vsync_mode", -1, "vsync_mode must be an integer from 0 through 3"),
+            ("vsync_mode", 4, "vsync_mode must be an integer from 0 through 3"),
+        )
+        for key, value, expected_error in invalid_values:
+            with self.subTest(key=key, value=value):
+                report = valid_report()
+                report[key] = value
+
+                errors, _ = validate_native_report(report)
+                self.assertIn(expected_error, errors)
+
+    def test_vsync_boolean_must_match_vsync_mode(self):
+        for mode, vsync in ((0, True), (1, False), (2, 0)):
+            with self.subTest(mode=mode, vsync=vsync):
+                report = valid_report()
+                report.update(vsync_mode=mode, vsync=vsync)
+
+                errors, _ = validate_native_report(report)
+                self.assertIn("vsync must agree with vsync_mode", errors)
+
     def test_boolean_values_are_not_accepted_as_counts_or_numbers(self):
         report = valid_report()
         report["version"] = True
@@ -306,10 +349,22 @@ class NativeRunClassificationTests(unittest.TestCase):
         self.assertTrue(summary["pacing_gate"]["pass"])
         self.assertTrue(summary["performance_pass"])
 
+    def test_legacy_report_without_pacing_metadata_remains_valid_and_unknown(self):
+        report = valid_report()
+        report["vsync"] = True
+        with tempfile.TemporaryDirectory() as temp_dir:
+            report_path = write_run(Path(temp_dir), "run-1", report)
+            summary = summarize_run(report_path, SHORT_POLICY)
+
+        self.assertTrue(summary["collection_valid"])
+        self.assertTrue(summary["performance_pass"])
+        self.assertEqual(summary["pacing_configuration"], {"max_fps": None, "vsync_mode": None})
+
     def test_campaign_requires_three_individually_passing_runs(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             report = sustained_report()
+            report.update(max_fps=60, vsync_mode=1, vsync=True)
             write_run(root, "run-1", report)
             one_run_summary, one_run_status = summarize_directory(root, root / "one-run-summary.json")
 
@@ -325,7 +380,82 @@ class NativeRunClassificationTests(unittest.TestCase):
         self.assertEqual(three_run_summary["run_count"], 3)
         self.assertEqual(three_run_summary["performance_pass_count"], 3)
         self.assertTrue(three_run_summary["performance_pass"])
+        self.assertTrue(three_run_summary["pacing_configuration_consistent"])
+        self.assertTrue(three_run_summary["pacing_configuration_complete"])
         self.assertEqual(three_run_status, 0)
+
+    def test_legacy_campaign_with_all_pacing_metadata_missing_stays_numeric_valid(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            report = sustained_report()
+            report["vsync"] = True
+            for index in range(1, 4):
+                write_run(root, f"run-{index}", report)
+
+            summary, status = summarize_directory(root, root / "summary.json")
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertTrue(summary["performance_pass"])
+        self.assertTrue(summary["pacing_configuration_consistent"])
+        self.assertFalse(summary["pacing_configuration_complete"])
+        self.assertEqual(status, 0)
+
+    def test_campaign_rejects_consistent_but_partial_pacing_metadata(self):
+        scenarios = ("partial-cap", "partial-mode")
+        for scenario in scenarios:
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temp_dir:
+                root = Path(temp_dir)
+                for index in range(1, 4):
+                    report = sustained_report()
+                    report["vsync"] = True
+                    if scenario == "partial-cap":
+                        report["max_fps"] = 60
+                    else:
+                        report["vsync_mode"] = 1
+                    report_path = write_run(root, f"run-{index}", report)
+                    self.assertTrue(summarize_run(report_path, DEFAULT_POLICY)["performance_pass"])
+
+                summary, status = summarize_directory(root, root / "summary.json")
+
+            self.assertEqual(summary["performance_pass_count"], 3)
+            self.assertTrue(summary["pacing_configuration_consistent"])
+            self.assertFalse(summary["pacing_configuration_complete"])
+            self.assertFalse(summary["performance_pass"])
+            self.assertEqual(status, 1)
+
+    def test_campaign_refuses_individually_passing_runs_with_mixed_pacing_configuration(self):
+        scenarios = (
+            ("mixed-cap", [(60, 1), (60, 1), (0, 1)]),
+            ("mixed-mode", [(60, 1), (60, 1), (60, 2)]),
+            ("mixed-missing", [(60, 1), (60, 1), None]),
+        )
+        for scenario, configurations in scenarios:
+            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temp_dir:
+                root = Path(temp_dir)
+                for index, configuration in enumerate(configurations, start=1):
+                    report = sustained_report()
+                    if configuration is None:
+                        report["vsync"] = True
+                    else:
+                        max_fps, vsync_mode = configuration
+                        report.update(
+                            max_fps=max_fps,
+                            vsync_mode=vsync_mode,
+                            vsync=vsync_mode != 0,
+                        )
+                    report_path = write_run(root, f"run-{index}", report)
+                    self.assertTrue(summarize_run(report_path, DEFAULT_POLICY)["performance_pass"])
+
+                summary, status = summarize_directory(root, root / "summary.json")
+
+            self.assertEqual(summary["performance_pass_count"], 3)
+            self.assertFalse(summary["performance_pass"])
+            self.assertFalse(summary["pacing_configuration_consistent"])
+            self.assertIn(
+                "runs have different or mixed known/unknown FPS caps or VSync modes",
+                summary["campaign_reasons"],
+            )
+            self.assertEqual(status, 1)
 
     def test_campaign_writes_report_and_refuses_to_overwrite(self):
         with tempfile.TemporaryDirectory() as temp_dir:

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "595a157e-1c40-4e6a-89a0-384fa9067870",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_field_integration.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:05:24.312322+00:00",
+  "label": "test_field_integration",
+  "log": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_integration-bohapir2\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\windsock-grid-20261021-8b808672\\checks\\test_field_integration-bohapir2\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.156,
+  "log_bytes": 2393,
+  "log_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5"
+}

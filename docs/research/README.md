@@ -190,6 +190,8 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Visual quality and landscape
 
+Advanced graphics: [independent source audit, 2026-10-21](advanced-graphics-2026-10-21/README.md) preserves the supplied AAA graphics brief, checks Godot/vendor capabilities and identifies current sky/water migration risks. A [second round of 25 investigations](advanced-graphics-2026-10-21/round-2.md) adds GitHub, Reddit, Godot Forum, tool and documentation evidence with explicit experiment decisions. The [VQ-07 upgrade plan](../plans/advanced-graphics.md) owns the isolated comparison and conditional High-profile proposal; no new runtime or performance result is claimed.
+
 Tree/forest follow-up: [source and current-code audit, 2026-10-17](tree-forest-quality-2026-10-17.md), with [25 additional investigations](tree-forest-quality-2026-10-17.md#second-round-25-additional-investigations). The [first implementation evidence](visual-quality-implementation/L6a-R1/README.md) records seven retained CC0 forms, a downloaded realistic sapling comparison, same-count irregular forest placement, imported-tree wind, source validation and native checks. The [tree/forest quality plan](../plans/tree-forest-quality.md) retains remaining qualification gates; no tree geometry was modeled.
 
 Grass-specific follow-up: [44 source investigations, 2026-10-17](grass-quality-2026-10-17.md), comprising the original 20 plus 24 additional studies of Godot documentation, free assets, papers, libraries, forums and Reddit. The [grass quality plan](../plans/grass-quality.md) maps findings to implementation steps, triggers and acceptance criteria. [Opt-in implementation evidence](visual-quality-implementation/grass-quality/README.md) covers shared photographic turf, species allocation, imported wind and the remaining full-session/owner gates.
@@ -252,7 +254,7 @@ The earlier [Godot integration review](wind-godot-integration.md) records its ow
 
 ### Drone racing (shared-foundation review)
 
-[DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) consumes HELI's shared inflow evidence; multirotor flight and racing remain proposed.
+[DR-01](drone-racing/DR-01/README.md) retains the original quadrotor, data, controller, racing and presentation survey. The [2026-10-21 refresh](drone-racing/DR-01/refresh-2026-10-21.md) corrects stale integration assumptions, audits five-inch geometry and downloadable assets, and separates software evidence from hardware validation. [DR-04a](drone-racing/DR-04a/README.md) records the implemented laboratory plant; its 15 checks were rerun during the refresh. The [5-inch FPV integration plan](../plans/drone-racing.md) owns remaining session/controller, free-flight, racing and fidelity gates; none is a playable drone route yet.
 
 ### Cross-aircraft
 

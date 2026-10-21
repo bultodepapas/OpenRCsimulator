@@ -1,0 +1,14 @@
+{
+  "baseline_commit": "e51af9593acd232d5b39aed52c8654092cdf6f17",
+  "final_sha256": {
+    "app/render/projected_shadow.gd": "067a730e618904aa8fa06259d6aa74a6a16c3d9496fa990892a9fa695a86aefe",
+    "app/render/field_projected_shadows.gd": "e6007bc14c4949f1657c841735dc872edd9c4fb58649853c6eab5a0dc176a846",
+    "app/tests/test_field_population_collection.gd": "dad46434b15f9eb76b15e79c11b1e027c1a9045444519fdee1f22a863c7e98ea",
+    "tools/shadows/compare_field_collection.gd": "1353842649062f3ef338350b98b59d07db854db957ad9eafe33752e6048438b0"
+  },
+  "only_runtime_paths_changed": [
+    "app/render/projected_shadow.gd",
+    "app/render/field_projected_shadows.gd"
+  ],
+  "provenance_note": "field-original is byte-identical after LF normalization to baseline commit; field-baseline rewrites only its Projected preload to frozen projected-original. Final comparator adds output/path guards and removes overlapping sum print after timing; runtime and measurement rows unchanged."
+}

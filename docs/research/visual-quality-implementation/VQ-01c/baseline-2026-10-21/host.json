@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-21T14:54:19.6653052Z",
+  "cpu": [
+    {
+      "Name": "AMD Ryzen 9 5900X 12-Core Processor            ",
+      "NumberOfLogicalProcessors": 24
+    }
+  ],
+  "gpu": [
+    {
+      "Name": "USB Mobile Monitor Virtual Display",
+      "DriverVersion": "2.0.0.1",
+      "CurrentHorizontalResolution": 1920,
+      "CurrentVerticalResolution": 1080,
+      "CurrentRefreshRate": 60
+    },
+    {
+      "Name": "NVIDIA GeForce RTX 3090",
+      "DriverVersion": "32.0.16.1742",
+      "CurrentHorizontalResolution": 3840,
+      "CurrentVerticalResolution": 2160,
+      "CurrentRefreshRate": 120
+    }
+  ],
+  "os": {
+    "Caption": "Microsoft Windows 11 Pro",
+    "Version": "10.0.26100",
+    "TotalVisibleMemorySize": 66995304,
+    "FreePhysicalMemory": 23285516
+  },
+  "power": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)",
+  "competing_processes": [
+    {
+      "Name": "Godot_v4.7.2-stable_win64_console.exe",
+      "ProcessId": 51996,
+      "CommandLine": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --editor --import"
+    },
+    {
+      "Name": "Godot_v4.7.2-stable_win64.exe",
+      "ProcessId": 984,
+      "CommandLine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe --headless --path app --editor --import"
+    }
+  ]
+}

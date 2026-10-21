@@ -1,0 +1,22 @@
+{
+  "head": "d768619a44d469d5c6f20fc114a6772472c6be8d",
+  "build_environment": {
+    "OPENRC_BUILD_DESCRIBE": "v0.1.7-17-gd768619a-graphics-settings",
+    "OPENRC_BUILD_COMMIT": "d768619a44d469d5c6f20fc114a6772472c6be8d",
+    "OPENRC_BUILD_DIRTY": "1",
+    "OPENRC_BUILD_DATE": "2026-10-21T12:58:50-05:00"
+  },
+  "changed_sources": {
+    "app/app_root.gd": "6e41cd01e84ffc12c1da3c60caf1f58b5f06bc648e23d482a666a505d9b847da",
+    "app/app_state/display_preferences.gd": "68da0db13cdda717879ffcd786649baccf8aa8c6f7c51a25ffc640ce46587f45",
+    "app/i18n/es.po": "fc8768e12d640b773388bcaa6467cf721684e3eef8bed5f05377ef9aa2759fdd",
+    "app/tests/test_settings_ui.gd": "1bd4c7714fb641bdbb18a17ae03fd02c18c12777cb9a10a335c8071388ce565c",
+    "app/tests/test_ui_modal_responsive.gd": "125768a4018f57a1ca4a493061c61c1d5718af500687cac78702a143ea4b5611",
+    "app/tests/test_ui_settings_integration.gd": "ef07b77b01d5dd205082730a8eacf9ff81ab209c12b8bc66557604e85fce17eb",
+    "app/ui/settings_screen.gd": "8f3bf88bf74d705d8128a2761d039960ab396a47834da254c63518b5d943eae0",
+    "app/tests/test_advanced_graphics_settings.gd": "ab38f391efc40d368dd18b5fc40e4d067d236d45c723b92c767e9ff8a8b17206",
+    "app/tests/test_advanced_graphics_settings.gd.uid": "37fb24023ee22c68061e87b87e2cd17dbdcd7dcdd7b769f9e96671aa80cc5229",
+    "app/tests/test_display_preferences.gd": "89fed81467bdc34f1c28fcf7ed0834a121d7f7df788d746779b5bbb98fc518c4",
+    "app/tests/test_display_preferences.gd.uid": "f6f35a39b88cb8ffcf5785685b9ea02360e72ea743f5b10ad85205a78d89979e"
+  }
+}

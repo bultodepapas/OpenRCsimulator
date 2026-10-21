@@ -1,0 +1,21 @@
+{
+  "initial_head": "22396c6edc86bc5e8ec8d2ef3040207602924290",
+  "retention_head": "188a1831202514cc4a95430965bdc2976fdc12ab",
+  "checked_file_count": 3630,
+  "changed_files": {
+    "research/performance/README.md": {
+      "initial": "4f8eb5835b7c08491ac9bc96845e039f95c062149892edd8a8c01bce27b68df0",
+      "final": "c6a06577b3701e2fa95f3cec95e7a827b7667b4843d0f1a24e207a8b55c214a4"
+    },
+    "research/performance/loading_probe.gd": {
+      "initial": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0",
+      "final": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97"
+    },
+    "research/performance/test_loading_probe.py": {
+      "initial": "ce714a8c239b94149952a7a55de93973e8cd978aa0fb87a888eb429b770dae8e",
+      "final": "9728cbc6ee386e88d2e4c62a80d882114cca442f78d00337e1a4b9d245b2d338"
+    }
+  },
+  "runtime_and_aircraft_sources_unchanged": true,
+  "scope": "Tracked source bytes; imported caches and external background activity are not frozen."
+}

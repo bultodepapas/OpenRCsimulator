@@ -75,22 +75,24 @@ func _run() -> void:
 			return
 		var begin := Time.get_ticks_usec()
 		fly.pressed.emit()
-		var ready := Time.get_ticks_usec()
-		var flight: Node = app.get("flight")
-		if flight == null or not str(flight.get("startup_error")).is_empty():
-			_fail("Home Fly failed to create a valid flight")
+		var dispatched := Time.get_ticks_usec()
+		# Home renders its acknowledgement before emitting fly_requested (UI-34c).
+		# Await the real handoff; never call start_flight directly or bypass readiness.
+		var handoff := await _wait_for_flight(app, home)
+		if not handoff.ok:
+			_fail(handoff.error)
 			return
+		var ready: int = handoff.ready_usec
+		var flight: Node = handoff.flight
 		var session: Node = flight.get("session")
-		if session == null or not session.is_flyable():
-			_fail("Flight session is not flyable")
-			return
 		# Keep real callbacks and focus safety. No manual pose/physics substitution.
 		await process_frame
 		await RenderingServer.frame_post_draw
 		var drawn := Time.get_ticks_usec()
 		var sim: Node = session.get("sim")
 		var sample := {
-			"cycle": index + 1, "fly_sync_usec": ready - begin,
+			"cycle": index + 1, "fly_sync_usec": dispatched - begin,
+			"fly_ready_usec": ready - begin,
 			"fly_first_draw_usec": drawn - begin,
 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
 			"nodes_in_flight": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
@@ -104,6 +106,7 @@ func _run() -> void:
 		if app.get("flight") != null or app.get("home") == null:
 			_fail("End flight failed to restore Home")
 			return
+		home = app.get("home")
 		sample["return_sync_usec"] = return_ready - return_begin
 		sample["return_first_draw_usec"] = Time.get_ticks_usec() - return_begin
 		sample["nodes_at_home"] = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
@@ -120,6 +123,7 @@ func _run() -> void:
 		"home_first_draw_from_load_usec": home_drawn - before_load,
 		"home_first_draw_engine_elapsed_usec": home_drawn,
 		"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+		"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
 		"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
 		"cycles": samples,
 	}
@@ -136,6 +140,30 @@ func _run() -> void:
 		_fail("Probe cleanup incomplete: " + str(report.shutdown))
 		return
 	quit(0)
+
+
+## Current Home defers one process frame; tolerate bounded scheduling, not an unbounded wait.
+## An external process timeout still bounds synchronous construction blocking a frame.
+func _wait_for_flight(app: Node, home: Node, max_frames: int = 4) -> Dictionary:
+	for index in range(max_frames + 1):
+		if not is_instance_valid(app) or not app.is_inside_tree():
+			return {ok = false, error = "Home Fly cancelled: app left the tree"}
+		var flight: Node = app.get("flight")
+		if flight != null:
+			if not str(flight.get("startup_error")).is_empty():
+				return {ok = false, error = "Home Fly startup error: " + str(flight.get("startup_error"))}
+			var session: Node = flight.get("session")
+			if session == null or not session.is_flyable():
+				return {ok = false, error = "Flight session is not flyable"}
+			return {ok = true, flight = flight, ready_usec = Time.get_ticks_usec()}
+		if not is_instance_valid(home) or not home.is_inside_tree():
+			return {ok = false, error = "Home Fly cancelled: Home left without a flight"}
+		var fly: Button = home.get("fly_button")
+		if fly == null or not fly.disabled:
+			return {ok = false, error = "Home Fly rejected: returned to ready state without a flight"}
+		if index < max_frames:
+			await process_frame
+	return {ok = false, error = "Home Fly handoff exceeded %d process frames" % max_frames}
 
 
 ## Outside every timing interval. Weak references observe mixer ownership without extending it.

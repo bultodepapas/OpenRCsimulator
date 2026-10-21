@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] _phase2_impl_build (res://scenery/scenery.gd:483)
+       [4] build (res://scenery/scenery.gd:251)
+       [5] _phase2_impl_attach (res://scenery/scenery.gd:185)
+       [6] attach (res://scenery/scenery.gd:171)
+       [7] _phase2_impl_build (res://render/field.gd:104)
+       [8] build (res://render/field.gd:32)
+       [9] build (res://landscapes/club_field/landscape.gd:12)
+       [10] build (res://landscapes/catalog.gd:31)
+       [11] <anonymous lambda> (res://ui/home_scene.gd:96)
+       [12] _phase2_impl_build (res://render/world/world.gd:297)
+       [13] build (res://render/world/world.gd:236)
+       [14] _phase2_impl__init (res://ui/home_scene.gd:97)
+       [15] _init (res://ui/home_scene.gd:64)
+       [16] show_home (res://app_root.gd:321)
+       [17] _ready (res://app_root.gd:257)
+       [18] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/profile-deep/profiled_loading_probe.gd:62)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+loading probe: 2 Home/Fly cycles -> C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase2-2026-10-21/loading-profile-05.json

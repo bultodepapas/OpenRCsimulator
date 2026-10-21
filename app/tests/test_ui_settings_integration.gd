@@ -80,6 +80,24 @@ func _run() -> void:
 	settings._category_buttons[0].grab_focus()
 	await ui.tap(KEY_ENTER)
 
+	# Real keyboard selection reaches the advanced tab and modifies the live renderer.
+	settings._category_buttons[3].grab_focus()
+	await ui.tap(KEY_ENTER)
+	settings._fps_picker.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN) # 30 FPS
+	await ui.tap(KEY_ENTER)
+	_check("advanced FPS selection applies live without saving", Engine.max_fps == 30
+		and DisplayPreferences.load_from(PREFS + ".display").max_fps == 0)
+	settings._msaa_picker.select(0)
+	settings._msaa_picker.item_selected.emit(0)
+	_check("MSAA preview changes the flight viewport", root.msaa_3d == Viewport.MSAA_DISABLED)
+	settings._revert_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Revert restores live FPS and MSAA", Engine.max_fps == 0 and root.msaa_3d == Viewport.MSAA_4X)
+	settings._category_buttons[0].grab_focus()
+	await ui.tap(KEY_ENTER)
+
 	# The 125% selector is driven through its real OptionButton popup. Theme font sizes are resolved on the
 	# Home and Settings controls after the root applies its presentation signal.
 	var home_font_before: int = app.home.fly_button.get_theme_font_size("font_size", "PrimaryButton")
@@ -180,6 +198,15 @@ func _run() -> void:
 		and session.sim.paused)
 
 	settings = app.screens.get_screen("settings") as CanvasLayer
+	settings._msaa_picker.select(1)
+	settings._msaa_picker.item_selected.emit(1)
+	settings.keep_changes()
+	await ui.settle()
+	_check("kept graphics change preserves the paused flight and tick", root.msaa_3d == Viewport.MSAA_2X
+		and session.sim.paused and session.sim.tick == held_tick
+		and DisplayPreferences.load_from(PREFS + ".display").msaa_3d == 1)
+	settings._restore_graphics_defaults()
+	settings.keep_changes()
 	settings._category_buttons[1].grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

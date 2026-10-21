@@ -1,0 +1,64 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8aa4d0b2-146b-48f1-b737-af9b2699b391",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\release\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--frametimes=D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-03.json",
+    "--warmup=10",
+    "--t=60"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:34:04.598231+00:00",
+  "label": "release-run-03",
+  "log": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\release-run-03-g00opoiq\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\release-run-03-g00opoiq\\report.json",
+  "timeout_seconds": 110.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "frame times: p50 16.63 ms, p95 22.70 ms, p99 30.43 ms over 3600 frames (complete=true) \u2192 D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release/run-03.json"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 8,
+      "message": "19 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2536)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 79.125,
+  "log_bytes": 719,
+  "log_sha256": "0719d916941e0ba8aacf5d0c2f8fafd2679ed55b95b862c25bd0128f2ade4df3"
+}

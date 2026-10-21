@@ -1,0 +1,114 @@
+{
+  "images": [
+    {
+      "name": "calm-settled-near.png",
+      "baseline_sha256": "cbabd6989d50592a6fed64df9a5cca06ddb15fd8a51995fd275c294feba6f435",
+      "candidate_sha256": "cbabd6989d50592a6fed64df9a5cca06ddb15fd8a51995fd275c294feba6f435",
+      "exact": true
+    },
+    {
+      "name": "calm-settled-pilot.png",
+      "baseline_sha256": "d362db6f64868a60aafd73f4c0cc72b37420bfee1d4115d4fa2db96f1dea6fab",
+      "candidate_sha256": "d362db6f64868a60aafd73f4c0cc72b37420bfee1d4115d4fa2db96f1dea6fab",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-before-near.png",
+      "baseline_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "candidate_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-before-pilot.png",
+      "baseline_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "candidate_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-mid-turn-0_2s-near.png",
+      "baseline_sha256": "f8474ca6bcbdbce8fa8a1b76ba85ddb01b69c9e53c26b5acedd00d33a4f38b31",
+      "candidate_sha256": "f8474ca6bcbdbce8fa8a1b76ba85ddb01b69c9e53c26b5acedd00d33a4f38b31",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-mid-turn-0_2s-pilot.png",
+      "baseline_sha256": "de98874078bf15b0934bc8bbd82e4d5a7fa7dad4c847faa96db8ad2371bfd1b9",
+      "candidate_sha256": "de98874078bf15b0934bc8bbd82e4d5a7fa7dad4c847faa96db8ad2371bfd1b9",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-settled-west-near.png",
+      "baseline_sha256": "2b4f502cdf6533ffccc2007158ff6837dc573721a17d48f5d20aeb97648f5b28",
+      "candidate_sha256": "2b4f502cdf6533ffccc2007158ff6837dc573721a17d48f5d20aeb97648f5b28",
+      "exact": true
+    },
+    {
+      "name": "direction-reversal-settled-west-pilot.png",
+      "baseline_sha256": "9b950b23b142ea646f77079af8402973f381994a3148a1c8ae229c767d1cdf93",
+      "candidate_sha256": "9b950b23b142ea646f77079af8402973f381994a3148a1c8ae229c767d1cdf93",
+      "exact": true
+    },
+    {
+      "name": "full-7_72mps-settled-near.png",
+      "baseline_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "candidate_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "exact": true
+    },
+    {
+      "name": "full-7_72mps-settled-pilot.png",
+      "baseline_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "candidate_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "exact": true
+    },
+    {
+      "name": "light-1_5mps-settled-near.png",
+      "baseline_sha256": "1804b28468daba1c031342e3b22eabb12b56b5d1b93d09170e2e21cf4c63bc1b",
+      "candidate_sha256": "1804b28468daba1c031342e3b22eabb12b56b5d1b93d09170e2e21cf4c63bc1b",
+      "exact": true
+    },
+    {
+      "name": "light-1_5mps-settled-pilot.png",
+      "baseline_sha256": "e857a557534cd7675aa134dbc2eabf75df43117b92fc0a297ded4bf1fdc26c0a",
+      "candidate_sha256": "e857a557534cd7675aa134dbc2eabf75df43117b92fc0a297ded4bf1fdc26c0a",
+      "exact": true
+    },
+    {
+      "name": "strong-15mps-settled-near.png",
+      "baseline_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "candidate_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "exact": true
+    },
+    {
+      "name": "strong-15mps-settled-pilot.png",
+      "baseline_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "candidate_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "exact": true
+    },
+    {
+      "name": "vertical-gust-settled-calm-near.png",
+      "baseline_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "candidate_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "exact": true
+    },
+    {
+      "name": "vertical-gust-settled-calm-pilot.png",
+      "baseline_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "candidate_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "exact": true
+    },
+    {
+      "name": "vertical-gust-up-15mps-0_5s-near.png",
+      "baseline_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "candidate_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "exact": true
+    },
+    {
+      "name": "vertical-gust-up-15mps-0_5s-pilot.png",
+      "baseline_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "candidate_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "exact": true
+    }
+  ],
+  "passed": true,
+  "scope": "18 fixed motion/lighting views; same native Compatibility renderer; not whole field or pilot acceptance"
+}

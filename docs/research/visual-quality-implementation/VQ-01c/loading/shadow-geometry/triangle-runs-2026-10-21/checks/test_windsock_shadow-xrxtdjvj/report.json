@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "29cb7502-86ee-4b9d-a12b-67e0be7d476f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_windsock_shadow.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:22:18.852409+00:00",
+  "label": "test_windsock_shadow",
+  "log": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_windsock_shadow-xrxtdjvj\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_windsock_shadow-xrxtdjvj\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.703,
+  "log_bytes": 134,
+  "log_sha256": "d50384a25e820e25b2ef8edefb061970077b23f54db78ee71cb8e19867cce656"
+}

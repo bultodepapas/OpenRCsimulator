@@ -2,6 +2,8 @@
 
 2026-10-14 · Revision 19 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
+**2026-10-21 execution update:** [VQ-04a-F4 is implemented](../research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f4-faster-cloth-construction): local cloth-grid reuse reduces windsock construction 73.3→23.2 ms, preserving exact mesh/state output and all 18 native images. Five active release pairs improve return-Home + second-Fly by 5.1% median paired; first-path improvement is 1.6%. Initial loading goals, native pacing, physical-display/readability, ordinary-release shutdown and long lifecycle/platform gates remain open. Next: frame-pacing repair on the updated runtime, then motion-reference refresh.
+
 **Latest menu responsiveness slice:** [UI-05-R3](../research/menu-investigations/UI-05-R3/README.md) adds latest-selection ownership and bounded asynchronous loading of selected scene resources, retaining UI-05-R2's three visual models. Five native process pairs measure jet selection feedback at 1727→6.44 ms, while the complete first preview still takes about 1604 ms and retains a construction stall. Cached handlers remain around 5 ms. The report separates feedback, readiness, frame spikes, memory limits and lifecycle checks; main-thread model/night preparation is next. Speculative prefetch, texture imports and shader warmup remain gated experiments.
 
 **Menu-focused follow-up:** [UI-05-R1](../research/menu-investigations/UI-05-R1/README.md) reuses unchanged Home legend controls, preserving physical-keyboard label refresh. [UI-06d-R2](../research/menu-investigations/UI-06d-R2/README.md) repairs long launch-caption overflow and live-language updates, with refreshed regression evidence. Native UI-call measurements remain separate from the loading campaigns below; UI-22…29 remain open.
@@ -192,6 +194,13 @@ Future per-build color/decal and show-effect controls belong to [AE-24](aircraft
 **Exit:** aligned visual/contact shore, no artificial uniform ring, stable grazing-angle depth/transparency and accepted cost. No water physics, wet friction or fluid solver. Skip if current materials pass.
 
 ### VQ-06a/b — qualified presets, one settings path
+
+2026-10-21 user-directed extension: [UI-24-R3](../research/menu-investigations/UI-24-R3/README.md)
+delivers individually selectable window resolution, frame cap, VSync and main-view
+MSAA through the existing UI-24 store and recovery flow. This advances the manual
+controls independently of automatic hardware presets; it does not qualify a new
+Performance/High/Ultra profile or establish a target-hardware speedup. Defaults
+remain unchanged. Native macOS/Linux behavior and per-GPU readability/cost remain gates.
 
 Define pure validated profile data and a presentation-only apply boundary. A module such as `app/render/quality_profile.gd` is **proposed**, not implemented; placement follows the existing UI registry boundary. Reuse SC-24 tiers after checking obstacle visibility and collision identity.
 

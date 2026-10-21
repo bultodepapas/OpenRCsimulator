@@ -196,16 +196,7 @@ static func collect_cell_shape(cell: MeshInstance3D, population: Node3D, pilot_x
 			var instance_to_cell: Transform3D = relative_to_cell * transforms[i]
 			# Transform the selected instance in native code; retain triangle order and cutoff.
 			var placed_faces: PackedVector3Array = instance_to_cell * faces
-			for first in range(0, placed_faces.size(), 3):
-				var a := placed_faces[first]
-				var b := placed_faces[first + 1]
-				var c := placed_faces[first + 2]
-				if maxf(a.y, maxf(b.y, c.y)) <= min_height_m:
-					continue
-				vertices.append(a)
-				vertices.append(b)
-				vertices.append(c)
-				extra_triangles += 1
+			extra_triangles += Projected.append_above(vertices, placed_faces, min_height_m)
 	if extra_triangles == 0:
 		shape["population_placements"] = 0
 		shape["population_elevated_placements"] = 0

@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8d5bf6c7-2e93-41d6-97db-849251571d4f",
+  "command": [
+    "D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/release/OpenRC Simulator.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--trace=D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/runs/release-trace.csv",
+    "--t=3"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T16:25:19.680076+00:00",
+  "label": "release-trace-smoke",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\release-trace-smoke-h908unz1\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\release-trace-smoke-h908unz1\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "trace saved: D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/runs/release-trace.csv (721 rows)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 7,
+      "message": "4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2536)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.125,
+  "log_bytes": 561,
+  "log_sha256": "8c0084a3e550920741786bbef942b8dd060916dbdc9f27334a5176be16e2efdf"
+}

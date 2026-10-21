@@ -1,0 +1,49 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7ed80cec-8db5-420c-b436-39b3f6d44a94",
+  "command": [
+    "D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/collector/OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--",
+    "--output=D:/OpenRCsimulator-scratch/graphics-export-20261021-2463af65/runs/collector-01.json",
+    "--cycles=2"
+  ],
+  "cwd": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\empty-host",
+  "started_utc": "2026-10-21T16:21:24.032123+00:00",
+  "label": "collector-native-01",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\collector-native-01-2ulj6j3s\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\checks\\collector-native-01-2ulj6j3s\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "loading probe: 2 Home/Fly cycles"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "loading probe: 2 Home/Fly cycles"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.172,
+  "log_bytes": 65,
+  "log_sha256": "51953a3e9f24cc659f1987eb35296ddea677bf6fc2cc076d4739c0792a352279"
+}

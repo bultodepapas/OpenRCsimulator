@@ -1,0 +1,305 @@
+diff --git a/research/performance/README.md b/research/performance/README.md
+index c75f6ffb..c947c560 100644
+--- a/research/performance/README.md
++++ b/research/performance/README.md
+@@ -54,8 +54,14 @@ Create the parent directory first; output and its `.settings.cfg` sidecar must n
+ Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. Cycles are bounded to
+ 1–50. Keep logs and inspect errors even on exit zero. Apply an external timeout for
+ unattended runs. A fresh process is not a cold OS/import/shader cache. Engine elapsed
+-time excludes parent-process launch overhead; synchronous build and first draw are
+-separate measurements. Three cycles do not establish the DT-12 soak or package gate.
++time excludes parent-process launch overhead. `fly_sync_usec` measures only dispatch
++of `pressed.emit()`; Home now acknowledges Fly before its deferred handoff.
++`fly_ready_usec` includes that handoff and validated flight creation, while
++`fly_first_draw_usec` additionally waits for post-draw. The probe allows at most four
++process frames for the handoff and rejects cancellation, retry-ready rejection,
++startup errors and unflyable sessions. An external timeout bounds blocking construction.
++A paused first draw is not interactive readiness. Three cycles do not establish the
++DT-12 soak or package gate.
+ 
+ After the last sample, the probe frees its scene and observes weak references to the
+ latest playback of each audio player. It allows up to one second for the mixer to
+@@ -66,7 +72,7 @@ free the owned scene and remove successfully created settings; existing files ar
+ removed. This distinguishes asynchronous audio retirement from persistent retention;
+ it is not a general memory/RSS or production quit guarantee.
+ 
+-Run its isolated success/failure/retention and file-preservation checks with:
++Run its isolated handoff, success/failure/retention and file-preservation checks with:
+ 
+ ```powershell
+ python research/performance/test_loading_probe.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe
+diff --git a/research/performance/loading_probe.gd b/research/performance/loading_probe.gd
+index f22dbde1..a084ac52 100644
+--- a/research/performance/loading_probe.gd
++++ b/research/performance/loading_probe.gd
+@@ -75,22 +75,24 @@ func _run() -> void:
+ 			return
+ 		var begin := Time.get_ticks_usec()
+ 		fly.pressed.emit()
+-		var ready := Time.get_ticks_usec()
+-		var flight: Node = app.get("flight")
+-		if flight == null or not str(flight.get("startup_error")).is_empty():
+-			_fail("Home Fly failed to create a valid flight")
++		var dispatched := Time.get_ticks_usec()
++		# Home renders its acknowledgement before emitting fly_requested (UI-34c).
++		# Await the real handoff; never call start_flight directly or bypass readiness.
++		var handoff := await _wait_for_flight(app, home)
++		if not handoff.ok:
++			_fail(handoff.error)
+ 			return
++		var ready: int = handoff.ready_usec
++		var flight: Node = handoff.flight
+ 		var session: Node = flight.get("session")
+-		if session == null or not session.is_flyable():
+-			_fail("Flight session is not flyable")
+-			return
+ 		# Keep real callbacks and focus safety. No manual pose/physics substitution.
+ 		await process_frame
+ 		await RenderingServer.frame_post_draw
+ 		var drawn := Time.get_ticks_usec()
+ 		var sim: Node = session.get("sim")
+ 		var sample := {
+-			"cycle": index + 1, "fly_sync_usec": ready - begin,
++			"cycle": index + 1, "fly_sync_usec": dispatched - begin,
++			"fly_ready_usec": ready - begin,
+ 			"fly_first_draw_usec": drawn - begin,
+ 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
+ 			"nodes_in_flight": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+@@ -104,6 +106,7 @@ func _run() -> void:
+ 		if app.get("flight") != null or app.get("home") == null:
+ 			_fail("End flight failed to restore Home")
+ 			return
++		home = app.get("home")
+ 		sample["return_sync_usec"] = return_ready - return_begin
+ 		sample["return_first_draw_usec"] = Time.get_ticks_usec() - return_begin
+ 		sample["nodes_at_home"] = int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT))
+@@ -120,6 +123,7 @@ func _run() -> void:
+ 		"home_first_draw_from_load_usec": home_drawn - before_load,
+ 		"home_first_draw_engine_elapsed_usec": home_drawn,
+ 		"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
++		"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+ 		"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+ 		"cycles": samples,
+ 	}
+@@ -138,6 +142,30 @@ func _run() -> void:
+ 	quit(0)
+ 
+ 
++## Current Home defers one process frame; tolerate bounded scheduling, not an unbounded wait.
++## An external process timeout still bounds synchronous construction blocking a frame.
++func _wait_for_flight(app: Node, home: Node, max_frames: int = 4) -> Dictionary:
++	for index in range(max_frames + 1):
++		if not is_instance_valid(app) or not app.is_inside_tree():
++			return {ok = false, error = "Home Fly cancelled: app left the tree"}
++		var flight: Node = app.get("flight")
++		if flight != null:
++			if not str(flight.get("startup_error")).is_empty():
++				return {ok = false, error = "Home Fly startup error: " + str(flight.get("startup_error"))}
++			var session: Node = flight.get("session")
++			if session == null or not session.is_flyable():
++				return {ok = false, error = "Flight session is not flyable"}
++			return {ok = true, flight = flight, ready_usec = Time.get_ticks_usec()}
++		if not is_instance_valid(home) or not home.is_inside_tree():
++			return {ok = false, error = "Home Fly cancelled: Home left without a flight"}
++		var fly: Button = home.get("fly_button")
++		if fly == null or not fly.disabled:
++			return {ok = false, error = "Home Fly rejected: returned to ready state without a flight"}
++		if index < max_frames:
++			await process_frame
++	return {ok = false, error = "Home Fly handoff exceeded %d process frames" % max_frames}
++
++
+ ## Outside every timing interval. Weak references observe mixer ownership without extending it.
+ func _cleanup() -> Dictionary:
+ 	if not _last_shutdown.is_empty():
+diff --git a/research/performance/test_loading_probe.py b/research/performance/test_loading_probe.py
+index de17c5b2..a83d7558 100644
+--- a/research/performance/test_loading_probe.py
++++ b/research/performance/test_loading_probe.py
+@@ -54,6 +54,164 @@ func _run() -> void:
+ 	quit(0)
+ '''
+ 
++HANDOFF_FIXTURE = '''extends "{probe}"
++
++class MockApp extends Node:
++	var flight: Node
++
++class MockHome extends Node:
++	var fly_button: Button
++
++class MockSession extends Node:
++	var flyable := true
++
++	func is_flyable() -> bool:
++		return flyable
++
++class MockFlight extends Node:
++	var startup_error := ""
++	var session: Node
++
++
++func _run() -> void:
++	var passed := await _deferred_success()
++	if passed:
++		passed = await _rejected_launch()
++	if passed:
++		passed = await _cancelled_launch()
++	if passed:
++		passed = await _bounded_timeout()
++	if passed:
++		passed = await _startup_error()
++	if passed:
++		passed = await _unflyable_session()
++	if passed:
++		print("PASS all Home Fly handoff regressions")
++	quit(0 if passed else 1)
++
++
++func _route() -> Array:
++	var app := MockApp.new()
++	var home := MockHome.new()
++	home.fly_button = Button.new()
++	home.fly_button.disabled = true # Models Home after it has accepted Fly.
++	home.add_child(home.fly_button)
++	app.add_child(home)
++	root.add_child(app)
++	return [app, home]
++
++
++func _flight(startup_error := "", flyable := true) -> MockFlight:
++	var flight := MockFlight.new()
++	flight.startup_error = startup_error
++	var session := MockSession.new()
++	session.flyable = flyable
++	flight.session = session
++	flight.add_child(session)
++	return flight
++
++
++func _check_case(condition: bool, label: String, detail := "") -> bool:
++	if condition:
++		print("PASS Home Fly handoff: ", label)
++		return true
++	push_error("Home Fly handoff regression failed: %s %s" % [label, detail])
++	return false
++
++
++func _discard_app(app: Node) -> void:
++	if is_instance_valid(app):
++		if app.get_parent() != null:
++			app.get_parent().remove_child(app)
++		app.free()
++
++
++func _deferred_success() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	var flight := _flight()
++	app.add_child(flight)
++	app.set_deferred("flight", flight)
++	if not app.flight == null:
++		push_error("Home Fly handoff success fixture was not deferred")
++		await _discard_app(app)
++		return false
++	var result: Dictionary = await _wait_for_flight(app, home, 4)
++	var ok: bool = result.get("ok", false) and result.get("flight") == flight and int(result.get("ready_usec", 0)) > 0
++	var checked := _check_case(ok, "deferred success", str(result))
++	await _discard_app(app)
++	return checked
++
++
++func _rejected_launch() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	home.fly_button.set_deferred("disabled", false) # Home.reject_start restores a retryable button.
++	var result: Dictionary = await _wait_for_flight(app, home, 4)
++	var ok: bool = not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly rejected:")
++	var checked := _check_case(ok, "rejected launch", str(result))
++	await _discard_app(app)
++	return checked
++
++
++func _cancelled_launch() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	root.call_deferred("remove_child", app)
++	var result: Dictionary = await _wait_for_flight(app, home, 4)
++	var ok: bool = not result.get("ok", true) and str(result.get("error", "")).begins_with("Home Fly cancelled:")
++	var checked := _check_case(ok, "cancelled route", str(result))
++	await _discard_app(app)
++	return checked
++
++
++func _bounded_timeout() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	var max_frames := 2
++	var start_frame := Engine.get_process_frames()
++	var result: Dictionary = await _wait_for_flight(app, home, max_frames)
++	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == \
++		"Home Fly handoff exceeded %d process frames" % max_frames
++	ok = ok and Engine.get_process_frames() - start_frame == max_frames
++	var checked := _check_case(ok, "bounded pending timeout", str(result))
++	await _discard_app(app)
++	return checked
++
++
++func _startup_error() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	var flight := _flight("controlled startup error")
++	app.add_child(flight)
++	flight.session = null # Startup error must be reported before session validation.
++	app.flight = flight
++	var result: Dictionary = await _wait_for_flight(app, home, 4)
++	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == \
++		"Home Fly startup error: controlled startup error"
++	var checked := _check_case(ok, "startup_error", str(result))
++	await _discard_app(app)
++	return checked
++
++
++func _unflyable_session() -> bool:
++	var route := _route()
++	var app: MockApp = route[0]
++	var home: MockHome = route[1]
++	app.flight = _flight("", false)
++	app.add_child(app.flight)
++	var result: Dictionary = await _wait_for_flight(app, home, 4)
++	var ok: bool = not result.get("ok", true) and str(result.get("error", "")) == "Flight session is not flyable"
++	var checked := _check_case(ok, "unflyable session", str(result))
++	await _discard_app(app)
++	return checked
++'''
++
+ 
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+@@ -103,6 +261,21 @@ def main():
+         assert rejected.returncode == 1
+         assert output.read_bytes() == b"existing report" and settings.read_bytes() == b"existing settings"
+         print("PASS existing files preserved")
++
++        handoff_script = folder / "handoff_fixture.gd"
++        handoff_script.write_text(HANDOFF_FIXTURE.format(probe=PROBE.as_posix()), encoding="utf-8")
++        handoff = subprocess.run([engine, "--headless", "--path", str(ROOT / "app"), "--audio-driver",
++                                  "Dummy", "--verbose", "--script", str(handoff_script)],
++                                 capture_output=True, text=True, timeout=15)
++        handoff_log = handoff.stdout + handoff.stderr
++        assert handoff.returncode == 0, handoff_log
++        assert "PASS all Home Fly handoff regressions" in handoff_log, handoff_log
++        for case in ("deferred success", "rejected launch", "cancelled route", "bounded pending timeout",
++                     "startup_error", "unflyable session"):
++            assert "PASS Home Fly handoff: " + case in handoff_log, handoff_log
++        assert not re.search(r"(?m)^(?:SCRIPT )?ERROR:", handoff_log), handoff_log
++        assert "instances were leaked" not in handoff_log, handoff_log
++        print("PASS Home Fly handoff states", flush=True)
+     return 0
+ 
+ 

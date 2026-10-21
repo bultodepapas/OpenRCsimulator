@@ -1,0 +1,30 @@
+{
+  "head": "ffc2974db625756bc19b2913ef0dd1c77c2d540c",
+  "frozen_file_count": 3842,
+  "changed_frozen_source": {
+    "app/main.gd": {
+      "baseline_sha256": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217",
+      "updated_snapshot_sha256": "3a35a848ac22c8e0f89cf67a802ecc73b175a09aebc006d76581f28488219589",
+      "working_tree_sha256": "3a35a848ac22c8e0f89cf67a802ecc73b175a09aebc006d76581f28488219589"
+    }
+  },
+  "binaries": {
+    "release\\OpenRC Simulator.exe": {
+      "bytes": 444964136,
+      "sha256": "74fe06eff8760269b868462af1bef3e9046db58e84e2ccab708a73d0b7d8ba24"
+    },
+    "release\\openrc_ground_vehicle.dll": {
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    },
+    "updated\\OpenRC Simulator.exe": {
+      "bytes": 444964408,
+      "sha256": "8607cea428c05a168f435d56af779dd6c7dde3015927ba9afea0416954ae0bf9"
+    },
+    "updated\\openrc_ground_vehicle.dll": {
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "patch_sha256": "7baf1f252e29c1799921066c3f117e7e2d2f4586d4f7e6125d136f380aff9aec"
+}

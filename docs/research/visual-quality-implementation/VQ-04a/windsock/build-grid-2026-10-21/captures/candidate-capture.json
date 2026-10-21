@@ -1,0 +1,689 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "captured_at_local": "2026-10-21 12:06:15",
+  "complete": true,
+  "cue_dimensions_m": {
+    "length": 2.5,
+    "pole_height": 3.6,
+    "tail_diameter": 0.18,
+    "throat_diameter": 0.45
+  },
+  "driver": "opengl3",
+  "format": "openrc-windsock-motion-capture-v1",
+  "godot": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "records": [
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "calm",
+      "centreline_arc_m": 2.49999998509884,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "calm-settled-near.png",
+      "image_sha256": "cbabd6989d50592a6fed64df9a5cca06ddb15fd8a51995fd275c294feba6f435",
+      "inflation": 0.0,
+      "state": "settled",
+      "tail_local_m": [
+        1.33426070213318,
+        -1.30355763435364,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "calm",
+      "centreline_arc_m": 2.49999998509884,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "calm-settled-pilot.png",
+      "image_sha256": "d362db6f64868a60aafd73f4c0cc72b37420bfee1d4115d4fa2db96f1dea6fab",
+      "inflation": 0.0,
+      "state": "settled",
+      "tail_local_m": [
+        1.33426070213318,
+        -1.30355763435364,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "light-1_5mps",
+      "centreline_arc_m": 2.49999998509884,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "light-1_5mps-settled-near.png",
+      "image_sha256": "1804b28468daba1c031342e3b22eabb12b56b5d1b93d09170e2e21cf4c63bc1b",
+      "inflation": 0.193743187329002,
+      "state": "settled",
+      "tail_local_m": [
+        1.67377400398254,
+        -1.22180187702179,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        1.5,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "light-1_5mps",
+      "centreline_arc_m": 2.49999998509884,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "light-1_5mps-settled-pilot.png",
+      "image_sha256": "e857a557534cd7675aa134dbc2eabf75df43117b92fc0a297ded4bf1fdc26c0a",
+      "inflation": 0.193743187329002,
+      "state": "settled",
+      "tail_local_m": [
+        1.67377400398254,
+        -1.22180187702179,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        1.5,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "full-7_72mps",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "full-7_72mps-settled-near.png",
+      "image_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "inflation": 0.996701494244061,
+      "state": "settled",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "full-7_72mps",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "full-7_72mps-settled-pilot.png",
+      "image_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "inflation": 0.996701494244061,
+      "state": "settled",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "strong-15mps",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "strong-15mps-settled-near.png",
+      "image_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "inflation": 0.996701494244061,
+      "state": "settled",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        15.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "strong-15mps",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "strong-15mps-settled-pilot.png",
+      "image_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "inflation": 0.996701494244061,
+      "state": "settled",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        15.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-before-near.png",
+      "image_sha256": "987812195f374a661864c050484ce78b2d0526366c855d10ccc135068f92ee3f",
+      "inflation": 0.996701494244061,
+      "state": "before",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.50000005960464,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-before-pilot.png",
+      "image_sha256": "27b320c6a44c37e6702ab6142aed394736ed05c635ae6a2c85b4d32a7900a0f6",
+      "inflation": 0.996701494244061,
+      "state": "before",
+      "tail_local_m": [
+        2.49731135368347,
+        -0.0843738615512848,
+        0.0
+      ],
+      "time_s": 2.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": -0.757968325867922,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.4999997317791,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-mid-turn-0_2s-near.png",
+      "image_sha256": "f8474ca6bcbdbce8fa8a1b76ba85ddb01b69c9e53c26b5acedd00d33a4f38b31",
+      "inflation": 0.776231904205713,
+      "state": "mid-turn-0_2s",
+      "tail_local_m": [
+        2.4971866607666,
+        -0.0826586112380028,
+        0.0248078145086765
+      ],
+      "time_s": 2.2,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        -7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": -0.757968325867922,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.4999997317791,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-mid-turn-0_2s-pilot.png",
+      "image_sha256": "de98874078bf15b0934bc8bbd82e4d5a7fa7dad4c847faa96db8ad2371bfd1b9",
+      "inflation": 0.776231904205713,
+      "state": "mid-turn-0_2s",
+      "tail_local_m": [
+        2.4971866607666,
+        -0.0826586112380028,
+        0.0248078145086765
+      ],
+      "time_s": 2.2,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        -7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": -3.1414472308042,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.50000007450581,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-settled-west-near.png",
+      "image_sha256": "2b4f502cdf6533ffccc2007158ff6837dc573721a17d48f5d20aeb97648f5b28",
+      "inflation": 0.994161691895676,
+      "state": "settled-west",
+      "tail_local_m": [
+        2.49588537216187,
+        -0.102021738886833,
+        0.0219113789498806
+      ],
+      "time_s": 4.2,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        -7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": -3.1414472308042,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "direction-reversal",
+      "centreline_arc_m": 2.50000007450581,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "direction-reversal-settled-west-pilot.png",
+      "image_sha256": "9b950b23b142ea646f77079af8402973f381994a3148a1c8ae229c767d1cdf93",
+      "inflation": 0.994161691895676,
+      "state": "settled-west",
+      "tail_local_m": [
+        2.49588537216187,
+        -0.102021738886833,
+        0.0219113789498806
+      ],
+      "time_s": 4.2,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        -7.71667,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "vertical-gust",
+      "centreline_arc_m": 2.49999991059303,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "vertical-gust-up-15mps-0_5s-near.png",
+      "image_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "inflation": 0.0,
+      "state": "up-15mps-0_5s",
+      "tail_local_m": [
+        1.4905024766922,
+        -1.27825546264648,
+        0.0
+      ],
+      "time_s": 1.0,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        -15.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "vertical-gust",
+      "centreline_arc_m": 2.49999991059303,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "vertical-gust-up-15mps-0_5s-pilot.png",
+      "image_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "inflation": 0.0,
+      "state": "up-15mps-0_5s",
+      "tail_local_m": [
+        1.4905024766922,
+        -1.27825546264648,
+        0.0
+      ],
+      "time_s": 1.0,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        -15.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        4.59999990463257,
+        5.59999990463257,
+        6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "vertical-gust",
+      "centreline_arc_m": 2.49999995529652,
+      "fov_deg": 42.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "vertical-gust-settled-calm-near.png",
+      "image_sha256": "c58ebacc1b3f9d7cfb8cd743a3cd188c9b9d480ad39acbd53c22c03146e6d8a8",
+      "inflation": 0.0,
+      "state": "settled-calm",
+      "tail_local_m": [
+        1.34194660186768,
+        -1.30278074741364,
+        0.0
+      ],
+      "time_s": 2.5,
+      "view": "near",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    },
+    {
+      "basket_yaw_rad": 0.0,
+      "camera_eye": [
+        12.0,
+        1.70000004768372,
+        -6.0
+      ],
+      "camera_target": [
+        0.699999988079071,
+        3.25,
+        0.0
+      ],
+      "case": "vertical-gust",
+      "centreline_arc_m": 2.49999995529652,
+      "fov_deg": 50.0,
+      "frame_draw_calls": 4,
+      "frame_primitives": 5268,
+      "image": "vertical-gust-settled-calm-pilot.png",
+      "image_sha256": "24c151c8db116a0172f55d52c1fbee0b16c3c9a422a4236feb0d350d4563c5b5",
+      "inflation": 0.0,
+      "state": "settled-calm",
+      "tail_local_m": [
+        1.34194660186768,
+        -1.30278074741364,
+        0.0
+      ],
+      "time_s": 2.5,
+      "view": "pilot",
+      "wind_ned_mps": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "windsock_draw_surfaces": 3,
+      "windsock_triangles": 5266
+    }
+  ],
+  "renderer": "gl_compatibility",
+  "sample_hz": 240,
+  "source_sha256": {
+    "capture": "aa611310c69e8dfeeb676e848b8bbd9feaf067e2e5afb617fd01d121334219be",
+    "fabric_shader": "e494822a41ac727f5a2063148da5b5966cce361f87a2a87fd11ef8a43beaceca",
+    "field_data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "motion": "ad487410160748f8c01cd8f6d904f3a4e5089bc86827eac8a1cbe49a2681bb8e",
+    "renderer": "9b4c3d9d0a4a238a1294cda0f0ec9e1757851956b956ca5b654a1db70e1e06c3",
+    "support_shader": "e5c23819262effa8429783cb873a7957f771a9d5a0e8f5ac1a0af49e2f756549"
+  },
+  "timing": "not measured",
+  "viewport": [
+    960,
+    540
+  ]
+}

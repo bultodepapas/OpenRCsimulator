@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL reject first at exact threshold appends scalar-selected vertices in exact order
+FAIL reject first at exact threshold reports the scalar accepted triangle count
+FAIL reject all including exact threshold appends scalar-selected vertices in exact order
+FAIL reject all including exact threshold reports the scalar accepted triangle count
+FAIL reject all including exact threshold preserves exact scalar AABB bounds
+FAIL flush across consecutive rejects appends scalar-selected vertices in exact order
+FAIL flush across consecutive rejects reports the scalar accepted triangle count
+FAIL alternating accepted and rejected runs appends scalar-selected vertices in exact order
+FAIL alternating accepted and rejected runs reports the scalar accepted triangle count
+field population collection: 54 checks, 9 failed

@@ -2,7 +2,7 @@
 
 2026-10-17 · TRA-01…07 · Local film delivered; publication was not requested.
 
-Latest edit: [revision 6](revision-6-2026-10-17.md) removes the abrupt reset before the logo and ends at 58 seconds. Feature titles, native ramp jump, formation opening, continuous score, twilight Lumber and two Extra rolls are retained. This report retains the first delivery's capture and export evidence.
+Latest delivery: the [2026-10-21 runtime refresh](refresh-2026-10-21.md) recaptures the 58-second edit with the current simulator. [Revision 6](revision-6-2026-10-17.md) removed the abrupt reset before the logo. This report retains the first delivery's capture and export evidence.
 
 The [production plan](../../plans/cinematic-trailer.md) and [16-topic research ledger](2026-10-17.md)
 led to a complete **60-second English trailer** with eight distinct vehicles, real flying/driving,

@@ -1,0 +1,60 @@
+{
+  "release": {
+    "OpenRC Simulator.exe": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\release\\OpenRC Simulator.exe",
+      "bytes": 444963576,
+      "sha256": "1262259ed088dbbcfec6431bb9ceab5219dbe6c1777db29b1c4a81660954a873"
+    },
+    "openrc_ground_vehicle.dll": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\release\\openrc_ground_vehicle.dll",
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "collector": {
+    "OpenRC Simulator.exe": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\collector\\OpenRC Simulator.exe",
+      "bytes": 444973064,
+      "sha256": "a61edc70681ac8d029381e91987f82c9f1bd70f8f7287a1fbde5dd6a7d8bebc5"
+    },
+    "openrc_ground_vehicle.dll": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\collector\\openrc_ground_vehicle.dll",
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "diagnostic": {
+    "OpenRC Simulator.exe": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\diagnostic\\OpenRC Simulator.exe",
+      "bytes": 444973688,
+      "sha256": "99296276cd00fb428364b270092106e0f3e5a6b07103a24f19bbbbc3fcb3bfc1"
+    },
+    "openrc_ground_vehicle.dll": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\diagnostic\\openrc_ground_vehicle.dll",
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "dependency": {
+    "OpenRC Simulator.exe": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\dependency\\OpenRC Simulator.exe",
+      "bytes": 444974888,
+      "sha256": "44bb7f06ab5711dbec183497ed2a33964cc64d151dbd09b340562b34fc60605c"
+    },
+    "openrc_ground_vehicle.dll": {
+      "path": "D:\\OpenRCsimulator-scratch\\graphics-export-20261021-2463af65\\dependency\\openrc_ground_vehicle.dll",
+      "bytes": 460800,
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+    }
+  },
+  "editor": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "bytes": 180858888,
+    "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  "release_template": {
+    "path": "C:\\Users\\bulto\\AppData\\Roaming\\Godot\\export_templates\\4.7.2.stable\\windows_release_x86_64.exe",
+    "bytes": 109268480,
+    "sha256": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562"
+  }
+}

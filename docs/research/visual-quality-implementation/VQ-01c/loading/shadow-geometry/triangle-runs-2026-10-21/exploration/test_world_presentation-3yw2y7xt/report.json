@@ -1,0 +1,66 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b3825dd1-10f3-42f6-94e3-a3e9597a3d61",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_world_presentation.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:22:32.454015+00:00",
+  "label": "test_world_presentation",
+  "log": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_world_presentation-3yw2y7xt\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_world_presentation-3yw2y7xt\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 3,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 3,
+      "message": "Attempt to open script 'res://tests/test_world_presentation.gd' resulted in error 'File not found'.",
+      "context": [
+        "   at: load_source_code (modules/gdscript/gdscript.cpp:1139)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Failed loading resource: res://tests/test_world_presentation.gd.",
+      "context": [
+        "   at: _load (core/io/resource_loader.cpp:317)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 7,
+      "message": "Can't load script: res://tests/test_world_presentation.gd",
+      "context": [
+        "   at: start (main/main.cpp:4370)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.203,
+  "log_bytes": 467,
+  "log_sha256": "aa5522dc92b3f0b05a2f3f8f715d97e6544fd77f4bbf4e694e1928b662b57467"
+}

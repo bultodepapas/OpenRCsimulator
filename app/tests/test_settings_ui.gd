@@ -99,7 +99,7 @@ func _run() -> void:
 		str(default_settings._scroll.get_child(0).size), str(default_settings._layout_panel.size)])
 	_check("default Settings workspace is bounded on a wide viewport",
 		default_settings._layout_panel.size.x <= 800.0)
-	for category: int in 3:
+	for category: int in 4:
 		default_settings._show_category(category)
 		await process_frame
 		await process_frame
@@ -185,6 +185,26 @@ func _run() -> void:
 	_check("expired preview emits the saved display configuration", not _presentations.is_empty()
 		and _presentations.back() == store.config)
 	_check("expired preview does not persist the tested window mode", DisplayPreferences.load_from(PREFS).window_mode == "windowed")
+
+	settings._fps_picker.select(2)
+	settings._fps_picker.item_selected.emit(2) # 60 FPS
+	var deadline: int = settings._trial_deadline_msec
+	_check("FPS preview starts recovery without saving", settings._draft.max_fps == 60
+		and deadline > Time.get_ticks_msec() and DisplayPreferences.load_from(PREFS).max_fps == 0)
+	settings._msaa_picker.select(3)
+	settings._msaa_picker.item_selected.emit(3)
+	settings._window_mode_selected(1)
+	settings._window_mode_selected(0)
+	_check("returning window mode cannot cancel an outstanding graphics recovery", settings._trial_deadline_msec == deadline)
+	settings._trial_deadline_msec = Time.get_ticks_msec() - 1
+	settings._process(0.0)
+	_check("timeout restores FPS and antialiasing together", settings._draft.max_fps == 0
+		and settings._draft.msaa_3d == 2 and _presentations.back() == store.config)
+	settings._resolution_picker.select(1)
+	settings._resolution_picker.item_selected.emit(1)
+	_check("resolution preview has recovery", settings._trial_deadline_msec > Time.get_ticks_msec())
+	settings.close()
+	_check("closing a resolution preview restores automatic sizing", settings._draft.window_resolution == "auto")
 
 	settings._language_selected(1)
 	_check("language applies immediately through the host signal", _languages == ["es"])

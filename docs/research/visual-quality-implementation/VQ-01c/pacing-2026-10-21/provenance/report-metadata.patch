@@ -1,0 +1,243 @@
+diff --git a/app/main.gd b/app/main.gd
+index 82044a29..44f55dcc 100644
+--- a/app/main.gd
++++ b/app/main.gd
+@@ -2655,6 +2655,12 @@ func _finish_frame_time(exit_code: int = OK) -> void:
+ 		pid = OS.get_process_id(),
+ 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
+ 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
++		# A CLI cap can differ from the shipped default even when VSync is enabled.
++		max_fps = Engine.max_fps,
++		vsync_mode = DisplayServer.window_get_vsync_mode(),
++		display_server = DisplayServer.get_name(),
++		screen_index = DisplayServer.window_get_current_screen(),
++		screen_refresh_hz = DisplayServer.screen_get_refresh_rate() if DisplayServer.get_name() != "headless" else -1.0,
+ 		aircraft_id = aircraft_id,
+ 		input_enabled = session.input_enabled,
+ 		flight_companions = companion_evidence,
+diff --git a/research/performance/native_summary.py b/research/performance/native_summary.py
+index d96f111d..9713d1fa 100644
+--- a/research/performance/native_summary.py
++++ b/research/performance/native_summary.py
+@@ -133,6 +133,16 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
+         if not isinstance(value, str) or not value.strip():
+             errors.append(f"{key} must be a non-empty string")
+ 
++    # Additive v2 metadata: unknown in historical reports, never inferred as uncapped.
++    if "max_fps" in report and (not _is_int(report["max_fps"]) or report["max_fps"] < 0):
++        errors.append("max_fps must be a non-negative integer")
++    if "vsync_mode" in report:
++        mode = report["vsync_mode"]
++        if not _is_int(mode) or mode not in (0, 1, 2, 3):
++            errors.append("vsync_mode must be an integer from 0 through 3")
++        elif "vsync" in report and (type(report["vsync"]) is not bool or report["vsync"] != (mode != 0)):
++            errors.append("vsync must agree with vsync_mode")
++
+     input_enabled = report.get("input_enabled")
+     if type(input_enabled) is not bool:
+         errors.append("input_enabled must be a boolean")
+@@ -498,6 +508,10 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
+         "duration_eligibility": duration,
+         "metrics": derived,
+         "pacing_gate": pacing,
++        "pacing_configuration": {
++            "max_fps": report.get("max_fps") if report is not None else None,
++            "vsync_mode": report.get("vsync_mode") if report is not None else None,
++        },
+         "performance_pass": performance_pass,
+         "hardware_acceptance": "not_claimed",
+     }
+@@ -532,7 +546,22 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
+         campaign_reasons.append(f"campaign has fewer than {minimum_runs} runs")
+     if runs and not all(run["performance_pass"] for run in runs):
+         campaign_reasons.append("one or more runs failed an individual performance gate")
+-    performance_pass = len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
++    configurations = [run["pacing_configuration"] for run in runs]
++    configuration_consistent = bool(configurations) and all(item == configurations[0] for item in configurations)
++    configuration_complete = bool(configurations) and all(
++        item["max_fps"] is not None and item["vsync_mode"] is not None for item in configurations
++    )
++    legacy_configuration = bool(configurations) and all(
++        item["max_fps"] is None and item["vsync_mode"] is None for item in configurations
++    )
++    if configurations and not configuration_consistent:
++        campaign_reasons.append("runs have different or mixed known/unknown FPS caps or VSync modes")
++    if configurations and not configuration_complete and not legacy_configuration:
++        campaign_reasons.append("non-legacy pacing configuration requires both FPS cap and VSync mode")
++    performance_pass = (
++        len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
++        and configuration_consistent and (configuration_complete or legacy_configuration)
++    )
+     summary = {
+         "format": SUMMARY_FORMAT,
+         "complete": True,
+@@ -544,6 +573,8 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
+         "active_flight_qualifier_count": sum(run["active_flight_qualifier"] for run in runs),
+         "duration_eligible_count": sum(bool(run["duration_eligibility"] and run["duration_eligibility"]["eligible"]) for run in runs),
+         "performance_pass": performance_pass,
++        "pacing_configuration_consistent": configuration_consistent,
++        "pacing_configuration_complete": configuration_complete,
+         "performance_pass_count": sum(run["performance_pass"] for run in runs),
+         "run_count": len(runs),
+         "minimum_runs": minimum_runs,
+diff --git a/research/performance/test_native_summary.py b/research/performance/test_native_summary.py
+index b6edb1b9..74b69b0e 100644
+--- a/research/performance/test_native_summary.py
++++ b/research/performance/test_native_summary.py
+@@ -142,6 +142,49 @@ class NativeReportValidationTests(unittest.TestCase):
+         # excluded interval and report a misleading 0.75 ratio here.
+         self.assertNotAlmostEqual(derived["simulation_wall_ratio"], 0.0375 / 0.05)
+ 
++    def test_optional_pacing_configuration_accepts_zero_sixty_and_all_vsync_modes(self):
++        for max_fps in (0, 60):
++            for vsync_mode in range(4):
++                with self.subTest(max_fps=max_fps, vsync_mode=vsync_mode):
++                    report = valid_report()
++                    report.update(
++                        max_fps=max_fps,
++                        vsync_mode=vsync_mode,
++                        vsync=vsync_mode != 0,
++                    )
++
++                    errors, _ = validate_native_report(report)
++                    self.assertEqual(errors, [])
++
++    def test_optional_pacing_configuration_rejects_invalid_values(self):
++        invalid_values = (
++            ("max_fps", True, "max_fps must be a non-negative integer"),
++            ("max_fps", 60.0, "max_fps must be a non-negative integer"),
++            ("max_fps", "60", "max_fps must be a non-negative integer"),
++            ("max_fps", -1, "max_fps must be a non-negative integer"),
++            ("vsync_mode", True, "vsync_mode must be an integer from 0 through 3"),
++            ("vsync_mode", 1.0, "vsync_mode must be an integer from 0 through 3"),
++            ("vsync_mode", "1", "vsync_mode must be an integer from 0 through 3"),
++            ("vsync_mode", -1, "vsync_mode must be an integer from 0 through 3"),
++            ("vsync_mode", 4, "vsync_mode must be an integer from 0 through 3"),
++        )
++        for key, value, expected_error in invalid_values:
++            with self.subTest(key=key, value=value):
++                report = valid_report()
++                report[key] = value
++
++                errors, _ = validate_native_report(report)
++                self.assertIn(expected_error, errors)
++
++    def test_vsync_boolean_must_match_vsync_mode(self):
++        for mode, vsync in ((0, True), (1, False), (2, 0)):
++            with self.subTest(mode=mode, vsync=vsync):
++                report = valid_report()
++                report.update(vsync_mode=mode, vsync=vsync)
++
++                errors, _ = validate_native_report(report)
++                self.assertIn("vsync must agree with vsync_mode", errors)
++
+     def test_boolean_values_are_not_accepted_as_counts_or_numbers(self):
+         report = valid_report()
+         report["version"] = True
+@@ -306,10 +349,22 @@ class NativeRunClassificationTests(unittest.TestCase):
+         self.assertTrue(summary["pacing_gate"]["pass"])
+         self.assertTrue(summary["performance_pass"])
+ 
++    def test_legacy_report_without_pacing_metadata_remains_valid_and_unknown(self):
++        report = valid_report()
++        report["vsync"] = True
++        with tempfile.TemporaryDirectory() as temp_dir:
++            report_path = write_run(Path(temp_dir), "run-1", report)
++            summary = summarize_run(report_path, SHORT_POLICY)
++
++        self.assertTrue(summary["collection_valid"])
++        self.assertTrue(summary["performance_pass"])
++        self.assertEqual(summary["pacing_configuration"], {"max_fps": None, "vsync_mode": None})
++
+     def test_campaign_requires_three_individually_passing_runs(self):
+         with tempfile.TemporaryDirectory() as temp_dir:
+             root = Path(temp_dir)
+             report = sustained_report()
++            report.update(max_fps=60, vsync_mode=1, vsync=True)
+             write_run(root, "run-1", report)
+             one_run_summary, one_run_status = summarize_directory(root, root / "one-run-summary.json")
+ 
+@@ -325,8 +380,83 @@ class NativeRunClassificationTests(unittest.TestCase):
+         self.assertEqual(three_run_summary["run_count"], 3)
+         self.assertEqual(three_run_summary["performance_pass_count"], 3)
+         self.assertTrue(three_run_summary["performance_pass"])
++        self.assertTrue(three_run_summary["pacing_configuration_consistent"])
++        self.assertTrue(three_run_summary["pacing_configuration_complete"])
+         self.assertEqual(three_run_status, 0)
+ 
++    def test_legacy_campaign_with_all_pacing_metadata_missing_stays_numeric_valid(self):
++        with tempfile.TemporaryDirectory() as temp_dir:
++            root = Path(temp_dir)
++            report = sustained_report()
++            report["vsync"] = True
++            for index in range(1, 4):
++                write_run(root, f"run-{index}", report)
++
++            summary, status = summarize_directory(root, root / "summary.json")
++
++        self.assertEqual(summary["performance_pass_count"], 3)
++        self.assertTrue(summary["performance_pass"])
++        self.assertTrue(summary["pacing_configuration_consistent"])
++        self.assertFalse(summary["pacing_configuration_complete"])
++        self.assertEqual(status, 0)
++
++    def test_campaign_rejects_consistent_but_partial_pacing_metadata(self):
++        scenarios = ("partial-cap", "partial-mode")
++        for scenario in scenarios:
++            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temp_dir:
++                root = Path(temp_dir)
++                for index in range(1, 4):
++                    report = sustained_report()
++                    report["vsync"] = True
++                    if scenario == "partial-cap":
++                        report["max_fps"] = 60
++                    else:
++                        report["vsync_mode"] = 1
++                    report_path = write_run(root, f"run-{index}", report)
++                    self.assertTrue(summarize_run(report_path, DEFAULT_POLICY)["performance_pass"])
++
++                summary, status = summarize_directory(root, root / "summary.json")
++
++            self.assertEqual(summary["performance_pass_count"], 3)
++            self.assertTrue(summary["pacing_configuration_consistent"])
++            self.assertFalse(summary["pacing_configuration_complete"])
++            self.assertFalse(summary["performance_pass"])
++            self.assertEqual(status, 1)
++
++    def test_campaign_refuses_individually_passing_runs_with_mixed_pacing_configuration(self):
++        scenarios = (
++            ("mixed-cap", [(60, 1), (60, 1), (0, 1)]),
++            ("mixed-mode", [(60, 1), (60, 1), (60, 2)]),
++            ("mixed-missing", [(60, 1), (60, 1), None]),
++        )
++        for scenario, configurations in scenarios:
++            with self.subTest(scenario=scenario), tempfile.TemporaryDirectory() as temp_dir:
++                root = Path(temp_dir)
++                for index, configuration in enumerate(configurations, start=1):
++                    report = sustained_report()
++                    if configuration is None:
++                        report["vsync"] = True
++                    else:
++                        max_fps, vsync_mode = configuration
++                        report.update(
++                            max_fps=max_fps,
++                            vsync_mode=vsync_mode,
++                            vsync=vsync_mode != 0,
++                        )
++                    report_path = write_run(root, f"run-{index}", report)
++                    self.assertTrue(summarize_run(report_path, DEFAULT_POLICY)["performance_pass"])
++
++                summary, status = summarize_directory(root, root / "summary.json")
++
++            self.assertEqual(summary["performance_pass_count"], 3)
++            self.assertFalse(summary["performance_pass"])
++            self.assertFalse(summary["pacing_configuration_consistent"])
++            self.assertIn(
++                "runs have different or mixed known/unknown FPS caps or VSync modes",
++                summary["campaign_reasons"],
++            )
++            self.assertEqual(status, 1)
++
+     def test_campaign_writes_report_and_refuses_to_overwrite(self):
+         with tempfile.TemporaryDirectory() as temp_dir:
+             root = Path(temp_dir)

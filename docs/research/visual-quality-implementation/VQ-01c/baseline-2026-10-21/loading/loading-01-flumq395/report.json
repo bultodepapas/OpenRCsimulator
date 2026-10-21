@@ -1,0 +1,72 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d3886a3c-a329-4424-bca5-011a5c63d882",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--windowed",
+    "--resolution",
+    "1280x720",
+    "--screen",
+    "0",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "60",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+    "--",
+    "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/graphics-phase1-2026-10-21/loading/loading-01.json",
+    "--cycles=2"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T15:02:40.589878+00:00",
+  "label": "loading-01",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase1-2026-10-21\\loading\\loading-01-flumq395\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase1-2026-10-21\\loading\\loading-01-flumq395\\report.json",
+  "timeout_seconds": 100.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 21,
+      "message": "Home Fly failed to create a valid flight",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd:185)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 9.906,
+  "log_bytes": 1701,
+  "log_sha256": "a87cce26a678c3c9c0141d7666027742bd1bf126f5b4c3528c093a4ddac66582"
+}

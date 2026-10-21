@@ -43,19 +43,10 @@ static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
 		if not include:
 			continue
 		var faces: PackedVector3Array = transform * mi.mesh.get_faces()
-		# Aircraft collection has no height cutoff; preserve the packed face order.
 		if min_height == -INF:
 			vertices.append_array(faces)
-			continue
-		for first in range(0, faces.size(), 3):
-			var a := faces[first]
-			var b := faces[first + 1]
-			var c := faces[first + 2]
-			if maxf(a.y, maxf(b.y, c.y)) <= min_height:
-				continue # static receivers must not recast their ground/pad polygons
-			vertices.append(a)
-			vertices.append(b)
-			vertices.append(c)
+		else:
+			append_above(vertices, faces, min_height)
 	if vertices.is_empty():
 		return {}
 	var box := AABB(vertices[0], Vector3.ZERO)
@@ -67,6 +58,27 @@ static func collect(model: Node3D, min_height: float = -INF) -> Dictionary:
 	var merged := ArrayMesh.new()
 	merged.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	return {mesh = merged, bounds = box, triangles = vertices.size() / 3}
+
+
+## Append ordered runs of accepted triangles to an independent destination.
+## Keep the scalar cutoff exactly; only the copies run in native code.
+static func append_above(vertices: PackedVector3Array, faces: PackedVector3Array,
+		min_height: float) -> int:
+	var before := vertices.size()
+	var run_start := 0
+	for first in range(0, faces.size(), 3):
+		var a := faces[first]
+		var b := faces[first + 1]
+		var c := faces[first + 2]
+		if maxf(a.y, maxf(b.y, c.y)) <= min_height:
+			if first > run_start:
+				vertices.append_array(faces.slice(run_start, first))
+			run_start = first + 3
+	if run_start == 0:
+		vertices.append_array(faces)
+	elif run_start < faces.size():
+		vertices.append_array(faces.slice(run_start))
+	return (vertices.size() - before) / 3
 
 
 static func project(point: Vector3, direction: Vector3) -> Vector2:

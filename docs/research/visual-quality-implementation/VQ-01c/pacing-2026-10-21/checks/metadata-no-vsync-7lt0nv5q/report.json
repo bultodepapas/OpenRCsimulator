@@ -1,0 +1,66 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9d93ffe2-9895-483a-bca2-4f9a941a2ffe",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\updated\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--max-fps",
+    "0",
+    "--disable-vsync",
+    "--",
+    "--scripted",
+    "--frametimes=D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/metadata-no-vsync.json",
+    "--warmup=0.1",
+    "--t=0.5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:49:31.109595+00:00",
+  "label": "metadata-no-vsync",
+  "log": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\metadata-no-vsync-7lt0nv5q\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\metadata-no-vsync-7lt0nv5q\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "frame times: p50 2.38 ms, p95 8.26 ms, p99 16.31 ms over 126 frames (complete=true) \u2192 D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/metadata-no-vsync.json"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 8,
+      "message": "4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2536)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.75,
+  "log_bytes": 718,
+  "log_sha256": "b4ac0d0158ee9d84bc5fd617fe5900356e6cb73cda9fe19309fb3b481796162c"
+}

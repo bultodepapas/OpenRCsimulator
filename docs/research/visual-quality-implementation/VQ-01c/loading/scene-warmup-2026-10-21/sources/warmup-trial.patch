@@ -1,0 +1,47 @@
+--- control/app/app_root.gd
++++ warmup/app/app_root.gd
+@@ -156,6 +156,7 @@
+ var _workshop_previous_sky_transport: Dictionary = {}
+ var _workshop_previous_world_context: Dictionary = {}
+ var _workshop_home_detached := false
++var _trial_pending_scene := ""
+ 
+ 
+ func _enter_tree() -> void:
+@@ -253,6 +254,10 @@
+ 	TranslationServer.set_locale(preferences.language)
+ 	if preferences.get("lighting_invalid", false):
+ 		_settings_note = tr("Invalid saved time-of-day settings; using legacy daylight.")
++	# Scratch experiment: one resource request, no early flight instance.
++	if Catalog.can_fly(preferences.aircraft) and not Catalog.is_rotorcraft(preferences.aircraft):
++		if ResourceLoader.load_threaded_request(FLIGHT_SCENE, "PackedScene", false) == OK:
++			_trial_pending_scene = FLIGHT_SCENE
+ 	show_home()
+ 	_start_update_check()
+ 
+@@ -744,6 +749,13 @@
+ 	if Catalog.is_rotorcraft(aircraft_id):
+ 		var helicopter_script: Script = load(route_path) as Script
+ 		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
++	if route_path == _trial_pending_scene:
++		var status := ResourceLoader.load_threaded_get_status(_trial_pending_scene)
++		print("warmup trial status at Fly: ", status)
++		var scene: PackedScene = ResourceLoader.load_threaded_get(_trial_pending_scene) as PackedScene
++		_trial_pending_scene = ""
++		if scene != null:
++			return scene.instantiate()
+ 	return load(route_path).instantiate()
+ 
+ 
+@@ -1412,6 +1424,11 @@
+ 
+ 
+ func _exit_tree() -> void:
++	if not _trial_pending_scene.is_empty():
++		var begin := Time.get_ticks_usec()
++		ResourceLoader.load_threaded_get(_trial_pending_scene)
++		_trial_pending_scene = ""
++		print("warmup trial exit drain usec: ", Time.get_ticks_usec() - begin)
+ 	# Suspended nodes are intentionally outside the tree, so the host must own their cleanup.
+ 	for entry: Dictionary in _workshop_screens:
+ 		if is_instance_valid(entry.node):

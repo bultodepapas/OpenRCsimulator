@@ -1,0 +1,68 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 1382701,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"cycle": 1,
+			"fly_first_draw_usec": 3167058,
+			"fly_ready_usec": 3042433,
+			"fly_sync_usec": 45,
+			"nodes_at_home": 777,
+			"nodes_in_flight": 1268,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 969821,
+			"return_sync_usec": 901201,
+			"tick_at_first_draw": 12
+		},
+		{
+			"cycle": 2,
+			"fly_first_draw_usec": 1637286,
+			"fly_ready_usec": 1539422,
+			"fly_sync_usec": 56,
+			"nodes_at_home": 777,
+			"nodes_in_flight": 1268,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 950716,
+			"return_sync_usec": 887036,
+			"tick_at_first_draw": 12
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 8760467,
+	"home_first_draw_from_load_usec": 4883307,
+	"home_sync_usec": 2765811,
+	"max_fps": 60,
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 308615,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1280,
+		720
+	],
+	"vsync_mode": 1
+}

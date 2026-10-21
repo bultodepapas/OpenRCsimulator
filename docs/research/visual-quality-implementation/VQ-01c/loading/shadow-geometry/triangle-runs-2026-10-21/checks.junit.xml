@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="OpenRC checked Godot invocations" tests="14" failures="0" errors="0" skipped="0" time="80.732000"><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/vq04a_capture.gd [baseline-native-captures-xt1ms5kc]" time="8.781000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=2
+
+Evidence: baseline-native-captures-xt1ms5kc/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+log:14 WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/vq04a_capture.gd [candidate-native-captures-0fq7wvk2]" time="9.500000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=2
+
+Evidence: candidate-native-captures-0fq7wvk2/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+log:14 WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/vq04a_capture.gd [candidate-native-repeat-sf8r3623]" time="9.109000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=2
+
+Evidence: candidate-native-repeat-sf8r3623/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+log:14 WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:/DEVELOPMENT/OpenRCsimulator/tools/shadows/compare_field_collection.gd [comparison-final-parse-w1dg4mav]" time="2.219000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: comparison-final-parse-w1dg4mav/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\compare_field_collection.gd [integrated-collection-1-032x9rjc]" time="6.922000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: integrated-collection-1-032x9rjc/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\compare_field_collection.gd [integrated-collection-2-hvcsg9oz]" time="6.687000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: integrated-collection-2-hvcsg9oz/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="C:\DEVELOPMENT\OpenRCsimulator\tools\shadows\compare_field_collection.gd [integrated-collection-3-svvlfda4]" time="8.015000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: integrated-collection-3-svvlfda4/report.json and engine.log
+log:4 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_field_integration.gd [test_field_integration-_sx6m3kg]" time="9.672000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_field_integration-_sx6m3kg/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_field_population_collection.gd [test_field_population_collection-a6fh8x52]" time="1.453000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_field_population_collection-a6fh8x52/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_field_projected_shadows.gd [test_field_projected_shadows-tvw_lc7z]" time="6.313000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=1
+
+Evidence: test_field_projected_shadows-tvw_lc7z/report.json and engine.log
+log:3 WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_projected_shadow.gd [test_projected_shadow-d_gqggs1]" time="5.296000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_projected_shadow-d_gqggs1/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_shadow_collection.gd [test_shadow_collection-ucj269zb]" time="0.187000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_shadow_collection-ucj269zb/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_windsock_shadow.gd [test_windsock_shadow-xrxtdjvj]" time="3.703000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_windsock_shadow-xrxtdjvj/report.json and engine.log</system-out></testcase><testcase classname="OpenRC.GodotCommand" name="res://tests/test_world_presentation_context.gd [test_world_presentation_context-7lh9_3aj]" time="2.875000"><system-out>Checked invocation completed.
+process_exit=0; complete=True; errors=0; warnings=0
+
+Evidence: test_world_presentation_context-7lh9_3aj/report.json and engine.log</system-out></testcase></testsuite>

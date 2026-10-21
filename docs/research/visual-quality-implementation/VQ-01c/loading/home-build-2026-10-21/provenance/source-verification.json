@@ -1,0 +1,25 @@
+{
+  "tracked_inputs": 3840,
+  "differences": {
+    "production": [],
+    "diagnostic_snapshot": [
+      "app/data/field_loader.gd",
+      "app/project.godot",
+      "app/render/airplane.gd",
+      "app/render/field.gd",
+      "app/render/field_projected_shadows.gd",
+      "app/render/landscape_upgrade/airfield_lighting.gd",
+      "app/render/world/world.gd",
+      "app/scenery/imported_near_grass.gd",
+      "app/scenery/scenery.gd",
+      "app/scenery/scenery_loader.gd",
+      "app/ui/home_scene.gd"
+    ]
+  },
+  "added_diagnostic_files": [
+    "app/package_loading_probe.gd",
+    "app/package_probe_host.tscn",
+    "app/phase2_loading_profile.gd"
+  ],
+  "scope": "tracked app/assets-aircraft/tools; private copied import caches uncontrolled"
+}

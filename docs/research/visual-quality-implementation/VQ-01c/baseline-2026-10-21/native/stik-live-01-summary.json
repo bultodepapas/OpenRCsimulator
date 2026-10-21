@@ -1,0 +1,48 @@
+{
+  "report": "stik-live-01.json",
+  "report_format": "openrc-frametimes v2",
+  "report_sha256": "536cb1f0d8f0dff6338102b5152fa4905a4e54340f68a364947b12993883d863",
+  "log": "stik-live-01.log",
+  "log_sha256": "0a05892e03b41d2af86daa6cfcab06dae2fa92d330c049e7d0b27a1cb325f775",
+  "engine_errors": [],
+  "collection_valid": true,
+  "collection_reasons": [],
+  "active_flight_qualifier": true,
+  "active_flight_reasons": [],
+  "duration_eligibility": {
+    "minimum_warmup_s": 10.0,
+    "minimum_sample_s": 60.0,
+    "requested_warmup_s": 10.0,
+    "requested_sample_s": 60.0,
+    "actual_warmup_s": 10.004077,
+    "eligible": true,
+    "reasons": []
+  },
+  "metrics": {
+    "frame_ms": {
+      "p50": 16.668,
+      "p95": 17.461000000000002,
+      "p99": 18.054000000000002,
+      "max": 280.46900000000005
+    },
+    "sample_wall_span_excluding_first_interval_s": 59.987342,
+    "sample_simulation_span_s": 59.787499999999966,
+    "sample_simulation_ticks": 14349,
+    "simulation_wall_ratio": 0.9966685971850523,
+    "tick_wall_ratio": 0.9966685971850529,
+    "max_frame_interval_usec": 280469,
+    "max_nonadvancing_interval_usec": 0
+  },
+  "pacing_gate": {
+    "p95_max_ms": 18.0,
+    "p95_pass": true,
+    "p99_max_ms": 25.0,
+    "p99_pass": true,
+    "simulation_wall_ratio_min": 0.99,
+    "simulation_wall_ratio_max": 1.01,
+    "simulation_wall_ratio_pass": true,
+    "pass": true
+  },
+  "performance_pass": true,
+  "hardware_acceptance": "not_claimed"
+}

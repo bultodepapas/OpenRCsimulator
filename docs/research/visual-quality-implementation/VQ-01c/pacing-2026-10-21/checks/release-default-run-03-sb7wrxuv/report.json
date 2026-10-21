@@ -1,0 +1,55 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5dd4f700-9d01-4451-a988-a0a8cda8bd30",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\release\\OpenRC Simulator.exe",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--position",
+    "80,80",
+    "--max-fps",
+    "0",
+    "--",
+    "--frametimes=D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release-default/run-03.json",
+    "--warmup=10",
+    "--t=60"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:42:02.950488+00:00",
+  "label": "release-default-run-03",
+  "log": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\release-default-run-03-sb7wrxuv\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\pacing-20261021-ffc2974d\\checks\\release-default-run-03-sb7wrxuv\\report.json",
+  "timeout_seconds": 110.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "aircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value",
+        "frame times: p50 16.67 ms, p95 17.40 ms, p99 17.79 ms over 3602 frames (complete=true) \u2192 D:/OpenRCsimulator-scratch/pacing-20261021-ffc2974d/runs/release-default/run-03.json"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 77.844,
+  "log_bytes": 593,
+  "log_sha256": "b49a015b1da70917877cb757c09cd751047f5c09b191103fd9ec4cd3e2bfb715"
+}

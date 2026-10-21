@@ -1,0 +1,186 @@
+{
+  "active_flight_qualifier_count": 3,
+  "campaign_reasons": [],
+  "collection_valid": true,
+  "collection_valid_count": 3,
+  "complete": true,
+  "duration_eligible_count": 3,
+  "failures": [],
+  "format": "openrc-native-frame-summary v1",
+  "hardware_acceptance": "not claimed; this reducer evaluates report integrity and declared software pacing gates only",
+  "input_pattern": "run-*.json with same-stem .log files",
+  "minimum_runs": 3,
+  "pacing_configuration_complete": false,
+  "pacing_configuration_consistent": true,
+  "performance_pass": true,
+  "performance_pass_count": 3,
+  "policy": {
+    "active_nonadvancing_interval_max_usec": 250000,
+    "minimum_runs": 3,
+    "minimum_sample_s": 60.0,
+    "minimum_warmup_s": 10.0,
+    "p95_max_ms": 18.0,
+    "p99_max_ms": 25.0,
+    "simulation_wall_ratio_max": 1.01,
+    "simulation_wall_ratio_min": 0.99
+  },
+  "run_count": 3,
+  "runs": [
+    {
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.001339,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-01.log",
+      "log_sha256": "26b1172ee2c01fbd768b55794cb32e267f882e82634c5ab952ca8a2c307da4ce",
+      "metrics": {
+        "frame_ms": {
+          "max": 35.958999999999996,
+          "p50": 16.668,
+          "p95": 17.586000000000002,
+          "p99": 18.178
+        },
+        "max_frame_interval_usec": 35959,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 60.00000000000003,
+        "sample_simulation_ticks": 14400,
+        "sample_wall_span_excluding_first_interval_s": 59.983584,
+        "simulation_wall_ratio": 1.000273674877447,
+        "tick_wall_ratio": 1.0002736748774466
+      },
+      "pacing_configuration": {
+        "max_fps": null,
+        "vsync_mode": null
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "pass": true,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": true
+      },
+      "performance_pass": true,
+      "report": "run-01.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "2240fdf292f3cdcbd181c25b8286c7688d570457b4d10170b981c534d2398887"
+    },
+    {
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.007316,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-02.log",
+      "log_sha256": "9a677a1ca8418e193974618ee3729ee2ea0585a5855bcaaa3c9de8e2e1633510",
+      "metrics": {
+        "frame_ms": {
+          "max": 35.256,
+          "p50": 16.668,
+          "p95": 17.378,
+          "p99": 17.782
+        },
+        "max_frame_interval_usec": 35256,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 60.03333333333333,
+        "sample_simulation_ticks": 14408,
+        "sample_wall_span_excluding_first_interval_s": 59.999778,
+        "simulation_wall_ratio": 1.0005592576248088,
+        "tick_wall_ratio": 1.0005592576248088
+      },
+      "pacing_configuration": {
+        "max_fps": null,
+        "vsync_mode": null
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "pass": true,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": true
+      },
+      "performance_pass": true,
+      "report": "run-02.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "2f9410bc52955af3583e1e6b3307b345f92ecf1608e443da7f98c23272ac8eca"
+    },
+    {
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.003536,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-03.log",
+      "log_sha256": "b49a015b1da70917877cb757c09cd751047f5c09b191103fd9ec4cd3e2bfb715",
+      "metrics": {
+        "frame_ms": {
+          "max": 33.665,
+          "p50": 16.67,
+          "p95": 17.4,
+          "p99": 17.787
+        },
+        "max_frame_interval_usec": 33665,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 60.029166666666676,
+        "sample_simulation_ticks": 14407,
+        "sample_wall_span_excluding_first_interval_s": 60.000433,
+        "simulation_wall_ratio": 1.0004788909884479,
+        "tick_wall_ratio": 1.0004788909884479
+      },
+      "pacing_configuration": {
+        "max_fps": null,
+        "vsync_mode": null
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "pass": true,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": true
+      },
+      "performance_pass": true,
+      "report": "run-03.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "fb50bef4471a1a360d5bd794890338b6855f0576b2de34ff6cfbf961853017ff"
+    }
+  ]
+}

@@ -2655,6 +2655,12 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		pid = OS.get_process_id(),
 		window = "%dx%d" % [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y],
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
+		# A CLI cap can differ from the shipped default even when VSync is enabled.
+		max_fps = Engine.max_fps,
+		vsync_mode = DisplayServer.window_get_vsync_mode(),
+		display_server = DisplayServer.get_name(),
+		screen_index = DisplayServer.window_get_current_screen(),
+		screen_refresh_hz = DisplayServer.screen_get_refresh_rate() if DisplayServer.get_name() != "headless" else -1.0,
 		aircraft_id = aircraft_id,
 		input_enabled = session.input_enabled,
 		flight_companions = companion_evidence,

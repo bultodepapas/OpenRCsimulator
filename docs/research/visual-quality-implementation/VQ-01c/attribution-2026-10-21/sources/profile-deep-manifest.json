@@ -1,0 +1,311 @@
+{
+  "format": "openrc-loading-profile-snapshot v1",
+  "created_utc": "2026-10-21T16:01:55.180529+00:00",
+  "control_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\control\\app",
+  "profile_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\profile-deep\\app",
+  "profiled_probe": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\graphics-phase2-2026-10-21\\profile-deep\\profiled_loading_probe.gd",
+  "span_meta_key": "openrc_loading_profile_spans",
+  "span_limit": 512,
+  "functions": [
+    {
+      "path": "main.gd",
+      "header": "func _ready() -> void:",
+      "name": "_ready",
+      "args": "",
+      "result_type": null,
+      "span_name": "main._ready",
+      "static": false
+    },
+    {
+      "path": "main.gd",
+      "header": "func _build_world() -> bool:",
+      "name": "_build_world",
+      "args": "",
+      "result_type": "bool",
+      "span_name": "main._build_world",
+      "static": false
+    },
+    {
+      "path": "ui/home_scene.gd",
+      "header": "func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:",
+      "name": "_init",
+      "args": "aircraft, field_path, selected_lighting, selected_night_options, selected_sky, landscape_id",
+      "result_type": null,
+      "span_name": "home_scene._init",
+      "static": false
+    },
+    {
+      "path": "ui/home_scene.gd",
+      "header": "func show_aircraft(id: String) -> bool:",
+      "name": "show_aircraft",
+      "args": "id",
+      "result_type": "bool",
+      "span_name": "home_scene.show_aircraft",
+      "static": false
+    },
+    {
+      "path": "render/world/world.gd",
+      "header": "static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:",
+      "name": "build",
+      "args": "parent, field, build_field, conditions, lighting, night_options",
+      "result_type": "Dictionary",
+      "span_name": "world.build",
+      "static": true
+    },
+    {
+      "path": "render/airplane.gd",
+      "header": "static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:",
+      "name": "build",
+      "args": "id, propeller_diameter_m, expected_presentation",
+      "result_type": "Dictionary",
+      "span_name": "airplane_builder.build",
+      "static": true
+    },
+    {
+      "path": "physics/aircraft_data.gd",
+      "header": "static func load_file(path: String) -> Dictionary:",
+      "name": "load_file",
+      "args": "path",
+      "result_type": "Dictionary",
+      "span_name": "aircraft_data.load_file",
+      "static": true
+    },
+    {
+      "path": "data/field_loader.gd",
+      "header": "static func load_from(path: String = DEFAULT_PATH) -> Dictionary:",
+      "name": "load_from",
+      "args": "path",
+      "result_type": "Dictionary",
+      "span_name": "field_loader.load_from",
+      "static": true
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func setup(path := Scenarios.AIRCRAFT, expected_id: String = \"\", frozen_data: Dictionary = {}) -> void:",
+      "name": "setup",
+      "args": "path, expected_id, frozen_data",
+      "result_type": null,
+      "span_name": "flight_session.setup",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:",
+      "name": "set_field",
+      "args": "field, table_path",
+      "result_type": "bool",
+      "span_name": "flight_session.set_field",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func set_collision_world(world: Dictionary) -> bool:",
+      "name": "set_collision_world",
+      "args": "world",
+      "result_type": "bool",
+      "span_name": "flight_session.set_collision_world",
+      "static": false
+    },
+    {
+      "path": "sim/flight_session.gd",
+      "header": "func reset(preserve_radio_readiness := false) -> void:",
+      "name": "reset",
+      "args": "preserve_radio_readiness",
+      "result_type": null,
+      "span_name": "flight_session.reset",
+      "static": false
+    },
+    {
+      "path": "render/shadow.gd",
+      "header": "static func bind_model(shadow: MeshInstance3D, model: Node3D, shape: Dictionary = {}) -> void:",
+      "name": "bind_model",
+      "args": "shadow, model, shape",
+      "result_type": null,
+      "span_name": "shadow.bind_model",
+      "static": true
+    },
+    {
+      "path": "app_root.gd",
+      "header": "func _create_flight(aircraft_id: String = \"\") -> Node:",
+      "name": "_create_flight",
+      "args": "aircraft_id",
+      "result_type": "Node",
+      "span_name": "app_root._create_flight",
+      "static": false
+    },
+    {
+      "path": "render/field.gd",
+      "header": "static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = []) -> Node3D:",
+      "name": "build",
+      "args": "field, lighting, extra_grass_exclusions",
+      "result_type": "Node3D",
+      "span_name": "field.build",
+      "static": true
+    },
+    {
+      "path": "scenery/scenery.gd",
+      "header": "static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> void:",
+      "name": "attach",
+      "args": "field_node, field, lighting, lake",
+      "result_type": null,
+      "span_name": "scenery.attach",
+      "static": true
+    },
+    {
+      "path": "scenery/scenery.gd",
+      "header": "static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, lighting: Dictionary = {}, lake: Dictionary = {}) -> Node3D:",
+      "name": "build",
+      "args": "field, scenery, opts, lighting, lake",
+      "result_type": "Node3D",
+      "span_name": "scenery.build",
+      "static": true
+    },
+    {
+      "path": "scenery/scenery_loader.gd",
+      "header": "static func load_from(path: String, field: Dictionary) -> Dictionary:",
+      "name": "load_from",
+      "args": "path, field",
+      "result_type": "Dictionary",
+      "span_name": "scenery.load_from",
+      "static": true
+    },
+    {
+      "path": "scenery/imported_near_grass.gd",
+      "header": "static func build(field: Dictionary, quality: String = \"high\", exclusions: Array = []) -> Node3D:",
+      "name": "build",
+      "args": "field, quality, exclusions",
+      "result_type": "Node3D",
+      "span_name": "near_grass.build",
+      "static": true
+    },
+    {
+      "path": "render/field_projected_shadows.gd",
+      "header": "static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) -> void:",
+      "name": "attach",
+      "args": "field_node, field, lighting",
+      "result_type": null,
+      "span_name": "field_shadows.attach",
+      "static": true
+    },
+    {
+      "path": "render/landscape_upgrade/airfield_lighting.gd",
+      "header": "static func build(field: Dictionary, field_lights: Dictionary = {}, validated_scenery: Dictionary = {}, regional := false) -> Node3D:",
+      "name": "build",
+      "args": "field, field_lights, validated_scenery, regional",
+      "result_type": "Node3D",
+      "span_name": "airfield_lighting.build",
+      "static": true
+    }
+  ],
+  "hashes": {
+    "app/app_root.gd": {
+      "control_sha256": "a96eed74b41f0549515c61888a47af2237a2bdb79dd915a4a0e627b48940374f",
+      "profile_sha256": "5ec67652b0837e87ca70efc99ad0a3961dfee1749821b50edc7c994861fab1cb",
+      "control_bytes": 108392,
+      "profile_bytes": 108778
+    },
+    "app/data/field_loader.gd": {
+      "control_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "profile_sha256": "829241376ea06c16f5b4fb545ff3258fc6057ff4e86b14e1144f9a9f48090c45",
+      "control_bytes": 60929,
+      "profile_bytes": 61313
+    },
+    "app/main.gd": {
+      "control_sha256": "f3658958fe92ebcfe69302efa6692f573a0a598534676dfcf75d896ddaa53217",
+      "profile_sha256": "0654dd0821db0da8f91117f8f66c8c31a612e6ceeedd3dc83ef5d3873f466f58",
+      "control_bytes": 148832,
+      "profile_bytes": 149374
+    },
+    "app/phase2_loading_profile.gd": {
+      "control_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "profile_sha256": "505f982da9a13e4a449c8d1d7183b484dc420be1e6833dac66595f38eddee2c5",
+      "control_bytes": 0,
+      "profile_bytes": 386
+    },
+    "app/physics/aircraft_data.gd": {
+      "control_sha256": "8e49ea5ad704eba76c79dcd892053cefbe96f821079b14c560c5caa50b93c7dd",
+      "profile_sha256": "3b4473f92f72c44039e5a5450ff54d7e5e679b1311776f5abcae78c0a244b361",
+      "control_bytes": 141590,
+      "profile_bytes": 141966
+    },
+    "app/project.godot": {
+      "control_sha256": "60596306ecfbd528abdb9a7aaa8c531b3ba6fda2d3f2793a848f83a43478daf1",
+      "profile_sha256": "3866da9ee079a2d2795b8c3637c4ce9416b8919055c83a48f3f2d3a015aacd99",
+      "control_bytes": 2257,
+      "profile_bytes": 2198
+    },
+    "app/render/airplane.gd": {
+      "control_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+      "profile_sha256": "655d7aefd69bc0226e0a2ba61d2246671d7898fb2dac5bcad118ca6301cb7644",
+      "control_bytes": 11328,
+      "profile_bytes": 11808
+    },
+    "app/render/field.gd": {
+      "control_sha256": "a95ca5751227f48d38b4c3f0d608011a5a58478ac720e239e2534c548eba149d",
+      "profile_sha256": "11426c92896c0b42d8c26b5e728c48d93082b0fd69774407440675b4278f805a",
+      "control_bytes": 11400,
+      "profile_bytes": 11851
+    },
+    "app/render/field_projected_shadows.gd": {
+      "control_sha256": "5a7115d0e62853b96e1582f4b0b6eed785d074652ba576f631d7277501b68d50",
+      "profile_sha256": "00751decc84c2a66c98b730fd9183448a05b7300fa8ba37f3b7fb86e291e7311",
+      "control_bytes": 11196,
+      "profile_bytes": 11572
+    },
+    "app/render/landscape_upgrade/airfield_lighting.gd": {
+      "control_sha256": "6c77822f8e85ceede8f7710dcbcceb04cb6c5475893f80ce0774c8c483d1132d",
+      "profile_sha256": "5764207ea0da4d5815ce20ac82f615d8ae0dbc367f96b0b142c801cfea8fef42",
+      "control_bytes": 36336,
+      "profile_bytes": 36831
+    },
+    "app/render/shadow.gd": {
+      "control_sha256": "bb469bfb2bfa73d901ad2bc459691ae7f2730478f75ccef8a3176204bdf13313",
+      "profile_sha256": "9ea001393152a9202c9f9ce4b2bc0112cc9af0ffee3ac5fb993744473366d816",
+      "control_bytes": 6889,
+      "profile_bytes": 7265
+    },
+    "app/render/world/world.gd": {
+      "control_sha256": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
+      "profile_sha256": "bb8062183b47cf408d5137870bb1991a5e8799b16338aa4456ec9b1bda709aa3",
+      "control_bytes": 47899,
+      "profile_bytes": 48448
+    },
+    "app/scenery/imported_near_grass.gd": {
+      "control_sha256": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+      "profile_sha256": "c07ffe23629ff08fd59553a1fcf5344ef183ef47245f42741ab6f0cb6049ae08",
+      "control_bytes": 11569,
+      "profile_bytes": 11993
+    },
+    "app/scenery/scenery.gd": {
+      "control_sha256": "a40ffb1932aa8cb61483e111412b9f807b1b3ef2ee74372c95464eb98431292c",
+      "profile_sha256": "c408d3dbff92e2a684b1a361769aed5ffc21d8eb660642d27e307809d530efed",
+      "control_bytes": 37408,
+      "profile_bytes": 38215
+    },
+    "app/scenery/scenery_loader.gd": {
+      "control_sha256": "7b07f2ecc47ffed2ef4d1ce7ca552f58bb14625666df30c6105ca017a682f541",
+      "profile_sha256": "bfbf28b98606f998c9efac907b7834c3f0d9f4357d5eac0dc98b3e0cdfc8160c",
+      "control_bytes": 18202,
+      "profile_bytes": 18598
+    },
+    "app/sim/flight_session.gd": {
+      "control_sha256": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+      "profile_sha256": "a9b3f04230e78dc92ef8ccb1a165e6b2b0076d7d1c4ffdc1316b9f166f1ab0cf",
+      "control_bytes": 235678,
+      "profile_bytes": 237003
+    },
+    "app/ui/home_scene.gd": {
+      "control_sha256": "aee9a49c726807d77b4f22d336711eb1d4f166a3aba6cff6726807a44490cc16",
+      "profile_sha256": "0dfc4071b31ee4542b01e0d2fac62f030826aba599bb81105d4c6b82cefb3f3a",
+      "control_bytes": 11478,
+      "profile_bytes": 12371
+    },
+    "profiled_loading_probe.gd": {
+      "control_sha256": "6021a86267271bab9c720c454a13f1686d6cba11d06d00cb201c9bcc467acc97",
+      "profile_sha256": "f37654552dde4f7c7f7dfb29fe858dbb3e64ccd13d9c5fc0788681fd3008b4f1",
+      "control_bytes": 9134,
+      "profile_bytes": 9271
+    }
+  },
+  "note": "Function bodies and call order are preserved; each selected call is timed by a wrapper that records after return."
+}

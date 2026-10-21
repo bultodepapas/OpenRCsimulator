@@ -54,8 +54,14 @@ Create the parent directory first; output and its `.settings.cfg` sidecar must n
 Optional `--aircraft=<id>` selects a flyable fixed-wing aircraft. Cycles are bounded to
 1–50. Keep logs and inspect errors even on exit zero. Apply an external timeout for
 unattended runs. A fresh process is not a cold OS/import/shader cache. Engine elapsed
-time excludes parent-process launch overhead; synchronous build and first draw are
-separate measurements. Three cycles do not establish the DT-12 soak or package gate.
+time excludes parent-process launch overhead. `fly_sync_usec` measures only dispatch
+of `pressed.emit()`; Home now acknowledges Fly before its deferred handoff.
+`fly_ready_usec` includes that handoff and validated flight creation, while
+`fly_first_draw_usec` additionally waits for post-draw. The probe allows at most four
+process frames for the handoff and rejects cancellation, retry-ready rejection,
+startup errors and unflyable sessions. An external timeout bounds blocking construction.
+A paused first draw is not interactive readiness. Three cycles do not establish the
+DT-12 soak or package gate.
 
 After the last sample, the probe frees its scene and observes weak references to the
 latest playback of each audio player. It allows up to one second for the mixer to
@@ -66,7 +72,7 @@ free the owned scene and remove successfully created settings; existing files ar
 removed. This distinguishes asynchronous audio retirement from persistent retention;
 it is not a general memory/RSS or production quit guarantee.
 
-Run its isolated success/failure/retention and file-preservation checks with:
+Run its isolated handoff, success/failure/retention and file-preservation checks with:
 
 ```powershell
 python research/performance/test_loading_probe.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe
@@ -241,9 +247,24 @@ Use the existing app logger, with one foreground flight at a time:
 
 ```powershell
 & .tools/Godot_v4.7.2-stable_win64_console.exe --path app `
-  --audio-driver Dummy --resolution 1280x720 --max-fps 60 -- `
+  --audio-driver Dummy --resolution 1280x720 --max-fps 0 -- `
   --frametimes=C:/absolute/new/run-1.json --warmup=10 --t=60
 ```
+
+This control uses the shipped uncapped engine setting with normal VSync. Retain
+`--max-fps 60` as a separately labelled capped comparison when reproducing earlier
+campaigns; never pool the two. The [2026-10-21 release comparison](../../docs/research/visual-quality-implementation/VQ-01c/pacing-2026-10-21/README.md)
+shows why the distinction matters on this host. The diagnostic example above
+deliberately uses the historical capped condition.
+
+New frame reports record `max_fps`, `vsync_mode`, display server, screen index and
+reported refresh rate at collection end. These are settings/observations, not
+continuous configuration tracking or physical-display qualification. A headless
+VSync enum does not imply presentation; its screen/refresh values are -1.
+The reducer rejects mixed caps/modes, mixed known/unknown configuration and
+partially specified configuration at campaign level. Historical reports lacking
+both fields retain numeric compatibility with `pacing_configuration_complete=false`;
+unknown never means uncapped. Keep their checked command lines as separate evidence.
 
 Retain combined stdout/stderr as `run-1.log`, repeat with new filenames, and record
 display refresh, VSync, power plan, driver and source/package identity. Dummy audio

@@ -64,6 +64,9 @@ var menu_audio: Node
 var _popup_realign_pending := false
 var display_preferences: DisplayPreferences
 var _display_window_mode := "windowed"
+var _display_resolution := "auto"
+var _automatic_window_size := Vector2i(1280, 720)
+var _display_preview_checkpoint: Dictionary = {}
 var _windowed_size := Vector2i(1280, 720)
 var _windowed_position := Vector2i.ZERO
 var _windowed_borderless := false
@@ -216,6 +219,7 @@ func _ready() -> void:
 		return
 	has_home = true
 	var ui_window: Window = get_tree().root
+	_automatic_window_size = ui_window.size
 	var initial_ui_scale: Dictionary = UiScale.apply(ui_window)
 	UiTheme.compact_layout = bool(initial_ui_scale.compact)
 	ui_window.size_changed.connect(_on_ui_window_resized)
@@ -750,8 +754,16 @@ func _create_flight(aircraft_id: String = "") -> Node:
 func open_settings(from: Control = null) -> void:
 	if not has_home or not (screens.is_top("home") or screens.is_top("pause")):
 		return
+	_automatic_window_size = get_window().size if _display_window_mode == "windowed" else _windowed_size
 	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
 	settings.presentation_changed.connect(_apply_presentation)
+	var window_checkpoint := _capture_display_window_state()
+	_display_preview_checkpoint = window_checkpoint
+	settings.presentation_committed.connect(func() -> void:
+		_automatic_window_size = get_window().size if _display_window_mode == "windowed" else _windowed_size
+		window_checkpoint.clear()
+		window_checkpoint.merge(_capture_display_window_state()))
+	settings.presentation_reverted.connect(func() -> void: _restore_display_window_state(window_checkpoint))
 	settings.language_changed.connect(set_language)
 	settings.sound_preview_requested.connect(func() -> void: menu_audio.play(&"accept"))
 	settings.closed.connect(func() -> void:
@@ -760,6 +772,46 @@ func open_settings(from: Control = null) -> void:
 		if route == "controls": open_controls(opener)
 		elif route == "about": open_help(opener))
 	screens.push("settings", settings, from)
+
+
+func _capture_display_window_state() -> Dictionary:
+	if DisplayServer.get_name() == "headless":
+		return {}
+	var window := get_window()
+	return {"mode": window.mode, "borderless": window.borderless, "size": window.size,
+		"position": window.position, "windowed_size": _windowed_size,
+		"windowed_position": _windowed_position, "windowed_borderless": _windowed_borderless,
+		"windowed_mode": _windowed_mode}
+
+
+func _restore_display_window_state(state: Dictionary) -> void:
+	if state.is_empty() or DisplayServer.get_name() == "headless":
+		return
+	var window := get_window()
+	# Geometry is a transaction too: automatic/manual sizing and maximized windows
+	# cannot be reconstructed from the saved resolution label alone.
+	if window.mode != int(state.mode) or window.borderless != bool(state.borderless) \
+			or window.size != Vector2i(state.size) or window.position != Vector2i(state.position):
+		window.mode = Window.MODE_WINDOWED
+		window.borderless = bool(state.borderless)
+		window.size = state.get("normal_size", state.size)
+		window.position = state.get("normal_position", state.position)
+		window.mode = int(state.mode) as Window.Mode
+	_windowed_size = state.windowed_size
+	_windowed_position = state.windowed_position
+	_windowed_borderless = state.windowed_borderless
+	_windowed_mode = state.windowed_mode
+
+
+func _leave_maximized_preview(window: Window) -> void:
+	if window.mode != Window.MODE_MAXIMIZED:
+		return
+	# Let the OS restore its normal rectangle before replacing it with a preview.
+	window.mode = Window.MODE_WINDOWED
+	if int(_display_preview_checkpoint.get("mode", -1)) == Window.MODE_MAXIMIZED \
+			and not _display_preview_checkpoint.has("normal_size"):
+		_display_preview_checkpoint.normal_size = DisplayServer.window_get_size()
+		_display_preview_checkpoint.normal_position = DisplayServer.window_get_position()
 
 
 func _menu_feedback(cue: StringName) -> void:
@@ -788,25 +840,56 @@ func _apply_presentation(config: Dictionary) -> void:
 	UiTheme.reduced_motion = bool(config.reduced_motion)
 	if theme_changed:
 		_refresh_screen_themes(self)
+	# These settings affect presentation only, including an already paused flight.
+	Engine.max_fps = int(config.get("max_fps", 0))
+	get_viewport().msaa_3d = int(config.get("msaa_3d", 2)) as Viewport.MSAA
+	if DisplayServer.get_name() == "headless":
+		return
+	var requested_vsync := DisplayServer.VSYNC_ENABLED if config.get("vsync_mode", "enabled") == "enabled" else DisplayServer.VSYNC_DISABLED
+	if DisplayServer.window_get_vsync_mode() != requested_vsync:
+		DisplayServer.window_set_vsync_mode(requested_vsync)
 	var requested: String = config.window_mode
-	if requested == _display_window_mode or DisplayServer.get_name() == "headless": return
+	var resolution: String = config.get("window_resolution", "auto")
+	var resolution_changed := resolution != _display_resolution
 	var window := get_window()
-	if requested == "borderless":
-		_windowed_size = DisplayServer.window_get_size()
-		_windowed_position = DisplayServer.window_get_position()
-		_windowed_borderless = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
-		_windowed_mode = DisplayServer.window_get_mode()
-		# Use the Window state machine: manually sizing a borderless window to the
-		# monitor can promote it to exclusive fullscreen behind Window's cached mode.
-		window.mode = Window.MODE_FULLSCREEN
-	else:
+	if requested != _display_window_mode:
+		if requested == "borderless":
+			_windowed_size = DisplayServer.window_get_size()
+			_windowed_position = DisplayServer.window_get_position()
+			_windowed_borderless = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
+			_windowed_mode = DisplayServer.window_get_mode()
+			_leave_maximized_preview(window)
+			if _windowed_mode == DisplayServer.WINDOW_MODE_MAXIMIZED:
+				_windowed_size = DisplayServer.window_get_size()
+				_windowed_position = DisplayServer.window_get_position()
+			window.mode = Window.MODE_FULLSCREEN
+		else:
+			window.mode = Window.MODE_WINDOWED
+			window.borderless = _windowed_borderless
+			window.size = _windowed_size
+			window.position = _windowed_position
+			if _windowed_mode != DisplayServer.WINDOW_MODE_WINDOWED and not resolution_changed:
+				window.mode = _windowed_mode as Window.Mode
+	if resolution_changed and requested == "windowed":
+		_leave_maximized_preview(window)
 		window.mode = Window.MODE_WINDOWED
-		window.borderless = _windowed_borderless
-		window.size = _windowed_size
-		window.position = _windowed_position
-		if _windowed_mode != DisplayServer.WINDOW_MODE_WINDOWED:
-			window.mode = _windowed_mode as Window.Mode
+		var target := _automatic_window_size
+		if resolution != "auto":
+			var dimensions := resolution.split("x")
+			target = Vector2i(int(dimensions[0]), int(dimensions[1]))
+		var usable := DisplayServer.screen_get_usable_rect(window.current_screen)
+		# Keep title bar and recovery controls reachable after monitor changes.
+		if usable.size.x > 0 and usable.size.y > 0:
+			var available := Vector2i(maxi(320, usable.size.x - 32), maxi(240, usable.size.y - 64))
+			var fit := minf(1.0, minf(float(available.x) / target.x, float(available.y) / target.y))
+			target = Vector2i(Vector2(target) * fit)
+		window.size = target
+		if usable.size.x > 0 and usable.size.y > 0:
+			window.position = usable.position + (usable.size - target) / 2
 	_display_window_mode = requested
+	# A window-size request is deferred while desktop fullscreen owns the size.
+	if requested == "windowed":
+		_display_resolution = resolution
 
 
 func _refresh_screen_themes(node: Node) -> void:

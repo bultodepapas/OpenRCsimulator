@@ -2,6 +2,8 @@
 
 2026-10-14 · Revision 17 · Step prefix: **VQ-**
 
+2026-10-21 execution update: [VQ-04a-F4 is implemented](research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f4-faster-cloth-construction): local cloth-grid reuse reduces windsock construction 73.3→23.2 ms, preserving exact mesh/state output and all 18 native images. Five active release pairs improve return-Home + second-Fly by 5.1% median paired; first-path improvement is 1.6%. Initial loading goals, native pacing, physical-display/readability, ordinary-release shutdown and long lifecycle/platform gates remain open. Next: frame-pacing repair on the updated runtime, then motion-reference refresh.
+
 Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md) preserves vertices, normals, indices and bounds in 40 native pairs while reducing construction median about 20%. All 94 focused headless assertions pass. The native combined horizon/atmosphere test has texture shutdown errors reproduced on the reference; no teardown fix is adopted. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) retains separate evidence. Appearance, full-loading non-regression and native acceptance remain open.
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
@@ -11,6 +13,8 @@ Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality
 **Owns:** visual-quality coordination and its VQ steps. Landscape implementation lives in [LANDSCAPE-PLAN](LANDSCAPE-PLAN.md); field composition and time of day live in [FIELD-WORLD-PLAN](FIELD-WORLD-PLAN.md) and [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md). Aircraft appearance stays with each model team.
 
 The [global implementation sequence](plans/global-performance-visual-quality.md#3-order-dependencies-and-reviewable-deliveries) selects the current performance/visual delivery and resolves its research ideas. VQ-01c measurement tools and the read-only VQ-02a inventory foundation are implemented; their acceptance gaps remain below. VQ-07 and additional postprocessing remain outside that delivery.
+
+The [advanced graphics plan](plans/advanced-graphics.md), added 2026-10-21, owns the proposed VQ-07a…h comparison steps and conditional High-profile decision. Its [source audit](research/advanced-graphics-2026-10-21/README.md) preserves the supplied research and independent checks. It does not expand the current Compatibility delivery or change the parent-step status below.
 
 ## Current implementation
 
@@ -35,7 +39,7 @@ VQ-04a-F2 adds a moving windsock silhouette in one 512² map, sharing the visibl
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |
 | VQ-06a/b | Apply renderer quality settings and expose saved presets through the menu. | Open with the UI-22…24 theme/display/Settings work; include repeated apply, invalid settings, restore and frame-time evidence. |
 | VQ-06c | Integrate the selected changes and qualify the exact packaged visual/performance slice with DT/L/FW/CAM. | Planned after selected probe outcomes and qualified settings; does not close unavailable native/pilot gates or the whole DT program. |
-| VQ-07 | Compare Forward+ in an isolated build. | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
+| VQ-07 | Compare Forward+ in an isolated build; [VQ-07a…h execution plan](plans/advanced-graphics.md#4-vq-07-isolated-renderer-comparison). | Open; no renderer migration or Ultra preset until colour, shaders, export and recovery are measured. |
 
 ## Evidence and acceptance
 

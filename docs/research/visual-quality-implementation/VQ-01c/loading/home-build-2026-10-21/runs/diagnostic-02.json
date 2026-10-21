@@ -1,0 +1,1041 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 690690,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"construction_spans": [
+		{
+			"detail": {},
+			"end_usec": 3399767,
+			"name": "field_loader.load_from",
+			"start_usec": 3390574
+		},
+		{
+			"detail": {},
+			"end_usec": 3478478,
+			"name": "world.before_field",
+			"start_usec": 3400138
+		},
+		{
+			"detail": {},
+			"end_usec": 3619282,
+			"name": "field.ground",
+			"start_usec": 3478498
+		},
+		{
+			"detail": {},
+			"end_usec": 3809363,
+			"name": "field.cues",
+			"start_usec": 3619293
+		},
+		{
+			"detail": {},
+			"end_usec": 3818450,
+			"name": "field_loader.load_from",
+			"start_usec": 3809411
+		},
+		{
+			"detail": {},
+			"end_usec": 3820355,
+			"name": "field.lake_resolution",
+			"start_usec": 3809371
+		},
+		{
+			"detail": {},
+			"end_usec": 3829241,
+			"name": "field_loader.load_from",
+			"start_usec": 3820396
+		},
+		{
+			"detail": {},
+			"end_usec": 3854240,
+			"name": "scenery.load_from",
+			"start_usec": 3840700
+		},
+		{
+			"detail": {},
+			"end_usec": 4804740,
+			"name": "field_loader.load_from",
+			"start_usec": 4796243
+		},
+		{
+			"detail": {},
+			"end_usec": 4815675,
+			"name": "scenery.load_from",
+			"start_usec": 4804749
+		},
+		{
+			"detail": {
+				"airfield_detail_batches": 5,
+				"airfield_detail_instances": 8,
+				"airfield_detail_triangles": 4482,
+				"botanical_batches": 14,
+				"botanical_plants": 285,
+				"botanical_triangles": 89655,
+				"build_ms": 1076.772,
+				"cells": 60,
+				"fleet": 13,
+				"fleet_batch_surfaces": 179,
+				"fleet_batches": 8,
+				"fleet_surfaces": 282,
+				"fleet_triangles": 273421,
+				"flowers": 0,
+				"instances": 170,
+				"motion": 5,
+				"moving_people": 7,
+				"pit_shelter_surfaces": 2,
+				"population": 24,
+				"population_triangles": 371573,
+				"quality": "high",
+				"shadows": 95,
+				"skipped": 0,
+				"theme": "temperate",
+				"timing_ms": {
+					"airfield_detail": 3.962,
+					"botanicals": 116.065,
+					"cell_meshes": 38.46,
+					"fence": 23.889,
+					"fleet": 125.68,
+					"hedge": 9.498,
+					"instances": 112.877,
+					"meshes": 87.369,
+					"patch": 41.522,
+					"population": 76.172,
+					"shelter_material": 45.303,
+					"shelter_meshes": 2.096,
+					"track": 1.129,
+					"vegetation": 276.661,
+					"woodland_edges": 47.417
+				},
+				"vegetation_instances": 42,
+				"vegetation_triangles": 101167,
+				"woodland_edge_batches": 5,
+				"woodland_edge_plants": 220,
+				"woodland_edge_triangles": 472
+			},
+			"end_usec": 4936295,
+			"name": "scenery.build",
+			"start_usec": 3854248
+		},
+		{
+			"detail": {},
+			"end_usec": 4936470,
+			"name": "scenery.attach",
+			"start_usec": 3820363
+		},
+		{
+			"detail": {},
+			"end_usec": 4936475,
+			"name": "field.scenery",
+			"start_usec": 3820361
+		},
+		{
+			"detail": {},
+			"end_usec": 5011204,
+			"name": "field.lake_attach",
+			"start_usec": 4936477
+		},
+		{
+			"detail": {},
+			"end_usec": 5038095,
+			"name": "near_grass.build",
+			"start_usec": 5013205
+		},
+		{
+			"detail": {},
+			"end_usec": 5038127,
+			"name": "field.grass",
+			"start_usec": 5011219
+		},
+		{
+			"detail": {},
+			"end_usec": 5104081,
+			"name": "field.landscape",
+			"start_usec": 5038128
+		},
+		{
+			"detail": {},
+			"end_usec": 5238442,
+			"name": "field_shadows.attach",
+			"start_usec": 5104091
+		},
+		{
+			"detail": {},
+			"end_usec": 5238450,
+			"name": "field.finalize",
+			"start_usec": 5104088
+		},
+		{
+			"detail": {},
+			"end_usec": 5238465,
+			"name": "field.build",
+			"start_usec": 3478496
+		},
+		{
+			"detail": {
+				"field_build_ms": 1759.987
+			},
+			"end_usec": 5238473,
+			"name": "world.field_callback",
+			"start_usec": 3478485
+		},
+		{
+			"detail": {},
+			"end_usec": 5269621,
+			"name": "scenery.load_from",
+			"start_usec": 5257864
+		},
+		{
+			"detail": {},
+			"end_usec": 5364542,
+			"name": "airfield_lighting.build",
+			"start_usec": 5275586
+		},
+		{
+			"detail": {
+				"field_build_ms": 1759.987
+			},
+			"end_usec": 5391456,
+			"name": "world.build",
+			"start_usec": 3400136
+		},
+		{
+			"detail": {},
+			"end_usec": 5746227,
+			"name": "airplane_builder.build",
+			"start_usec": 5402987
+		},
+		{
+			"detail": {},
+			"end_usec": 5843598,
+			"name": "home_scene.show_aircraft",
+			"start_usec": 5402982
+		},
+		{
+			"detail": {},
+			"end_usec": 5843634,
+			"name": "home_scene._init",
+			"start_usec": 3390543
+		},
+		{
+			"detail": {},
+			"end_usec": 7412613,
+			"name": "field_loader.load_from",
+			"start_usec": 7403435
+		},
+		{
+			"detail": {},
+			"end_usec": 7525461,
+			"name": "airplane_builder.build",
+			"start_usec": 7412692
+		},
+		{
+			"detail": {},
+			"end_usec": 7535445,
+			"name": "world.before_field",
+			"start_usec": 7525695
+		},
+		{
+			"detail": {},
+			"end_usec": 7572865,
+			"name": "field.ground",
+			"start_usec": 7535460
+		},
+		{
+			"detail": {},
+			"end_usec": 7682778,
+			"name": "field.cues",
+			"start_usec": 7572871
+		},
+		{
+			"detail": {},
+			"end_usec": 7684315,
+			"name": "field.lake_resolution",
+			"start_usec": 7682783
+		},
+		{
+			"detail": {},
+			"end_usec": 7701216,
+			"name": "scenery.load_from",
+			"start_usec": 7689968
+		},
+		{
+			"detail": {
+				"airfield_detail_batches": 5,
+				"airfield_detail_instances": 8,
+				"airfield_detail_triangles": 4482,
+				"botanical_batches": 14,
+				"botanical_plants": 285,
+				"botanical_triangles": 89655,
+				"build_ms": 166.242,
+				"cells": 60,
+				"fleet": 13,
+				"fleet_batch_surfaces": 179,
+				"fleet_batches": 8,
+				"fleet_surfaces": 282,
+				"fleet_triangles": 273421,
+				"flowers": 0,
+				"instances": 170,
+				"motion": 5,
+				"moving_people": 7,
+				"pit_shelter_surfaces": 2,
+				"population": 24,
+				"population_triangles": 371573,
+				"quality": "high",
+				"shadows": 95,
+				"skipped": 0,
+				"theme": "temperate",
+				"timing_ms": {
+					"airfield_detail": 0.551,
+					"botanicals": 23.479,
+					"cell_meshes": 37.147,
+					"fence": 22.922,
+					"fleet": 4.164,
+					"hedge": 4.308,
+					"instances": 62.823,
+					"meshes": 40.348,
+					"patch": 0.069,
+					"population": 0.502,
+					"shelter_material": 0.056,
+					"shelter_meshes": 2.202,
+					"track": 1.092,
+					"vegetation": 1.442,
+					"woodland_edges": 3.801
+				},
+				"vegetation_instances": 42,
+				"vegetation_triangles": 101167,
+				"woodland_edge_batches": 5,
+				"woodland_edge_plants": 220,
+				"woodland_edge_triangles": 472
+			},
+			"end_usec": 7870712,
+			"name": "scenery.build",
+			"start_usec": 7701220
+		},
+		{
+			"detail": {},
+			"end_usec": 7870881,
+			"name": "scenery.attach",
+			"start_usec": 7684320
+		},
+		{
+			"detail": {},
+			"end_usec": 7870889,
+			"name": "field.scenery",
+			"start_usec": 7684318
+		},
+		{
+			"detail": {},
+			"end_usec": 7906903,
+			"name": "field.lake_attach",
+			"start_usec": 7870890
+		},
+		{
+			"detail": {},
+			"end_usec": 7911700,
+			"name": "near_grass.build",
+			"start_usec": 7907468
+		},
+		{
+			"detail": {},
+			"end_usec": 7911711,
+			"name": "field.grass",
+			"start_usec": 7906913
+		},
+		{
+			"detail": {},
+			"end_usec": 7941377,
+			"name": "field.landscape",
+			"start_usec": 7911712
+		},
+		{
+			"detail": {},
+			"end_usec": 8043568,
+			"name": "field_shadows.attach",
+			"start_usec": 7941384
+		},
+		{
+			"detail": {},
+			"end_usec": 8043578,
+			"name": "field.finalize",
+			"start_usec": 7941382
+		},
+		{
+			"detail": {},
+			"end_usec": 8043592,
+			"name": "field.build",
+			"start_usec": 7535459
+		},
+		{
+			"detail": {
+				"field_build_ms": 508.533
+			},
+			"end_usec": 8043985,
+			"name": "world.field_callback",
+			"start_usec": 7535452
+		},
+		{
+			"detail": {},
+			"end_usec": 8062205,
+			"name": "scenery.load_from",
+			"start_usec": 8051044
+		},
+		{
+			"detail": {},
+			"end_usec": 8084535,
+			"name": "airfield_lighting.build",
+			"start_usec": 8067726
+		},
+		{
+			"detail": {
+				"field_build_ms": 508.533
+			},
+			"end_usec": 8088597,
+			"name": "world.build",
+			"start_usec": 7525694
+		},
+		{
+			"detail": {},
+			"end_usec": 8253918,
+			"name": "scenery.load_from",
+			"start_usec": 8242874
+		},
+		{
+			"detail": {},
+			"end_usec": 8959942,
+			"name": "field_loader.load_from",
+			"start_usec": 8950975
+		},
+		{
+			"detail": {},
+			"end_usec": 8970123,
+			"name": "world.before_field",
+			"start_usec": 8960277
+		},
+		{
+			"detail": {},
+			"end_usec": 9007483,
+			"name": "field.ground",
+			"start_usec": 8970133
+		},
+		{
+			"detail": {},
+			"end_usec": 9115459,
+			"name": "field.cues",
+			"start_usec": 9007491
+		},
+		{
+			"detail": {},
+			"end_usec": 9116991,
+			"name": "field.lake_resolution",
+			"start_usec": 9115465
+		},
+		{
+			"detail": {},
+			"end_usec": 9133631,
+			"name": "scenery.load_from",
+			"start_usec": 9122582
+		},
+		{
+			"detail": {
+				"airfield_detail_batches": 5,
+				"airfield_detail_instances": 8,
+				"airfield_detail_triangles": 4482,
+				"botanical_batches": 14,
+				"botanical_plants": 285,
+				"botanical_triangles": 89655,
+				"build_ms": 161.142,
+				"cells": 60,
+				"fleet": 13,
+				"fleet_batch_surfaces": 179,
+				"fleet_batches": 8,
+				"fleet_surfaces": 282,
+				"fleet_triangles": 273421,
+				"flowers": 0,
+				"instances": 170,
+				"motion": 5,
+				"moving_people": 7,
+				"pit_shelter_surfaces": 2,
+				"population": 24,
+				"population_triangles": 371573,
+				"quality": "high",
+				"shadows": 95,
+				"skipped": 0,
+				"theme": "temperate",
+				"timing_ms": {
+					"airfield_detail": 0.535,
+					"botanicals": 23.076,
+					"cell_meshes": 34.168,
+					"fence": 22.544,
+					"fleet": 4.262,
+					"hedge": 4.363,
+					"instances": 62.013,
+					"meshes": 37.041,
+					"patch": 0.079,
+					"population": 0.449,
+					"shelter_material": 0.053,
+					"shelter_meshes": 1.995,
+					"track": 1.106,
+					"vegetation": 1.215,
+					"woodland_edges": 3.73
+				},
+				"vegetation_instances": 42,
+				"vegetation_triangles": 101167,
+				"woodland_edge_batches": 5,
+				"woodland_edge_plants": 220,
+				"woodland_edge_triangles": 472
+			},
+			"end_usec": 9298372,
+			"name": "scenery.build",
+			"start_usec": 9133636
+		},
+		{
+			"detail": {},
+			"end_usec": 9298540,
+			"name": "scenery.attach",
+			"start_usec": 9116995
+		},
+		{
+			"detail": {},
+			"end_usec": 9298545,
+			"name": "field.scenery",
+			"start_usec": 9116994
+		},
+		{
+			"detail": {},
+			"end_usec": 9333677,
+			"name": "field.lake_attach",
+			"start_usec": 9298547
+		},
+		{
+			"detail": {},
+			"end_usec": 9338446,
+			"name": "near_grass.build",
+			"start_usec": 9334162
+		},
+		{
+			"detail": {},
+			"end_usec": 9338462,
+			"name": "field.grass",
+			"start_usec": 9333685
+		},
+		{
+			"detail": {},
+			"end_usec": 9368801,
+			"name": "field.landscape",
+			"start_usec": 9338464
+		},
+		{
+			"detail": {},
+			"end_usec": 9463211,
+			"name": "field_shadows.attach",
+			"start_usec": 9368806
+		},
+		{
+			"detail": {},
+			"end_usec": 9463220,
+			"name": "field.finalize",
+			"start_usec": 9368805
+		},
+		{
+			"detail": {},
+			"end_usec": 9463232,
+			"name": "field.build",
+			"start_usec": 8970132
+		},
+		{
+			"detail": {
+				"field_build_ms": 493.113
+			},
+			"end_usec": 9463239,
+			"name": "world.field_callback",
+			"start_usec": 8970126
+		},
+		{
+			"detail": {},
+			"end_usec": 9482342,
+			"name": "scenery.load_from",
+			"start_usec": 9471518
+		},
+		{
+			"detail": {},
+			"end_usec": 9503381,
+			"name": "airfield_lighting.build",
+			"start_usec": 9487871
+		},
+		{
+			"detail": {
+				"field_build_ms": 493.113
+			},
+			"end_usec": 9506685,
+			"name": "world.build",
+			"start_usec": 8960276
+		},
+		{
+			"detail": {},
+			"end_usec": 9610709,
+			"name": "airplane_builder.build",
+			"start_usec": 9508327
+		},
+		{
+			"detail": {},
+			"end_usec": 9700758,
+			"name": "home_scene.show_aircraft",
+			"start_usec": 9508323
+		},
+		{
+			"detail": {},
+			"end_usec": 9700788,
+			"name": "home_scene._init",
+			"start_usec": 8950943
+		},
+		{
+			"detail": {},
+			"end_usec": 9992013,
+			"name": "field_loader.load_from",
+			"start_usec": 9983080
+		},
+		{
+			"detail": {},
+			"end_usec": 10097594,
+			"name": "airplane_builder.build",
+			"start_usec": 9992054
+		},
+		{
+			"detail": {},
+			"end_usec": 10107154,
+			"name": "world.before_field",
+			"start_usec": 10097839
+		},
+		{
+			"detail": {},
+			"end_usec": 10143606,
+			"name": "field.ground",
+			"start_usec": 10107165
+		},
+		{
+			"detail": {},
+			"end_usec": 10248177,
+			"name": "field.cues",
+			"start_usec": 10143613
+		},
+		{
+			"detail": {},
+			"end_usec": 10249580,
+			"name": "field.lake_resolution",
+			"start_usec": 10248183
+		},
+		{
+			"detail": {},
+			"end_usec": 10265688,
+			"name": "scenery.load_from",
+			"start_usec": 10255010
+		},
+		{
+			"detail": {
+				"airfield_detail_batches": 5,
+				"airfield_detail_instances": 8,
+				"airfield_detail_triangles": 4482,
+				"botanical_batches": 14,
+				"botanical_plants": 285,
+				"botanical_triangles": 89655,
+				"build_ms": 159.458,
+				"cells": 60,
+				"fleet": 13,
+				"fleet_batch_surfaces": 179,
+				"fleet_batches": 8,
+				"fleet_surfaces": 282,
+				"fleet_triangles": 273421,
+				"flowers": 0,
+				"instances": 170,
+				"motion": 5,
+				"moving_people": 7,
+				"pit_shelter_surfaces": 2,
+				"population": 24,
+				"population_triangles": 371573,
+				"quality": "high",
+				"shadows": 95,
+				"skipped": 0,
+				"theme": "temperate",
+				"timing_ms": {
+					"airfield_detail": 0.615,
+					"botanicals": 23.444,
+					"cell_meshes": 32.801,
+					"fence": 22.318,
+					"fleet": 4.098,
+					"hedge": 4.404,
+					"instances": 61.336,
+					"meshes": 35.568,
+					"patch": 0.143,
+					"population": 0.464,
+					"shelter_material": 0.056,
+					"shelter_meshes": 1.938,
+					"track": 1.11,
+					"vegetation": 1.247,
+					"woodland_edges": 3.919
+				},
+				"vegetation_instances": 42,
+				"vegetation_triangles": 101167,
+				"woodland_edge_batches": 5,
+				"woodland_edge_plants": 220,
+				"woodland_edge_triangles": 472
+			},
+			"end_usec": 10428835,
+			"name": "scenery.build",
+			"start_usec": 10265693
+		},
+		{
+			"detail": {},
+			"end_usec": 10429011,
+			"name": "scenery.attach",
+			"start_usec": 10249584
+		},
+		{
+			"detail": {},
+			"end_usec": 10429014,
+			"name": "field.scenery",
+			"start_usec": 10249583
+		},
+		{
+			"detail": {},
+			"end_usec": 10463530,
+			"name": "field.lake_attach",
+			"start_usec": 10429015
+		},
+		{
+			"detail": {},
+			"end_usec": 10468215,
+			"name": "near_grass.build",
+			"start_usec": 10464036
+		},
+		{
+			"detail": {},
+			"end_usec": 10468229,
+			"name": "field.grass",
+			"start_usec": 10463540
+		},
+		{
+			"detail": {},
+			"end_usec": 10497550,
+			"name": "field.landscape",
+			"start_usec": 10468230
+		},
+		{
+			"detail": {},
+			"end_usec": 10594412,
+			"name": "field_shadows.attach",
+			"start_usec": 10497556
+		},
+		{
+			"detail": {},
+			"end_usec": 10594422,
+			"name": "field.finalize",
+			"start_usec": 10497554
+		},
+		{
+			"detail": {},
+			"end_usec": 10594435,
+			"name": "field.build",
+			"start_usec": 10107164
+		},
+		{
+			"detail": {
+				"field_build_ms": 487.664
+			},
+			"end_usec": 10594821,
+			"name": "world.field_callback",
+			"start_usec": 10107157
+		},
+		{
+			"detail": {},
+			"end_usec": 10615803,
+			"name": "scenery.load_from",
+			"start_usec": 10604241
+		},
+		{
+			"detail": {},
+			"end_usec": 10639262,
+			"name": "airfield_lighting.build",
+			"start_usec": 10621768
+		},
+		{
+			"detail": {
+				"field_build_ms": 487.664
+			},
+			"end_usec": 10642864,
+			"name": "world.build",
+			"start_usec": 10097838
+		},
+		{
+			"detail": {},
+			"end_usec": 10799246,
+			"name": "scenery.load_from",
+			"start_usec": 10788368
+		},
+		{
+			"detail": {},
+			"end_usec": 11271690,
+			"name": "field_loader.load_from",
+			"start_usec": 11262588
+		},
+		{
+			"detail": {},
+			"end_usec": 11281218,
+			"name": "world.before_field",
+			"start_usec": 11272002
+		},
+		{
+			"detail": {},
+			"end_usec": 11317133,
+			"name": "field.ground",
+			"start_usec": 11281229
+		},
+		{
+			"detail": {},
+			"end_usec": 11420130,
+			"name": "field.cues",
+			"start_usec": 11317138
+		},
+		{
+			"detail": {},
+			"end_usec": 11421609,
+			"name": "field.lake_resolution",
+			"start_usec": 11420136
+		},
+		{
+			"detail": {},
+			"end_usec": 11438134,
+			"name": "scenery.load_from",
+			"start_usec": 11427080
+		},
+		{
+			"detail": {
+				"airfield_detail_batches": 5,
+				"airfield_detail_instances": 8,
+				"airfield_detail_triangles": 4482,
+				"botanical_batches": 14,
+				"botanical_plants": 285,
+				"botanical_triangles": 89655,
+				"build_ms": 156.436,
+				"cells": 60,
+				"fleet": 13,
+				"fleet_batch_surfaces": 179,
+				"fleet_batches": 8,
+				"fleet_surfaces": 282,
+				"fleet_triangles": 273421,
+				"flowers": 0,
+				"instances": 170,
+				"motion": 5,
+				"moving_people": 7,
+				"pit_shelter_surfaces": 2,
+				"population": 24,
+				"population_triangles": 371573,
+				"quality": "high",
+				"shadows": 95,
+				"skipped": 0,
+				"theme": "temperate",
+				"timing_ms": {
+					"airfield_detail": 0.522,
+					"botanicals": 22.877,
+					"cell_meshes": 32.783,
+					"fence": 21.49,
+					"fleet": 4.055,
+					"hedge": 4.581,
+					"instances": 60.045,
+					"meshes": 35.567,
+					"patch": 0.077,
+					"population": 0.453,
+					"shelter_material": 0.056,
+					"shelter_meshes": 1.923,
+					"track": 1.075,
+					"vegetation": 1.167,
+					"woodland_edges": 3.652
+				},
+				"vegetation_instances": 42,
+				"vegetation_triangles": 101167,
+				"woodland_edge_batches": 5,
+				"woodland_edge_plants": 220,
+				"woodland_edge_triangles": 472
+			},
+			"end_usec": 11598051,
+			"name": "scenery.build",
+			"start_usec": 11438143
+		},
+		{
+			"detail": {},
+			"end_usec": 11598216,
+			"name": "scenery.attach",
+			"start_usec": 11421613
+		},
+		{
+			"detail": {},
+			"end_usec": 11598219,
+			"name": "field.scenery",
+			"start_usec": 11421612
+		},
+		{
+			"detail": {},
+			"end_usec": 11632570,
+			"name": "field.lake_attach",
+			"start_usec": 11598220
+		},
+		{
+			"detail": {},
+			"end_usec": 11637233,
+			"name": "near_grass.build",
+			"start_usec": 11633072
+		},
+		{
+			"detail": {},
+			"end_usec": 11637248,
+			"name": "field.grass",
+			"start_usec": 11632579
+		},
+		{
+			"detail": {},
+			"end_usec": 11666800,
+			"name": "field.landscape",
+			"start_usec": 11637250
+		},
+		{
+			"detail": {},
+			"end_usec": 11768347,
+			"name": "field_shadows.attach",
+			"start_usec": 11666806
+		},
+		{
+			"detail": {},
+			"end_usec": 11768355,
+			"name": "field.finalize",
+			"start_usec": 11666805
+		},
+		{
+			"detail": {},
+			"end_usec": 11768369,
+			"name": "field.build",
+			"start_usec": 11281228
+		},
+		{
+			"detail": {
+				"field_build_ms": 487.155
+			},
+			"end_usec": 11768376,
+			"name": "world.field_callback",
+			"start_usec": 11281221
+		},
+		{
+			"detail": {},
+			"end_usec": 11788826,
+			"name": "scenery.load_from",
+			"start_usec": 11777313
+		},
+		{
+			"detail": {},
+			"end_usec": 11811114,
+			"name": "airfield_lighting.build",
+			"start_usec": 11794581
+		},
+		{
+			"detail": {
+				"field_build_ms": 487.155
+			},
+			"end_usec": 11814585,
+			"name": "world.build",
+			"start_usec": 11272000
+		},
+		{
+			"detail": {},
+			"end_usec": 11922176,
+			"name": "airplane_builder.build",
+			"start_usec": 11816192
+		},
+		{
+			"detail": {},
+			"end_usec": 12012844,
+			"name": "home_scene.show_aircraft",
+			"start_usec": 11816188
+		},
+		{
+			"detail": {},
+			"end_usec": 12012869,
+			"name": "home_scene._init",
+			"start_usec": 11262549
+		}
+	],
+	"cycles": [
+		{
+			"cycle": 1,
+			"fly_first_draw_usec": 2293264,
+			"fly_ready_usec": 2155982,
+			"fly_sync_usec": 51,
+			"nodes_at_home": 781,
+			"nodes_in_flight": 1272,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 848518,
+			"return_sync_usec": 775715,
+			"tick_at_first_draw": 12
+		},
+		{
+			"cycle": 2,
+			"fly_first_draw_usec": 1451937,
+			"fly_ready_usec": 1357936,
+			"fly_sync_usec": 50,
+			"nodes_at_home": 779,
+			"nodes_in_flight": 1272,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 833296,
+			"return_sync_usec": 771707,
+			"tick_at_first_draw": 12
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"execution": {
+		"debug_build": false,
+		"editor_feature": false,
+		"executable": "D:/OpenRCsimulator-scratch/home-build-20261021-3f3892c7/diagnostic/OpenRC Simulator.exe",
+		"project_path": ""
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 6646100,
+	"home_first_draw_from_load_usec": 4069102,
+	"home_sync_usec": 2614848,
+	"max_fps": 60,
+	"package_build": {
+		"commit": "3f3892c7ee97340469975e12b99d5cd6c160e0f0",
+		"commit_date": "2026-10-21T11:44:46-05:00",
+		"describe": "v0.1.7-13-g3f3892c7-diagnostic",
+		"dirty": true,
+		"format": "openrc-build v1"
+	},
+	"renderer": "gl_compatibility",
+	"scene_spans": [],
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 222322,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1280,
+		720
+	],
+	"vsync_mode": 1
+}

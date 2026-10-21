@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8e4b5584-65c2-4c87-9493-477c62e308bd",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--editor",
+    "--import"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T18:03:57.733925+00:00",
+  "label": "import",
+  "log": "D:\\OpenRCsimulator-scratch\\graphics-settings-20261021\\checks\\import-l8e9na3o\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\graphics-settings-20261021\\checks\\import-l8e9na3o\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.875,
+  "log_bytes": 2240,
+  "log_sha256": "7360ba4a6943fb025c523f78a97ccb165cb3c092111a668c6d280629fed23fa0"
+}

@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e2e8ed00-1865-436b-b8c7-38b0ffe3e33a",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_projected_shadow.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T17:22:06.989638+00:00",
+  "label": "test_projected_shadow",
+  "log": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_projected_shadow-d_gqggs1\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\field-population-20261021\\checks\\test_projected_shadow-d_gqggs1\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.296,
+  "log_bytes": 125,
+  "log_sha256": "0d451b2980fa7ff0b6d0cc1497e9a9ec6c9684ff2f69cc2d5d57be3356527248"
+}

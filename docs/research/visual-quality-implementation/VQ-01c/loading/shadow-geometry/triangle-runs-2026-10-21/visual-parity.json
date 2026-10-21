@@ -1,0 +1,62 @@
+[
+  {
+    "file": "p51d-mustang-120-club.png",
+    "baseline_sha256": "d21e3d0729b6e0a971372acdf2599ef0e7f51f023db89b9a4c9f685128111a73",
+    "comparisons": [
+      {
+        "variant": "candidate",
+        "sha256": "a1a0a3342ae4e27e76b58036ce30cb826d01b7035f701221a04964a51922aaef",
+        "byte_identical": false,
+        "changed_pixels": 2,
+        "max_channel_delta": 1
+      },
+      {
+        "variant": "candidate-repeat",
+        "sha256": "832465668740257cd4d6aab5dc628367e9a365e0610d3dd8fcae4f60c6283aa1",
+        "byte_identical": false,
+        "changed_pixels": 1,
+        "max_channel_delta": 1
+      }
+    ]
+  },
+  {
+    "file": "p51d-mustang-120-flightline.png",
+    "baseline_sha256": "0e42284bed3b99b78c7062b6059f5fd0b4d350c3929d255199d7eaca357992c0",
+    "comparisons": [
+      {
+        "variant": "candidate",
+        "sha256": "0e42284bed3b99b78c7062b6059f5fd0b4d350c3929d255199d7eaca357992c0",
+        "byte_identical": true,
+        "changed_pixels": 0,
+        "max_channel_delta": 0
+      },
+      {
+        "variant": "candidate-repeat",
+        "sha256": "0e42284bed3b99b78c7062b6059f5fd0b4d350c3929d255199d7eaca357992c0",
+        "byte_identical": true,
+        "changed_pixels": 0,
+        "max_channel_delta": 0
+      }
+    ]
+  },
+  {
+    "file": "p51d-mustang-120-pilot.png",
+    "baseline_sha256": "a152d88823e6750ee094c89618f5e0fbeb3f4559ada3760d5dcc7b4d5f00958e",
+    "comparisons": [
+      {
+        "variant": "candidate",
+        "sha256": "a152d88823e6750ee094c89618f5e0fbeb3f4559ada3760d5dcc7b4d5f00958e",
+        "byte_identical": true,
+        "changed_pixels": 0,
+        "max_channel_delta": 0
+      },
+      {
+        "variant": "candidate-repeat",
+        "sha256": "a152d88823e6750ee094c89618f5e0fbeb3f4559ada3760d5dcc7b4d5f00958e",
+        "byte_identical": true,
+        "changed_pixels": 0,
+        "max_channel_delta": 0
+      }
+    ]
+  }
+]

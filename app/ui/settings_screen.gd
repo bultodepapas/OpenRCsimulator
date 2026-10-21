@@ -9,6 +9,8 @@ const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 
 signal closed
 signal presentation_changed(config: Dictionary)
+signal presentation_committed
+signal presentation_reverted
 signal language_changed(language: String)
 signal route_requested(route: String, from: Control)
 signal sound_preview_requested
@@ -34,11 +36,18 @@ var _close_button: Button
 var _rows: Array[BoxContainer] = []
 var _localized_controls: Array[Dictionary] = []
 var _window_picker: OptionButton
+var _resolution_picker: OptionButton
+var _fps_picker: OptionButton
+var _vsync_picker: OptionButton
+var _msaa_picker: OptionButton
+var _graphics_info: Label
 var _scale_picker: OptionButton
 var _opaque_toggle: CheckButton
 var _motion_toggle: CheckButton
 var _language_picker: OptionButton
 var _category_buttons: Array[Button] = []
+var _categories: GridContainer
+var _category_picker: OptionButton
 var _pages: Array[VBoxContainer] = []
 var _volume_slider: HSlider
 var _volume_value: Label
@@ -83,7 +92,7 @@ func _ready() -> void:
 	_surface.resized.connect(_update_layout)
 	_update_layout()
 	# UI-35a (UI-30 AL-4): start on the first category, so a pad or keyboard moves straight into the settings.
-	(_category_buttons[0] if not _category_buttons.is_empty() else _close_button).grab_focus.call_deferred()
+	(_category_picker if _category_picker.visible else _category_buttons[0]).grab_focus.call_deferred()
 
 
 func _build() -> void:
@@ -109,10 +118,13 @@ func _build() -> void:
 	_close_button.pressed.connect(close)
 	heading.add_child(_close_button)
 	_layout_shell.add_child(heading)
-	var categories := HBoxContainer.new()
-	categories.add_theme_constant_override("separation", 8)
+	var categories := GridContainer.new()
+	_categories = categories
+	categories.columns = 4
+	categories.add_theme_constant_override("h_separation", 8)
+	categories.add_theme_constant_override("v_separation", 8)
 	var category_group := ButtonGroup.new()
-	for caption: String in ["Display", "Interface", "Sound"]:
+	for caption: String in ["Display", "Interface", "Sound", "Graphics"]:
 		var tab := _button(caption, "HomeTab", caption + "Category")
 		tab.toggle_mode = true
 		tab.button_group = category_group
@@ -121,6 +133,13 @@ func _build() -> void:
 		_category_buttons.append(tab)
 		categories.add_child(tab)
 	_layout_shell.add_child(categories)
+	_category_picker = OptionButton.new()
+	_category_picker.name = "SettingsCategory"
+	for caption: String in ["Display", "Interface", "Sound", "Graphics"]:
+		_category_picker.add_item(tr(caption))
+	_category_picker.item_selected.connect(_show_category)
+	_category_picker.hide()
+	_layout_shell.add_child(_category_picker)
 	_scroll = ScrollContainer.new()
 	_scroll.follow_focus = true
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -132,7 +151,7 @@ func _build() -> void:
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_theme_constant_override("separation", 10)
 	_scroll.add_child(page)
-	for index: int in 3:
+	for index: int in 4:
 		var category := VBoxContainer.new()
 		category.name = "Category%d" % index
 		category.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -142,6 +161,7 @@ func _build() -> void:
 	var display_page := _pages[0]
 	var interface_page := _pages[1]
 	var sound_page := _pages[2]
+	var graphics_page := _pages[3]
 
 	_window_picker = OptionButton.new()
 	_window_picker.name = "WindowMode"
@@ -152,6 +172,10 @@ func _build() -> void:
 	_window_picker.item_selected.connect(_window_mode_selected)
 	_add_row(display_page, "Window mode", _window_picker)
 
+	_resolution_picker = _choice_picker("WindowResolution", "window_resolution", DisplayPreferences.WINDOW_RESOLUTIONS)
+	_add_row(display_page, "Window resolution", _resolution_picker)
+
+
 	_scale_picker = OptionButton.new()
 	_scale_picker.name = "UiScale"
 	for percent: int in SCALE_CHOICES:
@@ -159,7 +183,22 @@ func _build() -> void:
 		_scale_picker.set_item_metadata(_scale_picker.item_count - 1, float(percent) / 100.0)
 	_scale_picker.item_selected.connect(_scale_selected)
 	_add_row(display_page, "Text size", _scale_picker)
-	display_page.add_child(_label("Fullscreen changes have a 15-second safety timer.", "SecondaryLabel", true))
+	display_page.add_child(_label("Display and graphics changes have a 15-second safety timer.", "SecondaryLabel", true))
+
+	display_page.add_child(_label("Window sizes fit the available desktop. Fullscreen uses the desktop resolution.", "SecondaryLabel", true))
+
+	_fps_picker = _choice_picker("MaxFps", "max_fps", DisplayPreferences.MAX_FPS_VALUES)
+	_add_row(graphics_page, "Frame rate limit", _fps_picker)
+	_vsync_picker = _choice_picker("VSync", "vsync_mode", DisplayPreferences.VSYNC_MODES)
+	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
+	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
+	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
+	graphics_page.add_child(_label("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.", "SecondaryLabel", true))
+	_graphics_info = _label("", "SecondaryLabel", true)
+	graphics_page.add_child(_graphics_info)
+	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
+	defaults_button.pressed.connect(_restore_graphics_defaults)
+	graphics_page.add_child(defaults_button)
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -229,6 +268,7 @@ func _build() -> void:
 
 
 func _show_category(index: int) -> void:
+	_category_picker.select(index)
 	for page_index: int in _pages.size():
 		_pages[page_index].visible = page_index == index
 		_category_buttons[page_index].set_pressed_no_signal(page_index == index)
@@ -319,13 +359,59 @@ func _reveal_focused_control() -> void:
 
 func _window_mode_selected(index: int) -> void:
 	_draft.window_mode = str(_window_picker.get_item_metadata(index))
-	if _draft.window_mode == _saved.window_mode:
+	_on_graphics_option_changed()
+
+
+func _choice_picker(node_name: String, key: String, values: Array) -> OptionButton:
+	var picker := OptionButton.new()
+	picker.name = node_name
+	for value: Variant in values:
+		picker.add_item(_choice_caption(key, value))
+		picker.set_item_metadata(picker.item_count - 1, value)
+	picker.item_selected.connect(func(index: int) -> void:
+		_draft[key] = picker.get_item_metadata(index)
+		_on_graphics_option_changed())
+	return picker
+
+
+func _choice_caption(key: String, value: Variant) -> String:
+	match key:
+		"window_resolution": return tr("Automatic") if value == "auto" else str(value).replace("x", " × ")
+		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
+		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
+		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
+	return str(value)
+
+
+func _on_graphics_option_changed() -> void:
+	var changed := false
+	for key: String in ["window_mode", "window_resolution", "max_fps", "vsync_mode", "msaa_3d"]:
+		changed = changed or _draft[key] != _saved[key]
+	if not changed:
 		_trial_deadline_msec = 0
 	elif _trial_deadline_msec == 0:
 		_trial_deadline_msec = Time.get_ticks_msec() + DISPLAY_TEST_SECONDS * 1000
 		_set_status("trial", DISPLAY_TEST_SECONDS)
 	_emit_presentation()
-	_sync_action_buttons()
+	if not changed:
+		# Selecting the saved option is a rollback even if Close sees a clean draft.
+		presentation_reverted.emit()
+	_sync_controls()
+	_refresh_graphics_info.call_deferred()
+
+
+func _restore_graphics_defaults() -> void:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d"]:
+		_draft[key] = DisplayPreferences.DEFAULTS[key]
+	_on_graphics_option_changed()
+
+
+func _refresh_graphics_info() -> void:
+	if not is_inside_tree() or _graphics_info == null:
+		return
+	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.")
+	_graphics_info.text = tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
+		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
 
 
 func _scale_selected(index: int) -> void:
@@ -374,12 +460,15 @@ func keep_changes() -> void:
 	_trial_deadline_msec = 0
 	_set_status("saved")
 	_sync_action_buttons()
+	presentation_committed.emit()
 
 
 func _revert() -> void:
 	_trial_deadline_msec = 0
 	_draft = _saved.duplicate(true)
 	_emit_presentation(_saved)
+	presentation_reverted.emit()
+	_refresh_graphics_info.call_deferred()
 	call_deferred("_refresh_shared_theme")
 	_sync_controls()
 	_set_status("reverted")
@@ -395,6 +484,11 @@ func close() -> void:
 
 func _sync_controls() -> void:
 	_select_metadata(_window_picker, _draft.window_mode)
+	_select_metadata(_resolution_picker, _draft.window_resolution)
+	_resolution_picker.disabled = _draft.window_mode == "borderless"
+	_select_metadata(_fps_picker, _draft.max_fps)
+	_select_metadata(_vsync_picker, _draft.vsync_mode)
+	_select_metadata(_msaa_picker, _draft.msaa_3d)
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -439,8 +533,12 @@ func _update_layout() -> void:
 	else:
 		_layout_panel.remove_theme_stylebox_override("panel")
 	var available: Vector2 = _surface.size - Vector2(gutter * 2.0, gutter * 2.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(600.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(720.0, maxf(0.0, available.y)))
+	_refresh_graphics_info()
 	var stack_rows := _should_stack_rows()
+	_categories.columns = 2 if stack_rows else 4
+	_categories.visible = not compact_height
+	_category_picker.visible = compact_height
 	_destinations.vertical = stack_rows
 	for row: BoxContainer in _rows:
 		row.vertical = stack_rows
@@ -460,6 +558,9 @@ func _refresh_shared_theme() -> void:
 
 
 func _refresh_translated_text() -> void:
+	var categories := ["Display", "Interface", "Sound", "Graphics"]
+	for index: int in categories.size():
+		_category_picker.set_item_text(index, tr(categories[index]))
 	for entry: Dictionary in _localized_controls:
 		var control: Control = entry.control
 		if control is Button or control is Label:
@@ -467,6 +568,11 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"]]:
+		var picker: OptionButton = entry[0]
+		for index: int in picker.item_count:
+			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))
+	_refresh_graphics_info()
 	if _opaque_toggle != null:
 		_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	if _motion_toggle != null:

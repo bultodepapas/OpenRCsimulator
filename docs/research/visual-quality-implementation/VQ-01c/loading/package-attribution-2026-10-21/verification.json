@@ -1,0 +1,88 @@
+{
+  "retained_artifacts_verified": 75,
+  "checked_reports": [
+    {
+      "label": "collector-export",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "collector-export",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "collector-import",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "collector-native-01",
+      "ok": false,
+      "warnings": 0
+    },
+    {
+      "label": "collector-native-02",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "collector-native-03",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "dependency-export",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "dependency-native-01",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-export",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "diagnostic-native-01",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-02",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "diagnostic-native-03",
+      "ok": true,
+      "warnings": 1
+    },
+    {
+      "label": "isolated-import",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "release-export",
+      "ok": true,
+      "warnings": 0
+    },
+    {
+      "label": "release-trace-smoke",
+      "ok": true,
+      "warnings": 2
+    },
+    {
+      "label": "source-native-01",
+      "ok": true,
+      "warnings": 1
+    }
+  ],
+  "local_links": "passed",
+  "execution_identity_and_completion": "passed",
+  "preset_unchanged": true
+}
