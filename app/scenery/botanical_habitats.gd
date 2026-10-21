@@ -13,6 +13,8 @@ const LakeSurface := preload("res://physics/lake_surface.gd")
 const SEED := 221013
 const MAX_ADDED_TRIANGLES := 90000
 const MAX_VISIBLE_BATCHES := 24
+const FERN_ASSET_ID := "polyhaven_fern_02_a"
+const FLOWER_ASSET_ID := "polyhaven_flower_empodium_d"
 const SHORE_CLUSTER_VERTICES := [2, 7, 12, 17]
 const SHORE_REEDS_PER_CLUSTER := 7
 const SHORE_BANK_PLANTS_PER_CLUSTER := 6
@@ -47,7 +49,7 @@ const SHORE_MIN_DISTANCE_M := 0.75
 const SHORE_MAX_DISTANCE_M := 4.5
 
 const SHORE_BANK_ASSETS := [
-	"grass_common_short", "grass_common_tall", "fern_1", "grass_common_short", "clover_1", "flower_3_group",
+	"grass_common_short", "grass_common_tall", FERN_ASSET_ID, "grass_common_short", "clover_1", FLOWER_ASSET_ID,
 ]
 
 const HEIGHT_RANGES := {
@@ -55,12 +57,12 @@ const HEIGHT_RANGES := {
 	"grass_lolipop_tall": Vector2(0.40, 0.65),
 	"forest_leafy_shrub": Vector2(0.65, 0.95),
 	"clover_1": Vector2(0.30, 0.52),
-	"flower_3_group": Vector2(0.38, 0.60),
+	FLOWER_ASSET_ID: Vector2(0.14, 0.24),
 	"flower_4_group": Vector2(0.48, 0.65),
 	"grass_common_short": Vector2(0.20, 0.34),
 	"grass_common_tall": Vector2(0.32, 0.50),
 	"grass_wispy_tall": Vector2(0.34, 0.50),
-	"fern_1": Vector2(0.22, 0.42),
+	FERN_ASSET_ID: Vector2(0.22, 0.42),
 	"corn_4": Vector2(1.15, 1.42),
 	"wheat_4": Vector2(0.72, 0.92),
 	"reed_aredon": Vector2(0.90, 1.50),
@@ -69,36 +71,36 @@ const HEIGHT_RANGES := {
 
 const FLOWER_PATCHES := [
 	{zone = "club", north = -15.0, east = -3.0, radius_n = 0.35, radius_e = 2.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", FLOWER_ASSET_ID]},
 	{zone = "club", north = -15.0, east = 3.0, radius_n = 0.35, radius_e = 2.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", FLOWER_ASSET_ID]},
 	{zone = "meadow", north = 58.0, east = 98.0, radius_n = 8.0, radius_e = 13.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_4_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", FLOWER_ASSET_ID, "flower_4_group"]},
 	{zone = "meadow", north = 64.0, east = 154.0, radius_n = 7.0, radius_e = 13.0,
-		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "flower_3_group", "flower_3_group"]},
+		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", FLOWER_ASSET_ID, FLOWER_ASSET_ID]},
 	{zone = "meadow", north = 47.0, east = 128.0, radius_n = 5.0, radius_e = 11.0,
 		assets = ["clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1", "clover_1"]},
 ]
 
 const GRASS_PATCHES := [
 	{zone = "club", north = -52.0, east = -23.0, radius_n = 1.2, radius_e = 2.5,
-		assets = ["grass_common_short", "fern_1"]},
+		assets = ["grass_common_short", FERN_ASSET_ID]},
 	{zone = "club", north = -54.0, east = 7.0, radius_n = 1.2, radius_e = 2.5,
-		assets = ["grass_common_short", "fern_1"]},
+		assets = ["grass_common_short", FERN_ASSET_ID]},
 	{zone = "club", north = -29.5, east = -54.0, radius_n = 1.4, radius_e = 3.0,
-		assets = ["grass_common_short", "fern_1"]},
+		assets = ["grass_common_short", FERN_ASSET_ID]},
 	{zone = "club", north = -30.5, east = 54.0, radius_n = 1.4, radius_e = 3.0,
-		assets = ["fern_1"]},
+		assets = [FERN_ASSET_ID]},
 	{zone = "edge", north = 25.5, east = -42.0, radius_n = 2.0, radius_e = 7.0,
 		assets = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]},
 	{zone = "edge", north = 25.5, east = 42.0, radius_n = 2.0, radius_e = 7.0,
 		assets = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]},
 	{zone = "meadow", north = 58.0, east = 98.0, radius_n = 8.0, radius_e = 13.0,
-		assets = ["grass_common_short", "grass_common_tall", "fern_1"]},
+		assets = ["grass_common_short", "grass_common_tall", FERN_ASSET_ID]},
 	{zone = "meadow", north = 64.0, east = 154.0, radius_n = 7.0, radius_e = 13.0,
-		assets = ["grass_common_short", "grass_common_tall", "fern_1"]},
+		assets = ["grass_common_short", "grass_common_tall", FERN_ASSET_ID]},
 	{zone = "meadow", north = 47.0, east = 128.0, radius_n = 5.0, radius_e = 11.0,
-		assets = ["grass_common_tall", "fern_1"]},
+		assets = ["grass_common_tall", FERN_ASSET_ID]},
 ]
 
 

@@ -236,10 +236,9 @@ func _test_complete_scenery_budget() -> void:
 			var asset_id := str(tree.get("asset_id", ""))
 			source_tree_counts[asset_id] = int(source_tree_counts.get(asset_id, 0)) + 1
 			source_tree_triangles += int(tree.get("triangles", 0))
-	_check("complete scene uses eight downloaded forms at the same 17 trees",
-		source_tree_counts == {common_tree_1 = 1, common_tree_2 = 1, common_tree_3 = 4,
-			common_tree_4 = 1, pine_1 = 2, pine_2 = 2, pine_3 = 2, maple_tree = 4}
-		and source_tree_triangles == 77281,
+	_check("complete scene uses realistic sources at the same 17 trees and preserves four maples",
+		source_tree_counts == {landscapelab_quercus = 5, landscapelab_pine = 8, maple_tree = 4}
+		and source_tree_triangles == 91212,
 		"sources=%s triangles=%d" % [source_tree_counts, source_tree_triangles])
 	_check("whole scenery stays below the approved LU-21 triangle ceiling", triangles <= TRIANGLE_LIMIT,
 		"triangles=%d" % triangles)

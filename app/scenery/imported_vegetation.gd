@@ -8,9 +8,11 @@ const MAX_TREE_WIND_STRENGTH := 0.025
 const TREE_CELL_SIZES_M := [64, 128, 256]
 
 const ALIASES := {
-	"shade_tree": ["maple_tree", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
-	"tree": ["maple_tree", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
-	"sapling": ["common_tree_1", "common_tree_3", "common_tree_3", "common_tree_3"],
+	# Keep the seven alias slots: slot zero protects all four existing maples,
+	# including the clubhouse specimen. Replace only the stylized sources.
+	"shade_tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
+	"tree": ["maple_tree", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus", "landscapelab_pine"],
+	"sapling": ["landscapelab_quercus", "landscapelab_pine", "landscapelab_pine", "landscapelab_quercus"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",

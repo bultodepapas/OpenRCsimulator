@@ -23,16 +23,16 @@ func _initialize() -> void:
 func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
-	_check("nine retained tree variants", counts.get("trees", 0) == 9)
+	_check("eleven retained tree variants", counts.get("trees", 0) == 11)
 	_check("three downloaded shrubs", counts.get("shrubs", 0) == 3)
-	_check("six downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 6)
-	_check("three downloaded flowering assets", counts.get("flowers", 0) == 3)
+	_check("seven downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 7)
+	_check("four downloaded flowering assets", counts.get("flowers", 0) == 4)
 	_check("two downloaded crops", counts.get("crops", 0) == 2)
 	_check("one downloaded reed clump", counts.get("reeds", 0) == 1)
-	_check("all pinned sources are cataloged", data.get("sources", []).size() == 7)
+	_check("all pinned sources are cataloged", data.get("sources", []).size() == 10)
 
 	var assets: Array = data.get("assets", [])
-	_check("24 assets are cataloged", assets.size() == 24)
+	_check("28 assets are cataloged", assets.size() == 28)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -112,10 +112,10 @@ func _test_fit_and_aliases() -> void:
 		var id := ImportedVegetation.resolve_id("shade_tree", seed)
 		mature_forms[id] = true
 		_check("tree aliases share the same deterministic source", id == ImportedVegetation.resolve_id("tree", seed))
-	_check("mature aliases retain seven forms with Maple replacing the first common-tree slot",
-		mature_forms.size() == 7
+	_check("mature aliases retain protected Maple and use realistic oak/pine replacements",
+		mature_forms.size() == 3
 		and mature_forms.has("maple_tree")
-		and not mature_forms.has("common_tree_1")
+		and mature_forms.has("landscapelab_quercus") and mature_forms.has("landscapelab_pine")
 		and not mature_forms.has(""))
 	var maple := VegetationPlacement.spec("shade_tree", 793949324)
 	_check("production Maple placement uses its mature height and source geometry budget",
@@ -124,10 +124,10 @@ func _test_fit_and_aliases() -> void:
 		and int(maple.get("triangles", 0)) == 5541
 		and absf(float(maple.get("width", 0.0)) - 9.63) < 0.05
 		and absf(float(maple.get("depth", 0.0)) - 13.24) < 0.05)
-	_check("sapling alias is restricted to downloaded broadleaf variants",
-		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
-		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"
-		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_3")
+	_check("sapling alias uses downloaded oak and pine variants",
+		ImportedVegetation.resolve_id("sapling", 0) == "landscapelab_quercus"
+		and ImportedVegetation.resolve_id("sapling", 1) == "landscapelab_pine"
+		and ImportedVegetation.resolve_id("sapling", 2) == "landscapelab_pine")
 	var sapling_assets: Dictionary = {}
 	var sapling_heights_valid := true
 	for seed in 32:
@@ -136,8 +136,8 @@ func _test_fit_and_aliases() -> void:
 		sapling_heights_valid = sapling_heights_valid and float(sapling.get("height", 0.0)) >= 3.2 \
 			and float(sapling.get("height", 99.0)) <= 4.8 and float(sapling.get("triangles", 0)) > 0
 	_check("sapling placement keeps natural height and source triangle metadata", sapling_heights_valid)
-	_check("saplings sample both downloaded broadleaf variants", sapling_assets.size() == 2 \
-		and sapling_assets.has("common_tree_1") and sapling_assets.has("common_tree_3"))
+	_check("saplings sample both downloaded realistic variants", sapling_assets.size() == 2 \
+		and sapling_assets.has("landscapelab_quercus") and sapling_assets.has("landscapelab_pine"))
 	_check("bush alias resolves deterministically", ImportedVegetation.resolve_id("bush", 5) == "bush_common_flowers")
 	_check("unknown alias is rejected", ImportedVegetation.resolve_id("missing_plant", 0).is_empty())
 	var source: Dictionary = ImportedVegetation.get_asset("common_tree_3")
@@ -155,7 +155,8 @@ func _test_batch_build_and_damage() -> void:
 	var batches: Dictionary = {}
 	var tree_transform := Transform3D(Basis.IDENTITY, Vector3.ZERO)
 	var second_transform := Transform3D(Basis.IDENTITY, Vector3(30.0, 0.0, 0.0))
-	_check("tree alias queues resolved asset", ImportedVegetation.queue(batches, "shade_tree", tree_transform, 1, "tree-damaged") == "common_tree_3")
+	# Retain the legacy wind-compatible source for this batching/wind regression.
+	_check("exact retained tree queues its source", ImportedVegetation.queue(batches, "common_tree_3", tree_transform, 1, "tree-damaged") == "common_tree_3")
 	_check("exact asset queues without changing ID", ImportedVegetation.queue(
 		batches, "wheat_4", second_transform, 2, "", Color(0.4, 1.2, 0.9, 0.0)) == "wheat_4")
 	var queued_tint: Color = batches["wheat_4"][0].get("tint", Color.WHITE)
@@ -244,10 +245,10 @@ func _test_default_sapling_group() -> void:
 			var plant: Dictionary = VegetationPlacement.spec("sapling", int(placement.seed))
 			assets[str(plant.get("asset_id", ""))] = true
 			valid = valid and float(placement.north) < 0.0 \
-				and plant.get("asset_id", "") in ["common_tree_1", "common_tree_3"] \
+				and plant.get("asset_id", "") in ["landscapelab_quercus", "landscapelab_pine"] \
 				and float(plant.get("height", 0.0)) >= 3.2 and float(plant.get("height", 99.0)) <= 4.8
 		_check("sapling rows stay behind the club and fit downloaded sources proportionally", valid)
-		_check("sapling rows exercise both downloaded source variants", assets.has("common_tree_1") and assets.has("common_tree_3"))
+		_check("sapling rows exercise both downloaded source variants", assets.has("landscapelab_quercus") and assets.has("landscapelab_pine"))
 	_check("default layout contains its downloaded saplings group", found)
 	_check("three additional maples reach the farm and forest", landscape_maples == 3)
 

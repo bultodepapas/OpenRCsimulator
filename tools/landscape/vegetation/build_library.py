@@ -101,6 +101,7 @@ LANDSCAPELAB_ASSETS = {
     "landscapelab_quercus": {
         "source_name": "Quercus",
         "filename": "quercus.glb",
+        "runtime_subdir": "quercus",
         "bytes": 7_389_596,
         "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
         "triangles": 7_016,
@@ -109,6 +110,7 @@ LANDSCAPELAB_ASSETS = {
     "landscapelab_pine": {
         "source_name": "Pine",
         "filename": "pine_joined.glb",
+        "runtime_subdir": "pine",
         "bytes": 6_788_748,
         "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
         "triangles": 4_246,
@@ -1047,7 +1049,6 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
         raise BuildError("LandscapeLab license evidence or runtime notice changed from its manifest")
 
     source_prefix = LANDSCAPELAB_DERIVED_DIR.relative_to(ROOT).as_posix()
-    runtime_prefix = "models/landscapelab_tree_2026/"
     descriptions = {
         "landscapelab_quercus": "Mature broadleaf Quercus tree",
         "landscapelab_pine": "Mature pine tree",
@@ -1091,7 +1092,12 @@ def add_landscapelab_tree_pack(catalog: dict, library_files: dict[str, bytes]) -
         ):
             raise BuildError(f"LandscapeLab runtime GLB is not the pinned byte-for-byte source: {asset_id}")
 
-        runtime_path = runtime_prefix + filename
+        runtime_path = (
+            "models/landscapelab_tree_2026/"
+            + expected["runtime_subdir"]
+            + "/"
+            + filename
+        )
         library_files[runtime_path] = derived_bytes
         catalog["files"].append({
             "path": runtime_path,

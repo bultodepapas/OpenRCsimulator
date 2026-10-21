@@ -31,10 +31,11 @@ static func spec(prefab: String, seed: int, group_id: String = "") -> Dictionary
 		height = 3.2 + 1.6 * Palette.hash01(seed, 1)
 	var scale := height / float(bounds.height)
 	var source_size: Array = bounds.size
-	# The maple crown is slightly asymmetric about its grounded stem.
+	# Downloaded crowns are asymmetric about their grounded stems. Use the same
+	# source bounds as rendering when centering the coarse collision envelope.
 	var crown_x := 0.0
 	var crown_z := 0.0
-	if asset_id == "maple_tree":
+	if asset_id in ["maple_tree", "landscapelab_quercus", "landscapelab_pine"]:
 		crown_x = (float(bounds.min[0]) + float(bounds.max[0])) * 0.5 * scale
 		crown_z = (float(bounds.min[2]) + float(bounds.max[2])) * 0.5 * scale
 	return {asset_id = asset_id, height = height, scale = scale,

@@ -53,6 +53,37 @@ def _make_bake(root: Path) -> Path:
     return bake_dir
 
 
+def _make_realistic_bake(root: Path) -> Path:
+    bake_dir = _make_bake(root)
+    data = json.loads((bake_dir / "bake.json").read_text(encoding="utf-8"))
+    names = {
+        "CommonTree_1": ("branches", "leaves", "landscapelab:quercus"),
+        "CommonTree_3": ("Maple_Bark_PBR", "Maple_Leaves_PBR", "lolipop:acer_large_3_lod1"),
+        "Pine_1": ("branches.001", "leaves.001", "landscapelab:pine"),
+    }
+    for index, item in enumerate(data["species"]):
+        bark, foliage, source_asset_id = names[item["id"]]
+        item.update({
+            "bark_material_name": bark,
+            "foliage_material_name": foliage,
+            "source_asset_id": source_asset_id,
+            "source_sha256": f"{index + 1:x}" * 64,
+            "derived_sha256": f"{index + 4:x}" * 64,
+            "source_material_names": sorted([bark, foliage]),
+            "source_provenance": {
+                "creator": "Example source author", "license": "CC BY 4.0",
+                "source_url": "https://example.invalid/tree", "source_revision": "fixture-v1",
+            },
+            "normalization": {
+                "source_height_m": 2.0, "height_m": 1.0, "scale": 0.5,
+                "source_bounds_world_y_up": {"min": [-1, 0, -1], "max": [1, 2, 1]},
+            },
+        })
+    data["recipe_id"] = "realistic-fixture-v1"
+    (bake_dir / "bake.json").write_text(json.dumps(data), encoding="utf-8")
+    return bake_dir
+
+
 class WeightedDownsampleTests(unittest.TestCase):
     def test_transparent_black_does_not_darken_opaque_edge_color(self) -> None:
         pixels = np.zeros((2, 2, 4), dtype=np.uint8)
@@ -245,6 +276,7 @@ class AtlasPipelineTests(unittest.TestCase):
                 self.assertFalse(np.any(atlas_pixels[512:, 512:, 3]))
             catalog = json.loads(first["catalog"].read_text(encoding="utf-8"))
             self.assertEqual(catalog["format"], "openrc-tree-assets v1")
+            self.assertNotIn("recipe_id", catalog)
             self.assertEqual([item["id"] for item in catalog["species"]], list(IDS))
             with Image.open(first["foliage_mask"]) as mask:
                 pixels = np.asarray(mask.convert("RGBA"))
@@ -254,6 +286,28 @@ class AtlasPipelineTests(unittest.TestCase):
                 tile = pixels[:512, :512]
                 self.assertGreater(int((tile[128:320, 128:512, 0] == 255).sum()), 0)
                 self.assertGreater(int((tile[320:512, 128:512, 0] == 0).sum()), 0)
+
+    def test_realistic_source_materials_provenance_comparison_and_foliage_extents_are_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            bake_dir = _make_realistic_bake(root)
+
+            outputs = process_bake(bake_dir, root / "out")
+
+            catalog = json.loads(outputs["catalog"].read_text(encoding="utf-8"))
+            self.assertEqual(catalog["recipe_id"], "realistic-fixture-v1")
+            self.assertEqual(catalog["species"][0]["source_asset_id"], "landscapelab:quercus")
+            self.assertEqual(catalog["species"][0]["bark_material_name"], "branches")
+            self.assertEqual(catalog["species"][0]["foliage_material_name"], "leaves")
+
+            report = json.loads(outputs["analysis"].read_text(encoding="utf-8"))
+            self.assertEqual(report["recipe_id"], "realistic-fixture-v1")
+            first = report["species"][0]
+            self.assertTrue(first["source_derived_quality_gates"]["source_and_derived_hashes_pinned"])
+            self.assertEqual(first["material_foliage_coverage"]["raw_capture_1024"]["bbox_px_inclusive"],
+                             [128, 128, 895, 511])
+            self.assertEqual(first["material_foliage_coverage"]["atlas_tile_512"]["bbox_px_inclusive"],
+                             [64, 64, 447, 255])
 
 
 if __name__ == "__main__":

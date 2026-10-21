@@ -1,0 +1,53 @@
+; OpenRC Simulator (Godot 4.7). Started as the Stage 0/1 bake-off build (prototypes/stage0/SPEC.md).
+config_version=5
+
+[application]
+
+config/name="OpenRC Simulator"
+; UI-04a: numeric x.y.z only (Windows and macOS version fields take integers). The full identity (tag, commits,
+; SHA, dirty) is res://build_info.json, written into the pack at export. export.sh checks the tag's x.y.z matches.
+config/version="0.1.6"
+; UI-01a: the entry decides Home (no user arguments) or the direct flight (any `--` argument: traces, captures...).
+run/main_scene="res://app_root.tscn"
+config/features=PackedStringArray("4.7")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+
+[input]
+
+smoke_pump={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"physical_keycode":72)]
+}
+
+[physics]
+
+; Simulation steps at a fixed 240 Hz. Up to 12 catch-up steps per frame keeps real time down to 20 fps;
+; slower than that, the simulation runs in slow motion instead of spiraling.
+common/physics_ticks_per_second=240
+common/max_physics_steps_per_frame=12
+
+[rendering]
+
+; Compatibility renderer: the only one Godot can export to the web, and the closest match to WebGL 2.
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2
+; LU-25: one lake probe. The default 64-slot atlas reserves ~256 MiB on Compatibility.
+reflections/reflection_atlas/reflection_count=2
+; Required by Godot's macOS exporter for universal/arm64 builds (PT1); the app imports no textures, so nothing else changes.
+textures/vram_compression/import_etc2_astc=true
+
+[internationalization]
+
+; UI-01d: English is the source and default language (set by app_root, not the OS locale); one gettext .po per
+; other language. .po files load without an import step and are exported with all_resources (probe 23).
+locale/translations=PackedStringArray("res://i18n/es.po")
+
+[editor_plugins]
+
+; UI-04a: writes res://build_info.json into exported packs (addons/build_info; excluded from the packs themselves).
+enabled=PackedStringArray("res://addons/build_info/plugin.cfg", "res://addons/aircraft_contract/plugin.cfg")

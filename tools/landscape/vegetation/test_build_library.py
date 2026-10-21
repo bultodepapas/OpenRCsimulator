@@ -133,9 +133,9 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertIn("maple_tree", candidate_ids)
             self.assertIn("maple_tree", installed_ids)
             self.assertTrue({"landscapelab_quercus", "landscapelab_pine"}.issubset(installed_ids))
-            self.assertEqual(catalog["counts"]["total_assets"], 26)
+            self.assertEqual(catalog["counts"]["total_assets"], 28)
             self.assertEqual(catalog["counts"]["trees"], 11)
-            self.assertEqual(len(catalog["sources"]), 8)
+            self.assertEqual(len(catalog["sources"]), 10)
 
             candidates = {
                 asset["id"]: asset
@@ -171,9 +171,9 @@ class BuildLibraryTests(unittest.TestCase):
         ):
             catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
 
-        self.assertEqual(catalog["counts"]["total_assets"], 26)
+        self.assertEqual(catalog["counts"]["total_assets"], 28)
         self.assertEqual(catalog["counts"]["trees"], 11)
-        self.assertEqual(len(catalog["sources"]), 8)
+        self.assertEqual(len(catalog["sources"]), 10)
         self.assertEqual(
             library.sha256_file(library.LANDSCAPELAB_MANIFEST),
             library.LANDSCAPELAB_MANIFEST_SHA256,
@@ -204,7 +204,8 @@ class BuildLibraryTests(unittest.TestCase):
         for asset_id, facts in expected.items():
             with self.subTest(asset=asset_id):
                 asset = assets[asset_id]
-                runtime_path = "models/landscapelab_tree_2026/" + facts["filename"]
+                model_dir = "quercus" if asset_id == "landscapelab_quercus" else "pine"
+                runtime_path = "models/landscapelab_tree_2026/" + model_dir + "/" + facts["filename"]
                 source_path = library.LANDSCAPELAB_SOURCE_DIR / facts["filename"]
                 derived_path = library.LANDSCAPELAB_DERIVED_DIR / facts["filename"]
                 source_bytes = source_path.read_bytes()
@@ -241,6 +242,92 @@ class BuildLibraryTests(unittest.TestCase):
         self.assertEqual(source["conversion_proof_sha256"], library.LANDSCAPELAB_MANIFEST_SHA256)
         self.assertEqual(library_files[library.LANDSCAPELAB_NOTICE],
                          (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE).read_bytes())
+
+    def test_polyhaven_understory_catalog_preserves_candidate_receipts_and_alpha_policy(self) -> None:
+        with (
+            ZipFile(library.ARCHIVE) as standard,
+            ZipFile(library.CROPS_ARCHIVE) as crops,
+            ZipFile(library.REED_ARCHIVE) as reeds,
+            library.open_oak_conversion_archive() as oak,
+        ):
+            catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
+
+        self.assertEqual(library.sha256_file(library.UNDERSTORY_MANIFEST), library.UNDERSTORY_MANIFEST_SHA256)
+        self.assertEqual(catalog["counts"]["total_assets"], 28)
+        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(len(catalog["sources"]), 10)
+        manifest = json.loads(library.UNDERSTORY_MANIFEST.read_text(encoding="utf-8"))
+        assets = {asset["id"]: asset for asset in catalog["assets"]}
+        variants = {variant["id"]: variant for variant in manifest["variants"]}
+        expected = {
+            "polyhaven_fern_02_a": {
+                "source_id": "polyhaven_fern_02",
+                "source_name": "fern_02_a",
+                "role": "herb",
+                "triangles": 784,
+                "source_sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+                "source_mode": "MASK",
+                "output_mode": "MASK",
+            },
+            "polyhaven_flower_empodium_d": {
+                "source_id": "polyhaven_flower_empodium",
+                "source_name": "flower_empodium_d_LOD0",
+                "role": "flower",
+                "triangles": 360,
+                "source_sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+                "source_mode": "BLEND",
+                "output_mode": "MASK",
+            },
+        }
+        self.assertTrue(set(expected).issubset(assets))
+        for asset_id, facts in expected.items():
+            with self.subTest(asset=asset_id):
+                asset = assets[asset_id]
+                variant = variants[asset_id]
+                self.assertEqual(asset["source_id"], facts["source_id"])
+                self.assertEqual(asset["source_name"], facts["source_name"])
+                self.assertEqual(asset["role"], facts["role"])
+                self.assertEqual(asset["source_triangles"], facts["triangles"])
+                self.assertEqual(asset["source_sha256"], facts["source_sha256"])
+                self.assertEqual(asset["source_conversion_proof"], variant["source_conversion_proof"])
+                self.assertEqual(
+                    asset["source_conversion_proof_sha256"],
+                    hashlib.sha256((library.ROOT / variant["source_conversion_proof"]).read_bytes()).hexdigest(),
+                )
+                self.assertEqual(asset["source_dependency_sha256"], variant["source_dependency_sha256"])
+                self.assertEqual(asset["source_bounds_m"], variant["source_bounds_m"])
+                self.assertEqual(asset["grounded_bounds_m"], variant["grounded_bounds_m"])
+                self.assertEqual(asset["dependencies"], variant["dependencies"])
+
+                for dependency in variant["dependencies"]:
+                    source_path = library.ROOT / dependency
+                    relative = PurePosixPath(dependency).relative_to(
+                        library.UNDERSTORY_DERIVED_DIR.relative_to(library.ROOT).as_posix()
+                    )
+                    runtime_path = "models/realistic_understory_2026/" + relative.as_posix()
+                    self.assertEqual(library_files[runtime_path], source_path.read_bytes())
+
+                alpha = asset["material_alpha"]
+                self.assertEqual(alpha["source_alpha_mode"], facts["source_mode"])
+                self.assertEqual(alpha["output_alpha_mode"], facts["output_mode"])
+                self.assertEqual(alpha["output_alpha_cutoff"], 0.5)
+                self.assertTrue(alpha["double_sided"])
+                self.assertEqual(asset["visual_qualification"], "Not performed; staged source candidate only.")
+
+        flower_alpha = assets["polyhaven_flower_empodium_d"]["material_alpha"]
+        self.assertIn("Source BLEND changed to MASK", flower_alpha["mode_change"])
+        for source_id in ("polyhaven_fern_02", "polyhaven_flower_empodium"):
+            source = next(item for item in catalog["sources"] if item["id"] == source_id)
+            source_variant = next(item for item in manifest["variants"] if item["source_id"] == source_id)
+            self.assertEqual(source["license"], "CC0-1.0")
+            self.assertEqual(
+                source["conversion_proof_sha256"],
+                source_variant["source_conversion_proof_sha256"],
+            )
+        self.assertEqual(
+            library_files[library.UNDERSTORY_NOTICE],
+            (library.UNDERSTORY_SOURCE_DIR / "SOURCE_LICENSE.md").read_bytes(),
+        )
 
     def test_all_quaternius_tree_buffers_clamp_only_reviewed_color_components(self) -> None:
         with ZipFile(library.ARCHIVE) as standard, ZipFile(library.CROPS_ARCHIVE) as crops, ZipFile(
@@ -354,9 +441,9 @@ class BuildLibraryTests(unittest.TestCase):
                 oak_archive,
             )
 
-        self.assertEqual(catalog["counts"]["total_assets"], 24)
-        self.assertEqual(catalog["counts"]["trees"], 9)
-        self.assertEqual(len(catalog["sources"]), 7)
+        self.assertEqual(catalog["counts"]["total_assets"], 28)
+        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(len(catalog["sources"]), 10)
         oak = next(asset for asset in catalog["assets"] if asset["id"] == library.OAK_ASSET_ID)
         self.assertEqual(oak["source_id"], library.OAK_SOURCE_ID)
         self.assertEqual(oak["source_triangles"], 5_303)
@@ -602,11 +689,25 @@ class BuildLibraryTests(unittest.TestCase):
 
             production_before = file_snapshot(library.RUNTIME)
             maple_manifest = json.loads(library.MAPLE_MANIFEST.read_text(encoding="utf-8"))
+            landscapelab_manifest = json.loads(library.LANDSCAPELAB_MANIFEST.read_text(encoding="utf-8"))
+            understory_manifest = json.loads(library.UNDERSTORY_MANIFEST.read_text(encoding="utf-8"))
             maple_source_paths = (
                 library.MAPLE_MANIFEST,
                 library.MAPLE_SOURCE_DIR / "LICENSE_MAPLE.txt",
                 *(library.MAPLE_SOURCE_DIR / item["path"] for item in maple_manifest["inputs"]),
                 *(library.MAPLE_DERIVED_DIR / item["path"] for item in maple_manifest["outputs"]),
+            )
+            landscapelab_source_paths = (
+                library.LANDSCAPELAB_MANIFEST,
+                library.LANDSCAPELAB_SOURCE_DIR / "README.md",
+                library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE,
+                *(library.LANDSCAPELAB_SOURCE_DIR / item["filename"] for item in library.LANDSCAPELAB_ASSETS.values()),
+                *(library.LANDSCAPELAB_DERIVED_DIR / item["filename"] for item in library.LANDSCAPELAB_ASSETS.values()),
+            )
+            understory_source_paths = (
+                library.UNDERSTORY_MANIFEST,
+                *(library.ROOT / item["path"] for item in understory_manifest["inputs"]),
+                *(library.UNDERSTORY_DERIVED_DIR / item["path"] for item in understory_manifest["outputs"]),
             )
             source_evidence_before = {
                 path: path.read_bytes()
@@ -615,6 +716,8 @@ class BuildLibraryTests(unittest.TestCase):
                     *library.SOURCE_NOTICES.keys(),
                     library.OAK_LICENSE_SOURCE,
                     *maple_source_paths,
+                    *landscapelab_source_paths,
+                    *understory_source_paths,
                 )
             }
             source_archive_hashes_before = {
@@ -629,6 +732,8 @@ class BuildLibraryTests(unittest.TestCase):
                     library.OAK_CONVERSION_PROOF,
                     *(library.OAK_CONVERSION_DIR / item["entry"] for item in library.OAK_CONVERSION_FILES),
                     *maple_source_paths,
+                    *landscapelab_source_paths,
+                    *understory_source_paths,
                 )
             }
 
@@ -641,8 +746,8 @@ class BuildLibraryTests(unittest.TestCase):
             )
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
-            self.assertEqual(catalog["counts"]["total_assets"], 24)
-            self.assertEqual(catalog["counts"]["trees"], 9)
+            self.assertEqual(catalog["counts"]["total_assets"], 28)
+            self.assertEqual(catalog["counts"]["trees"], 11)
             first_snapshot = file_snapshot(candidate_root)
 
             checked = subprocess.run(

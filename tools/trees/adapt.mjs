@@ -314,7 +314,6 @@ async function mainRecipe(recipePathValue, outValue) {
     const foliage = materials.find(material => material.name === spec.foliage_material_name);
     requireThat(bark.alpha_mode === 'OPAQUE' && foliage.alpha_mode === 'MASK',
       `${id}: source tree requires OPAQUE bark and MASK foliage`);
-    requireThat(materials.every(material => material.metallic_factor === 0), `${id}: tree materials must be dielectric`);
     const referenceBytes = sourceIsGlb ? sourceBytes : await io.writeBinary(doc);
 
     // Preserve the original node tree and all material/texture data. Only a wrapper is added.

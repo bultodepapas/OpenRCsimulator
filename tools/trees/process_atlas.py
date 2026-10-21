@@ -304,6 +304,12 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
     out_dir = Path(out_dir)
     _require(bake_dir.is_dir(), f"Bake directory does not exist: {bake_dir}")
     species = _load_bake(bake_dir)
+    recipe_bake: dict[str, Any] = json.loads((bake_dir / "bake.json").read_text(encoding="utf-8"))
+    realistic_recipe = "source_asset_id" in species[0]
+    recipe_id = recipe_bake.get("recipe_id")
+    if realistic_recipe:
+        _require(isinstance(recipe_id, str) and recipe_id,
+                 "Realistic source bake must identify its source recipe.")
     runtime_atlas: np.ndarray | None = None
     if runtime_atlas_path is not None:
         try:
@@ -354,6 +360,12 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
         mask_counts = validate_foliage_mask(frames["adapted_foliage_mask"], frames["adapted_albedo"], tree_id)
         tile = weighted_box_downsample_rgba(frames["adapted_albedo"])
         mask_tile = weighted_box_downsample_rgba(frames["adapted_foliage_mask"])
+        foliage_coverage: dict[str, Any] | None = None
+        if realistic_recipe:
+            foliage_coverage = {
+                "raw_capture_1024": _foliage_coverage(frames["adapted_foliage_mask"], 128),
+                "atlas_tile_512": _foliage_coverage(mask_tile, 128),
+            }
         padding, bbox = _transparent_padding(tile)
         x, y, width, height = item["atlas_rect_px"]
         runtime_alignment: dict[str, Any] | None = None
@@ -364,7 +376,7 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
             filled_runtime_labels = _align_mask_alpha_to_runtime(mask_tile, runtime_alpha, tree_id)
         atlas[y:y + height, x:x + width] = tile
         foliage_mask_atlas[y:y + height, x:x + width] = mask_tile
-        analysis_species.append({
+        species_analysis = {
             "id": tree_id,
             "bark_material_name": item["bark_material_name"],
             "foliage_material_name": item["foliage_material_name"],
@@ -378,7 +390,29 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
             "atlas_tile_alpha_bbox_px_inclusive": bbox,
             "transparent_padding_px": padding,
             "adapted_albedo_raw_alpha_values": [0, 255],
-        })
+        }
+        if realistic_recipe:
+            species_analysis.update({
+                "source_asset_id": item["source_asset_id"],
+                "source_sha256": item["source_sha256"],
+                "derived_sha256": item["derived_sha256"],
+                "source_provenance": item["source_provenance"],
+                "normalization": item["normalization"],
+                "source_derived_quality_gates": {
+                    "source_and_derived_hashes_pinned": True,
+                    "normalized_height_m": item["normalization"]["height_m"],
+                    "albedo_silhouette_iou": alpha_checks["albedo"]["iou"],
+                    "albedo_silhouette_iou_minimum": ALPHA_IOU_MINIMUM,
+                    "lit_silhouette_iou": alpha_checks["lit"]["iou"],
+                    "lit_silhouette_iou_minimum": ALPHA_IOU_MINIMUM,
+                    "albedo_rgb_mae_0_255": rgb_difference["mean_absolute_rgb_difference_0_255"],
+                    "albedo_rgb_mae_maximum_0_255": 0.05,
+                    "albedo_fraction_pixels_over_two_levels": rgb_difference["fraction_pixels_above_two_rgb_levels"],
+                    "albedo_fraction_pixels_over_two_levels_maximum": 0.001,
+                },
+                "material_foliage_coverage": foliage_coverage,
+            })
+        analysis_species.append(species_analysis)
 
     empty_slot = atlas[TILE_SIZE:, TILE_SIZE:, :]
     _require(not np.any(empty_slot[:, :, 3]), "Reserved fourth atlas tile must remain transparent.")
@@ -393,6 +427,8 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
         "alpha_cutoff": 0.5,
         "species": species,
     }
+    if realistic_recipe:
+        catalog["recipe_id"] = recipe_id
     analysis = {
         "schema": "openrc-tree-atlas-analysis v1",
         "raw_capture_size_px": RAW_SIZE,
@@ -415,6 +451,8 @@ def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None 
         "reserved_fourth_slot": "transparent",
         "species": analysis_species,
     }
+    if realistic_recipe:
+        analysis["recipe_id"] = recipe_id
 
     out_dir.mkdir(parents=True, exist_ok=True)
     atlas_path = out_dir / "atlas.png"

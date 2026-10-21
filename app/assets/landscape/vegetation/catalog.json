@@ -182,6 +182,94 @@
       }
     },
     {
+      "id": "landscapelab_tree_2026",
+      "title": "LandscapeLab Assets — Quercus and Pine",
+      "author": "LandscapeLab Assets contributors",
+      "url": "https://github.com/boku-ilen/landscapelab-assets",
+      "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
+      "license_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+      "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
+      "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352",
+      "conversion_proof": "assets/landscape/vegetation/derived/landscapelab_tree_2026/conversion_manifest.json",
+      "conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "source": {
+        "repository": "https://github.com/boku-ilen/landscapelab-assets",
+        "revision": "dfdde034c3547f9876967653d98827bd5348e52e",
+        "commit_url": "https://github.com/boku-ilen/landscapelab-assets/tree/dfdde034c3547f9876967653d98827bd5348e52e",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "license_evidence": "assets/landscape/vegetation/source/landscapelab_tree_2026/README.md",
+        "license_evidence_bytes": 1718,
+        "license_evidence_sha256": "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276",
+        "runtime_notice": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
+        "runtime_notice_bytes": 848,
+        "runtime_notice_sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+      }
+    },
+    {
+      "id": "polyhaven_fern_02",
+      "title": "Fern 02",
+      "author": "Rico Cilliers, Rob Tuytel",
+      "url": "https://polyhaven.com/a/fern_02",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_statement_url": "https://polyhaven.com/license",
+      "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "license_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+      "runtime_notice": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "runtime_notice_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+      "conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_fern_02_a.json",
+      "conversion_proof_sha256": "6b159c4a1acfcb39158590776a0d1b74d74ea969e342c06784b5c76a6ce6d36c",
+      "source": {
+        "api_files": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_files.json",
+        "api_info": "assets/landscape/vegetation/source/realistic_understory_2026/fern_02/polyhaven_info.json",
+        "authors": {
+          "Rico Cilliers": "modeling",
+          "Rob Tuytel": "scanning"
+        },
+        "id": "polyhaven_fern_02",
+        "license": "CC0-1.0",
+        "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+        "license_statement_url": "https://polyhaven.com/license",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "title": "Fern 02",
+        "url": "https://polyhaven.com/a/fern_02"
+      }
+    },
+    {
+      "id": "polyhaven_flower_empodium",
+      "title": "Flower Empodium",
+      "author": "Jenelle van Heerden, Rico Cilliers",
+      "url": "https://polyhaven.com/a/flower_empodium",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "license_statement_url": "https://polyhaven.com/license",
+      "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "license_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+      "runtime_notice": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "runtime_notice_sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d",
+      "conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_d.json",
+      "conversion_proof_sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243",
+      "source": {
+        "api_files": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_files.json",
+        "api_info": "assets/landscape/vegetation/source/realistic_understory_2026/flower_empodium/polyhaven_info.json",
+        "authors": {
+          "Jenelle van Heerden": "Photography",
+          "Rico Cilliers": "modeling"
+        },
+        "id": "polyhaven_flower_empodium",
+        "license": "CC0-1.0",
+        "license_evidence": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+        "license_statement_url": "https://polyhaven.com/license",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "title": "Flower Empodium",
+        "url": "https://polyhaven.com/a/flower_empodium"
+      }
+    },
+    {
       "id": "lolipop_grass_2026",
       "title": "Grass pack (lowpoly, game-ready)",
       "author": "LOLIPOP",
@@ -260,19 +348,19 @@
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform",
+    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform; LandscapeLab Quercus and Pine preserve supplied GLBs byte-for-byte, with source-grounded bounds and 1 m normalization metadata; Poly Haven fern and flower derivatives preserve selected source mesh primitives and binary geometry while removing only gallery transforms",
     "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
-    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping"
+    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping; LandscapeLab materials and embedded textures are preserved byte-for-byte, including their source MASK foliage conventions; understory textures preserve supplier maps; fern MASK 0.5 is retained and Flower Empodium BLEND is staged as MASK 0.5 with alpha packing recorded"
   },
   "counts": {
-    "trees": 9,
+    "trees": 11,
     "shrubs": 3,
-    "grass_and_herbs": 6,
-    "flowers": 3,
+    "grass_and_herbs": 7,
+    "flowers": 4,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 24,
-    "source_triangles_one_of_each": 51000
+    "total_assets": 28,
+    "source_triangles_one_of_each": 63406
   },
   "files": [
     {
@@ -294,6 +382,12 @@
       "sha256": "397715d253b1dd51299bb6cc785e634e4a106b89e6541d6cefcf905ffa5ee4a7"
     },
     {
+      "path": "LICENSE_LANDSCAPELAB.txt",
+      "source_entry": "assets/landscape/vegetation/source/landscapelab_tree_2026/LICENSE_LANDSCAPELAB.txt",
+      "bytes": 848,
+      "sha256": "754b47476468f64300334ef987a70ca4e908db6e25514b3c0e6478d7532a6352"
+    },
+    {
       "path": "LICENSE_MAPLE.txt",
       "source_entry": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
       "bytes": 727,
@@ -304,6 +398,12 @@
       "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt",
       "bytes": 2245,
       "sha256": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40"
+    },
+    {
+      "path": "LICENSE_UNDERSTORY.txt",
+      "source_entry": "assets/landscape/vegetation/source/realistic_understory_2026/SOURCE_LICENSE.md",
+      "bytes": 1646,
+      "sha256": "635e68871c7393659fa4de319248e9651100862afd8ad63ce73c3dbe3ee7af7d"
     },
     {
       "path": "models/additional/aredon_reed/reed.mtl",
@@ -540,6 +640,18 @@
       "sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
     },
     {
+      "path": "models/landscapelab_tree_2026/pine/pine_joined.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/pine_joined.glb",
+      "bytes": 6788748,
+      "sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8"
+    },
+    {
+      "path": "models/landscapelab_tree_2026/quercus/quercus.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus.glb",
+      "bytes": 7389596,
+      "sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e"
+    },
+    {
       "path": "models/Leaf_Pine_C.png",
       "source_entry": "glTF/Leaf_Pine_C.png",
       "bytes": 70055,
@@ -724,6 +836,66 @@
       "source_entry": "glTF/Pine_3.gltf",
       "bytes": 3827,
       "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830"
+    },
+    {
+      "path": "models/realistic_understory_2026/fern_02_a.bin",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.bin",
+      "bytes": 176176,
+      "sha256": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c"
+    },
+    {
+      "path": "models/realistic_understory_2026/fern_02_a.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.gltf",
+      "bytes": 5700,
+      "sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1"
+    },
+    {
+      "path": "models/realistic_understory_2026/flower_empodium_d.bin",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin",
+      "bytes": 101936,
+      "sha256": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c"
+    },
+    {
+      "path": "models/realistic_understory_2026/flower_empodium_d.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
+      "bytes": 7224,
+      "sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+      "bytes": 280359,
+      "sha256": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+      "bytes": 886305,
+      "sha256": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+      "bytes": 367222,
+      "sha256": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+      "bytes": 267088,
+      "sha256": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+      "bytes": 394831,
+      "sha256": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515"
+    },
+    {
+      "path": "models/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
+      "bytes": 346423,
+      "sha256": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
     }
   ],
   "assets": [
@@ -2279,6 +2451,565 @@
         "alternate_source_lods_included": [],
         "godot_import_generate": true
       }
+    },
+    {
+      "id": "landscapelab_quercus",
+      "source_id": "landscapelab_tree_2026",
+      "source_name": "Quercus",
+      "description": "Mature broadleaf Quercus tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/quercus/quercus.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/quercus.glb",
+      "source_sha256": "d4fb683939a0a6e28fb1ff409cbc73c306207f093bfcb40110ff1fe79fabbd1e",
+      "source_git_blob_sha1": "e625adef3ae04e455037c4db4d39d7f486f0a498",
+      "source_upstream_path": "Natural/Plants/Trees/Quercus/quercus.glb",
+      "source_format": "glTF 2.0 binary (GLB)",
+      "source_conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "source_triangles": 7016,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "leaves",
+        "branches"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "leaves",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.5,
+          "double_sided": true
+        },
+        {
+          "name": "branches",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -25.538609,
+          0.0,
+          -26.160007
+        ],
+        "max": [
+          26.347387,
+          59.555878,
+          24.630487
+        ],
+        "size": [
+          51.885996,
+          59.555878,
+          50.790495
+        ],
+        "height": 59.555878,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.4288176,
+          0.0,
+          -0.439251481
+        ],
+        "max": [
+          0.442397767,
+          1.0,
+          0.413569381
+        ],
+        "size": [
+          0.871215368,
+          1.0,
+          0.852820862
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.016790953956,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 848136,
+          "sha256": "ebbb008c5dc660aa456e4efcf6eae7adc8467e86db3a2d8dfdabade6fa6cebf4"
+        },
+        {
+          "index": 1,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2528904,
+          "sha256": "ead116401dd0ec02eeeed2aa5490d01a19a27475ae0e1c6f2594cda2c086b83f"
+        },
+        {
+          "index": 2,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1217770,
+          "sha256": "92ab95d1900720d615ee6cf6038b7b3af2ceba2ed7ee41bc52a1a24f2f65a58b"
+        },
+        {
+          "index": 3,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2458044,
+          "sha256": "21462e7dbd2724f5414675731c26d20bf5c7f7ce93d8764514f09bde581d29dc"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "landscapelab_pine",
+      "source_id": "landscapelab_tree_2026",
+      "source_name": "Pine",
+      "description": "Mature pine tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/landscapelab_tree_2026/pine/pine_joined.glb",
+      "source_entry": "assets/landscape/vegetation/derived/landscapelab_tree_2026/pine_joined.glb",
+      "source_sha256": "74d3d4d0f541522163b1e4d24931e76640df6fdd758db0f963d109faf1a9bcf8",
+      "source_git_blob_sha1": "8634899c22a9e4a7bf8d3fc94930ed560d340dd0",
+      "source_upstream_path": "Natural/Plants/Trees/Pine/pine_joined.glb",
+      "source_format": "glTF 2.0 binary (GLB)",
+      "source_conversion_proof_sha256": "75440cfa4055ab828856e53cff69af797eaa31b2de66b3cc202495847f05ef0d",
+      "source_triangles": 4246,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_material_names": [
+        "branches.001",
+        "leaves.001"
+      ],
+      "source_material_conventions": [
+        {
+          "name": "branches.001",
+          "alpha_mode": "OPAQUE",
+          "alpha_cutoff": null,
+          "double_sided": false
+        },
+        {
+          "name": "leaves.001",
+          "alpha_mode": "MASK",
+          "alpha_cutoff": 0.206521735,
+          "double_sided": true
+        }
+      ],
+      "source_bounds_m": {
+        "min": [
+          -7.928009,
+          0.0,
+          -8.131644
+        ],
+        "max": [
+          7.767775,
+          41.153725,
+          7.985003
+        ],
+        "size": [
+          15.695783,
+          41.153725,
+          16.116648
+        ],
+        "height": 41.153725,
+        "ground_offset": 0.0
+      },
+      "normalized_bounds_1m": {
+        "min": [
+          -0.192643767,
+          0.0,
+          -0.197591939
+        ],
+        "max": [
+          0.18875022,
+          1.0,
+          0.194028694
+        ],
+        "size": [
+          0.381393987,
+          1.0,
+          0.391620633
+        ],
+        "height": 1.0,
+        "normalization_scale": 0.02429913715,
+        "ground_offset_after_scale": 0.0
+      },
+      "embedded_images": [
+        {
+          "index": 0,
+          "name": "Image_2",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 2195944,
+          "sha256": "85b5350621792705d9cc475326d97d82fcd19985270a517f2e4232f72460462a"
+        },
+        {
+          "index": 1,
+          "name": "Image_3-Image_0",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1281883,
+          "sha256": "e8fac2f0115961e0c7357b400cedf9131e660c3b25e50ddb16f9ad49103c01c6"
+        },
+        {
+          "index": 2,
+          "name": "Image_1",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1985412,
+          "sha256": "5ee8ccff7394ea5c20d678e45ae2164b42faf4b9aacdb937c4adb98b97e8efe8"
+        },
+        {
+          "index": 3,
+          "name": "Image_4",
+          "mime_type": "image/png",
+          "storage": "glb_embedded",
+          "bytes": 1098120,
+          "sha256": "8af0ed5d783f8cef1ef1a86272901da43327e01167213dabba3b795b9d4a90ba"
+        }
+      ],
+      "dependencies": [],
+      "extensions_used": [
+        "KHR_texture_transform"
+      ],
+      "source_node_transform": "identity; source Y axis is vertical and source origin is grounded",
+      "conversion": "byte-for-byte GLB copy; no geometry, material, texture, or transform edits",
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "polyhaven_fern_02_a",
+      "source_id": "polyhaven_fern_02",
+      "source_name": "fern_02_a",
+      "description": "Downloaded Fern 02 candidate",
+      "role": "herb",
+      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/fern_02_a.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.gltf",
+      "source_sha256": "a0159c5a44a58a520d4e366deddfa1630326a8f91e068233d30ed8bd67acfda1",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.bin": "fe1abb762bcbbc7ad9e86925c8080437a62add257d9280e9142fdc85c226e64c",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg": "ebfb5d76ce9cbdaec20bcd22dce9b755f0b1b8650ef29ca13555e3e6961025d7",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png": "ebfd1011899110deecdfc4df999beb989d3b2992ad355db1700a88e234fb97bd",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg": "45bce132c6e96a0864bc89ab5da51361ab3f4afa83a6669ae499ab5ca811f621"
+      },
+      "source_format": "glTF 2.0",
+      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_fern_02_a.json",
+      "source_conversion_proof_sha256": "6b159c4a1acfcb39158590776a0d1b74d74ea969e342c06784b5c76a6ce6d36c",
+      "source_triangles": 784,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "ground_offset": 0.028774,
+        "height": 0.286804,
+        "max": [
+          0.254283,
+          0.25803,
+          0.302153
+        ],
+        "min": [
+          -0.297657,
+          -0.028774,
+          -0.311268
+        ],
+        "size": [
+          0.551941,
+          0.286804,
+          0.613421
+        ]
+      },
+      "grounded_bounds_m": {
+        "max": [
+          0.254283,
+          0.286804,
+          0.302153
+        ],
+        "min": [
+          -0.297657,
+          0.0,
+          -0.311268
+        ],
+        "size": [
+          0.551941,
+          0.286804,
+          0.613421
+        ]
+      },
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.25428348779678345,
+          0.2580300271511078,
+          0.3021530210971832
+        ],
+        "position_accessor_min": [
+          -0.2976571321487427,
+          -0.028773518279194832,
+          -0.31126806139945984
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 9,
+          "POSITION": 8,
+          "TEXCOORD_0": 10,
+          "indices": 11
+        },
+        "source_gallery_translation_m": [
+          0.0,
+          0.0,
+          1.0000001192092896
+        ],
+        "source_mesh_index": 2,
+        "source_mesh_name": "Plane.006",
+        "source_node_index": 2,
+        "source_triangles": 784,
+        "uv0_max": [
+          0.630573,
+          0.971089
+        ],
+        "uv0_min": [
+          0.073993,
+          0.02042
+        ],
+        "uv_accessor_count": 544,
+        "vertex_count": 544
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.03996468,
+          "fractional_alpha_pixel_count": 41906,
+          "height": 1024,
+          "mask_coverage_fraction": 0.15347672,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 160932,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "fern_02/textures/fern_02_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source MASK mode and cutoff are retained.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": 0.5,
+        "source_alpha_mode": "MASK"
+      },
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+          "uri": "textures/fern_02_a_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg",
+          "uri": "textures/fern_02_a_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+          "uri": "textures/fern_02_a_arm_1k.jpg"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.bin",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/fern_02_a.gltf",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/fern_02_a_nor_gl_1k.jpg"
+      ],
+      "lod": {
+        "godot_import_generate": true,
+        "note": "The selected fern node is a supplied clump variant, not a named LOD level.",
+        "source_supplied": false
+      },
+      "source_metadata": {
+        "authors": {
+          "Rico Cilliers": "modeling",
+          "Rob Tuytel": "scanning"
+        },
+        "publisher_dimensions": [
+          1972.5302457809448,
+          1724.0281701087952,
+          427.6947118341923
+        ],
+        "publisher_polycount": 6232,
+        "title": "Fern 02"
+      },
+      "visual_qualification": "Not performed; staged source candidate only."
+    },
+    {
+      "id": "polyhaven_flower_empodium_d",
+      "source_id": "polyhaven_flower_empodium",
+      "source_name": "flower_empodium_d_LOD0",
+      "description": "Downloaded Flower Empodium candidate",
+      "role": "flower",
+      "scene": "res://assets/landscape/vegetation/models/realistic_understory_2026/flower_empodium_d.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
+      "source_sha256": "efdf4d73e4607a9a9fc7a67318d3b22325d4de3a0ec9aa9ae4641d73221e1a41",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin": "32256fa72adcf06602f5d80d1b98d2042c546bb3c65aa81a871ffbe22c834a5c",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg": "5b49a907dbd98d4d421992ce38ab17db35ed79451af062104efe5bc3e437a852",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png": "117109515f0642efae69a7b04fffa021e1ed3c187abbb16954fc1351579f4515",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg": "c752bc6905810e552816189c7e157d111bb9b64402eab9625271a5b4fad4c1ab"
+      },
+      "source_format": "glTF 2.0",
+      "source_conversion_proof": "assets/landscape/vegetation/derived/realistic_understory_2026/proofs/polyhaven_flower_empodium_d.json",
+      "source_conversion_proof_sha256": "6b6ca2aabe297dbc22c1d086ca94a97a0ace4d9dc8cedb2fb897a317a31aa243",
+      "source_triangles": 360,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "ground_offset": 0.00331,
+        "height": 0.168005,
+        "max": [
+          0.096003,
+          0.164695,
+          0.10281
+        ],
+        "min": [
+          -0.098079,
+          -0.00331,
+          -0.091466
+        ],
+        "size": [
+          0.194082,
+          0.168005,
+          0.194275
+        ]
+      },
+      "grounded_bounds_m": {
+        "max": [
+          0.096003,
+          0.168005,
+          0.10281
+        ],
+        "min": [
+          -0.098079,
+          0.0,
+          -0.091466
+        ],
+        "size": [
+          0.194082,
+          0.168005,
+          0.194275
+        ]
+      },
+      "source_geometry": {
+        "geometry_policy": "supplier primitive and source binary bytes preserved exactly; no modeling, retopology, decimation or vertex edit",
+        "output_node_transform": "identity; supplier side-by-side gallery translation removed",
+        "position_accessor_max": [
+          0.09600304812192917,
+          0.16469475626945496,
+          0.1028098613023758
+        ],
+        "position_accessor_min": [
+          -0.09807941317558289,
+          -0.003309954423457384,
+          -0.09146563708782196
+        ],
+        "source_accessor_indices": {
+          "NORMAL": 13,
+          "POSITION": 12,
+          "TEXCOORD_0": 14,
+          "indices": 15
+        },
+        "source_gallery_translation_m": [
+          0.2840630114078522,
+          0.0,
+          0.0
+        ],
+        "source_mesh_index": 3,
+        "source_mesh_name": "Plane.001",
+        "source_node_index": 3,
+        "source_triangles": 360,
+        "uv0_max": [
+          0.924251,
+          0.855721
+        ],
+        "uv0_min": [
+          -0.00137,
+          0.012407
+        ],
+        "uv_accessor_count": 300,
+        "vertex_count": 300
+      },
+      "material_alpha": {
+        "alpha_packing": {
+          "fractional_alpha_fraction": 0.03312778,
+          "fractional_alpha_pixel_count": 34737,
+          "height": 1024,
+          "mask_coverage_fraction": 0.1217823,
+          "output_bit_depth": 8,
+          "pixel_count": 1048576,
+          "pixels_at_or_above_mask_cutoff_0_5": 127698,
+          "scaling": "round-nearest: output = floor((input * 255 + 32767) / 65535)",
+          "source_bit_depth": 16,
+          "source_mode": "I;16",
+          "width": 1024
+        },
+        "alpha_source": "flower_empodium/textures/flower_empodium_alpha_1k.png",
+        "double_sided": true,
+        "mode_change": "Source BLEND changed to MASK at 0.5 to assess foliage alpha scissor and avoid blended overdraw; fractional coverage below the cutoff is discarded. This staged candidate is not visually qualified.",
+        "output_alpha_cutoff": 0.5,
+        "output_alpha_mode": "MASK",
+        "source_alpha_cutoff": null,
+        "source_alpha_mode": "BLEND"
+      },
+      "textures": [
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+          "uri": "textures/flower_empodium_d_base_color_alpha_1k.png"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg",
+          "uri": "textures/flower_empodium_d_nor_gl_1k.jpg"
+        },
+        {
+          "source_entry": "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+          "uri": "textures/flower_empodium_d_arm_1k.jpg"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.bin",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/flower_empodium_d.gltf",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_arm_1k.jpg",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_base_color_alpha_1k.png",
+        "assets/landscape/vegetation/derived/realistic_understory_2026/textures/flower_empodium_d_nor_gl_1k.jpg"
+      ],
+      "lod": {
+        "alternate_source_lods_included": [],
+        "godot_import_generate": true,
+        "imported_supplied_levels": [
+          "LOD0"
+        ],
+        "note": "The selected source node is labeled LOD0; no alternate level is present in this glTF.",
+        "source_lod": "LOD0",
+        "source_supplied": true
+      },
+      "source_metadata": {
+        "authors": {
+          "Jenelle van Heerden": "Photography",
+          "Rico Cilliers": "modeling"
+        },
+        "publisher_dimensions": [
+          1322.8426575660706,
+          284.0941548347473,
+          268.3515117969364
+        ],
+        "publisher_polycount": 5820,
+        "title": "Flower Empodium"
+      },
+      "visual_qualification": "Not performed; staged source candidate only."
     },
     {
       "id": "grass_lolipop_small",

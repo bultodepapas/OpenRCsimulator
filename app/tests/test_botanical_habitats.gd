@@ -73,15 +73,37 @@ func _test_imported_habitats(root: Node3D) -> void:
 	var budget := int(root.get_meta("triangle_budget", 0)) if root != null else 0
 	var batch_limit := int(root.get_meta("batch_limit", 0)) if root != null else 0
 	var batches := int(root.get_meta("batches", 0)) if root != null else 0
+	var fern_range: Vector2 = Habitats.HEIGHT_RANGES.get(Habitats.FERN_ASSET_ID, Vector2.ZERO)
+	var flower_range: Vector2 = Habitats.HEIGHT_RANGES.get(Habitats.FLOWER_ASSET_ID, Vector2.ZERO)
 	var reeds := 0
 	var dry_bank_plants := 0
 	var green_shrubs := 0
 	var tints_valid := true
+	var candidate_counts := {
+		Habitats.FERN_ASSET_ID: 0,
+		Habitats.FLOWER_ASSET_ID: 0,
+	}
+	var candidate_geometry_valid := true
+	var candidate_heights_valid := true
+	var candidate_triangles := 0
 	for plant_value: Variant in plants:
 		if not plant_value is Dictionary:
 			continue
 		var plant: Dictionary = plant_value
 		var asset_id := str(plant.get("asset_id", ""))
+		if candidate_counts.has(asset_id):
+			candidate_counts[asset_id] = int(candidate_counts[asset_id]) + 1
+			var catalog_asset := ImportedVegetation.get_asset(asset_id)
+			var source_triangles := int(catalog_asset.get("source_triangles", 0))
+			var expected_range: Vector2 = Habitats.HEIGHT_RANGES.get(asset_id, Vector2.ZERO)
+			candidate_triangles += source_triangles
+			candidate_geometry_valid = candidate_geometry_valid and source_triangles > 0 \
+				and source_triangles <= Habitats.MAX_ADDED_TRIANGLES \
+				and int(plant.get("source_triangles", 0)) == source_triangles
+			candidate_heights_valid = candidate_heights_valid and expected_range.x > 0.0 \
+				and expected_range.y >= expected_range.x \
+				and float(plant.get("height_m", 0.0)) >= expected_range.x \
+				and float(plant.get("height_m", 0.0)) <= expected_range.y
 		if str(plant.get("zone", "")) == "shore":
 			if asset_id == "reed_aredon":
 				reeds += 1
@@ -103,6 +125,15 @@ func _test_imported_habitats(root: Node3D) -> void:
 	_check("source vegetation carries bounded subtle instance tints", tints_valid)
 	_check("source meshes share no more than 24 runtime batches", batch_limit == 24 and batches <= batch_limit
 		and batches == root.get_child_count())
+	_check("accepted fern and Empodium source IDs are used in the built habitat",
+		int(candidate_counts.get(Habitats.FERN_ASSET_ID, 0)) > 0
+		and int(candidate_counts.get(Habitats.FLOWER_ASSET_ID, 0)) > 0)
+	_check("accepted candidate source triangles fit the 90,000 triangle scene cap",
+		candidate_geometry_valid and candidate_triangles > 0 and candidate_triangles <= Habitats.MAX_ADDED_TRIANGLES)
+	_check("fern and Empodium use the requested 0.22-0.42 m and 0.14-0.24 m ranges",
+		is_equal_approx(fern_range.x, 0.22) and is_equal_approx(fern_range.y, 0.42)
+		and is_equal_approx(flower_range.x, 0.14) and is_equal_approx(flower_range.y, 0.24)
+		and candidate_heights_valid)
 	var only_downloads := true
 	for plant_value: Variant in plants:
 		if not plant_value is Dictionary:
