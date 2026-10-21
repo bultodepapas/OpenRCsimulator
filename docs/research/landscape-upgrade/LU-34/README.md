@@ -44,6 +44,8 @@ Counts are renderer submissions after culling and LOD, measured with Mesa llvmpi
 
 The world holds 417,717 full-detail triangles (no generated LODs) and 970,334 LOD-carrying triangles. Only the close trees (101,167), the lake (7,980) and two night-light props cast real-time shadows. [Complete run](runs/attribution-720.json), [summary](runs/summary-720.json).
 
+**At 1920×1080** ([summary](runs/summary-1080.md), [run](runs/attribution-1080.json)) draw calls are identical in every view. Worst-view primitives rise 1.9% (pilot 412,840), 3.8% (ground 492,743) and 4.2% (aerial 438,160), all inside the class totals. Only generated-LOD selection changes: people and cars (+4.6k to +8.7k), the parked fleet (+2.1k to +9.5k), close trees (+2.1k, aerial) and botanicals. Aerial people/cars (43,070) exceed their 720p allocation of 38,000. The texture estimate rises 48.3 MiB, exactly 44 bytes per added pixel: these are viewport render buffers, so about 39 MiB of the 489 MiB at 720p depends on resolution. Budgets therefore stay defined at 1280×720, and the checker rejects other viewports.
+
 For reference, the 2026-10-20 RTX 3090 flights measured about 1.6–1.9 ms viewport CPU and 3.4 ms GPU render time at ~107 draws and ~249k primitives in the pilot view. That host has wide headroom. The proposed M1-class 8 GB floor (DT-01a) is unmeasured, so no absolute frame-time claim follows.
 
 ## Budget model
@@ -78,7 +80,7 @@ The downloaded LandscapeLab Quercus and pine maps, the Poly Haven fern and Empod
 
 Isolated Godot projects measured both variants of each asset in fresh processes with identical renders ([reports](texture-compression/), [fixtures](texture-compression/fixtures/)). In the production world, `Leaves.png` compression changes one pixel at the fence posts, none in the forward pilot view and 0.46% of a close veranda view. `test_imported_vegetation.gd` pins the policy and rejects a reverted or misflagged import.
 
-COLD_BUILD_PLACEHOLDER
+In the app, three fresh headless processes at low machine load measured the first `Scenery.build` at 924–1,006 ms: close vegetation 55–75 ms, botanical habitats 28–37 ms. A repeated build in the same process takes 553–573 ms. The same script measured 334–531 ms and 104–204 ms for those two stages before the change, but under parallel test load. Only the isolated per-asset loads above are a controlled comparison.
 
 ## Reduction plan for owners
 
@@ -103,4 +105,4 @@ Use a new output folder. `capture.sh` remains the SC-03 scenery-on/off and byte-
 - Frame-time calibration on DT-01a hardware, then scaling of the class totals.
 - Fill-rate and alpha-overdraw measurement, which counts cannot show.
 - The SC-03 per-view draw budget (≤ +40 scenery draws in pilot views) still fails; it now has a measured attribution to act on.
-- 1080p sensitivity run (LOD selection depends on resolution).
+- Higher qualification resolutions: measure there before scaling allocations; at 1080p, LOD growth stayed ≤ 4.2%.

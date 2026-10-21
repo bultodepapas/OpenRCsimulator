@@ -1,12 +1,11 @@
-Downloaded source: LandscapeLab Assets — Quercus, Quercus 2, Fagus and Pine
+Downloaded source: LandscapeLab Assets — Quercus and Pine
 Repository maintainer: boku-ilen
 Repository: https://github.com/boku-ilen/landscapelab-assets
 Revision: dfdde034c3547f9876967653d98827bd5348e52e
-Source files: Natural/Plants/Trees/Quercus/quercus.glb, Natural/Plants/Trees/Quercus/quercus2.glb, Natural/Plants/Trees/Fagus/Fagus.glb and Natural/Plants/Trees/Pine/pine_joined.glb
+Source files: Natural/Plants/Trees/Quercus/quercus.glb and Natural/Plants/Trees/Pine/pine_joined.glb
 License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
 License text: https://creativecommons.org/licenses/by-sa/4.0/legalcode
-Upstream license evidence: README.md in this source directory; the pinned repository README applies CC BY-SA 4.0 by default. Fagus has an additional upstream LICENSE file, retained as LICENSE_Fagus.md.
-Attribution: LandscapeLab Assets contributors; the pinned repository does not name individual creators for these files.
-Fagus leaf textures: leaves.png and leaves_normal.png derive from photographs by Krzysztof Golik, licensed CC BY-SA (https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_in_Aubrac_(2).jpg, https://commons.wikimedia.org/wiki/File:Fagus_sylvatica_in_Aubrac_(3).jpg).
+Upstream license evidence: README.md in this source directory; the pinned repository README applies CC BY-SA 4.0 by default, and neither selected asset has an additional LICENSE file.
+Attribution: LandscapeLab Assets contributors; the pinned repository does not name individual creators for these two files.
 Source changes: none. Derived/runtime model files are byte-for-byte copies of the supplied GLBs.
-Application material behavior: imported LandscapeLab trees use a duplicated StandardMaterial3D with metallic set to 0.0; textures, alpha modes, and roughness remain unchanged.
+Application material behavior: imported Quercus and Pine use a duplicated StandardMaterial3D with metallic set to 0.0; textures, alpha modes, and roughness remain unchanged.

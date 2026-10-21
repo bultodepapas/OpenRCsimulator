@@ -24,7 +24,9 @@ LICENSE_URL = "https://creativecommons.org/licenses/by-sa/4.0/"
 SOURCE_README = "README.md"
 SOURCE_README_BYTES = 1_718
 SOURCE_README_SHA256 = "87680a80f2fe326c387b1ed79c9a1a043fe0b0ce7e72d7f9ba2efe46c462e276"
-SOURCE_LICENSE_NOTICE = "LICENSE_LANDSCAPELAB.txt"
+# The vegetation library notice covers all four trees. LICENSE_LANDSCAPELAB.txt stays the
+# Quercus and Pine notice pinned by the far-tree atlas recipe (tools/trees/build.py).
+SOURCE_LICENSE_NOTICE = "LICENSE_LANDSCAPELAB_LIBRARY.txt"
 SOURCE_LICENSE_NOTICE_BYTES = 1_421
 SOURCE_LICENSE_NOTICE_SHA256 = "d30847e284ffedfad589bb687d03ab905245148efd8e629f79daa84f73bdcc99"
 SOURCE_PREFIX = "assets/landscape/vegetation/source/landscapelab_tree_2026/"

@@ -132,9 +132,9 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertIn(library.OAK_ASSET_ID, candidate_ids)
             self.assertIn("maple_tree", candidate_ids)
             self.assertIn("maple_tree", installed_ids)
-            self.assertTrue({"landscapelab_quercus", "landscapelab_pine"}.issubset(installed_ids))
-            self.assertEqual(catalog["counts"]["total_assets"], 28)
-            self.assertEqual(catalog["counts"]["trees"], 11)
+            self.assertTrue(set(library.LANDSCAPELAB_ASSETS).issubset(installed_ids))
+            self.assertEqual(catalog["counts"]["total_assets"], 30)
+            self.assertEqual(catalog["counts"]["trees"], 13)
             self.assertEqual(len(catalog["sources"]), 10)
 
             candidates = {
@@ -171,8 +171,8 @@ class BuildLibraryTests(unittest.TestCase):
         ):
             catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
 
-        self.assertEqual(catalog["counts"]["total_assets"], 28)
-        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(catalog["counts"]["total_assets"], 30)
+        self.assertEqual(catalog["counts"]["trees"], 13)
         self.assertEqual(len(catalog["sources"]), 10)
         self.assertEqual(
             library.sha256_file(library.LANDSCAPELAB_MANIFEST),
@@ -198,13 +198,32 @@ class BuildLibraryTests(unittest.TestCase):
                 "height": 41.153725,
                 "normalized_scale": 0.02429913715,
             },
+            "landscapelab_fagus": {
+                "filename": "Fagus.glb",
+                "sha256": "32542974981ccdbb3cf984e3c8bc1c1d87524fbc08589a69ed2658aba9619cff",
+                "triangles": 9312,
+                "surfaces": 2,
+                "materials": ["branches", "leaves"],
+                "height": 1.019293,
+                "normalized_scale": 0.981071877838,
+            },
+            "landscapelab_quercus2": {
+                "filename": "quercus2.glb",
+                "sha256": "e668ac1f03de63f1222754798802fae06620c3c0cac9993869bcaa87d33e0c6d",
+                "triangles": 11144,
+                "surfaces": 2,
+                "materials": ["branches", "leaves"],
+                "height": 71.853935,
+                "normalized_scale": 0.013917122237,
+            },
         }
         assets = {asset["id"]: asset for asset in catalog["assets"]}
+        self.assertEqual(set(expected), set(library.LANDSCAPELAB_ASSETS))
         self.assertTrue(set(expected).issubset(assets))
         for asset_id, facts in expected.items():
             with self.subTest(asset=asset_id):
                 asset = assets[asset_id]
-                model_dir = "quercus" if asset_id == "landscapelab_quercus" else "pine"
+                model_dir = library.LANDSCAPELAB_ASSETS[asset_id]["runtime_subdir"]
                 runtime_path = "models/landscapelab_tree_2026/" + model_dir + "/" + facts["filename"]
                 source_path = library.LANDSCAPELAB_SOURCE_DIR / facts["filename"]
                 derived_path = library.LANDSCAPELAB_DERIVED_DIR / facts["filename"]
@@ -235,6 +254,25 @@ class BuildLibraryTests(unittest.TestCase):
         self.assertEqual(pine_leaves["alpha_mode"], "MASK")
         self.assertAlmostEqual(pine_leaves["alpha_cutoff"], 0.206521735)
         self.assertTrue(pine_leaves["double_sided"])
+        for asset_id in ("landscapelab_fagus", "landscapelab_quercus2"):
+            leaves = next(
+                material
+                for material in assets[asset_id]["source_material_conventions"]
+                if material["name"] == "leaves"
+            )
+            self.assertEqual(leaves["alpha_mode"], "MASK")
+            self.assertEqual(leaves["alpha_cutoff"], 0.5)
+            self.assertTrue(leaves["double_sided"])
+
+        # Fagus leaf photographs carry their own attribution, pinned per asset.
+        fagus_license = assets["landscapelab_fagus"]["asset_license_evidence"]
+        self.assertEqual(fagus_license["upstream_path"], "Natural/Plants/Trees/Fagus/LICENSE.md")
+        fagus_license_bytes = (library.ROOT / fagus_license["path"]).read_bytes()
+        self.assertEqual(len(fagus_license_bytes), fagus_license["bytes"])
+        self.assertEqual(hashlib.sha256(fagus_license_bytes).hexdigest(), fagus_license["sha256"])
+        self.assertIn(b"Krzysztof Golik", fagus_license_bytes)
+        for asset_id in ("landscapelab_quercus", "landscapelab_pine", "landscapelab_quercus2"):
+            self.assertNotIn("asset_license_evidence", assets[asset_id])
 
         source = next(item for item in catalog["sources"] if item["id"] == "landscapelab_tree_2026")
         self.assertEqual(source["revision"], library.LANDSCAPELAB_REVISION)
@@ -243,10 +281,13 @@ class BuildLibraryTests(unittest.TestCase):
         license_notice = library_files[library.LANDSCAPELAB_NOTICE]
         self.assertEqual(
             license_notice,
-            (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE).read_bytes(),
+            (library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE_SOURCE).read_bytes(),
         )
+        self.assertEqual(source["runtime_notice"], library.LANDSCAPELAB_SOURCE_DIR.relative_to(library.ROOT).as_posix()
+                         + "/" + library.LANDSCAPELAB_NOTICE_SOURCE)
         self.assertIn(b"metallic set to 0.0", license_notice)
         self.assertIn(b"textures, alpha modes, and roughness remain unchanged", license_notice)
+        self.assertIn(b"Krzysztof Golik", license_notice)
 
     def test_polyhaven_understory_catalog_preserves_candidate_receipts_and_alpha_policy(self) -> None:
         with (
@@ -258,8 +299,8 @@ class BuildLibraryTests(unittest.TestCase):
             catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
 
         self.assertEqual(library.sha256_file(library.UNDERSTORY_MANIFEST), library.UNDERSTORY_MANIFEST_SHA256)
-        self.assertEqual(catalog["counts"]["total_assets"], 28)
-        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(catalog["counts"]["total_assets"], 30)
+        self.assertEqual(catalog["counts"]["trees"], 13)
         self.assertEqual(len(catalog["sources"]), 10)
         manifest = json.loads(library.UNDERSTORY_MANIFEST.read_text(encoding="utf-8"))
         assets = {asset["id"]: asset for asset in catalog["assets"]}
@@ -449,8 +490,8 @@ class BuildLibraryTests(unittest.TestCase):
                 oak_archive,
             )
 
-        self.assertEqual(catalog["counts"]["total_assets"], 28)
-        self.assertEqual(catalog["counts"]["trees"], 11)
+        self.assertEqual(catalog["counts"]["total_assets"], 30)
+        self.assertEqual(catalog["counts"]["trees"], 13)
         self.assertEqual(len(catalog["sources"]), 10)
         oak = next(asset for asset in catalog["assets"] if asset["id"] == library.OAK_ASSET_ID)
         self.assertEqual(oak["source_id"], library.OAK_SOURCE_ID)
@@ -709,6 +750,8 @@ class BuildLibraryTests(unittest.TestCase):
                 library.LANDSCAPELAB_MANIFEST,
                 library.LANDSCAPELAB_SOURCE_DIR / "README.md",
                 library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE,
+                library.LANDSCAPELAB_SOURCE_DIR / library.LANDSCAPELAB_NOTICE_SOURCE,
+                library.LANDSCAPELAB_SOURCE_DIR / "LICENSE_Fagus.md",
                 *(library.LANDSCAPELAB_SOURCE_DIR / item["filename"] for item in library.LANDSCAPELAB_ASSETS.values()),
                 *(library.LANDSCAPELAB_DERIVED_DIR / item["filename"] for item in library.LANDSCAPELAB_ASSETS.values()),
             )
@@ -754,8 +797,8 @@ class BuildLibraryTests(unittest.TestCase):
             )
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
-            self.assertEqual(catalog["counts"]["total_assets"], 28)
-            self.assertEqual(catalog["counts"]["trees"], 11)
+            self.assertEqual(catalog["counts"]["total_assets"], 30)
+            self.assertEqual(catalog["counts"]["trees"], 13)
             first_snapshot = file_snapshot(candidate_root)
 
             checked = subprocess.run(

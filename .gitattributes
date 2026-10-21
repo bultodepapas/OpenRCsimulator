@@ -28,6 +28,8 @@
 /docs/research/visual-quality-implementation/L6b-R2/**/*.log -whitespace
 /assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/** -text whitespace=cr-at-eol
 /assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
+# Poly Haven understory receipts are pinned with their downloaded CRLF bytes.
+/assets/landscape/vegetation/source/realistic_understory_2026/** -text whitespace=cr-at-eol
 /app/assets/landscape/vegetation/LICENSE_OAK.txt -text whitespace=-blank-at-eof,cr-at-eol
 /tools/landscape/vegetation/convert_oak.py -text whitespace=cr-at-eol
 # Maple conversion receipts and upstream files are bound by exact SHA-256 bytes.
