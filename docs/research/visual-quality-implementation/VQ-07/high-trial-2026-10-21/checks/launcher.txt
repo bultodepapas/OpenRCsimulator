@@ -1,0 +1,14 @@
+test_conflicting_renderer_driver_path_and_profile_args_are_rejected (tools.graphics.test_launch.GraphicsLauncherTests.test_conflicting_renderer_driver_path_and_profile_args_are_rejected) ... ok
+test_dry_run_is_json_and_reports_environment_removal (tools.graphics.test_launch.GraphicsLauncherTests.test_dry_run_is_json_and_reports_environment_removal) ... ok
+test_godot_discovery_prefers_explicit_path_then_env_then_pinned_path (tools.graphics.test_launch.GraphicsLauncherTests.test_godot_discovery_prefers_explicit_path_then_env_then_pinned_path) ... ok
+test_high_engine_launch_passes_renderer_resolution_and_user_args (tools.graphics.test_launch.GraphicsLauncherTests.test_high_engine_launch_passes_renderer_resolution_and_user_args) ... ok
+test_mutually_exclusive_targets_fail_before_launch (tools.graphics.test_launch.GraphicsLauncherTests.test_mutually_exclusive_targets_fail_before_launch) ... ok
+test_non_windows_ignores_pinned_windows_binary (tools.graphics.test_launch.GraphicsLauncherTests.test_non_windows_ignores_pinned_windows_binary) ... ok
+test_packaged_executable_omits_project_path (tools.graphics.test_launch.GraphicsLauncherTests.test_packaged_executable_omits_project_path) ... ok
+test_resolution_validation_and_duplicate_profile_rejection (tools.graphics.test_launch.GraphicsLauncherTests.test_resolution_validation_and_duplicate_profile_rejection) ... ok
+test_standard_removes_inherited_high_profile_and_passes_exit_code (tools.graphics.test_launch.GraphicsLauncherTests.test_standard_removes_inherited_high_profile_and_passes_exit_code) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.031s
+
+OK

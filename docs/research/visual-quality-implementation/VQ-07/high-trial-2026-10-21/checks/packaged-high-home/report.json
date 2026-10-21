@@ -1,0 +1,58 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0647ba7d-52bc-422e-99fd-594a581282e7",
+  "command": [
+    "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\release\\OpenRC Simulator.exe",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--quit-after",
+    "120"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:29:29.433653+00:00",
+  "label": "packaged-high-home",
+  "log": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\packaged-high-home-0vf6bff1\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\packaged-high-home-0vf6bff1\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "OpVectorExtractDynamic is not supported yet.",
+        "OpVectorExtractDynamic is not supported yet."
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 15,
+      "message": "4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+      "context": [
+        "   at: cleanup (core/object/object.cpp:2536)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.312,
+  "log_bytes": 932,
+  "log_sha256": "a0cb71d54721007ac1fd06388802cfbb6f34f35bb0cd17937003d697f6218718"
+}

@@ -55,7 +55,7 @@ The final source (including both night fixes) was rerun at actual 1920×1080: p5
 
 ## Local Windows build
 
-The final manual Windows export succeeds and launches both renderers in native production night captures. Packaged Standard matches the source Standard PNG byte-for-byte, and packaged High matches the final source High PNG byte-for-byte. Export/launch receipts are retained. Local build: `D:/OpenRCsimulator-scratch/high-graphics-20261021/release/OpenRC Simulator.exe`, with its adjacent `openrc_ground_vehicle.dll`; identities are in `manifest.json`. This is an unsigned local trial (`export-manual`), not a published release or cross-platform validation. The production restart handler is exercised in source binaries; packaged Home-menu restart remains an open check.
+The final manual Windows export succeeds and launches both renderers in native production night captures; the final packaged High Home startup also passes its native smoke check. Packaged Standard matches the source Standard PNG byte-for-byte, and packaged High matches the final source High PNG byte-for-byte. Export/launch receipts are retained. Local build: `D:/OpenRCsimulator-scratch/high-graphics-20261021/release/OpenRC Simulator.exe`, with its adjacent `openrc_ground_vehicle.dll`; identities are in `manifest.json`. This is an unsigned local trial (`export-manual`), not a published release or cross-platform validation. The production restart handler is exercised in source binaries; packaged Home-menu restart remains an open check.
 
 ## Remaining gates and known limits
 

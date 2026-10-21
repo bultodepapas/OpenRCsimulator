@@ -19,7 +19,6 @@
     "app/scenery/population_person.gdshader": "ac6a8b5a9345da4e7d91db7c44b2d7b3339874d9a09ef9c1877973df5336b5ce",
     "app/scenery/vertex_color_linear.gdshaderinc": "7fa64aa95a01b9d49b7548a0de74a9281fa1e90efa58ff4efa6a7c17c3c0a667",
     "app/scenery/vertex_color_linear.gdshaderinc.uid": "a4cfb43abc12eb84baaeea5c1e4064aa3a085d5c5670431d7d8a8c4137f69ff3",
-    "app/tests/test_field_population_collection.gd.uid": "056b461eced766d6ea0f5d0aae8e64b49ef8119ad8de38bf2cbf589e6d90c384",
     "app/tests/test_high_graphics_profile.gd": "1eb6da443ca38586d3c9d6d71791fc6bac9aab6e519947426d75c2d7fff8b1f6",
     "app/tests/test_high_graphics_profile.gd.uid": "7fe28bb33f03bb52447482598b30a0a074280788308af6a7da7d1f5cf1195e69",
     "app/tests/test_high_graphics_restart.gd": "d63059d6c3c64de21abe6e866c2a77d4622013588e8db2cf031fda4f5163dbe4",
@@ -36,9 +35,10 @@
     "high-final-source-flight.json": "4ef32be2bdf073ecb0abc6bd4bffd83e67bd75d2c67fb4fb722d6eeb089165e3",
     "high-flight-01.json": "5ee14a0c4547c916f3498272220f2d721cc4b80679919c3fb7ee6c45dfec64c6",
     "high-fullscreen-flight.json": "609f925c4ab7fa1205d829630a7f56c0fe6f969dc43aaf9b9e9b108e2514ce39",
-    "README.md": "a376a6de8471148eb8b9ca04745c1961e41dabdd13dcfd5968c9f7adb45887a6",
+    "README.md": "270d1ead7937a7ff2cbf6874bc44c0a32944d42a7c01006ab749988823e7458f",
     "standard-fullscreen-flight.json": "5b34fc2fa83fd8d16ea889fee1a8bf65c0f2e25f6d65ec348217a2d27394a82e",
     "standard-parity.json": "b54544d0906b2cb0967351a79efa49d152d0a2f6466403b7d39a674dbefda80b",
+    "checks/launcher.txt": "45952eb9632c0d083f5cb535f0c3068e4f4d2c8ba3aed1fcfd5b4146fbb75935",
     "checks/bare-forward-flight-01/engine.log": "6ee027e395b64118eb15429c4a3c6861c9458c553dfc437bce0b4c138b4d3553",
     "checks/bare-forward-flight-01/report.json": "e6786854bec1499acd7203ae84feadfa66bff819c895ccb2b6c18bf2f5c00c06",
     "checks/baseline-gl/engine.log": "6f2aea32aad111005d5d1bb053a18662843c1afbb8f1d27c901dd58e62990bb2",
@@ -59,6 +59,10 @@
     "checks/high-flight-01/report.json": "ea931b4625f22c3e01e1074f334c5e227e4e0ad19ba3c7208f312b4482905529",
     "checks/high-fullscreen-flight/engine.log": "1cc1bad83bf68ed6296101f478f189f681a77af87ac430f20f493c3620942335",
     "checks/high-fullscreen-flight/report.json": "7482ac4687e6bd380b6dc3aaef14168df2401bbd52c6864157dedc056a5a565f",
+    "checks/high-profile-headless-final/engine.log": "83f73a716ad117958eec29ab133b33777f7c05d283fe3f7f81e714a59bb05dc7",
+    "checks/high-profile-headless-final/report.json": "ad3185a1f531c2ead59628b297c192c7b96bcd1705350cf8cb58f84144545fe3",
+    "checks/high-restart-headless-final/engine.log": "772f866313531de51660c748522d3adcdbc8b6283dc67937920085d806c39c05",
+    "checks/high-restart-headless-final/report.json": "3dd0abd21739915856cf6726a01ef218ba59a3d05c3d81147161e88f8357e292",
     "checks/high-restart-ui-native/engine.log": "e952ad1667a28ca90c5991cdc9c90a669a5ce5a1e3091893da4cbe8cd11e1507",
     "checks/high-restart-ui-native/report.json": "396a56dd7f155e26f73a45896d9852349ff5490df00d65936e392cc40f92ecdd",
     "checks/high-unit-native/engine.log": "0b6b483bcbb7a9b9b2528804b2179a858faac8c29d798f59906ce90f4253d650",
@@ -69,6 +73,8 @@
     "checks/high-world-night-final/report.json": "5577628a115e0234719efd2ddf6fa15a47f1d8321e8976a8c47922892d9e60a0",
     "checks/high-world-night-fixed/engine.log": "4554a58d61dcd9cc5e38389e63649e4e770c209a6c7ea7902c8b412249e294ee",
     "checks/high-world-night-fixed/report.json": "971ac909e045d979e91f73b4c188f518af5c86d8f7cf5b1f4afda78a396f0603",
+    "checks/packaged-high-home/engine.log": "a0cb71d54721007ac1fd06388802cfbb6f34f35bb0cd17937003d697f6218718",
+    "checks/packaged-high-home/report.json": "3da60d5e8e413530889265e7bf3747aad6a326ea631d132cbb4bd46b3aa7a69a",
     "checks/packaged-high-night/engine.log": "02db4bd3c5561175b8d7e9fd024048bd55582648864f04045f48f1e9fb5b4c0f",
     "checks/packaged-high-night/report.json": "e35a7fe7df6441450b1e72703bcdfb36488a97d839d50845010789560b7cba2b",
     "checks/packaged-standard-night/engine.log": "8eac06ebddc67c625cb362e007c04334cf3117d01e2c06175ed464a90eb7a76f",
@@ -146,5 +152,9 @@
       "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
     }
   },
-  "native_restart_stages_pass": true
+  "native_restart_stages_pass": true,
+  "night_package_source_png_parity": {
+    "standard": true,
+    "high": true
+  }
 }
