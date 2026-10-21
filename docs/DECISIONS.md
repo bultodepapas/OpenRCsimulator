@@ -721,3 +721,19 @@ installed power, so top speed, ground rpm and climb agree with their anchors
 together. The Stik keeps the bare candidate until its owner adopts the variant.
 Revisit with a tach and thrust reading of the actual installation.
 [Evidence](research/extra-300-realism/EX-14/README.md#ex-14g--installed-engine).
+
+### 2026-10-21 — FASER-fitted post-stall polar for the Extra; separated centre of pressure waits for spin physics (EX-14h)
+
+With the owner's delegation, give the Extra the D8b-R2d tabulated post-stall
+polar (v2 method, full spanwise progression) fitted to NASA FASER's measured
+lift retention and stall-onset roll damping. It replaces the legacy blend's
+14–18° roll instability, the violent stall wing drop that owners do not report.
+Unlike the Stik, the Extra still spins with it, so D8b-R2's blocker does not
+apply. Section-only polars (Sandia NACA 0012/0015 at Re 3.6·10⁵ around the
+plan's 12.9 % rib) were rejected: their onset damping is neutral or violently
+unstable. Do not adopt the measured separated-flow centre of pressure yet. It
+gives the owners' low-rate mush but turns the card's upright spin into a
+skidding spiral, because the model's spin is already an accelerating spiral
+dive. Revisit after spin physics with rotation and separation dynamics
+(D10-R4, D8b-R2d-v3).
+[Evidence](research/extra-300-realism/EX-14/README.md#ex-14h--post-stall-wing-polar).
