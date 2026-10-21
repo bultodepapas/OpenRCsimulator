@@ -1,8 +1,4 @@
 {
-  "attached_fraction_14_17_deg": [
-    0.9349999999999999,
-    0.08999999999999998
-  ],
   "generator": "research/extra-300/ex14/fit_wing_polar.gd",
   "knot_angles_deg": [
     18.0,
@@ -14,13 +10,13 @@
     1.0,
     0.86,
     0.86,
-    0.86
+    0.82
   ],
   "measured": [
     "research/flight-robustness/d8b-r2/analog/faser_cl.csv",
     "research/flight-robustness/d8b-r2/analog/faser_clp.csv"
   ],
-  "method": "D8b-R2d post-stall v2 recipe with the attached-fraction knots fitted (EX-14h)",
+  "method": "D8b-R2d post-stall v2 recipe (research/flight-robustness/d8b-r2/analog/make_v2.gd) on the Extra (EX-14h)",
   "negative": [
     8.0,
     0.5716680249081675,
@@ -63,11 +59,11 @@
     14.0,
     0.9289604215427976,
     0.070042,
-    0.9349999999999999,
+    0.85,
     17.0,
     0.9289604215427976,
     0.11913290909090908,
-    0.08999999999999998,
+    0.3,
     20.0,
     0.8856089352041338,
     0.16822381818181817,
@@ -81,23 +77,23 @@
     0.34617912500000003,
     0.0,
     36.0,
-    0.7989059625268059,
+    0.761747545665094,
     0.46154367500000004,
     0.0,
     45.0,
-    0.7527083218108095,
+    0.7291119298934288,
     0.6487898595031245,
     0.0,
     55.0,
-    0.6578250817962198,
+    0.6444228019505571,
     0.8551771235962038,
     0.0,
     65.0,
-    0.5117234628260071,
+    0.5051471660178659,
     1.0352853025961954,
     0.0,
     77.0,
-    0.2813798832335138,
+    0.2796468266920136,
     1.1857307167056574,
     0.0,
     90.0,
@@ -105,9 +101,9 @@
     1.239139,
     0.0
   ],
-  "rms_clp_error_10_17_5_deg": 0.23603407511408353,
-  "rms_retention_error_15_30_deg": 0.03799282776714592,
+  "rms_clp_error_10_17_5_deg": 0.2548009095004586,
+  "rms_retention_error_15_30_deg": 0.059279131539728566,
   "spanwise_progression": 1.0,
-  "whole_aircraft_cl_max": 1.0358662787981352,
-  "whole_aircraft_cl_max_alpha_deg": 18.0
+  "whole_aircraft_cl_max": 1.0016978546549626,
+  "whole_aircraft_cl_max_alpha_deg": 14.0
 }
