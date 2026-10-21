@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "cf43cf038dd16356d54fe0a2588a385252644ad7babd5c8dfa360e7f3557f6a3",
+        "expected_source_sha256": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
         "lines": [
           {
             "id": "engine_main",

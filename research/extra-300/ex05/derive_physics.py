@@ -571,6 +571,17 @@ GE_SRC_T = (f"research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of
 note("ground effect", "induced c, e; tail c, e (VLM fit)", [GE["fit_induced"]["coefficient"], GE["fit_induced"]["exponent"], GE["fit_tail"]["coefficient"], GE["fit_tail"]["exponent"]],
      f"EX-14e image-method VLM of this planform, faded runtime law; ARP {arp_wheels:.3f} m above the main-wheel contact in a level attitude (x {x_wheels:.3f})")
 
+# --- EX-14h: post-stall wing polar (research/extra-300/ex14/fit_wing_polar.gd fits it on this data without the polar) --
+WP = json.load(open(ROOT / "research/extra-300/ex14/wing_polar_fit.json"))
+WP_SRC = (f"EX-14h, research/extra-300/ex14/fit_wing_polar.gd: the D8b-R2d post-stall v2 recipe (make_v2.gd) on this wing's calibrated "
+          f"attached line; post-peak knots {WP['knot_fractions_of_peak']} of the strip peak at {WP['knot_angles_deg']} deg fitted with full spanwise "
+          f"progression to NASA FASER's measured whole-aircraft lift retention and stall-onset roll damping (Ultra Stick 120, Re ~3.6e5; Owens et al. "
+          f"AIAA 2006-3306 Fig. 2a, Hoe et al. AIAA 2012-4645 Fig. 14): RMS errors {WP['rms_retention_error_15_30_deg']:.3f} retention, "
+          f"{WP['rms_clp_error_10_17_5_deg']:.3f} Clp. Replaces the legacy blend's 14-18 deg roll instability (the violent stall wing drop; owners report a "
+          f"mild mushing stall). Analog RC airframe, not an Extra measurement")
+note("aero", "post-stall polar knots (fraction of strip peak, EX-14h)", WP["knot_fractions_of_peak"],
+     f"D8b-R2d v2 recipe fitted to FASER retention and onset roll damping; RMS {WP['rms_retention_error_15_30_deg']:.3f} / {WP['rms_clp_error_10_17_5_deg']:.3f}")
+
 # --- Assemble ----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
 D = lambda how: f"{SCRIPT}: {how}"
@@ -736,6 +747,15 @@ data = {
             "induced_exponent": q(GE["fit_induced"]["exponent"], "1", "derived", GE_SRC_I),
             "downwash_coefficient": q(GE["fit_tail"]["coefficient"], "1", "derived", GE_SRC_T),
             "downwash_exponent": q(GE["fit_tail"]["exponent"], "1", "derived", GE_SRC_T),
+        },
+        # EX-14h: the D8b-R2d tabulated wing polar with full spanwise stall progression, fitted to an RC-class analog.
+        # The rows bypass q()'s rounding: the loader requires the first row on the attached line within 1e-9.
+        "wing_polar": {
+            "method": "tabulated-wing-v1",
+            "basis": "finite-wing-strip-reference",
+            "spanwise_progression": q(WP["spanwise_progression"], "1", "derived", "EX-14h: full spanwise stall progression from the calibrated induced map (strip loading relative to the wing mean), as D8b-R2d post-stall v2"),
+            "positive": dict(q(0.0, "deg, 1, 1, 1", "estimated", WP_SRC + "; pre-peak knots and profile CD from the D8b-R2 fixture recipe, separated from 20 deg, Viterna beyond 36 deg"), value=WP["positive"]),
+            "negative": dict(q(0.0, "deg, 1, 1, 1", "estimated", "EX-14h: the D8b-R2 fixture recipe's negative branch on this wing's attached line, retention 0.90; no measured negative branch"), value=WP["negative"]),
         },
     },
     "propulsion": json.loads(json.dumps(stik["propulsion"])),

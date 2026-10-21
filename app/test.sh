@@ -398,6 +398,8 @@ echo "== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candid
 run --script "$HERE/../research/flight-robustness/d8b-r2/make_candidates.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_analog.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_v2.gd" -- --check
+echo "== EX-14h: the Extra's post-stall wing polar fit is not stale (research/extra-300/ex14/fit_wing_polar.gd --check)"
+run --script "$HERE/../research/extra-300/ex14/fit_wing_polar.gd" -- --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_pullup_cli.py"
 
 echo "== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"
