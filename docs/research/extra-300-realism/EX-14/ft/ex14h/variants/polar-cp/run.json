@@ -1,0 +1,19 @@
+{
+  "card": "ft-card-v5",
+  "commit": "aa58d441d4cd506b37ba5d281f260b4b49a16d51",
+  "dirty_paths": [],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "disposable copy of app/ (EX-14h README)",
+  "only": "stall_power_off,stall_power_on,spin,snap_roll,stall_turning,stall_cross_controlled,stall_held,stall_inverted,spin_inverted,pitch_pull",
+  "aircraft": {
+    "gp-extra-300s-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 215.7,
+      "valid_tests": 10,
+      "tests": 10,
+      "data_file": "data/aircraft/gp_extra_300s_60.json",
+      "data_sha256": "adb7907bb7ade47d87a4977c8308b0a8b385b5d1e0dd7b0a4709cdb747291b99"
+    }
+  }
+}

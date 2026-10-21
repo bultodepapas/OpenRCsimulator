@@ -1,0 +1,19 @@
+{
+  "card": "ft-card-v5",
+  "commit": "3bfdc64f5a455556fbe767ea6010ad1094e03578",
+  "dirty_paths": [],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "app",
+  "only": null,
+  "aircraft": {
+    "gp-extra-300s-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 1178.7,
+      "valid_tests": 40,
+      "tests": 40,
+      "data_file": "data/aircraft/gp_extra_300s_60.json",
+      "data_sha256": "cf43cf038dd16356d54fe0a2588a385252644ad7babd5c8dfa360e7f3557f6a3"
+    }
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "format": "ft-card-v5",
+  "aircraft": "gp-extra-300s-60",
+  "name": "Great Planes Extra 300S .60",
+  "data_sha256": "c9c218d5c9e44cf71862e9af4f84883c9c8ae123f89e4a10a77b8047d0168b01",
+  "mass_kg": 3.8195476,
+  "wing_area_m2": 0.479999,
+  "span_m": 1.6256,
+  "start_speed_mps": 22.0,
+  "stall_speed_estimate_mps": 11.0153534966637,
+  "stall_start_alpha_deg": 13.2771601230363,
+  "engine": "4.7.2-stable (official)",
+  "results": {
+    "stall_power_off": {
+      "valid": true,
+      "metrics": {
+        "stall_speed_mps": 11.11,
+        "stall_alpha_deg": 21.0,
+        "wing_drop": "left",
+        "bank_in_first_second_deg": -74.6,
+        "max_bank_in_recovery_deg": 74.6,
+        "altitude_lost_m": 39.1,
+        "recovery_time_s": 4.51,
+        "break_kind": "wing drop or sink",
+        "deceleration_before_break_mps2": 0.47,
+        "ratio_to_cl_max_estimate": 1.009
+      },
+      "notes": [],
+      "wall_s": 15.378
+    },
+    "spin": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "steady_turn_time_s": 1.07,
+          "turns_in_6_s": 3.8,
+          "height_lost_per_turn_m": 23.3,
+          "max_alpha_deg": 28.2,
+          "recovery_turns": 0.24,
+          "recovery_time_s": 0.25,
+          "total_height_lost_m": 136.5,
+          "recovered": true,
+          "entered": "spin"
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "steady_turn_time_s": 1.18,
+          "turns_in_6_s": 3.47,
+          "height_lost_per_turn_m": 25.5,
+          "max_alpha_deg": 28.7,
+          "recovery_turns": 0.22,
+          "recovery_time_s": 0.25,
+          "total_height_lost_m": 132.1,
+          "recovered": true,
+          "entered": "spin"
+        }
+      ],
+      "wall_s": 14.414
+    },
+    "snap_roll": {
+      "valid": true,
+      "metrics": {},
+      "notes": [
+        "right snap: autorotation ended 35° short of the finish (autorotation ended)",
+        "left snap: autorotation ended 80° short of the finish (autorotation ended)"
+      ],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "entry_speed_mps": 17.78,
+          "alpha_before_45_deg_of_roll_deg": 26.8,
+          "max_alpha_deg": 26.8,
+          "entered": "snap (stalled autorotation)",
+          "release_reason": "autorotation ended",
+          "release_after_deg": 324.9,
+          "autorotation_short_of_finish_deg": 35.1,
+          "time_to_release_s": 1.72,
+          "peak_roll_rate_dps": 322.9,
+          "mean_roll_rate_dps": 188.8,
+          "mean_yaw_rate_dps": 92.0,
+          "yaw_to_roll_ratio": 0.487,
+          "stop_after_deg": 327.2,
+          "stop_error_deg": -32.8,
+          "peak_load_factor_g": 2.0,
+          "height_lost_m": 27.2,
+          "time_to_level_s": 2.38,
+          "heading_change_at_stop_deg": 24.8,
+          "exit_bank_deg": 0.0,
+          "recovered": true
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "entry_speed_mps": 17.78,
+          "alpha_before_45_deg_of_roll_deg": 26.9,
+          "max_alpha_deg": 26.9,
+          "entered": "snap (stalled autorotation)",
+          "release_reason": "autorotation ended",
+          "release_after_deg": 279.8,
+          "autorotation_short_of_finish_deg": 80.2,
+          "time_to_release_s": 1.69,
+          "peak_roll_rate_dps": 241.9,
+          "mean_roll_rate_dps": 165.8,
+          "mean_yaw_rate_dps": 80.4,
+          "yaw_to_roll_ratio": 0.485,
+          "stop_after_deg": 280.9,
+          "stop_error_deg": -79.1,
+          "peak_load_factor_g": 2.16,
+          "height_lost_m": 31.7,
+          "time_to_level_s": 2.54,
+          "heading_change_at_stop_deg": 1.2,
+          "exit_bank_deg": 0.0,
+          "recovered": true
+        }
+      ],
+      "wall_s": 11.98
+    },
+    "stall_held": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "controls_neutral",
+          "break_kind": "wing drop or sink",
+          "stall_speed_mps": 11.11,
+          "max_bank_held_deg": 179.3,
+          "max_rotation_rate_dps": 449.2,
+          "rotation_rate_last_2_s_dps": 424.6,
+          "heading_change_held_deg": -1540.5,
+          "height_lost_held_m": 83.5,
+          "outcome": "spin entry",
+          "height_lost_to_recovery_m": 131.4,
+          "recovery_time_s": 2.55,
+          "recovered": true
+        },
+        {
+          "case": "wings_level",
+          "break_kind": "wing drop or sink",
+          "stall_speed_mps": 11.11,
+          "max_bank_held_deg": 122.3,
+          "max_rotation_rate_dps": 182.0,
+          "rotation_rate_last_2_s_dps": 171.0,
+          "heading_change_held_deg": -667.7,
+          "height_lost_held_m": 86.2,
+          "outcome": "spin entry",
+          "height_lost_to_recovery_m": 123.4,
+          "recovery_time_s": 2.02,
+          "recovered": true
+        }
+      ],
+      "wall_s": 35.127
+    }
+  }
+}
