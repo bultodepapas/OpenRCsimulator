@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok imported vegetation proxy world builds
+ok shade-tree source spec resolves
+ok bush source spec resolves
+ok sapling source spec resolves
+ok stable shade-tree trunk and crown proxy IDs remain present
+ok stable bush proxy ID remains present
+ok sapling reuses the tree trunk/crown proxy profile with a distinct ID
+ok trunk width comes from source bounds with its wind allowance
+ok crown spans the imported upper uniform-height bounds
+ok shade-tree damage keys remain stable by source placement and part
+ok sapling stem is bounded from its imported size and wind allowance
+FAIL sapling crown spans its imported uniform-height bounds 
+ok sapling damage keys retain the source placement group and part
+ok bush box uses imported uniform-height source bounds and wind margin
+ok same imported vegetation records keep collision identity
+ok shade-tree imported crown remains a physical soft-contact proxy
+FAIL mature and sapling aliases expose every retained collision source 
+ok landscapelab_pine collision world builds
+ok landscapelab_pine has a physical crown proxy
+ok landscapelab_pine crown responds as soft foliage without trunk contact
+ok landscapelab_quercus collision world builds
+ok landscapelab_quercus has a physical crown proxy
+ok Quercus crown contains the full pinned leaf-triangle lower bound
+ok Quercus witness lies below the old crown edge and outside its trunk capsule
+ok Quercus lower off-axis foliage sweep hits the soft crown
+ok landscapelab_quercus crown responds as soft foliage without trunk contact
+ok maple_tree collision world builds
+ok maple_tree has a physical crown proxy
+ok asymmetric maple crown bounds cover its rotated source footprint
+ok maple_tree crown responds as soft foliage without trunk contact
+ok bush imported bounds remain a physical soft-contact proxy
+ok sapling imported crown remains a physical soft-contact proxy
+vegetation collision proxies: 32 checks, 2 failures

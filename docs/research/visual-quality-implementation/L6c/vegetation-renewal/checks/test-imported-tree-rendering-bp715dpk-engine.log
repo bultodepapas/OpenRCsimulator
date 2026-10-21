@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for oak_tree because source material -9223371999928121820 is unsupported (transparency mode is not opaque or alpha scissor)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:385)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] _test_oak_blend_fails_closed_to_static_source_material (res://tests/test_imported_tree_rendering.gd:643)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:34)
+WARNING: Tree wind is disabled for multipart-fixture: a shared multi-part bend frame is not qualified
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:364)
+       [2] _test_tree_wind_transform_guard (res://tests/test_imported_tree_rendering.gd:285)
+       [3] _initialize (res://tests/test_imported_tree_rendering.gd:35)
+WARNING: Tree wind is disabled for common_tree_1 because a placement transform is unsupported (part is not upright around local Y)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:434)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:394)
+       [2] build (res://scenery/imported_vegetation.gd:134)
+       [3] _test_tree_wind_transform_guard (res://tests/test_imported_tree_rendering.gd:298)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:35)
+WARNING: ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:336)
+       [1] _tree_cell_size_from_options (res://scenery/imported_vegetation.gd:324)
+       [2] build (res://scenery/imported_vegetation.gd:115)
+       [3] _test_invalid_cell_option_falls_back (res://tests/test_imported_tree_rendering.gd:666)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:36)
+WARNING: ImportedVegetation option tree_wind must be a boolean; ignoring it
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:336)
+       [1] _tree_wind_from_options (res://scenery/imported_vegetation.gd:305)
+       [2] build (res://scenery/imported_vegetation.gd:116)
+       [3] _test_invalid_cell_option_falls_back (res://tests/test_imported_tree_rendering.gd:668)
+       [4] _initialize (res://tests/test_imported_tree_rendering.gd:36)
+imported tree rendering tests passed

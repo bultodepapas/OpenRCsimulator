@@ -125,6 +125,8 @@ def godot_command(
         str(PROBE),
         "--resolution",
         f"{width}x{height}",
+        "--position",
+        "0,0",
         "--disable-vsync",
         "--max-fps",
         str(fps),

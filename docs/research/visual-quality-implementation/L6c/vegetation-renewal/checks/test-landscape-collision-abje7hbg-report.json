@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "425f6187-b08e-475f-b379-a27fb08306b8",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_landscape_collision.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T00:22:37.149194+00:00",
+  "label": "test-landscape-collision",
+  "log": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\checks\\final\\test-landscape-collision-abje7hbg\\engine.log",
+  "report": "D:\\OpenRCsimulator-vegetation-renewal-2026-10-20\\checks\\final\\test-landscape-collision-abje7hbg\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "landscape collision:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.719,
+  "log_bytes": 2795,
+  "log_sha256": "c4a368e1a52400a47e618c1494e6d509a8a056ef668a18bda60311d761c9245b"
+}

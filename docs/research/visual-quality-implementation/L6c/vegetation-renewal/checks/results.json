@@ -1,0 +1,47 @@
+[
+  {
+    "test": "test_imported_vegetation",
+    "returncode": 0,
+    "seconds": 1.25
+  },
+  {
+    "test": "test_botanical_habitats",
+    "returncode": 0,
+    "seconds": 2.609
+  },
+  {
+    "test": "test_landscape_tree_bounds",
+    "returncode": 0,
+    "seconds": 2.141
+  },
+  {
+    "test": "test_landscape_population",
+    "returncode": 0,
+    "seconds": 2.984
+  },
+  {
+    "test": "test_downloaded_habitats",
+    "returncode": 1,
+    "seconds": 1.422
+  },
+  {
+    "test": "test_woodland_edge_habitat",
+    "returncode": 0,
+    "seconds": 1.125
+  },
+  {
+    "test": "test_tree_wind",
+    "returncode": 0,
+    "seconds": 0.484
+  },
+  {
+    "test": "test_landscape_vegetation",
+    "returncode": 1,
+    "seconds": 4.016
+  },
+  {
+    "test": "test_scenery_build",
+    "returncode": 1,
+    "seconds": 7.484
+  }
+]

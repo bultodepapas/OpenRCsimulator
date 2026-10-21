@@ -1,0 +1,75 @@
+{
+  "format": "openrc-afc-raw-sample-reassessment v1",
+  "scope": "Recompute raw percentiles and validate warmup/duration/sample coherence; existing native captures are unchanged.",
+  "reducer_sha256": "9ad6e06dc15a58aaebcea81c301c61d82d95e0f707dda6354d687d53c92a5007",
+  "tests_sha256": "8b4624cb010e489819f825908a768f099e0279d980c0f1a4fee7504befb08e7b",
+  "unit_tests": 10,
+  "cases": [
+    {
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "count": 0,
+      "simulation_wall_ratio": 1.0000892128745522,
+      "frame_ms": {
+        "p50": 4.535,
+        "p95": 7.364,
+        "p99": 10.146,
+        "max": 22.125
+      },
+      "render_budget_pass": true,
+      "scope": "This capture only; isolation, source identity, CPU budget, all-visible/regime matrix and release gates require separate evidence.",
+      "source_frames_sha256": "915d9e9c21c7aab8e814c14843cf4421c2a8942fa6daaf43d3ac9127229e8b2b",
+      "fixture_sha256": "2cc5b3b760fb0b55e1727c16001ef7d5bb7271221c1f9ea8abda42637e9e0a8e"
+    },
+    {
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "count": 1,
+      "simulation_wall_ratio": 0.9999407397253512,
+      "frame_ms": {
+        "p50": 7.084,
+        "p95": 11.124,
+        "p99": 17.119,
+        "max": 42.683
+      },
+      "render_budget_pass": true,
+      "scope": "This capture only; isolation, source identity, CPU budget, all-visible/regime matrix and release gates require separate evidence.",
+      "source_frames_sha256": "171d76fbcadc12f2852245a316deb1747c85d5579b0415846d29ed0bfa0a5f82",
+      "fixture_sha256": "9dcf9eadaaaecd72d44769ab67e259f62b4845837accf7f40ff55d434d2c4f5b"
+    },
+    {
+      "valid_active_workload": true,
+      "invalid_reasons": [],
+      "count": 2,
+      "simulation_wall_ratio": 0.9997510934347914,
+      "frame_ms": {
+        "p50": 14.564,
+        "p95": 21.691,
+        "p99": 33.988,
+        "max": 66.651
+      },
+      "render_budget_pass": false,
+      "scope": "This capture only; isolation, source identity, CPU budget, all-visible/regime matrix and release gates require separate evidence.",
+      "source_frames_sha256": "af4a798a7cd1f402b734e051978954a1e68c8735f29401d94fb449832aee26a2",
+      "fixture_sha256": "13dfeda0a49f590810cf3bf7af43e304c062b9e1591098aab2aca809c6a0b83d"
+    },
+    {
+      "valid_active_workload": false,
+      "invalid_reasons": [
+        "simulation did not maintain wall time within 2 percent"
+      ],
+      "count": 3,
+      "simulation_wall_ratio": 0.9581682449052575,
+      "frame_ms": {
+        "p50": 46.679,
+        "p95": 59.904,
+        "p99": 92.094,
+        "max": 105.802
+      },
+      "render_budget_pass": false,
+      "scope": "This capture only; isolation, source identity, CPU budget, all-visible/regime matrix and release gates require separate evidence.",
+      "source_frames_sha256": "a51e1676f7c07e2ca5d2edd2cd85a0fa210c8910c07fffd4921f92b3c816d2ed",
+      "fixture_sha256": "c9edb9121305df7a30f0a96d8094c9f239816d78600eeb6f9fe7bafbc3b8b735"
+    }
+  ]
+}
