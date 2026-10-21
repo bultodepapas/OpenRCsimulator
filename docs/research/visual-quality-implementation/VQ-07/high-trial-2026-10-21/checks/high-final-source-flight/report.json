@@ -1,0 +1,70 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4ef55fd6-a054-4990-9916-53ff38037652",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--fullscreen",
+    "--resolution",
+    "1920x1080",
+    "--max-fps",
+    "0",
+    "--",
+    "--quick-flight",
+    "--start=airborne",
+    "--battery=ideal",
+    "--frametimes=D:/OpenRCsimulator-scratch/high-graphics-20261021/high-final-source-flight.json",
+    "--warmup=10",
+    "--t=60"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T19:24:19.323447+00:00",
+  "label": "high-final-source-flight",
+  "log": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\high-final-source-flight-gl2nizwu\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\high-graphics-20261021\\logs\\high-final-source-flight-gl2nizwu\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "Tree wind is disabled for maple_tree: no measured collision-bounded sway limit",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 32,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 82.406,
+  "log_bytes": 1982,
+  "log_sha256": "e37efd5ec12f1b4974930eb0e1e30ca32de830ac8f348c4c97c62711dc68ab78"
+}

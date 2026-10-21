@@ -1,0 +1,51 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   isolated preferences prepared
+WARNING: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:456)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:381)
+       [2] build (res://scenery/imported_vegetation.gd:153)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] attach (res://scenery/scenery.gd:180)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:327)
+       [12] _ready (res://app_root.gd:263)
+ok   app opens at Home
+ok   Home opens without an automatic sound
+ok   Home Settings button opens the Settings screen
+ok   opening Settings emits one accept and no automatic press
+ok   keyboard volume preview mutes the live service without saving
+ok   volume preview preserves both existing themes
+ok   Revert restores live menu volume
+ok   keyboard game volume preview mutes Master without saving
+ok   Revert restores the live Master level
+ok   advanced FPS selection applies live without saving
+ok   MSAA preview changes the flight viewport
+ok   Revert restores live FPS and MSAA
+ok   125% changes resolved theme font sizes and leaves Settings open
+ok   Revert restores the saved font scale and keeps Settings open
+ok   motion policy updates without rebuilding Home's theme
+ok   opacity still replaces themes and updates Home scrims
+ok   Revert restores translucent scrims and motion policy
+ok   language selection updates the app and the open Settings screen
+ok   Controls opens above Settings
+ok   Esc from Controls returns to Settings
+ok   Help/About opens above Settings
+ok   Esc from Help returns to Settings
+ok   Esc closes Settings, restores Home focus, and keeps language
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   flight opens Pause and holds the session
+ok   Pause Settings keeps the flight paused
+ok   kept graphics change preserves the paused flight and tick
+ok   nested Controls keeps ticks held
+ok   nested Help keeps ticks held
+ok   closing Settings returns to Pause without resuming or advancing ticks
+ok   Resume emits acceptance and releases only through the explicit action
+all Settings integration checks passed

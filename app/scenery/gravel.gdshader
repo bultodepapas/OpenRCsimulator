@@ -16,6 +16,7 @@ varying float worn_mask;
 
 // Reuse the project's integer cloud hash: stable across large/negative world coordinates.
 #include "res://render/cloud_field.gdshaderinc"
+#include "res://scenery/vertex_color_linear.gdshaderinc"
 
 float lattice(vec2 p) {
 	return cloud_field_hash2(ivec2(p), 8137u);
@@ -30,7 +31,7 @@ float grain(vec2 p) {
 }
 
 void vertex() {
-	ground_color = COLOR.rgb;
+	ground_color = vertex_color_to_linear(COLOR.rgb);
 	ground_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
 	aggregate_mask = smoothstep(0.44, 0.50, COLOR.a) * clamp((1.0 - COLOR.a) * 2.0, 0.0, 1.0);
 	worn_mask = clamp((0.45 - COLOR.a) * 2.2, 0.0, 1.0);

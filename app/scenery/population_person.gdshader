@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode cull_disabled, diffuse_burley, specular_schlick_ggx;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 global uniform float sim_clock;
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform sampler2D base_texture : source_color, filter_linear_mipmap_anisotropic;
@@ -23,7 +25,7 @@ void vertex() {
 	float motion = INSTANCE_CUSTOM.y;
 	float upper = smoothstep(0.65, 1.5, VERTEX.y);
 	shirt_weight = smoothstep(shirt_start, shirt_start + 0.12, VERTEX.y);
-	shirt_tint = COLOR.rgb;
+	shirt_tint = vertex_color_to_linear(COLOR.rgb);
 	skin_tone = INSTANCE_CUSTOM.z;
 	VERTEX.x += sin(sim_clock * (6.28318530718 * 43.0 / 1024.0) + phase) * 0.004 * upper * motion;
 	VERTEX.z += sin(sim_clock * (6.28318530718 * 171.0 / 1024.0) + phase) * 0.002 * upper * motion;

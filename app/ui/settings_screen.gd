@@ -6,6 +6,7 @@ const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const HighGraphics := preload("res://render/high_graphics_profile.gd")
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -14,6 +15,7 @@ signal presentation_reverted
 signal language_changed(language: String)
 signal route_requested(route: String, from: Control)
 signal sound_preview_requested
+signal graphics_restart_requested(profile: String)
 
 const DISPLAY_TEST_SECONDS := 15
 const LANGUAGE_CODES: Array[String] = ["en", "es"]
@@ -41,6 +43,7 @@ var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
 var _graphics_info: Label
+var _graphics_restart_button: Button
 var _scale_picker: OptionButton
 var _opaque_toggle: CheckButton
 var _motion_toggle: CheckButton
@@ -193,12 +196,21 @@ func _build() -> void:
 	_add_row(graphics_page, "Vertical synchronization", _vsync_picker)
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
-	graphics_page.add_child(_label("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.", "SecondaryLabel", true))
+	_msaa_picker.tooltip_text = tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
 	_graphics_info = _label("", "SecondaryLabel", true)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
 	defaults_button.pressed.connect(_restore_graphics_defaults)
-	graphics_page.add_child(defaults_button)
+	var graphics_actions := HFlowContainer.new()
+	graphics_page.add_child(graphics_actions)
+	graphics_actions.add_child(defaults_button)
+	_graphics_restart_button = _button("Restart in Standard" if HighGraphics.active() else "Try High (restart)", "QuietButton", "GraphicsRestart")
+	_graphics_restart_button.disabled = true
+	_graphics_restart_button.pressed.connect(func() -> void:
+		_revert()
+		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
+	graphics_actions.add_child(_graphics_restart_button)
+	graphics_page.add_child(_label("High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard.", "SecondaryLabel", true))
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -412,6 +424,15 @@ func _refresh_graphics_info() -> void:
 	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.")
 	_graphics_info.text = tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
+	_graphics_info.text += "\n" + tr("Graphics mode: %s") % (tr("High (experimental)") if HighGraphics.active() else tr("Standard"))
+	_graphics_info.text += " · " + RenderingServer.get_current_rendering_method()
+	if HighGraphics.requested() == "high" and not HighGraphics.active():
+		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
+
+
+func set_graphics_restart_available(available: bool) -> void:
+	_graphics_restart_button.disabled = not available
+	_graphics_restart_button.tooltip_text = tr("Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU.") if available else tr("End your flight and return Home to change graphics mode.")
 
 
 func _scale_selected(index: int) -> void:

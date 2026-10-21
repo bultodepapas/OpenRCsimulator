@@ -22,7 +22,9 @@ Make OpenRC look substantially more convincing while flying: recognizable aircra
 
 **Advanced settings, requested by the user:** [UI-24-R3 / VQ-06b](../research/menu-investigations/UI-24-R3/README.md) adds manual resolution, FPS cap, VSync and main-view antialiasing with persistent Keep/Revert recovery. This is the first configurable desktop slice; it does not label unmeasured combinations as hardware presets.
 
-**Next executable action:** VQ-01d/CAM motion-reference refresh using the updated source identity and explicit graphics settings, then qualify a lower-cost preset before a High profile. Extend the same menu with independently verified scenery/shadow/water controls as their owning work qualifies them. Test native Windows, macOS and Linux separately; operating-system names alone do not identify GPU capability. Physical-display qualification, capped pacing, readability, initial loading targets and ordinary-release shutdown remain open. Preserve focus safety and retain ineligible runs. Implement one attributable repair at a time; broad appearance changes and preload/cache rewrites remain unselected.
+**Selected and implemented High trial:** the owner prioritized a visible high-end mode. [VQ-07 temporary High trial](../research/visual-quality-implementation/VQ-07/high-trial-2026-10-21/README.md) adds a Home graphics-menu restart into Forward+, short-range SSAO, soft cascaded sun shadows and sky reflections. Renderer-specific sky, depth and vertex-color corrections keep accepted scenery usable. Standard remains the normal launch; this is an opt-in experiment, not hardware-profile qualification.
+
+**Next executable action:** review this High trial in ordinary pilot flight and reduce any demonstrated rendering/pacing defect before expanding effects. Complete matched motion/day/night/water evidence, repeated native performance pairs, packaged restart and platform/GPU coverage before promoting High. VQ-01d/CAM, the lower-cost preset, physical-display qualification and initial loading targets remain open. No RTX, temporal reconstruction or volumetric-fog adoption is implied.
 
 Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 3](#priority-and-expected-return) to choose dependency-ready work, and [section 6](#6-measurement-and-acceptance) to decide whether it succeeds.
 
@@ -30,11 +32,11 @@ Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 
 
 This plan expands **VQ-07** into reviewable steps and proposes the later High-profile decision. The [global performance/visual plan](global-performance-visual-quality.md) still owns the active Compatibility delivery; its exclusions and budgets remain binding for that delivery. [VQ](../VISUAL-QUALITY-PLAN.md) owns parent-step status. Existing material, landscape, smoke, sky and settings tasks stay in their current homes; they are dependencies, not a second backlog here.
 
-The [dated investigation](../research/advanced-graphics-2026-10-21/README.md) records independent source checks, current-code findings and corrections to the supplied October 20 brief. Its [second round of 25 investigations](../research/advanced-graphics-2026-10-21/round-2.md) adds GitHub, Reddit, Godot Forum, documentation and tool evidence; [section 9](#9-disposition-of-the-25-follow-up-investigations) maps each finding to existing work. This document owns proposed execution. No graphics change, benchmark, renderer adoption or completed implementation is claimed by creating the plan.
+The [dated investigation](../research/advanced-graphics-2026-10-21/README.md) records independent source checks, current-code findings and corrections to the supplied October 20 brief. Its [second round of 25 investigations](../research/advanced-graphics-2026-10-21/round-2.md) adds GitHub, Reddit, Godot Forum, documentation and tool evidence; [section 9](#9-disposition-of-the-25-follow-up-investigations) maps each finding to existing work. This document owns execution order; only the linked implementation reports establish delivered behavior. The temporary High trial does not close VQ-07 qualification gates.
 
 | Boundary | Owner and paths |
 | --- | --- |
-| VQ-07 experiments | VQ; proposed tools under `research/visual-quality/forward-plus/`, future evidence under `docs/research/visual-quality-implementation/VQ-07/`; this plan owns VQ-07a…h |
+| VQ-07 experiments | VQ; trial tools under `tools/graphics/`, evidence under `docs/research/visual-quality-implementation/VQ-07/`; this plan owns VQ-07a…h |
 | Renderer adaptation | VQ with FW/LU; `app/render/`, particularly sky, atmosphere, world exposure, lake, shadows and transparent effects |
 | Aircraft finish | Aircraft owners; source generators and materials identified in their guides; AS owns node/binding contracts |
 | Vegetation/terrain/scenery | L/LU/SC; existing assets, generators, batching, field adapters and obstacle inventory |
@@ -97,7 +99,9 @@ These are planning judgments, not measured gains. For each attempted candidate r
 
 ## 4. VQ-07: isolated renderer comparison
 
-Use separate checkouts/import caches and private preferences. Pin the same official engine and assets on both sides. Do not combine an engine upgrade, scenery replacement and renderer change in one comparison. The active Compatibility sequence has priority. Read-only preparation may proceed now; a disposable VQ-07 study starts only with VQ-07a's comparable source/host/tapes and recorded outcomes for relevant baseline repairs. It must not displace those repairs. Unavailable pilot/platform acceptance may remain open during isolated research, but cannot be waived for adoption. Completing every unrelated FW/SM/trailer feature is not an entry condition.
+**Qualification sequence below remains open.** The owner explicitly prioritized an integrated, temporary High trial on 2026-10-21; its bounded implementation and Windows diagnostics are linked above. That trial uses one source tree with explicit renderer selection and isolated restart-probe preferences. It does not claim the separate-checkout, repeated-tape, memory or platform qualification described here. Keep normal startup on Compatibility until these gates pass.
+
+For qualification, use separate checkouts/import caches and private preferences. Pin the same official engine and assets on both sides. Do not combine an engine upgrade or scenery replacement with renderer attribution. Record comparable source/host/tapes and relevant baseline failures. Unavailable pilot/platform acceptance can remain open during experiments, but cannot be waived for adoption.
 
 ```mermaid
 flowchart TD
@@ -105,7 +109,7 @@ flowchart TD
     A --> C[VQ-07a/b isolated parity study]
     B --> D[Required Compatibility qualification]
     C -->|Parity passes| E[VQ-07c native cost and headroom]
-    C -->|Parity fails| R[VQ-07g retain or defer; no High]
+    C -->|Parity fails| R[VQ-07g retain or defer; no qualified High]
     E -->|No headroom| R
     E -->|Pass and named need| F[Selected d/e/f candidates]
     E -->|No useful need| R
@@ -119,13 +123,13 @@ The parallel branch represents an isolated experiment, not permission to ship ar
 
 | ID | Work | Proof/status |
 | --- | --- | --- |
-| VQ-07a | Freeze the comparison manifest, target-host identities, scenes, motion tapes, camera states and baseline failures. Reuse VQ-01c/d tools; record actual renderer/backend and presentation settings. | **Pending.** Comparable repeated reference runs and runtime clips. If collection is unreliable, repair collection before b; a known target miss may be recorded but cannot qualify an effect. |
-| VQ-07b | Establish Forward+ visual/functional parity with advanced effects off. Fix one demonstrated renderer assumption per patch in the isolated copy. | **Pending; after a.** Correct color/depth/materials/alpha and unchanged simulation; no new runtime errors. Unresolved parity at the timebox ends d/e/f and routes directly to g's retain/defer decision. |
-| VQ-07c | Measure bare renderer cost and first-use behavior; attribute main/shadow passes, transparency and sky/radiance. Freeze a total effect budget on a named target. | **Pending; after b.** Paired native timing/load/memory evidence. If native gates or useful headroom fail, skip d/e/f on that target and record why in g; a different High target requires its own a/c evidence. |
+| VQ-07a | Freeze the comparison manifest, target-host identities, scenes, motion tapes, camera states and baseline failures. Reuse VQ-01c/d tools; record actual renderer/backend and presentation settings. | **Partially exercised by the temporary trial; qualification pending.** Comparable repeated reference runs and runtime clips. If collection is unreliable, repair collection before b; a known target miss may be recorded but cannot qualify an effect. |
+| VQ-07b | Establish Forward+ visual/functional parity with advanced effects off. Fix one demonstrated renderer assumption per patch in the isolated copy. | **Corrections implemented in trial; full parity pending after a.** Correct color/depth/materials/alpha and unchanged simulation; no new runtime errors. Unresolved parity at the timebox ends d/e/f and routes directly to g's retain/defer decision. |
+| VQ-07c | Measure bare renderer cost and first-use behavior; attribute main/shadow passes, transparency and sky/radiance. Freeze a total effect budget on a named target. | **Initial Windows pacing sampled; qualification pending after b.** Paired native timing/load/memory evidence. If native gates or useful headroom fail, skip d/e/f on that target and record why in g; a different High target requires its own a/c evidence. |
 | VQ-07d | Screen native MSAA/SMAA/TAA/FSR2 for a named edge/history defect, then qualify only useful finalists. Reduced-resolution FSR2 requires a demonstrated scaling need. | **Conditional; after c.** Reuse VQ-01d clips/tapes; motion readability, real cost and reset proof. No improvement means retain native baseline AA; do not run every scale by default. |
-| VQ-07e | For an owner-confirmed gap, compare shadow allocation/probes first, then one justified PCSS, SSR or indirect-light candidate. | **Conditional; after c.** Reuse projected-shadow/environment references and VQ-04b's comparison contract; pin AA to baseline or accepted d result. No gap means skip. Each effect needs its own outcome. |
+| VQ-07e | For an owner-confirmed gap, compare shadow allocation/probes first, then one justified PCSS, SSR or indirect-light candidate. | **PCSS/shadow trial implemented; acceptance conditional after c.** Reuse projected-shadow/environment references and VQ-04b's comparison contract; pin AA to baseline or accepted d result. No gap means skip. Each effect needs its own outcome. |
 | VQ-07f | Evaluate bounded atmosphere and effect improvements when FW/SM/CR identify a gap. FW-85 retains the cloud-backend decision. | **Conditional; after c.** Same authoritative inputs, readable pilot circuit, pause/reset/cut behavior, bounded particles/overdraw and cost. Volumetric clouds are not required. |
-| VQ-07g | Record the renderer decision; if advancing, integrate accepted candidates and qualify the exact combination before proposing High settings. | **Pending; after selected outcomes, including early rejection.** Retain/defer can close the study with no new profile. Adoption needs combined native/pilot/platform evidence and recovery; selected effects passing alone is insufficient. |
+| VQ-07g | Record the renderer decision; if advancing, integrate accepted candidates and qualify the exact combination before proposing persistent qualified High settings. | **Pending; after selected outcomes, including early rejection.** Retain/defer can close the study with no new profile. Adoption needs combined native/pilot/platform evidence and recovery; selected effects passing alone is insufficient. |
 | VQ-07h | Review vendor technologies in disposable projects, only after the native path has a decision and a named unresolved need. | **Deferred, optional.** Pinned SDK/fork sample, license/build/API/hardware assessment, latency and image evidence. Not required to close VQ-07a…g. |
 
 ### VQ-07b: concrete migration hazards

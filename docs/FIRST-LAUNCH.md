@@ -133,6 +133,12 @@ unlimited FPS, VSync on and 4× MSAA. These controls do not change flight physic
 VSync's effective state is displayed because the driver/compositor may override it.
 Workshop's separate preview images do not use the main-view MSAA setting.
 
+From Home, **Graphics → Try High (restart)** starts a temporary experimental
+Forward+ mode with ambient occlusion, soft sun shadows and sky reflections. Keep
+display changes first. **Restart in Standard**, or close and launch normally, to
+return to Standard. The restart action is unavailable during a flight or Workshop
+session. [Trial scope, launch options and verified hardware](../tools/graphics/README.md).
+
 Pause groups secondary actions under **Session options** and **Exit options**. Esc closes the top page or open group first; returning from Settings keeps the flight paused. Large text uses scrolling with focus following the selected action. The interactive UI scales automatically through native 4K without lowering 3D resolution. [Verification and remaining qualification](research/menu-investigations/UI-22-26-R1/README.md).
 
 **Aircraft Workshop (Workbench).** Open it from Home or Pause to create experimental local builds, save revisions and test them from an airborne start. Adjustments depend on the aircraft's supported capabilities. [Workflow, current limits and development plan](AIRCRAFT-WORKSHOP.md).

@@ -5022,3 +5022,30 @@ msgstr "Salida: %d × %d · VSync: %s"
 
 msgid "The driver or desktop compositor may override VSync."
 msgstr "El controlador o el escritorio pueden imponer su propio ajuste de VSync."
+# VQ-07 experimental graphics trial.
+msgid "Try High (restart)"
+msgstr "Probar Alta gama (reinicia)"
+
+msgid "Restart in Standard"
+msgstr "Reiniciar en Estándar"
+
+msgid "High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard."
+msgstr "Alta gama es una prueba temporal. Conserva tus ajustes antes de reiniciar. Un inicio normal vuelve a Estándar."
+
+msgid "Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU."
+msgstr "Sombras más suaves, oclusión ambiental y reflejos del cielo. Requiere una GPU compatible con Forward+."
+
+msgid "Graphics mode: %s"
+msgstr "Modo gráfico: %s"
+
+msgid "High (experimental)"
+msgstr "Alta gama (experimental)"
+
+msgid "Standard"
+msgstr "Estándar"
+
+msgid "High is unavailable with the current renderer. Standard remains active."
+msgstr "Alta gama no está disponible con el renderizador actual. Estándar sigue activo."
+
+msgid "End your flight and return Home to change graphics mode."
+msgstr "Termina el vuelo y vuelve al inicio para cambiar el modo gráfico."

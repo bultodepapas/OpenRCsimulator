@@ -5,12 +5,15 @@
 // disc and halo. Clouds are periodic and deterministic; their drift is supplied from simulation time on the CPU.
 // Godot's debanding. Never TIME (captures repeat; uniform changes refresh radiance).
 //
-// Colour space (read from the 4.7.2 GLES3 sky.glsl, line 250): Compatibility treats a sky shader's COLOR as sRGB
-// and converts it with a cubic srgb_to_linear right after our code. So all maths here is linear (uniforms are linear,
-// computed on the CPU) and the result is encoded with the exact inverse of that cubic: the engine gets our linear
-// value back, the same number the ground's fog and the engine's object fog use.
+// All sky maths is linear (uniforms are linear, computed on the CPU). Compatibility treats a sky shader's COLOR as
+// sRGB and converts it with a cubic srgb_to_linear; encode with the exact inverse so the engine gets our linear value
+// back. Forward+ consumes the shader output as linear directly.
 shader_type sky;
+#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 render_mode use_debanding;
+#endif
+// RD sky debanding scales its +/-1/255 noise by exposure. Night adaptation can
+// exceed 49000, overwhelming the physical sky; retain the calibrated GL path only.
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://render/cloud_relief.gdshaderinc"
 uniform float cloud_relief_strength : hint_range(0.0, 1.0) = 1.0;
@@ -312,5 +315,9 @@ void sky() {
 		solar *= exp(-8.0 * (density + cirrus_amount)) * step(0.0, EYEDIR.y);
 	}
 	col += solar * sun_disc;
+#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
 	COLOR = encode_for_engine(col);
+#else
+	COLOR = col;
+#endif
 }

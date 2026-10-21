@@ -2633,7 +2633,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	report.merge({
 		case_id = str(run_args.get("case", route_name)),
 		route = route_name,
-		preset = "current-default",
+		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
+		graphics_profile = Atmosphere.HighGraphics.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
 		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
 		camera = {
