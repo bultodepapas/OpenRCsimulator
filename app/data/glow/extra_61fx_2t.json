@@ -17,10 +17,10 @@
       "source": "NITRO-06: barrel open-area fraction at the idle stop giving the former per-cycle idle charge 0.28 at the declared 2800 rpm static idle (breathing 0.594) through the choked nozzle law; derived from estimates"
     },
     "throttle_travel_exponent": {
-      "value": 0.5539730264228222,
+      "value": 0.514443559415884,
       "unit": "1",
       "kind": "derived",
-      "source": "NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at 0.81 of the full-throttle static rpm (10165 of 12550 rpm), the operating band Menon 2010 (O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched propeller (78-84 %); another engine, a derived ratio, no linkage drawing"
+      "source": "NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at 0.81 of the full-throttle static rpm (9140 of 11284 rpm), the operating band Menon 2010 (O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched propeller (78-84 %); another engine, a derived ratio, no linkage drawing"
     },
     "servo_time_constant_s": {
       "value": 0.06,
@@ -171,10 +171,10 @@
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
     },
     "chord_m": {
-      "value": 0.0211364169120926,
+      "value": 0.015462200390624998,
       "unit": "m",
-      "kind": "estimated",
-      "source": "Conditional APC12x7 10330rpm fit at assumed 1.225kg/m3 for the MAX-55AX, carried to the MAX-61FX on an APC12x6 (different engine and pitch; predicts 12550 rpm static, above every 61FX indication); NITRO-61FX dossier"
+      "kind": "derived",
+      "source": "EX-14f research/glow-engines/fit_section.py: chord ratio 0.0507 and zero-lift angle -5.86 deg fitted to the measured UIUC APC Sport 11x6 Ct/Cp(J) knots (normalized rms 0.038; symmetric section best 0.547), transferred to the 12x6 Sport by c/D; no measured 12x6 Sport map"
     },
     "blades": {
       "value": 2.0,
@@ -199,6 +199,12 @@
       "unit": "1",
       "kind": "estimated",
       "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "zero_lift_angle_rad": {
+      "value": -0.10223236266152576,
+      "unit": "rad",
+      "kind": "derived",
+      "source": "EX-14f research/glow-engines/fit_section.py: chord ratio 0.0507 and zero-lift angle -5.86 deg fitted to the measured UIUC APC Sport 11x6 Ct/Cp(J) knots (normalized rms 0.038; symmetric section best 0.547), transferred to the 12x6 Sport by c/D; no measured 12x6 Sport map"
     }
   }
 }

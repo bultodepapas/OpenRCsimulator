@@ -148,7 +148,7 @@ def travel_exponent(profile, prop, area, idle_opening):
     p = 0.5 * (lo + hi)
     return p, static_rpm(profile, prop, area, idle_opening, p, 0.5), full
 
-def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
+def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True, section=None):
     family = 'glow_2t' if two else 'glow_4t'
     profile_file = ('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate')+'.json'
     settings = {
@@ -190,8 +190,14 @@ def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
                     'induced_drag':q(.06 if two else .075, source=EST if two else
                         EST+'; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit'),
                 })
+    if section is not None:
+        # EX-14f: a measured-data section fit (chord and cambered zero-lift angle) replaces the transferred chord.
+        out['propeller']['chord_m'] = q(section['chord_m'], 'm', 'derived', section['source'])
+        out['propeller']['zero_lift_angle_rad'] = q(section['zero_lift_angle_rad'], 'rad', 'derived', section['source'])
     profile = json.loads((ROOT/'app/data/glow'/profile_file).read_text(encoding='utf-8'))
     prop = {key: out['propeller'][key]['value'] for key in ['diameter_m', 'pitch_m', 'chord_m', 'blades', 'lift_slope', 'cd0', 'induced_drag']}
+    if 'zero_lift_angle_rad' in out['propeller']:
+        prop['zero_lift_angle_rad'] = out['propeller']['zero_lift_angle_rad']['value']
     exponent, half_rpm, full_rpm = travel_exponent(profile, prop, settings['throttle_effective_area_m2']['value'], settings['idle_opening']['value'])
     settings['throttle_travel_exponent'] = q(exponent, '1', 'derived', TRAVEL_EXPONENT.format(ratio=HALF_STICK_RPM_RATIO, half=half_rpm, full=full_rpm))
     # Keep the authored settings order: the three carburettor quantities first.
@@ -352,7 +358,15 @@ def outputs():
     # The Extra uses the same MAX-61FX candidate and 12x6 prop diameter, but
     # its carburetor location is not established by the Stik render. Omit the
     # optional feed block until Extra-specific source/measurement exists.
-    out[ROOT/'app/data/glow'/'extra_61fx_2t.json']=installation(True,12,6,fx61=True,include_feed=False)
+    # EX-14f: the Extra flies the cambered section fitted to measured APC Sport 11x6 data (fit_section.py), transferred
+    # to its 12x6 by c/D. The Stik installations keep the symmetric surrogate until their owners adopt it.
+    fit=json.loads((ROOT/'research/glow-engines/section_fits.json').read_text(encoding='utf-8'))['apc_sport_11x6_uiuc']
+    out[ROOT/'app/data/glow'/'extra_61fx_2t.json']=installation(True,12,6,fx61=True,include_feed=False,section={
+        'chord_m':fit['chord_over_diameter']*12*.0254,'zero_lift_angle_rad':fit['zero_lift_angle_rad'],
+        'source':'EX-14f research/glow-engines/fit_section.py: chord ratio %.4f and zero-lift angle %.2f deg fitted to the '
+                 'measured UIUC APC Sport 11x6 Ct/Cp(J) knots (normalized rms %.3f; symmetric section best %.3f), transferred to '
+                 'the 12x6 Sport by c/D; no measured 12x6 Sport map'%(fit['chord_over_diameter'],fit['zero_lift_angle_deg'],
+                 fit['normalized_rms'],fit['symmetric_section_normalized_rms'])})
     return out
 
 def render_json(value):

@@ -46,6 +46,7 @@ const PROPELLER := {
 	cd0 = "1",
 	induced_drag = "1",
 }
+const PROPELLER_ZERO_LIFT := "zero_lift_angle_rad"
 ## NITRO-05: optional fuel-feed block (physics/glow/fuel_feed.gd). The carburetor spray bar is an inventory-frame
 ## position [aft, right, up] from the wing leading-edge datum, like the tank.
 ## `fuel_inventory` remains a v1 provenance label; runtime binding is by normalized tank and liquid inventory IDs.
@@ -140,7 +141,18 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 	scalar_settings.erase("thermal")
 	var settings: Dictionary = _group(scalar_settings, SETTINGS, NONNEGATIVE_SETTINGS)
 	var thermal: Dictionary = _group(value.settings.get("thermal"), THERMAL, NONNEGATIVE_THERMAL)
-	var propeller: Dictionary = _group(value.get("propeller"), PROPELLER)
+	# EX-14f: the cambered section's optional zero-lift angle (rad, -0.3..0) is the only signed propeller quantity.
+	var propeller_raw: Variant = value.get("propeller")
+	var zero_lift: float = 0.0
+	if propeller_raw is Dictionary and propeller_raw.has(PROPELLER_ZERO_LIFT):
+		zero_lift = _quantity(propeller_raw.get(PROPELLER_ZERO_LIFT), "rad")
+		if not is_finite(zero_lift) or zero_lift < -0.3 or zero_lift > 0.0:
+			return _fail("Glow propeller zero_lift_angle_rad must be finite and in [-0.3, 0] rad")
+		propeller_raw = propeller_raw.duplicate()
+		propeller_raw.erase(PROPELLER_ZERO_LIFT)
+	var propeller: Dictionary = _group(propeller_raw, PROPELLER)
+	if not propeller.is_empty() and value.get("propeller", {}).has(PROPELLER_ZERO_LIFT):
+		propeller[PROPELLER_ZERO_LIFT] = zero_lift
 	var initial_temperature: float = _quantity(value.get("initial_temperature_k"), "K")
 	if settings.is_empty() or thermal.is_empty() or propeller.is_empty():
 		return _fail("Invalid glow installation quantity, unit or provenance")

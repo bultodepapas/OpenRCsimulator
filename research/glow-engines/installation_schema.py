@@ -55,10 +55,10 @@ def vector_quantity(unit: str, length: int = 3) -> dict[str, Any]:
     return schema
 
 
-def object_schema(properties: dict[str, Any]) -> dict[str, Any]:
+def object_schema(properties: dict[str, Any], optional: tuple[str, ...] = ()) -> dict[str, Any]:
     return {
         "type": "object",
-        "required": list(properties),
+        "required": [key for key in properties if key not in optional],
         "additionalProperties": False,
         "properties": properties,
     }
@@ -101,6 +101,8 @@ def schema_document() -> dict[str, Any]:
         "lift_slope": quantity("1/rad", exclusive_minimum=0.0, maximum=20.0),
         "cd0": quantity("1", exclusive_minimum=0.0, maximum=2.0),
         "induced_drag": quantity("1", exclusive_minimum=0.0, maximum=10.0),
+        # EX-14f: optional cambered-section zero-lift angle (absent = symmetric section).
+        "zero_lift_angle_rad": quantity("rad", minimum=-0.3, maximum=0.0),
     }
     # NITRO-05: optional fuel feed (spray-bar position in the inventory frame, driving pressures).
     fuel_feed = {
@@ -130,7 +132,7 @@ def schema_document() -> dict[str, Any]:
             "fuel_inventory": {"type": "string", "minLength": 1, "pattern": "\\S"},
             "settings": object_schema(settings),
             "initial_temperature_k": quantity("K", minimum=200.0, maximum=600.0),
-            "propeller": object_schema(propeller),
+            "propeller": object_schema(propeller, optional=("zero_lift_angle_rad",)),
             "fuel_feed": object_schema(fuel_feed),
         },
     }

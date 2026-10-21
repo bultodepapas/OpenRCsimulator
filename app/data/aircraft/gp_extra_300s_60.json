@@ -63,11 +63,11 @@
       "value": [
         0.1088,
         0.0,
-        -0.025021
+        -0.026159
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "FUEL-08: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); finite-glow flight reference starts with a full tank; not a measured airplane"
+      "source": "FUEL-08/EX-14a: dry (empty-tank) CG of the RCM-weighed 124 oz build, balanced at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in) by the build-mass closure; finite-glow flight reference starts with a full tank; mass distribution estimated, not measured"
     },
     "firewall": {
       "value": [
@@ -79,7 +79,7 @@
       "kind": "measured",
       "source": "firewall station, assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology)"
     },
-    "configuration": "virtual-balanced-dry-manual-p43-plus-full-finite-glow-tank-v2",
+    "configuration": "rcm-weighed-dry-manual-p43-plus-full-finite-glow-tank-v3",
     "fuel_state": "empty_tanks",
     "cg_range": {
       "forward": {
@@ -99,7 +99,7 @@
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
-      "source": "research/extra-300/ex05/derive_physics.py: dry virtual reference build balanced to the manual p43 empty-tank point, then full finite-glow fuel added; NOT a measured airplane"
+      "source": "research/extra-300/ex05/derive_physics.py: EX-14a: RCM-weighed dry mass with an estimated inventory, closed to the manual p43 empty-tank point, then full finite-glow fuel added; the mass distribution is not measured"
     }
   },
   "inventory": [
@@ -705,28 +705,28 @@
     },
     {
       "id": "ballast_reference",
-      "name": "virtual reference-build balancing mass",
+      "name": "virtual reference-build balancing mass (EX-14a: unaccounted build mass closing the RCM-weighed 124 oz)",
       "mass": {
-        "value": 0.142469,
+        "value": 0.384341,
         "unit": "kg",
         "kind": "derived",
-        "source": "research/extra-300/ex05/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) on the dry inventory for manual p43 empty-tank balance; virtual reference build, NOT measured hardware or a ballast recommendation (manual: balance with the receiver battery first)"
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14a closure: RCM April 2000 prototype 124 oz ready to fly minus the estimated inventory, placed where the dry build balances at the manual p43 point; glue, covering, paint, wiring and hardware the inventory does not list. NOT measured component data or a ballast recommendation"
       },
       "position": {
         "value": [
-          -0.2719,
+          -0.03232,
           0.0,
-          0.0
+          -0.026159
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "spinner weight position (manual p43)"
+        "source": "solved station; spread over the fuselage around it"
       },
       "size": {
         "value": [
-          0.025,
-          0.025,
-          0.025
+          0.3,
+          0.1522,
+          0.1883
         ],
         "unit": "m",
         "kind": "estimated",
@@ -874,11 +874,11 @@
     "mass_range": {
       "value": [
         3.0,
-        3.8
+        4.2
       ],
       "unit": "kg",
       "kind": "manual",
-      "source": "Great Planes Extra 300S .60 manual EXT6P03: 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; widened for fuel"
+      "source": "Great Planes Extra 300S .60 manual EXT6P03: 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; RC Universe owner builds 7.6-8.4 lb (3.45-3.81 kg); widened for the 0.30 kg full tank"
     },
     "inertia_reference": {
       "value": [
@@ -1025,7 +1025,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: Helmbold wing + downwashed tail"
       },
       "CLq": {
-        "value": 5.644474,
+        "value": 5.665946,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail volume + DATCOM wing term"
@@ -1079,19 +1079,19 @@
         "source": "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"
       },
       "CYb": {
-        "value": -0.479299,
+        "value": -0.4792992308088142,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.064824,
+        "value": -0.065341,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.329031,
+        "value": 0.328692,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin behind the CG"
@@ -1103,19 +1103,19 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.027714,
+        "value": -0.028539,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.596772,
+        "value": -0.596867,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.091673,
+        "value": 0.096048,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: CL_ref/4 + fin"
@@ -1151,7 +1151,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -9.380349,
+        "value": -9.360761,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
@@ -1175,25 +1175,25 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.000789,
+        "value": -0.002664,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.181184,
+        "value": -0.180871,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.012557,
+        "value": 0.013406,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.5, taper 0.5)"
       },
       "Cnda_left": {
-        "value": -0.012557,
+        "value": -0.013406,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw"
@@ -1211,6 +1211,18 @@
         "unit": "1",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: |Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips"
+      },
+      "body_cy_beta": {
+        "value": -0.12419,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14d (D10-R3): the DATCOM body side-force slope -2 K_i S0/S (K_i 1.3 low wing), as in the oracle's CYb; NACA TN 3551 fuselage-alone -1.5/rad on A_max x K_i gives -0.116"
+      },
+      "body_crossflow_area": {
+        "value": 0.156741,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14d (D10-R3): Allen-Perkins eta 0.65 x c_d 1.4 (Polhamus TR R-29, subcritical rounded rectangle) x fuselage side area from geometry.json; estimated factors"
       },
       "attached_limit": {
         "value": 8.0,
@@ -1325,6 +1337,32 @@
           "kind": "estimated",
           "source": "symmetric fin; propulsion installation angles are separate"
         }
+      }
+    },
+    "ground_effect": {
+      "induced_coefficient": {
+        "value": 17.157517,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of the P-51's image-method Weissinger VLM run on this wing (straight taper, no dihedral or twist), x = ARP height / span 0.06-1.5, rms 0.006; ratio 0.56 at x 0.12 (the low wing sits at x 0.13 on its wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured"
+      },
+      "induced_exponent": {
+        "value": 1.214905,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of the P-51's image-method Weissinger VLM run on this wing (straight taper, no dihedral or twist), x = ARP height / span 0.06-1.5, rms 0.006; ratio 0.56 at x 0.12 (the low wing sits at x 0.13 on its wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured"
+      },
+      "downwash_coefficient": {
+        "value": 19.194448,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift over the stabilizer quarter-chord line (0.079 m above the chord plane), rms 0.013; ratio 0.52 at x 0.12. No fuselage; not measured"
+      },
+      "downwash_exponent": {
+        "value": 1.332214,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift over the stabilizer quarter-chord line (0.079 m above the chord plane), rms 0.013; ratio 0.52 at x 0.12. No fuselage; not measured"
       }
     },
     "reference_coefficients": {
@@ -1479,9 +1517,9 @@
       },
       "thrust_line_offset": {
         "value": [
-          -0.36247,
+          -0.363245,
           0.00014,
-          0.022858
+          0.024041
         ],
         "unit": "m",
         "kind": "derived",
@@ -1504,92 +1542,92 @@
           ],
           [
             0.05,
-            0.000103
+            7.6e-05
           ],
           [
             0.1,
-            0.000336
+            0.000245
           ],
           [
             0.15,
-            0.000707
+            0.000517
           ],
           [
             0.2,
-            0.001214
+            0.000888
           ],
           [
             0.25,
-            0.001844
+            0.001349
           ],
           [
             0.3,
-            0.002575
+            0.001884
           ],
           [
             0.35,
-            0.003389
+            0.002479
           ],
           [
             0.4,
-            0.004264
+            0.00312
           ],
           [
             0.45,
-            0.005174
+            0.003785
           ],
           [
             0.5,
-            0.006091
+            0.004456
           ],
           [
             0.55,
-            0.006983
+            0.005108
           ],
           [
             0.6,
-            0.007817
+            0.005719
           ],
           [
             0.65,
-            0.00856
+            0.006262
           ],
           [
             0.7,
-            0.009175
+            0.006712
           ],
           [
             0.75,
-            0.009625
+            0.007041
           ],
           [
             0.8,
-            0.00987
+            0.007221
           ],
           [
             0.85,
-            0.009918
+            0.007256
           ],
           [
             0.9,
-            0.009782
+            0.007156
           ],
           [
             0.95,
-            0.009462
+            0.006922
           ],
           [
             1.0,
-            0.008984
+            0.006573
           ],
           [
             1.05,
-            0.008362
+            0.006117
           ]
         ],
         "unit": "1",
         "kind": "derived",
-        "source": "research/extra-300/ex05/derive_physics.py: EX-14c: McCormick blade-element normal force per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D4; Ct(J), solidity 0.0706, section slope and cd0 of the Glow propeller surrogate (app/data/glow/extra_61fx_2t.json)"
+        "source": "research/extra-300/ex05/derive_physics.py: EX-14c: McCormick blade-element normal force per rad of disc angle of attack (Selig, AIAA 2010-7938), x rho n2 D4; Ct(J), solidity 0.0517, section slope and cd0 of the Glow propeller surrogate (app/data/glow/extra_61fx_2t.json)"
       },
       "pfactor_moment": {
         "value": [
@@ -1599,63 +1637,63 @@
           ],
           [
             0.05,
-            0.000919
+            0.000672
           ],
           [
             0.1,
-            0.001775
+            0.001299
           ],
           [
             0.15,
-            0.002544
+            0.001861
           ],
           [
             0.2,
-            0.003202
+            0.002342
           ],
           [
             0.25,
-            0.003726
+            0.002725
           ],
           [
             0.3,
-            0.004099
+            0.002999
           ],
           [
             0.35,
-            0.004323
+            0.003162
           ],
           [
             0.4,
-            0.004398
+            0.003217
           ],
           [
             0.45,
-            0.004316
+            0.003158
           ],
           [
             0.5,
-            0.004071
+            0.002978
           ],
           [
             0.55,
-            0.003656
+            0.002674
           ],
           [
             0.6,
-            0.003061
+            0.00224
           ],
           [
             0.65,
-            0.002281
+            0.001669
           ],
           [
             0.7,
-            0.001308
+            0.000957
           ],
           [
             0.75,
-            0.000134
+            9.8e-05
           ],
           [
             0.8,
@@ -1728,7 +1766,7 @@
           {
             "surface": "vertical",
             "area": {
-              "value": 0.051391,
+              "value": 0.043694,
               "unit": "m2",
               "kind": "derived",
               "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
@@ -1763,6 +1801,50 @@
               "value": [
                 0.257349,
                 0.1082
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            }
+          },
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.007696,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.980531,
+                0.0,
+                -0.02875
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.06255,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: EX-14c: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.1225,
+                0.118125
               ],
               "unit": "m",
               "kind": "derived",
@@ -1880,13 +1962,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 726.728159,
+          "value": 775.355535,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 17.663515,
+          "value": 18.851548,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1918,13 +2000,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 726.728159,
+          "value": 775.355535,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 17.663515,
+          "value": 18.851548,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1956,13 +2038,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 215.744184,
+          "value": 231.336996,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 9.624112,
+          "value": 10.297199,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."

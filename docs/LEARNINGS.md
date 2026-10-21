@@ -60,11 +60,15 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-20 · EX-14c — a frozen fixture that subclasses a runtime script pins its signatures
+
+Adding an optional parameter to `Slipstream.loads` broke `test_segmented_slipstream_parity.gd` with "Could not resolve external class member", because its frozen reference fixture `extends` the script and overrides `loads`, and GDScript requires an override to match the parent signature. Keep a public function's signature when a fixture subclasses it, and add a new function (`stage_loads`) for the new argument. Search `tests/fixtures/` for `extends "res://…"` before changing a runtime signature. [Evidence](research/extra-300-realism/EX-14/README.md)
+
 ## 2026-10-19 · D10-R5 — differentiate every static derivative in both load regimes, not only in the production blend
 
 The Stik's oracle carried the dihedral effect in `Clb`, but the local strips have no spanwise flow, so its roll due to sideslip dropped 85 % between α 8° and 12°. No flight test flagged it, because the blend weight changes with α and the jump looked like stall behaviour. The fuselage yaw (P51-25) and the section pitching moment (D11j) were the same kind of gap.
 
-- When a term enters one regime, give the other regime its counterpart, with a loader rule that ties the two together.
+- When a term enters one regime, give the other regime its counterpart, with a loader rule that ties the two together. The fuselage side force was the next instance: without it in the local law the Extra 300S could not knife-edge (−35 m/s with full rudder), although its oracle `CYb` was sufficient (D10-R3, [EX-14](research/extra-300-realism/EX-14/README.md)).
 - Before tuning a maneuver, differentiate the oracle, the local law and the blend at fixed states across α. [`roll_regimes.gd`](../research/flight-dynamics/stik-lateral-directional/roll_regimes.gd) does this for Clβ and Cnβ. [Evidence](research/flight-dynamics/stik-roll-sideslip-2026-10-19/README.md)
 
 ## 2026-10-19 · GP-06 — check contacts against the built model, and never require a fallback in shipped data

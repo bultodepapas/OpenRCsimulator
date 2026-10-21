@@ -19,6 +19,11 @@ Original run identities below remain historical. Its 60-second moving-encounter 
 crash, but every case still misses player separation; the two repaired crossings
 had worse minimum separation. Those failed cases remain retained for comparison.
 
+[AFC-02-R1](../AFC-02/README.md#solver-only-merge-compatibility-afc-02-r1-2026-10-20)
+preserves this qualification after the Extra's opt-in solver extension, using
+paired Stik replay parity and focused integration checks. The original matrix
+below remains its basis and was not rerun for that source-only merge.
+
 The preceding [AFC-04-R1](../AFC-04-R1/README.md) repaired strongest-threat
 selection and passed the same matrix with byte-identical CSVs. That source
 (`51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3`)

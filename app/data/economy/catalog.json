@@ -4,7 +4,7 @@
   "price_date": "2026-10-20",
   "generated_from": {
     "price_catalog_sha256": "4fccd282d03a85a2bdb855bb3a04d2ae8513fb8cd8bad5ced92c75b706c4b2fa",
-    "aircraft_costing_sha256": "fd5647bc244925e116d4b9668c096e27967e857c98f11858fad8eb8579c28297",
+    "aircraft_costing_sha256": "a22c57bc194d1596dd8067ea2bfd11ebd2dc9e0c20c789ab366c2654aca9efbf",
     "aircraft_catalog_sha256": "34a48ec0516a46fdbf7c8daf2a14ba723eb91f0ddb8bc6cd49c2bd1a30add378",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "8b31bbc4358c239b29667069f8cdc8a0ef673ed59b713f50aee9b16fff6b8d21"
@@ -3871,7 +3871,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "ba3031a690c7af386b6f16ee4c994091e319d057d1474ccf7ec67509bc48f13b",
+      "source_sha256": "1d4b12202cbac889bd22644243eec93bb338ab6529204a98d67e7afa9cc8df96",
       "currency": "USD",
       "price_date": "2026-10-20",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4374,8 +4374,8 @@
             "energy_source": ""
           },
           "ballast_reference": {
-            "name": "virtual reference-build balancing mass",
-            "mass": 0.142469,
+            "name": "virtual reference-build balancing mass (EX-14a: unaccounted build mass closing the RCM-weighed 124 oz)",
+            "mass": 0.384341,
             "mass_unit": "kg",
             "energy_source": ""
           },

@@ -597,6 +597,28 @@ axis mapping. This lets a pilot choose the visual reference without implying
 that the pictured transmitter is attached or qualified. [Source, capture and
 verification](research/flight-overlays/HUD-05-R2/README.md).
 
+### 2026-10-20 — Compose the quasi-static tail wake with the Glow shaft (EX-14c)
+
+Admit the propeller normal force, P-factor and quasi-static tail slipstream on
+Glow installations, and hand the wake the stage's own hub thrust and torque
+(`Slipstream.stage_loads`). The independent route evaluates the hub once for
+both, so trim and flight agree. The smooth and transported wakes stay refused:
+the Glow state layout carries no wash states. Aircraft without the modules are
+byte-identical. This lets a glow airplane steer on the ground, pivot in a
+hammerhead and swing left on takeoff from mechanisms, not rudder bias.
+[Evidence](research/extra-300-realism/EX-14/README.md).
+
+### 2026-10-20 — Fuselage side force at the ARP, not faded (D10-R3)
+
+Give the local aerodynamic law an opt-in Allen–Perkins fuselage side force: a
+slender-body slope tied by a loader rule to the oracle's `CYb`, plus crossflow
+drag on η·c_d·S_side that grows with the crossflow speed √(v²+w²). It acts at the
+ARP, where the oracle already applies `CYb`, and carries no yaw couple, so the
+two regimes stay consistent. Unlike `body_cn_beta` it does not fade, because
+knife-edge and spins live at large sideslip. The forebody/aft-centroid yaw split
+is left for a later step with its own evidence. Revisit when a body yaw law or
+measured knife-edge data exists. [Evidence](research/extra-300-realism/EX-14/README.md).
+
 ### 2026-10-20 — Keep the player tick driver while introducing airborne companions (AFC-01/03)
 
 Controllerless aircraft use the same session guards and kernel through a validated
@@ -669,4 +691,3 @@ Fresh-buffer ordering closes that gap without a synchronization stall or another
 draw pass. Camera-dependent alpha crossings remain a visual qualification gate.
 [Exact backend source](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/storage/particles_storage.cpp#L734-L778)
 and [native comparison](research/smoke-investigations/SM-16-23/README.md).
-
