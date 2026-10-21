@@ -3,9 +3,9 @@
 # static lift retention and stall-onset roll damping of NASA FASER (Hangar 9 Ultra Stick 120, Re about 3.6e5, the Extra's
 # Reynolds class): faser_cl.csv and faser_clp.csv, scored with the bench's own definitions (make_v2.gd's static curve
 # helpers, as post_stall_sweep.gd). The recipe is v2's: knots on the Extra's own calibrated attached line to 10 deg, the
-# strip peak at 13 deg, monotone post-peak knots at 18/24/30/36 deg, Viterna beyond and the CD90 flat plate at 90 deg;
-# EX-14h also fits the two attached-fraction knots (14 and 17 deg, non-increasing), which v2 fixes at 0.85 and 0.3. The
-# negative branch is v2's (retention 0.90, unmeasured). FASER is an analog airframe (rectangular high wing), not the
+# strip peak at 13 deg, attached fraction 0.85 at 14 and 0.3 at 17 deg, monotone post-peak knots at 18/24/30/36 deg (the
+# fitted parameters), Viterna beyond and the CD90 flat plate at 90 deg; the negative branch is v2's (retention 0.90,
+# unmeasured). Only the aircraft differs from make_v2.gd. FASER is an analog airframe (rectangular high wing), not the
 # Extra; the fit transfers RC-class whole-aircraft behaviour, not an Extra measurement.
 # The base model is the Extra data with aero.wing_polar removed, so the fit is the same before and after the generator
 # embeds it. Writes research/extra-300/ex14/wing_polar_fit.json, which research/extra-300/ex05/derive_physics.py embeds.
@@ -20,8 +20,8 @@ const EXTRA := "res://data/aircraft/gp_extra_300s_60.json"
 const ANALOG := "res://../research/flight-robustness/d8b-r2/analog/"
 const OUT := "res://../research/extra-300/ex14/wing_polar_fit.json"
 const KNOT_DEG := [18.0, 24.0, 30.0, 36.0]
-## Post-peak lift knots (fractions of the strip peak), then the attached fraction at 14 and 17 deg.
-const START := [0.94, 0.90, 0.86, 0.82, 0.85, 0.3]
+## Post-peak lift knots (fractions of the strip peak).
+const START := [0.94, 0.90, 0.86, 0.82]
 const STEPS := [0.04, 0.02, 0.01, 0.005]
 const LIMITS := [0.40, 1.00]
 const RETENTION_DEG := [15.0, 16.0, 17.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0]
@@ -73,7 +73,7 @@ func _initialize() -> void:
 			for k in best.size():
 				for direction in [1.0, -1.0]:
 					var trial: Array = best.duplicate()
-					trial[k] = clampf(float(trial[k]) + direction * step, 0.0 if k >= KNOT_DEG.size() else LIMITS[0], LIMITS[1])
+					trial[k] = clampf(float(trial[k]) + direction * step, LIMITS[0], LIMITS[1])
 					var score := _score(trial)
 					if score.j < best_score.j - 1e-9:
 						best = trial
@@ -82,10 +82,9 @@ func _initialize() -> void:
 	var polar := _polar(best)
 	var result := {
 		generator = "research/extra-300/ex14/fit_wing_polar.gd",
-		method = "D8b-R2d post-stall v2 recipe with the attached-fraction knots fitted (EX-14h)",
+		method = "D8b-R2d post-stall v2 recipe (research/flight-robustness/d8b-r2/analog/make_v2.gd) on the Extra (EX-14h)",
 		measured = ["research/flight-robustness/d8b-r2/analog/faser_cl.csv", "research/flight-robustness/d8b-r2/analog/faser_clp.csv"],
-		knot_angles_deg = KNOT_DEG, knot_fractions_of_peak = best.slice(0, KNOT_DEG.size()),
-		attached_fraction_14_17_deg = best.slice(KNOT_DEG.size()),
+		knot_angles_deg = KNOT_DEG, knot_fractions_of_peak = best,
 		rms_retention_error_15_30_deg = best_score.retention, rms_clp_error_10_17_5_deg = best_score.clp,
 		whole_aircraft_cl_max = best_score.peak, whole_aircraft_cl_max_alpha_deg = best_score.peak_alpha,
 		spanwise_progression = 1.0, positive = polar.positive, negative = polar.negative}
@@ -103,24 +102,21 @@ func _initialize() -> void:
 			return
 		file.store_string(content)
 		file.close()
-	print("knots %s deg: %s; attached fraction at 14/17 deg: %s; %d evaluations" % [KNOT_DEG, best.slice(0, KNOT_DEG.size()),
-		best.slice(KNOT_DEG.size()), evaluations])
+	print("knots %s deg: %s; %d evaluations" % [KNOT_DEG, best, evaluations])
 	print("J %.3f: RMS retention error %.4f, RMS Clp error %.4f; whole-aircraft CLmax %.3f at %.1f deg; %s" % [best_score.j,
 		best_score.retention, best_score.clp, best_score.peak, best_score.peak_alpha, "verified" if check_only else "written"])
 	quit(0)
 
 
-func _score(params: Array) -> Dictionary:
+func _score(knots: Array) -> Dictionary:
 	evaluations += 1
 	var none := {j = INF, retention = INF, clp = INF, peak = NAN, peak_alpha = NAN}
-	# Past the stall the section's lift does not grow again, and separation does not reverse.
-	for k in range(1, KNOT_DEG.size()):
-		if float(params[k]) > float(params[k - 1]):
+	# Past the stall the section's lift does not grow again.
+	for k in range(1, knots.size()):
+		if float(knots[k]) > float(knots[k - 1]):
 			return none
-	if float(params[KNOT_DEG.size() + 1]) > float(params[KNOT_DEG.size()]):
-		return none
 	var candidate: Dictionary = raw.duplicate(true)
-	var polar := _polar(params)
+	var polar := _polar(knots)
 	candidate.aero.wing_polar = {method = "tabulated-wing-v1", basis = "finite-wing-strip-reference",
 		spanwise_progression = {value = 1.0, unit = "1", kind = "derived", source = "fit"},
 		positive = {value = polar.positive, unit = "deg, 1, 1, 1", kind = "estimated", source = "fit"},
@@ -143,16 +139,13 @@ func _score(params: Array) -> Dictionary:
 
 
 ## Both branches as flat [angle deg, CL, profile CD, attached fraction] rows (v2's recipe; see the header).
-func _polar(params: Array) -> Dictionary:
-	var knots := params.slice(0, KNOT_DEG.size())
-	var f14: float = params[KNOT_DEG.size()]
-	var f17: float = params[KNOT_DEG.size() + 1]
+func _polar(knots: Array) -> Dictionary:
 	var peak := offset + slope * deg_to_rad(13.0)
 	var positive := [
 		8.0, offset + slope * deg_to_rad(8.0), cd0, 1.0,
 		10.0, offset + slope * deg_to_rad(10.0), cd0, 1.0,
-		14.0, peak, cd0 + 0.04, f14,
-		17.0, peak * lerpf(1.0, float(knots[0]), 0.75), _profile_cd(17.0), f17,
+		14.0, peak, cd0 + 0.04, 0.85,
+		17.0, peak * lerpf(1.0, float(knots[0]), 0.75), _profile_cd(17.0), 0.3,
 		20.0, peak * lerpf(float(knots[0]), float(knots[1]), 2.0 / 6.0), _profile_cd(20.0), 0.0,
 	]
 	for k in range(1, KNOT_DEG.size()):
