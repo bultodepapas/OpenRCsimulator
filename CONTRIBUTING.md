@@ -12,7 +12,7 @@ For handling feedback, describe the maneuver, speed if known, stick input, expec
 
 1. Read the relevant step in [ROADMAP.md](ROADMAP.md) or the linked implementation plan. Use an issue to discuss large changes before investing in them.
 2. Work on a branch and keep the change focused. Preserve other developers' in-progress work; only stage files belonging to your change.
-3. Run the checks relevant to the change. For Godot code, run `app/test.sh`; for rendering changes, also run `app/capture.sh` and inspect the images. Changes to paths, ignore rules or generated outputs need verification from a fresh clone.
+3. Run the checks relevant to the change; the [tool index](docs/tools/README.md) names them per task. For Godot code, run `app/test.sh`; for rendering changes, also run `app/capture.sh` and inspect the images. Changes to paths, ignore rules or generated outputs need verification from a fresh clone.
 4. Record any new reusable lesson using [LEARNINGS.md's criteria](docs/LEARNINGS.md#keeping-this-useful), and include the applicable plan step and proof in the commit or pull request: test, capture, trace or measurement.
 5. Open a pull request explaining the problem, resulting behavior and validation. State any pending manual checks, especially real-radio, GPU or native-platform testing.
 
@@ -20,12 +20,7 @@ Documentation-only changes need link and content checks; they do not require rer
 
 ## Preserve the simulation contract
 
-- Keep simulation state in 64-bit GDScript `float`s. Do not use `Vector3`, `Basis`, `Quaternion` or `Transform3D` for state in `sim/` or `physics/`; rendering converts at the boundary.
-- Sessions install one `VehicleModel` into the shared kernel; keep vehicle-specific laws in that model. See [kernel boundaries](docs/STACK.md#boundaries-and-data-flow).
-- Aircraft parameters use [openrc-aircraft v2](docs/AIRCRAFT_CONTRACT.md) in `app/data/aircraft/`. Physical quantities carry `{value, unit, kind, source}`. Label estimates; invalid data must refuse flight.
-- Regenerate generated geometry and physics data through their source scripts. Do not hand-edit generated files. [AGENTS.md](AGENTS.md) identifies the relevant tracks and ownership boundaries.
-- Preserve aircraft node names and control-surface hinge interfaces. Re-record golden flights only for an intentional, explained physics change.
-- Do not leave broken scripts in `app/`: the test runner parses every script. Keep drafts outside the app until ready to validate.
+Follow [AGENTS.md → Simulation and verification](AGENTS.md#simulation-and-verification) and its aircraft naming and generated-data rules; they apply to every contributor. Label estimates in aircraft data; invalid data must refuse flight.
 
 ## Assets and research
 

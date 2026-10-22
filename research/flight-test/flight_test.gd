@@ -8,7 +8,7 @@
 #
 # Run (repository root):
 #   <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- \
-#       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=vmax,roll] [--full-traces]
+#       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=trim_sweep,stall_power_off,vmax,roll_rate] [--full-traces]
 # Writes <out>/<aircraft>/profile.json, profile.md and one 20 Hz CSV per flown test (--full-traces: every tick).
 # --list prints the fixed-wing catalog IDs the card can fly and exits. Table rows carry a stable `case` ID so two
 # profiles compare case by case (research/flight-test/compare.py).

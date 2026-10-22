@@ -3,12 +3,16 @@
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
 
 
-do not creat thing that you can free download
+Do not create anything you can download for free; reuse it with its license and provenance ([CONTRIBUTING](CONTRIBUTING.md#assets-and-research)).
+
+## Tools
+
+Tool index: [docs/tools/README.md](docs/tools/README.md). Check it before writing ad-hoc test or debug code.
 
 ## Start here
 
 - [STACK.md](docs/STACK.md): current architecture and dependencies.
-- [docs/TOOLS.md](docs/TOOLS.md): setup, commands, tests, captures and exports.
+- [docs/TOOLS.md](docs/TOOLS.md): developer setup, Workshop, radio and release procedures.
 - [docs/README.md](docs/README.md#tracks-plans-and-step-ids): track ownership and documentation homes.
 - [ROADMAP.md](ROADMAP.md): main-line steps and acceptance gates.
 - [AIRCRAFT_CONTRACT.md](docs/AIRCRAFT_CONTRACT.md): aircraft authoring and extension rules.
@@ -18,9 +22,7 @@ The production application is `app/`. The three.js bake-off in `prototypes/stage
 
 ## Discover code
 
- 
-
-Prefer codebase-memory-mcp: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Use `rg` for literals, configuration, non-code files or insufficient graph results.
+When your harness provides codebase-memory-mcp, prefer it: `search_graph`, `trace_path`, `get_code_snippet`, `query_graph`, then `get_architecture`. Index the repository first if absent. Stored line ranges may lag the working tree; verify the current source before editing. Otherwise, and for literals, configuration, non-code files or insufficient graph results, use `rg --glob '!app/captures/**' --glob '!tmp/**'`.
 
 ## Preserve parallel work
 
