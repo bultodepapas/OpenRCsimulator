@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-22 · F4U-07 — anchor XFOIL to measured sections before trusting its maximum lift at model Reynolds numbers
+
+Against NACA TR 586's 23012 measurements, XFOIL (Ncrit 9, free transition) over-predicted cl_max by about 16 % and the lift slope by about 20 % at Re 0.5–1 million; the Corsair's first derivation carried a −0.10 correction that left wing CL_max at 1.32 instead of 1.14. Use measured section data at the right Reynolds number for level (TR 586, TN 1945 or similar) and keep XFOIL for trends such as thickness. Likewise check that a manufacturer propeller table exists before using a calibrated BEM: the P-51's BEM over-predicted the Corsair 3-blade's thrust by 17–37 % in the cruise band. [Evidence](research/f4u-corsair/F4U-07/README.md)
+
 ## 2026-10-22 · F4U-07 — read VLM induced drag in the Trefftz plane when the bound line kinks
 
 The P-51 ground-effect VLM reads trailing-leg induced velocity at each bound-vortex midpoint, which equals half the far wake only for a straight, unswept quarter-chord line. On the Corsair's measured planform (straight leading edge inboard, swept rounded tip) it gave a span efficiency of 1.31, even with the wing flattened. Reading the legs 100 spans downstream and halving gives 1.013 flat, 1.021 for the gull, and still matches the P-51 (1.017 → 1.013). Before trusting a VLM on a new planform, check that its flat, untwisted wing gives e near 1; reuse the midpoint method only for straight quarter-chord lines. [Evidence](research/f4u-corsair/F4U-07/README.md)

@@ -1,0 +1,157 @@
+{
+  "format": "openrc-f4u-source v2",
+  "status": "PROVISIONAL inputs for research/f4u-corsair/F4U-07/derive_physics.py. On 2026-10-22 the owner asked for a big, realistic Corsair with a Moki radial and a three-blade propeller; D1, D4 and D5 record the resulting configuration and change only here. Nothing in this file is measured on a built Corsair.",
+  "decisions": {
+    "D1_hardware_reference": "CARF-Models F4U-1D Corsair 1:4.5 (2,800 mm), the standard giant-scale Corsair for a Moki radial",
+    "D4_propeller": "three-blade 30x18 (the Moki S250 manual's three-blade; the F4U-1D airframe has three blades)",
+    "D5_engine": "Moki S250 five-cylinder four-stroke radial (the engine CARF designed the kit around)"
+  },
+  "kit": {
+    "name": "CARF-Models F4U-1D Corsair 1:4.5",
+    "url": "https://carf-models.com/en/products/f4u-1d-corsair",
+    "span_m": 2.8,
+    "length_m": 2.2,
+    "wing_area_m2": 1.348,
+    "scale": 0.2222222222222222,
+    "kit_source": "CARF product page and dealers (nexusmodels.co.uk, 8fly.it): 110 in / 2,800 mm span, 87 in / 2,200 mm length, 39-46 lb dry, designed around the Moki 250 cc radial with a 32 in three-blade, Sierra Giant Scale retracts, optional hydraulic wing fold; wing area 2,090 sq in (Model Airplane News review, December 2011)",
+    "flying_mass": {
+      "method": "anchors for this kit with a Moki radial, at constant wing loading (x (b / their span)^2); a dry anchor adds half the tank; target = mean of the anchors, rounded to 0.5 kg; range spans the anchors",
+      "range_kg": [18.0, 24.0],
+      "anchors": [
+        {"name": "CARF-Models specification, dry", "span_m": 2.8, "mass_kg": 19.5, "basis": "dry", "source": "39-46 lb (18-21 kg) dry, midpoint (carf-models.com/en/products/f4u-1d-corsair; nexusmodels.co.uk/products/carf-f4u-1d-corsair-1-4-5-790000)"},
+        {"name": "Model Airplane News review, Moki 250, SEP 32x18 2-blade, Sierra retracts, hydraulic wing fold", "span_m": 2.794, "mass_kg": 24.0, "basis": "flying", "source": "53 lb on 2,090 sq in (modelairplanenews.com/carfcorsair)"}
+      ]
+    },
+    "kit_setup": {
+      "name": "CARF-Models F4U-1D manual, Important Values (p. 44) and engine installation",
+      "url": "https://carf-models.com/files/product/34/ed/06/corsair_manual.pdf",
+      "span_m": 2.8,
+      "throws_mm": {"aileron": {"up": 20.0, "down": 15.0}, "elevator": {"up": 20.0, "down": 20.0, "up_take_off": 35.0}, "rudder": {"each_side": 70.0}},
+      "flaps_deg": {"take_off": 0.0, "landing": 30.0, "useful_max": 35.0, "max": 45.0},
+      "thrust_angles_deg": {"right": 2.5, "up": 0.5},
+      "cg": "10-12 mm (1/2 in) in front of the main spar, seen from the top; the manual does not give the spar station",
+      "handling": "take off at 50 % power: at full power the low-rate elevator cannot hold the tail down and the model may nose over; no flaps for take-off; at most 30 deg of flap on approach because the large flaps weaken low-speed elevator response; land tail-up, a three-point touchdown is 'challenging'; never noticeably exceed 200 km/h",
+      "note": "the manual does not say where throws are measured; they convert on the widest surface chords, the Black Horse convention. The aileron differential (20 up, 15 down) enters as its mean"
+    },
+    "reference_setups": [
+      {"name": "Black Horse F4U-1D 2.28 m (BH64)", "url": "https://www.lindinger.at/media/f2/5a/bd/1602008047/9774576_EN_Manual.pdf", "span_m": 2.28,
+       "cg_aft_of_wing_le_at_fuselage_mm": 128.0,
+       "throws_mm": {"aileron": {"low": 12.0, "high": 15.0}, "elevator": {"low": 12.0, "high": 15.0}, "rudder": {"low": 30.0, "high": 45.0}, "flaps": {"take_off": 25.0, "landing": 35.0}},
+       "note": "manual pp. 36-37: 128 mm back from the leading edge at the fuselage, tank empty; throws measured at the widest point of each surface; flaps 'mid' and 'landing'"},
+      {"name": "Seagull FG-1D 87 in", "url": "https://www.skyraccoon.com/assets/pdf/Corsair-F4U-Goodyear-FG-1D_4444.pdf", "span_m": 2.21,
+       "cg_aft_of_wing_le_at_fuselage_mm": 120.0,
+       "throws_mm": {"aileron": {"low": 25.0, "high": 30.0}, "elevator": {"low": 20.0, "high": 25.0}, "rudder": {"low": 30.0, "high": 35.0}, "flaps": {"take_off": 50.0, "landing": 70.0}},
+       "note": "manual pp. 74-75: 120 mm back from the leading edge at the wing root, gear retracted; flaps 'mid' and 'full'"},
+      {"name": "Phoenix Model F4U 1.8 m (PMMA1845)", "url": "https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf", "span_m": 1.8,
+       "cg_aft_of_wing_le_at_fuselage_mm": 110.0,
+       "throws_mm": {"aileron": {"low": 12.0, "high": 15.0}, "elevator": {"low": 12.0, "high": 15.0}, "rudder": {"low": 20.0, "high": 40.0}, "flaps": {"take_off": 15.0, "landing": 25.0}},
+       "expo": {"aileron": 0.10, "elevator": 0.12, "rudder": 0.15},
+       "note": "manual p. 1 specification block; expo from the same block"}
+    ],
+    "setup_method": "the CARF manual sets the high-rate throws, flap settings and thrust angles of this kit. It gives the CG only relative to an unstated spar station, so the balance point is the mean of the three smaller Corsair manuals' CG fractions (lengths scale by b / their span), with CARF as a cross-check; their median low/high ratio sets the low rate and the Phoenix manual the expo",
+    "engine": {
+      "name": "Moki S250 (250 cc five-cylinder four-stroke radial, gasoline)",
+      "power_hp": 15.0,
+      "power_rpm": 5500.0,
+      "limit_rpm": 6000.0,
+      "idle_rpm": 900.0,
+      "mass_engine_kg": 5.4,
+      "fuel": "unleaded petrol with oil 50:1 (Moki manual)",
+      "anchor": {
+        "propeller": "Menz 32x18 2-blade",
+        "static_rpm": 4300.0,
+        "table": "32x18 2B GAS",
+        "check_three_blade": {"propeller": "SEP 30x18 3-blade", "static_rpm": 4400.0},
+        "spread": "single forum reports on 32x18 2-blades: SEP 4,200 rpm, Engel 5,200 rpm (RCU 'MOKI RADIAL Care and Maintenence' thread, search summaries, not read in full); Moki factory: about 4,200 rpm as the most efficient static speed (same thread)",
+        "source": "Moki S250 operating instructions: '2 Blade Menz: 32x18 @ 4300 rpm', '3 Blade SEP: 30x18 @ 4400 rpm' (heilemann-sternmotoren.de/images/pdf-dokumente/MOKI_250_S_Radial_Operating_Instructions.pdf). The Mejzlik 32x18 2B table stands in for the Menz; the calibrated BEM (prop_calibration.json) for the SEP"
+      },
+      "thrust_check": {"engine": "Moki S300", "propeller": "SEP 34x18 2-blade", "static_rpm": 3950.0, "thrust_kgf": 29.92, "diameter_in": 34.0, "source": "measured by a forum user (RCU Moki radial thread, search summary, page not read)"},
+      "sources": "15 bhp, 5.4 kg (11 lb), bore 42 mm, stroke 36 mm, 26-40 oz tank: Moki S250 operating instructions; approx. 15.5 PS DIN and 5,100 g: CARF (carf-models.com/en/products/moki-s250). No rated rpm is published: 5,500 rpm is estimated below the 6,000 rpm ignition limit (CH Ignitions CDI for the Moki S215/S250/S300, ch-ignitions.com/product/ch-cdi-moki-s215-s250-s300/; Seidel: 6,000 rpm in a deep dive, low ground idle 900 rpm, seidel-props.de/en/sp-250-x-beschreibung/)"
+    },
+    "propeller": {
+      "name": "30x18 three-blade (wood, SEP class)",
+      "diameter_in": 30.0,
+      "pitch_in": 18.0,
+      "blades": 3,
+      "mass_kg": 0.59,
+      "mass_source": "estimated: a Biela 32x18 2-blade weighs about 475 g; x 3/2 blades x (30/32)^3",
+      "source": "Moki S250 manual three-blade (SEP 30x18 at 4,400 rpm); CARF sells a 32 in ground-adjustable three-blade scale propeller for this kit (carf-models.com/en/products/moki-s250) without published data. No table exists for either: the calibrated BEM of fit_propeller.py models the 30x18"
+    },
+    "fuel_tank_l": 1.0,
+    "retracts": {
+      "main": "Sierra Giant Scale rotating pneumatic main retracts (CARF kit equipment) with Robart gear-door cylinders",
+      "tail": "retractable tail wheel with doors and pull-wire steering (CARF manual)",
+      "cycle_s": 4.0,
+      "source": "CARF manual (units); cycle time estimated as the P-51's pneumatic sequencer value, no Sierra timing published"
+    }
+  },
+  "full_size": {
+    "wing_area_ft2": 314.0,
+    "mac_in": 94.0,
+    "root_chord_in": 105.0,
+    "airfoil_root": "NACA 23018",
+    "airfoil_tip": "NACA 23009",
+    "horizontal_tail_area_ft2": 55.9,
+    "elevator_area_aft_of_hinge_ft2": 21.9,
+    "elevator_balance_area_ft2": 5.4,
+    "vertical_tail_area_ft2": 22.0,
+    "rudder_area_aft_of_hinge_ft2": 13.0,
+    "rudder_balance_area_ft2": 1.66,
+    "fin_offset_left_deg": 2.0,
+    "aileron_area_aft_of_hinge_both_ft2": 18.1,
+    "aileron_span_each_ft": 7.48,
+    "flap_area_total_ft2": 36.4,
+    "flap_type": "slotted",
+    "neutral_point_stick_free_power_on_mac": {"flaps_gear_up": 0.30, "flaps_gear_down": 0.27},
+    "cg_tested_mac": [0.265, 0.325],
+    "pb2v_full_aileron": 0.064,
+    "pb2v_flaps_gear_down": [0.06, 0.076],
+    "stall": "power on: pitch-down with roll-off to the left; power off: mild roll-off, inconsistent in direction; warning inadequate (NACA RM A7C05)",
+    "clmax_tunnel": {"slotted_flaps_50_ailerons_drooped_power_off": 2.13, "power_on": 2.46, "reynolds": 2.7e6},
+    "sources": "NACA RM A7C05 (F4U-4 flying qualities, 1947, ntrs.nasa.gov/citations/20050081862) dimension table and text; NACA WR L-440 (1/2.75 model, 1942, ntrs.nasa.gov/citations/19930093637); wing area: Patriots Point FG-1D and WR L-440 model area x 2.75^2. OCR-degraded values are recorded in docs/research/f4u-corsair/F4U-01/README.md"
+  },
+  "sections": {
+    "measured": {
+      "source": "NACA TR 586 (Jacobs and Sherman, 1937, ntrs.nasa.gov/citations/19930091662), Table I, variable-density tunnel at effective Reynolds numbers (free-air equivalent). Rows read from the OCR text layer by their Reynolds-number series and the 23012's signature (alpha0 -1.2 deg, cm -0.007 to -0.010); recheck against the page image",
+      "naca_23012": {
+        "reynolds_effective": [112000, 221000, 449000, 874000, 1760000, 3400000, 6070000, 8190000],
+        "clmax": [1.00, 1.15, 1.19, 1.28, 1.41, 1.53, 1.67, 1.72],
+        "cl_alpha_per_deg": 0.096,
+        "alpha0_deg": -1.2,
+        "cm_ac": -0.008
+      },
+      "naca_23015": {"reynolds_effective": [3880000, 8370000], "clmax": [1.60, 1.73], "cl_alpha_per_deg": 0.098, "alpha0_deg": -1.1, "cm_ac": -0.008},
+      "trends": "NACA TR 610 (ntrs.nasa.gov/citations/19930091685): lift-curve slope falls slightly with thickness, the aerodynamic centre moves forward, the moment and optimum lift fall numerically, and maximum lift peaks near 12-13 % thickness for the 230 series"
+    },
+    "xfoil": {
+      "method": "XFOIL 6.96 predictions, Ncrit 9, free transition, via airfoiltools.com (polar ids xf-naca230xx-il-{500000,1000000}); used only for the thickness trend relative to the 23012. 23009 is not hosted, so the thin outer sections clamp at 12 %",
+      "polars": [
+        {"airfoil": "NACA 23012", "reynolds": 500000, "alpha0_deg": -1.09, "cl_alpha_per_rad": 6.94, "cm": -0.0076, "clmax": 1.430, "cd_min": 0.00647},
+        {"airfoil": "NACA 23012", "reynolds": 1000000, "alpha0_deg": -1.06, "cl_alpha_per_rad": 6.73, "cm": -0.0053, "clmax": 1.541, "cd_min": 0.00587},
+        {"airfoil": "NACA 23015", "reynolds": 500000, "alpha0_deg": -1.09, "cl_alpha_per_rad": 6.66, "cm": -0.0032, "clmax": 1.430, "cd_min": 0.00808},
+        {"airfoil": "NACA 23015", "reynolds": 1000000, "alpha0_deg": -1.14, "cl_alpha_per_rad": 6.48, "cm": -0.0046, "clmax": 1.559, "cd_min": 0.00719},
+        {"airfoil": "NACA 23018", "reynolds": 500000, "alpha0_deg": -1.13, "cl_alpha_per_rad": 6.12, "cm": 0.0020, "clmax": 1.406, "cd_min": 0.00844},
+        {"airfoil": "NACA 23018", "reynolds": 1000000, "alpha0_deg": -1.20, "cl_alpha_per_rad": 6.15, "cm": -0.0016, "clmax": 1.540, "cd_min": 0.00727}
+      ]
+    },
+    "finish_clmax_decrement": 0.05,
+    "finish_source": "painted model finish, as the P-51 (NACA TN 1945: rough sections about 0.1 lower)"
+  },
+  "slotted_flap": {
+    "source": "Roskam, Airplane Design Part VI, Fig. 8.17 (single-slotted lift effectiveness alpha_delta) and Figs. 8.31-8.34 (maximum-lift increment: base(t/c) k1(c_f/c) k2(delta) k3(delta/45)), as digitized by FAST-GA (github.com/supaero-aircraft-design/FAST-GA, resources k_single_slot.csv, base_increment.csv, k1.csv, k2.csv, k3.csv; GPL-3.0 project, values cited as published readings)",
+    "alpha_delta": {
+      "chord_ratios": [0.15, 0.20, 0.25, 0.30],
+      "deflections_deg": [0, 10, 20, 30, 40],
+      "values": [[0.371, 0.371, 0.357, 0.324, 0.272],
+                 [0.449, 0.448, 0.428, 0.392, 0.336],
+                 [0.515, 0.510, 0.492, 0.458, 0.403],
+                 [0.555, 0.552, 0.532, 0.502, 0.441]],
+      "note": "rows: chord ratio; columns: deflection; digitized abscissae are within 0.6 deg of the nominal columns"
+    },
+    "base_increment": [[12, 1.307], [13, 1.379], [14, 1.469], [15, 1.572], [16, 1.657], [17, 1.709], [18, 1.721], [19, 1.711], [20, 1.669]],
+    "k1": [[14, 0.78], [16, 0.838], [18, 0.884], [20, 0.924], [22, 0.962], [24, 0.991], [26, 1.018], [28, 1.042], [30, 1.062]],
+    "k2": [[0, 0.180], [5, 0.323], [10.2, 0.469], [15, 0.590], [20, 0.695], [25, 0.788], [30, 0.865], [35, 0.925], [40, 0.968], [45, 1.0]],
+    "k3": [[0.1, 0.1375], [0.2, 0.2646], [0.3, 0.3875], [0.4, 0.5104], [0.5, 0.6146], [0.6, 0.7104], [0.7, 0.7896], [0.8, 0.8667], [0.9, 0.9396], [1.0, 1.0]],
+    "check_tr664": "NACA TR 664 (Wenzinger and Harris, 1939, ntrs.nasa.gov/citations/19930091739): NACA 23012 with the 0.2566c slotted flap 2-h reaches section cl_max 2.86 at an effective Reynolds number of 8,000,000, the increment nearly constant from 0.9 to 8 million; against a plain 23012 near 1.75 that is about 1.1"
+  }
+}

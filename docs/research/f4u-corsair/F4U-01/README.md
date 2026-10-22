@@ -45,6 +45,21 @@ Cross-checks with the FokkeRC kit: its 2,052 mm length is within 1.1 % of the pu
 
 **Mass inference, not a source.** Scaling the two mass anchors to 2.50 m span by span³ gives 19.7–19.9 kg; by span² (constant wing loading) 17.4–18.8 kg. A placeholder range of 16–21 kg flying mass is reasonable until a kit manual or builder log is found. For comparison, the P-51 data uses 18–24 kg for a 2.82 m, 120 cc model.
 
+## Additions, 2026-10-22
+
+| Topic | Source | Value used |
+| --- | --- | --- |
+| Section maximum lift and slope at model Reynolds numbers | [NACA TR 586](https://ntrs.nasa.gov/citations/19930091662), Table I (OCR layer; rows identified by the 23012's α₀ −1.2° and Cm −0.007 to −0.010 signature; recheck against the page image) | 23012 cl_max 1.19 / 1.28 / 1.41 at effective Re 0.45 / 0.87 / 1.76 million; slope ≈0.096/deg; 23015 α₀ −1.1°, Cm −0.008. XFOIL (Ncrit 9) runs about 16 % high on cl_max and 20 % high on slope at these Reynolds numbers |
+| Thickness trends of the 230 series | [NACA TR 610](https://ntrs.nasa.gov/citations/19930091685) | Slope falls slightly with thickness; cl_max peaks near 12–13 % thickness, so the 9–11 % outer sections should stall earlier than the clamped model |
+| Slotted flaps | [NACA TR 664](https://ntrs.nasa.gov/citations/19930091739); Roskam Part VI Figs. 8.17, 8.31–8.34 as digitized by [FAST-GA](https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/figure_digitization.html) | TR 664: 23012 with the 0.2566c flap 2-h reaches cl_max 2.86 at Re 8 million, increment nearly Reynolds-independent; Roskam's chain gives 1.19 on that flap against TR 664's ≈1.1 |
+| Corsair setups | [Black Horse BH64 manual](https://www.lindinger.at/media/f2/5a/bd/1602008047/9774576_EN_Manual.pdf) (2.28 m), [Seagull FG-1D manual](https://www.skyraccoon.com/assets/pdf/Corsair-F4U-Goodyear-FG-1D_4444.pdf) (2.21 m), Phoenix PMMA1845 (1.8 m) | CG 128 / 120 / 110 mm behind the root leading edge; throws and flap settings in mm (Black Horse: measured at each surface's widest point) |
+| Mass | Black Horse 9.6–10 kg on 94.6 dm² (gasoline 55–65 cc, rotary air retracts); Seagull 14 kg | Constant-wing-loading scaling of the gasoline Corsairs to 2.5 m: 11.8, 17.9 and 18.8 kg (mean 16 kg) |
+| DLE-111 installed power | [Team Flying Circus](http://www.teamflyingcircus.com/forum/showthread.php?t=5561), [RCU](https://www.rcuniverse.com/forum/gas-engines-142/9214721-dle-111-rpm-numbers.html), [rc-network](https://www.rc-network.de/threads/dle-111-mit-28x12-drehzahl.665634/); [Mejzlik 27x10 2B datasheet](https://www.mejzlik.eu/files/27x10-2b-gas-datasheet.pdf) | Mejzlik 27x10 "a hair over 6800 rpm" static, static Cp 0.027 → 7.3 kW installed; spread 6,250–6,900 rpm on 27x10 propellers, 5,300–6,600 rpm on 28x12 |
+| Propeller | Mejzlik 26x12 3B GAS N datasheet rev. 3.0 | Values in `research/p51/p51-06/mejzlik_26x12.json` rechecked; the calibrated BEM over-predicts thrust by 17–37 % at J 0.59–0.67 |
+| Full-size handling | NACA RM A7C05 text | Clean pb/2V 0.064 (required 0.09); flaps and gear down 0.060–0.076; power-on stall rolls off to the left; lateral oscillation damped at low altitude, rudder oscillation lightly damped |
+
+No F4U sideslip derivatives were found in NTRS beyond RM A7C05's figures (RM SL7E20 covers store drag and buffet only). Transferring the P-51's flight-calibrated body-yaw ratio (3.6 × DATCOM) would make the Corsair directionally unstable, against RM A7C05's measured stability over ±15°, so it is not used.
+
 ## Rights notes
 
 The [licensing guide](../../../AIRCRAFT-LICENSING.md) classifies the Corsair as a conditional historical replica and records licensing activity for the name. R59 lists the Royal RC F4U-1D plan and the CARF manual among its references and packs two plan scans; the g1 request asks for their removal and a reference list. Kit plans are reference material only; no kit drawing, CAD or artwork is imported.

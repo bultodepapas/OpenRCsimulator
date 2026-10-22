@@ -14,7 +14,7 @@ All required physical capabilities already exist in the aircraft contract: the P
 | --- | --- |
 | Visual delivery requirements for the author | [Blender delivery request](F4U-BLENDER-HANDOFF.md) |
 | Sources, full-size data, RC reference candidates | [F4U-01 evidence](research/f4u-corsair/F4U-01/README.md) |
-| Sources, pipeline and commands | [Asset guide](../assets/aircraft/f4u-corsair-1-5/README.md) |
+| Sources, pipeline and commands | [Asset guide](../assets/aircraft/f4u-corsair-250/README.md) |
 | Provisional 1/5 geometry | [F4U-06 R59 extraction](research/f4u-corsair/F4U-06/README.md) |
 | Provisional physics data and checks | [F4U-07 evidence](research/f4u-corsair/F4U-07/README.md) |
 | Retractable-taildragger rig | [F4U-02 evidence](research/f4u-corsair/F4U-02/README.md) |
@@ -23,7 +23,7 @@ All required physical capabilities already exist in the aircraft contract: the P
 | Shared model, retraction and section contracts | [Aircraft contract](AIRCRAFT_CONTRACT.md#model-and-package-contract) (AS) |
 | Rights | [Licensing guide](AIRCRAFT-LICENSING.md) |
 
-F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/`, `assets/aircraft/f4u-corsair-1-5/` and, once created, `app/assets/aircraft/f4u-corsair-1-5/`, `app/aircraft/f4u_*`, `app/data/aircraft/f4u_corsair_1_5.json` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
+F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/`, `assets/aircraft/f4u-corsair-250/` and, once created, `app/assets/aircraft/f4u-corsair-250/`, `app/aircraft/f4u_*`, `app/data/aircraft/f4u_corsair_250.json` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
 
 ## 3. Gaps found in the shared code
 
@@ -47,7 +47,7 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 | F4U-04 | Tool ready | Preflight: `preflight_glb.py` (strict profile) plus the author's verifier; Godot import with mesh compression disabled; compare landmarks with metadata. Proof of the tool: exact Avanti/Timber counts and 9/9 mutation checks (2026-10-21). Return failures to the author. |
 | F4U-05 | Waiting for g1 | Model family: geometry compiler from g1 metadata plus `GearRetract` sampled stowed → down (Avanti `export_blender.py` method); `model-bindings.json` entry (`imported_glb`, `gltf_extras`, `retraction`); model manifest; Workshop descriptor. Proof: model verifier, pose/full-travel checks, conformance. |
 | F4U-06 | Done, provisional, 2026-10-22 | [R59 extraction](research/f4u-corsair/F4U-06/README.md) to `geometry-r59.json`: sections, control surfaces, fuselage, hull points and gear paths through R59's own retract rig. Planform and tail areas match published values within 0.6–4 %; gull, dihedral and incidence lack a primary source. Remaining: re-extract from g1 and compare. |
-| F4U-07 | Done, provisional, 2026-10-22 | [Native v2 generator](research/f4u-corsair/F4U-07/README.md) with gull-wing VLM; staged output passes the production loader; level, glide and flare trims inside the throws (probe 9/9). Neutral point calibrated to a NACA-based target. Remaining: slotted-flap data, body-yaw calibration from RM A7C05 sideslips, PDF recheck of OCR values, D1/D4/D5. Output moves to `app/data/aircraft/` at F4U-09; never hand-edited. |
+| F4U-07 | Done, provisional, 2026-10-22 | [Native v2 generator](research/f4u-corsair/F4U-07/README.md): measured NACA 23012 sections, three Corsair setups, DLE-111 anchor, Mejzlik 3-blade table, Roskam slotted flaps (within 8 % of TR 664), gull-wing VLM. Staged output passes the production loader; trims, flare authority, top speed (53.5 m/s) and Level 1 modes at four speeds (probe 22/22). Remaining: body-yaw calibration (no F4U sideslip data found), thin-tip stall data, PDF recheck of OCR values, D1/D4/D5. Output moves to `app/data/aircraft/` at F4U-09; never hand-edited. |
 | F4U-08 | After F4U-05 | Contacts and `retraction_path` already come from R59's rig; confirm against the sampled g1 action. Recompute gear travel with the GP-06 reserve-drop probe; tail steering, brakes, Robart retract timing. Proof: ground suites, runway start qualification. |
 | F4U-09 | After F4U-08 | Catalog registration, EN/ES names, Home and menu entries, thumbnail. Display name per D2. |
 | F4U-10 | After F4U-05 | Presentation: paint slots `paint_body/wing/wing_tip/tail`, livery set and default (D3), registration mounts, light anchors, smoke outlets (exhaust, wingtips). |
@@ -58,7 +58,7 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 
 ## 5. Owner decisions pending
 
-D1, D4 and D5 run on their recommended values as provisional defaults in [source.json](../assets/aircraft/f4u-corsair-1-5/source.json); changing one is a source edit and a regeneration.
+D1, D4 and D5 run on their recommended values as provisional defaults in [source.json](../assets/aircraft/f4u-corsair-250/source.json); changing one is a source edit and a regeneration.
 
 | ID | Decision | Recommendation |
 | --- | --- | --- |

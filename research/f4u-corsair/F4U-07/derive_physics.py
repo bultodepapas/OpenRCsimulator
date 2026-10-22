@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""F4U-07: physics data of the 1/5 F4U-1D Corsair (DLE-111 class), derived and reproducible.
+"""F4U-07: physics data of the 1/4.5 F4U-1D Corsair (CARF-Models class, Moki S250 radial), derived and reproducible.
 
-Reads the provisional 1/5 geometry measured on the author's R59 master (assets/aircraft/f4u-corsair-1-5/geometry-r59.json),
+Reads the provisional 1/4.5 geometry measured on the author's R59 master (assets/aircraft/f4u-corsair-250/geometry-r59.json),
 the authored inputs in source.json, the gull-wing ground-effect fit (vlm_ground_effect.json beside this script), the
-Mejzlik 26x12 propeller data and BEM calibration of the P-51 (research/p51/p51-06) and the Ugly Stik data file for
-shared conventions and provisional local-surface limits. Writes an openrc-aircraft v2 file natively (the v1 upgrader
-is ID-gated to the eight reviewed aircraft) and derivation.md.
+Mejzlik 32x18 table and the propeller calibration beside this script (mejzlik_32x18.json; prop_calibration.json from
+fit_propeller.py), the P51-06 blade-element model and the Ugly Stik data file for shared conventions and provisional
+local-surface limits. Writes an openrc-aircraft v2 file natively (the v1 upgrader is ID-gated to the eight reviewed
+aircraft) and derivation.md.
 
 The method follows the P-51 generator (research/p51/p51-05/derive_physics.py): Helmbold/DATCOM lift slopes, tail
 volume, strip theory, Schrenk/Reynolds spanwise stall, drag build-up, component inventory, BEM propeller and a shaft
@@ -35,18 +36,18 @@ from physical_identity import validate_physical_identity  # noqa: E402
 import fuel_registry  # noqa: E402
 from bem import bem_tables  # noqa: E402
 
-GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-1-5/geometry-r59.json"
-SOURCE = ROOT / "assets/aircraft/f4u-corsair-1-5/source.json"
+GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/geometry-r59.json"
+SOURCE = ROOT / "assets/aircraft/f4u-corsair-250/source.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 GE_FILE = HERE / "vlm_ground_effect.json"
-MEJZ = ROOT / "research/p51/p51-06/mejzlik_26x12.json"
-CALIB = ROOT / "research/p51/p51-06/calibration.json"
+MEJZ = HERE / "mejzlik_32x18.json"
+CALIB = HERE / "prop_calibration.json"
 OUT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_OUTPUT_DIR", HERE)).resolve()
 REPORT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_REPORT_DIR", HERE)).resolve()
-OUT = OUT_DIR / "f4u_corsair_1_5.json"
+OUT = OUT_DIR / "f4u_corsair_250.json"
 REPORT = REPORT_DIR / "derivation.md"
 SCRIPT = "research/f4u-corsair/F4U-07/derive_physics.py"
-GEO_SRC = "assets/aircraft/f4u-corsair-1-5/geometry-r59.json (F4U-06: R59 visual master measured at 1/5; provisional until g1)"
+GEO_SRC = "assets/aircraft/f4u-corsair-250/geometry-r59.json (F4U-06: R59 visual master measured at 1/4.5; provisional until g1)"
 IN, FT2, LB = 0.0254, 0.09290304, 0.45359237
 RHO, G0, NU = 1.225, 9.80665, 1.46e-5
 
@@ -58,9 +59,12 @@ def load_json(path):
 g = load_json(GEOMETRY)
 src = load_json(SOURCE)
 KIT, FULL, SEC = src["kit"], src["full_size"], src["sections"]
-REFSET = KIT["reference_setup"]
+SETUPS = KIT["reference_setups"]
+KS = KIT["kit_setup"]
+SLOT = src["slotted_flap"]
 SCALE = KIT["scale"]
 AREA_SCALE = SCALE * SCALE
+SCALE_TXT = f"1/{1 / SCALE:g}"
 log = []
 
 
@@ -110,8 +114,7 @@ def median_filter(values, half=3):
 # --- Wing planform (measured right half, mirrored) ---------------------------------------------------------------
 WS = g["wing_sections"]
 semi = g["hull"]["wing_tip"][1]
-b = note("reference", "b (m)", KIT["span_m"], f"kit span ({KIT['name']}); R59 x 0.2 gives {2 * semi:.4f} m")
-assert abs(b - 2 * semi) < 1e-6
+b = note("reference", "b (m)", 2 * semi, f"R59 x {SCALE_TXT}; {KIT['name']} quotes {KIT['span_m']} m")
 ys = [r["station"] for r in WS] + [semi]
 cs = [r["chord"] for r in WS] + [0.0]
 les = [r["le"][0] for r in WS] + [g["hull"]["wing_tip"][0]]
@@ -136,10 +139,10 @@ grid = [semi * (k + 0.5) / N_INT for k in range(N_INT)]
 dy_int = semi / N_INT
 integral = lambda f, lo=0.0, hi=None: sum(f(y) for y in grid if lo <= y <= (semi if hi is None else hi)) * dy_int
 S_r59 = 2 * integral(chord)
-S = note("reference", "S (m2)", FULL["wing_area_ft2"] * FT2 * AREA_SCALE, f"published 314 sq ft x 1/25 (F4U-01); the measured R59 planform integrates to {S_r59:.4f} m2 ({100 * (S_r59 / (FULL['wing_area_ft2'] * FT2 * AREA_SCALE) - 1):+.1f} %)")
+S = note("reference", "S (m2)", FULL["wing_area_ft2"] * FT2 * AREA_SCALE, f"published 314 sq ft x ({SCALE_TXT})2 (F4U-01); the measured R59 planform integrates to {S_r59:.4f} m2 ({100 * (S_r59 / (FULL['wing_area_ft2'] * FT2 * AREA_SCALE) - 1):+.1f} %); {KIT['name']} quotes {KIT['wing_area_m2']} m2")
 c_ref = note("reference", "c_ref = S/b (m)", S / b, "v1 coefficient reference length (not the MAC)")
 AR = note("reference", "AR = b2/S", b * b / S, "")
-mac = note("reference", "MAC (m)", 2 / S_r59 * integral(lambda y: chord(y) ** 2), f"measured planform, (2/S) int c2 dy; NACA RM A7C05 94.00 in x 0.2 = {FULL['mac_in'] * IN * SCALE:.4f} m")
+mac = note("reference", "MAC (m)", 2 / S_r59 * integral(lambda y: chord(y) ** 2), f"measured planform, (2/S) int c2 dy; NACA RM A7C05 94.00 in x {SCALE_TXT} = {FULL['mac_in'] * IN * SCALE:.4f} m")
 y_mac = note("reference", "MAC span station (m)", 2 / S_r59 * integral(lambda y: chord(y) * y), "")
 mac_le_x = note("reference", "MAC leading edge (x_aft m)", 2 / S_r59 * integral(lambda y: chord(y) * at(y, les)), "chord-weighted leading edge")
 # Equivalent trapezoid of the same area and MAC: the loader's planform fields and equal-area strips use it.
@@ -148,7 +151,7 @@ aq, bq = 1 - 0.75 * ratio, 1 - 1.5 * ratio
 lam = (-bq - math.sqrt(bq * bq - 4 * aq * aq)) / (2 * aq)
 cr = 2 * c_ref / (1 + lam)
 ct = lam * cr
-note("reference", "equivalent trapezoid root, tip (m), taper", [cr, ct, lam], "same S and MAC as the measured planform; measured root chord " + f"{WS[0]['chord']:.4f} m (NACA 105 in x 0.2 = {FULL['root_chord_in'] * IN * SCALE:.4f})")
+note("reference", "equivalent trapezoid root, tip (m), taper", [cr, ct, lam], "same S and MAC as the measured planform; measured root chord " + f"{WS[0]['chord']:.4f} m (NACA 105 in x {SCALE_TXT} = {FULL['root_chord_in'] * IN * SCALE:.4f})")
 qc = lambda y: at(y, les) + 0.25 * chord(y)
 hc = lambda y: at(y, les) + 0.5 * chord(y)
 sweep_hc = note("reference", "half-chord sweep (deg)", math.degrees(math.atan2(hc(0.8 * semi) - hc(0.2 * semi), 0.6 * semi)), "measured, 20-80 % semi-span")
@@ -170,13 +173,16 @@ gamma_inner = math.degrees(dihedral(0.2))
 gamma_outer = math.degrees(dihedral(0.8))
 note("aero", "local dihedral at y 0.20 / 0.80 m (deg)", [gamma_inner, gamma_outer], "inverted gull: anhedral inboard, dihedral outboard (F4U-06)")
 
-# --- Sections: XFOIL 230-series, interpolated in thickness and log Reynolds number --------------------------------
-POL = SEC["polars"]
-CORR = SEC["xfoil_corrections"]
+# --- Sections: measured NACA 23012 data (TR 586) set the level; XFOIL supplies only the thickness trend -------------
+POL = SEC["xfoil"]["polars"]
+MEAS = SEC["measured"]
+M12, M15 = MEAS["naca_23012"], MEAS["naca_23015"]
 TC_OF = {"NACA 23012": 0.12, "NACA 23015": 0.15, "NACA 23018": 0.18}
+FINISH = SEC["finish_clmax_decrement"]
 
 
-def section(key, tc, re):
+def xfoil(key, tc, re):
+    """XFOIL value interpolated in thickness (clamped 12-18 %) and log Reynolds number (clamped 0.5-1 million)."""
     tc = min(max(tc, 0.12), 0.18)
     lre = math.log10(min(max(re, 5e5), 1e6))
     by_tc = {}
@@ -189,18 +195,37 @@ def section(key, tc, re):
     return lerp_table(rows, tc)
 
 
+def clmax_23012(re):
+    """TR 586 measured 23012 maximum lift, interpolated in log effective Reynolds number."""
+    return lerp_table([(math.log10(r), c) for r, c in zip(M12["reynolds_effective"], M12["clmax"])], math.log10(re))
+
+
+def section(key, tc, re):
+    """Measured 23012 level x XFOIL thickness ratio (lift slope, clmax); measured angle and moment with the XFOIL
+    thickness increment for sections thicker than the measured 23015."""
+    if key == "clmax":
+        return clmax_23012(re) * xfoil("clmax", tc, re) / xfoil("clmax", 0.12, re) - FINISH
+    if key == "cl_alpha_per_rad":
+        return math.degrees(M12["cl_alpha_per_deg"]) * xfoil("cl_alpha_per_rad", tc, re) / xfoil("cl_alpha_per_rad", 0.12, re)
+    if key == "alpha0_deg":
+        return lerp_table([(0.12, M12["alpha0_deg"]), (0.15, M15["alpha0_deg"])], tc)
+    if key == "cm":
+        return M15["cm_ac"] + (xfoil("cm", tc, re) - xfoil("cm", 0.15, re) if tc > 0.15 else 0.0)
+    raise KeyError(key)
+
+
 V_cruise_guess = 25.0
-re_mac = V_cruise_guess * mac / NU
-cla_xfoil = 2 / S_r59 * integral(lambda y: chord(y) * section("cl_alpha_per_rad", at(y, tcs), V_cruise_guess * chord(y) / NU))
-kappa = note("aero", "section lift slope / 2pi", CORR["lift_slope_factor"] * cla_xfoil / (2 * math.pi), f"chord-weighted XFOIL {cla_xfoil:.3f}/rad at 25 m/s x {CORR['lift_slope_factor']} ({CORR['source'].split(':')[0]})")
-alpha0 = note("aero", "wing zero-lift angle (deg)", 2 / S_r59 * integral(lambda y: chord(y) * section("alpha0_deg", at(y, tcs), V_cruise_guess * chord(y) / NU)), "XFOIL 230-series, chord-weighted; thin-airfoil theory for the 230 mean line gives about -1.2 deg")
-cm_ac = note("aero", "section Cm_ac", 2 / S_r59 * integral(lambda y: chord(y) * section("cm", at(y, tcs), V_cruise_guess * chord(y) / NU)), "XFOIL 230-series moment over CL 0-0.6, chord-weighted: the forward-camber family has almost no pitching moment")
+cla_sec = 2 / S_r59 * integral(lambda y: chord(y) * section("cl_alpha_per_rad", at(y, tcs), V_cruise_guess * chord(y) / NU))
+kappa = note("aero", "section lift slope / 2pi", cla_sec / (2 * math.pi), f"chord-weighted {cla_sec:.3f}/rad at 25 m/s: NACA TR 586 23012 {M12['cl_alpha_per_deg']}/deg x the XFOIL thickness trend (XFOIL alone gives {2 / S_r59 * integral(lambda y: chord(y) * xfoil('cl_alpha_per_rad', at(y, tcs), V_cruise_guess * chord(y) / NU)):.2f}/rad)")
+alpha0 = note("aero", "wing zero-lift angle (deg)", 2 / S_r59 * integral(lambda y: chord(y) * section("alpha0_deg", at(y, tcs), V_cruise_guess * chord(y) / NU)), "NACA TR 586: 23012 -1.2, 23015 -1.1 deg, chord-weighted")
+cm_ac = note("aero", "section Cm_ac", 2 / S_r59 * integral(lambda y: chord(y) * section("cm", at(y, tcs), V_cruise_guess * chord(y) / NU)), "NACA TR 586 23015 -0.008 plus the XFOIL thickness increment beyond 15 %, chord-weighted")
+note("aero", "measured / XFOIL clmax at Re 0.5 and 1.0 million (23012)", [clmax_23012(5e5) / xfoil("clmax", 0.12, 5e5), clmax_23012(1e6) / xfoil("clmax", 0.12, 1e6)], "NACA TR 586 against XFOIL: XFOIL's free-transition clmax runs about 16 % high at model Reynolds numbers")
 
 # --- Fuselage ------------------------------------------------------------------------------------------------------
 FS = g["fuselage_stations"]
 nose_x = g["nose"]["spinner_tip"][0]
 tail_x = g["hull"]["tail_end"][0]
-fus_len = note("fuselage", "length, spinner tip to tail cone (m)", tail_x - nose_x, f"R59 x 0.2; FokkeRC kit length {KIT['length_m']} m; full-size 33.3 ft x 0.2 = {33.3 * 12 * IN * SCALE:.4f} m")
+fus_len = note("fuselage", "length, spinner tip to tail cone (m)", tail_x - nose_x, f"R59 x {SCALE_TXT}; {KIT['name']} length {KIT['length_m']} m; full-size 33.3 ft x {SCALE_TXT} = {33.3 * 12 * IN * SCALE:.4f} m")
 fus_w = 2 * max(s["half_width"] for s in FS)
 fus_d = max(s["top"] - s["bottom"] for s in FS)
 note("fuselage", "max width, depth (m)", [fus_w, fus_d], "fuselage and cowl stations")
@@ -218,7 +243,7 @@ def fus_top(x):
 # --- Horizontal tail: NACA areas, measured layout ------------------------------------------------------------------
 SS = g["stabilizer_sections"]
 hs = g["hull"]["stab_tip"][1]
-Sh = note("tail", "Sh (m2)", FULL["horizontal_tail_area_ft2"] * FT2 * AREA_SCALE, f"NACA RM A7C05 55.9 sq ft x 1/25; R59 measures {2 * sum(0.5 * (a['chord'] + c['chord']) * (c['station'] - a['station']) for a, c in zip(SS, SS[1:])):.4f} m2")
+Sh = note("tail", "Sh (m2)", FULL["horizontal_tail_area_ft2"] * FT2 * AREA_SCALE, f"NACA RM A7C05 55.9 sq ft x ({SCALE_TXT})2; R59 measures {2 * sum(0.5 * (a['chord'] + c['chord']) * (c['station'] - a['station']) for a, c in zip(SS, SS[1:])):.4f} m2")
 bh = 2 * hs
 AR_h = bh * bh / Sh
 mach_h = sum(r["chord"] ** 2 for r in SS) / sum(r["chord"] for r in SS)
@@ -231,7 +256,7 @@ crh = SS[0]["chord"]
 # --- Vertical tail: NACA area, measured fin above the fuselage ------------------------------------------------------
 FN = g["fin_sections"]
 fin_exposed = [r for r in FN if r["station"] >= fus_top(r["le"][0] + 0.5 * r["chord"])]
-Sv = note("tail", "Sv (m2)", FULL["vertical_tail_area_ft2"] * FT2 * AREA_SCALE, "NACA RM A7C05 22.0 sq ft x 1/25 (measured fin agrees when cut at the fuselage top, F4U-06)")
+Sv = note("tail", "Sv (m2)", FULL["vertical_tail_area_ft2"] * FT2 * AREA_SCALE, f"NACA RM A7C05 22.0 sq ft x ({SCALE_TXT})2 (measured fin agrees when cut at the fuselage top, F4U-06)")
 fin_root_z = fin_exposed[0]["station"]
 fin_top_z = g["hull"]["fin_top"][2]
 h_v = note("tail", "fin height above the fuselage (m)", fin_top_z - fin_root_z, "")
@@ -241,9 +266,12 @@ note("tail", "fin ac (x_aft, z_up m)", [xv_ac, fin_cz], "chord-weighted quarter 
 cf_r = note("tail", "rudder chord fraction (aft of hinge)", FULL["rudder_area_aft_of_hinge_ft2"] / FULL["vertical_tail_area_ft2"], "NACA area ratio 13.0/22.0")
 
 # --- CG from the reference setup -----------------------------------------------------------------------------------
-x_cg_target = note("balance", "CG (x_aft m)", REFSET["cg_aft_of_wing_le_at_fuselage_mm"] / 1000 * REFSET["length_ratio_to_1_5"], f"{REFSET['name']}: {REFSET['cg_aft_of_wing_le_at_fuselage_mm']:.0f} mm behind the wing leading edge at the fuselage, x {REFSET['length_ratio_to_1_5']:.5f} to 1/5; the leading edge is straight inboard (x 0 at the root)")
+setup_cg = [s_["cg_aft_of_wing_le_at_fuselage_mm"] / 1000 * b / s_["span_m"] for s_ in SETUPS]
+x_cg_target = note("balance", "CG (x_aft m)", sum(setup_cg) / len(setup_cg), f"mean of the three Corsair manuals scaled to {b:.3f} m (" + ", ".join(f"{s_['name'].split(' (')[0]} {s_['cg_aft_of_wing_le_at_fuselage_mm']:.0f} mm -> {1000 * c_:.1f} mm" for s_, c_ in zip(SETUPS, setup_cg)) + "); the leading edge is straight inboard (x 0 at the root)")
 cg_mac = note("balance", "CG (% MAC)", 100 * (x_cg_target - mac_le_x) / mac, "")
 cg_mac /= 100
+spar_cg = [100 * (f_ * WS[0]["chord"] - 0.011 * b / KS["span_m"] - mac_le_x) / mac for f_ in (0.25, 0.30, 0.33)]
+note("balance", "CARF cross-check: CG for a main spar at 25 / 30 / 33 % root chord (% MAC)", spar_cg, "CARF manual: 10-12 mm ahead of the main spar, station not given; the 230 series is thickest at 30 % chord")
 
 # --- Lift slopes, downwash, neutral point --------------------------------------------------------------------------
 GE = load_json(GE_FILE)
@@ -294,38 +322,41 @@ SURF = g["surfaces"]
 ail = SURF["aileron_right"]
 y1a, y2a = ail["span"]
 A_ail = FULL["aileron_area_aft_of_hinge_both_ft2"] / 2 * FT2 * AREA_SCALE
-cf_a = note("controls", "aileron chord fraction (aft of hinge)", A_ail / integral(chord, y1a, y2a), f"NACA 18.1 sq ft (both) x 1/25 over the wing area of the measured aileron span {y1a:.3f}-{y2a:.3f} m")
+cf_a = note("controls", "aileron chord fraction (aft of hinge)", A_ail / integral(chord, y1a, y2a), f"NACA 18.1 sq ft (both) x ({SCALE_TXT})2 over the wing area of the measured aileron span {y1a:.3f}-{y2a:.3f} m")
 flap_spans = [SURF[k]["span"] for k in ("flap_right_1", "flap_right_2", "flap_right_3")]
 y1f, y2f = flap_spans[0][0], flap_spans[-1][1]
 A_flap = FULL["flap_area_total_ft2"] / 2 * FT2 * AREA_SCALE
-cf_f = note("controls", "flap chord fraction", A_flap / integral(chord, y1f, y2f), f"NACA 36.4 sq ft (both) x 1/25 over the measured flap span {y1f:.3f}-{y2f:.3f} m (three panels)")
-k_ratio = REFSET["length_ratio_to_1_5"]
+cf_f = note("controls", "flap chord fraction", A_flap / integral(chord, y1f, y2f), f"NACA 36.4 sq ft (both) x ({SCALE_TXT})2 over the measured flap span {y1f:.3f}-{y2f:.3f} m (three panels)")
+def throw_deg(mm, model_span, surface_chord):
+    return math.degrees(math.asin(min(1.0, mm / 1000 * b / model_span / surface_chord)))
 
 
-def throw_deg(mm, surface_chord):
-    return math.degrees(math.asin(min(1.0, mm / 1000 * k_ratio / surface_chord)))
+def median(values):
+    v = sorted(values)
+    return v[len(v) // 2] if len(v) % 2 else 0.5 * (v[len(v) // 2 - 1] + v[len(v) // 2])
 
 
+# Widest surface chords aft of the hinge (NACA area fractions on the measured planform): the Black Horse manual
+# measures throws there; the others do not say.
 chord_ail = cf_a * chord(y1a)
 chord_elev = cf_e * crh
 chord_rud = cf_r * max(r["chord"] for r in fin_exposed)
 chord_flap = cf_f * chord(y1f)
-TH = REFSET["throws_mm"]
-throws = {
-    "aileron": throw_deg(TH["aileron"]["high"], chord_ail),
-    "elevator": throw_deg(TH["elevator"]["high"], chord_elev),
-    "rudder": throw_deg(TH["rudder"]["high"], chord_rud),
-}
-low = {
-    "aileron": throw_deg(TH["aileron"]["low"], chord_ail),
-    "elevator": throw_deg(TH["elevator"]["low"], chord_elev),
-    "rudder": throw_deg(TH["rudder"]["low"], chord_rud),
-}
-THROW_SRC = f"{REFSET['name']} manual (high/low mm, {REFSET['url']}), x {k_ratio:.4f} to 1/5, converted with this airframe's surface chord at its inboard end (aileron {chord_ail:.3f}, elevator {chord_elev:.3f}, rudder {chord_rud:.3f} m; NACA area fractions): the measuring station is not stated"
+SURFACE_CHORD = {"aileron": chord_ail, "elevator": chord_elev, "rudder": chord_rud, "flaps": chord_flap}
+per_setup = {s_["name"]: {axis: {rate: throw_deg(mm, s_["span_m"], SURFACE_CHORD[axis]) for rate, mm in rates.items()}
+                          for axis, rates in s_["throws_mm"].items()} for s_ in SETUPS}
+KT = KS["throws_mm"]
+kit_mm = {"aileron": 0.5 * (KT["aileron"]["up"] + KT["aileron"]["down"]), "elevator": KT["elevator"]["up"], "rudder": KT["rudder"]["each_side"]}
+throws = {k: throw_deg(mm, KS["span_m"], SURFACE_CHORD[k]) for k, mm in kit_mm.items()}
+low_fraction = {k: median([per_setup[n][k]["low"] / per_setup[n][k]["high"] for n in per_setup]) for k in throws}
+EXPO = next(s_["expo"] for s_ in SETUPS if "expo" in s_)
+THROW_SRC = (f"CARF manual ({KS['url']}): aileron {KT['aileron']['up']:.0f} mm up / {KT['aileron']['down']:.0f} mm down (mean), elevator {KT['elevator']['up']:.0f} mm, "
+             f"rudder {KT['rudder']['each_side']:.0f} mm, converted on this airframe's widest surface chords (aileron {chord_ail:.3f}, elevator {chord_elev:.3f}, rudder {chord_rud:.3f} m; NACA area fractions)")
 for k in throws:
-    note("controls", f"{k} high / low (deg)", [throws[k], low[k]], "")
-flap_settings = {"take_off": throw_deg(TH["flaps"]["take_off"], chord_flap), "landing": throw_deg(TH["flaps"]["landing"], chord_flap)}
-note("controls", "flap take-off / landing (deg)", [flap_settings["take_off"], flap_settings["landing"]], f"Phoenix 15 / 25 mm on a flap chord of {chord_flap:.3f} m")
+    note("controls", f"{k} high (deg), low fraction", [throws[k], low_fraction[k]], "CARF high rate; low = median low/high of three Corsair manuals (" + ", ".join(f"{per_setup[n][k]['low'] / per_setup[n][k]['high']:.2f}" for n in per_setup) + "); their high rates on this airframe: " + ", ".join(f"{per_setup[n][k]['high']:.1f}" for n in per_setup))
+note("controls", "elevator take-off up throw (deg)", throw_deg(KT["elevator"]["up_take_off"], KS["span_m"], chord_elev), f"CARF: up to {KT['elevator']['up_take_off']:.0f} mm for take-off only; not a separate rate here")
+flap_settings = {k: KS["flaps_deg"][k] for k in ("take_off", "landing")}
+note("controls", "flap take-off / landing (deg)", [flap_settings["take_off"], flap_settings["landing"]], f"CARF manual: no flap for take-off, at most 30 deg on approach (useful {KS['flaps_deg']['useful_max']:.0f}, mechanical {KS['flaps_deg']['max']:.0f}); the three smaller manuals' landing settings on this flap chord ({chord_flap:.3f} m): " + ", ".join(f"{per_setup[n]['flaps']['landing']:.1f}" for n in per_setup))
 k_flap = note("controls", "flap effectiveness correction", 0.8, "estimated (DATCOM range 0.6-0.9), as the P-51")
 tau_e = flap_tau(cf_e) * k_flap
 ce_h = note("controls", "elevator effectiveness (local)", tau_e / (1 - deps), f"tau {tau_e:.3f} / (1 - deps/dalpha)")
@@ -340,52 +371,68 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory over the measured aileron
 NOSE = g["nose"]
 GW = g["gear"]["wheels"]
 spinner_back = NOSE["spinner_back_x"]
-rc_fw = spinner_back + 0.25
+prop_x = NOSE["propeller_plane"][0]
+rc_fw = prop_x + 0.24  # Moki S250 from propeller flange to the back of its cast radial mount (estimated)
 cp_z = arp_z
 FUEL_BLEND = "gasoline_premix_40_1"
 TANK_L = KIT["fuel_tank_l"]
 FUEL_KG = TANK_L * 1e-3 * fuel_registry.blend_density(FUEL_BLEND) * 0.5
-mejz = load_json(MEJZ)
-prop_rec = mejz["props"][KIT["propeller"]["table_key"]]
+anc_rec = load_json(MEJZ)["props"][KIT["engine"]["anchor"]["table"]]
+PR = KIT["propeller"]
+PROP_D = PR["diameter_in"] * IN
+PROP_P = PR["pitch_in"] * IN
+prop_inertia = PR["mass_kg"] * PROP_D ** 2 * PR["blades"] / 24
 aileron_mid = 0.5 * (y1a + y2a)
 flap_mid = 0.5 * (y1f + y2f)
 wing_z_mac = at(y_mac, zs)
 ENERGY_SOURCES = {"fuel (half tank)": "gasoline"}
 E = KIT["engine"]
+
+
+def full(*v):
+    """Airframe stations laid out in full-size metres from the R59 root (le frame), scaled to the model. Component
+    offsets from measured features (tank behind the firewall, wheel above its contact) stay hardware-sized."""
+    return [x * SCALE for x in v]
+
+
 items = [
-    ("engine DLE-111", E["mass_engine_kg"], "manual", E["sources"], [spinner_back + 0.12, 0.0, 0.0], [0.15, 0.32, 0.15], "estimated", "crankshaft on the thrust line, crankcase ~0.12 m behind the spinner back (boxer twin)", "engine_main"),
-    ("ignition module and two canister mufflers", E["mass_with_ignition_and_mufflers_kg"] - E["mass_engine_kg"], "manual", "Lindinger: 2690 g total less the 2370 g engine", [spinner_back + 0.20, 0.0, -0.06], [0.22, 0.22, 0.08], "estimated", "inside the radial cowl below the cylinders", "muffler_pair"),
-    ("propeller Mejzlik 26x12 3-blade", prop_rec["mass_kg"], "manual", f"Mejzlik datasheet mass ({prop_rec['url']})", [NOSE["propeller_plane"][0], 0.0, 0.0], [0.02, 26 * IN, 26 * IN], "measured", "propeller plane of the R59 nose (geometry-r59.json)", "propeller_main"),
+    ("engine Moki S250 with radial mount and collector ring", E["mass_engine_kg"], "manual", E["sources"], [prop_x + 0.12, 0.0, 0.0], [0.22, 0.33, 0.33], "estimated", "crankcase on the thrust line, cylinders just inside the cowl lip (CARF: the engine is barely smaller than the cowl)", "engine_main"),
+    ("ignition module, sensor lead and switch", 0.18, "estimated", "Moki manual: separate screened ignition cylinder, mounted away from the engine", [rc_fw + 0.05, 0.0, 0.05], None, "estimated", "behind the firewall", "ignition_module"),
+    (f"propeller {PR['name']}", PR["mass_kg"], "estimated", PR["mass_source"], [prop_x, 0.0, 0.0], [0.03, PROP_D, PROP_D], "measured", "propeller plane of the R59 nose (geometry-r59.json)", "propeller_main"),
     ("spinner and hub", 0.15, "estimated", "small aluminium hub cap, as the F4U-1D's", [spinner_back - 0.04, 0.0, 0.0], [0.10, 0.09, 0.09], "measured", "R59 spinner", "spinner_main"),
-    ("engine standoffs, mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", [rc_fw - 0.03, 0.0, 0.0], None, "estimated", "the model's firewall: spinner back + 0.25 m", "engine_mount"),
-    ("cowl (composite, 297 mm)", 0.50, "estimated", "FokkeRC composite cowl, 297 mm diameter", [0.5 * (NOSE["cowl_front_x"] + NOSE["cowl_rear_x"]), 0.0, 0.0], [NOSE["cowl_rear_x"] - NOSE["cowl_front_x"], 2 * NOSE["cowl_half_width"], 2 * NOSE["cowl_half_width"]], "measured", "R59 cowl", "cowl_main"),
+    ("firewall bolts, blind nuts and thrust spacers", 0.10, "estimated", "M5 bolts and large spacers for 2.5 deg right thrust (CARF manual); the cast radial mount is in the engine mass", [rc_fw, 0.0, 0.0], None, "estimated", "the model's firewall: propeller plane + 0.24 m", "engine_mount"),
+    ("cowl (composite, about 335 mm)", 0.60, "estimated", "CARF composite cowl; R59 cowl width x 1/4.5", [0.5 * (NOSE["cowl_front_x"] + NOSE["cowl_rear_x"]), 0.0, 0.0], [NOSE["cowl_rear_x"] - NOSE["cowl_front_x"], 2 * NOSE["cowl_half_width"], 2 * NOSE["cowl_half_width"]], "measured", "R59 cowl", "cowl_main"),
     ("fuel tank 1 l (empty) with lines", 0.20, "estimated", "gasoline tank with clunk and lines", [rc_fw + 0.10, 0.0, -0.02], None, "estimated", "behind the firewall", "fuel_tank"),
-    ("fuel (half tank)", FUEL_KG, "derived", f"half of the {TANK_L:.1f} l tank x {fuel_registry.blend_source(FUEL_BLEND)} (registry 40:1 premix; DLE asks for 30:1, a negligible density difference)", [rc_fw + 0.10, 0.0, -0.02], [0.16, 0.10, 0.0625], "estimated", "uniform liquid box in the tank", "fuel_flight"),
-    ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", [rc_fw + 0.03, 0.0, -0.08], None, "estimated", "below the tank", "ignition_battery"),
+    ("fuel (half tank)", FUEL_KG, "derived", f"half of the {TANK_L:.1f} l tank x {fuel_registry.blend_source(FUEL_BLEND)} (registry 40:1 premix; Moki asks for 50:1, a negligible density difference)", [rc_fw + 0.10, 0.0, -0.02], [0.16, 0.10, 0.0625], "estimated", "uniform liquid box in the tank", "fuel_flight"),
+    ("ignition battery 2S LiPo", 0.15, "estimated", "Moki manual: 2S LiPo or LiFe, 6-9 V", [rc_fw + 0.03, 0.0, -0.08], None, "estimated", "below the tank", "ignition_battery"),
     ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", [rc_fw + 0.06, 0.0, -0.09], None, "estimated", "forward fuselage floor", "receiver_batteries"),
-    ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", [0.30, 0.0, -0.05], None, "estimated", "under the cockpit floor", "receiver_radio"),
-    ("retract air tank, valve and lines", 0.20, "estimated", "pneumatic Robart retracts need an air tank, valve and lines", [0.25, 0.0, -0.08], None, "estimated", "fuselage floor near the wing", "retract_air"),
+    ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", full(1.50, 0.0, -0.25), None, "estimated", "under the cockpit floor", "receiver_radio"),
+    ("retract and gear-door air system", 0.25, "estimated", "Sierra retracts and Robart door cylinders need an air tank, valves and lines", full(1.25, 0.0, -0.40), None, "estimated", "fuselage floor near the wing", "retract_air"),
     ("aileron servo left", 0.08, "estimated", "20-25 kg cm class servo", [0.5 * chord(aileron_mid), -aileron_mid, at(aileron_mid, zs)], [0.03, 0.04, 0.02], "estimated", "aileron span midpoint", "servo_aileron_left"),
     ("aileron servo right", 0.08, "estimated", "20-25 kg cm class servo", [0.5 * chord(aileron_mid), aileron_mid, at(aileron_mid, zs)], [0.03, 0.04, 0.02], "estimated", "aileron span midpoint", "servo_aileron_right"),
-    ("flap servo left", 0.08, "estimated", "one servo per side for the three panels", [0.6 * chord(flap_mid), -flap_mid, at(flap_mid, zs)], [0.03, 0.04, 0.02], "estimated", "flap span midpoint", "servo_flap_left"),
-    ("flap servo right", 0.08, "estimated", "one servo per side for the three panels", [0.6 * chord(flap_mid), flap_mid, at(flap_mid, zs)], [0.03, 0.04, 0.02], "estimated", "flap span midpoint", "servo_flap_right"),
-    ("elevator servos (2)", 0.16, "estimated", "two tail servos", [xh_ac - 0.10, 0.0, zh], [0.05, 0.25, 0.03], "estimated", "stabilizer root", "servo_elevator"),
-    ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", [0.60, 0.0, -0.02], None, "estimated", "aft of the cockpit", "servo_rudder"),
+    ("flap servos left (inner and outer)", 0.16, "estimated", "CARF manual: an inner and an outer flap servo per side", [0.6 * chord(flap_mid), -flap_mid, at(flap_mid, zs)], [0.03, 0.04, 0.02], "estimated", "flap span midpoint", "servo_flap_left"),
+    ("flap servos right (inner and outer)", 0.16, "estimated", "as the left side", [0.6 * chord(flap_mid), flap_mid, at(flap_mid, zs)], [0.03, 0.04, 0.02], "estimated", "flap span midpoint", "servo_flap_right"),
+    ("elevator servos (2)", 0.16, "estimated", "two tail servos", [xh_ac - 0.5 * SCALE, 0.0, zh], [0.05, 0.25, 0.03], "estimated", "stabilizer root", "servo_elevator"),
+    ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", full(3.0, 0.0, -0.10), None, "estimated", "aft of the cockpit", "servo_rudder"),
+    ("tail-wheel steering servo and pull wires", 0.06, "estimated", "CARF manual: a separate steering servo right behind the wing", full(3.2, 0.0, -0.20), None, "estimated", "right behind the wing", "servo_tail_steering"),
     ("throttle, choke servos and linkage", 0.08, "estimated", "two small servos", [rc_fw + 0.05, 0.0, 0.02], None, "estimated", "behind the firewall", "servo_throttle_choke"),
-    ("main gear assembly left", 0.75, "estimated", "Robart #150 rotating retract, strut, wheel and door (estimated)", [GW["main_left"]["centre_down"][0], GW["main_left"]["centre_down"][1], 0.5 * (GW["main_left"]["centre_down"][2] + at(abs(GW["main_left"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_left"),
-    ("main gear assembly right", 0.75, "estimated", "Robart #150 rotating retract, strut, wheel and door (estimated)", [GW["main_right"]["centre_down"][0], GW["main_right"]["centre_down"][1], 0.5 * (GW["main_right"]["centre_down"][2] + at(abs(GW["main_right"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_right"),
-    ("tail wheel assembly (retractable)", 0.20, "estimated", "Robart #160 1/5 tail retract", [GW["tail"]["centre_down"][0], 0.0, GW["tail"]["centre_down"][2] + 0.04], None, "measured", "R59 tail wheel", "gear_tail"),
-    ("wing panel, left, sheeted, with flaps and aileron", 2.20, "estimated", "built-up sheeted wing half of a 2.5 m warbird with retract bays", [mac_le_x + 0.42 * mac, -y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_left"),
-    ("wing panel, right, sheeted, with flaps and aileron", 2.20, "estimated", "same as the left panel", [mac_le_x + 0.42 * mac, y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_right"),
-    ("wing tube and bolts", 0.35, "estimated", "aluminium or carbon wing joiner", [0.20, 0.0, arp_z], [0.04, 0.6, 0.04], "estimated", "main spar", "wing_joiner"),
-    ("fuselage front (firewall to cockpit rear), covered", 1.70, "estimated", "lite-ply/balsa box with doublers, glassed", [0.25, 0.0, 0.0], [1.0, fus_w, fus_d], "estimated", "from the stations", "fuselage_front"),
-    ("fuselage rear, turtle deck and tail cone", 0.95, "estimated", "balsa sides and stringered deck", [1.10, 0.0, 0.02], [0.9, 0.18, 0.2], "estimated", "from the stations", "fuselage_rear"),
+    ("main gear assembly left", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_left"]["centre_down"][0], GW["main_left"]["centre_down"][1], 0.5 * (GW["main_left"]["centre_down"][2] + at(abs(GW["main_left"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_left"),
+    ("main gear assembly right", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_right"]["centre_down"][0], GW["main_right"]["centre_down"][1], 0.5 * (GW["main_right"]["centre_down"][2] + at(abs(GW["main_right"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_right"),
+    ("tail wheel assembly (retractable, with doors)", 0.30, "estimated", "CARF retractable tail wheel with doors", [GW["tail"]["centre_down"][0], 0.0, GW["tail"]["centre_down"][2] + 0.04], None, "measured", "R59 tail wheel", "gear_tail"),
+    ("wing panel, left, with flaps and aileron", 2.70, "estimated", "CARF composite sandwich wing half with retract bays", [mac_le_x + 0.42 * mac, -y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_left"),
+    ("wing panel, right, with flaps and aileron", 2.70, "estimated", "same as the left panel", [mac_le_x + 0.42 * mac, y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_right"),
+    ("wing tubes and bolts", 0.45, "estimated", "CARF plug-in wing: aluminium wing tubes", [1.0 * SCALE, 0.0, arp_z], full(0.2, 3.0, 0.2), "estimated", "main spar", "wing_joiner"),
+    ("fuselage front (firewall to cockpit rear)", 2.10, "estimated", "CARF composite sandwich fuselage with ply formers", full(1.25, 0.0, 0.0), [5.0 * SCALE, fus_w, fus_d], "estimated", "from the stations", "fuselage_front"),
+    ("fuselage rear, turtle deck and tail cone", 1.20, "estimated", "composite shell", full(5.5, 0.0, 0.10), full(4.5, 0.9, 1.0), "estimated", "from the stations", "fuselage_rear"),
     ("canopy, frame and pilot", 0.35, "estimated", "Lexan canopy, composite frame, pilot bust", list(g["canopy_top"][:2]) + [g["canopy_top"][2] - 0.05], None, "measured", "R59 canopy", "canopy_pilot"),
     ("stabilizer and elevator, covered", 0.60, "estimated", "sheeted built-up stab", [xh_ac + 0.15 * mach_h, 0.0, zh], [crh, bh, 0.025], "measured", "R59 stabilizer", "horizontal_tail"),
     ("fin and rudder, covered", 0.30, "estimated", "sheeted built-up fin", [xv_ac + 0.1, 0.0, fin_cz], [0.3, 0.02, h_v], "derived", "exposed fin centroid", "vertical_tail"),
-    ("pushrods, horns, cowl fasteners, hardware", 0.35, "estimated", "rough sum", [0.60, 0.0, 0.0], None, "estimated", "spread along the fuselage", "control_hardware"),
+    ("pushrods, horns, cowl fasteners, hardware", 0.40, "estimated", "rough sum", full(3.0, 0.0, 0.0), None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
-FLIGHT_MASS = KIT["flying_mass_kg"]["target"]
+FM = KIT["flying_mass"]
+mass_anchors = [(a_["name"], (a_["mass_kg"] + (FUEL_KG if a_["basis"] == "dry" else 0.0)) * (b / a_["span_m"]) ** 2) for a_ in FM["anchors"]]
+FLIGHT_MASS = round(2 * sum(m_ for _, m_ in mass_anchors) / len(mass_anchors)) / 2
+note("balance", "flight mass target (kg)", FLIGHT_MASS, f"constant wing loading to {b:.3f} m, a dry anchor plus half the tank: " + ", ".join(f"{n_.split(',')[0]} {m_:.1f}" for n_, m_ in mass_anchors) + " kg; mean, rounded to 0.5 kg")
 STRUCTURE = ("wing panel", "wing tube", "fuselage", "canopy", "stabilizer", "fin and rudder", "cowl", "pushrods")
 is_structure = lambda it: any(it[0].startswith(s) for s in STRUCTURE)
 is_fuel = lambda it: it[0] == "fuel (half tank)"
@@ -416,7 +463,7 @@ dry_cg[1] = 0.0
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0
-note("balance", "flight mass (kg), CG (le m)", [mass] + cg, f"dry {dry_mass:.3f} kg; range {KIT['flying_mass_kg']['range']}")
+note("balance", "flight mass (kg), CG (le m)", [mass] + cg, f"dry {dry_mass:.3f} kg; range {FM['range_kg']}")
 
 
 def inertia(pt):
@@ -455,7 +502,7 @@ for _ in range(5):
         c_c = w / (hi_y - lo_y)
         tc_c = integral(lambda y: chord(y) * at(y, tcs), lo_y, hi_y) / w
         re_c = V_stall_guess * c_c / NU
-        clmax_c = section("clmax", tc_c, re_c) - CORR["clmax_decrement"]
+        clmax_c = section("clmax", tc_c, re_c)
         load = integral(lambda y: chord(y) * schrenk(y), lo_y, hi_y) / w
         twist_c = integral(lambda y: chord(y) * at(y, incs), lo_y, hi_y) / w
         strips.append({"y": y_c, "chord": c_c, "tc": tc_c, "re": re_c, "clmax": clmax_c, "load": load, "twist": twist_c, "cl_star": clmax_c / load})
@@ -466,7 +513,7 @@ strip_inc = [(s_["twist"] - twist_mean) + (CL_max - s_["cl_star"]) / CLa_w for s
 for i, s_ in enumerate(strips):
     note("stall", f"strip {i + 1}: y, chord, t/c, Re, clmax, cl/CL, CL*", [s_["y"], s_["chord"], s_["tc"], s_["re"], s_["clmax"], s_["load"], s_["cl_star"]], "")
 note("stall", "strip incidence offsets root to tip (deg)", [math.degrees(x) for x in strip_inc], "measured twist + Schrenk/Re stall order; the most positive strip stalls first")
-CL_max = note("aero", "CL_max", CL_max, "mean of three equal-area strip limits: Schrenk loading on the measured chord, XFOIL 230-series clmax(t/c, Re) less the stated decrement")
+CL_max = note("aero", "CL_max", CL_max, "mean of three equal-area strip limits: Schrenk loading on the measured chord; section clmax = NACA TR 586 23012 clmax(Re) x the XFOIL thickness trend, less 0.05 for a painted finish")
 Vs = note("aero", "1-g stall (m/s)", math.sqrt(2 * mass * G0 / (RHO * S * CL_max)), "flight mass, CL_max")
 V_start = note("aero", "start speed (m/s)", round(1.6 * Vs), "1.6 x the 1-g stall, rounded")
 CL_ref = note("aero", "CL_ref", mass * G0 / (0.5 * RHO * V_start ** 2 * S), "level flight at the start speed")
@@ -544,48 +591,55 @@ CD0 = note("drag", "CD0", (sum(parts.values()) - parts["gear down: wheels, strut
 e_osw = note("drag", "Oswald e", 0.75, f"estimated as the P-51; the inviscid VLM of the gull planform gives {GE['free_air']['e_trefftz']:.3f}")
 k_ind = 1 / (math.pi * e_osw * AR)
 
-# --- Propeller: calibrated BEM for the Mejzlik 26x12 3-blade ---------------------------------------------------------
+# --- Propeller: BEM calibrated on the Mejzlik 32x18 2-blade and the P-51's 26x12 pair (fit_propeller.py) ----------
 calib = load_json(CALIB)
-PROP_D = KIT["propeller"]["diameter_in"] * IN
-PROP_P = KIT["propeller"]["pitch_in"] * IN
-# The BEM calibration was fitted with the P-51 blade planform; reuse it so the fitted factors stay valid.
+# The calibration was fitted with the P-51 blade planform; reuse it so the fitted factors stay valid.
 PLANFORM = load_json(ROOT / "assets/aircraft/p51d-mustang-120/geometry.json")["propeller"]["blade"]["chord_fraction_of_radius"]
-ct_table, cp_table = bem_tables(PROP_D, PROP_P, KIT["propeller"]["blades"], PLANFORM,
+ct_table, cp_table = bem_tables(PROP_D, PROP_P, PR["blades"], PLANFORM,
                                 pitch_factor=calib["pitch_factor"], chord_factor=calib["chord_factor"], j_max=1.6)
 Ct0, Cp0 = ct_table[0][1], cp_table[0][1]
-mej_rows = list(zip(prop_rec["J"], prop_rec["Ct"], prop_rec["Cp"]))
-bem_err = [abs(lerp_table(ct_table, J) - ct_) / max(ct_, 1e-3) for J, ct_, _ in mej_rows if ct_ > 0.01]
-note("propulsion", "BEM vs Mejzlik 26x12 3B table: Ct0, Cp0, mean |dCt|/Ct", [Ct0, Cp0, sum(bem_err) / len(bem_err)], f"calibrated planform of the P-51 BEM (pitch x{calib['pitch_factor']:.3f}, chord x{calib['chord_factor']:.3f}); Mejzlik static Ct {prop_rec['Ct'][0]:.4f}, Cp {prop_rec['Cp'][0]:.4f}")
+note("propulsion", "30x18 3-blade static Ct, Cp (calibrated BEM)", [Ct0, Cp0],
+     f"{calib['source']}: pitch x {calib['pitch_factor']}, chord x {calib['chord_factor']}, rms " + ", ".join(f"{k} {100 * v:.1f} %" for k, v in calib["rms_per_table"].items()) + "; no 30x18 three-blade table exists")
 
-# --- Engine: generic two-stroke twin shape at the DLE-111 rating, installed derate borrowed from the P-51 ------------
-TORQUE_SHAPE = [(0.0, 0.70), (0.2, 0.75), (0.4, 0.85), (0.6, 0.95), (0.75, 1.0), (0.9, 0.97), (1.0, 0.92), (1.1, 0.80), (1.25, 0.55), (1.4, 0.25)]
+# --- Engine: four-stroke radial shape, level from the Moki manual's two static operating points ----------------------
+# Torque relative to its peak against rpm / peak-power rpm, flatter than the two-stroke twins' (estimated: no Moki dyno
+# curve is published). Above limit_rpm the ignition cuts: brake power falls to 2 % within 150 rpm (the loader needs
+# positive samples).
+TORQUE_SHAPE = [(0.0, 0.72), (0.2, 0.78), (0.4, 0.88), (0.6, 0.97), (0.75, 1.0), (0.9, 0.98), (1.0, 0.95), (1.2, 0.88)]
 N_REF = E["power_rpm"]
 shape = lambda rpm: lerp_table(TORQUE_SHAPE, rpm / N_REF)
 P_rated = E["power_hp"] * 745.7
-p51_data = load_json(ROOT / "app/data/aircraft/p51d_mustang_120.json")
-p51_engine = p51_data["propulsion"]["engine"]
-derate = max(r[1] for r in p51_engine["shaft"]["power_curve"]["value"]) / p51_engine["peak_power"]["value"]
-note("propulsion", "installed/catalogue power ratio", derate, "BORROWED from the P-51 (DA-120 installed curve anchored on a reported 28x10 static rpm, over its 11.7 hp rating); no DLE-111 static-rpm record was found")
-peak_shape = max(shape(r) * r for r in range(1000, 9001, 10))
-Q0 = derate * P_rated / (2 * math.pi / 60 * peak_shape)
-power_curve = [[float(r), Q0 * shape(r) * 2 * math.pi * r / 60] for r in range(1000, 9001, 500)]
-P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve), f"{E['power_hp']} hp ({P_rated:.0f} W) rating x {derate:.3f}")
-FRICTION = [0.5, 0.14]
+ANC = E["anchor"]
+CHK = ANC["check_three_blade"]
+q_static = lambda cp0, rpm, dia: cp0 * RHO * (rpm / 60) ** 2 * dia ** 5 / (2 * math.pi)
+Q_2b = q_static(anc_rec["Cp"][0], ANC["static_rpm"], anc_rec["diameter_in"] * IN) / shape(ANC["static_rpm"])
+Q_3b = q_static(Cp0, CHK["static_rpm"], PROP_D) / shape(CHK["static_rpm"])
+Q0 = note("propulsion", "full-throttle peak brake torque (N m)", 0.5 * (Q_2b + Q_3b),
+          f"mean of the Moki manual's static points: {ANC['propeller']} at {ANC['static_rpm']:.0f} rpm on the Mejzlik 32x18 table (Cp {anc_rec['Cp'][0]}) -> {Q_2b:.2f}; {CHK['propeller']} at {CHK['static_rpm']:.0f} rpm on the calibrated BEM (Cp {Cp0:.4f}) -> {Q_3b:.2f}")
+note("propulsion", "brake mean effective pressure at peak torque (bar)", 4 * math.pi * Q0 / 250e-6 / 1e5, "250 cc four-stroke: 4 pi Q / V_d")
+LIMIT = E["limit_rpm"]
+power_curve = [[float(r), Q0 * shape(r) * 2 * math.pi * r / 60] for r in range(500, int(LIMIT) + 1, 250)]
+power_curve.append([LIMIT + 150.0, 0.02 * power_curve[-1][1]])
+P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve), f"{100 * max(p_[1] for p_ in power_curve) / P_rated:.0f} % of the {E['power_hp']} hp ({P_rated:.0f} W) rating, reached at the {LIMIT:.0f} rpm ignition limit")
+FRICTION = [0.5 * 250 / 120, 0.14 * 250 / 120]
 q_fric = lambda rpm: FRICTION[0] + FRICTION[1] * rpm / 1000
 IDLE_RPM = E["idle_rpm"]
 q_prop_static = lambda rpm: Cp0 * RHO * (rpm / 60) ** 2 * PROP_D ** 5 / (2 * math.pi)
 idle_power = (q_prop_static(IDLE_RPM) + q_fric(IDLE_RPM)) * 2 * math.pi * IDLE_RPM / 60
 peak_ind = max(p_[1] + q_fric(p_[0]) * 2 * math.pi * p_[0] / 60 for p_ in power_curve)
-lo, hi = 1000.0, 9000.0
+lo, hi = 500.0, LIMIT
 for _ in range(80):
     mid = 0.5 * (lo + hi)
     lo, hi = (mid, hi) if Q0 * shape(mid) > q_prop_static(mid) else (lo, mid)
-rpm_static = note("propulsion", "static rpm", 0.5 * (lo + hi), "full-throttle torque meets the 3-blade's static torque")
+rpm_static = note("propulsion", "static rpm", 0.5 * (lo + hi), f"full-throttle torque meets the 3-blade's static torque; Moki manual: {CHK['static_rpm']:.0f} rpm on a {CHK['propeller']}")
 thrust_static = Ct0 * RHO * (rpm_static / 60) ** 2 * PROP_D ** 4
-note("propulsion", "static thrust (N, kgf), thrust/weight", [thrust_static, thrust_static / G0, thrust_static / (mass * G0)], f"check: the distributor claims {E['static_thrust_claim_kgf']} kgf static (propeller not named)")
-rotor_j = note("propulsion", "rotating inertia (kg m2)", prop_rec["inertia_kgm2"] + 0.15 * 0.045 ** 2 / 2 + 0.002, "Mejzlik 26x12 3B datasheet estimate + hub cap + crank and flywheel 0.002 (estimated)")
+TC = E["thrust_check"]
+tc_kgf = anc_rec["Ct"][0] * RHO * (TC["static_rpm"] / 60) ** 2 * (TC["diameter_in"] * IN) ** 4 / G0
+note("propulsion", "static thrust (N, kgf), thrust/weight", [thrust_static, thrust_static / G0, thrust_static / (mass * G0)],
+     f"check: the Mejzlik 32x18 static Ct gives {tc_kgf:.1f} kgf for a {TC['engine']} on a {TC['propeller']} at {TC['static_rpm']:.0f} rpm, measured {TC['thrust_kgf']} kgf ({TC['source']})")
+rotor_j = note("propulsion", "rotating inertia (kg m2)", prop_inertia + 0.15 * 0.045 ** 2 / 2 + 0.004, f"{PR['name']}: Mejzlik's estimate mass D2 blades / 24 on the estimated mass + hub cap + radial crank, master rod and cam ring 0.004 (estimated)")
 plan_ = PLANFORM
-sigma = KIT["propeller"]["blades"] * calib["chord_factor"] * sum(0.5 * (a[1] + c_[1]) * (c_[0] - a[0]) for a, c_ in zip(plan_, plan_[1:])) / math.pi
+sigma = PR["blades"] * calib["chord_factor"] * sum(0.5 * (a[1] + c_[1]) * (c_[0] - a[0]) for a, c_ in zip(plan_, plan_[1:])) / math.pi
 a_bl, cd_bl = 0.9 * 2 * math.pi, 0.02
 nf_rows, pm_rows = [], []
 for J_, ct_ in ct_table:
@@ -599,7 +653,7 @@ for J_, ct_ in ct_table:
     cm = sigma * math.pi * J_ ** 2 / 32 * (2 * math.pi / (3 * J_) * clb + a_bl / 2 * (1 - (J_ / math.pi) ** 2 * lg) - math.pi / J_ * cd_bl)
     nf_rows.append([J_, round(max(cn, 0.0), 6)])
     pm_rows.append([J_, round(max(cm, 0.0), 6)])
-THRUST_ANGLES = [1.5, 1.5]
+THRUST_ANGLES = [-KS["thrust_angles_deg"]["up"], KS["thrust_angles_deg"]["right"]]
 hub = NOSE["propeller_plane"]
 
 # --- Slipstream pieces -----------------------------------------------------------------------------------------------
@@ -639,7 +693,7 @@ def contact(identity, name, key, k_, travel, steer, how):
 
 TRAVEL_SRC = "BORROWED from the P-51 (same class and mass); recompute with the GP-06 reserve-drop probe in F4U-08"
 landing_gear = {
-    "description": "F4U-07: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics from R59's retract rig scaled 1/5; timing, travel and drag are estimates.",
+    "description": f"F4U-07: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics from R59's retract rig scaled {SCALE_TXT}; timing, travel and drag are estimates.",
     "contacts": [
         contact("contact_main_left", "main_left", "main_left", k_main, 0.12, 0.0, TRAVEL_SRC),
         contact("contact_main_right", "main_right", "main_right", k_main, 0.12, 0.0, TRAVEL_SRC),
@@ -658,31 +712,60 @@ landing_gear = {
 }
 
 # --- Flaps: three slotted panels per side under the shared hinged-trailing-edge law ----------------------------------
-FLAP_KPRIME = [(5, 1.000), (10, 0.999), (15, 0.979), (20, 0.868), (25, 0.728), (30, 0.662), (35, 0.620), (40, 0.588), (45, 0.562)]
+# Single-slotted flap (Roskam Part VI, FAST-GA digitization): the shift law gain*L*tanh(tau*delta/L) is fitted to the
+# slotted lift effectiveness alpha_delta*delta (Fig. 8.17); slotted flaps fall below Glauert's tau at small deflection
+# and hold it better at large ones, which needs the gain as well as the limit. The profile-drag parameter is divided
+# by the gain so the runtime's product stays Raymer's value.
+AD = SLOT["alpha_delta"]
+
+
+def alpha_delta(cf, delta):
+    rows = [lerp_table(list(zip(AD["deflections_deg"], vals)), delta) for vals in AD["values"]]
+    return lerp_table(list(zip(AD["chord_ratios"], rows)), cf)
+
+
+def slotted_dclmax(tc_pct, cf, delta):
+    return (lerp_table(SLOT["base_increment"], tc_pct) * lerp_table(SLOT["k1"], 100 * cf)
+            * lerp_table(SLOT["k2"], delta) * lerp_table(SLOT["k3"], delta / 45.0))
+
+
 tau_f = note("flaps", "flap thin-airfoil effectiveness tau", flap_tau(cf_f), f"Glauert, c_f/c {cf_f:.3f}")
-_err = lambda L: sum((L * math.tanh(tau_f * d / L) - k * tau_f * d) ** 2 for d, k in FLAP_KPRIME)
-flap_limit = note("flaps", "effective angle limit (deg)", min((x / 100 for x in range(600, 3000)), key=_err), "fit of the runtime tanh bound to Roskam's PLAIN-flap K' (as the P-51): conservative for the slotted F4U flap, no slotted-flap table digitized")
-flap_cd = note("flaps", "profile drag coefficient", 0.9 * cf_f ** 1.38, "Raymer eq. 12.61 (after Hoerner)")
-ROSKAM_BASE = [(11, 0.861), (12, 0.920), (13, 0.988), (14, 1.080), (15, 1.186), (16, 1.313), (17, 1.431), (18, 1.514)]
-ROSKAM_K1_CF = [(15, 0.810), (20, 0.926), (25, 1.007)]
-ROSKAM_K2 = [(15, 0.457), (20, 0.571), (25, 0.672), (30, 0.759), (35, 0.821), (40, 0.873), (45, 0.912)]
+FIT_DELTAS = [5, 10, 15, 20, 25, 30, 35, 40, 45]
+target_shift = {d: alpha_delta(cf_f, d) * d for d in FIT_DELTAS}
+best = None
+for gi in range(500, 1001):
+    gain_ = gi / 1000
+    for li in range(500, 3001, 5):
+        L_ = li / 100
+        err = sum((gain_ * L_ * math.tanh(tau_f * d / L_) - target_shift[d]) ** 2 for d in FIT_DELTAS)
+        if best is None or err < best[0]:
+            best = (err, gain_, L_)
+_, flap_gain, flap_limit = best
+note("flaps", "slotted fit: gain, effective angle limit (deg), rms (deg)", [flap_gain, flap_limit, math.sqrt(best[0] / len(FIT_DELTAS))],
+     f"least squares of gain*L*tanh(tau*delta/L) to Roskam Fig. 8.17 alpha_delta*delta at c_f/c {cf_f:.3f}, 5-45 deg")
+flap_cd = note("flaps", "profile drag coefficient (runtime parameter)", 0.9 * cf_f ** 1.38 / flap_gain, f"Raymer eq. 12.61 (after Hoerner) 0.9 (c_f/c)^1.38 = {0.9 * cf_f ** 1.38:.4f}, divided by the gain the runtime multiplies in")
 tc_flap = integral(lambda y: chord(y) * at(y, tcs), y1f, y2f) / integral(chord, y1f, y2f)
-_ratios = [lerp_table(ROSKAM_BASE, 100 * tc_flap) * lerp_table(ROSKAM_K1_CF, 100 * cf_f) * k2 / (6.0 * tau_f * dict(FLAP_KPRIME)[d] * math.radians(d)) for d, k2 in ROSKAM_K2]
-flap_kappa = note("flaps", "stall shift fraction", 1 - sum(_ratios) / len(_ratios), f"1 - dClmax/dCl0, Roskam Part VI Figs. 8.31-8.33 at t/c {tc_flap:.3f}, c_f/c {cf_f:.3f} (as the P-51)")
+a_sec = cla_sec
+_ratios = [slotted_dclmax(100 * tc_flap, cf_f, d) / (a_sec * math.radians(flap_gain * flap_limit * math.tanh(tau_f * d / flap_limit))) for d in [15, 20, 25, 30, 35, 40, 45]]
+flap_kappa = note("flaps", "stall shift fraction", min(1.0, max(0.0, 1 - sum(_ratios) / len(_ratios))),
+                  f"1 - dClmax/dCl0 of a single-slotted flap, mean over 15-45 deg (range {1 - max(_ratios):.2f} to {1 - min(_ratios):.2f}); dClmax = Roskam base(t/c {100 * tc_flap:.1f} %) k1 k2 k3, dCl0 = section slope {a_sec:.2f}/rad x the fitted shift")
+tr664 = slotted_dclmax(12.0, 0.2566, 40.0)
+note("flaps", "method check: Roskam slotted dClmax for TR 664's flap (t/c 12 %, c_f/c 0.2566, 40 deg)", tr664,
+     f"NACA TR 664 measured about 1.1 (2.86 against a plain 23012 near 1.75); difference {100 * (tr664 / 1.11 - 1):+.0f} %")
 flaps = {
-    "max_angle_deg": q(flap_settings["landing"], "deg", "derived", D(f"landing setting: {TH['flaps']['landing']:.0f} mm on the Phoenix 1.8 m flap, scaled; full-size slotted flap 50 deg (NACA WR L-440)")),
-    "takeoff_angle_deg": q(flap_settings["take_off"], "deg", "derived", D(f"take-off setting: {TH['flaps']['take_off']:.0f} mm on the Phoenix flap, scaled")),
+    "max_angle_deg": q(flap_settings["landing"], "deg", "manual", f"CARF manual: at most 30 deg on approach (useful {KS['flaps_deg']['useful_max']:.0f}, mechanical {KS['flaps_deg']['max']:.0f}); full-size slotted flap 50 deg (NACA WR L-440)"),
+    "takeoff_angle_deg": q(flap_settings["take_off"], "deg", "manual", "CARF manual: do not take off with flaps deployed"),
     "inner_span_m": q(y1f, "m", "measured", "R59 inner flap panel inboard end"),
     "outer_span_m": q(y2f, "m", "measured", "R59 outer flap panel outboard end"),
     "hinge_fraction": q(1 - cf_f, "1", "derived", D("1 - flap chord fraction from the NACA flap area")),
     "extension_time": q(2.5, "s", "estimated", "slowed RC flap servo, as the P-51"),
     "retraction_time": q(2.5, "s", "estimated", "as extension"),
     "max_speed_mps": q(float(V_start), "m/s", "estimated", D("advisory: the start speed (1.6 Vs clean); no full-size or kit placard found")),
-    "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "the Phoenix manual lists no flap-elevator mix"),
-    "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D("plain-flap K' fit (conservative for a slotted flap)")),
-    "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61")),
-    "aerodynamic_gain": q(1.0, "1", "derived", "full shared flap law"),
-    "stall_shift_fraction": q(flap_kappa, "1", "derived", D("Roskam Part VI Figs. 8.31-8.33")),
+    "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "neither the CARF manual nor the three smaller Corsair manuals list a flap-elevator mix"),
+    "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D("single-slotted fit to Roskam Part VI Fig. 8.17 (FAST-GA digitization), with aerodynamic_gain")),
+    "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61 divided by aerodynamic_gain")),
+    "aerodynamic_gain": q(flap_gain, "1", "derived", D("single-slotted lift effectiveness below Glauert's tau at small deflection (Roskam Fig. 8.17), fitted with the limit")),
+    "stall_shift_fraction": q(flap_kappa, "1", "derived", D("single-slotted maximum-lift increment, Roskam Part VI Figs. 8.31-8.34 (FAST-GA digitization); method within 8 % of NACA TR 664")),
     "lift_reference_offset_m": q(x_ac_w - x_arp, "m", "derived", D("wing 25 % MAC aft of the wing-body ARP")),
 }
 
@@ -743,15 +826,15 @@ coefficients = {
 data = {
     "format": "openrc-aircraft v2",
     "physical_identity_version": 1,
-    "id": "f4u-corsair-1-5",
-    "description": f"{KIT['name']}: {b:.3f} m span F4U-1D Corsair, DLE-111 gasoline, retractable taildragger, slotted flaps. PROVISIONAL physics derived by {SCRIPT} (F4U-07) from the R59 visual master measured at 1/5 (F4U-06), NACA F4U data and RC-class references; owner decisions D1/D4/D5 open. Not registered in the catalog; not flight-identified.",
+    "id": "f4u-corsair-250",
+    "description": f"{KIT['name']} class: {b:.3f} m span F4U-1D Corsair, Moki S250 radial with a 30x18 three-blade, retractable taildragger, slotted flaps. PROVISIONAL physics derived by {SCRIPT} (F4U-07) from the R59 visual master measured at {SCALE_TXT} (F4U-06), NACA F4U data, the CARF manual and the Moki manual's operating points. Not registered in the catalog; not flight-identified.",
     "frames": {
         "le_frame": "positions in metres from the wing leading edge at the centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
         "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
     },
     "reference": {
-        "wing_area": q(S, "m2", "derived", D("published 314 sq ft x 1/25")),
-        "wing_span": q(b, "m", "manual", f"kit span, {KIT['name']} ({KIT['url']})"),
+        "wing_area": q(S, "m2", "derived", D(f"published 314 sq ft x ({SCALE_TXT})2")),
+        "wing_span": q(b, "m", "derived", D(f"R59 span x {SCALE_TXT}; {KIT['name']} quotes {KIT['span_m']} m ({KIT['url']})")),
         "mean_chord": q(c_ref, "m", "derived", f"S / b (not the MAC, {mac:.4f} m)"),
         "root_chord": q(cr, "m", "derived", D("equivalent trapezoid with the measured planform's area and MAC")),
         "tip_chord": q(ct, "m", "derived", D("equivalent trapezoid with the measured planform's area and MAC")),
@@ -760,15 +843,15 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(dry_cg, "m", "estimated", f"reference balance point {x_cg_target:.4f} m aft of the root LE ({100 * cg_mac:.1f} % MAC) from the {REFSET['name']} manual, scaled; tank empty"),
-        "firewall": q([rc_fw, 0.0, 0.0], "m", "estimated", "spinner back + 0.25 m (a 111 cc twin on standoffs)"),
+        "plan_cg": q(dry_cg, "m", "estimated", f"reference balance point {x_cg_target:.4f} m aft of the root LE ({100 * cg_mac:.1f} % MAC): mean of three Corsair manuals scaled to {b:.3f} m; tank empty"),
+        "firewall": q([rc_fw, 0.0, 0.0], "m", "estimated", "propeller plane + 0.24 m: a Moki S250 on its cast radial mount (estimated length)"),
         "configuration": "virtual-balanced-reference-v2-empty-tank",
         "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the reference point with the tank empty")),
         "fuel_state": "empty_tanks",
     },
     "fuel_system": {"tanks": [{
         "id": "main_tank", "fuel": FUEL_BLEND, "liquid_inventory_id": "fuel_flight", "shell_inventory_id": "fuel_tank",
-        "capacity": q(TANK_L, "l", "estimated", "1 l tank for a 111 cc twin (estimated; no kit value)"),
+        "capacity": q(TANK_L, "l", "estimated", "Moki manual: 26-40 oz tank; 1 l (34 oz) chosen"),
         "unusable": q(0.01, "l", "estimated", "FUEL-05c felt-clunk residue estimate"),
         "pickup": "felt_clunk", "feed": "pumped_diaphragm"}]},
     "inventory": [
@@ -783,22 +866,22 @@ data = {
     "crash_hull_ids": [i_ for i_, _, _ in hull_probes],
     "crash_hull_components": [c_ for _, _, c_ in hull_probes],
     "plausibility": {
-        "mass_range": q(KIT["flying_mass_kg"]["range"], "kg", "estimated", KIT["flying_mass_kg"]["source"]),
+        "mass_range": q(FM["range_kg"], "kg", "estimated", FM["method"] + "; anchors: " + "; ".join(f"{a_['name']}: {a_['source']}" for a_ in FM["anchors"])),
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
         "surface_ids": {"aileron_left": "surface_aileron_left", "aileron_right": "surface_aileron_right", "elevator": "surface_elevator", "rudder": "surface_rudder"},
-        "max_throw": {k: q(float(v), "deg", "estimated", THROW_SRC) for k, v in throws.items()},
+        "max_throw": {k: q(float(v), "deg", "derived", THROW_SRC) for k, v in throws.items()},
         "rates": {"normal": {
-            **{k: q(low[k] / throws[k], "1", "estimated", THROW_SRC + "; low rate as the fraction of the high-rate throw") for k in throws},
-            **{k + "_expo": q(TH[k]["expo"], "1", "estimated", f"{REFSET['name']} manual expo") for k in throws},
+            **{k: q(low_fraction[k], "1", "estimated", "low rate: median low/high fraction of three Corsair manuals (" + "; ".join(SETUPS[i]["name"] for i in range(len(SETUPS))) + ")") for k in throws},
+            **{k + "_expo": q(EXPO[k], "1", "estimated", "Phoenix Model F4U 1.8 m manual expo (the only manual that lists one)") for k in throws},
         }},
         "servo_full_throw_time": q(0.18, "s", "estimated", "placeholder, as the P-51"),
     },
     "aero": {
         "source": f"Derived from the measured planform by {SCRIPT} (Helmbold/DATCOM, VLM downwash and ground effect, strip theory, Schrenk/Reynolds stall, drag build-up); report research/f4u-corsair/F4U-07/derivation.md. Not calibrated or flight-identified.",
         "envelope": {
-            "CL_max": q(CL_max, "1", "estimated", "three equal-area strips: Schrenk on the measured chord, XFOIL 230-series clmax less 0.10; flaps up"),
+            "CL_max": q(CL_max, "1", "estimated", "three equal-area strips: Schrenk on the measured chord, NACA TR 586 23012 clmax(Re) x XFOIL thickness trend, less 0.05 finish; flaps up"),
             "CL_min": q(-0.85, "1", "estimated", "cambered section: inverted stall earlier than upright, as the P-51"),
             "stall_blend_width": q(4.0, "deg", "estimated", "230-series sections stall more abruptly than the P-51's laminar section (full-size F4U stall warning inadequate, NACA RM A7C05)"),
             "CD90": q(1.11 + 0.018 * AR, "1", "derived", "Viterna CDmax = 1.11 + 0.018 AR"),
@@ -813,7 +896,7 @@ data = {
             "attached_limit": same("attached_limit"), "tail_local_limit": same("tail_local_limit"), "tail_stall_end": same("tail_stall_end"),
             "tail_CD0": same("tail_CD0"), "tail_k": same("tail_k"), "tail_CD90": same("tail_CD90"),
             "horizontal": {
-                "area": q(Sh, "m2", "derived", D("NACA area x 1/25")),
+                "area": q(Sh, "m2", "derived", D(f"NACA area x ({SCALE_TXT})2")),
                 "position": q([xh_ac, 0.0, zh], "m", "derived", D("measured stabilizer quarter chord")),
                 "lift_slope": q(slope_h, "1/rad", "derived", D("Helmbold x eta 0.9 x (1 - deps/dalpha)")),
                 "control_effectiveness": q(ce_h, "1", "derived", D("thin-airfoil tau x 0.8 / (1 - deps/dalpha)")),
@@ -821,7 +904,7 @@ data = {
                 "downwash_gradient": q(deps, "1", "derived", D("F4U-07 VLM tail downwash")),
             },
             "vertical": {
-                "area": q(Sv, "m2", "derived", D("NACA area x 1/25")),
+                "area": q(Sv, "m2", "derived", D(f"NACA area x ({SCALE_TXT})2")),
                 "position": q([xv_ac, 0.0, fin_cz], "m", "derived", D("exposed fin quarter chord at its centroid height")),
                 "lift_slope": q(slope_v, "1/rad", "derived", D("Helmbold (end-plated AR) x sidewash")),
                 "control_effectiveness": q(ce_v, "1", "derived", D("thin-airfoil tau x 0.8 / sidewash")),
@@ -842,31 +925,31 @@ data = {
     },
     "propulsion": {
         "id": "propulsion_main",
-        "description": f"DLE-111 gasoline twin turning a Mejzlik 26x12 3-blade. Shaft balance, calibrated blade-element tables, down and right thrust, propeller normal force and P-factor, tail slipstream with swirl ({SCRIPT}).",
+        "description": f"Moki S250 five-cylinder four-stroke radial turning a 30x18 three-blade. Shaft balance with an ignition limit, calibrated blade-element tables, up and right thrust, propeller normal force and P-factor, tail slipstream with swirl ({SCRIPT}).",
         "engine": {
             "name": E["name"],
-            "peak_power": q(P_rated, "W", "manual", f"{E['power_hp']} hp at {E['power_rpm']:.0f} rpm: {E['sources']}"),
-            "peak_power_rpm": q(E["power_rpm"], "rpm", "manual", "DLE-111 rating"),
+            "peak_power": q(P_rated, "W", "manual", f"{E['power_hp']} hp: {E['sources']}"),
+            "peak_power_rpm": q(E["power_rpm"], "rpm", "estimated", f"no rated rpm published; estimated below the {LIMIT:.0f} rpm ignition limit"),
             "max_rpm_static": q(rpm_static, "rpm", "derived", D("full-throttle shaft balance at rest")),
-            "idle_rpm": q(IDLE_RPM, "rpm", "manual", "DLE-111 idle 1400 rpm"),
+            "idle_rpm": q(IDLE_RPM, "rpm", "manual", "Seidel: Moki 250 low ground idle 900 rpm"),
             "lag_time_constant": q(0.6, "s", "estimated", "D5 lag model, unused while the shaft model is present"),
             "shaft": {
                 "power_curve": {"value": [[r, round(w_, 1)] for r, w_ in power_curve], "unit": "rpm, W", "kind": "derived",
-                                "source": D(f"generic two-stroke twin torque shape (P-51) at the DLE-111 rating x the P-51 installed/catalogue ratio {derate:.3f}; no DLE-111 static-rpm record")},
-                "friction_torque": q(FRICTION, "N·m, N·m/krpm", "estimated", "as the P-51 (similar twin)"),
+                                "source": D(f"installed full-throttle brake power: estimated four-stroke radial torque shape (peak-power rpm {N_REF:.0f} estimated) at the Moki manual's static points ({ANC['propeller']} {ANC['static_rpm']:.0f} rpm, {CHK['propeller']} {CHK['static_rpm']:.0f} rpm -> {Q0:.2f} N m peak torque); ignition cut above {LIMIT:.0f} rpm; no dyno curve is published")},
+                "friction_torque": q(FRICTION, "N·m, N·m/krpm", "estimated", "the P-51 twin's value x 250/120 displacement (equal friction mean effective pressure)"),
                 "idle_power": q(idle_power, "W", "derived", D(f"closed throttle holds {IDLE_RPM:.0f} rpm static")),
                 "peak_indicated_power": q(peak_ind, "W", "derived", D("brake + friction power at the curve's peak")),
             },
         },
         "propeller": {
-            "name": "Mejzlik 26x12 3-blade GAS N (DLE-111 recommended size; three blades as the F4U-1D)",
-            "diameter": q(PROP_D, "m", "manual", "26 in"),
+            "name": f"{PR['name']} (Moki S250 manual three-blade; three blades as the F4U-1D)",
+            "diameter": q(PROP_D, "m", "manual", "30 in (Moki S250 manual)"),
             "rotation": "clockwise_from_rear",
-            "ct_table": q(ct_table, "1", "derived", D(f"BEM calibrated on the Mejzlik 26x12 2B/3B tables (P-51 calibration, rms {100 * calib['rms_relative_error']:.1f} %)")),
-            "cp_table": q(cp_table, "1", "derived", D("same calibrated BEM")),
-            "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "Mejzlik 26x12 3B datasheet + hub + crank"),
+            "ct_table": q(ct_table, "1", "derived", D(f"blade-element model calibrated by fit_propeller.py ({calib['source']}); no manufacturer table exists for a 30x18 three-blade")),
+            "cp_table": q(cp_table, "1", "derived", D("same model as ct_table")),
+            "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "estimated propeller mass with Mejzlik's inertia rule + hub + radial crank"),
             "thrust_line_offset": q([hub[0] - cg[0], 0.0, hub[2] - cg[2]], "m", "derived", D("propeller disc centre relative to the inventory CG")),
-            "thrust_angles": q(THRUST_ANGLES, "deg", "estimated", "down 1.5 deg, right 1.5 deg: typical giant-warbird engine offsets (no FokkeRC or Phoenix value found); the right thrust stands in for the full-size 2 deg left fin offset"),
+            "thrust_angles": q(THRUST_ANGLES, "deg", "manual", f"[down, right]: CARF manual {KS['thrust_angles_deg']['right']} deg right and {KS['thrust_angles_deg']['up']} deg up; the right thrust also stands in for the full-size 2 deg left fin offset"),
             "normal_force": q(nf_rows, "1", "derived", D(f"McCormick normal force per rad (Selig, AIAA 2010-7938), solidity {sigma:.3f}")),
             "pfactor_moment": q(pm_rows, "1", "derived", D("McCormick P-factor per rad (Selig, AIAA 2010-7938)")),
             "slipstream": {
@@ -881,7 +964,7 @@ data = {
         "kind": "glow_prop",
         "fuel_consumption": {
             "law": "gasoline_bsfc_v1", "tank_id": "main_tank",
-            "bsfc": q(0.500, "kg/kWh", "estimated", "FUEL-08 500 g/kWh proxy (as the P-51); not measured on the DLE-111"),
+            "bsfc": q(0.500, "kg/kWh", "estimated", "FUEL-08 500 g/kWh proxy (as the P-51); not measured on the Moki S250, a four-stroke that likely uses less"),
             "idle_flow": q(0.000080, "kg/s", "estimated", "FUEL-08 4.8 g/min idle baseline (as the P-51)"),
         },
     },
@@ -919,23 +1002,27 @@ for sec, name, val, how in log:
     v = ", ".join(f"{x:.4g}" for x in val) if isinstance(val, list) else f"{val:.4g}"
     rows.append(f"| {sec} | {name} | {v} | {how} |")
 coef_rows = ["| Coefficient | Value | Kind |", "| --- | --- | --- |"] + [f"| {k} | {v['value']:.5g} | {v['kind']} |" for k, v in data["aero"]["coefficients"].items()]
-prop_rows = ["| J | Ct (BEM) | Cp (BEM) |", "| --- | --- | --- |"] + [f"| {c_[0]:.2f} | {c_[1]:.4f} | {p_[1]:.4f} |" for c_, p_ in zip(ct_table, cp_table)]
-report = f"""# F4U-07: F4U Corsair 1/5 physics derivation
+prop_rows = ["| J | Ct | Cp |", "| --- | --- | --- |"] + [f"| {c_[0]:.2f} | {c_[1]:.4f} | {p_[1]:.4f} |" for c_, p_ in zip(ct_table, cp_table)]
+report = f"""# F4U-07: F4U Corsair {SCALE_TXT} physics derivation
 
-Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT).as_posix()}`, `source.json` and `vlm_ground_effect.json`; do not edit (regenerate). Output: `{OUT.relative_to(ROOT).as_posix() if OUT.is_relative_to(ROOT) else OUT.name}`, staged until catalog registration (F4U-09). PROVISIONAL: geometry from the R59 visual master at 1/5, owner decisions D1/D4/D5 open, no calibration against flight data. Software derivation, not physical validation.
+Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT).as_posix()}`, `source.json` and `vlm_ground_effect.json`; do not edit (regenerate). Output: `{OUT.relative_to(ROOT).as_posix() if OUT.is_relative_to(ROOT) else OUT.name}`, staged until catalog registration (F4U-09). PROVISIONAL: geometry from the R59 visual master at {SCALE_TXT}; D1/D4/D5 as in source.json ({KIT['name']}, {E['name'].split(' (')[0]}, {PR['name']}). Software derivation, not physical validation.
 
 Flight mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, stick-fixed power-off neutral point {np_mac:.1f} % MAC (static margin {sm:.1f} % MAC), CL_max {CL_max:.3f}, 1-g stall {Vs:.1f} m/s, start {V_start} m/s.
-Throws (Phoenix 1.8 m Corsair manual scaled): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}° high rate; flaps {flap_settings['take_off']:.1f}° / {flap_settings['landing']:.1f}°.
-Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf, distributor claim {E['static_thrust_claim_kgf']} kgf), thrust/weight {thrust_static / (mass * G0):.2f}.
+Throws (CARF manual on this airframe's surface chords): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}° high rate; slotted flaps {flap_settings['take_off']:.1f}° / {flap_settings['landing']:.1f}°.
+Engine and propeller: peak torque {Q0:.2f} N·m from the Moki manual's static points, installed peak {P_peak:.0f} W ({100 * P_peak / P_rated:.0f} % of the 15 hp rating) at the {LIMIT:.0f} rpm ignition limit; static {rpm_static:.0f} rpm on the 30x18 three-blade (manual {CHK['static_rpm']:.0f}), static thrust {thrust_static:.0f} N ({thrust_static / G0:.1f} kgf), thrust/weight {thrust_static / (mass * G0):.2f}.
 
-## Checks against the full-size airplane (not calibrations)
+## Checks against independent data (not calibrations)
 
-| Quantity | This model | NACA F4U | Note |
+| Quantity | This model | Reference | Note |
 | --- | --- | --- | --- |
-| Neutral point | {np_mac:.1f} % MAC stick-fixed, power off | 30 % (up) / 27 % (down) stick-free, power on | Stick-free and power-on points lie forward of stick-fixed power-off ones |
-| CG | {100 * cg_mac:.1f} % MAC | 26.5-32.5 % MAC tested | RC reference setup, scaled |
-| Roll response | pb/2V {pb2v:.3f} at {throws['aileron']:.1f}° | 0.064 at the full-size throw | Full-size aileron throw not recovered |
-| Wing area | {S_r59:.4f} m² measured | {S:.4f} m² published | |
+| Neutral point | {np_mac:.1f} % MAC stick-fixed, power off | NACA RM A7C05: 30 % (up) / 27 % (down) stick-free, power on | The calibration target adds the XP-51 power shift and a stick-free allowance |
+| CG | {100 * cg_mac:.1f} % MAC | NACA: 26.5-32.5 % MAC tested; CARF {spar_cg[1]:.1f} % MAC if its spar sits at 30 % chord ({spar_cg[0]:.1f}-{spar_cg[2]:.1f} for 25-33 %) | Mean of three Corsair manuals |
+| Static rpm, 30x18 three-blade | {rpm_static:.0f} | Moki manual: {CHK['static_rpm']:.0f} | Half of the torque anchor comes from this point |
+| Static thrust, Moki S300 on a SEP 34x18 at {TC['static_rpm']:.0f} rpm | {tc_kgf:.1f} kgf (Mejzlik 32x18 Ct) | {TC['thrust_kgf']} kgf, forum measurement | Supports the two-blade table as a stand-in for wooden propellers |
+| Roll response | pb/2V {pb2v:.3f} at {throws['aileron']:.1f}° | NACA: 0.064 clean, 0.06-0.076 flaps and gear down | Full-size aileron throw not recovered |
+| Slotted-flap method | {tr664:.2f} | NACA TR 664: about 1.1 | Roskam chain on TR 664's own flap |
+| Section clmax at Re 1 million | {section('clmax', 0.12, 1e6) + FINISH:.2f} (23012, before finish) | NACA TR 586: {clmax_23012(1e6):.2f} | The anchor itself; XFOIL gives {xfoil('clmax', 0.12, 1e6):.2f} |
+| Wing area | {S_r59:.4f} m² measured | {S:.4f} m² published | CARF quotes {KIT['wing_area_m2']} m² |
 
 ## Intermediate quantities
 
@@ -945,17 +1032,18 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 
 {chr(10).join(coef_rows)}
 
-## Propeller tables (calibrated BEM, Mejzlik 26x12 3-blade)
+## Propeller tables (30x18 three-blade, calibrated BEM)
 
 {chr(10).join(prop_rows)}
 
 ## Known simplifications
 
-- Geometry is the R59 visual master scaled 1/5; g1 metrology replaces it (F4U-05/06). Wing incidence and stabilizer setting lack a primary source.
-- Sections: XFOIL predictions with a 0.9 lift-slope factor and a 0.10 clmax decrement, both estimated.
-- No trim, neutral-point or sideslip calibration: the fuselage neutral-point term is a Raymer reading and the body yaw term is DATCOM's. The P-51's flight calibrations needed larger body terms; expect revision when F4U data are reduced.
-- Engine level borrows the P-51's installed/catalogue ratio; flaps use the plain-flap K' fit (conservative for slotted flaps); gear travel is borrowed from the P-51.
-- The fin carries no offset; RC right thrust stands in for the full-size 2° left fin offset.
+- Geometry is the R59 visual master scaled {SCALE_TXT}; g1 metrology replaces it (F4U-05/06). Wing incidence and stabilizer setting lack a primary source.
+- Sections: NACA TR 586 23012 measurements set lift slope and maximum lift; XFOIL supplies only the thickness trend, clamped at 12 %, so the thin outer sections (9-11 %) may stall earlier than modelled (TR 610: maximum lift falls below 12 %).
+- The neutral point is calibrated to a target built from NACA F4U and XP-51 data with an estimated stick-free allowance; the body yaw term is DATCOM's, uncalibrated. Expect revision when F4U sideslip data are reduced.
+- Engine level rests on the Moki manual's two static points with a simulated Mejzlik table and a calibrated BEM standing in for the wooden Menz and SEP propellers (single forum reports span 4,200-5,200 rpm on 32x18 two-blades); torque shape and peak-power rpm are estimated. Slotted flaps follow Roskam's digitized method; gear travel is borrowed from the P-51.
+- The CARF manual's handling notes (full power on take-off lifts the tail beyond the low-rate elevator; land tail-up; never noticeably exceed 200 km/h) are targets for F4U-08/12, not checked here.
+- The fin carries no offset; RC right thrust stands in for the full-size 2° left fin offset. The full-size airplane's left roll-off in the power-on stall is not modelled as an asymmetry.
 - CL-dependent cross terms are frozen at CL_ref = {CL_ref:.2f}.
 """
 
@@ -965,7 +1053,7 @@ elif "--check" in sys.argv:
     stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text(encoding="utf-8") != t]
     if stale:
         sys.exit("stale: " + ", ".join(p.name for p in stale) + f" (run {SCRIPT})")
-    print("f4u_corsair_1_5.json and derivation.md are up to date")
+    print("f4u_corsair_250.json and derivation.md are up to date")
 else:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(text, encoding="utf-8")
