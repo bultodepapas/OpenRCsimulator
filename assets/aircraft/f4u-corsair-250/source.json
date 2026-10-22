@@ -1,26 +1,37 @@
 {
   "format": "openrc-f4u-source v2",
-  "status": "PROVISIONAL inputs for research/f4u-corsair/F4U-07/derive_physics.py. Owner decisions D1 (hardware reference), D4 (propeller variant) and D5 (engine) are open; the values below are the F4U plan's recommended defaults and change only here. Nothing in this file is measured on a built 1/5 Corsair.",
+  "status": "PROVISIONAL inputs for research/f4u-corsair/F4U-07/derive_physics.py. On 2026-10-22 the owner asked for a big, realistic Corsair with a Moki radial and a three-blade propeller; D1, D4 and D5 record the resulting configuration and change only here. Nothing in this file is measured on a built Corsair.",
   "decisions": {
-    "D1_hardware_reference": "FokkeRC Vought F4U-1D Corsair 1/5 (recommended, not yet selected by the owner)",
-    "D4_propeller": "three-blade (F4U-1D airframe); the four-blade belongs to the F4U-4",
-    "D5_engine": "DLE-111 (the FokkeRC kit specification)"
+    "D1_hardware_reference": "CARF-Models F4U-1D Corsair 1:4.5 (2,800 mm), the standard giant-scale Corsair for a Moki radial",
+    "D4_propeller": "three-blade 30x18 (the Moki S250 manual's three-blade; the F4U-1D airframe has three blades)",
+    "D5_engine": "Moki S250 five-cylinder four-stroke radial (the engine CARF designed the kit around)"
   },
   "kit": {
-    "name": "FokkeRC Vought F4U-1D Corsair 1/5",
-    "url": "https://www.fokkerc.com/product/vought-f4u-1d-corsair-1-5/",
-    "span_m": 2.5,
-    "length_m": 2.052,
-    "scale": 0.2,
+    "name": "CARF-Models F4U-1D Corsair 1:4.5",
+    "url": "https://carf-models.com/en/products/f4u-1d-corsair",
+    "span_m": 2.8,
+    "length_m": 2.2,
+    "wing_area_m2": 1.348,
+    "scale": 0.2222222222222222,
+    "kit_source": "CARF product page and dealers (nexusmodels.co.uk, 8fly.it): 110 in / 2,800 mm span, 87 in / 2,200 mm length, 39-46 lb dry, designed around the Moki 250 cc radial with a 32 in three-blade, Sierra Giant Scale retracts, optional hydraulic wing fold; wing area 2,090 sq in (Model Airplane News review, December 2011)",
     "flying_mass": {
-      "method": "constant wing loading: each Corsair's flying mass x (1/5 wing area / its scale wing area); target = mean of the gasoline models, rounded; range spans every anchor",
-      "range_kg": [11.5, 21.0],
+      "method": "anchors for this kit with a Moki radial, at constant wing loading (x (b / their span)^2); a dry anchor adds half the tank; target = mean of the anchors, rounded to 0.5 kg; range spans the anchors",
+      "range_kg": [18.0, 24.0],
       "anchors": [
-        {"name": "Black Horse F4U-1D 2.28 m (BH64), gasoline 55-65 cc, rotary air retracts", "span_m": 2.28, "mass_kg": 9.8, "gas": true, "source": "manual specification: 9.6-10 kg, 94.6 dm2 (lindinger.at/media/f2/5a/bd/1602008047/9774576_EN_Manual.pdf)"},
-        {"name": "Seagull FG-1D 87 in, gasoline 60-70 cc", "span_m": 2.21, "mass_kg": 14.0, "gas": true, "source": "manual specification: 30.9 lb, 14 kg (skyraccoon.com/assets/pdf/Corsair-F4U-Goodyear-FG-1D_4444.pdf)"},
-        {"name": "TopRC F4U 93 in, gasoline 60-100 cc", "span_m": 2.362, "mass_kg": 16.8, "gas": true, "source": "retailer estimate, 37 lb (gator-rc.com)"},
-        {"name": "Phoenix Model F4U 1.8 m (PMMA1845), electric", "span_m": 1.8, "mass_kg": 5.4, "gas": false, "source": "manual specification: 5200-5600 g, 54.6 dm2"}
+        {"name": "CARF-Models specification, dry", "span_m": 2.8, "mass_kg": 19.5, "basis": "dry", "source": "39-46 lb (18-21 kg) dry, midpoint (carf-models.com/en/products/f4u-1d-corsair; nexusmodels.co.uk/products/carf-f4u-1d-corsair-1-4-5-790000)"},
+        {"name": "Model Airplane News review, Moki 250, SEP 32x18 2-blade, Sierra retracts, hydraulic wing fold", "span_m": 2.794, "mass_kg": 24.0, "basis": "flying", "source": "53 lb on 2,090 sq in (modelairplanenews.com/carfcorsair)"}
       ]
+    },
+    "kit_setup": {
+      "name": "CARF-Models F4U-1D manual, Important Values (p. 44) and engine installation",
+      "url": "https://carf-models.com/files/product/34/ed/06/corsair_manual.pdf",
+      "span_m": 2.8,
+      "throws_mm": {"aileron": {"up": 20.0, "down": 15.0}, "elevator": {"up": 20.0, "down": 20.0, "up_take_off": 35.0}, "rudder": {"each_side": 70.0}},
+      "flaps_deg": {"take_off": 0.0, "landing": 30.0, "useful_max": 35.0, "max": 45.0},
+      "thrust_angles_deg": {"right": 2.5, "up": 0.5},
+      "cg": "10-12 mm (1/2 in) in front of the main spar, seen from the top; the manual does not give the spar station",
+      "handling": "take off at 50 % power: at full power the low-rate elevator cannot hold the tail down and the model may nose over; no flaps for take-off; at most 30 deg of flap on approach because the large flaps weaken low-speed elevator response; land tail-up, a three-point touchdown is 'challenging'; never noticeably exceed 200 km/h",
+      "note": "the manual does not say where throws are measured; they convert on the widest surface chords, the Black Horse convention. The aileron differential (20 up, 15 down) enters as its mean"
     },
     "reference_setups": [
       {"name": "Black Horse F4U-1D 2.28 m (BH64)", "url": "https://www.lindinger.at/media/f2/5a/bd/1602008047/9774576_EN_Manual.pdf", "span_m": 2.28,
@@ -37,40 +48,41 @@
        "expo": {"aileron": 0.10, "elevator": 0.12, "rudder": 0.15},
        "note": "manual p. 1 specification block; expo from the same block"}
     ],
-    "setup_method": "each setup's lengths scale by (2.5 m / its span) to this airframe; throws convert to angles on this airframe's widest surface chords (the Black Horse convention); the median of the three setups is used for throws and flap settings, the mean of their CG fractions of the root chord for the balance point",
+    "setup_method": "the CARF manual sets the high-rate throws, flap settings and thrust angles of this kit. It gives the CG only relative to an unstated spar station, so the balance point is the mean of the three smaller Corsair manuals' CG fractions (lengths scale by b / their span), with CARF as a cross-check; their median low/high ratio sets the low rate and the Phoenix manual the expo",
     "engine": {
-      "name": "DLE-111 (111.2 cc twin, two-stroke gasoline)",
-      "power_hp": 11.2,
-      "power_rpm": 7500.0,
-      "idle_rpm": 1400.0,
-      "mass_engine_kg": 2.37,
-      "mass_with_ignition_and_mufflers_kg": 2.69,
-      "fuel": "gasoline 30:1 premix (DLE manual)",
-      "static_thrust_claim_kgf": 25.5,
+      "name": "Moki S250 (250 cc five-cylinder four-stroke radial, gasoline)",
+      "power_hp": 15.0,
+      "power_rpm": 5500.0,
+      "limit_rpm": 6000.0,
+      "idle_rpm": 900.0,
+      "mass_engine_kg": 5.4,
+      "fuel": "unleaded petrol with oil 50:1 (Moki manual)",
       "anchor": {
-        "propeller": "Mejzlik 27x10 2B GAS",
-        "static_rpm": 6800.0,
-        "static_cp": 0.027,
-        "diameter_in": 27.0,
-        "spread_rpm": [6250.0, 6900.0],
-        "source": "'a hair over 6800' on a Mejzlik 27x10 (teamflyingcircus.com/forum/showthread.php?t=5561); Mejzlik 27x10 2B GAS datasheet (mejzlik.eu/files/27x10-2b-gas-datasheet.pdf, rev. 3.0, simulated at 5200 rpm) static Cp 0.027. Spread: Xoar 27x10 6250 rpm and Biela 27x10 6900 rpm with shortened mufflers (rcuniverse.com/forum/gas-engines-142/9214721-dle-111-rpm-numbers.html)"
+        "propeller": "Menz 32x18 2-blade",
+        "static_rpm": 4300.0,
+        "table": "32x18 2B GAS",
+        "check_three_blade": {"propeller": "SEP 30x18 3-blade", "static_rpm": 4400.0},
+        "spread": "single forum reports on 32x18 2-blades: SEP 4,200 rpm, Engel 5,200 rpm (RCU 'MOKI RADIAL Care and Maintenence' thread, search summaries, not read in full); Moki factory: about 4,200 rpm as the most efficient static speed (same thread)",
+        "source": "Moki S250 operating instructions: '2 Blade Menz: 32x18 @ 4300 rpm', '3 Blade SEP: 30x18 @ 4400 rpm' (heilemann-sternmotoren.de/images/pdf-dokumente/MOKI_250_S_Radial_Operating_Instructions.pdf). The Mejzlik 32x18 2B table stands in for the Menz; the calibrated BEM (prop_calibration.json) for the SEP"
       },
-      "sources": "11.2 hp / 7500 rpm, idle 1400 rpm, recommended 27x10 26x12 28x10: DLE-111 manual as repeated by MacGregor (macgregor.co.uk/dleengine/dle111.htm) and Lindinger (lindinger.at, item 78867); 2370 g engine and 2690 g total: Lindinger technical data; 25.5 kgf static at 100 m altitude: distributor claim (fridayparts.com), propeller not named"
+      "thrust_check": {"engine": "Moki S300", "propeller": "SEP 34x18 2-blade", "static_rpm": 3950.0, "thrust_kgf": 29.92, "diameter_in": 34.0, "source": "measured by a forum user (RCU Moki radial thread, search summary, page not read)"},
+      "sources": "15 bhp, 5.4 kg (11 lb), bore 42 mm, stroke 36 mm, 26-40 oz tank: Moki S250 operating instructions; approx. 15.5 PS DIN and 5,100 g: CARF (carf-models.com/en/products/moki-s250). No rated rpm is published: 5,500 rpm is estimated below the 6,000 rpm ignition limit (CH Ignitions CDI for the Moki S215/S250/S300, ch-ignitions.com/product/ch-cdi-moki-s215-s250-s300/; Seidel: 6,000 rpm in a deep dive, low ground idle 900 rpm, seidel-props.de/en/sp-250-x-beschreibung/)"
     },
     "propeller": {
-      "name": "Mejzlik 26x12 3-blade GAS N",
-      "diameter_in": 26.0,
-      "pitch_in": 12.0,
+      "name": "30x18 three-blade (wood, SEP class)",
+      "diameter_in": 30.0,
+      "pitch_in": 18.0,
       "blades": 3,
-      "table_key": "26x12 3B GAS N",
-      "source": "DLE-111 recommended 26x12; three blades match the F4U-1D (D4). Manufacturer table and mass in research/p51/p51-06/mejzlik_26x12.json (datasheet hash recorded there; rev. 3.0 values rechecked 2026-10-22)"
+      "mass_kg": 0.59,
+      "mass_source": "estimated: a Biela 32x18 2-blade weighs about 475 g; x 3/2 blades x (30/32)^3",
+      "source": "Moki S250 manual three-blade (SEP 30x18 at 4,400 rpm); CARF sells a 32 in ground-adjustable three-blade scale propeller for this kit (carf-models.com/en/products/moki-s250) without published data. No table exists for either: the calibrated BEM of fit_propeller.py models the 30x18"
     },
     "fuel_tank_l": 1.0,
     "retracts": {
-      "main": "Robart #150 rotating pneumatic (90 degree wheel twist)",
-      "tail": "Robart #160 1/5 mechanical retractable tail wheel",
+      "main": "Sierra Giant Scale rotating pneumatic main retracts (CARF kit equipment) with Robart gear-door cylinders",
+      "tail": "retractable tail wheel with doors and pull-wire steering (CARF manual)",
       "cycle_s": 4.0,
-      "source": "FokkeRC kit specification (units); cycle time estimated as the P-51's pneumatic sequencer value, no Robart timing published"
+      "source": "CARF manual (units); cycle time estimated as the P-51's pneumatic sequencer value, no Sierra timing published"
     }
   },
   "full_size": {

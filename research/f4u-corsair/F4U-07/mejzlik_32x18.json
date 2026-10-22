@@ -1,0 +1,59 @@
+{
+ "source": "Mejzlik Propellers datasheet (manufacturer-SIMULATED data at 4300 rpm, Rev. 3.0 2025-12-18), downloaded 2026-10-22; the PDF is not stored in the repository",
+ "props": {
+  "32x18 2B GAS": {
+   "url": "https://www.mejzlik.eu/files/32x18-2b-gas-datasheet.pdf",
+   "sha256": "811c60d24fab30100b6d295861c40331eeef37dd4adc2a414400a99805f27c14",
+   "diameter_in": 32.0,
+   "pitch_in": 18.0,
+   "blades": 2,
+   "mass_kg": 0.334,
+   "inertia_kgm2": 0.0184,
+   "limit_rpm": 5600,
+   "inertia_note": "manufacturer estimate I = mass D^2 blades / 24 (datasheet footnote)",
+   "J": [
+    0.0,
+    0.0858,
+    0.1717,
+    0.2575,
+    0.3433,
+    0.4292,
+    0.515,
+    0.6009,
+    0.6867,
+    0.7725,
+    0.8584,
+    0.9442
+   ],
+   "Ct": [
+    0.0961,
+    0.0923,
+    0.0881,
+    0.0818,
+    0.0754,
+    0.0699,
+    0.0592,
+    0.0469,
+    0.0336,
+    0.019,
+    0.0042,
+    -0.0089
+   ],
+   "Cp": [
+    0.0367,
+    0.0387,
+    0.0403,
+    0.0414,
+    0.0421,
+    0.0432,
+    0.0404,
+    0.0357,
+    0.029,
+    0.0198,
+    0.0092,
+    -0.0005
+   ]
+  }
+ },
+ "not_used": "Mejzlik 31x12 3B GAS (412 g, simulated at 4500 rpm) and 30x13 3B GAS EVO (403 g, at 4600 rpm), same revision: low-pitch blades for gasoline twins; one calibrated BEM misses them by 12-19 % rms while fitting this 32x18 and the P-51's 26x12 pair within 4-8 %, so they are not fitted"
+}

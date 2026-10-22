@@ -14,7 +14,7 @@ All required physical capabilities already exist in the aircraft contract: the P
 | --- | --- |
 | Visual delivery requirements for the author | [Blender delivery request](F4U-BLENDER-HANDOFF.md) |
 | Sources, full-size data, RC reference candidates | [F4U-01 evidence](research/f4u-corsair/F4U-01/README.md) |
-| Sources, pipeline and commands | [Asset guide](../assets/aircraft/f4u-corsair-1-5/README.md) |
+| Sources, pipeline and commands | [Asset guide](../assets/aircraft/f4u-corsair-250/README.md) |
 | Provisional 1/5 geometry | [F4U-06 R59 extraction](research/f4u-corsair/F4U-06/README.md) |
 | Provisional physics data and checks | [F4U-07 evidence](research/f4u-corsair/F4U-07/README.md) |
 | Retractable-taildragger rig | [F4U-02 evidence](research/f4u-corsair/F4U-02/README.md) |
@@ -23,7 +23,7 @@ All required physical capabilities already exist in the aircraft contract: the P
 | Shared model, retraction and section contracts | [Aircraft contract](AIRCRAFT_CONTRACT.md#model-and-package-contract) (AS) |
 | Rights | [Licensing guide](AIRCRAFT-LICENSING.md) |
 
-F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/`, `assets/aircraft/f4u-corsair-1-5/` and, once created, `app/assets/aircraft/f4u-corsair-1-5/`, `app/aircraft/f4u_*`, `app/data/aircraft/f4u_corsair_1_5.json` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
+F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/`, `assets/aircraft/f4u-corsair-250/` and, once created, `app/assets/aircraft/f4u-corsair-250/`, `app/aircraft/f4u_*`, `app/data/aircraft/f4u_corsair_250.json` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
 
 ## 3. Gaps found in the shared code
 
@@ -58,7 +58,7 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 
 ## 5. Owner decisions pending
 
-D1, D4 and D5 run on their recommended values as provisional defaults in [source.json](../assets/aircraft/f4u-corsair-1-5/source.json); changing one is a source edit and a regeneration.
+D1, D4 and D5 run on their recommended values as provisional defaults in [source.json](../assets/aircraft/f4u-corsair-250/source.json); changing one is a source edit and a regeneration.
 
 | ID | Decision | Recommendation |
 | --- | --- | --- |

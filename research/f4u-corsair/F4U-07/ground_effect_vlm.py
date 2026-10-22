@@ -2,7 +2,7 @@
 """F4U-07: ground-effect constants for the inverted-gull Corsair wing (image-method Weissinger VLM).
 
 Same method and runtime law as the P-51's research/p51/p51-20/ground_effect_vlm.py, but the planform is the measured
-one in assets/aircraft/f4u-corsair-1-5/geometry-r59.json: chord, leading edge, chord-plane height and incidence per
+one in assets/aircraft/f4u-corsair-250/geometry-r59.json: chord, leading edge, chord-plane height and incidence per
 station, so the gull's low inner wing and its local dihedral enter every panel. The aero reference point is the root
 chord plane on the centreline, as derive_physics.py writes it; x = its height above the ground / span.
 
@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-1-5/geometry-r59.json"
+GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/geometry-r59.json"
 OUT = Path(__file__).resolve().with_name("vlm_ground_effect.json")
 N_SIDE = 40
 ALPHA = math.radians(4.0)
@@ -196,7 +196,7 @@ def main():
     c_t, e_t, rms_t = fit([(r["x"], r["tail_downwash_ratio_per_lift"]) for r in rows])
     out = {
         "generator": "research/f4u-corsair/F4U-07/ground_effect_vlm.py",
-        "geometry": "assets/aircraft/f4u-corsair-1-5/geometry-r59.json",
+        "geometry": "assets/aircraft/f4u-corsair-250/geometry-r59.json",
         "method": f"image-method Weissinger VLM, {2 * N_SIDE} cosine-spaced panels on the measured gull planform (chord, leading edge, chord-plane height, median-filtered incidence), alpha {math.degrees(ALPHA):.1f} deg, ground parallel to the free stream, x = root-chord-plane height / span; no fuselage",
         "aero_reference_height_m": Z_ARP,
         "free_air": {"CL": free["CL"], "CLa_per_rad": free["CL"] / ALPHA, "area": free["area"],

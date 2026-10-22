@@ -1,9 +1,9 @@
-"""F4U-06: provisional 1/5 physics geometry of the F4U Corsair from the author's R59 master.
+"""F4U-06: provisional 1/4.5 physics geometry of the F4U Corsair from the author's R59 master.
 
 Poses the rig neutral in memory (never saved): root at identity, demo actions unassigned, controls and trims zero,
 wings spread and locked. Writes metres in the physics le frame, [x_aft, y_right, z_up] from the wing-root leading
-edge on the centreline at thrust-line height, scaled 0.2 (the owner's 1/5 decision). R59's root frame is +X aft,
-+Y right, +Z up at full size, so le = 0.2 * (x - X_LE, y, z - Z_THRUST).
+edge on the centreline at thrust-line height, scaled 1/4.5 (the owner's 2026-10-22 decision, CARF-Models class).
+R59's root frame is +X aft, +Y right, +Z up at full size, so le = (x - X_LE, y, z - Z_THRUST) / 4.5.
 
 Contents: right-wing, stabilizer and fin sections (edge-plane intersections), control-surface spans and chordwise
 extents, fuselage stations, spinner, propeller plane, canopy top, crash-hull points, light and exhaust positions,
@@ -18,7 +18,7 @@ import bpy, json, math, sys
 from mathutils import Matrix, Vector
 
 out_path, source_sha = sys.argv[sys.argv.index("--") + 1:][:2]
-SCALE = 0.2
+SCALE = 1 / 4.5
 X_LE = -2.923   # root leading edge, R59 x (F4U-06 sections: constant for y <= 0.6 m)
 Z_THRUST = 2.420  # spinner tip and hub centre height, R59 z
 N_PATH = 129

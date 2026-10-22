@@ -26,7 +26,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
-	var path: String = args[0] if args.size() > 0 else ProjectSettings.globalize_path("res://").path_join("../research/f4u-corsair/F4U-07/f4u_corsair_1_5.json").simplify_path()
+	var path: String = args[0] if args.size() > 0 else ProjectSettings.globalize_path("res://").path_join("../research/f4u-corsair/F4U-07/f4u_corsair_250.json").simplify_path()
 	var loaded: Dictionary = AircraftData.load_file(path)
 	_check("staged v2 file passes production validation", loaded.get("ok", false), "; ".join(loaded.get("errors", PackedStringArray())))
 	if not loaded.get("ok", false):
@@ -38,7 +38,7 @@ func _initialize() -> void:
 	var inventory_mass := 0.0
 	for part: Dictionary in raw.inventory:
 		inventory_mass += float(part.mass.value)
-	_check("loader keeps identity, span and the inventory flight mass", model.id == "f4u-corsair-1-5" and absf(float(model.reference.b) - 2.5) < 1e-9
+	_check("loader keeps identity, span and the inventory flight mass", model.id == "f4u-corsair-250" and absf(float(model.reference.b) - 2.5) < 1e-9
 		and absf(float(model.mass_kg) - inventory_mass) < 1e-9, "%s, %.3f m, %.4f kg" % [model.id, model.reference.b, model.mass_kg])
 	var throws: Dictionary = model.controls.throw_rad
 	var v_start := float(raw.start.level_speed.value)

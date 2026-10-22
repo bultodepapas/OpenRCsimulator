@@ -6,10 +6,10 @@ Derived 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md); revised the same da
 
 | File | Role |
 | --- | --- |
-| [source.json](../../../../assets/aircraft/f4u-corsair-1-5/source.json) (v2) | Authored inputs with sources: provisional D1/D4/D5 defaults (FokkeRC 1/5, three-blade, DLE-111), four mass anchors, three Corsair setups, the DLE-111 anchor, NACA full-size data, measured and XFOIL section data, slotted-flap digitization |
-| [geometry-r59.json](../../../../assets/aircraft/f4u-corsair-1-5/geometry-r59.json) | 1/5 geometry measured on R59 ([F4U-06](../F4U-06/README.md)) |
+| [source.json](../../../../assets/aircraft/f4u-corsair-250/source.json) (v2) | Authored inputs with sources: provisional D1/D4/D5 defaults (FokkeRC 1/5, three-blade, DLE-111), four mass anchors, three Corsair setups, the DLE-111 anchor, NACA full-size data, measured and XFOIL section data, slotted-flap digitization |
+| [geometry-r59.json](../../../../assets/aircraft/f4u-corsair-250/geometry-r59.json) | 1/5 geometry measured on R59 ([F4U-06](../F4U-06/README.md)) |
 | [ground_effect_vlm.py](../../../../research/f4u-corsair/F4U-07/ground_effect_vlm.py) → `vlm_ground_effect.json` | Image-method VLM of the measured gull planform; Trefftz-plane drag |
-| [derive_physics.py](../../../../research/f4u-corsair/F4U-07/derive_physics.py) → `f4u_corsair_1_5.json`, [derivation.md](../../../../research/f4u-corsair/F4U-07/derivation.md) | Native `openrc-aircraft v2` output, staged beside the script until F4U-09 |
+| [derive_physics.py](../../../../research/f4u-corsair/F4U-07/derive_physics.py) → `f4u_corsair_250.json`, [derivation.md](../../../../research/f4u-corsair/F4U-07/derivation.md) | Native `openrc-aircraft v2` output, staged beside the script until F4U-09 |
 | [probe.gd](../../../../research/f4u-corsair/F4U-07/probe.gd) | Production loader, trims, flare authority, top speed and flight modes |
 
 Sources for every input are in [F4U-01](../F4U-01/README.md). The method follows the P-51 generator, with Corsair-specific geometry, data and checks:
