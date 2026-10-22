@@ -240,6 +240,26 @@ still had p50 132.1 ms and advanced only 1.10 s in 3.02 s. All three were
 complete without a simulation fault. They are short, sequential samples, not
 controlled native pairs or evidence of resolved frame pacing.
 
+## Accepted-tick contact feed reuse
+
+The contact presentation array was sampled once after each accepted tick and
+again by the next input guard for the same previous/current state pair. A
+2,400-tick P-51 headless scratch probe found zero array mismatches; omitting
+the duplicate sample reduced the input guard's p50 from 203 to 95 µs and the
+session callback's p50 from 227 to 118 µs. This is a steady-mode estimate,
+not a controlled native frame result.
+
+The production cache checks the tick and copies of both states before reuse.
+It invalidates on contact-mode assignment, reset and restore, so a same-tick
+mode toggle or state change refreshes the presentation feed. Contact terminal,
+gear-collapse and prop-strike checks still execute in the guard. The focused
+soft-contact test covers both same-tick invalidations (36 checks, zero failures);
+aircraft contact, lake session, crash and prop-strike gates passed. A short
+[native P-51 capture](p51d-mustang-120-contact-cache-frames.json) had p50
+49.3 ms over 56 frames and advanced 2.78 s simulation in 3.00 s wall time.
+The preceding 50.6 ms capture was not a controlled pair; real-time backlog
+remains.
+
 ## Runway acceleration in simulation time
 
 The [fixed-tick probe](runway_acceleration_probe.gd) and its [Windows Godot

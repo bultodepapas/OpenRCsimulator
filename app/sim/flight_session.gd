@@ -738,7 +738,13 @@ var crash_auto_restart := true
 ## E3d1: crash-hull points become soft ground contacts (HullContact): light touches continue the flight and only a
 ## C2-grade impact or a deep crush ends it. Off by default so trace, scripted and golden routes keep D9d's "any hull
 ## contact is a crash"; Main turns it on for interactive flights.
-var soft_hull_contacts := false
+var _soft_contacts_cache_tick: int = -1
+var _soft_contacts_cache_previous := PackedFloat64Array()
+var _soft_contacts_cache_state := PackedFloat64Array()
+var soft_hull_contacts := false:
+	set(value):
+		soft_hull_contacts = value
+		_soft_contacts_cache_tick = -1
 var _hull_contact := {}
 ## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
 var soft_contacts: Array = []
@@ -1534,6 +1540,14 @@ func contact_events() -> Dictionary:
 		prop_strike = prop_strike.duplicate(true)}
 
 
+## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
+func _refresh_soft_contacts() -> void:
+	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	_soft_contacts_cache_previous = sim.previous.duplicate()
+	_soft_contacts_cache_state = sim.state.duplicate()
+	_soft_contacts_cache_tick = sim.tick
+
+
 func _observe_contact_tick(tick: int) -> void:
 	_contact_tick = tick
 	_contact_events.clear()
@@ -1541,9 +1555,10 @@ func _observe_contact_tick(tick: int) -> void:
 		_active_hull_ids.clear()
 		prop_strike = {}
 	if not soft_hull_contacts or not aircraft.get("ok", false):
+		_soft_contacts_cache_tick = -1
 		_active_hull_ids.clear()
 		return
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	_refresh_soft_contacts()
 	if soft_contacts.is_empty() and _active_hull_ids.is_empty():
 		return
 	var observed: Dictionary = ContactEvents.hull_events(soft_contacts, _contact_bindings, _active_hull_ids, tick)
@@ -1591,6 +1606,7 @@ func _clear_pending_contacts() -> void:
 
 func _reset_contact_history() -> void:
 	_contact_tick = -1
+	_soft_contacts_cache_tick = -1
 	_contact_events.clear()
 	_active_hull_ids.clear()
 	_clear_pending_contacts()
@@ -1598,6 +1614,7 @@ func _reset_contact_history() -> void:
 
 func _restore_contact_history(record: Dictionary) -> void:
 	_contact_tick = int(record.tick)
+	_soft_contacts_cache_tick = -1
 	_active_hull_ids = record.active_hull_ids.duplicate()
 	_contact_events.assign(record.events.duplicate(true))
 	prop_strike = record.prop_strike.duplicate(true)
@@ -1931,7 +1948,9 @@ func _session_after_input() -> bool:
 		return false
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
-			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+			if _soft_contacts_cache_tick != sim.tick or _soft_contacts_cache_previous != sim.previous \
+					or _soft_contacts_cache_state != sim.state:
+				_refresh_soft_contacts()
 			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
 			var hit: Dictionary = {index = -1} if finite_fuel_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
@@ -4551,7 +4570,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_failures = restored_failures
 	_scenery_damage = restored_damage
 	_restore_contact_history(restored_contacts)
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact) if soft_hull_contacts else []
+	if soft_hull_contacts:
+		_refresh_soft_contacts()
+	else:
+		soft_contacts = []
+		_soft_contacts_cache_tick = -1
 	_clear_pending_scenery_damage()
 	_weather = restored_weather
 	_weather_pending_reset = false
