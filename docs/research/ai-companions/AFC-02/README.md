@@ -262,3 +262,18 @@ records the actual runtime pilot/profile updates and focused integration checks.
 The runtime pilot is now `3842cbdba…1f024`, with the unchanged inherited circuit
 base. Its pure-score early return has independent differential and flight evidence.
 The source guards remain strict, and no aircraft/activity/count scope is expanded.
+
+## Performance-only solver re-bind `29ac7fe9`, 2026-10-22
+
+Five exactness-proven performance commits (glow feed reuse `e983eb49`/`126fbc47`,
+P-51 k1 preview `f86d0759`, hull and lake contact skips `67ba2835`, `e9e07e68`,
+`30b54621`) changed eight physics/simulation sources and moved the normalized
+133-file identity from `2f4f35c0…cff4bfa` to `29ac7fe9…bb75a047`. A disposable
+copy of the current app with only `app/physics`, `app/sim` and `app/failures`
+restored from `fc726623` reproduced `2f4f35c0…`. All nine retained tapes
+(six AFC-04-R2 crossings, three AFC-04-R1 parallel threats) replayed in candidate
+mode on both sides with `complete=true` and byte-identical CSVs. The Jensen Stik
+profile and its test now pin `29ac7fe9…`; profiles 37/0, manager 53/0, record
+156/0, lifecycle 653/0, presentation 13/0 and airspace 48/0 passed. Candidate
+replays report `solver_changed=true`; this is parity on these tapes, not exact
+replay or a scope expansion.

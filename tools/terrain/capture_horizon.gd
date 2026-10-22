@@ -215,6 +215,12 @@ func _tree_counts(field_node: Node3D) -> Dictionary:
 	if found == 0:
 		_fail("no tree MultiMesh with near/far metadata was found")
 		return {}
+	# L8a-R1/VQ-06b: front near-ring trees render as 3D detail instead of cards; they stay visible with "near".
+	var detail: Node = field_node.get_node_or_null("treelineDetail")
+	if detail != null:
+		for batch: Node in detail.find_children("*", "MultiMeshInstance3D", true, false):
+			near_count += (batch as MultiMeshInstance3D).multimesh.instance_count
+			total_count += (batch as MultiMeshInstance3D).multimesh.instance_count
 	return {"near": near_count, "far": far_count, "total": total_count, "sectors": found}
 
 

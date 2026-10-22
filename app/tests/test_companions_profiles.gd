@@ -68,7 +68,7 @@ func _run() -> void:
 	_check("solver qualification pins strict UTF-8/LF identity separately from FlightLog raw identity",
 		solver_identity.get("ok", false) \
 		and solver_identity.get("source_count", 0) == 133 \
-		and solver_identity.get("sha256", "") == "2f4f35c04c837e89c5317412991046cd097dd3c9f501e9697702e94a6cff4bfa" \
+		and solver_identity.get("sha256", "") == "29ac7fe98862745b038de64f69111634f310885bea61ea2da1c76759bb75a047" \
 		and result.profile.solver.normalization == "utf8-lf" \
 		and result.identity.solver_normalization == "utf8-lf" \
 		and result.identity.solver_qualification_sha256 == solver_identity.sha256 \

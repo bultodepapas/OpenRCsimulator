@@ -42,6 +42,10 @@ const FAR_CELL_M := 400.0
 const FAR_M := 400.0
 const SHADOW_RANGE_M := 300.0
 const QUALITIES: Array[String] = ["low", "balanced", "high"]
+# L6c-R2: club LandscapeLab bark may show this many pixels of LOD error (foliage keeps 1 px).
+# Half the field trees' 8 px, because club trees are seen from 10-60 m. Maples are not world-LOD
+# assets, so the protected clubhouse maple keeps its chain.
+const CLUB_BARK_LOD_ERROR_PX := 4.0
 static var _default_layout_geometry_ready: bool = false
 static var _default_layout_geometry: PackedByteArray = PackedByteArray()
 
@@ -475,6 +479,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
 		tree_wind = bool(opts.get("tree_wind", true)),
 		tree_cell_size_m = opts.get("tree_cell_size_m", 0),
+		bark_lod_error_px = CLUB_BARK_LOD_ERROR_PX,
 	})
 	root.add_child(vegetation)
 	stats.vegetation_triangles = vegetation_triangles

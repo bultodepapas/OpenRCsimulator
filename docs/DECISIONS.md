@@ -882,3 +882,12 @@ the duplicated material, chosen from a 0.5–1.0 sweep in club and field views; 
 bark textures, the downloaded resources, cards and maples unchanged. This supersedes the proposed
 card recolour.
 [Evidence](research/visual-quality-implementation/L8a-R2/README.md).
+
+### 2026-10-22 — Club LandscapeLab bark switches LOD at 4 px (L6c-R2)
+
+Counted per instance, the club's imported trees are the largest pilot-view subsystem. Pass the
+L8a-R1 `bark_lod_error_px` option for them at 4 px, half the field trees' 8 px because they are
+seen from 10–60 m. It cuts the club batches by a third in the club postcard and the 300 m runway
+telephoto with identical branch structure at 3×; the 100 m telephoto keeps full detail. Foliage
+and the protected maple keep their chains.
+[Evidence](research/visual-quality-implementation/L6c-R2/README.md).

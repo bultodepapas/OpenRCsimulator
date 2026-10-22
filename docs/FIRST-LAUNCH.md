@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide, checked 2026-10-20. [v0.1.7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.7) is the latest stable software release for this early-alpha simulator. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [v0.1.7 release notes](releases/v0.1.7.md). Current-source features may differ from the v0.1.7 package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide, checked 2026-10-20. [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8) is the latest stable software release for this early-alpha simulator. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [v0.1.8 release notes](releases/v0.1.8.md). Current-source features may differ from the v0.1.8 package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download the latest stable release, [v0.1.7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.7). Download a platform ZIP and `SHA256SUMS` from that release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download the latest stable release, [v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8). Download a platform ZIP and `SHA256SUMS` from that release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`

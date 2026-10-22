@@ -32,6 +32,20 @@ Enlarged 3× where pixels changed most (1, 4 and 8 px):
 
 At most 1,913 pixels change at 8 px in the club postcard and 885 at 4 px. Main limbs and branch structure are identical at 4 px. At 8 px a few fine branches of the tree nearest the cars change shape. The step uses 4 px (`Scenery.CLUB_BARK_LOD_ERROR_PX`): club trees are seen from 10–60 m, so they get half the field trees' 8 px.
 
+## Scene budget
+
+`tools/scenery/budget.sh` on main with this step, the matte foliage (L8a-R2) and Automatic (VQ-06b-R1), High preset ([summary](budget/summary-720.md)); all limits pass. Against the [L8a-R1 run](../L8a-R1/budget/summary-720.md):
+
+| | Before | After |
+| --- | ---: | ---: |
+| Pilot worst view (100 m runway telephoto) | 1,295,621 | 1,295,621 |
+| Pilot median | 816,151 | 803,744 (−1.5%) |
+| Ground worst view | 1,058,511 | 1,039,711 (−1.8%) |
+| Aerial worst view | 774,886 | 742,866 (−4.1%) |
+| Club imported vegetation, aerial worst | 187,050 | 155,030 (−17%) |
+
+The pilot worst view does not move: in the 100 m telephoto the club trees stay at full detail by design. The saving shows in club, ground and aerial views.
+
 ## Checks
 
 `test_club_bark_lod.gd` builds the club scenery and compares each tree batch with a default ImportedVegetation build of the same model. LandscapeLab bark errors are divided by 4, foliage keeps its chain, and the protected maple keeps its whole chain. Mutations on a disposable copy, each caught: the club option dropped; the bark scaling reaching non-LandscapeLab trees (the maple). `test_scenery_build.gd` and `test_imported_tree_rendering.gd` pass.
@@ -39,4 +53,3 @@ At most 1,913 pixels change at 8 px in the club postcard and 885 at 4 px. Main l
 ## Open
 
 - Native-GPU review of the club trees at 4 px, including motion.
-- A full scene-budget run with this change to update the per-level table.

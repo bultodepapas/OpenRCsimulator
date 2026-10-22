@@ -17,11 +17,11 @@ Eight vehicles in a full 360° studio tour: Ventage Jet first, followed by the h
 
 ## Download and fly
 
-[Download v0.1.7](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.7) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. ZIP archives are unsigned; the macOS app is ad-hoc signed but not notarized. See the [first-launch guide](docs/FIRST-LAUNCH.md) for checksums, platform setup, controls and radio calibration.
+[Download v0.1.8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.8) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. ZIP archives are unsigned; the macOS app is ad-hoc signed but not notarized. See the [first-launch guide](docs/FIRST-LAUNCH.md) for checksums, platform setup, controls and radio calibration.
 
 **First flight:** new Home preferences start on the Stik runway at Club field with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The aircraft and features below describe **current source**, which may differ from the download. The [v0.1.7 release notes](docs/releases/v0.1.7.md) describe that package and its known limits. Software checks do not establish physical flight validation.
+The aircraft and features below describe **current source**, which may differ from the download. The [v0.1.8 release notes](docs/releases/v0.1.8.md) describe that package and its known limits. Software checks do not establish physical flight validation.
 
 ## Aircraft
 

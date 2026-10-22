@@ -155,6 +155,11 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack L10c barrier and L10d contact shadows validated")
+	# L8a-R1/VQ-06b: front near-ring trees render as 3D detail instead of cards.
+	var detail: Node3D = field.get_node_or_null("treelineDetail")
+	if detail != null:
+		for batch: MultiMeshInstance3D in detail.find_children("*", "MultiMeshInstance3D", true, false):
+			count += batch.multimesh.instance_count
 	field.free()
 	var expected_count: int = result.field.objects[0].positions.size()
 	if count != expected_count:
