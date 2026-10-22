@@ -15,7 +15,7 @@ Measured on the flight-test card ([card v5 `power_step`](../../../../research/fl
 | Stik MAX-55AX | 10.3 % | −4.2° | +5.3° | +17° |
 | Stik FS-64V | 11.0 % | −5.0° | +6.8° | +20° |
 
-A real .60 glow engine at its idle stop in a 15–25 m/s glide runs at about 4,000–6,200 rpm and its 12×6 gives roughly zero to −1.5 N, never the static idle thrust ([research note, section 2](throttle-power-research.md#2-idle-in-a-glide)).
+A real .60 glow engine at its idle stop in a 15–25 m/s glide runs at about 4,000–6,200 rpm and its 12×6 gives roughly zero to −1.5 N, never the static idle thrust ([research note, section 2](throttle-power-research.md#2-idle-in-a-glide-glow-60-126)).
 
 ## The law
 

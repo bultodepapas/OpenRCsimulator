@@ -1,7 +1,8 @@
-"""Scratch oracles for a candidate default field: scenery layout and countryside asserts/outputs."""
+"""L7-R3 oracles for a candidate default field: scenery layout and countryside asserts/outputs.
+Usage: python3 field_oracles.py <candidate default.json>"""
 import importlib.util, json, math, shutil, sys
 from pathlib import Path
-ROOT = Path("/home/bulto/OpenRCsimulator")
+ROOT = Path(__file__).resolve().parents[5]  # repository root
 cand = Path(sys.argv[1])
 def load(name, rel):
     spec = importlib.util.spec_from_file_location(name, ROOT / rel); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); return m

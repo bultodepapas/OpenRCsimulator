@@ -137,4 +137,4 @@ The observed pattern is scene-led composition, clear input focus and configurabl
 
 No redesigned UI has been implemented or accepted. No OS DPI changes, ultrawide/16:10, accessibility 150/200%, screen reader, physical controller journey, other-platform/export, performance or audio qualification occurred here. The dense-screen matrix covers default pages and three weather tabs, not every tab/error/popup. The normal interactive flight used Stik; helicopter/garage/crash/trial-return interfaces need their own visual cases. The existing layout test covers other catalog Home geometry, not those live activities.
 
-Use the [plan's matrix and phase gates](../../../MENU-REDESIGN-PLAN.md#7-acceptance-matrix-and-release-gates) to close these gaps. Preserve the distinction between observed defects, proposed design values and pending validation.
+Use the [plan's matrix and phase gates](../../../MENU-REDESIGN-PLAN.md#10-acceptance-and-completion) to close these gaps. Preserve the distinction between observed defects, proposed design values and pending validation.

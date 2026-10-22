@@ -7,7 +7,7 @@ indices. It still validates the profile on every call and creates a fresh mesh;
 no generated asset or authoring pipeline changes are needed. Run the pinned
 engine headless with `--script res://tests/test_horizon.gd` for topology, height,
 seam and checksum checks. [Native parity, timings and the separate atmosphere
-texture shutdown diagnostic](../../docs/research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md)
+texture shutdown diagnostic](../../../../VQ-01c/loading/horizon-build/README.md)
 own the evidence and outstanding native-test limitation.
 
 ## DT-11a imported grass exclusion filtering
@@ -18,7 +18,7 @@ for each call and preserves the original point/polygon predicate and selection
 order. No generated asset changes are needed. Run
 `res://tests/test_grass_mask_bounds.gd` with the pinned headless engine to check
 inclusive boundaries, changed pilots and predicate parity; `app/test.sh` discovers
-it automatically. [Measurements and rejected alternatives](../../docs/research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md)
+it automatically. [Measurements and rejected alternatives](../../../../VQ-01c/loading/grass-masks/README.md)
 own the evidence and loading limitations.
 
 ## DT-11a default grass image reuse
@@ -30,7 +30,7 @@ regeneration command is needed; source changes take effect in a fresh process.
 
 Run `res://tests/test_ground_image_cache.gd` with the pinned engine to check complete
 byte equality, seeds and mutation isolation. It is also part of `app/test.sh`.
-[Measurements, commands and limitations](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/README.md)
+[Measurements, commands and limitations](../../../../VQ-01c/loading/ground-image/README.md)
 own the evidence; the first build still computes the tile.
 
 ## DT-11a default lake geometry
@@ -95,7 +95,7 @@ other GPU work is idle; shader compilation is excluded by warmup.
 selects a 640x96 exact crop of that camera; `--scale=4` supersamples it and uses
 three steps. The L9e report documents the isolated no-filter mutation used to
 compare the production filter with a supersampled reference. No mutation belongs
-in `app/`. See [L9e evidence](../../docs/research/visual-quality-implementation/L9e/README.md).
+in `app/`. See [L9e evidence](../../../../L9e/README.md).
 
 ## L9c surfaces
 
@@ -122,7 +122,7 @@ It subtracts `stripe_amp=0` images, compares native output with an independent r
 
 The club field caps the normal stripe amplitude at `0.026` through `stripe_amp`; setting that uniform to zero still removes the stripes for this ablation.
 
-Only a 640×64 sub-frustum of each original camera is rendered (up to 10240×1024 at 16×). The camera translation remains measured in base-resolution pixels; projected geometry is checked across resolutions. The measurement mask is a fixed one-metre runway inset, independent of image colour. The high-resolution PNGs are decoded to linear RGB before box averaging. This is a bounded engineering regression check, not proof of reference convergence or perceptual shimmer closure. See [method and evidence](../../docs/research/visual-quality-implementation/L9c-R1/README.md). Both ground checks run from `app/capture.sh` and appear in its final manifest.
+Only a 640×64 sub-frustum of each original camera is rendered (up to 10240×1024 at 16×). The camera translation remains measured in base-resolution pixels; projected geometry is checked across resolutions. The measurement mask is a fixed one-metre runway inset, independent of image colour. The high-resolution PNGs are decoded to linear RGB before box averaging. This is a bounded engineering regression check, not proof of reference convergence or perceptual shimmer closure. See [method and evidence](../../../../L9c-R1/README.md). Both ground checks run from `app/capture.sh` and appear in its final manifest.
 
 L10a flight-cue captures use the same pinned rendering environment:
 
@@ -130,7 +130,7 @@ L10a flight-cue captures use the same pinned rendering environment:
 "$(app/tests/visual-env.sh)" tools/ground/check_windsock.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l10a-windsock
 ```
 
-The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within current deformed cue bounds, whites must not clip, and the cue must add three draws and fewer than 6,000 triangles. The checker rejects an invisible-feature control. [Original L10a evidence](../../docs/research/visual-quality-implementation/L10a/README.md), [current motion evidence](../../docs/research/wind-implementation/M5-W04b-R1/README.md).
+The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within current deformed cue bounds, whites must not clip, and the cue must add three draws and fewer than 6,000 triangles. The checker rejects an invisible-feature control. [Original L10a evidence](../../../../L10a/README.md), [current motion evidence](../../../../../wind-implementation/M5-W04b-R1/README.md).
 
 ## Windsock motion (M5-W04b-R1)
 
@@ -156,7 +156,7 @@ Before editing the renderer, copy `app/render/windsock.gd` to an absolute path o
   --baseline=C:/absolute/baseline/windsock.gd --out=C:/absolute/comparison.json
 ```
 
-The harness compares 2,400 motion states, 600 render states and six bounds cases exactly, then measures 30 paired batches in alternating order. Active batches contain 240 advances and 60 updates with changing wind; paused batches contain 60 updates at the model's current timestamp. It also compares all static mesh surface arrays byte-for-byte at four dimension fixtures and measures ten alternating construction pairs, keeping cue copies and disposal outside the build timer. JSON retains raw microseconds, means, medians and source hashes. An equivalence mismatch exits nonzero, with bounded mismatch details. Check logs for engine errors too. This measures one cue's headless CPU work, with no GPU or whole-flight FPS claim. [Upload evidence](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f3-windsock-upload-cpu-optimization) and [construction evidence](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f4-faster-cloth-construction) retain results and native visual parity.
+The harness compares 2,400 motion states, 600 render states and six bounds cases exactly, then measures 30 paired batches in alternating order. Active batches contain 240 advances and 60 updates with changing wind; paused batches contain 60 updates at the model's current timestamp. It also compares all static mesh surface arrays byte-for-byte at four dimension fixtures and measures ten alternating construction pairs, keeping cue copies and disposal outside the build timer. JSON retains raw microseconds, means, medians and source hashes. An equivalence mismatch exits nonzero, with bounded mismatch details. Check logs for engine errors too. This measures one cue's headless CPU work, with no GPU or whole-flight FPS claim. [Upload evidence](../../README.md#vq-04a-f3-windsock-upload-cpu-optimization) and [construction evidence](../../README.md#vq-04a-f4-faster-cloth-construction) retain results and native visual parity.
 
 L10b reuses the flight-cue harness for the pilot station:
 
@@ -164,4 +164,4 @@ L10b reuses the flight-cue harness for the pilot station:
 "$(app/tests/visual-env.sh)" tools/ground/check_windsock.py --cue pilot_station --app app --godot "$(app/get-godot.sh)" --out /tmp/l10b-station
 ```
 
-Front, rear and raised views require a visible one-draw cue below 400 triangles. Both runway-threshold views use the field's actual pilot eye and require identical on/off pixels. A modified-pixel control tests that equality guard; it does not render an occluder. Default repeat and scenery-on runs produce 30 images. Both cue modes run in `app/capture.sh`. [L10b evidence and limits](../../docs/research/visual-quality-implementation/L10b/README.md).
+Front, rear and raised views require a visible one-draw cue below 400 triangles. Both runway-threshold views use the field's actual pilot eye and require identical on/off pixels. A modified-pixel control tests that equality guard; it does not render an occluder. Default repeat and scenery-on runs produce 30 images. Both cue modes run in `app/capture.sh`. [L10b evidence and limits](../../../../L10b/README.md).

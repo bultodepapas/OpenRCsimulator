@@ -209,7 +209,7 @@ A spectator or photographer by the flight path (SeligSIM FlyBy "jump ahead/behin
 
 ### 5.5 Orbit / inspect (V5)
 
-Replaces today's rigid close-up. A camera on a sphere around the CG: azimuth/elevation by right-drag, distance by wheel (0.6…20 × span), no roll, world up, look at the CG. The "close-up" preset reproduces today's `INSPECT_OFFSET` framing (left, above, behind) in the airplane's yaw frame so existing inspection captures keep a comparable view. Works paused (the pause-backdrop alternative in [MENU-REDESIGN-PLAN §7](../MENU-REDESIGN-PLAN.md#7-decisions-for-the-owner)).
+Replaces today's rigid close-up. A camera on a sphere around the CG: azimuth/elevation by right-drag, distance by wheel (0.6…20 × span), no roll, world up, look at the CG. The "close-up" preset reproduces today's `INSPECT_OFFSET` framing (left, above, behind) in the airplane's yaw frame so existing inspection captures keep a comparable view. Works paused (the pause-backdrop alternative in [MENU-REDESIGN-PLAN §7](../MENU-REDESIGN-PLAN.md)).
 
 ### 5.6 Field cameras (V6)
 

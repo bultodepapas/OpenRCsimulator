@@ -30,4 +30,4 @@ The test checks the 2T/4T firing lines, rich-2T subharmonic with unchanged famil
 
 The hub-v2 [source-order proof](source-orders-proof.json), with [capture log](source-orders.log), passes **73 checks with 0 failures** from a frozen snapshot. Native segments now load the corresponding candidate profile, evaluate its source observer at the accepted crank phase and pass that telemetry through Soundscape into the voice. Existing spectral thresholds pass without relaxation. The proof records the nine WAV hashes and exact source/profile inputs.
 
-The current implementation has no tach-synchronized real-engine recordings. Physical qualification remains open under [the NITRO engine plan](../../../plans/RC_NITRO_ENGINE_REALISM_PLAN.md#evidence-and-calibration-protocol) and [AUD-09](../../../plans/audio-realism.md#aud-09).
+The current implementation has no tach-synchronized real-engine recordings. Physical qualification remains open under [the NITRO engine plan](../../../plans/RC_NITRO_ENGINE_REALISM_PLAN.md#evidence-and-calibration-protocol) and [AUD-09](../../../plans/audio-realism.md#4-steps).
