@@ -58,7 +58,8 @@ def load_json(path):
 g = load_json(GEOMETRY)
 src = load_json(SOURCE)
 KIT, FULL, SEC = src["kit"], src["full_size"], src["sections"]
-REFSET = KIT["reference_setup"]
+SETUPS = KIT["reference_setups"]
+SLOT = src["slotted_flap"]
 SCALE = KIT["scale"]
 AREA_SCALE = SCALE * SCALE
 log = []
@@ -170,13 +171,16 @@ gamma_inner = math.degrees(dihedral(0.2))
 gamma_outer = math.degrees(dihedral(0.8))
 note("aero", "local dihedral at y 0.20 / 0.80 m (deg)", [gamma_inner, gamma_outer], "inverted gull: anhedral inboard, dihedral outboard (F4U-06)")
 
-# --- Sections: XFOIL 230-series, interpolated in thickness and log Reynolds number --------------------------------
-POL = SEC["polars"]
-CORR = SEC["xfoil_corrections"]
+# --- Sections: measured NACA 23012 data (TR 586) set the level; XFOIL supplies only the thickness trend -------------
+POL = SEC["xfoil"]["polars"]
+MEAS = SEC["measured"]
+M12, M15 = MEAS["naca_23012"], MEAS["naca_23015"]
 TC_OF = {"NACA 23012": 0.12, "NACA 23015": 0.15, "NACA 23018": 0.18}
+FINISH = SEC["finish_clmax_decrement"]
 
 
-def section(key, tc, re):
+def xfoil(key, tc, re):
+    """XFOIL value interpolated in thickness (clamped 12-18 %) and log Reynolds number (clamped 0.5-1 million)."""
     tc = min(max(tc, 0.12), 0.18)
     lre = math.log10(min(max(re, 5e5), 1e6))
     by_tc = {}
@@ -189,12 +193,31 @@ def section(key, tc, re):
     return lerp_table(rows, tc)
 
 
+def clmax_23012(re):
+    """TR 586 measured 23012 maximum lift, interpolated in log effective Reynolds number."""
+    return lerp_table([(math.log10(r), c) for r, c in zip(M12["reynolds_effective"], M12["clmax"])], math.log10(re))
+
+
+def section(key, tc, re):
+    """Measured 23012 level x XFOIL thickness ratio (lift slope, clmax); measured angle and moment with the XFOIL
+    thickness increment for sections thicker than the measured 23015."""
+    if key == "clmax":
+        return clmax_23012(re) * xfoil("clmax", tc, re) / xfoil("clmax", 0.12, re) - FINISH
+    if key == "cl_alpha_per_rad":
+        return math.degrees(M12["cl_alpha_per_deg"]) * xfoil("cl_alpha_per_rad", tc, re) / xfoil("cl_alpha_per_rad", 0.12, re)
+    if key == "alpha0_deg":
+        return lerp_table([(0.12, M12["alpha0_deg"]), (0.15, M15["alpha0_deg"])], tc)
+    if key == "cm":
+        return M15["cm_ac"] + (xfoil("cm", tc, re) - xfoil("cm", 0.15, re) if tc > 0.15 else 0.0)
+    raise KeyError(key)
+
+
 V_cruise_guess = 25.0
-re_mac = V_cruise_guess * mac / NU
-cla_xfoil = 2 / S_r59 * integral(lambda y: chord(y) * section("cl_alpha_per_rad", at(y, tcs), V_cruise_guess * chord(y) / NU))
-kappa = note("aero", "section lift slope / 2pi", CORR["lift_slope_factor"] * cla_xfoil / (2 * math.pi), f"chord-weighted XFOIL {cla_xfoil:.3f}/rad at 25 m/s x {CORR['lift_slope_factor']} ({CORR['source'].split(':')[0]})")
-alpha0 = note("aero", "wing zero-lift angle (deg)", 2 / S_r59 * integral(lambda y: chord(y) * section("alpha0_deg", at(y, tcs), V_cruise_guess * chord(y) / NU)), "XFOIL 230-series, chord-weighted; thin-airfoil theory for the 230 mean line gives about -1.2 deg")
-cm_ac = note("aero", "section Cm_ac", 2 / S_r59 * integral(lambda y: chord(y) * section("cm", at(y, tcs), V_cruise_guess * chord(y) / NU)), "XFOIL 230-series moment over CL 0-0.6, chord-weighted: the forward-camber family has almost no pitching moment")
+cla_sec = 2 / S_r59 * integral(lambda y: chord(y) * section("cl_alpha_per_rad", at(y, tcs), V_cruise_guess * chord(y) / NU))
+kappa = note("aero", "section lift slope / 2pi", cla_sec / (2 * math.pi), f"chord-weighted {cla_sec:.3f}/rad at 25 m/s: NACA TR 586 23012 {M12['cl_alpha_per_deg']}/deg x the XFOIL thickness trend (XFOIL alone gives {2 / S_r59 * integral(lambda y: chord(y) * xfoil('cl_alpha_per_rad', at(y, tcs), V_cruise_guess * chord(y) / NU)):.2f}/rad)")
+alpha0 = note("aero", "wing zero-lift angle (deg)", 2 / S_r59 * integral(lambda y: chord(y) * section("alpha0_deg", at(y, tcs), V_cruise_guess * chord(y) / NU)), "NACA TR 586: 23012 -1.2, 23015 -1.1 deg, chord-weighted")
+cm_ac = note("aero", "section Cm_ac", 2 / S_r59 * integral(lambda y: chord(y) * section("cm", at(y, tcs), V_cruise_guess * chord(y) / NU)), "NACA TR 586 23015 -0.008 plus the XFOIL thickness increment beyond 15 %, chord-weighted")
+note("aero", "measured / XFOIL clmax at Re 0.5 and 1.0 million (23012)", [clmax_23012(5e5) / xfoil("clmax", 0.12, 5e5), clmax_23012(1e6) / xfoil("clmax", 0.12, 1e6)], "NACA TR 586 against XFOIL: XFOIL's free-transition clmax runs about 16 % high at model Reynolds numbers")
 
 # --- Fuselage ------------------------------------------------------------------------------------------------------
 FS = g["fuselage_stations"]
@@ -241,7 +264,8 @@ note("tail", "fin ac (x_aft, z_up m)", [xv_ac, fin_cz], "chord-weighted quarter 
 cf_r = note("tail", "rudder chord fraction (aft of hinge)", FULL["rudder_area_aft_of_hinge_ft2"] / FULL["vertical_tail_area_ft2"], "NACA area ratio 13.0/22.0")
 
 # --- CG from the reference setup -----------------------------------------------------------------------------------
-x_cg_target = note("balance", "CG (x_aft m)", REFSET["cg_aft_of_wing_le_at_fuselage_mm"] / 1000 * REFSET["length_ratio_to_1_5"], f"{REFSET['name']}: {REFSET['cg_aft_of_wing_le_at_fuselage_mm']:.0f} mm behind the wing leading edge at the fuselage, x {REFSET['length_ratio_to_1_5']:.5f} to 1/5; the leading edge is straight inboard (x 0 at the root)")
+setup_cg = [s_["cg_aft_of_wing_le_at_fuselage_mm"] / 1000 * b / s_["span_m"] for s_ in SETUPS]
+x_cg_target = note("balance", "CG (x_aft m)", sum(setup_cg) / len(setup_cg), "mean of the three Corsair manuals scaled to 2.5 m (" + ", ".join(f"{s_['name'].split(' (')[0]} {s_['cg_aft_of_wing_le_at_fuselage_mm']:.0f} mm -> {1000 * c_:.1f} mm" for s_, c_ in zip(SETUPS, setup_cg)) + "); the leading edge is straight inboard (x 0 at the root)")
 cg_mac = note("balance", "CG (% MAC)", 100 * (x_cg_target - mac_le_x) / mac, "")
 cg_mac /= 100
 
@@ -299,33 +323,33 @@ flap_spans = [SURF[k]["span"] for k in ("flap_right_1", "flap_right_2", "flap_ri
 y1f, y2f = flap_spans[0][0], flap_spans[-1][1]
 A_flap = FULL["flap_area_total_ft2"] / 2 * FT2 * AREA_SCALE
 cf_f = note("controls", "flap chord fraction", A_flap / integral(chord, y1f, y2f), f"NACA 36.4 sq ft (both) x 1/25 over the measured flap span {y1f:.3f}-{y2f:.3f} m (three panels)")
-k_ratio = REFSET["length_ratio_to_1_5"]
+def throw_deg(mm, model_span, surface_chord):
+    return math.degrees(math.asin(min(1.0, mm / 1000 * b / model_span / surface_chord)))
 
 
-def throw_deg(mm, surface_chord):
-    return math.degrees(math.asin(min(1.0, mm / 1000 * k_ratio / surface_chord)))
+def median(values):
+    v = sorted(values)
+    return v[len(v) // 2] if len(v) % 2 else 0.5 * (v[len(v) // 2 - 1] + v[len(v) // 2])
 
 
+# Widest surface chords aft of the hinge (NACA area fractions on the measured planform): the Black Horse manual
+# measures throws there; the others do not say.
 chord_ail = cf_a * chord(y1a)
 chord_elev = cf_e * crh
 chord_rud = cf_r * max(r["chord"] for r in fin_exposed)
 chord_flap = cf_f * chord(y1f)
-TH = REFSET["throws_mm"]
-throws = {
-    "aileron": throw_deg(TH["aileron"]["high"], chord_ail),
-    "elevator": throw_deg(TH["elevator"]["high"], chord_elev),
-    "rudder": throw_deg(TH["rudder"]["high"], chord_rud),
-}
-low = {
-    "aileron": throw_deg(TH["aileron"]["low"], chord_ail),
-    "elevator": throw_deg(TH["elevator"]["low"], chord_elev),
-    "rudder": throw_deg(TH["rudder"]["low"], chord_rud),
-}
-THROW_SRC = f"{REFSET['name']} manual (high/low mm, {REFSET['url']}), x {k_ratio:.4f} to 1/5, converted with this airframe's surface chord at its inboard end (aileron {chord_ail:.3f}, elevator {chord_elev:.3f}, rudder {chord_rud:.3f} m; NACA area fractions): the measuring station is not stated"
+SURFACE_CHORD = {"aileron": chord_ail, "elevator": chord_elev, "rudder": chord_rud, "flaps": chord_flap}
+per_setup = {s_["name"]: {axis: {rate: throw_deg(mm, s_["span_m"], SURFACE_CHORD[axis]) for rate, mm in rates.items()}
+                          for axis, rates in s_["throws_mm"].items()} for s_ in SETUPS}
+throws = {k: median([per_setup[n][k]["high"] for n in per_setup]) for k in ("aileron", "elevator", "rudder")}
+low = {k: median([per_setup[n][k]["low"] for n in per_setup]) for k in ("aileron", "elevator", "rudder")}
+EXPO = next(s_["expo"] for s_ in SETUPS if "expo" in s_)
+THROW_SRC = (f"median of three Corsair manuals ({'; '.join(s_['name'] for s_ in SETUPS)}), mm scaled to 2.5 m and converted on this airframe's widest surface chords "
+             f"(aileron {chord_ail:.3f}, elevator {chord_elev:.3f}, rudder {chord_rud:.3f} m; NACA area fractions)")
 for k in throws:
-    note("controls", f"{k} high / low (deg)", [throws[k], low[k]], "")
-flap_settings = {"take_off": throw_deg(TH["flaps"]["take_off"], chord_flap), "landing": throw_deg(TH["flaps"]["landing"], chord_flap)}
-note("controls", "flap take-off / landing (deg)", [flap_settings["take_off"], flap_settings["landing"]], f"Phoenix 15 / 25 mm on a flap chord of {chord_flap:.3f} m")
+    note("controls", f"{k} high / low (deg), median", [throws[k], low[k]], "per manual high: " + ", ".join(f"{per_setup[n][k]['high']:.1f}" for n in per_setup))
+flap_settings = {k: median([per_setup[n]["flaps"][k] for n in per_setup]) for k in ("take_off", "landing")}
+note("controls", "flap take-off / landing (deg), median", [flap_settings["take_off"], flap_settings["landing"]], "per manual landing: " + ", ".join(f"{per_setup[n]['flaps']['landing']:.1f}" for n in per_setup) + f" on a flap chord of {chord_flap:.3f} m")
 k_flap = note("controls", "flap effectiveness correction", 0.8, "estimated (DATCOM range 0.6-0.9), as the P-51")
 tau_e = flap_tau(cf_e) * k_flap
 ce_h = note("controls", "elevator effectiveness (local)", tau_e / (1 - deps), f"tau {tau_e:.3f} / (1 - deps/dalpha)")
@@ -385,7 +409,10 @@ items = [
     ("fin and rudder, covered", 0.30, "estimated", "sheeted built-up fin", [xv_ac + 0.1, 0.0, fin_cz], [0.3, 0.02, h_v], "derived", "exposed fin centroid", "vertical_tail"),
     ("pushrods, horns, cowl fasteners, hardware", 0.35, "estimated", "rough sum", [0.60, 0.0, 0.0], None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
-FLIGHT_MASS = KIT["flying_mass_kg"]["target"]
+FM = KIT["flying_mass"]
+mass_anchors = [(a_["name"], a_["mass_kg"] * (b / a_["span_m"]) ** 2, a_["gas"]) for a_ in FM["anchors"]]
+FLIGHT_MASS = round(2 * sum(m_ for _, m_, gas in mass_anchors if gas) / sum(1 for *_, gas in mass_anchors if gas)) / 2
+note("balance", "flight mass target (kg)", FLIGHT_MASS, "constant wing loading to 2.5 m: " + ", ".join(f"{n_.split(',')[0]} {m_:.1f}" for n_, m_, _ in mass_anchors) + " kg; mean of the gasoline models, rounded to 0.5 kg")
 STRUCTURE = ("wing panel", "wing tube", "fuselage", "canopy", "stabilizer", "fin and rudder", "cowl", "pushrods")
 is_structure = lambda it: any(it[0].startswith(s) for s in STRUCTURE)
 is_fuel = lambda it: it[0] == "fuel (half tank)"
@@ -416,7 +443,7 @@ dry_cg[1] = 0.0
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0
-note("balance", "flight mass (kg), CG (le m)", [mass] + cg, f"dry {dry_mass:.3f} kg; range {KIT['flying_mass_kg']['range']}")
+note("balance", "flight mass (kg), CG (le m)", [mass] + cg, f"dry {dry_mass:.3f} kg; range {FM['range_kg']}")
 
 
 def inertia(pt):
@@ -455,7 +482,7 @@ for _ in range(5):
         c_c = w / (hi_y - lo_y)
         tc_c = integral(lambda y: chord(y) * at(y, tcs), lo_y, hi_y) / w
         re_c = V_stall_guess * c_c / NU
-        clmax_c = section("clmax", tc_c, re_c) - CORR["clmax_decrement"]
+        clmax_c = section("clmax", tc_c, re_c)
         load = integral(lambda y: chord(y) * schrenk(y), lo_y, hi_y) / w
         twist_c = integral(lambda y: chord(y) * at(y, incs), lo_y, hi_y) / w
         strips.append({"y": y_c, "chord": c_c, "tc": tc_c, "re": re_c, "clmax": clmax_c, "load": load, "twist": twist_c, "cl_star": clmax_c / load})
@@ -550,26 +577,40 @@ PROP_D = KIT["propeller"]["diameter_in"] * IN
 PROP_P = KIT["propeller"]["pitch_in"] * IN
 # The BEM calibration was fitted with the P-51 blade planform; reuse it so the fitted factors stay valid.
 PLANFORM = load_json(ROOT / "assets/aircraft/p51d-mustang-120/geometry.json")["propeller"]["blade"]["chord_fraction_of_radius"]
-ct_table, cp_table = bem_tables(PROP_D, PROP_P, KIT["propeller"]["blades"], PLANFORM,
-                                pitch_factor=calib["pitch_factor"], chord_factor=calib["chord_factor"], j_max=1.6)
-Ct0, Cp0 = ct_table[0][1], cp_table[0][1]
+bem_ct, bem_cp = bem_tables(PROP_D, PROP_P, KIT["propeller"]["blades"], PLANFORM,
+                            pitch_factor=calib["pitch_factor"], chord_factor=calib["chord_factor"], j_max=1.6)
 mej_rows = list(zip(prop_rec["J"], prop_rec["Ct"], prop_rec["Cp"]))
-bem_err = [abs(lerp_table(ct_table, J) - ct_) / max(ct_, 1e-3) for J, ct_, _ in mej_rows if ct_ > 0.01]
-note("propulsion", "BEM vs Mejzlik 26x12 3B table: Ct0, Cp0, mean |dCt|/Ct", [Ct0, Cp0, sum(bem_err) / len(bem_err)], f"calibrated planform of the P-51 BEM (pitch x{calib['pitch_factor']:.3f}, chord x{calib['chord_factor']:.3f}); Mejzlik static Ct {prop_rec['Ct'][0]:.4f}, Cp {prop_rec['Cp'][0]:.4f}")
+bem_err = [abs(lerp_table(bem_ct, J) - ct_) / max(ct_, 1e-3) for J, ct_, _ in mej_rows if ct_ > 0.01]
+note("propulsion", "calibrated BEM vs Mejzlik 26x12 3B: mean |dCt|/Ct, dCt at J 0.67", [sum(bem_err) / len(bem_err), lerp_table(bem_ct, 0.673) - lerp_table(list(zip(prop_rec["J"], prop_rec["Ct"])), 0.673)],
+     "the BEM over-predicts thrust in the cruise/top-speed band (J 0.55-0.75), so the manufacturer table is used where it exists")
+# Manufacturer table up to its last advance ratio; beyond it the calibrated BEM (windmilling branch), joined
+# continuously and faded onto the BEM over 0.25 in J.
+J_LAST = prop_rec["J"][-1]
+J_FADE = 0.25
 
-# --- Engine: generic two-stroke twin shape at the DLE-111 rating, installed derate borrowed from the P-51 ------------
+
+def blended(bem, values):
+    mej = list(zip(prop_rec["J"], values))
+    offset = lerp_table(mej, J_LAST) - lerp_table(bem, J_LAST)
+    grid = sorted({round(j, 6) for j, _ in bem} | {round(j, 6) for j in prop_rec["J"]})
+    return [[J, round(lerp_table(mej, J) if J <= J_LAST else lerp_table(bem, J) + offset * max(0.0, 1 - (J - J_LAST) / J_FADE), 6)] for J in grid]
+
+
+ct_table, cp_table = blended(bem_ct, prop_rec["Ct"]), blended(bem_cp, prop_rec["Cp"])
+Ct0, Cp0 = ct_table[0][1], cp_table[0][1]
+
+# --- Engine: generic two-stroke twin shape, level from a reported DLE-111 static rpm on a tabulated propeller --------
 TORQUE_SHAPE = [(0.0, 0.70), (0.2, 0.75), (0.4, 0.85), (0.6, 0.95), (0.75, 1.0), (0.9, 0.97), (1.0, 0.92), (1.1, 0.80), (1.25, 0.55), (1.4, 0.25)]
 N_REF = E["power_rpm"]
 shape = lambda rpm: lerp_table(TORQUE_SHAPE, rpm / N_REF)
 P_rated = E["power_hp"] * 745.7
-p51_data = load_json(ROOT / "app/data/aircraft/p51d_mustang_120.json")
-p51_engine = p51_data["propulsion"]["engine"]
-derate = max(r[1] for r in p51_engine["shaft"]["power_curve"]["value"]) / p51_engine["peak_power"]["value"]
-note("propulsion", "installed/catalogue power ratio", derate, "BORROWED from the P-51 (DA-120 installed curve anchored on a reported 28x10 static rpm, over its 11.7 hp rating); no DLE-111 static-rpm record was found")
-peak_shape = max(shape(r) * r for r in range(1000, 9001, 10))
-Q0 = derate * P_rated / (2 * math.pi / 60 * peak_shape)
+ANC = E["anchor"]
+anchor_power = lambda rpm: ANC["static_cp"] * RHO * (rpm / 60) ** 3 * (ANC["diameter_in"] * IN) ** 5
+P_anchor = note("propulsion", "installed power at the anchor (W)", anchor_power(ANC["static_rpm"]),
+                f"{ANC['propeller']} static Cp {ANC['static_cp']} at {ANC['static_rpm']:.0f} rpm on a DLE-111; reported spread {ANC['spread_rpm'][0]:.0f}-{ANC['spread_rpm'][1]:.0f} rpm gives {anchor_power(ANC['spread_rpm'][0]):.0f}-{anchor_power(ANC['spread_rpm'][1]):.0f} W")
+Q0 = P_anchor / (shape(ANC["static_rpm"]) * 2 * math.pi * ANC["static_rpm"] / 60)
 power_curve = [[float(r), Q0 * shape(r) * 2 * math.pi * r / 60] for r in range(1000, 9001, 500)]
-P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve), f"{E['power_hp']} hp ({P_rated:.0f} W) rating x {derate:.3f}")
+P_peak = note("propulsion", "installed peak power (W)", max(p_[1] for p_ in power_curve), f"{100 * max(p_[1] for p_ in power_curve) / P_rated:.0f} % of the {E['power_hp']} hp ({P_rated:.0f} W) rating (stock mufflers and cowl installation)")
 FRICTION = [0.5, 0.14]
 q_fric = lambda rpm: FRICTION[0] + FRICTION[1] * rpm / 1000
 IDLE_RPM = E["idle_rpm"]
@@ -658,31 +699,60 @@ landing_gear = {
 }
 
 # --- Flaps: three slotted panels per side under the shared hinged-trailing-edge law ----------------------------------
-FLAP_KPRIME = [(5, 1.000), (10, 0.999), (15, 0.979), (20, 0.868), (25, 0.728), (30, 0.662), (35, 0.620), (40, 0.588), (45, 0.562)]
+# Single-slotted flap (Roskam Part VI, FAST-GA digitization): the shift law gain*L*tanh(tau*delta/L) is fitted to the
+# slotted lift effectiveness alpha_delta*delta (Fig. 8.17); slotted flaps fall below Glauert's tau at small deflection
+# and hold it better at large ones, which needs the gain as well as the limit. The profile-drag parameter is divided
+# by the gain so the runtime's product stays Raymer's value.
+AD = SLOT["alpha_delta"]
+
+
+def alpha_delta(cf, delta):
+    rows = [lerp_table(list(zip(AD["deflections_deg"], vals)), delta) for vals in AD["values"]]
+    return lerp_table(list(zip(AD["chord_ratios"], rows)), cf)
+
+
+def slotted_dclmax(tc_pct, cf, delta):
+    return (lerp_table(SLOT["base_increment"], tc_pct) * lerp_table(SLOT["k1"], 100 * cf)
+            * lerp_table(SLOT["k2"], delta) * lerp_table(SLOT["k3"], delta / 45.0))
+
+
 tau_f = note("flaps", "flap thin-airfoil effectiveness tau", flap_tau(cf_f), f"Glauert, c_f/c {cf_f:.3f}")
-_err = lambda L: sum((L * math.tanh(tau_f * d / L) - k * tau_f * d) ** 2 for d, k in FLAP_KPRIME)
-flap_limit = note("flaps", "effective angle limit (deg)", min((x / 100 for x in range(600, 3000)), key=_err), "fit of the runtime tanh bound to Roskam's PLAIN-flap K' (as the P-51): conservative for the slotted F4U flap, no slotted-flap table digitized")
-flap_cd = note("flaps", "profile drag coefficient", 0.9 * cf_f ** 1.38, "Raymer eq. 12.61 (after Hoerner)")
-ROSKAM_BASE = [(11, 0.861), (12, 0.920), (13, 0.988), (14, 1.080), (15, 1.186), (16, 1.313), (17, 1.431), (18, 1.514)]
-ROSKAM_K1_CF = [(15, 0.810), (20, 0.926), (25, 1.007)]
-ROSKAM_K2 = [(15, 0.457), (20, 0.571), (25, 0.672), (30, 0.759), (35, 0.821), (40, 0.873), (45, 0.912)]
+FIT_DELTAS = [5, 10, 15, 20, 25, 30, 35, 40, 45]
+target_shift = {d: alpha_delta(cf_f, d) * d for d in FIT_DELTAS}
+best = None
+for gi in range(500, 1001):
+    gain_ = gi / 1000
+    for li in range(500, 3001, 5):
+        L_ = li / 100
+        err = sum((gain_ * L_ * math.tanh(tau_f * d / L_) - target_shift[d]) ** 2 for d in FIT_DELTAS)
+        if best is None or err < best[0]:
+            best = (err, gain_, L_)
+_, flap_gain, flap_limit = best
+note("flaps", "slotted fit: gain, effective angle limit (deg), rms (deg)", [flap_gain, flap_limit, math.sqrt(best[0] / len(FIT_DELTAS))],
+     f"least squares of gain*L*tanh(tau*delta/L) to Roskam Fig. 8.17 alpha_delta*delta at c_f/c {cf_f:.3f}, 5-45 deg")
+flap_cd = note("flaps", "profile drag coefficient (runtime parameter)", 0.9 * cf_f ** 1.38 / flap_gain, f"Raymer eq. 12.61 (after Hoerner) 0.9 (c_f/c)^1.38 = {0.9 * cf_f ** 1.38:.4f}, divided by the gain the runtime multiplies in")
 tc_flap = integral(lambda y: chord(y) * at(y, tcs), y1f, y2f) / integral(chord, y1f, y2f)
-_ratios = [lerp_table(ROSKAM_BASE, 100 * tc_flap) * lerp_table(ROSKAM_K1_CF, 100 * cf_f) * k2 / (6.0 * tau_f * dict(FLAP_KPRIME)[d] * math.radians(d)) for d, k2 in ROSKAM_K2]
-flap_kappa = note("flaps", "stall shift fraction", 1 - sum(_ratios) / len(_ratios), f"1 - dClmax/dCl0, Roskam Part VI Figs. 8.31-8.33 at t/c {tc_flap:.3f}, c_f/c {cf_f:.3f} (as the P-51)")
+a_sec = cla_sec
+_ratios = [slotted_dclmax(100 * tc_flap, cf_f, d) / (a_sec * math.radians(flap_gain * flap_limit * math.tanh(tau_f * d / flap_limit))) for d in [15, 20, 25, 30, 35, 40, 45]]
+flap_kappa = note("flaps", "stall shift fraction", min(1.0, max(0.0, 1 - sum(_ratios) / len(_ratios))),
+                  f"1 - dClmax/dCl0 of a single-slotted flap, mean over 15-45 deg (range {1 - max(_ratios):.2f} to {1 - min(_ratios):.2f}); dClmax = Roskam base(t/c {100 * tc_flap:.1f} %) k1 k2 k3, dCl0 = section slope {a_sec:.2f}/rad x the fitted shift")
+tr664 = slotted_dclmax(12.0, 0.2566, 40.0)
+note("flaps", "method check: Roskam slotted dClmax for TR 664's flap (t/c 12 %, c_f/c 0.2566, 40 deg)", tr664,
+     f"NACA TR 664 measured about 1.1 (2.86 against a plain 23012 near 1.75); difference {100 * (tr664 / 1.11 - 1):+.0f} %")
 flaps = {
-    "max_angle_deg": q(flap_settings["landing"], "deg", "derived", D(f"landing setting: {TH['flaps']['landing']:.0f} mm on the Phoenix 1.8 m flap, scaled; full-size slotted flap 50 deg (NACA WR L-440)")),
-    "takeoff_angle_deg": q(flap_settings["take_off"], "deg", "derived", D(f"take-off setting: {TH['flaps']['take_off']:.0f} mm on the Phoenix flap, scaled")),
+    "max_angle_deg": q(flap_settings["landing"], "deg", "derived", D("landing setting: median of the three Corsair manuals, scaled to this flap chord; full-size slotted flap 50 deg (NACA WR L-440)")),
+    "takeoff_angle_deg": q(flap_settings["take_off"], "deg", "derived", D("take-off setting: median of the three Corsair manuals, scaled")),
     "inner_span_m": q(y1f, "m", "measured", "R59 inner flap panel inboard end"),
     "outer_span_m": q(y2f, "m", "measured", "R59 outer flap panel outboard end"),
     "hinge_fraction": q(1 - cf_f, "1", "derived", D("1 - flap chord fraction from the NACA flap area")),
     "extension_time": q(2.5, "s", "estimated", "slowed RC flap servo, as the P-51"),
     "retraction_time": q(2.5, "s", "estimated", "as extension"),
     "max_speed_mps": q(float(V_start), "m/s", "estimated", D("advisory: the start speed (1.6 Vs clean); no full-size or kit placard found")),
-    "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "the Phoenix manual lists no flap-elevator mix"),
-    "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D("plain-flap K' fit (conservative for a slotted flap)")),
-    "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61")),
-    "aerodynamic_gain": q(1.0, "1", "derived", "full shared flap law"),
-    "stall_shift_fraction": q(flap_kappa, "1", "derived", D("Roskam Part VI Figs. 8.31-8.33")),
+    "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "none of the three Corsair manuals lists a flap-elevator mix"),
+    "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D("single-slotted fit to Roskam Part VI Fig. 8.17 (FAST-GA digitization), with aerodynamic_gain")),
+    "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61 divided by aerodynamic_gain")),
+    "aerodynamic_gain": q(flap_gain, "1", "derived", D("single-slotted lift effectiveness below Glauert's tau at small deflection (Roskam Fig. 8.17), fitted with the limit")),
+    "stall_shift_fraction": q(flap_kappa, "1", "derived", D("single-slotted maximum-lift increment, Roskam Part VI Figs. 8.31-8.34 (FAST-GA digitization); method within 8 % of NACA TR 664")),
     "lift_reference_offset_m": q(x_ac_w - x_arp, "m", "derived", D("wing 25 % MAC aft of the wing-body ARP")),
 }
 
@@ -760,7 +830,7 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(dry_cg, "m", "estimated", f"reference balance point {x_cg_target:.4f} m aft of the root LE ({100 * cg_mac:.1f} % MAC) from the {REFSET['name']} manual, scaled; tank empty"),
+        "plan_cg": q(dry_cg, "m", "estimated", f"reference balance point {x_cg_target:.4f} m aft of the root LE ({100 * cg_mac:.1f} % MAC): mean of three Corsair manuals scaled to 2.5 m; tank empty"),
         "firewall": q([rc_fw, 0.0, 0.0], "m", "estimated", "spinner back + 0.25 m (a 111 cc twin on standoffs)"),
         "configuration": "virtual-balanced-reference-v2-empty-tank",
         "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the reference point with the tank empty")),
@@ -783,7 +853,7 @@ data = {
     "crash_hull_ids": [i_ for i_, _, _ in hull_probes],
     "crash_hull_components": [c_ for _, _, c_ in hull_probes],
     "plausibility": {
-        "mass_range": q(KIT["flying_mass_kg"]["range"], "kg", "estimated", KIT["flying_mass_kg"]["source"]),
+        "mass_range": q(FM["range_kg"], "kg", "estimated", FM["method"] + "; anchors: " + "; ".join(f"{a_['name']}: {a_['source']}" for a_ in FM["anchors"])),
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
@@ -791,7 +861,7 @@ data = {
         "max_throw": {k: q(float(v), "deg", "estimated", THROW_SRC) for k, v in throws.items()},
         "rates": {"normal": {
             **{k: q(low[k] / throws[k], "1", "estimated", THROW_SRC + "; low rate as the fraction of the high-rate throw") for k in throws},
-            **{k + "_expo": q(TH[k]["expo"], "1", "estimated", f"{REFSET['name']} manual expo") for k in throws},
+            **{k + "_expo": q(EXPO[k], "1", "estimated", "Phoenix Model F4U 1.8 m manual expo (the only manual that lists one)") for k in throws},
         }},
         "servo_full_throw_time": q(0.18, "s", "estimated", "placeholder, as the P-51"),
     },
@@ -852,7 +922,7 @@ data = {
             "lag_time_constant": q(0.6, "s", "estimated", "D5 lag model, unused while the shaft model is present"),
             "shaft": {
                 "power_curve": {"value": [[r, round(w_, 1)] for r, w_ in power_curve], "unit": "rpm, W", "kind": "derived",
-                                "source": D(f"generic two-stroke twin torque shape (P-51) at the DLE-111 rating x the P-51 installed/catalogue ratio {derate:.3f}; no DLE-111 static-rpm record")},
+                                "source": D(f"installed full-throttle brake power: generic two-stroke twin torque shape (P-51) scaled to a reported DLE-111 anchor, {ANC['propeller']} at {ANC['static_rpm']:.0f} rpm static (Mejzlik static Cp {ANC['static_cp']} -> {P_anchor:.0f} W); forum reports, not an instrumented test")},
                 "friction_torque": q(FRICTION, "N·m, N·m/krpm", "estimated", "as the P-51 (similar twin)"),
                 "idle_power": q(idle_power, "W", "derived", D(f"closed throttle holds {IDLE_RPM:.0f} rpm static")),
                 "peak_indicated_power": q(peak_ind, "W", "derived", D("brake + friction power at the curve's peak")),
@@ -862,8 +932,8 @@ data = {
             "name": "Mejzlik 26x12 3-blade GAS N (DLE-111 recommended size; three blades as the F4U-1D)",
             "diameter": q(PROP_D, "m", "manual", "26 in"),
             "rotation": "clockwise_from_rear",
-            "ct_table": q(ct_table, "1", "derived", D(f"BEM calibrated on the Mejzlik 26x12 2B/3B tables (P-51 calibration, rms {100 * calib['rms_relative_error']:.1f} %)")),
-            "cp_table": q(cp_table, "1", "derived", D("same calibrated BEM")),
+            "ct_table": q(ct_table, "1", "derived", D(f"Mejzlik 26x12 3B GAS N manufacturer table (simulated) to J {J_LAST:.3f}; beyond it the P-51-calibrated BEM, joined continuously and faded over 0.25 in J")),
+            "cp_table": q(cp_table, "1", "derived", D("same construction as ct_table")),
             "rotating_inertia": q(rotor_j, "kg·m2", "estimated", "Mejzlik 26x12 3B datasheet + hub + crank"),
             "thrust_line_offset": q([hub[0] - cg[0], 0.0, hub[2] - cg[2]], "m", "derived", D("propeller disc centre relative to the inventory CG")),
             "thrust_angles": q(THRUST_ANGLES, "deg", "estimated", "down 1.5 deg, right 1.5 deg: typical giant-warbird engine offsets (no FokkeRC or Phoenix value found); the right thrust stands in for the full-size 2 deg left fin offset"),
