@@ -212,6 +212,29 @@ func _test_lake_sample() -> void:
 	if not bool(loaded.get("ok", false)):
 		return
 	var lake: Dictionary = loaded.lake
+	var center_hull: Dictionary = HullContact.prepare_geometry(PackedFloat64Array([0.0, 0.0, 1.0]), lake)
+	var above_bed: Dictionary = HullContact.loads_at_properties(
+		_state([110.0, 125.0, -0.4], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]), center_hull, _properties())
+	_check("covered hull below the flat datum but above the lake bed stays clear",
+		bool(above_bed.ok) and above_bed.loads.is_empty(), str(above_bed))
+	var mixed_points := PackedFloat64Array([0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 200.0, 1.0])
+	var mixed_hull: Dictionary = HullContact.prepare_geometry(mixed_points, lake)
+	var bed_state: PackedFloat64Array = _state([110.0, 125.0, 5.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
+	var mixed: Dictionary = HullContact.loads_at_properties(bed_state, mixed_hull, _properties())
+	var summed := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var pieces_valid := true
+	for at in range(0, mixed_points.size(), 3):
+		var point_hull: Dictionary = HullContact.prepare_geometry(mixed_points.slice(at, at + 3), lake)
+		var part: Dictionary = HullContact.loads_at_properties(bed_state, point_hull, _properties())
+		pieces_valid = pieces_valid and bool(part.ok)
+		if part.loads.size() == 6:
+			for axis in 6:
+				summed[axis] += part.loads[axis]
+	_check("mixed lake-bed, clear-bed and dry-ground hull loads retain force and moment",
+		pieces_valid and bool(mixed.ok) and mixed.loads.size() == 6
+		and M.norm(mixed.loads.slice(0, 3)) > 0.0
+		and M.norm(M.sub(mixed.loads, summed)) < 1.0e-9,
+		"mixed=%s summed=%s" % [mixed, summed])
 	var previous: PackedFloat64Array = _state([110.0, 80.0, -1.0], [0.0, 90.0, 20.0], [0.0, 0.0, 0.0])
 	var current: PackedFloat64Array = _state([110.0, 170.0, 1.0], [0.0, 90.0, 20.0], [0.0, 0.0, 0.0])
 	var samples: Array[float] = []

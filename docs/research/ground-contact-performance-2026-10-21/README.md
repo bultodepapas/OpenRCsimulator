@@ -30,6 +30,10 @@ render and simulation context. The same host ran each case serially.
 
 These native frame reports were captured after the runway hull screen and
 before the lake follow-up below; their source fingerprints remain in each JSON.
+The capture windows differ: Extra before/after requested 3/3 s, P-51 2/3 s,
+and MAX-61FX 1/3 s. The MAX-61FX baseline has only four frames and no frame
+diagnostics. Its frame percentile is illustrative only; the physics/tick and
+simulated-time figures carry stronger evidence for that case.
 
 The Stik remains slow. Its optional fuel-feed closure evaluates engine
 lifecycle, coupling and feed pressure four times per stage. A frozen 30 m
@@ -40,10 +44,13 @@ addresses the shared ground-contact overhead only.
 
 ## Fleet and lake follow-up
 
-The [fleet probe](fleet_contact_probe.gd) ran 120 full-throttle ticks per case
-from runway and airborne starts, with soft contacts on or off. It uses a
-headless session and measures physics only; the 8-aircraft output is retained
-with [no lake](fleet-no-lake.json) and [the default lake](fleet-with-lake.json).
+The [no-lake fleet probe](fleet_contact_probe.gd) and [default-lake variant](fleet_contact_lake_probe.gd)
+ran 120 full-throttle ticks per case from runway and airborne starts, with
+soft contacts on or off. They use headless sessions and measure physics only;
+the 8-aircraft outputs are retained with [no lake](fleet-no-lake.json) and
+[the default lake](fleet-with-lake.json). The lake variant explicitly calls
+`set_lake_context` before the launch. The measured source is represented by
+commit `32a7cff0`; timing distributions vary with host load.
 Representative soft-contact, no-lake mean costs in ms/tick:
 
 | Aircraft | Runway | Airborne |
@@ -87,6 +94,18 @@ height and slope vary across the finite-difference stencil, so the deep-bed
 shortcut cannot apply. This is a remaining low-altitude performance limit,
 not evidence of changed forces or a physical handling defect.
 
+A later [native P-51 frame capture](p51d-mustang-120-followup-frames.json) on
+the current contact/lake source remains slow at p50 62.8 ms over 44 frames.
+During 3.06 s wall time, its simulation advanced 2.2 s (528 ticks), without
+pausing or faulting. Every measured frame ended 12 ticks later, the configured
+maximum steps per frame. Its smoothed physics cost was 4.24 ms/tick against a
+4.17 ms budget at 240 Hz; this explains why runway motion appears delayed in
+real time even after the contact fix. A fixed-state [stage profile](p51_stage_profile.gd)
+measured about 496 µs for the P-51 stage, with 110 µs in aero and 103 µs in
+slipstream; these are overlapping components, not additive tick costs. The
+existing `bench_regimes.gd` P-51 fixture fails its reset invariants on this
+source, so its output was discarded rather than used as performance evidence.
+
 ## Numerical evidence
 
 `*-baseline.orfl` used the committed pre-change `hull_contact.gd` with soft
@@ -100,7 +119,9 @@ divergence and zero position, velocity, angular-rate and attitude error.
 The changed solver fingerprint precludes calling the candidate an exact replay.
 
 The focused mass-contact test covers a hull inside broad-phase reach with no
-actual contact. Godot import parsed the project. The dynamic-mass contact,
+actual contact, a clear hull above the lake bed, and mixed penetrating lake,
+clear lake and dry-ground points with aggregate force and torque checks (37
+checks, zero failures). Godot import parsed the project. The dynamic-mass contact,
 dynamic-mass session, aircraft contact session, P-51 ground, and glow flight
 physics tests passed. The P-51 takeoff gate still gives 4.0 s simulated
 liftoff, 35 m ground run, and no crash. Software checks do not establish

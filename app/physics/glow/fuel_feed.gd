@@ -144,6 +144,48 @@ static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: 
 		alpha_body_rad_s2 = alpha_body.duplicate(), omega_body_rad_s = omega_body.duplicate()}
 
 
+## Candidate-independent terms for the same-stage closure. The live force and angular acceleration still determine
+## apparent gravity for each candidate; tank fill, the needled reference head, and carburetor drive do not.
+static func prepare_factor_context(feed: Dictionary, remaining_fuel_kg: float, capacity_fuel_kg: float,
+		unusable_fuel_kg: float, admission: float, rpm: float, tank_center: PackedFloat64Array,
+		tank_size: PackedFloat64Array) -> Dictionary:
+	if not is_finite(remaining_fuel_kg) or not is_finite(capacity_fuel_kg) or capacity_fuel_kg <= 0.0 \
+			or not is_finite(unusable_fuel_kg) or unusable_fuel_kg < 0.0 or unusable_fuel_kg >= capacity_fuel_kg \
+			or not is_finite(admission) or not is_finite(rpm) or rpm < 0.0:
+		return {ok = false}
+	return {ok = true, feed = feed, fill_fraction = clampf(remaining_fuel_kg / capacity_fuel_kg, 0.0, 1.0),
+		remaining_fuel_kg = remaining_fuel_kg, unusable_fuel_kg = unusable_fuel_kg,
+		drive_pa = drive_pa(admission, rpm, feed),
+		needled_head_pa = needled_head_pa(feed, tank_center, tank_size, STANDARD_GRAVITY),
+		tank_center = tank_center, tank_size = tank_size}
+
+
+## Scalar-only form of `evaluate()` for solver candidates. Returns NaN on the same malformed apparent-gravity or
+## authored-pickup conditions; the accepted candidate is evaluated once with `evaluate()` for full telemetry.
+static func factor_for_stage(context: Dictionary, force_body: PackedFloat64Array, mass_kg: float,
+		tank_arm_from_cg_body_m: PackedFloat64Array, alpha_body: PackedFloat64Array,
+		omega_body: PackedFloat64Array, pickup_position_body_m: PackedFloat64Array = PackedFloat64Array()) -> float:
+	if not context.get("ok", false):
+		return NAN
+	var feed: Dictionary = context.feed
+	var g_eff: PackedFloat64Array = apparent_gravity(force_body, mass_kg, tank_arm_from_cg_body_m,
+		alpha_body, omega_body)
+	if g_eff.size() != 3:
+		return NAN
+	var head: float = head_pa(g_eff, float(context.fill_fraction), feed.carburetor_body_m,
+		context.tank_center, context.tank_size, float(feed.density_kg_m3))
+	var pickup_wet: bool = true
+	if not pickup_position_body_m.is_empty():
+		var pickup_margin: float = pickup_margin_m(g_eff, float(context.fill_fraction), pickup_position_body_m,
+			context.tank_center, context.tank_size)
+		if not is_finite(pickup_margin):
+			return NAN
+		pickup_wet = pickup_margin >= 0.0
+	if float(context.remaining_fuel_kg) <= float(context.unusable_fuel_kg):
+		return 0.0
+	return factor(float(context.drive_pa), head, float(context.needled_head_pa)) if pickup_wet else 0.0
+
+
 ## Solve the same-stage fuel/torque/feed closure. The callback returns
 ## {ok, target_factor, ...payload}; accepted roots satisfy f - target_factor = 0.
 ## A narrow bracket without a small residual is rejected (discontinuous callbacks can have no root).

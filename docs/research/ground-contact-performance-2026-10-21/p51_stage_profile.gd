@@ -1,0 +1,61 @@
+extends SceneTree
+
+const Flight = preload("res://sim/flight_session.gd")
+const Field = preload("res://data/field_loader.gd")
+const Catalog = preload("res://app_state/aircraft_catalog.gd")
+const LiquidFlight = preload("res://sim/liquid_fuel_flight.gd")
+const Dynamics = preload("res://physics/dynamics.gd")
+const Aero = preload("res://physics/aero.gd")
+const Slipstream = preload("res://physics/slipstream.gd")
+const Propulsion = preload("res://physics/propulsion.gd")
+
+const CALLS := 180
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+func _measure(action: Callable) -> float:
+	for i in 8:
+		action.call()
+	var start := Time.get_ticks_usec()
+	for i in CALLS:
+		action.call()
+	return float(Time.get_ticks_usec() - start) / CALLS
+
+func _run() -> void:
+	for id in ["p51d-mustang-120"]:
+		var session = Flight.new()
+		session.input_enabled = false
+		session.setup(Catalog.entry(id).data, id)
+		session.set_field(Field.load_from().field)
+		session.start_choice = Flight.START_RUNWAY
+		root.add_child(session)
+		session.reset()
+		var body: PackedFloat64Array = session.sim.state.duplicate()
+		var values: PackedFloat64Array = session.sim.continuous.duplicate()
+		var base: PackedFloat64Array = values.slice(0, session._liquid_index())
+		var live: Dictionary = LiquidFlight.properties(session, values, true)
+		var air: Dictionary = session.air_data(body, 0.0)
+		var model: Dictionary = session.aircraft.model
+		var aux: PackedFloat64Array = session.sim.aux
+		var rpm: float = session._coupled_rpm(base)
+		var deflections: Dictionary = session._deflections(aux)
+		var density: float = session.air_density(body)
+		var result := {
+			"id": id,
+			"full_stage_us": _measure(func(): session.sim.model.stage.call(body, values, 0.0)),
+			"coupled_response_us": _measure(func(): session._coupled_response(body, base, 0.0, live, true)),
+			"ground_evaluation_us": _measure(func(): session._ground_evaluation(body, aux, base, {}, live)),
+			"dynamics_us": _measure(func(): Dynamics.loads_from_air(body, model, session._deflections(aux), rpm,
+				session.air_density(body), air, NAN, base.slice(0, session._rotor_index()), session._ground_up(body))),
+			"air_data_us": _measure(func(): session.air_data(body, 0.0)),
+			"properties_us": _measure(func(): LiquidFlight.properties(session, values, true)),
+			"aero_us": _measure(func(): Aero.loads(body, air, deflections, model, density, NAN, session._ground_up(body))),
+			"slipstream_us": _measure(func(): Slipstream.stage_loads(body, air, deflections, model, rpm, density, NAN,
+				base.slice(0, session._rotor_index()), 1, PackedFloat64Array())),
+			"propulsion_us": _measure(func(): Propulsion.loads(air.v_air, rpm, model.propulsion, density)),
+		}
+		print(JSON.stringify(result))
+		session.queue_free()
+		await process_frame
+	quit()

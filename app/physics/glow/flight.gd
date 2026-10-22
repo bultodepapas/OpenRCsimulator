@@ -466,6 +466,13 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		var omega: PackedFloat64Array=body.slice(RB.RATE,RB.RATE+3)
 		var pickup: PackedFloat64Array=install.get("pickup_position",PackedFloat64Array()) \
 			if mode==MODE_MAIN_TANK else PackedFloat64Array()
+		var solve_fuel: float=maxf(main_fuel,install.unusable_fuel_kg+1.0e-30)
+		var solve_admission: float=admission_at(install,state.air_fraction,rpm)
+		var feed_context: Dictionary=FuelFeed.prepare_factor_context(install.fuel_feed,solve_fuel,
+			install.capacity_fuel_kg,install.unusable_fuel_kg,solve_admission,rpm,
+			install.tank_position,install.tank_size)
+		if not feed_context.get("ok",false): return {ok=false}
+		var feed_force_body: PackedFloat64Array=airframe.external.slice(0,3)
 		var solve: Dictionary=FuelFeed.solve_factor(func(candidate_factor: float) -> Dictionary:
 			var candidate_evaluation: Dictionary=_lifecycle_evaluate(install,state,rpm,local_cooling,ambient,
 				values[12],candidate_factor,evaluator,identity_matches,owner,lifecycle_floor)
@@ -473,21 +480,21 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 			var candidate_coupling: Dictionary=_stage_coupling(owner,body,values,install,state,
 				candidate_evaluation.source,load,airframe,feed_mass,ambient)
 			if not candidate_coupling.get("ok",false): return {ok=false}
-			var candidate_feed: Dictionary=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),
-				feed_mass.mass_kg,maxf(main_fuel,install.unusable_fuel_kg+1.0e-30),
-				install.capacity_fuel_kg,install.unusable_fuel_kg,
-				admission_at(install,state.air_fraction,rpm),rpm,install.tank_position,install.tank_size,tank_arm,
-				candidate_coupling.alpha_body,omega,pickup)
-			if not candidate_feed.get("ok",false): return {ok=false}
-			return {ok=true,target_factor=float(candidate_feed.factor),evaluation=candidate_evaluation,
-				coupling=candidate_coupling,feed=candidate_feed}
+			var target_factor: float=FuelFeed.factor_for_stage(feed_context,feed_force_body,feed_mass.mass_kg,
+				tank_arm,candidate_coupling.alpha_body,omega,pickup)
+			if not is_finite(target_factor): return {ok=false}
+			return {ok=true,target_factor=target_factor,evaluation=candidate_evaluation,
+				coupling=candidate_coupling}
 		,1.0)
 		if not solve.get("ok",false): return {ok=false,message=str(solve.get("message","fuel feed solve failed"))}
 		var solved: Dictionary=solve.payload
 		feed_factor=float(solve.factor)
 		evaluation=solved.evaluation
-		feed=solved.feed
 		stage_coupling=solved.coupling
+		feed=FuelFeed.evaluate(install.fuel_feed,feed_force_body,feed_mass.mass_kg,solve_fuel,
+			install.capacity_fuel_kg,install.unusable_fuel_kg,solve_admission,rpm,install.tank_position,
+			install.tank_size,tank_arm,stage_coupling.alpha_body,omega,pickup)
+		if not feed.get("ok",false): return {ok=false}
 		evaluation.fuel_feed_solver={factor=feed_factor,residual=float(solve.residual),
 			evaluations=int(solve.evaluations),iterations=int(solve.iterations)}
 	else:
