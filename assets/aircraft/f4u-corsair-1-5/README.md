@@ -6,7 +6,7 @@ Checked 2026-10-22. `f4u-corsair-1-5` is a proposed 2.500 m, 1/5-scale F4U-1D fo
 
 | File | Content |
 | --- | --- |
-| [source.json](source.json) | Authored inputs: provisional hardware choices (D1 FokkeRC 1/5, D4 three-blade, D5 DLE-111), reference setup (Phoenix 1.8 m Corsair manual), NACA full-size data, XFOIL 230-series sections. Edit only here. |
+| [source.json](source.json) | Authored inputs (format v2): provisional hardware choices (D1 FokkeRC 1/5, D4 three-blade, D5 DLE-111), four Corsair mass anchors, three Corsair setups (Black Horse, Seagull, Phoenix), the DLE-111 static-rpm anchor, NACA full-size data, measured NACA 23012/23015 sections with XFOIL thickness trends, Roskam slotted-flap digitization. Edit only here. |
 | [geometry-r59.json](geometry-r59.json) | Generated: 1/5 geometry measured on the R59 master (sections, control surfaces, fuselage, nose, hull points, gear and retraction paths). Provisional until g1 metrology. |
 
 Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the root leading edge on the centreline at thrust-line height. This is the delivery request's D0, so g1 model coordinates map as `[x_aft, y_right, z_up] = [z_model, x_model, y_model]`.
