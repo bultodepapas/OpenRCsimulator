@@ -28,8 +28,8 @@ F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/` 
 | --- | --- | --- |
 | The imported retraction rig admitted only tricycle gear | `retractable_model.gd`, `imported_model_contract.gd` and `build_models.py` required `left/right/nose`. | **Resolved by F4U-02** (2026-10-22): nose or tail third wheel, with the dependent manifests, descriptors and parked bakes regenerated. |
 | Imported GLB gear must rest stowed | `retractable_model.bind()` refuses carriers not at sample 0 (fully stowed). | Corrected in request revision 2: export at `GearRetract` frame 100. |
-| Fin offset has no explicit data field | NACA RM A7C05 lists a 2° left fin offset. | F4U-07: represent it through existing yaw coefficients (Cn0/side-force terms) if the v2 schema supports a zero-sideslip yawing moment; otherwise propose an AS extension before use. |
-| Slotted flaps | The shared flap law follows plain-flap data (P-51: Roskam Part VI). | F4U-07: calibrate against NACA WR L-440 with a Reynolds-number correction, or propose a slotted-flap parameter set through AS. |
+| Fin offset | NACA RM A7C05 lists a 2° left fin offset. The aero law has no zero-sideslip yaw coefficient. | No extension needed: `aero.surfaces.vertical.incidence` (radians) already offsets the fin's local flow angle in `physics/aero.gd`. F4U-07 sets it and tests the sign against propeller swirl. |
+| Slotted flaps | The P-51 flap parameters come from plain-flap data (Roskam Part VI). | No new law: F4U-07 computes the existing flap parameters (effectiveness, angle limit, profile drag, stall shift) from single-slotted-flap data and checks the trend against NACA WR L-440. |
 
 The crash system already supports the three-way wing split (`wing_center` plus outer panels): a hit naming one wing releases only that outer panel, and an unnamed hit releases all wing sections.
 
