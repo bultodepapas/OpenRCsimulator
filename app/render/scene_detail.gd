@@ -18,6 +18,7 @@ const PROFILES := {
 }
 
 static var _preference := ""
+static var _warned := {}
 
 
 ## The player's saved choice (Settings > Graphics); unknown values fall back to the default.
@@ -35,7 +36,8 @@ static func level() -> String:
 	if requested.is_empty():
 		requested = _preference
 	if not LEVELS.has(requested):
-		if not requested.is_empty():
+		if not requested.is_empty() and not _warned.has(requested):
+			_warned[requested] = true
 			push_warning("Unknown scene detail '%s'; using %s" % [requested, DEFAULT])
 		return DEFAULT
 	return requested

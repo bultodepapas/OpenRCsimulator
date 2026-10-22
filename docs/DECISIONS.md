@@ -850,3 +850,15 @@ Compatibility. Field-tree collision ignores the preset; ornament props keep the 
 what is drawn collides, and the flight log records the collision world. The High-mode experiment
 note moves into its button tooltip so the Graphics page still fits at 1080p.
 [Evidence](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
+
+### 2026-10-22 — Keep repository history; stop large-file growth instead
+
+The repository pack is 4.1 GiB and the tracked files 5.1 GiB, 3.5 GiB of it under `docs/`
+(2.3 GiB lossless PNG evidence). Do not rewrite history or migrate to Git LFS: rewritten commits
+break every clone and parallel session, packaging CI needs full history for `git describe`, and
+GitHub's free LFS quota (1 GiB storage and bandwidth per month) would be exhausted by CI checkouts.
+Do not re-encode existing evidence: history keeps the old blobs, so clones would grow, and many
+PNGs are pixel evidence. Instead, `tools/repo/check_large_files.py` (in `app/test.sh` and the
+opt-in pre-push hook) refuses unrecorded tracked files above 50 MiB and any above GitHub's
+100 MiB push limit; four existing files are recorded. New evidence shows views as JPEG and keeps
+PNG only when pixel values are the evidence ([conventions](README.md#conventions-for-documents)).

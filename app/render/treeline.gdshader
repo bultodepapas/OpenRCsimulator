@@ -5,7 +5,7 @@ render_mode cull_disabled, diffuse_burley, specular_disabled;
 
 global uniform float sim_clock;
 global uniform vec3 wind_vec;
-uniform bool wind_enabled = true; // capture ablation; production wind remains zero until M5
+uniform bool wind_enabled = true; // capture ablation switch; cards follow the session wind (global wind_vec, ShaderClock)
 
 // Landscape improvement phases 0/1/3 (docs/research/landscape-improvement-2026-10-07, report 02):
 // - one crown normal per pixel: an ellipsoid around the crown centre in the view plane, written in fragment() (after
