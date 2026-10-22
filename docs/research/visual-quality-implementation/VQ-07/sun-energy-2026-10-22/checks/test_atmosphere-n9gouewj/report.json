@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "56801866-968d-437d-8ed5-890db3f57728",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_atmosphere.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:02:34.917107+00:00",
+  "label": "test_atmosphere",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_atmosphere-n9gouewj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_atmosphere-n9gouewj\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.969,
+  "log_bytes": 97,
+  "log_sha256": "f9b5e5f7b3fbbd93baa589c3131ce07d165c198a3c5daaf4d0245bd2d2d97ca8"
+}

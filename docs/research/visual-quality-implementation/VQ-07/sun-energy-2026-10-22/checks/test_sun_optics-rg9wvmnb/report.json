@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fc423b97-0f8e-4931-9f47-f7b931ace2eb",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_sun_optics.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:02:37.094270+00:00",
+  "label": "test_sun_optics",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_sun_optics-rg9wvmnb\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_sun_optics-rg9wvmnb\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.719,
+  "log_bytes": 109,
+  "log_sha256": "230c895bc2f1349399952f3ac0bdb6b5d31aa87c986f3ac2c295797974b075da"
+}

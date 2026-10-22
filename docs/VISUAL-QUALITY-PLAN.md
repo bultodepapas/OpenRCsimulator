@@ -18,6 +18,8 @@ The [advanced graphics plan](plans/advanced-graphics.md), added 2026-10-21, owns
 
 ## Current implementation
 
+VQ-07's [2026-10-22 sunlight correction](research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md) confines the legacy shadow-energy compensation to Compatibility. The experimental High renderer no longer dims unoccluded surfaces when shadows are enabled. Native panel/scene evidence and focused checks support this repair; the VQ-07 qualification gates remain open.
+
 The app uses Godot 4.7.2 with the Compatibility renderer. A validated field and shared builder serve Home and flight. The visual capture harness records case, renderer, backend and frame-time context; llvmpipe results establish repeatability, not target-GPU performance. See [VQ-01a](research/visual-quality-implementation/VQ-01a/README.md), [VQ-01b](research/visual-quality-implementation/VQ-01b/README.md), and the landscape implementation evidence.
 
 VQ-04a derives an opaque projected silhouette from each aircraft's visible mesh and model datum, then places a soft receiver on the flat ground. Field silhouettes cover the fence, pilot station, windsock, nearby scenery and people. Isolated 256² mask viewports avoid changing Compatibility shadow blending or aircraft paint; the legacy mask remains an empty-model fallback. The implementation caps field masks at 16 maps and 8,388,608 pixels; default optional scenery uses 10 maps and 4,784,128 pixels. The all-aircraft and field evidence includes native captures, an independent GPU projection oracle, lifecycle checks, a frame-time budget and unchanged flight samples: [VQ-04a evidence](research/visual-quality-implementation/VQ-04a/README.md). A separate shadow-map comparison is still optional.

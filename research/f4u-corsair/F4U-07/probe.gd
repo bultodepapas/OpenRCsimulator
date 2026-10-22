@@ -6,8 +6,8 @@ const Trim := preload("res://physics/trim.gd")
 const FlightModes := preload("res://physics/flight_modes.gd")
 const G := 9.80665
 ## MIL-F-8785C Level 1 bounds as a reference frame, not acceptance: damping ratios carry over; times scale by the
-## Froude factor sqrt(1/5) for a 1/5 model (roll mode 1.0 s, spiral doubling 12 s full size).
-const FROUDE_TIME := 0.4472136
+## Froude factor sqrt(1/4.5) for a 1/4.5 model (roll mode 1.0 s, spiral doubling 12 s full size).
+const FROUDE_TIME := 0.4714045
 const SHORT_PERIOD_ZETA := [0.35, 1.30]
 const PHUGOID_ZETA_MIN := 0.04
 const DUTCH_ROLL_ZETA_MIN := 0.08
@@ -38,7 +38,7 @@ func _initialize() -> void:
 	var inventory_mass := 0.0
 	for part: Dictionary in raw.inventory:
 		inventory_mass += float(part.mass.value)
-	_check("loader keeps identity, span and the inventory flight mass", model.id == "f4u-corsair-250" and absf(float(model.reference.b) - 2.5) < 1e-9
+	_check("loader keeps identity, span and the inventory flight mass", model.id == "f4u-corsair-250" and absf(float(model.reference.b) - 12.5 / 4.5) < 1e-6
 		and absf(float(model.mass_kg) - inventory_mass) < 1e-9, "%s, %.3f m, %.4f kg" % [model.id, model.reference.b, model.mass_kg])
 	var throws: Dictionary = model.controls.throw_rad
 	var v_start := float(raw.start.level_speed.value)
@@ -60,7 +60,8 @@ func _initialize() -> void:
 		_check("power-off flare trim at %.2f Vs inside the elevator throw" % factor, flare.get("ok", false)
 			and absf(float(flare.elevator)) < float(throws.elevator), "alpha %.2f deg, elevator %.2f of %.1f deg" % [rad_to_deg(float(flare.get("alpha", NAN))),
 			rad_to_deg(float(flare.get("elevator", NAN))), rad_to_deg(float(throws.elevator))])
-	# Top speed: the level-trim throttle reaches 1. A plausibility band for 1/5 warbirds on 100-120 cc, not a measurement.
+	# Top speed: the level-trim throttle reaches 1. A plausibility band for giant warbirds, not a measurement (CARF: never
+	# noticeably exceed 200 km/h).
 	var lo := v_start
 	var hi := 90.0
 	var hi_trim: Dictionary = Trim.solve("level", hi, model, G, throws)
@@ -73,7 +74,7 @@ func _initialize() -> void:
 			lo = mid
 		else:
 			hi = mid
-	_check("full-throttle level speed inside the 1/5 warbird band (40-65 m/s)", lo > 40.0 and lo < 65.0, "%.1f m/s (%.0f km/h)" % [lo, lo * 3.6])
+	_check("full-throttle level speed inside the giant-warbird band (40-65 m/s)", lo > 40.0 and lo < 65.0, "%.1f m/s (%.0f km/h)" % [lo, lo * 3.6])
 	# Flight modes of the simulated equations (physics/flight_modes.gd, the same Jacobian test_modes.gd checks).
 	for speed: float in [1.3 * v_stall, v_start, 30.0, 38.0]:
 		var r: Dictionary = FlightModes.analyze(model, speed)

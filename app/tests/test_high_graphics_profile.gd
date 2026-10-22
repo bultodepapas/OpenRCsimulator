@@ -87,6 +87,13 @@ func _near(actual: float, expected: float, tolerance := 1.0e-5) -> bool:
 	return absf(actual - expected) <= tolerance
 
 
+func _expected_sun_energy(engine_shadows: bool, lighting: Dictionary) -> float:
+	var energy := float(lighting.sun_energy)
+	if engine_shadows and RenderingServer.get_current_rendering_method() == "gl_compatibility":
+		energy *= float(lighting.shadow_energy_compat)
+	return energy
+
+
 func _test_water_defaults(native_high: bool) -> void:
 	var water := WaterMaterial.create({})
 	_check("water default follows actual native High", _near(
@@ -103,14 +110,32 @@ func _test_water_defaults(native_high: bool) -> void:
 
 
 func _test_standard_integration() -> void:
-	var env := Atmosphere.environment(Spec.ATMOSPHERE)
-	_check("standard environment keeps SSAO off", not env.ssao_enabled)
-	_check("standard environment uses sky reflections", env.reflected_light_source == Environment.REFLECTION_SOURCE_SKY)
+	var previous_engine_shadows := Atmosphere.engine_shadows
+	Atmosphere.engine_shadows = false
+	var env_off := Atmosphere.environment(Spec.ATMOSPHERE)
+	_check("standard environment keeps SSAO off", not env_off.ssao_enabled)
+	_check("standard environment uses sky reflections", env_off.reflected_light_source == Environment.REFLECTION_SOURCE_SKY)
 	var holder := Node3D.new()
 	root.add_child(holder)
-	var sun := Atmosphere.create_sun(holder, Spec.ATMOSPHERE)
-	_check("standard sun keeps two shadow splits", sun.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS)
-	_check("standard sun keeps default angular size", _near(sun.light_angular_distance, 0.0))
+	var sun_off := Atmosphere.create_sun(holder, Spec.ATMOSPHERE)
+	_check("standard sun with shadows off uses configured energy", not sun_off.shadow_enabled
+		and _near(sun_off.light_energy, _expected_sun_energy(false, Spec.ATMOSPHERE)))
+	_check("standard sun keeps two shadow splits", sun_off.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS)
+	_check("standard sun keeps default angular size", _near(sun_off.light_angular_distance, 0.0))
+	var fog_sun_product_off := env_off.fog_sun_scatter * sun_off.light_energy
+
+	Atmosphere.engine_shadows = true
+	var env_on := Atmosphere.environment(Spec.ATMOSPHERE)
+	var sun_on := Atmosphere.create_sun(holder, Spec.ATMOSPHERE)
+	_check("standard sun with shadows on uses renderer-specific energy", sun_on.shadow_enabled
+		and _near(sun_on.light_energy, _expected_sun_energy(true, Spec.ATMOSPHERE)),
+		"renderer=%s energy=%s" % [RenderingServer.get_current_rendering_method(), sun_on.light_energy])
+	_check("standard sun keeps two shadow splits with shadows on",
+		sun_on.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS)
+	_check("standard sun keeps default angular size with shadows on", _near(sun_on.light_angular_distance, 0.0))
+	_check("standard fog sun product is stable across shadow toggle",
+		_near(env_on.fog_sun_scatter * sun_on.light_energy, fog_sun_product_off, 1.0e-5))
+	Atmosphere.engine_shadows = previous_engine_shadows
 	holder.free()
 
 
@@ -233,17 +258,35 @@ func _test_atmosphere_reapplication(native_forward_plus: bool) -> void:
 	_check("apply_state_to_environment does not mutate flow state", Atmosphere.state == flow_state)
 
 	Atmosphere.state = {}
+	var previous_engine_shadows := Atmosphere.engine_shadows
 	var sun := DirectionalLight3D.new()
 	sun.light_energy = 1.1
 	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
 	sun.directional_shadow_blend_splits = false
 	sun.light_angular_distance = 0.0
+	Atmosphere.engine_shadows = false
+	Atmosphere.update_environment(env, lighting)
 	Atmosphere.update_sun(sun, lighting)
-	_check("update_sun reapplies high four-split shadows", sun.directional_shadow_mode ==
+	_check("update_sun with shadows off uses configured energy", not sun.shadow_enabled
+		and _near(sun.light_energy, _expected_sun_energy(false, lighting)))
+	_check("update_sun retains profile split mode with shadows off", sun.directional_shadow_mode ==
+		(DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS if native_forward_plus else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS))
+	var fog_sun_product_off := env.fog_sun_scatter * sun.light_energy
+
+	Atmosphere.engine_shadows = true
+	Atmosphere.update_environment(env, lighting)
+	Atmosphere.update_sun(sun, lighting)
+	_check("update_sun with shadows on uses renderer-specific energy", sun.shadow_enabled
+		and _near(sun.light_energy, _expected_sun_energy(true, lighting)),
+		"renderer=%s energy=%s" % [RenderingServer.get_current_rendering_method(), sun.light_energy])
+	_check("sun energy × fog scatter is stable across shadow toggle",
+		_near(env.fog_sun_scatter * sun.light_energy, fog_sun_product_off, 1.0e-5))
+	_check("update_sun retains profile split mode with shadows on", sun.directional_shadow_mode ==
 		(DirectionalLight3D.SHADOW_PARALLEL_4_SPLITS if native_forward_plus else DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS))
 	if native_forward_plus:
 		_check("update_sun reapplies high split blending", sun.directional_shadow_blend_splits)
 		_check("update_sun reapplies high angular size", _near(sun.light_angular_distance, 0.53))
 	else:
 		_check("standard update_sun leaves high angular size disabled", _near(sun.light_angular_distance, 0.0))
+	Atmosphere.engine_shadows = previous_engine_shadows
 	sun.free()

@@ -377,7 +377,10 @@ static func haze_linear(lighting: Dictionary = {}) -> Vector3:
 
 ## Compensation for Compatibility's sRGB blending of shadowed lights, used only with engine shadows (L3).
 static func shadow_compensation() -> float:
-	return Spec.ATMOSPHERE.shadow_energy_compat if engine_shadows else 1.0
+	# Forward+ blends lighting in linear HDR: applying the GLES3 correction there
+	# dims even unoccluded surfaces when shadow maps are enabled (VQ-07).
+	return Spec.ATMOSPHERE.shadow_energy_compat \
+		if engine_shadows and RenderingServer.get_current_rendering_method() == "gl_compatibility" else 1.0
 
 
 ## The light's actual energy.

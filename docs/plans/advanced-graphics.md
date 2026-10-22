@@ -38,6 +38,8 @@ Make OpenRC look substantially more convincing while flying: recognizable aircra
 
 Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 3](#priority-and-expected-return) to choose dependency-ready work, and [section 6](#6-measurement-and-acceptance) to decide whether it succeeds.
 
+**High sunlight correction, 2026-10-22:** [VQ-07 renderer-specific shadow compensation](../research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md) removes an unintended 0.85 sunlight factor from Forward+. Enabling shadows on unoccluded GPU panels now changes their sampled RGB by 0/255 instead of 11/255. Standard retains its calibrated factor; paired scene/flow captures and focused regression checks pass within their recorded scope. High promotion, continuous pilot motion, full performance and package qualification remain open.
+
 ## 1. Scope and authority
 
 This plan expands **VQ-07** into reviewable steps and proposes the later High-profile decision. The [global performance/visual plan](global-performance-visual-quality.md) still owns the active Compatibility delivery; its exclusions and budgets remain binding for that delivery. [VQ](../VISUAL-QUALITY-PLAN.md) owns parent-step status. Existing material, landscape, smoke, sky and settings tasks stay in their current homes; they are dependencies, not a second backlog here.

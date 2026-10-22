@@ -1,0 +1,74 @@
+{
+	"capture_only": false,
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"max_channel_delta": 0.0,
+	"passed": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"resolved": true,
+	"samples": [
+		{
+			"colors": [
+				[
+					0.250980406999588,
+					0.227450981736183,
+					0.207843139767647
+				],
+				[
+					0.513725519180298,
+					0.227450981736183,
+					0.0980392172932625
+				],
+				[
+					0.600000023841858,
+					0.545098066329956,
+					0.501960813999176
+				]
+			],
+			"energy": 1.0,
+			"shadows": false
+		},
+		{
+			"colors": [
+				[
+					0.250980406999588,
+					0.227450981736183,
+					0.207843139767647
+				],
+				[
+					0.513725519180298,
+					0.227450981736183,
+					0.0980392172932625
+				],
+				[
+					0.600000023841858,
+					0.545098066329956,
+					0.501960813999176
+				]
+			],
+			"energy": 1.0,
+			"shadows": true
+		}
+	],
+	"tolerance": 0.00784313725490196,
+	"viewport": [
+		512,
+		256
+	]
+}

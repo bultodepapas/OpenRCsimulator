@@ -396,7 +396,9 @@ def full(*v):
 
 
 items = [
-    ("engine Moki S250 with radial mount and collector ring", E["mass_engine_kg"], "manual", E["sources"], [prop_x + 0.12, 0.0, 0.0], [0.22, 0.33, 0.33], "estimated", "crankcase on the thrust line, cylinders just inside the cowl lip (CARF: the engine is barely smaller than the cowl)", "engine_main"),
+    # The loader caps one inventory item at 5 kg; the 5.4 kg engine is split into its core and its mount and exhaust.
+    ("engine Moki S250: crankcase, cylinders, heads, carburettor", E["mass_engine_kg"] - 0.65, "manual", E["sources"] + "; less 0.65 kg for the mount and collector ring (estimated split)", [prop_x + 0.11, 0.0, 0.0], [0.20, 0.33, 0.33], "estimated", "crankcase on the thrust line, cylinders just inside the cowl lip (CARF: the engine is barely smaller than the cowl)", "engine_main"),
+    ("engine Moki S250: cast radial mount and collector ring", 0.65, "estimated", "share of the manual's 5.4 kg (estimated split)", [prop_x + 0.19, 0.0, 0.0], [0.08, 0.30, 0.30], "estimated", "behind the cylinders, ahead of the firewall", "engine_mount_exhaust"),
     ("ignition module, sensor lead and switch", 0.18, "estimated", "Moki manual: separate screened ignition cylinder, mounted away from the engine", [rc_fw + 0.05, 0.0, 0.05], None, "estimated", "behind the firewall", "ignition_module"),
     (f"propeller {PR['name']}", PR["mass_kg"], "estimated", PR["mass_source"], [prop_x, 0.0, 0.0], [0.03, PROP_D, PROP_D], "measured", "propeller plane of the R59 nose (geometry-r59.json)", "propeller_main"),
     ("spinner and hub", 0.15, "estimated", "small aluminium hub cap, as the F4U-1D's", [spinner_back - 0.04, 0.0, 0.0], [0.10, 0.09, 0.09], "measured", "R59 spinner", "spinner_main"),

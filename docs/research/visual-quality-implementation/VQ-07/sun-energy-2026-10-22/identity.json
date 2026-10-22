@@ -1,0 +1,18 @@
+{
+  "baseline_commit": "2904410aae448f345068c2a6052aab27b713a663",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "baseline_runtime_git_blob": "e7285d789d6e7d99bb3643dd1db87f9802fa7a54",
+  "candidate_sha256": {
+    "app/render/atmosphere.gd": "7338450e8901979007ef1d711400ba41c922e04ff45c7eedc92ef034a39371ed",
+    "app/tests/test_atmosphere.gd": "e5e062e240532c1101e957360f9499122d3ac1a8a2b3c7faa295ad5b3abc3519",
+    "app/tests/test_high_graphics_profile.gd": "a94e10b66dbbe68d902930cf233a13a4bf5eb659c3f24362c1abdf87f61a36f6",
+    "tools/graphics/test_shadow_energy.gd": "ac27a6484310d39625f359f9d09d1da5a98edada7f0db589eeca362251c5de0f",
+    "tools/graphics/capture.gd": "1e694a3e1d8eff0a6d445202172addeb4190e21b56882ca70a85a3e70b494bd4",
+    "tools/graphics/flow_probe.gd": "cafafa4bbe239081e4bc140750ddd30ba45f877f2256445fa241b03cc7720c11",
+    "app/project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  "baseline_runtime_eol": "CRLF checkout of LF Git blob",
+  "unrelated_changes": "Concurrent F4U-07 research edits were observed during verification and left untouched; fixtures use P-51 and Ugly Stik.",
+  "scope": "Windows editor binary; native graphics regression and short smoke checks, no exported-package or performance qualification"
+}
