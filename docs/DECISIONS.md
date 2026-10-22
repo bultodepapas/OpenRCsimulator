@@ -771,3 +771,22 @@ Recalibrate the totals when DT-01a measures the M1-class floor. Apply the
 reviewed GPU-compressed texture policy to the downloaded trees, understory and
 `Leaves.png`.
 [Evidence](research/landscape-upgrade/LU-34/README.md).
+
+### 2026-10-21 — Beech and young oak at the club; LandscapeLab foliage keeps its crowns at range (L6c-R1)
+
+Add the downloaded LandscapeLab Fagus (beech) to two mature club slots and Quercus 2
+(young open-grown oak) to two sapling slots, under the same pinned revision and CC BY-SA 4.0
+terms. Lower their crown proxies to their lowest leaf triangles and bound their sway.
+A visual audit then showed the new crowns bare from the air, from three measured causes.
+Give LandscapeLab batches a `lod_bias` equal to their largest instance scale, because MultiMesh
+LOD ignores instance scale. Keep only foliage LOD levels that retain at least 25% of the cards,
+because generated LODs delete whole leaf cards. Sample tree-wind foliage albedo no coarser than
+mip 6, the last level at which every LandscapeLab leaf atlas keeps its alpha coverage. Keep
+mipmaps instead of unmipped atlases (speckle) or un-premultiplied colour (over-bright). The
+clubhouse maple keeps its default LOD. Offset the new texture memory by GPU-compressing the
+Quaternius `Flowers.png` atlas. Ship a four-tree library notice and keep the Quercus and Pine
+notice that the far-tree atlas pins. The two species cost +93% close-vegetation primitives with
+readable crowns, against LU-34's +50% allowance, which assumed the scale-blind LOD. Allocate
+their measured cost +10% and raise the pilot total from 450,000 to 455,000; the pilot growth
+reserve is spent, so further pilot-view growth needs a matching reduction.
+[Evidence](research/visual-quality-implementation/L6c/species-variety/README.md).

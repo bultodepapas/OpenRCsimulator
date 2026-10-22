@@ -55,12 +55,14 @@ For reference, the 2026-10-20 RTX 3090 flights measured about 1.6–1.9 ms viewp
 | Drawn cost per view class | [`scene_budget.json`](../../../../tools/scenery/scene_budget.json), [`budget.sh`](../../../../tools/scenery/budget.sh) (native) | Worst view per class ≤ pilot 450k primitives / 360 draws, ground 525k / 395, aerial 465k / 405, shadow pass included. |
 | Subsystem allocations | same | Each subsystem's worst drawn cost per class ≤ its allocation; unlisted new subsystems get 1,000 primitives / 2 draws until budgeted. |
 | Shadow casters | same | Only close trees, lake and two night props cast real-time shadows; ≤ 160,000 caster triangles. |
-| Full-detail meshes | same | A visible mesh over 5,000 triangles without generated LODs fails unless listed. The 19 current meshes are recorded debt. |
+| Full-detail meshes | same | A visible mesh with more than 5,000 triangles in surfaces without generated LODs fails unless listed. The 19 LU-34 meshes are recorded debt; L6c-R1 adds the deliberately full-detail Quercus foliage. |
 | Texture memory | same | Renderer texture estimate ≤ 495 MiB (489 measured): no growth without a matching reduction. |
 | Source geometry | [`scene_source_budget.gd`](../../../../app/tests/scene_source_budget.gd), headless tests | Per-subsystem allowances replace the 725k pool: people/cars 380k, fleet 350k, cells 175k, close vegetation 150k, botanical 90k, pit shelters 13k, airfield detail 5k, other 8k. |
 | Build time | `test_scenery_build.gd` (unchanged) | Warm scene construction ≤ 800 ms. |
 
 **Why these numbers.** Class totals are the worst measured view +10%, a reserve that new content may use before a reduction is required. Subsystem allocations are each measured maximum +10%. Close vegetation carries a declared +50% primitive / +12 draw growth allowance, about four more downloaded tree species. A new species adds one batch per surface in the visible and shadow passes. Its source allowance rises from 101,167 to 150,000 for the same reason. People, cells and other subsystems keep only small margins, so their growth needs a recorded decision. Source allowances still bound vertex memory and load work, which they do predict.
+
+**Revision, L6c-R1.** Two downloaded species with crowns that stay full at range cost close vegetation +93% drawn primitives. The +50% allowance had assumed the scale-blind LOD that left them bare. Close vegetation is now allocated its measured cost +10% (pilot 133,000, ground 140,000), and the pilot total is 455,000 (worst view 451,503). The pilot growth reserve is spent, so further pilot-view growth needs a matching reduction. The attribution now counts full-detail triangles per surface. [Evidence](../../visual-quality-implementation/L6c/species-variety/README.md#scene-budget).
 
 The values are provisional until DT-01a measures frame time on the named floor hardware. Then the class totals scale to that headroom, and the reductions below lower them. A budget that freezes today's draw-call peak is not a recommendation: the fleet and tiny-draw subsystems are the first reduction targets.
 

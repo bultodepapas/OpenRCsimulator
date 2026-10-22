@@ -43,6 +43,7 @@ func _initialize() -> void:
 	_test_wind_modes_and_material_preservation()
 	_test_tree_wind_qualification()
 	_test_tree_wind_stays_inside_collision_proxies()
+	_test_world_lod_keeps_foliage()
 	_test_maple_source_materials()
 	_test_oak_blend_fails_closed_to_static_source_material()
 	_test_tree_wind_transform_guard()
@@ -338,6 +339,9 @@ func _check_tree_wind_material(asset_id: String, surface_index: int, wind_materi
 		bool(wind_material.get_shader_parameter("use_alpha_scissor")) == scissor
 		and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
 			source_material.alpha_scissor_threshold))
+	var max_mip: Variant = wind_material.get_shader_parameter("alpha_scissor_max_mip")
+	_check(label + " clamps only foliage to the last coverage-preserving mip",
+		max_mip is float and is_equal_approx(max_mip, ImportedVegetation.FOLIAGE_ALPHA_MAX_MIP if scissor else 1000.0))
 	_check(label + " bends in its own source-part height frame",
 		is_equal_approx(float(wind_material.get_shader_parameter("plant_height")), part_bounds.size.y)
 		and is_equal_approx(float(wind_material.get_shader_parameter("plant_base_y")), part_bounds.position.y))
@@ -531,6 +535,89 @@ func _test_tree_wind_stays_inside_collision_proxies() -> void:
 			asset_id, crown_escape_m], crown_escape_m <= 0.0)
 		_check("%s trunk-band sway stays within the trunk capsule's wind margin (%.4f m)" % [
 			asset_id, trunk_band_sway_m], trunk_band_sway_m <= margin)
+
+
+## L6c-R1: MultiMesh LOD ignored the ~9.5x instance scale of the 1 m Fagus source, and generated
+## LODs dropped whole leaf cards, so beech crowns turned bare from about 60 m. LandscapeLab batches
+## now bias LOD by their largest instance scale and drop only the near-empty foliage levels.
+func _test_world_lod_keeps_foliage() -> void:
+	var placements := {
+		"landscapelab_fagus": [9.4, 10.2],
+		"landscapelab_quercus2": [3.2, 4.8],
+		"landscapelab_quercus": [9.5, 10.1],
+		"landscapelab_pine": [3.3, 10.3],
+		"maple_tree": [14.0],
+	}
+	for tree_wind: bool in [true, false]:
+		var batches := {}
+		var expected_bias := {}
+		for asset_id: String in placements:
+			var heights: Array = placements[asset_id]
+			for index in range(heights.size()):
+				var placement := ImportedVegetation.fit_to_height(asset_id, float(heights[index]),
+					Transform3D(Basis(Vector3.UP, 0.4 * float(index)), Vector3(float(index) * 25.0, 0.0, 40.0 * float(batches.size()))))
+				ImportedVegetation.queue(batches, asset_id, placement, 300 + index)
+				expected_bias[asset_id] = maxf(float(expected_bias.get(asset_id, 0.0)), placement.basis.get_scale().x)
+		var root := ImportedVegetation.build(batches, false, {"tree_wind": tree_wind, "tree_cell_size_m": 0})
+		var mode := "tree wind" if tree_wind else "static"
+		for child in root.get_children():
+			var instance := child as MultiMeshInstance3D
+			var asset_id := str(instance.name).get_slice("_Part_", 0)
+			var part_index := int(str(instance.name).get_slice("_Part_", 1).get_slice("_", 0))
+			var source_part: Dictionary = ImportedVegetation.get_parts(asset_id)[part_index]
+			var source_mesh: Mesh = source_part.mesh
+			var draw_mesh: Mesh = instance.multimesh.mesh
+			if asset_id == "maple_tree":
+				_check("%s: the protected Maple keeps default LOD and its source LOD chain" % mode,
+					is_equal_approx(instance.lod_bias, 1.0) and _lod_counts(draw_mesh) == _lod_counts(source_mesh))
+				continue
+			_check("%s: %s LOD bias is its largest instance scale (%.3f)" % [mode, asset_id, instance.lod_bias],
+				is_equal_approx(instance.lod_bias, float(expected_bias[asset_id])))
+			var source_materials: Array = source_part.get("materials", [])
+			for surface_index in range(source_mesh.get_surface_count()):
+				var source_info := RenderingServer.mesh_get_surface(source_mesh.get_rid(), surface_index)
+				var draw_info := RenderingServer.mesh_get_surface(draw_mesh.get_rid(), surface_index)
+				var foliage := (source_materials[surface_index] as BaseMaterial3D).transparency \
+					== BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				_check("%s: %s surface %d keeps its exact vertex and index data" % [mode, asset_id, surface_index],
+					draw_info.get("vertex_data") == source_info.get("vertex_data")
+					and draw_info.get("attribute_data") == source_info.get("attribute_data")
+					and draw_info.get("index_data") == source_info.get("index_data"))
+				var draw_lods: Array = draw_info.get("lods", [])
+				var source_lods: Array = source_info.get("lods", [])
+				if foliage:
+					var dense: Array = []
+					var dropped := 0
+					for lod: Dictionary in source_lods:
+						if _lod_triangle_share(source_info, lod.index_data) >= ImportedVegetation.FOLIAGE_LOD_MIN_FRACTION:
+							dense.append(lod)
+						else:
+							dropped += 1
+					_check("%s: %s foliage surface %d keeps only its dense LOD levels (%d dropped)" % [
+						mode, asset_id, surface_index, dropped], draw_lods == dense and dropped > 0)
+				else:
+					_check("%s: %s bark surface %d keeps its generated LOD chain" % [mode, asset_id, surface_index],
+						draw_lods.size() == source_lods.size() and not draw_lods.is_empty())
+			var shadow_mesh := (draw_mesh as ArrayMesh).shadow_mesh
+			var source_shadow := (source_mesh as ArrayMesh).shadow_mesh
+			_check("%s: %s shadow mesh drops the same sparse foliage levels" % [mode, asset_id],
+				shadow_mesh != null and shadow_mesh != source_shadow
+				and _lod_counts(shadow_mesh) == _lod_counts(draw_mesh))
+		root.free()
+	_check("the imported source meshes keep their generated foliage LODs",
+		_lod_counts(ImportedVegetation.get_parts("landscapelab_fagus")[0].mesh).min() > 0)
+
+
+func _lod_triangle_share(surface_info: Dictionary, lod_indices: PackedByteArray) -> float:
+	var bytes_per_index := float((surface_info.index_data as PackedByteArray).size()) / float(surface_info.index_count)
+	return float(lod_indices.size()) / bytes_per_index / float(surface_info.index_count)
+
+
+func _lod_counts(mesh: Mesh) -> Array[int]:
+	var counts: Array[int] = []
+	for surface_index in range(mesh.get_surface_count()):
+		counts.append((RenderingServer.mesh_get_surface(mesh.get_rid(), surface_index).get("lods", []) as Array).size())
+	return counts
 
 
 func _test_maple_source_materials() -> void:

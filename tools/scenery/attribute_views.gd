@@ -181,19 +181,26 @@ func _geometry(nodes: Array) -> Dictionary:
 			if mesh == null:
 				continue
 			var triangles := count * Population.triangles(mesh)
+			# Surfaces without generated LODs draw at full detail (a tree's foliage may, its bark not).
+			var full_detail := count * _full_detail_triangles(mesh)
 			result.source_triangles += triangles
-			if _has_lods(mesh):
-				result.lod_triangles += triangles
-			else:
-				result.full_detail_triangles += triangles
-				if triangles > 5000:
-					(result.full_detail_meshes_over_5000 as Array).append("%s:%d" % [current.name, triangles])
+			result.lod_triangles += triangles - full_detail
+			result.full_detail_triangles += full_detail
+			if full_detail > 5000:
+				(result.full_detail_meshes_over_5000 as Array).append("%s:%d" % [current.name, full_detail])
 			if (current as GeometryInstance3D).cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 				result.shadow_caster_triangles += triangles
 	return result
 
 
-func _has_lods(mesh: Mesh) -> bool:
-	if not mesh is ArrayMesh or mesh.get_surface_count() == 0:
-		return false
-	return not (RenderingServer.mesh_get_surface(mesh.get_rid(), 0).get("lods", []) as Array).is_empty()
+func _full_detail_triangles(mesh: Mesh) -> int:
+	if not mesh is ArrayMesh:
+		return Population.triangles(mesh)
+	var array_mesh := mesh as ArrayMesh
+	var total := 0
+	for surface in array_mesh.get_surface_count():
+		if not (RenderingServer.mesh_get_surface(mesh.get_rid(), surface).get("lods", []) as Array).is_empty():
+			continue
+		var index_count := array_mesh.surface_get_array_index_len(surface)
+		total += (index_count if index_count > 0 else array_mesh.surface_get_array_len(surface)) / 3
+	return total

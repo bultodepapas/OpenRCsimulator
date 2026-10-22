@@ -1,11 +1,11 @@
 {
  "format": "openrc-scene-budget v1",
- "step": "LU-34",
+ "step": "LU-34, revised by L6c-R1",
  "viewport": [
   1280,
   720
  ],
- "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values.",
+ "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values. L6c-R1 (2026-10-21) revised close vegetation to its measured cost +10% after two downloaded species and readable distant LandscapeLab crowns (120,759 pilot / 126,699 ground drawn primitives), and the pilot total to 455,000 (worst view 451,503): the pilot growth reserve is spent, so further pilot-view growth needs a matching reduction.",
  "classes": {
   "aerial": {
    "max_primitives": 465000,
@@ -16,7 +16,7 @@
    "max_draws": 395
   },
   "pilot": {
-   "max_primitives": 450000,
+   "max_primitives": 455000,
    "max_draws": 360
   }
  },
@@ -237,11 +237,11 @@
     "draws": 42
    },
    "ground": {
-    "primitives": 103000,
+    "primitives": 140000,
     "draws": 49
    },
    "pilot": {
-    "primitives": 94000,
+    "primitives": 133000,
     "draws": 44
    }
   },
@@ -471,9 +471,12 @@
    "cell_1000000_1003000",
    "cell_1000000_1004000",
    "cell_1002000_1001000"
+  ],
+  "scenery_ImportedVegetationBatches": [
+   "landscapelab_quercus_Part_00"
   ]
  },
- "full_detail_note": "Visible meshes over 5,000 triangles without generated LODs draw at full detail whenever visible. The listed 2026-10-21 meshes are recorded debt; new ones need LODs or an entry here.",
+ "full_detail_note": "Visible meshes over 5,000 triangles without generated LODs draw at full detail whenever visible. The listed 2026-10-21 meshes are recorded debt; new ones need LODs or an entry here. Counted per surface. L6c-R1: Quercus foliage keeps full detail because its only generated leaf level keeps 10% of the cards (2,636 triangles per tree); its bark keeps generated LODs.",
  "max_texture_mib": 495,
- "texture_note": "Renderer texture estimate after the first view (489 MiB measured 2026-10-21, including render targets). No growth without a matching reduction; LU-34 lists about 204 MiB of uncompressed material textures that GPU compression would recover."
+ "texture_note": "Renderer texture estimate after the first view (489 MiB measured at LU-34 and 473 MiB after L6c-R1 and other tracks' changes, 2026-10-21; includes about 39 MiB of 1280x720 render targets). No growth without a matching reduction; LU-34 lists about 204 MiB of uncompressed material textures that GPU compression would recover."
 }
