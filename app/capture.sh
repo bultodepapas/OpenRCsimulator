@@ -171,7 +171,7 @@ rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/capt
 "$VPY" "$HERE/../tools/ground/check_windsock.py" --cue flightline_barrier --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10c"
 "$VPY" "$HERE/../tools/ground/check_windsock.py" --cue contact_shadows --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l10d"
 # L11a: grass budget, seam, wind wrap and reuse of existing opt-in scenery flowers.
-"$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a"
+"$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a" --timeout 600
 "$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$HERE/captures/l11a/candidate-repeat-1" --out "$HERE/captures/l11a/seam-summary.json" --self-test
 # L15b: rooted tree sway, calm parity, fixed-clock repeats and GPU geometry readback.
 "$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15b" --timeout 600
