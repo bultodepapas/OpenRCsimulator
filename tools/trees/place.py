@@ -81,6 +81,19 @@ GROVE_ATTEMPTS = 600000
 # these sectors and no other crown enters them, so landmark azimuths and scenery stay unchanged.
 SKYLINE_ANCHORS_DEG = ((64.0, 92.0), (254.0, 268.0))
 SCENERY_KEEPOUT_M = 22.0  # around every committed scenery placement beyond 200 m
+# L7-R4 groves-v2 keeps the groves-v1 near ring and compacts the twelve habitat-v1 far patches,
+# at their centres and orientations, into woods at near-closed canopy density.
+FAR_GROVE_SEED = 620102
+FAR_GROVE_AREA_PER_TREE_M2 = 220.0
+FAR_GROVE_GROWTH_STEPS = 30  # widen a wood by 8% per step only when constraints leave too little room
+# Fixed inputs that do not depend on tree positions: bake_countryside.py's farm boxes (it asserts
+# 10 m tree clearance) and road centrelines, the woodland-edge floor templates, and the
+# botanical farm crops/shrubs, which nothing else keeps clear of trees.
+COUNTRYSIDE_FARM_BOXES_NE_M = ((630.0, 280.0, 780.0, 430.0), (470.0, 380.0, 550.0, 540.0))
+FARM_BOX_MARGIN_M = 14.0
+ROAD_TREE_MARGIN_M = 9.0  # beyond the road half-width; test_countryside.py requires more than 3 m
+WOODLAND_EDGE_KEEPOUT_M = 30.0
+FARM_HABITAT_KEEPOUT_NE_M = ((561.0, 335.0, 25.0), (554.0, 315.0, 12.0), (573.0, 354.0, 12.0))
 # render/treeline.gd crown half-widths at alpha 0.5 times the card frame (Quercus, maple, pine).
 CARD_CROWN_FRACTIONS = (0.3701171875 * 1.125001, 0.3017578125 * 1.125001, 0.1669921875 * 1.125001)
 
@@ -725,16 +738,117 @@ def generate_grove_near(field: dict[str, Any], scenery_path: Path) -> tuple[list
     return near, groups
 
 
+class _FarGroveSite:
+    """Far-ring constraints; every input is fixed independently of tree positions."""
+
+    def __init__(self, field: dict[str, Any], scenery_path: Path, countryside_path: Path, woodland_path: Path) -> None:
+        self.pilot_north = float(field["pilot"]["north"]["value"])
+        self.strips = [s for s in field["surfaces"] if s["type"] in ("runway", "mown")]
+        self.keepout = [(n, e, SCENERY_KEEPOUT_M) for n, e in _scenery_keepout(scenery_path)]
+        woodland = json.loads(woodland_path.read_text(encoding="utf-8"))
+        self.keepout += [(float(p["floor_center_ne_m"][0]), float(p["floor_center_ne_m"][1]), WOODLAND_EDGE_KEEPOUT_M)
+                         for p in woodland["patches"]]
+        self.keepout += list(FARM_HABITAT_KEEPOUT_NE_M)
+        countryside = json.loads(countryside_path.read_text(encoding="utf-8"))
+        # Road segments indexed by every 64 m cell their clearance box overlaps.
+        self.road_cells: dict[tuple[int, int], list[tuple[float, float, float, float, float]]] = {}
+        for road in countryside["roads"]:
+            clearance = float(road["width_m"]) / 2.0 + ROAD_TREE_MARGIN_M
+            line = road["centerline_ne_m"]
+            for start, end in zip(line, line[1:]):
+                segment = (float(start[0]), float(start[1]), float(end[0]), float(end[1]), clearance)
+                for cell_north in range(math.floor((min(start[0], end[0]) - clearance) / 64.0),
+                                        math.floor((max(start[0], end[0]) + clearance) / 64.0) + 1):
+                    for cell_east in range(math.floor((min(start[1], end[1]) - clearance) / 64.0),
+                                           math.floor((max(start[1], end[1]) + clearance) / 64.0) + 1):
+                        self.road_cells.setdefault((cell_north, cell_east), []).append(segment)
+
+    def _near_road(self, north: float, east: float) -> bool:
+        for n0, e0, n1, e1, clearance in self.road_cells.get((math.floor(north / 64.0), math.floor(east / 64.0)), ()):
+            dn, de = n1 - n0, e1 - e0
+            length2 = dn * dn + de * de
+            t = 0.0 if length2 == 0.0 else max(0.0, min(1.0, ((north - n0) * dn + (east - e0) * de) / length2))
+            if math.hypot(north - n0 - t * dn, east - e0 - t * de) < clearance:
+                return True
+        return False
+
+    def allowed(self, north: float, east: float) -> bool:
+        radius = math.hypot(north, east)
+        # Keep clear of the 600 m CPU/shader near-far boundary.
+        if not FAR_RADIUS_MIN_M + 1.5 <= radius <= FAR_RADIUS_MAX_M:
+            return False
+        if _inside_protected_gap(north, east) or _in_skyline_anchor(north, east, CROWN_RADIUS_M):
+            return False
+        if _inside_flight_corridor(north, self.pilot_north, self.strips, 0.0):
+            return False
+        for n0, e0, n1, e1 in COUNTRYSIDE_FARM_BOXES_NE_M:
+            if n0 - FARM_BOX_MARGIN_M < north < n1 + FARM_BOX_MARGIN_M and e0 - FARM_BOX_MARGIN_M < east < e1 + FARM_BOX_MARGIN_M:
+                return False
+        if any((north - kn) ** 2 + (east - ke) ** 2 < kr * kr for kn, ke, kr in self.keepout):
+            return False
+        return not self._near_road(north, east)
+
+
+def generate_grove_far(
+    field: dict[str, Any],
+    near_points: list[list[float | int]],
+    scenery_path: Path,
+    countryside_path: Path,
+    woodland_path: Path,
+) -> tuple[list[list[float | int]], list[dict[str, Any]]]:
+    """1,200 far trees: frozen habitat-v1 trees in the skyline anchors, then the twelve compacted woods."""
+    rng = random.Random(FAR_GROVE_SEED)
+    site = _FarGroveSite(field, scenery_path, countryside_path, woodland_path)
+    canopy = _Canopy()
+    for north, east, _ in near_points:
+        canopy.add(north, east, _card_crown_radius(north, east))
+    habitat_far, patches = generate_habitat_far(field)
+    far = [list(point) for point in habitat_far if _in_skyline_anchor(point[0], point[1])]
+    for point in far:
+        canopy.add(point[0], point[1], _card_crown_radius(point[0], point[1]))
+    groups: list[dict[str, Any]] = [{"kind": "skyline-anchor", "count": len(far)}]
+    budget = [int(patch["count"]) for patch in patches]
+    counts = [round(count * (FAR_COUNT - len(far)) / sum(budget)) for count in budget]
+    counts[-1] += FAR_COUNT - len(far) - sum(counts)
+    for patch, count in zip(patches, counts):
+        ratio = float(patch["semi_major_m"]) / float(patch["semi_minor_m"])
+        semi_minor = math.sqrt(count * FAR_GROVE_AREA_PER_TREE_M2 / math.pi / ratio)
+        dominant = rng.choice((0, 0, 1, 1, 2))
+        center = (float(patch["north_m"]), float(patch["east_m"]))
+        for step in range(FAR_GROVE_GROWTH_STEPS):
+            grow = 1.0 + 0.08 * step
+            points = _make_grove(rng, site, canopy, center, count, semi_minor * ratio * grow, semi_minor * grow,
+                                 float(patch["orientation_rad"]), dominant)
+            if points is not None:
+                break
+        else:
+            raise ValueError(f"L7-R4 far wood at {center} exhausted its bounded growth steps")
+        far += points
+        share = sum(tree_identity(n, e)[0] == dominant for n, e, _ in points) / count
+        groups.append({"kind": "wood", "count": count, "north_m": center[0], "east_m": center[1],
+                       "semi_major_m": round(semi_minor * ratio * grow, 2), "semi_minor_m": round(semi_minor * grow, 2),
+                       "dominant_species": dominant, "dominant_share": round(share, 3)})
+    if len(far) != FAR_COUNT:
+        raise ValueError("L7-R4 far woods do not match the 1,200-tree far budget")
+    far.sort()
+    return far, groups
+
+
 PRODUCTION_SCENERY = Path(__file__).resolve().parents[2] / "app/data/scenery/default.json"
+PRODUCTION_COUNTRYSIDE = Path(__file__).resolve().parents[2] / "app/data/scenery/countryside.json"
+PRODUCTION_WOODLAND_EDGES = Path(__file__).resolve().parents[2] / "app/data/woodland_edges.json"
 
 
 def generate(
     field: dict[str, Any],
-    recipe: str = "groves-v1",
+    recipe: str = "groves-v2",
     scenery_path: Path = PRODUCTION_SCENERY,
+    countryside_path: Path = PRODUCTION_COUNTRYSIDE,
+    woodland_path: Path = PRODUCTION_WOODLAND_EDGES,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     near_groups: list[dict[str, Any]] = []
-    if recipe == "groves-v1":
+    far_groups: list[dict[str, Any]] = []
+    if recipe in ("groves-v1", "groves-v2"):
         near_points, near_groups = generate_grove_near(field, scenery_path)
     else:
         near_points = generate_near(field)
@@ -742,6 +856,9 @@ def generate(
         far_points, patches = generate_far(field)
     elif recipe in ("habitat-v1", "groves-v1"):
         far_points, patches = generate_habitat_far(field)
+    elif recipe == "groves-v2":
+        far_points, far_groups = generate_grove_far(field, near_points, scenery_path, countryside_path, woodland_path)
+        _, patches = generate_habitat_far(field)
     else:
         raise ValueError(f"Unknown placement recipe: {recipe}")
     points = near_points + far_points
@@ -770,11 +887,11 @@ def generate(
         near_hash = _positions_sha256(near_points)
         far_hash = _positions_sha256(far_points)
         combined_hash = _positions_sha256(points)
-        if recipe == "groves-v1":
+        if recipe in ("groves-v1", "groves-v2"):
             kinds = {kind: sum(g["count"] for g in near_groups if g["kind"] == kind)
                      for kind in ("skyline-anchor", "wood", "hedgerow", "solitary")}
             near_text = (
-                f"L7-R3 groves-v1 tools/trees/place.py. Estimated visual composition, not surveyed "
+                f"L7-R3 {recipe} tools/trees/place.py. Estimated visual composition, not surveyed "
                 f"or an ecological simulation: 480 near trees from seed {GROVE_SEED} in "
                 f"{sum(1 for g in near_groups if g['kind'] == 'wood')} woods ({kinds['wood']} trees), "
                 f"{HEDGEROW_LINES} hedgerow lines ({kinds['hedgerow']}), {kinds['solitary']} solitary trees "
@@ -786,10 +903,21 @@ def generate(
                 "L7-R1 habitat-v1 tools/trees/place.py. Estimated visual composition, not surveyed "
                 f"or an ecological simulation: 480 frozen near trees from seed {NEAR_SEED}, plus "
             )
+        if recipe == "groves-v2":
+            far_text = (
+                f"L7-R4 {len(far_points)} far trees from seed {FAR_GROVE_SEED}: the {len(patches)} habitat-v1 "
+                f"patch centres and orientations compacted to woods at {FAR_GROVE_AREA_PER_TREE_M2:.0f} m2 per tree "
+                f"with counts {','.join(str(g['count']) for g in far_groups if g['kind'] == 'wood')}, plus "
+                f"{far_groups[0]['count']} frozen habitat-v1 trees in the landmark skyline sectors; clear of the "
+                "countryside roads, farm boxes, woodland-edge floors and farm habitats; "
+            )
+        else:
+            far_text = (
+                f"{len(far_points)} far trees from seed {HABITAT_FAR_SEED} in {len(patches)} "
+                f"irregular anisotropic patches with counts {','.join(map(str, patch_counts))}; "
+            )
         source = (
-            near_text + 
-            f"{len(far_points)} far trees from seed {HABITAT_FAR_SEED} in {len(patches)} "
-            f"irregular anisotropic patches with counts {','.join(map(str, patch_counts))}; "
+            near_text + far_text +
             f"far bounds N={far_bounds['north_min_m']:.2f}..{far_bounds['north_max_m']:.2f} m, "
             f"E={far_bounds['east_min_m']:.2f}..{far_bounds['east_max_m']:.2f} m; 0.25 m grid. "
             f"Near, far and combined position SHA-256: {near_hash}, {far_hash}, {combined_hash}. "
@@ -809,8 +937,10 @@ def generate(
             "patch_counts": patch_counts,
             "patches": patches,
         }
-        if recipe == "groves-v1":
+        if recipe in ("groves-v1", "groves-v2"):
             return_manifest["near_groups"] = near_groups
+        if recipe == "groves-v2":
+            return_manifest["far_groups"] = far_groups
     return {
         "id": "treeline",
         "type": "treeline",
@@ -829,9 +959,9 @@ def main() -> None:
     parser.add_argument("--field", type=Path, help="field JSON to verify or update")
     parser.add_argument(
         "--recipe",
-        choices=("existing", "habitat-v1", "groves-v1"),
-        default="groves-v1",
-        help="L7-R3 grove layout (default), the L7-R1 habitat layout or the historical existing layout",
+        choices=("existing", "habitat-v1", "groves-v1", "groves-v2"),
+        default="groves-v2",
+        help="L7-R4 groves with far woods (default), L7-R3 near groves, the L7-R1 habitat layout or the historical existing layout",
     )
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
@@ -847,8 +977,8 @@ def main() -> None:
         field["objects"] = objects
         # .gitattributes keeps this file CRLF; write those bytes on every OS so raw-byte pins agree.
         field_path.write_text(json.dumps(field, indent=2) + "\n", encoding="utf-8", newline="\r\n")
-    seed_far = FAR_SEED if args.recipe == "existing" else HABITAT_FAR_SEED
-    seed_near = GROVE_SEED if args.recipe == "groves-v1" else NEAR_SEED
+    seed_far = {"existing": FAR_SEED, "groves-v2": FAR_GROVE_SEED}.get(args.recipe, HABITAT_FAR_SEED)
+    seed_near = GROVE_SEED if args.recipe in ("groves-v1", "groves-v2") else NEAR_SEED
     print(json.dumps({"seed_near": seed_near, "seed_far": seed_far, **manifest}, indent=2))
 
 

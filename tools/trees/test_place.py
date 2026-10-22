@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from functools import lru_cache
 import hashlib
 import json
 import math
@@ -21,6 +22,8 @@ from place import (
     FAR_RADIUS_MAX_M,
     FAR_RADIUS_MIN_M,
     FAR_TREES_PER_CLUSTER,
+    COUNTRYSIDE_FARM_BOXES_NE_M,
+    FAR_GROVE_SEED,
     GAPS,
     GROVE_SEED,
     HABITAT_FAR_COUNT,
@@ -35,10 +38,15 @@ from place import (
     _card_crown_radius,
     _in_skyline_anchor,
     _inside_protected_gap,
+    _FarGroveSite,
     _scenery_keepout,
     _inside_flight_corridor,
     _positions_sha256,
+    PRODUCTION_COUNTRYSIDE,
+    PRODUCTION_SCENERY,
+    PRODUCTION_WOODLAND_EDGES,
     generate,
+    generate_habitat_far,
     generate_near,
     tree_identity,
 )
@@ -48,6 +56,12 @@ ROOT = Path(__file__).resolve().parents[2]
 FIELD_PATH = ROOT / "app/data/fields/default.json"
 PLACE_SCRIPT = ROOT / "tools/trees/place.py"
 HABITAT_TRIAL_ROOT = ROOT / "tmp/tree-quality-implementation"
+
+
+@lru_cache(maxsize=None)
+def _generated(recipe: str) -> tuple[dict, dict]:
+    """One generation per recipe for the read-only tests; determinism tests regenerate."""
+    return generate(json.loads(FIELD_PATH.read_bytes()), recipe)
 
 
 def _sector(north: float, east: float) -> int:
@@ -230,7 +244,7 @@ class HabitatRecipeTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(default_check.returncode, 0, default_check.stderr)
-        self.assertEqual(json.loads(default_check.stdout)["recipe"], "groves-v1")
+        self.assertEqual(json.loads(default_check.stdout)["recipe"], "groves-v2")
 
         # The committed field is groves-v1, so the habitat-v1 reference no longer matches it.
         explicit_habitat_check = subprocess.run(
@@ -271,26 +285,27 @@ class HabitatRecipeTests(unittest.TestCase):
 
 
 class GroveRecipeTests(unittest.TestCase):
-    """L7-R3 groves-v1: the committed default composition."""
+    """L7-R3 near groves, committed through the groves-v2 default."""
 
     @classmethod
     def setUpClass(cls) -> None:
         cls.field_bytes = FIELD_PATH.read_bytes()
         cls.field = json.loads(cls.field_bytes)
-        cls.object_data, cls.manifest = generate(cls.field)
+        cls.object_data, cls.manifest = _generated("groves-v2")
         cls.points = cls.object_data["positions"]["value"]
         cls.near = cls.points[:NEAR_COUNT]
         cls.far = cls.points[NEAR_COUNT:]
-        cls.habitat_object, cls.habitat_manifest = generate(cls.field, "habitat-v1")
+        cls.v1_object, cls.v1_manifest = _generated("groves-v1")
 
-    def test_committed_field_is_groves_with_the_same_counts_and_far_ring(self) -> None:
+    def test_committed_field_is_groves_v2_with_the_v1_near_ring_and_same_counts(self) -> None:
         self.assertEqual(self.field["objects"], [self.object_data])
-        self.assertEqual(self.manifest["recipe"], "groves-v1")
-        self.assertEqual(GROVE_SEED, 620101)
+        self.assertEqual(self.manifest["recipe"], "groves-v2")
+        self.assertEqual((GROVE_SEED, FAR_GROVE_SEED), (620101, 620102))
         self.assertEqual((len(self.near), len(self.far), len(self.points)), (NEAR_COUNT, HABITAT_FAR_COUNT, 1680))
-        self.assertEqual(self.far, self.habitat_object["positions"]["value"][NEAR_COUNT:])
-        self.assertEqual(self.manifest["far_positions_sha256"], self.habitat_manifest["far_positions_sha256"])
-        self.assertIn("L7-R3 groves-v1", self.object_data["positions"]["source"])
+        self.assertEqual(self.near, self.v1_object["positions"]["value"][:NEAR_COUNT])
+        self.assertEqual(self.manifest["near_groups"], self.v1_manifest["near_groups"])
+        self.assertIn("L7-R3 groves-v2", self.object_data["positions"]["source"])
+        self.assertIn("L7-R4", self.object_data["positions"]["source"])
         self.assertIn(self.manifest["positions_sha256"], self.object_data["positions"]["source"])
         # .gitattributes keeps the field CRLF; the generator writes those bytes on every OS.
         self.assertNotIn(b"\n", self.field_bytes.replace(b"\r\n", b""))
@@ -344,6 +359,52 @@ class GroveRecipeTests(unittest.TestCase):
         second_object, second_manifest = generate(self.field)
         self.assertEqual(self.object_data, second_object)
         self.assertEqual(self.manifest, second_manifest)
+        # The manifest includes far_groups, so this also covers the L7-R4 far woods.
+
+
+class FarGroveTests(unittest.TestCase):
+    """L7-R4 far woods: compacted habitat-v1 patches clear of every fixed countryside feature."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.field = json.loads(FIELD_PATH.read_bytes())
+        cls.object_data, cls.manifest = _generated("groves-v2")
+        cls.far = cls.object_data["positions"]["value"][NEAR_COUNT:]
+        habitat_far, _ = generate_habitat_far(cls.field)
+        cls.anchored = sorted(p for p in habitat_far if _in_skyline_anchor(p[0], p[1]))
+
+    def test_far_groups_are_twelve_single_species_woods_and_frozen_anchors(self) -> None:
+        groups = self.manifest["far_groups"]
+        self.assertEqual(groups[0], {"kind": "skyline-anchor", "count": len(self.anchored)})
+        woods = [group for group in groups if group["kind"] == "wood"]
+        self.assertEqual(len(woods), 12)
+        self.assertEqual(sum(group["count"] for group in groups), HABITAT_FAR_COUNT)
+        self.assertTrue(all(group["dominant_share"] >= 0.75 for group in woods), woods)
+        self.assertEqual(sorted(p for p in self.far if _in_skyline_anchor(p[0], p[1])), self.anchored)
+
+    def test_new_far_trees_clear_roads_farm_boxes_and_keepouts(self) -> None:
+        site = _FarGroveSite(self.field, PRODUCTION_SCENERY, PRODUCTION_COUNTRYSIDE, PRODUCTION_WOODLAND_EDGES)
+        roads = json.loads(PRODUCTION_COUNTRYSIDE.read_text(encoding="utf-8"))["roads"]
+        anchored = {tuple(p) for p in self.anchored}
+        for north, east, down in self.far:
+            if (north, east, down) in anchored:
+                continue
+            with self.subTest(north=north, east=east):
+                self.assertTrue(site.allowed(north, east))
+                self.assertTrue(FAR_RADIUS_MIN_M < math.hypot(north, east) <= FAR_RADIUS_MAX_M)
+                for n0, e0, n1, e1 in COUNTRYSIDE_FARM_BOXES_NE_M:
+                    self.assertFalse(n0 - 10 < north < n1 + 10 and e0 - 10 < east < e1 + 10)
+                for road in roads:
+                    line = road["centerline_ne_m"]
+                    clearance = min(_segment_distance((north, east), a, b) for a, b in zip(line, line[1:]))
+                    self.assertGreater(clearance - road["width_m"] / 2.0, 3.0, road["id"])
+
+
+def _segment_distance(point, start, end) -> float:
+    dn, de = end[0] - start[0], end[1] - start[1]
+    length2 = dn * dn + de * de
+    t = 0.0 if length2 == 0 else max(0.0, min(1.0, ((point[0] - start[0]) * dn + (point[1] - start[1]) * de) / length2))
+    return math.hypot(point[0] - start[0] - t * dn, point[1] - start[1] - t * de)
 
 
 if __name__ == "__main__":
