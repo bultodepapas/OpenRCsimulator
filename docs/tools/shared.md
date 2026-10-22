@@ -8,7 +8,7 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
 - **When:** in every command that needs Godot. Never call a system `godot`.
 - **Command:** `"$(app/get-godot.sh)"`
 - **Result:** prints the binary path; exits nonzero on a hash mismatch.
-- **Gotchas:** a fresh checkout needs `"$(app/get-godot.sh)" --headless --path app --editor --import` before standalone scripts; `app/test.sh` and `app/capture.sh` import by themselves. `--headless` already selects the Dummy audio driver.
+- **Gotchas:** a fresh checkout needs `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --import` before standalone scripts; `app/test.sh` and `app/capture.sh` import by themselves. `--headless` already selects the Dummy audio driver.
 
 ## Full app suite
 

@@ -29,6 +29,7 @@ Find the tool for your task here before you write ad-hoc test or debug code. Rea
 
 ## Rules for every tool
 
+- In a fresh checkout, worktree or app copy, import once before running any Godot tool: `"$(app/get-godot.sh)" --headless --path <app-dir> --audio-driver Dummy --import` (the form `app/test.sh` uses). Without the import cache, scripts fail with missing `.godot/imported` resources. Pass `--godot "$(app/get-godot.sh)"` to Python runners that accept it.
 - Use a new output directory under ignored `tmp/` for every run. Several tools refuse or silently overwrite existing output.
 - Read the engine log, not only the exit code. Godot can print `SCRIPT ERROR` and still exit 0; `tools/godot/run_checked.py` catches this.
 - A "pending" physical check, a valid flight-test case or a matching capture is software evidence, not physical validation.

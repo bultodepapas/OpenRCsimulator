@@ -10,16 +10,22 @@ Results here are model predictions. They do not establish physical validation.
 - **When:** after any change to aircraft data, aerodynamics, propulsion, controls or the session loop. Use it to validate a handling change such as roll rate.
 - **Command:**
   ```sh
-  # 1. Baseline on the unchanged tree.
-  python3 research/flight-test/run.py --out tmp/ft-base --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate
-  # 2. Candidate: same flags; add --app <disposable copy of app/> when the change is not in the working tree.
-  python3 research/flight-test/run.py --out tmp/ft-cand --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate
+  G="$(app/get-godot.sh)"
+  # 0. Once per checkout or app copy without an import cache (app/.godot/); otherwise every flight reports script errors.
+  "$G" --headless --path app --audio-driver Dummy --import
+  # 1. Candidate copy: the change goes here, not into the working tree. Copying .godot/ (~0.4 GB) skips a re-import.
+  # The app reads res://../assets/, so the copy needs the repository's assets/ beside it.
+  mkdir -p tmp/cand && rsync -a --exclude captures app/ tmp/cand/app/ && ln -s "$PWD/assets" tmp/cand/assets
+  # ...edit tmp/cand/app/data/aircraft/<file>.json...
+  # 2. Baseline (working tree) and candidate (--app), same --aircraft and --only.
+  python3 research/flight-test/run.py --godot "$G" --out tmp/ft-base --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate
+  python3 research/flight-test/run.py --godot "$G" --out tmp/ft-cand --aircraft <id> --only trim_sweep,stall_power_off,vmax,roll_rate --app tmp/cand/app
   # 3. Compare.
   python3 research/flight-test/compare.py tmp/ft-base tmp/ft-cand --out tmp/ft-compare.md
   ```
-  Aircraft IDs: `python3 research/flight-test/run.py --help` does not list them; run `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/flight-test/flight_test.gd" -- --list`. Current fixed-wing IDs: `jensen-das-ugly-stik-60`, `stik-glow-61fx-2t`, `stik-glow-55ax-2t`, `stik-glow-fs64v-4t`, `gp-extra-300s-60`, `p51d-mustang-120`, `sebart-avanti-s-a200-p100rx`, `turbo-lumber-evolution`.
+  Aircraft IDs: `"$G" --headless --path app --script "$PWD/research/flight-test/flight_test.gd" -- --list` prints `FT-AIRCRAFT <id>` lines. Current fixed-wing IDs: `jensen-das-ugly-stik-60`, `stik-glow-61fx-2t`, `stik-glow-55ax-2t`, `stik-glow-fs64v-4t`, `gp-extra-300s-60`, `p51d-mustang-120`, `sebart-avanti-s-a200-p100rx`, `turbo-lumber-evolution`.
 - **Result:**
-  - `run.py` prints `ok`/`FAIL` per aircraft and exits 1 only on an engine error, timeout or missing profile. Read `<out>/<id>/profile.md` for values and `<out>/run.json` for identities.
+  - `run.py` prints `ok`/`FAIL` per aircraft and exits 1 only on a nonzero engine exit, a `SCRIPT ERROR`/`ERROR` line, a timeout or a missing profile. `FAIL … script errors N` with many errors usually means a missing import cache. Read `<out>/<id>/profile.md` for values and `<out>/run.json` for identities.
   - Each test has `valid`: whether the pilot flew what the card asks. An invalid test is a result, not a run failure. There are no pass/fail bands for the airplane.
   - `compare.py` ends with `**N change(s) beyond tolerance.**` (default max(0.01, 1 % of baseline)). Every listed change needs an explanation. `--fail-on-change` makes it exit 1.
   - Roll rate: test `roll_rate`, cases `1.3Vs_right/left`, `start_right/left`, `0.8Vmax_right/left`; fields `max_roll_rate_dps`, `time_to_360_s`, `height_change_m`, `max_sideslip_deg`. Related: `slow_roll`, `point_roll` (need `knife_edge,inverted_speeds`), `snap_roll`, and `modes` (roll time constant, no flight).
@@ -27,7 +33,8 @@ Results here are model predictions. They do not establish physical validation.
   - `--only` silently skips unknown names; check every name against the list in the [battery README](../../research/flight-test/README.md) (there is no test called `roll`).
   - Tests placed by Vs and Vmax (`roll_rate`, `power_step` and most figures) need `trim_sweep,stall_power_off,vmax` in the same `--only`, or they fall back to estimates.
   - Run baseline and candidate with the same `--aircraft` and `--only`. A fleet baseline against a one-aircraft candidate lists every missing aircraft as a change; a full baseline against an `--only` candidate lists every omitted test as removed unless you pass `--shared-tests`.
-  - Runtime: four `--only` tests for one Stik take a few minutes; the full card takes about 51 minutes for the fleet with four jobs.
+  - Runtime: four `--only` tests for one Stik take under a minute; the full card takes about 51 minutes for the fleet with four jobs.
+  - Roll rate is speed dependent: compare all three case speeds, not one number.
   - Runs are deterministic: two runs of an unchanged tree compare with zero changes. A nonzero diff on identical trees is a bug.
   - Full workflow, card versions, `--diagnostics`, `spin_state.py` and `polar_fit.py`: [battery README](../../research/flight-test/README.md). Fleet baseline: [FT-05](../research/flight-test/FT-05/README.md).
 
@@ -52,6 +59,7 @@ Results here are model predictions. They do not establish physical validation.
 - **Gotchas:**
   - Quantities are `{value, unit, kind, source}`; a changed value needs a changed `source`. Format: [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md).
   - Roll response depends on aileron maximum throw and servo time (`controls`), and on the roll derivatives. `controls.rates` only shapes pilot input and is not an aerodynamic quantity.
+  - Generators read and write the repository's `app/data`, not an `--app` copy. For a disposable candidate, edit the copy's JSON and fly only the aircraft you changed; regenerate dependents (for example the glow Stik variants) in the working tree when you adopt the change.
   - Changing a model's physics changes golden flights; see [golden flights](#golden-flights).
 
 ## Flight log and replay

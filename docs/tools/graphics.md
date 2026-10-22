@@ -22,19 +22,28 @@ Captures on the dev VM and CI use Xvfb with Mesa llvmpipe (software OpenGL, `gl_
 - **When:** to see a change, or to make a before/after pair.
 - **Command:**
   ```sh
+  OPENRC_SCENERY=off OPENRC_SCENERY_BIRDS=off OPENRC_ENGINE_SHADOWS=off LP_NUM_THREADS=1 \
   xvfb-run -a -s "-screen 0 1280x720x24" "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --audio-driver Dummy \
-    -- --capture --t=1.5 --out="$PWD/tmp/view.png" [--inspect] [--look_az=225 --look_el=25] [--alt=3] [--hide_airplane] [--shadow=off]
+    -- --capture --t=1.5 --out="$PWD/tmp/view.png" [view flags]
   ```
-  `--scripted` flies the fixed circle; `--inspect` frames the airplane; `--autozoom=0` keeps the pilot view. Copy a case from the `shot` lines in [`app/capture.sh`](../../app/capture.sh).
+  The environment prefix matches `app/capture.sh` so repeats are byte-identical. View flags:
+  - ground, grass, field surfaces: `--look_az=0 --look_el=-15 --hide_airplane` (or `--look_el=0` for the horizon);
+  - airplane: `--inspect`; the deflected surfaces add `--roll=1 --pitch=1 --yaw=1`;
+  - sun and lighting: `--look_az=225 --look_el=25`; top view: `--look_az=0 --look_el=-90 --look_alt=30`;
+  - `--scripted` flies the fixed circle; `--autozoom=0` keeps the follow camera at its default distance (mostly sky).
+  Every reference case is a `shot` line in [`app/capture.sh`](../../app/capture.sh).
 - **Result:** the PNG plus a sibling `.json` manifest (renderer, adapter, identities) and a log line `saved … (error 0) draw_calls=…`.
-- **Gotchas:** use an absolute `--out`. Unknown flags are ignored silently.
+- **Gotchas:**
+  - Use an absolute `--out`. Unknown flags are ignored silently.
+  - A fresh checkout or app copy must be imported first (see the [index rules](README.md#rules-for-every-tool)).
+  - For a before/after pair, copy `app/` to `tmp/cand/app/` and symlink the repository's `assets/` to `tmp/cand/assets` (the app reads `res://../assets/`); otherwise the copy exits 30 with "authoring source is missing". Run the engine and visual venv from the repository root.
 
 ## Compare captures
 
 - **Purpose:** decide whether two capture sets differ.
 - **Command:** `"$(app/tests/visual-env.sh)" app/tests/compare_captures.py compare <reference-dir> <test-dir> [--max-bad 50] [--flip 0.1]`. Airplane readability: `… compare_captures.py readability <captures-dir> --require "capture-land-30m.png:-0.40:0.15:30:25"`.
 - **Result:** same renderer: SHA-256 must match exactly. Different renderer: fails when more than `--max-bad` pixels exceed the FLIP threshold.
-- **Gotchas:** byte equality holds only for one Mesa build. Each PNG needs its manifest `.json`.
+- **Gotchas:** byte equality holds only for one Mesa build. Each PNG needs its manifest `.json`. On the same renderer it reports only `sha256 equal` or `differs` per file; no repository tool localizes a difference. To show where an image changed, diff the two PNGs with NumPy and Pillow from the visual venv and inspect the result.
 
 ## Area capture checkers
 
