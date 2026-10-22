@@ -38,6 +38,8 @@ From 120 m the woods now read as single stands (dark pine, green oak, warm maple
 | `app/data/woodland_edges.json` | Regenerated. It pins the normalized text of `place.py`, so regenerate it after every edit to `place.py`. |
 | Companions field pin | Updated to the CRLF hash. |
 
+**Scene budget (L7-R3 and L7-R4 together, 1280×720):** field cards still draw 6 triangles per tree. The worst views are pilot 451,177, ground 523,637 and aerial 436,073 primitives. Countryside ground draws rise from 8 to 11 because of the freed parcels; `scene_budget.json` allocates 12. All limits pass.
+
 Generation takes 11 s. It was 23 s before road segments were indexed in 64 m cells; the output is byte-identical.
 
 ## Checks

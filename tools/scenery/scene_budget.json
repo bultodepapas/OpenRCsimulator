@@ -5,7 +5,7 @@
   1280,
   720
  ],
- "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values. L6c-R1 (2026-10-21) revised close vegetation to its measured cost +10% after two downloaded species and readable distant LandscapeLab crowns (120,759 pilot / 126,699 ground drawn primitives), and the pilot total to 455,000 (worst view 451,503): the pilot growth reserve is spent, so further pilot-view growth needs a matching reduction.",
+ "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values. L6c-R1 (2026-10-21) revised close vegetation to its measured cost +10% after two downloaded species and readable distant LandscapeLab crowns (120,759 pilot / 126,699 ground drawn primitives), and the pilot total to 455,000 (worst view 451,503): the pilot growth reserve is spent, so further pilot-view growth needs a matching reduction. L7-R3/R4 (2026-10-22): the regrouped field trees free four countryside parcels; countryside draws rise to 11 (ground), allocated 12.",
  "classes": {
   "aerial": {
    "max_primitives": 465000,
@@ -38,11 +38,11 @@
   "field_Countryside": {
    "aerial": {
     "primitives": 3000,
-    "draws": 9
+    "draws": 10
    },
    "ground": {
     "primitives": 4000,
-    "draws": 9
+    "draws": 12
    },
    "pilot": {
     "primitives": 3000,
