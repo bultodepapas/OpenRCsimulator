@@ -1,0 +1,12 @@
+{
+ "format": "openrc-large-files v1",
+ "max_new_file_bytes": 52428800,
+ "hard_limit_bytes": 104857600,
+ "basis": "GitHub warns above 50 MiB and refuses pushes containing a file above 100 MiB. History is not rewritten (shared clones, CI needs full history, free LFS quota is 1 GiB). Files above 50 MiB need an entry here with the reason they must be tracked; prefer a hash, licence and download or regeneration recipe instead.",
+ "allowed": {
+  "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip": "CC0 source archive; build_library.py and import_airfield_detail.py read and verify it.",
+  "docs/research/physics-audit-2026-10-14/remediation/R11/export-resource-probes/package-mount-01/macos-extracted/OpenRC Simulator.pck": "R11 export-resource probe evidence: the exact extracted macOS package.",
+  "assets/source-deliveries/hx-700-original/UYjm3SGvvYxnGgggCnqPGIuKhQHNNSeM98oX8uMr.pdf": "Original HX-700 source delivery kept as supplied.",
+  "docs/research/visual-quality-implementation/L4c/captures-and-integration.zip": "L4c capture and integration evidence archive."
+ }
+}
