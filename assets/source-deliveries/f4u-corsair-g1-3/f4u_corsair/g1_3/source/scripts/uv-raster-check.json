@@ -1,0 +1,9 @@
+{
+  "atlas_size": [
+    2048,
+    2048
+  ],
+  "painted_parts": 34,
+  "occupied_pixels": 993625,
+  "islands_strategy": "per-part disjoint padded rectangles, smart-project packed islands inside each rectangle"
+}

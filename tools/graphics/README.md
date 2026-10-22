@@ -99,3 +99,17 @@ The dated [lake sky-edit and low Ventage Jet fixtures](../../docs/research/visua
 retain production-reflection checks, prescribed aircraft motion, and rejected
 fixture-only dynamic reflection screens. They do not qualify real-time flight
 pacing or enable aircraft reflections in the game.
+
+An experimental planar lake capture now supports the detailed jet in native High:
+
+```powershell
+$env:OPENRC_LAKE_REFLECTIONS = 'planar'
+python tools/graphics/launch.py --profile high -- --quick-flight --aircraft=sebart-avanti-s-a200-p100rx
+Remove-Item Env:OPENRC_LAKE_REFLECTIONS
+```
+
+This launch-only option is off by default and ignored in Standard/headless.
+It renders a second camera at half resolution, capped at 1280×720, and falls back
+to the existing probe below/near water or without a perspective camera. It adds
+rendering cost; full flight/platform qualification remains open.
+[Source, low jet clip, measured scope and reproducer](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md).

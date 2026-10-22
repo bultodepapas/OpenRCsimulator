@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+planar lake probe complete: [{"cloud_seed":1253,"phase":"initial","refreshes":1},{"cloud_seed":918273,"phase":"edited","refreshes":2},{"cloud_seed":918273,"phase":"forced","refreshes":2},{"cloud_seed":918273,"phase":"absent","refreshes":2},{"end_ned":[119.0,125.0,-1.5],"frames":61,"phase":"motion","prescribed_speed_m_s":18.0,"refreshes":2,"sample_hz":60,"start_ned":[101.0,125.0,-1.5],"visual_origin_height_above_mean_water_m":1.95},{"phase":"orbit","planar_active":false,"probe_receiver_mask":2},{"phase":"underwater","planar_active":false,"probe_receiver_mask":2},{"phase":"restored","planar_active":false,"probe_receiver_mask":2}]

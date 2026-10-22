@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1msavepack[22m | Started Packing (102 steps)[39m[0m
+[   1% ] [90m[1msavepack[22m | Storing File: res://i18n/es.po[39m[0m
+[  12% ] [90m[1msavepack[22m | Storing File: res://render/lake/vendor/smart_planar_reflector/planar_reflector.gdc[39m[0m
+[  23% ] [90m[1msavepack[22m | Storing File: res://render/lake/lake_planar_reflection.gdc[39m[0m
+[  33% ] [90m[1msavepack[22m | Storing File: res://render/lake/water.gdshader[39m[0m
+[  44% ] [90m[1msavepack[22m | Storing File: res://render/high_graphics_profile.gdc[39m[0m
+[  55% ] [90m[1msavepack[22m | Storing File: res://render/lake/vendor/smart_planar_reflector/LICENSE[39m[0m
+[  66% ] [90m[1msavepack[22m | Storing File: res://pack_fixture.gdc[39m[0m
+[  76% ] [90m[1msavepack[22m | Storing File: res://.godot/exported/133200997/export-8b3c31143bcb58de6ac4f9fdb99c2535-pack_fixture.scn[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://render/lake/vendor/smart_planar_reflector/CREDITS.md[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://render/lake/vendor/smart_planar_reflector/planar_reflector.gd.remap[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://render/lake/lake_planar_reflection.gd.remap[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://render/high_graphics_profile.gd.remap[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://pack_fixture.gd.remap[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://pack_fixture.tscn.remap[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://.godot/global_script_class_cache.cfg[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://.godot/uid_cache.bin[39m[0m
+[  87% ] [90m[1msavepack[22m | Storing File: res://project.binary[39m[0m
+[92m[ DONE ][39m [1msavepack[22m
+[0m

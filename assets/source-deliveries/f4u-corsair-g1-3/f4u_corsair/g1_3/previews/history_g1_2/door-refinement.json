@@ -1,0 +1,62 @@
+[
+  {
+    "name": "gear_door_front_mesh_left",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 932
+  },
+  {
+    "name": "gear_door_inner_mesh_left",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 870
+  },
+  {
+    "name": "gear_door_outer_mesh_left",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 1097
+  },
+  {
+    "name": "gear_door_front_mesh_right",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 960
+  },
+  {
+    "name": "gear_door_inner_mesh_right",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 874
+  },
+  {
+    "name": "gear_door_outer_mesh_right",
+    "edge_radius_m": 0.00035,
+    "faces_before": 650,
+    "faces_after": 1097
+  },
+  {
+    "name": "gear_door_tail_mesh_left_1",
+    "edge_radius_m": 0.00035,
+    "faces_before": 300,
+    "faces_after": 440
+  },
+  {
+    "name": "gear_door_tail_mesh_left_2",
+    "edge_radius_m": 0.00035,
+    "faces_before": 300,
+    "faces_after": 474
+  },
+  {
+    "name": "gear_door_tail_mesh_right_1",
+    "edge_radius_m": 0.00035,
+    "faces_before": 300,
+    "faces_after": 448
+  },
+  {
+    "name": "gear_door_tail_mesh_right_2",
+    "edge_radius_m": 0.00035,
+    "faces_before": 300,
+    "faces_after": 480
+  }
+]

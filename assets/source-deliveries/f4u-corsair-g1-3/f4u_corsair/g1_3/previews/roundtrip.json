@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "span_m": 2.777770519256592,
+  "maximum_node_position_error_m": 1.7881393432617188e-07,
+  "maximum_node_angle_error_deg": 0.0,
+  "errors": []
+}

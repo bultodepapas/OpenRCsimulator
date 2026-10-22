@@ -1,0 +1,54 @@
+{
+  "changes": [
+    {
+      "mesh": "flap_left_1",
+      "additional_down_relief_m": 0.0,
+      "remaining_contact_pairs": 0
+    },
+    {
+      "mesh": "flap_left_2",
+      "additional_down_relief_m": 0.0011,
+      "remaining_contact_pairs": 0
+    },
+    {
+      "mesh": "flap_right_1",
+      "additional_down_relief_m": 0.0,
+      "remaining_contact_pairs": 0
+    },
+    {
+      "mesh": "flap_right_2",
+      "additional_down_relief_m": 0.0011,
+      "remaining_contact_pairs": 0
+    }
+  ],
+  "open_boundaries": [
+    {
+      "mesh": "wing_center_fixed",
+      "edges": 2,
+      "min": [
+        0.49490007758140564,
+        -0.15718576312065125,
+        -0.11233124136924744
+      ],
+      "max": [
+        0.4951110780239105,
+        -0.15706077218055725,
+        -0.11176276206970215
+      ]
+    },
+    {
+      "mesh": "wing_center_fixed",
+      "edges": 2,
+      "min": [
+        -0.4951110780239105,
+        -0.15718576312065125,
+        -0.11233124136924744
+      ],
+      "max": [
+        -0.49490007758140564,
+        -0.15706077218055725,
+        -0.11176276206970215
+      ]
+    }
+  ]
+}

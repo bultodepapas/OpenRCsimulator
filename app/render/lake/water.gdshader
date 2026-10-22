@@ -13,6 +13,10 @@ global uniform float sim_clock;
 
 uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear;
 uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;
+// Optional native High capture; the normal probe path stays active by default.
+uniform bool planar_reflection_enabled = false;
+// The adapter supplies linear HDR, not an sRGB/display-referred image.
+uniform sampler2D reflection_texture : repeat_disable, filter_linear;
 
 uniform vec4 shallow_color : source_color = vec4(0.20, 0.43, 0.40, 1.0);
 uniform vec4 deep_color : source_color = vec4(0.025, 0.115, 0.15, 1.0);
@@ -173,6 +177,14 @@ void fragment() {
 	ROUGHNESS = water_roughness;
 	SPECULAR = water_specular;
 	ALPHA = 1.0;
+	if (planar_reflection_enabled) {
+		// Use the existing analytic wave slopes for a bounded ripple distortion.
+		vec3 flat_normal_view = mat3(VIEW_MATRIX) * vec3(0.0, 1.0, 0.0);
+		vec2 reflection_uv = clamp(SCREEN_UV + (wave_normal_view.xy - flat_normal_view.xy) * 0.025,
+			vec2(0.001), vec2(0.999));
+		// Replace environment radiance, retaining the engine's Fresnel and direct sun.
+		RADIANCE = vec4(texture(reflection_texture, reflection_uv).rgb, 1.0);
+	}
 
 	float shore_band = 1.0 - smoothstep(shore_foam_start_m, shore_foam_end_m, max(shore_distance_m, 0.0));
 	float crest_weight = smoothstep(-0.015, 0.045, raw_height * shore_fade.x);

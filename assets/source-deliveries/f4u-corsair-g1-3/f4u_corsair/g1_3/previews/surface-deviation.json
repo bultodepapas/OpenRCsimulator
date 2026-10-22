@@ -1,0 +1,52 @@
+{
+  "fuselage_core": {
+    "sample_count": 29084,
+    "maximum_distance_m": 0.00029124904540367424,
+    "p95_distance_m": 8.116397657431662e-05
+  },
+  "wing_center_fixed": {
+    "sample_count": 16607,
+    "maximum_distance_m": 0.0029056032653898,
+    "p95_distance_m": 0.00017731849220581353
+  },
+  "wing_left_fixed": {
+    "sample_count": 23487,
+    "maximum_distance_m": 0.00033260637428611517,
+    "p95_distance_m": 5.614653855445795e-05
+  },
+  "wing_right_fixed": {
+    "sample_count": 22334,
+    "maximum_distance_m": 0.00036728844861499965,
+    "p95_distance_m": 4.9701586249284446e-05
+  },
+  "stabilizer_fixed": {
+    "sample_count": 19850,
+    "maximum_distance_m": 0.00031518065952695906,
+    "p95_distance_m": 8.202008757507429e-05
+  },
+  "fin_fixed": {
+    "sample_count": 6771,
+    "maximum_distance_m": 0.00011098617687821388,
+    "p95_distance_m": 3.369331170688383e-05
+  },
+  "elevator": {
+    "sample_count": 26864,
+    "maximum_distance_m": 0.0002422713441774249,
+    "p95_distance_m": 6.225311517482623e-05
+  },
+  "rudder": {
+    "sample_count": 21941,
+    "maximum_distance_m": 0.00015835899102967232,
+    "p95_distance_m": 4.3540789192775264e-05
+  },
+  "cowl": {
+    "sample_count": 19120,
+    "maximum_distance_m": 0.0002523951407056302,
+    "p95_distance_m": 0.0001367388031212613
+  },
+  "propeller_rotor": {
+    "sample_count": 16175,
+    "maximum_distance_m": 0.001250116154551506,
+    "p95_distance_m": 0.00011974103836109862
+  }
+}

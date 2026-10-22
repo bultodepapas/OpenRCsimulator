@@ -8,7 +8,7 @@ Latest VQ-01c / DT-11a follow-up: [horizon construction](research/visual-quality
 
 [Audio teardown diagnostics](research/visual-quality-implementation/VQ-01c/loading/audio/README.md) now separate mixer retirement from persistent retention. The loading probe checks bounded cleanup on success/failure; packaged 50-cycle diagnostics finish without exit warnings but include one paused first draw. This does not close the native lifecycle/soak gates.
 
-Latest VQ-07 lake follow-up: [explicit sky refresh and low Ventage Jet pass](research/visual-quality-implementation/VQ-07/lake-refresh-2026-10-22/README.md) fixes stale cubemaps after sky edits/restoration. Native captures expose the missing dynamic aircraft reflection; simple SSR/cubemap fixture toggles are not adopted. 160 focused checks pass; full motion/performance and High qualification remain open.
+Latest VQ-07 lake follow-up: [optional planar jet reflection](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md) adds a default-off native High experiment using a pinned MIT camera component. The low detailed jet pass now reflects coherently; linear HDR, fallback and lifecycle checks pass. One offscreen pair increases draw wall p95 from 2.12 to 4.02 ms. Full flight, motion/performance and High qualification remain open. The preceding [sky-refresh repair](research/visual-quality-implementation/VQ-07/lake-refresh-2026-10-22/README.md) remains the cubemap fallback.
 
 **Status:** VQ-01a/b, VQ-04a and VQ-05 are delivered. VQ-02/03/04b/06/07 remain open; L6c owner readability review and Gates L/2 remain independent acceptance points.
 

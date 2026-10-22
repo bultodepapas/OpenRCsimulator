@@ -1,0 +1,6 @@
+F4U Corsair g1, derived from the user's R59 project with Codex-assisted modelling and export preparation.
+The g1 paint designs and markings were created for this project. Referenced photographs, plans and third-party artwork are not included as textures or packed images.
+
+Asset licence terms have not been selected by the owner. This private project delivery does not assert a CC0, CC-BY or other public redistribution grant. Public redistribution requires the owner's chosen terms and any necessary clearance of the source-derived geometry. The user's instruction to continue without discussing licensing was respected; no licence was assigned on their behalf.
+
+See PROVENANCE.md for reference history. No rights in third-party aircraft photographs, drawings, manufacturer marks or documents are granted by this file.

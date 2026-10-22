@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1905578f-b51d-41fa-9f09-bfc6c3fdf817",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tmp/aaa-planar-20261022/hdr_probe.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:43:59.735197+00:00",
+  "label": "hdr-color-path",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\hdr-color-path-gtyo7xcy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\hdr-color-path-gtyo7xcy\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "HDR probe:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.718,
+  "log_bytes": 504,
+  "log_sha256": "51ba7334ccc838542a058549bc468d454c050cc76103ff4501d15821f02c692b"
+}

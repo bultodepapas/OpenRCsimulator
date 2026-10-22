@@ -1,0 +1,70 @@
+{
+  "frame_for_measurements": 0,
+  "span_m": 2.777770519256592,
+  "length_from_landmarks_m": 2.3811178737216525,
+  "propeller_diameter_m": 0.9003021457332075,
+  "wheel_track_m": 0.8622221814261543,
+  "wheels": {
+    "left": {
+      "diameter_from_retained_radius_m": 0.18800000349680585,
+      "mesh_lowest_point_m": [
+        -0.4435557425022125,
+        -0.060645293444395065,
+        -0.5308477878570557
+      ],
+      "recorded_contact_m": [
+        -0.4435557425022125,
+        -0.060645293444395065,
+        -0.5308477878570557
+      ],
+      "contact_height_difference_m": 0.0,
+      "nominal_contact_height_difference_m": 0.00018107891082763672,
+      "mesh_diameter_vertical_m": 0.1881496012210846,
+      "oleo_travel_m": 0.022222222222222227
+    },
+    "right": {
+      "diameter_from_retained_radius_m": 0.18800000349680585,
+      "mesh_lowest_point_m": [
+        0.4324444830417633,
+        -0.0617084801197052,
+        -0.5308060646057129
+      ],
+      "recorded_contact_m": [
+        0.4324444830417633,
+        -0.0617084801197052,
+        -0.5308060646057129
+      ],
+      "contact_height_difference_m": 0.0,
+      "nominal_contact_height_difference_m": 0.00013935565948486328,
+      "mesh_diameter_vertical_m": 0.18832039833068848,
+      "oleo_travel_m": 0.022222222222222227
+    },
+    "tail": {
+      "diameter_from_retained_radius_m": 0.07777775658501519,
+      "mesh_lowest_point_m": [
+        -2.565215062588777e-08,
+        -1.410483479499817,
+        -0.18333926796913147
+      ],
+      "recorded_contact_m": [
+        -2.565215062588777e-08,
+        -1.410483479499817,
+        -0.18333926796913147
+      ],
+      "contact_height_difference_m": 0.0,
+      "nominal_contact_height_difference_m": 5.9770213232945846e-06,
+      "mesh_diameter_vertical_m": 0.07778958231210709,
+      "oleo_travel_m": 0.02777777777777778
+    }
+  },
+  "runtime_gear_frame": 100,
+  "runtime_wheel_minimum_z": {
+    "left": -0.20189286768436432,
+    "right": -0.2019033432006836,
+    "tail": -0.02061636373400688
+  },
+  "runtime_wing_minimum_z": -0.23462483286857605,
+  "runtime_nodes": 80,
+  "runtime_meshes": 44,
+  "passed": true
+}

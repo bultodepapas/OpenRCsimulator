@@ -1,0 +1,68 @@
+[
+  {
+    "source": "R55 | derecha tapa enrasada bisagra 0",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.661,
+      0.005,
+      0.6960000000000001,
+      0.04
+    ]
+  },
+  {
+    "source": "R55 | derecha tapa enrasada bisagra 1",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.7020000000000001,
+      0.005,
+      0.7370000000000001,
+      0.04
+    ]
+  },
+  {
+    "source": "R55 | derecha tapa enrasada bisagra 2",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.743,
+      0.005,
+      0.778,
+      0.04
+    ]
+  },
+  {
+    "source": "R55 | izquierda tapa enrasada bisagra 0",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.784,
+      0.005,
+      0.8190000000000001,
+      0.04
+    ]
+  },
+  {
+    "source": "R55 | izquierda tapa enrasada bisagra 1",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.8250000000000001,
+      0.005,
+      0.8600000000000001,
+      0.04
+    ]
+  },
+  {
+    "source": "R55 | izquierda tapa enrasada bisagra 2",
+    "target": "wing_center_fixed",
+    "triangles": 350,
+    "uv_tile": [
+      0.866,
+      0.005,
+      0.901,
+      0.04
+    ]
+  }
+]

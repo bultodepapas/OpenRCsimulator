@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5eadff26-cb3a-4e6f-a4dc-ef1b1de9d653",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "tmp/aaa-planar-20261022/fresh-clone/app",
+    "--script",
+    "res://tests/test_lake_planar_reflection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:50:41.001215+00:00",
+  "label": "fresh-clone-complete",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\fresh-clone-complete-3ytzajsd\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\fresh-clone-complete-3ytzajsd\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.313,
+  "log_bytes": 129,
+  "log_sha256": "9228693c59e4aa9f2aa2b8e02215675d5f189201b728f43a2b25ebcc2f73265a"
+}
