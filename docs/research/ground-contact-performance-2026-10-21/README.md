@@ -35,13 +35,13 @@ and MAX-61FX 1/3 s. The MAX-61FX baseline has only four frames and no frame
 diagnostics. Its frame percentile is illustrative only; the physics/tick and
 simulated-time figures carry stronger evidence for that case.
 
-The Stik remains slow. Its optional fuel-feed closure evaluates engine
-lifecycle, coupling and feed pressure four times per stage. A frozen 30 m
-airborne probe measured 1.48 ms for its `GlowFlight.point` versus 0.137 ms
-for the Extra. The candidate fuel factor changes torque and apparent gravity,
-so reusing those sample results would alter the numerical law. The later scalar
-feed-factor change below removes repeated telemetry construction while keeping
-the same stage closure and solver callback count.
+The Stik remained slow in that measurement. Its optional fuel-feed closure
+evaluated engine lifecycle, coupling and feed pressure four times per stage. A
+frozen 30 m airborne probe measured 1.48 ms for its `GlowFlight.point` versus
+0.137 ms for the Extra. The first scalar feed-factor change below retained the
+same stage closure and solver callback count. A later dependency audit showed
+that torque and body response use current fuel transport and are invariant
+across this stage's candidate factors; the reuse is recorded further below.
 
 ## Glow follow-up
 
