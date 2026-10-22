@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4fb58313-ac84-48d4-b051-ceeea02b39ea",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--script",
+    "../tmp/aaa-reflections-20261022/jet_motion_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-reflections-20261022/standard-jet-motion"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:24:28.702685+00:00",
+  "label": "standard-jet-motion",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\standard-jet-motion-o9s_4m4n\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\standard-jet-motion-o9s_4m4n\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "reflection edit probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 22.297,
+  "log_bytes": 613,
+  "log_sha256": "d6526f2b82177c663345e97dd3d5465d7999bf8664a45d2b84088054c3b4c2e9"
+}

@@ -1,9 +1,14 @@
-## LU-25: one bounded cubemap, refreshed only when the simulation-owned lighting changes.
+## LU-25: one bounded cubemap, refreshed by lighting changes or explicit sky edits.
 extends ReflectionProbe
 var water_material: ShaderMaterial
 var _signature := PackedByteArray()
 var _offset_sign := 1.0
 var _static_layers_ready := false
+
+## A paused sky edit can change clouds without changing any lighting uniform.
+## Coalesce explicit edits with the ordinary lighting refresh on the next process.
+func request_refresh() -> void:
+	_signature = PackedByteArray()
 
 func _process(_delta: float) -> void:
 	if water_material == null:

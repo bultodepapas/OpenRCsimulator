@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f19413b9-aa65-42ad-b1af-78fb7aaefc21",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tmp/aaa-reflections-20261022/probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-reflections-20261022/high-after"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:17:59.509689+00:00",
+  "label": "high-reflection-after",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\high-reflection-after-5fcevnqw\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\high-reflection-after-5fcevnqw\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "reflection edit probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 8.797,
+  "log_bytes": 953,
+  "log_sha256": "ac4bc843279a7e2e56863cec1e0dff8723e1e4250d9dcf6307971865c39351de"
+}

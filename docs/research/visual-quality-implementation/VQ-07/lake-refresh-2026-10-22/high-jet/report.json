@@ -1,0 +1,76 @@
+{
+	"aircraft_id": "sebart-avanti-s-a200-p100rx",
+	"cases": [
+		{
+			"cloud_seed": 1253,
+			"phase": "initial",
+			"refreshes": 1
+		},
+		{
+			"cloud_seed": 918273,
+			"phase": "edited",
+			"refreshes": 2
+		},
+		{
+			"cloud_seed": 918273,
+			"phase": "forced",
+			"refreshes": 2
+		},
+		{
+			"cloud_seed": 918273,
+			"phase": "absent",
+			"refreshes": 2
+		},
+		{
+			"end_ned": [
+				119.0,
+				125.0,
+				-1.5
+			],
+			"frames": 61,
+			"phase": "motion",
+			"prescribed_speed_m_s": 18.0,
+			"refreshes": 2,
+			"sample_hz": 60,
+			"start_ned": [
+				101.0,
+				125.0,
+				-1.5
+			],
+			"visual_origin_height_above_mean_water_m": 1.95
+		}
+	],
+	"complete": true,
+	"dynamic_probe_fixture_only": false,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"jet_mesh_count": 38,
+	"jet_meshes_captured_by_probe": 0,
+	"model_manifest_sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
+	"msaa_3d": 2,
+	"performance_claim": false,
+	"physics_validation": false,
+	"prescribed_render_motion": true,
+	"probe_cull_mask": 8,
+	"probe_reflection_mask": 2,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"ssr_enabled": false,
+	"viewport": [
+		1280,
+		720
+	]
+}

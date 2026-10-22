@@ -1,0 +1,26 @@
+{
+	"cases": [
+		{
+			"cloud_seed": 1253,
+			"phase": "initial",
+			"refreshes": 1
+		},
+		{
+			"cloud_seed": 918273,
+			"phase": "edited",
+			"refreshes": 2
+		},
+		{
+			"cloud_seed": 918273,
+			"phase": "forced",
+			"refreshes": 2
+		}
+	],
+	"complete": true,
+	"profile": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": ""
+	}
+}

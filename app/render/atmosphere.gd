@@ -705,15 +705,19 @@ static func update_clouds(env: Environment, sim_time: float) -> bool:
 	return global_offset_changed or sky_changed
 
 
-## Refresh the cached field materials after a paused preset change; the sky Environment and sun are updated separately.
+## Refresh field materials and cached reflections after an explicit sky edit or restoration.
+## The sky Environment and sun are updated separately; continuous cloud drift does not call this path.
 static func update_cloud_appearance(root: Node) -> void:
-	if root == null or not is_instance_valid(root) or not root.has_meta("lighting_materials"):
+	if root == null or not is_instance_valid(root):
 		return
 	var materials: Array = root.get_meta("lighting_materials", [])
 	var lighting: Dictionary = root.get_meta("lighting_snapshot", {})
 	for material_value: Variant in materials:
 		if material_value is ShaderMaterial and is_instance_valid(material_value):
 			update_ground_material(material_value as ShaderMaterial, lighting)
+	for probe: Node in root.find_children("*", "ReflectionProbe", true, false):
+		if probe.has_method("request_refresh"):
+			probe.request_refresh()
 
 
 ## The ground's material: grass texture in world space + the haze as custom fog with the rim fade.

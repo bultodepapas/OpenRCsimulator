@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f5bf1479-70a5-4a53-b940-6646f48846f6",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--script",
+    "../tmp/aaa-reflections-20261022/probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-reflections-20261022/standard-after"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:20:53.684700+00:00",
+  "label": "standard-reflection-after",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\standard-reflection-after-1l5axzmj\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflections-20261022\\checks\\standard-reflection-after-1l5axzmj\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "reflection edit probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 13.828,
+  "log_bytes": 365,
+  "log_sha256": "e9d981ea462c84b4f560293932a0ae814935b9fc408453d382de768aa5001d8e"
+}
