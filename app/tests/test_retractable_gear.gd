@@ -83,6 +83,17 @@ func contracts() -> void:
 			"reused_helper": bad.wheels.right.spin_node = bad.wheels.left.spin_node
 			"missing_wheel_path": bad.wheels.left.contact_model.pop_back()
 		check("model contract rejects " + mutation, not Rig.validate(bad).is_empty())
+	# F4U-02: the same rig declared as a retractable taildragger steers its tail wheel.
+	var tail: Dictionary = Geometry.DATA.gear.duplicate(true)
+	tail.wheels.tail = tail.wheels.nose
+	tail.wheels.erase("nose")
+	check("taildragger rig with a steered tail wheel is valid", Rig.validate(tail).is_empty())
+	var both: Dictionary = Geometry.DATA.gear.duplicate(true)
+	both.wheels.tail = both.wheels.nose.duplicate(true)
+	check("model contract rejects nose and tail wheels together", not Rig.validate(both).is_empty())
+	var unsteered: Dictionary = tail.duplicate(true)
+	unsteered.wheels.tail.erase("steer_node")
+	check("model contract rejects a tail wheel without its steering helper", not Rig.validate(unsteered).is_empty())
 
 
 func session() -> void:

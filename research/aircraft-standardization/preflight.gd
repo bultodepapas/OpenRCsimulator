@@ -92,9 +92,10 @@ func _pose_checks(airplane: Dictionary, throws: Dictionary, errors: PackedString
 			for declared: Dictionary in binding.hinges:
 				var value: Variant = airplane.hinges[declared.key]
 				var node := _node(value)
-				if binding.visual_only:
+				# Flight flaps follow their own actuator, not roll/pitch/yaw: like visual-only roles they hold rest here.
+				if binding.visual_only or not surfaces.has(role):
 					if node.basis != rests[declared.key]:
-						errors.append("Visual-only surface moved under conventional flight commands: " + role)
+						errors.append(("Visual-only" if binding.visual_only else "Flap") + " surface moved under conventional flight commands: " + role)
 					continue
 				var expected: float = deg_to_rad(surfaces[role]) * (1.0 if role == "rudder" else -1.0)
 				var actual: float

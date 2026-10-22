@@ -137,6 +137,22 @@ class AircraftModelManifestTests(unittest.TestCase):
         reject_mutation(lambda family: family["construction"]["material_grow"].append(copy.deepcopy(family["construction"]["material_grow"][0])), "duplicate material node/material pair")
         reject_mutation(lambda family: family["construction"]["material_grow"][0].update(amount_m=float("inf")), "non-finite material growth")
 
+    def test_retraction_accepts_a_steered_tail_wheel_and_rejects_mixed_layouts(self):
+        # F4U-02: a sampled rig steers a nose wheel (tricycle) or a tail wheel (taildragger), never both or neither.
+        def registry_errors(keys):
+            candidate = copy.deepcopy(self.registry)
+            family = next(item for item in candidate["families"] if item["family_id"] == "sebart-avanti-s-a200-p100rx")
+            family["bindings"]["gear"]["keys"] = {key: key for key in keys}
+            return validate_registry(candidate)
+
+        self.assertFalse(registry_errors(["left", "right", "tail", "steering"]))
+        self.assertTrue(registry_errors(["left", "right", "nose", "tail", "steering"]))
+        self.assertTrue(registry_errors(["left", "right", "steering"]))
+        family = copy.deepcopy(self.by_family["sebart-avanti-s-a200-p100rx"])
+        family["bindings"]["gear"]["keys"] = {"left": "left", "right": "right", "tail": "tail", "steering": "steering"}
+        with self.assertRaisesRegex(ModelManifestError, "must match the family's gear bindings"):
+            build_manifest(ROOT, REGISTRY_PATH, family)
+
     def test_construction_references_resolve_and_gear_does_not_require_control_metadata(self):
         family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])
         family["construction"]["gear"][0]["geometry_ref"] = "articulations.missing_gear"

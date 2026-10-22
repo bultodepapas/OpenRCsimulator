@@ -167,13 +167,13 @@
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+      "sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
       "hash_mode": "lf_text",
       "role": "builder"
     },
     {
       "path": "res://aircraft/imported_model_contract.gd",
-      "sha256": "bdbd47fce8b70cd2f1f567b6c062730af239c4c7d36c46ef14ea40381fa3270e",
+      "sha256": "eb1bcf44ad54e01a086aadd97439b4292a2bef0f33e9af15c8e0c4eec510f308",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -185,7 +185,7 @@
     },
     {
       "path": "res://aircraft/retractable_model.gd",
-      "sha256": "98821a8c571bd1204737c5b6e80a01dd3aa1dbcf4ab4e183779cd90bddc6a730",
+      "sha256": "4d753bbca79eb8576ee7bfdbe6f5f238d9fb82b3b7dd209a1d1b5fb83c709805",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

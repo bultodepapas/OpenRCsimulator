@@ -59,8 +59,9 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 		var retract: Variant = construction.retraction
 		if _check_fields(retract, ["geometry_ref"], "$.construction.retraction", errors, diagnostics) and not _dotted_ref(retract.get("geometry_ref")):
 			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_REF_INVALID", "$.construction.retraction", "retraction needs a dotted geometry reference")
-		if expected_roles.size() != 4 or not expected_roles.has_all(["left", "right", "nose", "steering"]) or construction.get("gear") != []:
-			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_GEAR_INVALID", "$.construction.retraction", "retraction needs left/right/nose/steering bindings and no static gear wrappers")
+		var steered := "tail" if expected_roles.has("tail") else "nose"
+		if expected_roles.size() != 4 or not expected_roles.has_all(["left", "right", steered, "steering"]) or construction.get("gear") != []:
+			_fail(errors, diagnostics, "MODEL_CONSTRUCTION_GEAR_INVALID", "$.construction.retraction", "retraction needs left/right/steering plus a nose or tail binding and no static gear wrappers")
 		expected_roles = {}
 	_claim_name("propeller", "$.construction.generated.propeller", used_names, errors, diagnostics)
 	_claim_name("propeller_mount", "$.construction.generated.propeller_mount", used_names, errors, diagnostics)

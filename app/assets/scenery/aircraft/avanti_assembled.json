@@ -105,14 +105,14 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
-			"sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
-			"pinned_sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
+			"sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
+			"pinned_sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
 			"matches_pin": true
 		},
 		"builder": {
 			"path": "res://aircraft/imported_model.gd",
-			"sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
-			"pinned_sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+			"sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
+			"pinned_sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
 			"matches_pin": true
 		},
 		"geometry_script": {
