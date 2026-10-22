@@ -1,0 +1,7258 @@
+{
+  "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+  "format": "openrc-view-attribution v2",
+  "godot": "4.7.2-stable (official)",
+  "groups": {
+    "field_Countryside": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 6764,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 6764
+    },
+    "field_DistantRidges": {
+      "full_detail_meshes_over_5000": [
+        "Ridge3:6912",
+        "Ridge2:6912",
+        "Ridge1:6912",
+        "Ridge0:6912"
+      ],
+      "full_detail_triangles": 27648,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 27648
+    },
+    "field_FlightCueShadows": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 0
+    },
+    "field_Lake": {
+      "full_detail_meshes_over_5000": [
+        "Water:19008",
+        "Basin:25944"
+      ],
+      "full_detail_triangles": 44952,
+      "lod_triangles": 20272,
+      "nodes": 1,
+      "shadow_caster_triangles": 7980,
+      "source_triangles": 65224
+    },
+    "field_NearGrass": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 49579,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 49579
+    },
+    "field_flightline_barrier": {
+      "full_detail_meshes_over_5000": [
+        "Barrier:38120"
+      ],
+      "full_detail_triangles": 38840,
+      "lod_triangles": 42761,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 81601
+    },
+    "field_pilot_station": {
+      "full_detail_meshes_over_5000": [
+        "Station:6124"
+      ],
+      "full_detail_triangles": 6124,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 6124
+    },
+    "field_rough": {
+      "full_detail_meshes_over_5000": [
+        "rough:84960"
+      ],
+      "full_detail_triangles": 84960,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 84960
+    },
+    "field_treeline": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 10080,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 10080
+    },
+    "field_windsock": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 5266,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 5266
+    },
+    "scenery_AirfieldDetail": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 4482,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 4482
+    },
+    "scenery_Birds": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 24,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 24
+    },
+    "scenery_BotanicalHabitats": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 2372,
+      "lod_triangles": 87283,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 89655
+    },
+    "scenery_BuildingRoofs": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 100,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 100
+    },
+    "scenery_ImportedVegetationBatches": {
+      "full_detail_meshes_over_5000": [
+        "landscapelab_quercus_Part_00:5272"
+      ],
+      "full_detail_triangles": 7702,
+      "lod_triangles": 124755,
+      "nodes": 1,
+      "shadow_caster_triangles": 132457,
+      "source_triangles": 132457
+    },
+    "scenery_Motion": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 296,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 296
+    },
+    "scenery_ParkedAircraft": {
+      "full_detail_meshes_over_5000": [
+        "sebart-avanti-s-a200-p100rx_assembled_west:17847",
+        "sebart-avanti-s-a200-p100rx_assembled_east:11898"
+      ],
+      "full_detail_triangles": 38845,
+      "lod_triangles": 234576,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 273421
+    },
+    "scenery_Population": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 897,
+      "lod_triangles": 370676,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 371573
+    },
+    "scenery_PopulationContacts": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 1391,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 1391
+    },
+    "scenery_WoodlandEdges": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 472,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 472
+    },
+    "scenery_cells": {
+      "full_detail_meshes_over_5000": [
+        "cell_-2_-1:8270",
+        "cell_-1_-1:15552",
+        "cell_-1_0:16408",
+        "cell_1000000_1001000:20314",
+        "cell_1000000_1002000:27509",
+        "cell_1000000_1003000:26613",
+        "cell_1000000_1004000:7975",
+        "cell_1002000_1001000:7720"
+      ],
+      "full_detail_triangles": 168031,
+      "lod_triangles": 0,
+      "nodes": 60,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 168031
+    },
+    "scenery_contact_shadows": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 702,
+      "lod_triangles": 0,
+      "nodes": 24,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 702
+    },
+    "scenery_hedges": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 848,
+      "lod_triangles": 0,
+      "nodes": 2,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 848
+    },
+    "scenery_pit_shelters": {
+      "full_detail_meshes_over_5000": [
+        "PitShelter_prop_pit-shelters_00:6402",
+        "PitShelter_prop_pit-shelters_01:5694"
+      ],
+      "full_detail_triangles": 12096,
+      "lod_triangles": 0,
+      "nodes": 2,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 12096
+    },
+    "world_AirfieldLighting": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 8462,
+      "lod_triangles": 17924,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 26386
+    },
+    "world_Campfire": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 305,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 305,
+      "source_triangles": 305
+    },
+    "world_FieldLights": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 240,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 192,
+      "source_triangles": 240
+    },
+    "world_SunGlare": {
+      "full_detail_meshes_over_5000": [],
+      "full_detail_triangles": 0,
+      "lod_triangles": 0,
+      "nodes": 1,
+      "shadow_caster_triangles": 0,
+      "source_triangles": 0
+    }
+  },
+  "memory": {
+    "buffer_bytes": 48160788,
+    "texture_bytes": 496040612,
+    "video_bytes": 544201400
+  },
+  "mesh_lod_threshold": 1.0,
+  "renderer": "gl_compatibility",
+  "scenery_sha256": "2200edd9baa87bb275025c295164e9f6aac8781eab28896f49fe4a66a0587130",
+  "viewport": [
+    1280.0,
+    720.0
+  ],
+  "views": {
+    "aerial_overview": {
+      "complete": {
+        "draws": 374,
+        "objects": 377,
+        "primitives": 436073
+      },
+      "complete_repeat": {
+        "draws": 374,
+        "objects": 377,
+        "primitives": 436073
+      },
+      "instanced_lod": {
+        "field_Lake": [
+          {
+            "counted": 50,
+            "instances": 105,
+            "node": "LakePlants/NymphaeaLeaves",
+            "one_instance": 50
+          }
+        ],
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 224,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 32,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 32
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 189,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 189
+          },
+          {
+            "counted": 24,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 24
+          },
+          {
+            "counted": 12,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 12
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 140,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 140
+          },
+          {
+            "counted": 224,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 112,
+            "instances": 28,
+            "node": "reed_aredon_Part_00",
+            "one_instance": 112
+          },
+          {
+            "counted": 2772,
+            "instances": 4,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 11604,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 11604
+          },
+          {
+            "counted": 4074,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 4074
+          },
+          {
+            "counted": 14924,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 9652
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 9052,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 9052
+          },
+          {
+            "counted": 5448,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1704
+          },
+          {
+            "counted": 64,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 64
+          },
+          {
+            "counted": 2644,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 2644
+          },
+          {
+            "counted": 888,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 798
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 2632,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 2492
+          },
+          {
+            "counted": 18777,
+            "instances": 2,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_east",
+            "one_instance": 12828
+          },
+          {
+            "counted": 3214,
+            "instances": 2,
+            "node": "turbo-lumber-evolution_assembled_east",
+            "one_instance": 3214
+          },
+          {
+            "counted": 24726,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 12828
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 194,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 194
+          },
+          {
+            "counted": 323,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 323
+          },
+          {
+            "counted": 190,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 190
+          },
+          {
+            "counted": 56,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 56
+          },
+          {
+            "counted": 84,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 84
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 194,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 194
+          },
+          {
+            "counted": 323,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 323
+          },
+          {
+            "counted": 190,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 190
+          },
+          {
+            "counted": 54,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 54
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 194,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 194
+          },
+          {
+            "counted": 324,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 324
+          },
+          {
+            "counted": 190,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 190
+          },
+          {
+            "counted": 57,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 57
+          },
+          {
+            "counted": 7307,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 6967
+          },
+          {
+            "counted": 15206,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 15206
+          },
+          {
+            "counted": 9269,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 9033
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 365,
+          "objects": 368,
+          "primitives": 433189
+        },
+        "field_DistantRidges": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        },
+        "field_FlightCueShadows": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        },
+        "field_Lake": {
+          "draws": 371,
+          "objects": 374,
+          "primitives": 391071
+        },
+        "field_NearGrass": {
+          "draws": 371,
+          "objects": 374,
+          "primitives": 435072
+        },
+        "field_flightline_barrier": {
+          "draws": 368,
+          "objects": 371,
+          "primitives": 396422
+        },
+        "field_pilot_station": {
+          "draws": 372,
+          "objects": 375,
+          "primitives": 429947
+        },
+        "field_rough": {
+          "draws": 373,
+          "objects": 376,
+          "primitives": 351113
+        },
+        "field_treeline": {
+          "draws": 371,
+          "objects": 374,
+          "primitives": 431729
+        },
+        "field_windsock": {
+          "draws": 370,
+          "objects": 373,
+          "primitives": 430805
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        },
+        "scenery_Birds": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 357,
+          "objects": 359,
+          "primitives": 429857
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 436045
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 336,
+          "objects": 339,
+          "primitives": 369984
+        },
+        "scenery_Motion": {
+          "draws": 373,
+          "objects": 376,
+          "primitives": 435913
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 195,
+          "objects": 196,
+          "primitives": 362313
+        },
+        "scenery_Population": {
+          "draws": 325,
+          "objects": 328,
+          "primitives": 401738
+        },
+        "scenery_PopulationContacts": {
+          "draws": 373,
+          "objects": 376,
+          "primitives": 434682
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 373,
+          "objects": 376,
+          "primitives": 436041
+        },
+        "scenery_cells": {
+          "draws": 364,
+          "objects": 367,
+          "primitives": 390495
+        },
+        "scenery_contact_shadows": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 435911
+        },
+        "scenery_hedges": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        },
+        "scenery_pit_shelters": {
+          "draws": 372,
+          "objects": 375,
+          "primitives": 423977
+        },
+        "world_AirfieldLighting": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 430127
+        },
+        "world_Campfire": {
+          "draws": 370,
+          "objects": 373,
+          "primitives": 435463
+        },
+        "world_FieldLights": {
+          "draws": 362,
+          "objects": 365,
+          "primitives": 435641
+        },
+        "world_SunGlare": {
+          "draws": 374,
+          "objects": 377,
+          "primitives": 436073
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 350,
+        "objects": 353,
+        "primitives": 399761
+      }
+    },
+    "birds_watch": {
+      "complete": {
+        "draws": 67,
+        "objects": 67,
+        "primitives": 208291
+      },
+      "complete_repeat": {
+        "draws": 67,
+        "objects": 67,
+        "primitives": 208291
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 18624,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 18624
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 192,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 192
+          },
+          {
+            "counted": 172,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 172
+          },
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1287,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          },
+          {
+            "counted": 96,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 96
+          },
+          {
+            "counted": 42,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 42
+          },
+          {
+            "counted": 1558,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1287,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 1287
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 64,
+          "objects": 64,
+          "primitives": 207305
+        },
+        "field_DistantRidges": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 194467
+        },
+        "field_FlightCueShadows": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "field_Lake": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "field_NearGrass": {
+          "draws": 64,
+          "objects": 64,
+          "primitives": 207188
+        },
+        "field_flightline_barrier": {
+          "draws": 61,
+          "objects": 61,
+          "primitives": 168293
+        },
+        "field_pilot_station": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "field_rough": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 123331
+        },
+        "field_treeline": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 205399
+        },
+        "field_windsock": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_Birds": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 208267
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 61,
+          "objects": 61,
+          "primitives": 205267
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 57,
+          "objects": 57,
+          "primitives": 173044
+        },
+        "scenery_Motion": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_Population": {
+          "draws": 56,
+          "objects": 56,
+          "primitives": 196369
+        },
+        "scenery_PopulationContacts": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 206900
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 208259
+        },
+        "scenery_cells": {
+          "draws": 58,
+          "objects": 58,
+          "primitives": 200175
+        },
+        "scenery_contact_shadows": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "scenery_hedges": {
+          "draws": 66,
+          "objects": 66,
+          "primitives": 207779
+        },
+        "scenery_pit_shelters": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "world_AirfieldLighting": {
+          "draws": 65,
+          "objects": 65,
+          "primitives": 204079
+        },
+        "world_Campfire": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        },
+        "world_FieldLights": {
+          "draws": 59,
+          "objects": 59,
+          "primitives": 208243
+        },
+        "world_SunGlare": {
+          "draws": 67,
+          "objects": 67,
+          "primitives": 208291
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 61,
+        "objects": 61,
+        "primitives": 187897
+      }
+    },
+    "car_park": {
+      "complete": {
+        "draws": 160,
+        "objects": 161,
+        "primitives": 365808
+      },
+      "complete_repeat": {
+        "draws": 160,
+        "objects": 161,
+        "primitives": 365808
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 28956,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 21048
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 33432,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 33432
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3522,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3382
+          },
+          {
+            "counted": 31162,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 19264
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 19750,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 19410
+          },
+          {
+            "counted": 20299,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 20299
+          },
+          {
+            "counted": 19976,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 19740
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 363438
+        },
+        "field_DistantRidges": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "field_FlightCueShadows": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "field_Lake": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "field_NearGrass": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 364860
+        },
+        "field_flightline_barrier": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "field_pilot_station": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "field_rough": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 280848
+        },
+        "field_treeline": {
+          "draws": 157,
+          "objects": 158,
+          "primitives": 361710
+        },
+        "field_windsock": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "scenery_Birds": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 364869
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 143,
+          "objects": 144,
+          "primitives": 365740
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 130,
+          "objects": 131,
+          "primitives": 246123
+        },
+        "scenery_Motion": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 121,
+          "objects": 121,
+          "primitives": 331124
+        },
+        "scenery_Population": {
+          "draws": 130,
+          "objects": 131,
+          "primitives": 305783
+        },
+        "scenery_PopulationContacts": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 364417
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 365776
+        },
+        "scenery_cells": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 318790
+        },
+        "scenery_contact_shadows": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 365736
+        },
+        "scenery_hedges": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "scenery_pit_shelters": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 359406
+        },
+        "world_AirfieldLighting": {
+          "draws": 155,
+          "objects": 156,
+          "primitives": 362704
+        },
+        "world_Campfire": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        },
+        "world_FieldLights": {
+          "draws": 155,
+          "objects": 156,
+          "primitives": 365798
+        },
+        "world_SunGlare": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 365808
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 140,
+        "objects": 141,
+        "primitives": 286018
+      }
+    },
+    "fleet_close": {
+      "complete": {
+        "draws": 152,
+        "objects": 153,
+        "primitives": 315883
+      },
+      "complete_repeat": {
+        "draws": 152,
+        "objects": 153,
+        "primitives": 315883
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 28956,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 21048
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 4870,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 4730
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 96,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 96
+          },
+          {
+            "counted": 42,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 42
+          },
+          {
+            "counted": 1558,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1532,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 1532
+          },
+          {
+            "counted": 1287,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 18564,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 18224
+          },
+          {
+            "counted": 16147,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 16147
+          },
+          {
+            "counted": 16350,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 16114
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 144,
+          "objects": 145,
+          "primitives": 313053
+        },
+        "field_DistantRidges": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "field_FlightCueShadows": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "field_Lake": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "field_NearGrass": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 314780
+        },
+        "field_flightline_barrier": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 315881
+        },
+        "field_pilot_station": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "field_rough": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 230923
+        },
+        "field_treeline": {
+          "draws": 148,
+          "objects": 149,
+          "primitives": 310675
+        },
+        "field_windsock": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "scenery_Birds": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 147,
+          "objects": 147,
+          "primitives": 314274
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 315879
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 124,
+          "objects": 125,
+          "primitives": 207342
+        },
+        "scenery_Motion": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 110,
+          "objects": 111,
+          "primitives": 303005
+        },
+        "scenery_Population": {
+          "draws": 116,
+          "objects": 117,
+          "primitives": 257716
+        },
+        "scenery_PopulationContacts": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 314492
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 315741
+        },
+        "scenery_cells": {
+          "draws": 146,
+          "objects": 147,
+          "primitives": 288117
+        },
+        "scenery_contact_shadows": {
+          "draws": 150,
+          "objects": 151,
+          "primitives": 315811
+        },
+        "scenery_hedges": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "scenery_pit_shelters": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 309481
+        },
+        "world_AirfieldLighting": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 311123
+        },
+        "world_Campfire": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        },
+        "world_FieldLights": {
+          "draws": 145,
+          "objects": 146,
+          "primitives": 315837
+        },
+        "world_SunGlare": {
+          "draws": 152,
+          "objects": 153,
+          "primitives": 315883
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 134,
+        "objects": 135,
+        "primitives": 247237
+      }
+    },
+    "pilot_east": {
+      "complete": {
+        "draws": 80,
+        "objects": 81,
+        "primitives": 278494
+      },
+      "complete_repeat": {
+        "draws": 80,
+        "objects": 81,
+        "primitives": 278494
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 18624,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 18624
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 192,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 192
+          },
+          {
+            "counted": 172,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 172
+          },
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1532,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 1532
+          },
+          {
+            "counted": 1287,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 76,
+          "objects": 77,
+          "primitives": 276690
+        },
+        "field_DistantRidges": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 271582
+        },
+        "field_FlightCueShadows": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "field_Lake": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "field_NearGrass": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 277391
+        },
+        "field_flightline_barrier": {
+          "draws": 74,
+          "objects": 75,
+          "primitives": 238496
+        },
+        "field_pilot_station": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "field_rough": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 193534
+        },
+        "field_treeline": {
+          "draws": 78,
+          "objects": 79,
+          "primitives": 276346
+        },
+        "field_windsock": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_Birds": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 72,
+          "objects": 72,
+          "primitives": 275422
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 70,
+          "objects": 71,
+          "primitives": 243247
+        },
+        "scenery_Motion": {
+          "draws": 76,
+          "objects": 77,
+          "primitives": 278358
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_Population": {
+          "draws": 73,
+          "objects": 74,
+          "primitives": 270614
+        },
+        "scenery_PopulationContacts": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 277103
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 278462
+        },
+        "scenery_cells": {
+          "draws": 62,
+          "objects": 63,
+          "primitives": 186721
+        },
+        "scenery_contact_shadows": {
+          "draws": 79,
+          "objects": 80,
+          "primitives": 278476
+        },
+        "scenery_hedges": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "scenery_pit_shelters": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "world_AirfieldLighting": {
+          "draws": 76,
+          "objects": 77,
+          "primitives": 276618
+        },
+        "world_Campfire": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        },
+        "world_FieldLights": {
+          "draws": 71,
+          "objects": 72,
+          "primitives": 278350
+        },
+        "world_SunGlare": {
+          "draws": 80,
+          "objects": 81,
+          "primitives": 278494
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 71,
+        "objects": 72,
+        "primitives": 248692
+      }
+    },
+    "pilot_north": {
+      "complete": {
+        "draws": 115,
+        "objects": 117,
+        "primitives": 260518
+      },
+      "complete_repeat": {
+        "draws": 115,
+        "objects": 117,
+        "primitives": 260518
+      },
+      "instanced_lod": {
+        "field_Lake": [
+          {
+            "counted": 50,
+            "instances": 105,
+            "node": "LakePlants/NymphaeaLeaves",
+            "one_instance": 50
+          },
+          {
+            "counted": 80,
+            "instances": 14,
+            "node": "LakePlants/WaterlilyBlossoms",
+            "one_instance": 80
+          },
+          {
+            "counted": 272,
+            "instances": 21,
+            "node": "LakePlants/EmergentReeds/reed_aredon_Part_00",
+            "one_instance": 272
+          }
+        ],
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 176,
+            "instances": 22,
+            "node": "corn_4_Part_00",
+            "one_instance": 176
+          },
+          {
+            "counted": 66,
+            "instances": 62,
+            "node": "wheat_4_Part_00",
+            "one_instance": 66
+          },
+          {
+            "counted": 136,
+            "instances": 28,
+            "node": "reed_aredon_Part_00",
+            "one_instance": 136
+          },
+          {
+            "counted": 2772,
+            "instances": 4,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 36,
+            "instances": 12,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 36
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 108,
+          "objects": 110,
+          "primitives": 258906
+        },
+        "field_DistantRidges": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 232870
+        },
+        "field_FlightCueShadows": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "field_Lake": {
+          "draws": 102,
+          "objects": 104,
+          "primitives": 215164
+        },
+        "field_NearGrass": {
+          "draws": 112,
+          "objects": 114,
+          "primitives": 259415
+        },
+        "field_flightline_barrier": {
+          "draws": 109,
+          "objects": 111,
+          "primitives": 220520
+        },
+        "field_pilot_station": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "field_rough": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 175558
+        },
+        "field_treeline": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 255646
+        },
+        "field_windsock": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "scenery_Birds": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 260494
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 96,
+          "objects": 97,
+          "primitives": 253674
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 111,
+          "objects": 113,
+          "primitives": 260494
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 108,
+          "objects": 109,
+          "primitives": 243859
+        },
+        "scenery_Motion": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "scenery_Population": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 258960
+        },
+        "scenery_PopulationContacts": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 114,
+          "objects": 116,
+          "primitives": 260486
+        },
+        "scenery_cells": {
+          "draws": 95,
+          "objects": 97,
+          "primitives": 236222
+        },
+        "scenery_contact_shadows": {
+          "draws": 109,
+          "objects": 111,
+          "primitives": 260302
+        },
+        "scenery_hedges": {
+          "draws": 113,
+          "objects": 115,
+          "primitives": 259670
+        },
+        "scenery_pit_shelters": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "world_AirfieldLighting": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 256096
+        },
+        "world_Campfire": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        },
+        "world_FieldLights": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 260470
+        },
+        "world_SunGlare": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 260518
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 107,
+        "objects": 109,
+        "primitives": 249300
+      }
+    },
+    "pilot_south": {
+      "complete": {
+        "draws": 159,
+        "objects": 160,
+        "primitives": 348654
+      },
+      "complete_repeat": {
+        "draws": 159,
+        "objects": 160,
+        "primitives": 348654
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 378,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 378
+          },
+          {
+            "counted": 379,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 379
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 28956,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 21048
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 758,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 3380,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 3380
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 192,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 192
+          },
+          {
+            "counted": 172,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 172
+          },
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1287,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1295,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 1295
+          },
+          {
+            "counted": 382,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 643,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 643
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1296,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 1296
+          },
+          {
+            "counted": 766,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 18412,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 18072
+          },
+          {
+            "counted": 16071,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 16071
+          },
+          {
+            "counted": 16274,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 16038
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 346138
+        },
+        "field_DistantRidges": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "field_FlightCueShadows": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "field_Lake": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "field_NearGrass": {
+          "draws": 156,
+          "objects": 157,
+          "primitives": 347551
+        },
+        "field_flightline_barrier": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 348652
+        },
+        "field_pilot_station": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "field_rough": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 263694
+        },
+        "field_treeline": {
+          "draws": 155,
+          "objects": 156,
+          "primitives": 343446
+        },
+        "field_windsock": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 154,
+          "objects": 155,
+          "primitives": 346789
+        },
+        "scenery_Birds": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 152,
+          "objects": 152,
+          "primitives": 345908
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 153,
+          "objects": 154,
+          "primitives": 348630
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 117,
+          "objects": 118,
+          "primitives": 227895
+        },
+        "scenery_Motion": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 348494
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "scenery_Population": {
+          "draws": 112,
+          "objects": 113,
+          "primitives": 284736
+        },
+        "scenery_PopulationContacts": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 347263
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 157,
+          "objects": 158,
+          "primitives": 348512
+        },
+        "scenery_cells": {
+          "draws": 151,
+          "objects": 152,
+          "primitives": 303412
+        },
+        "scenery_contact_shadows": {
+          "draws": 158,
+          "objects": 159,
+          "primitives": 348600
+        },
+        "scenery_hedges": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        },
+        "scenery_pit_shelters": {
+          "draws": 157,
+          "objects": 158,
+          "primitives": 336558
+        },
+        "world_AirfieldLighting": {
+          "draws": 154,
+          "objects": 155,
+          "primitives": 343038
+        },
+        "world_Campfire": {
+          "draws": 155,
+          "objects": 156,
+          "primitives": 348044
+        },
+        "world_FieldLights": {
+          "draws": 149,
+          "objects": 150,
+          "primitives": 348414
+        },
+        "world_SunGlare": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 348654
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 131,
+        "objects": 132,
+        "primitives": 273498
+      }
+    },
+    "pilot_west": {
+      "complete": {
+        "draws": 66,
+        "objects": 67,
+        "primitives": 175627
+      },
+      "complete_repeat": {
+        "draws": 66,
+        "objects": 67,
+        "primitives": 175627
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 192,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 192
+          },
+          {
+            "counted": 172,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 172
+          },
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1532,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 1532
+          },
+          {
+            "counted": 1287,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 61,
+          "objects": 62,
+          "primitives": 174545
+        },
+        "field_DistantRidges": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 168715
+        },
+        "field_FlightCueShadows": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "field_Lake": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "field_NearGrass": {
+          "draws": 63,
+          "objects": 64,
+          "primitives": 174524
+        },
+        "field_flightline_barrier": {
+          "draws": 60,
+          "objects": 61,
+          "primitives": 135629
+        },
+        "field_pilot_station": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "field_rough": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 90667
+        },
+        "field_treeline": {
+          "draws": 63,
+          "objects": 64,
+          "primitives": 170167
+        },
+        "field_windsock": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 175625
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_Birds": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 59,
+          "objects": 59,
+          "primitives": 172881
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 58,
+          "objects": 59,
+          "primitives": 175595
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 60,
+          "objects": 61,
+          "primitives": 159004
+        },
+        "scenery_Motion": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_Population": {
+          "draws": 59,
+          "objects": 60,
+          "primitives": 167747
+        },
+        "scenery_PopulationContacts": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 174236
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 64,
+          "objects": 65,
+          "primitives": 175485
+        },
+        "scenery_cells": {
+          "draws": 62,
+          "objects": 63,
+          "primitives": 170267
+        },
+        "scenery_contact_shadows": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_hedges": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "scenery_pit_shelters": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "world_AirfieldLighting": {
+          "draws": 64,
+          "objects": 65,
+          "primitives": 173741
+        },
+        "world_Campfire": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        },
+        "world_FieldLights": {
+          "draws": 58,
+          "objects": 59,
+          "primitives": 175579
+        },
+        "world_SunGlare": {
+          "draws": 66,
+          "objects": 67,
+          "primitives": 175627
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 62,
+        "objects": 63,
+        "primitives": 164545
+      }
+    },
+    "postcard_club": {
+      "complete": {
+        "draws": 369,
+        "objects": 372,
+        "primitives": 451627
+      },
+      "complete_repeat": {
+        "draws": 369,
+        "objects": 372,
+        "primitives": 451627
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 170,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 170
+          },
+          {
+            "counted": 166,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 166
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 378,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 392,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 392
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 18624,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 18624
+          },
+          {
+            "counted": 8492,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 8492
+          },
+          {
+            "counted": 19304,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 14032
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 14072,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 14072
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 378,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 2888,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 2888
+          },
+          {
+            "counted": 888,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 798
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3390,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3250
+          },
+          {
+            "counted": 25411,
+            "instances": 2,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_east",
+            "one_instance": 19462
+          },
+          {
+            "counted": 11830,
+            "instances": 2,
+            "node": "turbo-lumber-evolution_assembled_east",
+            "one_instance": 11830
+          },
+          {
+            "counted": 25122,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 13224
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 121,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 121
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 123,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 123
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 648,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 648
+          },
+          {
+            "counted": 382,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 120,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 120
+          },
+          {
+            "counted": 15283,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 14943
+          },
+          {
+            "counted": 15752,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 15752
+          },
+          {
+            "counted": 15979,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 15743
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 360,
+          "objects": 363,
+          "primitives": 449761
+        },
+        "field_DistantRidges": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        },
+        "field_FlightCueShadows": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        },
+        "field_Lake": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        },
+        "field_NearGrass": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 450524
+        },
+        "field_flightline_barrier": {
+          "draws": 363,
+          "objects": 366,
+          "primitives": 411629
+        },
+        "field_pilot_station": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 445501
+        },
+        "field_rough": {
+          "draws": 368,
+          "objects": 371,
+          "primitives": 366667
+        },
+        "field_treeline": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 448357
+        },
+        "field_windsock": {
+          "draws": 365,
+          "objects": 368,
+          "primitives": 446359
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 364,
+          "objects": 367,
+          "primitives": 450183
+        },
+        "scenery_Birds": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 360,
+          "objects": 362,
+          "primitives": 448705
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 358,
+          "objects": 361,
+          "primitives": 451583
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 331,
+          "objects": 334,
+          "primitives": 362078
+        },
+        "scenery_Motion": {
+          "draws": 368,
+          "objects": 371,
+          "primitives": 451467
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 190,
+          "objects": 191,
+          "primitives": 357807
+        },
+        "scenery_Population": {
+          "draws": 320,
+          "objects": 323,
+          "primitives": 399269
+        },
+        "scenery_PopulationContacts": {
+          "draws": 368,
+          "objects": 371,
+          "primitives": 450236
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 368,
+          "objects": 371,
+          "primitives": 451595
+        },
+        "scenery_cells": {
+          "draws": 359,
+          "objects": 362,
+          "primitives": 404787
+        },
+        "scenery_contact_shadows": {
+          "draws": 366,
+          "objects": 369,
+          "primitives": 451537
+        },
+        "scenery_hedges": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        },
+        "scenery_pit_shelters": {
+          "draws": 367,
+          "objects": 370,
+          "primitives": 439531
+        },
+        "world_AirfieldLighting": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 444381
+        },
+        "world_Campfire": {
+          "draws": 365,
+          "objects": 368,
+          "primitives": 451017
+        },
+        "world_FieldLights": {
+          "draws": 357,
+          "objects": 360,
+          "primitives": 451195
+        },
+        "world_SunGlare": {
+          "draws": 369,
+          "objects": 372,
+          "primitives": 451627
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 345,
+        "objects": 348,
+        "primitives": 403585
+      }
+    },
+    "postcard_farm": {
+      "complete": {
+        "draws": 86,
+        "objects": 88,
+        "primitives": 207983
+      },
+      "complete_repeat": {
+        "draws": 86,
+        "objects": 88,
+        "primitives": 207983
+      },
+      "instanced_lod": {
+        "field_Lake": [
+          {
+            "counted": 100,
+            "instances": 105,
+            "node": "LakePlants/NymphaeaLeaves",
+            "one_instance": 100
+          },
+          {
+            "counted": 80,
+            "instances": 14,
+            "node": "LakePlants/WaterlilyBlossoms",
+            "one_instance": 80
+          },
+          {
+            "counted": 556,
+            "instances": 21,
+            "node": "LakePlants/EmergentReeds/reed_aredon_Part_00",
+            "one_instance": 556
+          }
+        ],
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 440,
+            "instances": 22,
+            "node": "corn_4_Part_00",
+            "one_instance": 440
+          },
+          {
+            "counted": 102,
+            "instances": 62,
+            "node": "wheat_4_Part_00",
+            "one_instance": 102
+          },
+          {
+            "counted": 278,
+            "instances": 28,
+            "node": "reed_aredon_Part_00",
+            "one_instance": 278
+          },
+          {
+            "counted": 2772,
+            "instances": 4,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 9312,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 9312
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 144,
+            "instances": 12,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 82,
+          "objects": 84,
+          "primitives": 206725
+        },
+        "field_DistantRidges": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 194159
+        },
+        "field_FlightCueShadows": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "field_Lake": {
+          "draws": 73,
+          "objects": 75,
+          "primitives": 162295
+        },
+        "field_NearGrass": {
+          "draws": 83,
+          "objects": 85,
+          "primitives": 206880
+        },
+        "field_flightline_barrier": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 207981
+        },
+        "field_pilot_station": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "field_rough": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 123023
+        },
+        "field_treeline": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 206003
+        },
+        "field_windsock": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_Birds": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 67,
+          "objects": 68,
+          "primitives": 200697
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 84,
+          "objects": 86,
+          "primitives": 207971
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 77,
+          "objects": 78,
+          "primitives": 181904
+        },
+        "scenery_Motion": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_Population": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "scenery_PopulationContacts": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 206592
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 207951
+        },
+        "scenery_cells": {
+          "draws": 76,
+          "objects": 78,
+          "primitives": 188443
+        },
+        "scenery_contact_shadows": {
+          "draws": 81,
+          "objects": 83,
+          "primitives": 207821
+        },
+        "scenery_hedges": {
+          "draws": 85,
+          "objects": 87,
+          "primitives": 207647
+        },
+        "scenery_pit_shelters": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "world_AirfieldLighting": {
+          "draws": 82,
+          "objects": 84,
+          "primitives": 203701
+        },
+        "world_Campfire": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        },
+        "world_FieldLights": {
+          "draws": 78,
+          "objects": 80,
+          "primitives": 207935
+        },
+        "world_SunGlare": {
+          "draws": 86,
+          "objects": 88,
+          "primitives": 207983
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 76,
+        "objects": 78,
+        "primitives": 187311
+      }
+    },
+    "postcard_meadow": {
+      "complete": {
+        "draws": 117,
+        "objects": 119,
+        "primitives": 203389
+      },
+      "complete_repeat": {
+        "draws": 117,
+        "objects": 119,
+        "primitives": 203389
+      },
+      "instanced_lod": {
+        "field_Lake": [
+          {
+            "counted": 50,
+            "instances": 105,
+            "node": "LakePlants/NymphaeaLeaves",
+            "one_instance": 50
+          },
+          {
+            "counted": 80,
+            "instances": 14,
+            "node": "LakePlants/WaterlilyBlossoms",
+            "one_instance": 80
+          },
+          {
+            "counted": 460,
+            "instances": 21,
+            "node": "LakePlants/EmergentReeds/reed_aredon_Part_00",
+            "one_instance": 460
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 176,
+            "instances": 22,
+            "node": "corn_4_Part_00",
+            "one_instance": 176
+          },
+          {
+            "counted": 66,
+            "instances": 62,
+            "node": "wheat_4_Part_00",
+            "one_instance": 66
+          },
+          {
+            "counted": 230,
+            "instances": 28,
+            "node": "reed_aredon_Part_00",
+            "one_instance": 230
+          },
+          {
+            "counted": 2772,
+            "instances": 4,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 72,
+            "instances": 12,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 72
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 110,
+          "objects": 112,
+          "primitives": 201315
+        },
+        "field_DistantRidges": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 189565
+        },
+        "field_FlightCueShadows": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "field_Lake": {
+          "draws": 104,
+          "objects": 106,
+          "primitives": 157847
+        },
+        "field_NearGrass": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "field_flightline_barrier": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "field_pilot_station": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "field_rough": {
+          "draws": 116,
+          "objects": 118,
+          "primitives": 118429
+        },
+        "field_treeline": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 201409
+        },
+        "field_windsock": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_Birds": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 97,
+          "objects": 98,
+          "primitives": 195629
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 113,
+          "objects": 115,
+          "primitives": 203365
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 110,
+          "objects": 111,
+          "primitives": 186694
+        },
+        "scenery_Motion": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203321
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_Population": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_PopulationContacts": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203247
+        },
+        "scenery_cells": {
+          "draws": 91,
+          "objects": 93,
+          "primitives": 180167
+        },
+        "scenery_contact_shadows": {
+          "draws": 99,
+          "objects": 101,
+          "primitives": 202777
+        },
+        "scenery_hedges": {
+          "draws": 116,
+          "objects": 118,
+          "primitives": 203053
+        },
+        "scenery_pit_shelters": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "world_AirfieldLighting": {
+          "draws": 107,
+          "objects": 109,
+          "primitives": 197275
+        },
+        "world_Campfire": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        },
+        "world_FieldLights": {
+          "draws": 115,
+          "objects": 117,
+          "primitives": 203353
+        },
+        "world_SunGlare": {
+          "draws": 117,
+          "objects": 119,
+          "primitives": 203389
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 109,
+        "objects": 111,
+        "primitives": 192077
+      }
+    },
+    "postcard_pavilion": {
+      "complete": {
+        "draws": 255,
+        "objects": 257,
+        "primitives": 393501
+      },
+      "complete_repeat": {
+        "draws": 255,
+        "objects": 257,
+        "primitives": 393501
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 378,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 378
+          },
+          {
+            "counted": 758,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 758
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 28956,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 21048
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          },
+          {
+            "counted": 9720,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 4104
+          },
+          {
+            "counted": 758,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 3380,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 3380
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3522,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3382
+          },
+          {
+            "counted": 31162,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 19264
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1295,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 1295
+          },
+          {
+            "counted": 766,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1296,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 1296
+          },
+          {
+            "counted": 766,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 18564,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 18224
+          },
+          {
+            "counted": 16147,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 16147
+          },
+          {
+            "counted": 16274,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 16038
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 246,
+          "objects": 248,
+          "primitives": 391635
+        },
+        "field_DistantRidges": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "field_FlightCueShadows": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "field_Lake": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "field_NearGrass": {
+          "draws": 252,
+          "objects": 254,
+          "primitives": 392398
+        },
+        "field_flightline_barrier": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 393499
+        },
+        "field_pilot_station": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "field_rough": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 308541
+        },
+        "field_treeline": {
+          "draws": 253,
+          "objects": 255,
+          "primitives": 390231
+        },
+        "field_windsock": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 250,
+          "objects": 252,
+          "primitives": 391257
+        },
+        "scenery_Birds": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 248,
+          "objects": 249,
+          "primitives": 390755
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 244,
+          "objects": 246,
+          "primitives": 393457
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 208,
+          "objects": 210,
+          "primitives": 266802
+        },
+        "scenery_Motion": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 393341
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 341911
+        },
+        "scenery_Population": {
+          "draws": 213,
+          "objects": 215,
+          "primitives": 334127
+        },
+        "scenery_PopulationContacts": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 392110
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 393469
+        },
+        "scenery_cells": {
+          "draws": 246,
+          "objects": 248,
+          "primitives": 347903
+        },
+        "scenery_contact_shadows": {
+          "draws": 253,
+          "objects": 255,
+          "primitives": 393429
+        },
+        "scenery_hedges": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "scenery_pit_shelters": {
+          "draws": 254,
+          "objects": 256,
+          "primitives": 387099
+        },
+        "world_AirfieldLighting": {
+          "draws": 249,
+          "objects": 251,
+          "primitives": 387795
+        },
+        "world_Campfire": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        },
+        "world_FieldLights": {
+          "draws": 245,
+          "objects": 247,
+          "primitives": 393261
+        },
+        "world_SunGlare": {
+          "draws": 255,
+          "objects": 257,
+          "primitives": 393501
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 225,
+        "objects": 227,
+        "primitives": 313610
+      }
+    },
+    "postcard_pits": {
+      "complete": {
+        "draws": 356,
+        "objects": 359,
+        "primitives": 523637
+      },
+      "complete_repeat": {
+        "draws": 356,
+        "objects": 359,
+        "primitives": 523637
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 378,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 378
+          },
+          {
+            "counted": 166,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 166
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 378,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 19304,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 14032
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 758,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 3380,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 3380
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3722,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3582
+          },
+          {
+            "counted": 19839,
+            "instances": 2,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_east",
+            "one_instance": 13890
+          },
+          {
+            "counted": 11442,
+            "instances": 2,
+            "node": "turbo-lumber-evolution_assembled_east",
+            "one_instance": 11442
+          },
+          {
+            "counted": 32372,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 20474
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1295,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 1295
+          },
+          {
+            "counted": 766,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 648,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 648
+          },
+          {
+            "counted": 382,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 120,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 120
+          },
+          {
+            "counted": 18564,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 18224
+          },
+          {
+            "counted": 16071,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 16071
+          },
+          {
+            "counted": 16350,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 16114
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 349,
+          "objects": 352,
+          "primitives": 520675
+        },
+        "field_DistantRidges": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "field_FlightCueShadows": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "field_Lake": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "field_NearGrass": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 522534
+        },
+        "field_flightline_barrier": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 523635
+        },
+        "field_pilot_station": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "field_rough": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 438677
+        },
+        "field_treeline": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 520415
+        },
+        "field_windsock": {
+          "draws": 352,
+          "objects": 355,
+          "primitives": 518369
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 351,
+          "objects": 354,
+          "primitives": 521985
+        },
+        "scenery_Birds": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 349,
+          "objects": 351,
+          "primitives": 521271
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 523625
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 314,
+          "objects": 317,
+          "primitives": 410730
+        },
+        "scenery_Motion": {
+          "draws": 354,
+          "objects": 357,
+          "primitives": 523443
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 177,
+          "objects": 178,
+          "primitives": 427889
+        },
+        "scenery_Population": {
+          "draws": 314,
+          "objects": 317,
+          "primitives": 466860
+        },
+        "scenery_PopulationContacts": {
+          "draws": 355,
+          "objects": 358,
+          "primitives": 522246
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 523385
+        },
+        "scenery_cells": {
+          "draws": 339,
+          "objects": 342,
+          "primitives": 389268
+        },
+        "scenery_contact_shadows": {
+          "draws": 353,
+          "objects": 356,
+          "primitives": 523547
+        },
+        "scenery_hedges": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        },
+        "scenery_pit_shelters": {
+          "draws": 354,
+          "objects": 357,
+          "primitives": 511541
+        },
+        "world_AirfieldLighting": {
+          "draws": 341,
+          "objects": 344,
+          "primitives": 516413
+        },
+        "world_Campfire": {
+          "draws": 352,
+          "objects": 355,
+          "primitives": 523027
+        },
+        "world_FieldLights": {
+          "draws": 344,
+          "objects": 347,
+          "primitives": 523205
+        },
+        "world_SunGlare": {
+          "draws": 356,
+          "objects": 359,
+          "primitives": 523637
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 328,
+        "objects": 331,
+        "primitives": 457137
+      }
+    },
+    "runway_threshold": {
+      "complete": {
+        "draws": 273,
+        "objects": 275,
+        "primitives": 395175
+      },
+      "complete_repeat": {
+        "draws": 273,
+        "objects": 275,
+        "primitives": 395175
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 378,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 378
+          },
+          {
+            "counted": 166,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 166
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 8492,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 8492
+          },
+          {
+            "counted": 19304,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 14032
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 378,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 2888,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 2888
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3390,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3250
+          },
+          {
+            "counted": 25122,
+            "instances": 3,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_west",
+            "one_instance": 13224
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 643,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 643
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 643,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 643
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 648,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 648
+          },
+          {
+            "counted": 382,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 120,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 120
+          },
+          {
+            "counted": 15543,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 15203
+          },
+          {
+            "counted": 15979,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 15743
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 262,
+          "objects": 264,
+          "primitives": 393091
+        },
+        "field_DistantRidges": {
+          "draws": 271,
+          "objects": 273,
+          "primitives": 381351
+        },
+        "field_FlightCueShadows": {
+          "draws": 273,
+          "objects": 275,
+          "primitives": 395175
+        },
+        "field_Lake": {
+          "draws": 273,
+          "objects": 275,
+          "primitives": 395175
+        },
+        "field_NearGrass": {
+          "draws": 270,
+          "objects": 272,
+          "primitives": 394072
+        },
+        "field_flightline_barrier": {
+          "draws": 267,
+          "objects": 269,
+          "primitives": 355177
+        },
+        "field_pilot_station": {
+          "draws": 271,
+          "objects": 273,
+          "primitives": 389049
+        },
+        "field_rough": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 310215
+        },
+        "field_treeline": {
+          "draws": 270,
+          "objects": 272,
+          "primitives": 389715
+        },
+        "field_windsock": {
+          "draws": 269,
+          "objects": 271,
+          "primitives": 389907
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 268,
+          "objects": 270,
+          "primitives": 393523
+        },
+        "scenery_Birds": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 395151
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 264,
+          "objects": 265,
+          "primitives": 391481
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 262,
+          "objects": 264,
+          "primitives": 395131
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 237,
+          "objects": 239,
+          "primitives": 309674
+        },
+        "scenery_Motion": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 395015
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 178,
+          "objects": 179,
+          "primitives": 349801
+        },
+        "scenery_Population": {
+          "draws": 234,
+          "objects": 236,
+          "primitives": 357267
+        },
+        "scenery_PopulationContacts": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 393784
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 271,
+          "objects": 273,
+          "primitives": 395033
+        },
+        "scenery_cells": {
+          "draws": 263,
+          "objects": 265,
+          "primitives": 349245
+        },
+        "scenery_contact_shadows": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 395157
+        },
+        "scenery_hedges": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 394663
+        },
+        "scenery_pit_shelters": {
+          "draws": 272,
+          "objects": 274,
+          "primitives": 388773
+        },
+        "world_AirfieldLighting": {
+          "draws": 258,
+          "objects": 260,
+          "primitives": 388009
+        },
+        "world_Campfire": {
+          "draws": 273,
+          "objects": 275,
+          "primitives": 395175
+        },
+        "world_FieldLights": {
+          "draws": 261,
+          "objects": 263,
+          "primitives": 394743
+        },
+        "world_SunGlare": {
+          "draws": 273,
+          "objects": 275,
+          "primitives": 395175
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 251,
+        "objects": 253,
+        "primitives": 344806
+      }
+    },
+    "runway_zoom_100": {
+      "complete": {
+        "draws": 165,
+        "objects": 166,
+        "primitives": 401819
+      },
+      "complete_repeat": {
+        "draws": 165,
+        "objects": 166,
+        "primitives": 401819
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 326,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 379,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 379
+          }
+        ],
+        "scenery_AirfieldDetail": [
+          {
+            "counted": 342,
+            "instances": 2,
+            "node": "rock_0",
+            "one_instance": 342
+          },
+          {
+            "counted": 378,
+            "instances": 2,
+            "node": "flower_0",
+            "one_instance": 378
+          },
+          {
+            "counted": 758,
+            "instances": 2,
+            "node": "flower_1",
+            "one_instance": 758
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 378,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 27936,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 27936
+          },
+          {
+            "counted": 12738,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 12738
+          },
+          {
+            "counted": 28956,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 21048
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 758,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 3380,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 3380
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1295,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 1295
+          },
+          {
+            "counted": 766,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 643,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 643
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1295,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 1295
+          },
+          {
+            "counted": 766,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 20,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 20
+          },
+          {
+            "counted": 778,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 778
+          },
+          {
+            "counted": 1296,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 1296
+          },
+          {
+            "counted": 766,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 766
+          },
+          {
+            "counted": 1287,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 19078,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 18738
+          },
+          {
+            "counted": 20299,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 20299
+          },
+          {
+            "counted": 21870,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 21634
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 400591
+        },
+        "field_DistantRidges": {
+          "draws": 163,
+          "objects": 164,
+          "primitives": 387995
+        },
+        "field_FlightCueShadows": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        },
+        "field_Lake": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        },
+        "field_NearGrass": {
+          "draws": 162,
+          "objects": 163,
+          "primitives": 400716
+        },
+        "field_flightline_barrier": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 361821
+        },
+        "field_pilot_station": {
+          "draws": 163,
+          "objects": 164,
+          "primitives": 395693
+        },
+        "field_rough": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 316859
+        },
+        "field_treeline": {
+          "draws": 163,
+          "objects": 164,
+          "primitives": 399059
+        },
+        "field_windsock": {
+          "draws": 161,
+          "objects": 162,
+          "primitives": 396551
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 160,
+          "objects": 161,
+          "primitives": 399575
+        },
+        "scenery_Birds": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 401795
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 156,
+          "objects": 156,
+          "primitives": 398505
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 163,
+          "objects": 164,
+          "primitives": 401811
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 123,
+          "objects": 124,
+          "primitives": 281060
+        },
+        "scenery_Motion": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 401659
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        },
+        "scenery_Population": {
+          "draws": 116,
+          "objects": 117,
+          "primitives": 328085
+        },
+        "scenery_PopulationContacts": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 400428
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 401787
+        },
+        "scenery_cells": {
+          "draws": 156,
+          "objects": 157,
+          "primitives": 363337
+        },
+        "scenery_contact_shadows": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 401765
+        },
+        "scenery_hedges": {
+          "draws": 164,
+          "objects": 165,
+          "primitives": 401307
+        },
+        "scenery_pit_shelters": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        },
+        "world_AirfieldLighting": {
+          "draws": 159,
+          "objects": 160,
+          "primitives": 396413
+        },
+        "world_Campfire": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        },
+        "world_FieldLights": {
+          "draws": 153,
+          "objects": 154,
+          "primitives": 401387
+        },
+        "world_SunGlare": {
+          "draws": 165,
+          "objects": 166,
+          "primitives": 401819
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 138,
+        "objects": 139,
+        "primitives": 326872
+      }
+    },
+    "runway_zoom_300": {
+      "complete": {
+        "draws": 336,
+        "objects": 338,
+        "primitives": 451177
+      },
+      "complete_repeat": {
+        "draws": 336,
+        "objects": 338,
+        "primitives": 451177
+      },
+      "instanced_lod": {
+        "field_NearGrass": [
+          {
+            "counted": 155,
+            "instances": 67,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 224,
+            "instances": 42,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 622,
+            "instances": 41,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          }
+        ],
+        "field_flightline_barrier": [
+          {
+            "counted": 622,
+            "instances": 40,
+            "node": "PostVegetation/grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 155,
+            "instances": 20,
+            "node": "PostVegetation/grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 189,
+            "instances": 39,
+            "node": "PostVegetation/clover_1_Part_00",
+            "one_instance": 189
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 189,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 189
+          },
+          {
+            "counted": 378,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 392,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 392
+          },
+          {
+            "counted": 224,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 622,
+            "instances": 2,
+            "node": "grass_wispy_tall_Part_00",
+            "one_instance": 622
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 18624,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 18624
+          },
+          {
+            "counted": 8492,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 8492
+          },
+          {
+            "counted": 19304,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 14032
+          },
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          },
+          {
+            "counted": 22288,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 22288
+          },
+          {
+            "counted": 6480,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 2736
+          },
+          {
+            "counted": 378,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 378
+          },
+          {
+            "counted": 2888,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 2888
+          },
+          {
+            "counted": 1600,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 1510
+          }
+        ],
+        "scenery_ParkedAircraft": [
+          {
+            "counted": 3426,
+            "instances": 2,
+            "node": "gp-extra-300s-60_assembled_west",
+            "one_instance": 3286
+          },
+          {
+            "counted": 25213,
+            "instances": 2,
+            "node": "sebart-avanti-s-a200-p100rx_assembled_east",
+            "one_instance": 19264
+          },
+          {
+            "counted": 11442,
+            "instances": 2,
+            "node": "turbo-lumber-evolution_assembled_east",
+            "one_instance": 11442
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 48,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 2,
+            "node": "pilot_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 121,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 121
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          },
+          {
+            "counted": 48,
+            "instances": 8,
+            "node": "standing_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 8,
+            "node": "standing_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 8,
+            "node": "standing_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 647,
+            "instances": 8,
+            "node": "standing_3",
+            "one_instance": 647
+          },
+          {
+            "counted": 382,
+            "instances": 8,
+            "node": "standing_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 123,
+            "instances": 8,
+            "node": "standing_5",
+            "one_instance": 123
+          },
+          {
+            "counted": 48,
+            "instances": 3,
+            "node": "sitting_0",
+            "one_instance": 48
+          },
+          {
+            "counted": 12,
+            "instances": 3,
+            "node": "sitting_1",
+            "one_instance": 12
+          },
+          {
+            "counted": 388,
+            "instances": 3,
+            "node": "sitting_2",
+            "one_instance": 388
+          },
+          {
+            "counted": 648,
+            "instances": 3,
+            "node": "sitting_3",
+            "one_instance": 648
+          },
+          {
+            "counted": 382,
+            "instances": 3,
+            "node": "sitting_4",
+            "one_instance": 382
+          },
+          {
+            "counted": 120,
+            "instances": 3,
+            "node": "sitting_5",
+            "one_instance": 120
+          },
+          {
+            "counted": 15543,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 15203
+          },
+          {
+            "counted": 15776,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 15776
+          },
+          {
+            "counted": 16235,
+            "instances": 2,
+            "node": "sedan_0",
+            "one_instance": 15999
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 331,
+          "objects": 333,
+          "primitives": 449949
+        },
+        "field_DistantRidges": {
+          "draws": 334,
+          "objects": 336,
+          "primitives": 437353
+        },
+        "field_FlightCueShadows": {
+          "draws": 336,
+          "objects": 338,
+          "primitives": 451177
+        },
+        "field_Lake": {
+          "draws": 336,
+          "objects": 338,
+          "primitives": 451177
+        },
+        "field_NearGrass": {
+          "draws": 333,
+          "objects": 335,
+          "primitives": 450176
+        },
+        "field_flightline_barrier": {
+          "draws": 330,
+          "objects": 332,
+          "primitives": 411369
+        },
+        "field_pilot_station": {
+          "draws": 334,
+          "objects": 336,
+          "primitives": 445051
+        },
+        "field_rough": {
+          "draws": 335,
+          "objects": 337,
+          "primitives": 366217
+        },
+        "field_treeline": {
+          "draws": 333,
+          "objects": 335,
+          "primitives": 447343
+        },
+        "field_windsock": {
+          "draws": 332,
+          "objects": 334,
+          "primitives": 445909
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 336,
+          "objects": 338,
+          "primitives": 451177
+        },
+        "scenery_Birds": {
+          "draws": 335,
+          "objects": 337,
+          "primitives": 451153
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 327,
+          "objects": 328,
+          "primitives": 448547
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 333,
+          "objects": 335,
+          "primitives": 451165
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 298,
+          "objects": 300,
+          "primitives": 352700
+        },
+        "scenery_Motion": {
+          "draws": 335,
+          "objects": 337,
+          "primitives": 451017
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 181,
+          "objects": 182,
+          "primitives": 383339
+        },
+        "scenery_Population": {
+          "draws": 287,
+          "objects": 289,
+          "primitives": 398279
+        },
+        "scenery_PopulationContacts": {
+          "draws": 335,
+          "objects": 337,
+          "primitives": 449786
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 335,
+          "objects": 337,
+          "primitives": 451145
+        },
+        "scenery_cells": {
+          "draws": 322,
+          "objects": 324,
+          "primitives": 403079
+        },
+        "scenery_contact_shadows": {
+          "draws": 333,
+          "objects": 335,
+          "primitives": 451087
+        },
+        "scenery_hedges": {
+          "draws": 334,
+          "objects": 336,
+          "primitives": 450329
+        },
+        "scenery_pit_shelters": {
+          "draws": 334,
+          "objects": 336,
+          "primitives": 439081
+        },
+        "world_AirfieldLighting": {
+          "draws": 321,
+          "objects": 323,
+          "primitives": 441685
+        },
+        "world_Campfire": {
+          "draws": 332,
+          "objects": 334,
+          "primitives": 450567
+        },
+        "world_FieldLights": {
+          "draws": 324,
+          "objects": 326,
+          "primitives": 450745
+        },
+        "world_SunGlare": {
+          "draws": 336,
+          "objects": 338,
+          "primitives": 451177
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 312,
+        "objects": 314,
+        "primitives": 398671
+      }
+    },
+    "top_140": {
+      "complete": {
+        "draws": 36,
+        "objects": 37,
+        "primitives": 123857
+      },
+      "complete_repeat": {
+        "draws": 36,
+        "objects": 37,
+        "primitives": 123857
+      },
+      "instanced_lod": {
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 74,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 74
+          },
+          {
+            "counted": 24,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 24
+          },
+          {
+            "counted": 12,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 12
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 140,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 140
+          },
+          {
+            "counted": 224,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 5802,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 5802
+          },
+          {
+            "counted": 2037,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 2037
+          },
+          {
+            "counted": 7462,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 4826
+          },
+          {
+            "counted": 11082,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 11082
+          },
+          {
+            "counted": 4526,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 4526
+          },
+          {
+            "counted": 3240,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 32,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 32
+          },
+          {
+            "counted": 1322,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 1322
+          },
+          {
+            "counted": 444,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 399
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 34,
+          "objects": 35,
+          "primitives": 123609
+        },
+        "field_DistantRidges": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_FlightCueShadows": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_Lake": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_NearGrass": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_flightline_barrier": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_pilot_station": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_rough": {
+          "draws": 35,
+          "objects": 36,
+          "primitives": 38897
+        },
+        "field_treeline": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "field_windsock": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_Birds": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 28,
+          "objects": 28,
+          "primitives": 122584
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 16,
+          "objects": 17,
+          "primitives": 87010
+        },
+        "scenery_Motion": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_Population": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_PopulationContacts": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 35,
+          "objects": 36,
+          "primitives": 123825
+        },
+        "scenery_cells": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_contact_shadows": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_hedges": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "scenery_pit_shelters": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "world_AirfieldLighting": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        },
+        "world_Campfire": {
+          "draws": 34,
+          "objects": 35,
+          "primitives": 123552
+        },
+        "world_FieldLights": {
+          "draws": 34,
+          "objects": 35,
+          "primitives": 123665
+        },
+        "world_SunGlare": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 123857
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 14,
+        "objects": 15,
+        "primitives": 92054
+      }
+    },
+    "top_140_b": {
+      "complete": {
+        "draws": 56,
+        "objects": 57,
+        "primitives": 172131
+      },
+      "complete_repeat": {
+        "draws": 56,
+        "objects": 57,
+        "primitives": 172131
+      },
+      "instanced_lod": {
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 12,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 12
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 140,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 140
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 11604,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 11604
+          },
+          {
+            "counted": 6522,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 6522
+          },
+          {
+            "counted": 14924,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 9652
+          },
+          {
+            "counted": 11082,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 11082
+          },
+          {
+            "counted": 9052,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 9052
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 12219,
+            "instances": 5,
+            "node": "hatch_0",
+            "one_instance": 11879
+          },
+          {
+            "counted": 15206,
+            "instances": 4,
+            "node": "crossover_0",
+            "one_instance": 15206
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 55,
+          "objects": 56,
+          "primitives": 171945
+        },
+        "field_DistantRidges": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_FlightCueShadows": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_Lake": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_NearGrass": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_flightline_barrier": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_pilot_station": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_rough": {
+          "draws": 55,
+          "objects": 56,
+          "primitives": 87171
+        },
+        "field_treeline": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "field_windsock": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_Birds": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 51,
+          "objects": 51,
+          "primitives": 171180
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 118947
+        },
+        "scenery_Motion": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_Population": {
+          "draws": 36,
+          "objects": 37,
+          "primitives": 144706
+        },
+        "scenery_PopulationContacts": {
+          "draws": 55,
+          "objects": 56,
+          "primitives": 170740
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 55,
+          "objects": 56,
+          "primitives": 172099
+        },
+        "scenery_cells": {
+          "draws": 54,
+          "objects": 55,
+          "primitives": 168191
+        },
+        "scenery_contact_shadows": {
+          "draws": 55,
+          "objects": 56,
+          "primitives": 172077
+        },
+        "scenery_hedges": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "scenery_pit_shelters": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "world_AirfieldLighting": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "world_Campfire": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        },
+        "world_FieldLights": {
+          "draws": 52,
+          "objects": 53,
+          "primitives": 172123
+        },
+        "world_SunGlare": {
+          "draws": 56,
+          "objects": 57,
+          "primitives": 172131
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 46,
+        "objects": 47,
+        "primitives": 145539
+      }
+    },
+    "top_140_c": {
+      "complete": {
+        "draws": 85,
+        "objects": 86,
+        "primitives": 176514
+      },
+      "complete_repeat": {
+        "draws": 85,
+        "objects": 86,
+        "primitives": 176514
+      },
+      "instanced_lod": {
+        "field_Lake": [
+          {
+            "counted": 50,
+            "instances": 105,
+            "node": "LakePlants/NymphaeaLeaves",
+            "one_instance": 50
+          },
+          {
+            "counted": 80,
+            "instances": 14,
+            "node": "LakePlants/WaterlilyBlossoms",
+            "one_instance": 80
+          },
+          {
+            "counted": 224,
+            "instances": 21,
+            "node": "LakePlants/EmergentReeds/reed_aredon_Part_00",
+            "one_instance": 224
+          }
+        ],
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 189,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 189
+          },
+          {
+            "counted": 24,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 24
+          },
+          {
+            "counted": 12,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 12
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 140,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 140
+          },
+          {
+            "counted": 224,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 224
+          },
+          {
+            "counted": 112,
+            "instances": 28,
+            "node": "reed_aredon_Part_00",
+            "one_instance": 112
+          },
+          {
+            "counted": 2772,
+            "instances": 4,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 5802,
+            "instances": 4,
+            "node": "landscapelab_fagus_Part_00",
+            "one_instance": 5802
+          },
+          {
+            "counted": 2037,
+            "instances": 5,
+            "node": "landscapelab_pine_Part_00",
+            "one_instance": 2037
+          },
+          {
+            "counted": 7462,
+            "instances": 2,
+            "node": "landscapelab_quercus_Part_00",
+            "one_instance": 4826
+          },
+          {
+            "counted": 11082,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 11082
+          },
+          {
+            "counted": 4526,
+            "instances": 2,
+            "node": "landscapelab_quercus2_Part_00",
+            "one_instance": 4526
+          },
+          {
+            "counted": 3240,
+            "instances": 5,
+            "node": "bush_common_flowers_Part_00",
+            "one_instance": 1368
+          },
+          {
+            "counted": 32,
+            "instances": 3,
+            "node": "clover_1_Part_00",
+            "one_instance": 32
+          },
+          {
+            "counted": 1322,
+            "instances": 2,
+            "node": "flower_4_group_Part_00",
+            "one_instance": 1322
+          },
+          {
+            "counted": 444,
+            "instances": 2,
+            "node": "flower_3_group_Part_00",
+            "one_instance": 399
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 84,
+          "objects": 85,
+          "primitives": 176360
+        },
+        "field_DistantRidges": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "field_FlightCueShadows": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "field_Lake": {
+          "draws": 72,
+          "objects": 73,
+          "primitives": 131208
+        },
+        "field_NearGrass": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "field_flightline_barrier": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "field_pilot_station": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "field_rough": {
+          "draws": 84,
+          "objects": 85,
+          "primitives": 91554
+        },
+        "field_treeline": {
+          "draws": 84,
+          "objects": 85,
+          "primitives": 175230
+        },
+        "field_windsock": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_Birds": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 71,
+          "objects": 71,
+          "primitives": 172242
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 65,
+          "objects": 66,
+          "primitives": 139667
+        },
+        "scenery_Motion": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_Population": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_PopulationContacts": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 84,
+          "objects": 85,
+          "primitives": 176482
+        },
+        "scenery_cells": {
+          "draws": 70,
+          "objects": 71,
+          "primitives": 173910
+        },
+        "scenery_contact_shadows": {
+          "draws": 70,
+          "objects": 71,
+          "primitives": 175956
+        },
+        "scenery_hedges": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "scenery_pit_shelters": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "world_AirfieldLighting": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        },
+        "world_Campfire": {
+          "draws": 83,
+          "objects": 84,
+          "primitives": 176209
+        },
+        "world_FieldLights": {
+          "draws": 83,
+          "objects": 84,
+          "primitives": 176322
+        },
+        "world_SunGlare": {
+          "draws": 85,
+          "objects": 86,
+          "primitives": 176514
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 59,
+        "objects": 60,
+        "primitives": 144599
+      }
+    },
+    "turbines_zoom": {
+      "complete": {
+        "draws": 50,
+        "objects": 51,
+        "primitives": 147512
+      },
+      "complete_repeat": {
+        "draws": 50,
+        "objects": 51,
+        "primitives": 147512
+      },
+      "instanced_lod": {
+        "scenery_BotanicalHabitats": [
+          {
+            "counted": 379,
+            "instances": 58,
+            "node": "clover_1_Part_00",
+            "one_instance": 379
+          },
+          {
+            "counted": 758,
+            "instances": 7,
+            "node": "polyhaven_flower_empodium_a_Part_00",
+            "one_instance": 758
+          },
+          {
+            "counted": 26,
+            "instances": 37,
+            "node": "grass_lolipop_small_Part_00",
+            "one_instance": 26
+          },
+          {
+            "counted": 155,
+            "instances": 15,
+            "node": "grass_common_short_Part_00",
+            "one_instance": 155
+          },
+          {
+            "counted": 784,
+            "instances": 11,
+            "node": "polyhaven_fern_02_a_Part_00",
+            "one_instance": 784
+          },
+          {
+            "counted": 326,
+            "instances": 9,
+            "node": "grass_common_tall_Part_00",
+            "one_instance": 326
+          },
+          {
+            "counted": 144,
+            "instances": 4,
+            "node": "forest_leafy_shrub_Part_00",
+            "one_instance": 144
+          }
+        ],
+        "scenery_ImportedVegetationBatches": [
+          {
+            "counted": 16623,
+            "instances": 4,
+            "node": "maple_tree_Part_00",
+            "one_instance": 16623
+          }
+        ],
+        "scenery_Population": [
+          {
+            "counted": 192,
+            "instances": 2,
+            "node": "pilot_0",
+            "one_instance": 192
+          },
+          {
+            "counted": 172,
+            "instances": 2,
+            "node": "pilot_1",
+            "one_instance": 172
+          },
+          {
+            "counted": 1558,
+            "instances": 2,
+            "node": "pilot_2",
+            "one_instance": 1558
+          },
+          {
+            "counted": 2591,
+            "instances": 2,
+            "node": "pilot_3",
+            "one_instance": 2591
+          },
+          {
+            "counted": 1287,
+            "instances": 2,
+            "node": "pilot_5",
+            "one_instance": 1287
+          },
+          {
+            "counted": 548,
+            "instances": 2,
+            "node": "pilot_6",
+            "one_instance": 548
+          }
+        ]
+      },
+      "without": {
+        "field_Countryside": {
+          "draws": 47,
+          "objects": 48,
+          "primitives": 146404
+        },
+        "field_DistantRidges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 140600
+        },
+        "field_FlightCueShadows": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "field_Lake": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "field_NearGrass": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "field_flightline_barrier": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "field_pilot_station": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "field_rough": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 62552
+        },
+        "field_treeline": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 146228
+        },
+        "field_windsock": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_AirfieldDetail": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_Birds": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_BotanicalHabitats": {
+          "draws": 42,
+          "objects": 42,
+          "primitives": 144440
+        },
+        "scenery_BuildingRoofs": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_ImportedVegetationBatches": {
+          "draws": 44,
+          "objects": 45,
+          "primitives": 130889
+        },
+        "scenery_Motion": {
+          "draws": 46,
+          "objects": 47,
+          "primitives": 147376
+        },
+        "scenery_ParkedAircraft": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_Population": {
+          "draws": 44,
+          "objects": 45,
+          "primitives": 141164
+        },
+        "scenery_PopulationContacts": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 146121
+        },
+        "scenery_WoodlandEdges": {
+          "draws": 49,
+          "objects": 50,
+          "primitives": 147480
+        },
+        "scenery_cells": {
+          "draws": 43,
+          "objects": 44,
+          "primitives": 123780
+        },
+        "scenery_contact_shadows": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_hedges": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "scenery_pit_shelters": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "world_AirfieldLighting": {
+          "draws": 47,
+          "objects": 48,
+          "primitives": 145646
+        },
+        "world_Campfire": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        },
+        "world_FieldLights": {
+          "draws": 42,
+          "objects": 43,
+          "primitives": 147464
+        },
+        "world_SunGlare": {
+          "draws": 50,
+          "objects": 51,
+          "primitives": 147512
+        }
+      },
+      "without_sun_shadows": {
+        "draws": 46,
+        "objects": 47,
+        "primitives": 136430
+      }
+    }
+  }
+}

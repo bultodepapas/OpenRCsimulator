@@ -1,22 +1,22 @@
 {
  "format": "openrc-scene-budget v1",
- "step": "LU-34, revised by L6c-R1",
+ "step": "LU-34, revised by L6c-R1, LU-34-R1 and L8a-R1",
  "viewport": [
   1280,
   720
  ],
- "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values. L6c-R1 (2026-10-21) revised close vegetation to its measured cost +10% after two downloaded species and readable distant LandscapeLab crowns (120,759 pilot / 126,699 ground drawn primitives), and the pilot total to 455,000 (worst view 451,503): the pilot growth reserve is spent, so further pilot-view growth needs a matching reduction. L7-R3/R4 (2026-10-22): the regrouped field trees free four countryside parcels; countryside draws rise to 11 (ground), allocated 12.",
+ "basis": "Drawn cost from tools/scenery/attribute_views.gd at the 1280x720 qualification viewport, 2026-10-21. Class totals: worst measured view +10%. Subsystems: measured maximum +10% (at least 1,000 primitives and 2 draws); vegetation carries a declared +50% primitive / +12 draw growth allowance for species variety. Provisional until DT-01a measures the M1-class floor; reductions found later lower these values. L6c-R1 (2026-10-21) revised close vegetation to its measured cost +10% after two downloaded species and readable distant LandscapeLab crowns (120,759 pilot / 126,699 ground drawn primitives), and the pilot total to 455,000 (worst view 451,503): the pilot growth reserve is spent, so further pilot-view growth needs a matching reduction. L7-R3/R4 (2026-10-22): the regrouped field trees free four countryside parcels; countryside draws rise to 11 (ground), allocated 12. LU-34-R1 (2026-10-22): Godot's Compatibility counter counts an instanced mesh with LODs once per draw; primitives now count every instance (attribute_views.gd v2). Values were re-based on HEAD e51df687 measured that way, keeping each limit's headroom: class totals keep their ratio to the counter worst case (pilot 1.0085, ground 1.0026, aerial 1.0663), subsystems their ratio capped at the +10% rule. L8a-R1 (2026-10-22): the owner-requested 3D trees in front of the pilot are allocated their measured cost +10% (pilot 379,224 / 22 draws) and raise the pilot total from 973,000 to 1,307,000 at the same ratio; no matching reduction exists in the worst view, a 10-degree telephoto in which club and front trees are legitimately at full detail.",
  "classes": {
   "aerial": {
-   "max_primitives": 465000,
+   "max_primitives": 827000,
    "max_draws": 405
   },
   "ground": {
-   "max_primitives": 525000,
+   "max_primitives": 1062000,
    "max_draws": 395
   },
   "pilot": {
-   "max_primitives": 455000,
+   "max_primitives": 1307000,
    "max_draws": 360
   }
  },
@@ -79,43 +79,43 @@
   },
   "field_Lake": {
    "aerial": {
-    "primitives": 50000,
+    "primitives": 62000,
     "draws": 15
    },
    "ground": {
-    "primitives": 51000,
+    "primitives": 76000,
     "draws": 15
    },
    "pilot": {
-    "primitives": 50000,
+    "primitives": 63000,
     "draws": 15
    }
   },
   "field_NearGrass": {
    "aerial": {
-    "primitives": 2000,
+    "primitives": 50000,
     "draws": 4
    },
    "ground": {
-    "primitives": 2000,
+    "primitives": 55000,
     "draws": 4
    },
    "pilot": {
-    "primitives": 2000,
+    "primitives": 55000,
     "draws": 4
    }
   },
   "field_flightline_barrier": {
    "aerial": {
-    "primitives": 44000,
+    "primitives": 75000,
     "draws": 7
    },
    "ground": {
-    "primitives": 44000,
+    "primitives": 90000,
     "draws": 7
    },
    "pilot": {
-    "primitives": 44000,
+    "primitives": 90000,
     "draws": 7
    }
   },
@@ -161,6 +161,20 @@
     "draws": 5
    }
   },
+  "field_treelineDetail": {
+   "pilot": {
+    "primitives": 418000,
+    "draws": 25
+   },
+   "ground": {
+    "primitives": 90000,
+    "draws": 7
+   },
+   "aerial": {
+    "primitives": 5000,
+    "draws": 3
+   }
+  },
   "field_windsock": {
    "aerial": {
     "primitives": 6000,
@@ -181,11 +195,11 @@
     "draws": 2
    },
    "ground": {
-    "primitives": 3000,
+    "primitives": 5000,
     "draws": 6
    },
    "pilot": {
-    "primitives": 3000,
+    "primitives": 5000,
     "draws": 6
    }
   },
@@ -205,15 +219,15 @@
   },
   "scenery_BotanicalHabitats": {
    "aerial": {
-    "primitives": 7000,
+    "primitives": 33000,
     "draws": 19
    },
    "ground": {
-    "primitives": 9000,
+    "primitives": 82000,
     "draws": 22
    },
    "pilot": {
-    "primitives": 8000,
+    "primitives": 68000,
     "draws": 21
    }
   },
@@ -233,15 +247,15 @@
   },
   "scenery_ImportedVegetationBatches": {
    "aerial": {
-    "primitives": 74000,
+    "primitives": 206000,
     "draws": 42
    },
    "ground": {
-    "primitives": 140000,
+    "primitives": 401000,
     "draws": 49
    },
    "pilot": {
-    "primitives": 133000,
+    "primitives": 390000,
     "draws": 44
    }
   },
@@ -261,29 +275,29 @@
   },
   "scenery_ParkedAircraft": {
    "aerial": {
-    "primitives": 82000,
+    "primitives": 110000,
     "draws": 197
    },
    "ground": {
-    "primitives": 106000,
+    "primitives": 163000,
     "draws": 197
    },
    "pilot": {
-    "primitives": 75000,
+    "primitives": 106000,
     "draws": 171
    }
   },
   "scenery_Population": {
    "aerial": {
-    "primitives": 38000,
+    "primitives": 138000,
     "draws": 54
    },
    "ground": {
-    "primitives": 67000,
+    "primitives": 270000,
     "draws": 54
    },
    "pilot": {
-    "primitives": 82000,
+    "primitives": 300000,
     "draws": 54
    }
   },
@@ -478,6 +492,9 @@
   "scenery_ParkedAircraft": [
    "sebart-avanti-s-a200-p100rx_assembled_west",
    "sebart-avanti-s-a200-p100rx_assembled_east"
+  ],
+  "field_treelineDetail": [
+   "landscapelab_quercus_Part_00"
   ]
  },
  "full_detail_note": "Visible meshes over 5,000 triangles without generated LODs draw at full detail whenever visible. The listed 2026-10-21 meshes are recorded debt; new ones need LODs or an entry here. Counted per surface. L6c-R1: Quercus foliage keeps full detail because its only generated leaf level keeps 10% of the cards (2,636 triangles per tree); its bark keeps generated LODs. The per-surface count surfaced the parked Avanti batches (17,847 and 11,898 full-detail triangles in surfaces its SC-09-R1 bake left without LODs): recorded fleet debt.",

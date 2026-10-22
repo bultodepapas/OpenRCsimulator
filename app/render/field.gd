@@ -5,6 +5,7 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
 const FieldLightData = preload("res://render/world/field_lights.gd")
 const Treeline = preload("res://render/treeline.gd")
+const FieldTreeDetail = preload("res://render/field_tree_detail.gd")
 const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
 const ImportedNearGrass = preload("res://scenery/imported_near_grass.gd")
@@ -66,8 +67,14 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 		if not materials.has(mesh_instance.material_override):
 			materials.append(mesh_instance.material_override as ShaderMaterial)
 		result.add_child(mesh_instance)
+	var front_azimuth := Treeline.front_azimuth_deg(field)
 	for object_data: Dictionary in field.objects:
-		result.add_child(Treeline.build(object_data, field.pilot))
+		result.add_child(Treeline.build(object_data, field.pilot, front_azimuth))
+		var detail := FieldTreeDetail.build(object_data, field.pilot, front_azimuth)
+		if detail.get_child_count() > 0:
+			result.add_child(detail)
+		else:
+			detail.free()
 	for cue: Dictionary in field.get("flight_cues", []):
 		if cue.type == "pilot_station":
 			result.add_child(PilotStation.build(cue))

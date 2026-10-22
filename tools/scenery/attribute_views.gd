@@ -4,7 +4,10 @@
 ## total counters include shadow-pass work, so the difference covers visible and shadow draws. It also
 ## records each subsystem's full-detail source triangles (the quantity the scenery tests cap).
 ## llvmpipe counts are renderer-independent CPU-side submissions after culling and mesh LOD; they are
-## not GPU timings. Run through tools/scenery/attribute_views.sh.
+## not GPU timings. Godot 4.7.2 Compatibility counts a MultiMesh surface that has LODs once per draw,
+## not per instance (drivers/gles3/rasterizer_scene_gles3.cpp, _fill_render_list); each such node in
+## view is therefore measured alone and recorded under "instanced_lod" (see _instanced_lod).
+## Run through tools/scenery/budget.sh.
 ##   xvfb-run -a godot --path app --rendering-driver opengl3 --audio-driver Dummy --resolution 1280x720 \
 ##     --script <abs>/tools/scenery/attribute_views.gd -- --out=<new dir> [--views=a,b] [--t=1.5]
 extends SceneTree
@@ -16,7 +19,7 @@ const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const Population = preload("res://scenery/population.gd")
 
-const FORMAT := "openrc-view-attribution v1"
+const FORMAT := "openrc-view-attribution v2"
 const SCENERY_PATTERNS := {"cell_": "scenery_cells", "shadows_": "scenery_contact_shadows",
 	"ImportedHedge_": "scenery_hedges", "PitShelter_": "scenery_pit_shelters"}
 
@@ -69,9 +72,11 @@ func _run() -> void:
 		scenery_sha256 = FileAccess.get_sha256("res://data/scenery/default.json"),
 		groups = {}, views = {},
 	}
+	var lod_nodes := {}
 	for name: String in groups:
 		report.groups[name] = _geometry(groups[name])
 		report.groups[name]["nodes"] = (groups[name] as Array).size()
+		lod_nodes[name] = _instanced_lod_nodes(groups[name])
 	var wanted: Array = Postcards.names()
 	if _args.has("views"):
 		wanted = str(_args.views).split(",")
@@ -105,6 +110,10 @@ func _run() -> void:
 			row.without[name] = await _measure()
 			for node: Node3D in hidden:
 				node.visible = true
+		row["instanced_lod"] = {}
+		for name: String in groups:
+			if row.without[name].primitives != row.complete.primitives and not lod_nodes[name].is_empty():
+				row.instanced_lod[name] = await _instanced_lod(groups, name, lod_nodes[name])
 		row["complete_repeat"] = await _measure()
 		report.views[view_name] = row
 		print("ATTRIBUTED ", view_name)
@@ -156,6 +165,62 @@ func _measure() -> Dictionary:
 		primitives = int(Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME)),
 		objects = int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)),
 	}
+
+
+## The group's visible MultiMeshes with LOD surfaces and several instances.
+func _instanced_lod_nodes(nodes: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for node: Node3D in nodes:
+		var candidates: Array[Node] = node.find_children("*", "MultiMeshInstance3D", true, false)
+		if node is MultiMeshInstance3D:
+			candidates.push_front(node)
+		for candidate: MultiMeshInstance3D in candidates:
+			var multimesh := candidate.multimesh
+			if not candidate.is_visible_in_tree() or multimesh == null or multimesh.mesh == null:
+				continue
+			var instances := multimesh.instance_count if multimesh.visible_instance_count < 0 else multimesh.visible_instance_count
+			if instances >= 2 and Population.triangles(multimesh.mesh) != _full_detail_triangles(multimesh.mesh):
+				result.append({node = candidate, path = str(node.get_path_to(candidate)), instances = instances,
+					per_instance_surfaces = _full_detail_triangles(multimesh.mesh) > 0})
+	return result
+
+
+## Per drawn node from _instanced_lod_nodes: the counted primitives (hiding it) and one instance's
+## primitives (all passes). Every instance shares the node's LOD, so the drawn cost is
+## instances * one_instance. Surfaces without LODs are counted per instance, so a second frame with one
+## visible instance separates them; the full AABB is pinned meanwhile because Godot would otherwise
+## rebuild it from the visible instances and change the LOD distance and culling. Counts are per
+## object and LOD depends only on the camera, so the other groups are hidden to keep frames cheap.
+func _instanced_lod(groups: Dictionary, name: String, candidates: Array[Dictionary]) -> Array:
+	var hidden: Array[Node3D] = []
+	for other: String in groups:
+		for node: Node3D in groups[other]:
+			if other != name and node.visible:
+				node.visible = false
+				hidden.append(node)
+	var group_primitives: int = (await _measure()).primitives
+	var rows := []
+	for entry: Dictionary in candidates:
+		var candidate: MultiMeshInstance3D = entry.node
+		candidate.visible = false
+		var counted: int = group_primitives - (await _measure()).primitives
+		candidate.visible = true
+		if counted <= 0:
+			continue
+		var one_instance := counted
+		if entry.per_instance_surfaces:
+			var multimesh := candidate.multimesh
+			var custom_aabb := multimesh.custom_aabb
+			var visible_count := multimesh.visible_instance_count
+			multimesh.custom_aabb = multimesh.get_aabb()
+			multimesh.visible_instance_count = 1
+			one_instance = counted - (group_primitives - (await _measure()).primitives)
+			multimesh.visible_instance_count = visible_count
+			multimesh.custom_aabb = custom_aabb
+		rows.append({node = entry.path, instances = entry.instances, counted = counted, one_instance = one_instance})
+	for node: Node3D in hidden:
+		node.visible = true
+	return rows
 
 
 ## Full-detail triangles of every visible mesh/MultiMesh under the group (MultiMesh: visible

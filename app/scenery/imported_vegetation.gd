@@ -33,6 +33,11 @@ const LEAF_FLUTTER_TILT := 0.12
 const WORLD_LOD_SOURCE_IDS := ["landscapelab_tree_2026"]
 const FOLIAGE_LOD_MIN_FRACTION := 0.25
 const FOLIAGE_ALPHA_MAX_MIP := 6.0
+# L8a-R1: Godot switches LOD only below 1 px of geometric error, so a distant LandscapeLab tree
+# keeps its full bark mesh (Fagus: 6,912 of 9,312 triangles) in a crown tens of pixels tall.
+# The bark_lod_error_px build option lets bark surfaces of world-LOD batches switch at that error
+# instead; foliage keeps the 1 px rule, because coarser leaf levels thin the crown.
+const BARK_LOD_ERROR_MAX_PX := 16.0
 
 const ALIASES := {
 	# Keep the seven alias slots: slot zero protects all four existing maples,
@@ -146,6 +151,7 @@ static func queue(
 
 static func build(batches: Dictionary, enable_wind: bool = false, options: Dictionary = {}) -> Node3D:
 	var tree_cell_size := _tree_cell_size_from_options(options)
+	var bark_lod_error_px := _bark_lod_error_from_options(options)
 	var tree_wind_requested := _tree_wind_from_options(options)
 	var root := Node3D.new()
 	root.name = "ImportedVegetationBatches"
@@ -191,6 +197,7 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 				)
 			if world_lod:
 				draw_mesh = _without_sparse_foliage_lods(draw_mesh, part.get("materials", []))
+				_scale_bark_lod_error(draw_mesh, part.get("materials", []), bark_lod_error_px)
 			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
 			for group in groups:
 				var cell_records: Array = group.get("records", [])
@@ -347,6 +354,20 @@ static func _tree_wind_from_options(options: Dictionary) -> bool:
 		_warn_option_once("tree_wind_type", "ImportedVegetation option tree_wind must be a boolean; ignoring it")
 		return false
 	return value
+
+
+static func _bark_lod_error_from_options(options: Dictionary) -> float:
+	if not options.has("bark_lod_error_px"):
+		return 1.0
+	var value: Variant = options["bark_lod_error_px"]
+	if (typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT) \
+			or float(value) < 1.0 or float(value) > BARK_LOD_ERROR_MAX_PX:
+		_warn_option_once(
+			"bark_lod_error_px",
+			"ImportedVegetation option bark_lod_error_px must be 1 to %d pixels; using 1" % int(BARK_LOD_ERROR_MAX_PX)
+		)
+		return 1.0
+	return float(value)
 
 
 static func _tree_cell_size_from_options(options: Dictionary) -> int:
@@ -721,12 +742,7 @@ static func _prepare_tree_wind_mesh(source_mesh: Mesh, source_materials: Array, 
 static func _without_sparse_foliage_lods(draw_mesh: Mesh, source_materials: Array) -> Mesh:
 	if not draw_mesh is ArrayMesh:
 		return draw_mesh
-	var foliage: Array[int] = []
-	for surface_index in range(draw_mesh.get_surface_count()):
-		var material: Material = source_materials[surface_index] if surface_index < source_materials.size() else null
-		if material is BaseMaterial3D \
-				and (material as BaseMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
-			foliage.append(surface_index)
+	var foliage := _foliage_surfaces(draw_mesh, source_materials)
 	if foliage.is_empty():
 		return draw_mesh
 	_keep_dense_lods(draw_mesh as ArrayMesh, foliage)
@@ -739,6 +755,35 @@ static func _without_sparse_foliage_lods(draw_mesh: Mesh, source_materials: Arra
 			_foliage_shadow_mesh_cache[key] = stripped_shadow
 		(draw_mesh as ArrayMesh).shadow_mesh = _foliage_shadow_mesh_cache[key]
 	return draw_mesh
+
+
+## Alpha-scissor (leaf card) surfaces of a draw mesh, by source material.
+static func _foliage_surfaces(draw_mesh: Mesh, source_materials: Array) -> Array[int]:
+	var foliage: Array[int] = []
+	for surface_index in range(draw_mesh.get_surface_count()):
+		var material: Material = source_materials[surface_index] if surface_index < source_materials.size() else null
+		if material is BaseMaterial3D \
+				and (material as BaseMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+			foliage.append(surface_index)
+	return foliage
+
+
+## Divides the LOD error of the bark surfaces of a per-build draw mesh by bark_lod_error_px, so
+## Godot's 1 px rule admits that many pixels of bark error. Index data is unchanged.
+static func _scale_bark_lod_error(draw_mesh: Mesh, source_materials: Array, bark_lod_error_px: float) -> void:
+	if bark_lod_error_px == 1.0 or not draw_mesh is ArrayMesh:
+		return
+	var foliage := _foliage_surfaces(draw_mesh, source_materials)
+	var surfaces: Array = draw_mesh.get("_surfaces")
+	for surface_index in range(surfaces.size()):
+		if foliage.has(surface_index):
+			continue
+		var surface: Dictionary = surfaces[surface_index]
+		var lods: Array = surface.get("lods", [])
+		for pair in range(0, lods.size(), 2):
+			lods[pair] = float(lods[pair]) / bark_lod_error_px
+		surface["lods"] = lods
+	draw_mesh.set("_surfaces", surfaces)
 
 
 static func _keep_dense_lods(mesh: ArrayMesh, surface_indices: Array[int]) -> void:

@@ -111,6 +111,7 @@ static func _add_field_trees(proxies: Array[Dictionary], field: Dictionary) -> v
 		if str(object.get("type", "")) != "treeline":
 			continue
 		var tree_id := str(object.get("id", "trees"))
+		var front_azimuth := Treeline.front_azimuth_deg(field)
 		for index: int in object.get("positions", []).size():
 			var point: Array = object.positions[index]
 			if point.size() != 3:
@@ -121,6 +122,11 @@ static func _add_field_trees(proxies: Array[Dictionary], field: Dictionary) -> v
 			var north := pilot_north + local_north
 			var east := pilot_east + local_east
 			var tree: Dictionary = Treeline.identity(local_north, local_east)
+			var detail_asset := Treeline.detail_asset(local_north, local_east, front_azimuth)
+			if not detail_asset.is_empty():
+				_add_field_detail_tree_proxies(proxies, "%s:%04d" % [tree_id, index], north, east, base_down,
+					float(tree.height), detail_asset, rad_to_deg(float(tree.yaw)), index)
+				continue
 			_add_field_tree_proxies(proxies, "%s:%04d" % [tree_id, index], north, east,
 				base_down, float(tree.height), int(tree.species), float(tree.yaw))
 
@@ -324,6 +330,29 @@ static func _add_field_tree_proxies(proxies: Array[Dictionary], id: String, nort
 		north, east, base_down - height * float(TREE_CROWN_CENTER_FRACTIONS[species_index]),
 		horizontal_half_extent * 2.0, vertical_half_extent * 2.0, horizontal_half_extent * 2.0,
 		rad_to_deg(-yaw))
+
+
+## L8a-R1: a 3D field tree uses the club trees' imported envelope at its hashed height and heading.
+static func _add_field_detail_tree_proxies(proxies: Array[Dictionary], id: String, north: float, east: float,
+		base_down: float, height: float, asset_id: String, heading: float, seed: int) -> void:
+	var vegetation: Dictionary = VegetationPlacement.asset_spec(asset_id, height)
+	if vegetation.is_empty():
+		return
+	var wind_margin := float(vegetation.wind_margin)
+	var trunk_height := height * (SHADE_TREE_TRUNK_HEIGHT_FRACTION
+		+ SHADE_TREE_TRUNK_HEIGHT_VARIATION_FRACTION * Palette.hash01(seed, 2))
+	var trunk_radius := minf(float(vegetation.width), float(vegetation.depth)) \
+		* SHADE_TREE_TRUNK_RADIUS_FRACTION + wind_margin
+	_add_capsule(proxies, "tree:%s:trunk" % id, "tree_trunk", "trunk", "hard_terminal",
+		north, east, base_down - trunk_height * 0.5, trunk_radius, maxf(0.0, trunk_height * 0.5 - trunk_radius))
+	var crown_bottom_height := minf(trunk_height,
+		height * float(LANDSCAPELAB_CROWN_BOTTOM_FRACTIONS.get(asset_id, 1.0)))
+	var crown_center := _placement_point(north, east, heading,
+		float(vegetation.crown_offset_x), float(vegetation.crown_offset_z))
+	_add_box_at_down(proxies, "tree:%s:crown" % id, "tree_foliage", "crown", "soft_foliage_impulse",
+		crown_center[0], crown_center[1], base_down - (crown_bottom_height + height) * 0.5,
+		float(vegetation.width) + 2.0 * wind_margin, maxf(0.001, height - crown_bottom_height),
+		float(vegetation.depth) + 2.0 * wind_margin, heading)
 
 
 static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, prefab: String,

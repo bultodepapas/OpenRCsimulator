@@ -14,6 +14,13 @@ const PATCH_SPACING_M: float = 180.0
 const PATCH_HASH_OFFSET: int = 32768
 # Must match tree_wind.gdshaderinc; angle <= lean/height, even beyond 10m/s.
 const WIND_LEAN_M: float = 0.24
+# L8a-R1: near-ring trees in front of the pilot (within this half-angle of the runway as seen from
+# the pilot) render as 3D LandscapeLab trees (render/field_tree_detail.gd) and collide with their
+# imported bounds. Cards remain everywhere else. Species slots map to the card sources, with beech
+# for the maple slot because its 3D model has the qualified wind and distant-foliage path.
+const DETAIL_MAX_RADIUS_M: float = 600.0
+const DETAIL_HALF_ANGLE_DEG: float = 60.0
+const DETAIL_ASSETS: Array[String] = ["landscapelab_quercus", "landscapelab_fagus", "landscapelab_pine"]
 
 
 ## CPU mirror for bounds/tests. Shader owns appearance; values are design estimates (12–25m).
@@ -75,7 +82,26 @@ static func sector(north: float, east: float) -> int:
 
 
 ## Validated L6b objects only. Owns meshes/materials per field; shares them within that field.
-static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
+## Azimuth (degrees from north) of the runway centre seen from the pilot: the flying area in front.
+static func front_azimuth_deg(field: Dictionary) -> float:
+	for surface: Dictionary in field.get("surfaces", []):
+		if str(surface.get("id", "")) == str(field.get("runway", "")):
+			return fposmod(rad_to_deg(atan2(float(surface.center_east) - float(field.pilot.east),
+				float(surface.center_north) - float(field.pilot.north))), 360.0)
+	return NAN
+
+
+## The 3D asset for a pilot-relative field tree, or "" when it stays a card (NAN: no 3D trees).
+static func detail_asset(north: float, east: float, front_azimuth: float) -> String:
+	if is_nan(front_azimuth) or Vector2(north, east).length() > DETAIL_MAX_RADIUS_M:
+		return ""
+	var azimuth := rad_to_deg(atan2(east, north))
+	if absf(wrapf(azimuth - front_azimuth, -180.0, 180.0)) > DETAIL_HALF_ANGLE_DEG:
+		return ""
+	return DETAIL_ASSETS[int(identity(north, east).species)]
+
+
+static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float = NAN) -> Node3D:
 	ShaderClock.register() # standalone fields/exported packs must not depend on main.gd initialization
 	var result: Node3D = Node3D.new()
 	result.name = object_data.id
@@ -102,6 +128,8 @@ static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
 		near_groups.append([])
 		far_groups.append([])
 	for point: Array in object_data.positions:
+		if not detail_asset(point[0], point[1], front_azimuth).is_empty():
+			continue
 		var group_index: int = sector(point[0], point[1])
 		var radius: float = sqrt(float(point[0]) * float(point[0]) + float(point[1]) * float(point[1]))
 		if radius <= FAR_RING_START_M:

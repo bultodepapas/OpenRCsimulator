@@ -43,6 +43,16 @@ func run() -> void:
 			and _mask_tile_has_both(mask_image, 512, 0) and _mask_tile_has_both(mask_image, 0, 512))
 	var committed_positions: Array = loaded.field.objects[0].positions
 	check("combined near and far placement has 1,680 trees", committed_positions.size() == 1680)
+	# L8a-R1: front near-ring trees render as 3D trees beside the card sectors.
+	var front: float = Trees.front_azimuth_deg(loaded.field)
+	var detail_count: int = 0
+	for p: Array in committed_positions:
+		if not Trees.detail_asset(p[0], p[1], front).is_empty():
+			detail_count += 1
+	var detail_instances: int = 0
+	for batch: MultiMeshInstance3D in field.get_node("treelineDetail").find_children("*", "MultiMeshInstance3D", true, false):
+		detail_instances += batch.multimesh.instance_count
+	check("front near-ring trees render as 3D detail trees", detail_count == 127 and detail_instances == detail_count)
 	var count: int = 0
 	var species_count: Array[int] = [0, 0, 0]
 	var mesh: ArrayMesh = null
@@ -60,7 +70,7 @@ func run() -> void:
 		var expected_near_count: int = 0
 		var expected_far_count: int = 0
 		for p: Array in loaded.field.objects[0].positions:
-			if child.name == "Sector%d" % Trees.sector(p[0], p[1]):
+			if child.name == "Sector%d" % Trees.sector(p[0], p[1]) and Trees.detail_asset(p[0], p[1], front).is_empty():
 				points.append(p)
 				var radius: float = Vector2(float(p[0]), float(p[1])).length()
 				if radius <= 600.0:
@@ -95,7 +105,7 @@ func run() -> void:
 			var margin: float = rad_to_deg(asin(15.0 / Vector2(data.r, data.g).length()))
 			for gap: Vector2 in [Vector2(30.0, 8.0), Vector2(210.0, 10.0)]:
 				check("deliberate gap survives crown width", absf(fposmod(angle - gap.x + 180.0, 360.0) - 180.0) > gap.y + margin)
-	check("1,680 committed trees", count == 1680)
+	check("1,680 committed trees as cards or 3D detail trees", count + detail_count == 1680)
 	check("three species have useful representation", species_count.min() > 100)
 	check("no collision shapes or scene simulation", field.find_children("*", "CollisionObject3D", true, false).is_empty() and field.find_children("*", "CollisionShape3D", true, false).is_empty())
 	field.free()
