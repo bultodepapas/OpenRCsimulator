@@ -95,6 +95,8 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 	if config.has("retraction"):
 		retract = Retraction.bind(_record(data, config.retraction.geometry_ref, errors), nodes)
 		errors.append_array(retract.errors)
+		for role: String in retract.get("gear", {}):
+			if not bindings.gear.keys.has(role): errors.append("Gear rig wheel has no manifest binding: " + role)
 	if not errors.is_empty():
 		root.free()
 		return _failure(errors)

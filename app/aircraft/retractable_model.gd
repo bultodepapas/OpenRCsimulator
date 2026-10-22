@@ -43,14 +43,16 @@ static func validate(data: Variant) -> PackedStringArray:
 			elif absf(_rotation(pose.rotation_wxyz).length_squared() - 1.0) > 0.00001:
 				errors.append("Gear rotation must be normalized: " + str(name))
 			if not data.bindings.has(name): errors.append("Missing gear carrier rest binding: " + str(name))
-	if data.wheels.size() != 3 or not data.wheels.has_all(["left", "right", "nose"]): errors.append("Retractable rig needs left/right/nose wheels.")
+	# F4U-02: a tricycle steers its nose wheel; a retractable taildragger steers its tail wheel.
+	var steered := "tail" if data.wheels.has("tail") else "nose"
+	if data.wheels.size() != 3 or not data.wheels.has_all(["left", "right", steered]): errors.append("Retractable rig needs left/right wheels and one nose or tail wheel.")
 	var used := {}
 	for role in data.wheels:
 		var wheel: Variant = data.wheels[role]
 		if not wheel is Dictionary or not _number(wheel.get("radius_m")) or float(wheel.radius_m) <= 0.0 or float(wheel.radius_m) > 1.0:
 			errors.append("Invalid gear wheel: " + str(role))
 			continue
-		for key in ["spin_node", "compression_node"] + (["steer_node"] if role == "nose" else []):
+		for key in ["spin_node", "compression_node"] + (["steer_node"] if role == steered else []):
 			var name: Variant = wheel.get(key)
 			if not name is String or not data.bindings.has(name) or used.has(name) or names.has(name):
 				errors.append("Invalid or reused wheel helper: " + str(name))
@@ -96,7 +98,7 @@ static func bind(data: Dictionary, nodes: Dictionary) -> Dictionary:
 		gear[role] = bound[wheel.spin_node]
 		compression[role] = bound[wheel.compression_node]
 		rest[role] = compression[role].transform
-		if role == "nose": gear.steering = bound[wheel.steer_node]
+		if role in ["nose", "tail"]: gear.steering = bound[wheel.steer_node]
 	var rig := {data = data, nodes = bound, gear = gear, compression = compression, rest = rest}
 	# The imported asset must be at the first (fully stowed) sample exactly.
 	for name in data.retraction.samples[0].nodes:

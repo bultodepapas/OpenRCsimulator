@@ -899,7 +899,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
+      "model_manifest_sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
       "paint_slots": [
         {
           "id": "body",
@@ -1106,14 +1106,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "b36bab2f24e728ce84214f6eed815692c8454991b9f2d0044b44b4f1ebc15e52"
+      "slots_sha256": "102959a7eb8e2f4d740ec82946942555478d34d6672e4f09e9158a720da91ece"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "5abbb38e61d45bc9b07018455dd13576dd1478a18bcbe84b47be783c568f0c85",
+      "model_manifest_sha256": "99ab3f6ccd9477fecdf8e8abb10ce08e3a93eccbb9b4792f741cae52c18b9075",
       "paint_slots": [
         {
           "id": "body",
@@ -1370,7 +1370,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "29544392bac546f930c5cb7a1569255c261ecc56e6c28eb34620a6d93e6bb7a7"
+      "slots_sha256": "6498162b95ff43e178b03ddbf839db7db22a44cda8425bc366fa9c477a8b90fe"
     }
   ]
 }
