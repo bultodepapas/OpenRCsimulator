@@ -154,6 +154,49 @@ branch cost about 22 µs per call, but that branch ran only once in 1,920
 P-51 RK stage calls over a two-second runway probe. Its optimization was
 reverted because it would not materially improve the flight loop.
 
+## Joint-stage substep preview
+
+The P-51's finite-fuel RK stage already evaluates air, aerodynamic loads,
+ground contact and the fuel-CG moment shift at the start of each tick. Its
+engine-off substep preview repeated these source-independent calculations.
+`VehicleModel.substeps_joint` now optionally receives the validated current
+stage, including opaque vehicle-owned context. The P-51 passes the air data,
+pre-reaction loads and wheel derivative into its preview, then recomputes the
+source-off shaft rate and rotor/body reaction. The kernel still validates the
+substep count and owns the tick and event policy. Unsupported propulsion
+families, missing context and other stage states use the original calculation.
+
+The [seven-scenario probe](p51_joint_substep_probe.gd) captured complete
+tick snapshots against baseline commit `67ba2835`: full fuel, the 1.0001 RPM
+boundary, source cut, fuel exhaustion, changing inputs, runway and lake contact.
+Baseline and candidate
+binary outputs were each 672,668 bytes with identical SHA-256
+`3f4a671aa74a80d830097a3d75f9c5f9e0828a96dfa703fcd18763dd84fb108a`.
+The integrated tree produced the same hash. At the RPM boundary, the request
+remained two substeps; the exhaustion event also matched. The callback left
+the k1 stage unchanged in the probe. The Extra retained its legacy callback
+and matched its baseline output exactly.
+Run the probe with Godot 4.7.2 using `--headless --path app --script
+<absolute path to p51_joint_substep_probe.gd> -- --out=<absolute output.bin>`.
+
+On a paired 120-tick P-51 runway/lake/soft-contact probe, best-of-three tick
+cost changed from 4,132.4 to 3,659.0 µs (−473.4 µs, 11.5%). This measures
+the simulation loop on one host; it does not establish interactive frame
+pacing or a physically correct takeoff. The Extra's measured difference was
+0.18%, within run noise. No flight law, contact coefficient, input mapping or
+golden flight was changed.
+
+A subsequent [native P-51 capture](p51d-mustang-120-joint-preview-frames.json)
+advanced 2.35 s of simulation in 3.01 s wall time. Its p50 frame was 58.6 ms
+over 47 frames and final smoothed physics cost was 3.74 ms/tick, without a
+fault. This is an improvement in simulated-time progress from the preceding
+2.15 s / 3.03 s capture, but the runs were not a controlled pair and a
+real-time backlog remains. The [native Extra capture](gp-extra-300s-60-joint-preview-frames.json)
+advanced 2.25 s in 3.0 s wall time with p50 63.4 ms over 45 frames and final
+smoothed physics cost 4.12 ms/tick. The joint preview is not active for the
+Extra; this capture demonstrates that the shared runway performance problem
+remains. These short samples should not be read as stable FPS estimates.
+
 ## Runway acceleration in simulation time
 
 The [fixed-tick probe](runway_acceleration_probe.gd) and its [Windows Godot

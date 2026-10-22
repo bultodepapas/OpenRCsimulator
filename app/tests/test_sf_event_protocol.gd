@@ -37,6 +37,7 @@ func _run() -> void:
 	_declared_event()
 	_policy_results()
 	_contract_shape()
+	_simulation_configuration_guards()
 	_adapter_contract()
 	_electric_routes()
 	_glow_route()
@@ -162,6 +163,73 @@ func _contract_shape() -> void:
 	var sim: Node = _new_sim(m, 1.0)
 	_check("an index beyond the continuous block is refused at reset", not sim.reset(_level_state()))
 	sim.free()
+	m = _falling_model()
+	m.substeps = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> int: return 1
+	m.substeps_joint = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float,
+			_current_joint: Dictionary) -> int: return 1
+	var both_substep_callbacks: Dictionary = VehicleModel.validate(m)
+	_check("a model cannot select both substep callback forms", not both_substep_callbacks.ok
+		and both_substep_callbacks.message.contains("at most one of substeps"), both_substep_callbacks.message)
+	var no_joint_stage := VehicleModel.new()
+	no_joint_stage.continuous_size = 1
+	no_joint_stage.block_loads = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	no_joint_stage.block_derivative = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0])
+	no_joint_stage.substeps_joint = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float,
+			_current_joint: Dictionary) -> int: return 1
+	var missing_joint_stage: Dictionary = VehicleModel.validate(no_joint_stage)
+	_check("a joint substep callback requires the joint stage evaluator", not missing_joint_stage.ok
+		and missing_joint_stage.message.contains("requires a joint stage evaluator"), missing_joint_stage.message)
+
+
+func _joint_substep_model() -> VehicleModel:
+	var model := VehicleModel.new()
+	model.continuous_size = -1
+	model.stage = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> Dictionary:
+		return {loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+			derivative = PackedFloat64Array([0.0]), rotor_momentum = PackedFloat64Array([0.0, 0.0, 0.0])}
+	model.substeps_joint = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float,
+			_current_joint: Dictionary) -> int: return 1
+	return model
+
+
+func _simulation_configuration_guards() -> void:
+	var no_continuous := Sim.new()
+	var no_continuous_model := _joint_substep_model()
+	_check("joint substep model installs before live layout is known", no_continuous.set_model(no_continuous_model))
+	no_continuous.continuous = PackedFloat64Array()
+	var empty_layout: Dictionary = no_continuous.prepare_reset(_level_state())
+	_check("simulation configuration rejects joint substeps without continuous state",
+		not no_continuous._configuration_is_valid() and not empty_layout.get("ok", false),
+		str(empty_layout.get("message", "")))
+	no_continuous.free()
+
+	var no_stage := Sim.new()
+	var no_stage_model := _joint_substep_model()
+	_check("joint substep model with a stage installs", no_stage.set_model(no_stage_model))
+	no_stage.continuous = PackedFloat64Array([0.0])
+	no_stage_model.stage = Callable()
+	no_stage_model.block_loads = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	no_stage_model.block_derivative = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0])
+	var missing_live_stage: Dictionary = no_stage.prepare_reset(_level_state())
+	_check("simulation configuration rejects joint substeps after the joint stage is removed",
+		not no_stage._configuration_is_valid() and not missing_live_stage.get("ok", false),
+		str(missing_live_stage.get("message", "")))
+	no_stage.free()
+
+	var both_callbacks := Sim.new()
+	var both_callbacks_model := _joint_substep_model()
+	_check("joint substep model installs before callback mutation", both_callbacks.set_model(both_callbacks_model))
+	both_callbacks.continuous = PackedFloat64Array([0.0])
+	both_callbacks_model.substeps = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> int: return 1
+	var duplicate_selectors: Dictionary = both_callbacks.prepare_reset(_level_state())
+	_check("simulation configuration rejects both substep callback forms after model mutation",
+		not both_callbacks._configuration_is_valid() and not duplicate_selectors.get("ok", false),
+		str(duplicate_selectors.get("message", "")))
+	both_callbacks.free()
 
 
 func _adapter_contract() -> void:
