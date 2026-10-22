@@ -108,12 +108,17 @@ The LU-34 growth allowance for close vegetation (+50% primitives) assumed source
 - The pilot class total moves from 450,000 to 455,000. The pilot growth reserve is spent, so further pilot-view growth needs a matching reduction from the [LU-34 list](../../../landscape-upgrade/LU-34/README.md#reduction-plan-for-owners).
 - Ground is at 523,385 of 525,000.
 - `attribute_views.gd` now counts full-detail triangles per surface. Quercus foliage (2 × 2,636 triangles) is a recorded full-detail exception, because its only generated leaf level keeps 10% of the cards.
+- The per-surface count also surfaced pre-existing debt: the parked Avanti batches have 17,847 and 11,898 full-detail triangles in surfaces that the SC-09-R1 bake left without LODs. They are recorded as fleet-owner exceptions.
 
 ## Checks
 
 - `test_build_library.py` (9 tests), `convert_landscapelab_trees.py --check`, `build_library.py --check`, the far-tree atlas recipe pins, `place_woodland_edges.py --check` and `tools/trees` placement tests all pass.
 - Builder mutations are rejected with a reason: the notice source swapped to the atlas notice, a changed Fagus licence hash, licence evidence outside the source directory, and Quercus 2 removed from the manifest.
 - `test_imported_vegetation`, `test_imported_tree_rendering`, `test_vegetation_collision_proxies`, `test_landscape_vegetation` and `test_scenery_build` pass. These include the GPU-compressed recipe for the new maps and `Flowers.png`, LandscapeLab leaf maps that keep mips, catalog and alias composition, and the sway bound above.
+- **Full suite on the final state:**
+  - Parse check of every script: clean.
+  - Units: 660 of 660 run. The only failures are the 8 `test_companions_*` tests, which fail on their pre-existing field-hash pin (AFC owner).
+  - Final budget sweep: all limits pass.
 - **LOD and foliage mutations** run on a disposable copy, and each fails its check:
 
   | Mutation | Fails |

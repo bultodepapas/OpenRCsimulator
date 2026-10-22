@@ -790,3 +790,16 @@ readable crowns, against LU-34's +50% allowance, which assumed the scale-blind L
 their measured cost +10% and raise the pilot total from 450,000 to 455,000; the pilot growth
 reserve is spent, so further pilot-view growth needs a matching reduction.
 [Evidence](research/visual-quality-implementation/L6c/species-variety/README.md).
+
+### 2026-10-22 — Regroup the near field trees into woods, hedgerows and field trees (L7-R3)
+
+The owner approved changing the frozen L6b near ring. `tools/trees/place.py` `groves-v1` keeps
+480 near and 1,200 far trees, and keeps the habitat-v1 far ring byte-for-byte. It places the near
+trees as 9 single-species woods, 4 hedgerow lines and 24 solitary field trees. Species and height
+stay the renderer's position hash, so the generator selects positions by their hashed identity
+and needs no runtime or data-format change. Frozen L6b trees remain in the two skyline sectors
+where `tools/scenery/place.py` places the turbines, pylons and village, so landmarks and scenery
+stay byte-identical; the collision world identity changes. Write the field CRLF on every OS,
+matching `.gitattributes`, so raw-byte pins agree on Linux and Windows. Defer far-ring compaction
+and a higher tree count (loader limit) to separate decisions.
+[Evidence](research/visual-quality-implementation/L7-R3/README.md).
