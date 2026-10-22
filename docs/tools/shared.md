@@ -20,6 +20,8 @@ Tools every domain uses: the engine, the test suite, headless runs, flags, trace
   - It takes over 40 minutes on the dev VM. For a quick check, run the affected scripts with the [checked runner](#one-godot-script) first.
   - The parse step launches Godot once per script; if your working tree changes during the run (another session pulls or edits), the result is invalid. Run long suites on a snapshot: `git worktree add --detach tmp/suite HEAD`, then run `tmp/suite/app/test.sh` (copy or hard-link `.tools/Godot_*` into `tmp/suite/.tools/` to skip the download).
   - Two named physical checks run in "pending" mode inside the suite (`test_rudder_authority.gd`, `test_yaw_damping.gd`). Pending is not a pass; run alone they are strict. Details: [TOOLS](../TOOLS.md#app-and-release-commands).
+  - The script stops at the first failure (`set -e`), and the integration tail runs after the units. One red unit script hides every later result: run `OPENRC_TEST_PART=integration app/test.sh` for the tail, and loop the remaining `app/tests/test_*.gd` through the [checked runner](#one-godot-script) to see all unit failures.
+  - Do not run two suites, or two Godot tools, on checkouts of this project at once: they share the same `user://` data directory.
   - It does not run the CI-only checks below.
 
 ## CI-only checks
