@@ -79,3 +79,10 @@ offscreen production World diagnostic without aircraft or flight simulation;
 it does not qualify flight pacing, pilot readability or reflection quality.
 Flowing High uses Godot's realtime 256-pixel sky filtering to allow continuity;
 frozen worlds retain quality filtering. [Evidence and tradeoffs](../../docs/research/visual-quality-implementation/VQ-07/sky-continuity-2026-10-21/README.md).
+
+`test_ridge_color.gd` is a native GPU regression for the distant mountain
+material. Run it with `launch.py --profile standard` and `--profile high`, adding
+`--script ../tools/graphics/test_ridge_color.gd`. Eleven controlled palette cases
+compare the production fragment path with StandardMaterial3D references, with
+lighting/fog isolated. Headless execution fails rather than claiming GPU coverage.
+[Mountain color evidence](../../docs/research/visual-quality-implementation/VQ-07/ridge-color-2026-10-21/README.md).

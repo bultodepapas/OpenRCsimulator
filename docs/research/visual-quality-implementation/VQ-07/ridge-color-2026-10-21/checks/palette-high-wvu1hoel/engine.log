@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ridge color mismatch grass_low_clamp: max 5.00/255 (shader (0.0824, 0.1255, 0.0314, 1.0), reference (0.0941, 0.1333, 0.051, 1.0))
+ridge color mismatch grass_mid_gray: max 4.00/255 (shader (0.1176, 0.1725, 0.0549, 1.0), reference (0.1255, 0.1804, 0.0706, 1.0))
+ridge color mismatch green_biome_vegetation: max 4.00/255 (shader (0.0745, 0.1608, 0.0549, 1.0), reference (0.0863, 0.1647, 0.0706, 1.0))
+ridge color mismatch detail_alpha: max 5.00/255 (shader (0.0706, 0.1098, 0.0275, 1.0), reference (0.0863, 0.1216, 0.0471, 1.0))
+ridge color GPU regression: 4 of 11 palette cases exceeded 3.5/255

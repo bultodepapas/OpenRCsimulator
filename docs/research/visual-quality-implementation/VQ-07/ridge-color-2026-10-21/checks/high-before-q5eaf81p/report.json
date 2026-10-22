@@ -1,0 +1,59 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "42f453dc-cb4c-478d-827f-43895742d425",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../tools/graphics/capture.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-scratch/ridge-20261021/high-before",
+    "--aircraft=p51d-mustang-120",
+    "--hour=15"
+  ],
+  "cwd": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\isolated",
+  "started_utc": "2026-10-21T21:54:00.556283+00:00",
+  "label": "high-before",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\high-before-q5eaf81p\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\high-before-q5eaf81p\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "graphics capture: lake complete"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/geometry.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/source.json\", \"authoring source is missing: assets/aircraft/p51d-mustang-120/appearance.json\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:55)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "graphics capture: lake complete"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 8.765,
+  "log_bytes": 1357,
+  "log_sha256": "c8bda4e6572a24b8e2f85806895372ab37fab68fd29b407041e25106a08bf6d4"
+}

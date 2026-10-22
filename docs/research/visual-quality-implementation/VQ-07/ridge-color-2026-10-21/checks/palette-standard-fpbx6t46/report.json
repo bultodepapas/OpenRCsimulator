@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "de8a787c-5951-4587-a756-f65c9ef53955",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/isolated/app",
+    "--rendering-method",
+    "gl_compatibility",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/test_ridge_color.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T22:06:47.669062+00:00",
+  "label": "palette-standard",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\palette-standard-fpbx6t46\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\palette-standard-fpbx6t46\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ridge color GPU regression passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.406,
+  "log_bytes": 254,
+  "log_sha256": "7b135e6d292b5badfe01ee9136a02e9c38d71a7b51225f2c4e2ccd3cb68b301b"
+}

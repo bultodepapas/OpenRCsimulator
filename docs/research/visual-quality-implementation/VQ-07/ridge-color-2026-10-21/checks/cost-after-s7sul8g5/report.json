@@ -1,0 +1,57 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1bcde5a2-746a-4aee-9a99-e43b718eb3b8",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/isolated/app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../tools/graphics/capture.gd",
+    "--",
+    "--out=D:/OpenRCsimulator-scratch/ridge-20261021/cost-after",
+    "--aircraft=p51d-mustang-120",
+    "--hour=15",
+    "--view=pilot",
+    "--seconds=10"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T22:08:13.628520+00:00",
+  "label": "cost-after",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\cost-after-s7sul8g5\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\cost-after-s7sul8g5\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "graphics capture: pilot complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 29.953,
+  "log_bytes": 794,
+  "log_sha256": "896683dccdb420a9def6f18418f502ec27241e263dbf557108c99c449a1d2d4b"
+}

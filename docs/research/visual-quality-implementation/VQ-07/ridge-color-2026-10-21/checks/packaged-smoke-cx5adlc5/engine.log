@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high_experimental","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+frame times: p50 16.67 ms, p95 18.90 ms, p99 35.02 ms over 300 frames (complete=true) → D:/OpenRCsimulator-scratch/ridge-20261021/packaged-smoke.json
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: finalize (servers/rendering/rendering_device.cpp:8900)

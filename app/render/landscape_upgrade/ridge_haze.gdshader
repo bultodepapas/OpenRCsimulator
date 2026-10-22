@@ -17,8 +17,11 @@ uniform float beta = 0.00017;
 uniform sampler2D relief : filter_linear_mipmap_anisotropic, repeat_disable;
 // LU-16-R2: offline habitat classification + two shared CC0 photographic tiles.
 uniform sampler2D habitat : filter_linear_mipmap_anisotropic, repeat_disable;
-uniform sampler2D grass_rock : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
-uniform sampler2D rocks : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+// These photographs drive the authored sRGB modulation/coverage recipe below,
+// rather than supplying linear surface color. Sample their encoded values on
+// both renderers: source_color would decode only on RD and flatten the recipe.
+uniform sampler2D grass_rock : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D rocks : filter_linear_mipmap_anisotropic, repeat_enable;
 varying vec3 world_pos;
 
 void vertex() {
@@ -45,6 +48,11 @@ void fragment() {
 	vec3 outcrop = vec3(0.205, 0.20, 0.18) * clamp(stone_value * 2.6, 0.6, 1.4);
 	float rock_cover = smoothstep(0.18, 0.8, biome.r + (stone_value - 0.3) * 0.3);
 	ALBEDO = mix(vegetation, outcrop, rock_cover) * detail.a;
+#if CURRENT_RENDERER != RENDERER_COMPATIBILITY
+	// Match the existing Compatibility material response. GLES3 applies this
+	// cubic to ALBEDO after fragment(); Forward+ expects linear ALBEDO already.
+	ALBEDO = ALBEDO * (ALBEDO * (ALBEDO * 0.305306011 + 0.682171111) + 0.012522878);
+#endif
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.12;
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;

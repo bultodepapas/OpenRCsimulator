@@ -4,6 +4,7 @@
 Import/material corrections remain gated by VQ-01c/d. No production assets, import
 settings, materials, physics or goldens changed in this slice.
 Commands and tool scope live in the [tool contract](../../../../research/performance/README.md#runtime-texture-inventory-vq-02a).
+The first correction, [VQ-02a-R1 roof map mipmaps](roof-mipmaps/README.md) (2026-10-21), is recorded separately.
 
 ## Source and evidence
 

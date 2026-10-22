@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "679c4d46-52db-413e-a947-376ba257dab9",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/isolated/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_landscape_horizon.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T22:03:39.789147+00:00",
+  "label": "horizon",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\horizon-tgkv7g44\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\horizon-tgkv7g44\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.406,
+  "log_bytes": 123,
+  "log_sha256": "bb19d942acf0c82c4fab377135100617e1a675320fb224b2ccf065b17335f350"
+}

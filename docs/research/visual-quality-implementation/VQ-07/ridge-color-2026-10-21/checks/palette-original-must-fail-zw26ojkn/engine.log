@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ridge color mismatch grass_low_clamp: max 70.00/255 (shader (0.3373, 0.4, 0.2549, 1.0), reference (0.0824, 0.1255, 0.0314, 1.0))
+ridge color mismatch grass_mid_gray: max 57.00/255 (shader (0.3373, 0.4, 0.2549, 1.0), reference (0.1176, 0.1765, 0.0549, 1.0))
+ridge color mismatch grass_high_clamp: max 73.00/255 (shader (0.5333, 0.6235, 0.4078, 1.0), reference (0.2471, 0.349, 0.1294, 1.0))
+ridge color mismatch grass_rgb_luminance: max 41.00/255 (shader (0.3373, 0.4, 0.2549, 1.0), reference (0.1804, 0.2588, 0.0941, 1.0))
+ridge color mismatch blue_biome_meadow: max 44.00/255 (shader (0.4039, 0.4118, 0.3059, 1.0), reference (0.2431, 0.2549, 0.1333, 1.0))
+ridge color mismatch green_biome_vegetation: max 44.00/255 (shader (0.2392, 0.3333, 0.2196, 1.0), reference (0.0745, 0.1608, 0.0549, 1.0))
+ridge color mismatch stone_low_clamp: max 69.00/255 (shader (0.3843, 0.3804, 0.3608, 1.0), reference (0.1137, 0.1098, 0.098, 1.0))
+ridge color mismatch stone_mid_gray: max 59.00/255 (shader (0.3843, 0.3804, 0.3608, 1.0), reference (0.1529, 0.149, 0.1333, 1.0))
+ridge color mismatch stone_high_clamp: max 73.00/255 (shader (0.5725, 0.5647, 0.5373, 1.0), reference (0.2863, 0.2784, 0.251, 1.0))
+ridge color mismatch rock_cover_blend: max 51.00/255 (shader (0.3569, 0.3922, 0.298, 1.0), reference (0.1608, 0.1922, 0.1098, 1.0))
+ridge color mismatch detail_alpha: max 44.00/255 (shader (0.2392, 0.2824, 0.1765, 1.0), reference (0.0706, 0.1098, 0.0275, 1.0))
+ridge color GPU regression: 11 of 11 palette cases exceeded 3.5/255

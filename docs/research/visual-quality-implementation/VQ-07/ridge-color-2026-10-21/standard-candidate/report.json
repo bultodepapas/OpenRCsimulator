@@ -1,0 +1,256 @@
+{
+	"arguments": {
+		"aircraft": "p51d-mustang-120",
+		"hour": 15.0,
+		"out": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate",
+		"seconds": 0.0,
+		"view": "all",
+		"width": 1920
+	},
+	"cases": [
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				8.0,
+				-9.0,
+				-1.2
+			],
+			"counters": {
+				"draw_calls": 218,
+				"primitives": 328104
+			},
+			"id": "flightline",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/flightline.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				4.5,
+				-12.0,
+				-0.35
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-1.0,
+				-8.0,
+				-3.6
+			],
+			"counters": {
+				"draw_calls": 214,
+				"primitives": 306412
+			},
+			"id": "windsock",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/windsock.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-6.0,
+				-11.0,
+				-3.3
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [
+				0.0,
+				38.0,
+				-0.5
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				7.0,
+				32.0,
+				-2.0
+			],
+			"counters": {
+				"draw_calls": 375,
+				"primitives": 208860
+			},
+			"id": "aircraftground",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/aircraftground.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				0.0,
+				38.0,
+				-0.5
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			],
+			"aircraft_visible": true,
+			"camera_ned": [
+				0.0,
+				0.0,
+				-1.7
+			],
+			"counters": {
+				"draw_calls": 418,
+				"primitives": 321140
+			},
+			"id": "pilot",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/pilot.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				28.0056018829346,
+				28.0056018829346,
+				-7.30112047195435
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				-8.0,
+				-13.0,
+				-2.5
+			],
+			"counters": {
+				"draw_calls": 212,
+				"primitives": 303168
+			},
+			"id": "pavilion",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/pavilion.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				-22.0,
+				0.0,
+				-1.5
+			]
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"aircraft_ned": [],
+			"aircraft_visible": false,
+			"camera_ned": [
+				80.0,
+				90.0,
+				-5.0
+			],
+			"counters": {
+				"draw_calls": 103,
+				"primitives": 184481
+			},
+			"id": "lake",
+			"image": "D:/OpenRCsimulator-scratch/ridge-20261021/standard-candidate/lake.png",
+			"manual_draw": true,
+			"settled_draw_frames": 90,
+			"target_ned": [
+				110.0,
+				125.0,
+				0.0
+			]
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"environment": {
+		"fog_density": 0.000170086961588822,
+		"fog_enabled": true,
+		"glow_enabled": false,
+		"reflected_light_source": 2,
+		"ssao_enabled": false,
+		"tonemap_exposure": 0.600000023841858,
+		"tonemap_mode": 3
+	},
+	"format": "openrc-graphics-capture v1",
+	"gpu": {
+		"api": "3.3.0 NVIDIA 617.42",
+		"name": "NVIDIA GeForce RTX 3090"
+	},
+	"lighting": {
+		"engine_shadows": true,
+		"hour": 15.0,
+		"snapshot": {
+			"cloud_cirrus_strength": 0.12,
+			"cloud_cluster_strength": 0.35,
+			"cloud_color": "(0.949, 0.9569, 0.9686, 1.0)",
+			"cloud_coverage": 0.35,
+			"cloud_deck_m": 1500.0,
+			"cloud_drift_cells_per_s": "(0.004, 0.0015)",
+			"cloud_scale": 6.0,
+			"cloud_seed": 1253,
+			"cloud_shadow_strength": 0.22,
+			"cloud_silver_strength": 0.18,
+			"cloud_update_s": 1.0,
+			"disc_cloud_occlusion": true,
+			"disc_elevation_deg": 46.8567999206744,
+			"exposure": 0.6,
+			"gradient_curve": 2.6,
+			"haze": "(0.7882, 0.8902, 0.9294, 1.0)",
+			"haze_energy": 1.0,
+			"rim_end_m": 20000.0,
+			"rim_start_m": 16000.0,
+			"shadow_energy_compat": 0.85,
+			"shadow_max_distance_m": 300.0,
+			"shadow_strength": 0.960052852164302,
+			"solar": {
+				"azimuth_deg": 270.007909865832,
+				"direction_ned": [
+					0.0000944041077750243,
+					-0.683824103292156,
+					-0.729646891889867
+				],
+				"elevation_deg": 46.8567999206744,
+				"errors": [],
+				"hour_angle_deg": 43.1431998069032,
+				"julian_date": 2461120.125,
+				"ok": true
+			},
+			"sun_azimuth_deg": 270.007909865832,
+			"sun_color": "(1.0, 0.9137, 0.8431, 1.0)",
+			"sun_diameter_deg": 0.53,
+			"sun_elevation_deg": 46.8567999206744,
+			"sun_energy": 0.960052852164302,
+			"sun_scatter": 0.785,
+			"visibility_m": 23000.0,
+			"white": 1.0,
+			"zenith": "(0.3057, 0.4078, 0.5764, 1.0)"
+		},
+		"sun_azimuth_deg": 270.007909865832,
+		"sun_direction_render": [
+			-0.683824121952057,
+			0.729646921157837,
+			-0.0000944041094044223
+		],
+		"sun_elevation_deg": 46.8567999206744,
+		"sun_energy": 0.816044924339656,
+		"sun_shadow_enabled": true
+	},
+	"msaa_3d": 2,
+	"offscreen": true,
+	"performance_claim": false,
+	"profile": {
+		"active": "standard",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "gl_compatibility",
+		"requested": "standard"
+	},
+	"renderer": "gl_compatibility",
+	"viewport": [
+		1920,
+		1080
+	]
+}

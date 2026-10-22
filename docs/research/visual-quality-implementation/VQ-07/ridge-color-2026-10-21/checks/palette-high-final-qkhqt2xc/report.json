@@ -1,0 +1,62 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "74461893-f580-4d45-9208-1e9a1cfd2a62",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/isolated/app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/test_ridge_color.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T22:06:20.617568+00:00",
+  "label": "palette-high-final",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\palette-high-final-qkhqt2xc\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\palette-high-final-qkhqt2xc\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ridge color GPU regression passed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 2,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 4,
+      "message": "Parse Error: Cannot infer the type of \"s\" variable because the value doesn't have a set type.",
+      "context": [
+        "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/test_ridge_color.gd:148)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 6,
+      "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tools/graphics/test_ridge_color.gd\" with error \"Parse error\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "ridge color GPU regression passed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 1.531,
+  "log_bytes": 548,
+  "log_sha256": "fa378f5ad67eea9c7ddccb931fd1518fad45a5afc43a1081b8ce1ea4dce7a55d"
+}

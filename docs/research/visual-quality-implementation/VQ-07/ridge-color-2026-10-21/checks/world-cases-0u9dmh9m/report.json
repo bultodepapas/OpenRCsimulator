@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f219d985-f000-48ab-9f5b-82d1a8ed05d8",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/isolated/app",
+    "--rendering-method",
+    "forward_plus",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-07/ridge-color-2026-10-21/world_probe.gd",
+    "--",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/world-cases",
+    "D:/OpenRCsimulator-scratch/ridge-20261021/ridge-before.gdshader"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-21T22:02:29.955602+00:00",
+  "label": "world-cases",
+  "log": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\world-cases-0u9dmh9m\\engine.log",
+  "report": "D:\\OpenRCsimulator-scratch\\ridge-20261021\\checks\\world-cases-0u9dmh9m\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "ridge World probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 30.563,
+  "log_bytes": 819,
+  "log_sha256": "b7a73abec462bd86e0753a5b8b7c166a53e6afa103275993ba2f391208415148"
+}

@@ -1,0 +1,25 @@
+{
+  "base_commit": "2bb2fc2fadc55cc8e41030608a22daf64ef5a2dc",
+  "build_label": "2bb2fc2f-ridge-color-trial",
+  "dirty": true,
+  "scope": "local frozen-source Windows trial; not a release or later parallel commits",
+  "files": {
+    "OpenRC Simulator.exe": {
+      "sha256": "0e8bb185376f456e4fa3b7c564bc9bed1d2330b3fa8c98bbb4f0a8b8d70995c0",
+      "bytes": 452281264
+    },
+    "openrc_ground_vehicle.dll": {
+      "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+      "bytes": 460800
+    },
+    "Play High.cmd": {
+      "sha256": "7f5fa4f559c6c6108453a7bd406b602fecf254d96d10ec886e30d2e764939495",
+      "bytes": 123
+    }
+  },
+  "source_sha256": {
+    "app/render/landscape_upgrade/ridge_haze.gdshader": "c9688437380bef067e8a247990121d54926f8bc1e99ebe6c83cfd2f38481ac30",
+    "tools/graphics/test_ridge_color.gd": "18f0fc9f8fa1a06184eb1f172fb130283aea5ff65b8bc18b5356b0213917bb5f",
+    "docs/research/visual-quality-implementation/VQ-07/ridge-color-2026-10-21/world_probe.gd": "fe8b046ac31ede0ff082e6c7a3778c631030b8bc1c329508f7622bc2a33cc493"
+  }
+}

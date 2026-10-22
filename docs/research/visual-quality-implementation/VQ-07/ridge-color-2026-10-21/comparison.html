@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenRC — High mountain detail comparison</title>
+<style>
+  * {box-sizing: border-box}
+  body {margin: 0; padding: 28px; background: #101816; color: #e7eee8; font: 16px/1.5 system-ui, sans-serif}
+  main {max-width: 1440px; margin: auto}
+  h1 {font-size: clamp(24px, 4vw, 40px); margin: 0 0 6px}
+  p {color: #b8c9be; max-width: 880px}
+  figure {position: relative; margin: 24px 0 12px; --split: 50%; background: #000}
+  img {display: block; width: 100%; height: auto}
+  .before {position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--split)) 0 0)}
+  .line {position: absolute; inset: 0 auto 0 var(--split); width: 2px; background: #fff; pointer-events: none}
+  .tag {position: absolute; top: 12px; padding: 5px 12px; background: #101816d9; border-radius: 4px}
+  .left {left: 12px} .right {right: 12px}
+  input {width: 100%; accent-color: #b5dba3; min-height: 32px}
+  button {font: inherit; color: inherit; border: 1px solid #52715d; background: #1e3227; padding: 9px 18px; cursor: pointer; border-radius: 5px; margin-right: 8px}
+  button[aria-pressed=true] {background: #b5dba3; color: #101816}
+  a {color: #b5dba3} small {display: block; color: #b8c9be; margin-top: 12px}
+</style>
+<main>
+  <h1>Mountain detail in High</h1>
+  <p>Same camera, lighting, assets and graphics settings. The mountain material now preserves its authored texture controls and decodes its palette correctly. Vegetation is identical on both sides and belongs to the separate vegetation track.</p>
+  <button type="button" aria-pressed="true" data-view="lake">Lakeside</button>
+  <button type="button" aria-pressed="false" data-view="pilot">Pilot view</button>
+  <figure aria-label="Interactive before and after comparison">
+    <img id="after" src="high-candidate/lake.png" alt="Corrected High mountains with restored slope texture">
+    <img id="before" class="before" src="high-baseline/lake.png" alt="Original High mountains with flattened texture">
+    <div class="line"></div><span class="tag left">Before</span><span class="tag right">After</span>
+  </figure>
+  <label for="split">Drag to compare — left: before · right: after</label>
+  <input id="split" type="range" min="0" max="100" value="50">
+  <small>Unmodified native 1920 × 1080 captures · Forward+ · 4× MSAA · Windows / RTX 3090. This corrects a material defect; it does not establish full renderer parity or an FPS gain. <a href="README.md">Evidence and limits</a>.</small>
+</main>
+<script>
+  const figure = document.querySelector('figure');
+  document.querySelector('#split').addEventListener('input', e => figure.style.setProperty('--split', e.target.value + '%'));
+  document.querySelectorAll('button').forEach(button => button.addEventListener('click', () => {
+    document.querySelector('#before').src = 'high-baseline/' + button.dataset.view + '.png';
+    document.querySelector('#after').src = 'high-candidate/' + button.dataset.view + '.png';
+    document.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+  }));
+</script>
+</html>

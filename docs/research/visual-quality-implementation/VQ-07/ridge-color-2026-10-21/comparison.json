@@ -1,0 +1,432 @@
+{
+  "scope": "fixed native captures; pixel and regional contrast diagnostics, not quality/FPS scores",
+  "numpy": "2.4.6",
+  "pillow": "12.3.0",
+  "static": {
+    "standard": {
+      "aircraftground": {
+        "before_sha256": "5f6dd125e8c59373993d46c487893ba4527bbb6804532b98901b548fc115ba09",
+        "after_sha256": "5f6dd125e8c59373993d46c487893ba4527bbb6804532b98901b548fc115ba09",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "flightline": {
+        "before_sha256": "987530271f1c4ac9cc48d003b1c368411cdeffc9c7711c601b07f0098079cf97",
+        "after_sha256": "ac9ba55d2d8d71df37efa34fef6d5c152c68a3f102d58b56eddf7d66263d5962",
+        "changed_pixels": 1,
+        "total_pixels": 2073600,
+        "max_channel_delta": 1.0,
+        "mean_absolute_channel_delta": 1.6075102880658437e-07,
+        "bbox_xyxy": [
+          400,
+          728,
+          401,
+          729
+        ]
+      },
+      "lake": {
+        "before_sha256": "ce1810a71b6a78a2a74d94fec1a03f4ff22bc0a4cfc92de274c764f12f34c410",
+        "after_sha256": "be81b3853c2d70532f31e54815c2f41f512e325cade54b88f966f86df1767ce1",
+        "changed_pixels": 921,
+        "total_pixels": 2073600,
+        "max_channel_delta": 1.0,
+        "mean_absolute_channel_delta": 0.00016348379629629628,
+        "bbox_xyxy": [
+          2,
+          496,
+          1748,
+          994
+        ]
+      },
+      "pavilion": {
+        "before_sha256": "197493a7058de85220f5171ca7f5dc0096335f83f195784d6951f87782837d90",
+        "after_sha256": "197493a7058de85220f5171ca7f5dc0096335f83f195784d6951f87782837d90",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "pilot": {
+        "before_sha256": "905ae9cc55553810dd17bd7569b1e218420e8cb62a8c5744e7b5413fcd2cf8c9",
+        "after_sha256": "905ae9cc55553810dd17bd7569b1e218420e8cb62a8c5744e7b5413fcd2cf8c9",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "windsock": {
+        "before_sha256": "b9c50d3a416da867884ef5e693fe37b86000818256e5be2fe591c2da3e5693ef",
+        "after_sha256": "5036e471d0146cda19ab7a6b9bb9562f7f1c6fb4748cda685b0c638987dfd61d",
+        "changed_pixels": 1,
+        "total_pixels": 2073600,
+        "max_channel_delta": 1.0,
+        "mean_absolute_channel_delta": 1.6075102880658437e-07,
+        "bbox_xyxy": [
+          122,
+          627,
+          123,
+          628
+        ]
+      }
+    },
+    "high": {
+      "aircraftground": {
+        "before_sha256": "0637aeeb013fb20127eca4d31fd795e44c2a30027a8d4758e52576e9d0dac1cd",
+        "after_sha256": "0637aeeb013fb20127eca4d31fd795e44c2a30027a8d4758e52576e9d0dac1cd",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "flightline": {
+        "before_sha256": "151f101063a8e7cc8774544849160c9caa3a5bab2ff46bf65671d5d7b599d913",
+        "after_sha256": "151f101063a8e7cc8774544849160c9caa3a5bab2ff46bf65671d5d7b599d913",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "lake": {
+        "before_sha256": "691589d46dd75f19b7fabd9ad446c2a03f0b6042e822412a765637e97a81a913",
+        "after_sha256": "68e77e4ca6665e9cf25050b52327dc9c79074283bbff6d1da804d009aab3ea5f",
+        "changed_pixels": 255335,
+        "total_pixels": 2073600,
+        "max_channel_delta": 18.0,
+        "mean_absolute_channel_delta": 0.8025083590534979,
+        "bbox_xyxy": [
+          0,
+          48,
+          1544,
+          417
+        ]
+      },
+      "pavilion": {
+        "before_sha256": "c19a562eefd6b0a0fd74fee8b20f3418b363e668fb627c21fa53bf04f88a0ca1",
+        "after_sha256": "c19a562eefd6b0a0fd74fee8b20f3418b363e668fb627c21fa53bf04f88a0ca1",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      },
+      "pilot": {
+        "before_sha256": "259f45b77ec17d169b743de5ff3c6301cfe33d176072e52b4dfe8e1fb08d1f41",
+        "after_sha256": "e521a5d83175fe4047ba90463e608fe05ce8a97313209d8c21359b1cb8920d13",
+        "changed_pixels": 270319,
+        "total_pixels": 2073600,
+        "max_channel_delta": 17.0,
+        "mean_absolute_channel_delta": 0.7804439943415638,
+        "bbox_xyxy": [
+          0,
+          348,
+          1656,
+          705
+        ]
+      },
+      "windsock": {
+        "before_sha256": "9319857379c3324420c6e7b90eb97aed32a99d4e930601b6930367ca7af80a84",
+        "after_sha256": "9319857379c3324420c6e7b90eb97aed32a99d4e930601b6930367ca7af80a84",
+        "changed_pixels": 0,
+        "total_pixels": 2073600,
+        "max_channel_delta": 0.0,
+        "mean_absolute_channel_delta": 0.0,
+        "bbox_xyxy": null
+      }
+    }
+  },
+  "world": {
+    "1500-before-lake-000.png": {
+      "before_sha256": "5ca11ea4ee76295287986359376f830144ecd14fb4f8d82f33be6ef932efcaae",
+      "after_sha256": "56cc01abe8ba4c20fc003c6c17a02efa289fc88fea1cc74351549d5a64c15a7d",
+      "changed_pixels": 255339,
+      "total_pixels": 2073600,
+      "max_channel_delta": 25.0,
+      "mean_absolute_channel_delta": 1.1707445987654321,
+      "bbox_xyxy": [
+        0,
+        48,
+        1544,
+        417
+      ]
+    },
+    "1500-before-lake-060.png": {
+      "before_sha256": "9135cf35ac7b16c126d96f38f252325b2a24579498b611cfb2c74da1af75d9ac",
+      "after_sha256": "8093fa7ede07ca04b7eb6472c539219bd9a15b3152fa7ff5c945dd41d69fb934",
+      "changed_pixels": 263052,
+      "total_pixels": 2073600,
+      "max_channel_delta": 25.0,
+      "mean_absolute_channel_delta": 1.2016610403806585,
+      "bbox_xyxy": [
+        0,
+        51,
+        1577,
+        413
+      ]
+    },
+    "1500-before-pilot-000.png": {
+      "before_sha256": "196129ea7649089b50aa729a793f5b3c8afe528c399a679d97117f052c077735",
+      "after_sha256": "843266570c351b54d72588e069d6998438513a8d5aa466e54281f87d189b1e8b",
+      "changed_pixels": 270889,
+      "total_pixels": 2073600,
+      "max_channel_delta": 24.0,
+      "mean_absolute_channel_delta": 1.1529846643518518,
+      "bbox_xyxy": [
+        0,
+        348,
+        1656,
+        705
+      ]
+    },
+    "1500-before-pilot-060.png": {
+      "before_sha256": "3edf13bfdf3f942fbabd27a9079193801d892dd551beefa06e543a91cc7468db",
+      "after_sha256": "5d8cfa26263ab35d3866142428eb266f909d5ec01aac5f77b4dbd463a7f6ac85",
+      "changed_pixels": 283317,
+      "total_pixels": 2073600,
+      "max_channel_delta": 24.0,
+      "mean_absolute_channel_delta": 1.2103550990226337,
+      "bbox_xyxy": [
+        0,
+        359,
+        1691,
+        711
+      ]
+    },
+    "1930-before-lake-000.png": {
+      "before_sha256": "fb2e5edb39ffce82f66fc2f8daa4ea31208a369735980b564e7ef44999e37406",
+      "after_sha256": "444921de987308bda2c11f451a2c17c4f94e1927bf167a0484aa2de48a1a381e",
+      "changed_pixels": 255292,
+      "total_pixels": 2073600,
+      "max_channel_delta": 11.0,
+      "mean_absolute_channel_delta": 0.4062503215020576,
+      "bbox_xyxy": [
+        0,
+        48,
+        1544,
+        417
+      ]
+    },
+    "1930-before-lake-060.png": {
+      "before_sha256": "96cdb8ee36f67c2548c2469e0fc915d907bb2bc000d7c4ef48acf17b890d6007",
+      "after_sha256": "10552905b81668feece04a61e10306d564a45fa51d32bd57b178c611a8e297b8",
+      "changed_pixels": 263002,
+      "total_pixels": 2073600,
+      "max_channel_delta": 11.0,
+      "mean_absolute_channel_delta": 0.4153491512345679,
+      "bbox_xyxy": [
+        0,
+        51,
+        1577,
+        413
+      ]
+    },
+    "1930-before-pilot-000.png": {
+      "before_sha256": "369b7e5304f92882308d2da358d009ed1f3aa5f088b0d9a52bd989b2f4f84a6d",
+      "after_sha256": "e7d28bcd795c6e07fe437cba74a87294f4531f21f20f6636f487e6919ab527a8",
+      "changed_pixels": 270832,
+      "total_pixels": 2073600,
+      "max_channel_delta": 9.0,
+      "mean_absolute_channel_delta": 0.4015371013374486,
+      "bbox_xyxy": [
+        0,
+        348,
+        1656,
+        705
+      ]
+    },
+    "1930-before-pilot-060.png": {
+      "before_sha256": "8c4b50283fb7214bfc52ffe2c71d53d81cff34900b0dacedcee0baf7df8488b0",
+      "after_sha256": "3546caa8766cc286a9920832d42ef76da6152bd775a987bb2b76083917c54de2",
+      "changed_pixels": 283267,
+      "total_pixels": 2073600,
+      "max_channel_delta": 10.0,
+      "mean_absolute_channel_delta": 0.42078012474279836,
+      "bbox_xyxy": [
+        0,
+        359,
+        1688,
+        711
+      ]
+    },
+    "2100-before-lake-000.png": {
+      "before_sha256": "617d8c89973e90f5c0af5f36351e5ca06b37346255a5b71ca7f89c6b61eaec51",
+      "after_sha256": "e13e9e0167a2a2dae6d872d5fd04442bfde189537687a240d16552cbb0b6320a",
+      "changed_pixels": 140191,
+      "total_pixels": 2073600,
+      "max_channel_delta": 1.0,
+      "mean_absolute_channel_delta": 0.02796071244855967,
+      "bbox_xyxy": [
+        0,
+        49,
+        1507,
+        417
+      ]
+    },
+    "2100-before-lake-060.png": {
+      "before_sha256": "8bafdaa0b1f50fc8007042d0a19b320a101b516d3c66a3ce472bb4bfb0a915d5",
+      "after_sha256": "7835e71dfac6b131c9df2c01a300d920968fa9e8d4cc7d2824134b513eb00342",
+      "changed_pixels": 162658,
+      "total_pixels": 2073600,
+      "max_channel_delta": 1.0,
+      "mean_absolute_channel_delta": 0.034295267489711935,
+      "bbox_xyxy": [
+        0,
+        52,
+        1554,
+        413
+      ]
+    },
+    "2100-before-pilot-000.png": {
+      "before_sha256": "506184c1d62b066fdbedadb54e3f1f39aa47119f0cfde7f5cbefa10926aea43a",
+      "after_sha256": "6fda62b28af29de66c87e5800b22a0ac215f6476b4a1edc8fd5cf39bf9b7a090",
+      "changed_pixels": 151538,
+      "total_pixels": 2073600,
+      "max_channel_delta": 1.0,
+      "mean_absolute_channel_delta": 0.0302197466563786,
+      "bbox_xyxy": [
+        0,
+        348,
+        1607,
+        705
+      ]
+    },
+    "2100-before-pilot-060.png": {
+      "before_sha256": "18ce56f6522bfdefd9ffcf0ee8301847dae2f6b22a69ca9e2fb49f960d538b91",
+      "after_sha256": "e503e47b4cca592e3a9c40e9e9839664bd747b3f1559ed7620b30a693e7525cb",
+      "changed_pixels": 172644,
+      "total_pixels": 2073600,
+      "max_channel_delta": 1.0,
+      "mean_absolute_channel_delta": 0.034547646604938274,
+      "bbox_xyxy": [
+        0,
+        359,
+        1662,
+        711
+      ]
+    }
+  },
+  "cost": {
+    "before": {
+      "samples": 6065,
+      "counters": {
+        "draw_calls": 266,
+        "primitives": 321140
+      },
+      "percentiles_ms": {
+        "wall_ms": [
+          1.625,
+          1.9428000000000003,
+          2.6671999999999936
+        ],
+        "cpu_ms": [
+          0.509999990463257,
+          0.726000010967255,
+          0.9448000168800338
+        ],
+        "gpu_ms": [
+          1.39999997615814,
+          1.65900003910065,
+          2.3971599960327095
+        ]
+      }
+    },
+    "after": {
+      "samples": 5993,
+      "counters": {
+        "draw_calls": 266,
+        "primitives": 321140
+      },
+      "percentiles_ms": {
+        "wall_ms": [
+          1.64,
+          2.035,
+          2.61224
+        ],
+        "cpu_ms": [
+          0.521000027656555,
+          0.7521999955177299,
+          0.971000015735626
+        ],
+        "gpu_ms": [
+          1.51800000667572,
+          1.7863999843597396,
+          2.3630799293518066
+        ]
+      }
+    }
+  },
+  "mountain_patch": {
+    "image": "lake.png",
+    "xyxy": [
+      700,
+      245,
+      900,
+      295
+    ],
+    "samples": {
+      "standard-baseline": {
+        "mean_rgb": [
+          136.1405,
+          160.6465,
+          161.6092
+        ],
+        "std_luminance": 3.994717080594045,
+        "mean_absolute_horizontal_luminance_gradient": 0.7504191959798991
+      },
+      "standard-candidate": {
+        "mean_rgb": [
+          136.1405,
+          160.6465,
+          161.6092
+        ],
+        "std_luminance": 3.994717080594045,
+        "mean_absolute_horizontal_luminance_gradient": 0.7504191959798991
+      },
+      "high-baseline": {
+        "mean_rgb": [
+          145.6144,
+          166.57,
+          166.9327
+        ],
+        "std_luminance": 2.3750136639666084,
+        "mean_absolute_horizontal_luminance_gradient": 0.07373646231155793
+      },
+      "high-candidate": {
+        "mean_rgb": [
+          137.322,
+          158.7128,
+          162.2053
+        ],
+        "std_luminance": 2.4155146682994224,
+        "mean_absolute_horizontal_luminance_gradient": 0.24855835175879307
+      }
+    }
+  },
+  "shadow_receiver_ablation": {
+    "before_sha256": "68e77e4ca6665e9cf25050b52327dc9c79074283bbff6d1da804d009aab3ea5f",
+    "after_sha256": "07cda56525948a0f0626ad5dcbbf2c501a864277c0f9312c918863c271d4da2a",
+    "changed_pixels": 1,
+    "total_pixels": 2073600,
+    "max_channel_delta": 1.0,
+    "mean_absolute_channel_delta": 1.6075102880658437e-07,
+    "bbox_xyxy": [
+      165,
+      317,
+      166,
+      318
+    ]
+  },
+  "identity": {
+    "base_commit": "2bb2fc2fadc55cc8e41030608a22daf64ef5a2dc",
+    "baseline_shader_sha256": "c3eab6b4786f936c552ff3bb8f45a6e737da98c7f08b269e92ba9371156ae92a",
+    "candidate_shader_sha256": "c9688437380bef067e8a247990121d54926f8bc1e99ebe6c83cfd2f38481ac30",
+    "capture_sha256": "4c04a0a28cbec04ba983f95bb8a3db20e7eef0a69f191d98413180e15e90fb42",
+    "cache": "fresh import in isolated archive; no shared asset/import-cache repair"
+  }
+}
