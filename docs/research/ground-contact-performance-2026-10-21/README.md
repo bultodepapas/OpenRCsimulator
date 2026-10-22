@@ -292,6 +292,18 @@ over 51 frames; its installation does not use this fuel-feed closure, so that
 small change is within run variation. All captures completed without a fault,
 but real-time backlog remains.
 
+## Physics-step cap experiment
+
+The project allows 12 physics steps per rendered frame at 240 Hz. The
+[six-step launcher](physics_cap6_launch.gd) changes only that cap for one
+native P-51 quick flight; it does not change the integrator or its tick size.
+The [capture](p51d-mustang-120-cap6-experiment-frames.json) had p50 26.8 ms
+over 106 frames, compared with 49.3 ms over 56 frames in the preceding
+12-step capture. It advanced only 2.675 s simulation in 3.006 s wall time,
+versus 2.779 s in 3.001 s with the existing cap. It trades shorter rendered
+frames for a slower flight and was not adopted. The short runs are sequential,
+not paired CPU benchmarks.
+
 ## Runway acceleration in simulation time
 
 The [fixed-tick probe](runway_acceleration_probe.gd) and its [Windows Godot
