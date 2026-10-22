@@ -92,16 +92,20 @@ static func front_azimuth_deg(field: Dictionary) -> float:
 
 
 ## The 3D asset for a pilot-relative field tree, or "" when it stays a card (NAN: no 3D trees).
-static func detail_asset(north: float, east: float, front_azimuth: float) -> String:
-	if is_nan(front_azimuth) or Vector2(north, east).length() > DETAIL_MAX_RADIUS_M:
+## half_angle_deg widens or narrows the front sector for a Scene detail preset (VQ-06b); collision
+## always uses the default, so presets never change the simulation.
+static func detail_asset(north: float, east: float, front_azimuth: float,
+		half_angle_deg: float = DETAIL_HALF_ANGLE_DEG) -> String:
+	if is_nan(front_azimuth) or half_angle_deg <= 0.0 or Vector2(north, east).length() > DETAIL_MAX_RADIUS_M:
 		return ""
 	var azimuth := rad_to_deg(atan2(east, north))
-	if absf(wrapf(azimuth - front_azimuth, -180.0, 180.0)) > DETAIL_HALF_ANGLE_DEG:
+	if absf(wrapf(azimuth - front_azimuth, -180.0, 180.0)) > half_angle_deg:
 		return ""
 	return DETAIL_ASSETS[int(identity(north, east).species)]
 
 
-static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float = NAN) -> Node3D:
+static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float = NAN,
+		half_angle_deg: float = DETAIL_HALF_ANGLE_DEG) -> Node3D:
 	ShaderClock.register() # standalone fields/exported packs must not depend on main.gd initialization
 	var result: Node3D = Node3D.new()
 	result.name = object_data.id
@@ -128,7 +132,7 @@ static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: flo
 		near_groups.append([])
 		far_groups.append([])
 	for point: Array in object_data.positions:
-		if not detail_asset(point[0], point[1], front_azimuth).is_empty():
+		if not detail_asset(point[0], point[1], front_azimuth, half_angle_deg).is_empty():
 			continue
 		var group_index: int = sector(point[0], point[1])
 		var radius: float = sqrt(float(point[0]) * float(point[0]) + float(point[1]) * float(point[1]))

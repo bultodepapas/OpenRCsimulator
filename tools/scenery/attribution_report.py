@@ -73,6 +73,7 @@ def summarize(report: dict) -> dict:
         }
     return {"viewport": report["viewport"], "adapter": report["adapter"], "godot": report["godot"],
             "memory": report.get("memory", {}), "instanced_lod_corrected": corrected,
+            "scene_detail": report.get("scene_detail", "high"),
             "source_triangles": {group: data["source_triangles"] for group, data in groups.items()},
             "full_detail_triangles": {group: data.get("full_detail_triangles") for group, data in groups.items()},
             "shadow_caster_triangles": {group: data.get("shadow_caster_triangles") for group, data in groups.items()},
@@ -86,6 +87,10 @@ def check_budget(summary: dict, report: dict, budget: dict) -> list[str]:
     failures = []
     if not summary["instanced_lod_corrected"]:
         failures.append("v1 attribution undercounts instanced LOD meshes; re-run attribute_views.gd")
+    # VQ-06b: the budget guards one Scene detail preset (High, the default); others are measured, not capped.
+    if summary["scene_detail"] != budget.get("scene_detail", "high"):
+        failures.append(f"scene detail {summary['scene_detail']} measured; this budget applies to "
+                        f"{budget.get('scene_detail', 'high')}")
     if [int(value) for value in summary["viewport"]] != budget["viewport"]:
         failures.append(f"viewport {summary['viewport']} differs from the budget's {budget['viewport']}")
     default = budget.get("default_subsystem", {})
@@ -131,7 +136,8 @@ def check_budget(summary: dict, report: dict, budget: dict) -> list[str]:
 
 def markdown(summary: dict) -> str:
     width, height = summary["viewport"]
-    lines = [f"Viewport {int(width)}×{int(height)}, {summary['adapter']}, Godot {summary['godot']}.",
+    lines = [f"Viewport {int(width)}×{int(height)}, {summary['adapter']}, Godot {summary['godot']}, "
+             f"scene detail {summary['scene_detail']}.",
              "Primitives count every MultiMesh instance (instanced LOD nodes measured one by one)."
              if summary["instanced_lod_corrected"] else
              "Engine counter only (v1): instanced meshes with LODs are counted once per draw.", ""]

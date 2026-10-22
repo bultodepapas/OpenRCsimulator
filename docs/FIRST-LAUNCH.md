@@ -131,6 +131,10 @@ borderless fullscreen uses the desktop resolution. Graphics changes preview imme
 and share the 15-second Keep/Revert recovery. Restore graphics defaults returns to
 unlimited FPS, VSync on and 4× MSAA. These controls do not change flight physics.
 VSync's effective state is displayed because the driver/compositor may override it.
+**Scene detail** (Low, Medium, High, Extreme) sets trees, props and model detail from the
+next flight: Low and Medium draw all field trees as cards with fewer props, High (default)
+draws the trees in front of the pilot in 3D, and Extreme every nearby field tree. Tree
+collision is the same at every level. [Presets and measured cost](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
 Workshop's separate preview images do not use the main-view MSAA setting.
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental

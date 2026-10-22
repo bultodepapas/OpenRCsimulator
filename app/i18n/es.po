@@ -5049,3 +5049,21 @@ msgstr "Alta gama no está disponible con el renderizador actual. Estándar sigu
 
 msgid "End your flight and return Home to change graphics mode."
 msgstr "Termina el vuelo y vuelve al inicio para cambiar el modo gráfico."
+
+msgid "Scene detail"
+msgstr "Detalle de escena"
+
+msgid "Low"
+msgstr "Bajo"
+
+msgid "Medium"
+msgstr "Medio"
+
+msgid "High"
+msgstr "Alto"
+
+msgid "Extreme"
+msgstr "Extremo"
+
+msgid "Trees, props and model detail, from your next flight. High is the default. Extreme draws every nearby field tree in 3D and needs a strong GPU."
+msgstr "Árboles, objetos y detalle de modelos, a partir del siguiente vuelo. Alto es el valor predeterminado. Extremo dibuja en 3D todos los árboles cercanos del campo y requiere una GPU potente."

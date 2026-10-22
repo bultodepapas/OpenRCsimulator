@@ -18,6 +18,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const Population = preload("res://scenery/population.gd")
+const SceneDetail = preload("res://render/scene_detail.gd")
 
 const FORMAT := "openrc-view-attribution v2"
 const SCENERY_PATTERNS := {"cell_": "scenery_cells", "shadows_": "scenery_contact_shadows",
@@ -47,6 +48,8 @@ func _run() -> void:
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	ShaderClock.register()
 	ShaderClock.update(float(_args.get("t", "1.5")))
+	# VQ-06b: measure the preset the world is built with (--scene_detail / OPENRC_SCENE_DETAIL; default High).
+	SceneDetail.apply(root.get_viewport(), "")
 	var world := Node3D.new()
 	root.add_child(world)
 	var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
@@ -67,7 +70,7 @@ func _run() -> void:
 		format = FORMAT, renderer = RenderingServer.get_current_rendering_method(),
 		adapter = RenderingServer.get_video_adapter_name(), godot = Engine.get_version_info().string,
 		viewport = [root.get_visible_rect().size.x, root.get_visible_rect().size.y],
-		mesh_lod_threshold = root.get_viewport().mesh_lod_threshold,
+		mesh_lod_threshold = root.get_viewport().mesh_lod_threshold, scene_detail = SceneDetail.level(),
 		field_sha256 = FileAccess.get_sha256(FieldLoader.DEFAULT_PATH),
 		scenery_sha256 = FileAccess.get_sha256("res://data/scenery/default.json"),
 		groups = {}, views = {},
