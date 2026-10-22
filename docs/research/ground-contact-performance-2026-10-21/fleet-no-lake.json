@@ -1,0 +1,677 @@
+{
+	"aircraft": [
+		{
+			"continuous": 3,
+			"end_position": [
+				15.0050534803205,
+				-46.4847262306724,
+				-0.232493332699775
+			],
+			"end_speed": [
+				2.87801576920578,
+				0.00481464465220472,
+				-0.12819812422807
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "jensen-das-ugly-stik-60",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 230.4375,
+			"tick_us": 1195.51666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 3,
+			"end_position": [
+				15.0050534803205,
+				-46.4847262306724,
+				-0.232493332699775
+			],
+			"end_speed": [
+				2.87801576920578,
+				0.00481464465220472,
+				-0.12819812422807
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "jensen-das-ugly-stik-60",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 234.575,
+			"tick_us": 1260.25,
+			"ticks": 120
+		},
+		{
+			"continuous": 3,
+			"end_position": [
+				60.0315626781567,
+				-32.0408690288416,
+				-30.067240424808
+			],
+			"end_speed": [
+				17.415856156602,
+				-0.0224005531275738,
+				1.00592577543088
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "jensen-das-ugly-stik-60",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 118.2625,
+			"tick_us": 851.4,
+			"ticks": 120
+		},
+		{
+			"continuous": 3,
+			"end_position": [
+				60.0315626781567,
+				-32.0408690288416,
+				-30.067240424808
+			],
+			"end_speed": [
+				17.415856156602,
+				-0.0224005531275738,
+				1.00592577543088
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "jensen-das-ugly-stik-60",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 114.825,
+			"tick_us": 666.441666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0020284299362,
+				-46.9762965747164,
+				-0.226091963587573
+			],
+			"end_speed": [
+				0.133933222409128,
+				0.0129948541903113,
+				-0.00597770513690564
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-61fx-2t",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 940.775,
+			"tick_us": 6873.175,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0020284299362,
+				-46.9762965747164,
+				-0.226091963587573
+			],
+			"end_speed": [
+				0.133933222409128,
+				0.0129948541903113,
+				-0.00597770513690564
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-61fx-2t",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 931.6625,
+			"tick_us": 7589.01666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0268743855243,
+				-29.895565993129,
+				-30.0074674482166
+			],
+			"end_speed": [
+				20.8553152703701,
+				0.041204170848342,
+				0.665318569639009
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-61fx-2t",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 1474.0125,
+			"tick_us": 4608.45,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0268743855243,
+				-29.895565993129,
+				-30.0074674482166
+			],
+			"end_speed": [
+				20.8553152703701,
+				0.041204170848342,
+				0.665318569639009
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-61fx-2t",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 1579.525,
+			"tick_us": 4583.95,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0014598365176,
+				-46.9719829444344,
+				-0.229876102137885
+			],
+			"end_speed": [
+				0.160074792050476,
+				0.0102748441390188,
+				-0.0106490220773055
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-55ax-2t",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 854.225,
+			"tick_us": 6747.13333333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0014598365176,
+				-46.9719829444344,
+				-0.229876102137885
+			],
+			"end_speed": [
+				0.160074792050476,
+				0.0102748441390188,
+				-0.0106490220773055
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-55ax-2t",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 904.8,
+			"tick_us": 7275.13333333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0259241166276,
+				-29.9026103452589,
+				-30.0078036717724
+			],
+			"end_speed": [
+				20.7624220689468,
+				0.0386547908605655,
+				0.57448030891571
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-55ax-2t",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 953.2875,
+			"tick_us": 5506.675,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0259241166276,
+				-29.9026103452589,
+				-30.0078036717724
+			],
+			"end_speed": [
+				20.7624220689468,
+				0.0386547908605655,
+				0.57448030891571
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-55ax-2t",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 713.975,
+			"tick_us": 4745.425,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0028868671345,
+				-46.9027711477342,
+				-0.232281538897159
+			],
+			"end_speed": [
+				0.52573203475719,
+				0.0157989655003117,
+				-0.0323365062004161
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-fs64v-4t",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 889.25,
+			"tick_us": 7449.9,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				15.0028868671345,
+				-46.9027711477342,
+				-0.232281538897159
+			],
+			"end_speed": [
+				0.52573203475719,
+				0.0157989655003117,
+				-0.0323365062004161
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-fs64v-4t",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 1103.1875,
+			"tick_us": 7202.24166666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0348827730833,
+				-29.9178502730422,
+				-30.0073625815993
+			],
+			"end_speed": [
+				20.6303388516441,
+				0.0131324864482914,
+				0.523423548622441
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-fs64v-4t",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 691.9625,
+			"tick_us": 4368.45833333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				60.0348827730833,
+				-29.9178502730422,
+				-30.0073625815993
+			],
+			"end_speed": [
+				20.6303388516441,
+				0.0131324864482914,
+				0.523423548622441
+			],
+			"fault": "",
+			"hull_points": 8,
+			"id": "stik-glow-fs64v-4t",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 863.625,
+			"tick_us": 4629.375,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				14.9995124066112,
+				-46.9958494155872,
+				-0.204729053168216
+			],
+			"end_speed": [
+				0.012097198840354,
+				0.00594059074466241,
+				0.00151147752223716
+			],
+			"fault": "",
+			"hull_points": 10,
+			"id": "gp-extra-300s-60",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 634.675,
+			"tick_us": 3172.30833333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				14.9995124066112,
+				-46.9958494155872,
+				-0.204729053168216
+			],
+			"end_speed": [
+				0.012097198840354,
+				0.00594059074466241,
+				0.00151147752223716
+			],
+			"fault": "",
+			"hull_points": 10,
+			"id": "gp-extra-300s-60",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 541.3,
+			"tick_us": 3018.89166666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				59.8625270430626,
+				-28.9385612407344,
+				-29.9982717196439
+			],
+			"end_speed": [
+				22.4365382524545,
+				0.3735587298984,
+				1.34714489986888
+			],
+			"fault": "",
+			"hull_points": 10,
+			"id": "gp-extra-300s-60",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 494.75,
+			"tick_us": 2355.25833333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 22,
+			"end_position": [
+				59.8625270430626,
+				-28.9385612407344,
+				-29.9982717196439
+			],
+			"end_speed": [
+				22.4365382524545,
+				0.3735587298984,
+				1.34714489986888
+			],
+			"fault": "",
+			"hull_points": 10,
+			"id": "gp-extra-300s-60",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 364.4875,
+			"tick_us": 2224.14166666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				15.0006186763758,
+				-46.8849221798381,
+				-0.371892696191013
+			],
+			"end_speed": [
+				0.681311232155282,
+				0.000831040906925185,
+				0.165782743865201
+			],
+			"fault": "",
+			"hull_points": 14,
+			"id": "p51d-mustang-120",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 488.2125,
+			"tick_us": 3047.36666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				15.0006186763758,
+				-46.8849221798381,
+				-0.371892696191013
+			],
+			"end_speed": [
+				0.681311232155282,
+				0.000831040906925185,
+				0.165782743865201
+			],
+			"fault": "",
+			"hull_points": 14,
+			"id": "p51d-mustang-120",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 523.4,
+			"tick_us": 3177.975,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				59.9712438064816,
+				-27.3387034906684,
+				-29.9741441531461
+			],
+			"end_speed": [
+				25.8884197837516,
+				0.699094823151679,
+				1.46559375435199
+			],
+			"fault": "",
+			"hull_points": 14,
+			"id": "p51d-mustang-120",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 414.8,
+			"tick_us": 2322.95833333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				59.9712438064816,
+				-27.3387034906684,
+				-29.9741441531461
+			],
+			"end_speed": [
+				25.8884197837516,
+				0.699094823151679,
+				1.46559375435199
+			],
+			"fault": "",
+			"hull_points": 14,
+			"id": "p51d-mustang-120",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 374.4625,
+			"tick_us": 2214.18333333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				14.9999411746495,
+				-46.9986858289441,
+				-0.21733527753994
+			],
+			"end_speed": [
+				0.00124932588249593,
+				0.000000344886125191443,
+				0.0000107135043646137
+			],
+			"fault": "",
+			"hull_points": 13,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 283.2875,
+			"tick_us": 1571.66666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				14.9999411746495,
+				-46.9986858289441,
+				-0.21733527753994
+			],
+			"end_speed": [
+				0.00124932588249593,
+				0.000000344886125191443,
+				0.0000107135043646137
+			],
+			"fault": "",
+			"hull_points": 13,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 309.7625,
+			"tick_us": 1870.86666666667,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				59.9999954109859,
+				-25.4580249354287,
+				-30.0063275465968
+			],
+			"end_speed": [
+				29.1767171104031,
+				-0.000363720810433513,
+				2.29179148939006
+			],
+			"fault": "",
+			"hull_points": 13,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 217.1625,
+			"tick_us": 1196.725,
+			"ticks": 120
+		},
+		{
+			"continuous": 6,
+			"end_position": [
+				59.9999954109859,
+				-25.4580249354287,
+				-30.0063275465968
+			],
+			"end_speed": [
+				29.1767171104031,
+				-0.000363720810433513,
+				2.29179148939006
+			],
+			"fault": "",
+			"hull_points": 13,
+			"id": "sebart-avanti-s-a200-p100rx",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 226.1,
+			"tick_us": 1255.73333333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 4,
+			"end_position": [
+				15.0173790474231,
+				-46.4361987890356,
+				-0.223421904818661
+			],
+			"end_speed": [
+				2.9643640802781,
+				0.058702619161999,
+				0.459420981623502
+			],
+			"fault": "",
+			"hull_points": 17,
+			"id": "turbo-lumber-evolution",
+			"regime": "runway",
+			"soft": false,
+			"stage_us": 246.2875,
+			"tick_us": 1423.175,
+			"ticks": 120
+		},
+		{
+			"continuous": 4,
+			"end_position": [
+				15.0173790474231,
+				-46.4361987890356,
+				-0.223421904818661
+			],
+			"end_speed": [
+				2.9643640802781,
+				0.058702619161999,
+				0.459420981623502
+			],
+			"fault": "",
+			"hull_points": 17,
+			"id": "turbo-lumber-evolution",
+			"regime": "runway",
+			"soft": true,
+			"stage_us": 241.1375,
+			"tick_us": 1422.25833333333,
+			"ticks": 120
+		},
+		{
+			"continuous": 4,
+			"end_position": [
+				59.9574026494722,
+				-32.8725815655366,
+				-30.0396238149132
+			],
+			"end_speed": [
+				15.7785039955057,
+				-0.717862193845729,
+				0.777164091207784
+			],
+			"fault": "",
+			"hull_points": 17,
+			"id": "turbo-lumber-evolution",
+			"regime": "airborne",
+			"soft": false,
+			"stage_us": 159.2125,
+			"tick_us": 873.675,
+			"ticks": 120
+		},
+		{
+			"continuous": 4,
+			"end_position": [
+				59.9574026494722,
+				-32.8725815655366,
+				-30.0396238149132
+			],
+			"end_speed": [
+				15.7785039955057,
+				-0.717862193845729,
+				0.777164091207784
+			],
+			"fault": "",
+			"hull_points": 17,
+			"id": "turbo-lumber-evolution",
+			"regime": "airborne",
+			"soft": true,
+			"stage_us": 161.3875,
+			"tick_us": 948.333333333333,
+			"ticks": 120
+		}
+	],
+	"format": "fleet-contact-probe-v1"
+}

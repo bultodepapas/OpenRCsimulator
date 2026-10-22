@@ -151,6 +151,7 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	active.resize(hull.size() / 3)
 	var any_active := false
 	var lake: Dictionary = geometry.get("lake", {})
+	var lake_samples: Array[Dictionary] = []
 	for i in range(0, hull.size(), 3):
 		var depth: float = s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2]
 		if not is_finite(depth):
@@ -160,7 +161,13 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 			var point_ned: PackedFloat64Array = _point_ned(s, hull.slice(i, i + 3))
 			if not _finite_array(point_ned):
 				return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
-			may_touch = may_touch or bool(_lake_sample(geometry, point_ned).get("covered", false))
+			var terrain: Dictionary = _lake_sample(geometry, point_ned)
+			lake_samples.append({point_ned = point_ned, terrain = terrain})
+			if bool(terrain.get("covered", false)):
+				var ground_down: float = float(terrain.get("ground_down_m", NAN))
+				if not is_finite(ground_down):
+					return {ok = false, loads = PackedFloat64Array(), reason = "invalid_lake_terrain"}
+				may_touch = point_ned[2] > ground_down
 		active[i / 3] = 1 if may_touch else 0
 		any_active = any_active or may_touch
 	if not any_active:
@@ -188,12 +195,13 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	if geometry.has("lake"):
 		prepared["lake"] = geometry.lake
 		prepared["lake_bounds_ne_m"] = geometry.get("lake_bounds_ne_m", PackedFloat64Array())
-	return {ok = true, loads = loads(s, prepared), reason = ""}
+	return {ok = true, loads = loads(s, prepared, lake_samples), reason = ""}
 
 
 ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
 ## nothing, so flight away from the ground is bit-identical).
-static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64Array:
+static func loads(s: PackedFloat64Array, prepared: Dictionary,
+		lake_samples: Array[Dictionary] = []) -> PackedFloat64Array:
 	if prepared.is_empty() or -s[RB.POS + 2] > float(prepared.reach):
 		return PackedFloat64Array()
 	var hull: PackedFloat64Array = prepared.points
@@ -207,8 +215,9 @@ static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64A
 	for i in range(0, hull.size(), 3):
 		var body_point: PackedFloat64Array = hull.slice(i, i + 3)
 		if not lake.is_empty():
-			var point_ned: PackedFloat64Array = _point_ned(s, body_point)
-			var terrain: Dictionary = _lake_sample(prepared, point_ned)
+			var cached: Dictionary = lake_samples[i / 3] if lake_samples.size() == hull.size() / 3 else {}
+			var point_ned: PackedFloat64Array = cached.point_ned if not cached.is_empty() else _point_ned(s, body_point)
+			var terrain: Dictionary = cached.terrain if not cached.is_empty() else _lake_sample(prepared, point_ned)
 			if bool(terrain.get("covered", false)):
 				var lake_load: PackedFloat64Array = _lake_load(s, prepared, i / 3, body_point, point_ned, terrain)
 				if not lake_load.is_empty():

@@ -55,6 +55,29 @@ static func sample_terrain_validated(lake: Dictionary, north: float, east: float
 	var inside_water: bool = center[0] > 0.5
 	var signed_shore_distance: float = center[2] if inside_water else -center[2]
 	var signed_bank_distance: float = center[3] if inside_bank else -center[3]
+	# Distance to a polygon boundary is 1-Lipschitz. Beyond the last bed
+	# profile inset plus the stencil radius, all four neighbors stay inside
+	# the bank and on the same constant-depth bed. Their finite differences
+	# are exactly zero, so avoid four more polygon scans per contact query.
+	if inside_water and center[2] > float(lake.bed_profile.back().inset_m) + SAMPLE_EPSILON_M \
+			and center[3] > SAMPLE_EPSILON_M:
+		return {
+			"covered": true,
+			"region": "bed",
+			"ground_down_m": center[6],
+			"slope_north": 0.0,
+			"slope_east": 0.0,
+			"blend_fraction": center[4],
+			"blend_slope_north": 0.0,
+			"blend_slope_east": 0.0,
+			"bed_depth_m": center[5],
+			"bed_depth_slope_north": 0.0,
+			"bed_depth_slope_east": 0.0,
+			"signed_shore_distance_m": signed_shore_distance,
+			"signed_bank_distance_m": signed_bank_distance,
+			"water_down_m": float(lake.water_level_down_m),
+			"depth_m": center[5],
+		}
 	if not inside_bank and _outside_expanded_polygon_aabb(lake.bank_ne_m, north, east, SAMPLE_EPSILON_M):
 		return {
 			"covered": false,
