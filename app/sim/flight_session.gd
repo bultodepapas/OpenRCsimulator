@@ -738,7 +738,13 @@ var crash_auto_restart := true
 ## E3d1: crash-hull points become soft ground contacts (HullContact): light touches continue the flight and only a
 ## C2-grade impact or a deep crush ends it. Off by default so trace, scripted and golden routes keep D9d's "any hull
 ## contact is a crash"; Main turns it on for interactive flights.
-var soft_hull_contacts := false
+var _soft_contacts_cache_tick: int = -1
+var _soft_contacts_cache_previous := PackedFloat64Array()
+var _soft_contacts_cache_state := PackedFloat64Array()
+var soft_hull_contacts := false:
+	set(value):
+		soft_hull_contacts = value
+		_soft_contacts_cache_tick = -1
 var _hull_contact := {}
 ## E3d1 presentation feed: the hull points touching after the latest tick (HullContact.contacts); read-only.
 var soft_contacts: Array = []
@@ -1380,7 +1386,6 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	vehicle.loads = _loads
 	vehicle.pre_tick = _pre_step
 	vehicle.rotor_momentum = rotor_momentum
-	vehicle.substeps = _substeps
 	if not sim.set_model(vehicle):
 		push_error("Cannot install the fixed-wing vehicle model")
 	_gear_cache.clear()
@@ -1412,6 +1417,12 @@ func _configure_continuous_callbacks() -> void:
 		return
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
 		sim.model.set(field, prepared[field])
+	if sim.model.stage.is_valid() and _substep_preview_supported():
+		sim.model.substeps = Callable()
+		sim.model.substeps_joint = _substeps_joint
+	else:
+		sim.model.substeps_joint = Callable()
+		sim.model.substeps = _substeps
 	var declared: Array[Dictionary] = []
 	for event: Variant in prepared.get("events", []):
 		declared.append(event)
@@ -1529,6 +1540,14 @@ func contact_events() -> Dictionary:
 		prop_strike = prop_strike.duplicate(true)}
 
 
+## The observer owns the accepted-tick presentation sample; the next input guard can reuse it.
+func _refresh_soft_contacts() -> void:
+	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	_soft_contacts_cache_previous = sim.previous.duplicate()
+	_soft_contacts_cache_state = sim.state.duplicate()
+	_soft_contacts_cache_tick = sim.tick
+
+
 func _observe_contact_tick(tick: int) -> void:
 	_contact_tick = tick
 	_contact_events.clear()
@@ -1536,9 +1555,10 @@ func _observe_contact_tick(tick: int) -> void:
 		_active_hull_ids.clear()
 		prop_strike = {}
 	if not soft_hull_contacts or not aircraft.get("ok", false):
+		_soft_contacts_cache_tick = -1
 		_active_hull_ids.clear()
 		return
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+	_refresh_soft_contacts()
 	if soft_contacts.is_empty() and _active_hull_ids.is_empty():
 		return
 	var observed: Dictionary = ContactEvents.hull_events(soft_contacts, _contact_bindings, _active_hull_ids, tick)
@@ -1586,6 +1606,7 @@ func _clear_pending_contacts() -> void:
 
 func _reset_contact_history() -> void:
 	_contact_tick = -1
+	_soft_contacts_cache_tick = -1
 	_contact_events.clear()
 	_active_hull_ids.clear()
 	_clear_pending_contacts()
@@ -1593,6 +1614,7 @@ func _reset_contact_history() -> void:
 
 func _restore_contact_history(record: Dictionary) -> void:
 	_contact_tick = int(record.tick)
+	_soft_contacts_cache_tick = -1
 	_active_hull_ids = record.active_hull_ids.duplicate()
 	_contact_events.assign(record.events.duplicate(true))
 	prop_strike = record.prop_strike.duplicate(true)
@@ -1926,7 +1948,9 @@ func _session_after_input() -> bool:
 		return false
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
-			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
+			if _soft_contacts_cache_tick != sim.tick or _soft_contacts_cache_previous != sim.previous \
+					or _soft_contacts_cache_state != sim.state:
+				_refresh_soft_contacts()
 			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
 			var hit: Dictionary = {index = -1} if finite_fuel_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
@@ -3329,14 +3353,15 @@ func _coupled_rotor(_s: PackedFloat64Array, values: PackedFloat64Array, _t: floa
 
 ## External loads include -Q_prop exactly once. The rotor response adds only relative-spin reaction.
 func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
-		properties: Dictionary = {}, source_enabled: bool = true) -> Dictionary:
+		properties: Dictionary = {}, source_enabled: bool = true, preview: Dictionary = {},
+		capture_pre_reaction: bool = false) -> Dictionary:
 	var prop: Dictionary = aircraft.model.propulsion
 	var electric: bool = Propulsion.is_electric(prop)
 	var trial_rpm: float = _coupled_rpm(values, electric)
 	if not is_finite(trial_rpm):
 		return {ok = false}
 	var rpm: float = maxf(0.0, trial_rpm) if electric else trial_rpm
-	var air: Dictionary = air_data(s, time_s)
+	var air: Dictionary = preview.air if preview.has("air") else air_data(s, time_s)
 	var battery_point: Dictionary = {}
 	var rate: float
 	if battery_is_dynamic():
@@ -3352,17 +3377,23 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		return {ok = false}
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
-	var external: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
-		air_density(s), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()), _ground_up(s))
-	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {}, properties)
-	if not ground.get("ok", false):
-		return {ok = false}
-	var ground_loads: PackedFloat64Array = ground.loads
-	for i: int in ground_loads.size():
-		external[i] += ground_loads[i]
+	var external: PackedFloat64Array
+	var ground: Dictionary
+	if preview.has("pre_reaction_loads"):
+		external = preview.pre_reaction_loads.duplicate()
+		ground = {ok = true, derivative = preview.get("wheel_derivative", PackedFloat64Array())}
+	else:
+		external = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
+			air_density(s), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()), _ground_up(s))
+		ground = _ground_evaluation(s, a, values, air if gear_is_retractable() else {}, properties)
+		if not ground.get("ok", false):
+			return {ok = false}
+		var ground_loads: PackedFloat64Array = ground.loads
+		for i: int in ground_loads.size():
+			external[i] += ground_loads[i]
 	var stage_inertia: PackedFloat64Array = sim.inertia if properties.is_empty() else properties.inertia
 	var stage_inverse: PackedFloat64Array = RB.inertia_inverse(sim.inertia) if properties.is_empty() else properties.inverse
-	if not properties.is_empty():
+	if not properties.is_empty() and not preview.has("pre_reaction_loads"):
 		var shift: PackedFloat64Array = M.cross(properties.cg_body_m, external.slice(0, 3))
 		for axis: int in 3:
 			external[3 + axis] -= shift[axis]
@@ -3417,6 +3448,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		else:
 			# A body-driven forward breakaway uses the moving side of the authored friction curve.
 			rate = (drive - friction_limit) / float(prop.rotor_inertia) * 60.0 / TAU
+	var pre_reaction_loads: PackedFloat64Array = external.duplicate() if capture_pre_reaction else PackedFloat64Array()
 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
 		M.v3(external[3], external[4], external[5]), stage_inertia, stage_inverse,
 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
@@ -3428,6 +3460,8 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	for i: int in 3:
 		external[3 + i] += response.reaction[i]
 	response.loads = external
+	if capture_pre_reaction:
+		response.pre_reaction_loads = pre_reaction_loads
 	response.air = air
 	response.rpm_rate = response.spin_acceleration * 60.0 / TAU
 	response.wheel_derivative = ground.derivative
@@ -3456,7 +3490,8 @@ func _coupled_derivative(s: PackedFloat64Array, values: PackedFloat64Array, time
 
 ## One response per RK stage; both the old separate callbacks and this joint path keep the same arithmetic.
 func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
-	var result: Dictionary = _coupled_response(s, values, time_s)
+	var capture_context: bool = _should_capture_substep_context(s, values, time_s)
+	var result: Dictionary = _coupled_response(s, values, time_s, {}, true, {}, capture_context)
 	if not result.ok:
 		return {}
 	var extra: PackedFloat64Array = PackedFloat64Array()
@@ -3467,7 +3502,35 @@ func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	extra.append(result.rpm_rate)
 	_append_battery_rates(extra, result)
 	extra.append_array(result.get("wheel_derivative", PackedFloat64Array()))
-	return {loads = result.loads, derivative = extra, rotor_momentum = _coupled_rotor(s, values, time_s)}
+	var joint: Dictionary = {loads = result.loads, derivative = extra, rotor_momentum = _coupled_rotor(s, values, time_s)}
+	var stage_context: Dictionary = _substep_stage_context(result)
+	if not stage_context.is_empty():
+		joint.stage_context = stage_context
+	return joint
+
+
+func _should_capture_substep_context(body: PackedFloat64Array, values: PackedFloat64Array, at: float) -> bool:
+	if at != sim.time() or not _substep_preview_supported() or body != sim.state or values != sim.continuous:
+		return false
+	var rotor_index: int = _rotor_index()
+	return rotor_index >= 0 and rotor_index < values.size() and is_finite(values[rotor_index]) \
+		and values[rotor_index] > Propulsion.STOPPED_RPM
+
+
+func _substep_preview_supported() -> bool:
+	if not aircraft.get("ok", false) or not shaft_is_coupled():
+		return false
+	var prop: Dictionary = aircraft.model.propulsion
+	return not Propulsion.is_electric(prop) and not Propulsion.is_glow(prop) \
+		and not Turbine.is_turbine(prop) and Propulsion.has_rotor_dynamics(prop) \
+		and (liquid_fuel_is_active() or not propulsion_power_enabled())
+
+
+func _substep_stage_context(response: Dictionary) -> Dictionary:
+	if not response.has("pre_reaction_loads") or not response.has("air") or not response.has("wheel_derivative"):
+		return {}
+	return {air = response.air, pre_reaction_loads = response.pre_reaction_loads,
+		wheel_derivative = response.wheel_derivative}
 
 
 func _append_battery_rates(values: PackedFloat64Array, response: Dictionary) -> void:
@@ -3605,6 +3668,42 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
 ## SF-05: contact refinement plus a bounded RK domain refinement for the engine-off combustion cutoff.
 func _substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float) -> int:
+	return _substeps_with_context(body, continuous, at, {})
+
+
+func _substeps_joint(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
+		current_joint: Dictionary) -> int:
+	var stage_context: Variant = current_joint.get("stage_context", {})
+	if typeof(stage_context) != TYPE_DICTIONARY or not _substep_stage_context_is_valid(stage_context):
+		stage_context = {}
+	return _substeps_with_context(body, continuous, at, stage_context)
+
+
+func _substep_stage_context_is_valid(stage_context: Dictionary) -> bool:
+	if not stage_context.has_all(["air", "pre_reaction_loads", "wheel_derivative"]) \
+			or typeof(stage_context.air) != TYPE_DICTIONARY:
+		return false
+	var air_velocity: Variant = stage_context.air.get("v_air", PackedFloat64Array())
+	var external: Variant = stage_context.pre_reaction_loads
+	var wheel_derivative: Variant = stage_context.wheel_derivative
+	if not air_velocity is PackedFloat64Array or air_velocity.size() != 3 \
+			or not external is PackedFloat64Array or external.size() != 6 \
+			or not wheel_derivative is PackedFloat64Array:
+		return false
+	for value: float in air_velocity:
+		if not is_finite(value):
+			return false
+	for value: float in external:
+		if not is_finite(value):
+			return false
+	for value: float in wheel_derivative:
+		if not is_finite(value):
+			return false
+	return true
+
+
+func _substeps_with_context(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
+		preview: Dictionary) -> int:
 	var count: int = 1
 	if aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
 		count = Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces)
@@ -3624,7 +3723,7 @@ func _substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, at: flo
 			var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
 			# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
 			# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
-			var response: Dictionary = _coupled_response(body, shaft_values, at, properties, false)
+			var response: Dictionary = _coupled_response(body, shaft_values, at, properties, false, preview)
 			if not response.get("ok", false):
 				# A bad preview cannot justify an unrefined step. Return an over-cap request so the
 				# kernel rejects the tick without committing a potentially malformed RK stage.
@@ -4471,7 +4570,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_failures = restored_failures
 	_scenery_damage = restored_damage
 	_restore_contact_history(restored_contacts)
-	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact) if soft_hull_contacts else []
+	if soft_hull_contacts:
+		_refresh_soft_contacts()
+	else:
+		soft_contacts = []
+		_soft_contacts_cache_tick = -1
 	_clear_pending_scenery_damage()
 	_weather = restored_weather
 	_weather_pending_reset = false

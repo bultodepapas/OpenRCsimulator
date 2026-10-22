@@ -270,13 +270,16 @@ func step() -> void:
 	# SF-05: a model may ask for n substeps this tick (stiff contacts within reach); the kernel's own RK4 and the
 	# declared-event locator then integrate n pieces of dt/n, re-evaluating k1 at each piece. A policy owns its tick.
 	var substeps: int = 1
-	if model.substeps.is_valid():
-		var declared_substeps: Variant = model.substeps.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
-		if typeof(declared_substeps) != TYPE_INT or declared_substeps < 1 or declared_substeps > MAX_SUBSTEPS:
-			aux = old_aux
-			_fail_safe("step rejected: substep count is not an integer within 1..%d" % MAX_SUBSTEPS)
-			return
-		substeps = declared_substeps
+	var declared_substeps: Variant = 1
+	if model.substeps_joint.is_valid():
+		declared_substeps = model.substeps_joint.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t, current_joint)
+	elif model.substeps.is_valid():
+		declared_substeps = model.substeps.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
+	if typeof(declared_substeps) != TYPE_INT or declared_substeps < 1 or declared_substeps > MAX_SUBSTEPS:
+		aux = old_aux
+		_fail_safe("step rejected: substep count is not an integer within 1..%d" % MAX_SUBSTEPS)
+		return
+	substeps = declared_substeps
 	# SF-04b: a step policy owns the whole tick and is never split. Refuse the tick rather than integrate a stiff
 	# contact over the full dt, where the loader's per-substep ω·dt rule would silently not hold.
 	if substeps > 1 and model.step_policy.is_valid():
@@ -410,6 +413,10 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 func _configuration_is_valid() -> bool:
 	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
+		return false
+	if model.substeps.is_valid() and model.substeps_joint.is_valid():
+		return false
+	if model.substeps_joint.is_valid() and (not model.stage.is_valid() or continuous.is_empty()):
 		return false
 	if not continuous.is_empty() and not model.stage.is_valid() and (not model.block_loads.is_valid() or not model.block_derivative.is_valid()):
 		return false
@@ -665,8 +672,21 @@ func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 
 
 func _joint_stage_is_valid(candidate: Variant) -> bool:
-	return candidate is Dictionary and (candidate.size() == 3 or (candidate.size() == 4 and candidate.has("body_derivative") and _array_is_finite(candidate.body_derivative, RB.SIZE))) and candidate.has_all(["loads", "derivative", "rotor_momentum"]) \
-		and _loads_are_valid(candidate.loads) and _array_is_finite(candidate.derivative, continuous.size()) \
+	if not candidate is Dictionary or not candidate.has_all(["loads", "derivative", "rotor_momentum"]):
+		return false
+	# Every required field is present; exact size rejects unknown keys without allocating keys() on RK stages.
+	var expected_size: int = 3
+	if candidate.has("body_derivative"):
+		expected_size += 1
+	if candidate.has("stage_context"):
+		expected_size += 1
+	if candidate.size() != expected_size:
+		return false
+	if candidate.has("body_derivative") and not _array_is_finite(candidate.body_derivative, RB.SIZE):
+		return false
+	if candidate.has("stage_context") and typeof(candidate.stage_context) != TYPE_DICTIONARY:
+		return false
+	return _loads_are_valid(candidate.loads) and _array_is_finite(candidate.derivative, continuous.size()) \
 		and _array_is_finite(candidate.rotor_momentum, 3)
 
 

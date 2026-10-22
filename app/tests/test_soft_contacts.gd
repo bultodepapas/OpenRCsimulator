@@ -35,6 +35,7 @@ func _initialize() -> void:
 	_airborne_identity(stik)
 	_determinism(stik)
 	_identity(stik)
+	_cached_contact_refresh(stik)
 	stik.free()
 	var avanti := _session(AVANTI, AVANTI_ID)
 	_belly_slide(avanti)
@@ -190,6 +191,26 @@ func _identity(session: Node) -> void:
 	session.soft_hull_contacts = true
 	_check("the same session restores its own checkpoint", session.restore_checkpoint(checkpoint))
 	_check("the contact law names its constants", HullContact.law().contains("omega=60") and HullContact.law().contains("terminal_j_per_kg=2.5"))
+	session.soft_hull_contacts = false
+	session.reset()
+
+
+func _cached_contact_refresh(session: Node) -> void:
+	session.soft_hull_contacts = false
+	session.reset()
+	var brush := _state_above(session, -0.005, 0.0, 0.0, deg_to_rad(40.0), M.v3(0, 0, 0))
+	session.sim.reset(brush)
+	session.sim.set_paused(false)
+	var expected: Array = HullContact.contacts(session.sim.previous, session.sim.state, session._hull_contact)
+	_check("same-tick contact fixture touches the hull", not expected.is_empty())
+	session.soft_hull_contacts = true
+	var ready: bool = session._session_after_input()
+	_check("same-tick mode enable preserves the flight", ready and session.crash.is_empty())
+	_check("same-tick mode enable refreshes presentation contacts", session.soft_contacts == expected)
+	session.sim.state = _state_above(session, 0.02, 0.0, 0.0, deg_to_rad(40.0), M.v3(0, 0, 0))
+	expected = HullContact.contacts(session.sim.previous, session.sim.state, session._hull_contact)
+	session._session_after_input()
+	_check("same-tick state change refreshes presentation contacts", session.soft_contacts == expected)
 	session.soft_hull_contacts = false
 	session.reset()
 

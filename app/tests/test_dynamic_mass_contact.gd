@@ -217,6 +217,11 @@ func _test_lake_sample() -> void:
 		_state([110.0, 125.0, -0.4], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]), center_hull, _properties())
 	_check("covered hull below the flat datum but above the lake bed stays clear",
 		bool(above_bed.ok) and above_bed.loads.is_empty(), str(above_bed))
+	var bank_hull: Dictionary = HullContact.prepare_geometry(PackedFloat64Array([0.0, 0.0, 0.0]), lake)
+	var above_bank: Dictionary = HullContact.loads_at_properties(
+		_state([110.0, 171.0, -0.4], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]), bank_hull, _properties())
+	_check("hull above the lake bank and flat datum has no contact load",
+		bool(above_bank.ok) and above_bank.loads.is_empty(), str(above_bank))
 	var mixed_points := PackedFloat64Array([0.0, 0.0, 1.0, 0.0, 0.0, -1.0, 0.0, 200.0, 1.0])
 	var mixed_hull: Dictionary = HullContact.prepare_geometry(mixed_points, lake)
 	var bed_state: PackedFloat64Array = _state([110.0, 125.0, 5.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])

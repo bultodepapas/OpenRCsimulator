@@ -45,8 +45,10 @@ func _run() -> void:
 	_refinement()
 	_far_side_contract()
 	_hold_restart_and_replay()
+	_joint_substep_contract()
 	Engine.physics_ticks_per_second = original_rate
 	_policy_substep_guard()
+	_joint_substep_policy_and_cap_guards()
 	_fleet_policy_substeps()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -225,6 +227,121 @@ func _hold_restart_and_replay() -> void:
 			sim.fault_reason.is_empty() and record.is_empty() and absf(sim.continuous[0] - expected) <= 1e-7,
 			sci(sim.continuous[0] - expected))
 		sim.free()
+
+
+## Joint substep selection receives the validated k1 result from this tick, while the old three-argument callback
+## remains a supported route for models that have not adopted a joint stage.
+func _joint_substep_contract() -> void:
+	Engine.physics_ticks_per_second = 240
+	var calls := {stage = 0, substeps = 0, observations = []}
+	var joint_model := VehicleModel.new()
+	joint_model.continuous_size = 1
+	joint_model.stage = func(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float) -> Dictionary:
+		calls.stage += 1
+		return {loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+			derivative = PackedFloat64Array([1.0]), rotor_momentum = PackedFloat64Array([0.0, 0.0, 0.0]),
+			stage_context = {sequence = calls.stage, time_s = at, position_x = body[RB.POS], continuous_value = continuous[0]}}
+	joint_model.substeps_joint = func(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float,
+			current_joint: Dictionary) -> int:
+		calls.substeps += 1
+		var context: Variant = current_joint.get("stage_context", {})
+		calls.observations.append({sequence = context.get("sequence", -1) if context is Dictionary else -1,
+			stage_calls = calls.stage, time_s = at, position_x = body[RB.POS], continuous_value = continuous[0],
+			context_time_s = context.get("time_s", NAN) if context is Dictionary else NAN,
+			context_position_x = context.get("position_x", NAN) if context is Dictionary else NAN,
+			context_continuous_value = context.get("continuous_value", NAN) if context is Dictionary else NAN})
+		return 2
+	var joint_sim: Node = _sim(joint_model, 1.0, [])
+	# Reset may evaluate boundary loads. The counter below covers only the two live ticks.
+	calls.stage = 0
+	joint_sim.step()
+	joint_sim.step()
+	var observed: Array = calls.observations
+	var current_k1_context: bool = observed.size() == 2
+	if current_k1_context:
+		for i: int in observed.size():
+			var item: Dictionary = observed[i]
+			current_k1_context = current_k1_context and item.sequence == item.stage_calls \
+				and item.time_s == item.context_time_s and item.position_x == item.context_position_x \
+				and item.continuous_value == item.context_continuous_value
+		_check("joint substep selector receives each tick's current k1 context",
+			current_k1_context and observed[0].sequence == 1 and observed[1].sequence == 9,
+			"observed %s" % str(observed))
+	_check("two joint-selected substeps advance through the normal RK4 path",
+		joint_sim.fault_reason.is_empty() and joint_sim.tick == 2 and calls.substeps == 2 and calls.stage == 16,
+		"stage calls=%d; selector calls=%d; fault '%s'" % [calls.stage, calls.substeps, joint_sim.fault_reason])
+	_check("the second tick's k1 context reflects its updated boundary state",
+		observed.size() == 2 and observed[1].time_s > observed[0].time_s
+		and observed[1].continuous_value > observed[0].continuous_value, str(observed))
+	joint_sim.free()
+
+	var legacy_calls := {count = 0, observation = {}}
+	var legacy_model := VehicleModel.new()
+	legacy_model.continuous_size = 1
+	legacy_model.block_loads = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	legacy_model.block_derivative = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+		return PackedFloat64Array([1.0])
+	legacy_model.substeps = func(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float) -> int:
+		legacy_calls.count += 1
+		legacy_calls.observation = {position_x = body[RB.POS], continuous_value = continuous[0], time_s = at}
+		return 2
+	var legacy_sim: Node = _sim(legacy_model, 0.0, [])
+	var initial_position_x: float = legacy_sim.state[RB.POS]
+	var expected_continuous: float = legacy_sim.continuous[0] + legacy_sim.dt()
+	legacy_sim.step()
+	var legacy_observation: Dictionary = legacy_calls.observation
+	_check("legacy three-argument substeps callback still selects one tick's resolution",
+		legacy_model.substeps.is_valid() and not legacy_model.substeps_joint.is_valid()
+		and legacy_calls.count == 1 and legacy_observation.position_x == initial_position_x
+		and legacy_observation.continuous_value == 0.0 and legacy_observation.time_s == 0.0
+		and legacy_sim.tick == 1 and legacy_sim.fault_reason.is_empty()
+		and absf(legacy_sim.continuous[0] - expected_continuous) < 1e-14,
+		"calls=%d; continuous=%s; fault '%s'" % [legacy_calls.count, str(legacy_sim.continuous), legacy_sim.fault_reason])
+	legacy_sim.free()
+
+
+func _joint_count_model(request: Dictionary, use_policy: bool) -> VehicleModel:
+	var model := VehicleModel.new()
+	model.continuous_size = 1
+	model.stage = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float) -> Dictionary:
+		return {loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+			derivative = PackedFloat64Array([0.0]), rotor_momentum = PackedFloat64Array([0.0, 0.0, 0.0])}
+	model.substeps_joint = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array, _at: float,
+			_current_joint: Dictionary) -> int:
+		return int(request.n)
+	if use_policy:
+		model.step_policy = func(combined: PackedFloat64Array, at: float, h: float, f: Callable,
+				k1: PackedFloat64Array) -> Variant:
+			return RK.rk4_step_at(combined, at, h, f, k1)
+	return model
+
+
+func _joint_substep_policy_and_cap_guards() -> void:
+	var policy_request := {n = 2}
+	var policy_sim: Node = _sim(_joint_count_model(policy_request, true), 1.0, [])
+	var before: PackedByteArray = policy_sim.state.to_byte_array() + policy_sim.continuous.to_byte_array()
+	policy_sim.step()
+	_check("joint substep count above one is refused under a whole-tick step policy",
+		policy_sim.tick == 0 and policy_sim.fault_reason.contains("cannot honour 2 contact substeps")
+		and before == policy_sim.state.to_byte_array() + policy_sim.continuous.to_byte_array(), policy_sim.fault_reason)
+	policy_request.n = 1
+	_check("joint policy model resets after the refused tick", policy_sim.reset(RB.make_state(
+		M.v3(0.0, 0.0, -50.0), M.v3(0.0, 0.0, 0.0), M.q_identity(), M.v3(0.0, 0.0, 0.0))))
+	policy_sim.step()
+	_check("one joint-selected substep remains valid under a whole-tick policy",
+		policy_sim.tick == 1 and policy_sim.fault_reason.is_empty(), policy_sim.fault_reason)
+	policy_sim.free()
+
+	var cap_request := {n = Sim.MAX_SUBSTEPS + 1}
+	var cap_sim: Node = _sim(_joint_count_model(cap_request, false), 1.0, [])
+	var cap_before: PackedByteArray = cap_sim.state.to_byte_array() + cap_sim.continuous.to_byte_array()
+	cap_sim.step()
+	_check("joint substep requests above the cap fail closed without clipping",
+		cap_sim.tick == 0 and cap_sim.fault_reason.contains("substep count is not an integer within 1..%d" % Sim.MAX_SUBSTEPS)
+		and cap_before == cap_sim.state.to_byte_array() + cap_sim.continuous.to_byte_array(),
+		"requested %d; cap %d; fault '%s'" % [cap_request.n, Sim.MAX_SUBSTEPS, cap_sim.fault_reason])
+	cap_sim.free()
 
 
 ## A step policy owns the tick. The kernel never splits it and refuses a tick that asks for contact substeps.

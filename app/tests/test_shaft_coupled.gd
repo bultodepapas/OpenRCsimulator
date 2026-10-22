@@ -82,6 +82,21 @@ func _shaft_values(flight: Node, values: PackedFloat64Array) -> PackedFloat64Arr
 	return values.slice(0, flight._liquid_index()) if flight.liquid_fuel_is_active() else values.duplicate()
 
 
+func _requested_substeps(flight: Node) -> int:
+	var model: Variant = flight.sim.model
+	var body: PackedFloat64Array = flight.sim.state.duplicate()
+	var continuous: PackedFloat64Array = flight.sim.continuous.duplicate()
+	var at: float = flight.sim.time()
+	if model.substeps_joint.is_valid():
+		var current_joint: Variant = model.stage.call(body, continuous, at)
+		if not current_joint is Dictionary:
+			return -1
+		return model.substeps_joint.call(body, continuous, at, current_joint)
+	if model.substeps.is_valid():
+		return model.substeps.call(body, continuous, at)
+	return -1
+
+
 func _coupled_fixture(transport: bool = false, weather: Dictionary = {}) -> Node:
 	var flight: Node = _new_flight("coupled-rk4", P51_PATH, weather)
 	if flight == null or not flight.is_flyable():
@@ -181,6 +196,9 @@ func _mode_and_legacy_paths() -> void:
 		finite_p51 != null and finite_p51.liquid_fuel_is_active() and finite_p51.shaft_integrator() == "coupled-rk4")
 	_check("finite-fuel P-51 accepts explicit coupled RK4",
 		explicit_coupled != null and explicit_coupled.liquid_fuel_is_active() and explicit_coupled.shaft_is_coupled())
+	_check("finite-fuel coupled P-51 selects only the joint substep callback",
+		finite_p51 != null and finite_p51.sim.model.stage.is_valid()
+		and finite_p51.sim.model.substeps_joint.is_valid() and not finite_p51.sim.model.substeps.is_valid())
 	if finite_p51 != null and explicit_coupled != null:
 		_advance(finite_p51, 80)
 		_advance(explicit_coupled, 80)
@@ -200,6 +218,9 @@ func _mode_and_legacy_paths() -> void:
 		legacy_default != null and not legacy_default.liquid_fuel_is_active()
 		and legacy_default.shaft_integrator() == "split" and legacy_split != null
 		and not legacy_split.liquid_fuel_is_active() and legacy_split.shaft_integrator() == "split")
+	_check("legacy static-fuel P-51 keeps only the three-argument substep callback",
+		legacy_default != null and legacy_default.sim.model.substeps.is_valid()
+		and not legacy_default.sim.model.substeps_joint.is_valid())
 	if legacy_default != null and legacy_split != null:
 		_advance(legacy_default, 80)
 		_advance(legacy_split, 80)
@@ -342,8 +363,7 @@ func _stopped_combustion_lock_and_cutoff() -> void:
 			rundown.sim.continuous[cutoff_index] = initial_rpm
 			rundown.sim.aux[0] = initial_rpm
 			var reset_ok: bool = rundown.sim.reset(initial_body)
-			var planned_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
-				rundown.sim.continuous, rundown.sim.time())
+			var planned_substeps: int = _requested_substeps(rundown)
 			var fuel_before: float = rundown.sim.continuous[liquid_index]
 			var fuel_event_declared: bool = rundown.sim.model.events.size() == 1 \
 				and rundown.sim.model.events[0].get("type") == "fuel_exhausted"
@@ -377,8 +397,7 @@ func _stopped_combustion_lock_and_cutoff() -> void:
 	rundown.sim.continuous[liquid_index] = 1e-8
 	rundown.sim.continuous[liquid_index + 1] = 1.0
 	_check("same-tick fuel-exhaustion fixture resets with source latched on", rundown.sim.reset(initial_body))
-	var exhaustion_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
-		rundown.sim.continuous, rundown.sim.time())
+	var exhaustion_substeps: int = _requested_substeps(rundown)
 	var exhaustion_stages: Array[float] = []
 	var exhaustion_stage: Callable = rundown.sim.model.stage
 	rundown.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
@@ -399,8 +418,7 @@ func _stopped_combustion_lock_and_cutoff() -> void:
 	rundown.sim.continuous[cutoff_index] = Prop.STOPPED_RPM + 0.000001
 	rundown.sim.aux[0] = Prop.STOPPED_RPM + 0.000001
 	_check("depleted finite source resets with legacy engine mode still running", rundown.sim.reset(rundown.sim.state))
-	var depleted_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
-		rundown.sim.continuous, rundown.sim.time())
+	var depleted_substeps: int = _requested_substeps(rundown)
 	var depleted_stages: Array[float] = []
 	var depleted_stage: Callable = rundown.sim.model.stage
 	rundown.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
@@ -423,8 +441,7 @@ func _stopped_combustion_lock_and_cutoff() -> void:
 	rundown.sim.continuous[liquid_index] = full_usable_fuel
 	rundown.sim.continuous[liquid_index + 1] = 0.0
 	_check("substep-cap fixture resets at supported 16 Hz", rundown.sim.reset(initial_body))
-	var excessive_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
-		rundown.sim.continuous, rundown.sim.time())
+	var excessive_substeps: int = _requested_substeps(rundown)
 	var before_excessive_step: PackedByteArray = _dynamic_bits(rundown.sim)
 	rundown.sim.step()
 	_check("refinement above the kernel substep cap fails closed without clipping the requested count",
@@ -434,6 +451,34 @@ func _stopped_combustion_lock_and_cutoff() -> void:
 		"requested %d; cap %d; fault '%s'" % [excessive_substeps, SimKernel.MAX_SUBSTEPS, rundown.sim.fault_reason])
 	Engine.physics_ticks_per_second = original_hz
 	rundown.free()
+
+
+func _malformed_joint_context_falls_back() -> void:
+	var flight: Node = _coupled_fixture()
+	if flight == null or not flight.is_flyable():
+		_check("malformed joint-context fixture starts", false)
+		if flight != null:
+			flight.free()
+		return
+	var body: PackedFloat64Array = flight.sim.state.duplicate()
+	var continuous: PackedFloat64Array = flight.sim.continuous.duplicate()
+	var at: float = flight.sim.time()
+	var valid_context := {
+		air = {v_air = PackedFloat64Array([0.0, 0.0, 0.0])},
+		pre_reaction_loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+		wheel_derivative = PackedFloat64Array(),
+	}
+	var malformed_context: Dictionary = valid_context.duplicate(true)
+	malformed_context.pre_reaction_loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0])
+	_check("coupled substep context validator accepts the expected preview shape",
+		flight._substep_stage_context_is_valid(valid_context))
+	_check("coupled substep context validator rejects a short load vector",
+		not flight._substep_stage_context_is_valid(malformed_context))
+	var expected: int = flight._substeps(body, continuous, at)
+	var actual: int = flight._substeps_joint(body, continuous, at, {stage_context = malformed_context})
+	_check("malformed joint preview falls back to the legacy substep calculation",
+		actual == expected and actual >= 1, "legacy=%d; joint=%d" % [expected, actual])
+	flight.free()
 
 
 func _stage_local_integration() -> void:
@@ -791,6 +836,7 @@ func _initialize() -> void:
 	_mode_and_legacy_paths()
 	_coupling_physics()
 	_stopped_combustion_lock_and_cutoff()
+	_malformed_joint_context_falls_back()
 	_stage_local_integration()
 	_joint_callback_falls_back_to_legacy()
 	_wind_time_purity()

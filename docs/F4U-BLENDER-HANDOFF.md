@@ -1,6 +1,8 @@
 # F4U Corsair 1/5: Blender game-delivery request
 
-2026-10-21 · Revision 1 · To the F4U Corsair model author · Request for game revision **g1**, derived from master **R59**
+2026-10-21 · Revision 2 · To the F4U Corsair model author · Request for game revision **g1**, derived from master **R59**
+
+**Revision 2:** `aircraft.glb` is exported with the gear **stowed** (`GearRetract` frame 100), because the simulator's sampled gear rig binds imported carriers at the fully stowed pose. Everything else stays neutral. Sections 3, 4, 7 and 12 are updated.
 
 Thank you for R59. It is an exceptional master: gull wing, folding panels, sequenced retracts, cowl flaps, cockpit and engine are carefully built and documented. OpenRC Simulator cannot fly it directly, however. It is a full-size studio scene with millions of triangles, driver-based rigs and no game export. Please prepare a lightweight, editable **game version** at RC scale, as specified below. Keep R59 intact as the detailed master; this delivery is export preparation, simplification and separation into usable parts, not a rebuild.
 
@@ -57,7 +59,7 @@ f4u_corsair/g1/
 ```
 
 1. **`source/aircraft_game.blend`** opens directly to the assembled, neutral aircraft in a framed three-quarter view. Parts are named and easy to select. It contains no drivers, constraints, linked libraries or missing caches, and includes a short text block with the export command, frame convention and node names.
-2. **`export/aircraft.glb`** contains the same neutral aircraft, its pivots, materials and section tags. This is the file Godot imports.
+2. **`export/aircraft.glb`** contains the same neutral aircraft with the gear stowed (section 7), its pivots, materials and section tags. This is the file Godot imports.
 3. **Derivation.** Preferably, a script in `source/scripts/` derives the game file from R59, so a later master revision can be re-derived. A documented manual derivation is acceptable; the game `.blend` then becomes the editable source for later revisions. Re-exporting the GLB from the game `.blend` must not require R59.
 
 Use Blender 5.2.2 LTS and its bundled glTF exporter; do not migrate to a newer build for this delivery. The target is Godot 4.7.2 with the Compatibility renderer.
@@ -78,9 +80,9 @@ From R59 to the export scene, with D0 measured in the R59 root frame: `export = 
 
 Apply the 0.2 factor to mesh data and pivot locations, never as an object scale. Exported node scales are exactly (1, 1, 1), without reflection or shear.
 
-**Neutral pose:** root identity (no ground attitude baked in); all controls and trims 0, including the left aileron trim tab, elevator and rudder trims and both balance tabs; flaps 0; cowl flaps closed; wings spread and locked, fold hardware hidden; canopy closed; gear down and locked with zero oleo compression; tailhook stowed; stores and empty pylons removed; propeller at a recorded blade angle with zero visual pitch offset.
+**Neutral pose:** root identity (no ground attitude baked in); all controls and trims 0, including the left aileron trim tab, elevator and rudder trims and both balance tabs; flaps 0; cowl flaps closed; wings spread and locked, fold hardware hidden; canopy closed; zero oleo compression; tailhook stowed; stores and empty pylons removed; propeller at a recorded blade angle with zero visual pitch offset. The gear pose is set by `GearRetract`: frame 0 (down and locked) for landmarks and clearance checks, frame 100 (stowed) for the GLB export.
 
-Record export-frame coordinates for: both wingtips, spinner tip, rudder trailing edge, tail-cone end, wing-root leading edge, propeller hub, every wheel centre and ground contact point, nav and landing light lenses and the exhaust stack exits. Include wheel radii, propeller diameter, hinge lines and thrust-axis direction. Measure transformed mesh vertices, not rotated bounding boxes.
+Record export-frame coordinates for: both wingtips, spinner tip, rudder trailing edge, tail-cone end, wing-root leading edge, propeller hub, every wheel centre and ground contact point with the gear down, nav and landing light lenses and the exhaust stack exits. Include wheel radii, propeller diameter, hinge lines and thrust-axis direction. Measure transformed mesh vertices, not rotated bounding boxes.
 
 ## 5 Parts, crash sections and hierarchy
 
@@ -148,14 +150,15 @@ These ranges are geometric clearance cases; the simulator's throws come from its
 
 The simulator replays a **sampled** retraction. It interpolates rigid carrier transforms between gear-up and gear-down; the Ventage Jet uses the same route. Please provide:
 
-1. One action named **`GearRetract`** in the game `.blend`: frame 0 = down and locked (the neutral pose), frame 100 = fully up with doors closed, with progress uniform in frame. Include the 86° aft fold, the 90° wheel twist and the door sequence. Extension reverses the same path.
-2. **Rigid carriers only.** Every moving gear part follows an object whose transform the action animates: location and rotation, unit scale. Bake drivers and constraints into the action. Replace the deforming hose with rigid segments or omit it.
-3. Per wheel (`left`, `right`, `tail`), helper nodes that are correct when deployed:
+1. One action named **`GearRetract`** in the game `.blend`: frame 0 = down and locked, frame 100 = fully up with doors closed, with progress uniform in frame. Include the 86° aft fold, the 90° wheel twist and the door sequence. Extension reverses the same path.
+2. **Export `aircraft.glb` at frame 100.** The simulator binds every imported carrier at the fully stowed sample and refuses a mismatch, so stowed carriers in the GLB must equal frame 100 exactly. The game `.blend` may open at frame 0 for editing; the export command sets frame 100 first.
+3. **Rigid carriers only.** Every moving gear part follows an object whose transform the action animates: location and rotation, unit scale. Bake drivers and constraints into the action. Replace the deforming hose with rigid segments or omit it.
+4. Per wheel (`left`, `right`, `tail`), helper nodes that are correct when deployed:
    - `gear_compression_<role>`: slides along the strut axis and carries the lower oleo, axle and wheel.
    - `gear_spin_<role>`: local +X is the axle.
    - `gear_wheel_<role>`: tyre and hub mesh.
    - Tailwheel only, `gear_steer_tail`: local +Y is the steering axis, between the tail carrier and the compression node.
-4. Record the authored oleo travel and the tyre radii. Doors and links that are hidden when the gear is down may be omitted from the down pose only if the action still shows them correctly.
+5. Record the authored oleo travel and the tyre radii. Doors and links that are hidden when the gear is down may be omitted from the down pose only if the action still shows them correctly.
 
 Name carriers `gear_*`, tag them `gear`, and keep the gear subtree outside every other section. Keep the carrier count reasonable, roughly 20 or fewer.
 
@@ -211,7 +214,7 @@ No mass, CG, inertia or strength data are required. The simulator team chooses t
 ## 12 Acceptance checklist
 
 - [ ] A clean machine opens `aircraft_game.blend` and re-exports the GLB with the documented command, without R59 or missing files.
-- [ ] A clean Blender scene re-imports `aircraft.glb` at 2.500 m span with the same hierarchy, neutral pose and materials.
+- [ ] A clean Blender scene re-imports `aircraft.glb` at 2.500 m span with the same hierarchy, materials and neutral pose, gear stowed exactly at `GearRetract` frame 100.
 - [ ] Orthographic views of R59 (scaled 0.2) and g1 match in silhouette; markings stay readable in flight views.
 - [ ] Root identity, metres, D0, left/right and axis conversion are correct; metadata and exported pivots and landmarks agree within 0.1 mm and 0.01°.
 - [ ] Every control and gear pivot exists with the expected parent and moves its own meshes, including horns and markings.

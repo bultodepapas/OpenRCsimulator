@@ -76,6 +76,7 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 	var derivative: PackedFloat64Array
 	var rotor: PackedFloat64Array
 	var shaft_power: float = 0.0
+	var joint_stage_context: Dictionary = {}
 	if Turbine.is_turbine(prop):
 		var response: Dictionary = owner._turbine_evaluate(body, base, at, live, running)
 		if response.is_empty():
@@ -88,7 +89,8 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 		for axis: int in 3:
 			loads[3 + axis] -= shift[axis]
 	else:
-		var response: Dictionary = owner._coupled_response(body, base, at, live, running)
+		var capture_context: bool = owner._should_capture_substep_context(body, values, at)
+		var response: Dictionary = owner._coupled_response(body, base, at, live, running, {}, capture_context)
 		if not response.get("ok", false):
 			return {}
 		rpm = owner._coupled_rpm(base)
@@ -100,6 +102,7 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 		rotor = owner._coupled_rotor(body, base, at)
 		shaft_power = maxf(0.0, Propulsion.engine_torque(rpm, owner.propulsion_throttle(), prop,
 			owner.engine_charge_ratio(body)) * rpm * TAU / 60.0) if running else 0.0
+		joint_stage_context = owner._substep_stage_context(response)
 	var rate: float = Liquid.flow_rate_kg_s(prop.liquid_fuel,
 		{running = running, shaft_power_w = shaft_power, rpm = rpm})
 	if not is_finite(rate) or rate < 0.0:
@@ -108,7 +111,11 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, at: f
 	derivative.append(0.0)
 	var body_rate: PackedFloat64Array = FixedDatum.derivative(body, live, loads.slice(0, 3),
 		loads.slice(3, 6), owner.sim.gravity, rotor)
-	return {loads = loads, derivative = derivative, rotor_momentum = rotor, body_derivative = body_rate}
+	var joint: Dictionary = {loads = loads, derivative = derivative, rotor_momentum = rotor,
+		body_derivative = body_rate}
+	if not joint_stage_context.is_empty():
+		joint.stage_context = joint_stage_context
+	return joint
 
 
 static func project_exhaustion(combined: PackedFloat64Array, at: int) -> PackedFloat64Array:

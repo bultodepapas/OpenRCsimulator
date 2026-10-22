@@ -260,7 +260,7 @@ func _flights() -> void:
 	_check("actual feed-enabled stage solves its factor residual within the declared bound",
 		trimmed.solver is Dictionary and absf(float(trimmed.solver.get("residual",INF)))<=Feed.SOLVE_RESIDUAL_TOLERANCE,
 		str(trimmed.get("solver",{})))
-	_check("actual weak-coupling stage uses fewer than eight source evaluations (no-feed baseline is one)",
+	_check("actual weak-coupling stage uses fewer than eight factor samples",
 		trimmed.solver is Dictionary and int(trimmed.solver.get("evaluations",99))<8,
 		str(trimmed.get("solver",{})))
 	_check("full throttle from 12 m/s throws the fuel aft (%.1f m/s²)" % accelerating.g_aft, accelerating.g_aft > 2.0)

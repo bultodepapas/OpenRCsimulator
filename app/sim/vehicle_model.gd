@@ -23,8 +23,9 @@ var identity: Dictionary = {}
 var loads: Callable = func(_body: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 ## stage(body, continuous, t) -> {loads: float64[6], derivative: float64[continuous], rotor_momentum: float64[3]
-## [, body_derivative: float64[13]]}: one joint evaluation per RK stage. A body_derivative is a qualified
-## open-system law (finite fuel mass/CG) replacing RigidBody.derivative for that stage.
+## [, body_derivative: float64[13]][, stage_context: Dictionary]}: one joint evaluation per RK stage.
+## `stage_context` is opaque to the kernel and is passed only to `substeps_joint` for this tick's k1 result.
+## A body_derivative is a qualified open-system law (finite fuel mass/CG) replacing RigidBody.derivative for that stage.
 var stage: Callable
 ## Split route when `stage` is unset and continuous state exists:
 ## block_loads(body, continuous, t) -> float64[6]; block_derivative(body, continuous, t) -> float64[continuous].
@@ -65,6 +66,11 @@ var events: Array[Dictionary] = []
 ## reach). A step_policy owns the whole tick and is never split: a tick that asks for more than one substep under a
 ## policy is refused (SF-04b). Unset = 1.
 var substeps: Callable
+## Optional joint-stage form: substeps_joint(body, continuous, t, current_joint) -> int. The kernel passes the
+## validated k1 joint result from this same tick; `stage_context` remains opaque and is owned by the vehicle law.
+## The callback must treat current_joint and its arrays as read-only because the kernel reuses k1 after this call.
+## Set this or `substeps`, never both. Existing three-argument substeps callbacks remain unchanged.
+var substeps_joint: Callable = Callable()
 
 
 ## Static shape of the contract. Checks that depend on the live state (continuous size, array finiteness)
@@ -81,11 +87,15 @@ static func validate(candidate: Variant) -> Dictionary:
 	if typeof(candidate.identity) != TYPE_DICTIONARY:
 		return {ok = false, message = "vehicle model identity must be a dictionary"}
 	for field: String in ["loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum",
-			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps"]:
+			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps", "substeps_joint"]:
 		if typeof(candidate.get(field)) != TYPE_CALLABLE:
 			return {ok = false, message = "vehicle model %s must be a Callable" % field}
 	if candidate.post_tick.is_valid() and candidate.post_tick_joint.is_valid():
 		return {ok = false, message = "vehicle model selects at most one of post_tick and post_tick_joint"}
+	if candidate.substeps.is_valid() and candidate.substeps_joint.is_valid():
+		return {ok = false, message = "vehicle model selects at most one of substeps and substeps_joint"}
+	if candidate.substeps_joint.is_valid() and not candidate.stage.is_valid():
+		return {ok = false, message = "vehicle model substeps_joint requires a joint stage evaluator"}
 	if not candidate.loads.is_valid() and not candidate.stage.is_valid() \
 			and not (candidate.block_loads.is_valid() and candidate.block_derivative.is_valid()):
 		return {ok = false, message = "vehicle model supplies loads, stage, or block_loads and block_derivative"}
