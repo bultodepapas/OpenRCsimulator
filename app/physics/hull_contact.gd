@@ -143,10 +143,36 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 			return {ok = false, loads = PackedFloat64Array(), reason = "invalid_rigid_body_state"}
 		return {ok = true, loads = PackedFloat64Array(), reason = ""}
 	var hull: PackedFloat64Array = geometry.points
+	# The contact coefficients matter only where loads() can apply a force.
+	# In particular, a runway start must not invert inertia 26 times for every
+	# hull point that is clear of the ground at every RK stage.
+	var down: PackedFloat64Array = _down_row(s)
+	var active := PackedByteArray()
+	active.resize(hull.size() / 3)
+	var any_active := false
+	var lake: Dictionary = geometry.get("lake", {})
+	for i in range(0, hull.size(), 3):
+		var depth: float = s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2]
+		if not is_finite(depth):
+			return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+		var may_touch := depth > 0.0
+		if not lake.is_empty():
+			var point_ned: PackedFloat64Array = _point_ned(s, hull.slice(i, i + 3))
+			if not _finite_array(point_ned):
+				return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+			may_touch = may_touch or bool(_lake_sample(geometry, point_ned).get("covered", false))
+		active[i / 3] = 1 if may_touch else 0
+		any_active = any_active or may_touch
+	if not any_active:
+		return {ok = true, loads = PackedFloat64Array(), reason = ""}
 	var stiffness := PackedFloat64Array()
 	var damping := PackedFloat64Array()
+	stiffness.resize(active.size())
+	damping.resize(active.size())
 	var identity := PackedFloat64Array([1.0, 0.0, 0.0, 0.0])
 	for i in range(0, hull.size(), 3):
+		if active[i / 3] == 0:
+			continue
 		var body_point_o: PackedFloat64Array = hull.slice(i, i + 3)
 		var smallest: float = float(properties.mass_kg)
 		for d: Array in _DIRECTIONS:
@@ -155,8 +181,8 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 			if not bool(effective.get("ok", false)):
 				return {ok = false, loads = PackedFloat64Array(), reason = str(effective.get("reason", "invalid_effective_mass"))}
 			smallest = minf(smallest, float(effective.effective_mass_kg))
-		stiffness.append(smallest * OMEGA_RAD_S * OMEGA_RAD_S)
-		damping.append(2.0 * ZETA * smallest * OMEGA_RAD_S)
+		stiffness[i / 3] = smallest * OMEGA_RAD_S * OMEGA_RAD_S
+		damping[i / 3] = 2.0 * ZETA * smallest * OMEGA_RAD_S
 	var prepared := {points = hull, stiffness = stiffness, damping = damping,
 		reach = float(geometry.reach), mass = float(properties.mass_kg), inertia = properties.inertia}
 	if geometry.has("lake"):
