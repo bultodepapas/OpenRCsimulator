@@ -474,9 +474,13 @@
   ],
   "scenery_ImportedVegetationBatches": [
    "landscapelab_quercus_Part_00"
+  ],
+  "scenery_ParkedAircraft": [
+   "sebart-avanti-s-a200-p100rx_assembled_west",
+   "sebart-avanti-s-a200-p100rx_assembled_east"
   ]
  },
- "full_detail_note": "Visible meshes over 5,000 triangles without generated LODs draw at full detail whenever visible. The listed 2026-10-21 meshes are recorded debt; new ones need LODs or an entry here. Counted per surface. L6c-R1: Quercus foliage keeps full detail because its only generated leaf level keeps 10% of the cards (2,636 triangles per tree); its bark keeps generated LODs.",
+ "full_detail_note": "Visible meshes over 5,000 triangles without generated LODs draw at full detail whenever visible. The listed 2026-10-21 meshes are recorded debt; new ones need LODs or an entry here. Counted per surface. L6c-R1: Quercus foliage keeps full detail because its only generated leaf level keeps 10% of the cards (2,636 triangles per tree); its bark keeps generated LODs. The per-surface count surfaced the parked Avanti batches (17,847 and 11,898 full-detail triangles in surfaces its SC-09-R1 bake left without LODs): recorded fleet debt.",
  "max_texture_mib": 495,
  "texture_note": "Renderer texture estimate after the first view (489 MiB measured at LU-34 and 473 MiB after L6c-R1 and other tracks' changes, 2026-10-21; includes about 39 MiB of 1280x720 render targets). No growth without a matching reduction; LU-34 lists about 204 MiB of uncompressed material textures that GPU compression would recover."
 }

@@ -64,6 +64,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 | L15b-R1 | Imported-tree wind qualification, preserving field cards and shared grass consumers. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
 | L15b-R2 | Close downloaded-tree wind within unchanged collision proxies; delivered 2026-10-21. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 | L6c-R1 | Downloaded beech and young oak at the club; LandscapeLab crowns stay full at range (world-unit LOD bias, foliage LOD floor, mip-6 foliage clamp); delivered 2026-10-21. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
+| L7-R3 | Near-ring woods, hedgerows and field trees with the same 480-tree count; landmark skyline preserved; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 
 ## Landscape integration
 

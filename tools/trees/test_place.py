@@ -22,16 +22,25 @@ from place import (
     FAR_RADIUS_MIN_M,
     FAR_TREES_PER_CLUSTER,
     GAPS,
+    GROVE_SEED,
     HABITAT_FAR_COUNT,
     HABITAT_FAR_SEED,
     HABITAT_PATCH_COUNT,
     NEAR_COUNT,
     NEAR_POSITIONS_SHA256,
+    NEAR_RADIUS_MAX_M,
+    NEAR_RADIUS_MIN_M,
+    SCENERY_KEEPOUT_M,
     _angular_distance,
+    _card_crown_radius,
+    _in_skyline_anchor,
+    _inside_protected_gap,
+    _scenery_keepout,
     _inside_flight_corridor,
     _positions_sha256,
     generate,
     generate_near,
+    tree_identity,
 )
 
 
@@ -118,7 +127,7 @@ class HabitatRecipeTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.field_bytes = FIELD_PATH.read_bytes()
         cls.field = json.loads(cls.field_bytes)
-        cls.object_data, cls.manifest = generate(cls.field)
+        cls.object_data, cls.manifest = generate(cls.field, "habitat-v1")
         cls.points = cls.object_data["positions"]["value"]
         cls.near = cls.points[:NEAR_COUNT]
         cls.far = cls.points[NEAR_COUNT:]
@@ -134,7 +143,6 @@ class HabitatRecipeTests(unittest.TestCase):
         self.assertEqual(self.manifest["far_count"], HABITAT_FAR_COUNT)
         self.assertEqual(self.manifest["recipe"], "habitat-v1")
         self.assertEqual(HABITAT_FAR_SEED, 610617)
-        self.assertEqual(self.field["objects"], [self.object_data])
         self.assertEqual(self.manifest["near_positions_sha256"], NEAR_POSITIONS_SHA256)
         self.assertEqual(
             self.manifest["far_positions_sha256"],
@@ -208,12 +216,12 @@ class HabitatRecipeTests(unittest.TestCase):
             spacing_grid.setdefault(cell, []).append((north, east))
 
     def test_habitat_generation_is_deterministic(self) -> None:
-        second_object, second_manifest = generate(self.field)
+        second_object, second_manifest = generate(self.field, "habitat-v1")
         self.assertEqual(self.object_data, second_object)
         self.assertEqual(self.manifest, second_manifest)
         self.assertEqual(_positions_sha256(self.far), "c24d479e2a5063f895a106a7a6e687736b8bfc2b8c5c62cf6c60554a6d58594e")
 
-    def test_habitat_cli_is_default_and_existing_remains_explicit_control(self) -> None:
+    def test_groves_cli_is_default_and_other_recipes_remain_explicit(self) -> None:
         production_hash = hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest()
         default_check = subprocess.run(
             [sys.executable, str(PLACE_SCRIPT), "--check"],
@@ -222,15 +230,16 @@ class HabitatRecipeTests(unittest.TestCase):
             text=True,
         )
         self.assertEqual(default_check.returncode, 0, default_check.stderr)
-        self.assertEqual(json.loads(default_check.stdout)["recipe"], "habitat-v1")
+        self.assertEqual(json.loads(default_check.stdout)["recipe"], "groves-v1")
 
+        # The committed field is groves-v1, so the habitat-v1 reference no longer matches it.
         explicit_habitat_check = subprocess.run(
             [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1", "--check"],
             cwd=ROOT,
             capture_output=True,
             text=True,
         )
-        self.assertEqual(explicit_habitat_check.returncode, 0, explicit_habitat_check.stderr)
+        self.assertNotEqual(explicit_habitat_check.returncode, 0)
 
         HABITAT_TRIAL_ROOT.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="place-habitat-test-", dir=HABITAT_TRIAL_ROOT) as temp:
@@ -259,6 +268,82 @@ class HabitatRecipeTests(unittest.TestCase):
             self.assertEqual(historical_path.read_bytes(), stage_bytes)
 
         self.assertEqual(hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest(), production_hash)
+
+
+class GroveRecipeTests(unittest.TestCase):
+    """L7-R3 groves-v1: the committed default composition."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.field_bytes = FIELD_PATH.read_bytes()
+        cls.field = json.loads(cls.field_bytes)
+        cls.object_data, cls.manifest = generate(cls.field)
+        cls.points = cls.object_data["positions"]["value"]
+        cls.near = cls.points[:NEAR_COUNT]
+        cls.far = cls.points[NEAR_COUNT:]
+        cls.habitat_object, cls.habitat_manifest = generate(cls.field, "habitat-v1")
+
+    def test_committed_field_is_groves_with_the_same_counts_and_far_ring(self) -> None:
+        self.assertEqual(self.field["objects"], [self.object_data])
+        self.assertEqual(self.manifest["recipe"], "groves-v1")
+        self.assertEqual(GROVE_SEED, 620101)
+        self.assertEqual((len(self.near), len(self.far), len(self.points)), (NEAR_COUNT, HABITAT_FAR_COUNT, 1680))
+        self.assertEqual(self.far, self.habitat_object["positions"]["value"][NEAR_COUNT:])
+        self.assertEqual(self.manifest["far_positions_sha256"], self.habitat_manifest["far_positions_sha256"])
+        self.assertIn("L7-R3 groves-v1", self.object_data["positions"]["source"])
+        self.assertIn(self.manifest["positions_sha256"], self.object_data["positions"]["source"])
+        # .gitattributes keeps the field CRLF; the generator writes those bytes on every OS.
+        self.assertNotIn(b"\n", self.field_bytes.replace(b"\r\n", b""))
+
+    def test_groups_are_woods_hedgerows_solitary_trees_and_frozen_anchors(self) -> None:
+        groups = self.manifest["near_groups"]
+        kinds = [group["kind"] for group in groups]
+        self.assertEqual(kinds.count("wood"), 9)
+        self.assertEqual(kinds.count("hedgerow"), 4)
+        self.assertEqual(sum(group["count"] for group in groups), NEAR_COUNT)
+        self.assertEqual(sum(g["count"] for g in groups if g["kind"] == "solitary"), 24)
+        self.assertEqual(sum(g["count"] for g in groups if g["kind"] == "hedgerow"), 56)
+        woods = [group for group in groups if group["kind"] == "wood"]
+        self.assertTrue(all(group["dominant_share"] >= 0.75 for group in woods), woods)
+        self.assertEqual(len({group["dominant_species"] for group in woods}), 3)
+        frozen = generate_near(self.field)
+        anchored = sorted(p for p in frozen if _in_skyline_anchor(p[0], p[1]))
+        self.assertEqual(sorted(p for p in self.near if _in_skyline_anchor(p[0], p[1])), anchored)
+        self.assertEqual(groups[0], {"kind": "skyline-anchor", "count": len(anchored)})
+
+    def test_new_near_trees_keep_ring_gaps_corridor_anchors_and_scenery_clearance(self) -> None:
+        pilot_north = self.field["pilot"]["north"]["value"]
+        strips = [s for s in self.field["surfaces"] if s["type"] in ("runway", "mown")]
+        frozen = {tuple(p) for p in generate_near(self.field)}
+        keepout = _scenery_keepout(ROOT / "app/data/scenery/default.json")
+        for north, east, down in self.near:
+            with self.subTest(north=north, east=east):
+                self.assertEqual(down, 0)
+                self.assertEqual(north * 4, round(north * 4))
+                self.assertEqual(east * 4, round(east * 4))
+                self.assertTrue(NEAR_RADIUS_MIN_M <= math.hypot(north, east) <= NEAR_RADIUS_MAX_M)
+                self.assertFalse(_inside_flight_corridor(north, pilot_north, strips, 0.0))
+                if (north, east, down) in frozen and _in_skyline_anchor(north, east):
+                    continue
+                self.assertFalse(_inside_protected_gap(north, east))
+                self.assertFalse(_in_skyline_anchor(north, east, CROWN_RADIUS_M))
+                self.assertTrue(all(math.hypot(north - n, east - e) >= SCENERY_KEEPOUT_M for n, e in keepout))
+
+    def test_crowns_do_not_stack_and_species_follow_the_renderer_hash(self) -> None:
+        crowns = [(n, e, _card_crown_radius(n, e)) for n, e, _ in self.near]
+        for index, (north, east, radius) in enumerate(crowns):
+            for other_north, other_east, other_radius in crowns[index + 1:]:
+                self.assertGreaterEqual(
+                    math.hypot(north - other_north, east - other_east) + 1e-9,
+                    0.55 * (radius + other_radius) if (north, east) != (other_north, other_east) else 0.0,
+                )
+        species = [tree_identity(n, e)[0] for n, e, _ in self.near]
+        self.assertTrue(all(species.count(value) > 50 for value in range(3)))
+
+    def test_grove_generation_is_deterministic(self) -> None:
+        second_object, second_manifest = generate(self.field)
+        self.assertEqual(self.object_data, second_object)
+        self.assertEqual(self.manifest, second_manifest)
 
 
 if __name__ == "__main__":

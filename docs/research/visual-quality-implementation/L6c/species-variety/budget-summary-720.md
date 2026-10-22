@@ -8,16 +8,16 @@ Renderer estimates after the first frame: textures 473 MiB, buffers 46 MiB, vide
 | Subsystem | Source triangles | Without LOD | Pilot prims max | Pilot draws max | Ground prims max | Ground draws max | Aerial prims max | Aerial draws max |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | scenery_cells | 168,031 | 168,031 | 91,773 | 20 | 134,369 | 26 | 45,578 | 15 |
-| scenery_ImportedVegetationBatches | 132,457 | 14,032 | 120,759 | 42 | 126,699 | 47 | 66,089 | 38 |
-| scenery_ParkedAircraft | 273,421 | 0 | 67,838 | 155 | 95,748 | 179 | 73,760 | 179 |
+| scenery_ImportedVegetationBatches | 132,457 | 7,702 | 120,759 | 42 | 126,699 | 47 | 66,089 | 38 |
+| scenery_ParkedAircraft | 273,421 | 38,845 | 67,838 | 155 | 95,748 | 179 | 73,760 | 179 |
 | field_rough | 84,960 | 84,960 | 84,960 | 1 | 84,960 | 1 | 84,960 | 1 |
-| scenery_Population | 371,573 | 0 | 73,734 | 49 | 60,025 | 49 | 34,335 | 49 |
+| scenery_Population | 371,573 | 897 | 73,734 | 49 | 60,025 | 49 | 34,335 | 49 |
 | field_Lake | 65,224 | 44,952 | 45,354 | 13 | 45,688 | 13 | 45,306 | 13 |
 | field_flightline_barrier | 81,601 | 38,840 | 39,998 | 6 | 39,998 | 6 | 39,651 | 6 |
 | field_DistantRidges | 27,648 | 27,648 | 27,648 | 4 | 13,824 | 2 | 0 | 0 |
 | scenery_pit_shelters | 12,096 | 12,096 | 12,096 | 2 | 12,096 | 2 | 12,096 | 2 |
 | world_AirfieldLighting | 26,386 | 8,462 | 9,492 | 15 | 7,246 | 16 | 5,946 | 16 |
-| scenery_BotanicalHabitats | 89,655 | 500 | 6,844 | 19 | 7,760 | 20 | 6,216 | 17 |
+| scenery_BotanicalHabitats | 89,655 | 2,372 | 6,844 | 19 | 7,760 | 20 | 6,216 | 17 |
 | field_treeline | 10,080 | 10,080 | 5,418 | 4 | 6,168 | 4 | 6,270 | 5 |
 | field_pilot_station | 6,124 | 6,124 | 6,126 | 2 | 6,126 | 2 | 6,126 | 2 |
 | field_windsock | 5,266 | 5,266 | 5,268 | 4 | 5,268 | 4 | 5,268 | 4 |
