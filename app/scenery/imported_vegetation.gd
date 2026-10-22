@@ -33,6 +33,12 @@ const LEAF_FLUTTER_TILT := 0.12
 const WORLD_LOD_SOURCE_IDS := ["landscapelab_tree_2026"]
 const FOLIAGE_LOD_MIN_FRACTION := 0.25
 const FOLIAGE_ALPHA_MAX_MIP := 6.0
+# L8a-R2: every LandscapeLab GLB authors roughnessFactor 0.5 (with metallicFactor 0.5, reset below)
+# on its leaves. Glossy leaf cards in every orientation mirrored the sky: 3D crowns rendered
+# grey-blue (Quercus blue/green 0.78) against their yellow-green leaf textures (0.43). A roughness
+# sweep in the club and field views chose 0.85; specular keeps the dielectric 0.5. Bark keeps its
+# authored roughness texture.
+const LANDSCAPELAB_FOLIAGE_ROUGHNESS := 0.85
 # L8a-R1: Godot switches LOD only below 1 px of geometric error, so a distant LandscapeLab tree
 # keeps its full bark mesh (Fagus: 6,912 of 9,312 triangles) in a crown tens of pixels tall.
 # The bark_lod_error_px build option lets bark surfaces of world-LOD batches switch at that error
@@ -663,9 +669,12 @@ static func _part(
 				and material is StandardMaterial3D:
 			# Every supplier GLB assigns metallicFactor=0.5 to bark and foliage.
 			# These are dielectric surfaces. Keep downloaded resources untouched;
-			# the cached draw material retains their textures, alpha and roughness.
+			# the cached draw material retains their textures and alpha. Foliage
+			# also replaces the placeholder roughness (L8a-R2).
 			material = material.duplicate() as StandardMaterial3D
 			(material as StandardMaterial3D).metallic = 0.0
+			if (material as StandardMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+				(material as StandardMaterial3D).roughness = LANDSCAPELAB_FOLIAGE_ROUGHNESS
 		materials.append(material)
 	return {
 		"mesh": mesh,

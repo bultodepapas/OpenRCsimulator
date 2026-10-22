@@ -5065,5 +5065,32 @@ msgstr "Alto"
 msgid "Extreme"
 msgstr "Extremo"
 
-msgid "Trees, props and model detail, from your next flight. High is the default. Extreme draws every nearby field tree in 3D and needs a strong GPU."
-msgstr "Árboles, objetos y detalle de modelos, a partir del siguiente vuelo. Alto es el valor predeterminado. Extremo dibuja en 3D todos los árboles cercanos del campo y requiere una GPU potente."
+msgid "Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU."
+msgstr "Árboles, objetos y detalle de modelos, a partir del siguiente vuelo. Automático elige un nivel para tu GPU. Extremo dibuja en 3D todos los árboles cercanos del campo y requiere una GPU potente."
+
+msgid "Automatic (%s)"
+msgstr "Automático (%s)"
+
+msgid "Detected: %s (%s)."
+msgstr "Detectada: %s (%s)."
+
+msgid "software renderer"
+msgstr "renderizado por software"
+
+msgid "mobile GPU"
+msgstr "GPU móvil"
+
+msgid "entry-level GPU"
+msgstr "GPU de gama básica"
+
+msgid "dedicated GPU"
+msgstr "GPU dedicada"
+
+msgid "integrated GPU"
+msgstr "GPU integrada"
+
+msgid "unrecognized GPU"
+msgstr "GPU no reconocida"
+
+msgid "no GPU reported"
+msgstr "sin GPU informada"

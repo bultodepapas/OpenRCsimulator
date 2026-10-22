@@ -35,8 +35,11 @@ func _run() -> void:
 
 
 func _test_levels() -> void:
-	_check("the saved values match the preset levels", DisplayPreferences.SCENE_DETAILS == SceneDetail.LEVELS
-		and DisplayPreferences.DEFAULTS.scene_detail == SceneDetail.DEFAULT and SceneDetail.DEFAULT == "high")
+	var saved_values: Array[String] = [SceneDetail.AUTO]
+	saved_values.append_array(SceneDetail.LEVELS)
+	_check("the saved values are Automatic plus the preset levels", DisplayPreferences.SCENE_DETAILS == saved_values
+		and DisplayPreferences.DEFAULTS.scene_detail == SceneDetail.AUTO and SceneDetail.DEFAULT == "high")
+	_test_recommendations()
 	SceneDetail.set_preference("")
 	_check("no choice means High", SceneDetail.level() == "high")
 	var qualities := []
@@ -73,6 +76,42 @@ func _test_levels() -> void:
 	viewport.free()
 
 
+## VQ-06b-R1: GL renderer strings as drivers report them, and the level Automatic picks.
+func _test_recommendations() -> void:
+	var cases := {
+		"llvmpipe (LLVM 20.1.2, 256 bits)|Mesa": "low",
+		"Microsoft Basic Render Driver|Microsoft": "low",
+		"Mali-G78|ARM": "low",
+		"NVIDIA GeForce RTX 3090/PCIe/SSE2|NVIDIA Corporation": "high",
+		"AMD Radeon RX 6800 XT|ATI Technologies Inc.": "high",
+		"Intel(R) Arc(TM) A770 Graphics|Intel": "high",
+		"ANGLE (NVIDIA, NVIDIA GeForce GTX 1060 Direct3D11 vs_5_0 ps_5_0)|Google Inc.": "high",
+		"NVIDIA GeForce MX250/PCIe/SSE2|NVIDIA Corporation": "medium",
+		"Intel(R) UHD Graphics 620|Intel": "medium",
+		"Mesa Intel(R) Iris(R) Xe Graphics (TGL GT2)|Intel": "medium",
+		"AMD Radeon(TM) Graphics|ATI Technologies Inc.": "medium",
+		"ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)|Google Inc.": "medium",
+		"Some Future GPU 9000|Acme": "high",
+		"|": "high",
+	}
+	for gpu: String in cases:
+		var parts := gpu.split("|")
+		var picked: Dictionary = SceneDetail.recommend(parts[0], parts[1])
+		_check("Automatic picks %s for '%s'" % [cases[gpu], parts[0]], picked.level == cases[gpu],
+			"%s (%s)" % [picked.level, picked.reason])
+		_check("Automatic never picks Extreme for '%s'" % parts[0], picked.level != "extreme")
+	SceneDetail.set_preference(SceneDetail.AUTO)
+	SceneDetail.adapter_override = PackedStringArray(["llvmpipe (LLVM 20.1.2, 256 bits)", "Mesa"])
+	_check("a saved Automatic resolves through the detected GPU", SceneDetail.level() == "low"
+		and Scenery.options().quality == "low")
+	SceneDetail.adapter_override = PackedStringArray(["Intel(R) UHD Graphics 620", "Intel"])
+	_check("Automatic follows a different GPU at the next launch", SceneDetail.level() == "medium")
+	SceneDetail.adapter_override = PackedStringArray()
+	SceneDetail.set_preference("low")
+	_check("a saved level wins over detection", SceneDetail.level() == "low")
+	SceneDetail.set_preference("")
+
+
 func _test_preferences() -> void:
 	var candidate: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 	candidate.scene_detail = "extreme"
@@ -83,7 +122,7 @@ func _test_preferences() -> void:
 	var older: Dictionary = DisplayPreferences.DEFAULTS.duplicate(true)
 	older.erase("scene_detail")
 	var checked := DisplayPreferences.validate(older)
-	_check("settings saved before VQ-06b load with High", checked.ok and checked.config.scene_detail == "high")
+	_check("settings saved before VQ-06b load with Automatic", checked.ok and checked.config.scene_detail == "auto")
 
 
 func _test_settings_row() -> void:
@@ -93,15 +132,17 @@ func _test_settings_row() -> void:
 	root.add_child(settings)
 	await process_frame
 	var picker: OptionButton = settings.find_child("SceneDetail", true, false)
-	_check("Settings > Graphics shows Scene detail", picker != null and picker.item_count == 4
-		and picker.get_item_metadata(picker.selected) == "high")
+	_check("Settings > Graphics shows Scene detail with Automatic selected", picker != null and picker.item_count == 5
+		and picker.get_item_metadata(picker.selected) == "auto"
+		and picker.get_item_text(0) == "Automatic (%s)" % str(SceneDetail.detected().level).capitalize(),
+		picker.get_item_text(0) if picker != null else "")
 	if picker != null:
-		picker.select(3)
-		picker.item_selected.emit(3)
+		picker.select(4)
+		picker.item_selected.emit(4)
 		settings.keep_changes()
 		_check("keeping Extreme saves it", DisplayPreferences.load_from(PREFS).scene_detail == "extreme")
 		settings._restore_graphics_defaults()
-		_check("restoring graphics defaults returns to High", settings._draft.scene_detail == "high")
+		_check("restoring graphics defaults returns to Automatic", settings._draft.scene_detail == "auto")
 	settings.queue_free()
 	await process_frame
 

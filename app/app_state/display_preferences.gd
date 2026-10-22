@@ -13,14 +13,14 @@ const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
 # VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
-const SCENE_DETAILS: Array[String] = ["low", "medium", "high", "extreme"]
+const SCENE_DETAILS: Array[String] = ["auto", "low", "medium", "high", "extreme"]
 const DEFAULTS := {
 	"window_mode": "windowed",
 	"window_resolution": "auto",
 	"max_fps": 0,
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
-	"scene_detail": "high",
+	"scene_detail": "auto",
 	"ui_scale": 1.0,
 	"opaque_panels": false,
 	"reduced_motion": false,
@@ -155,7 +155,7 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("msaa_3d must be an integer from 0 through 3")
 	var scene_detail: Variant = raw.get("scene_detail", DEFAULTS.scene_detail)
 	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
-		errors.append("scene_detail must be low, medium, high or extreme")
+		errors.append("scene_detail must be auto, low, medium, high or extreme")
 	var scale: Variant = raw.get("ui_scale")
 	if typeof(scale) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(scale)) \
 			or float(scale) < 1.0 or float(scale) > 2.0 \

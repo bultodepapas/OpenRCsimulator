@@ -145,6 +145,13 @@ func _test_catalog_and_parts() -> void:
 					and original.normal_texture == effective.normal_texture
 					and original.transparency == effective.transparency
 					and is_equal_approx(original.alpha_scissor_threshold, effective.alpha_scissor_threshold))
+				var foliage := original != null and original.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+				_check("%s %s replaces the supplier's placeholder roughness only on foliage (L8a-R2)" % [
+					asset_id, "foliage" if foliage else "bark"],
+					original != null and effective != null and is_equal_approx(original.roughness, 0.5)
+					and is_equal_approx(effective.roughness,
+						ImportedVegetation.LANDSCAPELAB_FOLIAGE_ROUGHNESS if foliage else original.roughness)
+					and original.roughness_texture == effective.roughness_texture)
 
 
 func _test_fit_and_aliases() -> void:

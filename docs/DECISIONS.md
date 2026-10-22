@@ -862,3 +862,23 @@ PNGs are pixel evidence. Instead, `tools/repo/check_large_files.py` (in `app/tes
 opt-in pre-push hook) refuses unrecorded tracked files above 50 MiB and any above GitHub's
 100 MiB push limit; four existing files are recorded. New evidence shows views as JPEG and keeps
 PNG only when pixel values are the evidence ([conventions](README.md#conventions-for-documents)).
+
+### 2026-10-22 — Scene detail defaults to Automatic, from the GPU name (VQ-06b-R1)
+
+Godot 4.7.2's Compatibility driver cannot report the GPU type (always `DEVICE_TYPE_OTHER`), so
+Automatic, the new default, classifies the GL renderer and vendor strings at each launch:
+software and mobile renderers get Low, integrated and entry-level GPUs Medium, dedicated and
+unknown GPUs High; Extreme is never automatic. A saved level always wins, and detection never
+rewrites a saved choice. Tools and tests keep High. A measured benchmark stays the next step,
+because its thresholds need calibration on the owner's GPU and a weak one.
+[Evidence](research/visual-quality-implementation/VQ-06b-scene-detail/README.md#vq-06b-r1-automatic-level).
+
+### 2026-10-22 — Matte LandscapeLab foliage, roughness 0.85 (L8a-R2)
+
+The 3D woods read paler and bluer than the cards. Measurement showed the cards match the leaf
+textures and the 3D foliage mirrored the sky: every LandscapeLab GLB authors placeholder
+roughness 0.5 (and metallic 0.5, already reset) on its leaves. Set foliage roughness to 0.85 on
+the duplicated material, chosen from a 0.5–1.0 sweep in club and field views; keep specular 0.5,
+bark textures, the downloaded resources, cards and maples unchanged. This supersedes the proposed
+card recolour.
+[Evidence](research/visual-quality-implementation/L8a-R2/README.md).

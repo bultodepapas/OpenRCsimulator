@@ -67,7 +67,7 @@ The budget in `scene_budget.json` guards High; the other levels are measured and
 
 - Low drops people and ornament props, Medium a fixed seeded half of them (SC-24 tiers); landmarks, buildings, fences and tree positions stay.
 - High turns the front woods 3D; Extreme also the side and rear woods (east view, aerial).
-- From the air, the 3D woods read paler and bluer than the cards beside them. The proposed [L8a-R2](../../../plans/tree-forest-quality.md#follow-ups-2026-10-21) card colour match addresses this.
+- From the air, the 3D woods read paler and bluer than the cards beside them. [L8a-R2](../L8a-R2/README.md) traced this to glossy 3D foliage, not the cards, and made it matte.
 
 ## Checks
 
@@ -77,8 +77,44 @@ Mutations on a disposable copy, each caught: the field ignores the preset (Low, 
 
 Existing UI tests pass: `test_settings_ui` (pages fit at 1080p), `test_advanced_graphics_settings`, `test_ui_settings_integration`, `test_high_graphics_restart`, `test_ui_language`, `test_ui_pause`, `test_display_preferences`.
 
+## Research: choosing the level automatically
+
+Ten web searches and the engine source, 2026-10-22:
+
+| Finding | Consequence here | Source |
+| --- | --- | --- |
+| `RenderingServer.get_video_adapter_type()` distinguishes integrated, discrete, virtual and CPU devices, but Godot 4.7.2's Compatibility driver hard-codes `DEVICE_TYPE_OTHER` (`drivers/gles3/storage/utilities.cpp`) | Only the adapter name and vendor strings (`GL_RENDERER`, `GL_VENDOR`) are available to classify the GPU | [PR #55790](https://git.objectionable.solutions/Sara/behaviour-tree-test/commit/b3174e7af93e9840698bba53a5d866a61c37d2da), [RenderingServer](https://docs.godotengine.org/en/4.2/classes/class_renderingserver.html) |
+| Unreal's `scalability auto` runs a short CPU/GPU benchmark (index 100 = average) and maps it through per-project thresholds that QA tunes on real machines | A measured frame time is the reliable signal; its thresholds need the owner's GPU and a weak one | [Tom Looman](https://tomlooman.com/unreal-engine-optimal-graphics-settings/), [FSynthBenchmarkResults](https://docs.unrealengine.com/4.26/API/Runtime/ApplicationCore/GenericPlatform/FSynthBenchmarkResults/index.html) |
+| World of Tanks detects on first launch and from a "Recommended" button; it uses CPU, GPU, RAM and VRAM | Detect once when nothing is saved, and offer a re-run; never override a saved choice | [Wargaming](https://wargaming.net/support/en/products/wot/article/16379/) |
+| GeForce Experience used a server database and a frame-rate target; users disliked silent resets after updates | No online database; never change a saved setting silently | [Laptop Mag](https://www.laptopmag.com/articles/nvidia-geforce-experience-software-optimizes-your-game-settings) |
+| Players expect a preset as a starting point with overrides; FFXV's benchmark without settings drew criticism | The recommendation pre-selects a level the player can change | [Gamers Nexus](https://gamersnexus.net/news/3248-ffxv-playable-demo-addresses-settings-customization-concerns), [Train Sim World](https://support.dovetailgames.com/hc/en-us/articles/29719662434962) |
+| Unity Adaptive Performance adjusts quality at run time from thermal and bottleneck state (mobile) | Run-time switching would rebuild the scene; only the LOD threshold could adapt live | [Unity](https://docs.unity3d.com/Packages/com.unity.adaptiveperformance@5.1/manual/user-guide.html) |
+| `Performance` monitors: `TIME_FPS` updates once per second, some monitors are zero in release builds | Time frames directly (`Time.get_ticks_usec`) rather than read FPS monitors | [Performance](https://docs.godotengine.org/en/4.2/classes/class_performance.html) |
+| The MIT "Smart Graphics Settings" add-on adapts render scale, AA, shadows and reflections from FPS | Its knobs are Forward+ settings, not this project's scene detail; not adopted | [Asset Library](https://www.godotengine.org/asset-library/asset/edit/16085) |
+
+## VQ-06b-R1 Automatic level
+
+2026-10-22. Following the research above, **Automatic** is the new default choice. It shows as "Automatic (Medium)" and picks a level from the GPU at every launch, so a new GPU is followed without a stale saved guess. Choosing a level saves it, and a saved level always wins. Restore graphics defaults returns to Automatic. Tools and tests never load preferences and keep High.
+
+`SceneDetail.recommend()` classifies the GL renderer and vendor strings:
+
+| GPU name contains | Level | Reason shown |
+| --- | --- | --- |
+| llvmpipe, softpipe, lavapipe, SwiftShader, Microsoft Basic Render, GDI Generic | Low | software renderer |
+| Adreno, Mali, PowerVR, Tegra | Low | mobile GPU |
+| GeForce MX, GeForce GT, old GeForce 8/9 | Medium | entry-level GPU |
+| GeForce, RTX, Quadro, Radeon RX/Pro/R9/R7, FirePro, Intel Arc | High | dedicated GPU |
+| Intel (UHD, Iris, HD), Radeon(TM) Graphics, Radeon Vega, Apple M | Medium | integrated GPU |
+| anything else, or no name | High | unrecognized GPU / no GPU reported |
+
+Rules are checked in that order, so "Intel Arc" and "Radeon RX" never count as integrated. Extreme is never chosen automatically. The Settings tooltip names the detected GPU and the reason.
+
+**Checks.** `test_scene_detail.gd` covers 14 driver strings, including ANGLE-wrapped names from macOS and Windows; a saved Automatic resolving through detection (llvmpipe → Low, then a different GPU → Medium); a saved level winning; and the menu entry, selection and restore. Mutations on a disposable copy, each caught: integrated checked before discrete ("Intel Arc" fell to Medium); Automatic never resolved; the caption ignoring Automatic. On this VM's real OpenGL driver Godot reports `llvmpipe (LLVM 20.1.2, 256 bits)` / `Mesa` with device type 0 (`DEVICE_TYPE_OTHER`), and Automatic picks Low; headless reports no GPU and keeps High.
+
+**Limits.** Name lists only guess. A measured benchmark (render the pilot view at High for a few seconds and step down when frames are slow) is the reliable next step. Its thresholds need the owner's RTX 3090 and one weak GPU; llvmpipe cannot calibrate them.
+
 ## Open
 
 - Frame time on native hardware for each level (VQ-06's acceptance); llvmpipe counts are workload, not timing.
-- Per-option overrides (trees, props, LOD) under the preset, and a first-launch recommendation.
+- Per-option overrides (trees, props, LOD) under the preset, and a measured first-launch benchmark to refine Automatic.
 - Shadow quality as a tier knob.

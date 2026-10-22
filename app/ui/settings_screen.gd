@@ -7,6 +7,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
+const SceneDetail := preload("res://render/scene_detail.gd")
 
 signal closed
 signal presentation_changed(config: Dictionary)
@@ -206,7 +207,9 @@ func _build() -> void:
 		_scene_detail_picker.set_item_metadata(_scene_detail_picker.item_count - 1, level)
 	_scene_detail_picker.item_selected.connect(_scene_detail_selected)
 	_add_row(graphics_page, "Scene detail", _scene_detail_picker)
-	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. High is the default. Extreme draws every nearby field tree in 3D and needs a strong GPU.")
+	var detected: Dictionary = SceneDetail.detected()
+	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU.") \
+		+ "\n" + tr("Detected: %s (%s).") % [RenderingServer.get_video_adapter_name(), tr(str(detected.reason))]
 	_graphics_info = _label("", "SecondaryLabel", true)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
@@ -401,7 +404,10 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
-		"scene_detail": return tr(str(value).capitalize())
+		"scene_detail":
+			if value == SceneDetail.AUTO:
+				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
+			return tr(str(value).capitalize())
 	return str(value)
 
 

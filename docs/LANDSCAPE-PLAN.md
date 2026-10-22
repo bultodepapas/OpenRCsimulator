@@ -67,6 +67,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 | L7-R3 | Near-ring woods, hedgerows and field trees with the same 480-tree count; landmark skyline preserved; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 | L7-R4 | Single-species far woods at the habitat-v1 sites; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 | L8a-R1 | The 127 near-ring trees in front of the pilot render and collide as 3D LandscapeLab trees, in 256 m cells with an 8 px bark LOD error; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
+| L8a-R2 | Matte LandscapeLab foliage (roughness 0.85 instead of the supplier's 0.5); the 3D crowns no longer mirror the sky; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 
 ## Landscape integration
 
