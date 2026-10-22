@@ -147,10 +147,43 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 	# In particular, a runway start must not invert inertia 26 times for every
 	# hull point that is clear of the ground at every RK stage.
 	var down: PackedFloat64Array = _down_row(s)
+	var lake: Dictionary = geometry.get("lake", {})
+	# Valid lake beds are below the field datum. When every point is clear of
+	# that datum, skip the lake queries and the contact-parameter work.
+	if not lake.is_empty():
+		var qw := s[RB.ATT]
+		var qx := s[RB.ATT + 1]
+		var qy := s[RB.ATT + 2]
+		var qz := s[RB.ATT + 3]
+		var may_contact := false
+		for i in range(0, hull.size(), 3):
+			var rx := hull[i]
+			var ry := hull[i + 1]
+			var rz := hull[i + 2]
+			var depth: float = s[RB.POS + 2] + down[0] * rx + down[1] * ry + down[2] * rz
+			if not is_finite(depth):
+				return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+			# Reproduce M.q_rotate and M.add's scalar order. The flat and lake
+			# tests round differently, so both must prove clearance.
+			var tx := (qy * rz - qz * ry) * 2.0
+			var ty := (qz * rx - qx * rz) * 2.0
+			var tz := (qx * ry - qy * rx) * 2.0
+			var rotated_x := (rx + tx * qw) + (qy * tz - qz * ty)
+			var rotated_y := (ry + ty * qw) + (qz * tx - qx * tz)
+			var rotated_z := (rz + tz * qw) + (qx * ty - qy * tx)
+			var point_x := s[RB.POS] + rotated_x
+			var point_y := s[RB.POS + 1] + rotated_y
+			var point_z := s[RB.POS + 2] + rotated_z
+			if not is_finite(point_x) or not is_finite(point_y) or not is_finite(point_z):
+				return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+			if depth > 0.0 or point_z > 0.0:
+				may_contact = true
+				break
+		if not may_contact:
+			return {ok = true, loads = PackedFloat64Array(), reason = ""}
 	var active := PackedByteArray()
 	active.resize(hull.size() / 3)
 	var any_active := false
-	var lake: Dictionary = geometry.get("lake", {})
 	var lake_samples: Array[Dictionary] = []
 	for i in range(0, hull.size(), 3):
 		var depth: float = s[RB.POS + 2] + down[0] * hull[i] + down[1] * hull[i + 1] + down[2] * hull[i + 2]

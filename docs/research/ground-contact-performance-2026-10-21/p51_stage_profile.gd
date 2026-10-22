@@ -9,6 +9,10 @@ const Dynamics = preload("res://physics/dynamics.gd")
 const Aero = preload("res://physics/aero.gd")
 const Slipstream = preload("res://physics/slipstream.gd")
 const Propulsion = preload("res://physics/propulsion.gd")
+const LakeSurface = preload("res://physics/lake_surface.gd")
+const Terrain = preload("res://physics/ground_terrain.gd")
+const HullContact = preload("res://physics/hull_contact.gd")
+const Ground = preload("res://physics/ground_contact.gd")
 
 const CALLS := 180
 
@@ -44,14 +48,27 @@ func _run() -> void:
 		var rpm: float = session._coupled_rpm(base)
 		var deflections: Dictionary = session._deflections(aux)
 		var density: float = session.air_density(body)
+		var joint: Dictionary = session.sim.model.stage.call(body, values, 0.0)
+		var ground_check: Dictionary = session._ground_evaluation(body, aux, base, air, live)
+		var gear: Dictionary = session.current_landing_gear(aux)
+		var anchors: PackedFloat64Array = aux.slice(session.AUX_ANCHORS,
+			session.AUX_ANCHORS + session.anchor_count() * Ground.ANCHOR_STRIDE)
+		var wheels: PackedFloat64Array = base.slice(session.wheel_index(),
+			session.wheel_index() + session.wheel_count())
 		var result := {
 			"id": id,
-			"substeps": session.sim.model.substeps.call(body, values, 0.0) if session.sim.model.substeps.is_valid() else 1,
+			"substeps": session.sim.model.substeps_joint.call(body, values, 0.0, joint) if session.sim.model.substeps_joint.is_valid() else session.sim.model.substeps.call(body, values, 0.0),
+			"ground_evaluation_ok": ground_check.get("ok", false),
 			"step_policy": session.sim.model.step_policy.is_valid(),
 			"events": session.sim.model.events.size(),
 			"full_stage_us": _measure(func(): session.sim.model.stage.call(body, values, 0.0)),
 			"coupled_response_us": _measure(func(): session._coupled_response(body, base, 0.0, live, true)),
-			"ground_evaluation_us": _measure(func(): session._ground_evaluation(body, aux, base, {}, live)),
+			"ground_evaluation_us": _measure(func(): session._ground_evaluation(body, aux, base, air, live)),
+			"hull_contact_us": _measure(func(): HullContact.loads_at_properties(body, session._hull_contact, live)),
+			"wheel_ground_us": _measure(func(): Ground.evaluate(body, gear, aux[session.AUX_SERVO + 2],
+				session.ground_surfaces, anchors, wheels, session.sim.inputs[5], false, session._lake)),
+			"lake_validation_us": _measure(func(): LakeSurface.is_valid_definition(session._lake)),
+			"surface_validation_us": _measure(func(): Terrain.is_valid_surface_table(session.ground_surfaces)),
 			"dynamics_us": _measure(func(): Dynamics.loads_from_air(body, model, session._deflections(aux), rpm,
 				session.air_density(body), air, NAN, base.slice(0, session._rotor_index()), session._ground_up(body))),
 			"air_data_us": _measure(func(): session.air_data(body, 0.0)),

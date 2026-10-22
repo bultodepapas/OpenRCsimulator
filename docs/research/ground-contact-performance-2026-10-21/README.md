@@ -131,8 +131,13 @@ maximum steps per frame. Its smoothed physics cost was 4.24 ms/tick against a
 real time even after the contact fix. The frame report's physics cost is a
 5%-weight moving average, not a per-tick median. The corrected
 [fixed-state stage probe](p51_stage_profile.gd) installs the lake and soft
-contacts, but it has no stable paired measurement on this busy host; no
-component cost is inferred from it. The existing
+contacts. An initial ground-component measurement passed empty stage air to
+the P-51's retractable-gear evaluator, triggering its invalid-input early
+return; its 5.9 µs result must be discarded. With actual stage air, that
+evaluator returned `ok=true` and measured 361.8 µs in one Windows 180-call
+run. The full stage was 697.8 µs in that run. These fixed-state figures have
+no stable paired comparison and do not establish the remaining
+runway-versus-airborne difference. The existing
 `bench_regimes.gd` P-51 fixture fails its reset invariants on this source, so
 its output was discarded rather than used as performance evidence.
 
@@ -196,6 +201,44 @@ advanced 2.25 s in 3.0 s wall time with p50 63.4 ms over 45 frames and final
 smoothed physics cost 4.12 ms/tick. The joint preview is not active for the
 Extra; this capture demonstrates that the shared runway performance problem
 remains. These short samples should not be read as stable FPS estimates.
+
+## Clear-hull stage screen
+
+Paired 120-tick runway and airborne sessions with Club field, lake and soft
+hull contacts located another common runway cost inside `_ground_evaluation`.
+For P-51/Extra/Stik, the runway hull pass cost about 145/124/111 µs per RK
+stage in two baseline probes. A valid lake bed is below the flat field datum.
+The new `HullContact.loads_at_properties` pre-scan returns empty loads only
+when every hull point passes **both** existing clearance tests: the flat
+depth and the lake point's transformed vertical coordinate. The scalar
+quaternion calculation preserves `M.q_rotate`/`M.add` operation order; any
+possible contact runs the original path. It also preserves the existing
+invalid-input result.
+
+The [six-case trajectory probe](clear_hull_parity_probe.gd) runs 120 ticks for
+each P-51, Extra and glow Stik runway/airborne start, with soft contacts and
+lake active. Baseline and candidate 492,028-byte snapshots matched byte for
+byte (SHA-256 `3daf55d897922ffbf0c18bfa328e7d54c1cc3871c9a24ddec14396482c28b74`).
+The baseline app's `hull_contact.gd` matches commit `f86d0759`; its earlier
+joint-preview implementation was separately shown byte-identical. Focused
+scratch probes also matched 24 rounded contact-boundary orientations, covered
+bed, mixed lower-bank contact with a nonempty force, and malformed inputs.
+Run the probe on each source with Godot 4.7.2 using `--headless --path <app>
+--script <absolute path to clear_hull_parity_probe.gd> -- --out=<absolute output.bin>`.
+The 761-case lake terrain oracle and contact/session gates passed on the
+integrated tree.
+
+Across two alternating 120-tick pairs, runway hull cost fell to about
+35/31/31 µs per stage for P-51/Extra/Stik. Whole-tick means fell by about
+1.7%/9.8%/9.0%, respectively, but whole-tick samples varied with host load;
+the isolated per-call savings are stronger evidence. A later
+[P-51 native capture](p51d-mustang-120-clear-hull-frames.json) had p50 50.6 ms
+and advanced 2.78 s of simulation in 3.02 s wall time. The
+[Extra capture](gp-extra-300s-60-clear-hull-frames.json) had p50 54.0 ms and
+advanced 2.70 s in 3.04 s. The [glow Stik capture](stik-glow-61fx-2t-clear-hull-frames.json)
+still had p50 132.1 ms and advanced only 1.10 s in 3.02 s. All three were
+complete without a simulation fault. They are short, sequential samples, not
+controlled native pairs or evidence of resolved frame pacing.
 
 ## Runway acceleration in simulation time
 
