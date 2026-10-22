@@ -1,0 +1,3957 @@
+{
+  "format": "openrc-aircraft v2",
+  "physical_identity_version": 1,
+  "id": "f4u-corsair-1-5",
+  "description": "FokkeRC Vought F4U-1D Corsair 1/5: 2.500 m span F4U-1D Corsair, DLE-111 gasoline, retractable taildragger, slotted flaps. PROVISIONAL physics derived by research/f4u-corsair/F4U-07/derive_physics.py (F4U-07) from the R59 visual master measured at 1/5 (F4U-06), NACA F4U data and RC-class references; owner decisions D1/D4/D5 open. Not registered in the catalog; not flight-identified.",
+  "frames": {
+    "le_frame": "positions in metres from the wing leading edge at the centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
+    "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
+  },
+  "reference": {
+    "wing_area": {
+      "value": 1.166862,
+      "unit": "m2",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: published 314 sq ft x 1/25"
+    },
+    "wing_span": {
+      "value": 2.5,
+      "unit": "m",
+      "kind": "manual",
+      "source": "kit span, FokkeRC Vought F4U-1D Corsair 1/5 (https://www.fokkerc.com/product/vought-f4u-1d-corsair-1-5/)"
+    },
+    "mean_chord": {
+      "value": 0.466745,
+      "unit": "m",
+      "kind": "derived",
+      "source": "S / b (not the MAC, 0.4845 m)"
+    },
+    "root_chord": {
+      "value": 0.624445,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: equivalent trapezoid with the measured planform's area and MAC"
+    },
+    "tip_chord": {
+      "value": 0.309045,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: equivalent trapezoid with the measured planform's area and MAC"
+    },
+    "aero_reference_point": {
+      "value": [
+        0.086288,
+        0.0,
+        -0.086102
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: wing-body ac (Raymer K_fus estimate) on the root chord plane"
+    },
+    "planform": "tapered"
+  },
+  "start": {
+    "level_speed": {
+      "value": 22.0,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: 1.6 x the 1-g stall at the flight mass and CL_max, rounded"
+    }
+  },
+  "balance": {
+    "plan_cg": {
+      "value": [
+        0.152778,
+        0.0,
+        -0.054172
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "reference balance point 0.1528 m aft of the root LE (27.7 % MAC) from the Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual, scaled; tank empty"
+    },
+    "firewall": {
+      "value": [
+        -0.173,
+        0.0,
+        0.0
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "spinner back + 0.25 m (a 111 cc twin on standoffs)"
+    },
+    "configuration": "virtual-balanced-reference-v2-empty-tank",
+    "cg_tolerance": {
+      "value": 0.001,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: virtual reference build balanced to the reference point with the tank empty"
+    },
+    "fuel_state": "empty_tanks"
+  },
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "gasoline_premix_40_1",
+        "liquid_inventory_id": "fuel_flight",
+        "shell_inventory_id": "fuel_tank",
+        "capacity": {
+          "value": 1.0,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "1 l tank for a 111 cc twin (estimated; no kit value)"
+        },
+        "unusable": {
+          "value": 0.01,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05c felt-clunk residue estimate"
+        },
+        "pickup": "felt_clunk",
+        "feed": "pumped_diaphragm"
+      }
+    ]
+  },
+  "inventory": [
+    {
+      "id": "engine_main",
+      "name": "engine DLE-111",
+      "mass": {
+        "value": 2.37,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "11.2 hp / 7500 rpm, idle 1400 rpm, recommended 27x10 26x12 28x10: DLE-111 manual (mikrocontroller.net/attachment/566025/dle_111_eng.pdf, mirrored; not retrieved in full) as repeated by MacGregor (macgregor.co.uk/dleengine/dle111.htm) and Lindinger (lindinger.at, item 78867); 2370 g engine and 2690 g total: Lindinger technical data; 25.5 kgf static at 100 m altitude: distributor claim (fridayparts.com), propeller not named"
+      },
+      "position": {
+        "value": [
+          -0.303,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "crankshaft on the thrust line, crankcase ~0.12 m behind the spinner back (boxer twin)"
+      },
+      "size": {
+        "value": [
+          0.15,
+          0.32,
+          0.15
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "muffler_pair",
+      "name": "ignition module and two canister mufflers",
+      "mass": {
+        "value": 0.32,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "Lindinger: 2690 g total less the 2370 g engine"
+      },
+      "position": {
+        "value": [
+          -0.223,
+          0.0,
+          -0.06
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "inside the radial cowl below the cylinders"
+      },
+      "size": {
+        "value": [
+          0.22,
+          0.22,
+          0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "propeller_main",
+      "name": "propeller Mejzlik 26x12 3-blade",
+      "mass": {
+        "value": 0.261,
+        "unit": "kg",
+        "kind": "manual",
+        "source": "Mejzlik datasheet mass (https://www.mejzlik.eu/files/26x12-3b-gas-n-datasheet.pdf)"
+      },
+      "position": {
+        "value": [
+          -0.407161,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "propeller plane of the R59 nose (geometry-r59.json)"
+      },
+      "size": {
+        "value": [
+          0.02,
+          0.6604,
+          0.6604
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "spinner_main",
+      "name": "spinner and hub",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "small aluminium hub cap, as the F4U-1D's"
+      },
+      "position": {
+        "value": [
+          -0.463,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 spinner"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.09,
+          0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "engine_mount",
+      "name": "engine standoffs, mount and bolts",
+      "mass": {
+        "value": 0.25,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "aluminium standoffs on a plywood firewall"
+      },
+      "position": {
+        "value": [
+          -0.203,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "the model's firewall: spinner back + 0.25 m"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "cowl_main",
+      "name": "cowl (composite, 297 mm)",
+      "mass": {
+        "value": 0.493944,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "FokkeRC composite cowl, 297 mm diameter; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          -0.2357,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 cowl"
+      },
+      "size": {
+        "value": [
+          0.1834,
+          0.30143,
+          0.30143
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "fuel_tank",
+      "name": "fuel tank 1 l (empty) with lines",
+      "mass": {
+        "value": 0.2,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "gasoline tank with clunk and lines"
+      },
+      "position": {
+        "value": [
+          -0.073,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "behind the firewall"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "fuel_flight",
+      "name": "fuel (half tank)",
+      "mass": {
+        "value": 0.373927,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "half of the 1.0 l tank x app/data/fuels/openrc-fuel-registry.json blend gasoline_premix_40_1 (747.85 kg/m3 at 288.15 K) (registry 40:1 premix; DLE asks for 30:1, a negligible density difference)"
+      },
+      "position": {
+        "value": [
+          -0.073,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "uniform liquid box in the tank"
+      },
+      "size": {
+        "value": [
+          0.16,
+          0.1,
+          0.0625
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      },
+      "energy_source": "gasoline"
+    },
+    {
+      "id": "ignition_battery",
+      "name": "ignition battery 2S LiFe",
+      "mass": {
+        "value": 0.15,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "1500-2100 mAh LiFe pack"
+      },
+      "position": {
+        "value": [
+          -0.143,
+          0.0,
+          -0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "below the tank"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "receiver_batteries",
+      "name": "receiver batteries 2S LiFe (2)",
+      "mass": {
+        "value": 0.3,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "two 2100 mAh LiFe packs (redundant)"
+      },
+      "position": {
+        "value": [
+          -0.113,
+          0.0,
+          -0.09
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "forward fuselage floor"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "receiver_radio",
+      "name": "receiver, switches, power distribution",
+      "mass": {
+        "value": 0.12,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "receiver, two switches, harnesses"
+      },
+      "position": {
+        "value": [
+          0.3,
+          0.0,
+          -0.05
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "under the cockpit floor"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "retract_air",
+      "name": "retract air tank, valve and lines",
+      "mass": {
+        "value": 0.2,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "pneumatic Robart retracts need an air tank, valve and lines"
+      },
+      "position": {
+        "value": [
+          0.25,
+          0.0,
+          -0.08
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "fuselage floor near the wing"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "servo_aileron_left",
+      "name": "aileron servo left",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "20-25 kg cm class servo"
+      },
+      "position": {
+        "value": [
+          0.219805,
+          -0.983125,
+          -0.073631
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "aileron span midpoint"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.04,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "servo_aileron_right",
+      "name": "aileron servo right",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "20-25 kg cm class servo"
+      },
+      "position": {
+        "value": [
+          0.219805,
+          0.983125,
+          -0.073631
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "aileron span midpoint"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.04,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "servo_flap_left",
+      "name": "flap servo left",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one servo per side for the three panels"
+      },
+      "position": {
+        "value": [
+          0.314493,
+          -0.466758,
+          -0.165307
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "flap span midpoint"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.04,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "servo_flap_right",
+      "name": "flap servo right",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one servo per side for the three panels"
+      },
+      "position": {
+        "value": [
+          0.314493,
+          0.466758,
+          -0.165307
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "flap span midpoint"
+      },
+      "size": {
+        "value": [
+          0.03,
+          0.04,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "servo_elevator",
+      "name": "elevator servos (2)",
+      "mass": {
+        "value": 0.16,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "two tail servos"
+      },
+      "position": {
+        "value": [
+          1.297381,
+          0.0,
+          0.08655
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "stabilizer root"
+      },
+      "size": {
+        "value": [
+          0.05,
+          0.25,
+          0.03
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "servo_rudder",
+      "name": "rudder servo and pull-pull",
+      "mass": {
+        "value": 0.1,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "one servo with cables"
+      },
+      "position": {
+        "value": [
+          0.6,
+          0.0,
+          -0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "aft of the cockpit"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "servo_throttle_choke",
+      "name": "throttle, choke servos and linkage",
+      "mass": {
+        "value": 0.08,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "two small servos"
+      },
+      "position": {
+        "value": [
+          -0.123,
+          0.0,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "behind the firewall"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "gear_main_left",
+      "name": "main gear assembly left",
+      "mass": {
+        "value": 0.75,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Robart #150 rotating retract, strut, wheel and door (estimated)"
+      },
+      "position": {
+        "value": [
+          0.0546,
+          -0.388,
+          -0.2846
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 main wheel centre and wing chord plane"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.08,
+          0.3
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "gear_main_right",
+      "name": "main gear assembly right",
+      "mass": {
+        "value": 0.75,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Robart #150 rotating retract, strut, wheel and door (estimated)"
+      },
+      "position": {
+        "value": [
+          0.0546,
+          0.388,
+          -0.2846
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 main wheel centre and wing chord plane"
+      },
+      "size": {
+        "value": [
+          0.1,
+          0.08,
+          0.3
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "gear_tail",
+      "name": "tail wheel assembly (retractable)",
+      "mass": {
+        "value": 0.2,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Robart #160 1/5 tail retract"
+      },
+      "position": {
+        "value": [
+          1.2706,
+          0.0,
+          -0.09
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 tail wheel"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "wing_left",
+      "name": "wing panel, left, sheeted, with flaps and aileron",
+      "mass": {
+        "value": 2.173352,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "built-up sheeted wing half of a 2.5 m warbird with retract bays; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.221976,
+          -0.576293,
+          -0.144963
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "42 % MAC at the MAC station"
+      },
+      "size": {
+        "value": [
+          0.484506,
+          1.25,
+          0.07
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "wing_right",
+      "name": "wing panel, right, sheeted, with flaps and aileron",
+      "mass": {
+        "value": 2.173352,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "same as the left panel; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.221976,
+          0.576293,
+          -0.144963
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "42 % MAC at the MAC station"
+      },
+      "size": {
+        "value": [
+          0.484506,
+          1.25,
+          0.07
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "wing_joiner",
+      "name": "wing tube and bolts",
+      "mass": {
+        "value": 0.34576,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "aluminium or carbon wing joiner; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.2,
+          0.0,
+          -0.086102
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "main spar"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.6,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "fuselage_front",
+      "name": "fuselage front (firewall to cockpit rear), covered",
+      "mass": {
+        "value": 1.679408,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "lite-ply/balsa box with doublers, glassed; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "from the stations"
+      },
+      "size": {
+        "value": [
+          1.0,
+          0.301444,
+          0.359514
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "fuselage_rear",
+      "name": "fuselage rear, turtle deck and tail cone",
+      "mass": {
+        "value": 0.938493,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "balsa sides and stringered deck; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          1.1,
+          0.0,
+          0.02
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "from the stations"
+      },
+      "size": {
+        "value": [
+          0.9,
+          0.18,
+          0.2
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "canopy_pilot",
+      "name": "canopy, frame and pilot",
+      "mass": {
+        "value": 0.34576,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Lexan canopy, composite frame, pilot bust; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.535555,
+          0.0,
+          0.221902
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 canopy"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "horizontal_tail",
+      "name": "stabilizer and elevator, covered",
+      "mass": {
+        "value": 0.592732,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "sheeted built-up stab; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          1.431281,
+          0.0,
+          0.08655
+        ],
+        "unit": "m",
+        "kind": "measured",
+        "source": "R59 stabilizer"
+      },
+      "size": {
+        "value": [
+          0.293163,
+          1.01992,
+          0.025
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "vertical_tail",
+      "name": "fin and rudder, covered",
+      "mass": {
+        "value": 0.296366,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "sheeted built-up fin; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          1.321899,
+          0.0,
+          0.286957
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "exposed fin centroid"
+      },
+      "size": {
+        "value": [
+          0.3,
+          0.02,
+          0.327784
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    },
+    {
+      "id": "control_hardware",
+      "name": "pushrods, horns, cowl fasteners, hardware",
+      "mass": {
+        "value": 0.34576,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "rough sum; x0.988: airframe scaled to the target flight mass"
+      },
+      "position": {
+        "value": [
+          0.6,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "spread along the fuselage"
+      },
+      "size": {
+        "value": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "point mass"
+      }
+    },
+    {
+      "id": "ballast_reference",
+      "name": "virtual reference-build balancing mass",
+      "mass": {
+        "value": 2.060146,
+        "unit": "kg",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the reference balance point; a virtual reference build, NOT measured hardware or a ballast recommendation"
+      },
+      "position": {
+        "value": [
+          -0.443,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "behind the spinner backplate"
+      },
+      "size": {
+        "value": [
+          0.04,
+          0.04,
+          0.04
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      }
+    }
+  ],
+  "crash_hull": {
+    "value": [
+      [
+        0.086361,
+        -1.201904,
+        -0.019877
+      ],
+      [
+        0.086361,
+        1.201904,
+        -0.019877
+      ],
+      [
+        0.38427,
+        -1.201904,
+        -0.024178
+      ],
+      [
+        0.38427,
+        1.201904,
+        -0.024178
+      ],
+      [
+        -0.529,
+        0.0,
+        0.0
+      ],
+      [
+        -0.407161,
+        0.0,
+        -0.40132
+      ],
+      [
+        -0.407161,
+        -0.283773,
+        -0.283773
+      ],
+      [
+        -0.407161,
+        0.283773,
+        -0.283773
+      ],
+      [
+        1.483405,
+        6.3e-05,
+        0.120695
+      ],
+      [
+        1.474061,
+        -0.50996,
+        0.0861
+      ],
+      [
+        1.474061,
+        0.50996,
+        0.0861
+      ],
+      [
+        1.292035,
+        7e-05,
+        0.475784
+      ],
+      [
+        0.535555,
+        0.0,
+        0.271902
+      ],
+      [
+        -0.144,
+        -0.0,
+        -0.151385
+      ]
+    ],
+    "unit": "m",
+    "kind": "derived",
+    "source": "Points that hit the ground first (le frame) from assets/aircraft/f4u-corsair-1-5/geometry-r59.json (F4U-06: R59 visual master measured at 1/5; provisional until g1); the propeller probes use the visual scale propeller"
+  },
+  "crash_hull_ids": [
+    "probe_wing_left_le",
+    "probe_wing_right_le",
+    "probe_wing_left_te",
+    "probe_wing_right_te",
+    "probe_spinner_tip",
+    "probe_propeller_bottom",
+    "probe_propeller_lower_left",
+    "probe_propeller_lower_right",
+    "probe_rudder_bottom",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_canopy_top",
+    "probe_cowl_bottom"
+  ],
+  "crash_hull_components": [
+    "left_wing_tip",
+    "right_wing_tip",
+    "left_wing_tip",
+    "right_wing_tip",
+    "spinner",
+    "propeller",
+    "propeller",
+    "propeller",
+    "tail_end",
+    "left_stab_tip",
+    "right_stab_tip",
+    "fin_top",
+    "canopy",
+    "belly"
+  ],
+  "plausibility": {
+    "mass_range": {
+      "value": [
+        16.0,
+        21.0
+      ],
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "no published FokkeRC flying mass; F4U-01 mass inference: TopRC 93 in (16.8 kg) and Seagull 87 in (13.6 kg) scaled to 2.50 m span give 17.4-18.8 kg (span^2) and 19.7-19.9 kg (span^3); target near the middle, range widened (docs/research/f4u-corsair/F4U-01/README.md)"
+    },
+    "inertia_reference": {
+      "value": [
+        0.07151,
+        0.08636,
+        0.15364
+      ],
+      "unit": "kg·m2",
+      "kind": "borrowed",
+      "source": "UltraStick25e Jxx Jyy Jzz (1.959 kg, 1.27 m span); compared after scaling by m·b²"
+    }
+  },
+  "controls": {
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
+    },
+    "max_throw": {
+      "aileron": {
+        "value": 14.480232,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated"
+      },
+      "elevator": {
+        "value": 10.450839,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated"
+      },
+      "rudder": {
+        "value": 15.199229,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated"
+      }
+    },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "value": 0.796887,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated; low rate as the fraction of the high-rate throw"
+        },
+        "elevator": {
+          "value": 0.79839,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated; low rate as the fraction of the high-rate throw"
+        },
+        "rudder": {
+          "value": 0.495583,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual (high/low mm, https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf), x 1.3889 to 1/5, converted with this airframe's surface chord at its inboard end (aileron 0.083, elevator 0.115, rudder 0.212 m; NACA area fractions): the measuring station is not stated; low rate as the fraction of the high-rate throw"
+        },
+        "aileron_expo": {
+          "value": 0.1,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual expo"
+        },
+        "elevator_expo": {
+          "value": 0.12,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual expo"
+        },
+        "rudder_expo": {
+          "value": 0.15,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric manual expo"
+        }
+      }
+    },
+    "servo_full_throw_time": {
+      "value": 0.18,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "placeholder, as the P-51"
+    }
+  },
+  "aero": {
+    "source": "Derived from the measured planform by research/f4u-corsair/F4U-07/derive_physics.py (Helmbold/DATCOM, VLM downwash and ground effect, strip theory, Schrenk/Reynolds stall, drag build-up); report research/f4u-corsair/F4U-07/derivation.md. Not calibrated or flight-identified.",
+    "envelope": {
+      "CL_max": {
+        "value": 1.322416,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "three equal-area strips: Schrenk on the measured chord, XFOIL 230-series clmax less 0.10; flaps up"
+      },
+      "CL_min": {
+        "value": -0.85,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "cambered section: inverted stall earlier than upright, as the P-51"
+      },
+      "stall_blend_width": {
+        "value": 4.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "230-series sections stall more abruptly than the P-51's laminar section (full-size F4U stall warning inadequate, NACA RM A7C05)"
+      },
+      "CD90": {
+        "value": 1.206412,
+        "unit": "1",
+        "kind": "derived",
+        "source": "Viterna CDmax = 1.11 + 0.018 AR"
+      },
+      "sideslip_blend": {
+        "value": [
+          15.0,
+          25.0
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Sideslip range where the linear beta terms (CYb, Clb, Cnb) give way to their sin(beta) form, finite and restoring up to knife edge"
+      }
+    },
+    "conventions": {
+      "alpha_beta": "rad",
+      "rates": "p_hat = p·b/(2V), q_hat = q·c/(2V), r_hat = r·b/(2V)",
+      "elevator": "per radian, positive = trailing edge DOWN (dCm/dElev < 0)",
+      "aileron": "per radian per surface, positive = trailing edge DOWN; right and left listed separately",
+      "rudder": "per radian, positive = trailing edge LEFT (dCn/dRud < 0)",
+      "drag": "CD = CD0 + k·(CL - CL_minD)² + sum |dCD/dδ·δ|",
+      "axes": "lift, drag, side force in wind axes; roll, pitch, yaw moments in body axes about the aero reference point"
+    },
+    "coefficients": {
+      "CL0": {
+        "value": 0.119412,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: cambered wing at its mean incidence + tail at zero body alpha (no trim calibration)"
+      },
+      "CLa": {
+        "value": 4.310623,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: Helmbold x cos2(gull) + downwashed tail (VLM downwash)"
+      },
+      "CLq": {
+        "value": 5.77277,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail volume + DATCOM wing term"
+      },
+      "CLde": {
+        "value": 0.377842,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail slope x elevator effectiveness"
+      },
+      "CLda_each": {
+        "value": 0.251112,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory over the measured aileron span"
+      },
+      "CD0": {
+        "value": 0.030744,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: component drag build-up at 22 m/s, gear up"
+      },
+      "CL_minD": {
+        "value": 0.056666,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "minimum drag near half the zero-alpha wing lift"
+      },
+      "k_induced": {
+        "value": 0.079237,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: 1/(pi e AR), e 0.75 estimated"
+      },
+      "CDda_each": {
+        "value": 0.0151,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e (via the Stik data file)"
+      },
+      "CDdr": {
+        "value": 0.0303,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e (via the Stik data file)"
+      },
+      "CDde": {
+        "value": 0.0135,
+        "unit": "1/rad",
+        "kind": "borrowed",
+        "source": "OpenFlightSim UltraStick25e (via the Stik data file)"
+      },
+      "CYb": {
+        "value": -0.3696832638341123,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + DATCOM body (rule: fin + body_cy_beta)"
+      },
+      "CYp": {
+        "value": -0.04807,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin above the CG"
+      },
+      "CYr": {
+        "value": 0.151605,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin behind the CG"
+      },
+      "CYdr": {
+        "value": 0.12449181292137829,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin slope x Sv/S x rudder effectiveness"
+      },
+      "Clb": {
+        "value": -0.13949915399387605,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + wing-body (gull strip dihedral, low-wing interference, CL term; rule: fin + wing_body_cl_beta)"
+      },
+      "Clp": {
+        "value": -0.590937,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory on the measured chord + stab + fin"
+      },
+      "Clr": {
+        "value": 0.151763,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: CL_ref/4 + fin"
+      },
+      "Clda_right": {
+        "value": -0.097639,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory"
+      },
+      "Clda_left": {
+        "value": 0.097639,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: strip theory"
+      },
+      "Cldr": {
+        "value": 0.018577116494654586,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: rudder side force x fin height above the ARP"
+      },
+      "Cm0": {
+        "value": -0.020835,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: 230-series Cm_ac + tail at zero body alpha"
+      },
+      "Cma": {
+        "value": -1.024941,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail about the wing-body ac"
+      },
+      "Cmq": {
+        "value": -10.039753,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail damping about the CG x1.1"
+      },
+      "Cmde": {
+        "value": -1.061364,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: elevator lift x tail arm from the ARP"
+      },
+      "Cmda_each": {
+        "value": -0.074113,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: aileron lift at its thin-airfoil centre"
+      },
+      "Cnb": {
+        "value": 0.050999710689568066,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + DATCOM body (rule: fin + body_cn_beta)"
+      },
+      "Cnp": {
+        "value": -0.044914,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: -CL_ref/8 + fin"
+      },
+      "Cnr": {
+        "value": -0.09261,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: fin + wing profile drag + fuselage"
+      },
+      "Cnda_right": {
+        "value": 0.015363,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15"
+      },
+      "Cnda_left": {
+        "value": -0.015363,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: adverse yaw"
+      },
+      "Cndr": {
+        "value": -0.05654970886538373,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: rudder side force x fin arm from the ARP"
+      }
+    },
+    "surfaces": {
+      "wing_aileron_effectiveness": {
+        "value": 0.204205,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: |Clda| 2n b / (CLa sum(y)) over the loader's equal-area strips"
+      },
+      "wing_station_incidence": {
+        "value": [
+          0.030313,
+          0.000582,
+          -0.030896
+        ],
+        "unit": "rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: per-strip offsets root -> tip, zero mean: measured twist + Schrenk/Re stall order"
+      },
+      "wing_section_cm_ac": {
+        "value": -0.003617,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: XFOIL 230-series section moment, chord-weighted"
+      },
+      "attached_limit": {
+        "value": 8.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "same provisional value as the Ugly Stik surface model (retained small-angle oracle validity limit)"
+      },
+      "tail_local_limit": {
+        "value": 12.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "same provisional value as the Ugly Stik surface model (complete local loads before tail stall)"
+      },
+      "tail_stall_end": {
+        "value": 24.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "same provisional value as the Ugly Stik surface model (symmetric tail blend width 12 deg)"
+      },
+      "tail_CD0": {
+        "value": 0.012,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "same provisional value as the Ugly Stik surface model (estimated, not measured flight data)"
+      },
+      "tail_k": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "same provisional value as the Ugly Stik surface model (estimated, not measured flight data)"
+      },
+      "tail_CD90": {
+        "value": 1.2,
+        "unit": "1",
+        "kind": "borrowed",
+        "source": "same provisional value as the Ugly Stik surface model (same flat-plate approximation as wing)"
+      },
+      "horizontal": {
+        "area": {
+          "value": 0.207731,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: NACA area x 1/25"
+        },
+        "position": {
+          "value": [
+            1.397381,
+            0.0,
+            0.08655
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: measured stabilizer quarter chord"
+        },
+        "lift_slope": {
+          "value": 2.049569,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: Helmbold x eta 0.9 x (1 - deps/dalpha)"
+        },
+        "control_effectiveness": {
+          "value": 1.035537,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: thin-airfoil tau x 0.8 / (1 - deps/dalpha)"
+        },
+        "incidence": {
+          "value": 0.016664,
+          "unit": "rad",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: (1.25 deg stabilizer - eps0)/(1 - deps/dalpha)"
+        },
+        "downwash_gradient": {
+          "value": 0.427302,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: F4U-07 VLM tail downwash"
+        }
+      },
+      "vertical": {
+        "area": {
+          "value": 0.081755,
+          "unit": "m2",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: NACA area x 1/25"
+        },
+        "position": {
+          "value": [
+            1.221899,
+            0.0,
+            0.286957
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: exposed fin quarter chord at its centroid height"
+        },
+        "lift_slope": {
+          "value": 2.519144,
+          "unit": "1/rad",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: Helmbold (end-plated AR) x sidewash"
+        },
+        "control_effectiveness": {
+          "value": 0.705331,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: thin-airfoil tau x 0.8 / sidewash"
+        },
+        "incidence": {
+          "value": 0.0,
+          "unit": "rad",
+          "kind": "estimated",
+          "source": "the RC fin and the visual model have no offset; the full-size 2 deg left fin offset is replaced by RC right thrust (propulsion.thrust_angles)"
+        }
+      },
+      "body_cn_beta": {
+        "value": -0.029175,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: DATCOM fuselage estimate, NOT calibrated"
+      },
+      "wing_body_cl_beta": {
+        "value": -0.113161,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: gull strip dihedral + low-wing interference + wing CL term (D10-R5)"
+      },
+      "body_cy_beta": {
+        "value": -0.193182,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: DATCOM body side force (D10-R3)"
+      },
+      "body_crossflow_area": {
+        "value": 0.450391,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: Allen-Perkins eta 0.65 x c_d 1.4 x side area (D10-R3)"
+      }
+    },
+    "ground_effect": {
+      "induced_coefficient": {
+        "value": 18.431747,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/ground_effect_vlm.py: faded runtime law fitted to the gull-planform VLM induced-drag ratio, rms 0.0036"
+      },
+      "induced_exponent": {
+        "value": 1.25177,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/ground_effect_vlm.py"
+      },
+      "downwash_coefficient": {
+        "value": 18.431747,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/ground_effect_vlm.py: tail downwash ratio per unit lift, rms 0.0106"
+      },
+      "downwash_exponent": {
+        "value": 1.357544,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/ground_effect_vlm.py"
+      }
+    },
+    "reference_coefficients": {
+      "CLadot": {
+        "value": 1.529458,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
+      }
+    }
+  },
+  "propulsion": {
+    "id": "propulsion_main",
+    "description": "DLE-111 gasoline twin turning a Mejzlik 26x12 3-blade. Shaft balance, calibrated blade-element tables, down and right thrust, propeller normal force and P-factor, tail slipstream with swirl (research/f4u-corsair/F4U-07/derive_physics.py).",
+    "engine": {
+      "name": "DLE-111 (111.2 cc twin, two-stroke gasoline)",
+      "peak_power": {
+        "value": 8351.84,
+        "unit": "W",
+        "kind": "manual",
+        "source": "11.2 hp at 7500 rpm: 11.2 hp / 7500 rpm, idle 1400 rpm, recommended 27x10 26x12 28x10: DLE-111 manual (mikrocontroller.net/attachment/566025/dle_111_eng.pdf, mirrored; not retrieved in full) as repeated by MacGregor (macgregor.co.uk/dleengine/dle111.htm) and Lindinger (lindinger.at, item 78867); 2370 g engine and 2690 g total: Lindinger technical data; 25.5 kgf static at 100 m altitude: distributor claim (fridayparts.com), propeller not named"
+      },
+      "peak_power_rpm": {
+        "value": 7500.0,
+        "unit": "rpm",
+        "kind": "manual",
+        "source": "DLE-111 rating"
+      },
+      "max_rpm_static": {
+        "value": 5421.251485,
+        "unit": "rpm",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: full-throttle shaft balance at rest"
+      },
+      "idle_rpm": {
+        "value": 1400.0,
+        "unit": "rpm",
+        "kind": "manual",
+        "source": "DLE-111 idle 1400 rpm"
+      },
+      "lag_time_constant": {
+        "value": 0.6,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "D5 lag model, unused while the shaft model is present"
+      },
+      "shaft": {
+        "power_curve": {
+          "value": [
+            [
+              1000.0,
+              716.5
+            ],
+            [
+              1500.0,
+              1099.1
+            ],
+            [
+              2000.0,
+              1530.6
+            ],
+            [
+              2500.0,
+              1994.7
+            ],
+            [
+              3000.0,
+              2491.3
+            ],
+            [
+              3500.0,
+              3020.5
+            ],
+            [
+              4000.0,
+              3582.3
+            ],
+            [
+              4500.0,
+              4176.6
+            ],
+            [
+              5000.0,
+              4749.2
+            ],
+            [
+              5500.0,
+              5343.5
+            ],
+            [
+              6000.0,
+              5803.3
+            ],
+            [
+              6500.0,
+              6202.2
+            ],
+            [
+              7000.0,
+              6519.7
+            ],
+            [
+              7500.0,
+              6741.2
+            ],
+            [
+              8000.0,
+              6565.3
+            ],
+            [
+              8500.0,
+              6182.1
+            ],
+            [
+              9000.0,
+              5568.8
+            ]
+          ],
+          "unit": "rpm, W",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: generic two-stroke twin torque shape (P-51) at the DLE-111 rating x the P-51 installed/catalogue ratio 0.807; no DLE-111 static-rpm record"
+        },
+        "friction_torque": {
+          "value": [
+            0.5,
+            0.14
+          ],
+          "unit": "N·m, N·m/krpm",
+          "kind": "estimated",
+          "source": "as the P-51 (similar twin)"
+        },
+        "idle_power": {
+          "value": 192.428764,
+          "unit": "W",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: closed throttle holds 1400 rpm static"
+        },
+        "peak_indicated_power": {
+          "value": 7958.522709,
+          "unit": "W",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: brake + friction power at the curve's peak"
+        }
+      }
+    },
+    "propeller": {
+      "name": "Mejzlik 26x12 3-blade GAS N (DLE-111 recommended size; three blades as the F4U-1D)",
+      "diameter": {
+        "value": 0.6604,
+        "unit": "m",
+        "kind": "manual",
+        "source": "26 in"
+      },
+      "rotation": "clockwise_from_rear",
+      "ct_table": {
+        "value": [
+          [
+            0.0,
+            0.11819
+          ],
+          [
+            0.05,
+            0.11509
+          ],
+          [
+            0.1,
+            0.11137
+          ],
+          [
+            0.15,
+            0.10696
+          ],
+          [
+            0.2,
+            0.10183
+          ],
+          [
+            0.25,
+            0.09592
+          ],
+          [
+            0.3,
+            0.0892
+          ],
+          [
+            0.35,
+            0.08169
+          ],
+          [
+            0.4,
+            0.0736
+          ],
+          [
+            0.45,
+            0.06513
+          ],
+          [
+            0.5,
+            0.0563
+          ],
+          [
+            0.55,
+            0.04714
+          ],
+          [
+            0.6,
+            0.03764
+          ],
+          [
+            0.65,
+            0.02784
+          ],
+          [
+            0.7,
+            0.01775
+          ],
+          [
+            0.75,
+            0.00727
+          ],
+          [
+            0.8,
+            -0.00497
+          ],
+          [
+            0.85,
+            -0.0192
+          ],
+          [
+            0.9,
+            -0.03398
+          ],
+          [
+            0.95,
+            -0.04883
+          ],
+          [
+            1.0,
+            -0.06378
+          ],
+          [
+            1.05,
+            -0.07698
+          ],
+          [
+            1.1,
+            -0.0885
+          ],
+          [
+            1.15,
+            -0.09827
+          ],
+          [
+            1.2,
+            -0.10609
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: BEM calibrated on the Mejzlik 26x12 2B/3B tables (P-51 calibration, rms 6.5 %)"
+      },
+      "cp_table": {
+        "value": [
+          [
+            0.0,
+            0.04624
+          ],
+          [
+            0.05,
+            0.04758
+          ],
+          [
+            0.1,
+            0.04864
+          ],
+          [
+            0.15,
+            0.04934
+          ],
+          [
+            0.2,
+            0.0496
+          ],
+          [
+            0.25,
+            0.0493
+          ],
+          [
+            0.3,
+            0.04835
+          ],
+          [
+            0.35,
+            0.04669
+          ],
+          [
+            0.4,
+            0.04436
+          ],
+          [
+            0.45,
+            0.04145
+          ],
+          [
+            0.5,
+            0.03791
+          ],
+          [
+            0.55,
+            0.0337
+          ],
+          [
+            0.6,
+            0.02877
+          ],
+          [
+            0.65,
+            0.02308
+          ],
+          [
+            0.7,
+            0.0166
+          ],
+          [
+            0.75,
+            0.00923
+          ],
+          [
+            0.8,
+            -0.00023
+          ],
+          [
+            0.85,
+            -0.01232
+          ],
+          [
+            0.9,
+            -0.02609
+          ],
+          [
+            0.95,
+            -0.04119
+          ],
+          [
+            1.0,
+            -0.05706
+          ],
+          [
+            1.05,
+            -0.07209
+          ],
+          [
+            1.1,
+            -0.0861
+          ],
+          [
+            1.15,
+            -0.09861
+          ],
+          [
+            1.2,
+            -0.10947
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: same calibrated BEM"
+      },
+      "rotating_inertia": {
+        "value": 0.016352,
+        "unit": "kg·m2",
+        "kind": "estimated",
+        "source": "Mejzlik 26x12 3B datasheet + hub + crank"
+      },
+      "thrust_line_offset": {
+        "value": [
+          -0.555375,
+          0.0,
+          0.053481
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: propeller disc centre relative to the inventory CG"
+      },
+      "thrust_angles": {
+        "value": [
+          1.5,
+          1.5
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "down 1.5 deg, right 1.5 deg: typical giant-warbird engine offsets (no FokkeRC or Phoenix value found); the right thrust stands in for the full-size 2 deg left fin offset"
+      },
+      "normal_force": {
+        "value": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.05,
+            0.000111
+          ],
+          [
+            0.1,
+            0.000375
+          ],
+          [
+            0.15,
+            0.000826
+          ],
+          [
+            0.2,
+            0.00148
+          ],
+          [
+            0.25,
+            0.002345
+          ],
+          [
+            0.3,
+            0.003416
+          ],
+          [
+            0.35,
+            0.004684
+          ],
+          [
+            0.4,
+            0.006136
+          ],
+          [
+            0.45,
+            0.007756
+          ],
+          [
+            0.5,
+            0.009527
+          ],
+          [
+            0.55,
+            0.011424
+          ],
+          [
+            0.6,
+            0.01342
+          ],
+          [
+            0.65,
+            0.015489
+          ],
+          [
+            0.7,
+            0.017599
+          ],
+          [
+            0.75,
+            0.019709
+          ],
+          [
+            0.8,
+            0.021645
+          ],
+          [
+            0.85,
+            0.023288
+          ],
+          [
+            0.9,
+            0.024706
+          ],
+          [
+            0.95,
+            0.025903
+          ],
+          [
+            1.0,
+            0.026833
+          ],
+          [
+            1.05,
+            0.027762
+          ],
+          [
+            1.1,
+            0.028723
+          ],
+          [
+            1.15,
+            0.02978
+          ],
+          [
+            1.2,
+            0.031038
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: McCormick normal force per rad (Selig, AIAA 2010-7938), solidity 0.084"
+      },
+      "pfactor_moment": {
+        "value": [
+          [
+            0.0,
+            0.0
+          ],
+          [
+            0.05,
+            0.000948
+          ],
+          [
+            0.1,
+            0.001953
+          ],
+          [
+            0.15,
+            0.002996
+          ],
+          [
+            0.2,
+            0.004054
+          ],
+          [
+            0.25,
+            0.005105
+          ],
+          [
+            0.3,
+            0.006123
+          ],
+          [
+            0.35,
+            0.007084
+          ],
+          [
+            0.4,
+            0.007977
+          ],
+          [
+            0.45,
+            0.008798
+          ],
+          [
+            0.5,
+            0.009533
+          ],
+          [
+            0.55,
+            0.010171
+          ],
+          [
+            0.6,
+            0.010696
+          ],
+          [
+            0.65,
+            0.011099
+          ],
+          [
+            0.7,
+            0.011368
+          ],
+          [
+            0.75,
+            0.01148
+          ],
+          [
+            0.8,
+            0.011245
+          ],
+          [
+            0.85,
+            0.010586
+          ],
+          [
+            0.9,
+            0.009655
+          ],
+          [
+            0.95,
+            0.008509
+          ],
+          [
+            1.0,
+            0.007136
+          ],
+          [
+            1.05,
+            0.005839
+          ],
+          [
+            1.1,
+            0.004643
+          ],
+          [
+            1.15,
+            0.003598
+          ],
+          [
+            1.2,
+            0.00278
+          ]
+        ],
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: McCormick P-factor per rad (Selig, AIAA 2010-7938)"
+      },
+      "slipstream": {
+        "hub": {
+          "value": [
+            -0.407161,
+            0.0,
+            0.0
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: propeller disc centre"
+        },
+        "wash_factor": {
+          "value": [
+            0.8,
+            1.8
+          ],
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Selig, AIAA 2010-7938, Fig. 5 (as the P-51)"
+        },
+        "swirl_factor": {
+          "value": 0.6,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "as the P-51"
+        },
+        "vertical_drift": {
+          "value": 0.572698,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: 1 - d(eps)/d(alpha)"
+        },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a eq. 8 (as the P-51)"
+        },
+        "pieces": [
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.081755,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "root": {
+              "value": [
+                1.221899,
+                0.0,
+                0.148
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span": {
+              "value": 0.327784,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "chords": {
+              "value": [
+                0.358603,
+                0.08208
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.103866,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "root": {
+              "value": [
+                1.397381,
+                0.0,
+                0.08655
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span": {
+              "value": 0.50996,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "chords": {
+              "value": [
+                0.293163,
+                0.030665
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.103866,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "root": {
+              "value": [
+                1.397381,
+                0.0,
+                0.08655
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "span": {
+              "value": 0.50996,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            },
+            "chords": {
+              "value": [
+                0.293163,
+                0.030665
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/f4u-corsair/F4U-07/derive_physics.py: tail piece from the measured geometry"
+            }
+          }
+        ]
+      }
+    },
+    "kind": "glow_prop",
+    "fuel_consumption": {
+      "law": "gasoline_bsfc_v1",
+      "tank_id": "main_tank",
+      "bsfc": {
+        "value": 0.5,
+        "unit": "kg/kWh",
+        "kind": "estimated",
+        "source": "FUEL-08 500 g/kWh proxy (as the P-51); not measured on the DLE-111"
+      },
+      "idle_flow": {
+        "value": 8e-05,
+        "unit": "kg/s",
+        "kind": "estimated",
+        "source": "FUEL-08 4.8 g/min idle baseline (as the P-51)"
+      }
+    }
+  },
+  "landing_gear": {
+    "description": "F4U-07: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics from R59's retract rig scaled 1/5; timing, travel and drag are estimates.",
+    "contacts": [
+      {
+        "id": "contact_main_left",
+        "name": "main_left",
+        "position": {
+          "value": [
+            0.0546,
+            -0.3768,
+            -0.4776
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "R59 tyre contact point with the gear down (geometry-r59.json)"
+        },
+        "stiffness": {
+          "value": 3983.435046,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E1 rule: heave w dt 0.09 at 240 Hz (sum k 8631 N/m for 18.50 kg), split by the static load (7.7 % on the tail wheel)"
+        },
+        "damping": {
+          "value": 94.038427,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio 0.3 of the loader's m/3 share"
+        },
+        "max_compression": {
+          "value": 0.12,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "BORROWED from the P-51 (same class and mass); recompute with the GP-06 reserve-drop probe in F4U-08"
+        },
+        "max_steering": {
+          "value": 0.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "fixed main wheel"
+        },
+        "retraction_path": {
+          "value": [
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341824,
+            -0.398506,
+            -0.150225,
+            0.341851,
+            -0.398485,
+            -0.150468,
+            0.341904,
+            -0.398443,
+            -0.150933,
+            0.341982,
+            -0.398381,
+            -0.151636,
+            0.342083,
+            -0.398298,
+            -0.152574,
+            0.342205,
+            -0.398195,
+            -0.153741,
+            0.342344,
+            -0.398072,
+            -0.155134,
+            0.342496,
+            -0.39793,
+            -0.156748,
+            0.342658,
+            -0.397769,
+            -0.158581,
+            0.342825,
+            -0.39759,
+            -0.160627,
+            0.342991,
+            -0.397394,
+            -0.162883,
+            0.343152,
+            -0.397181,
+            -0.165345,
+            0.343302,
+            -0.396951,
+            -0.16801,
+            0.343436,
+            -0.396705,
+            -0.170873,
+            0.343547,
+            -0.396445,
+            -0.173931,
+            0.343629,
+            -0.396169,
+            -0.177179,
+            0.343676,
+            -0.39588,
+            -0.180614,
+            0.34368,
+            -0.395577,
+            -0.184231,
+            0.343636,
+            -0.395262,
+            -0.188025,
+            0.343536,
+            -0.394935,
+            -0.191992,
+            0.343373,
+            -0.394596,
+            -0.196127,
+            0.343141,
+            -0.394247,
+            -0.200425,
+            0.342831,
+            -0.393887,
+            -0.204881,
+            0.342438,
+            -0.393519,
+            -0.20949,
+            0.341955,
+            -0.393142,
+            -0.214244,
+            0.341373,
+            -0.392757,
+            -0.219139,
+            0.340687,
+            -0.392366,
+            -0.224168,
+            0.33989,
+            -0.391968,
+            -0.229324,
+            0.338975,
+            -0.391565,
+            -0.2346,
+            0.337936,
+            -0.391157,
+            -0.23999,
+            0.336767,
+            -0.390745,
+            -0.245485,
+            0.335463,
+            -0.390329,
+            -0.251078,
+            0.334017,
+            -0.389912,
+            -0.25676,
+            0.332425,
+            -0.389493,
+            -0.262524,
+            0.330681,
+            -0.389072,
+            -0.268361,
+            0.328782,
+            -0.388652,
+            -0.274261,
+            0.326724,
+            -0.388232,
+            -0.280215,
+            0.324503,
+            -0.387814,
+            -0.286215,
+            0.322116,
+            -0.387397,
+            -0.292251,
+            0.319561,
+            -0.386984,
+            -0.298313,
+            0.316836,
+            -0.386573,
+            -0.304391,
+            0.313939,
+            -0.386167,
+            -0.310475,
+            0.31087,
+            -0.385765,
+            -0.316556,
+            0.307629,
+            -0.385368,
+            -0.322623,
+            0.304216,
+            -0.384977,
+            -0.328666,
+            0.300631,
+            -0.384593,
+            -0.334675,
+            0.296878,
+            -0.384215,
+            -0.340641,
+            0.292957,
+            -0.383845,
+            -0.346553,
+            0.288872,
+            -0.383483,
+            -0.352402,
+            0.284627,
+            -0.383129,
+            -0.358178,
+            0.280226,
+            -0.382783,
+            -0.363873,
+            0.275673,
+            -0.382447,
+            -0.369476,
+            0.270974,
+            -0.38212,
+            -0.374981,
+            0.266134,
+            -0.381803,
+            -0.380377,
+            0.261162,
+            -0.381496,
+            -0.385658,
+            0.256062,
+            -0.381199,
+            -0.390816,
+            0.250844,
+            -0.380912,
+            -0.395843,
+            0.245515,
+            -0.380636,
+            -0.400734,
+            0.240084,
+            -0.380371,
+            -0.405482,
+            0.23456,
+            -0.380116,
+            -0.410082,
+            0.228951,
+            -0.379873,
+            -0.414529,
+            0.223269,
+            -0.37964,
+            -0.418819,
+            0.217523,
+            -0.379418,
+            -0.422947,
+            0.211722,
+            -0.379207,
+            -0.426911,
+            0.205879,
+            -0.379007,
+            -0.430708,
+            0.200004,
+            -0.378817,
+            -0.434336,
+            0.194107,
+            -0.378638,
+            -0.437795,
+            0.188199,
+            -0.378469,
+            -0.441082,
+            0.182293,
+            -0.378311,
+            -0.4442,
+            0.176399,
+            -0.378163,
+            -0.447147,
+            0.170528,
+            -0.378025,
+            -0.449926,
+            0.164692,
+            -0.377896,
+            -0.452537,
+            0.158902,
+            -0.377776,
+            -0.454984,
+            0.153169,
+            -0.377666,
+            -0.45727,
+            0.147504,
+            -0.377564,
+            -0.459397,
+            0.141918,
+            -0.377471,
+            -0.46137,
+            0.136421,
+            -0.377386,
+            -0.463193,
+            0.131024,
+            -0.377308,
+            -0.464871,
+            0.125737,
+            -0.377238,
+            -0.466409,
+            0.120571,
+            -0.377175,
+            -0.467813,
+            0.115535,
+            -0.377119,
+            -0.469088,
+            0.110639,
+            -0.377068,
+            -0.470241,
+            0.105892,
+            -0.377024,
+            -0.471277,
+            0.101303,
+            -0.376985,
+            -0.472205,
+            0.096882,
+            -0.376951,
+            -0.47303,
+            0.092636,
+            -0.376922,
+            -0.473759,
+            0.088574,
+            -0.376897,
+            -0.474399,
+            0.084705,
+            -0.376876,
+            -0.474957,
+            0.081035,
+            -0.376859,
+            -0.47544,
+            0.077573,
+            -0.376844,
+            -0.475854,
+            0.074327,
+            -0.376832,
+            -0.476206,
+            0.071302,
+            -0.376823,
+            -0.476503,
+            0.068507,
+            -0.376816,
+            -0.47675,
+            0.065948,
+            -0.376811,
+            -0.476954,
+            0.063631,
+            -0.376807,
+            -0.47712,
+            0.061564,
+            -0.376804,
+            -0.477254,
+            0.059752,
+            -0.376802,
+            -0.477359,
+            0.058203,
+            -0.376801,
+            -0.477441,
+            0.056922,
+            -0.3768,
+            -0.477502,
+            0.055915,
+            -0.3768,
+            -0.477547,
+            0.055188,
+            -0.3768,
+            -0.477577,
+            0.054748,
+            -0.3768,
+            -0.4776,
+            0.0546,
+            -0.3768,
+            -0.4776
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: 129 uniform extension samples of one tyre material point through R59's tren_retraccion rig (F4U-06): 86 deg aft fold with 90 deg wheel twist, sequenced doors"
+        }
+      },
+      {
+        "id": "contact_main_right",
+        "name": "main_right",
+        "position": {
+          "value": [
+            0.0546,
+            0.3768,
+            -0.4776
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "R59 tyre contact point with the gear down (geometry-r59.json)"
+        },
+        "stiffness": {
+          "value": 3983.435046,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E1 rule: heave w dt 0.09 at 240 Hz (sum k 8631 N/m for 18.50 kg), split by the static load (7.7 % on the tail wheel)"
+        },
+        "damping": {
+          "value": 94.038427,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio 0.3 of the loader's m/3 share"
+        },
+        "max_compression": {
+          "value": 0.12,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "BORROWED from the P-51 (same class and mass); recompute with the GP-06 reserve-drop probe in F4U-08"
+        },
+        "max_steering": {
+          "value": 0.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "fixed main wheel"
+        },
+        "retraction_path": {
+          "value": [
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341824,
+            0.398506,
+            -0.150225,
+            0.341851,
+            0.398485,
+            -0.150468,
+            0.341904,
+            0.398443,
+            -0.150933,
+            0.341982,
+            0.398381,
+            -0.151636,
+            0.342083,
+            0.398298,
+            -0.152574,
+            0.342205,
+            0.398195,
+            -0.153741,
+            0.342344,
+            0.398072,
+            -0.155134,
+            0.342496,
+            0.39793,
+            -0.156748,
+            0.342658,
+            0.397769,
+            -0.158581,
+            0.342825,
+            0.39759,
+            -0.160627,
+            0.342991,
+            0.397394,
+            -0.162883,
+            0.343152,
+            0.397181,
+            -0.165345,
+            0.343302,
+            0.396951,
+            -0.16801,
+            0.343436,
+            0.396705,
+            -0.170873,
+            0.343547,
+            0.396445,
+            -0.173931,
+            0.343629,
+            0.396169,
+            -0.177179,
+            0.343676,
+            0.39588,
+            -0.180614,
+            0.34368,
+            0.395577,
+            -0.184231,
+            0.343636,
+            0.395262,
+            -0.188025,
+            0.343536,
+            0.394935,
+            -0.191992,
+            0.343373,
+            0.394596,
+            -0.196127,
+            0.343141,
+            0.394247,
+            -0.200425,
+            0.342831,
+            0.393887,
+            -0.204881,
+            0.342438,
+            0.393519,
+            -0.20949,
+            0.341955,
+            0.393142,
+            -0.214244,
+            0.341373,
+            0.392757,
+            -0.219139,
+            0.340687,
+            0.392366,
+            -0.224168,
+            0.33989,
+            0.391968,
+            -0.229324,
+            0.338975,
+            0.391565,
+            -0.2346,
+            0.337936,
+            0.391157,
+            -0.23999,
+            0.336767,
+            0.390745,
+            -0.245485,
+            0.335463,
+            0.390329,
+            -0.251078,
+            0.334017,
+            0.389912,
+            -0.25676,
+            0.332425,
+            0.389493,
+            -0.262524,
+            0.330681,
+            0.389072,
+            -0.268361,
+            0.328782,
+            0.388652,
+            -0.274261,
+            0.326724,
+            0.388232,
+            -0.280215,
+            0.324503,
+            0.387814,
+            -0.286215,
+            0.322116,
+            0.387397,
+            -0.292251,
+            0.319561,
+            0.386984,
+            -0.298313,
+            0.316836,
+            0.386573,
+            -0.304391,
+            0.313939,
+            0.386167,
+            -0.310475,
+            0.31087,
+            0.385765,
+            -0.316556,
+            0.307629,
+            0.385368,
+            -0.322623,
+            0.304216,
+            0.384977,
+            -0.328666,
+            0.300631,
+            0.384593,
+            -0.334675,
+            0.296878,
+            0.384215,
+            -0.340641,
+            0.292957,
+            0.383845,
+            -0.346553,
+            0.288872,
+            0.383483,
+            -0.352402,
+            0.284627,
+            0.383129,
+            -0.358178,
+            0.280226,
+            0.382783,
+            -0.363873,
+            0.275673,
+            0.382447,
+            -0.369476,
+            0.270974,
+            0.38212,
+            -0.374981,
+            0.266134,
+            0.381803,
+            -0.380377,
+            0.261162,
+            0.381496,
+            -0.385658,
+            0.256062,
+            0.381199,
+            -0.390816,
+            0.250844,
+            0.380912,
+            -0.395843,
+            0.245515,
+            0.380636,
+            -0.400734,
+            0.240084,
+            0.380371,
+            -0.405482,
+            0.23456,
+            0.380116,
+            -0.410082,
+            0.228951,
+            0.379873,
+            -0.414529,
+            0.223269,
+            0.37964,
+            -0.418819,
+            0.217523,
+            0.379418,
+            -0.422947,
+            0.211722,
+            0.379207,
+            -0.426911,
+            0.205879,
+            0.379007,
+            -0.430708,
+            0.200004,
+            0.378817,
+            -0.434336,
+            0.194107,
+            0.378638,
+            -0.437795,
+            0.188199,
+            0.378469,
+            -0.441082,
+            0.182293,
+            0.378311,
+            -0.4442,
+            0.176399,
+            0.378163,
+            -0.447147,
+            0.170528,
+            0.378025,
+            -0.449926,
+            0.164692,
+            0.377896,
+            -0.452537,
+            0.158902,
+            0.377776,
+            -0.454984,
+            0.153169,
+            0.377666,
+            -0.45727,
+            0.147504,
+            0.377564,
+            -0.459397,
+            0.141918,
+            0.377471,
+            -0.46137,
+            0.136421,
+            0.377386,
+            -0.463193,
+            0.131024,
+            0.377308,
+            -0.464871,
+            0.125737,
+            0.377238,
+            -0.466409,
+            0.120571,
+            0.377175,
+            -0.467813,
+            0.115535,
+            0.377119,
+            -0.469088,
+            0.110639,
+            0.377068,
+            -0.470241,
+            0.105892,
+            0.377024,
+            -0.471277,
+            0.101303,
+            0.376985,
+            -0.472205,
+            0.096882,
+            0.376951,
+            -0.47303,
+            0.092636,
+            0.376922,
+            -0.473759,
+            0.088574,
+            0.376897,
+            -0.474399,
+            0.084705,
+            0.376876,
+            -0.474957,
+            0.081035,
+            0.376859,
+            -0.47544,
+            0.077573,
+            0.376844,
+            -0.475854,
+            0.074327,
+            0.376832,
+            -0.476206,
+            0.071302,
+            0.376823,
+            -0.476503,
+            0.068507,
+            0.376816,
+            -0.47675,
+            0.065948,
+            0.376811,
+            -0.476954,
+            0.063631,
+            0.376807,
+            -0.47712,
+            0.061564,
+            0.376804,
+            -0.477254,
+            0.059752,
+            0.376802,
+            -0.477359,
+            0.058203,
+            0.376801,
+            -0.477441,
+            0.056922,
+            0.3768,
+            -0.477502,
+            0.055915,
+            0.3768,
+            -0.477547,
+            0.055188,
+            0.3768,
+            -0.477577,
+            0.054748,
+            0.3768,
+            -0.4776,
+            0.0546,
+            0.3768,
+            -0.4776
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: 129 uniform extension samples of one tyre material point through R59's tren_retraccion rig (F4U-06): 86 deg aft fold with 90 deg wheel twist, sequenced doors"
+        }
+      },
+      {
+        "id": "contact_tail",
+        "name": "tail",
+        "position": {
+          "value": [
+            1.2706,
+            0.0,
+            -0.165
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "R59 tyre contact point with the gear down (geometry-r59.json)"
+        },
+        "stiffness": {
+          "value": 664.489922,
+          "unit": "N/m",
+          "kind": "estimated",
+          "source": "E1 rule: heave w dt 0.09 at 240 Hz (sum k 8631 N/m for 18.50 kg), split by the static load (7.7 % on the tail wheel)"
+        },
+        "damping": {
+          "value": 38.407911,
+          "unit": "N·s/m",
+          "kind": "estimated",
+          "source": "damping ratio 0.3 of the loader's m/3 share"
+        },
+        "max_compression": {
+          "value": 0.105,
+          "unit": "m",
+          "kind": "estimated",
+          "source": "BORROWED from the P-51 (same class and mass); recompute with the GP-06 reserve-drop probe in F4U-08"
+        },
+        "max_steering": {
+          "value": -25.0,
+          "unit": "deg",
+          "kind": "estimated",
+          "source": "steerable tail wheel linked to the rudder, as the P-51; negative: against the rudder trailing edge"
+        },
+        "retraction_path": {
+          "value": [
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411039,
+            0.0,
+            -0.003127,
+            1.411028,
+            0.0,
+            -0.003173,
+            1.410988,
+            0.0,
+            -0.003346,
+            1.410919,
+            0.0,
+            -0.003644,
+            1.410821,
+            0.0,
+            -0.004067,
+            1.410693,
+            0.0,
+            -0.004609,
+            1.410536,
+            0.0,
+            -0.005269,
+            1.410348,
+            0.0,
+            -0.006044,
+            1.41013,
+            0.0,
+            -0.00693,
+            1.409881,
+            0.0,
+            -0.007926,
+            1.4096,
+            0.0,
+            -0.009027,
+            1.409285,
+            0.0,
+            -0.010231,
+            1.408937,
+            0.0,
+            -0.011535,
+            1.408554,
+            0.0,
+            -0.012936,
+            1.408135,
+            0.0,
+            -0.01443,
+            1.407678,
+            0.0,
+            -0.016014,
+            1.407183,
+            0.0,
+            -0.017686,
+            1.406648,
+            0.0,
+            -0.019441,
+            1.406071,
+            0.0,
+            -0.021276,
+            1.405453,
+            0.0,
+            -0.023189,
+            1.404791,
+            0.0,
+            -0.025175,
+            1.404084,
+            0.0,
+            -0.027232,
+            1.403331,
+            0.0,
+            -0.029355,
+            1.40253,
+            0.0,
+            -0.031541,
+            1.401682,
+            0.0,
+            -0.033788,
+            1.400783,
+            0.0,
+            -0.03609,
+            1.399835,
+            0.0,
+            -0.038445,
+            1.398835,
+            0.0,
+            -0.040849,
+            1.397783,
+            0.0,
+            -0.043298,
+            1.396678,
+            0.0,
+            -0.045789,
+            1.39552,
+            0.0,
+            -0.048318,
+            1.394307,
+            0.0,
+            -0.050882,
+            1.39304,
+            0.0,
+            -0.053476,
+            1.391718,
+            0.0,
+            -0.056097,
+            1.39034,
+            0.0,
+            -0.058742,
+            1.388908,
+            0.0,
+            -0.061406,
+            1.387421,
+            0.0,
+            -0.064086,
+            1.385878,
+            0.0,
+            -0.066779,
+            1.384281,
+            0.0,
+            -0.069481,
+            1.38263,
+            0.0,
+            -0.072189,
+            1.380926,
+            0.0,
+            -0.074898,
+            1.379168,
+            0.0,
+            -0.077605,
+            1.377359,
+            0.0,
+            -0.080308,
+            1.375499,
+            0.0,
+            -0.083003,
+            1.37359,
+            0.0,
+            -0.085686,
+            1.371632,
+            0.0,
+            -0.088354,
+            1.369627,
+            0.0,
+            -0.091004,
+            1.367577,
+            0.0,
+            -0.093634,
+            1.365484,
+            0.0,
+            -0.09624,
+            1.363349,
+            0.0,
+            -0.098819,
+            1.361175,
+            0.0,
+            -0.101368,
+            1.358963,
+            0.0,
+            -0.103886,
+            1.356716,
+            0.0,
+            -0.106369,
+            1.354437,
+            0.0,
+            -0.108815,
+            1.352128,
+            0.0,
+            -0.111222,
+            1.349791,
+            0.0,
+            -0.113588,
+            1.347429,
+            0.0,
+            -0.11591,
+            1.345046,
+            0.0,
+            -0.118186,
+            1.342643,
+            0.0,
+            -0.120415,
+            1.340225,
+            0.0,
+            -0.122596,
+            1.337794,
+            0.0,
+            -0.124726,
+            1.335354,
+            0.0,
+            -0.126804,
+            1.332907,
+            0.0,
+            -0.128829,
+            1.330458,
+            0.0,
+            -0.1308,
+            1.328009,
+            0.0,
+            -0.132716,
+            1.325564,
+            0.0,
+            -0.134575,
+            1.323127,
+            0.0,
+            -0.136379,
+            1.320701,
+            0.0,
+            -0.138124,
+            1.31829,
+            0.0,
+            -0.139812,
+            1.315897,
+            0.0,
+            -0.141442,
+            1.313527,
+            0.0,
+            -0.143014,
+            1.311182,
+            0.0,
+            -0.144527,
+            1.308867,
+            0.0,
+            -0.145982,
+            1.306585,
+            0.0,
+            -0.147378,
+            1.30434,
+            0.0,
+            -0.148716,
+            1.302135,
+            0.0,
+            -0.149997,
+            1.299975,
+            0.0,
+            -0.15122,
+            1.297863,
+            0.0,
+            -0.152386,
+            1.295803,
+            0.0,
+            -0.153496,
+            1.293798,
+            0.0,
+            -0.15455,
+            1.291852,
+            0.0,
+            -0.155549,
+            1.289968,
+            0.0,
+            -0.156493,
+            1.288151,
+            0.0,
+            -0.157384,
+            1.286404,
+            0.0,
+            -0.158222,
+            1.28473,
+            0.0,
+            -0.159007,
+            1.283133,
+            0.0,
+            -0.159742,
+            1.281615,
+            0.0,
+            -0.160425,
+            1.280182,
+            0.0,
+            -0.161059,
+            1.278835,
+            0.0,
+            -0.161644,
+            1.277579,
+            0.0,
+            -0.16218,
+            1.276416,
+            0.0,
+            -0.162669,
+            1.275349,
+            0.0,
+            -0.16311,
+            1.274383,
+            0.0,
+            -0.163505,
+            1.273519,
+            0.0,
+            -0.163853,
+            1.272761,
+            0.0,
+            -0.164155,
+            1.272112,
+            0.0,
+            -0.164412,
+            1.271575,
+            0.0,
+            -0.164622,
+            1.271152,
+            0.0,
+            -0.164786,
+            1.270847,
+            0.0,
+            -0.164905,
+            1.270662,
+            0.0,
+            -0.164976,
+            1.2706,
+            0.0,
+            -0.165
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/f4u-corsair/F4U-07/derive_physics.py: 129 uniform extension samples of one tyre material point through R59's tren_retraccion rig (F4U-06): 86 deg aft fold with 90 deg wheel twist, sequenced doors"
+        }
+      }
+    ],
+    "rolling_resistance": {
+      "value": 0.03,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "as the P-51 (similar wheel size)"
+    },
+    "breakaway_factor": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "shared E3b1 value, as the P-51, Stik and Timber"
+    },
+    "side_friction": {
+      "value": 0.8,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "JSBSim c172x static_friction 0.8 (as the Stik, E2)"
+    },
+    "peak_slip_angle": {
+      "value": 6.0,
+      "unit": "deg",
+      "kind": "borrowed",
+      "source": "JSBSim FGLGear default Pacejka initial slope (as the Stik, E2)"
+    },
+    "retraction": {
+      "extension_time": {
+        "value": 4.0,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "FokkeRC kit specification (units); cycle time estimated as the P-51's pneumatic sequencer value, no Robart timing published"
+      },
+      "retraction_time": {
+        "value": 4.0,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "as extension"
+      },
+      "drag_area": {
+        "value": 0.0176,
+        "unit": "m²",
+        "kind": "derived",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: gear-down item of the drag build-up x1.1, removed from CD0"
+      },
+      "drag_center": {
+        "value": [
+          0.1762,
+          0.0,
+          -0.44634
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "research/f4u-corsair/F4U-07/derive_physics.py: contacts weighted 0.45/0.45/0.10"
+      }
+    }
+  },
+  "convention_id": "openrc-le-frd-v1",
+  "capabilities": {
+    "controls": "conventional",
+    "gear": "retractable_taildragger",
+    "propulsion_layout": "single_tractor",
+    "energy": "finite_liquid_fuel",
+    "damage": "terminal_hull",
+    "flaps": "simulated"
+  },
+  "flaps": {
+    "max_angle_deg": {
+      "value": 22.264118,
+      "unit": "deg",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: landing setting: 25 mm on the Phoenix 1.8 m flap, scaled; full-size slotted flap 50 deg (NACA WR L-440)"
+    },
+    "takeoff_angle_deg": {
+      "value": 13.139693,
+      "unit": "deg",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: take-off setting: 15 mm on the Phoenix flap, scaled"
+    },
+    "inner_span_m": {
+      "value": 0.154237,
+      "unit": "m",
+      "kind": "measured",
+      "source": "R59 inner flap panel inboard end"
+    },
+    "outer_span_m": {
+      "value": 0.779279,
+      "unit": "m",
+      "kind": "measured",
+      "source": "R59 outer flap panel outboard end"
+    },
+    "hinge_fraction": {
+      "value": 0.788719,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: 1 - flap chord fraction from the NACA flap area"
+    },
+    "extension_time": {
+      "value": 2.5,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "slowed RC flap servo, as the P-51"
+    },
+    "retraction_time": {
+      "value": 2.5,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "as extension"
+    },
+    "max_speed_mps": {
+      "value": 22.0,
+      "unit": "m/s",
+      "kind": "estimated",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: advisory: the start speed (1.6 Vs clean); no full-size or kit placard found"
+    },
+    "elevator_mix_per_flap_fraction": {
+      "value": 0.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "the Phoenix manual lists no flap-elevator mix"
+    },
+    "effective_angle_limit_deg": {
+      "value": 14.38,
+      "unit": "deg",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: plain-flap K' fit (conservative for a slotted flap)"
+    },
+    "profile_drag_coefficient": {
+      "value": 0.105329,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: Raymer eq. 12.61"
+    },
+    "aerodynamic_gain": {
+      "value": 1.0,
+      "unit": "1",
+      "kind": "derived",
+      "source": "full shared flap law"
+    },
+    "stall_shift_fraction": {
+      "value": 0.261479,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: Roskam Part VI Figs. 8.31-8.33"
+    },
+    "lift_reference_offset_m": {
+      "value": 0.053322,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: wing 25 % MAC aft of the wing-body ARP"
+    }
+  }
+}

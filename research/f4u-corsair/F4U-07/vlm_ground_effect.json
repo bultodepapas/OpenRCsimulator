@@ -1,0 +1,105 @@
+{
+  "generator": "research/f4u-corsair/F4U-07/ground_effect_vlm.py",
+  "geometry": "assets/aircraft/f4u-corsair-1-5/geometry-r59.json",
+  "method": "image-method Weissinger VLM, 80 cosine-spaced panels on the measured gull planform (chord, leading edge, chord-plane height, median-filtered incidence), alpha 4.0 deg, ground parallel to the free stream, x = root-chord-plane height / span; no fuselage",
+  "aero_reference_height_m": -0.086102,
+  "free_air": {
+    "CL": 0.32879974970030085,
+    "CLa_per_rad": 4.709709490696273,
+    "area": 1.1818347518309926,
+    "e_trefftz": 1.0208086916431387,
+    "tail_downwash_per_CL": 0.10829422652565111
+  },
+  "rows": [
+    {
+      "x": 0.06,
+      "cl_ratio_same_alpha": 2.184675053691318,
+      "cdi_ratio_same_cl": 0.3577615479804868,
+      "tail_downwash_ratio_per_lift": 0.3098087556913122
+    },
+    {
+      "x": 0.08,
+      "cl_ratio_same_alpha": 1.644409577105818,
+      "cdi_ratio_same_cl": 0.4432732248699249,
+      "tail_downwash_ratio_per_lift": 0.38472834432948716
+    },
+    {
+      "x": 0.1,
+      "cl_ratio_same_alpha": 1.413479378247351,
+      "cdi_ratio_same_cl": 0.5113283991891253,
+      "tail_downwash_ratio_per_lift": 0.4473025158108747
+    },
+    {
+      "x": 0.12,
+      "cl_ratio_same_alpha": 1.294462932382352,
+      "cdi_ratio_same_cl": 0.5669712238750418,
+      "tail_downwash_ratio_per_lift": 0.5028491611826534
+    },
+    {
+      "x": 0.15,
+      "cl_ratio_same_alpha": 1.1994487783871342,
+      "cdi_ratio_same_cl": 0.6337154015556918,
+      "tail_downwash_ratio_per_lift": 0.5756808342885772
+    },
+    {
+      "x": 0.2,
+      "cl_ratio_same_alpha": 1.1242907413904233,
+      "cdi_ratio_same_cl": 0.7153052087912369,
+      "tail_downwash_ratio_per_lift": 0.6729935989549933
+    },
+    {
+      "x": 0.25,
+      "cl_ratio_same_alpha": 1.0869859010771712,
+      "cdi_ratio_same_cl": 0.7732281178954298,
+      "tail_downwash_ratio_per_lift": 0.7457067382280799
+    },
+    {
+      "x": 0.3,
+      "cl_ratio_same_alpha": 1.0649214861671985,
+      "cdi_ratio_same_cl": 0.8159163170893068,
+      "tail_downwash_ratio_per_lift": 0.7997955841497707
+    },
+    {
+      "x": 0.4,
+      "cl_ratio_same_alpha": 1.040423181693231,
+      "cdi_ratio_same_cl": 0.8731204117150145,
+      "tail_downwash_ratio_per_lift": 0.8706537275748965
+    },
+    {
+      "x": 0.5,
+      "cl_ratio_same_alpha": 1.0275626750607358,
+      "cdi_ratio_same_cl": 0.9082497878977455,
+      "tail_downwash_ratio_per_lift": 0.9118376240194676
+    },
+    {
+      "x": 0.75,
+      "cl_ratio_same_alpha": 1.0132339463612439,
+      "cdi_ratio_same_cl": 0.952502969768933,
+      "tail_downwash_ratio_per_lift": 0.9591922349289862
+    },
+    {
+      "x": 1.0,
+      "cl_ratio_same_alpha": 1.0076697356888582,
+      "cdi_ratio_same_cl": 0.9714606488360891,
+      "tail_downwash_ratio_per_lift": 0.9772185649279018
+    },
+    {
+      "x": 1.5,
+      "cl_ratio_same_alpha": 1.003475453796887,
+      "cdi_ratio_same_cl": 0.9866076359547002,
+      "tail_downwash_ratio_per_lift": 0.9902044770485775
+    }
+  ],
+  "fit_induced": {
+    "coefficient": 18.431746876702967,
+    "exponent": 1.25177001953125,
+    "rms": 0.0036481330250287703,
+    "range": "x 0.06-1.5, faded runtime law"
+  },
+  "fit_tail": {
+    "coefficient": 18.431746876702967,
+    "exponent": 1.3575439453125,
+    "rms": 0.010637608430003116,
+    "range": "x 0.06-1.5, faded runtime law"
+  }
+}

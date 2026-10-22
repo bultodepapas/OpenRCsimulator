@@ -60,6 +60,18 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-22 · F4U-07 — read VLM induced drag in the Trefftz plane when the bound line kinks
+
+The P-51 ground-effect VLM reads trailing-leg induced velocity at each bound-vortex midpoint, which equals half the far wake only for a straight, unswept quarter-chord line. On the Corsair's measured planform (straight leading edge inboard, swept rounded tip) it gave a span efficiency of 1.31, even with the wing flattened. Reading the legs 100 spans downstream and halving gives 1.013 flat, 1.021 for the gull, and still matches the P-51 (1.017 → 1.013). Before trusting a VLM on a new planform, check that its flat, untwisted wing gives e near 1; reuse the midpoint method only for straight quarter-chord lines. [Evidence](research/f4u-corsair/F4U-07/README.md)
+
+## 2026-10-22 · F4U-06 — tag the driven objects before sampling a Blender rig run by custom properties
+
+R59's gear and controls are drivers fed by custom properties. Assigning an ID property from Python does not tag its datablock, and `frame_set` refreshes only time-dependent drivers, so the first retraction sampling silently stayed in the down pose. Call `update_tag()` on the control objects and every driven object before each evaluation, and confirm one known motion (a wheel that must move) before trusting sampled paths. Plain-arithmetic driver expressions evaluate with auto-run scripts disabled; audit them rather than enabling auto-run. [Evidence](research/f4u-corsair/F4U-06/README.md)
+
+## 2026-10-22 · F4U-02 — a script pinned by model manifests reaches parked scenery, and an aborted check can still print PASS
+
+Model manifests pin `imported_model.gd`, `imported_model_contract.gd` and `retractable_model.gd`; Workshop descriptors and the customization registry pin the manifests; the parked-aircraft bakes pin both, and only `bake_parked_aircraft.gd -- --check` notices. After touching those scripts, regenerate in order (`build_models.py`, `build_descriptors.py`, `build_customization.py`, the OpenGL bake) and rerun each `--check`. Separately, a GDScript runtime error inside the conformance preflight aborted the Avanti's pose checks while its line still printed PASS; only the log scan for `SCRIPT ERROR` caught it. Treat engine errors in a check's log as failures of that check, whatever its summary says. [Evidence](research/f4u-corsair/F4U-02/README.md)
+
 ## 2026-10-21 · EX-14h — load the regenerated aircraft after a generator embeds a fitted table
 
 The Extra generator's `q()` rounds every number to 6 decimals for readable data. Embedding the fitted `wing_polar` through it moved the first row 7·10⁻⁸ off the attached line, and the loader refuses a polar whose first row misses that join by more than 1e-9. The generator's `--check` still passed, because it only compares the generator with its own output. Pass tables that carry exactness joins through unrounded, as `inventory_mass` already does for tank mass, and load the regenerated aircraft (or run its test) before reporting the regeneration. [Evidence](research/extra-300-realism/EX-14/README.md#ex-14h--post-stall-wing-polar)

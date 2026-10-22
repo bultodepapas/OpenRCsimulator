@@ -1,6 +1,6 @@
 # F4U Corsair 1/5: integration plan
 
-Checked 2026-10-21 · Aircraft/model owner · Prefix **F4U-00…14**. Nothing flies yet: the catalog has no Corsair, and the visual model waits for the author's g1 delivery. This plan states what is prepared, what is blocked and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
+Checked 2026-10-22 · Aircraft/model owner · Prefix **F4U-00…14**. Nothing flies yet: provisional physics data exist and pass the production loader and trim (F4U-07), but the catalog has no Corsair and the visual model waits for the author's g1 delivery. This plan states what is prepared, what is blocked and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
 
 ## 1. Identity and scope
 
@@ -14,13 +14,16 @@ All required physical capabilities already exist in the aircraft contract: the P
 | --- | --- |
 | Visual delivery requirements for the author | [Blender delivery request](F4U-BLENDER-HANDOFF.md) |
 | Sources, full-size data, RC reference candidates | [F4U-01 evidence](research/f4u-corsair/F4U-01/README.md) |
-| Provisional wing and tail geometry | [F4U-06 R59 sections](research/f4u-corsair/F4U-06/README.md) |
+| Sources, pipeline and commands | [Asset guide](../assets/aircraft/f4u-corsair-1-5/README.md) |
+| Provisional 1/5 geometry | [F4U-06 R59 extraction](research/f4u-corsair/F4U-06/README.md) |
+| Provisional physics data and checks | [F4U-07 evidence](research/f4u-corsair/F4U-07/README.md) |
+| Retractable-taildragger rig | [F4U-02 evidence](research/f4u-corsair/F4U-02/README.md) |
 | R59 review method | [inspect_blend.py](../research/f4u-corsair/F4U-00/inspect_blend.py), [measure_neutral.py](../research/f4u-corsair/F4U-00/measure_neutral.py) |
 | g1 preflight | [preflight_glb.py](../research/f4u-corsair/F4U-04/preflight_glb.py), [mutation test](../research/f4u-corsair/F4U-04/test_preflight_glb.py) |
 | Shared model, retraction and section contracts | [Aircraft contract](AIRCRAFT_CONTRACT.md#model-and-package-contract) (AS) |
 | Rights | [Licensing guide](AIRCRAFT-LICENSING.md) |
 
-F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/` and, once created, `assets/aircraft/f4u-corsair-1-5/`, `app/assets/aircraft/f4u-corsair-1-5/`, `app/aircraft/f4u_*` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
+F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/`, `assets/aircraft/f4u-corsair-1-5/` and, once created, `app/assets/aircraft/f4u-corsair-1-5/`, `app/aircraft/f4u_*`, `app/data/aircraft/f4u_corsair_1_5.json` and F4U tests. The external delivery folder stays read-only. Shared files (`model-bindings.json`, the retraction rig, catalog, Workshop descriptors) change only through their owners' generators and in coordinated commits.
 
 ## 3. Gaps found in the shared code
 
@@ -28,8 +31,8 @@ F4U owns `docs/F4U-*.md`, `docs/research/f4u-corsair/`, `research/f4u-corsair/` 
 | --- | --- | --- |
 | The imported retraction rig admitted only tricycle gear | `retractable_model.gd`, `imported_model_contract.gd` and `build_models.py` required `left/right/nose`. | **Resolved by F4U-02** (2026-10-22): nose or tail third wheel, with the dependent manifests, descriptors and parked bakes regenerated. |
 | Imported GLB gear must rest stowed | `retractable_model.bind()` refuses carriers not at sample 0 (fully stowed). | Corrected in request revision 2: export at `GearRetract` frame 100. |
-| Fin offset | NACA RM A7C05 lists a 2° left fin offset. The aero law has no zero-sideslip yaw coefficient. | No extension needed: `aero.surfaces.vertical.incidence` (radians) already offsets the fin's local flow angle in `physics/aero.gd`. F4U-07 sets it and tests the sign against propeller swirl. |
-| Slotted flaps | The P-51 flap parameters come from plain-flap data (Roskam Part VI). | No new law: F4U-07 computes the existing flap parameters (effectiveness, angle limit, profile drag, stall shift) from single-slotted-flap data and checks the trend against NACA WR L-440. |
+| Fin offset | NACA RM A7C05 lists a 2° left fin offset. The aero law has no zero-sideslip yaw coefficient. | No extension needed: `aero.surfaces.vertical.incidence` can carry it. F4U-07 keeps the fin at 0°, as the RC kit and the visual model are built, and uses 1.5° right thrust instead (RC practice). |
+| Slotted flaps | The flap parameters come from plain-flap data (Roskam Part VI). | No new law. F4U-07 uses the plain-flap fit, conservative for a slotted flap; digitizing single-slotted data (Roskam Fig. 8.17) and checking against NACA WR L-440 remains open. |
 
 The crash system already supports the three-way wing split (`wing_center` plus outer panels): a hit naming one wing releases only that outer panel, and an unnamed hit releases all wing sections.
 
@@ -43,9 +46,9 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 | F4U-03 | Waiting for g1 | Intake: copy the delivery unchanged to `assets/source-deliveries/f4u-corsair-g1/`; source manifest with per-file SHA-256 (Timber TT-01 pattern); LICENSE and reference-list review. |
 | F4U-04 | Tool ready | Preflight: `preflight_glb.py` (strict profile) plus the author's verifier; Godot import with mesh compression disabled; compare landmarks with metadata. Proof of the tool: exact Avanti/Timber counts and 9/9 mutation checks (2026-10-21). Return failures to the author. |
 | F4U-05 | Waiting for g1 | Model family: geometry compiler from g1 metadata plus `GearRetract` sampled stowed → down (Avanti `export_blender.py` method); `model-bindings.json` entry (`imported_glb`, `gltf_extras`, `retraction`); model manifest; Workshop descriptor. Proof: model verifier, pose/full-travel checks, conformance. |
-| F4U-06 | Started 2026-10-21 | Physics source: full-size geometry ×0.2 from F4U-01 (S = 1.167 m², MAC 0.478 m, NACA 23018→23009), kit anchors from D1. [Provisional R59 sections](research/f4u-corsair/F4U-06/README.md) match published wing and tail areas within 0.6–4 %; gull, dihedral and incidence still lack a primary source. Remeasure on g1. Proof: source file with per-quantity provenance; g1 metrology agreement. |
-| F4U-07 | After F4U-06 | Derivation generator (fork of the P-51 [P51-05](../research/p51/p51-05/derive_physics.py) method): gull-wing strips with per-panel dihedral, Reynolds-corrected sections, slotted flaps, fin offset, gasoline twin and propeller tables, ground-effect VLM. Calibration: NACA neutral points (27–30 % MAC) and CL_max trends; held-out checks separate. Output `app/data/aircraft/f4u_corsair_1_5.json`, never hand-edited. |
-| F4U-08 | After F4U-05/07 | Gear contacts and `retraction_path` from the sampled g1 action; tail steering, brakes, pneumatic retract timing (Robart data). Proof: ground suites, runway start qualification. |
+| F4U-06 | Done, provisional, 2026-10-22 | [R59 extraction](research/f4u-corsair/F4U-06/README.md) to `geometry-r59.json`: sections, control surfaces, fuselage, hull points and gear paths through R59's own retract rig. Planform and tail areas match published values within 0.6–4 %; gull, dihedral and incidence lack a primary source. Remaining: re-extract from g1 and compare. |
+| F4U-07 | Done, provisional, 2026-10-22 | [Native v2 generator](research/f4u-corsair/F4U-07/README.md) with gull-wing VLM; staged output passes the production loader; level, glide and flare trims inside the throws (probe 9/9). Neutral point calibrated to a NACA-based target. Remaining: slotted-flap data, body-yaw calibration from RM A7C05 sideslips, PDF recheck of OCR values, D1/D4/D5. Output moves to `app/data/aircraft/` at F4U-09; never hand-edited. |
+| F4U-08 | After F4U-05 | Contacts and `retraction_path` already come from R59's rig; confirm against the sampled g1 action. Recompute gear travel with the GP-06 reserve-drop probe; tail steering, brakes, Robart retract timing. Proof: ground suites, runway start qualification. |
 | F4U-09 | After F4U-08 | Catalog registration, EN/ES names, Home and menu entries, thumbnail. Display name per D2. |
 | F4U-10 | After F4U-05 | Presentation: paint slots `paint_body/wing/wing_tip/tail`, livery set and default (D3), registration mounts, light anchors, smoke outlets (exhaust, wingtips). |
 | F4U-11 | After F4U-05 | Crash: release checks for each outer panel with its aileron and outer flap, `wing_center`, cowl, propeller, canopy and gear; damage and cost dossier. |
@@ -54,6 +57,8 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 | F4U-14 | Later | Physical evidence: builder logs, measured mass/CG/servo throws or flight video of the selected kit, if available. |
 
 ## 5. Owner decisions pending
+
+D1, D4 and D5 run on their recommended values as provisional defaults in [source.json](../assets/aircraft/f4u-corsair-1-5/source.json); changing one is a source edit and a regeneration.
 
 | ID | Decision | Recommendation |
 | --- | --- | --- |

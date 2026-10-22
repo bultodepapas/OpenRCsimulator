@@ -1,0 +1,103 @@
+{
+  "format": "openrc-f4u-source v1",
+  "status": "PROVISIONAL inputs for research/f4u-corsair/F4U-07/derive_physics.py. Owner decisions D1 (hardware reference), D4 (propeller variant) and D5 (engine) are open; the values below are the F4U plan's recommended defaults and change only here. Nothing in this file is measured on a built 1/5 Corsair.",
+  "decisions": {
+    "D1_hardware_reference": "FokkeRC Vought F4U-1D Corsair 1/5 (recommended, not yet selected by the owner)",
+    "D4_propeller": "three-blade (F4U-1D airframe); the four-blade belongs to the F4U-4",
+    "D5_engine": "DLE-111 (the FokkeRC kit specification)"
+  },
+  "kit": {
+    "name": "FokkeRC Vought F4U-1D Corsair 1/5",
+    "url": "https://www.fokkerc.com/product/vought-f4u-1d-corsair-1-5/",
+    "span_m": 2.5,
+    "length_m": 2.052,
+    "scale": 0.2,
+    "flying_mass_kg": {
+      "target": 18.5,
+      "range": [16.0, 21.0],
+      "source": "no published FokkeRC flying mass; F4U-01 mass inference: TopRC 93 in (16.8 kg) and Seagull 87 in (13.6 kg) scaled to 2.50 m span give 17.4-18.8 kg (span^2) and 19.7-19.9 kg (span^3); target near the middle, range widened (docs/research/f4u-corsair/F4U-01/README.md)"
+    },
+    "reference_setup": {
+      "name": "Phoenix Model F4U Corsair 1.8 m (PMMA1845), electric",
+      "url": "https://assets.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/dw6d0fa6db/Manuals/PMMA1845-Manual-EN.pdf",
+      "span_m": 1.8,
+      "length_ratio_to_1_5": 1.38889,
+      "cg_aft_of_wing_le_at_fuselage_mm": 110.0,
+      "throws_mm": {
+        "aileron": {"low": 12.0, "high": 15.0, "expo": 0.10},
+        "elevator": {"low": 12.0, "high": 15.0, "expo": 0.12},
+        "rudder": {"low": 20.0, "high": 40.0, "expo": 0.15},
+        "flaps": {"take_off": 15.0, "landing": 25.0}
+      },
+      "note": "Manual page 1 specification block: CG 110 mm back from the wing leading edge at the fuselage; throws up/down (rudder right/left) in mm; flaps down. The measuring station is not stated: angles use the surface chord at its inboard end. length_ratio_to_1_5 = 2.5 m / 1.8 m: the Phoenix is 1/6.94 scale, so its lengths scale by 1.389 to this 1/5 airframe."
+    },
+    "engine": {
+      "name": "DLE-111 (111.2 cc twin, two-stroke gasoline)",
+      "power_hp": 11.2,
+      "power_rpm": 7500.0,
+      "idle_rpm": 1400.0,
+      "mass_engine_kg": 2.37,
+      "mass_with_ignition_and_mufflers_kg": 2.69,
+      "fuel": "gasoline 30:1 premix (DLE manual)",
+      "recommended_props": ["27x10", "26x12", "28x10", "26x10", "28x12"],
+      "static_thrust_claim_kgf": 25.5,
+      "sources": "11.2 hp / 7500 rpm, idle 1400 rpm, recommended 27x10 26x12 28x10: DLE-111 manual (mikrocontroller.net/attachment/566025/dle_111_eng.pdf, mirrored; not retrieved in full) as repeated by MacGregor (macgregor.co.uk/dleengine/dle111.htm) and Lindinger (lindinger.at, item 78867); 2370 g engine and 2690 g total: Lindinger technical data; 25.5 kgf static at 100 m altitude: distributor claim (fridayparts.com), propeller not named"
+    },
+    "propeller": {
+      "name": "Mejzlik 26x12 3-blade GAS N",
+      "diameter_in": 26.0,
+      "pitch_in": 12.0,
+      "blades": 3,
+      "table_key": "26x12 3B GAS N",
+      "source": "DLE-111 recommended 26x12; three blades match the F4U-1D (D4). Manufacturer table and mass in research/p51/p51-06/mejzlik_26x12.json (datasheet hash recorded there)"
+    },
+    "fuel_tank_l": 1.0,
+    "retracts": {
+      "main": "Robart #150 rotating pneumatic (90 degree wheel twist)",
+      "tail": "Robart #160 1/5 mechanical retractable tail wheel",
+      "cycle_s": 4.0,
+      "source": "FokkeRC kit specification (units); cycle time estimated as the P-51's pneumatic sequencer value, no Robart timing published"
+    },
+    "cg_fraction_note": "The CG comes from the Phoenix reference setup, scaled; the derivation reports it in % MAC."
+  },
+  "full_size": {
+    "wing_area_ft2": 314.0,
+    "mac_in": 94.0,
+    "root_chord_in": 105.0,
+    "airfoil_root": "NACA 23018",
+    "airfoil_tip": "NACA 23009",
+    "horizontal_tail_area_ft2": 55.9,
+    "elevator_area_aft_of_hinge_ft2": 21.9,
+    "elevator_balance_area_ft2": 5.4,
+    "vertical_tail_area_ft2": 22.0,
+    "rudder_area_aft_of_hinge_ft2": 13.0,
+    "rudder_balance_area_ft2": 1.66,
+    "fin_offset_left_deg": 2.0,
+    "aileron_area_aft_of_hinge_both_ft2": 18.1,
+    "aileron_span_each_ft": 7.48,
+    "flap_area_total_ft2": 36.4,
+    "flap_type": "slotted",
+    "neutral_point_stick_free_power_on_mac": {"flaps_gear_up": 0.30, "flaps_gear_down": 0.27},
+    "cg_tested_mac": [0.265, 0.325],
+    "pb2v_full_aileron": 0.064,
+    "clmax_tunnel": {"slotted_flaps_50_ailerons_drooped_power_off": 2.13, "power_on": 2.46, "reynolds": 2.7e6},
+    "sources": "NACA RM A7C05 (F4U-4 flying qualities, 1947, ntrs.nasa.gov/citations/20050081862) dimension table and summary; NACA WR L-440 (1/2.75 model, 1942, ntrs.nasa.gov/citations/19930093637); wing area: Patriots Point FG-1D and WR L-440 model area x 2.75^2. OCR-degraded values are recorded in docs/research/f4u-corsair/F4U-01/README.md"
+  },
+  "sections": {
+    "method": "XFOIL 6.96 predictions, Ncrit 9, free transition, via airfoiltools.com (polar ids xf-naca230xx-il-{500000,1000000}); 23009 is not hosted, so 23012 stands for the thin outer sections. Reduced over alpha -2..6 deg (slope, zero-lift angle) and CL 0-0.6 (moment).",
+    "urls": "http://airfoiltools.com/polar/details?polar=xf-naca23015-il-1000000 (and the 23012/23018, Re 500000 variants)",
+    "polars": [
+      {"airfoil": "NACA 23012", "reynolds": 500000, "alpha0_deg": -1.09, "cl_alpha_per_rad": 6.94, "cm": -0.0076, "clmax": 1.430, "cd_min": 0.00647},
+      {"airfoil": "NACA 23012", "reynolds": 1000000, "alpha0_deg": -1.06, "cl_alpha_per_rad": 6.73, "cm": -0.0053, "clmax": 1.541, "cd_min": 0.00587},
+      {"airfoil": "NACA 23015", "reynolds": 500000, "alpha0_deg": -1.09, "cl_alpha_per_rad": 6.66, "cm": -0.0032, "clmax": 1.430, "cd_min": 0.00808},
+      {"airfoil": "NACA 23015", "reynolds": 1000000, "alpha0_deg": -1.14, "cl_alpha_per_rad": 6.48, "cm": -0.0046, "clmax": 1.559, "cd_min": 0.00719},
+      {"airfoil": "NACA 23018", "reynolds": 500000, "alpha0_deg": -1.13, "cl_alpha_per_rad": 6.12, "cm": 0.0020, "clmax": 1.406, "cd_min": 0.00844},
+      {"airfoil": "NACA 23018", "reynolds": 1000000, "alpha0_deg": -1.20, "cl_alpha_per_rad": 6.15, "cm": -0.0016, "clmax": 1.540, "cd_min": 0.00727}
+    ],
+    "xfoil_corrections": {
+      "lift_slope_factor": 0.9,
+      "clmax_decrement": 0.10,
+      "source": "estimated: XFOIL's free-transition predictions run above wind-tunnel lift slope and maximum lift for real model surfaces; the P-51 derivation subtracts 0.05 from measured TN 1945 data for a painted finish, doubled here for XFOIL optimism. Abbott and von Doenhoff list about 0.10-0.105/deg for 230-series sections at high Reynolds number"
+    }
+  }
+}
