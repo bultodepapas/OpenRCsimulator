@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Graphics profile: {"active":"standard","gpu":"","renderer":"gl_compatibility","requested":"ultra"}
+SKIP high native values: renderer=gl_compatibility display=headless
+67 checks, 0 failed

@@ -1,0 +1,29 @@
+# F4U-04: delivery preflight and the g1.2 review
+
+Reviewed 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md). Dated evidence: what the author delivered, what the tools found and what went back to the author in [request revision 3](../../../F4U-BLENDER-HANDOFF.md#0-review-of-g12-and-what-g13-changes). Software preflight, not acceptance.
+
+## Delivery
+
+`f4u_corsair/g1_2/` ("tapas superiores"), received from the owner on 2026-10-22 outside the repository, 81 MB, read-only. g1.2 adds six upper wing-fold covers to g1.1 (door bevels, tail-door relief, paint finish) and g1. Blender 5.2.2 LTS `d13f752e3b9c`, derived from R59 SHA-256 `94edd59b…4dc3`. `aircraft.glb` SHA-256 `2ae83262d2b81bf2d8ad2b4538a3d42b7882d6e72f68d3cddb778e48733a0302`.
+
+It is not taken into `assets/source-deliveries/`: the accepted revision will be, once (F4U-03), so the repository does not carry two 81 MB copies.
+
+## Results
+
+| Check | Result |
+| --- | --- |
+| Manifest | 79 of 79 SHA-256 values match; only the manifest itself is unlisted |
+| Author's verifier (`verification.json`) | Passes: identity root, unit scales, names, sections, required nodes, one rigid `GearRetract` action reproducing 101 reference samples, budgets, span 2.499993 m, GLB hash |
+| [preflight_glb.py](../../../../research/f4u-corsair/F4U-04/preflight_glb.py), revision 2 rules | Passes: 90,861 triangles, 44 mesh nodes, 54 surfaces, 11 materials, one 2048² image, all ten sections, every pivot pair, gear helper and paint material |
+| Godot 4.7.2 import (disposable scratch project) | 81 uniquely named nodes, every required pivot and helper, `openrc_section` extras on all 44 meshes, no animation player |
+| Gear pose | **Down**: the lowest vertex is `gear_wheel_left` at −0.478 m (GLB up), 0.267 m below the lowest wing vertex. Revision 2 asked for frame 100 (stowed); the importer binds carriers only at the stowed sample |
+| Scale | 1:5, as requested by revision 2; the owner moved the model to 1:4.5 the same day |
+| Previews | Clean F4U-1D silhouette, coherent gull wing, closed sections, three original liveries (midnight default, three-tone, scarlet 308) |
+
+Neither the author's verifier nor this preflight checked the exported gear pose. The preflight now does: no gear vertex may lie more than 10 mm below the lowest airframe vertex, propeller excluded (the default in the strict profile, `--gear-stowed` in the generic one). On the repository's assets it passes the Avanti (exported stowed) and rejects the fixed-gear Timber. The mutation suite gained the Timber and Avanti cases and an Avanti main gear moved 0.1 m down: 12 of 12 pass. The span rule follows revision 3 (12.5 m / 4.5 = 2.778 m).
+
+Under revision 3 the preflight rejects g1.2 for exactly the two requested changes: `gear reaches 0.267 m below the lowest airframe vertex` and `span 2.5000 m differs from 2.7778 m`.
+
+## Limits
+
+The scratch Godot import checks structure and extras, not runtime binding, pose sampling or crash separation; those belong to F4U-05/08/11 on the accepted revision. Licence terms are not set in the delivery (F4U-13).

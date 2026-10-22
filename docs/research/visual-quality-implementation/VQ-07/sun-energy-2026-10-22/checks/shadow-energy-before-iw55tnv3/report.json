@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0e50080e-b946-4b57-8c1a-ae8a877d5752",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tools/graphics/test_shadow_energy.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-20261022/shadow-before",
+    "--capture-only"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T22:58:57.480385+00:00",
+  "label": "shadow-energy-before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\shadow-energy-before-iw55tnv3\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\shadow-energy-before-iw55tnv3\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "shadow energy GPU comparison:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.5,
+  "log_bytes": 1250,
+  "log_sha256": "bd486a20302aae95a02660ae8a82fa33c4761a0b9acb0278364f69b60fa715ce"
+}

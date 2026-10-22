@@ -34,6 +34,8 @@ Source texts: [WR L-440](https://ntrs.nasa.gov/citations/19930093637), [RM A7C05
 
 ## 1/5 RC hardware reference candidates
 
+Superseded on 2026-10-22 by the [giant-scale reference](#giant-scale-reference-2026-10-22); kept as the evidence the 1/5 derivation used.
+
 | Candidate | Span / length | Power and gear | Mass evidence | Fit |
 | --- | --- | --- | --- | --- |
 | [FokkeRC Vought F4U-1D Corsair 1/5](https://www.fokkerc.com/product/vought-f4u-1d-corsair-1-5/) | 2,500 mm / 2,052 mm | DLE-111/120 gasoline boxer; Robart #150 rotating pneumatic main retracts; Robart #160 1/5 mechanical tail retract | Not published | **Recommended:** exact 1/5, F4U-1D, rotating retracts match R59's 90° wheel twist. Laser-cut wood kit with 1:1 plans, 297 mm composite cowl. FokkeRC is already cited by the P-51 data |
@@ -57,6 +59,24 @@ Cross-checks with the FokkeRC kit: its 2,052 mm length is within 1.1 % of the pu
 | DLE-111 installed power | [Team Flying Circus](http://www.teamflyingcircus.com/forum/showthread.php?t=5561), [RCU](https://www.rcuniverse.com/forum/gas-engines-142/9214721-dle-111-rpm-numbers.html), [rc-network](https://www.rc-network.de/threads/dle-111-mit-28x12-drehzahl.665634/); [Mejzlik 27x10 2B datasheet](https://www.mejzlik.eu/files/27x10-2b-gas-datasheet.pdf) | Mejzlik 27x10 "a hair over 6800 rpm" static, static Cp 0.027 → 7.3 kW installed; spread 6,250–6,900 rpm on 27x10 propellers, 5,300–6,600 rpm on 28x12 |
 | Propeller | Mejzlik 26x12 3B GAS N datasheet rev. 3.0 | Values in `research/p51/p51-06/mejzlik_26x12.json` rechecked; the calibrated BEM over-predicts thrust by 17–37 % at J 0.59–0.67 |
 | Full-size handling | NACA RM A7C05 text | Clean pb/2V 0.064 (required 0.09); flaps and gear down 0.060–0.076; power-on stall rolls off to the left; lateral oscillation damped at low altitude, rudder oscillation lightly damped |
+
+## Giant-scale reference, 2026-10-22
+
+The owner asked for a bigger, realistic Corsair with a Moki radial and, preferably, a three-blade propeller. The common configuration of that kind is the CARF-Models F4U-1D 1:4.5 with a Moki S250 five-cylinder radial. It supersedes the 1/5 candidates above as D1.
+
+| Topic | Source | Value |
+| --- | --- | --- |
+| Kit | [CARF-Models F4U-1D / F4U-4 1:4.5](https://carf-models.com/en/products/f4u-1d-corsair); dealers [Nexus Models](https://nexusmodels.co.uk/products/carf-f4u-1d-corsair-1-4-5-790000), 8fly.it | 2,800 mm (110 in) span, 2,200 mm (87 in) length, 18–21 kg (39–46 lb) dry; designed around the Moki 250 cc radial with a 32 in three-blade; also allows 80–150 cc gas engines; Sierra Giant Scale retracts, optional hydraulic wing fold |
+| Flown example | [Model Airplane News review](https://www.modelairplanenews.com/carfcorsair) (December 2011) | 53 lb (24.0 kg), 2,090 sq in (1.348 m²), Moki 250, SEP 32x18 two-blade, Sierra retracts, hydraulic fold |
+| Setup | [CARF manual](https://carf-models.com/files/product/34/ed/06/corsair_manual.pdf), "Important Values" and engine installation | CG 10–12 mm ahead of the main spar (spar station not given); aileron 20 mm up / 15 down; elevator 20/20 mm (35 mm up for take-off only); rudder 70 mm; flaps 45° maximum, 35° useful, 30° recommended on approach; 2.5° right thrust, 0.5° up-thrust. Take off at 50 % power; full power can nose the model over because the low-rate elevator cannot hold the tail; no take-off flap; land tail-up; never noticeably exceed 200 km/h |
+| Engine | [Moki S250 operating instructions](https://www.heilemann-sternmotoren.de/images/pdf-dokumente/MOKI_250_S_Radial_Operating_Instructions.pdf); [CARF Moki S250 page](https://carf-models.com/en/products/moki-s250) | 250 cc, bore 42 mm, stroke 36 mm, 15 bhp, 5.4 kg (CARF: about 15.5 PS DIN, 5,100 g); Menz 32x18 two-blade at 4,300 rpm, SEP 30x18 three-blade at 4,400 rpm; 26–40 oz tank; petrol 50:1; ignition with overspeed cut-off. No rated rpm published |
+| Engine limits | [CH Ignitions CDI for the Moki S215/S250/S300](https://ch-ignitions.com/product/ch-cdi-moki-s215-s250-s300/); [Seidel SP-250-X](https://seidel-props.de/en/sp-250-x-beschreibung/) | Rev limiter 6,000 rpm; idle 900 rpm on the ground, 6,000 rpm in a deep dive; "15 hp (Data Airworld)" |
+| Engine, field reports | RCU "MOKI RADIAL Care and Maintenence" thread (search summaries, pages not read in full) | Moki S300 with a SEP 34x18 at 3,950 rpm pulled 29.92 kg; S250 on 32x18 two-blades: SEP 4,200 rpm, Engel 5,200 rpm; factory: about 4,200 rpm as the most efficient static speed |
+| Bigger engine | Moki S400 operating instructions | 400 cc, 23 bhp, 9.6 kg; SEP 38x18 two-blade at 3,800 rpm, SEP 36x18 three-blade. For 1/3.5–1/3 models, not used |
+| Propeller tables | Mejzlik datasheets rev. 3.0, 2025-12-18 (simulated): [32x18 2B GAS](https://www.mejzlik.eu/files/32x18-2b-gas-datasheet.pdf) at 4,300 rpm, [31x12 3B GAS](https://www.mejzlik.eu/files/31x12-3b-gas-datasheet.pdf), [30x13 3B GAS EVO](https://www.mejzlik.eu/files/30x13-3b-gas-evo-datasheet.pdf) | 32x18 2B: 334 g, static Ct 0.0961, Cp 0.0367, limit 5,600 rpm. No 30–32 in high-pitch three-blade table is published; CARF's 32 in ground-adjustable scale three-blade has no data |
+| Propeller mass | Earlier search: Biela 32x18 two-blade semi-scale for the Moki 215 | About 475 g |
+
+The Moki manual's two static points agree within 13 % in torque on the Mejzlik coefficients (13.1 and 14.9 N·m), and the Mejzlik 32x18 thrust coefficient reproduces the measured Moki S300 thrust within 3.5 %. Larger Corsairs exist (1/4 at about 3.1 m, Moki S400 or geared drives such as the Seidel SP-250-X with a 38 in scale propeller), but none was found with a published setup comparable to CARF's.
 
 No F4U sideslip derivatives were found in NTRS beyond RM A7C05's figures (RM SL7E20 covers store drag and buffet only). Transferring the P-51's flight-calibrated body-yaw ratio (3.6 × DATCOM) would make the Corsair directionally unstable, against RM A7C05's measured stability over ±15°, so it is not used.
 

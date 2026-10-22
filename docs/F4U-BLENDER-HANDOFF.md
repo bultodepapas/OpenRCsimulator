@@ -1,8 +1,27 @@
-# F4U Corsair 1/5: Blender game-delivery request
+# F4U Corsair 1/4.5: Blender game-delivery request
 
-2026-10-21 · Revision 2 · To the F4U Corsair model author · Request for game revision **g1**, derived from master **R59**
+2026-10-22 · Revision 3 · To the F4U Corsair model author · Request for game revision **g1.3**, derived from your **g1.2** delivery (master **R59**)
 
-**Revision 2:** `aircraft.glb` is exported with the gear **stowed** (`GearRetract` frame 100), because the simulator's sampled gear rig binds imported carriers at the fully stowed pose. Everything else stays neutral. Sections 3, 4, 7 and 12 are updated.
+**Revision 3:** g1.2 is accepted in substance; [section 0](#0-review-of-g12-and-what-g13-changes) lists the review and the two changes for g1.3: the owner moved the model to **1:4.5**, and `aircraft.glb` must be exported with the gear **stowed** (`GearRetract` frame 100), as revision 2 already asked. Sections 1, 2, 3, 4, 12 and 13 are updated for the new scale.
+
+## 0 Review of g1.2 and what g1.3 changes
+
+Reviewed 2026-10-22 from `f4u_corsair/g1_2/`: all 79 manifest SHA-256 values match; your verifier passes; our independent GLB preflight passes every structural rule; Godot 4.7.2 imports the GLB with 81 uniquely named nodes, every required pivot and gear helper, and `openrc_section` extras on all 44 meshes. The geometry, section split, closure work, door refinement, upper fold covers and the three liveries are what we hoped for. Thank you.
+
+| Item | g1.2 | g1.3 |
+| --- | --- | --- |
+| Scale | 1:5, span 2.499993 m | **1:4.5, span 2.778 m.** On 2026-10-22 the owner chose a bigger model: the CARF-Models-class 1:4.5 Corsair with a Moki radial |
+| Gear in `aircraft.glb` | Down: lowest vertex `gear_wheel_left` at −0.478 m (GLB up), 0.267 m below the lowest wing vertex | **Stowed, exactly `GearRetract` frame 100** (section 7, item 2). Our importer binds every carrier at the stowed sample and refuses another pose |
+| Everything else | Accepted | Unchanged: names, hierarchy, sections, pivots, the action's frames and carriers, materials, UVs, liveries, budgets, documentation |
+
+**Suggested method: scale g1.2, do not re-derive from R59.** Scale the finished g1.2 game scene uniformly by **10/9** (= (1/4.5) / (1/5)) about D0: mesh data, pivot and carrier locations, every location key of `GearRetract`, and the helper empties. Apply it to the data, never as an object scale, so exported node scales stay (1, 1, 1). Rotations, angles, rest orientations, UVs and textures do not change. A uniform scale preserves every clearance and contact result you already verified; only lengths grow by 10/9 (for example the 0.35 mm door bevels become 0.39 mm). Then:
+
+1. Update `metadata.json`: `scale_factor` 0.2222222 (1/4.5); landmarks, pivots, wheel centres, contacts, radii, oleo travel, span, length and propeller diameter × 10/9; the new GLB hash.
+2. Update the verifier's span rule from 2.500 m to **2.778 m** (12.5 m / 4.5; tolerance 0.01 m) and its gear check to compare the GLB with frame 100.
+3. Export `aircraft.glb` with `GearRetract` at frame 100, still without animation, cameras or lights.
+4. Re-run your verifier, round trip, clearance and motion witnesses; regenerate previews, `verification.json`, the manifest and the README figures; add a g1.3 changelog entry. The previous revisions stay as they are.
+
+Expected g1.3 figures: span 2.7778 m, length 2.3811 m, propeller 0.9003 m, tyre diameters 0.1880 m (main) and 0.0778 m (tail), wheel track 0.8622 m, main wheel contact −0.5307 m below the thrust axis with the gear down. Our preflight now checks both changes: with g1.2 it reports `gear reaches 0.267 m below the lowest airframe vertex` and `span 2.5000 m differs from 2.7778 m`.
 
 Thank you for R59. It is an exceptional master: gull wing, folding panels, sequenced retracts, cowl flaps, cockpit and engine are carefully built and documented. OpenRC Simulator cannot fly it directly, however. It is a full-size studio scene with millions of triangles, driver-based rigs and no game export. Please prepare a lightweight, editable **game version** at RC scale, as specified below. Keep R59 intact as the detailed master; this delivery is export preparation, simplification and separation into usable parts, not a rebuild.
 
@@ -14,7 +33,7 @@ Reviewed 2026-10-21 with Blender 5.2.2 LTS (`d13f752e3b9c`), headless, scripts a
 
 | Item | R59 as delivered | Needed for g1 |
 | --- | --- | --- |
-| Scale | Full size: 12.500 m span, 10.718 m spinner tip to tail cone | 1:5, uniform: 2.500 m span |
+| Scale | Full size: 12.500 m span, 10.718 m spinner tip to tail cone | 1:4.5, uniform: 2.778 m span |
 | Frame | Root frame +X aft, +Y right, +Z up; origin near the ground plane, thrust axis at Z ≈ 2.420 m | Section 4 frame, root at D0 |
 | Triangles | ≈5.66 M in 5,616 visible aircraft meshes, plus ≈0.63 M in studio, audit and store collections | 60,000–100,000 target, 150,000 ceiling |
 | Heaviest parts | Propeller hub 946,448 (Subdivision); six exhaust manifolds 1.25 M; engine detail 1.71 M; cowl flaps 0.42 M; cockpit 0.38 M; wing mechanisms 0.32 M | Section 8 budgets |
@@ -34,7 +53,7 @@ Neutral landmarks in the R59 root frame (full size, metres): spinner tip (−5.5
 
 ## 2 Owner decisions for g1
 
-- **Scale 1:5.** Apply one uniform factor of 0.2 to the full-size master. Expected values: span 2.500 m, length ≈2.144 m, propeller ≈0.803 m, main tyres ≈0.169 m, wheel track ≈0.776 m.
+- **Scale 1:4.5** (revision 3; g1 and g1.2 were 1:5). Apply one uniform factor of 1/4.5 to the full-size master, or 10/9 to g1.2 (section 0). Expected values: span 2.778 m, length ≈2.381 m, propeller ≈0.900 m, main tyres ≈0.188 m, wheel track ≈0.862 m.
 - **Retractable gear.** Deliver both main legs and the tailwheel as a sampled retraction (section 7).
 - **Several liveries.** At least three original paint schemes on one shared UV layout (section 9).
 - **Clean configuration.** No external stores, rockets, pylons, folding mechanism, parking struts or diagnostic content in the game file.
@@ -42,7 +61,7 @@ Neutral landmarks in the R59 root frame (full size, metres): spinner tip (−5.5
 ## 3 What to deliver
 
 ```text
-f4u_corsair/g1/
+f4u_corsair/g1_3/
   README.md                       Blender version, how to open and re-export, frame, changes from R59
   CHANGELOG.md
   LICENSE.txt                     authorship and asset terms (section 11)
@@ -74,11 +93,11 @@ Use metres. Left and right always refer to the pilot looking forward.
 | g1 Blender export scene | +X | +Z | +Y |
 | GLB and Godot model | +X | +Y | −Z |
 
-From R59 to the export scene, with D0 measured in the R59 root frame: `export = 0.2 × (r59.y, −(r59.x − D0.x), r59.z − D0.z)`. This is a proper rotation about Z plus uniform scale, without reflection. The Y-up glTF export then applies `godot = (blender.x, blender.z, −blender.y)` once.
+From R59 to the export scene, with D0 measured in the R59 root frame: `export = (1/4.5) × (r59.y, −(r59.x − D0.x), r59.z − D0.z)`. This is a proper rotation about Z plus uniform scale, without reflection. The Y-up glTF export then applies `godot = (blender.x, blender.z, −blender.y)` once.
 
 **D0** is the symmetry plane × wing-root leading-edge station × thrust-axis height. Our estimate is x ≈ −2.923, z ≈ 2.420 in the R59 root frame; please measure it on the actual root section and record it. D0 is not the CG. The export root has zero translation and rotation and unit scale.
 
-Apply the 0.2 factor to mesh data and pivot locations, never as an object scale. Exported node scales are exactly (1, 1, 1), without reflection or shear.
+Apply the 1/4.5 factor to mesh data and pivot locations, never as an object scale. Exported node scales are exactly (1, 1, 1), without reflection or shear.
 
 **Neutral pose:** root identity (no ground attitude baked in); all controls and trims 0, including the left aileron trim tab, elevator and rudder trims and both balance tabs; flaps 0; cowl flaps closed; wings spread and locked, fold hardware hidden; canopy closed; zero oleo compression; tailhook stowed; stores and empty pylons removed; propeller at a recorded blade angle with zero visual pitch offset. The gear pose is set by `GearRetract`: frame 0 (down and locked) for landmarks and clearance checks, frame 100 (stowed) for the GLB export.
 
@@ -214,8 +233,8 @@ No mass, CG, inertia or strength data are required. The simulator team chooses t
 ## 12 Acceptance checklist
 
 - [ ] A clean machine opens `aircraft_game.blend` and re-exports the GLB with the documented command, without R59 or missing files.
-- [ ] A clean Blender scene re-imports `aircraft.glb` at 2.500 m span with the same hierarchy, materials and neutral pose, gear stowed exactly at `GearRetract` frame 100.
-- [ ] Orthographic views of R59 (scaled 0.2) and g1 match in silhouette; markings stay readable in flight views.
+- [ ] A clean Blender scene re-imports `aircraft.glb` at 2.778 m span with the same hierarchy, materials and neutral pose, gear stowed exactly at `GearRetract` frame 100.
+- [ ] Orthographic views of R59 (scaled 1/4.5) and g1.3 match in silhouette; markings stay readable in flight views.
 - [ ] Root identity, metres, D0, left/right and axis conversion are correct; metadata and exported pivots and landmarks agree within 0.1 mm and 0.01°.
 - [ ] Every control and gear pivot exists with the expected parent and moves its own meshes, including horns and markings.
 - [ ] Positive and negative witness poses and the clearance sweep pass, and returning to zero restores neutral.
@@ -228,7 +247,7 @@ No mass, CG, inertia or strength data are required. The simulator team chooses t
 
 ## 13 What we do after delivery
 
-We will import g1 with Godot 4.7.2, verify `extras`, poses and landmarks, bind the controls, sample `GearRetract` into the retractable-gear rig, and check crash separation of each wing panel, tail, cowl, canopy, propeller and gear. We will choose the 1:5 RC hardware reference, derive flight data through our own generator, and add paint-slot and livery bindings. None of that requires changes to the Godot application from you.
+We will import g1.3 with Godot 4.7.2, verify `extras`, poses and landmarks, bind the controls, sample `GearRetract` into the retractable-gear rig, and check crash separation of each wing panel, tail, cowl, canopy, propeller and gear. The RC hardware reference is the CARF-Models F4U-1D 1:4.5 class with a Moki S250 radial; we derive the flight data through our own generator and add paint-slot and livery bindings. None of that requires changes to the Godot application from you.
 
 ## Supporting references
 

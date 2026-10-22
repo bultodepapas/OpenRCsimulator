@@ -4,13 +4,15 @@
 Reads the GLB directly (no Blender, no Godot) and checks the structural rules in docs/F4U-BLENDER-HANDOFF.md:
 ASCII unique node names, identity root, unit node scales, `openrc_section` extras on every mesh and pivot, no
 detachable ancestor capturing another section, required control pivots and gear helpers, paint-region materials,
-embedded images, no cameras/lights/animation/compression extensions, triangle/surface/material budgets and span.
+embedded images, no cameras/lights/animation/compression extensions, triangle/surface/material budgets, span and
+the stowed gear pose (no gear vertex more than 10 mm below the lowest airframe vertex, propeller excluded).
 
     python research/f4u-corsair/F4U-04/preflight_glb.py PATH/aircraft.glb [--report out.json]
-    python research/f4u-corsair/F4U-04/preflight_glb.py PATH/other.glb --profile generic
+    python research/f4u-corsair/F4U-04/preflight_glb.py PATH/other.glb --profile generic [--gear-stowed]
 
 `--profile f4u-g1` (default) applies every rule. `--profile generic` keeps only aircraft-independent rules, so the
-counting code can be checked against the accepted Avanti and Timber assets. Exit status is 1 when any mandatory
+counting code can be checked against the accepted Avanti and Timber assets; `--gear-stowed` adds the stowed-gear
+rule to it (the Avanti is exported stowed, the Timber has fixed gear). Exit status is 1 when any mandatory
 check fails, 2 on unreadable input. Python standard library only. A pass is software preflight, not acceptance.
 """
 import argparse
@@ -46,13 +48,14 @@ FIXED_PARTS = {"fuselage_core": "core", "canopy_glass": "canopy", "wing_center_f
 GEAR_HELPERS = [f"gear_{kind}_{role}" for role in ("left", "right", "tail")
                 for kind in ("compression", "spin", "wheel")] + ["gear_steer_tail"]
 PAINT_MATERIALS = ["paint_body", "paint_wing", "paint_wing_tip", "paint_tail"]
-SPAN_M = 2.500
+SPAN_M = 12.5 / 4.5  # request revision 3: 1/4.5 of R59's 12.5 m span
 SPAN_TOLERANCE_M = 0.010
 TRIANGLE_CEILING = 150000
 TRIANGLE_TARGET = 100000
 SURFACE_TARGET = 60
 MATERIAL_TARGET = 24
 IMAGE_MAX_PX = 2048
+GEAR_STOWED_TOLERANCE_M = 0.010
 COMPONENTS = {5120: ("b", 1), 5121: ("B", 1), 5122: ("h", 2), 5123: ("H", 2), 5125: ("I", 4), 5126: ("f", 4)}
 TYPE_WIDTH = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
 
@@ -133,7 +136,7 @@ def png_size(blob):
     return None
 
 
-def inspect(path, profile):
+def inspect(path, profile, gear_stowed=None):
     gltf, binary = read_glb(path)
     failures, warnings = [], []
     nodes = gltf.get("nodes", [])
@@ -258,6 +261,7 @@ def inspect(path, profile):
     for start in roots:
         visit(start, identity4)
     low, high = [math.inf] * 3, [-math.inf] * 3
+    lowest = {}
     for index, node in enumerate(nodes):
         if "mesh" not in node or index not in world:
             continue
@@ -267,8 +271,17 @@ def inspect(path, profile):
                 point = [m[r][0] * x + m[r][1] * y + m[r][2] * z + m[r][3] for r in range(3)]
                 low = [min(a, b) for a, b in zip(low, point)]
                 high = [max(a, b) for a, b in zip(high, point)]
+                key = sections.get(index, "untagged")
+                lowest[key] = min(lowest.get(key, math.inf), point[1])
     span = high[0] - low[0]
     length = high[2] - low[2]
+    # Stowed gear: retracted carriers sit inside the wing and fuselage, so no gear vertex hangs below the airframe.
+    airframe_low = min((v for key, v in lowest.items() if key not in ("gear", "propeller")), default=math.inf)
+    if (profile == "f4u-g1" if gear_stowed is None else gear_stowed) and "gear" in lowest:
+        drop = airframe_low - lowest["gear"]
+        if drop > GEAR_STOWED_TOLERANCE_M:
+            failures.append(f"gear reaches {drop:.3f} m below the lowest airframe vertex: export the GLB with the gear "
+                            "stowed (GearRetract frame 100)")
 
     images = []
     for image in gltf.get("images", []):
@@ -301,7 +314,8 @@ def inspect(path, profile):
         "counts": {"nodes": len(nodes), "mesh_nodes": len(mesh_stats), "triangles": triangles,
                    "surfaces": surfaces, "materials": materials, "images": len(images)},
         "bounds_m": {"low": [round(v, 6) for v in low], "high": [round(v, 6) for v in high],
-                     "span_x": round(span, 6), "length_z": round(length, 6)},
+                     "span_x": round(span, 6), "length_z": round(length, 6),
+                     "lowest_up_by_section": {key: round(v, 6) for key, v in sorted(lowest.items())}},
         "sections": sorted({value for value in sections.values()}),
         "extensions_used": sorted(used),
         "meshes": mesh_stats, "images": images,
@@ -312,10 +326,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("glb")
     parser.add_argument("--profile", choices=("f4u-g1", "generic"), default="f4u-g1")
+    parser.add_argument("--gear-stowed", action="store_true", help="apply the stowed-gear rule in the generic profile")
     parser.add_argument("--report", help="write the full JSON report here")
     args = parser.parse_args()
     try:
-        report = inspect(args.glb, args.profile)
+        report = inspect(args.glb, args.profile, True if args.gear_stowed else None)
     except (OSError, ValueError, KeyError, struct.error) as error:
         print(f"preflight: cannot read {args.glb}: {error}", file=sys.stderr)
         return 2

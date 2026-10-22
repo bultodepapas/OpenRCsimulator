@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7c3b450d-d1ec-4e3b-8ecb-cdc2d26c4502",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_time_of_day_render_update.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:02:53.509012+00:00",
+  "label": "test_time_of_day_render_update",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_time_of_day_render_update-t2scaucu\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-20261022\\checks\\test_time_of_day_render_update-t2scaucu\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.563,
+  "log_bytes": 5090,
+  "log_sha256": "00f5a0b7ac98e94128b6937c858e3489f887b63b26c2b75c4bc4c0e3ddd16a58"
+}

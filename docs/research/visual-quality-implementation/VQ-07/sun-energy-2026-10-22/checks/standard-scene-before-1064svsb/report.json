@@ -1,0 +1,43 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e3f9f865-5ff4-409b-a2a9-37bac7bbea0e",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--script",
+    "../tools/graphics/capture.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-20261022/standard-before",
+    "--aircraft=p51d-mustang-120",
+    "--hour=15",
+    "--width=1280"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T22:59:16.945457+00:00",
+  "label": "standard-scene-before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\standard-scene-before-1064svsb\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\standard-scene-before-1064svsb\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "graphics capture: lake complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.875,
+  "log_bytes": 395,
+  "log_sha256": "8f4518825e9d799f69167fc104c41e57bdc39bf08e887373061299ac793237ed"
+}

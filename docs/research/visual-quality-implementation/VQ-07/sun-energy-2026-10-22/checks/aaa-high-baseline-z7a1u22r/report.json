@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6bb65c68-892c-4f05-8faa-d8fcf8bf46a7",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tools/graphics/capture.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-20261022/high-baseline",
+    "--view=aircraftground",
+    "--aircraft=p51d-mustang-120",
+    "--hour=15",
+    "--width=1280"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T22:55:43.677505+00:00",
+  "label": "aaa-high-baseline",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\aaa-high-baseline-z7a1u22r\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\aaa-high-baseline-z7a1u22r\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "graphics capture: aircraftground complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 12.953,
+  "log_bytes": 692,
+  "log_sha256": "60fdf69d3548ef715fb77adc4066082a62709fee64da3e43f9aa81c536e2011e"
+}

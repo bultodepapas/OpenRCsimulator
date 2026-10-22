@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """F4U-04: deliberate mutations of an accepted GLB must make preflight_glb.py exit nonzero.
 
-Uses the shipped Timber r2 GLB as a known-good sectioned asset, writes each mutation to a disposable temporary
-copy and never touches the original.
+Uses the shipped Timber r2 GLB as a known-good sectioned asset and the Avanti GLB (exported with its retractable
+gear stowed) for the stowed-gear rule, writes each mutation to a disposable temporary copy and never touches the
+originals.
 
     python research/f4u-corsair/F4U-04/test_preflight_glb.py
 """
@@ -16,6 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 BASE = ROOT / "app/assets/aircraft/turbo-lumber-evolution/timber.glb"
+STOWED = ROOT / "app/assets/aircraft/avanti-s-a200/avanti_s.glb"
 TOOL = HERE / "preflight_glb.py"
 sys.path.insert(0, str(HERE))
 import preflight_glb  # noqa: E402
@@ -30,8 +32,8 @@ def write_glb(path, gltf, binary):
                      + struct.pack("<II", len(binary), 0x004E4942) + binary)
 
 
-def run(path, profile="generic"):
-    return subprocess.run([sys.executable, "-I", str(TOOL), str(path), "--profile", profile],
+def run(path, profile="generic", *extra):
+    return subprocess.run([sys.executable, "-I", str(TOOL), str(path), "--profile", profile, *extra],
                           capture_output=True, text=True).returncode
 
 
@@ -101,6 +103,13 @@ def main():
             write_glb(path, copy, binary)
             expect(f"preflight rejects: {name}", run(path) == 1)
         expect("strict profile rejects a non-F4U asset", run(BASE, "f4u-g1") == 1)
+        expect("fixed-gear Timber fails the stowed-gear rule", run(BASE, "generic", "--gear-stowed") == 1)
+        expect("stowed Avanti passes the stowed-gear rule", run(STOWED, "generic", "--gear-stowed") == 0)
+        stowed, stowed_binary = preflight_glb.read_glb(STOWED)
+        pivot = stowed["nodes"][first(stowed, lambda n: n.get("name") == "MainGear_L_Pivot")]
+        pivot["translation"][1] -= 0.1  # child of the identity root: 0.1 m straight down
+        write_glb(Path(directory) / "gear_down.glb", stowed, stowed_binary)
+        expect("preflight rejects: a main gear 0.1 m below its stowed pose", run(Path(directory) / "gear_down.glb", "generic", "--gear-stowed") == 1)
         bad = Path(directory) / "broken.glb"
         bad.write_bytes(b"not a glb")
         expect("unreadable input exits 2", run(bad) == 2)

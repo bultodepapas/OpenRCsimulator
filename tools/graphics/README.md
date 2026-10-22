@@ -86,3 +86,11 @@ material. Run it with `launch.py --profile standard` and `--profile high`, addin
 compare the production fragment path with StandardMaterial3D references, with
 lighting/fog isolated. Headless execution fails rather than claiming GPU coverage.
 [Mountain color evidence](../../docs/research/visual-quality-implementation/VQ-07/ridge-color-2026-10-21/README.md).
+
+`test_shadow_energy.gd` checks that enabling shadow maps does not dim unoccluded
+Forward+ panels through the production sun adapter. Run with
+`launch.py --profile high --script ../tools/graphics/test_shadow_energy.gd -- --out=<new absolute directory>`.
+It refuses headless rendering, retains on/off PNGs and a JSON verdict, and requires
+agreement within 2/255 per sampled RGB channel. `--capture-only` records a failing
+baseline without a nonzero exit; its report must not be presented as a pass.
+[Sun-energy correction and evidence](../../docs/research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md).

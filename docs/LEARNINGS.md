@@ -60,6 +60,14 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-22 · F4U-04 — a delivery can pass every structural check in the wrong rig pose
+
+The Corsair g1.2 GLB passed the author's verifier, our structural preflight and a Godot import, yet it was exported with the gear down, which the importer's stowed-sample binding refuses. Both checkers tested names, sections, scales and counts, and neither tested where the rig stood. When a contract fixes an export pose, check it geometrically in the receiving preflight (here: no gear vertex more than 10 mm below the airframe), with a known-good and a mutated asset in its test. [Evidence](research/f4u-corsair/F4U-04/README.md)
+
+## 2026-10-22 · F4U-07 — anchor an engine on its maker's static operating points, not its power rating
+
+Rated power overstated the installed level for all three gasoline engines derived so far: the DA-120 sat 24 % below its rating, the DLE-111 8 % and the Moki S250 28 %. The Moki's 15 hp would need 8.9 bar of brake mean effective pressure at its 6,000 rpm limit, while the manual's own propeller and rpm pairs imply 7.0 bar. Derive torque from static rpm on a tabulated propeller, check bmep for plausibility, and keep the rating only as a citation. [Evidence](research/f4u-corsair/F4U-07/README.md)
+
 ## 2026-10-22 · F4U-07 — anchor XFOIL to measured sections before trusting its maximum lift at model Reynolds numbers
 
 Against NACA TR 586's 23012 measurements, XFOIL (Ncrit 9, free transition) over-predicted cl_max by about 16 % and the lift slope by about 20 % at Re 0.5–1 million; the Corsair's first derivation carried a −0.10 correction that left wing CL_max at 1.32 instead of 1.14. Use measured section data at the right Reynolds number for level (TR 586, TN 1945 or similar) and keep XFOIL for trends such as thickness. Likewise check that a manufacturer propeller table exists before using a calibrated BEM: the P-51's BEM over-predicted the Corsair 3-blade's thrust by 17–37 % in the cruise band. [Evidence](research/f4u-corsair/F4U-07/README.md)

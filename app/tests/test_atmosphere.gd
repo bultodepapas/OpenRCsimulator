@@ -58,13 +58,19 @@ func _initialize() -> void:
 	_check("ground fog density = engine fog density", absf(ground.get_shader_parameter("beta") - env.fog_density) < 1e-9)
 
 	# L3: the off reference and the on path retain the same haze sun term.
-	_check("engine shadows explicitly off for the reference", not sun.shadow_enabled and Atmosphere.light_energy() == Spec.ATMOSPHERE.sun_energy)
+	_check("engine shadows explicitly off for the reference", not sun.shadow_enabled
+		and sun.light_energy == Spec.ATMOSPHERE.sun_energy and Atmosphere.light_energy() == Spec.ATMOSPHERE.sun_energy)
 	var product_off: float = Atmosphere.light_energy() * Atmosphere.sun_scatter()
 	Atmosphere.engine_shadows = true
 	var sun2 := Atmosphere.create_sun(holder)
 	var env2 := Atmosphere.environment()
-	_check("engine shadows: PSSM 2 splits to 300 m, energy × compensation", sun2.shadow_enabled and sun2.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
-		and sun2.directional_shadow_max_distance == Spec.ATMOSPHERE.shadow_max_distance_m and absf(sun2.light_energy - Spec.ATMOSPHERE.sun_energy * Spec.ATMOSPHERE.shadow_energy_compat) < 1e-6)
+	var actual_renderer := RenderingServer.get_current_rendering_method()
+	var expected_shadow_compensation := Spec.ATMOSPHERE.shadow_energy_compat if actual_renderer == "gl_compatibility" else 1.0
+	_check("engine shadows: PSSM 2 splits to 300 m, renderer-specific energy", sun2.shadow_enabled
+		and sun2.directional_shadow_mode == DirectionalLight3D.SHADOW_PARALLEL_2_SPLITS
+		and sun2.directional_shadow_max_distance == Spec.ATMOSPHERE.shadow_max_distance_m
+		and absf(sun2.light_energy - Spec.ATMOSPHERE.sun_energy * expected_shadow_compensation) < 1e-6,
+		"renderer=%s energy=%s" % [actual_renderer, sun2.light_energy])
 	_check("engine shadows: fog sun term (energy × scatter) unchanged", absf(Atmosphere.light_energy() * Atmosphere.sun_scatter() - product_off) < 1e-9
 		and absf(env2.fog_sun_scatter * sun2.light_energy - product_off) < 1e-5)
 	Atmosphere.engine_shadows = false
