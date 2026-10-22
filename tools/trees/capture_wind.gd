@@ -252,11 +252,18 @@ func _tree_report() -> Dictionary:
 		if instance.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 			shadow_nodes.append(str(child.name))
 		chunks.append({"name": str(child.name), "instances": instance.multimesh.instance_count})
+	# L8a-R1/VQ-06b: front near-ring trees render as 3D detail instead of cards.
+	var detail_count: int = 0
+	var detail: Node = _field_node.get_node_or_null("treelineDetail")
+	if detail != null:
+		for batch: Node in detail.find_children("*", "MultiMeshInstance3D", true, false):
+			detail_count += (batch as MultiMeshInstance3D).multimesh.instance_count
 	return {
 		"visible": true,
 		"chunks": chunks,
 		"chunk_count": chunks.size(),
-		"tree_instances": count,
+		"tree_instances": count + detail_count,
+		"detail_instances": detail_count,
 		"casts_shadows": not shadow_nodes.is_empty(),
 		"shadow_nodes": shadow_nodes,
 		"unique_materials": _tree_materials.size(),
