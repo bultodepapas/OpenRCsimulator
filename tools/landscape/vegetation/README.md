@@ -70,6 +70,8 @@ The downloaded LandscapeLab Quercus, Quercus 2, Fagus and Pine models are pinned
 
 LandscapeLab source and derived GLBs retain the supplied mesh geometry, transforms, material names, textures and alpha conventions. The offline atlas adapter applies a grounded root wrapper to normalize each tree to 1 m without editing source geometry. The imported-vegetation library keeps source dimensions; runtime placement computes a uniform instance scale from the grounded source bounds and requested height. Poly Haven conversion preserves the supplied plant meshes and records the paired base-color/alpha inputs and conversion hashes. No plant geometry is generated. The adopted understory has 11 ferns and seven flowering Empodium A instances among 285 botanical placements, totaling 89,655 / 90,000 source triangles. Source checks do not establish full-scene or hardware acceptance; consult the current evidence report below.
 
+At runtime, LandscapeLab tree batches set `lod_bias` to their largest instance scale, because MultiMesh LOD ignores per-instance scale. Their alpha-scissor foliage keeps only generated LOD levels that retain at least 25% of its triangles, and the tree-wind shader samples foliage albedo no coarser than mip 6. Leaf maps keep their mipmaps. Without these rules, distant crowns turned bare ([L6c-R1](../../../docs/research/visual-quality-implementation/L6c/species-variety/README.md#distant-landscapelab-foliage)). The static fallback (`--tree_wind=off`) has no mip clamp.
+
 Run the source converters and library checks from the repository root:
 
 ```powershell

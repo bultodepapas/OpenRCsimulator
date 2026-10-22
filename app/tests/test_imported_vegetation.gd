@@ -32,7 +32,6 @@ const VRAM_TEXTURES := {
 	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_base_color_alpha_1k.png": false,
 	"res://assets/landscape/vegetation/models/realistic_understory_2026/textures/flower_empodium_a_nor_gl_1k.jpg": true,
 }
-
 var _failures := 0
 
 
@@ -312,6 +311,10 @@ func _test_vram_texture_policy() -> void:
 			and str(config.get_value("remap", "path.etc2", "")).ends_with(".etc2.ctex"))
 		_check(path.get_file() + " flags normal maps only",
 			config.get_value("params", "compress/normal_map", -1) == (1 if VRAM_TEXTURES[path] else 0))
+		if path.contains("/landscapelab_tree_2026/"):
+			# L6c-R1: leaf maps keep soft mips; the tree shader stops foliage at FOLIAGE_ALPHA_MAX_MIP.
+			_check(path.get_file() + " keeps generated mipmaps",
+				config.get_value("params", "mipmaps/generate", null) == true)
 		var texture := load(path) as Texture2D
 		_check(path.get_file() + " loads as an imported compressed texture",
 			texture is CompressedTexture2D and texture.get_width() > 0)

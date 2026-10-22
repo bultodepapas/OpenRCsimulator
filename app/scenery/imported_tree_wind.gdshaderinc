@@ -42,6 +42,8 @@ uniform vec4 ao_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 uniform float ao_light_affect = 0.0;
 uniform bool use_alpha_scissor = false;
 uniform float alpha_scissor_threshold = 0.5;
+// L6c-R1: highest mip for the foliage alpha test; the default never clamps (StandardMaterial3D parity).
+uniform float alpha_scissor_max_mip = 1000.0;
 // Source-mesh bend frame (local units) and the per-asset crown-top limit in metres.
 uniform float plant_height = 1.0;
 uniform float plant_base_y = 0.0;
@@ -103,8 +105,23 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = use_albedo_texture ? texture(albedo_texture, base_uv) : vec4(1.0);
+	float alpha_tex = albedo_tex.a;
+	if (use_alpha_scissor && use_albedo_texture && alpha_scissor_max_mip < 1000.0) {
+		vec2 texel = base_uv * vec2(textureSize(albedo_texture, 0));
+		vec2 texel_dx = dFdx(texel);
+		vec2 texel_dy = dFdy(texel);
+		float mip = 0.5 * log2(max(max(dot(texel_dx, texel_dx), dot(texel_dy, texel_dy)), 1.0));
+		if (mip > alpha_scissor_max_mip) {
+			// Small distant leaf cards sample mips whose averaged alpha falls under the cutoff, so
+			// crowns turn bare. Stay on the last mip that keeps the atlas coverage; its colour keeps
+			// the near tone (un-premultiplying the black transparent texels would brighten it).
+			albedo_tex = textureLod(albedo_texture, base_uv, alpha_scissor_max_mip);
+			alpha_tex = albedo_tex.a;
+		}
+	}
 	if (use_vertex_color) {
 		albedo_tex *= COLOR;
+		alpha_tex *= COLOR.a;
 	}
 	ALBEDO = albedo_color.rgb * albedo_tex.rgb;
 	float metallic_tex = use_metallic_texture ? dot(texture(metallic_texture, base_uv), metallic_texture_channel) : 1.0;
@@ -116,7 +133,7 @@ void fragment() {
 		NORMAL_MAP = texture(normal_texture, base_uv).rgb;
 		NORMAL_MAP_DEPTH = normal_scale;
 	}
-	if (use_alpha_scissor && albedo_color.a * albedo_tex.a < alpha_scissor_threshold) {
+	if (use_alpha_scissor && albedo_color.a * alpha_tex < alpha_scissor_threshold) {
 		discard;
 	}
 	if (use_ao) {

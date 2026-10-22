@@ -23,6 +23,16 @@ const TREE_WIND_LEAN_LIMITS_M := {
 }
 # Foliage normal tilt at full flutter; shading only, so it cannot change any envelope.
 const LEAF_FLUTTER_TILT := 0.12
+# L6c-R1: distant LandscapeLab crowns turned bare. MultiMesh LOD ignores per-instance scale
+# (Fagus is authored 1 m tall), so these batches bias LOD by their largest instance scale.
+# Generated LODs drop whole leaf cards at small geometric error, so foliage keeps only levels
+# with at least FOLIAGE_LOD_MIN_FRACTION of its triangles. Averaged alpha mips past
+# FOLIAGE_ALPHA_MAX_MIP fall under the cutoff on every LandscapeLab leaf atlas (box-filter
+# coverage ratio 0.60-0.98 at mip 7 versus 1.00-1.11 through mip 6), so tree-wind foliage
+# samples no coarser mip than that.
+const WORLD_LOD_SOURCE_IDS := ["landscapelab_tree_2026"]
+const FOLIAGE_LOD_MIN_FRACTION := 0.25
+const FOLIAGE_ALPHA_MAX_MIP := 6.0
 
 const ALIASES := {
 	# Keep the seven alias slots: slot zero protects all four existing maples,
@@ -54,6 +64,7 @@ static var _wind_shader: Shader
 static var _wind_material_cache: Dictionary = {}
 static var _tree_wind_shaders: Dictionary = {}
 static var _tree_wind_material_cache: Dictionary = {}
+static var _foliage_shadow_mesh_cache: Dictionary = {}
 static var _option_warnings: Dictionary = {}
 static var _tree_wind_warnings: Dictionary = {}
 
@@ -156,6 +167,7 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 		var use_tree_wind := tree_opt_in and _tree_asset_wind_supported(asset_id, parts, records)
 		var use_legacy_wind := enable_wind and not tree_opt_in
 		var groups := _record_groups(records, tree_cell_size if role == "tree" else 0)
+		var world_lod := WORLD_LOD_SOURCE_IDS.has(str(asset.get("source_id", "")))
 		for part_index in range(parts.size()):
 			var part: Dictionary = parts[part_index]
 			var source_mesh: Mesh = part.get("mesh")
@@ -177,6 +189,8 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 					_wind_strength_for_role(role),
 					wind_materials
 				)
+			if world_lod:
+				draw_mesh = _without_sparse_foliage_lods(draw_mesh, part.get("materials", []))
 			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
 			for group in groups:
 				var cell_records: Array = group.get("records", [])
@@ -191,11 +205,14 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 				var bounds_indices: Array[int] = []
 				var has_cull_bounds := false
 				var cull_bounds := AABB()
+				var lod_scale := 0.0
 				for instance_index in range(cell_records.size()):
 					var record: Dictionary = cell_records[instance_index]
 					var plant_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
 					var instance_transform := plant_transform * part_transform
 					multi_mesh.set_instance_transform(instance_index, instance_transform)
+					var axis_scale := instance_transform.basis.get_scale().abs()
+					lod_scale = maxf(lod_scale, maxf(axis_scale.x, maxf(axis_scale.y, axis_scale.z)))
 					var phase := fposmod(float(record.get("seed", 0)) * 0.61803398875, 1.0)
 					multi_mesh.set_instance_custom_data(instance_index, Color(phase, 0.0, 0.0, 1.0))
 					var instance_tint: Color = record.get("tint", Color.WHITE)
@@ -228,6 +245,9 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 					instance.name += "_Cell_%d_%d" % [cell.x, cell.y]
 				instance.multimesh = multi_mesh
 				instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+				if world_lod and lod_scale > 0.0:
+					# LOD error is authored in source units; the largest instance keeps the batch conservative.
+					instance.lod_bias = lod_scale
 				instance.set_meta("_imported_vegetation_wind_enabled", use_legacy_wind)
 				instance.set_meta("_imported_vegetation_tree_wind_enabled", use_tree_wind)
 				if use_tree_wind and has_cull_bounds:
@@ -695,6 +715,49 @@ static func _prepare_tree_wind_mesh(source_mesh: Mesh, source_materials: Array, 
 	return draw_mesh
 
 
+## Drops generated LODs that keep less than FOLIAGE_LOD_MIN_FRACTION of an alpha-scissor foliage
+## surface, in a per-build draw mesh and its shadow mesh. Vertex and index data are unchanged;
+## bark surfaces keep their full LOD chain.
+static func _without_sparse_foliage_lods(draw_mesh: Mesh, source_materials: Array) -> Mesh:
+	if not draw_mesh is ArrayMesh:
+		return draw_mesh
+	var foliage: Array[int] = []
+	for surface_index in range(draw_mesh.get_surface_count()):
+		var material: Material = source_materials[surface_index] if surface_index < source_materials.size() else null
+		if material is BaseMaterial3D \
+				and (material as BaseMaterial3D).transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+			foliage.append(surface_index)
+	if foliage.is_empty():
+		return draw_mesh
+	_keep_dense_lods(draw_mesh as ArrayMesh, foliage)
+	var shadow_mesh := (draw_mesh as ArrayMesh).shadow_mesh
+	if shadow_mesh != null and shadow_mesh.get_surface_count() == draw_mesh.get_surface_count():
+		var key := shadow_mesh.get_instance_id()
+		if not _foliage_shadow_mesh_cache.has(key):
+			var stripped_shadow := shadow_mesh.duplicate() as ArrayMesh
+			_keep_dense_lods(stripped_shadow, foliage)
+			_foliage_shadow_mesh_cache[key] = stripped_shadow
+		(draw_mesh as ArrayMesh).shadow_mesh = _foliage_shadow_mesh_cache[key]
+	return draw_mesh
+
+
+static func _keep_dense_lods(mesh: ArrayMesh, surface_indices: Array[int]) -> void:
+	# ArrayMesh's stored surface format keeps the encoded buffers byte-for-byte; "lods" alternates
+	# edge length and index bytes.
+	var surfaces: Array = mesh.get("_surfaces")
+	for surface_index in surface_indices:
+		var surface: Dictionary = surfaces[surface_index]
+		var bytes_per_index := float((surface.index_data as PackedByteArray).size()) / float(surface.index_count)
+		var kept := []
+		var lods: Array = surface.lods
+		for pair in range(0, lods.size(), 2):
+			var lod_indices := float((lods[pair + 1] as PackedByteArray).size()) / bytes_per_index
+			if lod_indices >= FOLIAGE_LOD_MIN_FRACTION * float(surface.index_count):
+				kept.append_array([lods[pair], lods[pair + 1]])
+		surface["lods"] = kept
+	mesh.set("_surfaces", surfaces)
+
+
 ## Tree-wind materials have no per-build uniforms, so one cached material serves every build.
 static func _tree_wind_material(base_material: BaseMaterial3D, bounds_value: AABB, lean_limit_m: float) -> ShaderMaterial:
 	var key := "%s:%0.6f:%0.6f:%0.6f" % [base_material.get_instance_id(), bounds_value.size.y, bounds_value.position.y, lean_limit_m]
@@ -744,6 +807,7 @@ static func _tree_wind_material(base_material: BaseMaterial3D, bounds_value: AAB
 	material.set_shader_parameter("ao_light_affect", base_material.ao_light_affect)
 	material.set_shader_parameter("use_alpha_scissor", scissor)
 	material.set_shader_parameter("alpha_scissor_threshold", base_material.alpha_scissor_threshold)
+	material.set_shader_parameter("alpha_scissor_max_mip", FOLIAGE_ALPHA_MAX_MIP if scissor else 1000.0)
 	_tree_wind_material_cache[key] = material
 	return material
 
