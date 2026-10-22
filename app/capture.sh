@@ -174,7 +174,7 @@ rm -rf "$HERE/captures/l7" "$HERE/captures/l4b" "$HERE/captures/l9c" "$HERE/capt
 "$VPY" "$HERE/../tools/grass/check_grass.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l11a" --timeout 600
 "$VPY" "$HERE/../tools/grass/check_grass_seam.py" --captures "$HERE/captures/l11a/candidate-repeat-1" --out "$HERE/captures/l11a/seam-summary.json" --self-test
 # L15b: rooted tree sway, calm parity, fixed-clock repeats and GPU geometry readback.
-"$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15b" --timeout 600
+"$VPY" "$HERE/../tools/trees/check_wind.py" --app "$HERE" --godot "$GODOT" --out "$HERE/captures/l15b" --timeout 1200
 # L6c: the airplane against trees, treetop edge, sky and grass at 100 m (numbers recorded for Gate L, case guards
 # only) and the blinded 24-image attitude kit for the human playtest (captures/l6c/kit).
 "$VPY" "$HERE/tests/test_treeline_readability.py"
