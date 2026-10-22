@@ -85,6 +85,35 @@ func _analytic() -> void:
 		and absf(zero_g.needled_head_pa - level) < 1.0e-12
 		and absf(zero_g.factor - zero_g_expected) < 1.0e-12 and zero_g.factor > 1.0,
 		"%s expected factor=%s" % [str(zero_g), str(zero_g_expected)])
+	var zero_context: Dictionary = Feed.prepare_factor_context(zero_g_feed, 1.0, 1.0, 0.0, 1.0, 16000.0, tank, size)
+	var zero_factor: float = Feed.factor_for_stage(zero_context, PackedFloat64Array([0.0, 0.0, 0.0]), 1.0,
+		PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]))
+	_check("scalar closure candidate matches full zero-g feed evaluation bit-for-bit",
+		zero_context.get("ok", false) and zero_factor == zero_g.factor, "candidate=%s full=%s" % [str(zero_factor), str(zero_g.factor)])
+	var axial_force := PackedFloat64Array([-19.6133, 0.0, 0.0])
+	var wet_pickup := PackedFloat64Array([0.0, 0.0, 0.015])
+	var wet_full: Dictionary = Feed.evaluate(zero_g_feed, axial_force, 2.0, 0.4, 0.5, 0.01, 0.4, 5000.0,
+		tank, size, PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]), wet_pickup)
+	var wet_context: Dictionary = Feed.prepare_factor_context(zero_g_feed, 0.4, 0.5, 0.01, 0.4, 5000.0, tank, size)
+	var wet_factor: float = Feed.factor_for_stage(wet_context, axial_force, 2.0,
+		PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]), wet_pickup)
+	_check("scalar closure candidate preserves the submerged pickup result exactly",
+		wet_full.get("ok", false) and wet_context.get("ok", false) and wet_factor == wet_full.factor,
+		"candidate=%s full=%s" % [str(wet_factor), str(wet_full.get("factor", NAN))])
+	var dry_force := PackedFloat64Array([0.0, 0.0, -19.6133])
+	var dry_full: Dictionary = Feed.evaluate(zero_g_feed, dry_force, 2.0, 0.05, 0.5, 0.001, 0.4, 5000.0,
+		tank, size, PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]), wet_pickup)
+	var dry_context: Dictionary = Feed.prepare_factor_context(zero_g_feed, 0.05, 0.5, 0.001, 0.4, 5000.0, tank, size)
+	var dry_factor: float = Feed.factor_for_stage(dry_context, dry_force, 2.0,
+		PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]), wet_pickup)
+	_check("scalar closure candidate preserves a dry authored pickup result exactly",
+		dry_full.get("ok", false) and dry_context.get("ok", false) and dry_factor == dry_full.factor and dry_factor == 0.0,
+		"candidate=%s full=%s" % [str(dry_factor), str(dry_full.get("factor", NAN))])
 
 
 func _rotation_and_solver() -> void:
