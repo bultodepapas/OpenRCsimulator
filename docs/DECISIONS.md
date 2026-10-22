@@ -813,3 +813,27 @@ at 220 m² per tree; frozen trees keep the landmark skyline sectors. Constrain n
 by inputs that do not depend on tree positions (countryside roads and asserted farm boxes,
 woodland-edge templates, farm habitats, scenery), so the regeneration order is acyclic.
 [Evidence](research/visual-quality-implementation/L7-R4/README.md).
+
+### 2026-10-22 — Count every instance in the scene budget (LU-34-R1)
+
+Godot 4.7.2's Compatibility counter adds an instanced mesh's selected LOD once per draw, not per
+instance, so the LU-34 budget undercounted close trees, people and cars, grass, botanicals, the
+fence, the lake and fleet duplicates (79 beeches read 9,312 primitives and drew 735,648). Measure
+each such MultiMesh alone and count every instance (attribution format v2); reject counter-only
+attributions. Re-base `scene_budget.json` on HEAD measured that way without granting new headroom:
+class totals keep their previous ratio to the counter worst case, subsystems their ratio capped at
++10%. The spent pilot reserve stays spent.
+[Evidence](research/landscape-upgrade/LU-34/README.md#revision-lu-34-r1-instanced-lod-meshes-were-undercounted).
+
+### 2026-10-22 — 3D trees in front of the pilot (L8a-R1)
+
+At the owner's request, render the 127 near-ring field trees within ±60° of the runway, as seen
+from the pilot, as 3D LandscapeLab trees (beech in the maple slot) and collide them with the club
+trees' imported envelope; positions and species stay the card hash. Batch them in 256 m cells and
+let their bark switch LOD at 8 px of error through a new ImportedVegetation option; foliage keeps
+the 1 px rule so crowns do not pop while the pilot camera zooms, and club trees are unchanged.
+Counted per instance, their cost in the pilot view falls from 595,362 (cells alone) to 379,224. No
+matching reduction exists in the worst pilot view, a 10° telephoto where club and front trees are
+legitimately at full detail, so allocate the trees their measured cost +10% and raise the pilot
+total from 973,000 to 1,307,000.
+[Evidence](research/visual-quality-implementation/L8a-R1/README.md).

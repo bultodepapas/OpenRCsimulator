@@ -26,9 +26,18 @@ static func spec(prefab: String, seed: int, group_id: String = "") -> Dictionary
 		height = 0.68 + 0.16 * Palette.hash01(seed, 1)
 	elif prefab == "flower_clump":
 		height = 0.32 + 0.06 * Palette.hash01(seed, 1)
-	var bounds: Dictionary = asset.source_bounds_m
 	if prefab == "sapling":
 		height = 3.2 + 1.6 * Palette.hash01(seed, 1)
+	return asset_spec(asset_id, height)
+
+
+## Uniform-height dimensions of one imported asset: the rendered fit and the coarse obstacle envelope.
+## Shared by scenery plants and the L8a-R1 3D field trees.
+static func asset_spec(asset_id: String, height: float) -> Dictionary:
+	var asset := Library.get_asset(asset_id)
+	if asset.is_empty():
+		return {}
+	var bounds: Dictionary = asset.source_bounds_m
 	var scale := height / float(bounds.height)
 	var source_size: Array = bounds.size
 	# Downloaded crowns are asymmetric about their grounded stems. Use the same

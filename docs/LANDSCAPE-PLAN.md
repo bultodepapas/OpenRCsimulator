@@ -66,6 +66,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 | L6c-R1 | Downloaded beech and young oak at the club; LandscapeLab crowns stay full at range (world-unit LOD bias, foliage LOD floor, mip-6 foliage clamp); delivered 2026-10-21. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 | L7-R3 | Near-ring woods, hedgerows and field trees with the same 480-tree count; landmark skyline preserved; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 | L7-R4 | Single-species far woods at the habitat-v1 sites; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
+| L8a-R1 | The 127 near-ring trees in front of the pilot render and collide as 3D LandscapeLab trees, in 256 m cells with an 8 px bark LOD error; delivered 2026-10-22. | [Tree follow-ups](plans/tree-forest-quality.md#follow-ups-2026-10-21). |
 
 ## Landscape integration
 

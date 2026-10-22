@@ -170,6 +170,9 @@ echo "== L7-R1 woodland-edge recipe and full-envelope exclusions stay current"
 python3 "$HERE/../tools/trees/place_woodland_edges.py" --check
 python3 "$HERE/../tools/trees/test_place_woodland_edges.py"
 
+echo "== LU-34-R1 scene budget report counts every instance of instanced LOD meshes"
+python3 "$HERE/../tools/scenery/test_attribution_report.py"
+
 echo "== L11a offline grass placement matches committed offsets"
 python3 "$HERE/../tools/grass/place.py" --check
 python3 "$HERE/../tools/grass/test_place.py"
