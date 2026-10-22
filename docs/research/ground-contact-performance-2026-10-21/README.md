@@ -39,8 +39,30 @@ The Stik remains slow. Its optional fuel-feed closure evaluates engine
 lifecycle, coupling and feed pressure four times per stage. A frozen 30 m
 airborne probe measured 1.48 ms for its `GlowFlight.point` versus 0.137 ms
 for the Extra. The candidate fuel factor changes torque and apparent gravity,
-so reusing those sample results would alter the numerical law. This change
-addresses the shared ground-contact overhead only.
+so reusing those sample results would alter the numerical law. The later scalar
+feed-factor change below removes repeated telemetry construction while keeping
+the same stage closure and solver callback count.
+
+## Glow follow-up
+
+`GlowFlight.point` now prepares candidate-independent fuel-feed terms once per
+stage, evaluates only the scalar factor for each solver candidate, then builds
+full feed telemetry for the accepted candidate. The endpoint-plus-seed solver
+was retained. Against the original full-feed closure, the [short trimmed trace](glow-original.csv)
+and [candidate trace](glow-scalar-only.csv) match exactly after excluding the
+UTC creation line. The [original](glow-full-throttle-original.bin) and
+[candidate](glow-full-throttle-candidate.bin) 240-tick, full-throttle airborne
+binary state histories are both 94,080 bytes with SHA-256
+`A51427333C5C2A854282B1559466DF553EE78B2EA77F1EC1CEAB12FF84DC0281`.
+The original source was commit `32a7cff0`; the candidate appears in
+`126fbc47`. `test_glow_fuel_feed.gd` passed 41 checks and
+`test_glow_flight_physics.gd` passed 110.
+
+On the same host, the MAX-55AX whole-tick bench changed from 4,213.6 to
+4,113.0 µs/tick in its trimmed case and 4,302.4 to 4,014.0 µs/tick stalled.
+These are modest improvements (2.4% and 6.7%) and remain near the 4,167 µs
+240 Hz interval. The three glow Stik variants still need a larger, separately
+validated performance improvement to guarantee real-time flight on this host.
 
 ## Fleet and lake follow-up
 
@@ -88,11 +110,17 @@ comparison matched every terrain output field exactly against the previous
 sampler; 24 lake hull states across six finite-fuel aircraft matched complete
 load results exactly. The frozen lake oracle suite passed 761 checks.
 
-The [low bank probe](lake_bank_probe.gd) still costs about 2.5–3.2 ms per
-stage for Extra, P-51 and Turbo Lumber near the sloped shoreline. Its terrain
-height and slope vary across the finite-difference stencil, so the deep-bed
-shortcut cannot apply. This is a remaining low-altitude performance limit,
-not evidence of changed forces or a physical handling defect.
+The [low bank probe](lake_bank_probe.gd) found that many hull points remained
+above the field datum while passing over the bank. Validated lake bed and bank
+heights are below that datum, so `HullContact` now skips terrain sampling when
+both the body contact depth and transformed point height are nonpositive. It
+keeps a placeholder cache entry so the later load path reads the same point
+order. In an isolated clean, paired 40-stage probe, Extra changed from
+2,076 to 934 µs/stage and P-51 from 2,584 to 913; three glow Stiks changed
+from 1,718–1,800 to 751–789. Ugly Stik and Turbo Lumber changed little.
+Eighteen paired contact checks matched loads, status and reason byte-exactly;
+the 761-check lake terrain oracle also passed. These are synthetic static
+poses and do not measure frame rate or establish physical handling.
 
 A later [native P-51 frame capture](p51d-mustang-120-followup-frames.json) on
 the current contact/lake source remains slow at p50 62.8 ms over 44 frames.
@@ -100,11 +128,49 @@ During 3.06 s wall time, its simulation advanced 2.2 s (528 ticks), without
 pausing or faulting. Every measured frame ended 12 ticks later, the configured
 maximum steps per frame. Its smoothed physics cost was 4.24 ms/tick against a
 4.17 ms budget at 240 Hz; this explains why runway motion appears delayed in
-real time even after the contact fix. A fixed-state [stage profile](p51_stage_profile.gd)
-measured about 496 µs for the P-51 stage, with 110 µs in aero and 103 µs in
-slipstream; these are overlapping components, not additive tick costs. The
-existing `bench_regimes.gd` P-51 fixture fails its reset invariants on this
-source, so its output was discarded rather than used as performance evidence.
+real time even after the contact fix. The frame report's physics cost is a
+5%-weight moving average, not a per-tick median. The corrected
+[fixed-state stage probe](p51_stage_profile.gd) installs the lake and soft
+contacts, but it has no stable paired measurement on this busy host; no
+component cost is inferred from it. The existing
+`bench_regimes.gd` P-51 fixture fails its reset invariants on this source, so
+its output was discarded rather than used as performance evidence.
+
+A second [native P-51 capture](p51d-mustang-120-shore-followup-frames.json)
+after the bank guard still has p50 62.9 ms across 43 frames. It advanced
+2.15 s of simulation in 3.03 s wall time, with no fault; its smoothed physics
+cost ended at 4.00 ms/tick. This run was not paired under controlled host
+load, so its difference from the earlier 4.24 ms/tick is not attributed to
+the bank change. Both captures show the remaining real-time backlog.
+
+The P-51's off-source RPM preview in `FlightSession._substeps` cost about
+0.88 ms/tick in one instrumented run. Skipping it for a full tank changed the
+substep count from 2 to 1 near the stopped-RPM boundary and changed the next
+state. A scalar `Propulsion.shaft_rate` replacement also differed because
+rotor/body coupling uses aerodynamic and ground moments. Neither shortcut was
+integrated; those measurements identify a residual cost, not a safe fix.
+An apparent duplicate wing-lift calculation in the global ground-effect
+branch cost about 22 µs per call, but that branch ran only once in 1,920
+P-51 RK stage calls over a two-second runway probe. Its optimization was
+reverted because it would not materially improve the flight loop.
+
+## Runway acceleration in simulation time
+
+The [fixed-tick probe](runway_acceleration_probe.gd) and its [Windows Godot
+4.7.2 result](runway-acceleration-probe.json) compare immediate full throttle
+with a 0-to-1 command ramp over two simulated seconds on the same flat runway.
+The Extra is glow-started before each run. All four cases completed 480 ticks
+without a crash or solver fault. At two seconds, the Extra reached 5.61 m/s
+with immediate throttle and 3.46 m/s with the ramp; the P-51 reached 9.89 and
+8.38 m/s. The Extra's three wheel anchors remained stuck at 0.5 s in both
+cases, then slid by 1 s. P-51 wheel anchors slid by 0.5 s.
+
+Keyboard and default gamepad stick-rate profiles both increase throttle at
+0.5 per simulated second; the selectable absolute-trigger gamepad profile
+applies its axis position directly. Thus the default command ramp, Extra glow
+spool and estimated wheel breakaway all contribute to the perceived initial
+delay. These probes do not establish an incorrect coefficient or a real-aircraft
+acceleration target; no propulsion or friction data was retuned.
 
 ## Numerical evidence
 
@@ -120,7 +186,7 @@ The changed solver fingerprint precludes calling the candidate an exact replay.
 
 The focused mass-contact test covers a hull inside broad-phase reach with no
 actual contact, a clear hull above the lake bed, and mixed penetrating lake,
-clear lake and dry-ground points with aggregate force and torque checks (37
+clear lake and dry-ground points with aggregate force and torque checks (38
 checks, zero failures). Godot import parsed the project. The dynamic-mass contact,
 dynamic-mass session, aircraft contact session, P-51 ground, and glow flight
 physics tests passed. The P-51 takeoff gate still gives 4.0 s simulated

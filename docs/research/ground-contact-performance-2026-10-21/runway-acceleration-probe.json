@@ -1,0 +1,283 @@
+{
+  "cases": [
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "complete_2s": true,
+      "engine_running": true,
+      "samples": [
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 5.64517150601159E-10,
+          "rpm": 2200.0,
+          "speed_mps": 3.65969824666273E-08,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 0,
+          "time_s": 0.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.0121750472327217,
+          "rpm": 4054.00903638461,
+          "speed_mps": 0.0136288641416508,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 120,
+          "time_s": 0.5
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.671936676347481,
+          "rpm": 6893.25180459101,
+          "speed_mps": 0.682649905138309,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 240,
+          "time_s": 1.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 5.52531292240655,
+          "rpm": 9452.38282405564,
+          "speed_mps": 5.6106725579225,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 480,
+          "time_s": 2.0
+        }
+      ],
+      "throttle_profile": "immediate"
+    },
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "complete_2s": true,
+      "engine_running": true,
+      "samples": [
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 5.64517150601159E-10,
+          "rpm": 2200.0,
+          "speed_mps": 3.65969824666273E-08,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 0.0,
+          "tick": 0,
+          "time_s": 0.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.00569996937941076,
+          "rpm": 3149.48345768628,
+          "speed_mps": 0.00744303739736333,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 0.25,
+          "tick": 120,
+          "time_s": 0.5
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.167669012840036,
+          "rpm": 5200.30485436057,
+          "speed_mps": 0.170490990149282,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 0.5,
+          "tick": 240,
+          "time_s": 1.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 3.40799470752243,
+          "rpm": 8857.52481744452,
+          "speed_mps": 3.46367165251544,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 480,
+          "time_s": 2.0
+        }
+      ],
+      "throttle_profile": "ramp2s"
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "complete_2s": true,
+      "engine_running": true,
+      "samples": [
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.0,
+          "rpm": 1399.99999870981,
+          "speed_mps": 0.0,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 0,
+          "time_s": 0.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.680699526581346,
+          "rpm": 2961.32409830783,
+          "speed_mps": 0.700490724669352,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 120,
+          "time_s": 0.5
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 2.87276211070239,
+          "rpm": 3981.62745686826,
+          "speed_mps": 2.95637027916186,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 240,
+          "time_s": 1.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 9.63481441631148,
+          "rpm": 4719.31255541073,
+          "speed_mps": 9.89040770730131,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 480,
+          "time_s": 2.0
+        }
+      ],
+      "throttle_profile": "immediate"
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "complete_2s": true,
+      "engine_running": true,
+      "samples": [
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.0,
+          "rpm": 1399.99999870981,
+          "speed_mps": 0.0,
+          "stuck_wheels": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "throttle_command": 0.0,
+          "tick": 0,
+          "time_s": 0.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 0.283307437884718,
+          "rpm": 2381.02503733417,
+          "speed_mps": 0.29137714058954,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 0.25,
+          "tick": 120,
+          "time_s": 0.5
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 1.83237093911362,
+          "rpm": 3600.17949836493,
+          "speed_mps": 1.88448664057036,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 0.5,
+          "tick": 240,
+          "time_s": 1.0
+        },
+        {
+          "crash": "",
+          "fault": "",
+          "forward_body_mps": 8.1412544333538,
+          "rpm": 4641.6623070383,
+          "speed_mps": 8.37749251990002,
+          "stuck_wheels": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "throttle_command": 1.0,
+          "tick": 480,
+          "time_s": 2.0
+        }
+      ],
+      "throttle_profile": "ramp2s"
+    }
+  ],
+  "controls": "zero roll/pitch/yaw",
+  "engine_start": "Extra glow_start() before stepping; P-51 runway-start engine state",
+  "errors": [],
+  "field": "default",
+  "format": "openrc-runway-acceleration-probe v1",
+  "ramp_definition": "throttle command increases linearly from 0 to 1 over 480 ticks (2 simulated seconds)",
+  "tick_rate_hz": 240
+}

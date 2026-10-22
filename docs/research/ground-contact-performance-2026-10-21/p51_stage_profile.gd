@@ -2,6 +2,7 @@ extends SceneTree
 
 const Flight = preload("res://sim/flight_session.gd")
 const Field = preload("res://data/field_loader.gd")
+const Lake = preload("res://data/lake_loader.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const LiquidFlight = preload("res://sim/liquid_fuel_flight.gd")
 const Dynamics = preload("res://physics/dynamics.gd")
@@ -26,8 +27,10 @@ func _run() -> void:
 	for id in ["p51d-mustang-120"]:
 		var session = Flight.new()
 		session.input_enabled = false
+		session.soft_hull_contacts = true
 		session.setup(Catalog.entry(id).data, id)
 		session.set_field(Field.load_from().field)
+		session.set_lake_context(Lake.load_from().lake)
 		session.start_choice = Flight.START_RUNWAY
 		root.add_child(session)
 		session.reset()
@@ -43,6 +46,9 @@ func _run() -> void:
 		var density: float = session.air_density(body)
 		var result := {
 			"id": id,
+			"substeps": session.sim.model.substeps.call(body, values, 0.0) if session.sim.model.substeps.is_valid() else 1,
+			"step_policy": session.sim.model.step_policy.is_valid(),
+			"events": session.sim.model.events.size(),
 			"full_stage_us": _measure(func(): session.sim.model.stage.call(body, values, 0.0)),
 			"coupled_response_us": _measure(func(): session._coupled_response(body, base, 0.0, live, true)),
 			"ground_evaluation_us": _measure(func(): session._ground_evaluation(body, aux, base, {}, live)),

@@ -161,6 +161,12 @@ static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, pro
 			var point_ned: PackedFloat64Array = _point_ned(s, hull.slice(i, i + 3))
 			if not _finite_array(point_ned):
 				return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+			# Valid lake beds/banks are down from the field datum. A point at or
+			# above that datum and clear of flat ground cannot touch either surface.
+			if depth <= 0.0 and point_ned[2] <= 0.0:
+				lake_samples.append({point_ned = point_ned, terrain = {covered = false}})
+				active[i / 3] = 0
+				continue
 			var terrain: Dictionary = _lake_sample(geometry, point_ned)
 			lake_samples.append({point_ned = point_ned, terrain = terrain})
 			if bool(terrain.get("covered", false)):
