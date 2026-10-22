@@ -2,6 +2,7 @@
 
 Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
 
+When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for specialist roles, task boundaries and evidence handoffs. Select only the specialists useful for the current task.
 
 do not creat thing that you can free download
 
