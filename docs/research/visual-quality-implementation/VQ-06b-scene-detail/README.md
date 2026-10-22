@@ -35,7 +35,39 @@ Precedence: `--scene_detail=<level>` after `--`, then `OPENRC_SCENE_DETAIL`, the
 
 **Settings.** One row on the Graphics page, with Spanish text. It previews and is kept like text size, without the 15-second display trial, because it cannot blank the screen. Restore graphics defaults returns it to High. To fit the page at 1080p without scrolling (UI-23-R4), the "High is a temporary experiment" note moved from its own label into the Try High button's tooltip.
 
-PRESET_COST
+## Cost per level
+
+Scene budget at 1280×720, primitives counted per instance ([LU-34-R1](../../landscape-upgrade/LU-34/README.md#revision-lu-34-r1-instanced-lod-meshes-were-undercounted)), one run per level with `OPENRC_SCENE_DETAIL=<level> tools/scenery/budget.sh` ([summaries](budget/); High is the [L8a-R1 run](../L8a-R1/budget/summary-720.md)). [`fixtures/preset_cost_table.py`](fixtures/preset_cost_table.py) builds the table and fails if a run was taken at another level or a level draws more than the one above it:
+
+| Level | Pilot worst view: primitives / draws | Ground worst view | Aerial worst view | Pilot median | 3D field trees, pilot worst |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Low | 756,608 / 297 | 811,001 / 327 | 551,768 / 335 | 405,042 | 0 |
+| Medium | 856,360 / 333 | 904,675 / 362 | 636,113 / 372 | 435,348 | 0 |
+| **High** | 1,295,621 / 350 | 1,058,511 / 369 | 774,886 / 374 | 816,151 | 379,224 |
+| Extreme | 1,321,436 / 349 | 1,624,964 / 388 | 1,288,039 / 403 | 817,912 | 481,986 |
+
+- **Medium to High is the big step** (pilot worst +51%, median +87%): the 3D front trees. Medium is the setting for weaker GPUs.
+- **Low saves 12% more than Medium** in the pilot worst view, through fewer props and a 4 px LOD threshold. The gain is modest because that view is a 10° telephoto: club trees (43%) and people and cars (25%) stay at full detail even at 4 px, and the ground (11%) and fence (10%) have no LODs. The proposed [L6c-R2](../../../plans/tree-forest-quality.md#follow-ups-2026-10-21) bark LOD error for club trees targets the largest share.
+- **Extreme adds 2% in pilot views,** which already face the front trees, but 54% in ground views and 66% from the air, where the whole ring of 480 trees is in view.
+- Draw calls change little (297–403), so the levels differ in geometry, not in submissions.
+
+The budget in `scene_budget.json` guards High; the other levels are measured and reported, not capped. llvmpipe counts are workload, not frame time.
+
+### What each level shows
+
+[`fixtures/preset_capture.gd`](fixtures/preset_capture.gd) renders the production world at each level with the preset applied as in the app ([views](fixtures/preset_views.json)); each image shows Low, Medium, High and Extreme.
+
+| View | Four levels |
+| --- | --- |
+| Pilot, 50° north | ![](pilot-north.jpg) |
+| Pilot, 20° north-west | ![](front-zoom20-nw.jpg) |
+| Pilot, 50° east | ![](pilot-east.jpg) |
+| Club, from the flight line | ![](club-south.jpg) |
+| From 120 m | ![](aerial-120m.jpg) |
+
+- Low drops people and ornament props, Medium a fixed seeded half of them (SC-24 tiers); landmarks, buildings, fences and tree positions stay.
+- High turns the front woods 3D; Extreme also the side and rear woods (east view, aerial).
+- From the air, the 3D woods read paler and bluer than the cards beside them. The proposed [L8a-R2](../../../plans/tree-forest-quality.md#follow-ups-2026-10-21) card colour match addresses this.
 
 ## Checks
 

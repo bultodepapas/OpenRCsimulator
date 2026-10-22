@@ -1,0 +1,3681 @@
+{
+ "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "classes": {
+  "aerial": {
+   "groups": {
+    "field_Countryside": {
+     "draws_max": 9,
+     "draws_median": 1.5,
+     "primitives_max": 2884,
+     "primitives_median": 217.0
+    },
+    "field_DistantRidges": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "field_FlightCueShadows": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "field_Lake": {
+     "draws_max": 13,
+     "draws_median": 1.5,
+     "primitives_max": 54598,
+     "primitives_median": 25101.0
+    },
+    "field_NearGrass": {
+     "draws_max": 3,
+     "draws_median": 0.0,
+     "primitives_max": 3725,
+     "primitives_median": 0.0
+    },
+    "field_flightline_barrier": {
+     "draws_max": 6,
+     "draws_median": 0.0,
+     "primitives_max": 42926,
+     "primitives_median": 0.0
+    },
+    "field_pilot_station": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 6126,
+     "primitives_median": 0.0
+    },
+    "field_rough": {
+     "draws_max": 1,
+     "draws_median": 1.0,
+     "primitives_max": 84960,
+     "primitives_median": 84960.0
+    },
+    "field_treeline": {
+     "draws_max": 3,
+     "draws_median": 0.5,
+     "primitives_max": 4344,
+     "primitives_median": 642.0
+    },
+    "field_windsock": {
+     "draws_max": 4,
+     "draws_median": 0.0,
+     "primitives_max": 5268,
+     "primitives_median": 0.0
+    },
+    "scenery_AirfieldDetail": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_Birds": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_BotanicalHabitats": {
+     "draws_max": 14,
+     "draws_median": 9.0,
+     "primitives_max": 3351,
+     "primitives_median": 1762.0
+    },
+    "scenery_BuildingRoofs": {
+     "draws_max": 7,
+     "draws_median": 0.0,
+     "primitives_max": 28,
+     "primitives_median": 0.0
+    },
+    "scenery_ImportedVegetationBatches": {
+     "draws_max": 22,
+     "draws_median": 16.0,
+     "primitives_max": 109106,
+     "primitives_median": 82644.5
+    },
+    "scenery_Motion": {
+     "draws_max": 1,
+     "draws_median": 0.0,
+     "primitives_max": 160,
+     "primitives_median": 0.0
+    },
+    "scenery_ParkedAircraft": {
+     "draws_max": 179,
+     "draws_median": 0.0,
+     "primitives_max": 92875,
+     "primitives_median": 0.0
+    },
+    "scenery_Population": {
+     "draws_max": 30,
+     "draws_median": 10.0,
+     "primitives_max": 90136,
+     "primitives_median": 38892.5
+    },
+    "scenery_PopulationContacts": {
+     "draws_max": 1,
+     "draws_median": 0.5,
+     "primitives_max": 1271,
+     "primitives_median": 635.5
+    },
+    "scenery_WoodlandEdges": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_cells": {
+     "draws_max": 15,
+     "draws_median": 5.5,
+     "primitives_max": 35770,
+     "primitives_median": 3271.0
+    },
+    "scenery_contact_shadows": {
+     "draws_max": 15,
+     "draws_median": 3.0,
+     "primitives_max": 558,
+     "primitives_median": 108.0
+    },
+    "scenery_hedges": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_pit_shelters": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 12096,
+     "primitives_median": 0.0
+    },
+    "world_AirfieldLighting": {
+     "draws_max": 16,
+     "draws_median": 0.0,
+     "primitives_max": 5866,
+     "primitives_median": 0.0
+    },
+    "world_Campfire": {
+     "draws_max": 4,
+     "draws_median": 2.0,
+     "primitives_max": 610,
+     "primitives_median": 305.0
+    },
+    "world_FieldLights": {
+     "draws_max": 12,
+     "draws_median": 3.0,
+     "primitives_max": 432,
+     "primitives_median": 192.0
+    },
+    "world_SunGlare": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    }
+   },
+   "sun_shadow_pass": {
+    "draws_max": 18,
+    "primitives_max": 22316
+   },
+   "total": {
+    "draws_max": 335,
+    "draws_median": 63.0,
+    "primitives_max": 551768,
+    "primitives_median": 240870.5
+   },
+   "views": [
+    "aerial_overview",
+    "top_140",
+    "top_140_b",
+    "top_140_c"
+   ]
+  },
+  "ground": {
+   "groups": {
+    "field_Countryside": {
+     "draws_max": 11,
+     "draws_median": 8.5,
+     "primitives_max": 2962,
+     "primitives_median": 2079.0
+    },
+    "field_DistantRidges": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 13824,
+     "primitives_median": 0.0
+    },
+    "field_FlightCueShadows": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "field_Lake": {
+     "draws_max": 13,
+     "draws_median": 0.0,
+     "primitives_max": 57874,
+     "primitives_median": 0.0
+    },
+    "field_NearGrass": {
+     "draws_max": 3,
+     "draws_median": 2.5,
+     "primitives_max": 12441,
+     "primitives_median": 10562.5
+    },
+    "field_flightline_barrier": {
+     "draws_max": 6,
+     "draws_median": 1.0,
+     "primitives_max": 74193,
+     "primitives_median": 2.0
+    },
+    "field_pilot_station": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 6126,
+     "primitives_median": 0.0
+    },
+    "field_rough": {
+     "draws_max": 1,
+     "draws_median": 1.0,
+     "primitives_max": 84960,
+     "primitives_median": 84960.0
+    },
+    "field_treeline": {
+     "draws_max": 4,
+     "draws_median": 2.5,
+     "primitives_max": 5460,
+     "primitives_median": 3270.0
+    },
+    "field_windsock": {
+     "draws_max": 4,
+     "draws_median": 0.0,
+     "primitives_max": 5268,
+     "primitives_median": 0.0
+    },
+    "scenery_AirfieldDetail": {
+     "draws_max": 3,
+     "draws_median": 1.5,
+     "primitives_max": 926,
+     "primitives_median": 170.0
+    },
+    "scenery_Birds": {
+     "draws_max": 1,
+     "draws_median": 0.0,
+     "primitives_max": 24,
+     "primitives_median": 0.0
+    },
+    "scenery_BotanicalHabitats": {
+     "draws_max": 20,
+     "draws_median": 4.5,
+     "primitives_max": 14155,
+     "primitives_median": 6167.5
+    },
+    "scenery_BuildingRoofs": {
+     "draws_max": 17,
+     "draws_median": 7.5,
+     "primitives_max": 68,
+     "primitives_median": 34.0
+    },
+    "scenery_ImportedVegetationBatches": {
+     "draws_max": 30,
+     "draws_median": 24.0,
+     "primitives_max": 311178,
+     "primitives_median": 227562.0
+    },
+    "scenery_Motion": {
+     "draws_max": 2,
+     "draws_median": 1.0,
+     "primitives_max": 194,
+     "primitives_median": 114.0
+    },
+    "scenery_ParkedAircraft": {
+     "draws_max": 179,
+     "draws_median": 68.5,
+     "primitives_max": 123699,
+     "primitives_median": 52543.0
+    },
+    "scenery_Population": {
+     "draws_max": 30,
+     "draws_median": 30.0,
+     "primitives_max": 195554,
+     "primitives_median": 133641.0
+    },
+    "scenery_PopulationContacts": {
+     "draws_max": 1,
+     "draws_median": 1.0,
+     "primitives_max": 1271,
+     "primitives_median": 1271.0
+    },
+    "scenery_WoodlandEdges": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_cells": {
+     "draws_max": 26,
+     "draws_median": 10.0,
+     "primitives_max": 124285,
+     "primitives_median": 35956.0
+    },
+    "scenery_contact_shadows": {
+     "draws_max": 18,
+     "draws_median": 2.5,
+     "primitives_max": 612,
+     "primitives_median": 81.0
+    },
+    "scenery_hedges": {
+     "draws_max": 1,
+     "draws_median": 0.0,
+     "primitives_max": 128,
+     "primitives_median": 0.0
+    },
+    "scenery_pit_shelters": {
+     "draws_max": 2,
+     "draws_median": 1.0,
+     "primitives_max": 12096,
+     "primitives_median": 6402.0
+    },
+    "world_AirfieldLighting": {
+     "draws_max": 16,
+     "draws_median": 8.0,
+     "primitives_max": 6026,
+     "primitives_median": 5233.0
+    },
+    "world_Campfire": {
+     "draws_max": 4,
+     "draws_median": 0.0,
+     "primitives_max": 610,
+     "primitives_median": 0.0
+    },
+    "world_FieldLights": {
+     "draws_max": 12,
+     "draws_median": 9.0,
+     "primitives_max": 432,
+     "primitives_median": 144.0
+    },
+    "world_SunGlare": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    }
+   },
+   "sun_shadow_pass": {
+    "draws_max": 20,
+    "primitives_max": 66554
+   },
+   "total": {
+    "draws_max": 327,
+    "draws_median": 187.5,
+    "primitives_max": 811001,
+    "primitives_median": 628174.5
+   },
+   "views": [
+    "car_park",
+    "fleet_close",
+    "postcard_club",
+    "postcard_pavilion",
+    "postcard_pits",
+    "postcard_meadow",
+    "postcard_farm",
+    "runway_threshold"
+   ]
+  },
+  "pilot": {
+   "groups": {
+    "field_Countryside": {
+     "draws_max": 8,
+     "draws_median": 5.0,
+     "primitives_max": 2516,
+     "primitives_median": 1228.0
+    },
+    "field_DistantRidges": {
+     "draws_max": 4,
+     "draws_median": 1.5,
+     "primitives_max": 27648,
+     "primitives_median": 10368.0
+    },
+    "field_FlightCueShadows": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "field_Lake": {
+     "draws_max": 13,
+     "draws_median": 0.0,
+     "primitives_max": 54598,
+     "primitives_median": 0.0
+    },
+    "field_NearGrass": {
+     "draws_max": 3,
+     "draws_median": 3.0,
+     "primitives_max": 12441,
+     "primitives_median": 12441.0
+    },
+    "field_flightline_barrier": {
+     "draws_max": 6,
+     "draws_median": 6.0,
+     "primitives_max": 81603,
+     "primitives_median": 77898.0
+    },
+    "field_pilot_station": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 6126,
+     "primitives_median": 0.0
+    },
+    "field_rough": {
+     "draws_max": 1,
+     "draws_median": 1.0,
+     "primitives_max": 84960,
+     "primitives_median": 84960.0
+    },
+    "field_treeline": {
+     "draws_max": 4,
+     "draws_median": 2.5,
+     "primitives_max": 5460,
+     "primitives_median": 3363.0
+    },
+    "field_windsock": {
+     "draws_max": 4,
+     "draws_median": 0.0,
+     "primitives_max": 5268,
+     "primitives_median": 0.0
+    },
+    "scenery_AirfieldDetail": {
+     "draws_max": 3,
+     "draws_median": 0.0,
+     "primitives_max": 926,
+     "primitives_median": 0.0
+    },
+    "scenery_Birds": {
+     "draws_max": 1,
+     "draws_median": 0.5,
+     "primitives_max": 24,
+     "primitives_median": 12.0
+    },
+    "scenery_BotanicalHabitats": {
+     "draws_max": 18,
+     "draws_median": 5.0,
+     "primitives_max": 12145,
+     "primitives_median": 6466.5
+    },
+    "scenery_BuildingRoofs": {
+     "draws_max": 8,
+     "draws_median": 2.5,
+     "primitives_max": 32,
+     "primitives_median": 10.0
+    },
+    "scenery_ImportedVegetationBatches": {
+     "draws_max": 28,
+     "draws_median": 10.0,
+     "primitives_max": 328598,
+     "primitives_median": 140988.0
+    },
+    "scenery_Motion": {
+     "draws_max": 4,
+     "draws_median": 1.0,
+     "primitives_max": 160,
+     "primitives_median": 136.0
+    },
+    "scenery_ParkedAircraft": {
+     "draws_max": 155,
+     "draws_median": 0.0,
+     "primitives_max": 61485,
+     "primitives_median": 0.0
+    },
+    "scenery_Population": {
+     "draws_max": 30,
+     "draws_median": 0.0,
+     "primitives_max": 187176,
+     "primitives_median": 0.0
+    },
+    "scenery_PopulationContacts": {
+     "draws_max": 1,
+     "draws_median": 1.0,
+     "primitives_max": 1271,
+     "primitives_median": 1271.0
+    },
+    "scenery_WoodlandEdges": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    },
+    "scenery_cells": {
+     "draws_max": 18,
+     "draws_median": 8.5,
+     "primitives_max": 91495,
+     "primitives_median": 26207.0
+    },
+    "scenery_contact_shadows": {
+     "draws_max": 6,
+     "draws_median": 1.0,
+     "primitives_max": 216,
+     "primitives_median": 36.0
+    },
+    "scenery_hedges": {
+     "draws_max": 2,
+     "draws_median": 0.5,
+     "primitives_max": 256,
+     "primitives_median": 64.0
+    },
+    "scenery_pit_shelters": {
+     "draws_max": 2,
+     "draws_median": 0.0,
+     "primitives_max": 12096,
+     "primitives_median": 0.0
+    },
+    "world_AirfieldLighting": {
+     "draws_max": 15,
+     "draws_median": 4.5,
+     "primitives_max": 8192,
+     "primitives_median": 4317.0
+    },
+    "world_Campfire": {
+     "draws_max": 4,
+     "draws_median": 0.0,
+     "primitives_max": 610,
+     "primitives_median": 0.0
+    },
+    "world_FieldLights": {
+     "draws_max": 12,
+     "draws_median": 8.5,
+     "primitives_max": 432,
+     "primitives_median": 96.0
+    },
+    "world_SunGlare": {
+     "draws_max": 0,
+     "draws_median": 0.0,
+     "primitives_max": 0,
+     "primitives_median": 0.0
+    }
+   },
+   "sun_shadow_pass": {
+    "draws_max": 21,
+    "primitives_max": 68838
+   },
+   "total": {
+    "draws_max": 297,
+    "draws_median": 89.0,
+    "primitives_max": 756608,
+    "primitives_median": 405042.0
+   },
+   "views": [
+    "pilot_north",
+    "pilot_south",
+    "pilot_east",
+    "pilot_west",
+    "runway_zoom_100",
+    "runway_zoom_300",
+    "birds_watch",
+    "turbines_zoom"
+   ]
+  }
+ },
+ "cost": {
+  "field_Countryside": {
+   "aerial_overview": {
+    "counter_primitives": 2884,
+    "draws": 9,
+    "primitives": 2884
+   },
+   "birds_watch": {
+    "counter_primitives": 986,
+    "draws": 3,
+    "primitives": 986
+   },
+   "car_park": {
+    "counter_primitives": 2370,
+    "draws": 9,
+    "primitives": 2370
+   },
+   "fleet_close": {
+    "counter_primitives": 2830,
+    "draws": 8,
+    "primitives": 2830
+   },
+   "pilot_east": {
+    "counter_primitives": 1804,
+    "draws": 4,
+    "primitives": 1804
+   },
+   "pilot_north": {
+    "counter_primitives": 1612,
+    "draws": 7,
+    "primitives": 1612
+   },
+   "pilot_south": {
+    "counter_primitives": 2516,
+    "draws": 8,
+    "primitives": 2516
+   },
+   "pilot_west": {
+    "counter_primitives": 1082,
+    "draws": 5,
+    "primitives": 1082
+   },
+   "postcard_club": {
+    "counter_primitives": 1866,
+    "draws": 9,
+    "primitives": 1866
+   },
+   "postcard_farm": {
+    "counter_primitives": 1258,
+    "draws": 4,
+    "primitives": 1258
+   },
+   "postcard_meadow": {
+    "counter_primitives": 2074,
+    "draws": 7,
+    "primitives": 2074
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 1866,
+    "draws": 9,
+    "primitives": 1866
+   },
+   "postcard_pits": {
+    "counter_primitives": 2962,
+    "draws": 7,
+    "primitives": 2962
+   },
+   "runway_threshold": {
+    "counter_primitives": 2084,
+    "draws": 11,
+    "primitives": 2084
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 1228,
+    "draws": 5,
+    "primitives": 1228
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 1228,
+    "draws": 5,
+    "primitives": 1228
+   },
+   "top_140": {
+    "counter_primitives": 248,
+    "draws": 2,
+    "primitives": 248
+   },
+   "top_140_b": {
+    "counter_primitives": 186,
+    "draws": 1,
+    "primitives": 186
+   },
+   "top_140_c": {
+    "counter_primitives": 154,
+    "draws": 1,
+    "primitives": 154
+   },
+   "turbines_zoom": {
+    "counter_primitives": 1108,
+    "draws": 3,
+    "primitives": 1108
+   }
+  },
+  "field_DistantRidges": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 6912,
+    "draws": 1,
+    "primitives": 6912
+   },
+   "pilot_north": {
+    "counter_primitives": 27648,
+    "draws": 4,
+    "primitives": 27648
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 6912,
+    "draws": 1,
+    "primitives": 6912
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "postcard_meadow": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 13824,
+    "draws": 2,
+    "primitives": 13824
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 6912,
+    "draws": 1,
+    "primitives": 6912
+   }
+  },
+  "field_FlightCueShadows": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "field_Lake": {
+   "aerial_overview": {
+    "counter_primitives": 45002,
+    "draws": 3,
+    "primitives": 50202
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 45238,
+    "draws": 13,
+    "primitives": 54598
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 45394,
+    "draws": 13,
+    "primitives": 57874
+   },
+   "postcard_meadow": {
+    "counter_primitives": 45262,
+    "draws": 13,
+    "primitives": 55102
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 45238,
+    "draws": 13,
+    "primitives": 54598
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "field_NearGrass": {
+   "aerial_overview": {
+    "counter_primitives": 327,
+    "draws": 3,
+    "primitives": 3725
+   },
+   "birds_watch": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "car_park": {
+    "counter_primitives": 948,
+    "draws": 2,
+    "primitives": 9806
+   },
+   "fleet_close": {
+    "counter_primitives": 846,
+    "draws": 2,
+    "primitives": 8684
+   },
+   "pilot_east": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "pilot_north": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "pilot_south": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "pilot_west": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "postcard_club": {
+    "counter_primitives": 1001,
+    "draws": 3,
+    "primitives": 11319
+   },
+   "postcard_farm": {
+    "counter_primitives": 948,
+    "draws": 2,
+    "primitives": 9806
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 1103,
+    "draws": 3,
+    "primitives": 12441
+   },
+   "postcard_pits": {
+    "counter_primitives": 1001,
+    "draws": 3,
+    "primitives": 11319
+   },
+   "runway_threshold": {
+    "counter_primitives": 1001,
+    "draws": 3,
+    "primitives": 11319
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 1001,
+    "draws": 3,
+    "primitives": 11319
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 1001,
+    "draws": 3,
+    "primitives": 11319
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "field_flightline_barrier": {
+   "aerial_overview": {
+    "counter_primitives": 38961,
+    "draws": 6,
+    "primitives": 42926
+   },
+   "birds_watch": {
+    "counter_primitives": 39998,
+    "draws": 6,
+    "primitives": 81603
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "pilot_east": {
+    "counter_primitives": 39998,
+    "draws": 6,
+    "primitives": 81603
+   },
+   "pilot_north": {
+    "counter_primitives": 39998,
+    "draws": 6,
+    "primitives": 81603
+   },
+   "pilot_south": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "pilot_west": {
+    "counter_primitives": 39998,
+    "draws": 6,
+    "primitives": 81603
+   },
+   "postcard_club": {
+    "counter_primitives": 39693,
+    "draws": 6,
+    "primitives": 69708
+   },
+   "postcard_farm": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "postcard_pits": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "runway_threshold": {
+    "counter_primitives": 39808,
+    "draws": 6,
+    "primitives": 74193
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 39808,
+    "draws": 6,
+    "primitives": 74193
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 39651,
+    "draws": 6,
+    "primitives": 68070
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "field_pilot_station": {
+   "aerial_overview": {
+    "counter_primitives": 6126,
+    "draws": 2,
+    "primitives": 6126
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 6126,
+    "draws": 2,
+    "primitives": 6126
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 6126,
+    "draws": 2,
+    "primitives": 6126
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 6126,
+    "draws": 2,
+    "primitives": 6126
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 6126,
+    "draws": 2,
+    "primitives": 6126
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "field_rough": {
+   "aerial_overview": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "birds_watch": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "car_park": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "fleet_close": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "pilot_east": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "pilot_north": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "pilot_south": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "pilot_west": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "postcard_club": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "postcard_farm": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "postcard_meadow": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "postcard_pits": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "runway_threshold": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "top_140": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "top_140_b": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "top_140_c": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   },
+   "turbines_zoom": {
+    "counter_primitives": 84960,
+    "draws": 1,
+    "primitives": 84960
+   }
+  },
+  "field_treeline": {
+   "aerial_overview": {
+    "counter_primitives": 4344,
+    "draws": 3,
+    "primitives": 4344
+   },
+   "birds_watch": {
+    "counter_primitives": 2892,
+    "draws": 2,
+    "primitives": 2892
+   },
+   "car_park": {
+    "counter_primitives": 4098,
+    "draws": 3,
+    "primitives": 4098
+   },
+   "fleet_close": {
+    "counter_primitives": 5208,
+    "draws": 4,
+    "primitives": 5208
+   },
+   "pilot_east": {
+    "counter_primitives": 2148,
+    "draws": 2,
+    "primitives": 2148
+   },
+   "pilot_north": {
+    "counter_primitives": 4872,
+    "draws": 4,
+    "primitives": 4872
+   },
+   "pilot_south": {
+    "counter_primitives": 5208,
+    "draws": 4,
+    "primitives": 5208
+   },
+   "pilot_west": {
+    "counter_primitives": 5460,
+    "draws": 3,
+    "primitives": 5460
+   },
+   "postcard_club": {
+    "counter_primitives": 3270,
+    "draws": 2,
+    "primitives": 3270
+   },
+   "postcard_farm": {
+    "counter_primitives": 1980,
+    "draws": 2,
+    "primitives": 1980
+   },
+   "postcard_meadow": {
+    "counter_primitives": 1980,
+    "draws": 2,
+    "primitives": 1980
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 3270,
+    "draws": 2,
+    "primitives": 3270
+   },
+   "postcard_pits": {
+    "counter_primitives": 3222,
+    "draws": 3,
+    "primitives": 3222
+   },
+   "runway_threshold": {
+    "counter_primitives": 5460,
+    "draws": 3,
+    "primitives": 5460
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 2760,
+    "draws": 2,
+    "primitives": 2760
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 3834,
+    "draws": 3,
+    "primitives": 3834
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 1284,
+    "draws": 1,
+    "primitives": 1284
+   },
+   "turbines_zoom": {
+    "counter_primitives": 1284,
+    "draws": 1,
+    "primitives": 1284
+   }
+  },
+  "field_windsock": {
+   "aerial_overview": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 2,
+    "draws": 1,
+    "primitives": 2
+   },
+   "postcard_club": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "runway_threshold": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 5268,
+    "draws": 4,
+    "primitives": 5268
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_AirfieldDetail": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 756,
+    "draws": 3,
+    "primitives": 926
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 316,
+    "draws": 3,
+    "primitives": 340
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 756,
+    "draws": 3,
+    "primitives": 926
+   },
+   "postcard_pits": {
+    "counter_primitives": 316,
+    "draws": 3,
+    "primitives": 340
+   },
+   "runway_threshold": {
+    "counter_primitives": 316,
+    "draws": 3,
+    "primitives": 340
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 756,
+    "draws": 3,
+    "primitives": 926
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_Birds": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 24,
+    "draws": 1,
+    "primitives": 24
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 24,
+    "draws": 1,
+    "primitives": 24
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 24,
+    "draws": 1,
+    "primitives": 24
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 24,
+    "draws": 1,
+    "primitives": 24
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 24,
+    "draws": 1,
+    "primitives": 24
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_BotanicalHabitats": {
+   "aerial_overview": {
+    "counter_primitives": 947,
+    "draws": 14,
+    "primitives": 2819
+   },
+   "birds_watch": {
+    "counter_primitives": 534,
+    "draws": 2,
+    "primitives": 6081
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 112,
+    "draws": 2,
+    "primitives": 244
+   },
+   "pilot_east": {
+    "counter_primitives": 1558,
+    "draws": 6,
+    "primitives": 9187
+   },
+   "pilot_north": {
+    "counter_primitives": 2496,
+    "draws": 18,
+    "primitives": 12145
+   },
+   "pilot_south": {
+    "counter_primitives": 883,
+    "draws": 4,
+    "primitives": 6852
+   },
+   "pilot_west": {
+    "counter_primitives": 505,
+    "draws": 3,
+    "primitives": 5718
+   },
+   "postcard_club": {
+    "counter_primitives": 640,
+    "draws": 5,
+    "primitives": 4343
+   },
+   "postcard_farm": {
+    "counter_primitives": 2112,
+    "draws": 15,
+    "primitives": 14155
+   },
+   "postcard_meadow": {
+    "counter_primitives": 3830,
+    "draws": 20,
+    "primitives": 13575
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 1263,
+    "draws": 4,
+    "primitives": 7992
+   },
+   "postcard_pits": {
+    "counter_primitives": 210,
+    "draws": 4,
+    "primitives": 1352
+   },
+   "runway_threshold": {
+    "counter_primitives": 1418,
+    "draws": 5,
+    "primitives": 8767
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 640,
+    "draws": 5,
+    "primitives": 4343
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 987,
+    "draws": 6,
+    "primitives": 2749
+   },
+   "top_140": {
+    "counter_primitives": 185,
+    "draws": 5,
+    "primitives": 705
+   },
+   "top_140_b": {
+    "counter_primitives": 112,
+    "draws": 2,
+    "primitives": 244
+   },
+   "top_140_c": {
+    "counter_primitives": 1479,
+    "draws": 13,
+    "primitives": 3351
+   },
+   "turbines_zoom": {
+    "counter_primitives": 1418,
+    "draws": 5,
+    "primitives": 8767
+   }
+  },
+  "scenery_BuildingRoofs": {
+   "aerial_overview": {
+    "counter_primitives": 28,
+    "draws": 7,
+    "primitives": 28
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 68,
+    "draws": 17,
+    "primitives": 68
+   },
+   "fleet_close": {
+    "counter_primitives": 4,
+    "draws": 1,
+    "primitives": 4
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 24,
+    "draws": 4,
+    "primitives": 24
+   },
+   "pilot_south": {
+    "counter_primitives": 24,
+    "draws": 6,
+    "primitives": 24
+   },
+   "pilot_west": {
+    "counter_primitives": 32,
+    "draws": 8,
+    "primitives": 32
+   },
+   "postcard_club": {
+    "counter_primitives": 44,
+    "draws": 11,
+    "primitives": 44
+   },
+   "postcard_farm": {
+    "counter_primitives": 12,
+    "draws": 2,
+    "primitives": 12
+   },
+   "postcard_meadow": {
+    "counter_primitives": 24,
+    "draws": 4,
+    "primitives": 24
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 44,
+    "draws": 11,
+    "primitives": 44
+   },
+   "postcard_pits": {
+    "counter_primitives": 12,
+    "draws": 3,
+    "primitives": 12
+   },
+   "runway_threshold": {
+    "counter_primitives": 44,
+    "draws": 11,
+    "primitives": 44
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 8,
+    "draws": 2,
+    "primitives": 8
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 12,
+    "draws": 3,
+    "primitives": 12
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_ImportedVegetationBatches": {
+   "aerial_overview": {
+    "counter_primitives": 39459,
+    "draws": 22,
+    "primitives": 109106
+   },
+   "birds_watch": {
+    "counter_primitives": 35247,
+    "draws": 10,
+    "primitives": 140988
+   },
+   "car_park": {
+    "counter_primitives": 99831,
+    "draws": 30,
+    "primitives": 311178
+   },
+   "fleet_close": {
+    "counter_primitives": 95305,
+    "draws": 28,
+    "primitives": 302126
+   },
+   "pilot_east": {
+    "counter_primitives": 35247,
+    "draws": 10,
+    "primitives": 140988
+   },
+   "pilot_north": {
+    "counter_primitives": 16623,
+    "draws": 6,
+    "primitives": 66492
+   },
+   "pilot_south": {
+    "counter_primitives": 92350,
+    "draws": 28,
+    "primitives": 287351
+   },
+   "pilot_west": {
+    "counter_primitives": 16623,
+    "draws": 6,
+    "primitives": 66492
+   },
+   "postcard_club": {
+    "counter_primitives": 56277,
+    "draws": 22,
+    "primitives": 170686
+   },
+   "postcard_farm": {
+    "counter_primitives": 25935,
+    "draws": 8,
+    "primitives": 103740
+   },
+   "postcard_meadow": {
+    "counter_primitives": 16623,
+    "draws": 6,
+    "primitives": 66492
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 95305,
+    "draws": 28,
+    "primitives": 302126
+   },
+   "postcard_pits": {
+    "counter_primitives": 81273,
+    "draws": 26,
+    "primitives": 279334
+   },
+   "runway_threshold": {
+    "counter_primitives": 53027,
+    "draws": 20,
+    "primitives": 175790
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 108541,
+    "draws": 28,
+    "primitives": 328598
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 58725,
+    "draws": 22,
+    "primitives": 182926
+   },
+   "top_140": {
+    "counter_primitives": 22377,
+    "draws": 12,
+    "primitives": 64027
+   },
+   "top_140_b": {
+    "counter_primitives": 38056,
+    "draws": 20,
+    "primitives": 101262
+   },
+   "top_140_c": {
+    "counter_primitives": 22377,
+    "draws": 12,
+    "primitives": 64027
+   },
+   "turbines_zoom": {
+    "counter_primitives": 16623,
+    "draws": 6,
+    "primitives": 66492
+   }
+  },
+  "scenery_Motion": {
+   "aerial_overview": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 136,
+    "draws": 4,
+    "primitives": 136
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 68,
+    "draws": 2,
+    "primitives": 68
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "postcard_pits": {
+    "counter_primitives": 194,
+    "draws": 2,
+    "primitives": 194
+   },
+   "runway_threshold": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 160,
+    "draws": 1,
+    "primitives": 160
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 136,
+    "draws": 4,
+    "primitives": 136
+   }
+  },
+  "scenery_ParkedAircraft": {
+   "aerial_overview": {
+    "counter_primitives": 69132,
+    "draws": 179,
+    "primitives": 92875
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 28384,
+    "draws": 39,
+    "primitives": 45788
+   },
+   "fleet_close": {
+    "counter_primitives": 11370,
+    "draws": 42,
+    "primitives": 14812
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 79866,
+    "draws": 179,
+    "primitives": 112117
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 43610,
+    "draws": 95,
+    "primitives": 59798
+   },
+   "postcard_pits": {
+    "counter_primitives": 82642,
+    "draws": 179,
+    "primitives": 123699
+   },
+   "runway_threshold": {
+    "counter_primitives": 43188,
+    "draws": 95,
+    "primitives": 59298
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 49040,
+    "draws": 155,
+    "primitives": 61485
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_Population": {
+   "aerial_overview": {
+    "counter_primitives": 25259,
+    "draws": 30,
+    "primitives": 90136
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 52780,
+    "draws": 30,
+    "primitives": 195554
+   },
+   "fleet_close": {
+    "counter_primitives": 45266,
+    "draws": 30,
+    "primitives": 160653
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 42558,
+    "draws": 30,
+    "primitives": 153557
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 31782,
+    "draws": 30,
+    "primitives": 113725
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 42894,
+    "draws": 30,
+    "primitives": 154901
+   },
+   "postcard_pits": {
+    "counter_primitives": 42558,
+    "draws": 30,
+    "primitives": 153557
+   },
+   "runway_threshold": {
+    "counter_primitives": 17433,
+    "draws": 20,
+    "primitives": 56541
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 50909,
+    "draws": 30,
+    "primitives": 187176
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 40517,
+    "draws": 30,
+    "primitives": 145931
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 18223,
+    "draws": 20,
+    "primitives": 77785
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_PopulationContacts": {
+   "aerial_overview": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "birds_watch": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "car_park": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "fleet_close": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "pilot_east": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "postcard_pits": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "runway_threshold": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 1271,
+    "draws": 1,
+    "primitives": 1271
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_WoodlandEdges": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_cells": {
+   "aerial_overview": {
+    "counter_primitives": 35770,
+    "draws": 10,
+    "primitives": 35770
+   },
+   "birds_watch": {
+    "counter_primitives": 8114,
+    "draws": 8,
+    "primitives": 8114
+   },
+   "car_park": {
+    "counter_primitives": 37210,
+    "draws": 11,
+    "primitives": 37210
+   },
+   "fleet_close": {
+    "counter_primitives": 22862,
+    "draws": 6,
+    "primitives": 22862
+   },
+   "pilot_east": {
+    "counter_primitives": 91495,
+    "draws": 17,
+    "primitives": 91495
+   },
+   "pilot_north": {
+    "counter_primitives": 23740,
+    "draws": 18,
+    "primitives": 23740
+   },
+   "pilot_south": {
+    "counter_primitives": 35434,
+    "draws": 8,
+    "primitives": 35434
+   },
+   "pilot_west": {
+    "counter_primitives": 5358,
+    "draws": 3,
+    "primitives": 5358
+   },
+   "postcard_club": {
+    "counter_primitives": 37032,
+    "draws": 10,
+    "primitives": 37032
+   },
+   "postcard_farm": {
+    "counter_primitives": 18988,
+    "draws": 10,
+    "primitives": 18988
+   },
+   "postcard_meadow": {
+    "counter_primitives": 22670,
+    "draws": 26,
+    "primitives": 22670
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 35790,
+    "draws": 9,
+    "primitives": 35790
+   },
+   "postcard_pits": {
+    "counter_primitives": 124285,
+    "draws": 17,
+    "primitives": 124285
+   },
+   "runway_threshold": {
+    "counter_primitives": 36122,
+    "draws": 10,
+    "primitives": 36122
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 28674,
+    "draws": 9,
+    "primitives": 28674
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 38290,
+    "draws": 14,
+    "primitives": 38290
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 3938,
+    "draws": 1,
+    "primitives": 3938
+   },
+   "top_140_c": {
+    "counter_primitives": 2604,
+    "draws": 15,
+    "primitives": 2604
+   },
+   "turbines_zoom": {
+    "counter_primitives": 23732,
+    "draws": 7,
+    "primitives": 23732
+   }
+  },
+  "scenery_contact_shadows": {
+   "aerial_overview": {
+    "counter_primitives": 162,
+    "draws": 5,
+    "primitives": 162
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 72,
+    "draws": 2,
+    "primitives": 72
+   },
+   "fleet_close": {
+    "counter_primitives": 72,
+    "draws": 2,
+    "primitives": 72
+   },
+   "pilot_east": {
+    "counter_primitives": 18,
+    "draws": 1,
+    "primitives": 18
+   },
+   "pilot_north": {
+    "counter_primitives": 216,
+    "draws": 6,
+    "primitives": 216
+   },
+   "pilot_south": {
+    "counter_primitives": 54,
+    "draws": 1,
+    "primitives": 54
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 90,
+    "draws": 3,
+    "primitives": 90
+   },
+   "postcard_farm": {
+    "counter_primitives": 162,
+    "draws": 5,
+    "primitives": 162
+   },
+   "postcard_meadow": {
+    "counter_primitives": 612,
+    "draws": 18,
+    "primitives": 612
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 72,
+    "draws": 2,
+    "primitives": 72
+   },
+   "postcard_pits": {
+    "counter_primitives": 90,
+    "draws": 3,
+    "primitives": 90
+   },
+   "runway_threshold": {
+    "counter_primitives": 18,
+    "draws": 1,
+    "primitives": 18
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 54,
+    "draws": 1,
+    "primitives": 54
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 90,
+    "draws": 3,
+    "primitives": 90
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 54,
+    "draws": 1,
+    "primitives": 54
+   },
+   "top_140_c": {
+    "counter_primitives": 558,
+    "draws": 15,
+    "primitives": 558
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_hedges": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 128,
+    "draws": 1,
+    "primitives": 128
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 256,
+    "draws": 2,
+    "primitives": 256
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 128,
+    "draws": 1,
+    "primitives": 128
+   },
+   "postcard_meadow": {
+    "counter_primitives": 128,
+    "draws": 1,
+    "primitives": 128
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 128,
+    "draws": 1,
+    "primitives": 128
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 128,
+    "draws": 1,
+    "primitives": 128
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 256,
+    "draws": 2,
+    "primitives": 256
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "scenery_pit_shelters": {
+   "aerial_overview": {
+    "counter_primitives": 12096,
+    "draws": 2,
+    "primitives": 12096
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 6402,
+    "draws": 1,
+    "primitives": 6402
+   },
+   "fleet_close": {
+    "counter_primitives": 6402,
+    "draws": 1,
+    "primitives": 6402
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 12096,
+    "draws": 2,
+    "primitives": 12096
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 12096,
+    "draws": 2,
+    "primitives": 12096
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 6402,
+    "draws": 1,
+    "primitives": 6402
+   },
+   "postcard_pits": {
+    "counter_primitives": 12096,
+    "draws": 2,
+    "primitives": 12096
+   },
+   "runway_threshold": {
+    "counter_primitives": 6402,
+    "draws": 1,
+    "primitives": 6402
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 12096,
+    "draws": 2,
+    "primitives": 12096
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "world_AirfieldLighting": {
+   "aerial_overview": {
+    "counter_primitives": 5866,
+    "draws": 16,
+    "primitives": 5866
+   },
+   "birds_watch": {
+    "counter_primitives": 4212,
+    "draws": 2,
+    "primitives": 4212
+   },
+   "car_park": {
+    "counter_primitives": 3104,
+    "draws": 5,
+    "primitives": 3104
+   },
+   "fleet_close": {
+    "counter_primitives": 4760,
+    "draws": 3,
+    "primitives": 4760
+   },
+   "pilot_east": {
+    "counter_primitives": 1876,
+    "draws": 4,
+    "primitives": 1876
+   },
+   "pilot_north": {
+    "counter_primitives": 4422,
+    "draws": 8,
+    "primitives": 4422
+   },
+   "pilot_south": {
+    "counter_primitives": 5616,
+    "draws": 5,
+    "primitives": 5616
+   },
+   "pilot_west": {
+    "counter_primitives": 1886,
+    "draws": 2,
+    "primitives": 1886
+   },
+   "postcard_club": {
+    "counter_primitives": 5946,
+    "draws": 16,
+    "primitives": 5946
+   },
+   "postcard_farm": {
+    "counter_primitives": 4282,
+    "draws": 4,
+    "primitives": 4282
+   },
+   "postcard_meadow": {
+    "counter_primitives": 4682,
+    "draws": 10,
+    "primitives": 4682
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 5706,
+    "draws": 6,
+    "primitives": 5706
+   },
+   "postcard_pits": {
+    "counter_primitives": 5996,
+    "draws": 15,
+    "primitives": 5996
+   },
+   "runway_threshold": {
+    "counter_primitives": 6026,
+    "draws": 15,
+    "primitives": 6026
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 5136,
+    "draws": 6,
+    "primitives": 5136
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 8192,
+    "draws": 15,
+    "primitives": 8192
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 1866,
+    "draws": 3,
+    "primitives": 1866
+   }
+  },
+  "world_Campfire": {
+   "aerial_overview": {
+    "counter_primitives": 610,
+    "draws": 4,
+    "primitives": 610
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 610,
+    "draws": 4,
+    "primitives": 610
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 610,
+    "draws": 4,
+    "primitives": 610
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 610,
+    "draws": 4,
+    "primitives": 610
+   },
+   "runway_threshold": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 610,
+    "draws": 4,
+    "primitives": 610
+   },
+   "top_140": {
+    "counter_primitives": 305,
+    "draws": 2,
+    "primitives": 305
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 305,
+    "draws": 2,
+    "primitives": 305
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  },
+  "world_FieldLights": {
+   "aerial_overview": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "birds_watch": {
+    "counter_primitives": 48,
+    "draws": 8,
+    "primitives": 48
+   },
+   "car_park": {
+    "counter_primitives": 10,
+    "draws": 5,
+    "primitives": 10
+   },
+   "fleet_close": {
+    "counter_primitives": 46,
+    "draws": 7,
+    "primitives": 46
+   },
+   "pilot_east": {
+    "counter_primitives": 144,
+    "draws": 9,
+    "primitives": 144
+   },
+   "pilot_north": {
+    "counter_primitives": 48,
+    "draws": 8,
+    "primitives": 48
+   },
+   "pilot_south": {
+    "counter_primitives": 240,
+    "draws": 10,
+    "primitives": 240
+   },
+   "pilot_west": {
+    "counter_primitives": 48,
+    "draws": 8,
+    "primitives": 48
+   },
+   "postcard_club": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "postcard_farm": {
+    "counter_primitives": 48,
+    "draws": 8,
+    "primitives": 48
+   },
+   "postcard_meadow": {
+    "counter_primitives": 36,
+    "draws": 2,
+    "primitives": 36
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 240,
+    "draws": 10,
+    "primitives": 240
+   },
+   "postcard_pits": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "runway_threshold": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 432,
+    "draws": 12,
+    "primitives": 432
+   },
+   "top_140": {
+    "counter_primitives": 192,
+    "draws": 2,
+    "primitives": 192
+   },
+   "top_140_b": {
+    "counter_primitives": 8,
+    "draws": 4,
+    "primitives": 8
+   },
+   "top_140_c": {
+    "counter_primitives": 192,
+    "draws": 2,
+    "primitives": 192
+   },
+   "turbines_zoom": {
+    "counter_primitives": 48,
+    "draws": 8,
+    "primitives": 48
+   }
+  },
+  "world_SunGlare": {
+   "aerial_overview": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "birds_watch": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "car_park": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "fleet_close": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_east": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_north": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_south": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "pilot_west": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_club": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_farm": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_meadow": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pavilion": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "postcard_pits": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_threshold": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_100": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "runway_zoom_300": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_b": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "top_140_c": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   },
+   "turbines_zoom": {
+    "counter_primitives": 0,
+    "draws": 0,
+    "primitives": 0
+   }
+  }
+ },
+ "full_detail_triangles": {
+  "field_Countryside": 6764,
+  "field_DistantRidges": 27648,
+  "field_FlightCueShadows": 0,
+  "field_Lake": 44952,
+  "field_NearGrass": 0,
+  "field_flightline_barrier": 38840,
+  "field_pilot_station": 6124,
+  "field_rough": 84960,
+  "field_treeline": 10080,
+  "field_windsock": 5266,
+  "scenery_AirfieldDetail": 0,
+  "scenery_Birds": 24,
+  "scenery_BotanicalHabitats": 568,
+  "scenery_BuildingRoofs": 100,
+  "scenery_ImportedVegetationBatches": 5272,
+  "scenery_Motion": 296,
+  "scenery_ParkedAircraft": 38845,
+  "scenery_Population": 897,
+  "scenery_PopulationContacts": 1271,
+  "scenery_WoodlandEdges": 0,
+  "scenery_cells": 157395,
+  "scenery_contact_shadows": 702,
+  "scenery_hedges": 256,
+  "scenery_pit_shelters": 12096,
+  "world_AirfieldLighting": 8462,
+  "world_Campfire": 305,
+  "world_FieldLights": 240,
+  "world_SunGlare": 0
+ },
+ "godot": "4.7.2-stable (official)",
+ "instanced_lod_corrected": true,
+ "memory": {
+  "buffer_bytes": 42782294,
+  "texture_bytes": 452349936,
+  "video_bytes": 495132230
+ },
+ "scene_detail": "low",
+ "shadow_caster_triangles": {
+  "field_Countryside": 0,
+  "field_DistantRidges": 0,
+  "field_FlightCueShadows": 0,
+  "field_Lake": 7980,
+  "field_NearGrass": 0,
+  "field_flightline_barrier": 0,
+  "field_pilot_station": 0,
+  "field_rough": 0,
+  "field_treeline": 0,
+  "field_windsock": 0,
+  "scenery_AirfieldDetail": 0,
+  "scenery_Birds": 0,
+  "scenery_BotanicalHabitats": 0,
+  "scenery_BuildingRoofs": 0,
+  "scenery_ImportedVegetationBatches": 116962,
+  "scenery_Motion": 0,
+  "scenery_ParkedAircraft": 0,
+  "scenery_Population": 0,
+  "scenery_PopulationContacts": 0,
+  "scenery_WoodlandEdges": 0,
+  "scenery_cells": 0,
+  "scenery_contact_shadows": 0,
+  "scenery_hedges": 0,
+  "scenery_pit_shelters": 0,
+  "world_AirfieldLighting": 0,
+  "world_Campfire": 305,
+  "world_FieldLights": 192,
+  "world_SunGlare": 0
+ },
+ "source_triangles": {
+  "field_Countryside": 6764,
+  "field_DistantRidges": 27648,
+  "field_FlightCueShadows": 0,
+  "field_Lake": 65224,
+  "field_NearGrass": 12441,
+  "field_flightline_barrier": 81601,
+  "field_pilot_station": 6124,
+  "field_rough": 84960,
+  "field_treeline": 10080,
+  "field_windsock": 5266,
+  "scenery_AirfieldDetail": 2102,
+  "scenery_Birds": 24,
+  "scenery_BotanicalHabitats": 32613,
+  "scenery_BuildingRoofs": 100,
+  "scenery_ImportedVegetationBatches": 116962,
+  "scenery_Motion": 296,
+  "scenery_ParkedAircraft": 273421,
+  "scenery_Population": 275158,
+  "scenery_PopulationContacts": 1271,
+  "scenery_WoodlandEdges": 0,
+  "scenery_cells": 157395,
+  "scenery_contact_shadows": 702,
+  "scenery_hedges": 256,
+  "scenery_pit_shelters": 12096,
+  "world_AirfieldLighting": 26386,
+  "world_Campfire": 305,
+  "world_FieldLights": 240,
+  "world_SunGlare": 0
+ },
+ "stable_repeat": {
+  "aerial_overview": true,
+  "birds_watch": true,
+  "car_park": true,
+  "fleet_close": true,
+  "pilot_east": true,
+  "pilot_north": true,
+  "pilot_south": true,
+  "pilot_west": true,
+  "postcard_club": true,
+  "postcard_farm": true,
+  "postcard_meadow": true,
+  "postcard_pavilion": true,
+  "postcard_pits": true,
+  "runway_threshold": true,
+  "runway_zoom_100": true,
+  "runway_zoom_300": true,
+  "top_140": true,
+  "top_140_b": true,
+  "top_140_c": true,
+  "turbines_zoom": true
+ },
+ "view_totals": {
+  "aerial_overview": {
+   "counter_primitives": 379066,
+   "draws": 335,
+   "objects": 337,
+   "primitives": 551768
+  },
+  "birds_watch": {
+   "counter_primitives": 193341,
+   "draws": 50,
+   "objects": 50,
+   "primitives": 357572
+  },
+  "car_park": {
+   "counter_primitives": 321510,
+   "draws": 157,
+   "objects": 158,
+   "primitives": 701893
+  },
+  "fleet_close": {
+   "counter_primitives": 281318,
+   "draws": 140,
+   "objects": 140,
+   "primitives": 614938
+  },
+  "pilot_east": {
+   "counter_primitives": 268670,
+   "draws": 69,
+   "objects": 69,
+   "primitives": 434983
+  },
+  "pilot_north": {
+   "counter_primitives": 253280,
+   "draws": 109,
+   "objects": 110,
+   "primitives": 375101
+  },
+  "pilot_south": {
+   "counter_primitives": 285843,
+   "draws": 121,
+   "objects": 121,
+   "primitives": 609320
+  },
+  "pilot_west": {
+   "counter_primitives": 163971,
+   "draws": 51,
+   "objects": 51,
+   "primitives": 271996
+  },
+  "postcard_club": {
+   "counter_primitives": 368748,
+   "draws": 327,
+   "objects": 329,
+   "primitives": 641411
+  },
+  "postcard_farm": {
+   "counter_primitives": 200033,
+   "draws": 78,
+   "objects": 79,
+   "primitives": 311219
+  },
+  "postcard_meadow": {
+   "counter_primitives": 196773,
+   "draws": 114,
+   "objects": 115,
+   "primitives": 266227
+  },
+  "postcard_pavilion": {
+   "counter_primitives": 324716,
+   "draws": 218,
+   "objects": 219,
+   "primitives": 677969
+  },
+  "postcard_pits": {
+   "counter_primitives": 449400,
+   "draws": 320,
+   "objects": 322,
+   "primitives": 811001
+  },
+  "runway_threshold": {
+   "counter_primitives": 324542,
+   "draws": 230,
+   "objects": 231,
+   "primitives": 554599
+  },
+  "runway_zoom_100": {
+   "counter_primitives": 351708,
+   "draws": 125,
+   "objects": 125,
+   "primitives": 756608
+  },
+  "runway_zoom_300": {
+   "counter_primitives": 366594,
+   "draws": 297,
+   "objects": 298,
+   "primitives": 649153
+  },
+  "top_140": {
+   "counter_primitives": 108267,
+   "draws": 24,
+   "objects": 24,
+   "primitives": 150437
+  },
+  "top_140_b": {
+   "counter_primitives": 146808,
+   "draws": 51,
+   "objects": 51,
+   "primitives": 269708
+  },
+  "top_140_c": {
+   "counter_primitives": 159151,
+   "draws": 75,
+   "objects": 75,
+   "primitives": 212033
+  },
+  "turbines_zoom": {
+   "counter_primitives": 138087,
+   "draws": 39,
+   "objects": 39,
+   "primitives": 195305
+  }
+ },
+ "viewport": [
+  1280.0,
+  720.0
+ ]
+}
