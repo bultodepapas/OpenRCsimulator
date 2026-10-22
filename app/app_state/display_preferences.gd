@@ -12,12 +12,15 @@ const WINDOW_RESOLUTIONS: Array[String] = [
 const MAX_FPS_VALUES: Array[int] = [0, 30, 60, 90, 120, 144, 165, 240]
 const VSYNC_MODES: Array[String] = ["enabled", "disabled"]
 const MSAA_3D_VALUES: Array[int] = [0, 1, 2, 3]
+# VQ-06b: mirrors render/scene_detail.gd LEVELS (test_scene_detail.gd keeps them equal).
+const SCENE_DETAILS: Array[String] = ["low", "medium", "high", "extreme"]
 const DEFAULTS := {
 	"window_mode": "windowed",
 	"window_resolution": "auto",
 	"max_fps": 0,
 	"vsync_mode": "enabled",
 	"msaa_3d": 2,
+	"scene_detail": "high",
 	"ui_scale": 1.0,
 	"opaque_panels": false,
 	"reduced_motion": false,
@@ -25,7 +28,7 @@ const DEFAULTS := {
 	"master_volume": 1.0, # AUD-12b: whole-game level on the Master bus (flight, scenery, crash, menu)
 }
 const OPTIONAL_KEYS: Array[String] = [
-	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d",
+	"menu_volume", "master_volume", "window_resolution", "max_fps", "vsync_mode", "msaa_3d", "scene_detail",
 ] # schema-1 extensions; older files and callers keep defaults
 const AUDIO_LEVEL_KEYS: Array[String] = ["menu_volume", "master_volume"]
 
@@ -87,6 +90,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.max_fps = cfg.get_value("graphics", "max_fps", DEFAULTS.max_fps)
 	raw.vsync_mode = cfg.get_value("graphics", "vsync_mode", DEFAULTS.vsync_mode)
 	raw.msaa_3d = cfg.get_value("graphics", "msaa_3d", DEFAULTS.msaa_3d)
+	raw.scene_detail = cfg.get_value("graphics", "scene_detail", DEFAULTS.scene_detail)
 	raw.opaque_panels = cfg.get_value("accessibility", "opaque_panels", DEFAULTS.opaque_panels)
 	raw.reduced_motion = cfg.get_value("accessibility", "reduced_motion", DEFAULTS.reduced_motion)
 	raw.menu_volume = cfg.get_value("audio", "menu_volume", DEFAULTS.menu_volume)
@@ -119,6 +123,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("graphics", "max_fps", checked.config.max_fps)
 	cfg.set_value("graphics", "vsync_mode", checked.config.vsync_mode)
 	cfg.set_value("graphics", "msaa_3d", checked.config.msaa_3d)
+	cfg.set_value("graphics", "scene_detail", checked.config.scene_detail)
 	cfg.set_value("accessibility", "opaque_panels", checked.config.opaque_panels)
 	cfg.set_value("accessibility", "reduced_motion", checked.config.reduced_motion)
 	cfg.set_value("audio", "menu_volume", checked.config.menu_volume)
@@ -148,6 +153,9 @@ static func validate(raw: Variant) -> Dictionary:
 	var msaa_3d: Variant = raw.get("msaa_3d", DEFAULTS.msaa_3d)
 	if typeof(msaa_3d) != TYPE_INT or msaa_3d not in MSAA_3D_VALUES:
 		errors.append("msaa_3d must be an integer from 0 through 3")
+	var scene_detail: Variant = raw.get("scene_detail", DEFAULTS.scene_detail)
+	if typeof(scene_detail) != TYPE_STRING or scene_detail not in SCENE_DETAILS:
+		errors.append("scene_detail must be low, medium, high or extreme")
 	var scale: Variant = raw.get("ui_scale")
 	if typeof(scale) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(scale)) \
 			or float(scale) < 1.0 or float(scale) > 2.0 \
@@ -169,6 +177,7 @@ static func validate(raw: Variant) -> Dictionary:
 		"max_fps": max_fps,
 		"vsync_mode": vsync_mode,
 		"msaa_3d": msaa_3d,
+		"scene_detail": scene_detail,
 		"ui_scale": float(raw.ui_scale),
 		"opaque_panels": raw.opaque_panels,
 		"reduced_motion": raw.reduced_motion,

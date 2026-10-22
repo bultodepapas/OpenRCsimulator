@@ -48,6 +48,15 @@ class InstancedLodCorrectionTest(unittest.TestCase):
         v2 = attribution()
         self.assertEqual(report_tool.check_budget(report_tool.summarize(v2), v2, budget), [])
 
+    def test_budget_applies_to_its_scene_detail_only(self):
+        budget = {"format": "openrc-scene-budget v1", "viewport": [1280, 720], "scene_detail": "high",
+                  "classes": {"pilot": {"max_primitives": 10**7, "max_draws": 1000}}, "subsystems": {}}
+        report = attribution()
+        self.assertEqual(report_tool.check_budget(report_tool.summarize(report), report, budget), [])
+        report["scene_detail"] = "extreme"
+        failures = report_tool.check_budget(report_tool.summarize(report), report, budget)
+        self.assertTrue(any("scene detail extreme" in failure for failure in failures))
+
     def test_full_detail_exception_covers_every_cell_of_a_mesh(self):
         budget = {"format": "openrc-scene-budget v1", "viewport": [1280, 720],
                   "classes": {"pilot": {"max_primitives": 10**7, "max_draws": 1000}}, "subsystems": {},

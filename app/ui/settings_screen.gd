@@ -42,6 +42,7 @@ var _resolution_picker: OptionButton
 var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
+var _scene_detail_picker: OptionButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -197,6 +198,15 @@ func _build() -> void:
 	_msaa_picker = _choice_picker("Msaa3D", "msaa_3d", DisplayPreferences.MSAA_3D_VALUES)
 	_add_row(graphics_page, "Antialiasing (MSAA)", _msaa_picker)
 	_msaa_picker.tooltip_text = tr("Higher antialiasing smooths edges at a higher GPU cost. VSync reduces tearing; a frame limit can save power. Test what feels smooth on your display.")
+	# VQ-06b: no display trial; it cannot blank the screen. Trees and props change from the next flight.
+	_scene_detail_picker = OptionButton.new()
+	_scene_detail_picker.name = "SceneDetail"
+	for level: String in DisplayPreferences.SCENE_DETAILS:
+		_scene_detail_picker.add_item(_choice_caption("scene_detail", level))
+		_scene_detail_picker.set_item_metadata(_scene_detail_picker.item_count - 1, level)
+	_scene_detail_picker.item_selected.connect(_scene_detail_selected)
+	_add_row(graphics_page, "Scene detail", _scene_detail_picker)
+	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. High is the default. Extreme draws every nearby field tree in 3D and needs a strong GPU.")
 	_graphics_info = _label("", "SecondaryLabel", true)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
@@ -210,7 +220,6 @@ func _build() -> void:
 		_revert()
 		graphics_restart_requested.emit("standard" if HighGraphics.active() else "high"))
 	graphics_actions.add_child(_graphics_restart_button)
-	graphics_page.add_child(_label("High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard.", "SecondaryLabel", true))
 
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
@@ -392,6 +401,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 		"max_fps": return tr("Unlimited") if value == 0 else "%d FPS" % int(value)
 		"vsync_mode": return tr("On") if value == "enabled" else tr("Off")
 		"msaa_3d": return tr("Off") if value == 0 else "%d×" % (1 << int(value))
+		"scene_detail": return tr(str(value).capitalize())
 	return str(value)
 
 
@@ -413,7 +423,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail"]:
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -432,11 +442,19 @@ func _refresh_graphics_info() -> void:
 
 func set_graphics_restart_available(available: bool) -> void:
 	_graphics_restart_button.disabled = not available
-	_graphics_restart_button.tooltip_text = tr("Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU.") if available else tr("End your flight and return Home to change graphics mode.")
+	# VQ-06b: the experiment note moved here from its own label so Scene detail fits the page at 1080p.
+	_graphics_restart_button.tooltip_text = tr("Softer shadows, ambient occlusion and sky reflections. Requires a Forward+ capable GPU.") \
+		+ "\n" + tr("High is a temporary experiment. Keep your changes before restarting. A normal launch returns to Standard.") \
+		if available else tr("End your flight and return Home to change graphics mode.")
 
 
 func _scale_selected(index: int) -> void:
 	_draft.ui_scale = float(_scale_picker.get_item_metadata(index))
+	_on_presentation_option_changed()
+
+
+func _scene_detail_selected(index: int) -> void:
+	_draft.scene_detail = str(_scene_detail_picker.get_item_metadata(index))
 	_on_presentation_option_changed()
 
 
@@ -510,6 +528,7 @@ func _sync_controls() -> void:
 	_select_metadata(_fps_picker, _draft.max_fps)
 	_select_metadata(_vsync_picker, _draft.vsync_mode)
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
+	_select_metadata(_scene_detail_picker, _draft.scene_detail)
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
@@ -589,7 +608,7 @@ func _refresh_translated_text() -> void:
 	if _window_picker != null:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
-	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"]]:
+	for entry: Array in [[_resolution_picker, "window_resolution"], [_fps_picker, "max_fps"], [_vsync_picker, "vsync_mode"], [_msaa_picker, "msaa_3d"], [_scene_detail_picker, "scene_detail"]]:
 		var picker: OptionButton = entry[0]
 		for index: int in picker.item_count:
 			picker.set_item_text(index, _choice_caption(entry[1], picker.get_item_metadata(index)))

@@ -26,6 +26,7 @@ const DamageBatches = preload("res://scenery/damage_batches.gd")
 const GrassMask = preload("res://render/landscape_upgrade/scenery_grass_mask.gd")
 const Flowers = preload("res://scenery/flowers.gd")
 const BotanicalHabitats = preload("res://scenery/botanical_habitats.gd")
+const SceneDetail = preload("res://render/scene_detail.gd")
 const AirfieldDetail = preload("res://scenery/airfield_detail.gd")
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
 const Ambience = preload("res://scenery/ambience.gd")
@@ -60,7 +61,8 @@ static func options() -> Dictionary:
 	return {
 		enabled = on.call(get.call("scenery", "OPENRC_SCENERY", "on")),
 		theme = get.call("scenery_theme", "OPENRC_SCENERY_THEME", ""),
-		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", "high"),
+		# VQ-06b: the Scene detail preset supplies the default tier; the explicit switches still win.
+		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", str(SceneDetail.profile().scenery_quality)),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),
 		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "on")),
 		tree_wind = on.call(get.call("tree_wind", "OPENRC_TREE_WIND", "on")),

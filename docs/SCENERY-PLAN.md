@@ -43,7 +43,7 @@ Static object contact uses the separate float64 LU-05 collision world. [CR-17a l
 | --- | --- | --- |
 | SC-18 | Add remaining field-life motion from the shared wind service. | Partial: rotors and club flag use simulation time and wind; wind pump, canopy flutter and grazing heads are not done. |
 | SC-22 | Offer the existing five postcard compositions from Home. | Partial: captures and compositions exist; menu integration belongs to UI-06. |
-| SC-24 | Connect low/balanced/high scenery quality to product presets. | Partial: deterministic scenery tiers work; VQ-06 integration remains open. |
+| SC-24 | Connect low/balanced/high scenery quality to product presets. | Connected 2026-10-22: the VQ-06b Scene detail preset selects the tier (Low → low, Medium → balanced, High/Extreme → high); `--scenery_quality` still overrides ([evidence](research/visual-quality-implementation/VQ-06b-scene-detail/README.md)). |
 | SC-19b | Recorded ambient samples with per-file source and license proof. | Optional; not started. |
 | SC-21 | Animated spectators. | Optional; not started. |
 

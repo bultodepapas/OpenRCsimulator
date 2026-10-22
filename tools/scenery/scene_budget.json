@@ -1,6 +1,7 @@
 {
  "format": "openrc-scene-budget v1",
  "step": "LU-34, revised by L6c-R1, LU-34-R1 and L8a-R1",
+ "scene_detail": "high",
  "viewport": [
   1280,
   720

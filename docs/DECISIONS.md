@@ -837,3 +837,16 @@ matching reduction exists in the worst pilot view, a 10° telephoto where club a
 legitimately at full detail, so allocate the trees their measured cost +10% and raise the pilot
 total from 973,000 to 1,307,000.
 [Evidence](research/visual-quality-implementation/L8a-R1/README.md).
+
+### 2026-10-22 — Scene detail preset: Low, Medium, High (default), Extreme (VQ-06b)
+
+The owner asked for graphics tiers so that scene cost becomes the player's choice. Add one saved
+**Scene detail** setting to the existing display store and Graphics page. It maps onto existing
+knobs only: the SC-24 scenery tier, which field trees render in 3D (none, the L8a-R1 front trees,
+or the whole near ring) and Godot's viewport mesh LOD threshold (4/2/1/1 px). High keeps the
+current look and remains the default and the budgeted preset; the other levels are measured, not
+capped. This supersedes the earlier "no Ultra profile" line for scene detail; the renderer stays
+Compatibility. Field-tree collision ignores the preset; ornament props keep the LU-05 rule that
+what is drawn collides, and the flight log records the collision world. The High-mode experiment
+note moves into its button tooltip so the Graphics page still fits at 1080p.
+[Evidence](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).

@@ -14,14 +14,15 @@ const CELL_SIZE_M := 256
 const BARK_LOD_ERROR_PX := 8.0
 
 
-static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float) -> Node3D:
+static func build(object_data: Dictionary, pilot: Dictionary, front_azimuth: float,
+		half_angle_deg: float = Treeline.DETAIL_HALF_ANGLE_DEG) -> Node3D:
 	var result := Node3D.new()
 	result.name = str(object_data.get("id", "treeline")) + "Detail"
 	result.position = Frames.ned_to_render([pilot.north, pilot.east, pilot.down])
 	var batches := {}
 	for index: int in object_data.positions.size():
 		var point: Array = object_data.positions[index]
-		var asset_id := Treeline.detail_asset(point[0], point[1], front_azimuth)
+		var asset_id := Treeline.detail_asset(point[0], point[1], front_azimuth, half_angle_deg)
 		if asset_id.is_empty():
 			continue
 		var tree: Dictionary = Treeline.identity(point[0], point[1])

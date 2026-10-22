@@ -36,7 +36,7 @@ Latest VQ-01d slice: [moving visibility references](../research/visual-quality-i
 | Vegetation | Test the existing atlas and alpha-to-coverage first | No replacement library, octahedral addon or custom mip importer in the initial slice. |
 | Aircraft | Preserve current materials/livery; repair demonstrated readability or sparkle problems | Film gloss, filtered markings, propeller blur and hinge-glint repairs already exist. |
 | Wind and clouds | Compare static windsock against wind-driven foliage; reproduce high-wind cloud stepping | Reuse M5 read-only inputs and FW-81 history. No new weather physics. |
-| Quality UI | Balanced retains the current qualified look; Performance ships only with measured benefit | Use VQ-06 and UI-24. No Ultra profile, renderer selector or second preferences system. |
+| Quality UI | Balanced retains the current qualified look; Performance ships only with measured benefit | Use VQ-06 and UI-24. No renderer selector or second preferences system. On 2026-10-22 the owner asked for tiers including an Extreme scene-detail level; the Scene detail preset ships in the existing store, High keeps the current look as default, and every level has measured drawn cost ([VQ-06b](../research/visual-quality-implementation/VQ-06b-scene-detail/README.md)). |
 | Assets | Reuse retained maps, trees, aircraft generators and licensed packs | Check free downloadable equivalents before authoring content. No asset-library replacement campaign. |
 | Product breadth | No replay UI, ghosts, latency-training mode, photo-field or terrain replacement | These do not repair this delivery's performance/visual acceptance gaps. |
 
