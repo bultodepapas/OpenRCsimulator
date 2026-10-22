@@ -72,6 +72,6 @@ Captures use [`fixtures/world_capture.gd`](fixtures/world_capture.gd) with [`fix
 ## Limits and next steps
 
 - Saved visual checkpoints and companion collision-world identities from before this change no longer match the field (expected for a world change).
-- The far ring (600–1,500 m) keeps its habitat-v1 patches, which are too sparse to close their canopy. Compacting them is a separate step.
+- The far ring (600–1,500 m) kept its habitat-v1 patches in this step. [L7-R4](../L7-R4/README.md) turns them into single-species woods.
 - With 480 trees, woods at canopy density leave much open land. More near trees are cheap (6 triangles each, no new draws) but need the loader's 1,680-position limit raised; that is a separate decision.
 - `tools/trees/habitat_diagnostics.py` and its test describe the L7-R1 habitat-v1 comparison. They predate the 2026-10-20 vegetation renewal and do not apply to groves-v1.

@@ -803,3 +803,12 @@ stay byte-identical; the collision world identity changes. Write the field CRLF 
 matching `.gitattributes`, so raw-byte pins agree on Linux and Windows. Defer far-ring compaction
 and a higher tree count (loader limit) to separate decisions.
 [Evidence](research/visual-quality-implementation/L7-R3/README.md).
+
+### 2026-10-22 — Single-species far woods at the existing far sites (L7-R4)
+
+Extend the approved groves to the far ring. `groves-v2` keeps the groves-v1 near ring and the
+twelve habitat-v1 far sites, and makes each a single-species wood with a woodland height profile
+at 220 m² per tree; frozen trees keep the landmark skyline sectors. Constrain new far trees only
+by inputs that do not depend on tree positions (countryside roads and asserted farm boxes,
+woodland-edge templates, farm habitats, scenery), so the regeneration order is acyclic.
+[Evidence](research/visual-quality-implementation/L7-R4/README.md).
