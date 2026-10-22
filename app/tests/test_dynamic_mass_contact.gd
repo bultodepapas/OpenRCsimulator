@@ -103,6 +103,10 @@ func _test_hull_dynamic_contact() -> void:
 			M.norm(M.sub(result.loads.slice(3, 6), summed_torque)) < 1.0e-9,
 			"aggregate=%s per-point=%s" % [result.loads.slice(3, 6), summed_torque])
 	var high_state: PackedFloat64Array = _state([0.0, 0.0, -10.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
+	var clear_near_state: PackedFloat64Array = _state([0.0, 0.0, -1.05], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0])
+	var clear_near: Dictionary = HullContact.loads_at_properties(clear_near_state, geometry, properties)
+	_check("hull inside broad-phase reach but clear of ground has no contact load",
+		bool(clear_near.ok) and clear_near.loads.is_empty(), str(clear_near))
 	var far: Dictionary = HullContact.loads_at_properties(high_state, geometry, properties)
 	_check("geometry reach gate returns a valid empty load without stage contact work",
 		bool(far.ok) and far.loads.is_empty(), str(far))
