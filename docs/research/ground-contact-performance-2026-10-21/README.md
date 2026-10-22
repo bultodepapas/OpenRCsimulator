@@ -260,6 +260,38 @@ aircraft contact, lake session, crash and prop-strike gates passed. A short
 The preceding 50.6 ms capture was not a controlled pair; real-time backlog
 remains.
 
+## Glow fuel-feed closure reuse
+
+Headless profiling found the Stik's fuel-feed closure used about 2.10 ms of a
+3.68 ms tick on the measured host. Five stage solves called the lifecycle and
+body/rotor coupling about 20 times each. For a fixed stage, the candidate feed
+factor changes only the target fuel transport rate and two telemetry values;
+source torque, current mixture, thermal response and body acceleration use the
+current transport. The closure now evaluates those invariant responses once
+per stage and retains the existing bounded scalar root solver. It falls back
+to the original per-candidate path if the factor-1 sample or coupling fails.
+
+The [six-case trajectory probe](clear_hull_parity_probe.gd) produced identical
+492,028-byte snapshots with the previous glow evaluator and this candidate:
+SHA-256 `3daf55d897922ffbf0c18bfa328e7d54c1cc3871c9a24ddec14396482c28b74`.
+The prior evaluator in the scratch app matches the committed source blob; the
+probe compares body, auxiliary, continuous, loads, events and engine mode for
+120 full-throttle ticks on each P-51, Extra and glow Stik runway/airborne case.
+It is a bounded software comparison, not exact recorder replay. Glow fuel-feed
+(41/0), flight physics (110/0), stage reuse (2,005/0), session (140/0),
+coupling (65/0), trace (286/0), two-stroke (50/0), four-stroke (304/0),
+prepared (580/0) and lifecycle (52/0) checks passed.
+
+The subsequent [native glow Stik capture](stik-glow-61fx-2t-factor-reuse-frames.json)
+had p50 69.0 ms over 42 frames, 4.64 ms smoothed physics/tick, and advanced
+2.15 s simulation in 3.06 s wall time. The earlier capture had p50 132.1 ms
+and advanced 1.10 s in 3.02 s. These short sequential samples differ in
+simulation state and are not controlled paired benchmarks. The
+[Extra capture](gp-extra-300s-60-factor-reuse-frames.json) had p50 52.7 ms
+over 51 frames; its installation does not use this fuel-feed closure, so that
+small change is within run variation. All captures completed without a fault,
+but real-time backlog remains.
+
 ## Runway acceleration in simulation time
 
 The [fixed-tick probe](runway_acceleration_probe.gd) and its [Windows Godot

@@ -473,12 +473,40 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 			install.tank_position,install.tank_size)
 		if not feed_context.get("ok",false): return {ok=false}
 		var feed_force_body: PackedFloat64Array=airframe.external.slice(0,3)
+		# The factor changes only the target transport rate and its telemetry. The source,
+		# thermal balance, and body/rotor response use the current transport and are
+		# invariant for this stage. Keep the original path if the factor-1 sample fails:
+		# another factor may still have a finite transport rate.
+		var base_evaluation: Dictionary=_lifecycle_evaluate(install,state,rpm,local_cooling,ambient,
+			values[12],1.0,evaluator,identity_matches,owner,lifecycle_floor)
+		var base_coupling: Dictionary={}
+		if base_evaluation.get("ok",false):
+			base_coupling=_stage_coupling(owner,body,values,install,state,
+				base_evaluation.source,load,airframe,feed_mass,ambient)
+		var reuse_response: bool=base_evaluation.get("ok",false) and base_coupling.get("ok",false)
+		var base_target: float=float(base_evaluation.telemetry.fuel_target_kg_s) if reuse_response else NAN
+		var current_transport: float=maxf(0.0,float(state.fuel_transport_kg_s))
+		var active_transport: bool=bool(state.running) and float(state.fuel_kg)>lifecycle_floor
+		var transport_tau: float=float(install.settings.fuel_transport_time_constant_s)
 		var solve: Dictionary=FuelFeed.solve_factor(func(candidate_factor: float) -> Dictionary:
-			var candidate_evaluation: Dictionary=_lifecycle_evaluate(install,state,rpm,local_cooling,ambient,
-				values[12],candidate_factor,evaluator,identity_matches,owner,lifecycle_floor)
+			var candidate_evaluation: Dictionary
+			if reuse_response:
+				var target_flow: float=base_target*candidate_factor
+				var transport_rate: float=(target_flow-current_transport)/transport_tau if active_transport \
+					else -current_transport/transport_tau
+				if not is_finite(transport_rate): return {ok=false}
+				candidate_evaluation=base_evaluation.duplicate()
+				candidate_evaluation.rates=base_evaluation.rates.duplicate()
+				candidate_evaluation.telemetry=base_evaluation.telemetry.duplicate()
+				candidate_evaluation.rates.fuel_transport_kg_s=transport_rate
+				candidate_evaluation.telemetry.fuel_target_kg_s=target_flow
+				candidate_evaluation.telemetry.fuel_feed_factor=candidate_factor
+			else:
+				candidate_evaluation=_lifecycle_evaluate(install,state,rpm,local_cooling,ambient,
+					values[12],candidate_factor,evaluator,identity_matches,owner,lifecycle_floor)
 			if not candidate_evaluation.get("ok",false): return {ok=false}
-			var candidate_coupling: Dictionary=_stage_coupling(owner,body,values,install,state,
-				candidate_evaluation.source,load,airframe,feed_mass,ambient)
+			var candidate_coupling: Dictionary=base_coupling if reuse_response else _stage_coupling(
+				owner,body,values,install,state,candidate_evaluation.source,load,airframe,feed_mass,ambient)
 			if not candidate_coupling.get("ok",false): return {ok=false}
 			var target_factor: float=FuelFeed.factor_for_stage(feed_context,feed_force_body,feed_mass.mass_kg,
 				tank_arm,candidate_coupling.alpha_body,omega,pickup)
