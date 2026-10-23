@@ -478,7 +478,10 @@ func update(rotor_rpm: float) -> void:
 	_broken = broken
 	_applied = true
 	for node in _originals:
-		node.visible = fraction <= 0.0 and not broken
+		# The aircraft can be freed before this sibling observer. Still retire
+		# our owned copies below instead of aborting on a borrowed mesh.
+		if is_instance_valid(node):
+			node.visible = fraction <= 0.0 and not broken
 	for node in _hub_copies:
 		node.visible = shown and fraction > 0.0
 	for node in _blade_copies:

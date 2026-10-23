@@ -1,0 +1,41 @@
+{
+  "retirement": [
+    {
+      "run": "high-after",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ok": true,
+      "ghost_pixels": 0,
+      "max_channel_delta": 0,
+      "retired_sha256": "eee61d9c8407ecf455a2b06a5325fc614d299bcee02366328c0d598affb57bad",
+      "empty_sha256": "eee61d9c8407ecf455a2b06a5325fc614d299bcee02366328c0d598affb57bad"
+    },
+    {
+      "run": "high-before",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ok": false,
+      "ghost_pixels": 407416,
+      "max_channel_delta": 30,
+      "retired_sha256": "bf8edc64cce1127c2f4cd6a201787e2fc10e9583511b8eefee5808a48faa1719",
+      "empty_sha256": "eee61d9c8407ecf455a2b06a5325fc614d299bcee02366328c0d598affb57bad"
+    },
+    {
+      "run": "standard-after",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "ok": false,
+      "ghost_pixels": 0,
+      "max_channel_delta": 0,
+      "retired_sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366",
+      "empty_sha256": "48570ddbe278b95f65b277f7bb68d42c4aadeb219dff8166c5cf8c204786a366"
+    }
+  ],
+  "normal_high_full_speed_exact": true
+}

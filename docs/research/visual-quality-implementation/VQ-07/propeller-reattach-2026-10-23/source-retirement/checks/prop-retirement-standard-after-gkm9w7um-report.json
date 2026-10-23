@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fcc2ebac-5fa2-46fa-a93f-adca79cf46ed",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--resolution",
+    "1920x1080",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../docs/research/visual-quality-implementation/VQ-07/propeller-reattach-2026-10-23/capture_1080.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/prop-retirement/standard-after",
+    "--view=front",
+    "--rpm=0,600,1200,6000"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T11:49:29.800548+00:00",
+  "label": "prop-retirement-standard-after",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-retirement-standard-after-gkm9w7um\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-retirement-standard-after-gkm9w7um\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "destroyed source leaves no propeller ghost"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 4.625,
+  "log_bytes": 1230,
+  "log_sha256": "4e52cd4043231b409d9d1c0b1e245bb2089b8567d77cfac3337549d1702a5771"
+}

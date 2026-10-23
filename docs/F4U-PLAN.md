@@ -1,6 +1,6 @@
 # F4U Corsair 1/4.5: integration plan
 
-Checked 2026-10-22 · Aircraft/model owner · Prefix **F4U-00…14**. Nothing flies yet: provisional physics data exist and pass the production loader and trim (F4U-07), but the catalog has no Corsair. The author's g1.3 visual model (1:4.5, gear stowed) is accepted, frozen and built by the shared imported-scene builder (F4U-05); catalog registration waits for ground handling (F4U-08). This plan states what is prepared, what is blocked and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
+Checked 2026-10-23 · Aircraft/model owner · Prefix **F4U-00…14**. The Corsair is an **experimental catalog aircraft**: Home, Quick Flight and the Workshop offer it, the standard flight-test battery flies it, and every catalog-wide suite passes with it. Its physics remains an unvalidated estimate; physical evidence (F4U-14) and the owner's rights decisions (F4U-13) are open. This plan states what is done, what is open and how each step is proven. Implementation, passing software checks and physical validation remain separate claims.
 
 ## 1. Identity and scope
 
@@ -50,13 +50,13 @@ The crash system already supports the three-way wing split (`wing_center` plus o
 | F4U-05 | Done 2026-10-22 | [Model family](research/f4u-corsair/F4U-05/README.md): the delivered GLB under `app/assets/aircraft/f4u-corsair-250/`; `GearRetract` sampled from the frozen game source (101 poses, 0.55 µm midpoint error); `compile_model.py` → `model-geometry.json` and `f4u_corsair_geometry.gd`; binding with three flap hinges per side, rotor and sampled taildragger retraction; customization coverage entry. Proof: the model probe 28/0 through the production registry (now `verify_f4u.gd`), shared retract suites and Avanti verifier green, manifests/descriptors/customization/parked bakes regenerated and current. |
 | F4U-06 | Done, provisional, 2026-10-22 | [R59 extraction](research/f4u-corsair/F4U-06/README.md) to `geometry-r59.json` at 1/4.5 (every length × 10/9 of the 1/5 run, checked field by field). Planform and tail areas match published values within 0.6–4 %; gull, dihedral and incidence lack a primary source. g1.3 landmarks agree within 0.3 mm ([comparison](research/f4u-corsair/F4U-06/README.md#comparison-with-g13-2026-10-22)); the physics sections stay with R59. |
 | F4U-07 | Done, provisional, 2026-10-22 | [Native v2 generator](research/f4u-corsair/F4U-07/README.md) at 1/4.5: 21.5 kg, CARF throws, flaps and thrust angles, Moki S250 from the manual's two static points (static 4,274 rpm against the manual's 4,400, 28.0 kgf), 30x18 three-blade from a blade-element model calibrated on Mejzlik tables (`fit_propeller.py`). Probe 22/22; top speed 57.7 m/s against CARF's 200 km/h warning; pb/2V 0.062 against the full-size 0.064. Remaining: body-yaw calibration, thin-tip stall data, a Moki dyno curve or three-blade table, PDF recheck of OCR values. Output moves to `app/data/aircraft/` at F4U-09; never hand-edited. |
-| F4U-08 | After F4U-05 | Contacts and `retraction_path` already come from R59's rig; confirm against the sampled g1.3 action and use wheel-plane contacts (`nominal_ground_contact_m`), not the low-poly tyre's lowest vertex. Recompute gear travel with the GP-06 reserve-drop probe; tail steering, brakes, Sierra retract timing. Ground-handling targets from the CARF manual: full power on take-off lifts the tail beyond the low-rate elevator, tail-up landings. Proof: ground suites, runway start qualification. |
-| F4U-09 | After F4U-08 | Catalog registration, EN/ES names, Home and menu entries, thumbnail. Display name per D2. |
-| F4U-10 | After F4U-05 | Presentation: paint slots `paint_body/wing/wing_tip/tail`, livery set and default (D3), registration mounts, light anchors, smoke outlets (exhaust collector, wingtips), radial sound. |
-| F4U-11 | After F4U-05 | Crash: release checks for each outer panel with its aileron and outer flap, `wing_center`, cowl, propeller, canopy and gear; damage and cost dossier. |
+| F4U-08 | Done 2026-10-22 | [Ground data](research/f4u-corsair/F4U-08/README.md): contacts and retraction paths from the g1.3 `GearRetract` in each wheel's plane; GP-06c travel 0.100 m mains / 0.110 m tail (reserve drop worst 93 %); wheel profile with estimated 2.0 N·m pneumatic main brakes; prop-strike probes on the physical 30 in disc. Proof: reserve-drop and visual-contact suites, `verify_f4u.gd` contacts within 0.5 µm of the rendered wheel bottoms. |
+| F4U-09 | Done 2026-10-22 | [Catalog registration](research/f4u-corsair/F4U-09/README.md): experimental entry after the P-51, EN/ES texts, Workshop descriptor, economy route, three-blade audio. Natural Random v1 stays at five aircraft (versioned list). Proof: 52 catalog-iterating suites; nine fleet-count assertions updated, then 22/22 affected suites green. |
+| F4U-10 | Done 2026-10-22 | [Presentation](research/f4u-corsair/F4U-10/README.md): four paint slots, registration on both fuselage sides, wingtip/tail show smoke, exhaust smoke at the left middle stack, propeller drawn at its physical 30 in, generic night kit. Only the default livery is selectable (no texture-livery switch in the app). |
+| F4U-11 | Done 2026-10-22 | [Crash and economics](research/f4u-corsair/F4U-11/README.md): ten wreck sections; C3 wing hits release only their outer panel, a spinner hit propeller, engine and canopy; independent partial costing dossier (servo proxies priced, kit and Moki unpriced with dated evidence). |
 | F4U-12 | After F4U-09 | Verification: `verify_f4u.gd`, clearance sweep, handling tests, flight-test card, baseline `.orfl` per [flight logging](FLIGHT-LOGGING.md). |
-| F4U-13 | Owner | Rights record: name-use assessment, livery originality, plan provenance; release category per the licensing guide. g1.2's LICENSE leaves terms unset. |
-| F4U-14 | Later | Physical evidence: builder logs, measured mass/CG/servo throws or flight video of a CARF Corsair with a Moki, if available. |
+| F4U-13 | Owner | [Rights record](research/f4u-corsair/F4U-13/README.md) prepared: asset terms unset, Royal RC plan provenance open, name decision D2. Internal use only until the owner acts. |
+| F4U-14 | Owner, later | Physical evidence: a piloted baseline `.orfl` (`python tools/flight_log/flight_log.py record --aircraft f4u-corsair-250 --out <new file>`), builder logs, measured mass/CG/servo throws or flight video of a CARF Corsair with a Moki S250. |
 
 ## 5. Owner decisions
 
@@ -66,7 +66,7 @@ D1, D4 and D5 follow the owner's 2026-10-22 direction and live in [source.json](
 | --- | --- | --- |
 | D1 | RC hardware reference | CARF-Models F4U-1D 1:4.5 (2,800 mm, Sierra retracts). Replaced the FokkeRC 1/5 recommendation |
 | D2 | Display name | Open; decide with F4U-13. "F4U Corsair" is a conditional historical name |
-| D3 | Default livery | Open; the author proposes Midnight Blue, with Coastal Three Tone and Scarlet 308 |
+| D3 | Default livery | Midnight Blue as delivered (embedded); Coastal Three Tone and Scarlet 308 await a texture-livery feature |
 | D4 | Propeller | 30x18 three-blade (Moki manual). CARF's 32 in ground-adjustable scale three-blade is the alternative once data exist |
 | D5 | Engine | Moki S250 five-cylinder radial. The Moki S400 belongs to 1/3.5–1/3 models |
 

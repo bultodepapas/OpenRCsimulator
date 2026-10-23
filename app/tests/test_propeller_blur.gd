@@ -195,7 +195,20 @@ func _aircraft(id: String) -> void:
 	holder.free()
 	await process_frame
 	_check(id + " freeing the blur restores the model's blades", _snapshot(airplane.root) == before)
+	# The source may be destroyed before its sibling presentation observer.
+	holder = Node3D.new()
+	root.add_child(holder)
+	node = Blur.attach(airplane, null, holder)
+	node.update(mid_rpm)
 	airplane.root.free()
+	node.update(mid_rpm)
+	var retired: bool = not node._disc.visible and node.blur == 0.0
+	for copy: MeshInstance3D in node._blade_copies + node._hub_copies:
+		retired = retired and not copy.visible
+	_check(id + " source-first destruction hides every owned copy", retired)
+	node.update(mid_rpm)
+	_check(id + " retired observer remains hidden on repeated update", not node._disc.visible)
+	holder.free()
 
 
 func _no_propeller() -> void:

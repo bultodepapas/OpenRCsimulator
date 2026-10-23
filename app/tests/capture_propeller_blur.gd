@@ -174,6 +174,16 @@ func _run() -> void:
 		quit(2)
 		return
 	_check("repeated frame is byte-identical", repeat.get_data() == repeated.get_data(), "two frames at %d rpm; retained repeat-a/b PNGs" % int(_rpms[-1]))
+	airplane.root.free()
+	node.update(_rpms[-1])
+	var source_retired := await _grab()
+	node.visible = false
+	var empty_reference := await _grab()
+	_check("destroyed source leaves no propeller ghost", source_retired.get_data() == empty_reference.get_data(), "retired observer vs explicitly hidden observer")
+	if source_retired.save_png(prefix + "-source-retired.png") != OK or empty_reference.save_png(prefix + "-empty-reference.png") != OK:
+		printerr("could not retain source retirement evidence")
+		quit(2)
+		return
 	var summary := {format = "openrc-propeller-blur-capture v1", aircraft = _aircraft, view = _view, blade_angle_deg = _angle_deg,
 		viewport = [repeat.get_width(), repeat.get_height()],
 		msaa_3d = root.msaa_3d,

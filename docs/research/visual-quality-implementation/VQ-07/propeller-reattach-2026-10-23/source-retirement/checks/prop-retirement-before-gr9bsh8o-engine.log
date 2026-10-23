@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Invalid assignment of property or key 'visible' with value of type 'bool' on a base object of type 'previously freed'.
+   at: update (res://render/propeller_blur.gd:481)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/propeller_blur.gd:481)
+       [1] _aircraft (res://tests/test_propeller_blur.gd:204)
+FAIL jensen-das-ugly-stik-60 source-first destruction hides every owned copy 
+FAIL jensen-das-ugly-stik-60 retired observer remains hidden on repeated update 
+SCRIPT ERROR: Invalid assignment of property or key 'visible' with value of type 'bool' on a base object of type 'previously freed'.
+   at: update (res://render/propeller_blur.gd:481)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/propeller_blur.gd:481)
+       [1] _aircraft (res://tests/test_propeller_blur.gd:204)
+FAIL gp-extra-300s-60 source-first destruction hides every owned copy 
+FAIL gp-extra-300s-60 retired observer remains hidden on repeated update 
+SCRIPT ERROR: Invalid assignment of property or key 'visible' with value of type 'bool' on a base object of type 'previously freed'.
+   at: update (res://render/propeller_blur.gd:481)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/propeller_blur.gd:481)
+       [1] _aircraft (res://tests/test_propeller_blur.gd:204)
+FAIL p51d-mustang-120 source-first destruction hides every owned copy 
+FAIL p51d-mustang-120 retired observer remains hidden on repeated update 
+SCRIPT ERROR: Invalid assignment of property or key 'visible' with value of type 'bool' on a base object of type 'previously freed'.
+   at: update (res://render/propeller_blur.gd:481)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/propeller_blur.gd:481)
+       [1] _aircraft (res://tests/test_propeller_blur.gd:204)
+FAIL turbo-lumber-evolution source-first destruction hides every owned copy 
+FAIL turbo-lumber-evolution retired observer remains hidden on repeated update 
+propeller blur: 154 checks, 8 failures

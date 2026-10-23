@@ -112,3 +112,5 @@ The [2026-10-22 VQ-07b diagnostic](../VQ-07/propeller-repeat-2026-10-22/README.m
 ## Retained observer lifecycle
 
 The [2026-10-23 reattachment repair](../VQ-07/propeller-reattach-2026-10-23/README.md) invalidates cached presentation after detachment restores original blades. The expanded suite passes 146 checks; High is pixel-identical across reattachment at 1080p. Standard retains the separate strict repeat failure.
+
+The [source-first destruction follow-up](../VQ-07/propeller-reattach-2026-10-23/README.md#source-first-destruction) guards borrowed mesh references so cleanup hides owned copies even after the aircraft is freed. All 154 checks pass; native retirement matches an empty reference in both renderers at 1080p.

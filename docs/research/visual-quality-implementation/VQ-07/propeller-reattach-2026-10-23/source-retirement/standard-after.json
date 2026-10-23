@@ -1,0 +1,161 @@
+{
+  "aircraft": "jensen-das-ugly-stik-60",
+  "blade_angle_deg": 25.0,
+  "captured_utc": "2026-10-23T11:49:34",
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.3894 at 0 rpm -> 0.0530 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "210148 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "reattachment reapplies blade visibility",
+      "detail": "same RPM after detach/reattach",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+      "ok": false
+    },
+    {
+      "check": "destroyed source leaves no propeller ghost",
+      "detail": "retired observer vs explicitly hidden observer",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm0.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.389439777930507,
+      "rpm": 0.0,
+      "sha256": "a5630996d763502d8ef5642050334faea439b0a4d9990d1db7ee410d66281563"
+    },
+    {
+      "blur": 0.126200274348422,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm600.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.342026381029051,
+      "rpm": 600.0,
+      "sha256": "4ed6307632527a3bdea701b04641504542475e2779caf6eaa306ec5e4092f50d"
+    },
+    {
+      "blur": 0.873799725651577,
+      "changed_outside_blades": 191212,
+      "image": "jensen-das-ugly-stik-60-front-rpm1200.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.0903167003148664,
+      "rpm": 1200.0,
+      "sha256": "b0ced0a119bf48075f3cd7a6d8cb92482062b69657b931465f53c3749444fbcd"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 210148,
+      "image": "jensen-das-ugly-stik-60-front-rpm6000.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.0530144185975251,
+      "rpm": 6000.0,
+      "sha256": "207f31e2faaac24fb8a4bf7341c8027398288a1c7c12ce6f90333b6121f02ad3"
+    }
+  ],
+  "msaa_3d": 2,
+  "ok": false,
+  "process_id": 46280,
+  "profile": {
+    "blades": 2,
+    "coverage": [
+      0.0,
+      0.0,
+      0.0,
+      0.283333333333333,
+      0.433333333333333,
+      0.416666666666667,
+      0.383333333333333,
+      0.358333333333333,
+      0.325,
+      0.308333333333333,
+      0.291666666666667,
+      0.266666666666667,
+      0.25,
+      0.233333333333333,
+      0.216666666666667,
+      0.2,
+      0.183333333333333,
+      0.183333333333333,
+      0.166666666666667,
+      0.15,
+      0.15,
+      0.133333333333333,
+      0.133333333333333,
+      0.116666666666667,
+      0.108333333333333,
+      0.1,
+      0.0916666666666667,
+      0.0916666666666667,
+      0.0833333333333333,
+      0.075,
+      0.0666666666666667,
+      0.0583333333333333,
+      0.0583333333333333,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.025
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0455856025218964,
+    "plane_z_m": 0.0,
+    "radius_m": 0.152452737092972
+  },
+  "region_px": [
+    565.485900878906,
+    145.434951782227,
+    767.522033691406,
+    769.842468261719
+  ],
+  "renderer": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "repeat_images": [
+    {
+      "image": "jensen-das-ugly-stik-60-front-repeat-a.png",
+      "sha256": "04126da3c0e186f1da7f0f404cbfa408dbcbc6240a091e29db9aad7c6e9858b4"
+    },
+    {
+      "image": "jensen-das-ugly-stik-60-front-repeat-b.png",
+      "sha256": "5322ab1a6565e81e36b31f58e26233483b56583d03651d4cae6b8dfb5e41cda8"
+    }
+  ],
+  "source_sha256": {
+    "blur": "70e89719f86644037379c0a9d18b8ac8bac6aa0aa8eb3fa43e4d194576bfe072",
+    "capture": "c66cd88fbfbfb4c766c4acca40b0f6c57eaa72b93866592118eb02470cfc4d8e"
+  },
+  "view": "front",
+  "viewport": [
+    1920,
+    1080
+  ]
+}
