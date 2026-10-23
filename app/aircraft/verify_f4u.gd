@@ -86,7 +86,7 @@ func _asset() -> void:
 			worst = INF
 			continue
 		worst = maxf(worst, node.position.distance_to(_v(record.rest_translation)))
-	_check("all eleven articulation rests match the compiled geometry", worst < 2e-5, "%.2e m" % worst)
+	_check("all eleven articulation rests match the compiled geometry", worst < 2e-5, "%.7f m" % worst)
 	scene.free()
 
 
@@ -130,7 +130,7 @@ func _built_model() -> void:
 		for role: String in ["left", "right", "tail"]:
 			var path: Array = Geometry.DATA.gear.wheels[role].center_model
 			worst = maxf(worst, Importer.relative(root, model.gear[role]).origin.distance_to(_v(path[int(round(extension * (path.size() - 1)))])))
-	_check("wheel centres follow the sampled GearRetract stowed, in transit and down", worst < 1e-4, "%.2e m" % worst)
+	_check("wheel centres follow the sampled GearRetract stowed, in transit and down", worst < 1e-4, "%.7f m" % worst)
 	Rig.apply(rig, 1.0)
 	var down_y := Importer.relative(root, model.gear.left).origin.y
 	var slider: Node3D = rig.compression.left
@@ -158,7 +158,7 @@ func _presentation() -> void:
 		var role: String = str(contact.name).trim_prefix("main_")
 		var p: Array = Geometry.DATA.gear.wheels[role].contact_model[-1]
 		var gap := Vector3(p[2], p[0], p[1]).distance_to(_v(contact.position.value))
-		_check("%s physics contact is the rendered wheel bottom (F4U-08)" % role, gap < 2e-6, "%.2e m" % gap)
+		_check("%s physics contact is the rendered wheel bottom (F4U-08)" % role, gap < 2e-6, "%.7f m" % gap)
 	airplane.root.free()
 
 

@@ -7,10 +7,328 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "38582dc7f57c3aedd61fa48777df6826cd9bc207fc16ccc946ee0f01b89194ed",
-      "paint_slots": [],
-      "marking_slots": [],
-      "smoke_slots": [],
+      "model_manifest_sha256": "891899aa5fde40b6d3c54b037d98ccf36089977a6a4c80ea78e890c42fdb21f7",
+      "paint_slots": [
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/cowl",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/canopy_frame",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_left_1/gear_door_tail_mesh_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_left_2/gear_door_tail_mesh_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_right_1/gear_door_tail_mesh_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_tail_right_2/gear_door_tail_mesh_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/stabilizer_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/fin_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/wing_center_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_left_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_right_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_1_hinge/flap_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_2_hinge/flap_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_left_3_hinge/flap_left_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_1_hinge/flap_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_2_hinge/flap_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/flap_right_3_hinge/flap_right_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_front_left/gear_door_front_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_front_right/gear_door_front_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_inner_left/gear_door_inner_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_inner_right/gear_door_inner_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_outer_left/gear_door_outer_mesh_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/gear_root/gear_door_outer_right/gear_door_outer_mesh_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "F4UCorsair/wing_left_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "F4UCorsair/wing_right_fixed",
+              "surface": 2,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
+      ],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "position_m": [
+                -0.1029,
+                0.08,
+                1.05
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.16,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "F4UCorsair/fuselage_core",
+              "position_m": [
+                0.1029,
+                0.08,
+                1.05
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.16,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
+      "smoke_slots": [
+        {
+          "id": "show_exhaust",
+          "label": "Exhaust smoke pump",
+          "kind": "show",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_and_request",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0.0,
+            0.0742,
+            1.794
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.388,
+            0.0,
+            0.2574
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.388,
+            0.0,
+            0.2574
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ],
+          "radius_m": 0.0029,
+          "emissions_preset": "independent_show",
+          "activation_policy": "independent_request",
+          "provenance": "authored"
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "radius_m": 0.008,
+          "emissions_preset": "gasoline_two_stroke",
+          "activation_policy": "source_running",
+          "provenance": "estimated",
+          "source_id": "$propulsion",
+          "anchor_id": "physical_exit"
+        }
+      ],
       "presentation_engine_version": "4.7.2",
       "presentation_sources": [
         {
@@ -54,7 +372,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "4ded72f20dd31459cf2bf8bf45cf6cb3788a2d2993871c800a203d74a2a2a1f4"
+      "slots_sha256": "0d5c0912fa448b837ff9f9ada9d0b8c6e2ed6d2e1f9103b3c4921ed84cca325f"
     },
     {
       "format": "openrc-aircraft-customization-bindings",

@@ -194,7 +194,7 @@ func _test_recipe_and_fixed_tape(frozen: Dictionary) -> void:
 
 func _test_catalog_fixed_tape() -> void:
 	var entries: Array = Catalog.airplane_flyable_entries()
-	_check("catalog-wide launch cases cover all eight airplane defaults", entries.size() == 8,
+	_check("catalog-wide launch cases cover all nine airplane defaults", entries.size() == 9,
 		"airplane default count: %d" % entries.size())
 	var accepted_runs: int = 0
 	var unsupported_runs: int = 0

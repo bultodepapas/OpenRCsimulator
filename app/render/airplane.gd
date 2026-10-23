@@ -119,6 +119,12 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		return {}
 	airplane.root.set_meta("aircraft_id", id)
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
+	# F4U-10: an imported scene carries no builder metadata; its compiled geometry may publish exhaust anchors instead.
+	if airplane.exhausts.is_empty() and airplane.get("data", {}) is Dictionary:
+		for anchor: Dictionary in airplane.get("data", {}).get("exhausts", []):
+			airplane.exhausts.append({position = Vector3(anchor.position[0], anchor.position[1], anchor.position[2]),
+				direction = Vector3(anchor.direction[0], anchor.direction[1], anchor.direction[2]),
+				radius_m = float(anchor.radius_m), kind = str(anchor.kind), pump = bool(anchor.get("pump", false))})
 	if family == TIMBER_ID:
 		TimberVisualDetails.apply(airplane.root)
 		TimberVisualLighting.apply(airplane.root)
