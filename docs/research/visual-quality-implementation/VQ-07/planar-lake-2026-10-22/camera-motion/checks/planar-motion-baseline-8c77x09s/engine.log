@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL effective eye above water activates reflection even when camera node origin is below
+FAIL effective eye below water disables reflection even when camera node origin is above
+lake planar reflection contract: 51 checks, 2 failed

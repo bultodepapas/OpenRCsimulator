@@ -1,0 +1,132 @@
+{
+	"cases": [
+		{
+			"active": false,
+			"eye_y": 0.248808801174164,
+			"mirror_uv": [
+				0.5,
+				0.731991052627563
+			],
+			"name": "raised-eye",
+			"node_y": -0.649999976158142,
+			"probe_mask": 2,
+			"reflected_uv": [
+				0.500000059604645,
+				0.590763926506042
+			],
+			"source_uv": [
+				0.500000059604645,
+				0.375099897384644
+			],
+			"update_mode": 0
+		},
+		{
+			"active": true,
+			"eye_y": -1.14880871772766,
+			"mirror_uv": [
+				0.5,
+				0.513661623001099
+			],
+			"name": "lowered-eye",
+			"node_y": -0.25,
+			"probe_mask": 0,
+			"reflected_uv": [
+				0.5,
+				0.513662219047546
+			],
+			"source_uv": [
+				0.5,
+				0.297426700592041
+			],
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"eye_y": 8.0,
+			"mirror_uv": [
+				0.922717452049255,
+				0.799263596534729
+			],
+			"name": "offscreen-jet",
+			"node_y": 8.0,
+			"probe_mask": 0,
+			"reflected_uv": [
+				0.922717273235321,
+				0.799264013767242
+			],
+			"source_uv": [
+				1.22735333442688,
+				0.0636168420314789
+			],
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"eye_y": 8.0,
+			"mirror_uv": [
+				0.922717452049255,
+				0.799263596534729
+			],
+			"name": "offscreen-hidden",
+			"node_y": 8.0,
+			"probe_mask": 0,
+			"reflected_uv": [
+				0.922717273235321,
+				0.799264013767242
+			],
+			"source_uv": [
+				1.22735333442688,
+				0.0636168420314789
+			],
+			"update_mode": 4
+		},
+		{
+			"active": false,
+			"eye_y": 2.5,
+			"mirror_uv": [
+				-0.712304353713989,
+				-0.569872736930847
+			],
+			"name": "sky-only",
+			"node_y": 2.5,
+			"probe_mask": 2,
+			"reflected_uv": [
+				-0.71230149269104,
+				-0.569870591163635
+			],
+			"source_uv": [
+				-8.59226322174072,
+				-6.82706642150879
+			],
+			"update_mode": 0
+		},
+		{
+			"active": true,
+			"eye_y": 2.5,
+			"mirror_uv": [
+				0.5,
+				0.731991052627563
+			],
+			"name": "restored",
+			"node_y": 2.5,
+			"probe_mask": 0,
+			"reflected_uv": [
+				0.499999940395355,
+				0.73199200630188
+			],
+			"source_uv": [
+				0.499999940395355,
+				0.340796887874603
+			],
+			"update_mode": 4
+		}
+	],
+	"complete": true,
+	"physics_validation": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	}
+}

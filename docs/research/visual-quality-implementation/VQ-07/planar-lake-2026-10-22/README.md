@@ -134,3 +134,74 @@ The shared tree advanced through unrelated commits during work; no exact
 whole-repository baseline equivalence is claimed. PNGs are lossless evidence;
 MP4/JPEG motion derivatives are viewing aids, with all original frames
 reproducible through the fixture.
+
+## Camera-motion follow-up, 2026-10-22
+
+The water-side guard now uses `Camera3D.get_camera_transform().origin` instead
+of the node origin. Camera h/v offsets move the rendered eye: a node below the
+water could previously disable a valid above-water reflection, and a node above
+water could keep the capture active with its actual eye submerged. This was
+reproduced with synthetic offset cameras; the ordinary game camera currently
+does not use these offsets. No vendor, shader, physics or profile default changed.
+
+The native raised-eye case has node Y −0.65 m and actual eye Y +0.248809 m over
+water at Y −0.45 m. The jet reflection is missing [before](camera-motion/baseline/raised-eye.png)
+and present [after](camera-motion/candidate/raised-eye.png). The reverse case,
+with actual eye Y −1.148809 m, now disables the extra viewport and restores the
+static probe. An independent reviewer reproduced both failures and found no
+remaining concrete projection mismatch after the correction.
+
+The expanded planar contract passes **51 checks, zero failures/errors/warnings**.
+Before the repair, the two new water-side behavior checks failed. Five points
+(center and off-axis) compare normalized main-view virtual-image coordinates
+with the mirror camera across three roll/FOV/aspect/offset configurations.
+These geometric checks pass alongside the offset gates and existing lifecycle
+checks. The retained failing baseline used center-only projection assertions;
+the final test strengthens these to five points.
+
+Additional production-World captures:
+
+- [Two-second camera orbit](camera-motion/candidate/orbit.mp4): 121 prescribed
+  frames with changing roll, FOV and viewing angle. All remain active and all
+  121 PNGs are pixel identical before/after this targeted guard repair.
+  Selected frames were visually inspected; this is not human pilot acceptance
+  or an actual flight. Motion PNGs remain reproducible; the clip/JPEGs are derivatives.
+- [Off-screen jet reflection](camera-motion/candidate/offscreen-jet.png) and
+  [hidden-aircraft control](camera-motion/candidate/offscreen-hidden.png): source
+  center UV X is 1.227 (outside the main image), while the reflected center is
+  at (0.923, 0.799). The bottom-right reflection ROI changes in 3,339 pixels by
+  more than 2/255 when the aircraft is hidden, separate from its sun shadow.
+- Looking entirely at the sky disables the mirror viewport; returning to the
+  lake restores it. These checks and UV comparisons are in the retained reports.
+
+Two ordinary native High sessions attempted the existing 10 s warmup + 60 s
+flight protocol, first with the option absent and then with `planar`. Both used
+the same jet, airborne-half-power start and fixed pilot lake view. With live
+controller input the throttle closed, the jet crashed within the warmup, and
+the simulation paused. **Both collections are ineligible for flight/performance
+qualification**: zero simulation ticks advance during the measured minute.
+The existing `native_summary.py` correctly rejects both. No pause behavior,
+controller input or crash protection was bypassed to obtain a passing number.
+The reports record a 120 Hz display, uncapped engine and VSync enabled; do not
+pool them with older 60 Hz evidence or compare their paused frame times as flight.
+
+Raw reports are losslessly compressed under `camera-motion/native-ineligible/`,
+with their engine logs and unmodified reducer results. To rerun the existing
+reducer, decompress one report as `run-1.json` in a new directory with its
+matching log as `run-1.log`. Checked command receipts preserve the invocations.
+The native fixtures retain the pre-existing seven Texture RID exit warning;
+the focused headless contract has no warnings. An initial edge-fixture parse
+error was fixed before capture and is excluded from accepted evidence.
+
+Run `python <this-directory>/camera-motion/reduce.py` to verify the retained
+camera cases, image parity summary, reflected-aircraft ROI and rejected native
+eligibility. Reproduce captures through the existing launcher with `--profile
+high`, `OPENRC_LAKE_REFLECTIONS=planar`, `--script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/camera-motion/motion_probe.gd`
+(or `edge_probe.gd`) and `-- --out=<new absolute directory>`. These scripts are
+capture diagnostics; their `complete` field alone is not a pass verdict.
+[Follow-up patch](camera-motion/followup.patch) and [source identity](camera-motion/identity.json)
+record this correction separately from the initial integration above.
+
+Keep the mode default-off. Sustained active flight, broader clipping/roughness,
+night/storm and full release/platform qualification remain open. The new cases
+extend the bounded camera evidence; they do not close those gates.

@@ -12,8 +12,8 @@
     "sha256": "22eb22fcaa7c147bce7a634c48ef8131f52bc134f8d5626d71c012a915dc7da8"
   },
   "README.md": {
-    "bytes": 8171,
-    "sha256": "a62eff29fd00409505841c8dbe23ad58f31ee0c7d965abc42884778920c6170f"
+    "bytes": 13005,
+    "sha256": "36d7a5154e577418a846390d14375075c3794dbcc5bc28fce9c3e10d9401aa1b"
   },
   "reduce.py": {
     "bytes": 897,
@@ -22,6 +22,206 @@
   "runtime.patch": {
     "bytes": 53839,
     "sha256": "6786def19340007cc4bbbd24a602cc62990164fa75e6515de923e87e2d9c4645"
+  },
+  "camera-motion/edge_probe.gd": {
+    "bytes": 4620,
+    "sha256": "b96b4faab736c1869b55d4e6d3841a986c3baf874e94ab538682541bd9da0fe6"
+  },
+  "camera-motion/followup.patch": {
+    "bytes": 8737,
+    "sha256": "ae4d72fbb5b5ea4608566710006bc99db815b078186bbf8a0bcc4d29f440721a"
+  },
+  "camera-motion/identity.json": {
+    "bytes": 541,
+    "sha256": "03bb3dfacf7c4a6680a38a65cc70ece1b9cfb4c3990b0b7769c8566200e0631d"
+  },
+  "camera-motion/motion-parity.json": {
+    "bytes": 33412,
+    "sha256": "1c5ab0640585155dbbec9d39748c65a15548994f8a2177deae5a10c4f2756893"
+  },
+  "camera-motion/motion_probe.gd": {
+    "bytes": 4013,
+    "sha256": "a72cdca07bdfe0ccd557c35b47f5a779f8979c0825ab5bf1c3f8503266c660cc"
+  },
+  "camera-motion/reduce.py": {
+    "bytes": 2237,
+    "sha256": "99b1ddcd4eed6294d73f8a3b35ac1267dcb612b8985ca769c8d826fedb232396"
+  },
+  "camera-motion/baseline/edges.json": {
+    "bytes": 2218,
+    "sha256": "aa66213caa35e82baf41602079d644ec9bd6ab83b1da56846af3453b64716b90"
+  },
+  "camera-motion/baseline/lowered-eye.png": {
+    "bytes": 708641,
+    "sha256": "df0d9843d322b7f1df51bbb16effec18a2310a911f67d36968f3acb794fed029"
+  },
+  "camera-motion/baseline/motion.json": {
+    "bytes": 9185,
+    "sha256": "e8f0341a05dc2150706b0bdfb55e8dde3aab782212a0cca999e2a25684395272"
+  },
+  "camera-motion/baseline/offscreen-hidden.png": {
+    "bytes": 525341,
+    "sha256": "0d6373c835c1347436675dcd3c0df6bd726ee29d6a1b1a143aeb312dce143f72"
+  },
+  "camera-motion/baseline/offscreen-jet.png": {
+    "bytes": 529478,
+    "sha256": "eb66051729a2b9d1503bc84d28e88735b16ce898287bfe76f4646f58c14ccdf4"
+  },
+  "camera-motion/baseline/raised-eye.png": {
+    "bytes": 336612,
+    "sha256": "2fd8709f500baace0734dcfc41585382774876990e2bf6be118821bd97a1b3a3"
+  },
+  "camera-motion/baseline/restored.png": {
+    "bytes": 464313,
+    "sha256": "3bc5f405f170e247c1b4ce3d3e9faff8aa1de23d3a588df6af7c7ce47b5da4a3"
+  },
+  "camera-motion/baseline/sky-only.png": {
+    "bytes": 410896,
+    "sha256": "be56be0c7dca140644c11aeb8ea6cf227d57904ab7001261f428a2c8fa5f1521"
+  },
+  "camera-motion/candidate/edges.json": {
+    "bytes": 2244,
+    "sha256": "bfbef4a238c740cd152d712be81b0fcd020a0d55305a6c97aa0ed9e6c81b7969"
+  },
+  "camera-motion/candidate/lowered-eye.png": {
+    "bytes": 709305,
+    "sha256": "280091a8b9b9c92fe8ee492b0ff6daa17eeb34f6a40433cf821042a05854adf2"
+  },
+  "camera-motion/candidate/motion-000.jpg": {
+    "bytes": 96389,
+    "sha256": "4da624c1726fd63161ae807ba7be7768c37f7b0b040049ecc4e0f86941d6d7ba"
+  },
+  "camera-motion/candidate/motion-030.jpg": {
+    "bytes": 111464,
+    "sha256": "06ade0ec574ff9739bed600c3ed75962e441b33efce9a083abc347ff3a774937"
+  },
+  "camera-motion/candidate/motion-060.jpg": {
+    "bytes": 106798,
+    "sha256": "325007ee4671ec0434e7ce7d2cff5766f74fa797e6979b101633c720b3e05625"
+  },
+  "camera-motion/candidate/motion-090.jpg": {
+    "bytes": 91402,
+    "sha256": "f0af7fb0ccd5d5e6e437c34a36d884bcd4c6e188b9ad7f5eb9caba0183560ba8"
+  },
+  "camera-motion/candidate/motion-120.jpg": {
+    "bytes": 87314,
+    "sha256": "727b5028055bf6a1d09256f682310b6b596bf9592839b798700709f7900ea683"
+  },
+  "camera-motion/candidate/motion.json": {
+    "bytes": 9185,
+    "sha256": "e8f0341a05dc2150706b0bdfb55e8dde3aab782212a0cca999e2a25684395272"
+  },
+  "camera-motion/candidate/offscreen-hidden.png": {
+    "bytes": 525341,
+    "sha256": "0d6373c835c1347436675dcd3c0df6bd726ee29d6a1b1a143aeb312dce143f72"
+  },
+  "camera-motion/candidate/offscreen-jet.png": {
+    "bytes": 529478,
+    "sha256": "eb66051729a2b9d1503bc84d28e88735b16ce898287bfe76f4646f58c14ccdf4"
+  },
+  "camera-motion/candidate/orbit.mp4": {
+    "bytes": 1797530,
+    "sha256": "65ddee0f93be94ab58fd9a38f917a993156b8260e30d767f9ce5bf60ddd95c4f"
+  },
+  "camera-motion/candidate/raised-eye.png": {
+    "bytes": 412313,
+    "sha256": "cdedb07e89dfd30ea9598e629dc1d2c3140626f495ef0482565a5763541f8b90"
+  },
+  "camera-motion/candidate/restored.png": {
+    "bytes": 464313,
+    "sha256": "3bc5f405f170e247c1b4ce3d3e9faff8aa1de23d3a588df6af7c7ce47b5da4a3"
+  },
+  "camera-motion/candidate/sky-only.png": {
+    "bytes": 410896,
+    "sha256": "be56be0c7dca140644c11aeb8ea6cf227d57904ab7001261f428a2c8fa5f1521"
+  },
+  "camera-motion/checks/edges-baseline-fixed-fixture-6zdab8mz/engine.log": {
+    "bytes": 788,
+    "sha256": "7f73b3e8645d4a0d8dd84b35e6cceab4e19c674fdada6e9f88dee4532278aae5"
+  },
+  "camera-motion/checks/edges-baseline-fixed-fixture-6zdab8mz/report.json": {
+    "bytes": 1570,
+    "sha256": "7480af5ea72f740221aa3351b24af207bfb116a2533c43cde4c36912491b1d66"
+  },
+  "camera-motion/checks/edges-candidate-bbjzstfb/engine.log": {
+    "bytes": 788,
+    "sha256": "7f73b3e8645d4a0d8dd84b35e6cceab4e19c674fdada6e9f88dee4532278aae5"
+  },
+  "camera-motion/checks/edges-candidate-bbjzstfb/report.json": {
+    "bytes": 1531,
+    "sha256": "c6b1692e6ce50f7290c38366776efacecc5c95c3f06cc9f074c2219599c8475b"
+  },
+  "camera-motion/checks/flight-high-control-w922awjm/engine.log": {
+    "bytes": 1357,
+    "sha256": "4e3c5603465b570a67a9e9df00decf0ab7e8f7810c1dd2bd20478ada58fcf717"
+  },
+  "camera-motion/checks/flight-high-control-w922awjm/report.json": {
+    "bytes": 1788,
+    "sha256": "0884eb892628870a4e4617a95cd37edb3c383811bed3d6ef3c3eb3c8c55d67cf"
+  },
+  "camera-motion/checks/flight-high-planar-s13i87xc/engine.log": {
+    "bytes": 1358,
+    "sha256": "176c8c41e6494397314add0750acd2af209d4b247c3a9ffa560eafefd3af53dc"
+  },
+  "camera-motion/checks/flight-high-planar-s13i87xc/report.json": {
+    "bytes": 1784,
+    "sha256": "44001a06e44e15b12783f28dc55119fea2fa8fdabb9c52c3fc2457f97dc2b5c5"
+  },
+  "camera-motion/checks/motion-baseline-5ukhaq6s/engine.log": {
+    "bytes": 789,
+    "sha256": "37f115c3f1fb0e2ed0adb75d1cffd4714f7d1fdc547def539fb001dcf6f74db7"
+  },
+  "camera-motion/checks/motion-baseline-5ukhaq6s/report.json": {
+    "bytes": 1526,
+    "sha256": "d4a6a09eb2f6cfc314a54a12f06c77bd152146d0d62dd14844233c8db8eb407b"
+  },
+  "camera-motion/checks/motion-candidate-6wd9qw8i/engine.log": {
+    "bytes": 789,
+    "sha256": "37f115c3f1fb0e2ed0adb75d1cffd4714f7d1fdc547def539fb001dcf6f74db7"
+  },
+  "camera-motion/checks/motion-candidate-6wd9qw8i/report.json": {
+    "bytes": 1532,
+    "sha256": "d54e3b97d6e782a07420523a4b84f3c5aea7c9170b4503ef4ecf50156cc980b7"
+  },
+  "camera-motion/checks/planar-motion-baseline-8c77x09s/engine.log": {
+    "bytes": 310,
+    "sha256": "a86fa0ef57c658e6507613947b962aac0079d6e2c1ad575d3326322aa1a0857d"
+  },
+  "camera-motion/checks/planar-motion-baseline-8c77x09s/report.json": {
+    "bytes": 1265,
+    "sha256": "8edb6ad05ff246239848e6666cf4563a0c68125cc3c8f98c54f6e121b772d5bf"
+  },
+  "camera-motion/checks/planar-reflection-integrated-6igwnmj3/engine.log": {
+    "bytes": 129,
+    "sha256": "8686086985de911628462718543e72155e66217b1ca3681a3069d654eea52543"
+  },
+  "camera-motion/checks/planar-reflection-integrated-6igwnmj3/report.json": {
+    "bytes": 1312,
+    "sha256": "8421804934516c5edc9a56331ae00ff3655257e468b5b7bcbbbe07ad4f138d49"
+  },
+  "camera-motion/native-ineligible/control-summary.json": {
+    "bytes": 2815,
+    "sha256": "ae4f80a99040eff341bfd71881d0abe6fb8c23b6d8240fcfe53e92de057ad556"
+  },
+  "camera-motion/native-ineligible/control.json.gz": {
+    "bytes": 97070,
+    "sha256": "b14c1a80ffd78c5c82d13c9771ed9180e2d58025f330c47791f923b687c11753"
+  },
+  "camera-motion/native-ineligible/control.log": {
+    "bytes": 1357,
+    "sha256": "4e3c5603465b570a67a9e9df00decf0ab7e8f7810c1dd2bd20478ada58fcf717"
+  },
+  "camera-motion/native-ineligible/planar-summary.json": {
+    "bytes": 2817,
+    "sha256": "0ab30534df8f86368641009f21f308b95016294cf65249b0674c5483d9489f48"
+  },
+  "camera-motion/native-ineligible/planar.json.gz": {
+    "bytes": 101451,
+    "sha256": "48661a8fa5793d51a4127a24a3318efd1e5b54c21800bfe678886febe762be66"
+  },
+  "camera-motion/native-ineligible/planar.log": {
+    "bytes": 1358,
+    "sha256": "176c8c41e6494397314add0750acd2af209d4b247c3a9ffa560eafefd3af53dc"
   },
   "checks/final-test_high_graphics_profile-bql2sxyd/engine.log": {
     "bytes": 265,

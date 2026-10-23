@@ -168,6 +168,8 @@ func _run() -> void:
 		and is_equal_approx(second_capture_environment.tonemap_exposure, 1.0)
 		and _live_environment_properties_match(second_source_environment, second_capture_environment))
 	_check_mirrored_camera("switched camera position and basis mirror over water", planar, second_camera, water.global_position.y)
+	_test_mirrored_projection_frames(planar, second_camera, water.global_position.y)
+	_test_effective_eye_water_gate(planar, second_camera, water.global_position.y, water_material, probe, basin)
 
 	# The plane is inactive at and below the configured mean-water threshold.
 	second_camera.global_position = Vector3(second_camera.global_position.x,
@@ -317,3 +319,125 @@ func _check_mirrored_camera(label: String, planar: LakePlanarReflection, source:
 		and mirrored.global_basis.x.normalized().is_equal_approx(expected_right)
 		and mirrored.global_basis.y.normalized().is_equal_approx(expected_up)
 		and mirrored.global_basis.z.normalized().is_equal_approx(expected_back))
+
+
+func _test_mirrored_projection_frames(planar: LakePlanarReflection, source: Camera3D, mean_water_y: float) -> void:
+	var frames := [
+		{label = "unrolled perspective projection", roll = 0.0, fov = 56.0, aspect = Camera3D.KEEP_HEIGHT, h = 0.0, v = 0.0},
+		{label = "rolled KEEP_WIDTH projection with camera offsets", roll = 31.0, fov = 68.0, aspect = Camera3D.KEEP_WIDTH, h = 0.14, v = -0.09},
+		{label = "second offset KEEP_WIDTH projection", roll = -19.0, fov = 42.0, aspect = Camera3D.KEEP_WIDTH, h = -0.08, v = 0.12},
+	]
+	for frame: Dictionary in frames:
+		source.global_position = planar.global_position + Vector3(0.0, 22.0, 25.0)
+		source.look_at(planar.global_position, Vector3.UP)
+		source.rotate_object_local(Vector3.BACK, deg_to_rad(float(frame.roll)))
+		source.fov = float(frame.fov)
+		source.keep_aspect = int(frame.aspect)
+		source.h_offset = float(frame.h)
+		source.v_offset = float(frame.v)
+		source.make_current()
+		planar.call("_process", 0.0)
+		_check_mirrored_projection_alignment(str(frame.label), planar, source, mean_water_y)
+
+
+func _check_mirrored_projection_alignment(label: String, planar: LakePlanarReflection,
+		source: Camera3D, mean_water_y: float) -> void:
+	if planar.reflect_camera == null or not planar.initialized:
+		_check(label + " has an initialized mirror camera", false)
+		return
+	var mirror_transform := planar.reflect_camera.get_camera_transform()
+	var mirror_forward := -mirror_transform.basis.z.normalized()
+	if mirror_forward.y <= 0.001:
+		_check(label + " mirror camera looks through the water plane toward the original scene", false)
+		return
+	var distance_to_plane := (mean_water_y - mirror_transform.origin.y) / mirror_forward.y
+	if distance_to_plane <= 0.0:
+		_check(label + " mirror eye lies below the mean-water plane", false)
+		return
+	# Sample the center and off-axis points at one mirror-camera depth. The
+	# off-axis samples make the oracle sensitive to FOV, aspect, roll and offsets.
+	var center_point := mirror_transform.origin + mirror_forward * (distance_to_plane + 8.0 / mirror_forward.y)
+	var mirror_right := mirror_transform.basis.x.normalized()
+	var mirror_up := mirror_transform.basis.y.normalized()
+	var point_offsets: Array[Vector3] = [
+		Vector3.ZERO,
+		mirror_right * 2.0,
+		mirror_right * -2.0,
+		mirror_up * 1.2,
+		mirror_up * -1.2,
+	]
+	var source_size := source.get_viewport().get_visible_rect().size
+	var mirror_size := planar.reflect_camera.get_viewport().get_visible_rect().size
+	var all_in_front := true
+	var all_inside_viewports := true
+	var all_coordinates_finite := true
+	var maximum_coordinate_error := 0.0
+	for offset: Vector3 in point_offsets:
+		var original_point := center_point + offset
+		var reflected_point := Vector3(original_point.x, 2.0 * mean_water_y - original_point.y, original_point.z)
+		var source_normalized := source.unproject_position(reflected_point) / source_size
+		var mirror_normalized := planar.reflect_camera.unproject_position(original_point) / mirror_size
+		all_in_front = all_in_front and not source.is_position_behind(reflected_point) \
+			and not planar.reflect_camera.is_position_behind(original_point)
+		all_inside_viewports = all_inside_viewports and _inside_normalized_view(source_normalized) \
+			and _inside_normalized_view(mirror_normalized)
+		all_coordinates_finite = all_coordinates_finite and source_normalized.is_finite() and mirror_normalized.is_finite()
+		maximum_coordinate_error = maxf(maximum_coordinate_error, source_normalized.distance_to(mirror_normalized))
+	_check(label + " projects center and four off-axis reflected points inside both views",
+		all_in_front and all_inside_viewports)
+	_check(label + " matches normalized coordinates for center and off-axis points",
+		all_coordinates_finite and maximum_coordinate_error < 0.001)
+
+
+func _inside_normalized_view(point: Vector2) -> bool:
+	return point.x >= 0.0 and point.x <= 1.0 and point.y >= 0.0 and point.y <= 1.0
+
+
+func _test_effective_eye_water_gate(planar: LakePlanarReflection, camera: Camera3D, mean_water_y: float,
+		water_material: ShaderMaterial, probe: ReflectionProbe, basin: GeometryInstance3D) -> void:
+	# Camera3D offsets move the effective eye in its local basis. Use the live
+	# Camera3D transform API to choose a vertical offset that crosses the gate,
+	# while leaving the Camera3D node itself on the opposite side.
+	camera.global_position = planar.global_position + Vector3(0.0, -0.05, 22.0)
+	camera.look_at(planar.global_position, Vector3.UP)
+	camera.h_offset = 0.0
+	camera.v_offset = 0.0
+	camera.make_current()
+	var raw_below_effective_above := _offset_camera_eye_to_y(camera, mean_water_y + 0.6)
+	var effective_above := camera.get_camera_transform().origin.y > mean_water_y + 0.1
+	_check("node below water can have its effective camera eye above the reflection threshold",
+		camera.global_position.y <= mean_water_y + 0.1 and effective_above and raw_below_effective_above)
+	planar.call("_process", 0.0)
+	_check("effective eye above water activates reflection even when camera node origin is below",
+		water_material.get_shader_parameter("planar_reflection_enabled") == true and probe.reflection_mask == 0)
+
+	camera.global_position = planar.global_position + Vector3(0.0, 0.6, 22.0)
+	camera.look_at(planar.global_position, Vector3.UP)
+	camera.h_offset = 0.0
+	camera.v_offset = 0.0
+	var raw_above_effective_below := _offset_camera_eye_to_y(camera, mean_water_y + 0.05)
+	var effective_below := camera.get_camera_transform().origin.y <= mean_water_y + 0.1
+	_check("node above water can have its effective camera eye at or below the reflection threshold",
+		camera.global_position.y > mean_water_y + 0.1 and effective_below and raw_above_effective_below)
+	planar.call("_process", 0.0)
+	_check("effective eye below water disables reflection even when camera node origin is above",
+		water_material.get_shader_parameter("planar_reflection_enabled") != true
+		and probe.reflection_mask == 2 and basin.layers == 9
+		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+
+	# Restore the camera state expected by the following gate/lifecycle checks.
+	camera.global_position = planar.global_position + Vector3(14.0, 24.0, 18.0)
+	camera.look_at(planar.global_position, Vector3.UP)
+	camera.h_offset = 0.0
+	camera.v_offset = 0.0
+	planar.call("_process", 0.0)
+
+
+func _offset_camera_eye_to_y(camera: Camera3D, target_y: float) -> bool:
+	var origin_y := camera.get_camera_transform().origin.y
+	camera.v_offset = 1.0
+	var unit_shift := camera.get_camera_transform().origin.y - origin_y
+	if absf(unit_shift) < 0.001:
+		return false
+	camera.v_offset = (target_y - origin_y) / unit_shift
+	return absf(camera.get_camera_transform().origin.y - target_y) < 0.001

@@ -60,10 +60,12 @@ func _process(_delta: float) -> void:
 	var camera := get_viewport().get_camera_3d()
 	if camera == null or not is_instance_valid(_water) or not _water.is_visible_in_tree() \
 			or camera.projection != Camera3D.PROJECTION_PERSPECTIVE \
-			or camera.global_position.y <= _water.global_position.y + 0.1 \
+			or camera.get_camera_transform().origin.y <= _water.global_position.y + 0.1 \
 			or (camera.cull_mask & _water.layers) == 0:
 		_set_active(false)
 		return
+	# Camera3D h/v offsets move the rendered eye away from the node origin.
+	# The water-side gate above must use that same eye as the mirrored frustum.
 	camera_override = camera
 	camera_path = get_path_to(camera)
 	if not initialized:
