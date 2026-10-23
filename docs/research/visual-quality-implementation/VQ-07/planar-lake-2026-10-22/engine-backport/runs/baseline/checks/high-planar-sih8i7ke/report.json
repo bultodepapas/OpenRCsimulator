@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "f52fae56-bc90-4626-ab4e-13f06cd518a7",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\tools\\graphics\\launch.py",
+    "--godot",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\baseline\\godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-engine-backport-20261022\\lake_parity.gd",
+    "--",
+    "--out=D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\baseline\\high-planar"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:33:49.344132+00:00",
+  "label": "high-planar",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\baseline\\checks\\high-planar-sih8i7ke\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\baseline\\checks\\high-planar-sih8i7ke\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "engine lake parity complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: RenderingDevice::finalize (servers\\rendering\\rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.687,
+  "log_bytes": 836,
+  "log_sha256": "2141321af82e4f7835aae343c3aa4b1c221edff92ca313b38502266b8ed96418"
+}

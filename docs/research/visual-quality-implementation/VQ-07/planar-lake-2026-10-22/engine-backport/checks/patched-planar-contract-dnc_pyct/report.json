@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4bfa151c-7367-4aea-9361-03f345394b25",
+  "command": [
+    "D:/OpenRC-builds/godot-vq07-20261022/patched/godot.windows.editor.x86_64.console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRC-builds/godot-vq07-20261022/project/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_lake_planar_reflection.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:36:14.454613+00:00",
+  "label": "patched-planar-contract",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\patched-planar-contract-dnc_pyct\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\patched-planar-contract-dnc_pyct\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.438,
+  "log_bytes": 159,
+  "log_sha256": "5b705cdb2bbd7957e401fa7e48f7ff439bc2221259e08634d8ddad46f0c8fdbd"
+}

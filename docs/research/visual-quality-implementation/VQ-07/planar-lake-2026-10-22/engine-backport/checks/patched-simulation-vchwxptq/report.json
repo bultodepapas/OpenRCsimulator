@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "beddad72-fd4f-4e54-8e55-257b270e8e4e",
+  "command": [
+    "D:/OpenRC-builds/godot-vq07-20261022/patched/godot.windows.editor.x86_64.console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRC-builds/godot-vq07-20261022/project/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_simulation.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:38:10.863602+00:00",
+  "label": "patched-simulation",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\patched-simulation-vchwxptq\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\patched-simulation-vchwxptq\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.296,
+  "log_bytes": 126,
+  "log_sha256": "72ef5ac2718d8704fd758655a6cbe9073a606887042cfe7dabc37dae15c470d2"
+}

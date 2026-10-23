@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.custom_build.ed1daf0bf (2026-08-17 01:18:38 UTC) - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high_experimental","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+engine lake parity complete
+WARNING: 7 RIDs of type "Texture" were leaked.
+   at: RenderingDevice::finalize (servers\rendering\rendering_device.cpp:8900)

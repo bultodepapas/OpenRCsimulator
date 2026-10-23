@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5d234eb2-a17f-493e-88bb-8e29014f6434",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\tools\\graphics\\launch.py",
+    "--godot",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\baseline\\godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\engine-lifetime\\minimal.gd",
+    "--",
+    "--probe"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:33:33.554310+00:00",
+  "label": "one-probe",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\baseline\\checks\\one-probe-u9bum3l5\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\baseline\\checks\\one-probe-u9bum3l5\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "minimal lifetime complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: RenderingDevice::finalize (servers\\rendering\\rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.75,
+  "log_bytes": 350,
+  "log_sha256": "685c5b868b0a8a82de9ce004e6ce9643205eb8b25b7b6f7636f395d75c90c0ba"
+}

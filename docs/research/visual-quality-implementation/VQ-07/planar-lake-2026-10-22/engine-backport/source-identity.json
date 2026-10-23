@@ -1,0 +1,52 @@
+{
+  "project_head": "2830d895cba7d90e0636dffb46a8a7dfffd424d5",
+  "engine_head": "ed1daf0bf001b61586d9930840f2f1394092c079",
+  "project_import_patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "upstream_patch_sha256": "86ab87598f732271991332a2be5f4ba1f6e2987fbacc21030e39645ab9b3010f",
+  "project_import_note": "Initial editor import produced no textual git diff; tracked-file SHA-256 snapshots before/after each native phase are authoritative for byte stability.",
+  "build_options": [
+    "platform=windows",
+    "target=editor",
+    "arch=x86_64",
+    "d3d12=no",
+    "accesskit=no",
+    "angle=no",
+    "debug_symbols=no",
+    "optimize=speed",
+    "lto=none",
+    "-j16"
+  ],
+  "python": "3.11.9",
+  "scons": "4.10.1",
+  "msvc_toolset": "14.51.36231",
+  "windows_sdk": "10.0.26100.0",
+  "custom_build_limit": "Windows editor only. AccessKit, ANGLE and D3D12 disabled; not an official distribution or shipping replacement.",
+  "baseline_binaries": {
+    "godot.windows.editor.x86_64.console.exe": "47cee070d7e615fa06b0259756cef2c83a3d952df448442ea72a38f607780db7",
+    "godot.windows.editor.x86_64.exe": "68133d7584d117e48f5bbba48d29bab19d8b0040f0d9fe47c3f2b93b4afdd72b"
+  },
+  "patched_binaries": {
+    "godot.windows.editor.x86_64.console.exe": "c105c71aa7c3d5069558350b841b44a94ace2c1841ae35ac33b00cebdc57fd5e",
+    "godot.windows.editor.x86_64.exe": "52eaf1b8ef60756d5e54a02d6830e7e23f6551a596d885a5dc91f177616c9c9e"
+  },
+  "engine_diff": "diff --git a/servers/rendering/renderer_rd/storage_rd/light_storage.cpp b/servers/rendering/renderer_rd/storage_rd/light_storage.cpp\nindex 48ec434..4052fca 100644\n--- a/servers/rendering/renderer_rd/storage_rd/light_storage.cpp\n+++ b/servers/rendering/renderer_rd/storage_rd/light_storage.cpp\n@@ -1559,6 +1559,9 @@ void LightStorage::_reflection_atlas_clear(ReflectionAtlas *p_reflection_atlas)\n \tRD::get_singleton()->free_rid(p_reflection_atlas->reflection);\n \tp_reflection_atlas->reflection = RID();\n \n+\tRD::get_singleton()->free_rid(p_reflection_atlas->color_buffer);\n+\tp_reflection_atlas->color_buffer = RID();\n+\n \tRD::get_singleton()->free_rid(p_reflection_atlas->depth_fb);\n \tp_reflection_atlas->depth_fb = RID();\n \n",
+  "baseline_explicit_build_exit": 0,
+  "patched_build_exit": 0,
+  "tracked_app_files": 3585,
+  "retained_script_sha256": {
+    "lake_parity.gd": "4a222291d6bfbe88937d1d21805bebac6427a8d23f9c20a5a659c652b0d2ac6f",
+    "run_cases.py": "99f7cfa8c57ebd6b621c4a8066b533782beb4fb16ff2cac0618065b54ec3b461",
+    "verify.py": "dc69ec07fbc8aba3e544f01436da30d3ad8d03c6cebc02ef0d830e049323cbe1"
+  },
+  "script_hash_scope": "Retention-time hashes; no claim of independently recorded per-run script hashes.",
+  "initial_build_note": "Initial baseline command auto-disabled unavailable AccessKit and ANGLE; retained initial log includes the dependency diagnostic. Explicit matching disabled-feature options subsequently completed without diagnostics (up-to-date baseline); the patched rebuild used these exact explicit options.",
+  "initial_visual_verification": "The initial all-nine-images exact assertion failed at Standard low. All differences and within-build repeats are retained; Standard exact parity remains false.",
+  "focused_checks": {
+    "planar_contract": 61,
+    "simulation": 11,
+    "high_graphics_profile": 78,
+    "failed": 0
+  },
+  "upstream_commit": "29d351f9eb0dd7582469ad38e215e9902204df12",
+  "upstream_url": "https://github.com/godotengine/godot/pull/124743"
+}

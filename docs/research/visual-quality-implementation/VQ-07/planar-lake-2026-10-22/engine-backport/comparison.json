@@ -1,0 +1,267 @@
+{
+  "lifecycle": [
+    {
+      "phase": "baseline",
+      "case": "no-probe",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "baseline",
+      "case": "one-probe",
+      "leaked_texture_rids": 7,
+      "warnings": 1
+    },
+    {
+      "phase": "baseline",
+      "case": "four-worlds",
+      "leaked_texture_rids": 28,
+      "warnings": 1
+    },
+    {
+      "phase": "baseline",
+      "case": "high-probe",
+      "leaked_texture_rids": 7,
+      "warnings": 1
+    },
+    {
+      "phase": "baseline",
+      "case": "high-planar",
+      "leaked_texture_rids": 7,
+      "warnings": 1
+    },
+    {
+      "phase": "baseline",
+      "case": "standard-planar",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "no-probe",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "one-probe",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "four-worlds",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "high-probe",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "high-planar",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    },
+    {
+      "phase": "patched",
+      "case": "standard-planar",
+      "leaked_texture_rids": 0,
+      "warnings": 0
+    }
+  ],
+  "images": [
+    {
+      "case": "high-probe",
+      "view": "low",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "high-probe",
+      "view": "roll60",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "high-probe",
+      "view": "high",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "high-planar",
+      "view": "low",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "high-planar",
+      "view": "roll60",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "high-planar",
+      "view": "high",
+      "rgb_pixel_identical": true,
+      "changed_pixels": 0,
+      "max_channel_delta_255": 0,
+      "mean_absolute_channel_delta_255": 0.0,
+      "bbox": null
+    },
+    {
+      "case": "standard-planar",
+      "view": "low",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 418,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 7.362397119341564e-05,
+      "bbox": [
+        0,
+        505,
+        1894,
+        646
+      ]
+    },
+    {
+      "case": "standard-planar",
+      "view": "roll60",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 148,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 2.5559413580246914e-05,
+      "bbox": [
+        638,
+        2,
+        1264,
+        1024
+      ]
+    },
+    {
+      "case": "standard-planar",
+      "view": "high",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 2,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 3.2150205761316875e-07,
+      "bbox": [
+        52,
+        73,
+        167,
+        233
+      ]
+    }
+  ],
+  "native_cases": 12,
+  "matched_images": 6,
+  "standard_within_build_repeats": [
+    {
+      "phase": "baseline",
+      "view": "low",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 143,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 2.6363168724279836e-05,
+      "bbox": [
+        114,
+        504,
+        1812,
+        613
+      ]
+    },
+    {
+      "phase": "baseline",
+      "view": "roll60",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 253,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 4.4206532921810695e-05,
+      "bbox": [
+        638,
+        0,
+        1297,
+        1061
+      ]
+    },
+    {
+      "phase": "baseline",
+      "view": "high",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 1,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 1.6075102880658437e-07,
+      "bbox": [
+        166,
+        73,
+        167,
+        74
+      ]
+    },
+    {
+      "phase": "patched",
+      "view": "low",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 341,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 5.8995627572016456e-05,
+      "bbox": [
+        0,
+        502,
+        1894,
+        646
+      ]
+    },
+    {
+      "phase": "patched",
+      "view": "roll60",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 160,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 2.7809927983539093e-05,
+      "bbox": [
+        638,
+        6,
+        1302,
+        1072
+      ]
+    },
+    {
+      "phase": "patched",
+      "view": "high",
+      "rgb_pixel_identical": false,
+      "changed_pixels": 5,
+      "max_channel_delta_255": 1,
+      "mean_absolute_channel_delta_255": 8.037551440329218e-07,
+      "bbox": [
+        138,
+        3,
+        362,
+        74
+      ]
+    }
+  ],
+  "high_pixel_parity": true,
+  "standard_pixel_parity": false,
+  "standard_disposition": "Exact parity failed. Within-build repeats also vary; these controls do not uniquely attribute the cross-build differences to the patch. No tolerance-based acceptance or root cause is inferred.",
+  "performance_qualification": false,
+  "scope": "Native Windows custom editor builds; not official binary, release template or cross-platform qualification"
+}

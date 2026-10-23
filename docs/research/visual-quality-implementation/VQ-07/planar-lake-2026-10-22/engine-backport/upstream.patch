@@ -1,0 +1,23 @@
+From 29d351f9eb0dd7582469ad38e215e9902204df12 Mon Sep 17 00:00:00 2001
+From: Skyth <19259897+blueskythlikesclouds@users.noreply.github.com>
+Date: Wed, 21 Oct 2026 18:00:24 +0300
+Subject: [PATCH] Fix reflection probes leaking the color buffer.
+
+---
+ servers/rendering/renderer_rd/storage_rd/light_storage.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/servers/rendering/renderer_rd/storage_rd/light_storage.cpp b/servers/rendering/renderer_rd/storage_rd/light_storage.cpp
+index 45228b2957f5..9904926b30f7 100644
+--- a/servers/rendering/renderer_rd/storage_rd/light_storage.cpp
++++ b/servers/rendering/renderer_rd/storage_rd/light_storage.cpp
+@@ -1576,6 +1576,9 @@ void LightStorage::_reflection_atlas_clear(ReflectionAtlas *p_reflection_atlas)
+ 	RD::get_singleton()->free_rid(p_reflection_atlas->reflection);
+ 	p_reflection_atlas->reflection = RID();
+ 
++	RD::get_singleton()->free_rid(p_reflection_atlas->color_buffer);
++	p_reflection_atlas->color_buffer = RID();
++
+ 	RD::get_singleton()->free_rid(p_reflection_atlas->depth_fb);
+ 	p_reflection_atlas->depth_fb = RID();
+ 

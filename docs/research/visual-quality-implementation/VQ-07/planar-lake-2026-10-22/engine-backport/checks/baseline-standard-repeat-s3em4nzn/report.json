@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e1949018-8afb-4751-8bc9-866540431b49",
+  "command": [
+    "python",
+    "D:/OpenRC-builds/godot-vq07-20261022/project/tools/graphics/launch.py",
+    "--godot",
+    "D:/OpenRC-builds/godot-vq07-20261022/baseline/godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "standard",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-engine-backport-20261022/lake_parity.gd",
+    "--",
+    "--out=D:/OpenRC-builds/godot-vq07-20261022/repeat-baseline"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:37:07.260454+00:00",
+  "label": "baseline-standard-repeat",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\baseline-standard-repeat-s3em4nzn\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\baseline-standard-repeat-s3em4nzn\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "engine lake parity complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.063,
+  "log_bytes": 231,
+  "log_sha256": "98f581ac8a2de77886d5cae952591987cfa3cb962a227c6d2cede825ced3991e"
+}

@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a1a2d628-ab55-45a1-b099-f49ac5d7af04",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\tools\\graphics\\launch.py",
+    "--godot",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\patched\\godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\engine-lifetime\\once_cycles.gd",
+    "--",
+    "--probe",
+    "--cycles=4"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:35:27.869796+00:00",
+  "label": "four-worlds",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\four-worlds-8o2y5oli\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\four-worlds-8o2y5oli\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "isolated worlds complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.0,
+  "log_bytes": 230,
+  "log_sha256": "e63759d19e1ff20df003abc1fc75613eaceb6900791c6ded161d9f67e9b3804d"
+}

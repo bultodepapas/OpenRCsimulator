@@ -1,0 +1,45 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4cad5289-03aa-40bb-b2ec-ba7b6ca5ae84",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\tools\\graphics\\launch.py",
+    "--godot",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\patched\\godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\engine-lifetime\\minimal.gd",
+    "--"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:35:23.813832+00:00",
+  "label": "no-probe",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\no-probe-cf38r_iq\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\no-probe-cf38r_iq\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "minimal lifetime complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.047,
+  "log_bytes": 223,
+  "log_sha256": "d540e5a3e7df5dfc31a30313f8b0b64326577e4cb638e84eb8bb2af386ae6929"
+}

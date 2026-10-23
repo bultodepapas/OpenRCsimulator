@@ -420,3 +420,77 @@ python docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/
 Checked receipts retain native invocations; use fresh report paths when rerunning.
 The graphics profile, planar default and engine version remain unchanged. Primary
 1080p performance, ordinary pilot motion, shutdown and platform gates remain open.
+
+## Controlled engine backport, 2026-10-22
+
+A locally compiled Godot 4.7.2 baseline reproduces the reflection-atlas leak;
+applying only [upstream PR #124743](https://github.com/godotengine/godot/pull/124743)
+removes it in the matched controls below. The production engine pin is unchanged.
+This is a diagnostic Windows editor candidate, not a shipping engine replacement.
+
+The source is `ed1daf0bf001b61586d9930840f2f1394092c079` plus upstream commit
+`29d351f9eb0dd7582469ad38e215e9902204df12`: two cleanup statements in
+`LightStorage::_reflection_atlas_clear`. Both builds use Python 3.11.9,
+SCons 4.10.1, MSVC 14.51.36231, Windows SDK 10.0.26100.0 and:
+
+```text
+platform=windows target=editor arch=x86_64 d3d12=no accesskit=no angle=no debug_symbols=no optimize=speed lto=none -j16
+```
+
+The initial baseline build auto-disabled unavailable AccessKit/ANGLE and emitted
+a dependency diagnostic. An explicit baseline confirmation with the options above
+completed cleanly, up to date; the patched rebuild used exactly those options.
+[Source identity](engine-backport/source-identity.json) retains the complete source
+diff, patch hash, both executable hashes, toolchain, build exits and caveats.
+The two engines have the same version string; executable hashes distinguish them.
+
+All native launches were serial on RTX 3090 with a 1920×1080 root window.
+The project was frozen at `2830d895cba7d90e0636dffb46a8a7dfffd424d5`;
+SHA-256 snapshots of all 3,585 tracked `app/` files match before/after each phase
+and across engines. Ignored import caches and host state are outside that claim.
+
+| Native case | Baseline leaked Texture RIDs | Patched |
+| --- | ---: | ---: |
+| No probe | 0 | 0 |
+| One captured probe | 7 | 0 |
+| Four independent probe worlds | 28 | 0 |
+| Production lake, High probe | 7 | 0 |
+| Production lake, High planar | 7 | 0 |
+| Standard, planar requested but inactive | 0 | 0 |
+
+Every patched checked process exits without engine errors or warnings. The world
+fixtures use the detailed Avanti at low altitude over the lake, with low, rolled
+and high cameras, fixed sky time and a 1920×1080 capture viewport. All **six High
+RGB comparisons are pixel-identical**, including the
+[low jet and planar reflection](engine-backport/runs/patched/high-planar/low.png).
+These are rendered fixtures, not flight or frame-pacing measurements.
+
+The initial strict nine-image comparison failed in Standard. Its three images
+change 418, 148 and 2 pixels, with maximum channel delta 1/255. Repeating the same
+build also changes pixels: baseline 143/253/1; patched 341/160/5, all at most 1/255.
+[Comparison](engine-backport/comparison.json) preserves exact Standard parity as
+**false**. The controls do not uniquely attribute these differences to the patch;
+no tolerance-based acceptance or root cause is inferred.
+
+The patched engine passes 61 planar-contract checks, 11 simulation checks and
+78 native High-profile checks, with no failures or engine warnings. Independent
+read-only review confirmed the bounded resource and visual conclusions. This
+software evidence does not establish physical validation. The separate intermittent
+ObjectDB warnings, full Home/Fly lifecycle, performance and platform gates stay open.
+
+The [evidence manifest](engine-backport/manifest.json) covers the retained scripts,
+logs, checked receipts, images and identities. The parent manifest remains the
+preceding historical snapshot. Reproduce the offline comparison with Python and
+Pillow from the repository root:
+
+```powershell
+python docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-backport/verify.py docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-backport
+```
+
+Native commands retain their original local paths. Build sources, frozen worktree
+and paired executables remain at `D:/OpenRC-builds/godot-vq07-20261022/`; binaries
+are excluded from the evidence bundle. `run_cases.py` requires fresh phase output
+directories and that frozen project. Script hashes were recorded at retention,
+not independently at each launch. The next adoption gate is a full-feature engine
+with matching export templates, packaged lifecycle/render checks and platform
+qualification. Planar reflection remains default-off.

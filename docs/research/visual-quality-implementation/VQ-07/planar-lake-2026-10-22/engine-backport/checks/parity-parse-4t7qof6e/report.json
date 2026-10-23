@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "64f4420c-c120-47a3-b165-de682f50636b",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRC-builds/godot-vq07-20261022/project/app",
+    "--check-only",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-engine-backport-20261022/lake_parity.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:29:24.077783+00:00",
+  "label": "parity-parse",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\parity-parse-4t7qof6e\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\checks\\parity-parse-4t7qof6e\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.016,
+  "log_bytes": 75,
+  "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+}

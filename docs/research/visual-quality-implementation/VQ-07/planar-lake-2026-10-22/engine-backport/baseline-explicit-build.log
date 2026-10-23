@@ -1,0 +1,8 @@
+scons: Reading SConscript files ...
+Using Visual Studio 14.5 with Windows SDK 10.0.26100.0.
+Building for platform "windows", architecture "x86_64", target "editor".
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `.' is up to date.
+scons: done building targets.
+INFO: Time elapsed: 00:00:16.72

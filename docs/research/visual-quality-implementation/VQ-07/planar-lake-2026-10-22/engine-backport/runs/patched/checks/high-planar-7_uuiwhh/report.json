@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d135b9ac-7381-40ab-9f78-3068eba04ca3",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\project\\tools\\graphics\\launch.py",
+    "--godot",
+    "D:\\OpenRC-builds\\godot-vq07-20261022\\patched\\godot.windows.editor.x86_64.console.exe",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-engine-backport-20261022\\lake_parity.gd",
+    "--",
+    "--out=D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\high-planar"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:35:40.727835+00:00",
+  "label": "high-planar",
+  "log": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\high-planar-7_uuiwhh\\engine.log",
+  "report": "D:\\OpenRC-builds\\godot-vq07-20261022\\runs\\patched\\checks\\high-planar-7_uuiwhh\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "engine lake parity complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 11.609,
+  "log_bytes": 708,
+  "log_sha256": "e3f3d05ffb865de123c30281c57a8a193cee2dac660e222678ecb1435192b2ce"
+}

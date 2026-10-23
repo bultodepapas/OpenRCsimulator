@@ -28,7 +28,7 @@ The [native keyboard cost screen](research/visual-quality-implementation/VQ-07/p
 
 ## Current implementation
 
-[VQ-07 lifecycle attribution](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#engine-lifetime-attribution-and-session-context-2026-10-22) identifies the pinned Godot reflection-atlas leak through a stock minimal reproduction and upstream fix. The collector now preserves optional endpoint pause context; three native 1080p producer checks pass. No engine upgrade or lifecycle/performance qualification is claimed.
+[VQ-07 controlled engine backport](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#controlled-engine-backport-2026-10-22) eliminates the reproduced reflection-atlas leak in local matched Windows editor builds, preserves six exact High images at 1080p and passes 150 focused checks. Standard retains tiny non-exact differences also seen in same-build repeats. The production engine pin, export qualification and lifecycle/performance gates remain unchanged; the next candidate needs full-feature builds and matching templates.
 
 VQ-07's [2026-10-22 sunlight correction](research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md) confines the legacy shadow-energy compensation to Compatibility. The experimental High renderer no longer dims unoccluded surfaces when shadows are enabled. Native panel/scene evidence and focused checks support this repair; the VQ-07 qualification gates remain open.
 

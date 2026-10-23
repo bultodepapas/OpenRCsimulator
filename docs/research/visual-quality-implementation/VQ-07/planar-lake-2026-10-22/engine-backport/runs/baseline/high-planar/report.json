@@ -1,0 +1,54 @@
+{
+	"cases": [
+		{
+			"active": true,
+			"name": "low",
+			"near": 0.87982177734375,
+			"reflected_uv": [
+				0.499999970197678,
+				0.709960460662842
+			]
+		},
+		{
+			"active": true,
+			"name": "roll60",
+			"near": 0.451919555664062,
+			"reflected_uv": [
+				0.397719979286194,
+				0.604980111122131
+			]
+		},
+		{
+			"active": true,
+			"name": "high",
+			"near": 11.5967330932617,
+			"reflected_uv": [
+				0.499999970197678,
+				0.574536383152008
+			]
+		}
+	],
+	"complete": true,
+	"engine": {
+		"build": "custom_build",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (custom_build)",
+		"timestamp": 1786929518
+	},
+	"physics_validation": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"viewport": [
+		1920,
+		1080
+	]
+}
