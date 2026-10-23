@@ -1,0 +1,156 @@
+{
+	"cases": [
+		{
+			"actual": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"name": "concrete_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.537254929542542,
+				0.537254929542542,
+				0.537254929542542
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.537254929542542,
+				0.537254929542542,
+				0.537254929542542
+			],
+			"name": "wood_front_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.537254929542542,
+				0.537254929542542,
+				0.537254929542542
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.537254929542542,
+				0.537254929542542,
+				0.537254929542542
+			],
+			"name": "wood_side_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.737254917621613,
+				0.737254917621613,
+				0.737254917621613
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.737254917621613,
+				0.737254917621613,
+				0.737254917621613
+			],
+			"name": "inox_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.882352948188782,
+				0.882352948188782,
+				0.882352948188782
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.882352948188782,
+				0.882352948188782,
+				0.882352948188782
+			],
+			"name": "rubber_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"name": "frame_tag",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.549019634723663,
+				0.600000023841858,
+				0.619607865810394
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.549019634723663,
+				0.600000023841858,
+				0.619607865810394
+			],
+			"name": "inox_palette",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0196078438311815,
+				0.0235294122248888,
+				0.0235294122248888
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0196078438311815,
+				0.0235294122248888,
+				0.0235294122248888
+			],
+			"name": "rubber_palette",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0352941192686558,
+				0.105882354080677,
+				0.125490203499794
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0352941192686558,
+				0.105882354080677,
+				0.125490203499794
+			],
+			"name": "frame_palette",
+			"passed": true,
+			"reference_resolved": true
+		}
+	],
+	"complete": true,
+	"failures": 0,
+	"renderer": "forward_plus",
+	"shader_sha256": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+	"viewport": [
+		1920,
+		1080
+	]
+}

@@ -1,6 +1,8 @@
 shader_type spatial;
 render_mode diffuse_burley, specular_schlick_ggx;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 uniform sampler2D wood_color : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D wood_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D wood_roughness : filter_linear_mipmap_anisotropic, repeat_enable;
@@ -38,17 +40,18 @@ void fragment() {
 		NORMAL_MAP = texture(wood_normal, UV).rgb;
 		NORMAL_MAP_DEPTH = 0.18;
 	} else if (material_id < 2.5) {
-		ALBEDO = vec3(0.55, 0.60, 0.62);
+		// Fixed sRGB palette colors need the same decoding as albedo uniforms on RD.
+		ALBEDO = vertex_color_to_linear(vec3(0.55, 0.60, 0.62));
 		METALLIC = 0.75;
 		ROUGHNESS = 0.30 + texture(metal_roughness, UV).r * 0.20;
 		NORMAL_MAP = texture(metal_normal, UV).rgb;
 		NORMAL_MAP_DEPTH = 0.12;
 	} else if (material_id < 3.5) {
-		ALBEDO = vec3(0.018, 0.023, 0.024);
+		ALBEDO = vertex_color_to_linear(vec3(0.018, 0.023, 0.024));
 		ROUGHNESS = 0.95;
 		NORMAL_MAP = vec3(0.5, 0.5, 1.0);
 	} else {
-		ALBEDO = vec3(0.035, 0.105, 0.125);
+		ALBEDO = vertex_color_to_linear(vec3(0.035, 0.105, 0.125));
 		ROUGHNESS = 0.42 + texture(metal_roughness, UV).r * 0.16;
 		NORMAL_MAP = texture(metal_normal, UV).rgb;
 		NORMAL_MAP_DEPTH = 0.10;

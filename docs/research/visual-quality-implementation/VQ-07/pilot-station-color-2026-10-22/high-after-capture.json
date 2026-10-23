@@ -1,0 +1,59 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "aa5f9e62eb7ee9265a6cf3cec2284f69a12940a880ea4a0c89e8481180fd1704",
+  "complete": true,
+  "method": "forward_plus",
+  "records": [
+    {
+      "draws": 225,
+      "eye": [
+        1.79999995231628,
+        1.25,
+        -2.20000004768372
+      ],
+      "fov": 48.0,
+      "sha256": "4524096e8548ce68f1078ca57d039492c412af21c089a51be68caaef5d9ab087",
+      "view": "front"
+    },
+    {
+      "draws": 65,
+      "eye": [
+        1.79999995231628,
+        1.45000004768372,
+        2.0
+      ],
+      "fov": 48.0,
+      "sha256": "52407e3e10ee65506f76897c8f340028bd5d40cfa5cfea9187edb0b2f5e0985a",
+      "view": "rear"
+    },
+    {
+      "draws": 46,
+      "eye": [
+        1.04999995231628,
+        0.850000023841858,
+        -1.04999995231628
+      ],
+      "fov": 48.0,
+      "sha256": "d41ab6cac05c7b6bed8dacb20efbbd996d4454297fb70f3f94b79347f32f3594",
+      "view": "joint"
+    },
+    {
+      "draws": 45,
+      "eye": [
+        0.5,
+        1.29999995231628,
+        1.20000004768372
+      ],
+      "fov": 48.0,
+      "sha256": "174413e038174de9f5ab10c4f417476d3639ceaacea456f36eb6d885546ca3b5",
+      "view": "floor"
+    }
+  ],
+  "shader_sha256": "f43e74d41218850ae486f68a4c8a24f19ecdf1b474d76a7d90f1946b79b5c87f",
+  "station_surfaces": 1,
+  "station_triangles": 6124,
+  "viewport": [
+    1920,
+    1080
+  ]
+}

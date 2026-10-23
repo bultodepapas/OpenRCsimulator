@@ -123,3 +123,10 @@ It renders a second camera at half resolution, capped at 1280×720, and falls ba
 to the existing probe below/near water or without a perspective camera. It adds
 rendering cost; full flight/platform qualification remains open.
 [Source, low jet clip, measured scope and reproducer](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md).
+
+`test_pilot_station_color.gd` checks six production vertex material tags and three
+fixed palettes against independent references at native 1920×1080. Run both
+profiles with `--script ../tools/graphics/test_pilot_station_color.gd -- --out=<new absolute directory>`.
+Headless execution fails. Reference anchors reject background-only comparisons;
+palette agreement must be within 2/255 per channel.
+[Pilot-station evidence and reproducer](../../docs/research/visual-quality-implementation/VQ-07/pilot-station-color-2026-10-22/README.md).

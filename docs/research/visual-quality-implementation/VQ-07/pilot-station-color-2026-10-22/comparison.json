@@ -1,0 +1,58 @@
+[
+  {
+    "profile": "standard",
+    "view": "front",
+    "changed_pixels": 0,
+    "before_sha256": "e3f07bdabe164fc4ec87af18bbe3d24b5078e46d1a44e9f5cef361742d1302a9",
+    "after_sha256": "e3f07bdabe164fc4ec87af18bbe3d24b5078e46d1a44e9f5cef361742d1302a9"
+  },
+  {
+    "profile": "standard",
+    "view": "rear",
+    "changed_pixels": 0,
+    "before_sha256": "9f6ab1af613a0bc3a24ded21564c056d07b221ddbda1086f509d15bb209b09d5",
+    "after_sha256": "9f6ab1af613a0bc3a24ded21564c056d07b221ddbda1086f509d15bb209b09d5"
+  },
+  {
+    "profile": "standard",
+    "view": "joint",
+    "changed_pixels": 0,
+    "before_sha256": "69e1135e8e1a93537f2341d79d05b68d51cd590839404a1ff3477d77e697ae3b",
+    "after_sha256": "69e1135e8e1a93537f2341d79d05b68d51cd590839404a1ff3477d77e697ae3b"
+  },
+  {
+    "profile": "standard",
+    "view": "floor",
+    "changed_pixels": 0,
+    "before_sha256": "10012bbf8d94f332178fb5705b647dbd7f44b02af117f6553849304b516281cc",
+    "after_sha256": "10012bbf8d94f332178fb5705b647dbd7f44b02af117f6553849304b516281cc"
+  },
+  {
+    "profile": "high",
+    "view": "front",
+    "changed_pixels": 55222,
+    "before_sha256": "9975bd868a753d60b320641c85b7583751b5c78d6c43e69419bcbfc119f91d3d",
+    "after_sha256": "4524096e8548ce68f1078ca57d039492c412af21c089a51be68caaef5d9ab087"
+  },
+  {
+    "profile": "high",
+    "view": "rear",
+    "changed_pixels": 60898,
+    "before_sha256": "eb2f098f54cb59d3991881c9ba3d4ac16b454c64b4097c2c6e940ea5a9436765",
+    "after_sha256": "52407e3e10ee65506f76897c8f340028bd5d40cfa5cfea9187edb0b2f5e0985a"
+  },
+  {
+    "profile": "high",
+    "view": "joint",
+    "changed_pixels": 263551,
+    "before_sha256": "96fc1790583a79aafded5e6ca034adfc26cada3cfd29bfc5f638ff9021681434",
+    "after_sha256": "d41ab6cac05c7b6bed8dacb20efbbd996d4454297fb70f3f94b79347f32f3594"
+  },
+  {
+    "profile": "high",
+    "view": "floor",
+    "changed_pixels": 189734,
+    "before_sha256": "9387911a919fc6226358cc0b30b839602cba1b48df50edb2aa4f4d75387c638b",
+    "after_sha256": "174413e038174de9f5ab10c4f417476d3639ceaacea456f36eb6d885546ca3b5"
+  }
+]
