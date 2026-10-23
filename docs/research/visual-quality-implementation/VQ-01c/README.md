@@ -111,6 +111,10 @@ a bounded render-geometry cache; no LU-10-R1, shader or appearance change is ado
 uncertainty and native/loading evidence are resolved. VQ-01d remains the next dependent
 package; the import inventory alone does not authorize material edits.
 
+The [2026-10-23 runtime audit](runtime-audit-2026-10-23/README.md) retains two small
+CPU optimizations with component measurements and native 1080p verification; it
+does not establish a whole-game FPS improvement or close these acceptance gaps.
+
 ## Artifact identity
 
 [Evidence manifest](evidence-manifest.json) records source commit, runtime diff, both
