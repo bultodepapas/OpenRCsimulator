@@ -10,7 +10,7 @@ const Fuels := preload("res://physics/fuel_properties.gd")
 ## Fixture: the base Stik with its FUEL-05f tank and empty-tank balance removed again (plan CG = authored inventory
 ## CG, as before FUEL-05), and its liquid given a 0.225 l box in _raw().
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
-const FLEET_WITH_TANKS := ["gp_extra_300s_60.json", "jensen_ugly_stik_60.json", "p51d_mustang_120.json",
+const FLEET_WITH_TANKS := ["f4u_corsair_250.json", "gp_extra_300s_60.json", "jensen_ugly_stik_60.json", "p51d_mustang_120.json",
 	"sebart_avanti_s_a200.json", "stik_glow_55ax_2t.json", "stik_glow_55ax_2t_apc_13x6.json", "stik_glow_61fx_2t.json",
 	"stik_glow_fs64v_4t.json", "stik_glow_fs64v_4t_apc_13x6.json"]
 const TIMBER := "res://data/aircraft/turbo_lumber_evolution.json"
