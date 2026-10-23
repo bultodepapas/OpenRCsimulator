@@ -35,24 +35,26 @@ Sources for every input are in [F4U-01](../F4U-01/README.md). The method follows
 | Throws | Normal rate aileron 10.8°, elevator 8.9°, rudder 17.2°; high rate 13.5°, 11.2°, 25.9° | Normal = the CARF manual's recommended set (20/15 mm aileron mean, 20 mm elevator, 70 mm rudder); high = normal ÷ the median low/high ratio of three Corsair manuals; the elevator stays inside CARF's 35 mm take-off allowance (corrected 2026-10-23, see below) |
 | Flaps | 0° take-off, 30° landing; slotted fit gain 0.839, limit 22.9°, stall shift 0.10 | CARF: no take-off flap, at most 30° on approach (35° useful, 45° mechanical) |
 | Thrust angles | 2.5° right, 0.5° up | CARF manual |
+| Wing incidence, stabilizer | +2° wing, 1.25° stabilizer, both to the thrust line | Wing: F4U-1 pilot's handbook AN 01-45HA-1, Appendix I p. 64 (corrected 2026-10-23, see below). Stabilizer: NACA RM A7C05 (F4U-4), reference line assumed |
+| Flap speed advisory | 28.2 m/s EAS (HUD only) | AN 01-45HA-1 Section I p. 14: flaps-down restricted speed 130 kt at 50° to 200 kt at 20°, so 177 kt at the model's 30°, mapped at equal CL at the handbook's lightest charted weight (10,000 lb) |
 | Engine, propeller | Peak torque 13.97 N·m (bmep 7.0 bar); installed 8.06 kW at the 6,000 rpm limit (72 % of 15 hp); static 4,274 rpm, 28.0 kgf, T/W 1.30 | The two Moki points give 13.09 and 14.86 N·m; the three-blade's static rpm lands 3 % under the manual's 4,400 |
 | Roll response | pb/2V 0.062 at the CARF normal throw, 0.078 at the high rate | Full-size 0.064 (NACA RM A7C05) |
-| Top speed | 57.7 m/s (208 km/h) | Full-throttle level trim. CARF: "never noticeably exceed 200 km/h" |
+| Top speed | 53.5 m/s (193 km/h) | Full-throttle level trim. CARF: "never noticeably exceed 200 km/h" |
 
 ### Flight modes (physics/flight_modes.gd on the simulated equations)
 
 | Speed | Short period | Phugoid | Roll τ | Dutch roll | Spiral |
 | --- | --- | --- | --- | --- | --- |
-| 18.7 m/s (1.3 Vs) | 0.86 Hz, ζ 0.86 | 0.098 Hz, ζ 0.15 | 0.123 s | 0.47 Hz, ζ 0.20 | +0.015 1/s (doubles in 46 s) |
-| 23 m/s | 1.01 Hz, ζ 0.88 | 0.078 Hz, ζ 0.23 | 0.094 s | 0.50 Hz, ζ 0.19 | stable |
-| 30 m/s | 1.29 Hz, ζ 0.89 | 0.061 Hz, ζ 0.40 | 0.071 s | 0.59 Hz, ζ 0.19 | stable |
-| 38 m/s | 1.63 Hz, ζ 0.89 | 0.049 Hz, ζ 0.63 | 0.056 s | 0.72 Hz, ζ 0.18 | stable |
+| 18.7 m/s (1.3 Vs) | 0.85 Hz, ζ 0.87 | 0.100 Hz, ζ 0.14 | 0.117 s | 0.45 Hz, ζ 0.19 | +0.0011 1/s (doubles in 632 s) |
+| 23 m/s | 1.00 Hz, ζ 0.88 | 0.081 Hz, ζ 0.22 | 0.093 s | 0.48 Hz, ζ 0.18 | stable |
+| 30 m/s | 1.29 Hz, ζ 0.89 | 0.064 Hz, ζ 0.36 | 0.071 s | 0.58 Hz, ζ 0.17 | stable |
+| 38 m/s | 1.63 Hz, ζ 0.88 | 0.054 Hz, ζ 0.57 | 0.056 s | 0.70 Hz, ζ 0.17 | stable |
 
 All meet MIL-F-8785C Level 1 bounds used as a reference frame (damping ratios direct, times Froude-scaled by √(1/4.5)).
 
-## Verification (2026-10-22, Windows, Godot 4.7.2)
+## Verification (2026-10-23, Windows, Godot 4.7.2)
 
-`probe.gd`: 22 checks, 0 failed. The production `AircraftData.load_file` accepts the file and keeps identity, span (2.778 m) and inventory mass. Level trims from 18.7 to 38 m/s use 4.5° to 1.0° of up elevator; power-off flares at 1.15 and 1.10 Vs need 6.0° and 6.5° of the 11.2° throw. `fit_propeller.py --check`, `ground_effect_vlm.py --check` and `derive_physics.py --check` pass.
+`probe.gd`: 22 checks, 0 failed. The production `AircraftData.load_file` accepts the file and keeps identity, span (2.778 m) and inventory mass. Level trims run from 2.1° of up elevator at 18.7 m/s through neutral near 27 m/s to 1.3° down at 38 m/s; power-off flares at 1.15 and 1.10 Vs need 3.5° and 4.0° of the 11.2° throw (with the R59 incidence: 4.5° up to 1.0° up, and 6.0° and 6.5°). `fit_propeller.py --check`, `ground_effect_vlm.py --check` and `derive_physics.py --check` pass.
 
 ## Cross-checks of the engine and propeller
 
@@ -73,8 +75,9 @@ Single forum reports span 4,200–5,200 rpm on 32x18 two-blades. The Mejzlik 31x
 - **Propeller tables.** A calibrated blade-element model over-predicts low-pitch three-blades by 17–37 % in the cruise band; a manufacturer table governs where one exists. The 30x18 three-blade has none, so its tables carry the calibration's uncertainty.
 - **Rated power.** The Moki S250's 15 hp needs about 8.9 bar of bmep at 6,000 rpm; the manual's own static points imply 7.0 bar, so the installed peak is 72 % of the rating.
 - **Throw mapping.** The first 1/4.5 derivation put CARF's single recommended set into `max_throw`, so the default normal rate flew 80 % of the manual's throws. The contract's `max_throw` is the full surface travel and `rates.normal` the default fraction; CARF's set is now the normal rate. The standard flight-test card exposed it (F4U-12).
+- **Wing incidence.** The R59 visual master models the wing at 0.5° to the thrust line (chord-weighted), so with RM A7C05's 1.25° stabilizer the tail sat at a higher incidence than the wing. The F4U-1 pilot's handbook gives +2° (AN 01-45HA-1, Appendix I p. 64, read from the page image, 2026-10-23). With it, CL0 rises from 0.111 to 0.200 and Cm0 from −0.026 to −0.008. Cruise trims near neutral elevator instead of 2.9° up, the flare needs about 2.5° less up elevator, and top speed falls from 57.7 to 53.5 m/s, under CARF's 200 km/h note. R59's station-to-station twist stays in the strip offsets.
 - **Loader item limit.** One inventory item may weigh at most 5 kg; the 5.4 kg engine is split into its core and its mount and collector ring.
 
 ## Limits
 
-Geometry is the R59 visual master; wing incidence, stabilizer setting and gull angles lack a primary source. TR 586 values are read from a degraded OCR layer. The thin outer sections (9–11 %) clamp at the 12 % trend, so tip stall may come earlier than modelled. The body yaw term is DATCOM's, uncalibrated. The Moki torque shape and peak-power rpm are estimated; Mejzlik tables and the calibrated model stand in for the wooden Menz and SEP propellers. Gear travel follows the GP-06c reserve-drop rule ([F4U-08](../F4U-08/README.md)). The CARF manual's handling notes are checked in [F4U-12](../F4U-12/README.md#ground-handling): the tail-up landing is consistent, the full-power nose-over is not reproduced. Flight-identified behavior requires F4U-14 evidence.
+Geometry is the R59 visual master. The wing incidence is the full-size handbook's; the CARF kit publishes none, and its scale-moulded fuselage is assumed to keep it. The stabilizer setting is the F4U-4's (RM A7C05) against an assumed reference line, and the gull angles lack a primary source. TR 586 values were checked against the page images on 2026-10-23 ([recheck](tr586-recheck-2026-10-23/README.md): two Reynolds numbers corrected, CL_max 1.155667 → 1.155345). The thin outer sections (9–11 %) clamp at the 12 % trend, so tip stall may come earlier than modelled. The body yaw term is DATCOM's, uncalibrated. The Moki torque shape and peak-power rpm are estimated; Mejzlik tables and the calibrated model stand in for the wooden Menz and SEP propellers. Gear travel follows the GP-06c reserve-drop rule ([F4U-08](../F4U-08/README.md)). The CARF manual's handling notes are checked in [F4U-12](../F4U-12/README.md#ground-handling): the tail-up landing is consistent, the full-power nose-over is not reproduced. Flight-identified behavior requires F4U-14 evidence.

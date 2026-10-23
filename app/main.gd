@@ -654,6 +654,8 @@ func _ready() -> void:
 	var failure_options: Dictionary = _failure_options(args)
 	if not failure_options.ok or (_scripted and failure_options.config.probability_percent > 0):
 		startup_error = "; ".join(failure_options.errors) if not failure_options.ok else "Failures require a physics flight."
+		session.free() # Refused before parenting: Main's deletion cannot reclaim this session.
+		session = null
 		if not interactive_start:
 			printerr(startup_error)
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -665,6 +667,8 @@ func _ready() -> void:
 	failure_notifications = failure_config.notify
 	if not _scripted and not session.setup_failures(failure_config, failure_seed):
 		startup_error = session.failure_error
+		session.free()
+		session = null
 		if not interactive_start:
 			printerr(startup_error)
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -674,6 +678,8 @@ func _ready() -> void:
 	var conditions: Dictionary = _weather_options(args)
 	if not conditions.ok or not session.setup_weather(conditions.config):
 		startup_error = "; ".join(conditions.errors) if not conditions.ok else session.weather_error
+		session.free()
+		session = null
 		if not interactive_start:
 			printerr("weather refused: ", startup_error)
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -684,6 +690,18 @@ func _ready() -> void:
 	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
+	# Setup already trimmed this inventory. Only a changed fill needs a new solve;
+	# the session also checks that the selected tank contains usable fuel.
+	if fuel_start_fill != session.fuel_start_fill and not session.set_fuel_start_fill(fuel_start_fill):
+		startup_error = "Fuel fill refused: the selected amount must exceed the tank's unusable fuel."
+		session.free()
+		session = null
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	add_child(session)
 	# Sample the committed wind at every tick, including OU gusts between render frames.
 	# The windsock is a read-only presentation consumer; uploads happen in World.update.
@@ -701,10 +719,6 @@ func _ready() -> void:
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
-	# Setup already trimmed this inventory. Reapplying it invalidates the trim cache
-	# and repeats the same solve during reset (particularly costly for glow aircraft).
-	if fuel_start_fill != session.fuel_start_fill:
-		session.set_fuel_start_fill(fuel_start_fill) # FUEL-07: validated above; only finite-fuel tanks use it
 	session.reset()
 	GroundGear.attach(_airplane, session)
 	TimberVisualMotion.attach(_airplane, session)

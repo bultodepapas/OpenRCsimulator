@@ -1343,7 +1343,7 @@
     "source": "Derived from the measured planform by research/f4u-corsair/F4U-07/derive_physics.py (Helmbold/DATCOM, VLM downwash and ground effect, strip theory, Schrenk/Reynolds stall, drag build-up); report research/f4u-corsair/F4U-07/derivation.md. Not calibrated or flight-identified.",
     "envelope": {
       "CL_max": {
-        "value": 1.155667,
+        "value": 1.155345,
         "unit": "1",
         "kind": "estimated",
         "source": "three equal-area strips: Schrenk on the measured chord, NACA TR 586 23012 clmax(Re) x XFOIL thickness trend, less 0.05 finish; flaps up"
@@ -1387,7 +1387,7 @@
     },
     "coefficients": {
       "CL0": {
-        "value": 0.111106,
+        "value": 0.200053,
         "unit": "1",
         "kind": "derived",
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: cambered wing at its mean incidence + tail at zero body alpha (no trim calibration)"
@@ -1423,7 +1423,7 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: component drag build-up at 23 m/s, gear up"
       },
       "CL_minD": {
-        "value": 0.052205,
+        "value": 0.099975,
         "unit": "1",
         "kind": "estimated",
         "source": "minimum drag near half the zero-alpha wing lift"
@@ -1513,7 +1513,7 @@
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: rudder side force x fin height above the ARP"
       },
       "Cm0": {
-        "value": -0.026296,
+        "value": -0.007576,
         "unit": "1",
         "kind": "derived",
         "source": "research/f4u-corsair/F4U-07/derive_physics.py: 230-series Cm_ac + tail at zero body alpha"
@@ -1588,9 +1588,9 @@
       },
       "wing_station_incidence": {
         "value": [
-          0.024787,
-          -0.002576,
-          -0.022212
+          0.024836,
+          -0.002535,
+          -0.022301
         ],
         "unit": "rad",
         "kind": "derived",
@@ -1668,7 +1668,7 @@
           "source": "research/f4u-corsair/F4U-07/derive_physics.py: thin-airfoil tau x 0.8 / (1 - deps/dalpha)"
         },
         "incidence": {
-          "value": 0.017449,
+          "value": 0.000271,
           "unit": "rad",
           "kind": "derived",
           "source": "research/f4u-corsair/F4U-07/derive_physics.py: (1.25 deg stabilizer - eps0)/(1 - deps/dalpha)"
@@ -3796,10 +3796,10 @@
       "source": "as extension"
     },
     "max_speed_mps": {
-      "value": 23.0,
+      "value": 28.157338,
       "unit": "m/s",
-      "kind": "estimated",
-      "source": "research/f4u-corsair/F4U-07/derive_physics.py: advisory: the start speed (1.6 Vs clean); no full-size or kit placard found"
+      "kind": "derived",
+      "source": "research/f4u-corsair/F4U-07/derive_physics.py: advisory: AN 01-45HA-1's flaps-down restricted speed at the model's 30 deg (177 kt IAS, linear between 130 kt at 50 deg and 200 kt at 20 deg) at equal CL 0.301, at the handbook's lightest charted gross weight (10,000 lb); not a simulation clamp"
     },
     "elevator_mix_per_flap_fraction": {
       "value": 0.0,

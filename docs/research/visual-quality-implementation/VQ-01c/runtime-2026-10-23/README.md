@@ -157,3 +157,71 @@ Applicable engine references: [Godot 4.7 renderers](https://docs.godotengine.org
 [GPU optimization](https://docs.godotengine.org/en/4.7/tutorials/performance/gpu_optimization.html),
 and [4.7.2 GLES3 implementation](https://github.com/godotengine/godot/blob/4.7.2-stable/drivers/gles3/rasterizer_scene_gles3.cpp).
 Compatibility-renderer observations on this GPU do not qualify other backends or hardware.
+
+## Third engineering pass
+
+Baseline `11bd41d313e87ae4d1a649608751563031ea3b85`. Two startup bugs were
+reproduced and fixed in `main.gd`:
+
+- Rejected failure/weather configuration left an unparented `FlightSession` and
+  its simulation alive after Main was deleted. Main now frees and clears that
+  session on those rejection paths. The reproduced two orphan nodes become zero.
+- A range-valid Avanti fuel selection of `0.001` was rejected by the session but
+  ignored by Main, which launched with the existing full tank. Main now checks
+  that result before parenting and reports the refusal; Home rolls back visibly.
+
+No physics, aircraft data, controls, rendering or quality changes are retained.
+Three valid starts (Avanti full/quarter and finite-fuel Stik glow half) produced
+byte-identical complete session and simulation checkpoints against the baseline
+at ticks zero and 480. Independent checks passed 15 comparator assertions,
+67 fuel assertions, seven shader-clock assertions and all four golden flights.
+The new persistent startup test passed 21 headless assertions, including Home
+rollback and stable orphan counts. Native startup assertions passed too, but
+that fixture is **not a clean native pass**: both baseline and candidate emit
+two GLES3 shutdown texture-leak errors, 349,524 bytes each. Home-only and a valid
+rendered Main teardown are clean; rejected startup reproduces the errors. Texture
+ownership remains unresolved; no speculative rendering cleanup was added.
+
+Native 1920×1080 gameplay passed 52 assertions without engine diagnostics across
+Avanti and GP Extra launches, normal physics, keyboard flight controls, cameras,
+restart, pause/resume, VSync preview/revert and repeated End/Home transitions.
+Rendered Home, flight and settings captures were inspected. They retain some
+existing appearance and archived-report state, so are not pristine visual baselines.
+Inputs were engine-parsed key events, not human pilot or physical latency evidence.
+
+The final Avanti half-power/pilot-camera run completed 10 seconds of warmup and
+60.016 seconds of sampling: 3,601 frames, 60.000 FPS, p95 **17.544 ms**, p99
+**18.704 ms**, maximum **21.599 ms**. It ended focused, unpaused and uncrashed,
+with 16,744 simulation ticks and no Godot engine errors; the existing aircraft-data
+provenance warning was still emitted. The initial baseline
+sample was 60.000 FPS, p95 18.047 ms, p99 19.742 ms and maximum 22.673 ms.
+External F4U work overlapped the final run throughout, so these are observations,
+not an equivalent-condition comparison or evidence of a performance gain.
+Both used VSync on, unlimited engine FPS, the 1080p/60 Hz virtual display, one-second
+process-resource sampling and a five-second host CPU/GPU sampler; only the baseline
+also collected Windows `typeperf` counters. The heavier
+per-frame diagnostics were off; a separate instrumented diagnostic run is retained
+and excluded from before/after claims.
+
+An unchanged-global ShaderClock guard was tested and **reverted**. The actual
+static-call comparison passed 29 shader-output/negative-control checks, but its
+active-clock median was 0.441 → 0.468 microseconds per call; paused repeated values
+were 0.421 → 0.316 microseconds. External F4U testing overlapped. These tiny,
+shared-host wrapper timings did not demonstrate a useful gameplay improvement.
+The earlier instance-call exploratory result is not acceptance evidence.
+
+The canonical Linux suite remained unavailable (`Wsl/Service/CreateInstance/E_FAIL`).
+Screen zero is a virtual 1080p/60 Hz display; physical input latency, sustained
+performance on the physical monitor, other platforms and long-session leak freedom
+remain unqualified. Unrelated concurrent F4U work was preserved.
+
+Evidence Auditor and Good Enemy found no blocking objection to the retained Main
+fixes. Good Enemy independently reran the startup regression: 21 checks passed
+with no Godot error/warning records. It verified the recorded artifact hashes and
+retained the native texture teardown defect and inconclusive performance evidence
+as explicit limitations.
+
+[Third-pass receipt](round3-receipt.json) records exact source identities, commands,
+checkpoint hashes and raw artifact identities, including adverse and rejected runs.
+Raw evidence and temporary captures remain under `tmp/game-engineering-round3/`;
+no images were added to Git.
