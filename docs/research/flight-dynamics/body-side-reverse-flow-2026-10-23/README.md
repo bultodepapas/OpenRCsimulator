@@ -162,9 +162,9 @@ changes preserved. The isolated flight/performance app copies differ only in
 candidate: `1d06d5160dd6b23ec619584cb9ea115eec30f4111ca23c74165eac1d9761e753`.
 Engine: Godot 4.7.2 stable, Windows x64, official `ed1daf0bf`.
 
-`evidence.zip` retains exact solver source bytes, aircraft data, the pre-existing
+[evidence.zip](evidence.zip) retains exact solver source bytes, aircraft data, the pre-existing
 patch, source identities, probe/recording scripts, ORFL tapes, CSVs, comparisons
-and checked-run reports/logs. `manifest.json` records each member's SHA-256.
+and checked-run reports/logs. [manifest.json](manifest.json) records each member's SHA-256.
 Absolute scratch paths in original reports are provenance, not portable paths.
 Use the base checkout plus retained baseline source/data overlays for the baseline;
 replace only `physics/aero.gd` from the candidate overlay for comparison. Use
@@ -174,3 +174,11 @@ The executed regression test differs from the current test only by its header co
 Rejected harness attempts (missing script, malformed probe inputs and a leaking
 diagnostic) are excluded from accepted checks. Expected baseline regression
 failures and incomplete flight records are retained and labeled separately.
+
+Final independent Evidence Auditor and Good Enemy reviews found no blocking issue.
+Good Enemy independently passed the 25-check body-side suite and accepted the gate
+only as a domain policy; real reverse-flight fidelity remains unvalidated. Its
+assessment is retained under `adversarial/` in the archive. The assessment's archive
+hash identifies the pre-review bundle; `reviewed-manifest.json` preserves that
+identity. The final bundle adds review evidence and updates only the packaging
+script among earlier members, leaving the experimental payload unchanged.

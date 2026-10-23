@@ -69,7 +69,8 @@ static func snapshot_contacts(session: Node, field: Dictionary) -> Array[Diction
 			force_ned = M.add(M.scale(normal, normal_load), M.add(M.scale(heading, longitudinal), M.scale(side, lateral)))
 			rim_speed = float(wheel_diag.get("rim_speed", 0.0))
 		else:
-			var single_gear: Dictionary = gear.duplicate(true)
+			# Ground.loads only reads nested gear data; isolate the contact list only.
+			var single_gear: Dictionary = gear.duplicate()
 			single_gear["contacts"] = [contact]
 			var one_anchor := PackedFloat64Array()
 			if anchors_count > index:

@@ -929,7 +929,7 @@ func _process(delta: float) -> void:
 	_update_aircraft_lights(visual_clock_s)
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
-		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
+		_frame_times.remove_at(0)
 	var sim: Node = session.sim
 	if _wheel_brake_key_held and (sim.paused or not session.crash.is_empty() or not session.gear_is_retractable()
 		or not Input.is_physical_key_pressed(KEY_B)):

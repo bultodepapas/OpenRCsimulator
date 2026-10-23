@@ -4,6 +4,21 @@
   "member_paths_relative_to": "evidence.zip root",
   "files": [
     {
+      "path": "adversarial/assessment.md",
+      "bytes": 3609,
+      "sha256": "ed7de641d74b0205d99c2c90f6c9dfcf6f5e15e3e0ec923706254af0c56399c1"
+    },
+    {
+      "path": "adversarial/checks/direct-run-record.json",
+      "bytes": 1089,
+      "sha256": "f274191e346749375d55326cdd2a0b2ea6a69881cacfdc5b4bc5e3ff2ec4e03e"
+    },
+    {
+      "path": "adversarial/checks/tool-output.log",
+      "bytes": 3013,
+      "sha256": "32042fd649495e8a762b60fa0aeaf64d0ab75b5872f7fbca6d140239a839d81a"
+    },
+    {
       "path": "aero.before.gd",
       "bytes": 50896,
       "sha256": "efccc6baf1a88fc24487d6766db05c6634da047de70bd55b9a115aed0adf5531"
@@ -2025,8 +2040,8 @@
     },
     {
       "path": "package_evidence.py",
-      "bytes": 5288,
-      "sha256": "53612b18598c9f8c243559f0b5f3d83a905798dda8d7e75f9878e953d4bd880d"
+      "bytes": 6027,
+      "sha256": "3c756d3ea87137fe96ad878fd243224565317e874dfc20bcdd60848e163638f4"
     },
     {
       "path": "performance/README.md",
@@ -2464,11 +2479,21 @@
       "sha256": "01719fd0828958d62000b3ca64f42e197901745a759d98b16a57b6a0a374a522"
     },
     {
+      "path": "reviewed-manifest.json",
+      "bytes": 96663,
+      "sha256": "059168686783d6180c7627b355fe2c9396145b9d0c9d3feae92119aee2c8d6f4"
+    },
+    {
       "path": "test_body_side_force.before.gd",
       "bytes": 7739,
       "sha256": "726f928afa77a429f1ba882c08a17fdb7282e72d049efa12b8de474a8e06e421"
     }
   ],
-  "archive_sha256": "62fd3a79e7a41c7e2c3d05fefa390627829443bddc4b2b7fec9a638ad61807df",
-  "archive_bytes": 5667733
+  "archive_sha256": "06a6b87746db3ef4d211ef8706f2f8811f30d194157ac2cc15c90a62aef39f73",
+  "archive_bytes": 5699058,
+  "adversarial_reviewed_archive_sha256": "62fd3a79e7a41c7e2c3d05fefa390627829443bddc4b2b7fec9a638ad61807df",
+  "changed_reviewed_members": [
+    "package_evidence.py"
+  ],
+  "review_extension": "Review artifacts appended; only the packaging script changed among earlier members."
 }
