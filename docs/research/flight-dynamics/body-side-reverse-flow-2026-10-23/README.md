@@ -11,6 +11,7 @@ reference-velocity convention remain. No aircraft coefficients, solver state
 layouts, integrator or goldens were changed.
 
 This is a conservative applicability limit, not a calibrated reverse-flow law.
+The references below do not prescribe this exact gate for these aircraft.
 For the configured signs, the combined body-side contribution (gated slope plus crossflow) satisfies
 `Fy v = 0.5 rho [S CYbeta max(u,0) - A_cross sqrt(v²+w²)] v² <= 0`.
 That bounds its translational work using the reference air velocity; it does
@@ -122,13 +123,31 @@ static probe confirms the explicit backward-shaft domain guard: required torque
 -0.103330 Nm exceeds the 0.010339 Nm static holding magnitude. Supporting backward
 rotation requires a signed-shaft model; bypassing the guard is not a correction.
 
-The longer Extra nose-up experiment still fails: baseline accepted 260 ticks,
-candidate 255, before `RK joint stage evaluation is nonfinite or malformed`.
-The failing substage was not recovered, so the static shaft guard does not prove
-the cause of that flight failure. Its retained prefix replays successfully, but
-neither run completed the intended two seconds. The accepted short tape is
-explicitly only 0.5 s. Earlier recorder prose saying all four cases lasted two
-seconds is stale; the per-case durations and failure records govern.
+Two longer Extra attempts are incomplete: an older baseline accepted 260 ticks,
+and the candidate extension accepted 255 before a malformed joint-stage fault.
+**Those counts are not a before/after comparison.** A full-checkpoint audit found
+the same body state, continuous state, modes and common command tape, but different
+initial downwash auxiliary state: approximately -1.8e-7 versus +5.6999 m/s.
+Initial loads also differ. The earlier comparison based only on the body seed
+was withdrawn. Candidate replay of the old tape only reaches its accepted
+260-tick prefix; it never evaluates the following failed step.
+The accepted short tape is explicitly only 0.5 s. Earlier recorder prose saying
+all four cases lasted two seconds is stale; per-case durations and failure records
+govern. The three accepted baseline/candidate replay comparisons preserve the
+full initial checkpoint and remain valid.
+
+A fresh instrumented pair then matched all initial body/auxiliary/continuous
+state, modes, inputs and reset loads, plus all 255 accepted command/input rows.
+Both variants refused tick 255→256 at the same midpoint stage, 1.064583333 s.
+The stopped, cut engine demanded reverse shaft torque of -0.0103607840 Nm
+(baseline) and -0.0103679683 Nm (candidate), exceeding the 0.0103390090 Nm static
+hold. `GlowFlight._stage_coupling` explicitly returns `{ok=false}` for that
+unsupported reversal; `evaluate` returns an empty stage, which the kernel rejects.
+This identifies a model-domain refusal, not nonfinite arithmetic, in this matched
+case. The probes deliberately exit 1 for the incomplete flight; both checked logs
+have zero engine/parser/resource errors. Diagnostic instrumentation and all stage
+values are retained. This correction neither introduces nor resolves that boundary
+in this fixture; a supported reverse-shaft model requires separate work.
 
 The canonical WSL `app/test.sh` could not start because WSL returned
 `Wsl/Service/CreateInstance/E_FAIL` (code 6, step 2). Native Windows checked runs
