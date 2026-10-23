@@ -116,7 +116,7 @@ class CustomizationGeneratorTests(unittest.TestCase):
         }
         self.assertEqual(
             set(registrations),
-            {"jensen-das-ugly-stik-60", "gp-extra-300s-60", "turbo-lumber-evolution"},
+            {"jensen-das-ugly-stik-60", "gp-extra-300s-60", "turbo-lumber-evolution", "f4u-corsair-250"},
         )
         for family_slots in registrations.values():
             self.assertEqual(len(family_slots), 1)

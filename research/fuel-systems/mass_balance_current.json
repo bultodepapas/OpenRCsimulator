@@ -53,6 +53,86 @@
   {
    "balance_fuel_state": "empty_tanks",
    "catalog_ids": [
+    "f4u-corsair-250"
+   ],
+   "cg_range_check": {
+    "plan_cg_x_m": 0.158843,
+    "plan_state": "empty",
+    "status": "not_declared"
+   },
+   "cg_tolerance_m": 0.001,
+   "energy": "finite_liquid_fuel",
+   "file": "f4u_corsair_250.json",
+   "flags": [
+    "missing_neutral_point",
+    "cg_range_not_declared"
+   ],
+   "fuel_items": [
+    {
+     "energy_source": "gasoline",
+     "id": "fuel_flight",
+     "mass_kg": 0.373927,
+     "position_m": [
+      -0.112401,
+      0.0,
+      -0.02
+     ],
+     "size_m": [
+      0.16,
+      0.1,
+      0.0625
+     ]
+    }
+   ],
+   "id": "f4u-corsair-250",
+   "inventory_identity": {
+    "idless_inventory_items": 0,
+    "physical_identity_version": 1
+   },
+   "mac_m": 0.53834,
+   "neutral_donor_items": [],
+   "neutral_point": null,
+   "plan_cg_m": [
+    0.158843,
+    0.0,
+    -0.063227
+   ],
+   "plan_cg_matches_inventory": true,
+   "plan_cg_state": "empty",
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.154125,
+      0.0,
+      -0.062475
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 21.500001
+    },
+    "empty": {
+     "cg_m": [
+      0.158843,
+      0.0,
+      -0.063227
+     ],
+     "cg_shift_from_declared_mm": 4.717,
+     "mass_kg": 21.126074
+    },
+    "full": {
+     "cg_m": [
+      0.149569,
+      0.0,
+      -0.061749
+     ],
+     "cg_shift_from_declared_mm": -4.556,
+     "mass_kg": 21.873928
+    }
+   },
+   "variant_kind": "catalog"
+  },
+  {
+   "balance_fuel_state": "empty_tanks",
+   "catalog_ids": [
     "gp-extra-300s-60"
    ],
    "cg_range_check": {
@@ -1197,6 +1277,7 @@
  ],
  "coverage": {
   "catalog_aircraft_ids": [
+   "f4u-corsair-250",
    "gp-extra-300s-60",
    "jensen-das-ugly-stik-60",
    "p51d-mustang-120",
@@ -1208,6 +1289,7 @@
   ],
   "catalog_covered_files": [
    "battery/turbo_lumber_evolution_4s_pack.json",
+   "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
    "p51d_mustang_120.json",
@@ -1219,6 +1301,7 @@
   ],
   "catalog_data_files": [
    "battery/turbo_lumber_evolution_4s_pack.json",
+   "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
    "p51d_mustang_120.json",
@@ -1232,6 +1315,7 @@
   "errors": [],
   "reported_airplane_files": [
    "battery/turbo_lumber_evolution_4s_pack.json",
+   "f4u_corsair_250.json",
    "gp_extra_300s_60.json",
    "jensen_ugly_stik_60.json",
    "p51d_mustang_120.json",
