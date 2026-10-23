@@ -1,0 +1,62 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cases": [
+		{
+			"aim_dot": 1.0,
+			"case": "ordinary",
+			"center_error_px": 0.0,
+			"centered": true,
+			"fov": 50.0,
+			"height": 1080,
+			"ok": true,
+			"png_sha256": "bee472ec279e6d3ea83da16f562920456df3707c15499164e476c7e1a419da82",
+			"width": 1920
+		},
+		{
+			"aim_dot": 1.0,
+			"case": "overhead",
+			"center_error_px": 0.00006103515625,
+			"centered": true,
+			"fov": 50.0,
+			"height": 1080,
+			"ok": true,
+			"png_sha256": "750b91423c7f81eb9d4abecb9554e29eb62f3d02845eb4f8c3cff9f85d888ae9",
+			"width": 1920
+		},
+		{
+			"aim_dot": 1.0,
+			"case": "underfoot",
+			"center_error_px": 0.00006103515625,
+			"centered": true,
+			"fov": 50.0,
+			"height": 1080,
+			"ok": true,
+			"png_sha256": "72d7be656cfa2fa572a26eb72dd7d1a1420ff066d88ae2094582a8470bbadac1",
+			"width": 1920
+		},
+		{
+			"aim_dot": 1.0,
+			"case": "near-pole-diagonal",
+			"center_error_px": 0.0131633747369051,
+			"centered": false,
+			"fov": 50.0,
+			"height": 1080,
+			"ok": false,
+			"png_sha256": "91312e7bb3f1c590c14e68c1a6668492c4f9cf80ee3e460b2d75d00ea5f67750",
+			"width": 1920
+		}
+	],
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"ok": false,
+	"renderer": "gl_compatibility"
+}

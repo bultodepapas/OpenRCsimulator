@@ -68,12 +68,14 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 	if direction.length_squared() < 1e-12:
 		return
 	direction = direction.normalized()
-	if direction.cross(Vector3.UP).length_squared() < 1e-10:
+	if direction.cross(Vector3.UP).is_zero_approx():
 		# World-up cannot define roll at the pole. Preserve screen-right there;
 		# fall back to north only if the previous right axis is also parallel.
-		var up := camera.global_basis.x.cross(direction).normalized()
-		if up.length_squared() < 0.5:
+		var up := camera.global_basis.x.cross(direction)
+		if up.is_zero_approx():
 			up = Vector3.FORWARD
+		else:
+			up = up.normalized()
 		camera.look_at(target, up)
 	else:
 		camera.look_at(target, Vector3.UP)

@@ -23,5 +23,19 @@
     "docs/research/camera-views/CAM-02-poles-2026-10-23/capture.gd": "e43ce26c91adf8d66b6dba05196571c1b871e243106461318ce999d3b15a805f"
   },
   "baseline_runtime_commit": "16b82bcb5897025c0fdcb23823552112604234d7",
-  "scope": "Camera files only; shared physics edits are unrelated. Raw check reports retain original temporary log paths."
+  "scope": "Camera files only; shared physics edits are unrelated. Raw check reports retain original temporary log paths.",
+  "final": {
+    "head": "c0fe45fd2141e87f9bb3c1a3233ab715977bd9c3",
+    "sha256": {
+      "app/render/pilot_camera.gd": "cee172271ae74483ace7fec509cfb941217cfdd1cdb9f8c9dea9e1e4ecf4100e",
+      "app/render/camera/camera_rig.gd": "e6efc5f29ef38e0136fb9882ed91fe6208b63d5406df919f90923418dd3967c2",
+      "app/tests/test_camera_views.gd": "519187134f764d10592f88fbb9536cf4e2a84fcb91839d981db262eb9e098541",
+      "app/tests/test_camera_math.gd": "837d86283b6b14e8cbb671658a21c7f7516a9dd4b5d389e3e26cdeaba3b7a5e8",
+      "app/tests/test_camera_route.gd": "8dc1e592bd3871bbd6d8e56c7154365ce9184df8d5f9304dfe421cf53559fd19",
+      "app/render/airplane.gd": "c8b3a78b8a07436e4c9e79ee95871f5309189cb110490cfbc209fa8433cebb98",
+      "app/spec.gd": "0b9e3625e60945e04e96533f44ccd22c906957d8eef15baf9ffae5b879aee0bc",
+      "docs/research/camera-views/CAM-02-poles-2026-10-23/capture.gd": "8152d5eaac12712102f13d61c6db31bf70873a25ea93a2db2f52b76c94cad122"
+    },
+    "note": "Final includes diagonal colinearity boundary and pre-normalization fallback correction; original top-level identities describe the first 52-check revision."
+  }
 }

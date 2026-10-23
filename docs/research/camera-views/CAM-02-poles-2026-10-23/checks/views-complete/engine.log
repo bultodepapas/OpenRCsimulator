@@ -1,0 +1,60 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   pilot view (auto-zoom true) is exactly PilotCamera.aim
+ok   pilot view (auto-zoom false) is exactly PilotCamera.aim
+ok   close-up view is exactly PilotCamera.aim(inspect)
+ok   landscape look view is exactly PilotCamera.look
+ok   pilot vertical target remains aimed (0.0, 30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.0, -30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.000001, 30.0, 0.0)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   pilot vertical target remains aimed (0.00024, 30.0, 0.00024)
+ok   pilot vertical basis stays orthonormal
+ok   pilot pole keeps the preceding screen-right direction
+ok   parallel or nearly parallel preceding right axis falls back to finite aimed basis
+ok   parallel or nearly parallel preceding right axis falls back to north-up
+ok   parallel or nearly parallel preceding right axis falls back to finite aimed basis
+ok   parallel or nearly parallel preceding right axis falls back to north-up
+ok   coincident pilot target preserves last orientation
+ok   ordinary pilot target retains exact look_at basis
+ok   far airplane: the auto-zoom law is narrower than the base FOV
+ok   Z: the first frame after the toggle keeps the FOV (no jump)
+ok   Z: settles on the base FOV within 2 s
+ok   Z: no frame changes the FOV by more than 3°
+ok   Z back on: the law's exact FOV again after 3 s
+ok   two zoom-in steps narrow tan(fov/2) by √2
+ok   pilot zoom stops at its limit
+ok   Backspace: back to the law's exact FOV
+ok   C cycles pilot → chase → orbit → close-up → pilot
+ok   Shift+C goes back
+ok   unknown view refused
+ok   names keep the historical panel text
+ok   chase: first frame is settled behind and above (south of a northbound airplane)
+ok   chase: looks at the airplane
+ok   chase: no roll (world up stays up)
+ok   chase: straight flight, same camera offset at 30/60/144 fps (≤ 1 cm)
+ok   chase: straight flight, exactly one boom behind and above (no speed lag)
+ok   chase: 12 s circle stays finite and within 0.5–2.5 booms
+ok   chase: circle keeps the airplane near the centre (look-ahead ≤ 10°)
+ok   chase: vertical climb holds the last heading, no NaN
+ok   chase: sliding backwards follows the nose
+ok   chase: slow (taxi) follows the nose
+ok   chase: fast track wins over the nose (crab)
+ok   chase: clearance above terrain
+ok   chase: unknown terrain reads as flat, never NaN
+ok   chase: a teleport snaps behind the new position
+ok   chase: frozen while paused
+ok   orbit: starts exactly where the previous view was
+ok   orbit: elevation clamps below the zenith
+ok   orbit: near the zenith the basis stays finite and aimed
+ok   orbit: distance limit
+ok   orbit: low airplane, camera kept above the ground
+ok   rig: pilot → orbit keeps the eye when within reach
+ok   rig: pilot → orbit from far keeps the direction at the default distance
+ok   rig: a flight that starts in orbit sees it from behind-left, above
+all 57 camera view checks passed

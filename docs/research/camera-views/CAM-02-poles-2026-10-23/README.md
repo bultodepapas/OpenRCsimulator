@@ -13,9 +13,9 @@ tracking failure. An eye-coincident target produced an engine error and left
 the orientation unchanged.
 
 For targets within 1 micrometre of the eye, explicitly keep the previous
-orientation. Within the tiny pole cone (normalized direction × world-up squared
-less than `1e-10`), derive up from the previous screen-right axis. If that axis
-is itself parallel to the target direction, use north-up. Elsewhere execute
+orientation. When normalized direction × world-up is approximately zero component by
+component, derive up from the previous screen-right axis. Test that raw cross
+product before normalization too; if approximately zero, use north-up. Elsewhere execute
 the original world-up `look_at` call. Position and FOV calculations are unchanged.
 Pole roll is intentionally different from the engine's implicit fallback.
 
@@ -28,22 +28,23 @@ did not edit the unrelated physics work present in the shared tree/commit.
 | Check | Result |
 | --- | --- |
 | Initial negative control | All 47 then-current assertions passed, but the checked runner failed on three colinearity warnings and one coincident-target engine error. Retained in `checks/before/`. |
-| Expanded camera views | **52 checks pass**: both poles, near-pole target, previous-right retention, parallel-right fallback, coincidence, exact ordinary basis parity, zoom transitions, chase and orbit. |
+| Expanded camera views | **57 checks pass**: both poles, near-pole and diagonal targets, previous-right retention, parallel/nearly parallel right fallback, coincidence, exact ordinary basis parity, zoom transitions, chase and orbit. |
 | Camera math | **21 checks pass**. |
 | Application input route | **19 checks pass**; camera input leaves simulation state untouched. Existing aircraft-data advisory text remains in the log. |
-| Native Compatibility studio | Three actual **1920×1080** PNGs; the production Stik and camera rig remain centered and finite at ordinary, overhead and underfoot poses. FOV 50°, aim dot 1.0 in all three. |
+| Native Compatibility studio | Four actual **1920×1080** PNGs; the production Stik and camera rig remain centered and finite at ordinary, overhead, underfoot and diagonal near-pole poses. Center error ≤0.0132 px, FOV 50°, aim dot 1.0 in all four. |
 
 All final focused runs use the checked runner with warnings treated as errors;
-no engine warnings/errors were emitted. Logs and verdicts are in `checks/`.
+no engine warnings/errors were emitted. Final logs/verdicts are `checks/views-complete/`, `checks/math/`,
+`checks/route-complete/` and `checks/native-complete/`; earlier runs are retained.
 The baseline assertion suite predates the final screen-right/fallback assertions;
 the retained baseline is diagnostic evidence, not a claim that the final suite
 passed on the old implementation. Independent Luna Max review found no blocking
 issue in the runtime and initial regression diff.
 
 The [capture fixture](capture.gd) reuses the production aircraft builder and
-camera rig in a static studio. [PNG metrics](standard/report.json),
-[ordinary view](standard/ordinary.png), [overhead view](standard/overhead.png)
-and [underfoot view](standard/underfoot.png) are retained and visually inspected.
+camera rig in a static studio. [PNG metrics](standard-complete/report.json),
+[ordinary view](standard-complete/ordinary.png), [overhead view](standard-complete/overhead.png)
+and [underfoot view](standard-complete/underfoot.png) are retained and visually inspected.
 The underfoot pose is a mathematical camera case, not an aircraft underground
 in a gameplay scene.
 
@@ -67,10 +68,33 @@ shared tree for the negative control.
 `wsl -d Ubuntu -- bash app/test.sh` and `app/capture.sh` stopped before executing
 checks because this Windows checkout has CRLF shell scripts (`pipefail\r: invalid option name`).
 The full Linux test/capture campaign is not claimed. Native whole-tree parse
-results are retained separately in `parse.json`.
+results are retained separately in `parse.json`: 1,223 of 1,224 scripts parsed
+on the first pass. The one failure was a transient `flight_session.gd` call-arity
+mismatch during parallel physics edits, reached through `test_camera_route.gd`.
+The subsequent 19-check input-route execution passes against the updated tree.
+This collection spans edits; it is not an atomic clean-tree full-suite result.
 
 These stills do not prove continuous overflight comfort, motion readability,
 performance, or High/platform qualification. Outside the tiny pole cone the
 existing world-up orientation law still applies; this patch does not smooth its
 roll transition on an overhead crossing. CAM-22 remains open. No flight-law,
 control, physics-data or golden-flight change belongs to this patch.
+
+## Boundary follow-up
+
+A diagonal near-pole target exposed a warning just outside the first radial
+threshold. The final guard uses `Vector3.is_zero_approx()` on the cross product,
+covering the engine's component-wise colinearity boundary. The failing check is
+retained in `checks/diagonal-before/`. Independent review also identified that
+normalizing before checking the previous-right cross product covered only exact
+parallelism. The final code checks before normalization; two fallback poses
+are now tested.
+
+The first extended native capture failed its newly authored 0.01-pixel centering
+assertion: Camera3D rounded the nearly vertical pose, leaving a measured
+0.0131634-pixel offset (local target X/Y each 0.000064 m at 8 m). It emitted
+no engine diagnostics. The capture now checks centering to half a pixel and
+retains the measured error; this is a fixture tolerance correction, not an
+improvement in camera aiming precision. Failed reports/PNGs remain in
+`standard-final/` and `checks/native-subpixel-*`. Final images are in
+`standard-complete/`; the three common cases are byte-identical to `standard/`.

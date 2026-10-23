@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3e0108e0-76d1-4043-bca4-765bd300b632",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--rendering-method",
+    "gl_compatibility",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/docs/research/camera-views/CAM-02-poles-2026-10-23/capture.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/camera-views/CAM-02-poles-2026-10-23/standard-final"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T12:10:29.354446+00:00",
+  "label": "pilot-pole-native-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\pilot-pole-native-final-67h74_op\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\pilot-pole-native-final-67h74_op\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "camera pole native captures passed"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [
+    "camera pole native captures passed"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 3.859,
+  "log_bytes": 208,
+  "log_sha256": "802022f1161cd7ed4f099ac14df7a64bfecc3551d1ffbc81395e23feaf83dc59"
+}

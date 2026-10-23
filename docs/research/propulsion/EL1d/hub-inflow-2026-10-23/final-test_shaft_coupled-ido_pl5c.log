@@ -1,0 +1,104 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coupled target is the positive-inertia P-51 shaft model
+ok finite-fuel P-51 v11 selects coupled RK4 by default
+ok finite-fuel P-51 accepts explicit coupled RK4
+ok finite-fuel coupled P-51 selects only the joint substep callback
+ok default and explicit v11 coupled trajectories stay byte-identical
+ok finite-fuel P-51 rejects split mode without mutation — finite propeller propulsion requires coupled-rk4
+ok legacy static-fuel P-51 keeps split default and accepts explicit split
+ok legacy static-fuel P-51 keeps only the three-argument substep callback
+ok legacy default and explicit split trajectories stay byte-identical
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok no-shaft Stik refuses coupled-rk4
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok rejected mode leaves no-shaft flight trajectory unchanged
+ok P-51 coupled state keeps RPM before appended wheel speeds
+ok high-throttle punch starts the relative rotor accelerating
+ok first-punch relative-spin reaction is added once over external loads — reaction residual 3.608224830031759e-16 N·m
+ok running torque, body coupling and friction close algebraically — I*(Omega_dot + axis·body_alpha)=Q_engine-Q_prop; residual 0 N·m
+ok engine-off closure includes mechanical friction once — I*(Omega_dot + axis·body_alpha)=Q_engine-Q_prop; residual 1.1102230246251565e-16 N·m
+ok power-off trim resets at zero relative shaft RPM
+ok resting engine-off coupling uses only bounded zero-speed shaft friction — required 5.8211459058684324e-05 N·m; authored bound 0.5 N·m
+ok stopped engine-off shaft refuses reverse breakaway beyond authored friction — { &"ok": false }
+ok zero-RPM power-off glide accepts all four coupled RK stages — stages [0.0, 0.0, 0.0, 0.0]; fault ''
+ok engine-off cutoff sweep starts with full usable finite fuel — state 0.7403751219512194 kg; full usable 0.7403751219512194 kg
+ok engine-off rundown 1.000001 RPM at 120 Hz stays in the nonnegative RK domain — substeps=3; stages [1.000001, 0.66128455562535, 1.000001, 0.32256768234333, 0.66128441265623, 0.66128441265623, 0.66128441265623, 0.66128441265623, 0.66128441265623, 0.66128441265623, 0.66128441265623, 0.66128441265623]; endpoint 0.6612844126562263 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.000001 RPM at 120 Hz)
+ok engine-off rundown 1.001 RPM at 120 Hz stays in the nonnegative RK domain — substeps=3; stages [1.001, 0.66228346180718, 1.001, 0.32356649470674, 0.66228331883797, 0.66228331883797, 0.66228331883797, 0.66228331883797, 0.66228331883797, 0.66228331883797, 0.66228331883797, 0.66228331883797]; endpoint 0.662283318837972 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.001 RPM at 120 Hz)
+ok engine-off rundown 1.01 RPM at 120 Hz stays in the nonnegative RK domain — substeps=3; stages [1.01, 0.67128261645827, 1.01, 0.33256480400778, 0.67128247348868, 0.67128247348868, 0.67128247348868, 0.67128247348868, 0.67128247348868, 0.67128247348868, 0.67128247348868, 0.67128247348868]; endpoint 0.6712824734886824 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.01 RPM at 120 Hz)
+ok engine-off rundown 1.02 RPM at 120 Hz stays in the nonnegative RK domain — substeps=3; stages [1.02, 0.68128167725998, 1.02, 0.34256292560999, 0.68128153428999, 0.68128153428999, 0.68128153428999, 0.68128153428999, 0.68128153428999, 0.68128153428999, 0.68128153428999, 0.68128153428999]; endpoint 0.6812815342899883 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.02 RPM at 120 Hz)
+ok engine-off rundown 1.05 RPM at 120 Hz stays in the nonnegative RK domain — substeps=3; stages [1.05, 0.71127886016444, 1.05, 0.37255729141544, 0.71127871719329, 0.71127871719329, 0.71127871719329, 0.71127871719329, 0.71127871719329, 0.71127871719329, 0.71127871719329, 0.71127871719329]; endpoint 0.7112787171932946 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.05 RPM at 120 Hz)
+ok engine-off rundown 2.0 RPM at 120 Hz stays in the nonnegative RK domain — substeps=2; stages [2.0, 1.49178509390696, 1.49190045231809, 0.98379940483348, 1.15312846779221, 0.64510454760243, 1.15312846779221, 0.13707685421324]; endpoint 0.645103289869291 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (2.0 RPM at 120 Hz)
+ok engine-off rundown 1.000001 RPM at 240 Hz stays in the nonnegative RK domain — substeps=2; stages [1.000001, 0.74596366683894, 1.000001, 0.4919261527308, 0.74596360652324, 0.74596360652324, 0.74596360652324, 0.74596360652324]; endpoint 0.7459636065232442 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.000001 RPM at 240 Hz)
+ok engine-off rundown 1.001 RPM at 240 Hz stays in the nonnegative RK domain — substeps=2; stages [1.001, 0.74696259645309, 1.001, 0.49292501195908, 0.74696253613739, 0.74696253613739, 0.74696253613739, 0.74696253613739]; endpoint 0.7469625361373889 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.001 RPM at 240 Hz)
+ok engine-off rundown 1.01 RPM at 240 Hz stays in the nonnegative RK domain — substeps=2; stages [1.01, 0.75596196242328, 1.01, 0.50192374389906, 0.75596190210745, 0.75596190210745, 0.75596190210745, 0.75596190210745]; endpoint 0.7559619021074466 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.01 RPM at 240 Hz)
+ok engine-off rundown 1.02 RPM at 240 Hz stays in the nonnegative RK domain — substeps=2; stages [1.02, 0.76596125800974, 1.02, 0.51192233507153, 0.76596119769376, 0.76596119769376, 0.76596119769376, 0.76596119769376]; endpoint 0.7659611976937573 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.02 RPM at 240 Hz)
+ok engine-off rundown 1.05 RPM at 240 Hz stays in the nonnegative RK domain — substeps=2; stages [1.05, 0.79595914517593, 1.05, 0.54191810940249, 0.79595908485947, 0.79595908485947, 0.79595908485947, 0.79595908485947]; endpoint 0.7959590848594741 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.05 RPM at 240 Hz)
+ok engine-off rundown 2.0 RPM at 240 Hz stays in the nonnegative RK domain — substeps=1; stages [2.0, 1.49178509399215, 1.49190045240287, 0.98379940500302]; endpoint 1.1531284679336342 RPM; fault ''
+ok engine-off rundown 1.000001 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [1.000001, 0.74596366681288, 1.000001, 0.49192615267881]; endpoint 0.7459636064972284 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.000001 RPM at 480 Hz)
+ok engine-off rundown 1.001 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [1.001, 0.74696259643164, 1.001, 0.49292501191627]; endpoint 0.7469625361159695 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.001 RPM at 480 Hz)
+ok engine-off rundown 1.01 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [1.01, 0.75596196240585, 1.01, 0.50192374386429]; endpoint 0.7559619020900469 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.01 RPM at 480 Hz)
+ok engine-off rundown 1.02 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [1.02, 0.76596125799583, 1.02, 0.51192233504377]; endpoint 0.7659611976798677 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.02 RPM at 480 Hz)
+ok engine-off rundown 1.05 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [1.05, 0.79595914516509, 1.05, 0.54191810938085]; endpoint 0.7959590848486462 RPM; fault ''
+ok sub-cutoff combustion RPM remains finite without a fabricated stop event (1.05 RPM at 480 Hz)
+ok engine-off rundown 2.0 RPM at 480 Hz stays in the nonnegative RK domain — substeps=1; stages [2.0, 1.7458925469879, 1.74592136541657, 1.49184254336122]; endpoint 1.4918426204791808 RPM; fault ''
+ok same-tick fuel-exhaustion fixture resets with source latched on
+ok near-cutoff refinement composes with same-tick finite-fuel exhaustion — substeps=2; events=[{ "type": "fuel_exhausted", "time_s": 0.000125 }]; RPM stages=[1.000001, 4.98020327866041, 4.98003762982999, 8.96007711603136, 1.23881313671962, 1.23881252252732, 1.47762404567211, 1.23881313576438, 1.23881252157207, 1.47762404376162, 1.47762404622603, 1.23872028192977, 1.23874605720226, 0.99986791134262, 1.07948542048363, 0.82537811386334, 1.07948542048363, 0.57127082484631]; fault ''
+ok depleted finite source resets with legacy engine mode still running
+ok zero-fuel source latch selects off-shaft refinement even when engine_running is true — substeps=2; RPM stages=[1.000001, 0.74591046800813, 1.000001, 0.49181978010228, 0.7459104160368, 0.7459104160368, 0.7459104160368, 0.7459104160368]; fault ''
+ok substep-cap fixture resets at supported 16 Hz
+ok refinement above the kernel substep cap fails closed without clipping the requested count — requested 17; cap 16; fault 'step rejected: substep count is not an integer within 1..16'
+ok coupled substep context validator accepts the expected preview shape
+ok coupled substep context validator rejects a short load vector
+ok malformed joint preview falls back to the legacy substep calculation — legacy=1; joint=1
+ok stage-local fixture resets cleanly
+ok coupled RK4 performs four joint evaluations with stage loads at k1–k4 times and RPM — stage rpm [1440.0, 1449.55577108359, 1449.57621047075, 1459.15256759282]; times [0.0, 0.00208333333333, 0.00208333333333, 0.00416666666667]; legacy calls { &"loads": 0, &"derivative": 0, &"rotor": 0 }
+ok endpoint projection mirrors continuous RPM into sampled telemetry
+ok unset joint callback uses each legacy stage callback four times without fault — { &"loads": 4, &"derivative": 4, &"rotor": 4 }
+ok legacy callback fallback remains bit-identical to joint evaluation
+ok stage shaft rate uses explicit wind time and remains pure
+ok P-51 test-only transported wash fixture validates — []
+ok P-51 transported-wash fixture retains the applied wheel profile
+ok transported wash precedes RPM and appended wheel speeds in the continuous layout
+ok RK stages transport wash and solve RPM together
+ok coupled traces retain schema and identify the shaft integrator
+ok coupled finite-fuel checkpoint v11 retains its v4 shaft identity
+ok coupled transported-wash checkpoint restores exactly
+ok coupled transported-wash replay is bit-exact
+ok bad checkpoint RPM mirror is rejected atomically
+ok bad checkpoint continuous layout is rejected atomically
+ok bad checkpoint negative RPM is rejected atomically
+ok split session refuses coupled checkpoint without mutation
+ok stage failure rolls every committed dynamic field back and emits no tick — step rejected: RK joint stage evaluation is nonfinite or malformed
+ok gyro failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok derivative failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok missing_field failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_float32 failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_width failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok wrong_type failure rolls every committed dynamic field back and emits no tick — step rejected: joint stage evaluation is nonfinite or malformed
+ok projection failure rolls every committed dynamic field back and emits no tick — step rejected: continuous auxiliary projection is nonfinite or malformed
+ok malformed float32 joint payload rejects reset atomically and emits no tick — reset rejected: aircraft returned nonfinite or malformed loads
+ok coupled recording freezes its integration identity
+ok trace refuses a false initial continuous RPM mirror
+ok P-51 test-only transported wash fixture validates — []
+ok P-51 transported-wash fixture retains the applied wheel profile
+ok coupled trace accepts finite negative wash increments with positive RPM
+ok pending shaft-layout draft rejects an incompatible checkpoint atomically
+ok legacy static-fuel split-to-coupled reset accepts an exact checkpoint
+ok restored coupled checkpoint advances without a fault
+G2 coupled shaft: 99 checks, 0 failed

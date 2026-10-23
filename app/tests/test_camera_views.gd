@@ -100,7 +100,7 @@ func _pilot_singularities() -> void:
 	var eye := Vector3(0, 1.7, 0)
 	cam.position = eye
 	cam.look_at(eye + Vector3(20, 10, 0), Vector3.UP)
-	for offset: Vector3 in [Vector3(0, 30, 0), Vector3(0, -30, 0), Vector3(0.000001, 30, 0)]:
+	for offset: Vector3 in [Vector3(0, 30, 0), Vector3(0, -30, 0), Vector3(0.000001, 30, 0), Vector3(0.00024, 30, 0.00024)]:
 		var previous_right := cam.basis.x
 		var target := eye + offset
 		var pose := Transform3D(Basis.IDENTITY, target)
@@ -109,11 +109,12 @@ func _pilot_singularities() -> void:
 		_check("pilot vertical basis stays orthonormal", cam.basis.is_finite() and cam.basis.is_equal_approx(cam.basis.orthonormalized()) and absf(cam.basis.determinant() - 1.0) < 0.00001)
 		_check("pilot pole keeps the preceding screen-right direction", cam.basis.x.dot(previous_right) > 0.99999)
 	# A preceding rolled view can put its right axis on the new viewing direction.
-	cam.basis = Basis(Vector3(0, 1, 0), Vector3(-1, 0, 0), Vector3(0, 0, 1))
 	var pole := eye + Vector3(0, 30, 0)
-	rig.update(pole, Transform3D(Basis.IDENTITY, pole), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
-	_check("parallel preceding right axis falls back to finite aimed basis", cam.basis.is_finite() and (-cam.basis.z).dot(Vector3.UP) > 0.99999)
-	_check("parallel preceding right axis falls back to north-up", cam.basis.y.dot(Vector3.FORWARD) > 0.99999)
+	for preceding: Basis in [Basis(Vector3(0, 1, 0), Vector3(-1, 0, 0), Vector3(0, 0, 1)), Basis(Vector3.FORWARD, -PI / 2.0 + 1e-7)]:
+		cam.basis = preceding
+		rig.update(pole, Transform3D(Basis.IDENTITY, pole), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+		_check("parallel or nearly parallel preceding right axis falls back to finite aimed basis", cam.basis.is_finite() and (-cam.basis.z).dot(Vector3.UP) > 0.99999)
+		_check("parallel or nearly parallel preceding right axis falls back to north-up", cam.basis.y.dot(Vector3.FORWARD) > 0.99999)
 	var previous := cam.basis
 	rig.update(eye, Transform3D(Basis.IDENTITY, eye), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
 	_check("coincident pilot target preserves last orientation", cam.basis == previous)

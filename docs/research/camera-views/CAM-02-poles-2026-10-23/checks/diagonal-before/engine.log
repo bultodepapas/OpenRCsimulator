@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.
+   at: looking_at (core/math/basis.cpp:1045)
+   GDScript backtrace (most recent call first):
+       [0] aim (res://render/pilot_camera.gd:79)
+       [1] run (C:/DEVELOPMENT/OpenRCsimulator/tmp/pilot_pole_diagonal.gd:7)
+diagonal checked
