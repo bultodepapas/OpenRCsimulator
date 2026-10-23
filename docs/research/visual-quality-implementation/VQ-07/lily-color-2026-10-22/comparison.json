@@ -1,0 +1,82 @@
+[
+  {
+    "profile": "standard",
+    "view": "bank_detail",
+    "changed_pixels": 642,
+    "max_channel_delta": 1,
+    "before_sha256": "be96c31998156479c0e9f2107c345608eb809b35e5192dc27b2fd43c80e8d59b",
+    "after_sha256": "6ae22d98e2df035ce1f5f934881056c742911fab7c7f46496da3953af34013bd"
+  },
+  {
+    "profile": "standard",
+    "view": "lake_overview",
+    "changed_pixels": 88,
+    "max_channel_delta": 1,
+    "before_sha256": "786e4a319d093ae346f936963f51b920c5e1c04754e4882f689181d868dab7e3",
+    "after_sha256": "a9858de664abea52dc8a1b2c3a72e20a1103b7b394fb74352e471974204468dd"
+  },
+  {
+    "profile": "standard",
+    "view": "lake_shore",
+    "changed_pixels": 524,
+    "max_channel_delta": 1,
+    "before_sha256": "4c4024230def20de400cd1c183845c1f1c7f36390404983c7f075935eb55370e",
+    "after_sha256": "9d40887b785d2a5dac0a69ca05c047519440779989ba9eb2e9696d9c8e5deb02"
+  },
+  {
+    "profile": "standard",
+    "view": "lily_detail",
+    "changed_pixels": 391,
+    "max_channel_delta": 1,
+    "before_sha256": "333e9f7ac1e81be1f39671436333c65e63f22e01a3fffdf35cd464f710ede02e",
+    "after_sha256": "099d7e48c3e1e6d122fd88e8b4b89f2fd37087c29627ae3ab8b0daaa145fd546"
+  },
+  {
+    "profile": "standard",
+    "view": "lily_wave_3s",
+    "changed_pixels": 637,
+    "max_channel_delta": 1,
+    "before_sha256": "31b113d0608c60dfc534e85a7fe08898bda1b6a698d1ad92212be0c5904bcb1f",
+    "after_sha256": "8099b3fbbaea771c76c3c97686fb4d256f9f155dedd64f5db8c3d9d90c5c51e9"
+  },
+  {
+    "profile": "high",
+    "view": "bank_detail",
+    "changed_pixels": 9471,
+    "max_channel_delta": 107,
+    "before_sha256": "4849b28428ce3dba0e49f3e4d04e1cff869c2092c85eaedb4d030e83ffaf0fb2",
+    "after_sha256": "79f77b4e141c9d65f2dac895a71d4de8edf3af929266b0cd41258f3275d6589b"
+  },
+  {
+    "profile": "high",
+    "view": "lake_overview",
+    "changed_pixels": 3714,
+    "max_channel_delta": 100,
+    "before_sha256": "9419b63580927aa3e0b1f19fa4989f739a5d8f69ed0a6b31463d56e050fe5e20",
+    "after_sha256": "bbd628b23c1ffc840d6b9b163921066b74eceb5df2451cb7bf2a0e2f622200ab"
+  },
+  {
+    "profile": "high",
+    "view": "lake_shore",
+    "changed_pixels": 12581,
+    "max_channel_delta": 106,
+    "before_sha256": "54cc27f65dae319b61a04a7f44253a4c126a9379be370f6eecfca749dd5d5d37",
+    "after_sha256": "0afb405e06795796fac774c6ab54d00020828f56553a5c38bafa9c6e37f9bd4b"
+  },
+  {
+    "profile": "high",
+    "view": "lily_detail",
+    "changed_pixels": 28890,
+    "max_channel_delta": 108,
+    "before_sha256": "b1c83f3786fcd32e8a07965059fe7991b30e7d832ba99c6b71c35c3f196e9ca3",
+    "after_sha256": "191352b3bfee65dffdd9af59a0126d0476d3cb72e2ead05faa36ee4e6a62e877"
+  },
+  {
+    "profile": "high",
+    "view": "lily_wave_3s",
+    "changed_pixels": 29382,
+    "max_channel_delta": 108,
+    "before_sha256": "5621dc29d49566cb865d2032eaa533f42f5738a80997bb6fbe6acc6b5b7b83b2",
+    "after_sha256": "61cef14febeca8236aa631b9aaf457355e49fc059054c55a28ca0913d726c69d"
+  }
+]

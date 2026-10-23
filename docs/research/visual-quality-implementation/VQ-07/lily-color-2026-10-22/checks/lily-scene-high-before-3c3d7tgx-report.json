@@ -1,0 +1,54 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "089282e4-dd92-44d0-ae14-15567aeb39e4",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--resolution",
+    "1920x1080",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../docs/research/visual-quality-implementation/VQ-07/lily-color-2026-10-22/capture.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/lily-color/scene-high-before"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T02:44:04.650442+00:00",
+  "label": "lily-scene-high-before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\lily-scene-high-before-3c3d7tgx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\lily-scene-high-before-3c3d7tgx\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "lily capture complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 10.234,
+  "log_bytes": 783,
+  "log_sha256": "33310896aa34a9b5e41a199197b5c87513e3be435841992c68ed9823d0c94c8a"
+}

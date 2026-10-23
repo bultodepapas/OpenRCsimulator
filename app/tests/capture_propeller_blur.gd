@@ -1,6 +1,6 @@
 # VQ-05 evidence: studio renders of one catalog propeller aircraft across rotor speeds, with self-checks.
 # Needs a renderer (run under Xvfb, see docs/TOOLS.md):
-#   xvfb-run -a -s "-screen 0 1280x720x24" godot --path app --rendering-driver opengl3 --audio-driver Dummy \
+#   xvfb-run -a -s "-screen 0 1920x1080x24" godot --path app --resolution 1920x1080 --rendering-driver opengl3 --audio-driver Dummy \
 #     --script res://tests/capture_propeller_blur.gd -- --out=/abs/dir [--aircraft=<catalog id>] \
 #     [--rpm=0,300,600,1200,2400,6000] [--view=quarter|front|side|rear] [--angle=<blade angle, deg>]
 # Writes <out>/<aircraft>-<view>-rpm<n>.png, pristine and no-propeller references, and <out>/<aircraft>-<view>.json
@@ -8,6 +8,7 @@
 # updating it at 0 rpm leaves the picture byte-identical; the blade change against the no-propeller reference falls
 # as the speed rises while the disc changes pixels outside the blade silhouette; a repeated frame is byte-identical.
 # Software rendering proves pixels and repeatability, not GPU cost or how the disc reads on the pilot's monitor.
+# Use a new absolute output directory. Repeat-a/b images retain strict-equality failures for diagnosis.
 extends SceneTree
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
@@ -41,6 +42,10 @@ func _check(label: String, ok: bool, detail: String) -> void:
 
 
 func _run() -> void:
+	if DisplayServer.get_name() == "headless":
+		printerr("propeller capture requires a native renderer")
+		quit(2)
+		return
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			_out = arg.trim_prefix("--out=")
@@ -54,11 +59,14 @@ func _run() -> void:
 			_view = arg.trim_prefix("--view=")
 		elif arg.begins_with("--angle="):
 			_angle_deg = float(arg.trim_prefix("--angle="))
-	if _out.is_empty() or not _out.is_absolute_path() or not VIEWS.has(_view) or _rpms.is_empty():
-		printerr("usage: --out=/abs/dir [--aircraft=<id>] [--rpm=a,b,c] [--view=%s] [--angle=deg]" % ",".join(VIEWS.keys()))
+	if _out.is_empty() or not _out.is_absolute_path() or DirAccess.dir_exists_absolute(_out) or FileAccess.file_exists(_out) or not VIEWS.has(_view) or _rpms.is_empty():
+		printerr("usage: --out=<new absolute directory> [--aircraft=<id>] [--rpm=a,b,c] [--view=%s] [--angle=deg]" % ",".join(VIEWS.keys()))
 		quit(2)
 		return
-	DirAccess.make_dir_recursive_absolute(_out)
+	if DirAccess.make_dir_recursive_absolute(_out) != OK:
+		printerr("could not create capture directory: " + _out)
+		quit(2)
+		return
 	await process_frame
 	var environment := WorldEnvironment.new()
 	environment.environment = Environment.new()
@@ -142,8 +150,24 @@ func _run() -> void:
 	_check("blade change falls with speed", monotone and last_mad < first_mad, "%.4f at %d rpm -> %.4f at %d rpm" % [first_mad, int(_rpms[0]), last_mad, int(_rpms[-1])])
 	_check("disc changes pixels outside the blade silhouette", last_outside > 0, "%d pixels at %d rpm" % [last_outside, int(_rpms[-1])])
 	var repeat := await _grab()
-	_check("repeated frame is byte-identical", repeat.get_data() == (await _grab()).get_data(), "two frames at %d rpm" % int(_rpms[-1]))
+	var repeated := await _grab()
+	var repeat_a := prefix + "-repeat-a.png"
+	var repeat_b := prefix + "-repeat-b.png"
+	var saved_a := repeat.save_png(repeat_a)
+	var saved_b := repeated.save_png(repeat_b)
+	if saved_a != OK or saved_b != OK:
+		printerr("could not retain repeated-frame evidence")
+		quit(2)
+		return
+	_check("repeated frame is byte-identical", repeat.get_data() == repeated.get_data(), "two frames at %d rpm; retained repeat-a/b PNGs" % int(_rpms[-1]))
 	var summary := {format = "openrc-propeller-blur-capture v1", aircraft = _aircraft, view = _view, blade_angle_deg = _angle_deg,
+		viewport = [repeat.get_width(), repeat.get_height()],
+		msaa_3d = root.msaa_3d,
+		process_id = OS.get_process_id(), captured_utc = Time.get_datetime_string_from_system(true),
+		source_sha256 = {capture = FileAccess.get_sha256(get_script().resource_path),
+			blur = FileAccess.get_sha256("res://render/propeller_blur.gd")},
+		repeat_images = [{image = repeat_a.get_file(), sha256 = FileAccess.get_sha256(repeat_a)},
+			{image = repeat_b.get_file(), sha256 = FileAccess.get_sha256(repeat_b)}],
 		renderer = {driver = RenderingServer.get_current_rendering_driver_name(), method = RenderingServer.get_current_rendering_method(),
 			adapter = RenderingServer.get_video_adapter_name(), api = RenderingServer.get_video_adapter_api_version(), godot = Engine.get_version_info().string},
 		profile = {radius_m = measured.radius, hub_radius_m = measured.hub_radius, inner_radius_m = measured.inner_radius, blades = measured.blades,

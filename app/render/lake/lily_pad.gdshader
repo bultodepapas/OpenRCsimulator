@@ -3,6 +3,8 @@
 shader_type spatial;
 render_mode cull_disabled, diffuse_burley, specular_schlick_ggx;
 
+#include "res://scenery/vertex_color_linear.gdshaderinc"
+
 global uniform float sim_clock;
 uniform int wave_count = 0;
 uniform vec4 wave_params[2];
@@ -51,7 +53,9 @@ void fragment() {
 	vec3 green = mix(vec3(0.21, 0.31, 0.10), vec3(0.37, 0.48, 0.16),
 		clamp(0.38 + 0.13 * marbling + 0.24 * midrib + 0.08 * small_veins, 0.0, 1.0));
 	green = mix(green, vec3(0.24, 0.30, 0.10), olive_edge * 0.32);
-	ALBEDO = green * leaf_color;
+	// The palette and per-pad tint form one authored sRGB leaf color.
+	// Decode after combining them; flower_color already has source_color.
+	ALBEDO = vertex_color_to_linear(green * leaf_color);
 	METALLIC = 0.0;
 	ROUGHNESS = 0.72;
 	SPECULAR = 0.28;

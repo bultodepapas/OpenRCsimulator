@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   attached at 0 rpm is byte-identical: pristine vs attached+update(0)
+ok   hidden propeller hides the disc: disc visible=false blur=0.00
+rpm      0 blur 0.000  mean change on blade pixels 0.3950  changed pixels outside blades 0
+rpm    600 blur 0.126  mean change on blade pixels 0.3469  changed pixels outside blades 0
+rpm   1200 blur 0.874  mean change on blade pixels 0.0913  changed pixels outside blades 191653
+rpm   6000 blur 1.000  mean change on blade pixels 0.0535  changed pixels outside blades 210582
+ok   blade change falls with speed: 0.3950 at 0 rpm -> 0.0535 at 6000 rpm
+ok   disc changes pixels outside the blade silhouette: 210582 pixels at 6000 rpm
+ok   repeated frame is byte-identical: two frames at 6000 rpm; retained repeat-a/b PNGs
+C:/DEVELOPMENT/OpenRCsimulator/tmp/prop-repeat/no-msaa/jensen-das-ugly-stik-60-front.json: all checks passed

@@ -137,3 +137,8 @@ profile with `--script ../tools/graphics/test_material_tags.gd -- --out=<new abs
 It checks variation, fitting tone, grain axes/seeds and roof/slab flags, with
 reference anchors and a 2/255 per-channel tolerance.
 [Metadata correction and evidence](../../docs/research/visual-quality-implementation/VQ-07/material-tags-2026-10-22/README.md).
+
+`test_lily_color.gd` checks six leaf UV/tint combinations and two flower colors
+against native StandardMaterial references. Run both profiles with
+`--script ../tools/graphics/test_lily_color.gd -- --out=<new absolute directory>`.
+[1080p evidence and integration captures](../../docs/research/visual-quality-implementation/VQ-07/lily-color-2026-10-22/README.md).

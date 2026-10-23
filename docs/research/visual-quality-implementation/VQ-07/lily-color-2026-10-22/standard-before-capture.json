@@ -1,0 +1,99 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "bank_builder_sha256": "b7467250cf9ba32bc59456aa851351b2c6930e18da5f1472ef89652e4cb996a8",
+  "bank_shader_sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+  "complete": true,
+  "lily_shader_sha256": "a9c5ea82b3db6820e1af931e9f34d680623c8c33054bd5865c8d1b1aecc148ea",
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "at_ned": [
+        112.0,
+        130.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 109,
+      "eye_ned": [
+        78.0,
+        113.0,
+        -1.5
+      ],
+      "fov": 58.0,
+      "sha256": "4c4024230def20de400cd1c183845c1f1c7f36390404983c7f075935eb55370e",
+      "view": "lake_shore"
+    },
+    {
+      "at_ned": [
+        79.0,
+        112.0,
+        0.2
+      ],
+      "clock_s": 0.0,
+      "draws": 45,
+      "eye_ned": [
+        76.0,
+        110.0,
+        -1.6
+      ],
+      "fov": 48.0,
+      "sha256": "be96c31998156479c0e9f2107c345608eb809b35e5192dc27b2fd43c80e8d59b",
+      "view": "bank_detail"
+    },
+    {
+      "at_ned": [
+        110.0,
+        125.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 128,
+      "eye_ned": [
+        45.0,
+        50.0,
+        -45.0
+      ],
+      "fov": 55.0,
+      "sha256": "786e4a319d093ae346f936963f51b920c5e1c04754e4882f689181d868dab7e3",
+      "view": "lake_overview"
+    },
+    {
+      "at_ned": [
+        87.0,
+        129.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 107,
+      "eye_ned": [
+        77.0,
+        121.0,
+        -3.5
+      ],
+      "fov": 55.0,
+      "sha256": "333e9f7ac1e81be1f39671436333c65e63f22e01a3fffdf35cd464f710ede02e",
+      "view": "lily_detail"
+    },
+    {
+      "at_ned": [
+        87.0,
+        129.0,
+        0.45
+      ],
+      "clock_s": 3.0,
+      "draws": 107,
+      "eye_ned": [
+        77.0,
+        121.0,
+        -3.5
+      ],
+      "fov": 55.0,
+      "sha256": "31b113d0608c60dfc534e85a7fe08898bda1b6a698d1ad92212be0c5904bcb1f",
+      "view": "lily_wave_3s"
+    }
+  ],
+  "viewport": [
+    1920,
+    1080
+  ]
+}

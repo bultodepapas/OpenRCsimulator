@@ -104,3 +104,7 @@ Full frames after: [P-51 close-up](images/field-p51-inspect-after.png), [Stik pi
 - FlightGear/JSBSim aircraft model XML: a `select` animation hides the solid propeller above 350–400 rpm and a material animation scales a disc's transparency by `rpm-norm-inv` — <https://gitlab.nps.edu/sasc/jsbsim/-/commit/a4adf05f4f88749ed648e99540c1c8996379fdee>
 - Flicker fusion threshold (rods ≈ 15 Hz, cones ≈ 60 Hz at high illumination) — <https://en.wikipedia.org/wiki/Flicker_fusion_threshold>
 - Rotor solidity (blade area over swept disc area; the local form cZ/2πr) — <https://en.wikipedia.org/wiki/Rotor_solidity>
+
+## Native High follow-up
+
+The [2026-10-22 VQ-07b diagnostic](../VQ-07/propeller-repeat-2026-10-22/README.md) adds retained repeat pairs and capture identities. High Stik/P-51/Timber studio checks pass at 1080p. Standard 4× MSAA retains a strict repeat failure (208 pixels, maximum 1/255); no runtime change or tolerance relaxation is adopted.

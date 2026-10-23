@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "493b964b-90af-42a2-b6d1-18081e0eb217",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--resolution",
+    "1920x1080",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/capture_propeller_blur.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/prop-repeat/p51-high",
+    "--aircraft=p51d-mustang-120",
+    "--view=front",
+    "--rpm=0,300,600,6000"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T02:38:46.995104+00:00",
+  "label": "prop-repeat-p51-high",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-repeat-p51-high-4coygi5r\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-repeat-p51-high-4coygi5r\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "all checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.703,
+  "log_bytes": 1025,
+  "log_sha256": "295723feb9d9a08e303ff9cc5e32b360868678652555ab1e9cf35c27f9f0fbac"
+}

@@ -1,0 +1,148 @@
+{
+  "aircraft": "jensen-das-ugly-stik-60",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.3894 at 0 rpm -> 0.0530 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "210146 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+      "ok": false
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm0.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.389439777930507,
+      "rpm": 0.0,
+      "sha256": "a5630996d763502d8ef5642050334faea439b0a4d9990d1db7ee410d66281563"
+    },
+    {
+      "blur": 0.126200274348422,
+      "changed_outside_blades": 0,
+      "image": "jensen-das-ugly-stik-60-front-rpm600.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.342026381029051,
+      "rpm": 600.0,
+      "sha256": "d66a07f0749b6d1a49c33e8d720cbf903164a9a5546c34f6470be23ed6c32368"
+    },
+    {
+      "blur": 0.873799725651577,
+      "changed_outside_blades": 191211,
+      "image": "jensen-das-ugly-stik-60-front-rpm1200.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.0903166509590248,
+      "rpm": 1200.0,
+      "sha256": "dfbbac2e8e9b1737906fda7c39768f8fec7ab23223061f1812c504d41abd8c2c"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 210146,
+      "image": "jensen-das-ugly-stik-60-front-rpm6000.png",
+      "mask_pixels": 52970,
+      "mean_change_on_blades": 0.0530142705300004,
+      "rpm": 6000.0,
+      "sha256": "5f33c0110923b16ad539e7f5bfaae669458518d306c4d4081b6d79638c93c7b2"
+    }
+  ],
+  "ok": false,
+  "profile": {
+    "blades": 2,
+    "coverage": [
+      0.0,
+      0.0,
+      0.0,
+      0.283333333333333,
+      0.433333333333333,
+      0.416666666666667,
+      0.383333333333333,
+      0.358333333333333,
+      0.325,
+      0.308333333333333,
+      0.291666666666667,
+      0.266666666666667,
+      0.25,
+      0.233333333333333,
+      0.216666666666667,
+      0.2,
+      0.183333333333333,
+      0.183333333333333,
+      0.166666666666667,
+      0.15,
+      0.15,
+      0.133333333333333,
+      0.133333333333333,
+      0.116666666666667,
+      0.108333333333333,
+      0.1,
+      0.0916666666666667,
+      0.0916666666666667,
+      0.0833333333333333,
+      0.075,
+      0.0666666666666667,
+      0.0583333333333333,
+      0.0583333333333333,
+      0.0416666666666667,
+      0.0416666666666667,
+      0.025
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0455856025218964,
+    "plane_z_m": 0.0,
+    "radius_m": 0.152452737092972
+  },
+  "region_px": [
+    565.485900878906,
+    145.434951782227,
+    767.522033691406,
+    769.842468261719
+  ],
+  "renderer": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "driver": "opengl3",
+    "godot": "4.7.2-stable (official)",
+    "method": "gl_compatibility"
+  },
+  "repeat_images": [
+    {
+      "image": "jensen-das-ugly-stik-60-front-repeat-a.png",
+      "sha256": "76460371a3ddcc4068ab3bd19022986f493cabe0f6cde57f10645d20633be7c7"
+    },
+    {
+      "image": "jensen-das-ugly-stik-60-front-repeat-b.png",
+      "sha256": "9f7d47b827e234d2d2de0b408289f6a0791eb1bf4700272f088ab4160d2de803"
+    }
+  ],
+  "source_sha256": {
+    "blur": "0ee92d336c9c2ae8ad1c6eda4dbc57db6bb7906098cce400a3a3ce1f5a4c32f7",
+    "capture": "e549adbbeba7f26ca99b569013eb92c0076b7a8f0365acf91fc18109f729ba99"
+  },
+  "view": "front",
+  "viewport": [
+    1920,
+    1080
+  ]
+}

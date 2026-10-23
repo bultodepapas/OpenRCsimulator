@@ -1,0 +1,149 @@
+{
+  "aircraft": "turbo-lumber-evolution",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.5714 at 0 rpm -> 0.1332 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "172775 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "turbo-lumber-evolution-quarter-rpm0.png",
+      "mask_pixels": 50017,
+      "mean_change_on_blades": 0.57140790206855,
+      "rpm": 0.0,
+      "sha256": "0a4fc4fa68828612dec87901c1f32b7334fcf31ffc176d5492676e9234407852"
+    },
+    {
+      "blur": 0.0196759259259259,
+      "changed_outside_blades": 0,
+      "image": "turbo-lumber-evolution-quarter-rpm300.png",
+      "mask_pixels": 50017,
+      "mean_change_on_blades": 0.522456674618636,
+      "rpm": 300.0,
+      "sha256": "437de7b443f9ecab307a7fea3e13607c9fc6e05756a045f8c56f55a5039f03d4"
+    },
+    {
+      "blur": 0.5,
+      "changed_outside_blades": 34113,
+      "image": "turbo-lumber-evolution-quarter-rpm600.png",
+      "mask_pixels": 50017,
+      "mean_change_on_blades": 0.25594403967217,
+      "rpm": 600.0,
+      "sha256": "ea0cc0705f82abd07789538425eb406ea7073fe856f1b72014c740df56044f3e"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 172775,
+      "image": "turbo-lumber-evolution-quarter-rpm6000.png",
+      "mask_pixels": 50017,
+      "mean_change_on_blades": 0.133249701680812,
+      "rpm": 6000.0,
+      "sha256": "b76aa8247d3b2c90f744a8ec4f29fb5b52de9cdd85594d560c8d3b7d4826244a"
+    }
+  ],
+  "msaa_3d": 2,
+  "ok": true,
+  "profile": {
+    "blades": 3,
+    "coverage": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      0.2375,
+      0.2375,
+      0.2375,
+      0.225,
+      0.225,
+      0.225,
+      0.225,
+      0.2,
+      0.2,
+      0.2,
+      0.2,
+      0.1875,
+      0.175,
+      0.175,
+      0.175,
+      0.1625,
+      0.15,
+      0.15,
+      0.15,
+      0.1375,
+      0.125,
+      0.125,
+      0.125,
+      0.1125,
+      0.1,
+      0.1,
+      0.1,
+      0.0875,
+      0.075,
+      0.0625
+    ],
+    "hub_radius_m": 0.0233865876992544,
+    "inner_radius_m": 0.0233865876992544,
+    "plane_z_m": 0.00787803385953491,
+    "radius_m": 0.140319526195526
+  },
+  "region_px": [
+    606.558471679688,
+    143.348114013672,
+    626.6220703125,
+    762.944458007813
+  ],
+  "renderer": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "1.4.351",
+    "driver": "vulkan",
+    "godot": "4.7.2-stable (official)",
+    "method": "forward_plus"
+  },
+  "repeat_images": [
+    {
+      "image": "turbo-lumber-evolution-quarter-repeat-a.png",
+      "sha256": "b76aa8247d3b2c90f744a8ec4f29fb5b52de9cdd85594d560c8d3b7d4826244a"
+    },
+    {
+      "image": "turbo-lumber-evolution-quarter-repeat-b.png",
+      "sha256": "b76aa8247d3b2c90f744a8ec4f29fb5b52de9cdd85594d560c8d3b7d4826244a"
+    }
+  ],
+  "source_sha256": {
+    "blur": "0ee92d336c9c2ae8ad1c6eda4dbc57db6bb7906098cce400a3a3ce1f5a4c32f7",
+    "capture": "0d31ab9ce479be0f38a8eb4d2b357b7af714de4ff51deee8f60f31f3abf49c59"
+  },
+  "view": "quarter",
+  "viewport": [
+    1920,
+    1080
+  ]
+}

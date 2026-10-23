@@ -1,0 +1,149 @@
+{
+  "aircraft": "p51d-mustang-120",
+  "blade_angle_deg": 25.0,
+  "checks": [
+    {
+      "check": "attached at 0 rpm is byte-identical",
+      "detail": "pristine vs attached+update(0)",
+      "ok": true
+    },
+    {
+      "check": "hidden propeller hides the disc",
+      "detail": "disc visible=false blur=0.00",
+      "ok": true
+    },
+    {
+      "check": "blade change falls with speed",
+      "detail": "0.4834 at 0 rpm -> 0.0635 at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "disc changes pixels outside the blade silhouette",
+      "detail": "247794 pixels at 6000 rpm",
+      "ok": true
+    },
+    {
+      "check": "repeated frame is byte-identical",
+      "detail": "two frames at 6000 rpm; retained repeat-a/b PNGs",
+      "ok": true
+    }
+  ],
+  "format": "openrc-propeller-blur-capture v1",
+  "images": [
+    {
+      "blur": 0.0,
+      "changed_outside_blades": 0,
+      "image": "p51d-mustang-120-front-rpm0.png",
+      "mask_pixels": 75217,
+      "mean_change_on_blades": 0.483382042361357,
+      "rpm": 0.0,
+      "sha256": "caf962bebdbf7d32f01502c1882384cc2f282215b719461af0a7a704a1ee09fb"
+    },
+    {
+      "blur": 0.126200274348422,
+      "changed_outside_blades": 14,
+      "image": "p51d-mustang-120-front-rpm300.png",
+      "mask_pixels": 75217,
+      "mean_change_on_blades": 0.335118065660127,
+      "rpm": 300.0,
+      "sha256": "9c241da58fe6f40b79f8f28d5cc2e22d5d3c8e54bc1420e10067650d3dc6f25a"
+    },
+    {
+      "blur": 0.873799725651577,
+      "changed_outside_blades": 225881,
+      "image": "p51d-mustang-120-front-rpm600.png",
+      "mask_pixels": 75217,
+      "mean_change_on_blades": 0.0844168753692276,
+      "rpm": 600.0,
+      "sha256": "50ba403170735a18aeeb05baea4c72906eb29984722fdc45eea797c0549831e6"
+    },
+    {
+      "blur": 1.0,
+      "changed_outside_blades": 247794,
+      "image": "p51d-mustang-120-front-rpm6000.png",
+      "mask_pixels": 75217,
+      "mean_change_on_blades": 0.0635151207865271,
+      "rpm": 6000.0,
+      "sha256": "f2dddc81807ddec79e65370b997254337afeccdef0c5a378809a337a1f57b53d"
+    }
+  ],
+  "msaa_3d": 2,
+  "ok": true,
+  "profile": {
+    "blades": 4,
+    "coverage": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.55,
+      0.633333333333333,
+      0.6,
+      0.55,
+      0.516666666666667,
+      0.5,
+      0.466666666666667,
+      0.433333333333333,
+      0.416666666666667,
+      0.383333333333333,
+      0.35,
+      0.333333333333333,
+      0.3,
+      0.283333333333333,
+      0.266666666666667,
+      0.25,
+      0.233333333333333,
+      0.216666666666667,
+      0.2,
+      0.2,
+      0.183333333333333,
+      0.183333333333333,
+      0.166666666666667,
+      0.15,
+      0.15,
+      0.133333333333333,
+      0.133333333333333,
+      0.116666666666667,
+      0.1,
+      0.0833333333333333,
+      0.0666666666666667
+    ],
+    "hub_radius_m": 0.0,
+    "inner_radius_m": 0.0913045033812523,
+    "plane_z_m": 0.00020929142097278,
+    "radius_m": 0.330370664596558
+  },
+  "region_px": [
+    565.572082519531,
+    144.199630737305,
+    767.779479980469,
+    767.394409179688
+  ],
+  "renderer": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "1.4.351",
+    "driver": "vulkan",
+    "godot": "4.7.2-stable (official)",
+    "method": "forward_plus"
+  },
+  "repeat_images": [
+    {
+      "image": "p51d-mustang-120-front-repeat-a.png",
+      "sha256": "f2dddc81807ddec79e65370b997254337afeccdef0c5a378809a337a1f57b53d"
+    },
+    {
+      "image": "p51d-mustang-120-front-repeat-b.png",
+      "sha256": "f2dddc81807ddec79e65370b997254337afeccdef0c5a378809a337a1f57b53d"
+    }
+  ],
+  "source_sha256": {
+    "blur": "0ee92d336c9c2ae8ad1c6eda4dbc57db6bb7906098cce400a3a3ce1f5a4c32f7",
+    "capture": "0d31ab9ce479be0f38a8eb4d2b357b7af714de4ff51deee8f60f31f3abf49c59"
+  },
+  "view": "front",
+  "viewport": [
+    1920,
+    1080
+  ]
+}
