@@ -330,7 +330,30 @@ func _spinning_anchor_release() -> void:
 	_check("residual wheel spin cannot acquire a static anchor", Ground.anchor_step(state, gear, 0.0, PackedFloat64Array(), free, spin) == free)
 
 
+func _low_resistance_surface() -> void:
+	# A valid smooth pad has rolling factor 0.5. The size correction represents
+	# vegetation excess, not a discount that can make a small wheel propel itself.
+	var contact := _contact(0.01, 0.000001)
+	var gear := _gear([contact])
+	gear.rolling_reference_radius = 0.09
+	# Smooth-pad endpoints and unchanged rough-terrain controls (radius scale = 3).
+	for sample in [[0.5, 0.02], [0.75, 0.03], [1.0, 0.04], [2.5, 0.22], [7.5, 0.82]]:
+		var factor: float = sample[0]
+		var surface := PackedFloat64Array([-INF, INF, -INF, INF, 1.0, factor])
+		_check("rolling-factor fixture is admitted %.2f" % factor, Terrain.is_valid_surface_table(surface))
+		var coefficient := Ground.coefficients(gear, contact, surface, M.v3(0.0, 0.0, 0.0))
+		var expected: float = sample[1]
+		_check("only positive terrain excess receives wheel-size scaling %.2f" % factor,
+			absf(coefficient[1] - expected) < 1e-12, "got %.12f expected %.12f" % [coefficient[1], expected])
+		for speed in [-2.0, 2.0]:
+			var result := _evaluate(_state(0.1, speed), gear, PackedFloat64Array([speed]), 0.0, surface)
+			var power: float = result.wheels[0].rolling_force * speed
+			_check("rolling removes energy factor %.2f speed %.1f" % [factor, speed], power <= 0.0,
+				"rolling power %.12f W" % power)
+
+
 func _initialize() -> void:
+	_low_resistance_surface()
 	_normal_load_and_airborne()
 	_flat_slope_and_gradient()
 	_asymmetric_surface_pair()

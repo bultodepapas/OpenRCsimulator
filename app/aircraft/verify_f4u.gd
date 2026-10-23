@@ -123,6 +123,16 @@ func _built_model() -> void:
 	var at_80: float = angle.call()
 	Importer.set_flaps(model, 0.0)
 	_check("flap hinges turn 30.000 deg for 30 and clamp at the 50 deg envelope", absf(at_30 - 30.0) < 0.01 and absf(at_80 - 50.0) < 0.01, "%.3f, %.3f" % [at_30, at_80])
+	# The hinge ranges are the author's g1.3 clearance sweep (all clear); the flown throws must stay inside them.
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var throws: Dictionary = data.controls.max_throw
+	var outside := []
+	for role: String in ["aileron_left", "aileron_right", "elevator", "rudder", "flap_left_1"]:
+		var limit: float = float(data.flaps.max_angle_deg.value) if role.begins_with("flap") else float(throws[role.get_slice("_", 0)].value)
+		var low: float = 0.0 if role.begins_with("flap") else -limit
+		if low < float(model.hinges[role].range_deg[0]) or limit > float(model.hinges[role].range_deg[1]):
+			outside.append(role)
+	_check("full throws (13.5, 11.2, 25.9 deg) and 30 deg flaps lie inside the swept clearance envelopes", outside.is_empty(), str(outside))
 	var rig: Dictionary = model.gear_retraction
 	var worst := 0.0
 	for extension: float in [0.0, 0.5, 1.0]:

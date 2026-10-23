@@ -1,0 +1,71 @@
+{
+  "cases": [
+    {
+      "brake": 0.0,
+      "case": "50 % power, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 13.94,
+      "least_pitch_deg": 14.47,
+      "liftoff_speed_mps": 13.94,
+      "liftoff_t_s": 3.01,
+      "ok": true,
+      "tail_lift_speed_mps": 13.48,
+      "tail_lift_t_s": 2.94,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 0.5
+    },
+    {
+      "brake": 0.0,
+      "case": "full power, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 13.88,
+      "least_pitch_deg": 14.53,
+      "liftoff_speed_mps": 13.88,
+      "liftoff_t_s": 2.8,
+      "ok": true,
+      "tail_lift_speed_mps": 13.46,
+      "tail_lift_t_s": 2.75,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    },
+    {
+      "brake": 0.0,
+      "case": "full power, full elevator throw",
+      "crashed": "",
+      "elevator_stick": 1.0,
+      "end_speed_mps": 13.88,
+      "least_pitch_deg": 14.53,
+      "liftoff_speed_mps": 13.88,
+      "liftoff_t_s": 2.8,
+      "ok": true,
+      "tail_lift_speed_mps": 13.46,
+      "tail_lift_t_s": 2.75,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    },
+    {
+      "brake": 1.0,
+      "case": "full-power run-up on the brakes, normal-rate elevator",
+      "crashed": "",
+      "elevator_stick": 0.798,
+      "end_speed_mps": 13.88,
+      "least_pitch_deg": 14.27,
+      "liftoff_speed_mps": 13.88,
+      "liftoff_t_s": 2.93,
+      "ok": true,
+      "tail_lift_speed_mps": 12.09,
+      "tail_lift_t_s": 2.69,
+      "tail_lifted": true,
+      "three_point_pitch_deg": 15.25,
+      "throttle": 1.0
+    }
+  ],
+  "data": "res://data/aircraft/f4u_corsair_250.json",
+  "format": "F4U-12 ground handling v1",
+  "normal_rate_elevator": 0.79839
+}

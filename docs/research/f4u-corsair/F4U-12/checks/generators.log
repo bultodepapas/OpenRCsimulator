@@ -1,0 +1,18 @@
+== python3 research/f4u-corsair/F4U-03/manifest.py --check
+assets/aircraft/f4u-corsair-250/source-manifest.json matches the g1.3 delivery
+exit 0
+== python3 research/f4u-corsair/F4U-05/compile_model.py --check
+model-geometry.json and f4u_corsair_geometry.gd are up to date
+exit 0
+== python3 research/f4u-corsair/F4U-07/ground_effect_vlm.py --check
+current
+exit 0
+== python3 research/f4u-corsair/F4U-07/fit_propeller.py --check
+prop_calibration.json is up to date
+exit 0
+== python3 research/f4u-corsair/F4U-07/derive_physics.py --check
+f4u_corsair_250.json and derivation.md are up to date
+exit 0
+== python3 research/f4u-corsair/F4U-11/costing_entry.py --check
+Corsair costing entry current
+exit 0

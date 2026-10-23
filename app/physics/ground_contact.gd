@@ -22,6 +22,7 @@ const M := preload("res://physics/math3d.gd")
 
 const RB := preload("res://physics/rigid_body.gd")
 const Wheels := preload("res://physics/ground_wheels.gd")
+const ROLLING_LAW := Wheels.ROLLING_LAW
 const Terrain := preload("res://physics/ground_terrain.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 

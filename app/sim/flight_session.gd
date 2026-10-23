@@ -4030,6 +4030,7 @@ func trace_meta() -> Dictionary:
 		var profile: Dictionary = model.get("wheel_profile", {})
 		metadata.metadata_schema = "openrc-flight-meta v6"
 		metadata.wheel_state_model = "relative-wheel-rim-speed-rk4-v1"
+		metadata.wheel_rolling_law = Ground.ROLLING_LAW
 		metadata.wheel_state_layout = wheel_state_layout()
 		metadata.wheel_profile_status = str(profile.get("status", "unknown"))
 		metadata.wheel_profile_sha256 = str(profile.get("profile_sha256", "unavailable"))
@@ -4323,6 +4324,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(Flaps.LAW + "; appended normalized demand and sampled actuator; restart_up")
 	if wheel_count() > 0:
 		parts.append("wheel-state-layout:" + wheel_state_layout())
+		parts.append(Ground.ROLLING_LAW)
 	if not field.is_calm() or field.has_atmosphere():
 		parts.append(field.configuration())
 	if field.has_vertical_atmosphere():

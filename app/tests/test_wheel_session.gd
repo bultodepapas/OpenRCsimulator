@@ -3,6 +3,7 @@ extends SceneTree
 
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
+const Wheels := preload("res://physics/ground_wheels.gd")
 const Session := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
@@ -145,6 +146,16 @@ func _initialize() -> void:
 		and profiled.wheel_index() == 0 and profiled.sim.continuous.size() == 3)
 	_check("reset initializes wheel rim speeds to rest", _all_zero(profiled.sim.continuous))
 	var initial_meta: Dictionary = profiled.trace_meta()
+	_check("trace identifies the rolling-resistance law", initial_meta.get("wheel_rolling_law", "") == "wheel-positive-terrain-excess-v2")
+	var timber: Dictionary = AircraftData.load_file("res://data/aircraft/turbo_lumber_evolution.json")
+	_check("Timber loads for smooth-pad rolling regression", timber.ok)
+	if timber.ok:
+		var timber_gear: Dictionary = timber.model.landing_gear
+		var pad := PackedFloat64Array([-INF, INF, -INF, INF, 1.0, 0.5])
+		for contact: Dictionary in timber_gear.contacts:
+			var cf := Wheels.coefficients(timber_gear, contact, pad, PackedFloat64Array([0.0, 0.0, 0.0]))
+			_check("authored Timber %s keeps positive pad resistance" % contact.name,
+				absf(cf[1] - 0.5 * float(timber_gear.rolling_resistance)) < 1e-12)
 	var layout: Array = JSON.parse_string(initial_meta.wheel_state_layout)
 	_check("trace declares profiled wheel state and its indices", initial_meta.metadata_schema == "openrc-flight-meta v6" \
 		and initial_meta.wheel_state_model == "relative-wheel-rim-speed-rk4-v1" \
