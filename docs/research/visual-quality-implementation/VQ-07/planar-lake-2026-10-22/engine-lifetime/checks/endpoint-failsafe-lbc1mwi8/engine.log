@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high_experimental","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+failsafe: endpoint diagnostic failsafe
+endpoint diagnostic ready: failsafe
+frame times: p50 8.31 ms, p95 20.12 ms, p99 25.53 ms over 107 frames (complete=true) → C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-lake-lifetime-20261022/failsafe.json
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.

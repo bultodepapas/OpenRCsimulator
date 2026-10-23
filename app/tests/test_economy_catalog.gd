@@ -43,7 +43,7 @@ func _raw_catalog() -> Dictionary:
 
 func _test_all_routes_and_baseline() -> void:
 	var routes: PackedStringArray = AircraftCatalog.ids()
-	_check("all nine live aircraft routes represented", routes.size() == 9)
+	_check("all ten live aircraft routes represented", routes.size() == 10)
 	var loaded_by_id: Dictionary = {}
 	var offer_sources_by_id: Dictionary = {}
 	for aircraft_id: String in routes:
@@ -130,7 +130,7 @@ func _test_missing_prices_do_not_gate_routes() -> void:
 					if component.unit_minor == null:
 						null_count += 1
 				_check("partial fleet dossier preserves unknown prices " + aircraft_id, null_count > 0)
-	_check("other five fleet routes remain economically incomplete", incomplete_count == 5, str(incomplete_count))
+	_check("other six fleet routes remain economically incomplete", incomplete_count == 6, str(incomplete_count))
 
 
 func _test_rejects_unknown_or_stale_sources() -> void:

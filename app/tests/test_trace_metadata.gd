@@ -123,10 +123,11 @@ func _initialize() -> void:
 		_check("auxiliary layout", JSON.parse_string(meta.aux_layout) == Trace.COLUMNS.slice(30))
 		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
 		_check("powered start", meta.recording_start_engine_running == "true")
-		if entry.id == "p51d-mustang-120":
-			_check("P-51 records the configured coupled shaft law",
+		if entry.id in ["p51d-mustang-120", "f4u-corsair-250"]:
+			# The gasoline shaft warbirds (P-51, F4U-09 Corsair) share the coupled shaft law and the tail slipstream.
+			_check("%s records the configured coupled shaft law" % entry.id,
 				meta.propulsion_model == "propeller-shaft-coupled-rk4-v1" and meta.shaft_integrator == "coupled-rk4")
-			_check("P-51 slipstream", meta.propwash_model == "tail-slipstream-increment-v1")
+			_check("%s slipstream" % entry.id, meta.propwash_model == "tail-slipstream-increment-v1")
 		elif entry.id == "sebart-avanti-s-a200-p100rx":
 			_check("Avanti continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
 				and meta.turbine_integrator == "rk4")

@@ -3,7 +3,7 @@
  "catalog_id": "f4u-corsair-250",
  "revision": "g1.3-c69151b3c96c",
  "source_alias": "F4U Corsair g1.3 game model (author delivery derived from master R59)",
- "status": "Imported g1.3 presentation with sampled GearRetract; flaps follow the session; physics staged separately (F4U-07); not in the catalog.",
+ "status": "Imported g1.3 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
  "generator": "research/f4u-corsair/F4U-05/compile_model.py",
  "units": "m",
  "axes": {

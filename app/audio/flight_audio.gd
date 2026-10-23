@@ -172,7 +172,7 @@ static func _glow_family(propulsion: Dictionary) -> String:
 static func propeller_blade_count(aircraft_id: String) -> int:
 	if aircraft_id == "p51d-mustang-120":
 		return int(P51Geometry.DATA.propeller.blades)
-	if aircraft_id == TIMBER_ID:
+	if aircraft_id == TIMBER_ID or aircraft_id == "f4u-corsair-250":
 		return 3
 	return 2
 

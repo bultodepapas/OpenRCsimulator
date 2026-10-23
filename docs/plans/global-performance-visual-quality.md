@@ -31,7 +31,7 @@ Latest VQ-01d slice: [moving visibility references](../research/visual-quality-i
 | Topic | Decision for this delivery | Reason / reopening condition |
 | --- | --- | --- |
 | Engine and renderer | Keep 4.7.2 and Compatibility; no dependency upgrade | Preserve export, shader and numerical baselines. VQ-07 remains outside this delivery. |
-| Performance target | Qualify a 60 Hz profile at 1280×720; compare 1920×1080 separately | DT-01 names actual hardware before any support claim. RTX 3090 evidence is a reference, not a minimum-GPU claim. |
+| Performance target | Qualify the primary 60 Hz profile at 1920×1080 first; above-1080p resolutions (1440p, 4K and higher) are secondary desirable targets; 1280×720 is tertiary and last ([policy](../../AGENTS.md#display-resolution-priorities)) | DT-01 names actual hardware before any support claim. RTX 3090 evidence is a reference, not a minimum-GPU claim. |
 | Ground blending | Try **one Laplacian blend** against current dual-sample detiling, using retained turf | Smaller preprocessing scope than histogram/LUT authoring. If it fails, retain current blending; a second algorithm needs a new finding. |
 | Vegetation | Test the existing atlas and alpha-to-coverage first | No replacement library, octahedral addon or custom mip importer in the initial slice. |
 | Aircraft | Preserve current materials/livery; repair demonstrated readability or sparkle problems | Film gloss, filtered markings, propeller blur and hinge-glint repairs already exist. |
@@ -89,7 +89,7 @@ Record commit/dirty-file hashes, engine/package hashes, aircraft/field identity,
 | Complete fixed-wing flight | Stik circuit/takeoff/contact, P-51 high-load flight, electric Timber route; basic route for other enabled catalog aircraft. Keep aircraft distributions separate. |
 | Shared-family regressions | Helicopter/Bisonte initialization/reset/camera/world when shared files change; performance reported separately |
 | Collision attribution | Empty/near car/tree/fence, bin edge, grazing/tied hit, fast rotating hull, shoreline crossing and airborne over lake |
-| Rendering/readability | Pilot normal/zoom, trees/horizon/cloud crossings, close pass, supported chase/orbit; 720p/1080p |
+| Rendering/readability | Pilot normal/zoom, trees/horizon/cloud crossings, close pass, supported chase/orbit; 1080p first, above-1080p targets second, 720p fallback last |
 | Conditions | Day/dusk, moonlit/moonless night, strongest qualified sky/storm, smoke and shadows; transient peaks separate |
 | Startup/lifecycle | Process launch → Home usable → Fly request → first validated interactive frame; Workshop; pause/reset/failed setup/return Home |
 

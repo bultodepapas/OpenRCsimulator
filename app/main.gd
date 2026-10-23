@@ -2671,6 +2671,15 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		aircraft_id = aircraft_id,
 		input_enabled = session.input_enabled,
 		flight_companions = companion_evidence,
+		# Reasons and holds are independent: a menu/focus hold may leave the reason empty.
+		# Read once after sampling; this is context, not a history or a resume action.
+		session_at_report = {
+			scope = "end of collection only; not pause history",
+			pause_reason = session.pause_reason,
+			holds = session.holds.keys(),
+			crashed = not session.crash.is_empty(),
+			window_focused = get_window().has_focus(),
+		},
 		simulation = {
 			scope = "first _process clock prime through sample completion; includes warm-up",
 			start_time_s = _frametimes_sim_start_s,

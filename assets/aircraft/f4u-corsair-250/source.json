@@ -78,6 +78,13 @@
       "source": "Moki S250 manual three-blade (SEP 30x18 at 4,400 rpm); CARF sells a 32 in ground-adjustable three-blade scale propeller for this kit (carf-models.com/en/products/moki-s250) without published data. No table exists for either: the calibrated BEM of fit_propeller.py models the 30x18"
     },
     "fuel_tank_l": 1.0,
+    "gear_travel": {
+      "main_m": 0.100,
+      "tail_m": 0.110,
+      "method": "GP-06c rule (docs/research/ground-physics/GP-06/README.md): max_compression >= 1.05 x the peak compression in the 14 CFR 23.727 reserve drop (2.56 m/s sink, lift 2/3 W, mains-level and three-point attitudes), rounded up to 5 mm",
+      "reserve_drop_peak_mm": {"main": 92.5, "tail": 102.3},
+      "source": "app/tests/test_gear_reserve_energy.gd drop() on the g1.3 contacts, 2026-10-22 (F4U-08); a borrowed full-size convention, not RC data"
+    },
     "retracts": {
       "main": "Sierra Giant Scale rotating pneumatic main retracts (CARF kit equipment) with Robart gear-door cylinders",
       "tail": "retractable tail wheel with doors and pull-wire steering (CARF manual)",

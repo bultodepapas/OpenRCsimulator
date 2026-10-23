@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e85fb6d4-b45b-4f02-a146-864e0708d31c",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tmp/aaa-render-lifetime-20261022/no_ssao_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-render-lifetime-20261022/no-ssao-world"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T00:18:34.639123+00:00",
+  "label": "no-ssao-world",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-render-lifetime-20261022\\checks\\no-ssao-world-5bf0uunx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-render-lifetime-20261022\\checks\\no-ssao-world-5bf0uunx\\report.json",
+  "timeout_seconds": 100.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "lake camera edges complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 9.187,
+  "log_bytes": 788,
+  "log_sha256": "7f73b3e8645d4a0d8dd84b35e6cceab4e19c674fdada6e9f88dee4532278aae5"
+}

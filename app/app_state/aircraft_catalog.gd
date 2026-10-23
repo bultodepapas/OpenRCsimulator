@@ -84,6 +84,18 @@ const ENTRIES := [
 		data = "res://data/aircraft/p51d_mustang_120.json",
 	},
 	{
+		# F4U-09: the author's g1.3 model (1:4.5, CARF-Models class) with a Moki S250 radial; historical name as the P-51,
+		# pending the F4U-13 name-use assessment for any public release.
+		id = "f4u-corsair-250",
+		visual_family = "f4u-corsair-250",
+		name = "F4U-1D Corsair 1/4.5",
+		short_name = "F4U Corsair",
+		summary = "Giant-scale warbird · 2.78 m · Moki 250 radial",
+		status = EXPERIMENTAL,
+		status_note = "Experimental: estimated 1/4.5 physics (CARF-class kit, Moki S250 radial), not yet flight-tested. Runway or airborne start.",
+		data = "res://data/aircraft/f4u_corsair_250.json",
+	},
+	{
 		id = "sebart-avanti-s-a200-p100rx",
 		visual_family = "sebart-avanti-s-a200-p100rx",
 		name = "Ventage Jet",

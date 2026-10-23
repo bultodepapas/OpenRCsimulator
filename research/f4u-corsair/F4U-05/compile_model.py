@@ -156,7 +156,7 @@ def compile_model():
         "catalog_id": manifest["catalog_id"],
         "revision": manifest["visual_revision"],
         "source_alias": f"F4U Corsair {manifest['delivery_revision']} game model (author delivery derived from master {manifest['master']['revision']})",
-        "status": "Imported g1.3 presentation with sampled GearRetract; flaps follow the session; physics staged separately (F4U-07); not in the catalog.",
+        "status": "Imported g1.3 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
         "generator": SCRIPT,
         "units": "m",
         "axes": {"nose": "-Z", "right": "+X", "up": "+Y"},

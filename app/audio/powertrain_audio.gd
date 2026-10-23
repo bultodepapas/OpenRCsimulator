@@ -35,7 +35,8 @@ static func profile_for(aircraft_id: String, propulsion: Dictionary) -> Dictiona
 		family = "gasoline"
 	elif aircraft_id == "xcell-60-research":
 		family = "rotor"
-	var blades: int = 4 if aircraft_id == "p51d-mustang-120" else (3 if aircraft_id == "turbo-lumber-evolution" else 2)
+	# F4U-09: the Corsair's 30x18 is a three-blade; its Moki radial uses the gasoline bank (no radial recording yet).
+	var blades: int = 4 if aircraft_id == "p51d-mustang-120" else (3 if aircraft_id in ["turbo-lumber-evolution", "f4u-corsair-250"] else 2)
 	# A .55 installation is slightly lighter voiced than the .61; no fabricated recording identity.
 	var trim: float = float(FAMILY_TRIM_DB.get(family, 0.0))
 	trim += -1.0 if aircraft_id == "stik-glow-55ax-2t" else (0.7 if aircraft_id == "gp-extra-300s-60" else 0.0)

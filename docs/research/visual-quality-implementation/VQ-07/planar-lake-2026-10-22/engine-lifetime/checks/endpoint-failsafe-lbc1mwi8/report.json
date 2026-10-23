@@ -1,0 +1,49 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "650a56ed-9884-43ae-aec4-ba3e8a6f7d6d",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "../tmp/aaa-lake-lifetime-20261022/session_endpoint.gd",
+    "--",
+    "--endpoint-case=failsafe",
+    "--start=airborne_half_power",
+    "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-lake-lifetime-20261022/failsafe.json",
+    "--warmup=0",
+    "--t=1",
+    "--lake=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:12:11.823514+00:00",
+  "label": "endpoint-failsafe",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\endpoint-failsafe-lbc1mwi8\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\endpoint-failsafe-lbc1mwi8\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 20.234,
+  "log_bytes": 986,
+  "log_sha256": "3c2c55385c5717782290c03aaa1bd2588ee9dbc5103980a81768cfb2e379a9e9"
+}

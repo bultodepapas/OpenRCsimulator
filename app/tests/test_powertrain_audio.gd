@@ -22,7 +22,7 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 
 func _run() -> void:
 	var airplanes: Array = Catalog.airplane_flyable_entries()
-	_check("catalog has eight fixed-wing configurations", airplanes.size() == 8, str(airplanes.size()))
+	_check("catalog has nine fixed-wing configurations", airplanes.size() == 9, str(airplanes.size()))
 	for entry: Dictionary in airplanes:
 		var id := str(entry.id)
 		var profile: Dictionary = Powertrain.profile_for(id, {})

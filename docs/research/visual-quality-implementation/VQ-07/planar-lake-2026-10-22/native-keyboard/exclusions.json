@@ -1,0 +1,7 @@
+{
+  "planar-2": "Checked process overlaps probe-2 by4.820246s",
+  "probe-2": "Checked process overlaps planar-2 by4.820246s",
+  "probe-4": "Paused; simulation ends63.9041667s",
+  "planar-4": "Paused; simulation ends11.8833333s",
+  "note": "No cause attributed to pauses; existing safety retained. No minimum-run gate override."
+}

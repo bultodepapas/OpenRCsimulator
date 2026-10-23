@@ -1,0 +1,247 @@
+[
+  {
+    "name": "probe-2",
+    "reason": "Checked process overlaps planar-2 by4.820246s",
+    "reducer": {
+      "report": "probe-2.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "a3079a74a214c21b5f1026426c62ab87149ae3be4e9d488141bc474b48ead3fb",
+      "log": "probe-2.log",
+      "log_sha256": "92a3a92c739a0310d6ccb7f6b399805b357362895aa39301d4a20f1c3acfe02e",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.00206,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 8.331,
+          "p95": 9.115,
+          "p99": 9.915999999999999,
+          "max": 19.546
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.998722,
+        "sample_simulation_span_s": 60.01250000000003,
+        "sample_simulation_ticks": 14403,
+        "simulation_wall_ratio": 1.000229638224628,
+        "tick_wall_ratio": 1.0002296382246276,
+        "max_frame_interval_usec": 19546,
+        "max_nonadvancing_interval_usec": 0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": true,
+        "pass": true
+      },
+      "pacing_configuration": {
+        "max_fps": 0,
+        "vsync_mode": 1
+      },
+      "lake_reflection_configuration": {
+        "mode": "probe"
+      },
+      "performance_pass": true,
+      "hardware_acceptance": "not_claimed"
+    }
+  },
+  {
+    "name": "planar-2",
+    "reason": "Checked process overlaps probe-2 by4.820246s",
+    "reducer": {
+      "report": "planar-2.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "ce4cbd2c8d37aef9c95c965dbcec87ea74931bb0d05033a6a2ee69c7382947b4",
+      "log": "planar-2.log",
+      "log_sha256": "1323a668cd73ec15643be5946e7b9d95b61cb7700d7410764d9256ab8630e987",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.007809,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 8.258,
+          "p95": 11.322000000000001,
+          "p99": 11.870000000000001,
+          "max": 33.784
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.99638,
+        "sample_simulation_span_s": 56.78749999999998,
+        "sample_simulation_ticks": 13629,
+        "simulation_wall_ratio": 0.9465154397648654,
+        "tick_wall_ratio": 0.9465154397648659,
+        "max_frame_interval_usec": 33784,
+        "max_nonadvancing_interval_usec": 3221970
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": false,
+        "pass": false
+      },
+      "pacing_configuration": {
+        "max_fps": 0,
+        "vsync_mode": 1
+      },
+      "lake_reflection_configuration": {
+        "mode": "planar"
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed"
+    }
+  },
+  {
+    "name": "probe-4",
+    "reason": "Paused; simulation ends63.9041667s",
+    "reducer": {
+      "report": "probe-4.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "28c7c6359d5df1089dac1e24e6b6413b74c8b1c53dbef0057d331ed573c8831e",
+      "log": "probe-4.log",
+      "log_sha256": "1e7861e446144cac4f1517c84fbd169bd137d7b17928d1eec3331125afbad432",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.007448,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 8.331,
+          "p95": 9.031,
+          "p99": 9.684999999999999,
+          "max": 11.802
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.995387,
+        "sample_simulation_span_s": 53.9166666666667,
+        "sample_simulation_ticks": 12940,
+        "simulation_wall_ratio": 0.8986802046408451,
+        "tick_wall_ratio": 0.8986802046408445,
+        "max_frame_interval_usec": 11802,
+        "max_nonadvancing_interval_usec": 6078129
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": false,
+        "pass": false
+      },
+      "pacing_configuration": {
+        "max_fps": 0,
+        "vsync_mode": 1
+      },
+      "lake_reflection_configuration": {
+        "mode": "probe"
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed"
+    }
+  },
+  {
+    "name": "planar-4",
+    "reason": "Paused; simulation ends11.8833333s",
+    "reducer": {
+      "report": "planar-4.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "927394767556723fbd9a00d7060662079c1f6674d2086ae31d9c9ae7ff39640f",
+      "log": "planar-4.log",
+      "log_sha256": "18427b83efcca08110f307e1dee78bdd43b2ecf9d4250d96ad90408adb36bd10",
+      "engine_errors": [],
+      "collection_valid": true,
+      "collection_reasons": [],
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "duration_eligibility": {
+        "minimum_warmup_s": 10.0,
+        "minimum_sample_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "requested_sample_s": 60.0,
+        "actual_warmup_s": 10.007435,
+        "eligible": true,
+        "reasons": []
+      },
+      "metrics": {
+        "frame_ms": {
+          "p50": 8.333,
+          "p95": 11.665,
+          "p99": 12.674,
+          "max": 14.937000000000001
+        },
+        "sample_wall_span_excluding_first_interval_s": 59.995754,
+        "sample_simulation_span_s": 2.02499999999997,
+        "sample_simulation_ticks": 486,
+        "simulation_wall_ratio": 0.0337523885440288,
+        "tick_wall_ratio": 0.0337523885440293,
+        "max_frame_interval_usec": 14937,
+        "max_nonadvancing_interval_usec": 57969289
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_pass": false,
+        "pass": false
+      },
+      "pacing_configuration": {
+        "max_fps": 0,
+        "vsync_mode": 1
+      },
+      "lake_reflection_configuration": {
+        "mode": "planar"
+      },
+      "performance_pass": false,
+      "hardware_acceptance": "not_claimed"
+    }
+  }
+]

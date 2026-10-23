@@ -17,6 +17,7 @@ const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx" # catalog ID; the jet is an imported V2 scene, built through its visual family
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
+const CORSAIR_ID := "f4u-corsair-250" # F4U-09: imported V2 scene with a sampled retraction rig
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"
@@ -87,6 +88,10 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	airplane.model_manifest_sha256 = resolved.manifest_sha256
 	airplane._model_builder = builder
 	airplane._finite_glow_visual = not glow.is_empty()
+	# F4U-10: a gasoline shaft propeller is drawn at its physical diameter, as a finite glow propeller is, so the
+	# visual disc and the prop-strike geometry agree (the P-51's visual and physical propellers are both 26 in).
+	var shaft_diameter: float = float(model.get("propulsion", {}).get("diameter", NAN)) if model.get("propulsion", {}).has("shaft") else NAN
+	airplane._scaled_propeller_visual = not glow.is_empty() or is_finite(shaft_diameter)
 	var customization: Dictionary = AircraftCustomization.describe_for_model(id, str(resolved.manifest_sha256))
 	if not customization.get("ok", false):
 		airplane.root.free()
@@ -108,6 +113,10 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 			airplane.root.free()
 			push_error("Aircraft visual has no valid propeller diameter binding.")
 			return {}
+	elif is_finite(shaft_diameter) and not apply_propeller_diameter(airplane, shaft_diameter):
+		airplane.root.free()
+		push_error("Aircraft visual has no valid propeller diameter binding.")
+		return {}
 	airplane.root.set_meta("aircraft_id", id)
 	airplane.exhausts = airplane.root.get_meta("exhausts", [])
 	if family == TIMBER_ID:
@@ -119,7 +128,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 
 ## Always scale from the authored diameter, so repeated setup/reload calls never compound scale.
 static func apply_propeller_diameter(airplane: Dictionary, diameter_m: float) -> bool:
-	if not airplane.get("_finite_glow_visual", false) or not is_finite(diameter_m) or diameter_m <= 0.0:
+	if not airplane.get("_scaled_propeller_visual", false) or not is_finite(diameter_m) or diameter_m <= 0.0:
 		return false
 	var propeller: Node3D = airplane.get("propeller")
 	var manifest: Dictionary = airplane.get("model_manifest", {})

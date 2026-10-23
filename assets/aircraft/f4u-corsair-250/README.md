@@ -1,6 +1,6 @@
 # F4U Corsair 1/4.5: sources and pipeline
 
-Checked 2026-10-22. `f4u-corsair-250` is a proposed 2.778 m, 1/4.5-scale F4U-1D of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade. Nothing here is in the catalog yet. The author's accepted g1.3 visual model is frozen in `assets/source-deliveries/f4u-corsair-g1-3/` and identified by [source-manifest.json](source-manifest.json). The [F4U plan](../../../docs/F4U-PLAN.md) owns scope, steps and owner decisions.
+Checked 2026-10-22. `f4u-corsair-250` is an experimental catalog aircraft: a 2.778 m, 1/4.5-scale F4U-1D of the CARF-Models class, powered by a Moki S250 five-cylinder radial with a 30x18 three-blade. The author's accepted g1.3 visual model is frozen in `assets/source-deliveries/f4u-corsair-g1-3/` and identified by [source-manifest.json](source-manifest.json). The [F4U plan](../../../docs/F4U-PLAN.md) owns scope, steps and owner decisions.
 
 ## Sources
 
@@ -21,7 +21,8 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | R59 → 1/4.5 geometry | [extract_geometry_r59.py](../../../research/f4u-corsair/F4U-06/extract_geometry_r59.py) (Blender 5.2.2, headless, `-Y`) | `geometry-r59.json`; a research operation, R59 stays outside the repository |
 | Gull-wing ground effect | [ground_effect_vlm.py](../../../research/f4u-corsair/F4U-07/ground_effect_vlm.py) | `research/f4u-corsair/F4U-07/vlm_ground_effect.json` |
 | Propeller calibration | [fit_propeller.py](../../../research/f4u-corsair/F4U-07/fit_propeller.py) | `research/f4u-corsair/F4U-07/prop_calibration.json` |
-| Physics derivation | [derive_physics.py](../../../research/f4u-corsair/F4U-07/derive_physics.py) | `research/f4u-corsair/F4U-07/f4u_corsair_250.json` (staged) and `derivation.md` |
+| Physics derivation | [derive_physics.py](../../../research/f4u-corsair/F4U-07/derive_physics.py) | `app/data/aircraft/f4u_corsair_250.json` and `research/f4u-corsair/F4U-07/derivation.md` |
+| Crash-economics costing | [costing_entry.py](../../../research/f4u-corsair/F4U-11/costing_entry.py), then `research/crash-economics/build_runtime.py` | the Corsair entry in `research/crash-economics/aircraft-costing.json`, `app/data/economy/catalog.json` |
 | Loader and trim probe | [probe.gd](../../../research/f4u-corsair/F4U-07/probe.gd) | Console checks |
 | Delivery preflight | [preflight_glb.py](../../../research/f4u-corsair/F4U-04/preflight_glb.py) | Pass/fail per delivery GLB |
 | Delivery identity | [manifest.py](../../../research/f4u-corsair/F4U-03/manifest.py) | `source-manifest.json` |
@@ -37,6 +38,7 @@ python3 research/f4u-corsair/F4U-05/compile_model.py --check
 python3 research/f4u-corsair/F4U-07/ground_effect_vlm.py --check
 python3 research/f4u-corsair/F4U-07/fit_propeller.py --check
 python3 research/f4u-corsair/F4U-07/derive_physics.py --check
+python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/f4u-corsair/F4U-07/probe.gd"
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/f4u-corsair/F4U-05/probe_model.gd"
 ```

@@ -1,5 +1,7 @@
 # Visual quality: implementation guide and open work
 
+Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 4K and higher) secondary desirable; 720p tertiary and last**. Follow the [shared policy](../AGENTS.md#display-resolution-priorities). Existing 720p defaults, fixtures and historical results retain their stated scope and do not qualify the primary target.
+
 2026-10-14 · Revision 17 · Step prefix: **VQ-**
 
 2026-10-21 execution update: [VQ-04a-F4 is implemented](research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f4-faster-cloth-construction): local cloth-grid reuse reduces windsock construction 73.3→23.2 ms, preserving exact mesh/state output and all 18 native images. Five active release pairs improve return-Home + second-Fly by 5.1% median paired; first-path improvement is 1.6%. Initial loading goals, native pacing, physical-display/readability, ordinary-release shutdown and long lifecycle/platform gates remain open. Next: frame-pacing repair on the updated runtime, then motion-reference refresh.
@@ -22,7 +24,11 @@ The [global implementation sequence](plans/global-performance-visual-quality.md#
 
 The [advanced graphics plan](plans/advanced-graphics.md), added 2026-10-21, owns the proposed VQ-07a…h comparison steps and conditional High-profile decision. Its [source audit](research/advanced-graphics-2026-10-21/README.md) preserves the supplied research and independent checks. It does not expand the current Compatibility delivery or change the parent-step status below.
 
+The [native keyboard cost screen](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#native-keyboard-cost-screen-2026-10-22) retains two valid pairs with advancing physics: planar reflection adds about 2.0–2.1 ms wall p95 at 720p on RTX 3090. Four runs are excluded for overlap or pause; both campaigns fail the three-run minimum. Planar stays default-off, with full flight/performance and lifecycle qualification open.
+
 ## Current implementation
+
+[VQ-07 lifecycle attribution](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#engine-lifetime-attribution-and-session-context-2026-10-22) identifies the pinned Godot reflection-atlas leak through a stock minimal reproduction and upstream fix. The collector now preserves optional endpoint pause context; three native 1080p producer checks pass. No engine upgrade or lifecycle/performance qualification is claimed.
 
 VQ-07's [2026-10-22 sunlight correction](research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md) confines the legacy shadow-energy compensation to Compatibility. The experimental High renderer no longer dims unoccluded surfaces when shadows are enabled. Native panel/scene evidence and focused checks support this repair; the VQ-07 qualification gates remain open.
 

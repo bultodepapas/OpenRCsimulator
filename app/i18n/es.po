@@ -438,6 +438,12 @@ msgstr "Entrenador deportivo de ala alta · 1,52 m · glow .61"
 msgid "Low-wing aerobat · 1.63 m · .61 glow"
 msgstr "Acrobático de ala baja · 1,63 m · glow .61"
 
+msgid "Giant-scale warbird · 2.78 m · Moki 250 radial"
+msgstr "Warbird a gran escala · 2,78 m · radial Moki 250"
+
+msgid "Experimental: estimated 1/4.5 physics (CARF-class kit, Moki S250 radial), not yet flight-tested. Runway or airborne start."
+msgstr "Experimental: física estimada a escala 1/4,5 (kit de clase CARF, radial Moki S250), aún sin contrastar en vuelo. Salida desde pista o en vuelo."
+
 msgid "Sport jet · 2.00 m · JetCat P100-RX turbine"
 msgstr "Reactor deportivo · 2,00 m · turbina JetCat P100-RX"
 

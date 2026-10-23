@@ -320,6 +320,24 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
             if rate != 240:
                 errors.append("simulation.physics_ticks_per_second must equal 240")
 
+    # Optional for historical reports. Endpoint context cannot establish pause
+    # history or replace the raw tick/time and simulation.paused gates.
+    if "session_at_report" in report:
+        endpoint = report["session_at_report"]
+        if not isinstance(endpoint, dict):
+            errors.append("session_at_report must be an object")
+        else:
+            if not isinstance(endpoint.get("scope"), str) or not endpoint["scope"].strip():
+                errors.append("session_at_report.scope must be a non-empty string")
+            if not isinstance(endpoint.get("pause_reason"), str):
+                errors.append("session_at_report.pause_reason must be a string")
+            holds = endpoint.get("holds")
+            if not isinstance(holds, list) or any(not isinstance(hold, str) for hold in holds):
+                errors.append("session_at_report.holds must be an array of strings")
+            for key in ("crashed", "window_focused"):
+                if type(endpoint.get(key)) is not bool:
+                    errors.append(f"session_at_report.{key} must be a boolean")
+
     sample_s = _finite_field(report, "sample_s", errors, "report")
     warmup_s = _finite_field(report, "warmup_s", errors, "report")
     actual_sample_s = _finite_field(report, "actual_sample_s", errors, "report")
@@ -570,6 +588,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
         "collection_reasons": errors,
         "active_flight_qualifier": active_qualifier,
         "active_flight_reasons": active_reasons,
+        "session_at_report": report.get("session_at_report") if report is not None else None,
         "duration_eligibility": duration,
         "metrics": derived,
         "pacing_gate": pacing,
