@@ -1,0 +1,63 @@
+{
+	"adapter": "res://../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/depth-culling/baseline_adapter.gd",
+	"cases": [
+		{
+			"active": true,
+			"name": "visible",
+			"source_far": 21000.0,
+			"source_near": 0.0500000007450581,
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"name": "far-clipped",
+			"source_far": 10.0,
+			"source_near": 0.0500000007450581,
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"name": "near-clipped",
+			"source_far": 21000.0,
+			"source_near": 200.0,
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"name": "partial-far",
+			"source_far": 90.0,
+			"source_near": 0.0500000007450581,
+			"update_mode": 4
+		},
+		{
+			"active": true,
+			"name": "restored",
+			"source_far": 21000.0,
+			"source_near": 0.0500000007450581,
+			"update_mode": 4
+		}
+	],
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"physics_validation": false,
+	"profile": {
+		"active": "high_experimental",
+		"gpu": "NVIDIA GeForce RTX 3090",
+		"renderer": "forward_plus",
+		"requested": "high"
+	},
+	"viewport": [
+		1920,
+		1080
+	]
+}

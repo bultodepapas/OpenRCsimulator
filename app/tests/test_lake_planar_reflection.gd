@@ -89,6 +89,11 @@ func _run() -> void:
 	first_camera.h_offset = 0.12
 	first_camera.v_offset = -0.08
 	first_camera.make_current()
+	var startup_far := first_camera.far
+	first_camera.far = 10.0
+	planar.call("_process", 0.0)
+	_check("fully depth-clipped water does not allocate an initial viewport", not planar.initialized)
+	first_camera.far = startup_far
 	planar.call("_process", 0.0)
 	_check("valid perspective camera initializes the reflection viewport", planar.initialized and planar.reflect_viewport != null)
 	_check("visible reflection enables water radiance and disables probe override",
@@ -124,6 +129,39 @@ func _run() -> void:
 	_check("capture clone initially synchronizes every live world environment property",
 		_live_environment_properties_match(first_source_environment, first_capture_environment))
 	_check_mirrored_camera("first camera reflection uses the water mean plane", planar, first_camera, water.global_position.y)
+	var original_near := first_camera.near
+	var original_far := first_camera.far
+	first_camera.far = 10.0
+	planar.call("_process", 0.0)
+	_check("water beyond the main camera far plane stops the unused capture",
+		water_material.get_shader_parameter("planar_reflection_enabled") != true
+		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
+		and probe.reflection_mask == 2 and basin.layers == 9)
+	water.custom_aabb = water.mesh.get_aabb().grow(20.0)
+	planar.call("_process", 0.0)
+	_check("custom shader bounds crossing the far plane keep capture eligible",
+		water_material.get_shader_parameter("planar_reflection_enabled") == true)
+	water.custom_aabb = AABB()
+	water.extra_cull_margin = 20.0
+	planar.call("_process", 0.0)
+	_check("extra cull margin crossing the far plane keeps capture eligible",
+		water_material.get_shader_parameter("planar_reflection_enabled") == true)
+	water.extra_cull_margin = 0.0
+	first_camera.far = 25.0
+	first_camera.near = 20.0
+	planar.call("_process", 0.0)
+	_check("water bounds spanning both clipping planes keep capture eligible",
+		water_material.get_shader_parameter("planar_reflection_enabled") == true)
+	first_camera.far = original_far
+	first_camera.near = 100.0
+	planar.call("_process", 0.0)
+	_check("water before the main camera near plane stops the unused capture",
+		water_material.get_shader_parameter("planar_reflection_enabled") != true
+		and planar.reflect_viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	first_camera.near = original_near
+	planar.call("_process", 0.0)
+	_check("restoring source clipping planes reactivates the existing capture",
+		water_material.get_shader_parameter("planar_reflection_enabled") == true)
 
 	var replacement_sky := Sky.new()
 	first_source_environment.sky = replacement_sky

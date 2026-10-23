@@ -71,6 +71,9 @@ func _process(_delta: float) -> void:
 			or (camera.cull_mask & _water.layers) == 0:
 		_set_active(false)
 		return
+	if not _water_in_depth_range(camera):
+		_set_active(false)
+		return
 	# Camera3D h/v offsets move the rendered eye away from the node origin.
 	# The water-side gate above must use that same eye as the mirrored frustum.
 	camera_override = camera
@@ -90,6 +93,20 @@ func _process(_delta: float) -> void:
 	reflect_camera.h_offset = camera.h_offset
 	reflect_camera.v_offset = camera.v_offset
 	_set_active(update_reflect_cam())
+
+
+func _water_in_depth_range(camera: Camera3D) -> bool:
+	# The downloaded reflector culls only against side planes. A reflection is
+	# unnecessary when the main camera clips the whole receiver near or far.
+	# Use the renderer's expanded bounds, including shader waves and margins;
+	# an intersecting box stays eligible even if no corner lies inside the slab.
+	var bounds := _water.custom_aabb
+	if bounds == AABB():
+		bounds = _water.mesh.get_aabb()
+	bounds = bounds.grow(_water.extra_cull_margin)
+	var to_camera := camera.get_camera_transform().affine_inverse() * _water.global_transform
+	var camera_bounds: AABB = to_camera * bounds
+	return camera_bounds.position.z <= -camera.near and camera_bounds.end.z >= -camera.far
 
 
 func _sync_environment(source: Environment) -> void:

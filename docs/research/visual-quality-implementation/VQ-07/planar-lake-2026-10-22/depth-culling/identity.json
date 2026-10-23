@@ -1,0 +1,10 @@
+{
+  "baseline_commit": "e8cae7d025682922772fa8fa3ee09cc7d3d9debc",
+  "sha256": {
+    "app/render/lake/lake_planar_reflection.gd": "2ca0bd0a7fa5deb5232c8078d3a874f656bc046443211d6847a56026d6f490a1",
+    "app/tests/test_lake_planar_reflection.gd": "d8a5b6379a365a496859300c02bf32c763396ed4774fbcb971fcc0a638ed99c2",
+    "docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\depth-culling\\capture.gd": "a450eb1e8ab071aa94fa1325f8fad1fab3319e02cb7540d8495ccbe1becc2fc6",
+    "docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\depth-culling\\baseline_adapter.gd": "657cd780daaf1da0ac80dbf2ee80dbdee1348ddf85da45fe8be90baf52291ed5",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  }
+}

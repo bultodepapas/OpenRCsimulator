@@ -540,3 +540,67 @@ against `cycle-0.png` as RGB pixels. This fixture exercises the production world
 and retained-tree lifecycle; it is not an automated Workshop menu journey,
 ordinary pilot-motion assessment or performance campaign. Full High qualification
 and the engine/template/platform gates remain open.
+
+## Receiver-depth culling, 2026-10-22
+
+The optional planar camera previously rendered even when the main camera clipped
+all water before its near plane or beyond its far plane. The downloaded component
+checks side planes only. Two added contract cases reproduced the unnecessary
+`UPDATE_ALWAYS` state before the repair.
+
+The local adapter now tests the receiver's camera-space depth bounds before
+allocating or updating its mirror. It uses the effective camera transform, the
+water's custom AABB (including production wave expansion), and extra cull margin.
+It rejects only a box entirely outside the source near/far interval. Overlapping
+bounds remain eligible, including boxes spanning both planes. The vendor source,
+reflection clipping algorithm, shader, physics and default-off setting are unchanged.
+This removes a demonstrated unused render pass; it does not establish a gameplay
+FPS gain, and ordinary flight cameras may not encounter these clipping cases.
+
+Verification:
+
+- **74 planar contract checks** pass, including first-use allocation avoidance,
+  near/far rejection, custom bounds, extra margin, partial depth overlap,
+  reactivation and the previous camera/lifecycle checks.
+- **27 lake-world checks** and **67 headless graphics-profile checks** pass.
+  The latter explicitly skips native High values; the native fixture below
+  confirms High/Forward+ separately. No full app-suite result is claimed.
+- **Five paired native 1920×1080 views** on Windows, pinned Godot 4.7.2 and RTX 3090
+  are exactly equal in RGB. Baseline mirrors update in all five cases; the repair
+  changes the fully near/far-clipped cases to `UPDATE_DISABLED`, while visible,
+  partially clipped and restored cases remain active. [Comparison](depth-culling/comparison.json),
+  [baseline metadata](depth-culling/before/report.json), [candidate metadata](depth-culling/after/report.json).
+- Both native runs retain the known seven-Texture-RID engine shutdown warning.
+  Independent Luna Max review found no false-negative path in the conservative
+  depth test; partial clipping is also exercised in the native comparison.
+
+The [fixture](depth-culling/capture.gd) replaces only the scene's planar helper
+with either the immutable [baseline adapter](depth-culling/baseline_adapter.gd)
+from `e8cae7d0` or the current production adapter, before capture initialization.
+This keeps the rest of the production world identical without modifying runtime
+source for the control. [Identities](depth-culling/identity.json), paired PNGs and
+[checked logs](depth-culling/checks/) retain source and result scope. The pre-fix
+contract failure is intentionally retained alongside the passing checks.
+
+Reproduce the candidate with a new absolute output directory:
+
+```powershell
+python tools/graphics/launch.py --profile high --resolution 1920x1080 --audio-driver Dummy --script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/depth-culling/capture.gd -- --out=C:/captures/openrc-depth-after
+```
+
+For the baseline, set `OPENRC_PLANAR_ADAPTER` to
+`res://../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/depth-culling/baseline_adapter.gd`
+for that process and use a separate output directory. Unset it for the candidate.
+The fixture selects planar mode itself. Compare same-named PNGs as RGB pixels
+and inspect `active` and `update_mode` in each report; image equality alone cannot
+prove that the unused viewport stopped rendering.
+
+Before this repair, an attempted 1080p live-flight cost collection ended paused
+at simulation time 47.754 s, with no fault and no window focus at report time.
+Its initial keyboard/focus checks passed, but endpoint context cannot reconstruct
+pause history. The [excluded report and receipt](depth-culling/excluded-flight/)
+are retained; no subsequent pairs or performance verdict were produced. Driver
+617.42 and Windows Balanced power plan were observed. Focus safety remains intact.
+
+Full active-flight cost, ordinary pilot motion, the pinned-engine leak and
+release/platform qualification remain open. Planar reflection stays default-off.

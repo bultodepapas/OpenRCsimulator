@@ -1,0 +1,12 @@
+{
+  "eligible": false,
+  "reason": "simulation paused; window not focused at report; no claim of pause history",
+  "simulation_end_s": 47.7541666666667,
+  "performance_campaign_completed": false,
+  "gpu": "RTX 3090",
+  "driver": "617.42",
+  "power_plan": "Balanced",
+  "capture_request": "1920x1080",
+  "sample_duration_s": 60,
+  "warmup_s": 10
+}
