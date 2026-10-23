@@ -277,3 +277,17 @@ profile and its test now pin `29ac7fe9…`; profiles 37/0, manager 53/0, record
 156/0, lifecycle 653/0, presentation 13/0 and airspace 48/0 passed. Candidate
 replays report `solver_changed=true`; this is parity on these tapes, not exact
 replay or a scope expansion.
+
+## Electric hub-inflow solver re-bind `69bf5c78`, 2026-10-23
+
+EL1d-R1 (`c0fe45fd`) moves electric propeller inflow to the hub in
+`physics/dynamics.gd`, `physics/propulsion.gd` and `sim/flight_session.gd`;
+the accepted Jensen Stik is not electric. The identity moved from
+`29ac7fe9…bb75a047` to `69bf5c78…9ffc7290`. Two disposable app copies differed
+only in `app/physics`, `app/sim` and `app/failures` (base from `7bb1d9f5`).
+Both used the pre-F4U `wheel_profiles.json` (`98f4c84f`), because adding the
+F4U profile changes the file identity that retained-tape checkpoints validate;
+the Stik wheel rows are unchanged. All nine retained tapes replayed in
+candidate mode with `complete=true` and byte-identical CSVs. Profile and test
+now pin `69bf5c78…`. This is parity on these tapes, not exact replay or a
+scope expansion.
