@@ -127,6 +127,7 @@ var _preset_ids: Array[String] = []
 var _clean_radio_actions_button: Button
 var _clean_radio_actions_help_label: Label
 var _prompt_texture_cache: Dictionary = {}
+var _error_field_controls: Array[Control] = []
 
 
 func _init() -> void:
@@ -319,6 +320,7 @@ func _build() -> void:
 	profile_name_edit.name = "ProfileName"
 	profile_name_edit.max_length = 80
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+	profile_name_edit.text_changed.connect(func(_t: String) -> void: _clear_field_errors())
 	_add_field(profile_row, "Saved profile", profile_picker)
 	_add_field(profile_row, "Name", profile_name_edit)
 	glyph_family_picker = _option("Controller prompts")
@@ -2195,6 +2197,7 @@ func _capture_done() -> void:
 
 
 func _save_profile(close_on_success := true) -> bool:
+	_clear_field_errors()
 	if _is_capture_active():
 		_set_status(tr("Finish or cancel remapping before saving."), true)
 		return false
@@ -2204,6 +2207,8 @@ func _save_profile(close_on_success := true) -> bool:
 	var candidate := _draft_profile.duplicate(true)
 	var profile_name := profile_name_edit.text.strip_edges()
 	if profile_name.is_empty():
+		_mark_field_error(profile_name_edit)
+		select_section("profile")
 		_set_status(tr("Enter a profile name before saving."), true)
 		return false
 	candidate["name"] = profile_name
@@ -2352,6 +2357,29 @@ func _set_status(text: String, is_error: bool) -> void:
 	status_label.add_theme_color_override("font_color", ScreenTheme.ERROR if is_error else Color(0.86, 0.9, 0.94))
 	if is_error and not text.is_empty():
 		status_label.text = tr("Problem: %s") % text
+
+
+func _mark_field_error(control: Control) -> void:
+	if not is_instance_valid(control) or control in _error_field_controls:
+		return
+	_error_field_controls.append(control)
+	var style := StyleBoxFlat.new()
+	style.border_color = ScreenTheme.ERROR
+	for side: int in [SIDE_LEFT, SIDE_RIGHT, SIDE_TOP, SIDE_BOTTOM]:
+		style.set_border_width(side, 2)
+	style.set_corner_radius_all(4)
+	style.bg_color = Color(ScreenTheme.ERROR.r, ScreenTheme.ERROR.g, ScreenTheme.ERROR.b, 0.08)
+	control.add_theme_stylebox_override("normal", style)
+	if control is LineEdit:
+		control.add_theme_stylebox_override("focus", style)
+
+
+func _clear_field_errors() -> void:
+	for control: Control in _error_field_controls:
+		if is_instance_valid(control):
+			control.remove_theme_stylebox_override("normal")
+			control.remove_theme_stylebox_override("focus")
+	_error_field_controls.clear()
 
 
 static func _section_label(text: String) -> Label:
