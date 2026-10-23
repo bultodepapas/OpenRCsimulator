@@ -1,0 +1,86 @@
+[
+  {
+    "run": "high-1080",
+    "viewport": [
+      1920,
+      1061
+    ],
+    "ok": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "915c2113bc4148663acadf909e4316430db4ff34cd6689c4c248d1ded4cb0997",
+    "after_sha256": "915c2113bc4148663acadf909e4316430db4ff34cd6689c4c248d1ded4cb0997"
+  },
+  {
+    "run": "high-after",
+    "viewport": [
+      1920,
+      1061
+    ],
+    "ok": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "915c2113bc4148663acadf909e4316430db4ff34cd6689c4c248d1ded4cb0997",
+    "after_sha256": "915c2113bc4148663acadf909e4316430db4ff34cd6689c4c248d1ded4cb0997"
+  },
+  {
+    "run": "high-before",
+    "viewport": [
+      1920,
+      1061
+    ],
+    "ok": false,
+    "changed_pixels": 48607,
+    "max_channel_delta": 209,
+    "before_sha256": "915c2113bc4148663acadf909e4316430db4ff34cd6689c4c248d1ded4cb0997",
+    "after_sha256": "90e0605ff993b17ac61fe9ddd7b40ca85545a7588bd16744095ba8dc350de2b9"
+  },
+  {
+    "run": "high-fixed1080",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "ok": true,
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "13ab77989977132a27de1610e536671d399572c402f00a263f4ecfd98ada66b0",
+    "after_sha256": "13ab77989977132a27de1610e536671d399572c402f00a263f4ecfd98ada66b0"
+  },
+  {
+    "run": "standard-1080",
+    "viewport": [
+      1920,
+      1061
+    ],
+    "ok": false,
+    "changed_pixels": 178,
+    "max_channel_delta": 1,
+    "before_sha256": "65d9811ab7b566bb11f0ae2c4815457573bdc20b2ddfd453cc9648b5c2d58652",
+    "after_sha256": "d8cc9d5f24334a008c18e2f3ffa8f67a8cd7628dd4207ca1e363fb65cfed9123"
+  },
+  {
+    "run": "standard-after",
+    "viewport": [
+      1920,
+      1061
+    ],
+    "ok": false,
+    "changed_pixels": 106,
+    "max_channel_delta": 1,
+    "before_sha256": "d91f81fef0fbb952a99ddc89bdd0e25225efcd83152f672ca89f7ef8465e1527",
+    "after_sha256": "613c17fc081335a237d496f6d61c296eb7cc07b97d9986c3948def525851f1a8"
+  },
+  {
+    "run": "standard-fixed1080",
+    "viewport": [
+      1920,
+      1080
+    ],
+    "ok": false,
+    "changed_pixels": 175,
+    "max_channel_delta": 1,
+    "before_sha256": "55ffb60b1b993f58309a09daf75679119c5b06e17349693fd1863527abc8bf0e",
+    "after_sha256": "a2fd9ad92a73f5739ecebb0756ee6ad0b7656cfff4a4eebb1b3602b5d586996f"
+  }
+]

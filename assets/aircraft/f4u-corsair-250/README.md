@@ -28,7 +28,7 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | Delivery identity | [manifest.py](../../../research/f4u-corsair/F4U-03/manifest.py) | `source-manifest.json` |
 | Gear sampling | [sample_gear.py](../../../research/f4u-corsair/F4U-05/sample_gear.py) (Blender 5.2.2, headless, `--disable-autoexec`) | `gear-samples.json` |
 | Model compile | [compile_model.py](../../../research/f4u-corsair/F4U-05/compile_model.py) | `model-geometry.json`, `app/aircraft/f4u_corsair_geometry.gd` |
-| Model build probe | [probe_model.gd](../../../research/f4u-corsair/F4U-05/probe_model.gd) | Console checks |
+| Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release |
 
 ```bash
 blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-corsair/F4U-06/extract_geometry_r59.py -- \
@@ -40,7 +40,7 @@ python3 research/f4u-corsair/F4U-07/fit_propeller.py --check
 python3 research/f4u-corsair/F4U-07/derive_physics.py --check
 python3 research/f4u-corsair/F4U-11/costing_entry.py --check
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/f4u-corsair/F4U-07/probe.gd"
-"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/f4u-corsair/F4U-05/probe_model.gd"
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://aircraft/verify_f4u.gd
 ```
 
 Gear samples come from Blender on the frozen delivery: `blender -b --factory-startup --disable-autoexec assets/source-deliveries/f4u-corsair-g1-3/f4u_corsair/g1_3/source/aircraft_game.blend --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json`. After a binding or model change, run `build_models.py`, `build_descriptors.py`, `build_customization.py` and the parked-aircraft bake in that order (see the [Avanti guide](../avanti-s-a200/README.md#regenerate-and-verify)).

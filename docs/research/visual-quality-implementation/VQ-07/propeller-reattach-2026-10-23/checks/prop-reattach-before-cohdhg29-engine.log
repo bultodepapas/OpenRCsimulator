@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL jensen-das-ugly-stik-60 reattach reapplies presentation at 900.0 
+FAIL jensen-das-ugly-stik-60 reattach reapplies presentation at 2880.0 
+FAIL gp-extra-300s-60 reattach reapplies presentation at 900.0 
+FAIL gp-extra-300s-60 reattach reapplies presentation at 2880.0 
+FAIL p51d-mustang-120 reattach reapplies presentation at 450.0 
+FAIL p51d-mustang-120 reattach reapplies presentation at 1440.0 
+FAIL turbo-lumber-evolution reattach reapplies presentation at 600.0 
+FAIL turbo-lumber-evolution reattach reapplies presentation at 1920.0 
+propeller blur: 138 checks, 8 failures

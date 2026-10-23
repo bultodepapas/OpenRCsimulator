@@ -149,6 +149,20 @@ func _run() -> void:
 	var last_mad: float = images[-1].mean_change_on_blades
 	_check("blade change falls with speed", monotone and last_mad < first_mad, "%.4f at %d rpm -> %.4f at %d rpm" % [first_mad, int(_rpms[0]), last_mad, int(_rpms[-1])])
 	_check("disc changes pixels outside the blade silhouette", last_outside > 0, "%d pixels at %d rpm" % [last_outside, int(_rpms[-1])])
+	# A retained observer must not leave solid blades over its active disc.
+	var before_reattach := await _grab()
+	root.remove_child(node)
+	root.add_child(node)
+	node.update(_rpms[-1])
+	var after_reattach := await _grab()
+	var restored_visibility := true
+	for original: MeshInstance3D in node._originals:
+		restored_visibility = restored_visibility and original.visible == (node.blur <= 0.0)
+	_check("reattachment reapplies blade visibility", restored_visibility, "same RPM after detach/reattach")
+	if before_reattach.save_png(prefix + "-before-reattach.png") != OK or after_reattach.save_png(prefix + "-after-reattach.png") != OK:
+		printerr("could not retain reattachment evidence")
+		quit(2)
+		return
 	var repeat := await _grab()
 	var repeated := await _grab()
 	var repeat_a := prefix + "-repeat-a.png"

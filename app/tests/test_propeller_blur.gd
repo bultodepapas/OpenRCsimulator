@@ -146,6 +146,35 @@ func _aircraft(id: String) -> void:
 	var fast_rpm: float = Blur.BLUR_FULL_HZ * 60.0 / float(measured.blades) * 2.0
 	node.update(fast_rpm)
 	_check(id + " fast: disc only", node.blur == 1.0 and node._disc.visible and not node._blade_copies[0].visible)
+	# Removing the observer restores originals; reattachment must reapply even
+	# when RPM, model visibility and broken state are unchanged.
+	for speed in [0.0, mid_rpm, fast_rpm]:
+		node.update(speed)
+		var expected_blur: float = node.blur
+		var expected_disc: bool = node._disc.visible
+		var expected_blade: bool = node._blade_copies[0].visible
+		holder.remove_child(node)
+		_check(id + " detach restores originals at " + str(speed), _snapshot(airplane.root) == before)
+		holder.add_child(node)
+		node.update(speed)
+		var correct_originals := true
+		for original: MeshInstance3D in node._originals:
+			correct_originals = correct_originals and original.visible == (expected_blur <= 0.0)
+		_check(id + " reattach reapplies presentation at " + str(speed), correct_originals
+			and node.blur == expected_blur and node._disc.visible == expected_disc
+			and node._blade_copies[0].visible == expected_blade)
+	airplane.propeller.set_meta(Blur.PropBreak.BROKEN_META, true)
+	node.update(fast_rpm)
+	holder.remove_child(node)
+	holder.add_child(node)
+	node.update(fast_rpm)
+	var broken_hidden: bool = not node._disc.visible
+	for original: MeshInstance3D in node._originals:
+		broken_hidden = broken_hidden and not original.visible
+	_check(id + " broken rotor stays hidden through reattachment", broken_hidden)
+	airplane.propeller.remove_meta(Blur.PropBreak.BROKEN_META)
+	node.update(fast_rpm)
+	_check(id + " repaired rotor resumes the disc", node._disc.visible and node.blur == 1.0)
 	# The blur follows the propeller through the model's pose and the spin phase.
 	airplane.root.transform = Transform3D(Basis.from_euler(Vector3(0.3, 1.2, -0.4)), Vector3(12.0, 30.0, -40.0))
 	airplane.propeller.rotation.z = 2.1

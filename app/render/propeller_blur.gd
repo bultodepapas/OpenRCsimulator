@@ -492,6 +492,9 @@ func update(rotor_rpm: float) -> void:
 
 ## Restores the model's own blades (for callers that detach the blur), unless a prop strike broke them.
 func _exit_tree() -> void:
+	# Restoration changes visibility outside update(); a retained observer must
+	# reapply its state after reattachment even when RPM has not changed.
+	_applied = false
 	for node in _originals:
 		if is_instance_valid(node):
 			node.visible = not _broken

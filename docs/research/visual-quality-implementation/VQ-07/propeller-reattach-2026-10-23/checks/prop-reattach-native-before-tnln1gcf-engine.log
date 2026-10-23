@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   attached at 0 rpm is byte-identical: pristine vs attached+update(0)
+ok   hidden propeller hides the disc: disc visible=false blur=0.00
+rpm      0 blur 0.000  mean change on blade pixels 0.3897  changed pixels outside blades 0
+rpm    600 blur 0.126  mean change on blade pixels 0.3022  changed pixels outside blades 0
+rpm   1200 blur 0.874  mean change on blade pixels 0.0683  changed pixels outside blades 126496
+rpm   6000 blur 1.000  mean change on blade pixels 0.0416  changed pixels outside blades 149740
+ok   blade change falls with speed: 0.3897 at 0 rpm -> 0.0416 at 6000 rpm
+ok   disc changes pixels outside the blade silhouette: 149740 pixels at 6000 rpm
+FAIL reattachment reapplies blade visibility: same RPM after detach/reattach
+ok   repeated frame is byte-identical: two frames at 6000 rpm; retained repeat-a/b PNGs
+C:/DEVELOPMENT/OpenRCsimulator/tmp/prop-reattach/high-before/jensen-das-ugly-stik-60-front.json: CHECKS FAILED

@@ -1,0 +1,9 @@
+{
+  "head": "71c48f7742f1f0fa0d8be0014644442d04c80612",
+  "files": {
+    "app/render/propeller_blur.gd": "2872fd3d209e693087c21068a01fe4733682031b8156c1a6a3a62b171cdea311",
+    "app/tests/test_propeller_blur.gd": "51e903dddba44e8e289c12d6d2b3ba32873b625c0443834acec955d74e1e0951",
+    "app/tests/capture_propeller_blur.gd": "7b56e3e2323b0df43d6231e7594755c302c255f539d70f1bc168f98a476c8cb5",
+    "docs\\research\\visual-quality-implementation\\VQ-07\\propeller-reattach-2026-10-23\\capture_1080.gd": "c66cd88fbfbfb4c766c4acca40b0f6c57eaa72b93866592118eb02470cfc4d8e"
+  }
+}

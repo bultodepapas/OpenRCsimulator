@@ -1,0 +1,46 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "30e31362-ef4f-4695-bcb7-3cc485d9f257",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--resolution",
+    "1920x1080",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../docs/research/visual-quality-implementation/VQ-07/propeller-reattach-2026-10-23/capture_1080.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/prop-reattach/high-fixed1080",
+    "--view=front",
+    "--rpm=0,600,1200,6000"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T11:41:26.558830+00:00",
+  "label": "prop-reattach-fixed1080",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-reattach-fixed1080-mw2zrlh7\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\prop-reattach-fixed1080-mw2zrlh7\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "all checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.469,
+  "log_bytes": 1117,
+  "log_sha256": "d6ebf8c6a845049a5b38d49a1344bf8f85d9448b0060a3b6e056b99fd60a8d71"
+}

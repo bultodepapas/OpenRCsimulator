@@ -11,7 +11,7 @@ Built 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md). Software integration 
 | [compile_model.py](../../../../research/f4u-corsair/F4U-05/compile_model.py) → [model-geometry.json](../../../../assets/aircraft/f4u-corsair-250/model-geometry.json), [f4u_corsair_geometry.gd](../../../../app/aircraft/f4u_corsair_geometry.gd) | Checks every input against [source-manifest.json](../../../../assets/aircraft/f4u-corsair-250/source-manifest.json); rest transforms from the GLB itself; ten control hinges, the thrust frame and the gear rig |
 | Family `f4u-corsair-250` in [model-bindings.json](../../../../assets/aircraft/model-bindings.json) → [manifest](../../../../app/data/aircraft_models/f4u-corsair-250.json) | Shared builder `imported_model.gd`: controls with three flap hinges per side, rotor (`thrust_frame` → `propeller_spin`, axis +X), sampled taildragger retraction, glTF-extras crash sections |
 | Family in [customization-bindings.json](../../../../assets/aircraft/customization-bindings.json) | Coverage entry with no slots; textured-livery paint, markings and smoke belong to F4U-10 |
-| [probe_model.gd](../../../../research/f4u-corsair/F4U-05/probe_model.gd) | Builds through the production registry and checks behavior |
+| `probe_model.gd` (since replaced by [verify_f4u.gd](../../../../app/aircraft/verify_f4u.gd), F4U-12) | Built through the production registry and checked behavior |
 
 Control signs follow the Timber, which is authored the same way (local +X, trailing edge down positive): app commands map with −1 for ailerons and elevator, +1 for rudder and flaps. Ranges are the author's checked clearance envelopes (±25°, ±35°, 0–50°); physical throws stay in the aircraft data.
 

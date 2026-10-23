@@ -108,3 +108,7 @@ Full frames after: [P-51 close-up](images/field-p51-inspect-after.png), [Stik pi
 ## Native High follow-up
 
 The [2026-10-22 VQ-07b diagnostic](../VQ-07/propeller-repeat-2026-10-22/README.md) adds retained repeat pairs and capture identities. High Stik/P-51/Timber studio checks pass at 1080p. Standard 4× MSAA retains a strict repeat failure (208 pixels, maximum 1/255); no runtime change or tolerance relaxation is adopted.
+
+## Retained observer lifecycle
+
+The [2026-10-23 reattachment repair](../VQ-07/propeller-reattach-2026-10-23/README.md) invalidates cached presentation after detachment restores original blades. The expanded suite passes 146 checks; High is pixel-identical across reattachment at 1080p. Standard retains the separate strict repeat failure.
