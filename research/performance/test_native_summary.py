@@ -128,6 +128,36 @@ def write_run(directory: Path, name: str, report: dict, log_text: str = "Godot c
     return report_path
 
 
+def lake_reflection_settings(
+    mode: str,
+    *,
+    requested: str = "",
+    active: bool = False,
+    capture_size: list[int] | None = None,
+) -> dict:
+    return {
+        "requested": requested,
+        "mode": mode,
+        "planar_active_at_report": active,
+        "capture_size_at_report": [0, 0] if capture_size is None else capture_size,
+    }
+
+
+def reflection_campaign(settings: list[dict | None]) -> tuple[dict, int]:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        root = Path(temp_dir)
+        for index, lake_settings in enumerate(settings, start=1):
+            report = valid_report()
+            if lake_settings is not None:
+                report["render_settings"] = {"lake_reflections": lake_settings}
+            write_run(root, f"run-{index}", report)
+        return summarize_directory(
+            root,
+            root / "summary.json",
+            {**SHORT_POLICY, "minimum_runs": len(settings)},
+        )
+
+
 class NativeReportValidationTests(unittest.TestCase):
     def test_valid_report_uses_frame_endpoints_for_simulation_wall_ratio(self):
         report = valid_report()
@@ -184,6 +214,81 @@ class NativeReportValidationTests(unittest.TestCase):
 
                 errors, _ = validate_native_report(report)
                 self.assertIn("vsync must agree with vsync_mode", errors)
+
+    def test_lake_reflection_report_metadata_accepts_supported_states(self):
+        cases = (
+            lake_reflection_settings("absent"),
+            lake_reflection_settings("probe", requested="planar"),
+            lake_reflection_settings("planar", requested="planar"),
+            lake_reflection_settings(
+                "planar", requested="planar", active=True, capture_size=[640, 360]
+            ),
+            lake_reflection_settings(
+                "planar", requested="planar", capture_size=[640, 360]
+            ),
+        )
+        for settings in cases:
+            with self.subTest(settings=settings):
+                report = valid_report()
+                report["render_settings"] = {"lake_reflections": settings}
+                errors, _ = validate_native_report(report)
+                self.assertEqual(errors, [])
+
+    def test_malformed_lake_reflection_report_metadata_is_rejected(self):
+        malformed = (
+            None,
+            [],
+            {},
+            {"requested": None, "mode": "absent", "planar_active_at_report": False,
+             "capture_size_at_report": [0, 0]},
+            {"requested": " Planar ", "mode": "planar", "planar_active_at_report": False,
+             "capture_size_at_report": [0, 0]},
+            {"requested": "", "mode": "disabled", "planar_active_at_report": False,
+             "capture_size_at_report": [0, 0]},
+            {"requested": "", "mode": "probe", "planar_active_at_report": 1,
+             "capture_size_at_report": [0, 0]},
+            {"requested": "", "mode": "probe", "planar_active_at_report": False,
+             "capture_size_at_report": [640, 0]},
+            {"requested": "", "mode": "probe", "planar_active_at_report": False,
+             "capture_size_at_report": [True, 360]},
+            {"requested": "", "mode": "probe", "planar_active_at_report": False,
+             "capture_size_at_report": [640]},
+            {"requested": "planar", "mode": "probe", "planar_active_at_report": True,
+             "capture_size_at_report": [640, 360]},
+            {"requested": "planar", "mode": "planar", "planar_active_at_report": True,
+             "capture_size_at_report": [0, 0]},
+            {"requested": "", "mode": "absent", "planar_active_at_report": False,
+             "capture_size_at_report": [640, 360]},
+        )
+        for settings in malformed:
+            with self.subTest(settings=settings):
+                report = valid_report()
+                report["render_settings"] = {"lake_reflections": settings}
+                errors, _ = validate_native_report(report)
+                self.assertTrue(errors)
+
+    def test_non_object_render_settings_parent_is_rejected(self):
+        for render_settings in (None, [], "invalid", 1):
+            with self.subTest(render_settings=render_settings):
+                report = valid_report()
+                report["render_settings"] = render_settings
+                errors, _ = validate_native_report(report)
+                self.assertIn("render_settings must be an object", errors)
+
+    def test_missing_lake_reflection_metadata_remains_historical_unknown(self):
+        cases = ((False, None), (True, {}))
+        for has_render_settings, render_settings in cases:
+            with self.subTest(has_render_settings=has_render_settings):
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    root = Path(temp_dir)
+                    report = valid_report()
+                    if has_render_settings:
+                        report["render_settings"] = render_settings
+                    report_path = write_run(root, "run-1", report)
+                    summary = summarize_run(report_path, SHORT_POLICY)
+
+                self.assertTrue(summary["collection_valid"])
+                self.assertIsNone(summary["lake_reflection_configuration"])
 
     def test_boolean_values_are_not_accepted_as_counts_or_numbers(self):
         report = valid_report()
@@ -456,6 +561,90 @@ class NativeRunClassificationTests(unittest.TestCase):
                 summary["campaign_reasons"],
             )
             self.assertEqual(status, 1)
+
+    def test_campaign_accepts_homogeneous_installed_lake_reflection_mode(self):
+        settings = [
+            lake_reflection_settings("probe", requested=requested)
+            for requested in ("", "planar", "")
+        ]
+        summary, status = reflection_campaign(settings)
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertTrue(summary["performance_pass"])
+        self.assertTrue(summary["lake_reflection_configuration_consistent"])
+        self.assertTrue(summary["lake_reflection_configuration_complete"])
+        self.assertEqual(
+            [run["lake_reflection_configuration"] for run in summary["runs"]],
+            [{"mode": "probe"}] * 3,
+        )
+        self.assertEqual(status, 0)
+
+    def test_campaign_rejects_individually_passing_runs_with_mixed_lake_reflection_modes(self):
+        settings = [
+            lake_reflection_settings("probe"),
+            lake_reflection_settings("planar", requested="planar"),
+            lake_reflection_settings("planar", requested="planar"),
+        ]
+        summary, status = reflection_campaign(settings)
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertFalse(summary["performance_pass"])
+        self.assertFalse(summary["lake_reflection_configuration_consistent"])
+        self.assertTrue(summary["lake_reflection_configuration_complete"])
+        self.assertIn(
+            "runs have different or mixed known/unknown installed lake reflection modes",
+            summary["campaign_reasons"],
+        )
+        self.assertEqual(status, 1)
+
+    def test_campaign_rejects_mixed_known_and_historical_unknown_lake_reflection_modes(self):
+        settings = [lake_reflection_settings("probe"), None, lake_reflection_settings("probe")]
+        summary, status = reflection_campaign(settings)
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertFalse(summary["performance_pass"])
+        self.assertFalse(summary["lake_reflection_configuration_consistent"])
+        self.assertFalse(summary["lake_reflection_configuration_complete"])
+        self.assertIn(
+            "runs have different or mixed known/unknown installed lake reflection modes",
+            summary["campaign_reasons"],
+        )
+        self.assertEqual(status, 1)
+
+    def test_all_historical_unknown_lake_reflection_metadata_remains_numerically_valid(self):
+        summary, status = reflection_campaign([None, None, None])
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertTrue(summary["performance_pass"])
+        self.assertTrue(summary["lake_reflection_configuration_consistent"])
+        self.assertFalse(summary["lake_reflection_configuration_complete"])
+        self.assertEqual(
+            [run["lake_reflection_configuration"] for run in summary["runs"]],
+            [None] * 3,
+        )
+        self.assertEqual(status, 0)
+
+    def test_same_planar_mode_allows_active_and_inactive_report_snapshots(self):
+        settings = [
+            lake_reflection_settings(
+                "planar", requested="planar", active=True, capture_size=[640, 360]
+            ),
+            lake_reflection_settings(
+                "planar", requested="planar", active=False, capture_size=[640, 360]
+            ),
+            lake_reflection_settings("planar", requested="planar"),
+        ]
+        summary, status = reflection_campaign(settings)
+
+        self.assertEqual(summary["performance_pass_count"], 3)
+        self.assertTrue(summary["performance_pass"])
+        self.assertTrue(summary["lake_reflection_configuration_consistent"])
+        self.assertTrue(summary["lake_reflection_configuration_complete"])
+        self.assertEqual(
+            [run["lake_reflection_configuration"] for run in summary["runs"]],
+            [{"mode": "planar"}] * 3,
+        )
+        self.assertEqual(status, 0)
 
     def test_campaign_writes_report_and_refuses_to_overwrite(self):
         with tempfile.TemporaryDirectory() as temp_dir:

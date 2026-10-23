@@ -1,0 +1,100 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   jensen-das-ugly-stik-60 data loads  []
+ok   jensen-das-ugly-stik-60 visual model builds
+ok   jensen-das-ugly-stik-60 main_left has a rendered wheel
+ok   jensen-das-ugly-stik-60 main_left has a profiled wheel radius
+ok   jensen-das-ugly-stik-60 main_left rendered wheel bottom matches the physics contact  rendered [0.21500000357628, -0.18000000715256, -0.25309999891967], physics [0.215, -0.18, -0.2531], max axis error 0.000 mm
+ok   jensen-das-ugly-stik-60 main_right has a rendered wheel
+ok   jensen-das-ugly-stik-60 main_right has a profiled wheel radius
+ok   jensen-das-ugly-stik-60 main_right rendered wheel bottom matches the physics contact  rendered [0.21500000357628, 0.18000000715256, -0.25309999891967], physics [0.215, 0.18, -0.2531], max axis error 0.000 mm
+ok   jensen-das-ugly-stik-60 nose has a rendered wheel
+ok   jensen-das-ugly-stik-60 nose has a profiled wheel radius
+ok   jensen-das-ugly-stik-60 nose rendered wheel bottom matches the physics contact  rendered [-0.13627598434687, 0.0, -0.24992499891967], physics [-0.136276, 0.0, -0.249925], max axis error 0.000 mm
+info jensen-das-ugly-stik-60: worst wheel-bottom difference 0.0000 mm
+ok   stik-glow-61fx-2t data loads  []
+ok   stik-glow-61fx-2t visual model builds
+ok   stik-glow-61fx-2t main_left has a rendered wheel
+ok   stik-glow-61fx-2t main_left has a profiled wheel radius
+ok   stik-glow-61fx-2t main_left rendered wheel bottom matches the physics contact  rendered [0.21500000357628, -0.18000000715256, -0.25309999891967], physics [0.215, -0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-61fx-2t main_right has a rendered wheel
+ok   stik-glow-61fx-2t main_right has a profiled wheel radius
+ok   stik-glow-61fx-2t main_right rendered wheel bottom matches the physics contact  rendered [0.21500000357628, 0.18000000715256, -0.25309999891967], physics [0.215, 0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-61fx-2t nose has a rendered wheel
+ok   stik-glow-61fx-2t nose has a profiled wheel radius
+ok   stik-glow-61fx-2t nose rendered wheel bottom matches the physics contact  rendered [-0.13627598434687, 0.0, -0.24992499891967], physics [-0.136276, 0.0, -0.249925], max axis error 0.000 mm
+info stik-glow-61fx-2t: worst wheel-bottom difference 0.0000 mm
+ok   stik-glow-55ax-2t data loads  []
+ok   stik-glow-55ax-2t visual model builds
+ok   stik-glow-55ax-2t main_left has a rendered wheel
+ok   stik-glow-55ax-2t main_left has a profiled wheel radius
+ok   stik-glow-55ax-2t main_left rendered wheel bottom matches the physics contact  rendered [0.21500000357628, -0.18000000715256, -0.25309999891967], physics [0.215, -0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-55ax-2t main_right has a rendered wheel
+ok   stik-glow-55ax-2t main_right has a profiled wheel radius
+ok   stik-glow-55ax-2t main_right rendered wheel bottom matches the physics contact  rendered [0.21500000357628, 0.18000000715256, -0.25309999891967], physics [0.215, 0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-55ax-2t nose has a rendered wheel
+ok   stik-glow-55ax-2t nose has a profiled wheel radius
+ok   stik-glow-55ax-2t nose rendered wheel bottom matches the physics contact  rendered [-0.13627598434687, 0.0, -0.24992499891967], physics [-0.136276, 0.0, -0.249925], max axis error 0.000 mm
+info stik-glow-55ax-2t: worst wheel-bottom difference 0.0000 mm
+ok   stik-glow-fs64v-4t data loads  []
+ok   stik-glow-fs64v-4t visual model builds
+ok   stik-glow-fs64v-4t main_left has a rendered wheel
+ok   stik-glow-fs64v-4t main_left has a profiled wheel radius
+ok   stik-glow-fs64v-4t main_left rendered wheel bottom matches the physics contact  rendered [0.21500000357628, -0.18000000715256, -0.25309999891967], physics [0.215, -0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-fs64v-4t main_right has a rendered wheel
+ok   stik-glow-fs64v-4t main_right has a profiled wheel radius
+ok   stik-glow-fs64v-4t main_right rendered wheel bottom matches the physics contact  rendered [0.21500000357628, 0.18000000715256, -0.25309999891967], physics [0.215, 0.18, -0.2531], max axis error 0.000 mm
+ok   stik-glow-fs64v-4t nose has a rendered wheel
+ok   stik-glow-fs64v-4t nose has a profiled wheel radius
+ok   stik-glow-fs64v-4t nose rendered wheel bottom matches the physics contact  rendered [-0.13627598434687, 0.0, -0.24992499891967], physics [-0.136276, 0.0, -0.249925], max axis error 0.000 mm
+info stik-glow-fs64v-4t: worst wheel-bottom difference 0.0000 mm
+ok   gp-extra-300s-60 data loads  []
+ok   gp-extra-300s-60 visual model builds
+ok   gp-extra-300s-60 main_left has a rendered wheel
+ok   gp-extra-300s-60 main_left has a profiled wheel radius
+ok   gp-extra-300s-60 main_left rendered wheel bottom matches the physics contact  rendered [0.01860000193119, -0.15999999642372, -0.26882499568462], physics [0.0186, -0.16, -0.268825], max axis error 0.000 mm
+ok   gp-extra-300s-60 main_right has a rendered wheel
+ok   gp-extra-300s-60 main_right has a profiled wheel radius
+ok   gp-extra-300s-60 main_right rendered wheel bottom matches the physics contact  rendered [0.01860000193119, 0.15999999642372, -0.26882499568462], physics [0.0186, 0.16, -0.268825], max axis error 0.000 mm
+ok   gp-extra-300s-60 tail has a rendered wheel
+ok   gp-extra-300s-60 tail has a profiled wheel radius
+ok   gp-extra-300s-60 tail rendered wheel bottom matches the physics contact  rendered [0.9526000097394, 0.0, -0.08959999789], physics [0.9526, 0.0, -0.0896], max axis error 0.000 mm
+info gp-extra-300s-60: worst wheel-bottom difference 0.0000 mm
+ok   p51d-mustang-120 data loads  []
+ok   p51d-mustang-120 visual model builds
+ok   p51d-mustang-120 main_left has a rendered wheel
+ok   p51d-mustang-120 main_left has a profiled wheel radius
+ok   p51d-mustang-120 main_left rendered wheel bottom matches the physics contact  rendered [0.02499999850988, -0.45100000500679, -0.51050000853539], physics [0.025, -0.451, -0.5105], max axis error 0.000 mm
+ok   p51d-mustang-120 main_right has a rendered wheel
+ok   p51d-mustang-120 main_right has a profiled wheel radius
+ok   p51d-mustang-120 main_right rendered wheel bottom matches the physics contact  rendered [0.02499999850988, 0.45100000500679, -0.51050000853539], physics [0.025, 0.451, -0.5105], max axis error 0.000 mm
+ok   p51d-mustang-120 tail has a rendered wheel
+ok   p51d-mustang-120 tail has a profiled wheel radius
+ok   p51d-mustang-120 tail rendered wheel bottom matches the physics contact  rendered [1.28180003166199, 0.0, -0.19964999473095], physics [1.2818, 0.0, -0.19965], max axis error 0.000 mm
+info p51d-mustang-120: worst wheel-bottom difference 0.0000 mm
+ok   sebart-avanti-s-a200-p100rx data loads  []
+ok   sebart-avanti-s-a200-p100rx visual model builds
+ok   sebart-avanti-s-a200-p100rx main_left has a rendered wheel
+ok   sebart-avanti-s-a200-p100rx main_left has a profiled wheel radius
+ok   sebart-avanti-s-a200-p100rx main_left rendered wheel bottom matches the physics contact  rendered [0.34499999880791, -0.32000005245209, -0.23549994111538], physics [0.345, -0.32, -0.2355], max axis error 0.000 mm
+ok   sebart-avanti-s-a200-p100rx main_right has a rendered wheel
+ok   sebart-avanti-s-a200-p100rx main_right has a profiled wheel radius
+ok   sebart-avanti-s-a200-p100rx main_right rendered wheel bottom matches the physics contact  rendered [0.34500002861023, 0.31999999284744, -0.23550000072002], physics [0.345, 0.32, -0.2355], max axis error 0.000 mm
+ok   sebart-avanti-s-a200-p100rx nose has a rendered wheel
+ok   sebart-avanti-s-a200-p100rx nose has a profiled wheel radius
+ok   sebart-avanti-s-a200-p100rx nose rendered wheel bottom matches the physics contact  rendered [-0.51800000667572, 0.000000046941, -0.23632004971027], physics [-0.518, 0.0, -0.23632], max axis error 0.000 mm
+info sebart-avanti-s-a200-p100rx: worst wheel-bottom difference 0.0001 mm
+ok   turbo-lumber-evolution data loads  []
+ok   turbo-lumber-evolution visual model builds
+ok   turbo-lumber-evolution main_left has a rendered wheel
+ok   turbo-lumber-evolution main_left has a profiled wheel radius
+ok   turbo-lumber-evolution main_left rendered wheel bottom matches the physics contact  rendered [0.00800000317395, -0.13197880983353, -0.25600201382828], physics [0.008, -0.131979, -0.256016], max axis error 0.014 mm
+ok   turbo-lumber-evolution main_right has a rendered wheel
+ok   turbo-lumber-evolution main_right has a profiled wheel radius
+ok   turbo-lumber-evolution main_right rendered wheel bottom matches the physics contact  rendered [0.00800000317395, 0.1319787800312, -0.25600201382828], physics [0.008, 0.131979, -0.256016], max axis error 0.014 mm
+ok   turbo-lumber-evolution tail has a rendered wheel
+ok   turbo-lumber-evolution tail has a profiled wheel radius
+ok   turbo-lumber-evolution tail rendered wheel bottom matches the physics contact  rendered [0.7590000629425, 0.0, -0.12600000345707], physics [0.759, 0.0, -0.126004], max axis error 0.004 mm
+info turbo-lumber-evolution: worst wheel-bottom difference 0.0140 mm
+ok   every geared catalog airplane was compared  8
+GP-06 gear visual contacts: 89 checks, 0 failed

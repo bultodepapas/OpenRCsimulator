@@ -94,6 +94,33 @@ func contracts() -> void:
 	var unsteered: Dictionary = tail.duplicate(true)
 	unsteered.wheels.tail.erase("steer_node")
 	check("model contract rejects a tail wheel without its steering helper", not Rig.validate(unsteered).is_empty())
+	# F4U-05: an oleo slider may also be a sampled carrier; spin and steering helpers may not.
+	for helper in ["compression_node", "spin_node", "steer_node"]:
+		var sampled: Dictionary = Geometry.DATA.gear.duplicate(true)
+		var wheel: Dictionary = sampled.wheels.nose
+		for item: Dictionary in sampled.retraction.samples:
+			item.nodes[wheel[helper]] = {translation = sampled.bindings[wheel[helper]].rest_translation, rotation_wxyz = [1.0, 0.0, 0.0, 0.0]}
+		if helper == "compression_node": check("sampled oleo slider is a valid compression helper", Rig.validate(sampled).is_empty())
+		else: check("model contract rejects a sampled " + helper, not Rig.validate(sampled).is_empty())
+	sampled_compression()
+
+
+## F4U-05: compression offsets the pose just sampled when the slider is a carrier, and the bound rest otherwise.
+func sampled_compression() -> void:
+	var slider := Node3D.new()
+	var sample := func(y: float) -> Dictionary: return {translation = [0.0, y, 0.0], rotation_wxyz = [1.0, 0.0, 0.0, 0.0]}
+	var rig := {data = {retraction = {samples = [{extension = 0.0, nodes = {slider = sample.call(0.0)}},
+		{extension = 1.0, nodes = {slider = sample.call(-0.022)}}]}},
+		nodes = {slider = slider}, compression = {left = slider}, rest = {left = Transform3D.IDENTITY}, sampled_compression = {left = true}}
+	Rig.apply(rig, 1.0)
+	check("sampled slider: compression rest follows the down sample", rig.rest.left.origin.is_equal_approx(Vector3(0, -0.022, 0)))
+	Rig.apply(rig, 0.5)
+	check("sampled slider: compression rest follows the transit sample", rig.rest.left.origin.is_equal_approx(Vector3(0, -0.011, 0)))
+	rig.sampled_compression = {}
+	rig.rest.left = Transform3D.IDENTITY
+	Rig.apply(rig, 1.0)
+	check("unsampled helper: compression rest keeps the bound pose", rig.rest.left == Transform3D.IDENTITY)
+	slider.free()
 
 
 func session() -> void:

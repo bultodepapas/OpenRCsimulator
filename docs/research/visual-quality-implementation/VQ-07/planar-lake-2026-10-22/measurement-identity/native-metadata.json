@@ -1,0 +1,65 @@
+{
+  "complete": true,
+  "cases": [
+    {
+      "case": "high-probe",
+      "profile": {
+        "active": "high_experimental",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "forward_plus",
+        "requested": "high"
+      },
+      "lake_reflections": {
+        "capture_size_at_report": [
+          0,
+          0
+        ],
+        "mode": "probe",
+        "planar_active_at_report": false,
+        "requested": ""
+      },
+      "scripted": true,
+      "performance_qualification": false
+    },
+    {
+      "case": "high-planar",
+      "profile": {
+        "active": "high_experimental",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "forward_plus",
+        "requested": "high"
+      },
+      "lake_reflections": {
+        "capture_size_at_report": [
+          640,
+          360
+        ],
+        "mode": "planar",
+        "planar_active_at_report": true,
+        "requested": "planar"
+      },
+      "scripted": true,
+      "performance_qualification": false
+    },
+    {
+      "case": "standard-ignored",
+      "profile": {
+        "active": "standard",
+        "gpu": "NVIDIA GeForce RTX 3090",
+        "renderer": "gl_compatibility",
+        "requested": ""
+      },
+      "lake_reflections": {
+        "capture_size_at_report": [
+          0,
+          0
+        ],
+        "mode": "probe",
+        "planar_active_at_report": false,
+        "requested": "planar"
+      },
+      "scripted": true,
+      "performance_qualification": false
+    }
+  ]
+}

@@ -57,6 +57,7 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const FieldBuilder = preload("res://render/field.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
+const LakeReflection = preload("res://render/lake/lake_reflection.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
@@ -2640,7 +2641,8 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		preset = "high-experimental" if Atmosphere.HighGraphics.active() else "current-default",
 		graphics_profile = Atmosphere.HighGraphics.describe(),
 		backend = RenderingServer.get_current_rendering_method(),
-		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
+		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
+			scaling_3d_scale = get_viewport().scaling_3d_scale, lake_reflections = LakeReflection.describe(_field_node)},
 		camera = {
 			fov_deg = _camera.fov,
 			autozoom = _rig.auto_zoom,
@@ -2727,7 +2729,8 @@ func capture_evidence() -> Dictionary:
 			projection = _camera.projection, keep_aspect = _camera.keep_aspect,
 			viewport = [get_viewport().get_visible_rect().size.x, get_viewport().get_visible_rect().size.y]},
 		exposure = _env.tonemap_exposure, tonemapper = _env.tonemap_mode,
-		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa, scaling_3d_scale = get_viewport().scaling_3d_scale},
+		render_settings = {msaa_3d = get_viewport().msaa_3d, screen_space_aa = get_viewport().screen_space_aa,
+			scaling_3d_scale = get_viewport().scaling_3d_scale, lake_reflections = LakeReflection.describe(_field_node)},
 		clock_s = ShaderClock.last_clock, simulation_time_s = session.sim.time(), simulation_tick = session.sim.tick,
 		state = {paused = session.sim.paused, aircraft_visible = _airplane.root.visible, treeline_visible = not _treeline_hidden, shadow = _shadow_mode,
 			engine_shadows = Atmosphere.engine_shadows, physics_state = Array(session.sim.state),

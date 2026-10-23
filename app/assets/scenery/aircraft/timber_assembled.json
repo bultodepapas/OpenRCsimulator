@@ -118,14 +118,14 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/turbo-lumber-evolution.json",
-			"sha256": "99ab3f6ccd9477fecdf8e8abb10ce08e3a93eccbb9b4792f741cae52c18b9075",
-			"pinned_sha256": "99ab3f6ccd9477fecdf8e8abb10ce08e3a93eccbb9b4792f741cae52c18b9075",
+			"sha256": "cfdb6299f412200db543e1ed7233a7e0b1ce96aa3baa4f656636c6027f283b38",
+			"pinned_sha256": "cfdb6299f412200db543e1ed7233a7e0b1ce96aa3baa4f656636c6027f283b38",
 			"matches_pin": true
 		},
 		"builder": {
 			"path": "res://aircraft/imported_model.gd",
-			"sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
-			"pinned_sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
+			"sha256": "bf28b60d60df227b05a52c15d3bcab59727b3133342d980851c16e143e1a9857",
+			"pinned_sha256": "bf28b60d60df227b05a52c15d3bcab59727b3133342d980851c16e143e1a9857",
 			"matches_pin": true
 		},
 		"geometry_script": {

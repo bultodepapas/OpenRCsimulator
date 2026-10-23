@@ -1,0 +1,243 @@
+{
+  "schema": "openrc-aircraft-model",
+  "version": 2,
+  "family_id": "f4u-corsair-250",
+  "builder": {
+    "script": "res://aircraft/imported_model.gd",
+    "adapter": "imported_glb"
+  },
+  "surface_method": "apply_surfaces",
+  "datum": {
+    "model_z_le": 0.0,
+    "model_y_thrust": 0.0
+  },
+  "coordinates": {
+    "units": "m",
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "root_node": "airplane",
+  "source_registry": {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "55fd266b29997dc7813b1d5b9a41bd2598f43eb48af8180f833c3db808611690",
+    "hash_mode": "lf_text"
+  },
+  "geometry": {
+    "script": "res://aircraft/f4u_corsair_geometry.gd",
+    "source": {
+      "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
+      "sha256": "d8e2d603f575da6c3ea1336fedd9b0f03f1a2da299ed84ff06a9f74613181a9d",
+      "hash_mode": "lf_text"
+    },
+    "revision": "g1.3-c69151b3c96c",
+    "datum_source": {
+      "model_z_le": {
+        "value": 0.0
+      },
+      "model_y_thrust": {
+        "value": 0.0
+      }
+    }
+  },
+  "asset": {
+    "kind": "imported_glb",
+    "identity": "F4U Corsair g1.3 game model (author delivery derived from master R59)",
+    "revision": "g1.3-c69151b3c96c",
+    "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+    "sha256": "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e"
+  },
+  "bindings": {
+    "controls": {
+      "aileron_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_left",
+            "node": "aileron_left_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_left_hinge"
+          }
+        ]
+      },
+      "aileron_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "aileron_right",
+            "node": "aileron_right_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.aileron_right_hinge"
+          }
+        ]
+      },
+      "elevator": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "elevator",
+            "node": "elevator_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.elevator_hinge"
+          }
+        ]
+      },
+      "rudder": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "rudder",
+            "node": "rudder_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.rudder_hinge"
+          }
+        ]
+      },
+      "flap_left": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "flap_left_1",
+            "node": "flap_left_1_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_left_1_hinge"
+          },
+          {
+            "key": "flap_left_2",
+            "node": "flap_left_2_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_left_2_hinge"
+          },
+          {
+            "key": "flap_left_3",
+            "node": "flap_left_3_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_left_3_hinge"
+          }
+        ]
+      },
+      "flap_right": {
+        "visual_only": false,
+        "hinges": [
+          {
+            "key": "flap_right_1",
+            "node": "flap_right_1_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_right_1_hinge"
+          },
+          {
+            "key": "flap_right_2",
+            "node": "flap_right_2_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_right_2_hinge"
+          },
+          {
+            "key": "flap_right_3",
+            "node": "flap_right_3_hinge",
+            "source": "geometry_articulation",
+            "geometry_ref": "articulations.flap_right_3_hinge"
+          }
+        ]
+      }
+    },
+    "rotor": {
+      "present": true,
+      "node": "propeller",
+      "spin_node": "propeller_spin",
+      "authored_diameter_m": 0.9003021457332075,
+      "source": "geometry_articulation",
+      "geometry_ref": "articulations.propeller_spin"
+    },
+    "gear": {
+      "keys": {
+        "left": "left",
+        "right": "right",
+        "tail": "tail",
+        "steering": "steering"
+      }
+    },
+    "crash": {
+      "provider": "gltf_extras",
+      "metadata_script": "",
+      "asset_node": ""
+    }
+  },
+  "authoring_sources": [
+    {
+      "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
+      "sha256": "d8e2d603f575da6c3ea1336fedd9b0f03f1a2da299ed84ff06a9f74613181a9d",
+      "hash_mode": "lf_text",
+      "role": "geometry"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/source-manifest.json",
+      "sha256": "4b91a84f258230f007d753ea6e96e16445da52c7d66c98abcbd125da3f2331e0",
+      "hash_mode": "lf_text",
+      "role": "asset_identity"
+    },
+    {
+      "path": "assets/aircraft/f4u-corsair-250/gear-samples.json",
+      "sha256": "829b40c8a1dcabbae901a037f6ebe52e155535b1528b15d07534bd2c752f66c5",
+      "hash_mode": "lf_text",
+      "role": "gear_samples"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "res://aircraft/f4u_corsair_geometry.gd",
+      "sha256": "04e5b67140303421a5aa19d60ac06058e544f81ce78e8a53f851f2cd1913809f",
+      "hash_mode": "lf_text",
+      "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/imported_model.gd",
+      "sha256": "13b5be8e0c10abe02848a70e0b647489c0ae6c4b83c0a3bc2a98b377df1de2d9",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/imported_model_contract.gd",
+      "sha256": "eb1bcf44ad54e01a086aadd97439b4292a2bef0f33e9af15c8e0c4eec510f308",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "9bf210209c791be07ba8f2636fa95c52f74fb9dbcc97e8b04b017a883cbb9156",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/retractable_model.gd",
+      "sha256": "ba6cbf65c686fd244ffe4ce1c3debe9fe0e1a22b7bf32cf5d3ddf99e356cea83",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "sha256": "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e",
+      "hash_mode": "raw",
+      "role": "imported_asset"
+    },
+    {
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb.import",
+      "sha256": "9a951afd2de50da7a1f8cc643fd869942aac16377f154257afd2fc35b094aa3b",
+      "hash_mode": "lf_text",
+      "role": "resource_dependency"
+    }
+  ],
+  "construction": {
+    "version": 1,
+    "hinge_axis": "+X",
+    "rotor": {
+      "frame_node": "thrust_frame",
+      "geometry_ref": "thrust",
+      "axis": "+X"
+    },
+    "gear": [],
+    "material_grow": [],
+    "retraction": {
+      "geometry_ref": "gear"
+    }
+  }
+}

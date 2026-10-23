@@ -54,7 +54,9 @@ static func validate(data: Variant) -> PackedStringArray:
 			continue
 		for key in ["spin_node", "compression_node"] + (["steer_node"] if role == steered else []):
 			var name: Variant = wheel.get(key)
-			if not name is String or not data.bindings.has(name) or used.has(name) or names.has(name):
+			# F4U-05: an oleo slider may also be a sampled carrier; compression then offsets its sampled pose.
+			# Spin and steering helpers are rotated by presentation code and must stay unsampled.
+			if not name is String or not data.bindings.has(name) or used.has(name) or (names.has(name) and key != "compression_node"):
 				errors.append("Invalid or reused wheel helper: " + str(name))
 			used[name] = true
 		for key in ["center_model", "contact_model"]:
@@ -93,13 +95,15 @@ static func bind(data: Dictionary, nodes: Dictionary) -> Dictionary:
 	var gear := {}
 	var compression := {}
 	var rest := {}
+	var sampled_compression := {}
 	for role: String in data.wheels:
 		var wheel: Dictionary = data.wheels[role]
 		gear[role] = bound[wheel.spin_node]
 		compression[role] = bound[wheel.compression_node]
 		rest[role] = compression[role].transform
+		if data.retraction.samples[0].nodes.has(wheel.compression_node): sampled_compression[role] = true
 		if role in ["nose", "tail"]: gear.steering = bound[wheel.steer_node]
-	var rig := {data = data, nodes = bound, gear = gear, compression = compression, rest = rest}
+	var rig := {data = data, nodes = bound, gear = gear, compression = compression, rest = rest, sampled_compression = sampled_compression}
 	# The imported asset must be at the first (fully stowed) sample exactly.
 	for name in data.retraction.samples[0].nodes:
 		var sample: Dictionary = data.retraction.samples[0].nodes[name]
@@ -121,3 +125,6 @@ static func apply(rig: Dictionary, extension: float) -> void:
 		var node: Node3D = rig.nodes[name]
 		node.position = _v3(a.translation).lerp(_v3(b.translation), fraction)
 		node.quaternion = _rotation(a.rotation_wxyz).slerp(_rotation(b.rotation_wxyz), fraction).normalized()
+	# A sampled oleo slider: presentation compression (render/ground_gear.gd) offsets the pose just sampled.
+	for role: String in rig.get("sampled_compression", {}):
+		rig.rest[role] = rig.compression[role].transform

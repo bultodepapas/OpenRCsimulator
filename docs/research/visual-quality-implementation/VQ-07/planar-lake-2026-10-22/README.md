@@ -134,3 +134,156 @@ The shared tree advanced through unrelated commits during work; no exact
 whole-repository baseline equivalence is claimed. PNGs are lossless evidence;
 MP4/JPEG motion derivatives are viewing aids, with all original frames
 reproducible through the fixture.
+
+## Camera-motion follow-up, 2026-10-22
+
+The water-side guard now uses `Camera3D.get_camera_transform().origin` instead
+of the node origin. Camera h/v offsets move the rendered eye: a node below the
+water could previously disable a valid above-water reflection, and a node above
+water could keep the capture active with its actual eye submerged. This was
+reproduced with synthetic offset cameras; the ordinary game camera currently
+does not use these offsets. No vendor, shader, physics or profile default changed.
+
+The native raised-eye case has node Y −0.65 m and actual eye Y +0.248809 m over
+water at Y −0.45 m. The jet reflection is missing [before](camera-motion/baseline/raised-eye.png)
+and present [after](camera-motion/candidate/raised-eye.png). The reverse case,
+with actual eye Y −1.148809 m, now disables the extra viewport and restores the
+static probe. An independent reviewer reproduced both failures and found no
+remaining concrete projection mismatch after the correction.
+
+The expanded planar contract passes **51 checks, zero failures/errors/warnings**.
+Before the repair, the two new water-side behavior checks failed. Five points
+(center and off-axis) compare normalized main-view virtual-image coordinates
+with the mirror camera across three roll/FOV/aspect/offset configurations.
+These geometric checks pass alongside the offset gates and existing lifecycle
+checks. The retained failing baseline used center-only projection assertions;
+the final test strengthens these to five points.
+
+Additional production-World captures:
+
+- [Two-second camera orbit](camera-motion/candidate/orbit.mp4): 121 prescribed
+  frames with changing roll, FOV and viewing angle. All remain active and all
+  121 PNGs are pixel identical before/after this targeted guard repair.
+  Selected frames were visually inspected; this is not human pilot acceptance
+  or an actual flight. Motion PNGs remain reproducible; the clip/JPEGs are derivatives.
+- [Off-screen jet reflection](camera-motion/candidate/offscreen-jet.png) and
+  [hidden-aircraft control](camera-motion/candidate/offscreen-hidden.png): source
+  center UV X is 1.227 (outside the main image), while the reflected center is
+  at (0.923, 0.799). The bottom-right reflection ROI changes in 3,339 pixels by
+  more than 2/255 when the aircraft is hidden, separate from its sun shadow.
+- Looking entirely at the sky disables the mirror viewport; returning to the
+  lake restores it. These checks and UV comparisons are in the retained reports.
+
+Two ordinary native High sessions attempted the existing 10 s warmup + 60 s
+flight protocol, first with the option absent and then with `planar`. Both used
+the same jet, airborne-half-power start and fixed pilot lake view. With live
+controller input the throttle closed, the jet crashed within the warmup, and
+the simulation paused. **Both collections are ineligible for flight/performance
+qualification**: zero simulation ticks advance during the measured minute.
+The existing `native_summary.py` correctly rejects both. No pause behavior,
+controller input or crash protection was bypassed to obtain a passing number.
+The reports record a 120 Hz display, uncapped engine and VSync enabled; do not
+pool them with older 60 Hz evidence or compare their paused frame times as flight.
+
+Raw reports are losslessly compressed under `camera-motion/native-ineligible/`,
+with their engine logs and unmodified reducer results. To rerun the existing
+reducer, decompress one report as `run-1.json` in a new directory with its
+matching log as `run-1.log`. Checked command receipts preserve the invocations.
+The native fixtures retain the pre-existing seven Texture RID exit warning;
+the focused headless contract has no warnings. An initial edge-fixture parse
+error was fixed before capture and is excluded from accepted evidence.
+
+Run `python <this-directory>/camera-motion/reduce.py` to verify the retained
+camera cases, image parity summary, reflected-aircraft ROI and rejected native
+eligibility. Reproduce captures through the existing launcher with `--profile
+high`, `OPENRC_LAKE_REFLECTIONS=planar`, `--script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/camera-motion/motion_probe.gd`
+(or `edge_probe.gd`) and `-- --out=<new absolute directory>`. These scripts are
+capture diagnostics; their `complete` field alone is not a pass verdict.
+[Follow-up patch](camera-motion/followup.patch) and [source identity](camera-motion/identity.json)
+record this correction separately from the initial integration above.
+
+Keep the mode default-off. Sustained active flight, broader clipping/roughness,
+night/storm and full release/platform qualification remain open. The new cases
+extend the bounded camera evidence; they do not close those gates.
+
+## Reflection measurement identity, 2026-10-22
+
+The native reducer previously accepted a synthetic campaign containing one
+probe run and two planar runs, provided each passed its individual pacing gates.
+Frame reports and screenshot sidecars now describe the installed lake path.
+The reducer validates that descriptor and rejects mixed modes or mixed known
+and missing modes. All-historical missing data remains numerically compatible
+but explicitly configuration-incomplete. The [operating contract](../../../../../research/performance/README.md#native-frame-evidence)
+defines the fields and their snapshot limits. No shader, physics, profile
+default or per-frame observer changed.
+
+Evidence under `measurement-identity/` includes:
+
+- The same three **synthetic**, short-policy inputs, retained old reducer and
+  before/after summaries: all three individual runs pass; the campaign changes
+  from exit 0/pass to exit 1/rejected. These are reducer fixtures, not flights.
+- Serialized production-app metadata checks at 1280×720: High probe, High
+  planar (active 640×360 capture), and Standard with planar requested (probe).
+  Each uses the existing scripted detailed-jet route, zero warmup and 0.5 s
+  collection. A separate native High screenshot with `--lake=off` records
+  `absent` through the screenshot-sidecar route. These are metadata smoke
+  checks, not new lake appearance or performance acceptance.
+- **61 planar contract checks** and **104 performance-tool Python tests** pass.
+  Descriptor checks cover absent lake, initialization, resize, underwater and
+  missing-camera fallback, teardown, plain values and unchanged scene state.
+  Python checks cover mixed/historical modes and malformed nested metadata.
+  Checked engine receipts and Python output are retained.
+
+Run `python <this-directory>/measurement-identity/verify.py` from the repository
+to recheck the retained campaign and four metadata cases. Native invocations
+are preserved in `checks/*/report.json`; use new output paths when rerunning.
+[Source identity](measurement-identity/identity.json) and
+[patch](measurement-identity/followup.patch) identify the implementation.
+Historical command/output paths in receipts and summaries are unmodified.
+
+The seven Texture RID shutdown warning persists in both High frame collectors;
+Standard and the no-lake screenshot do not emit it. Two separate World fixture
+diagnostics retain the same warning after four draining draw frames and after
+disabling SSAO. Their scripts/logs remain under `shutdown-diagnostics/`; neither
+result identifies the owning subsystem or justifies a production workaround.
+The focused headless contract has no errors or warnings. Full active-flight,
+lifecycle and High qualification remain open; no FPS improvement is claimed.
+
+## Aircraft binding recovery and low camera screen, 2026-10-22
+
+The next native camera screen stopped before rendering the detailed jet:
+`Airplane.build` rejected the changed shared `retractable_model.gd` dependency.
+The failure is retained under `binding-recovery/checks/low-screen-*`. The model
+generator's check isolated stale Avanti and Turbo Lumber manifests. Running
+the existing model, customization and Workshop generators in dependency order
+restored both families. At that point the five generated files changed only
+dependency/manifest hashes and the two derived customization slot hashes;
+independent review confirmed this. Aircraft quantities and sampled poses were
+unchanged. The [authoring contract](../../../../AIRCRAFT_CONTRACT.md#model-and-package-contract)
+now states that regeneration order explicitly.
+
+The same native fixture then completed. At a camera height of 0.45 m above mean
+water, the detailed jet and its reflection remain visible at camera rolls of
+0°, 30°, 60° and 85°. A 12 m camera and a submerged-jet diagnostic complete six
+prescribed poses. All six PNGs were inspected; no new clipping defect was found
+in these cases. See the [low view](binding-recovery/captures/low.png),
+[60° roll](binding-recovery/captures/roll60.png) and
+[high view](binding-recovery/captures/high.png). No reflection algorithm change
+was justified. These are production-World render poses, not an active flight,
+continuous motion acceptance or performance measurement. The existing seven
+Texture RID exit warning remains.
+
+Six focused suites pass **883 checks**: Avanti model 390, wheel/contact alignment
+89, model manifests 75, Workshop descriptors 102, customization 159 and imported
+model 68. Logs, generation commands, fixture and images are under
+`binding-recovery/`. Reproduce with native High, `OPENRC_LAKE_REFLECTIONS=planar`,
+`--script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/binding-recovery/low_probe.gd`
+and `-- --out=<new absolute directory>`.
+
+Concurrent F4U authoring subsequently regenerated the shared registries again;
+those additions remain outside this repair. The [identity record](binding-recovery/identity.json)
+preserves the initial repair hashes without claiming whole-tree equivalence.
+All three generator freshness checks then passed with six visual families;
+the five manifest/model/Workshop/customization suites were repeated successfully
+against that combined state (`binding-recovery/final-checks/`). This does not
+qualify the new F4U model or its sampled compression path.

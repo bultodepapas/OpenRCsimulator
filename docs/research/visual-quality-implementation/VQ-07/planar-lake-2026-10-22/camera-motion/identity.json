@@ -1,0 +1,9 @@
+{
+  "head": "cb9c70b048cbf9cbecf838483611185dbd7d5751",
+  "before_adapter_sha256": "28470272bc9edcfbd3a5e1c974dd2bd4d961298e0628bf2e713086e645e978cd",
+  "after_sha256": {
+    "app/render/lake/lake_planar_reflection.gd": "5231594e9aefad1f93e8d6ebadf91673075c1a3d73f7cc9804efdf012c584b36",
+    "app/tests/test_lake_planar_reflection.gd": "20d3d3af32de880745f0c838f52fe758fb08f60bb34eb7b5c24245ce68eaa070"
+  },
+  "native_timing_note": "Before guard correction; both runs crashed and paused before sampling. No flight qualification."
+}

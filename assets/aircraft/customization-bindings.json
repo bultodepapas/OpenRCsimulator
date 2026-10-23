@@ -1131,6 +1131,12 @@
           "provenance": "authored"
         }
       ]
+    },
+    {
+      "visual_family": "f4u-corsair-250",
+      "paint_slots": [],
+      "marking_slots": [],
+      "smoke_slots": []
     }
   ]
 }

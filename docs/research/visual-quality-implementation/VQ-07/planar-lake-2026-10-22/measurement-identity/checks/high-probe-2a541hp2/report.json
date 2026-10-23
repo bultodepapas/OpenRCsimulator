@@ -1,0 +1,60 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e27e1c2a-e639-4761-b929-15f8c2d08a4c",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--resolution",
+    "1280x720",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--scripted",
+    "--aircraft=sebart-avanti-s-a200-p100rx",
+    "--view=pilot",
+    "--look_az=49",
+    "--look_el=-1",
+    "--look_alt=1.7",
+    "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\high-probe.json",
+    "--warmup=0",
+    "--t=0.5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T00:21:50.431198+00:00",
+  "label": "high-probe",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\checks\\high-probe-2a541hp2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\checks\\high-probe-2a541hp2\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 16,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 16.141,
+  "log_bytes": 1161,
+  "log_sha256": "d537aab104d3111df4db6cc9e0029f822a283b999f4f4e32203e1c02c17c9223"
+}

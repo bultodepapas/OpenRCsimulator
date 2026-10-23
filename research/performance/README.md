@@ -266,6 +266,19 @@ partially specified configuration at campaign level. Historical reports lacking
 both fields retain numeric compatibility with `pacing_configuration_complete=false`;
 unknown never means uncapped. Keep their checked command lines as separate evidence.
 
+Frame reports and capture sidecars also record `render_settings.lake_reflections`:
+normalized environment request, installed `mode` (`absent`, `probe`, `planar`),
+`planar_active_at_report` and `capture_size_at_report`. The installed path comes
+from the scene; requesting planar in Standard still reports `probe`. Activity
+and size are end snapshots, not continuous visibility/cost measurements. A
+temporarily inactive planar helper remains installed in `planar` mode.
+The reducer rejects malformed descriptors, mixed installed modes and mixed
+known/missing modes within a campaign. All-historical missing modes retain
+numeric compatibility with `lake_reflection_configuration_complete=false`;
+unknown does not mean probe or qualify a reflection configuration. Equal modes
+alone do not establish equal workloads. [Reproduction and native checks](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#reflection-measurement-identity-2026-10-22)
+retain the mixed-mode failure and correction.
+
 Retain combined stdout/stderr as `run-1.log`, repeat with new filenames, and record
 display refresh, VSync, power plan, driver and source/package identity. Dummy audio
 excludes output-device acceptance. A process-cold launch says nothing about GPU cache

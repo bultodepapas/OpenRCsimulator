@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "abc1a34e-b072-48d0-8696-a06dfb09d987",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../tmp/aaa-planar-next-20261022/low_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-planar-next-20261022/screen"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T00:31:45.292606+00:00",
+  "label": "low-screen",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-next-20261022\\checks\\low-screen-gndaa4a_\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-next-20261022\\checks\\low-screen-gndaa4a_\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "lake low camera screen complete"
+  ],
+  "process_exit": 1,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 5,
+      "message": "Aircraft model contract: [\"SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/aircraft/retractable_model.gd\"]",
+      "context": [
+        "   at: push_error (core/variant/variant_utility.cpp:1023)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] build (res://render/airplane.gd:55)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "lake low camera screen complete"
+  ],
+  "reason": "process_exit",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 7.344,
+  "log_bytes": 1038,
+  "log_sha256": "1dc925e2dee2087c67df6851072dd0c18bd894725e68441c08118473d3a31194"
+}

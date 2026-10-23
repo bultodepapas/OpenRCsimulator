@@ -1,0 +1,61 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "56bedb6e-98cd-43bc-93e1-66f3bd16400a",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--resolution",
+    "1280x720",
+    "--audio-driver",
+    "Dummy",
+    "--max-fps",
+    "0",
+    "--",
+    "--aircraft=sebart-avanti-s-a200-p100rx",
+    "--landscape=club_field",
+    "--start=airborne_half_power",
+    "--view=pilot",
+    "--look_az=49",
+    "--look_el=-1",
+    "--look_alt=1.7",
+    "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-planar-motion-20261022/flight-high-control.json",
+    "--warmup=10",
+    "--t=60"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T00:02:43.550906+00:00",
+  "label": "flight-high-control",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-motion-20261022\\checks\\flight-high-control-w922awjm\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-motion-20261022\\checks\\flight-high-control-w922awjm\\report.json",
+  "timeout_seconds": 115.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 18,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 84.453,
+  "log_bytes": 1357,
+  "log_sha256": "4e3c5603465b570a67a9e9df00decf0ab7e8f7810c1dd2bd20478ada58fcf717"
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_models.py",
+      "--check"
+    ],
+    "exit_code": 1,
+    "output": "stale generated aircraft model manifests:\n  app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json\n  app/data/aircraft_models/turbo-lumber-evolution.json\nrun: python research/aircraft-standardization/build_models.py\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_models.py"
+    ],
+    "exit_code": 0,
+    "output": "generated 5 aircraft model manifests\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_customization.py"
+    ],
+    "exit_code": 0,
+    "output": "generated customization bindings (5 visual families)\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-editor/build_descriptors.py"
+    ],
+    "exit_code": 0,
+    "output": "Generated 8 Workshop descriptors.\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_models.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "output": "model manifests current (5 visual families)\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_customization.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "output": "customization bindings current (5 visual families)\n"
+  },
+  {
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "output": "8 Workshop descriptors are current.\n"
+  }
+]

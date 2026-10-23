@@ -15,6 +15,7 @@ from build_models import (
     ModelManifestError,
     _normal_bytes,
     _validate_articulation,
+    _validate_retraction_rig,
     build_manifest,
     validate_dependency_hashes,
     validate_registry,
@@ -30,6 +31,7 @@ FAMILIES = {
     "p51d-mustang-120",
     "sebart-avanti-s-a200-p100rx",
     "turbo-lumber-evolution",
+    "f4u-corsair-250",
 }
 
 
@@ -44,7 +46,7 @@ class AircraftModelManifestTests(unittest.TestCase):
         cls.by_family = {item["family_id"]: item for item in cls.registry["families"]}
         cls.manifests = {path.stem: load_json(path) for path in OUTPUT_DIR.glob("*.json")}
 
-    def test_generated_manifests_are_current_and_cover_five_visual_builders(self):
+    def test_generated_manifests_are_current_and_cover_six_visual_builders(self):
         result = subprocess.run(
             [sys.executable, "research/aircraft-standardization/build_models.py", "--check"],
             cwd=ROOT,
@@ -56,7 +58,7 @@ class AircraftModelManifestTests(unittest.TestCase):
         self.assertEqual(set(self.by_family), FAMILIES)
         self.assertEqual(set(self.manifests), FAMILIES)
         self.assertEqual(self.registry["version"], 2)
-        imported = {"turbo-lumber-evolution", "sebart-avanti-s-a200-p100rx"}
+        imported = {"turbo-lumber-evolution", "sebart-avanti-s-a200-p100rx", "f4u-corsair-250"}
         for family_id, manifest in self.manifests.items():
             self.assertEqual(manifest["version"], 2 if family_id in imported else 1)
         self.assertFalse(validate_registry(self.registry))
@@ -69,6 +71,8 @@ class AircraftModelManifestTests(unittest.TestCase):
             "sebart-avanti-s-a200-p100rx": (0.0, 0.0, 0.0, "imported_glb"),
             # R2's measured mesh radius is 0.14032 m (geometry.json), independent of physical propeller sizing.
             "turbo-lumber-evolution": (0.0, 0.0, 0.28064, "imported_glb"),
+            # F4U-05: g1.3's three-blade visual propeller; the physical 30x18 is F4U-07 data.
+            "f4u-corsair-250": (0.0, 0.0, 0.9003021457332075, "imported_glb"),
         }
         for family_id, (datum_z, datum_y, diameter, adapter) in expected.items():
             with self.subTest(family=family_id):
@@ -80,7 +84,7 @@ class AircraftModelManifestTests(unittest.TestCase):
                 self.assertEqual(
                     set(manifest["bindings"]["controls"]),
                     {"aileron_left", "aileron_right", "elevator", "rudder"}
-                    | ({"flap_left", "flap_right"} if family_id in {"sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"} else set()),
+                    | ({"flap_left", "flap_right"} if family_id in {"sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "f4u-corsair-250"} else set()),
                 )
         avanti = self.manifests["sebart-avanti-s-a200-p100rx"]
         self.assertEqual(
@@ -153,6 +157,50 @@ class AircraftModelManifestTests(unittest.TestCase):
         with self.assertRaisesRegex(ModelManifestError, "must match the family's gear bindings"):
             build_manifest(ROOT, REGISTRY_PATH, family)
 
+    def test_corsair_combines_a_rotor_with_a_sampled_taildragger_retraction(self):
+        # F4U-05: the first imported family with both a propeller frame and a GearRetract rig.
+        manifest = self.manifests["f4u-corsair-250"]
+        construction = manifest["construction"]
+        self.assertEqual(construction["rotor"], {"frame_node": "thrust_frame", "geometry_ref": "thrust", "axis": "+X"})
+        self.assertEqual(construction["retraction"], {"geometry_ref": "gear"})
+        self.assertEqual(construction["gear"], [])
+        self.assertEqual(manifest["bindings"]["gear"]["keys"], {"left": "left", "right": "right", "tail": "tail", "steering": "steering"})
+        for side in ("left", "right"):
+            hinges = manifest["bindings"]["controls"]["flap_" + side]["hinges"]
+            self.assertEqual([hinge["node"] for hinge in hinges], [f"flap_{side}_{i}_hinge" for i in (1, 2, 3)])
+        geometry = json.loads((ROOT / manifest["geometry"]["source"]["path"]).read_text(encoding="utf-8"))
+        rig = geometry["gear"]
+        sampled = set(rig["retraction"]["samples"][0]["nodes"])
+        self.assertIn("gear_compression_left", sampled)
+        self.assertTrue({"gear_spin_left", "gear_spin_tail", "gear_steer_tail", "gear_compression_tail"}.isdisjoint(sampled))
+        self.assertEqual(len(rig["retraction"]["samples"]), 101)
+
+    def test_retraction_rig_accepts_a_sampled_oleo_slider_but_not_sampled_spin_or_steering(self):
+        # F4U-05: a compression helper may itself be a GearRetract carrier (the Corsair's oleo slider);
+        # presentation compression then offsets its sampled pose. Spin and steering helpers stay unsampled.
+        geometry = json.loads((ROOT / "assets/aircraft/avanti-s-a200/blender-geometry.json").read_text(encoding="utf-8"))
+        keys = {"left", "right", "nose", "steering"}
+        _validate_retraction_rig(geometry["gear"], keys)
+
+        def sample(helper_key):
+            rig = copy.deepcopy(geometry["gear"])
+            name = rig["wheels"]["left"][helper_key]
+            rest = rig["bindings"][name]
+            # Any valid unit quaternion: the rule concerns which nodes are sampled, not their values.
+            for item in rig["retraction"]["samples"]:
+                item["nodes"][name] = {"translation": list(rest["rest_translation"]), "rotation_wxyz": [1.0, 0.0, 0.0, 0.0]}
+            return rig
+
+        _validate_retraction_rig(sample("compression_node"), keys)
+        with self.assertRaisesRegex(ModelManifestError, "invalid or reused wheel helper"):
+            _validate_retraction_rig(sample("spin_node"), keys)
+        steered = copy.deepcopy(geometry["gear"])
+        name = steered["wheels"]["nose"]["steer_node"]
+        for item in steered["retraction"]["samples"]:
+            item["nodes"][name] = {"translation": [0.0, 0.0, 0.0], "rotation_wxyz": [1.0, 0.0, 0.0, 0.0]}
+        with self.assertRaisesRegex(ModelManifestError, "invalid or reused wheel helper"):
+            _validate_retraction_rig(steered, keys)
+
     def test_construction_references_resolve_and_gear_does_not_require_control_metadata(self):
         family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])
         family["construction"]["gear"][0]["geometry_ref"] = "articulations.missing_gear"
@@ -166,6 +214,8 @@ class AircraftModelManifestTests(unittest.TestCase):
     def test_source_registry_v1_remains_readable(self):
         legacy = copy.deepcopy(self.registry)
         legacy["version"] = 1
+        # The F4U Corsair exists only as a version 2 construction family; a v1 registry predates it.
+        legacy["families"] = [item for item in legacy["families"] if item["family_id"] != "f4u-corsair-250"]
         timber = next(item for item in legacy["families"] if item["family_id"] == "turbo-lumber-evolution")
         timber.pop("construction")
         timber["builder"]["script"] = "res://aircraft/timber_model.gd"

@@ -3,7 +3,8 @@
 
 This reducer checks collection integrity, active-flight eligibility, and the
 declared pacing policy separately. It does not establish aircraft, pilot, or
-hardware acceptance.
+hardware acceptance. When recorded, installed lake-reflection mode must be
+consistent across a campaign; this is not a render-quality qualification.
 """
 
 from __future__ import annotations
@@ -105,6 +106,67 @@ def _close(left: float, right: float, *, tolerance: float = 1e-6) -> bool:
     return math.isclose(left, right, rel_tol=0.0, abs_tol=tolerance)
 
 
+LAKE_REFLECTION_MODES = {"absent", "probe", "planar"}
+
+
+def _lake_reflection_settings(report: dict[str, Any]) -> tuple[bool, Any]:
+    render_settings = report.get("render_settings")
+    if not isinstance(render_settings, dict) or "lake_reflections" not in render_settings:
+        return False, None
+    return True, render_settings["lake_reflections"]
+
+
+def _lake_reflection_mode(report: dict[str, Any]) -> str | None:
+    present, settings = _lake_reflection_settings(report)
+    if not present or not isinstance(settings, dict):
+        return None
+    mode = settings.get("mode")
+    return mode if isinstance(mode, str) and mode in LAKE_REFLECTION_MODES else None
+
+
+def _validate_lake_reflection_settings(report: dict[str, Any], errors: list[str]) -> None:
+    if "render_settings" in report and not isinstance(report["render_settings"], dict):
+        errors.append("render_settings must be an object")
+        return
+    present, settings = _lake_reflection_settings(report)
+    if not present:
+        # Historical reports did not record the installed lake reflection path.
+        return
+    label = "render_settings.lake_reflections"
+    if not isinstance(settings, dict):
+        errors.append(f"{label} must be an object")
+        return
+
+    requested = settings.get("requested")
+    if not isinstance(requested, str):
+        errors.append(f"{label}.requested must be a string")
+    elif requested != requested.strip().lower():
+        errors.append(f"{label}.requested must be normalized to lowercase without surrounding whitespace")
+
+    mode = settings.get("mode")
+    if not isinstance(mode, str) or mode not in LAKE_REFLECTION_MODES:
+        errors.append(f"{label}.mode must be one of absent, probe, or planar")
+
+    active = settings.get("planar_active_at_report")
+    if type(active) is not bool:
+        errors.append(f"{label}.planar_active_at_report must be a boolean")
+
+    size = settings.get("capture_size_at_report")
+    if not isinstance(size, list) or len(size) != 2:
+        errors.append(f"{label}.capture_size_at_report must contain exactly two integers")
+    elif any(type(dimension) is not int or dimension < 0 for dimension in size):
+        errors.append(f"{label}.capture_size_at_report dimensions must be non-negative integers")
+    else:
+        zero_size = size == [0, 0]
+        positive_size = size[0] > 0 and size[1] > 0
+        if not zero_size and not positive_size:
+            errors.append(f"{label}.capture_size_at_report must be [0, 0] or two positive dimensions")
+        if active is True and (mode != "planar" or not positive_size):
+            errors.append(f"{label}.planar_active_at_report requires planar mode and a positive capture size")
+        if mode in ("absent", "probe") and (active is not False or not zero_size):
+            errors.append(f"{label} non-planar mode requires inactive reflection and capture size [0, 0]")
+
+
 def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | None]:
     """Validate v2 structure and derive values from the raw samples."""
     if not isinstance(report, dict):
@@ -142,6 +204,8 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
             errors.append("vsync_mode must be an integer from 0 through 3")
         elif "vsync" in report and (type(report["vsync"]) is not bool or report["vsync"] != (mode != 0)):
             errors.append("vsync must agree with vsync_mode")
+
+    _validate_lake_reflection_settings(report, errors)
 
     input_enabled = report.get("input_enabled")
     if type(input_enabled) is not bool:
@@ -487,6 +551,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "reasons": ["duration eligibility cannot be derived from an invalid report"],
         }
 
+    lake_reflection_mode = _lake_reflection_mode(report) if report is not None else None
     active_qualifier = collection_valid and not active_reasons
     if not collection_valid and "collection is invalid" not in active_reasons:
         active_reasons.append("collection is invalid")
@@ -512,6 +577,9 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
             "max_fps": report.get("max_fps") if report is not None else None,
             "vsync_mode": report.get("vsync_mode") if report is not None else None,
         },
+        "lake_reflection_configuration": (
+            {"mode": lake_reflection_mode} if lake_reflection_mode is not None else None
+        ),
         "performance_pass": performance_pass,
         "hardware_acceptance": "not_claimed",
     }
@@ -558,9 +626,26 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         campaign_reasons.append("runs have different or mixed known/unknown FPS caps or VSync modes")
     if configurations and not configuration_complete and not legacy_configuration:
         campaign_reasons.append("non-legacy pacing configuration requires both FPS cap and VSync mode")
+
+    lake_reflection_configurations = [run["lake_reflection_configuration"] for run in runs]
+    lake_reflection_configuration_consistent = bool(lake_reflection_configurations) and all(
+        item == lake_reflection_configurations[0] for item in lake_reflection_configurations
+    )
+    lake_reflection_configuration_complete = bool(lake_reflection_configurations) and all(
+        item is not None for item in lake_reflection_configurations
+    )
+    legacy_lake_reflection_configuration = bool(lake_reflection_configurations) and all(
+        item is None for item in lake_reflection_configurations
+    )
+    if lake_reflection_configurations and not lake_reflection_configuration_consistent:
+        campaign_reasons.append(
+            "runs have different or mixed known/unknown installed lake reflection modes"
+        )
     performance_pass = (
         len(runs) >= minimum_runs and all(run["performance_pass"] for run in runs)
         and configuration_consistent and (configuration_complete or legacy_configuration)
+        and lake_reflection_configuration_consistent
+        and (lake_reflection_configuration_complete or legacy_lake_reflection_configuration)
     )
     summary = {
         "format": SUMMARY_FORMAT,
@@ -575,6 +660,8 @@ def summarize_directory(input_dir: Path, output_file: Path, policy: dict[str, An
         "performance_pass": performance_pass,
         "pacing_configuration_consistent": configuration_consistent,
         "pacing_configuration_complete": configuration_complete,
+        "lake_reflection_configuration_consistent": lake_reflection_configuration_consistent,
+        "lake_reflection_configuration_complete": lake_reflection_configuration_complete,
         "performance_pass_count": sum(run["performance_pass"] for run in runs),
         "run_count": len(runs),
         "minimum_runs": minimum_runs,

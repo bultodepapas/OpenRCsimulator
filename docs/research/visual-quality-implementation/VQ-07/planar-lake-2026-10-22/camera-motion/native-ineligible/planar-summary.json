@@ -1,0 +1,89 @@
+{
+  "active_flight_qualifier_count": 0,
+  "campaign_reasons": [
+    "campaign has fewer than 3 runs",
+    "one or more runs failed an individual performance gate"
+  ],
+  "collection_valid": true,
+  "collection_valid_count": 1,
+  "complete": true,
+  "duration_eligible_count": 1,
+  "failures": [],
+  "format": "openrc-native-frame-summary v1",
+  "hardware_acceptance": "not claimed; this reducer evaluates report integrity and declared software pacing gates only",
+  "input_pattern": "run-*.json with same-stem .log files",
+  "minimum_runs": 3,
+  "pacing_configuration_complete": true,
+  "pacing_configuration_consistent": true,
+  "performance_pass": false,
+  "performance_pass_count": 0,
+  "policy": {
+    "active_nonadvancing_interval_max_usec": 250000,
+    "minimum_runs": 3,
+    "minimum_sample_s": 60.0,
+    "minimum_warmup_s": 10.0,
+    "p95_max_ms": 18.0,
+    "p99_max_ms": 25.0,
+    "simulation_wall_ratio_max": 1.01,
+    "simulation_wall_ratio_min": 0.99
+  },
+  "run_count": 1,
+  "runs": [
+    {
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance during the measured sample",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.006776,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-1.log",
+      "log_sha256": "176c8c41e6494397314add0750acd2af209d4b247c3a9ffa560eafefd3af53dc",
+      "metrics": {
+        "frame_ms": {
+          "max": 26.299,
+          "p50": 8.347,
+          "p95": 11.004,
+          "p99": 11.389
+        },
+        "max_frame_interval_usec": 26299,
+        "max_nonadvancing_interval_usec": 59998893,
+        "sample_simulation_span_s": 0.0,
+        "sample_simulation_ticks": 0,
+        "sample_wall_span_excluding_first_interval_s": 59.998893,
+        "simulation_wall_ratio": 0.0,
+        "tick_wall_ratio": 0.0
+      },
+      "pacing_configuration": {
+        "max_fps": 0,
+        "vsync_mode": 1
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "pass": false,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": false
+      },
+      "performance_pass": false,
+      "report": "run-1.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "dc37cb911ce901623c06b38f397d0ac5b26cfc0775a673ced6627394447cdd8e"
+    }
+  ]
+}

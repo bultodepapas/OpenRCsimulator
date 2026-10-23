@@ -1,0 +1,60 @@
+{
+	"cases": [
+		{
+			"active": true,
+			"name": "low",
+			"near": 0.87982177734375,
+			"reflected_uv": [
+				0.499999940395355,
+				0.709960460662842
+			]
+		},
+		{
+			"active": true,
+			"name": "roll30",
+			"near": 0.521316528320313,
+			"reflected_uv": [
+				0.440948635339737,
+				0.681831061840057
+			]
+		},
+		{
+			"active": true,
+			"name": "roll60",
+			"near": 0.451919555664063,
+			"reflected_uv": [
+				0.397719979286194,
+				0.604980170726776
+			]
+		},
+		{
+			"active": true,
+			"name": "roll85",
+			"near": 0.49383544921875,
+			"reflected_uv": [
+				0.382346659898758,
+				0.518299221992493
+			]
+		},
+		{
+			"active": true,
+			"name": "high",
+			"near": 11.5967330932617,
+			"reflected_uv": [
+				0.5,
+				0.574536323547363
+			]
+		},
+		{
+			"active": true,
+			"name": "below-water",
+			"near": 0.87982177734375,
+			"reflected_uv": [
+				0.499999940395355,
+				0.385366529226303
+			]
+		}
+	],
+	"complete": true,
+	"physics_validation": false
+}
