@@ -14,6 +14,7 @@ const EXTRA := "gp-extra-300s-60"
 const AVANTI := "sebart-avanti-s-a200-p100rx"
 const TIMBER := "turbo-lumber-evolution"
 const P51 := "p51d-mustang-120"
+const CORSAIR := "f4u-corsair-250"
 const GLOW_61FX := "stik-glow-61fx-2t"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
@@ -144,6 +145,11 @@ func _run() -> void:
 	await _preview(app)
 	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == P51, home.aircraft_id)
+	# F4U-09: the F4U Corsair follows the P-51 (experimental, flyable).
+	await ui.tap(KEY_ENTER)
+	await _preview(app)
+	_check("F4U Corsair: shown, experimental, Fly enabled", home.aircraft_id == CORSAIR and not home.fly_button.disabled
+		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == CORSAIR, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("Ventage Jet: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled

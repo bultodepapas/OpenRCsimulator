@@ -151,6 +151,15 @@ def compile_model():
         wheels[role] = dict(spec, radius_m=radius, center_model=centres,
                             contact_model=[[c[0], round(c[1] - radius, 10), c[2]] for c in centres])
 
+    # F4U-10: the smoke anchor at the delivered left middle exhaust stack (the F4U-1D's low cowl-flank stacks). The
+    # Moki's collector ring exit is not modelled; the visible stack is where a viewer expects the exhaust.
+    bx, by, bz = meta["landmarks_blender_m"]["detail_lenses_and_exhaust_exits"]["R43 | Escape unido -1 2"]
+    direction = [-0.4, -0.8, 0.45]
+    norm = math.sqrt(sum(v * v for v in direction))
+    exhausts = [{"position": [bx, bz, -by], "direction": [round(v / norm, 6) for v in direction], "radius_m": 0.008,
+                 "kind": "glow_prop", "pump": True,
+                 "source": "g1.3 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"}]
+
     data = {
         "schema": "openrc-f4u-model v1",
         "catalog_id": manifest["catalog_id"],
@@ -168,6 +177,7 @@ def compile_model():
                        "scale_factor": meta["scale_factor"]},
         "articulations": articulations,
         "thrust": thrust,
+        "exhausts": exhausts,
         "gear": {
             "version": 1,
             "bindings": bindings,

@@ -27,7 +27,7 @@
     "script": "res://aircraft/f4u_corsair_geometry.gd",
     "source": {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "c4a0af92ca4b7b95c2e004744fb411afbc69fe5bcfd534dff75a23ee3a5adb35",
+      "sha256": "ecff035e5d8dae45b329dd8f2d808e307d4eb317f70b45551a1ffc1970e248aa",
       "hash_mode": "lf_text"
     },
     "revision": "g1.3-c69151b3c96c",
@@ -165,7 +165,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "c4a0af92ca4b7b95c2e004744fb411afbc69fe5bcfd534dff75a23ee3a5adb35",
+      "sha256": "ecff035e5d8dae45b329dd8f2d808e307d4eb317f70b45551a1ffc1970e248aa",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
@@ -185,7 +185,7 @@
   "dependencies": [
     {
       "path": "res://aircraft/f4u_corsair_geometry.gd",
-      "sha256": "9481e55ac86000a110ce54cd3dc1383398f7bd1df8c2fcf944a058833ee79a72",
+      "sha256": "f090d2523bc00aff54c0cc13c57b39498e59498a93870c6c5a23f9de6cbf69f7",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },

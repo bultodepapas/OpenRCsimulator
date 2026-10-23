@@ -432,6 +432,24 @@
    "source": "g1.3 metadata.json: three-blade visual propeller"
   }
  },
+ "exhausts": [
+  {
+   "position": [
+    -0.08827704522344802,
+    -0.11166684329509735,
+    -0.06375821514262094
+   ],
+   "direction": [
+    -0.399501,
+    -0.799002,
+    0.449439
+   ],
+   "radius_m": 0.008,
+   "kind": "glow_prop",
+   "pump": true,
+   "source": "g1.3 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"
+  }
+ ],
  "gear": {
   "version": 1,
   "bindings": {

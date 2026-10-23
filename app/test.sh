@@ -397,6 +397,16 @@ echo "== Turbo Lumber Evolution model contract (aircraft/verify_timber.gd, TT-03
 run --script res://aircraft/verify_timber.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Timber model contract failed (see above)"; exit 1; fi
 
+echo "== F4U Corsair identity, generated data and model contract (F4U-03/05/07/11/12: manifest, rig, physics, costing, imported scene)"
+python3 "$HERE/../research/f4u-corsair/F4U-03/manifest.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-05/compile_model.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-07/ground_effect_vlm.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-07/fit_propeller.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-07/derive_physics.py" --check || exit 1
+python3 "$HERE/../research/f4u-corsair/F4U-11/costing_entry.py" --check || exit 1
+run --script res://aircraft/verify_f4u.gd 2>&1 | tee "$LOG" | tail -1
+if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "F4U Corsair model contract failed (see above)"; exit 1; fi
+
 echo "== C7-R1: trace completion, finite samples and failure exits"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 
