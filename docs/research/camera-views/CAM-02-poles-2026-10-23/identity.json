@@ -1,0 +1,27 @@
+{
+  "head_at_collection": "d9638018e26ad5797e6dd51dd2f89eae38735742",
+  "status_at_collection": [
+    " M app/physics/dynamics.gd",
+    " M app/physics/slipstream.gd",
+    " M app/physics/wash_transport.gd",
+    " M app/sim/flight_session.gd",
+    " M docs/ELECTRIC-PROPULSION-PLAN.md",
+    " M docs/plans/advanced-graphics.md",
+    " M docs/plans/camera-views.md",
+    " M docs/research/propulsion/EL1d/README.md",
+    "?? docs/research/camera-views/CAM-02-poles-2026-10-23/",
+    "?? docs/research/propulsion/EL1d/hub-inflow-2026-10-23/"
+  ],
+  "sha256": {
+    "app/render/pilot_camera.gd": "2dacd3fc55601fbd0de43d1e11cb0618ad9657183a16fdf9e5505d9aeeaf9a8e",
+    "app/render/camera/camera_rig.gd": "e6efc5f29ef38e0136fb9882ed91fe6208b63d5406df919f90923418dd3967c2",
+    "app/tests/test_camera_views.gd": "ecf18ac7187cdd27960397fffc49a1c41e1a3a3ec333edfed8f5b23e1cc4cb7a",
+    "app/tests/test_camera_math.gd": "837d86283b6b14e8cbb671658a21c7f7516a9dd4b5d389e3e26cdeaba3b7a5e8",
+    "app/tests/test_camera_route.gd": "8dc1e592bd3871bbd6d8e56c7154365ce9184df8d5f9304dfe421cf53559fd19",
+    "app/render/airplane.gd": "c8b3a78b8a07436e4c9e79ee95871f5309189cb110490cfbc209fa8433cebb98",
+    "app/spec.gd": "0b9e3625e60945e04e96533f44ccd22c906957d8eef15baf9ffae5b879aee0bc",
+    "docs/research/camera-views/CAM-02-poles-2026-10-23/capture.gd": "e43ce26c91adf8d66b6dba05196571c1b871e243106461318ce999d3b15a805f"
+  },
+  "baseline_runtime_commit": "16b82bcb5897025c0fdcb23823552112604234d7",
+  "scope": "Camera files only; shared physics edits are unrelated. Raw check reports retain original temporary log paths."
+}

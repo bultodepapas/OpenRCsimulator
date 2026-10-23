@@ -63,17 +63,15 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var v: PackedFloat64Array = air.v_air
-	# Electric disk induction uses hub inflow; drift and free-tail loads retain datum flow.
-	var disk_v: PackedFloat64Array = Propulsion.hub_air_velocity(state, v, prop.offset) if Propulsion.is_electric(prop) else v
 	var smooth: bool = prop.slipstream.has("edge_fraction")
-	var fade: float = reverse_weight(disk_v, rpm, prop) if smooth else 1.0
+	var fade: float = reverse_weight(v, rpm, prop) if smooth else 1.0
 	# A stopped source leaves a decaying axial wake. Reverse flow still removes its tail occupancy.
 	if not transported_dv.is_empty() and rpm < Propulsion.STOPPED_RPM:
 		fade = 1.0 if v[0] >= 0.0 else 0.0
 	if fade == 0.0:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	var tq := stage_thrust_torque if stage_thrust_torque.size() >= 2 else Propulsion.thrust_torque(disk_v, rpm, prop, rho)
-	var w := wake(disk_v, tq[0], tq[1], prop, rho)
+	var tq := stage_thrust_torque if stage_thrust_torque.size() >= 2 else Propulsion.thrust_torque(v, rpm, prop, rho)
+	var w := wake(v, tq[0], tq[1], prop, rho)
 	var ss: Dictionary = prop.slipstream
 	var v0: float = v[0]
 	var v1: float = v[1]
@@ -123,7 +121,7 @@ static func stage_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionar
 	var segmented: bool = ss.has("propeller_sidewash")
 	var crossflow := PackedFloat64Array([0.0, 0.0, 0.0])
 	if segmented:
-		crossflow = sidewash(disk_v, rpm, prop, w, ax, rho, float(ss.propeller_sidewash))
+		crossflow = sidewash(v, rpm, prop, w, ax, rho, float(ss.propeller_sidewash))
 	for piece_index in ss.pieces.size():
 		var piece: Dictionary = ss.pieces[piece_index]
 		if not transported_dv.is_empty():

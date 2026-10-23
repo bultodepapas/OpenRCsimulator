@@ -56,3 +56,5 @@ Write documentation in English, short and precise. Give each topic one authorita
 Use the owning track's step IDs. Include proof in commit messages: test, capture, trace or measurement. Record reusable lessons using [LEARNINGS.md's criteria](docs/LEARNINGS.md#keeping-this-useful); routine results belong in the existing evidence report. Record design decisions in [DECISIONS.md](docs/DECISIONS.md).
 
 Keep active plans and required evidence. Once a plan is complete or superseded, consolidate needed rationale and links into its canonical guide or existing evidence, then delete it. Do not create new archives or cleanup reports. Follow the [documentation conventions](docs/README.md#conventions-for-documents).
+
+DO NOT SAVE INNESARY IMAGES IN THE GIT REPO.

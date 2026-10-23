@@ -1,0 +1,14 @@
+{
+  "baseline_commit": "16b82bcb5897025c0fdcb23823552112604234d7",
+  "observed_head": "d9638018e26ad5797e6dd51dd2f89eae38735742",
+  "sha256": {
+    "app/physics/dynamics.gd": "4d98ba744d487b2663788d5e2d525ca4f8ea29e10c884daec1188986f1122426",
+    "app/physics/propulsion.gd": "37694d4530cadbec13900ff04df051237240f77d95a51d12c7e21c36f4a40124",
+    "app/physics/slipstream.gd": "a151f7d11bfd14ccc6a024b67c7851682495c7263d422d755d58de2c8bbe53cf",
+    "app/physics/wash_transport.gd": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d",
+    "app/sim/flight_session.gd": "ee0e5705e97654b482fd07c26357bd1c7a5ca2fe01a4b2c4bb65c411bd4d5bb0",
+    "app/tests/test_electric_session.gd": "a933397016042a5099a8b7e992136779b4fc1d7f84c99c848ffd3371878457bd",
+    "app/tests/test_wash_transport.gd": "522bfcda35ca069917c468a1c23a5c41c237c7a8743d2def824d3e94c542f64e"
+  },
+  "note": "Concurrent camera commit d9638018 included in-progress physics files; final working tree removes speculative wash edits. Review four physics/test paths against baseline_commit; unrelated work preserved."
+}

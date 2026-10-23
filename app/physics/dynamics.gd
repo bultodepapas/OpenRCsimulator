@@ -98,7 +98,7 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 			prop_air = Turbine.local_intake_velocity(air.v_air, state.slice(RB.RATE, RB.RATE + 3), model.propulsion)
 		elif Propulsion.is_glow(model.propulsion) or Propulsion.is_electric(model.propulsion):
 			prop_air = Propulsion.hub_air_velocity(state, air.v_air, model.propulsion.offset)
-		if washed and (Propulsion.is_glow(model.propulsion) or Propulsion.is_electric(model.propulsion)):
+		if washed and Propulsion.is_glow(model.propulsion):
 			# EX-14c: one hub evaluation feeds the shaft loads and the wake, exactly as the Glow stage route does.
 			wake_thrust_torque = Propulsion.thrust_torque(prop_air, rpm, model.propulsion, rho).slice(0, 2)
 			propulsion_loads = Propulsion.loads_from_thrust_torque(prop_air, rpm, model.propulsion, rho,

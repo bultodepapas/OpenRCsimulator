@@ -1,0 +1,83 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "e3a7fcd5-8898-453f-afd5-48030a11a0b3",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "tests/test_camera_views.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T11:57:07.162112+00:00",
+  "label": "pilot-pole-before",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\pilot-pole-before-1_c90j8g\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\pilot-pole-before-1_c90j8g\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "camera view checks passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 7,
+      "message": "Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.",
+      "context": [
+        "   at: looking_at (core/math/basis.cpp:1045)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] aim (res://render/pilot_camera.gd:66)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 16,
+      "message": "Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.",
+      "context": [
+        "   at: looking_at (core/math/basis.cpp:1045)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] aim (res://render/pilot_camera.gd:66)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 25,
+      "message": "Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.",
+      "context": [
+        "   at: looking_at (core/math/basis.cpp:1045)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] aim (res://render/pilot_camera.gd:66)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 34,
+      "message": "Node origin and target are in the same position, look_at() failed.",
+      "context": [
+        "   at: look_at_from_position (scene/3d/node_3d.cpp:1260)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] aim (res://render/pilot_camera.gd:66)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 4416,
+  "log_sha256": "38c15ef1579c7b0bc6d4b1c8bbba0374d5ada3b9b278d704f477c7b278a09dab"
+}

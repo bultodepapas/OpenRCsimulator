@@ -22,6 +22,8 @@ Motor winding and ESC thermal states, manufacturer current limiting, switching l
 
 Electric flight requires `coupled-rk4` with valid rotor and carrier inertia; an explicit split integrator is refused. The session integrates body and rotor state together and localizes stopped-rotor and energy-exhaustion events. Developer routes `-- --electric-demo=4s|6s` use fixed voltage; `4s-battery` and `6s-battery` use synthetic OCV/resistance packs. These labeled Stik fixtures are not catalog aircraft and make no validated conversion claim. The shared shaft behavior is summarized in [PROPULSION-CORE-PLAN](PROPULSION-CORE-PLAN.md).
 
+Electric propeller inflow is sampled at the hub (`v_air + omega × r`) for loads and shaft torque. The configuration hash identifies this law; old native snapshots are refused. Electric propwash is not supported by the current aircraft schema. [EL1d-R1 correction and verification](research/propulsion/EL1d/hub-inflow-2026-10-23/README.md).
+
 ## Physical reference and promotion
 
 The reference is the E-flite Turbo Timber Evolution BNF Basic B, EFL105250B: 800 Kv motor, 70 A ESC, stock three-blade 11×7.3 propeller and 4S 3200 mAh pack class. The catalog's finite-pack variant is software integrated, but the exact installed pack and hardware revision, motor R/I0, rotor inertia, loadout and matched stock-prop map remain unidentified. Manufacturer labels do not supply those parameters. SAFE and AS3X state must be recorded separately; disabling SAFE alone is not an unaided-flight reference. The sourced configuration and limits are in [Timber reference research](research/propulsion/EL1a/timber-reference.md).

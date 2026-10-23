@@ -3209,14 +3209,7 @@ func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloa
 	if not WashTransport.enabled(aircraft.model.propulsion):
 		return PackedFloat64Array()
 	var air: Dictionary = air_data(s, 0.0)
-	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, air_density(s),
-		_electric_hub_air(s, air))
-
-
-## Empty preserves the legacy wash convention; electric disks sample their actual rigid-body point.
-func _electric_hub_air(s: PackedFloat64Array, air: Dictionary) -> PackedFloat64Array:
-	var prop: Dictionary = aircraft.model.propulsion
-	return Propulsion.hub_air_velocity(s, air.v_air, prop.offset) if Propulsion.is_electric(prop) else PackedFloat64Array()
+	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, air_density(s))
 
 
 func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
@@ -3369,7 +3362,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		return {ok = false}
 	var rpm: float = maxf(0.0, trial_rpm) if electric else trial_rpm
 	var air: Dictionary = preview.air if preview.has("air") else air_data(s, time_s)
-	var prop_air: PackedFloat64Array = _electric_hub_air(s, air) if electric else air.v_air
+	var prop_air: PackedFloat64Array = Propulsion.hub_air_velocity(s, air.v_air, prop.offset) if electric else air.v_air
 	var battery_point: Dictionary = {}
 	var rate: float
 	if battery_is_dynamic():
@@ -3489,8 +3482,7 @@ func _coupled_derivative(s: PackedFloat64Array, values: PackedFloat64Array, time
 		return PackedFloat64Array([NAN])
 	var air: Dictionary = air_data(s, time_s)
 	var wash: PackedFloat64Array = WashTransport.derivative(air.v_air, _coupled_rpm(values),
-		aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()),
-		_electric_hub_air(s, air)) if _rotor_index() > 0 else PackedFloat64Array()
+		aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index())) if _rotor_index() > 0 else PackedFloat64Array()
 	wash.append(result.rpm_rate)
 	_append_battery_rates(wash, result)
 	wash.append_array(result.get("wheel_derivative", PackedFloat64Array()))
@@ -3507,7 +3499,7 @@ func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	if _rotor_index() > 0:
 		var air: Dictionary = result.air
 		extra = WashTransport.derivative(air.v_air, _coupled_rpm(values),
-			aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()), _electric_hub_air(s, air))
+			aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()))
 	extra.append(result.rpm_rate)
 	_append_battery_rates(extra, result)
 	extra.append_array(result.get("wheel_derivative", PackedFloat64Array()))

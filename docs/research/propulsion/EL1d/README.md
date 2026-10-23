@@ -4,6 +4,8 @@
 
 Electric aircraft automatically select the existing coupled rotor/body RK4 route. An explicit split-integrator request is refused. Propeller loads use stage RPM, air-relative velocity and field density; the electrical source has no density correction, separate Node clock or added RPM lag. Accepted continuous RPM is mirrored into the existing render/auxiliary slot. Invalid evaluations roll back body, shaft, auxiliary state, modes and tick together.
 
+**2026-10-23, EL1d-R1:** electric propeller loads and shaft torque now include the hub's rigid-point velocity during rotation. [Defect, regression and recorded-flight comparison](hub-inflow-2026-10-23/README.md).
+
 ## Rest boundary and supported numerical envelope
 
 `electric_stop.gd` localizes a downward zero-speed crossing within the tick, applies a tiny momentum-preserving projection and advances the remaining time from rest. Negative trial RPM uses an explicitly declared moving-side continuation only for localization; no negative endpoint is committed. At exact rest, bounded static bearing friction either holds the relative shaft, permits forward breakaway or refuses unsupported reverse departure. Body acceleration participates in that decision. An independent review exposed missing moving-side friction during body-driven forward breakaway; a gyroscopic session fixture now guards it.

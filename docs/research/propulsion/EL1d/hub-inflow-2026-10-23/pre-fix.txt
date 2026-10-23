@@ -1,0 +1,18 @@
+Pre-fix electric hub-inflow regression capture
+Capture date: 2026-10-23
+Baseline HEAD: 16b82bcb5897025c0fdcb23823552112604234d7
+Production code was unchanged at capture time. This preserves the quantitative regression lines and suite summary; repetitive aircraft inertia warnings are omitted.
+
+Command:
+& .\\.tools\\Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_electric_session.gd
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+fixed-voltage hub-flow load norm error = 0.62418316495274; expected = [3.74720181335845, 0.0, 0.0, -0.14343781246737, -0.41219219946943, -0.29977614506868]; actual = [3.12885232841676, 0.0, 0.0, -0.13021093450982, -0.34417375612584, -0.25030818627334]
+FAIL fixed-voltage Dynamics propeller loads use local hub velocity
+fixed-voltage hub-flow angular-momentum residual = 0.01322687795755 Nm
+FAIL fixed-voltage angular-momentum balance uses hub propeller torque
+dynamic-battery hub-flow load norm error = 0.62418316485677; expected = [3.7472018120036, 0.0, 0.0, -0.14343781242932, -0.4121921993204, -0.29977614496029]; actual = [3.12885232715704, 0.0, 0.0, -0.13021093447123, -0.34417375598727, -0.25030818617256]
+FAIL dynamic-battery Dynamics propeller loads use local hub velocity
+dynamic-battery hub-flow angular-momentum residual = 0.01322687795809 Nm
+FAIL dynamic-battery angular-momentum balance uses hub propeller torque
+EL1d electric session: 98 checks, 4 failed

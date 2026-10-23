@@ -1,0 +1,447 @@
+[
+  {
+    "aircraft": "jensen_ugly_stik_60",
+    "csv_bytes_identical": true,
+    "baseline_csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+    "candidate_csv_sha256": "0f41e057d3276066b2d6b75d2a355b362a32380b342928164fb63eb0eecc3041",
+    "complete": true,
+    "solver_changed": true,
+    "solver_sha256": "3f3f9c14e63a337bf3f69ce03a8d59a25abcf10cbba0fc85a86736f578e046c6",
+    "comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "q_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "r_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "east_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "north_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "v_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "w_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": null,
+      "rows": 261,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 260
+      },
+      "time_s": {
+        "duration": 1.0833333333333333,
+        "first": 0.0,
+        "last": 1.0833333333333333
+      }
+    }
+  },
+  {
+    "aircraft": "gp_extra_300s_60",
+    "csv_bytes_identical": true,
+    "baseline_csv_sha256": "6936aa45bcb1a8e07acee8a34d0d9a2800bc036d1f47cc24abb48614739e5b8a",
+    "candidate_csv_sha256": "6936aa45bcb1a8e07acee8a34d0d9a2800bc036d1f47cc24abb48614739e5b8a",
+    "complete": true,
+    "solver_changed": true,
+    "solver_sha256": "3f3f9c14e63a337bf3f69ce03a8d59a25abcf10cbba0fc85a86736f578e046c6",
+    "comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "q_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "r_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "east_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "north_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "v_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "w_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": null,
+      "rows": 261,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 260
+      },
+      "time_s": {
+        "duration": 1.0833333333333333,
+        "first": 0.0,
+        "last": 1.0833333333333333
+      }
+    }
+  },
+  {
+    "aircraft": "p51d_mustang_120",
+    "csv_bytes_identical": true,
+    "baseline_csv_sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+    "candidate_csv_sha256": "78279f458ae9b477809a259c167c7b2d3b49a4c2ce7aedb182eada93d01fb748",
+    "complete": true,
+    "solver_changed": true,
+    "solver_sha256": "3f3f9c14e63a337bf3f69ce03a8d59a25abcf10cbba0fc85a86736f578e046c6",
+    "comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "q_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "r_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "east_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "north_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "v_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "w_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": null,
+      "rows": 261,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 260
+      },
+      "time_s": {
+        "duration": 1.0833333333333333,
+        "first": 0.0,
+        "last": 1.0833333333333333
+      }
+    }
+  },
+  {
+    "aircraft": "sebart_avanti_s_a200",
+    "csv_bytes_identical": true,
+    "baseline_csv_sha256": "32660e6cf34c75ab5ea051fa0c086d0a03c49874ce7f5a68b91bd3027cac7977",
+    "candidate_csv_sha256": "32660e6cf34c75ab5ea051fa0c086d0a03c49874ce7f5a68b91bd3027cac7977",
+    "complete": true,
+    "solver_changed": true,
+    "solver_sha256": "3f3f9c14e63a337bf3f69ce03a8d59a25abcf10cbba0fc85a86736f578e046c6",
+    "comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "q_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "r_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "east_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "north_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "v_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "w_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": null,
+      "rows": 261,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 260
+      },
+      "time_s": {
+        "duration": 1.0833333333333333,
+        "first": 0.0,
+        "last": 1.0833333333333333
+      }
+    }
+  },
+  {
+    "aircraft": "stik_glow_61fx_2t",
+    "csv_bytes_identical": true,
+    "baseline_csv_sha256": "d57c78d951580e38fe779c03ec42cddc637f6f9ad0433769820433ced4c4773d",
+    "candidate_csv_sha256": "d57c78d951580e38fe779c03ec42cddc637f6f9ad0433769820433ced4c4773d",
+    "complete": true,
+    "solver_changed": true,
+    "solver_sha256": "3f3f9c14e63a337bf3f69ce03a8d59a25abcf10cbba0fc85a86736f578e046c6",
+    "comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "q_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "r_radps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "east_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "north_m": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "v_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            },
+            "w_mps": {
+              "max_abs": 0.0,
+              "rmse": 0.0
+            }
+          },
+          "max_abs": 0.0,
+          "rmse": 0.0,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": null,
+      "rows": 261,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 260
+      },
+      "time_s": {
+        "duration": 1.0833333333333333,
+        "first": 0.0,
+        "last": 1.0833333333333333
+      }
+    }
+  }
+]
