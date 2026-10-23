@@ -80,6 +80,6 @@ The Moki manual's two static points agree within 13 % in torque on the Mejzlik c
 
 No F4U sideslip derivatives were found in NTRS beyond RM A7C05's figures (RM SL7E20 covers store drag and buffet only). Transferring the P-51's flight-calibrated body-yaw ratio (3.6 × DATCOM) would make the Corsair directionally unstable, against RM A7C05's measured stability over ±15°, so it is not used.
 
-## Rights notes
+## Rights
 
-The [licensing guide](../../../AIRCRAFT-LICENSING.md) classifies the Corsair as a conditional historical replica and records licensing activity for the name. R59 lists the Royal RC F4U-1D plan and the CARF manual among its references and packs two plan scans; the g1 request asks for their removal and a reference list. Kit plans are reference material only; no kit drawing, CAD or artwork is imported.
+No licence is required ([owner decision F4U-13](../../../DECISIONS.md), 2026-10-23). R59 lists the Royal RC F4U-1D plan and the CARF manual among its references and packs two plan scans; the g1 request asks for their removal and a reference list. Kit plans are reference material only; no kit drawing, CAD or artwork is imported.

@@ -43,4 +43,4 @@ g1.3 is taken in by F4U-03: `assets/source-deliveries/f4u-corsair-g1-3/` holds t
 
 ## Limits
 
-The scratch Godot imports check structure and extras, not runtime binding, pose sampling or crash separation; those belong to F4U-05/08/11. Licence terms are not set in either delivery (F4U-13).
+The scratch Godot imports check structure and extras, not runtime binding, pose sampling or crash separation; those belong to F4U-05/08/11.

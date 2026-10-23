@@ -11,7 +11,7 @@ reference-velocity convention remain. No aircraft coefficients, solver state
 layouts, integrator or goldens were changed.
 
 This is a conservative applicability limit, not a calibrated reverse-flow law.
-For the configured signs, the isolated term satisfies
+For the configured signs, the combined body-side contribution (gated slope plus crossflow) satisfies
 `Fy v = 0.5 rho [S CYbeta max(u,0) - A_cross sqrt(v²+w²)] v² <= 0`.
 That bounds its translational work using the reference air velocity; it does
 not establish generalized rigid-body passivity with rotation or total-airframe
@@ -81,6 +81,16 @@ The software servo seam passed six checks in each isolated variant: at 240 Hz,
 the normalized roll servo reached `5/33.6` after five ticks and full throw at
 tick 34 (141.67 ms). This unchanged simulated travel time excludes controller,
 OS, radio and displayed-response latency.
+
+A native fullscreen rendering pair confirmed an actual 1920×1080 window on the
+existing 60 Hz display, VSync on, uncapped, Compatibility/Standard, MSAA 2,
+render scale 1.0. After five seconds of warmup, twenty-second samples measured
+p50 16.669 → 16.673 ms, p95 17.118 → 17.119 ms and p99 17.296 → 17.387 ms.
+The scripted-fixed capture advanced **zero simulation ticks**: this measures
+render pacing only and cannot qualify combined flight/render performance or the
+aero branch. Baseline emitted one ObjectDB exit warning; candidate emitted none;
+neither reported engine errors. A 1920×1061 windowed attempt was exploratory,
+not accepted as 1080p evidence.
 
 ## Scientific basis and limits
 
