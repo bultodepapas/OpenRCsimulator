@@ -115,7 +115,7 @@ func _initialize() -> void:
 	_check("stowed again after a full cycle", Importer.relative(root, model.gear.left).origin.distance_to(Vector3(data.wheels.left.center_model[0][0], data.wheels.left.center_model[0][1], data.wheels.left.center_model[0][2])) < 1e-4)
 
 	# Presentation and physics contacts (F4U-07 staged data, le frame [x_aft, y_right, z_up] = [z, x, y]).
-	var physics: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(ProjectSettings.globalize_path("res://").path_join("../research/f4u-corsair/F4U-07/f4u_corsair_250.json").simplify_path()))
+	var physics: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/f4u_corsair_250.json"))
 	for contact: Dictionary in physics.landing_gear.contacts:
 		var role: String = contact.name.trim_prefix("main_")
 		var p: Array = data.wheels[role].contact_model[-1]

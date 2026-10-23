@@ -982,6 +982,346 @@
       }
     },
     {
+      "aircraft_id": "f4u-corsair-250",
+      "status": "independent_partial_inventory_costing",
+      "price_observations": [
+        "savox-sa1230sgp",
+        "stik_servos_hitec_hs311_four"
+      ],
+      "replacement_total_minor": null,
+      "missing": [
+        "No current CARF-Models F4U-1D 1:4.5 kit, spare-part or retract price was entered: the CARF product pages did not show a kit price when observed, and the 2011 Model Airplane News prices ($3,695 ARF with wing fold) are historical.",
+        "The Moki S250 (CARF 4,610.00 USD, observed 2026-10-22) is recorded in the notes but not entered as a price observation, because the shared price catalog carries one observation date for every aircraft.",
+        "Propeller, cowl, airframe parts, gear, batteries, radio, fuel system and labor remain unpriced; ten flight-control and two throttle/choke servo positions use class value proxies, not installed identities."
+      ],
+      "notes": "Independent coverage of every physical inventory row of the 1/4.5 F4U Corsair (F4U-11). Known priced-part subtotal is $1,067.88: ten $103.39 SA-1230SG+ control-servo proxies and two $16.99 HS-311 throttle/choke-servo proxies. The Moki S250 alone lists at $4,610.00 (CARF, 2026-10-22, not entered). This is not a complete-build purchase amount.",
+      "dossier": {
+        "expected_source_sha256": "cee5e2efbc674d060440c053fd8c6ee2bee2cef9820e2d3c09adc0ea350e4005",
+        "lines": [
+          {
+            "id": "engine_moki_s250",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "engine_main",
+              "engine_mount_exhaust"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Moki S250 five-cylinder radial with its cast radial mount and collector ring (the physics splits the 5.4 kg engine into two rows). CARF-Models lists the Moki S250 at 4,610.00 USD (carf-models.com/en/products/moki-s250, observed 2026-10-22); not entered as a price observation because the shared price catalog carries one observation date. Unpriced here."
+          },
+          {
+            "id": "ignition_module",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "ignition_module"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced Moki ignition module, sensor lead and switch; supplied with the engine per the Moki manual, so a separate replacement price is not established."
+          },
+          {
+            "id": "propeller",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "propeller_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced 30x18 three-blade wood propeller (SEP class, Moki S250 manual); no current USD quote verified."
+          },
+          {
+            "id": "spinner_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "spinner_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced aluminium hub cap and propeller bolts."
+          },
+          {
+            "id": "engine_mount",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "engine_mount"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced firewall bolts, blind nuts and thrust spacers."
+          },
+          {
+            "id": "cowl_main",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "cowl_main"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced CARF composite cowl (about 335 mm); no separate CARF spare-part price verified."
+          },
+          {
+            "id": "fuel_tank",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fuel_tank"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced 1 l gasoline tank with lines."
+          },
+          {
+            "id": "fuel_flight",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fuel_flight"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced half-tank flight fuel; fill and fuel price not established."
+          },
+          {
+            "id": "ignition_battery",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "ignition_battery"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced 2S LiPo ignition battery."
+          },
+          {
+            "id": "receiver_batteries",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "receiver_batteries"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced two 2S LiFe receiver batteries."
+          },
+          {
+            "id": "receiver_radio",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "receiver_radio"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced receiver, switches and power distribution; installed radio identity unknown."
+          },
+          {
+            "id": "retract_air",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "retract_air"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced air tank, valves and lines for the Sierra retracts and Robart door cylinders."
+          },
+          {
+            "id": "flight_control_servos",
+            "quantity": 10,
+            "physical_inventory_ids": [
+              "servo_aileron_left",
+              "servo_aileron_right",
+              "servo_flap_left",
+              "servo_flap_right",
+              "servo_elevator",
+              "servo_rudder",
+              "servo_tail_steering"
+            ],
+            "evidence_kind": "price_proxy",
+            "price_observation": "savox-sa1230sgp",
+            "notes": "Ten control servos from seven inventory rows: two aileron, four flap (an inner and an outer per side, CARF manual), two elevator, one rudder and one tail-wheel steering. Savox SA-1230SG+ (79 g, 36 kg·cm at 6 V; ServoCity $103.39) is the large-aircraft servo value proxy the P-51 uses; it is a class proxy, not the installed identity or a fit qualification, and ten-unit availability is not established. Pull-pull cables and wires remain unpriced."
+          },
+          {
+            "id": "throttle_choke_servos",
+            "quantity": 2,
+            "physical_inventory_ids": [
+              "servo_throttle_choke"
+            ],
+            "evidence_kind": "price_proxy",
+            "price_observation": "stik_servos_hitec_hs311_four",
+            "notes": "Two small throttle/choke servos; Hitec HS-311 ($16.99 each at Tower) is the ordinary-servo value proxy the P-51 uses. Linkage unpriced; no installed model claimed."
+          },
+          {
+            "id": "gear_main_left",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "gear_main_left"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced Sierra Giant Scale rotating retract, strut, wheel and door (CARF kit equipment)."
+          },
+          {
+            "id": "gear_main_right",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "gear_main_right"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced Sierra Giant Scale rotating retract, strut, wheel and door (CARF kit equipment)."
+          },
+          {
+            "id": "gear_tail",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "gear_tail"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced retractable tail wheel with doors and steering."
+          },
+          {
+            "id": "wing_left",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "wing_left"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced CARF composite left wing panel with flaps and aileron; no spare-part price verified."
+          },
+          {
+            "id": "wing_right",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "wing_right"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced CARF composite right wing panel with flaps and aileron; no spare-part price verified."
+          },
+          {
+            "id": "wing_joiner",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "wing_joiner"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced aluminium wing tubes and bolts."
+          },
+          {
+            "id": "fuselage_front",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fuselage_front"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced CARF composite forward fuselage."
+          },
+          {
+            "id": "fuselage_rear",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "fuselage_rear"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced CARF composite rear fuselage and tail cone."
+          },
+          {
+            "id": "canopy_pilot",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "canopy_pilot"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced canopy, frame and pilot figure."
+          },
+          {
+            "id": "horizontal_tail",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "horizontal_tail"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced stabilizer and elevator."
+          },
+          {
+            "id": "vertical_tail",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "vertical_tail"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced fin and rudder."
+          },
+          {
+            "id": "control_hardware",
+            "quantity": 1,
+            "physical_inventory_ids": [
+              "control_hardware"
+            ],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced pushrods, horns, cowl fasteners and hardware."
+          },
+          {
+            "id": "final_assembly_and_commissioning",
+            "quantity": 1,
+            "physical_inventory_ids": [],
+            "evidence_kind": "estimated",
+            "notes": "Unpriced Corsair-specific final assembly, balancing, commissioning and post-crash inspection labor. No transferable allowance assumed."
+          }
+        ],
+        "contact_components": {
+          "propeller/propulsion_main": [
+            "propeller"
+          ],
+          "probe_wing_left_le": [
+            "wing_left"
+          ],
+          "probe_wing_left_te": [
+            "wing_left"
+          ],
+          "probe_wing_right_le": [
+            "wing_right"
+          ],
+          "probe_wing_right_te": [
+            "wing_right"
+          ],
+          "probe_spinner_tip": [
+            "spinner_main",
+            "engine_moki_s250",
+            "engine_mount",
+            "fuselage_front"
+          ],
+          "probe_propeller_bottom": [
+            "propeller"
+          ],
+          "probe_propeller_lower_left": [
+            "propeller"
+          ],
+          "probe_propeller_lower_right": [
+            "propeller"
+          ],
+          "probe_rudder_bottom": [
+            "vertical_tail"
+          ],
+          "probe_fin_top": [
+            "vertical_tail"
+          ],
+          "probe_stabilizer_left_tip": [
+            "horizontal_tail"
+          ],
+          "probe_stabilizer_right_tip": [
+            "horizontal_tail"
+          ],
+          "probe_canopy_top": [
+            "canopy_pilot",
+            "fuselage_front"
+          ],
+          "probe_cowl_bottom": [
+            "cowl_main",
+            "engine_moki_s250"
+          ],
+          "contact_main_left": [
+            "gear_main_left"
+          ],
+          "contact_main_right": [
+            "gear_main_right"
+          ],
+          "contact_tail": [
+            "gear_tail"
+          ]
+        },
+        "propeller_component_id": "propeller",
+        "propeller_inspection_ids": [
+          "engine_moki_s250",
+          "propeller",
+          "spinner_main",
+          "engine_mount",
+          "cowl_main",
+          "fuselage_front"
+        ]
+      }
+    },
+    {
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
       "status": "independent_partial_inventory_costing",
       "price_observations": [

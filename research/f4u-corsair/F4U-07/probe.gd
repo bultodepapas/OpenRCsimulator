@@ -26,7 +26,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
-	var path: String = args[0] if args.size() > 0 else ProjectSettings.globalize_path("res://").path_join("../research/f4u-corsair/F4U-07/f4u_corsair_250.json").simplify_path()
+	var path: String = args[0] if args.size() > 0 else "res://data/aircraft/f4u_corsair_250.json"
 	var loaded: Dictionary = AircraftData.load_file(path)
 	_check("staged v2 file passes production validation", loaded.get("ok", false), "; ".join(loaded.get("errors", PackedStringArray())))
 	if not loaded.get("ok", false):

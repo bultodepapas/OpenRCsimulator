@@ -7,7 +7,7 @@
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "f4u-corsair-250",
-      "model_manifest_sha256": "959c2f6e480854cfa2c2508f64a074561f35dcb4d553852365923f091862ed7d",
+      "model_manifest_sha256": "38582dc7f57c3aedd61fa48777df6826cd9bc207fc16ccc946ee0f01b89194ed",
       "paint_slots": [],
       "marking_slots": [],
       "smoke_slots": [],
@@ -54,7 +54,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "0d1046fcde0027fe34d32a3bf48dfa1dac7525b93901aa0bc96484af5be35c7e"
+      "slots_sha256": "4ded72f20dd31459cf2bf8bf45cf6cb3788a2d2993871c800a203d74a2a2a1f4"
     },
     {
       "format": "openrc-aircraft-customization-bindings",

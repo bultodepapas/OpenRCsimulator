@@ -129,8 +129,8 @@
 		},
 		"airplane_snapshot_builder": {
 			"path": "res://render/airplane.gd",
-			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
-			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"sha256": "6f998a17a11b092696661b88d45f67f719d1e1d7c179469f85e6705132ffa86d",
+			"pinned_sha256": "6f998a17a11b092696661b88d45f67f719d1e1d7c179469f85e6705132ffa86d",
 			"matches_pin": true
 		},
 		"baker": {
