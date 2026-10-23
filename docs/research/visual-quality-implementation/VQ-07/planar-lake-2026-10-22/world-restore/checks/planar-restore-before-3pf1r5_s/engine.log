@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL restored world reuses viewport and rebinds live reflection 0
+FAIL restored world reuses viewport and rebinds live reflection 1
+FAIL restored world reuses viewport and rebinds live reflection 2
+lake planar reflection contract: 67 checks, 3 failed

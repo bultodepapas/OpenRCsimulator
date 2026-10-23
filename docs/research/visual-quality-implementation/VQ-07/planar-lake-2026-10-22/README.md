@@ -494,3 +494,49 @@ directories and that frozen project. Script hashes were recorded at retention,
 not independently at each launch. The next adoption gate is a full-feature engine
 with matching export templates, packaged lifecycle/render checks and platform
 qualification. Planar reflection remains default-off.
+
+## Retained-world reflection restoration, 2026-10-22
+
+The optional planar path now restores its water texture when a retained flight
+world re-enters the scene tree. Workshop trial launch suspends the previous
+flight with `remove_child`; returning or rolling back a failed trial reattaches
+that same tree. Previously, exit cleared `reflection_texture`, while the surviving
+helper remained initialized. Its next update enabled planar radiance without
+rebinding the texture. Three headless detach/restore cycles reproduced the failure.
+
+The local adapter now rebinds the existing viewport texture in `_enter_tree`.
+It allocates no new viewport and preserves exit cleanup. The downloaded component,
+physics, shaders and default-off setting are unchanged. Independent read-only
+review checked the parent-before-child entry ordering against the pinned engine's
+stored viewport texture lifetime.
+
+Verification on the pinned Windows Godot 4.7.2 engine:
+
+- Planar contract: **67 checks, 0 failed**, including three repeated restoration
+  cycles and final teardown; the pre-fix run failed all three restoration checks.
+- Lake world: **27 checks**; presentation context: **26 checks**; Workshop trial:
+  **44 checks**, all passing. The Workshop test intentionally rejects a stale
+  presentation and emits its expected warning. An initial strict-warning receipt
+  and an incorrect context completion-marker receipt remain retained as rejected.
+- Native Forward+ on RTX 3090: four **1920×1080** production-world captures
+  (initial plus three restores) are pixel-identical in RGB. Every restored
+  frame uses the same viewport and a live texture binding. The reflected jet
+  remains visible in the [restored image](world-restore/restored.png).
+- The native run still emits the previously attributed **seven Texture RID**
+  shutdown warning; this change does not resolve the pinned-engine leak.
+
+[Source identities](world-restore/identity.json), [comparison and PNG hashes](world-restore/comparison.json),
+[native metadata](world-restore/native-report.json), [fixture](world-restore/capture.gd)
+and [checked logs](world-restore/checks/) retain the bounded result. The initial
+fixture parse failure is retained separately from the completed native run.
+Identical duplicate captures stay in ignored scratch storage; regenerate them with:
+
+```powershell
+python tools/graphics/launch.py --profile high --resolution 1920x1080 --audio-driver Dummy --script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/world-restore/capture.gd -- --out=C:/captures/openrc-world-restore
+```
+
+Use a new output directory. Compare each `cycle-1.png` through `cycle-3.png`
+against `cycle-0.png` as RGB pixels. This fixture exercises the production world
+and retained-tree lifecycle; it is not an automated Workshop menu journey,
+ordinary pilot-motion assessment or performance campaign. Full High qualification
+and the engine/template/platform gates remain open.

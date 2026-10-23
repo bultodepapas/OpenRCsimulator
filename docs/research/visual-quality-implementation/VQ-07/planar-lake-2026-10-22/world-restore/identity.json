@@ -1,0 +1,8 @@
+{
+  "baseline_commit": "0654f4bef0fa4bd83deec78851c42a784a44db57",
+  "sha256": {
+    "app/render/lake/lake_planar_reflection.gd": "657cd780daaf1da0ac80dbf2ee80dbdee1348ddf85da45fe8be90baf52291ed5",
+    "app/tests/test_lake_planar_reflection.gd": "8457a41e262445f93c7c3b84e24a311b78536ad277b2e7493055e79d73b908af",
+    "docs\\research\\visual-quality-implementation\\VQ-07\\planar-lake-2026-10-22\\world-restore\\capture.gd": "fed8e1ee05ed97570d1ac386c24106ba5999195c1ace7f4ea2cecaa55731e7d3"
+  }
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "cycle": 0,
+    "size": [
+      1920,
+      1080
+    ],
+    "pixel_identical_to_initial": true,
+    "maximum_channel_delta": 0,
+    "sha256": "daf95be1c2303715f355afb49c8aef8e47b7145fd906e269654842aa927824c7"
+  },
+  {
+    "cycle": 1,
+    "size": [
+      1920,
+      1080
+    ],
+    "pixel_identical_to_initial": true,
+    "maximum_channel_delta": 0,
+    "sha256": "daf95be1c2303715f355afb49c8aef8e47b7145fd906e269654842aa927824c7"
+  },
+  {
+    "cycle": 2,
+    "size": [
+      1920,
+      1080
+    ],
+    "pixel_identical_to_initial": true,
+    "maximum_channel_delta": 0,
+    "sha256": "daf95be1c2303715f355afb49c8aef8e47b7145fd906e269654842aa927824c7"
+  },
+  {
+    "cycle": 3,
+    "size": [
+      1920,
+      1080
+    ],
+    "pixel_identical_to_initial": true,
+    "maximum_channel_delta": 0,
+    "sha256": "daf95be1c2303715f355afb49c8aef8e47b7145fd906e269654842aa927824c7"
+  }
+]

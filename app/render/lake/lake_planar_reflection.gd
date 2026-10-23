@@ -29,6 +29,13 @@ static func requested() -> bool:
 	return HighGraphics.active() and OS.get_environment(ENVIRONMENT_KEY).strip_edges().to_lower() == "planar"
 
 
+func _enter_tree() -> void:
+	# Workshop retains the whole flight tree while a trial runs. Exit clears
+	# the material dependency, but the existing viewport survives that detach.
+	if initialized and is_instance_valid(_water_material):
+		_water_material.set_shader_parameter("reflection_texture", reflect_viewport.get_texture())
+
+
 func configure(probe: ReflectionProbe, water: MeshInstance3D) -> void:
 	_probe = probe
 	_water = water

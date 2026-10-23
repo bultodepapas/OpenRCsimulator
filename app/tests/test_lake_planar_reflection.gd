@@ -241,6 +241,22 @@ func _run() -> void:
 	recovery_camera.make_current()
 	planar.call("_process", 0.0)
 	_check("valid camera reactivates reflection after every inactive gate", water_material.get_shader_parameter("planar_reflection_enabled") == true and probe.reflection_mask == 0)
+	# Workshop suspends the existing flight world, then reattaches that same tree.
+	# Its viewport survives; its water texture binding must survive restoration too.
+	var retained_viewport := planar.reflect_viewport
+	for cycle in range(3):
+		root.remove_child(field)
+		_check("detached world releases water binding and restores fallback %d" % cycle,
+			water_material.get_shader_parameter("reflection_texture") == null
+			and water_material.get_shader_parameter("planar_reflection_enabled") != true
+			and probe.reflection_mask == 2 and basin.layers == 9)
+		root.add_child(field)
+		planar.call("_process", 0.0)
+		_check("restored world reuses viewport and rebinds live reflection %d" % cycle,
+			planar.reflect_viewport == retained_viewport
+			and water_material.get_shader_parameter("reflection_texture") == retained_viewport.get_texture()
+			and water_material.get_shader_parameter("planar_reflection_enabled") == true
+			and probe.reflection_mask == 0 and basin.layers == 12)
 	planar.queue_free()
 	await process_frame
 	_check("exit disables planar shader and restores probe mask",
