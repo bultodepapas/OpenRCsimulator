@@ -896,6 +896,9 @@ def main() -> int:
         OPENRC_SCENERY="off",
         OPENRC_SCENERY_AUDIO="off",
         OPENRC_SCENERY_BIRDS="off",
+        # L15b measures the card treeline's wind. Medium draws every field tree as a card; the VQ-06b
+        # 3D front trees have their own wind shader and would escape the card mask.
+        OPENRC_SCENE_DETAIL="medium",
         PYTHONDONTWRITEBYTECODE="1",
     )
     projects = {"candidate": app}
