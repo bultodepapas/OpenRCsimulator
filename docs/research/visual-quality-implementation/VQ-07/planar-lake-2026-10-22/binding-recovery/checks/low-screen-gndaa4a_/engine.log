@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+Graphics profile: {"active":"high_experimental","gpu":"NVIDIA GeForce RTX 3090","renderer":"forward_plus","requested":"high"}
+ERROR: Aircraft model contract: ["SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/aircraft/retractable_model.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:55)
+       [1] run (res://../tmp/aaa-planar-next-20261022/low_probe.gd:37)
+graphics capture: jet builder failed
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.
+OpVectorExtractDynamic is not supported yet.

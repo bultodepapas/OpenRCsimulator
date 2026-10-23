@@ -1,0 +1,28 @@
+{
+  "baseline_head": "c699a7b747c97ab28359fa9db521146bfaa3a7ed",
+  "generated_changes": {
+    "app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json": {
+      "before_sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
+      "after_sha256": "c7136903806b6b13df654376d46dd4b6d0ec12f191a948f65c6f45ec74a973af"
+    },
+    "app/data/aircraft_models/turbo-lumber-evolution.json": {
+      "before_sha256": "99ab3f6ccd9477fecdf8e8abb10ce08e3a93eccbb9b4792f741cae52c18b9075",
+      "after_sha256": "5aadb8d9c9a5c30dc1ed6aef049273729ddae8c4774bbf2a0ab942c4caea1e35"
+    },
+    "app/data/workshop/sebart-avanti-s-a200-p100rx.json": {
+      "before_sha256": "d98862eb46990b74f79d6e0dac11f776b8d39ed70ccbce6e0dcb63c0345a8c5e",
+      "after_sha256": "bc3ed0bfc9f0a57242eaeac80863ea5bc322994495c58e0a57906f29074b4722"
+    },
+    "app/data/workshop/turbo-lumber-evolution.json": {
+      "before_sha256": "9688d076555d4885b75c1048f0f8825cebbdeda39669f963c8bcb0f58e19d779",
+      "after_sha256": "939e9e7861f30d93cc1fd8afecbc5c8f19cc7c81befb517003752d7602754323"
+    }
+  },
+  "unchanged_render_source_sha256": {
+    "app/aircraft/retractable_model.gd": "c5a064b356ad9cd1bddd43784446bb286a05b0b2fe93db133950b51cd3b3803c",
+    "app/render/lake/lake_planar_reflection.gd": "5231594e9aefad1f93e8d6ebadf91673075c1a3d73f7cc9804efdf012c584b36",
+    "app/render/lake/water.gdshader": "5f24109204352a70ae83f110121959105353f6c758857ca6ed5d95fa4c4ec8f8"
+  },
+  "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "note": "Hashes of the four family manifests/descriptors were recorded immediately after this repair. Concurrent F4U registry integration subsequently regenerated them again; current whole-tree hashes are not claimed equal to this tested snapshot. Customization was also regenerated, changing only those two manifest hashes and their derived slots hashes at that point (independently reviewed). Camera screen is prescribed rendering, not flight or performance qualification."
+}

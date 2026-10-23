@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "1533b885aa0128acef19ca1b9be509db0964ff4ae0fd2faad9e1c4ac9ec78195",
+    "sha256": "55fd266b29997dc7813b1d5b9a41bd2598f43eb48af8180f833c3db808611690",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -185,7 +185,7 @@
     },
     {
       "path": "res://aircraft/retractable_model.gd",
-      "sha256": "4d753bbca79eb8576ee7bfdbe6f5f238d9fb82b3b7dd209a1d1b5fb83c709805",
+      "sha256": "ba6cbf65c686fd244ffe4ce1c3debe9fe0e1a22b7bf32cf5d3ddf99e356cea83",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

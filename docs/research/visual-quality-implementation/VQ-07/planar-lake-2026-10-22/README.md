@@ -213,7 +213,7 @@ probe run and two planar runs, provided each passed its individual pacing gates.
 Frame reports and screenshot sidecars now describe the installed lake path.
 The reducer validates that descriptor and rejects mixed modes or mixed known
 and missing modes. All-historical missing data remains numerically compatible
-but explicitly configuration-incomplete. The [operating contract](../../../../../../research/performance/README.md#native-frame-evidence)
+but explicitly configuration-incomplete. The [operating contract](../../../../../research/performance/README.md#native-frame-evidence)
 defines the fields and their snapshot limits. No shader, physics, profile
 default or per-frame observer changed.
 
@@ -248,3 +248,42 @@ disabling SSAO. Their scripts/logs remain under `shutdown-diagnostics/`; neither
 result identifies the owning subsystem or justifies a production workaround.
 The focused headless contract has no errors or warnings. Full active-flight,
 lifecycle and High qualification remain open; no FPS improvement is claimed.
+
+## Aircraft binding recovery and low camera screen, 2026-10-22
+
+The next native camera screen stopped before rendering the detailed jet:
+`Airplane.build` rejected the changed shared `retractable_model.gd` dependency.
+The failure is retained under `binding-recovery/checks/low-screen-*`. The model
+generator's check isolated stale Avanti and Turbo Lumber manifests. Running
+the existing model, customization and Workshop generators in dependency order
+restored both families. At that point the five generated files changed only
+dependency/manifest hashes and the two derived customization slot hashes;
+independent review confirmed this. Aircraft quantities and sampled poses were
+unchanged. The [authoring contract](../../../../AIRCRAFT_CONTRACT.md#model-and-package-contract)
+now states that regeneration order explicitly.
+
+The same native fixture then completed. At a camera height of 0.45 m above mean
+water, the detailed jet and its reflection remain visible at camera rolls of
+0°, 30°, 60° and 85°. A 12 m camera and a submerged-jet diagnostic complete six
+prescribed poses. All six PNGs were inspected; no new clipping defect was found
+in these cases. See the [low view](binding-recovery/captures/low.png),
+[60° roll](binding-recovery/captures/roll60.png) and
+[high view](binding-recovery/captures/high.png). No reflection algorithm change
+was justified. These are production-World render poses, not an active flight,
+continuous motion acceptance or performance measurement. The existing seven
+Texture RID exit warning remains.
+
+Six focused suites pass **883 checks**: Avanti model 390, wheel/contact alignment
+89, model manifests 75, Workshop descriptors 102, customization 159 and imported
+model 68. Logs, generation commands, fixture and images are under
+`binding-recovery/`. Reproduce with native High, `OPENRC_LAKE_REFLECTIONS=planar`,
+`--script ../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/binding-recovery/low_probe.gd`
+and `-- --out=<new absolute directory>`.
+
+Concurrent F4U authoring subsequently regenerated the shared registries again;
+those additions remain outside this repair. The [identity record](binding-recovery/identity.json)
+preserves the initial repair hashes without claiming whole-tree equivalence.
+All three generator freshness checks then passed with six visual families;
+the five manifest/model/Workshop/customization suites were repeated successfully
+against that combined state (`binding-recovery/final-checks/`). This does not
+qualify the new F4U model or its sampled compression path.

@@ -118,8 +118,8 @@
 	"source_identity": {
 		"manifest": {
 			"path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
-			"sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
-			"pinned_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+			"sha256": "48f8feb37bfe30baa5bb633343001b30b9181bcb5420bd53f1b082724e90e676",
+			"pinned_sha256": "48f8feb37bfe30baa5bb633343001b30b9181bcb5420bd53f1b082724e90e676",
 			"matches_pin": true
 		},
 		"builder": {

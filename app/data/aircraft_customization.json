@@ -6,8 +6,62 @@
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
+      "visual_family": "f4u-corsair-250",
+      "model_manifest_sha256": "959c2f6e480854cfa2c2508f64a074561f35dcb4d553852365923f091862ed7d",
+      "paint_slots": [],
+      "marking_slots": [],
+      "smoke_slots": [],
+      "presentation_engine_version": "4.7.2",
+      "presentation_sources": [
+        {
+          "path": "res://render/aircraft_customization.gd",
+          "sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349"
+        },
+        {
+          "path": "res://render/presentation_sources.gd",
+          "sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68"
+        },
+        {
+          "path": "res://render/smoke/exhaust.gd",
+          "sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+        },
+        {
+          "path": "res://render/smoke/process.gdshader",
+          "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+        },
+        {
+          "path": "res://render/smoke/profile_process.gdshader",
+          "sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke.gd",
+          "sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0"
+        },
+        {
+          "path": "res://render/smoke/profile_smoke_schedule.gd",
+          "sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a"
+        },
+        {
+          "path": "res://render/smoke/smoke_system.gd",
+          "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d"
+        },
+        {
+          "path": "res://render/smoke/stock_profile.gd",
+          "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f"
+        },
+        {
+          "path": "res://workshop/presentation.gd",
+          "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
+        }
+      ],
+      "slots_sha256": "0d1046fcde0027fe34d32a3bf48dfa1dac7525b93901aa0bc96484af5be35c7e"
+    },
+    {
+      "format": "openrc-aircraft-customization-bindings",
+      "version": 3,
+      "source_proof_version": 2,
       "visual_family": "gp-extra-300s-60",
-      "model_manifest_sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
+      "model_manifest_sha256": "79f7a304c5226188a9ba87d46fe15a3183e9341439f2b5317f79e67c278b1cfd",
       "paint_slots": [
         {
           "id": "body",
@@ -278,14 +332,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "8e6ad3e4e8de7599f83c0280719714011e0a3e0a24e432382d09852211957ad1"
+      "slots_sha256": "af7728ede03896b40650573c845ba7064115cafedcf8beda9cdf21919e38619e"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "jensen-das-ugly-stik-60",
-      "model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+      "model_manifest_sha256": "48f8feb37bfe30baa5bb633343001b30b9181bcb5420bd53f1b082724e90e676",
       "paint_slots": [
         {
           "id": "body",
@@ -575,14 +629,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "7815f197e72b50c8a7663d26d33d98b38eeef2fdae73c75c6cb734aabe40f86a"
+      "slots_sha256": "ff1a84d6f5a35b77de0a97866ce200f195eb685fd8937502a3ff15a54c67285f"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "p51d-mustang-120",
-      "model_manifest_sha256": "7240fa81961b9f4862151d4ba1737696c401783c2a9457bd428bf9fa75d5fd76",
+      "model_manifest_sha256": "a326e49d3ab8914a8b1e2cf63fc9d0fa8fbff9c4595230aa02aca1b4f90d087f",
       "paint_slots": [
         {
           "id": "body",
@@ -892,14 +946,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "f7dd5ab5381b93271af49b46c850081cc1c873070cef0bc5d2a6a3f02ea8cc1f"
+      "slots_sha256": "ad69cda66ab95c606bfec493d3ac6dafae62e289172158963c29b207f54837c4"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "sebart-avanti-s-a200-p100rx",
-      "model_manifest_sha256": "02756d2dedc50d201cb8972ad4a32a6d19b6990896c33bae3c3fc5eed701a8c2",
+      "model_manifest_sha256": "570977b6e137003c0f6cdd3d73500ec80e0a26920e5f56a3ff5cc3c73f8a09c1",
       "paint_slots": [
         {
           "id": "body",
@@ -1106,14 +1160,14 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "102959a7eb8e2f4d740ec82946942555478d34d6672e4f09e9158a720da91ece"
+      "slots_sha256": "7b0616a3ed62f74c2b60367099cc8840574b6770225e1cb7d7b9d420f864acb0"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
       "version": 3,
       "source_proof_version": 2,
       "visual_family": "turbo-lumber-evolution",
-      "model_manifest_sha256": "99ab3f6ccd9477fecdf8e8abb10ce08e3a93eccbb9b4792f741cae52c18b9075",
+      "model_manifest_sha256": "cfdb6299f412200db543e1ed7233a7e0b1ce96aa3baa4f656636c6027f283b38",
       "paint_slots": [
         {
           "id": "body",
@@ -1370,7 +1424,7 @@
           "sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8"
         }
       ],
-      "slots_sha256": "6498162b95ff43e178b03ddbf839db7db22a44cda8425bc366fa9c477a8b90fe"
+      "slots_sha256": "f7c0033e96608cebaf894f8660e87a101088294954880e4e7ba005c7e3010a44"
     }
   ]
 }
