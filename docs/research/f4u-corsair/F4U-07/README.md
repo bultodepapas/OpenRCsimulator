@@ -32,11 +32,11 @@ Sources for every input are in [F4U-01](../F4U-01/README.md). The method follows
 | Flight mass | 21.5 kg (dry 21.1 kg) | Mean of the CARF specification (18–21 kg dry, plus half the tank) and Model Airplane News' 24.0 kg Moki-powered review aircraft |
 | CG, neutral point, static margin | 25.7 % MAC, 36.9 % MAC, 11.2 % | CG from three manuals; CARF's spar rule gives 27.5 % MAC if its spar sits at 30 % chord (21.9–30.8 % for 25–33 %). Neutral point calibrated as before |
 | CL_max, 1-g stall, start speed | 1.16, 14.4 m/s, 23 m/s | TR 586 section data at the larger chord's Reynolds numbers |
-| Throws, high rate | Aileron 10.8°, elevator 8.9°, rudder 17.2° | CARF: 20/15 mm aileron (mean), 20 mm elevator, 70 mm rudder |
+| Throws | Normal rate aileron 10.8°, elevator 8.9°, rudder 17.2°; high rate 13.5°, 11.2°, 25.9° | Normal = the CARF manual's recommended set (20/15 mm aileron mean, 20 mm elevator, 70 mm rudder); high = normal ÷ the median low/high ratio of three Corsair manuals; the elevator stays inside CARF's 35 mm take-off allowance (corrected 2026-10-23, see below) |
 | Flaps | 0° take-off, 30° landing; slotted fit gain 0.839, limit 22.9°, stall shift 0.10 | CARF: no take-off flap, at most 30° on approach (35° useful, 45° mechanical) |
 | Thrust angles | 2.5° right, 0.5° up | CARF manual |
 | Engine, propeller | Peak torque 13.97 N·m (bmep 7.0 bar); installed 8.06 kW at the 6,000 rpm limit (72 % of 15 hp); static 4,274 rpm, 28.0 kgf, T/W 1.30 | The two Moki points give 13.09 and 14.86 N·m; the three-blade's static rpm lands 3 % under the manual's 4,400 |
-| Roll response | pb/2V 0.062 at the CARF throw | Full-size 0.064 (NACA RM A7C05) |
+| Roll response | pb/2V 0.062 at the CARF normal throw, 0.078 at the high rate | Full-size 0.064 (NACA RM A7C05) |
 | Top speed | 57.7 m/s (208 km/h) | Full-throttle level trim. CARF: "never noticeably exceed 200 km/h" |
 
 ### Flight modes (physics/flight_modes.gd on the simulated equations)
@@ -52,7 +52,7 @@ All meet MIL-F-8785C Level 1 bounds used as a reference frame (damping ratios di
 
 ## Verification (2026-10-22, Windows, Godot 4.7.2)
 
-`probe.gd`: 22 checks, 0 failed. The production `AircraftData.load_file` accepts the file and keeps identity, span (2.778 m) and inventory mass. Level trims from 18.7 to 38 m/s use 4.5° to 1.0° of up elevator; power-off flares at 1.15 and 1.10 Vs need 6.0° and 6.5° of the 8.9° throw. `fit_propeller.py --check`, `ground_effect_vlm.py --check` and `derive_physics.py --check` pass.
+`probe.gd`: 22 checks, 0 failed. The production `AircraftData.load_file` accepts the file and keeps identity, span (2.778 m) and inventory mass. Level trims from 18.7 to 38 m/s use 4.5° to 1.0° of up elevator; power-off flares at 1.15 and 1.10 Vs need 6.0° and 6.5° of the 11.2° throw. `fit_propeller.py --check`, `ground_effect_vlm.py --check` and `derive_physics.py --check` pass.
 
 ## Cross-checks of the engine and propeller
 
@@ -72,6 +72,7 @@ Single forum reports span 4,200–5,200 rpm on 32x18 two-blades. The Mejzlik 31x
 - **Calibration transfer.** The P-51's body-yaw factor (3.6 × DATCOM) does not transfer: on the Corsair it would invert the measured directional stability.
 - **Propeller tables.** A calibrated blade-element model over-predicts low-pitch three-blades by 17–37 % in the cruise band; a manufacturer table governs where one exists. The 30x18 three-blade has none, so its tables carry the calibration's uncertainty.
 - **Rated power.** The Moki S250's 15 hp needs about 8.9 bar of bmep at 6,000 rpm; the manual's own static points imply 7.0 bar, so the installed peak is 72 % of the rating.
+- **Throw mapping.** The first 1/4.5 derivation put CARF's single recommended set into `max_throw`, so the default normal rate flew 80 % of the manual's throws. The contract's `max_throw` is the full surface travel and `rates.normal` the default fraction; CARF's set is now the normal rate. The standard flight-test card exposed it (F4U-12).
 - **Loader item limit.** One inventory item may weigh at most 5 kg; the 5.4 kg engine is split into its core and its mount and collector ring.
 
 ## Limits

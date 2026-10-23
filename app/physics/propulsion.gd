@@ -21,6 +21,8 @@ const PACK_TRIM_AMBIENT_K: float = 288.15
 
 ## Below this, the engine produces nothing (stopped).
 const STOPPED_RPM := 1.0
+## EL1d-R1: electric propeller laws sample rigid-point velocity at the hub.
+const ELECTRIC_INFLOW_LAW := "electric-propeller-local-hub-inflow-v1"
 ## Beyond the table, coefficients extrapolate linearly but never below these floors (windmilling).
 const CT_FLOOR := -0.1
 const CP_FLOOR := 0.0

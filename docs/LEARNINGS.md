@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-23 · F4U-12 — a kit manual's single throw set is the normal rate, not `max_throw`
+
+A manual that lists one recommended set of throws describes what a pilot flies by default. Writing it into `controls.max_throw` made the Corsair's default `rates.normal` 80 % of the manual, and the standard flight-test card then measured a 55°/s full-aileron roll and failed eleven aerobatic tests against the P-51's 40/40. Map a single manual set to the normal rate and derive the maximum from a sourced high/low ratio or the manual's own mechanical allowance; when a manual gives dual rates, map them directly. [Evidence](research/f4u-corsair/F4U-12/README.md)
+
 ## 2026-10-22 · F4U-04 — a delivery can pass every structural check in the wrong rig pose
 
 The Corsair g1.2 GLB passed the author's verifier, our structural preflight and a Godot import, yet it was exported with the gear down, which the importer's stowed-sample binding refuses. Both checkers tested names, sections, scales and counts, and neither tested where the rig stood. When a contract fixes an export pose, check it geometrically in the receiving preflight (here: no gear vertex more than 10 mm below the airframe), with a known-good and a mutated asset in its test. [Evidence](research/f4u-corsair/F4U-04/README.md)

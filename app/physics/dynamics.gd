@@ -89,16 +89,16 @@ static func _components_from_air(state: PackedFloat64Array, model: Dictionary, d
 	var aero_loads := Aero.loads(state, air, d, model, rho, downwash_cl, ground_up)
 	var washed: bool = not model.propulsion.get("slipstream", {}).is_empty()
 	var wake_thrust_torque: PackedFloat64Array = stage_thrust_torque
-	# Powered-device loads use their local inflow point: the turbine intake and the Glow propeller hub.
+	# Powered-device loads use their local inflow point: turbine intake and glow/electric propeller hub.
 	# The stage-reuse route already evaluated that same point; other legacy routes retain their convention.
 	var propulsion_loads: PackedFloat64Array = stage_propulsion_loads
 	if propulsion_loads.is_empty():
 		var prop_air: PackedFloat64Array = air.v_air
 		if Turbine.is_turbine(model.propulsion):
 			prop_air = Turbine.local_intake_velocity(air.v_air, state.slice(RB.RATE, RB.RATE + 3), model.propulsion)
-		elif Propulsion.is_glow(model.propulsion):
+		elif Propulsion.is_glow(model.propulsion) or Propulsion.is_electric(model.propulsion):
 			prop_air = Propulsion.hub_air_velocity(state, air.v_air, model.propulsion.offset)
-		if washed and Propulsion.is_glow(model.propulsion):
+		if washed and (Propulsion.is_glow(model.propulsion) or Propulsion.is_electric(model.propulsion)):
 			# EX-14c: one hub evaluation feeds the shaft loads and the wake, exactly as the Glow stage route does.
 			wake_thrust_torque = Propulsion.thrust_torque(prop_air, rpm, model.propulsion, rho).slice(0, 2)
 			propulsion_loads = Propulsion.loads_from_thrust_torque(prop_air, rpm, model.propulsion, rho,

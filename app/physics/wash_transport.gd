@@ -14,19 +14,23 @@ static func enabled(prop: Dictionary) -> bool:
 
 ## [equilibrium increment (m/s), convection speed (m/s)]. The positive floor is an estimated
 ## zero-flow decay regularizer, declared with provenance; it is not a measured transport velocity.
-static func target(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
-	var tq: PackedFloat64Array = Propulsion.thrust_torque(v, rpm, prop, rho)
-	var wake: Dictionary = Slipstream.wake(v, tq[0], tq[1], prop, rho)
+## hub_air, when supplied, separates disk inflow from the datum flow used for tail geometry.
+static func target(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float,
+		hub_air: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+	var disk_v: PackedFloat64Array = v if hub_air.is_empty() else hub_air
+	var tq: PackedFloat64Array = Propulsion.thrust_torque(disk_v, rpm, prop, rho)
+	var wake: Dictionary = Slipstream.wake(disk_v, tq[0], tq[1], prop, rho)
 	var source: float = wake.dv
-	if rpm < Propulsion.STOPPED_RPM or Slipstream.reverse_weight(v, rpm, prop) == 0.0:
+	if rpm < Propulsion.STOPPED_RPM or Slipstream.reverse_weight(disk_v, rpm, prop) == 0.0:
 		source = 0.0
 	return PackedFloat64Array([source, maxf(wake.u + wake.w, prop.slipstream.transport_speed_floor)])
 
 
-static func settled(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+static func settled(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float,
+		hub_air: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
 	var out: PackedFloat64Array = PackedFloat64Array()
 	if enabled(prop):
-		var values: PackedFloat64Array = target(v, rpm, prop, rho)
+		var values: PackedFloat64Array = target(v, rpm, prop, rho, hub_air)
 		out.resize(prop.slipstream.pieces.size())
 		out.fill(values[0])
 	return out
@@ -35,8 +39,8 @@ static func settled(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: fl
 ## Evaluated at the same RK stage as body loads: dv' = (dv_equilibrium - dv) / tau,
 ## tau = (piece.root.x - hub.x) / max(u + w_disc, speed_floor). Axial shafts only.
 static func derivative(v: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float,
-		lagged: PackedFloat64Array) -> PackedFloat64Array:
-	var values: PackedFloat64Array = target(v, rpm, prop, rho)
+		lagged: PackedFloat64Array, hub_air: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+	var values: PackedFloat64Array = target(v, rpm, prop, rho, hub_air)
 	var out: PackedFloat64Array = lagged.duplicate()
 	for i in out.size():
 		var distance: float = prop.slipstream.pieces[i].root[0] - prop.slipstream.hub[0]

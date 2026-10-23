@@ -63,4 +63,17 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		if auto_zoom_span > 0.0:
 			var h := float(camera.get_viewport().get_visible_rect().size.y) if camera.is_inside_tree() else float(Spec.CAPTURE.height)
 			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), h)
-	camera.look_at(target, Vector3.UP)
+	var direction := target - camera.global_position
+	# An eye-coincident target has no viewing direction. Preserve the last pose.
+	if direction.length_squared() < 1e-12:
+		return
+	direction = direction.normalized()
+	if direction.cross(Vector3.UP).length_squared() < 1e-10:
+		# World-up cannot define roll at the pole. Preserve screen-right there;
+		# fall back to north only if the previous right axis is also parallel.
+		var up := camera.global_basis.x.cross(direction).normalized()
+		if up.length_squared() < 0.5:
+			up = Vector3.FORWARD
+		camera.look_at(target, up)
+	else:
+		camera.look_at(target, Vector3.UP)

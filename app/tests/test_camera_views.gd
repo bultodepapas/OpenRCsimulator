@@ -61,6 +61,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_pilot_parity()
+	_pilot_singularities()
 	_pilot_zoom()
 	_cycle()
 	_chase()
@@ -90,6 +91,40 @@ func _pilot_parity() -> void:
 	_check("landscape look view is exactly PilotCamera.look", cam.transform == ref.transform and cam.fov == ref.fov)
 	cam.queue_free()
 	ref.queue_free()
+
+
+func _pilot_singularities() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	rig.auto_zoom = false
+	var eye := Vector3(0, 1.7, 0)
+	cam.position = eye
+	cam.look_at(eye + Vector3(20, 10, 0), Vector3.UP)
+	for offset: Vector3 in [Vector3(0, 30, 0), Vector3(0, -30, 0), Vector3(0.000001, 30, 0)]:
+		var previous_right := cam.basis.x
+		var target := eye + offset
+		var pose := Transform3D(Basis.IDENTITY, target)
+		rig.update(target, pose, pose.basis, 1.0 / 60.0, false, _flat)
+		_check("pilot vertical target remains aimed " + str(offset), (-cam.basis.z).dot(offset.normalized()) > 0.99999)
+		_check("pilot vertical basis stays orthonormal", cam.basis.is_finite() and cam.basis.is_equal_approx(cam.basis.orthonormalized()) and absf(cam.basis.determinant() - 1.0) < 0.00001)
+		_check("pilot pole keeps the preceding screen-right direction", cam.basis.x.dot(previous_right) > 0.99999)
+	# A preceding rolled view can put its right axis on the new viewing direction.
+	cam.basis = Basis(Vector3(0, 1, 0), Vector3(-1, 0, 0), Vector3(0, 0, 1))
+	var pole := eye + Vector3(0, 30, 0)
+	rig.update(pole, Transform3D(Basis.IDENTITY, pole), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	_check("parallel preceding right axis falls back to finite aimed basis", cam.basis.is_finite() and (-cam.basis.z).dot(Vector3.UP) > 0.99999)
+	_check("parallel preceding right axis falls back to north-up", cam.basis.y.dot(Vector3.FORWARD) > 0.99999)
+	var previous := cam.basis
+	rig.update(eye, Transform3D(Basis.IDENTITY, eye), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	_check("coincident pilot target preserves last orientation", cam.basis == previous)
+	var ordinary := eye + Vector3(20, 10, -40)
+	rig.update(ordinary, Transform3D(Basis.IDENTITY, ordinary), Basis.IDENTITY, 1.0 / 60.0, false, _flat)
+	var reference := _camera()
+	reference.position = eye
+	reference.look_at(ordinary, Vector3.UP)
+	_check("ordinary pilot target retains exact look_at basis", cam.basis == reference.basis)
+	cam.free()
+	reference.free()
 
 
 func _pilot_zoom() -> void:

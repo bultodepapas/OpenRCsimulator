@@ -9,6 +9,7 @@ const RB: Script = preload("res://physics/rigid_body.gd")
 const Dynamics: Script = preload("res://physics/dynamics.gd")
 const Propulsion: Script = preload("res://physics/propulsion.gd")
 const PATHS: Array[String] = ["res://data/aircraft/synthetic_stik_electric_4s.json", "res://data/aircraft/synthetic_stik_electric_6s.json"]
+const BATTERY_PATH: String = "res://data/aircraft/synthetic_stik_electric_4s_battery.json"
 var checks: int = 0
 var failures: int = 0
 func check(label: String, ok: bool) -> void:
@@ -67,7 +68,113 @@ func check_rest_coupling(path: String) -> void:
 	a.free()
 
 
+func _arrays_close(got: PackedFloat64Array, want: PackedFloat64Array, tolerance: float) -> bool:
+	if got.size() != want.size():
+		return false
+	for i: int in got.size():
+		if not is_finite(got[i]) or not is_finite(want[i]) or absf(got[i] - want[i]) > tolerance:
+			return false
+	return true
+
+
+func _array_distance(got: PackedFloat64Array, want: PackedFloat64Array) -> float:
+	if got.size() != want.size():
+		return INF
+	var squared: float = 0.0
+	for i: int in got.size():
+		squared += (got[i] - want[i]) * (got[i] - want[i])
+	return sqrt(squared)
+
+
+## Independent rigid-point velocity: propulsion offsets are [aft, right, up] while state rates are FRD.
+func _hub_air_velocity_hand(state: PackedFloat64Array, datum_air: PackedFloat64Array,
+		offset: PackedFloat64Array) -> PackedFloat64Array:
+	var x: float = -offset[0]
+	var y: float = offset[1]
+	var z: float = -offset[2]
+	var p: float = state[RB.RATE]
+	var q: float = state[RB.RATE + 1]
+	var r: float = state[RB.RATE + 2]
+	return PackedFloat64Array([datum_air[0] + q * z - r * y,
+		datum_air[1] + r * x - p * z, datum_air[2] + p * y - q * x])
+
+
+func check_hub_inflow(path: String, label: String) -> void:
+	var a: Node = flight(path)
+	check(label + " session is flyable", a.is_flyable())
+	if not a.is_flyable():
+		a.free()
+		return
+	a.engine_running = true
+	a.sim.inputs[3] = 0.72
+	var prop: Dictionary = a.aircraft.model.propulsion
+	# Give this regression a supported, off-axis installation so q/r produce a sizeable axial hub-flow delta.
+	# The published demo uses a centreline shaft; this remains a test-only in-memory model mutation.
+	prop.offset = PackedFloat64Array([-0.414176, 0.08, 0.11])
+	var rpm: float = a.sim.continuous[0]
+	var values: PackedFloat64Array = a.sim.continuous.duplicate()
+	var state: PackedFloat64Array = a.sim.state.duplicate()
+	state[RB.POS + 2] = -20.0 # keep the local probe clear of ground contacts
+	state[RB.RATE] = 1.5
+	state[RB.RATE + 1] = 6.0
+	state[RB.RATE + 2] = 4.0
+	var rho: float = a.air_density(state)
+	var wind: PackedFloat64Array = a.wind_at(0.0)
+	var air: Dictionary = a.air_data(state, 0.0)
+	var hub_air: PackedFloat64Array = _hub_air_velocity_hand(state, air.v_air, prop.offset)
+	var axis: PackedFloat64Array = Propulsion.axis(prop)
+	check(label + " rate and offset change prop axial inflow",
+		absf(M.dot(hub_air, axis) - M.dot(air.v_air, axis)) > 0.5)
+
+	# Zero-rate positive control: the hub and datum velocities coincide, and the legacy result remains valid.
+	var zero_rate_state: PackedFloat64Array = state.duplicate()
+	for i: int in 3:
+		zero_rate_state[RB.RATE + i] = 0.0
+	var zero_air: Dictionary = a.air_data(zero_rate_state, 0.0)
+	var zero_expected: PackedFloat64Array = Propulsion.loads(zero_air.v_air, rpm, prop, rho)
+	var zero_dynamics: Dictionary = Dynamics.evaluate(zero_rate_state, a.aircraft.model,
+		a._deflections(a.sim.aux), rpm, rho, wind, a.sim.gravity)
+	check(label + " zero-rate propulsion loads match the datum-flow control",
+		_arrays_close(zero_dynamics.propulsion_loads, zero_expected, 1e-10))
+
+	# The explicit propeller loads in Dynamics must use the hand-computed local hub flow at nonzero p/q/r.
+	var expected_loads: PackedFloat64Array = Propulsion.loads(hub_air, rpm, prop, rho)
+	var dynamics: Dictionary = Dynamics.evaluate(state, a.aircraft.model, a._deflections(a.sim.aux),
+		rpm, rho, wind, a.sim.gravity)
+	print(label, " hub-flow load norm error = ", _array_distance(dynamics.propulsion_loads, expected_loads),
+		"; expected = ", expected_loads, "; actual = ", dynamics.propulsion_loads)
+	check(label + " Dynamics propeller loads use local hub velocity",
+		_arrays_close(dynamics.propulsion_loads, expected_loads, 1e-10))
+
+	# Exercise the real session coupling and close angular momentum without calling RotorCoupling for the oracle.
+	var response: Dictionary = a._coupled_response(state, values, 0.0)
+	check(label + " coupled session stage evaluates", response.get("ok", false))
+	if response.get("ok", false):
+		var motor_torque: float
+		if a.battery_is_dynamic():
+			motor_torque = float(response.battery.shaft_torque_nm)
+		else:
+			var source: Dictionary = Propulsion.electric_source_state(rpm, a.propulsion_throttle(), prop,
+				a.propulsion_power_enabled())
+			motor_torque = float(source.shaft_torque_nm)
+		var propeller_torque: float = Propulsion.prop_torque(rpm, M.dot(hub_air, axis), prop, rho)
+		var body_derivative: PackedFloat64Array = RB.derivative(state, a.sim.mass, a.sim.inertia,
+			RB.inertia_inverse(a.sim.inertia), response.loads.slice(0, 3), response.loads.slice(3, 6),
+			a.sim.gravity, Dynamics.rotor_momentum(a.aircraft.model, rpm))
+		var body_alpha: PackedFloat64Array = body_derivative.slice(RB.RATE, RB.RATE + 3)
+		var shaft_absolute_acceleration: float = float(prop.rotor_inertia) * \
+			(float(response.spin_acceleration) + M.dot(axis, body_alpha))
+		var shaft_torque_difference: float = motor_torque - propeller_torque
+		print(label, " hub-flow angular-momentum residual = ",
+			shaft_absolute_acceleration - shaft_torque_difference, " Nm")
+		check(label + " angular-momentum balance uses hub propeller torque",
+			absf(shaft_absolute_acceleration - shaft_torque_difference) < 1e-8)
+	a.free()
+
+
 func _initialize() -> void:
+	check_hub_inflow(PATHS[0], "fixed-voltage")
+	check_hub_inflow(BATTERY_PATH, "dynamic-battery")
 	for path: String in PATHS:
 		check_rest_coupling(path)
 		var a: Node = flight(path)

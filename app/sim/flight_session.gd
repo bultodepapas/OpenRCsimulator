@@ -3209,7 +3209,14 @@ func _settled_wash(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloa
 	if not WashTransport.enabled(aircraft.model.propulsion):
 		return PackedFloat64Array()
 	var air: Dictionary = air_data(s, 0.0)
-	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, air_density(s))
+	return WashTransport.settled(air.v_air, aux[AUX_RPM], aircraft.model.propulsion, air_density(s),
+		_electric_hub_air(s, air))
+
+
+## Empty preserves the legacy wash convention; electric disks sample their actual rigid-body point.
+func _electric_hub_air(s: PackedFloat64Array, air: Dictionary) -> PackedFloat64Array:
+	var prop: Dictionary = aircraft.model.propulsion
+	return Propulsion.hub_air_velocity(s, air.v_air, prop.offset) if Propulsion.is_electric(prop) else PackedFloat64Array()
 
 
 func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
@@ -3362,16 +3369,17 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		return {ok = false}
 	var rpm: float = maxf(0.0, trial_rpm) if electric else trial_rpm
 	var air: Dictionary = preview.air if preview.has("air") else air_data(s, time_s)
+	var prop_air: PackedFloat64Array = _electric_hub_air(s, air) if electric else air.v_air
 	var battery_point: Dictionary = {}
 	var rate: float
 	if battery_is_dynamic():
 		battery_point = _battery_point(rpm, values, true, s, air)
 		if not battery_point.get("ok", false):
 			return {ok = false}
-		var load_torque: float = Propulsion.prop_torque(rpm, M.dot(air.v_air, Propulsion.axis(prop)), prop, air_density(s))
+		var load_torque: float = Propulsion.prop_torque(rpm, M.dot(prop_air, Propulsion.axis(prop)), prop, air_density(s))
 		rate = (float(battery_point.shaft_torque_nm) - load_torque) / float(prop.rotor_inertia) * 60.0 / TAU
 	else:
-		rate = Propulsion.shaft_rate(rpm, propulsion_throttle(), M.dot(air.v_air, Propulsion.axis(prop)),
+		rate = Propulsion.shaft_rate(rpm, propulsion_throttle(), M.dot(prop_air, Propulsion.axis(prop)),
 			prop, air_density(s), engine_charge_ratio(s), propulsion_power_enabled() and source_enabled)
 	if not is_finite(rate):
 		return {ok = false}
@@ -3481,7 +3489,8 @@ func _coupled_derivative(s: PackedFloat64Array, values: PackedFloat64Array, time
 		return PackedFloat64Array([NAN])
 	var air: Dictionary = air_data(s, time_s)
 	var wash: PackedFloat64Array = WashTransport.derivative(air.v_air, _coupled_rpm(values),
-		aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index())) if _rotor_index() > 0 else PackedFloat64Array()
+		aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()),
+		_electric_hub_air(s, air)) if _rotor_index() > 0 else PackedFloat64Array()
 	wash.append(result.rpm_rate)
 	_append_battery_rates(wash, result)
 	wash.append_array(result.get("wheel_derivative", PackedFloat64Array()))
@@ -3498,7 +3507,7 @@ func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	if _rotor_index() > 0:
 		var air: Dictionary = result.air
 		extra = WashTransport.derivative(air.v_air, _coupled_rpm(values),
-			aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()))
+			aircraft.model.propulsion, air_density(s), values.slice(0, _rotor_index()), _electric_hub_air(s, air))
 	extra.append(result.rpm_rate)
 	_append_battery_rates(extra, result)
 	extra.append_array(result.get("wheel_derivative", PackedFloat64Array()))
@@ -4093,6 +4102,7 @@ func trace_meta() -> Dictionary:
 			metadata.weather_timing = "wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0"
 	if Propulsion.is_electric(prop):
 		metadata.propulsion_model = electric_law()
+		metadata.propeller_inflow_law = Propulsion.ELECTRIC_INFLOW_LAW
 		metadata.electric_configuration = JSON.stringify({motor = prop.motor, battery = prop.battery, esc = prop.esc}, "", true, true)
 		metadata.electric_sample_timing = "accepted endpoint; current tick input and source-enabled mode"
 		metadata.electric_stop = "first downward zero crossing; bounded RK4 localization; static bearing friction; no reverse"
@@ -4329,6 +4339,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(PACK_LAYOUT if battery_is_pack() else BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
+		parts.append(Propulsion.ELECTRIC_INFLOW_LAW)
 	if turbine_is_continuous():
 		parts.append(Turbine.CONTINUOUS_LAW + "; " + Turbine.CONTINUOUS_LAYOUT)
 	if glow_is_active():
