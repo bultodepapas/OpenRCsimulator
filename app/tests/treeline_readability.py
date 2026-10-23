@@ -47,16 +47,16 @@ POSES = vq.POSES
 # Where the airplane is seen from the pilot's eyes: azimuth from north and the CG's elevation above the eyes
 # (degrees), side-on with the nose to the pilot's right. Design values measured on wide renders of the committed
 # L6b treeline (docs/research/visual-quality-implementation/L6c): due north the trees are sparse and gapped at
-# 100 m, at azimuth 9° a solid tree band fills 0.5–4.1° of elevation. So 2.3° centres the airplane in the trees,
-# 4.1° sits it on the treetop edge, 10° is VQ-01b's clear sky and −0.5° puts the CG 0.83 m over the grass (a
-# knife-edge wingtip keeps 7 cm; the trunks 300 m behind show above its top rows). The same azimuth and light for
+# 100 m, at azimuth 9° a solid tree band fills 0.25–2.1° of elevation (re-measured 2026-10-23 after groves-v2;
+# 0.5–4.1° before). So 1.2° centres the airplane in the trees, 2.1° sits it on the treetop edge, 10° is VQ-01b's
+# clear sky and −0.5° puts the CG 0.83 m over the grass (a knife-edge wingtip keeps 7 cm; the trunks 300 m behind show above its top rows). The same azimuth and light for
 # all four. `expected` is the minimum share of the ring around the airplane that must be that background for the
 # case to count (a guard on the case, not a quality threshold).
 AZIMUTH_DEG = 9.0
 BACKGROUNDS: dict[str, dict[str, Any]] = {
     "sky": {"elevation_deg": 10.0, "expected": {"sky": 0.9}},
-    "horizon": {"elevation_deg": 4.1, "expected": {"sky": 0.15, "trees": 0.15}},
-    "trees": {"elevation_deg": 2.3, "expected": {"trees": 0.6}},
+    "horizon": {"elevation_deg": 2.1, "expected": {"sky": 0.15, "trees": 0.15}},
+    "trees": {"elevation_deg": 1.2, "expected": {"trees": 0.6}},
     "ground": {"elevation_deg": -0.5, "expected": {"ground": 0.6}},
 }
 # game: auto-zoom on, what the pilot sees (the FOV narrows so the span covers 30 px); fixed: the 50° L0c fixture.
