@@ -50,6 +50,8 @@ Use [section 8](#8-first-work-packages-and-stopping-rules) to execute, [section 
 
 **Aircraft binding recovery, 2026-10-22:** [jet capture recovery and low camera screen](../research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#aircraft-binding-recovery-and-low-camera-screen-2026-10-22) fixes stale generated identities after a shared gear-script change blocked the detailed jet. Avanti and Turbo Lumber bindings were regenerated through their pipelines; 883 focused checks pass. Six prescribed camera poses extend visual evidence without exposing a new clipping defect. Reflection algorithms and full-flight/performance gates remain unchanged.
 
+**Native planar cost screen, 2026-10-22:** [two valid keyboard-flight pairs](../research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#native-keyboard-cost-screen-2026-10-22) measure about 2.0–2.1 ms greater wall p95 with planar reflection at 720p on RTX 3090. Four other runs are excluded for overlap or pause. Both campaigns fail the unchanged three-run minimum; no runtime change or qualification follows. Keep planar default-off and pursue controlled foreground repetitions and pilot-motion evidence.
+
 ## 1. Scope and authority
 
 This plan expands **VQ-07** into reviewable steps and proposes the later High-profile decision. The [global performance/visual plan](global-performance-visual-quality.md) still owns the active Compatibility delivery; its exclusions and budgets remain binding for that delivery. [VQ](../VISUAL-QUALITY-PLAN.md) owns parent-step status. Existing material, landscape, smoke, sky and settings tasks stay in their current homes; they are dependencies, not a second backlog here.

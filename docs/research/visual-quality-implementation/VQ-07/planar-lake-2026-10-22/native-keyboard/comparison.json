@@ -1,0 +1,296 @@
+{
+  "rows": [
+    {
+      "name": "probe-1",
+      "mode": "probe",
+      "frame_ms": {
+        "max": 37.674,
+        "p50": 8.334,
+        "p95": 9.148,
+        "p99": 10.004
+      },
+      "simulation": {
+        "elapsed_time_s": 69.9916666666667,
+        "end_tick": 16800,
+        "end_time_s": 70.0,
+        "fault": "",
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "scope": "first _process clock prime through sample completion; includes warm-up",
+        "start_tick": 2,
+        "start_time_s": 0.00833333333333333,
+        "step_usec_smoothed": 1408.54317298228,
+        "ticks": 16798
+      },
+      "camera": {
+        "autozoom": true,
+        "far_m": 21000.0,
+        "fov_deg": 50.0,
+        "keep_aspect": 1,
+        "mode": "pilot",
+        "near_m": 0.100000001490116,
+        "projection": 0,
+        "transform": {
+          "basis_columns": [
+            [
+              0.656059086322784,
+              0.0,
+              0.754709541797638
+            ],
+            [
+              0.0131714968010783,
+              0.999847710132599,
+              -0.0114498091861606
+            ],
+            [
+              -0.754594624042511,
+              0.0174524057656527,
+              0.655959188938141
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        },
+        "viewport": [
+          1280.0,
+          720.0
+        ]
+      },
+      "max_fps": 0,
+      "vsync_mode": 1,
+      "screen_refresh_hz": 120.0,
+      "warnings": 1
+    },
+    {
+      "name": "planar-1",
+      "mode": "planar",
+      "frame_ms": {
+        "max": 27.857,
+        "p50": 8.275,
+        "p95": 11.245,
+        "p99": 12.073
+      },
+      "simulation": {
+        "elapsed_time_s": 69.9291666666667,
+        "end_tick": 16784,
+        "end_time_s": 69.9333333333333,
+        "fault": "",
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "scope": "first _process clock prime through sample completion; includes warm-up",
+        "start_tick": 1,
+        "start_time_s": 0.00416666666666667,
+        "step_usec_smoothed": 1402.43491029097,
+        "ticks": 16783
+      },
+      "camera": {
+        "autozoom": true,
+        "far_m": 21000.0,
+        "fov_deg": 50.0,
+        "keep_aspect": 1,
+        "mode": "pilot",
+        "near_m": 0.100000001490116,
+        "projection": 0,
+        "transform": {
+          "basis_columns": [
+            [
+              0.656059086322784,
+              0.0,
+              0.754709541797638
+            ],
+            [
+              0.0131714968010783,
+              0.999847710132599,
+              -0.0114498091861606
+            ],
+            [
+              -0.754594624042511,
+              0.0174524057656527,
+              0.655959188938141
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        },
+        "viewport": [
+          1280.0,
+          720.0
+        ]
+      },
+      "max_fps": 0,
+      "vsync_mode": 1,
+      "screen_refresh_hz": 120.0,
+      "warnings": 2
+    },
+    {
+      "name": "probe-3",
+      "mode": "probe",
+      "frame_ms": {
+        "max": 12.954,
+        "p50": 8.335,
+        "p95": 9.182,
+        "p99": 9.932
+      },
+      "simulation": {
+        "elapsed_time_s": 70.0166666666667,
+        "end_tick": 16806,
+        "end_time_s": 70.025,
+        "fault": "",
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "scope": "first _process clock prime through sample completion; includes warm-up",
+        "start_tick": 2,
+        "start_time_s": 0.00833333333333333,
+        "step_usec_smoothed": 1443.06095276293,
+        "ticks": 16804
+      },
+      "camera": {
+        "autozoom": true,
+        "far_m": 21000.0,
+        "fov_deg": 50.0,
+        "keep_aspect": 1,
+        "mode": "pilot",
+        "near_m": 0.100000001490116,
+        "projection": 0,
+        "transform": {
+          "basis_columns": [
+            [
+              0.656059086322784,
+              0.0,
+              0.754709541797638
+            ],
+            [
+              0.0131714968010783,
+              0.999847710132599,
+              -0.0114498091861606
+            ],
+            [
+              -0.754594624042511,
+              0.0174524057656527,
+              0.655959188938141
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        },
+        "viewport": [
+          1280.0,
+          720.0
+        ]
+      },
+      "max_fps": 0,
+      "vsync_mode": 1,
+      "screen_refresh_hz": 120.0,
+      "warnings": 1
+    },
+    {
+      "name": "planar-3",
+      "mode": "planar",
+      "frame_ms": {
+        "max": 27.329,
+        "p50": 8.266,
+        "p95": 11.206,
+        "p99": 11.939
+      },
+      "simulation": {
+        "elapsed_time_s": 69.9291666666667,
+        "end_tick": 16785,
+        "end_time_s": 69.9375,
+        "fault": "",
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "scope": "first _process clock prime through sample completion; includes warm-up",
+        "start_tick": 2,
+        "start_time_s": 0.00833333333333333,
+        "step_usec_smoothed": 1442.81381488764,
+        "ticks": 16783
+      },
+      "camera": {
+        "autozoom": true,
+        "far_m": 21000.0,
+        "fov_deg": 50.0,
+        "keep_aspect": 1,
+        "mode": "pilot",
+        "near_m": 0.100000001490116,
+        "projection": 0,
+        "transform": {
+          "basis_columns": [
+            [
+              0.656059086322784,
+              0.0,
+              0.754709541797638
+            ],
+            [
+              0.0131714968010783,
+              0.999847710132599,
+              -0.0114498091861606
+            ],
+            [
+              -0.754594624042511,
+              0.0174524057656527,
+              0.655959188938141
+            ]
+          ],
+          "position": [
+            0.0,
+            1.70000004768372,
+            0.0
+          ]
+        },
+        "viewport": [
+          1280.0,
+          720.0
+        ]
+      },
+      "max_fps": 0,
+      "vsync_mode": 1,
+      "screen_refresh_hz": 120.0,
+      "warnings": 1
+    }
+  ],
+  "campaigns": {
+    "probe": {
+      "exit_code": 1,
+      "performance_pass": false,
+      "active_flight_qualifier_count": 2
+    },
+    "planar": {
+      "exit_code": 1,
+      "performance_pass": false,
+      "active_flight_qualifier_count": 2
+    }
+  },
+  "accepted_processes_serial": true,
+  "source_same_for_all_accepted": true,
+  "order": [
+    "probe-1",
+    "planar-1",
+    "probe-3",
+    "planar-3"
+  ],
+  "excluded": [
+    "planar-2",
+    "probe-2",
+    "probe-4",
+    "planar-4"
+  ],
+  "workload": "Custom bootstrap using ordinary Main and ControllerService; neutral physical keyboard; fixed pilot lake view; no input/pose override",
+  "limitations": [
+    "Not a pilot circuit, low jet pass, exact input-tape equivalence, 1080p or release/platform qualification",
+    "Main viewport/frame cadence only; no claim of isolated GPU cost or input-to-photon latency",
+    "Other host activity uncontrolled; shutdown warnings remain; reflection activity is end snapshot"
+  ]
+}

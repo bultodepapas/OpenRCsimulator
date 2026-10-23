@@ -166,6 +166,13 @@ never bypass a pause/crash, weaken numerical guards or re-record goldens to fini
 
 ## Native frame evidence
 
+For neutral keyboard collection with a connected radio, explicitly select the
+keyboard through `ControllerService` before attaching the normal session. The
+[retained lake bootstrap](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#native-keyboard-cost-screen-2026-10-22)
+demonstrates this without changing saved preferences or bypassing focus-loss
+pause. Such a workload does not establish pilot-flight acceptance. Reject paused
+runs and overlapping GPU processes; keep exclusions and minimum-run gates visible.
+
 ### CPU, GPU and memory diagnosis
 
 For OS process RAM, system memory pressure, process I/O and project disk usage,

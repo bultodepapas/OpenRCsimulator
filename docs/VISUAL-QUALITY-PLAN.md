@@ -22,6 +22,8 @@ The [global implementation sequence](plans/global-performance-visual-quality.md#
 
 The [advanced graphics plan](plans/advanced-graphics.md), added 2026-10-21, owns the proposed VQ-07a…h comparison steps and conditional High-profile decision. Its [source audit](research/advanced-graphics-2026-10-21/README.md) preserves the supplied research and independent checks. It does not expand the current Compatibility delivery or change the parent-step status below.
 
+The [native keyboard cost screen](research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#native-keyboard-cost-screen-2026-10-22) retains two valid pairs with advancing physics: planar reflection adds about 2.0–2.1 ms wall p95 at 720p on RTX 3090. Four runs are excluded for overlap or pause; both campaigns fail the three-run minimum. Planar stays default-off, with full flight/performance and lifecycle qualification open.
+
 ## Current implementation
 
 VQ-07's [2026-10-22 sunlight correction](research/visual-quality-implementation/VQ-07/sun-energy-2026-10-22/README.md) confines the legacy shadow-energy compensation to Compatibility. The experimental High renderer no longer dims unoccluded surfaces when shadows are enabled. Native panel/scene evidence and focused checks support this repair; the VQ-07 qualification gates remain open.

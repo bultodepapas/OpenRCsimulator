@@ -1,0 +1,8 @@
+{
+  "head_at_retention": "45103c574133a96d1b398ccb847d4a2ca4978477",
+  "source_scope": "Per-run identity covers tracked app .gd/.gdshader/.json/.tscn/.godot files excluding tests; not a full binary-asset or host-state snapshot.",
+  "fixture_sha256": "74acf23e09036448b106ad8f330c78f93bdb58e4e81902854594fbd46a7625dc",
+  "reducer_sha256": "0065e3b1f124e2a42308a1ef8a9072d2810b06a470b2d98b409cf9f5f281e412",
+  "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "runtime_changes": "None in this measurement step; existing dirty aircraft/F4U bindings remain outside its ownership."
+}

@@ -287,3 +287,65 @@ All three generator freshness checks then passed with six visual families;
 the five manifest/model/Workshop/customization suites were repeated successfully
 against that combined state (`binding-recovery/final-checks/`). This does not
 qualify the new F4U model or its sampled compression path.
+
+## Native keyboard cost screen, 2026-10-22
+
+Two valid probe/planar pairs now provide exploratory wall-frame measurements
+with advancing physics. The [bootstrap](native-keyboard/keyboard_flight.gd) uses
+the ordinary `ControllerService` keyboard selection and `Main` session, retaining
+physical key input and focus-loss pause. It does not inject poses, input callbacks
+or automatic resume, or write controller preferences. This is neutral half-power
+Avanti flight with a fixed pilot view toward the lake, not a low pass or pilot
+circuit. The preceding detailed-jet captures remain the visual evidence.
+
+Each process used native High Forward+/Vulkan, Godot 4.7.2, RTX 3090,
+1280×720, 4× MSAA, VSync on at 120 Hz, no FPS cap, 10 s warmup and 60 s collection.
+The camera was at (0, 1.7, 0), azimuth 49°, elevation −1°, FOV 50°; the planar
+capture was active at 640×360 at report time. Activity is an endpoint snapshot,
+not continuous coverage. Collection used the normal wall-frame recorder without
+GPU diagnostics or screenshot readback during timing.
+
+| Retained run | p50 ms | p95 ms | p99 ms | Maximum ms |
+| --- | ---: | ---: | ---: | ---: |
+| probe-1 | 8.334 | 9.148 | 10.004 | 37.674 |
+| planar-1 | 8.275 | 11.245 | 12.073 | 27.857 |
+| probe-3 | 8.335 | 9.182 | 9.932 | 12.954 |
+| planar-3 | 8.266 | 11.206 | 11.939 | 27.329 |
+
+Planar p95 is 2.097 and 2.024 ms greater in these pairs. This is wall-frame
+cadence, not isolated GPU cost or a speedup. All four runs pass the individual
+software pacing gates and advance physics near 240 Hz without a reported fault
+or nonadvancing interval. Both campaigns nevertheless have **performance_pass=false**:
+two eligible runs per mode do not meet the unchanged three-run minimum.
+
+All eight raw reports, identities and checked logs are retained in
+`native-keyboard/`. [Exclusions](native-keyboard/exclusions.json) remain explicit:
+`planar-2` and `probe-2` overlapped by 4.820246 s; `probe-4` and `planar-4` ended
+paused at simulation times 63.9041667 and 11.8833333 s. Their reports do not record
+the pause cause, so none is attributed. No retry or safety bypass converts these
+into acceptance. All eight logs retain the seven Texture RID shutdown warning;
+planar runs 1 and 4 also report 19 retained ObjectDB instances at exit.
+
+The four valid processes ran serially and their identities match across 709
+tracked app source files. This excludes tests, binary assets and untracked files;
+it is not whole-tree or host-state equivalence. Other host activity and GPU cache
+state were uncontrolled. [Retention identity](native-keyboard/identity.json)
+records the bootstrap, engine and native reducer hashes separately. Independent
+review checked eligibility, configuration and the limited source identity claim.
+
+The [comparison](native-keyboard/comparison.json),
+[probe summary](native-keyboard/probe-summary.json) and
+[planar summary](native-keyboard/planar-summary.json) preserve the incomplete
+campaign verdict. Reproduce the reduction from the retained gzip reports, from
+the repository root, using a new output directory:
+
+```powershell
+python docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/native-keyboard/reduce_campaign.py tmp/planar-keyboard-reduction
+```
+
+Reproduction passed with two eligible runs per mode and both campaign verdicts
+false. Original checked receipts preserve launch commands and historical paths.
+No production runtime, aircraft physics or default changed in this measurement
+step. Keep planar reflection default-off. A controlled foreground campaign with
+the required repetitions, ordinary pilot motion, 1080p, release/platform and
+shutdown/lifecycle qualification remain open.

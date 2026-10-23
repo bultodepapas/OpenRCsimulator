@@ -37,6 +37,7 @@ import fuel_registry  # noqa: E402
 from bem import bem_tables  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/geometry-r59.json"
+MODEL_GEOMETRY = ROOT / "assets/aircraft/f4u-corsair-250/model-geometry.json"
 SOURCE = ROOT / "assets/aircraft/f4u-corsair-250/source.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 GE_FILE = HERE / "vlm_ground_effect.json"
@@ -369,7 +370,17 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory over the measured aileron
 
 # --- Inventory (le frame) ------------------------------------------------------------------------------------------
 NOSE = g["nose"]
-GW = g["gear"]["wheels"]
+# F4U-08: wheels, contacts and retraction paths from the delivered g1.3 model's own GearRetract (compiled by
+# research/f4u-corsair/F4U-05/compile_model.py), so the physics follows exactly what the renderer draws. Contacts sit
+# in each wheel's plane, radius below its centre; model frame [x right, y up, z aft] -> le [x_aft, y_right, z_up].
+MG = load_json(MODEL_GEOMETRY)
+WHEEL_ROLE = {"main_left": "left", "main_right": "right", "tail": "tail"}
+to_le = lambda p: [p[2], p[0], p[1]]
+GW = {key: {"path": [to_le(p) for p in MG["gear"]["wheels"][role]["contact_model"]],
+            "centre_down": to_le(MG["gear"]["wheels"][role]["center_model"][-1]),
+            "radius": MG["gear"]["wheels"][role]["radius_m"]} for key, role in WHEEL_ROLE.items()}
+for wheel in GW.values():
+    wheel["contact_down"] = wheel["path"][-1]
 spinner_back = NOSE["spinner_back_x"]
 prop_x = NOSE["propeller_plane"][0]
 rc_fw = prop_x + 0.24  # Moki S250 from propeller flange to the back of its cast radial mount (estimated)
@@ -418,9 +429,9 @@ items = [
     ("rudder servo and pull-pull", 0.10, "estimated", "one servo with cables", full(3.0, 0.0, -0.10), None, "estimated", "aft of the cockpit", "servo_rudder"),
     ("tail-wheel steering servo and pull wires", 0.06, "estimated", "CARF manual: a separate steering servo right behind the wing", full(3.2, 0.0, -0.20), None, "estimated", "right behind the wing", "servo_tail_steering"),
     ("throttle, choke servos and linkage", 0.08, "estimated", "two small servos", [rc_fw + 0.05, 0.0, 0.02], None, "estimated", "behind the firewall", "servo_throttle_choke"),
-    ("main gear assembly left", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_left"]["centre_down"][0], GW["main_left"]["centre_down"][1], 0.5 * (GW["main_left"]["centre_down"][2] + at(abs(GW["main_left"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_left"),
-    ("main gear assembly right", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_right"]["centre_down"][0], GW["main_right"]["centre_down"][1], 0.5 * (GW["main_right"]["centre_down"][2] + at(abs(GW["main_right"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "R59 main wheel centre and wing chord plane", "gear_main_right"),
-    ("tail wheel assembly (retractable, with doors)", 0.30, "estimated", "CARF retractable tail wheel with doors", [GW["tail"]["centre_down"][0], 0.0, GW["tail"]["centre_down"][2] + 0.04], None, "measured", "R59 tail wheel", "gear_tail"),
+    ("main gear assembly left", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_left"]["centre_down"][0], GW["main_left"]["centre_down"][1], 0.5 * (GW["main_left"]["centre_down"][2] + at(abs(GW["main_left"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "g1.3 main wheel centre and wing chord plane", "gear_main_left"),
+    ("main gear assembly right", 0.95, "estimated", "Sierra Giant Scale rotating retract, strut, wheel and door (estimated)", [GW["main_right"]["centre_down"][0], GW["main_right"]["centre_down"][1], 0.5 * (GW["main_right"]["centre_down"][2] + at(abs(GW["main_right"]["centre_down"][1]), zs))], [0.10, 0.08, 0.30], "measured", "g1.3 main wheel centre and wing chord plane", "gear_main_right"),
+    ("tail wheel assembly (retractable, with doors)", 0.30, "estimated", "CARF retractable tail wheel with doors", [GW["tail"]["centre_down"][0], 0.0, GW["tail"]["centre_down"][2] + 0.04], None, "measured", "g1.3 tail wheel", "gear_tail"),
     ("wing panel, left, with flaps and aileron", 2.70, "estimated", "CARF composite sandwich wing half with retract bays", [mac_le_x + 0.42 * mac, -y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_left"),
     ("wing panel, right, with flaps and aileron", 2.70, "estimated", "same as the left panel", [mac_le_x + 0.42 * mac, y_mac, wing_z_mac], [mac, semi, 0.07], "derived", "42 % MAC at the MAC station", "wing_right"),
     ("wing tubes and bolts", 0.45, "estimated", "CARF plug-in wing: aluminium wing tubes", [1.0 * SCALE, 0.0, arp_z], full(0.2, 3.0, 0.2), "estimated", "main spar", "wing_joiner"),
@@ -667,7 +678,7 @@ slip_pieces = [
     {"surface": "horizontal", "area": Sh / 2, "root": [xh_ac, 0.0, zh], "span_dir": [0.0, -1.0, 0.0], "span": hs, "chords": [crh, SS[-1]["chord"]]},
 ]
 
-# --- Landing gear: R59 contacts and retraction paths ----------------------------------------------------------------
+# --- Landing gear: g1.3 contacts and retraction paths ---------------------------------------------------------------
 main_pos = [GW["main_left"]["contact_down"], GW["main_right"]["contact_down"]]
 tail_pos = GW["tail"]["contact_down"]
 three_point = note("gear", "three-point attitude (deg)", math.degrees(math.atan2(tail_pos[2] - main_pos[0][2], tail_pos[0] - main_pos[0][0])), "thrust line to the ground, all wheels down, uncompressed")
@@ -677,8 +688,8 @@ k_total = (0.09 * 240) ** 2 * mass
 k_main, k_tail = k_total * (1 - tail_share) / 2, k_total * tail_share
 damp = lambda k_: 2 * 0.3 * math.sqrt(k_ * mass / 3)
 note("gear", "tail share, sum k (N/m), static sag (mm)", [tail_share, k_total, 1000 * mass * G0 / k_total], "")
-GEAR_SRC = "R59 tyre contact point with the gear down (geometry-r59.json)"
-PATH_SRC = D(f"{g['gear']['samples']} uniform extension samples of one tyre material point through R59's tren_retraccion rig (F4U-06): 86 deg aft fold with 90 deg wheel twist, sequenced doors")
+GEAR_SRC = "g1.3 wheel centre minus its radius in the wheel plane, gear down (model-geometry.json, F4U-05)"
+PATH_SRC = D(f"{len(GW['tail']['path'])} uniform extension samples of the wheel-bottom point through the delivered g1.3 GearRetract action (model-geometry.json, F4U-05): 86 deg aft fold with 90 deg wheel twist, sequenced doors")
 
 
 def contact(identity, name, key, k_, travel, steer, how):
@@ -693,13 +704,14 @@ def contact(identity, name, key, k_, travel, steer, how):
     })
 
 
-TRAVEL_SRC = "BORROWED from the P-51 (same class and mass); recompute with the GP-06 reserve-drop probe in F4U-08"
+GT = KIT["gear_travel"]
+TRAVEL_SRC = f"{GT['method']}: reserve-drop peaks {GT['reserve_drop_peak_mm']['main']} mm (mains), {GT['reserve_drop_peak_mm']['tail']} mm (tail); {GT['source']}"
 landing_gear = {
     "description": f"F4U-07: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, E3 field surfaces) on the shared retractable-point-gear-v1 law. Kinematics from R59's retract rig scaled {SCALE_TXT}; timing, travel and drag are estimates.",
     "contacts": [
-        contact("contact_main_left", "main_left", "main_left", k_main, 0.12, 0.0, TRAVEL_SRC),
-        contact("contact_main_right", "main_right", "main_right", k_main, 0.12, 0.0, TRAVEL_SRC),
-        contact("contact_tail", "tail", "tail", k_tail, 0.105, -25.0, TRAVEL_SRC),
+        contact("contact_main_left", "main_left", "main_left", k_main, GT["main_m"], 0.0, TRAVEL_SRC),
+        contact("contact_main_right", "main_right", "main_right", k_main, GT["main_m"], 0.0, TRAVEL_SRC),
+        contact("contact_tail", "tail", "tail", k_tail, GT["tail_m"], -25.0, TRAVEL_SRC),
     ],
     "rolling_resistance": q(0.03, "1", "estimated", "as the P-51 (similar wheel size)"),
     "breakaway_factor": q(1.25, "1", "estimated", "shared E3b1 value, as the P-51, Stik and Timber"),
@@ -777,7 +789,7 @@ surf = stik["aero"]["surfaces"]
 same = lambda key: dict(surf[key], source="same provisional value as the Ugly Stik surface model (" + surf[key]["source"].split(";")[-1].strip() + ")", kind=surf[key]["kind"] if surf[key]["kind"] != "derived" else "estimated")
 H = g["hull"]
 mirror = lambda p: [p[0], -p[1], p[2]]
-R_vis = NOSE["propeller_visual_diameter"] / 2
+R_vis = PROP_D / 2  # render/airplane.gd draws a shaft propeller at its physical diameter
 hull_probes = [
     ("probe_wing_left_le", mirror(H["wing_tip_le"]), "left_wing_tip"), ("probe_wing_right_le", H["wing_tip_le"], "right_wing_tip"),
     ("probe_wing_left_te", mirror(H["wing_tip_te"]), "left_wing_tip"), ("probe_wing_right_te", H["wing_tip_te"], "right_wing_tip"),
@@ -864,7 +876,7 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([p_ for _, p_, _ in hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + "; the propeller probes use the visual scale propeller"),
+    "crash_hull": q([p_ for _, p_, _ in hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + "; the propeller probes use the physical 30 in propeller, the diameter the renderer draws"),
     "crash_hull_ids": [i_ for i_, _, _ in hull_probes],
     "crash_hull_components": [c_ for _, _, c_ in hull_probes],
     "plausibility": {
@@ -1043,7 +1055,8 @@ Engine and propeller: peak torque {Q0:.2f} N·m from the Moki manual's static po
 - Geometry is the R59 visual master scaled {SCALE_TXT}; g1 metrology replaces it (F4U-05/06). Wing incidence and stabilizer setting lack a primary source.
 - Sections: NACA TR 586 23012 measurements set lift slope and maximum lift; XFOIL supplies only the thickness trend, clamped at 12 %, so the thin outer sections (9-11 %) may stall earlier than modelled (TR 610: maximum lift falls below 12 %).
 - The neutral point is calibrated to a target built from NACA F4U and XP-51 data with an estimated stick-free allowance; the body yaw term is DATCOM's, uncalibrated. Expect revision when F4U sideslip data are reduced.
-- Engine level rests on the Moki manual's two static points with a simulated Mejzlik table and a calibrated BEM standing in for the wooden Menz and SEP propellers (single forum reports span 4,200-5,200 rpm on 32x18 two-blades); torque shape and peak-power rpm are estimated. Slotted flaps follow Roskam's digitized method; gear travel is borrowed from the P-51.
+- Gear travel follows the GP-06c reserve-drop rule on the g1.3 contacts; wheel stiffness is the shared E1 numerical rule, not RC data.
+- Engine level rests on the Moki manual's two static points with a simulated Mejzlik table and a calibrated BEM standing in for the wooden Menz and SEP propellers (single forum reports span 4,200-5,200 rpm on 32x18 two-blades); torque shape and peak-power rpm are estimated. Slotted flaps follow Roskam's digitized method.
 - The CARF manual's handling notes (full power on take-off lifts the tail beyond the low-rate elevator; land tail-up; never noticeably exceed 200 km/h) are targets for F4U-08/12, not checked here.
 - The fin carries no offset; RC right thrust stands in for the full-size 2° left fin offset. The full-size airplane's left roll-off in the power-on stall is not modelled as an asymmetry.
 - CL-dependent cross terms are frozen at CL_ref = {CL_ref:.2f}.

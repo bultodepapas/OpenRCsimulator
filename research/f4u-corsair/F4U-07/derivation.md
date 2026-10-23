@@ -83,7 +83,7 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 | balance | airframe scale factor | 0.9013 | airframe items scaled so the flight mass is 21.5 kg |
 | balance | balancing mass (kg) | 0.3317 | nose weight of the virtual reference build |
 | balance | flight mass (kg), CG (le m) | 21.5, 0.1541, 0, -0.06248 | dry 21.126 kg; range [18.0, 24.0] |
-| balance | Jxx Jyy Jzz Jxy Jxz Jyz (kg m2) | 4.029, 6.656, 9.799, 0, -0.202, 0 | component envelopes + parallel axis |
+| balance | Jxx Jyy Jzz Jxy Jxz Jyz (kg m2) | 4.029, 6.656, 9.799, -7.618e-09, -0.202, 0 | component envelopes + parallel axis |
 | stall | strip 1: y, chord, t/c, Re, clmax, cl/CL, CL* | 0.1848, 0.5841, 0.1855, 5.753e+05, 1.157, 1.064, 1.088 |  |
 | stall | strip 2: y, chord, t/c, Re, clmax, cl/CL, CL* | 0.5874, 0.5698, 0.15, 5.612e+05, 1.173, 1.026, 1.143 |  |
 | stall | strip 3: y, chord, t/c, Re, clmax, cl/CL, CL* | 1.072, 0.4498, 0.1348, 4.43e+05, 1.139, 0.9214, 1.236 |  |
@@ -115,7 +115,7 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 | propulsion | static thrust (N, kgf), thrust/weight | 274.8, 28.02, 1.303 | check: the Mejzlik 32x18 static Ct gives 28.9 kgf for a Moki S300 on a SEP 34x18 2-blade at 3950 rpm, measured 29.92 kgf (measured by a forum user (RCU Moki radial thread, search summary, page not read)) |
 | propulsion | rotating inertia (kg m2) | 0.04697 | 30x18 three-blade (wood, SEP class): Mejzlik's estimate mass D2 blades / 24 on the estimated mass + hub cap + radial crank, master rod and cam ring 0.004 (estimated) |
 | gear | three-point attitude (deg) | 14.42 | thrust line to the ground, all wheels down, uncompressed |
-| gear | tail share, sum k (N/m), static sag (mm) | 0.06917, 1.003e+04, 21.02 |  |
+| gear | tail share, sum k (N/m), static sag (mm) | 0.06919, 1.003e+04, 21.02 |  |
 | flaps | flap thin-airfoil effectiveness tau | 0.5639 | Glauert, c_f/c 0.211 |
 | flaps | slotted fit: gain, effective angle limit (deg), rms (deg) | 0.839, 22.9, 0.211 | least squares of gain*L*tanh(tau*delta/L) to Roskam Fig. 8.17 alpha_delta*delta at c_f/c 0.211, 5-45 deg |
 | flaps | profile drag coefficient (runtime parameter) | 0.1255 | Raymer eq. 12.61 (after Hoerner) 0.9 (c_f/c)^1.38 = 0.1053, divided by the gain the runtime multiplies in |
@@ -197,7 +197,8 @@ Engine and propeller: peak torque 13.97 N·m from the Moki manual's static point
 - Geometry is the R59 visual master scaled 1/4.5; g1 metrology replaces it (F4U-05/06). Wing incidence and stabilizer setting lack a primary source.
 - Sections: NACA TR 586 23012 measurements set lift slope and maximum lift; XFOIL supplies only the thickness trend, clamped at 12 %, so the thin outer sections (9-11 %) may stall earlier than modelled (TR 610: maximum lift falls below 12 %).
 - The neutral point is calibrated to a target built from NACA F4U and XP-51 data with an estimated stick-free allowance; the body yaw term is DATCOM's, uncalibrated. Expect revision when F4U sideslip data are reduced.
-- Engine level rests on the Moki manual's two static points with a simulated Mejzlik table and a calibrated BEM standing in for the wooden Menz and SEP propellers (single forum reports span 4,200-5,200 rpm on 32x18 two-blades); torque shape and peak-power rpm are estimated. Slotted flaps follow Roskam's digitized method; gear travel is borrowed from the P-51.
+- Gear travel follows the GP-06c reserve-drop rule on the g1.3 contacts; wheel stiffness is the shared E1 numerical rule, not RC data.
+- Engine level rests on the Moki manual's two static points with a simulated Mejzlik table and a calibrated BEM standing in for the wooden Menz and SEP propellers (single forum reports span 4,200-5,200 rpm on 32x18 two-blades); torque shape and peak-power rpm are estimated. Slotted flaps follow Roskam's digitized method.
 - The CARF manual's handling notes (full power on take-off lifts the tail beyond the low-rate elevator; land tail-up; never noticeably exceed 200 km/h) are targets for F4U-08/12, not checked here.
 - The fin carries no offset; RC right thrust stands in for the full-size 2° left fin offset. The full-size airplane's left roll-off in the power-on stall is not modelled as an asymmetry.
 - CL-dependent cross terms are frozen at CL_ref = 0.45.
