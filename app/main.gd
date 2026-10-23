@@ -2411,7 +2411,8 @@ func _build_field() -> void:
 	add_child(_field_node)
 
 
-## Hides every field object (today: the treeline) for a background-only capture. False when there is none.
+## Hides every field object (today: the treeline and its L8a-R1 3D front trees) for a background-only
+## capture. False when there is none.
 func _hide_field_objects() -> bool:
 	var hidden := false
 	for object_data: Dictionary in field.get("objects", []):
@@ -2419,6 +2420,9 @@ func _hide_field_objects() -> bool:
 		if node != null:
 			node.visible = false
 			hidden = true
+		var detail: Node3D = get_node_or_null(NodePath("Field/%sDetail" % str(object_data.id))) as Node3D
+		if detail != null:
+			detail.visible = false
 	_treeline_hidden = hidden
 	return hidden
 
