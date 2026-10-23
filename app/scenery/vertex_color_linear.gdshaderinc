@@ -1,6 +1,6 @@
-// MeshKit colors and Color-hex Multimesh tints are sRGB-encoded on the
-// Forward+/Mobile shader path. Compatibility already supplies them in linear
-// space, so return the same linear values there without a second conversion.
+// Convert authored sRGB colors to the fragment ALBEDO domain: RD expects linear
+// values; Compatibility performs its own ALBEDO conversion before lighting.
+// Raw vertex metadata (material tags, variation seeds) must bypass this helper.
 vec3 vertex_color_to_linear(vec3 color) {
 	if (!OUTPUT_IS_SRGB) {
 		vec3 linear_color = mix(

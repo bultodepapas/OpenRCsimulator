@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Vulkan 1.4.351 - Forward+ - Using Device #0: NVIDIA - NVIDIA GeForce RTX 3090
+
+FAIL board_low error 23.00/255
+FAIL board_mid error 189.00/255
+FAIL board_high error 94.00/255
+FAIL steel_edge error 186.00/255
+FAIL bolt error 255.00/255
+FAIL rafter_z error 103.00/255
+FAIL beam_x error 39.00/255
+FAIL purlin_x error 71.00/255
+FAIL post_y error 31.00/255
+material tag GPU oracle: 15 cases, 9 failed

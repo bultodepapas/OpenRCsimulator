@@ -38,6 +38,8 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 ## Rendering and visual evidence
 
+- **Separate vertex metadata from display colors.** In Godot 4.7.2, raw packed vertex values reach `vertex()` in both renderers. Applying an sRGB transfer to material tags or variation seeds can preserve classification while collapsing variation and shifting UVs. Diagnose the actual stage with native reference panels; keep ALBEDO color decoding separate. [Barrier/shelter GPU evidence](../research/visual-quality-implementation/VQ-07/material-tags-2026-10-22/README.md).
+
 - **Reload generated resources with a real renderer before accepting a bake.** Headless snapshots saved empty texture data, and imported `PortableCompressedTexture2D` resources discarded their compressed buffers on re-save. Retain image buffers before saving, deduplicate identical payloads, then reload and inspect native captures. Check wheel contact against referenced triangle vertices: unused source vertices can extend an AABB below the visible tires. Recheck the final LOD geometry and collision offset together. [SC-09-R1](../research/scenery-implementation/SC-09-R1/README.md).
 
 - **Include shader defaults when auditing assigned textures.** On pinned Godot 4.7.2, `Shader.get_shader_uniform_list()` omits uniforms with default textures. Enumerate RenderingServer parameters and resolve material overrides/default textures explicitly; a native fixture should prove shared consumers and unchanged assignments. Keep assigned resources separate from visible draws, and CPU image bytes separate from resident VRAM. ([VQ-02a inventory](../research/visual-quality-implementation/VQ-02a/README.md))

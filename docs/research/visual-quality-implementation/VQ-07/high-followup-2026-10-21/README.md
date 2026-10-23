@@ -6,6 +6,8 @@ are identified by `manifest.json`. High remains experimental.
 
 ## Implemented correction
 
+**2026-10-22 correction:** the [raw-metadata GPU oracle](../material-tags-2026-10-22/README.md) disproves the vertex-stage normalization assumption below for barrier metadata. That portion is superseded; the fragment palette correction remains.
+
 The High Home backdrop exposed a beige windsock and gray timber rails. The
 windsock fabric/support and custom flightline-barrier shaders now normalize
 authored vertex colors through the existing renderer-specific helper. Barrier

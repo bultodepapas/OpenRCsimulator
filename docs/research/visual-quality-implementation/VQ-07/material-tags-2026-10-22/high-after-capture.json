@@ -1,0 +1,106 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "barrier_shader_sha256": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+  "builder_sha256": "12657346c01e9bce350d2cbafb5f5247232c00f6f7a4daaa5d10134c760a811b",
+  "complete": true,
+  "method": "forward_plus",
+  "records": [
+    {
+      "draws": 156,
+      "eye": [
+        -29.2000007629395,
+        2.20000004768372,
+        9.5
+      ],
+      "fov": 66.0,
+      "sha256": "5061ef78d56d84aae9551e1fe37b5b4663ab9c8ada5d97070967c30f513b2dc9",
+      "view": "front"
+    },
+    {
+      "draws": 62,
+      "eye": [
+        -30.0,
+        1.54999995231628,
+        16.7999992370605
+      ],
+      "fov": 74.0,
+      "sha256": "23072332d45eb146ff775a8822b3952b98e3771b3531b77d1e28b274c96e42f8",
+      "view": "underside"
+    },
+    {
+      "draws": 53,
+      "eye": [
+        -34.0,
+        2.34999990463257,
+        14.3000001907349
+      ],
+      "fov": 48.0,
+      "sha256": "3bbaec7b54004129a4b620dc1810c6871e44261014522aeef3a8e49d5ae33c18",
+      "view": "eave"
+    },
+    {
+      "draws": 205,
+      "eye": [
+        -9.0,
+        1.20000004768372,
+        -8.0
+      ],
+      "fov": 55.0,
+      "sha256": "e46b04750acbea225c10a55ee26bb0c6bbbfe9de23b480db4c48b99c0d918c75",
+      "view": "flightline"
+    }
+  ],
+  "scenery_stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 89655,
+    "build_ms": 1302.965,
+    "cells": 60,
+    "fleet": 13,
+    "fleet_batch_surfaces": 179,
+    "fleet_batches": 8,
+    "fleet_surfaces": 282,
+    "fleet_triangles": 273421,
+    "flowers": 0,
+    "instances": 170,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 95,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 18.352,
+      "botanicals": 96.135,
+      "cell_meshes": 48.937,
+      "fence": 30.17,
+      "fleet": 249.512,
+      "hedge": 23.456,
+      "instances": 175.362,
+      "meshes": 92.344,
+      "patch": 42.841,
+      "population": 217.965,
+      "shelter_material": 40.209,
+      "shelter_meshes": 2.377,
+      "track": 1.499,
+      "vegetation": 105.68,
+      "woodland_edges": 81.963
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 132457,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "shelter_shader_sha256": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db",
+  "viewport": [
+    1920,
+    1080
+  ]
+}

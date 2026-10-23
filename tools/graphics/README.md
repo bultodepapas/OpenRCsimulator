@@ -130,3 +130,10 @@ profiles with `--script ../tools/graphics/test_pilot_station_color.gd -- --out=<
 Headless execution fails. Reference anchors reject background-only comparisons;
 palette agreement must be within 2/255 per channel.
 [Pilot-station evidence and reproducer](../../docs/research/visual-quality-implementation/VQ-07/pilot-station-color-2026-10-22/README.md).
+
+`test_material_tags.gd` verifies raw vertex metadata in the production barrier
+and shelter shaders with 15 native GPU cases per renderer at 1080p. Run each
+profile with `--script ../tools/graphics/test_material_tags.gd -- --out=<new absolute directory>`.
+It checks variation, fitting tone, grain axes/seeds and roof/slab flags, with
+reference anchors and a 2/255 per-channel tolerance.
+[Metadata correction and evidence](../../docs/research/visual-quality-implementation/VQ-07/material-tags-2026-10-22/README.md).

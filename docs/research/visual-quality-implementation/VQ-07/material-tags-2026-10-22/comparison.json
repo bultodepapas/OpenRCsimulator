@@ -1,0 +1,66 @@
+[
+  {
+    "profile": "standard",
+    "view": "front",
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "6cc5c116cd0064a81fe05060deb196baa979a0691944331b31d3b6971d1c7533",
+    "after_sha256": "6cc5c116cd0064a81fe05060deb196baa979a0691944331b31d3b6971d1c7533"
+  },
+  {
+    "profile": "standard",
+    "view": "underside",
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "2534221ae412dc8b62b59d554ebd87b80dead2e07f7363906be12157ea8fdea1",
+    "after_sha256": "2534221ae412dc8b62b59d554ebd87b80dead2e07f7363906be12157ea8fdea1"
+  },
+  {
+    "profile": "standard",
+    "view": "eave",
+    "changed_pixels": 0,
+    "max_channel_delta": 0,
+    "before_sha256": "56f62f44c3ba02df55892b601a99d97460d265fe776580845c718fd2eacd2ccb",
+    "after_sha256": "56f62f44c3ba02df55892b601a99d97460d265fe776580845c718fd2eacd2ccb"
+  },
+  {
+    "profile": "standard",
+    "view": "flightline",
+    "changed_pixels": 1,
+    "max_channel_delta": 1,
+    "before_sha256": "fa60e5ada214068208d4a5186a4358a3c03f2f121413f42f72b4f90393180b17",
+    "after_sha256": "38cab0c889c5943e181110d9e595b59488ef8a00883d84e515df59df9f78cf57"
+  },
+  {
+    "profile": "high",
+    "view": "front",
+    "changed_pixels": 194747,
+    "max_channel_delta": 34,
+    "before_sha256": "af6d72d6c06e40104997d4f800ad90c4c336e1869099bb62b64c388903b9e391",
+    "after_sha256": "5061ef78d56d84aae9551e1fe37b5b4663ab9c8ada5d97070967c30f513b2dc9"
+  },
+  {
+    "profile": "high",
+    "view": "underside",
+    "changed_pixels": 381341,
+    "max_channel_delta": 57,
+    "before_sha256": "823eb2a81b9405508cc6a1e605f78c813f59d7eb1424fec4d509ece99ad9b5b1",
+    "after_sha256": "23072332d45eb146ff775a8822b3952b98e3771b3531b77d1e28b274c96e42f8"
+  },
+  {
+    "profile": "high",
+    "view": "eave",
+    "changed_pixels": 668763,
+    "max_channel_delta": 57,
+    "before_sha256": "57dd769595be1ac83ed1c03de092403904a609fbe73442a59686ef0e25d28cbf",
+    "after_sha256": "3bbaec7b54004129a4b620dc1810c6871e44261014522aeef3a8e49d5ae33c18"
+  },
+  {
+    "profile": "high",
+    "view": "flightline",
+    "changed_pixels": 139921,
+    "max_channel_delta": 51,
+    "before_sha256": "36571854d0d4af8c88a724e2dd08a5dba41573db59265868a8a67ec87ba04b6c",
+    "after_sha256": "e46b04750acbea225c10a55ee26bb0c6bbbfe9de23b480db4c48b99c0d918c75"
+  }
+]

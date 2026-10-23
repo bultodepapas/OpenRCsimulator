@@ -1,0 +1,12 @@
+{
+  "head_at_finish": "ad2f41006c02b0d39f7062fa40dcfccc55e33ebd",
+  "files": {
+    "app/render/flightline_barrier.gdshader": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+    "app/scenery/pit_shelter_roof.gdshader": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db",
+    "app/scenery/vertex_color_linear.gdshaderinc": "61b97ddbb6278497e8f297ac7d6aaef67e258c15ce7d91ffd64dd04afea43ab2",
+    "app/scenery/prefabs.gd": "12657346c01e9bce350d2cbafb5f5247232c00f6f7a4daaa5d10134c760a811b",
+    "app/render/flightline_barrier_detail.gd": "881da6550eab19ddba53d71dff6ae7aff789f55b9c4cd1e7544eb5ba98eea64a",
+    "tools/graphics/test_material_tags.gd": "2c409897b435792992f83f5b4245e97dac5660984e7125df59012cad0e7dbd61",
+    "docs\\research\\visual-quality-implementation\\VQ-07\\material-tags-2026-10-22\\capture.gd": "69ef462fbd801a9f74de588ae5edfc4b46e66c0d93d13f8a6e2312c5102eb5d5"
+  }
+}

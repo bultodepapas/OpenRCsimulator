@@ -62,16 +62,16 @@ varying vec2 slab_uv_local;
 varying float slab_surface_tag;
 
 void vertex() {
-	// Match Compatibility's linearized MeshKit stream before interpreting its
-	// material tags and tone seed. Alpha remains a separate, non-color channel.
-	vec3 mesh_color = vertex_color_to_linear(COLOR.rgb);
+	// Material tags and tone seeds are raw packed metadata in both renderers.
+	// Color transfer functions would change grain offsets and per-piece variation.
+	vec3 mesh_color = COLOR.rgb;
 	// Exact magenta top faces (1,0,1) and cyan underside faces (0,1,1).
 	bool roof_top_tag = mesh_color.r == 1.0 && mesh_color.g == 0.0 && mesh_color.b == 1.0;
 	bool roof_under_tag = mesh_color.r == 0.0 && mesh_color.g == 1.0 && mesh_color.b == 1.0;
 	bool slab_tag = mesh_color.r == 1.0 && mesh_color.g == 1.0 && mesh_color.b == 0.0;
 	// Timber tags: red (tone,0,0) means X grain, green (0,tone,0) means Z,
-	// and blue (0,0,tone) means Y. The low threshold tolerates Compatibility's
-	// linearized sRGB vertex colours while remaining separate from ordinary tints.
+	// and blue (0,0,tone) means Y. The threshold separates these markers from
+	// ordinary tints; it is not a color-space conversion boundary.
 	bool wood_x_tag = mesh_color.r >= 0.45 && mesh_color.g < 0.02 && mesh_color.b < 0.02;
 	bool wood_z_tag = mesh_color.r < 0.02 && mesh_color.g >= 0.45 && mesh_color.b < 0.02;
 	bool wood_y_tag = mesh_color.r < 0.02 && mesh_color.g < 0.02 && mesh_color.b >= 0.45;

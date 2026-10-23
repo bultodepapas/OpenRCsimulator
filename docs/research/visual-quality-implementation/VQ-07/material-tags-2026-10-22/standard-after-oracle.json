@@ -1,0 +1,255 @@
+{
+	"cases": [
+		{
+			"actual": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"name": "board_low",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				0.0,
+				0.509803950786591
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				0.0,
+				0.509803950786591
+			],
+			"name": "board_mid",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				0.0,
+				0.992156863212585
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				0.0,
+				0.992156863212585
+			],
+			"name": "board_high",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"name": "steel",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				1.0,
+				0.490196079015732
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				1.0,
+				0.490196079015732
+			],
+			"name": "steel_edge",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				1.0,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				1.0,
+				1.0
+			],
+			"name": "bolt",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.24705882370472,
+				0.537254929542542,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.24705882370472,
+				0.537254929542542,
+				1.0
+			],
+			"name": "rafter_z",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.756862759590149,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				0.756862759590149,
+				1.0
+			],
+			"name": "beam_x",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.623529434204102,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				0.623529434204102,
+				1.0
+			],
+			"name": "purlin_x",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.501960813999176,
+				0.803921580314636,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.501960813999176,
+				0.803921580314636,
+				1.0
+			],
+			"name": "post_y",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.749019622802734,
+				1.0,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.749019622802734,
+				1.0,
+				1.0
+			],
+			"name": "brace_positive",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"name": "brace_negative",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"name": "roof_top",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"name": "roof_under",
+			"passed": true,
+			"reference_resolved": true
+		},
+		{
+			"actual": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"error_255": 0.0,
+			"expected": [
+				0.0,
+				0.0,
+				1.0
+			],
+			"name": "slab",
+			"passed": true,
+			"reference_resolved": true
+		}
+	],
+	"complete": true,
+	"failures": 0,
+	"renderer": "gl_compatibility",
+	"shader_sha256": {
+		"barrier": "1b4cc342fe37d1823aae5d14d1c06befdfcbe00e974aa60f0fbf566daad17eb3",
+		"shelter": "4efa7d06928e72c8be783b5ac32d38a4014893f9ecfa648c9a22edf5708124db"
+	},
+	"viewport": [
+		1920,
+		1080
+	]
+}

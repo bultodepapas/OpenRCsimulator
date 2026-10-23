@@ -26,8 +26,9 @@ varying float is_fitting;
 varying float fitting_tone;
 
 void vertex() {
-	// MeshKit's material tags must have the same values on both renderers.
-	vec3 mesh_color = vertex_color_to_linear(COLOR.rgb);
+	// MeshKit stores raw material tags and variation seeds, not display colors.
+	// Both renderers expose the same packed values to vertex().
+	vec3 mesh_color = COLOR.rgb;
 	is_wood = step(mesh_color.b * 1.3, mesh_color.r);
 	is_fitting = (1.0 - step(0.25, mesh_color.g)) * (1.0 - is_wood);
 	fitting_tone = clamp((mesh_color.b - 0.40) / 0.16, 0.0, 1.0);
