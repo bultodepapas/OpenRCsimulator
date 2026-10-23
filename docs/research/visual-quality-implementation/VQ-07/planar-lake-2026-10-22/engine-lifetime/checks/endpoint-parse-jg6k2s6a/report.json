@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b88f347-c39f-4083-85a4-c8992e47ddb8",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--check-only",
+    "--script",
+    "../tmp/aaa-lake-lifetime-20261022/session_endpoint.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:11:33.738208+00:00",
+  "label": "endpoint-parse",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\endpoint-parse-jg6k2s6a\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\endpoint-parse-jg6k2s6a\\report.json",
+  "timeout_seconds": 30.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.218,
+  "log_bytes": 75,
+  "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+}

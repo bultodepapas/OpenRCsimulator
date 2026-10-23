@@ -1,0 +1,55 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "46d8c882-cf39-46f4-9e16-c9c6e4e2a5f2",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "640x360",
+    "--script",
+    "../tmp/aaa-lake-lifetime-20261022/cycles.gd",
+    "--",
+    "--probe",
+    "--cycles=4"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:09:08.804203+00:00",
+  "label": "isolated-probe-four",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\isolated-probe-four-u51yvlqm\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\isolated-probe-four-u51yvlqm\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "isolated worlds complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "28 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 5.5,
+  "log_bytes": 312,
+  "log_sha256": "83404a924eadb95b124d36d740ba283cc2f36c478d5883176e8b2af7b0468972"
+}

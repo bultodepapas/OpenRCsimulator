@@ -1,0 +1,26 @@
+{
+  "head_at_retention": "399b0fc10ba343eb26a869ac61224e7dcb83011c",
+  "source_scope": "Hashes identify the three edited files at retention, not per-run whole-tree equivalence; concurrent aircraft work excluded.",
+  "sha256_at_retention": {
+    "app/main.gd": "8bcaf056aea482c1075a114b2120f011db6ac7df0e2638918f6ba14ca76e67aa",
+    "research/performance/native_summary.py": "6b97766c2e1ccc3b374583fdd3564cda4b98b8fa879c22ab555b8fa108926e74",
+    "research/performance/test_native_summary.py": "9364e6db6bc500f5cae41ef4a84aadeb8ce1c83858191af2f63a38897d788cbc"
+  },
+  "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+  "engine_changed": false,
+  "upstream": {
+    "checked_date": "2026-10-22",
+    "pinned_cleanup": "https://github.com/godotengine/godot/blob/4.7.2-stable/servers/rendering/renderer_rd/storage_rd/light_storage.cpp#L1549-L1603",
+    "fix": "https://github.com/godotengine/godot/pull/124743",
+    "status": "Merged into master October 21; not installed or qualified here."
+  },
+  "python_tests": {
+    "command": "python -m unittest discover -s research/performance -p 'test_*.py'",
+    "exit_code": 0,
+    "tests": 107,
+    "elapsed_seconds": 2.245,
+    "record": "Recorded from tool execution output; raw stdout was not redirected."
+  },
+  "excluded_check": "ui-pause-p4ahcwqt: runner required the wrong marker (0 failed); actual suite printed all UI pause checks passed. Retained and rerun with the correct marker.",
+  "limits": "Minimal stock lifecycle cases and synthetic endpoint checks; not pilot, performance, full lifecycle or engine-fix acceptance."
+}

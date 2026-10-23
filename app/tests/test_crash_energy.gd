@@ -15,6 +15,7 @@ const CATALOG_AIRPLANE_TAGS := {
 	"stik-glow-fs64v-4t": "glow_fuel",
 	"gp-extra-300s-60": "glow_fuel",
 	"p51d-mustang-120": "gasoline",
+	"f4u-corsair-250": "gasoline",
 	"sebart-avanti-s-a200-p100rx": "kerosene",
 	"turbo-lumber-evolution": "lipo",
 }

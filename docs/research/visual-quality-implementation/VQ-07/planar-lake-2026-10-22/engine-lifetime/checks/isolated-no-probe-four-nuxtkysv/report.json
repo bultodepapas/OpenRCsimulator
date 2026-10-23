@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "4fa81fcb-98c0-47e3-9f33-67ad566dae50",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "640x360",
+    "--script",
+    "../tmp/aaa-lake-lifetime-20261022/cycles.gd",
+    "--",
+    "--cycles=4"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T01:09:28.223556+00:00",
+  "label": "isolated-no-probe-four",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\isolated-no-probe-four-nuxtkysv\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-lake-lifetime-20261022\\checks\\isolated-no-probe-four-nuxtkysv\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "isolated worlds complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.5,
+  "log_bytes": 201,
+  "log_sha256": "fd993558013c217570e497110861fcf59527a40c6c1dcc26f300f8ba99a9dc2a"
+}

@@ -1,0 +1,107 @@
+diff --git a/app/main.gd b/app/main.gd
+index c07331f7..99151ad8 100644
+--- a/app/main.gd
++++ b/app/main.gd
+@@ -2667,6 +2667,15 @@ func _finish_frame_time(exit_code: int = OK) -> void:
+ 		aircraft_id = aircraft_id,
+ 		input_enabled = session.input_enabled,
+ 		flight_companions = companion_evidence,
++		# Reasons and holds are independent: a menu/focus hold may leave the reason empty.
++		# Read once after sampling; this is context, not a history or a resume action.
++		session_at_report = {
++			scope = "end of collection only; not pause history",
++			pause_reason = session.pause_reason,
++			holds = session.holds.keys(),
++			crashed = not session.crash.is_empty(),
++			window_focused = get_window().has_focus(),
++		},
+ 		simulation = {
+ 			scope = "first _process clock prime through sample completion; includes warm-up",
+ 			start_time_s = _frametimes_sim_start_s,
+diff --git a/research/performance/native_summary.py b/research/performance/native_summary.py
+index 793d2e4f..dbc64e14 100644
+--- a/research/performance/native_summary.py
++++ b/research/performance/native_summary.py
+@@ -320,6 +320,24 @@ def validate_native_report(report: Any) -> tuple[list[str], dict[str, Any] | Non
+             if rate != 240:
+                 errors.append("simulation.physics_ticks_per_second must equal 240")
+ 
++    # Optional for historical reports. Endpoint context cannot establish pause
++    # history or replace the raw tick/time and simulation.paused gates.
++    if "session_at_report" in report:
++        endpoint = report["session_at_report"]
++        if not isinstance(endpoint, dict):
++            errors.append("session_at_report must be an object")
++        else:
++            if not isinstance(endpoint.get("scope"), str) or not endpoint["scope"].strip():
++                errors.append("session_at_report.scope must be a non-empty string")
++            if not isinstance(endpoint.get("pause_reason"), str):
++                errors.append("session_at_report.pause_reason must be a string")
++            holds = endpoint.get("holds")
++            if not isinstance(holds, list) or any(not isinstance(hold, str) for hold in holds):
++                errors.append("session_at_report.holds must be an array of strings")
++            for key in ("crashed", "window_focused"):
++                if type(endpoint.get(key)) is not bool:
++                    errors.append(f"session_at_report.{key} must be a boolean")
++
+     sample_s = _finite_field(report, "sample_s", errors, "report")
+     warmup_s = _finite_field(report, "warmup_s", errors, "report")
+     actual_sample_s = _finite_field(report, "actual_sample_s", errors, "report")
+@@ -570,6 +588,7 @@ def summarize_run(report_path: Path, policy: dict[str, Any]) -> dict[str, Any]:
+         "collection_reasons": errors,
+         "active_flight_qualifier": active_qualifier,
+         "active_flight_reasons": active_reasons,
++        "session_at_report": report.get("session_at_report") if report is not None else None,
+         "duration_eligibility": duration,
+         "metrics": derived,
+         "pacing_gate": pacing,
+diff --git a/research/performance/test_native_summary.py b/research/performance/test_native_summary.py
+index 8d1bc5aa..349a2ffd 100644
+--- a/research/performance/test_native_summary.py
++++ b/research/performance/test_native_summary.py
+@@ -347,6 +347,45 @@ class NativeReportValidationTests(unittest.TestCase):
+ 
+ 
+ class NativeRunClassificationTests(unittest.TestCase):
++    def test_endpoint_context_is_retained_without_inventing_history(self):
++        for paused in (False, True):
++            report = valid_report(paused=paused)
++            endpoint = {
++                "scope": "end of collection only; not pause history",
++                "pause_reason": "" if paused else "a previous diagnostic message",
++                "holds": ["focus"] if paused else [],
++                "crashed": False,
++                "window_focused": False,
++            }
++            report["session_at_report"] = endpoint
++            with self.subTest(paused=paused), tempfile.TemporaryDirectory() as temp_dir:
++                summary = summarize_run(write_run(Path(temp_dir), "run-1", report), SHORT_POLICY)
++            self.assertTrue(summary["collection_valid"])
++            self.assertEqual(summary["session_at_report"], endpoint)
++            self.assertEqual(summary["active_flight_qualifier"], not paused)
++            self.assertEqual(summary["performance_pass"], not paused)
++
++    def test_historical_report_has_unknown_endpoint_context(self):
++        with tempfile.TemporaryDirectory() as temp_dir:
++            summary = summarize_run(write_run(Path(temp_dir), "run-1", valid_report()), SHORT_POLICY)
++        self.assertIsNone(summary["session_at_report"])
++        self.assertTrue(summary["performance_pass"])
++
++    def test_malformed_endpoint_context_invalidates_collection(self):
++        valid = {"scope": "end of collection", "pause_reason": "", "holds": [],
++                 "crashed": False, "window_focused": True}
++        cases = [None, [], {}, {**valid, "scope": ""}, {**valid, "pause_reason": False},
++                 {**valid, "holds": "focus"}, {**valid, "holds": [1]},
++                 {**valid, "crashed": 0}, {**valid, "window_focused": 1}]
++        for endpoint in cases:
++            report = valid_report()
++            report["session_at_report"] = endpoint
++            with self.subTest(endpoint=endpoint), tempfile.TemporaryDirectory() as temp_dir:
++                summary = summarize_run(write_run(Path(temp_dir), "run-1", report), SHORT_POLICY)
++            self.assertFalse(summary["collection_valid"])
++            self.assertFalse(summary["performance_pass"])
++            self.assertTrue(any("session_at_report" in error for error in summary["collection_reasons"]))
++
+     def test_complete_paused_run_is_collection_valid_but_not_active_flight(self):
+         paused = valid_report(ticks=[240] * 4, times=[1.0] * 4, paused=True)
+         with tempfile.TemporaryDirectory() as temp_dir:

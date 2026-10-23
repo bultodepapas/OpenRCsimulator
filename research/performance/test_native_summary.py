@@ -347,6 +347,45 @@ class NativeReportValidationTests(unittest.TestCase):
 
 
 class NativeRunClassificationTests(unittest.TestCase):
+    def test_endpoint_context_is_retained_without_inventing_history(self):
+        for paused in (False, True):
+            report = valid_report(paused=paused)
+            endpoint = {
+                "scope": "end of collection only; not pause history",
+                "pause_reason": "" if paused else "a previous diagnostic message",
+                "holds": ["focus"] if paused else [],
+                "crashed": False,
+                "window_focused": False,
+            }
+            report["session_at_report"] = endpoint
+            with self.subTest(paused=paused), tempfile.TemporaryDirectory() as temp_dir:
+                summary = summarize_run(write_run(Path(temp_dir), "run-1", report), SHORT_POLICY)
+            self.assertTrue(summary["collection_valid"])
+            self.assertEqual(summary["session_at_report"], endpoint)
+            self.assertEqual(summary["active_flight_qualifier"], not paused)
+            self.assertEqual(summary["performance_pass"], not paused)
+
+    def test_historical_report_has_unknown_endpoint_context(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            summary = summarize_run(write_run(Path(temp_dir), "run-1", valid_report()), SHORT_POLICY)
+        self.assertIsNone(summary["session_at_report"])
+        self.assertTrue(summary["performance_pass"])
+
+    def test_malformed_endpoint_context_invalidates_collection(self):
+        valid = {"scope": "end of collection", "pause_reason": "", "holds": [],
+                 "crashed": False, "window_focused": True}
+        cases = [None, [], {}, {**valid, "scope": ""}, {**valid, "pause_reason": False},
+                 {**valid, "holds": "focus"}, {**valid, "holds": [1]},
+                 {**valid, "crashed": 0}, {**valid, "window_focused": 1}]
+        for endpoint in cases:
+            report = valid_report()
+            report["session_at_report"] = endpoint
+            with self.subTest(endpoint=endpoint), tempfile.TemporaryDirectory() as temp_dir:
+                summary = summarize_run(write_run(Path(temp_dir), "run-1", report), SHORT_POLICY)
+            self.assertFalse(summary["collection_valid"])
+            self.assertFalse(summary["performance_pass"])
+            self.assertTrue(any("session_at_report" in error for error in summary["collection_reasons"]))
+
     def test_complete_paused_run_is_collection_valid_but_not_active_flight(self):
         paused = valid_report(ticks=[240] * 4, times=[1.0] * 4, paused=True)
         with tempfile.TemporaryDirectory() as temp_dir:

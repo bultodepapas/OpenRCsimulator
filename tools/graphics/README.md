@@ -18,6 +18,13 @@ retained. It does not enable temporal AA, motion blur, SSR, GI or volumetric fog
 The atlas and screen-space buffers cost additional GPU memory. Only the recorded
 Windows/NVIDIA host has been exercised; macOS, Linux and other GPUs remain open.
 
+Known pinned-engine issue: a captured stock `ReflectionProbe` leaks its atlas
+color buffer and six texture views in Godot 4.7.2 Forward+. The native minimal
+reproduction grows from seven leaked Texture RIDs for one independent world to
+28 for four worlds. [Attribution and upstream fix](../../docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/README.md#engine-lifetime-attribution-and-session-context-2026-10-22)
+are retained; the project's engine pin is unchanged. Do not suppress the warning
+or count this attribution as a lifecycle pass.
+
 ## Explicit startup
 
 The Python standard-library launcher chooses the renderer before initialization

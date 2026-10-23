@@ -17,6 +17,7 @@ const EXTRA_ID := "gp-extra-300s-60"
 const AVANTI_ID := "sebart-avanti-s-a200-p100rx" # catalog ID; the jet is an imported V2 scene, built through its visual family
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
+const CORSAIR_ID := "f4u-corsair-250" # F4U-09: imported V2 scene with a sampled retraction rig
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"

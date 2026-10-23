@@ -244,7 +244,7 @@ Historical command/output paths in receipts and summaries are unmodified.
 The seven Texture RID shutdown warning persists in both High frame collectors;
 Standard and the no-lake screenshot do not emit it. Two separate World fixture
 diagnostics retain the same warning after four draining draw frames and after
-disabling SSAO. Their scripts/logs remain under `shutdown-diagnostics/`; neither
+disabling SSAO. Their scripts/logs remain under `engine-lifetime/prior-diagnostics/`; neither
 result identifies the owning subsystem or justifies a production workaround.
 The focused headless contract has no errors or warnings. Full active-flight,
 lifecycle and High qualification remain open; no FPS improvement is claimed.
@@ -349,3 +349,74 @@ No production runtime, aircraft physics or default changed in this measurement
 step. Keep planar reflection default-off. A controlled foreground campaign with
 the required repetitions, ordinary pilot motion, 1080p, release/platform and
 shutdown/lifecycle qualification remain open.
+
+## Engine lifetime attribution and session context, 2026-10-22
+
+The seven Texture RID shutdown warning is now localized to the pinned engine's
+reflection atlas. The minimal fixture imports no application code: it builds a
+stock procedural sky, camera and box, optionally adds a `ReflectionProbe`, draws
+40 frames, frees the nodes and waits another ten frames before exit. Native
+Forward+/Vulkan on the same RTX 3090 produces:
+
+| Fixture | Independent worlds | Probe | Leaked Texture RIDs |
+| --- | ---: | --- | ---: |
+| Root-world minimum | 1 | absent | 0 |
+| Root-world minimum | 1 | present | 7 |
+| Isolated SubViewport | 1 | present | 7 |
+| Isolated SubViewport | 4 | present | 28 |
+| Isolated SubViewport | 4 | absent | 0 |
+| Explicit `UPDATE_ONCE` | 4 | present | 28 |
+
+Each isolated world owns its own 3D world. The last case explicitly uses the
+production lake's probe update mode and a 1920×1080 root window; its diagnostic
+viewport stays 320×180. These are resource-lifetime checks, not resolution or
+frame-pacing qualification. The growth is per independent atlas/world in this
+fixture; no per-frame or real Home/Fly accumulation rate is claimed.
+
+In [Godot 4.7.2's atlas cleanup](https://github.com/godotengine/godot/blob/4.7.2-stable/servers/rendering/renderer_rd/storage_rd/light_storage.cpp#L1549-L1603),
+`color_buffer` is not released. Its allocation creates six dependent texture
+views. [Upstream PR #124743](https://github.com/godotengine/godot/pull/124743), merged
+October 21, frees and resets that buffer; the RenderingDevice releases its
+dependencies. This source defect matches the controlled native result. Neither
+the lake shader, planar camera nor SSAO is required. The earlier drain/SSAO
+negative diagnostics are retained under `engine-lifetime/prior-diagnostics/`.
+
+No application teardown workaround or engine upgrade is adopted. The upstream
+fix must be present in an explicitly pinned candidate engine and pass these
+controls, repeated application lifecycle checks, rendering comparisons and export
+checks before replacing the current binary. This attribution does not resolve
+the separate intermittent ObjectDB warnings or qualify High's lifecycle.
+
+The preceding native campaign also exposed missing diagnostic context: its final
+pair was paused without a recorded session reason. `Main` now adds
+`session_at_report` once after collection, retaining display reason, active holds,
+crash presence and window focus. Holds and reasons are independent. Direct
+simulation focus pauses may leave both empty; focus regained before reporting
+cannot reconstruct an earlier event. This is endpoint context, never a cause enum
+or pause history. Historical reports remain unknown. No input, pause/resume,
+physics or eligibility behavior changes.
+
+Three native High **1920×1080** producer checks use the real Main collector with
+a deliberate hold, a deliberate failsafe and explicit release/resume. Their
+reports preserve an empty reason with the hold, the failsafe text with no hold,
+and empty context after resume. All three checked processes exit without engine
+errors or leak warnings. They use zero warmup and one-second collection with the
+lake disabled: synthetic metadata checks, not performance acceptance.
+
+The performance-tool suite passes **107 tests**, including malformed optional
+context, historical compatibility and unchanged eligibility. The frame collector
+passes **86 checks**. The UI pause integration suite also passes, including five
+Home/flight cycles with stable node counts. Its first checked invocation used the
+wrong completion marker; that rejected receipt is retained alongside the passing
+rerun with the suite's actual marker. Independent review found no significant defect in the
+producer/reducer change. Scripts, gzip reports, checked logs, retention identity
+and patch are under `engine-lifetime/`. From the repository root, reproduce the
+offline verification with:
+
+```powershell
+python docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/engine-lifetime/verify.py
+```
+
+Checked receipts retain native invocations; use fresh report paths when rerunning.
+The graphics profile, planar default and engine version remain unchanged. Primary
+1080p performance, ordinary pilot motion, shutdown and platform gates remain open.
