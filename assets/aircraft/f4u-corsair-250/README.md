@@ -31,6 +31,7 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, throws inside the clearance envelopes, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release |
 | Flight-test card | `research/flight-test/run.py --aircraft f4u-corsair-250 --out <new directory>` | Profile and summary ([F4U-12](../../../docs/research/f4u-corsair/F4U-12/README.md)) |
 | Ground handling | [ground_handling.gd](../../../research/f4u-corsair/F4U-12/ground_handling.gd) | JSON: tail lift and lift-off against the CARF take-off note |
+| Retracts, flaps and smoke | [systems_check.gd](../../../research/f4u-corsair/F4U-12/systems_check.gd) with the windowed Godot and `--rendering-driver opengl3` | `checks.json` and screenshots in a new directory outside the repository |
 | Software baseline | [record_baseline.gd](../../../research/f4u-corsair/F4U-12/record_baseline.gd) `-- --out=<new .orfl>`, then `tools/flight_log/flight_log.py replay` | Scripted 10 s `.orfl` for candidate comparisons |
 
 ```bash

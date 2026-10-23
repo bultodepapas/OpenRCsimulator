@@ -14,6 +14,7 @@ Run 2026-10-23 for the [F4U plan](../../../F4U-PLAN.md) on Windows 11 with the o
 | Flight-test card `ft-card-v5` | 33/40 valid, exit 0, no script errors (first run 29/40, see below) | [ft/run2/](ft/run2/summary.md) |
 | Software baseline `.orfl` | 2,400 ticks; exact replay `complete: true`, `solver_changed: false`; export and replay CSVs byte-identical | [baseline](#software-baseline) |
 | Ground handling against the CARF manual | Tail-up landing consistent; full-power nose-over not reproduced | [below](#ground-handling) |
+| Retracts, flaps and smoke in the production flight scene | 15/15 | [below](#retracts-flaps-and-smoke) |
 
 ## Flight-test card
 
@@ -78,6 +79,18 @@ None of these is a script error. The coupling behind the stall turn and outside 
   - The estimated 2.0 N·m brakes resist with about 42 N against roughly 275 N of static thrust, so they cannot hold a run-up.
   - Grass drag, a different main-gear position or CG height, or stronger brakes could explain the difference. Each needs evidence (F4U-14) before any data change.
 - **Not checked:** the manual's flap warning (30° maximum because large flaps weaken low-speed elevator response).
+
+## Retracts, flaps and smoke
+
+[systems_check.gd](../../../../research/f4u-corsair/F4U-12/systems_check.gd) runs `main.tscn` with the Corsair, starting airborne at 150 m on the keyboard input path. It requests the gear and flaps through the same session calls as the G and F keys, and switches on the smoke as the H key does. Run 2026-10-23 on Windows with the official Godot 4.7.2 (Compatibility renderer, 1920×1080): 15/15 ([systems.json](checks/systems.json)).
+
+| System | Result |
+| --- | --- |
+| Retracts | Down and locked in 4.0 s and up in 4.0 s (data: 4.0 s each way); the rendered main wheel travels 0.347 m and returns to its stowed pose within 0.1 mm; retraction is accepted in flight |
+| Flaps | 30° in 2.4 s (data: 2.5 s); the rendered hinge reaches 30.00°. At the same flight state, full flap adds 201 N of lift and 9.5 N of drag and a 21 N·m nose-down moment |
+| Smoke | The stock profile has two emitters at the exhaust: show smoke (672 particles) and engine exhaust (60). With the smoke key on and the engine running, both emit |
+
+A connected gamepad owns the throttle and the smoke: the H key works only without a radio or gamepad, and with one connected, smoke follows the AUX assigned with J. The lowered flaps show their forward surfaces, which are grey in the delivered livery texture; they are hidden under the wing's trailing edge while the flaps are up. Screenshots were reviewed but not kept.
 
 ## Software baseline
 

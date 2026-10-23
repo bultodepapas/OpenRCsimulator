@@ -701,7 +701,10 @@ func _ready() -> void:
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
-	session.set_fuel_start_fill(fuel_start_fill) # FUEL-07: validated above; only finite-fuel tanks use it
+	# Setup already trimmed this inventory. Reapplying it invalidates the trim cache
+	# and repeats the same solve during reset (particularly costly for glow aircraft).
+	if fuel_start_fill != session.fuel_start_fill:
+		session.set_fuel_start_fill(fuel_start_fill) # FUEL-07: validated above; only finite-fuel tanks use it
 	session.reset()
 	GroundGear.attach(_airplane, session)
 	TimberVisualMotion.attach(_airplane, session)
