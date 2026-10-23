@@ -6,6 +6,14 @@ When delegating, use the [subagent collaboration guide](docs/SUBAGENTS.md) for s
 
 do not creat thing that you can free download
 
+## Display resolution priorities
+
+1. **Primary target: 1920×1080 (1080p).** Prioritize rendering, UI readability, visual quality and performance qualification at this resolution.
+2. **Secondary desirable targets: resolutions above 1080p**, including 1440p and 4K (and higher). Pursue these after the primary target.
+3. **Tertiary target: 1280×720 (720p), last in priority.** Treat it as a fallback/compatibility objective, after 1080p and higher-resolution objectives.
+
+Use this order for planning, optimization and acceptance evidence. A 720p viewport default, capture fixture or historical benchmark does not make 720p the product target; 720p results cannot establish 1080p qualification. These are development priorities, not claims that any resolution is already qualified on particular hardware.
+
 ## Start here
 
 - [STACK.md](docs/STACK.md): current architecture and dependencies.

@@ -1,5 +1,7 @@
 # Tooling index
 
+Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 4K and higher) secondary desirable; 720p tertiary and last**. Follow the [shared policy](../AGENTS.md#display-resolution-priorities). Existing 720p defaults, fixtures and historical results retain their stated scope and do not qualify the primary target.
+
 Canonical setup and command index. Code, configuration and generated data define implemented behavior. Run commands from the repository root in Bash unless labeled PowerShell; native Windows Python examples use `python` instead of `python3`. Detailed tool contracts live in the linked READMEs.
 
 ## Developer setup

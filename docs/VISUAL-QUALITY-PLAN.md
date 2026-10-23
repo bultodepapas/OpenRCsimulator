@@ -1,5 +1,7 @@
 # Visual quality: implementation guide and open work
 
+Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 4K and higher) secondary desirable; 720p tertiary and last**. Follow the [shared policy](../AGENTS.md#display-resolution-priorities). Existing 720p defaults, fixtures and historical results retain their stated scope and do not qualify the primary target.
+
 2026-10-14 · Revision 17 · Step prefix: **VQ-**
 
 2026-10-21 execution update: [VQ-04a-F4 is implemented](research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f4-faster-cloth-construction): local cloth-grid reuse reduces windsock construction 73.3→23.2 ms, preserving exact mesh/state output and all 18 native images. Five active release pairs improve return-Home + second-Fly by 5.1% median paired; first-path improvement is 1.6%. Initial loading goals, native pacing, physical-display/readability, ordinary-release shutdown and long lifecycle/platform gates remain open. Next: frame-pacing repair on the updated runtime, then motion-reference refresh.

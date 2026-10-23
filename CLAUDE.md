@@ -4,6 +4,8 @@ Use the shared repository rules below. Maintain project policy in [AGENTS.md](AG
 
 @AGENTS.md
 
+Follow the shared [display resolution priorities](AGENTS.md#display-resolution-priorities): **1080p is primary; above-1080p resolutions, including 1440p, 4K and higher, are secondary desirable targets; 720p is tertiary and last in priority.** Apply this order to delegated tasks as well.
+
 ## Claude subagent collaboration
 
 Act as the lead senior developer and technical orchestrator. Use native Claude Code subagents when independent investigation, implementation or review meaningfully improves the task. Keep small or tightly dependent work in the main conversation.

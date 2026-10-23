@@ -2,6 +2,8 @@
 
 Status: current implementation, checked 2026-10-19. Runtime settings live in [project.godot](../app/project.godot); Godot's exact version and SHA-512 are pinned by [get-godot.sh](../app/get-godot.sh). Setup and commands: [TOOLS](TOOLS.md).
 
+Display development follows the [shared resolution policy](../AGENTS.md#display-resolution-priorities): **1080p primary → above-1080p resolutions (including 4K) secondary desirable → 720p tertiary, last**. The configured default viewport below describes current implementation, not product priority or performance qualification.
+
 ## Runtime
 
 | Layer | Implementation |

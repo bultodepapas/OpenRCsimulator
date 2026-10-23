@@ -23,6 +23,10 @@ Eight vehicles in a full 360° studio tour: Ventage Jet first, followed by the h
 
 The aircraft and features below describe **current source**, which may differ from the download. The [v0.1.8 release notes](docs/releases/v0.1.8.md) describe that package and its known limits. Software checks do not establish physical flight validation.
 
+## Display targets
+
+**1080p (1920×1080) is our primary target** for visual quality, UI readability and performance. Resolutions above 1080p, including 1440p, 4K and higher, are secondary desirable targets. **720p (1280×720) is a tertiary fallback objective, last in priority.** These are development priorities; hardware-specific qualification still requires measurements. See the [shared resolution policy](AGENTS.md#display-resolution-priorities).
+
 ## Aircraft
 
 | Aircraft | Configuration | Status |
