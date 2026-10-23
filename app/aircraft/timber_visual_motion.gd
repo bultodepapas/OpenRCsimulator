@@ -408,7 +408,8 @@ func _process(_delta: float) -> void:
 		return
 	if not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
 		return
-	var state: PackedFloat64Array = _session.sim.interpolated(Engine.get_physics_interpolation_fraction())
+	var fraction := 1.0 if _session.sim.paused else Engine.get_physics_interpolation_fraction()
+	var state: PackedFloat64Array = _session.sim.interpolated(fraction)
 	var compression: PackedFloat64Array = _session.gear_compressions(state)
 	var contacts: Array = _session.current_landing_gear().get("contacts", [])
 	if compression.size() != contacts.size():

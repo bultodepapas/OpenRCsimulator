@@ -76,11 +76,27 @@ func _initialize() -> void:
 	_check("day marker sprites are dimmed without hiding fixture geometry", is_zero_approx(float(flood_material.get_shader_parameter("radiance"))))
 	var sky_shader := day_env.sky.sky_material as ShaderMaterial
 	sky_shader.set_shader_parameter("sun_disc", 0.0)
+	sky_shader.set_shader_parameter("disc_dir", Vector3.UP)
+	var day_exposure := 2.0
+	day_env.tonemap_exposure = day_exposure
+	helper.call("_update_from_environment")
+	var day_snapshot: Dictionary = helper.get("_last_snapshot")
+	_check("zero-output day exposure polls refresh state without changing fixture output",
+		is_equal_approx(float(helper.get("_last_exposure")), day_exposure)
+		and day_snapshot.has("sun_elevation_deg")
+		and is_equal_approx(float(day_snapshot.get("sun_elevation_deg", 0.0)), 90.0)
+		and omnis.all(func(node: OmniLight3D) -> bool: return node.light_energy == 0.0)
+		and is_zero_approx(float(flood_material.get_shader_parameter("radiance")))
+		and not spill.visible)
 	sky_shader.set_shader_parameter("disc_dir", Vector3(0.0, sin(deg_to_rad(-0.5)), -cos(deg_to_rad(-0.5))))
 	helper.call("_update_from_environment")
 	_check("sun-disc fade uses a continuous solar-elevation transition",
 		float(helper.get_meta("night_factor")) > 0.45 and float(helper.get_meta("night_factor")) < 0.55,
 		str(helper.get_meta("night_factor")))
+	var dusk_factor := float(helper.get_meta("night_factor"))
+	var dusk_expected_omni := minf(float(omnis[0].get_meta("lu03_base_energy")), 0.12 / day_exposure) * dusk_factor
+	_check("first nonzero dusk factor applies the latest daytime exposure",
+		absf(omnis[0].light_energy - dusk_expected_omni) < 1e-9)
 	sky_shader.set_shader_parameter("disc_cloud_occlusion", true)
 	sky_shader.set_shader_parameter("disc_dir", Vector3(0.0, sin(deg_to_rad(30.0)), -cos(deg_to_rad(30.0))))
 	helper.call("_update_from_environment")
@@ -105,12 +121,35 @@ func _initialize() -> void:
 	_check("replacement sky material updates the light state", is_zero_approx(float(helper.get_meta("night_factor"))))
 	day_env.sky.sky_material = sky_shader
 	sky_shader.set_shader_parameter("disc_dir", Vector3.UP)
+	# A rebind resets the zero-output cache. Seed stale values so the rebind must restore daytime output.
+	(existing_spots[0] as SpotLight3D).light_energy = 99.0
+	flood_material.set_shader_parameter("radiance", 99.0)
+	spill_material.set_shader_parameter("night_factor", 1.0)
+	spill.visible = true
 	helper.bind_environment(day_env, field_lights)
-	_check("rebinding an unchanged environment initializes the fixtures",
-		existing_spots.all(func(s: SpotLight3D) -> bool: return is_zero_approx(s.light_energy)))
+	_check("rebinding daylight restores zero fixture output and hidden spill",
+		existing_spots.all(func(s: SpotLight3D) -> bool: return is_zero_approx(s.light_energy))
+		and is_zero_approx(float(flood_material.get_shader_parameter("radiance")))
+		and is_zero_approx(float(spill_material.get_shader_parameter("night_factor"))) and not spill.visible)
+	var club_day_color := (existing_spots[0] as SpotLight3D).light_color
+	(existing_spots[0] as SpotLight3D).light_energy = 77.0
+	flood_material.set_shader_parameter("radiance", 77.0)
+	_check("day profile transition preserves tint and restores zero fixture output",
+		helper.set_profile("airfield")
+		and not (existing_spots[0] as SpotLight3D).light_color.is_equal_approx(club_day_color)
+		and is_zero_approx((existing_spots[0] as SpotLight3D).light_energy)
+		and is_zero_approx(float(flood_material.get_shader_parameter("radiance"))))
+	_check("day club profile transition restores the authored tint", helper.set_profile("club")
+		and (existing_spots[0] as SpotLight3D).light_color.is_equal_approx(club_day_color))
+	day_env.tonemap_exposure = 3.0
+	helper.call("_update_from_environment")
 	_check("manual on accepts an explicit daylight override", helper.set_activation("on")
 		and is_equal_approx(float(helper.get_meta("night_factor")), 1.0)
 		and existing_spots.all(func(s: SpotLight3D) -> bool: return s.light_energy > 0.0))
+	var manual_on_expected_omni := minf(float(omnis[0].get_meta("lu03_base_energy")), 0.12 / 3.0)
+	_check("manual on after a zero-output exposure poll uses the latest exposure",
+		is_equal_approx(float(helper.get("_last_exposure")), 3.0)
+		and absf(omnis[0].light_energy - manual_on_expected_omni) < 1e-9)
 	_check("manual on also enables bounded batched ground scatter",
 		is_equal_approx(float(spill_material.get_shader_parameter("night_factor")), 1.0)
 		and float(spill_material.get_shader_parameter("display_cap")) <= 0.05 and spill.visible)

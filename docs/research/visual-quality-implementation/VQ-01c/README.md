@@ -10,6 +10,8 @@ Follow-up: [actual Home/Fly loading and the DT-11a lake geometry reuse repair](l
 
 ## Delivered and verified
 
+Later follow-up: [2026-10-23 runtime fixes](runtime-2026-10-23/README.md) covers paused presentation, failed flight creation and redundant daylight lighting writes, with native 1080p regression evidence and explicit unresolved gates.
+
 Current pacing follow-up: [2026-10-21 release comparison](pacing-2026-10-21/README.md) separates normal VSync controls from an additional FPS cap, adds effective-setting metadata and prevents mixed-configuration campaign approval. Three default controls pass the software gates; physical-display and shutdown qualification remain open.
 
 Current follow-up: [2026-10-21 baseline triage](baseline-2026-10-21/README.md) repairs the loading probe's deferred Home/Fly handoff and records five fresh/warm loading pairs plus three standard native runs. Loading targets, startup-pause attribution and baseline qualification remain open; the report ranks the next bounded work. This does not replace the historical measurements below.

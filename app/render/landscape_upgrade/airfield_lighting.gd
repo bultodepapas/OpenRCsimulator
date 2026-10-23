@@ -130,6 +130,11 @@ func apply_lighting(snapshot: Dictionary) -> void:
 	if _profile != "off" and _activation != "off":
 		factor = 1.0 if _activation == "on" else night_factor
 	var exposure := _current_exposure()
+	# In full daylight, exposure and sun direction do not change any fixture output.
+	# Keep the snapshot current for later manual/profile changes, then avoid replaying the zero state.
+	if factor == 0.0 and _last_night_factor == 0.0:
+		_last_exposure = exposure
+		return
 	if is_equal_approx(factor, _last_night_factor) and is_equal_approx(exposure, _last_exposure):
 		return
 	_last_night_factor = factor

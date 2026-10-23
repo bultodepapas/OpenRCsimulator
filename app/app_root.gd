@@ -569,10 +569,6 @@ func start_flight(request: Dictionary = {}) -> void:
 			return
 	# Retain the exact briefing through failed startup, including its draft and focus.
 	var departing_random: CanvasLayer = null
-	if is_random:
-		departing_random = screens.pop(false, false) as CanvasLayer
-	while screens.top() != null and not screens.is_top("home"):
-		screens.pop()
 	var departing_home: Control = home
 	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
@@ -606,6 +602,25 @@ func start_flight(request: Dictionary = {}) -> void:
 		)
 		if checked_failures.get("ok", false):
 			failure_config_for_flight = checked_failures.config.duplicate(true)
+	# Build before removing Home so a missing or unusable route resource cannot strand the shell.
+	var candidate_flight: Node = _create_flight(route_aircraft_id)
+	if candidate_flight == null:
+		var reason := tr("Flight scene could not be created.")
+		var route_path := flight_script_path_for_aircraft(route_aircraft_id)
+		if is_random:
+			natural_random_screen.show_error(tr("Could not start flight: %s") % reason)
+		elif has_home and departing_home != null:
+			departing_home.reject_start(tr("Could not start flight: %s") % reason)
+		else:
+			printerr("Flight start refused: %s (%s)" % [reason, route_path])
+			get_tree().quit(ERR_CANT_CREATE)
+		if has_home:
+			_menu_feedback(&"reject")
+		return
+	if is_random:
+		departing_random = screens.pop(false, false) as CanvasLayer
+	while screens.top() != null and not screens.is_top("home"):
+		screens.pop()
 	if helicopter_route:
 		if not has_home: chosen_start = "runway"
 		# Rotorcraft has no sky editor/event consumer yet; never inherit the retired Home renderer.
@@ -614,7 +629,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		screens.pop(false, false)
 	if home_scene != null:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
-	flight = _create_flight(route_aircraft_id)
+	flight = candidate_flight
 	_flight_companions_available = not is_random and not helicopter_route \
 		and landscape_id == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config")
 	flight.field_path = field_path
@@ -749,10 +764,18 @@ func _attach_calibration_card(target: Node) -> void:
 
 func _create_flight(aircraft_id: String = "") -> Node:
 	var route_path := flight_script_path_for_aircraft(aircraft_id)
+	if not ResourceLoader.exists(route_path):
+		return null
 	if Catalog.is_rotorcraft(aircraft_id):
 		var helicopter_script: Script = load(route_path) as Script
-		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
-	return load(route_path).instantiate()
+		if helicopter_script == null or not helicopter_script.can_instantiate():
+			return null
+		var instance: Variant = helicopter_script.new()
+		return instance as Node if instance is Node else null
+	var flight_scene: PackedScene = load(route_path) as PackedScene
+	if flight_scene == null or not flight_scene.can_instantiate():
+		return null
+	return flight_scene.instantiate()
 
 
 func open_settings(from: Control = null) -> void:

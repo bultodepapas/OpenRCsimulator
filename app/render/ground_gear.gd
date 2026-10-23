@@ -69,7 +69,8 @@ func _process(_dt: float) -> void:
 	var model: Node3D = _airplane.get("root")
 	if model != null and model.has_node("NightKit"):
 		NightKit.update_dynamic(model.get_node("NightKit"), model, _session.gear_state().extension if _session.gear_is_retractable() else 1.0)
-	var compression: PackedFloat64Array = _session.gear_compressions(_session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
+	var fraction := 1.0 if _session.sim.paused else Engine.get_physics_interpolation_fraction()
+	var compression: PackedFloat64Array = _session.gear_compressions(_session.sim.interpolated(fraction))
 	var steer: float = _session.sim.aux[_session.AUX_SERVO + 2]
 	var gear: Dictionary = _airplane.get("gear", {})
 	for i in contacts.size():

@@ -190,6 +190,14 @@ func _run() -> void:
 		session.sim.state = _state(-4)
 		var ordinary: Dictionary = flight._pose_of(session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
 		_check(entry.id+" ordinary pose retains interpolation", _pose_equal(flight._current_pose(),ordinary))
+		var untouched := var_to_bytes([session.sim.previous, session.sim.state, session.sim.tick])
+		session.sim.set_paused(true)
+		_check(entry.id+" paused pose uses the latest accepted tick", _pose_equal(flight._current_pose(),
+			flight._pose_of(session.sim.interpolated(1.0))))
+		_check(entry.id+" paused presentation leaves simulation untouched", untouched ==
+			var_to_bytes([session.sim.previous, session.sim.state, session.sim.tick]))
+		session.sim.set_paused(false)
+		_check(entry.id+" resumed pose retains interpolation", _pose_equal(flight._current_pose(),ordinary))
 		flight.queue_free()
 		await process_frame
 	print("%d checks, %d failed" % [_count,_failures])

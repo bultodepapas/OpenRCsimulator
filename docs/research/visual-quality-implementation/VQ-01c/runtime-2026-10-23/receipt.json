@@ -1,0 +1,676 @@
+{
+  "format": "openrc-runtime-engineering-receipt v1",
+  "date": "2026-10-23",
+  "baseline_commit": "fa679fc1725d85f05a59f34773230e2b83de6cce",
+  "scope": "One native before/after regression screen, not a speedup or qualification campaign.",
+  "host": {
+    "cpu": "AMD Ryzen 9 5900X",
+    "gpu": "RTX 3090",
+    "driver": "617.42",
+    "engine": "4.7.2.stable.official.ed1daf0bf",
+    "renderer": "Compatibility",
+    "display_hz": 60,
+    "vsync": true
+  },
+  "before": {
+    "raw_path": "tmp/game-engineering-20261023/baseline-uninstrumented.json",
+    "raw_sha256": "9a71e02d4fe90b0cebac8690fef0cd5c2f5be9b3b2bbf34b193a69e2bdf8d907",
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:/DEVELOPMENT/OpenRCsimulator/app",
+      "--fullscreen",
+      "--resolution",
+      "1920x1080",
+      "--max-fps",
+      "0",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/native-keyboard/keyboard_flight.gd",
+      "--",
+      "--aircraft=sebart-avanti-s-a200-p100rx",
+      "--start=airborne_half_power",
+      "--view=pilot",
+      "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/baseline-uninstrumented.json",
+      "--warmup=10",
+      "--t=60"
+    ],
+    "runner_ok": true,
+    "log_sha256": "ed522d4bbf33cd47fed395b9bdf91eb96db6d1b06b27c828d14114e66db2dcc2",
+    "capture_id": "532ffd26-d8a9-4338-96b9-dafe0cf756b6",
+    "frames": 3600,
+    "wall_seconds": 60.0004129999999,
+    "mean_fps": 59.999587002842894,
+    "wall_frame_ms": {
+      "max": 22.449,
+      "p50": 16.653,
+      "p95": 17.802,
+      "p99": 18.914
+    },
+    "window": "1920x1080",
+    "simulation": {
+      "elapsed_time_s": 69.7708333333333,
+      "end_tick": 16748,
+      "end_time_s": 69.7833333333333,
+      "fault": "",
+      "paused": false,
+      "physics_enabled": true,
+      "physics_ticks_per_second": 240,
+      "scope": "first _process clock prime through sample completion; includes warm-up",
+      "start_tick": 3,
+      "start_time_s": 0.0125,
+      "step_usec_smoothed": 1651.56902268405,
+      "ticks": 16745
+    },
+    "source_map_entries": 542
+  },
+  "after": {
+    "raw_path": "tmp/game-engineering-20261023/after-uninstrumented.json",
+    "raw_sha256": "f3c4e7c90bb80d35d7171a91ffc913a8ccadfec0311940d26d80078f6b1ffb2c",
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:/DEVELOPMENT/OpenRCsimulator/app",
+      "--fullscreen",
+      "--resolution",
+      "1920x1080",
+      "--max-fps",
+      "0",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-07/planar-lake-2026-10-22/native-keyboard/keyboard_flight.gd",
+      "--",
+      "--aircraft=sebart-avanti-s-a200-p100rx",
+      "--start=airborne_half_power",
+      "--view=pilot",
+      "--frametimes=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/after-uninstrumented.json",
+      "--warmup=10",
+      "--t=60"
+    ],
+    "runner_ok": true,
+    "log_sha256": "3c188ce517eb93b3717166d3dc1d3bb5b10c5bef249fc95377c58e0fb5b0edca",
+    "capture_id": "687a1eeb-b98c-4c5d-8a9a-4418fb2f69e7",
+    "frames": 3600,
+    "wall_seconds": 60.000123,
+    "mean_fps": 59.99987700025215,
+    "wall_frame_ms": {
+      "max": 23.384,
+      "p50": 16.656,
+      "p95": 17.74,
+      "p99": 18.735
+    },
+    "window": "1920x1080",
+    "simulation": {
+      "elapsed_time_s": 69.7875,
+      "end_tick": 16752,
+      "end_time_s": 69.8,
+      "fault": "",
+      "paused": false,
+      "physics_enabled": true,
+      "physics_ticks_per_second": 240,
+      "scope": "first _process clock prime through sample completion; includes warm-up",
+      "start_tick": 3,
+      "start_time_s": 0.0125,
+      "step_usec_smoothed": 1433.80008155068,
+      "ticks": 16749
+    },
+    "source_map_entries": 542
+  },
+  "changed_runtime_source_sha256": {
+    "res://aircraft/timber_visual_motion.gd": {
+      "before": "cab8d170d89c474c0ba586ad7f4078a172482ba1a88a8801538e97253d433938",
+      "after": "0e3fe2d3e5e21362ac3f97e2ca41fe812fd4ba52fc226ef8b333cbec05b299bf"
+    },
+    "res://app_root.gd": {
+      "before": "e4a768f9d362ea93c85a0bbee461ce904f78f23a68e9ff4a89eeceb8a578cdd6",
+      "after": "9104fe74cea4b09722f5d800c6f1a0948da6a8a2298e1af9580c2c4ea7777613"
+    },
+    "res://main.gd": {
+      "before": "aa8e5fd3d2bf612a1c8b1ae15ba78ac4f7f5b18f13f1b1ce5ef1b6debde65906",
+      "after": "15f8c15a3ac307c37364393c8534f5763ebb0b326fab7f0cdc86fe8cc89a02f6"
+    },
+    "res://render/ground_gear.gd": {
+      "before": "b22d1ce6fe1f33488b405a487209e08084c34e10993af9bd48d485f78a89c70a",
+      "after": "384e86575c069c8f2be3549583b1fd93a30ee444418a30ff77d6ce44a7be74e0"
+    },
+    "res://render/landscape_upgrade/airfield_lighting.gd": {
+      "before": "6c77822f8e85ceede8f7710dcbcceb04cb6c5475893f80ce0774c8c483d1132d",
+      "after": "6001fed1f6a7d30993c326dbfce4e679069978b73276b170301fb8667a1d7b9c"
+    }
+  },
+  "lighting": {
+    "candidate_apply_total_us": [
+      8394,
+      8812,
+      8591,
+      9089,
+      9388
+    ],
+    "candidate_shader_setter_calls_per_day_poll": 0,
+    "engine": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "inputs_sha256": {
+      "baseline_script": "6c77822f8e85ceede8f7710dcbcceb04cb6c5475893f80ce0774c8c483d1132d",
+      "candidate_script": "6001fed1f6a7d30993c326dbfce4e679069978b73276b170301fb8667a1d7b9c",
+      "field": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+      "field_lights": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+      "scenery": "f871d9917cdd7d240c173651b6a75a2083c1363006c4546e24ae7b0bf2b4264e"
+    },
+    "iterations_per_round": 5000,
+    "original_apply_total_us": [
+      46219,
+      49649,
+      48235,
+      50780,
+      53774
+    ],
+    "original_shader_setter_calls_per_day_poll": 12,
+    "os": "Windows",
+    "parity_cases": 22,
+    "parity_failures": [],
+    "project_renderer": "gl_compatibility (from app/project.godot)",
+    "rounds": 5,
+    "scope": "direct apply_lighting CPU call time and exact exposed-state parity; excludes frame and GPU timing",
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/lighting/lighting_pair_probe.gd",
+      "--",
+      "--baseline=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/lighting/airfield_lighting-original.gd",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/lighting/native-pair.json"
+    ],
+    "log_sha256": "57ea2609abfe81b16774b60afd183aea76d0dca25b821b849c91c713c254ae6c",
+    "probe_sha256": "b79edb10b72e717151075141454a97b09a73a9c9d9cdb72126920bf009a418d5"
+  },
+  "pause": {
+    "before": {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "window": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "span_m": 0.165399551391602,
+      "tick": 109,
+      "physics_unchanged": true,
+      "raw_sha256": "eba45faed7b8cc701fc7af5c002e0b722686bc5beb0518a568f9e9fbad0d7ade",
+      "samples": 120,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/pause_probe.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=chase",
+        "--probe-output=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/pause-before.json"
+      ],
+      "log_sha256": "ade3135ad88382c84eb99291c44875202658cb9f0733aff90b4915410b1579e1"
+    },
+    "after": {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "window": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "span_m": 0.0,
+      "tick": 99,
+      "physics_unchanged": true,
+      "raw_sha256": "a315257bdab41d17b09346a0230053c8627e2dbdfa80435c5532a0cd0631b46a",
+      "samples": 120,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/pause_probe.gd",
+        "--",
+        "--aircraft=sebart-avanti-s-a200-p100rx",
+        "--start=airborne_half_power",
+        "--view=chase",
+        "--probe-output=C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/pause-after.json"
+      ],
+      "log_sha256": "d763070d443ce527b3bc3ea315fd2d5efcacbf05d0df4347077bfe473e2f50d8"
+    },
+    "probe_sha256": "21e422883aa957b002fce74cb5e9c40b428ba45e3835fad1a33bd9e64a4ed7c2"
+  },
+  "baseline_loading": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "app_load_and_instantiate_usec": 1619559,
+    "cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+    "complete": true,
+    "cycles": [
+      {
+        "cycle": 1,
+        "fly_first_draw_usec": 4119563,
+        "fly_ready_usec": 3624738,
+        "fly_sync_usec": 52,
+        "nodes_at_home": 797,
+        "nodes_in_flight": 1280,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 934482,
+        "return_sync_usec": 869123,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 2,
+        "fly_first_draw_usec": 1702941,
+        "fly_ready_usec": 1593497,
+        "fly_sync_usec": 50,
+        "nodes_at_home": 797,
+        "nodes_in_flight": 1280,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 963144,
+        "return_sync_usec": 893996,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 3,
+        "fly_first_draw_usec": 2421496,
+        "fly_ready_usec": 2197453,
+        "fly_sync_usec": 60,
+        "nodes_at_home": 797,
+        "nodes_in_flight": 1280,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 1246569,
+        "return_sync_usec": 1171280,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 4,
+        "fly_first_draw_usec": 1729038,
+        "fly_ready_usec": 1621016,
+        "fly_sync_usec": 52,
+        "nodes_at_home": 797,
+        "nodes_in_flight": 1280,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 926647,
+        "return_sync_usec": 866790,
+        "tick_at_first_draw": 12
+      },
+      {
+        "cycle": 5,
+        "fly_first_draw_usec": 1673049,
+        "fly_ready_usec": 1568137,
+        "fly_sync_usec": 47,
+        "nodes_at_home": 797,
+        "nodes_in_flight": 1280,
+        "orphan_nodes": 0,
+        "paused_at_first_draw": false,
+        "return_first_draw_usec": 945967,
+        "return_sync_usec": 864116,
+        "tick_at_first_draw": 12
+      }
+    ],
+    "display_server": "Windows",
+    "engine": {
+      "build": "official",
+      "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+      "hex": 263938,
+      "major": 4,
+      "minor": 7,
+      "patch": 2,
+      "status": "stable",
+      "string": "4.7.2-stable (official)",
+      "timestamp": 0
+    },
+    "fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+    "format": "openrc-loading-probe v1",
+    "home_first_draw_engine_elapsed_usec": 11938029,
+    "home_first_draw_from_load_usec": 6367883,
+    "home_sync_usec": 2756663,
+    "max_fps": 0,
+    "renderer": "gl_compatibility",
+    "scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+    "shutdown": {
+      "audio_released": true,
+      "elapsed_usec": 196969,
+      "remaining_playbacks": 0,
+      "settings_removed": true,
+      "timeout_usec": 1000000,
+      "tracked_playbacks": 1
+    },
+    "viewport_size": [
+      1920,
+      1080
+    ],
+    "vsync_mode": 1
+  },
+  "checked_tests": [
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_crash_pose/godot-j0so7wrv/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_crash_pose.gd"
+      ],
+      "log_sha256": "e8b8abbf87be14aeb778657df4042b4bfb08216d574a847b24c8b6874a1050e0"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_companions_presentation-2/godot-n152xscu/report.json",
+      "ok": false,
+      "reason": "process_exit",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_presentation.gd"
+      ],
+      "log_sha256": "7942fb2fdb31539e1bab1dbe11722c2ef98e0d8a14e9b6f7bbf8b14665a58a92"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_gear_flex-2/godot-xmf7ccpr/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_gear_flex.gd"
+      ],
+      "log_sha256": "7d4d50d83aac4de017a314bd33ca65f56f0e75039e047ac100d16875471223c5"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_gear_visual_contacts-2/godot-j9_5z_0n/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_gear_visual_contacts.gd"
+      ],
+      "log_sha256": "58d6acc1cba9cf01457dad41fee9453adaa854e62e0cbe53083d93594328795c"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_golden-2/godot-vnvhbq26/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_landscape_twilight-2/godot-ot8__o9r/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_twilight.gd"
+      ],
+      "log_sha256": "aedf11f8bfeb44a92a967319bb891b7cb13f35b6140577916fdead934b5b4ec8"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_p51_lights-2/godot-lgafgyi5/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_p51_lights.gd"
+      ],
+      "log_sha256": "91deb45e2df88e4de94c8429f882a1dabb57e1093c6a1bd87b56eb6419f48d22"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_ui_natural_random-2/godot-a4qbepbs/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_natural_random.gd"
+      ],
+      "log_sha256": "d4c3ca5ffbc536c58f5c6ffde8a6ee6ccc5bece06ba664c8c5a2cab52e7acff9"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-test_ui_preview_requests-2/godot-wee0tq3t/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_preview_requests.gd"
+      ],
+      "log_sha256": "364256212ad187c2a532e77294f0de477066a134a15ce696a0ebdb8e393d407c"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-fixed-144/godot-_j_2jlkn/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--fixed-fps",
+        "144",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ],
+      "log_sha256": "312be0ba3e5c53868591ed5d11170f72b30b7df5a15e3efd205fc1a7708ac3aa"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-fixed-30/godot-nwi6rkgz/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--fixed-fps",
+        "30",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ],
+      "log_sha256": "1722f9a686d739070e855a7475e420d9f36f97fa180c9f0f66514445cf2a9c75"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-fixed-60/godot-1itdx76l/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--fixed-fps",
+        "60",
+        "--script",
+        "res://tests/run_fixed_step.gd"
+      ],
+      "log_sha256": "9b13cc08650748f5a0959c5d9ce266a4eade604c36e17f836f3d043602ae4366"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/verified-native-settings/godot-0rt2polu/report.json",
+      "ok": true,
+      "reason": "passed",
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--fullscreen",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "res://tests/test_ui_settings_integration.gd"
+      ],
+      "log_sha256": "def5778d07b4796df89a1d9a32003a209c833dc94ef46cd9c435962a2f39f055"
+    }
+  ],
+  "limitations": [
+    "Native raw frame arrays and full logs remain in ignored tmp; hashes and commands retained here.",
+    "Pause source hashes were not captured automatically; entry ticks differ. This is within-run freeze evidence.",
+    "Companion fixture failed pre-existing solver qualification. Experimental companion changes were reverted.",
+    "No physical display/input latency, VRAM high-water, package, cross-platform or long-session qualification."
+  ],
+  "native_gameplay": {
+    "checks_passed": 30,
+    "ok": true,
+    "command": [
+      "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:/DEVELOPMENT/OpenRCsimulator/app",
+      "--fullscreen",
+      "--resolution",
+      "1920x1080",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/game-engineering-20261023/qa/native_gameplay_integration.gd"
+    ],
+    "log_sha256": "7841afc934861be2edbb7c3e4e9bc36d8dc1fed1befa826b1bacc688e9106afa",
+    "probe_sha256": "c08d07b7a94c24366e5113f3b28847c126f0d38281cbb4074e1c6b74051b3cc9",
+    "scope": "Engine-parsed physical-key events; not OS input or latency."
+  },
+  "fixed_step": {
+    "ticks": 480,
+    "render_fps": [
+      30,
+      60,
+      144
+    ],
+    "state_sha256": "16156a3080ae07db6da67b804c5fd9e67cabf9b0395fd5f3946b39dcc857d857",
+    "checkpoint_sha256": "5593cdb7ca6cadfbf6aef9bfc0ffcc043c731444c75aab81a975ae2c54172143",
+    "matches_pre_change": true
+  },
+  "good_enemy": [
+    {
+      "path": "tmp/game-engineering-20261023/good-enemy/crash-pose-ilr0oe0m/report.json",
+      "ok": true,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_crash_pose.gd"
+      ],
+      "log_sha256": "e8b8abbf87be14aeb778657df4042b4bfb08216d574a847b24c8b6874a1050e0"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/good-enemy/lighting-4dqzs0q7/report.json",
+      "ok": true,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_lighting.gd"
+      ],
+      "log_sha256": "0f9ce4da40a82025051eab251d01cafb60317718947b1556adfec4e90fc0368b"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/good-enemy/natural-random-_sjc8d7n/report.json",
+      "ok": true,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_natural_random.gd"
+      ],
+      "log_sha256": "d4c3ca5ffbc536c58f5c6ffde8a6ee6ccc5bece06ba664c8c5a2cab52e7acff9"
+    },
+    {
+      "path": "tmp/game-engineering-20261023/good-enemy/preview-requests-npkakewu/report.json",
+      "ok": true,
+      "command": [
+        "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:/DEVELOPMENT/OpenRCsimulator/app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_preview_requests.gd"
+      ],
+      "log_sha256": "364256212ad187c2a532e77294f0de477066a134a15ce696a0ebdb8e393d407c"
+    }
+  ]
+}

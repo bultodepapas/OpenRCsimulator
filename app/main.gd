@@ -1249,7 +1249,9 @@ func _current_pose() -> Dictionary:
 					basis = Frames.quat_to_render(impact.crossing.attitude) }
 			return _pose_of(impact.detected_state)
 		return _pose_of(session.sim.state)
-	return _pose_of(session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
+	# The engine interpolation clock keeps moving while this session is held.
+	var fraction := 1.0 if session.sim.paused else Engine.get_physics_interpolation_fraction()
+	return _pose_of(session.sim.interpolated(fraction))
 
 
 func _pose_of(s: PackedFloat64Array) -> Dictionary:
