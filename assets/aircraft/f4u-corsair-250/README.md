@@ -28,7 +28,10 @@ Coordinates are metres in the physics le frame, [x_aft, y_right, z_up], from the
 | Delivery identity | [manifest.py](../../../research/f4u-corsair/F4U-03/manifest.py) | `source-manifest.json` |
 | Gear sampling | [sample_gear.py](../../../research/f4u-corsair/F4U-05/sample_gear.py) (Blender 5.2.2, headless, `--disable-autoexec`) | `gear-samples.json` |
 | Model compile | [compile_model.py](../../../research/f4u-corsair/F4U-05/compile_model.py) | `model-geometry.json`, `app/aircraft/f4u_corsair_geometry.gd` |
-| Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release |
+| Model contract | [verify_f4u.gd](../../../app/aircraft/verify_f4u.gd), run by `app/test.sh` | Console checks: frozen asset, controls, flaps, throws inside the clearance envelopes, gear rig, oleo compression, propeller size, exhaust, paint slots, contacts, crash release |
+| Flight-test card | `research/flight-test/run.py --aircraft f4u-corsair-250 --out <new directory>` | Profile and summary ([F4U-12](../../../docs/research/f4u-corsair/F4U-12/README.md)) |
+| Ground handling | [ground_handling.gd](../../../research/f4u-corsair/F4U-12/ground_handling.gd) | JSON: tail lift and lift-off against the CARF take-off note |
+| Software baseline | [record_baseline.gd](../../../research/f4u-corsair/F4U-12/record_baseline.gd) `-- --out=<new .orfl>`, then `tools/flight_log/flight_log.py replay` | Scripted 10 s `.orfl` for candidate comparisons |
 
 ```bash
 blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-corsair/F4U-06/extract_geometry_r59.py -- \

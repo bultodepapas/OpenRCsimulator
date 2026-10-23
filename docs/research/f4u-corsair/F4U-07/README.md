@@ -1,6 +1,6 @@
 # F4U-07: provisional physics data for the 1/4.5 Corsair
 
-Derived 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md). The same day it was revised with measured section data and slotted flaps, then moved from the 1/5 DLE-111 configuration to the 1/4.5 CARF-class Corsair with a Moki S250 radial and a 30x18 three-blade, at the owner's direction. Software derivation from provisional inputs; not physical validation and not yet in the catalog.
+Derived 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md). The same day it was revised with measured section data and slotted flaps, then moved from the 1/5 DLE-111 configuration to the 1/4.5 CARF-class Corsair with a Moki S250 radial and a 30x18 three-blade, at the owner's direction. Software derivation from provisional inputs; not physical validation. In the catalog since [F4U-09](../F4U-09/README.md).
 
 ## What exists
 
@@ -10,7 +10,7 @@ Derived 2026-10-22 for the [F4U plan](../../../F4U-PLAN.md). The same day it was
 | [geometry-r59.json](../../../../assets/aircraft/f4u-corsair-250/geometry-r59.json) | 1/4.5 geometry measured on R59 ([F4U-06](../F4U-06/README.md)) |
 | [ground_effect_vlm.py](../../../../research/f4u-corsair/F4U-07/ground_effect_vlm.py) → `vlm_ground_effect.json` | Image-method VLM of the measured gull planform; Trefftz-plane drag |
 | [fit_propeller.py](../../../../research/f4u-corsair/F4U-07/fit_propeller.py) → `prop_calibration.json` | Blade-element model (P51-06 `bem.py`) fitted to the Mejzlik 32x18 2-blade ([mejzlik_32x18.json](../../../../research/f4u-corsair/F4U-07/mejzlik_32x18.json)) and the P-51's 26x12 2- and 3-blade tables |
-| [derive_physics.py](../../../../research/f4u-corsair/F4U-07/derive_physics.py) → `f4u_corsair_250.json`, [derivation.md](../../../../research/f4u-corsair/F4U-07/derivation.md) | Native `openrc-aircraft v2` output, staged beside the script until F4U-09 |
+| [derive_physics.py](../../../../research/f4u-corsair/F4U-07/derive_physics.py) → `f4u_corsair_250.json`, [derivation.md](../../../../research/f4u-corsair/F4U-07/derivation.md) | Native `openrc-aircraft v2` output, written to `app/data/aircraft/` |
 | [probe.gd](../../../../research/f4u-corsair/F4U-07/probe.gd) | Production loader, trims, flare authority, top speed and flight modes |
 
 Sources for every input are in [F4U-01](../F4U-01/README.md). The method follows the P-51 generator, with Corsair-specific geometry, data and checks:
@@ -77,4 +77,4 @@ Single forum reports span 4,200–5,200 rpm on 32x18 two-blades. The Mejzlik 31x
 
 ## Limits
 
-Geometry is the R59 visual master; wing incidence, stabilizer setting and gull angles lack a primary source. TR 586 values are read from a degraded OCR layer. The thin outer sections (9–11 %) clamp at the 12 % trend, so tip stall may come earlier than modelled. The body yaw term is DATCOM's, uncalibrated. The Moki torque shape and peak-power rpm are estimated; Mejzlik tables and the calibrated model stand in for the wooden Menz and SEP propellers. Gear travel is borrowed from the P-51. The CARF manual's handling notes (full power on take-off lifts the tail beyond the low-rate elevator, tail-up landings) are F4U-08/12 targets. Flight-identified behavior requires F4U-12 traces and F4U-14 evidence.
+Geometry is the R59 visual master; wing incidence, stabilizer setting and gull angles lack a primary source. TR 586 values are read from a degraded OCR layer. The thin outer sections (9–11 %) clamp at the 12 % trend, so tip stall may come earlier than modelled. The body yaw term is DATCOM's, uncalibrated. The Moki torque shape and peak-power rpm are estimated; Mejzlik tables and the calibrated model stand in for the wooden Menz and SEP propellers. Gear travel follows the GP-06c reserve-drop rule ([F4U-08](../F4U-08/README.md)). The CARF manual's handling notes are checked in [F4U-12](../F4U-12/README.md#ground-handling): the tail-up landing is consistent, the full-power nose-over is not reproduced. Flight-identified behavior requires F4U-14 evidence.

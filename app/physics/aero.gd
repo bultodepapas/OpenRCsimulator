@@ -1,7 +1,7 @@
 # Float64 aerodynamic loads about CG [Fx,Fy,Fz,Mx,My,Mz], gravity excluded.
 # The corrected empirical model remains the exact small-angle oracle. Outside its local-flow
-# validity region, complete loads blend to passive wing/tail elements: flow = v + omega cross r,
-# lift perpendicular to flow, drag against flow, moment = r cross F. No independently scaled
+# validity region, loads blend to local wing/tail elements plus declared body terms: flow = v + omega cross r,
+# section lift perpendicular to its plane flow, drag against that flow, moment = r cross F. No independently scaled
 # stall deficits or residual damping moments. The tail replaces global derivatives, never adds them.
 # Parameters/provenance: aero.surfaces in aircraft JSON. See docs/research/flight-repair-implementation.md.
 # coefficients() describes the reference empirical curve, not summed nonlinear surface loads.
@@ -589,14 +589,15 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	if wing_body_cl != 0.0:
 		mx_sum += 0.5 * rho * float(ref.S) * float(ref.b) * wing_body_cl * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
 	# D10-R3 (optional): the fuselage side force the strips and the fin lack, at the ARP where the oracle's CYb puts it.
-	# Allen-Perkins: the attached slender-body part ½ρ·S·CYβ_B·u·v (linear at small β, where the oracle's CYb carries the
-	# same term) plus the crossflow drag −½ρ·(η·c_d·S_side)·|v_c|·v, v_c = √(v² + w²) the body's crossflow speed. Neither
-	# fades with sideslip: the crossflow part carries knife-edge and grows with α in a spin. No body yaw couple is implied
-	# (the oracle's Cnb is the fin's unless body_cn_beta declares one).
+	# The attached forward-flight slope ½ρ·S·CYβ_B·u·v agrees with the oracle at small β. D10-R3-R1 limits that
+	# derivative to u > 0: its signed extrapolation is unsupported in tail-first flow. This is a conservative domain
+	# limit, not a calibrated reverse-flow law. Crossflow drag −½ρ·(η·c_d·S_side)·√(v²+w²)·v stays active in either
+	# direction and neither term fades with sideslip. The empirical resultant retains its reference-velocity convention;
+	# it is not a resolved body-strip model or a claim of passivity for arbitrary rotation. No body yaw couple is implied.
 	var body_cy: float = surfaces.get("body_cy_beta", 0.0)
 	var body_cda: float = surfaces.get("body_crossflow_area", 0.0)
 	if body_cy != 0.0 or body_cda != 0.0:
-		var fy_body: float = 0.5 * rho * (float(ref.S) * body_cy * v0 * v1 - body_cda * M.sqrt_(v1 * v1 + v2 * v2) * v1)
+		var fy_body: float = 0.5 * rho * (float(ref.S) * body_cy * maxf(v0, 0.0) * v1 - body_cda * M.sqrt_(v1 * v1 + v2 * v2) * v1)
 		fy_sum += fy_body
 		mx_sum += -az * fy_body
 		mz_sum += ax * fy_body

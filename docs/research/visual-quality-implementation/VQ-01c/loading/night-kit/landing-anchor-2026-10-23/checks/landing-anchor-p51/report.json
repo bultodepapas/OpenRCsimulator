@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "61568999-3326-44eb-a224-2f33390e111f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "tests/test_p51_lights.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T12:35:30.165785+00:00",
+  "label": "landing-anchor-p51",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\landing-anchor-p51-klo6j59g\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\landing-anchor-p51-klo6j59g\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.093,
+  "log_bytes": 1394,
+  "log_sha256": "91deb45e2df88e4de94c8429f882a1dabb57e1093c6a1bd87b56eb6419f48d22"
+}

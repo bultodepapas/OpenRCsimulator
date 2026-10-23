@@ -9,6 +9,9 @@ const LAW := "fixed-datum-fixed-shape-mass-inventory-geometry-v1"
 const REFERENCE_LAW := "fixed-datum-reference-state-resources-v1"
 const RESOURCE_DISTRIBUTION := "fixed_geometry_uniform_density_v1"
 const PSD_ROUNDING_TOLERANCE := 1.0e-12
+## Smallest normal IEEE-754 binary64 value; subnormal minors lose relative precision.
+## Use an exact power of two: the pinned engine parses the equivalent decimal literal as zero.
+const MIN_NORMAL_FLOAT64 := pow(2.0, -1022.0)
 
 
 ## Parallel-axis tensor per kilogram in [Jxx, Jyy, Jzz, Jxy, Jxz, Jyz] order.
@@ -256,17 +259,22 @@ static func evaluate_reference(prepared: Dictionary, amounts: PackedFloat64Array
 	var inertia: PackedFloat64Array = prepared.reference_inertia_kgm2.duplicate()
 	for k: int in 6:
 		inertia[k] = inertia_origin[k] - mass * parallel[k]
-	var inverse: PackedFloat64Array = RB.inertia_inverse(inertia)
-	if inertia[0] <= 0.0 or inertia[0] * inertia[1] - inertia[3] * inertia[3] <= 0.0:
-		return {ok = false, error = "inertia is not positive definite"}
+	var minor2: float = inertia[0] * inertia[1] - inertia[3] * inertia[3]
+	# Match the raw inverse's determinant arithmetic before entering its asserting helper.
 	var determinant: float = inertia[0] * (inertia[1] * inertia[2] - inertia[5] * inertia[5]) \
-		- inertia[3] * (inertia[3] * inertia[2] - inertia[4] * inertia[5]) \
+		+ inertia[3] * (inertia[4] * inertia[5] - inertia[3] * inertia[2]) \
 		+ inertia[4] * (inertia[3] * inertia[5] - inertia[4] * inertia[1])
-	if determinant <= 0.0:
-		return {ok = false, error = "inertia is not positive definite"}
-	for value: float in inverse:
-		if not is_finite(value):
-			return {ok = false, error = "inertia inverse is not finite"}
+	var inverse := PackedFloat64Array()
+	if inertia[0] > 0.0 and is_finite(minor2) and minor2 >= MIN_NORMAL_FLOAT64 \
+			and is_finite(determinant) and determinant >= MIN_NORMAL_FLOAT64:
+		# Preserve the historical arithmetic for ordinary aircraft and exact replay.
+		inverse = RB.inertia_inverse(inertia)
+	# Overflow, underflow, singularity and indefiniteness need the scaled SPD check.
+	# In particular, an infinite determinant must never produce an accepted zero inverse.
+	if inverse.size() != 6 or not _finite_array(inverse):
+		inverse = _scaled_spd_inverse(inertia)
+	if inverse.is_empty():
+		return {ok = false, error = "inertia is not positive definite or its inverse is not finite"}
 	return {ok = true, mass_kg = mass, cg_body_m = cg, inertia = inertia, inverse = inverse, inertia_origin = inertia_origin}
 
 

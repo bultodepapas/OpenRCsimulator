@@ -62,7 +62,7 @@ Put step status and next actions in the owning plan, measurements and reproducti
 
 ## 2026-10-23 · F4U-12 — a kit manual's single throw set is the normal rate, not `max_throw`
 
-A manual that lists one recommended set of throws describes what a pilot flies by default. Writing it into `controls.max_throw` made the Corsair's default `rates.normal` 80 % of the manual, and the standard flight-test card then measured a 55°/s full-aileron roll and failed eleven aerobatic tests against the P-51's 40/40. Map a single manual set to the normal rate and derive the maximum from a sourced high/low ratio or the manual's own mechanical allowance; when a manual gives dual rates, map them directly. [Evidence](research/f4u-corsair/F4U-12/README.md)
+A manual that lists one recommended set of throws describes what a pilot flies by default. Writing it into `controls.max_throw` made the Corsair's default `rates.normal` 80 % of the manual, and left radios and the flight-test card, which fly the full throws, no travel beyond it: the card measured a 55°/s full-aileron roll and 29/40 valid tests against the P-51's 40/40. Map a single manual set to the normal rate and derive the maximum from a sourced high/low ratio or the manual's own mechanical allowance; when a manual gives dual rates, map them directly. After the correction the card gave 33/40. Its pilot loops work in stick units, so a throw change also changes their gain: the accelerated and inverted stall breaks moved by about 45 % while the 1-g stall stayed within 1 %. Read `elevator limit (mush)` breaks after a throw change as the card's answer, not the wing's. [Evidence](research/f4u-corsair/F4U-12/README.md)
 
 ## 2026-10-22 · F4U-04 — a delivery can pass every structural check in the wrong rig pose
 

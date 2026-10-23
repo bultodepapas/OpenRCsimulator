@@ -26,6 +26,8 @@ Latest VQ-02a slice: [embedded-image and runtime texture inventory](../research/
 
 ## 1. Decisions already made
 
+Latest DT-11a night-kit slice: [skip unused landing-seat scans](../research/visual-quality-implementation/VQ-01c/loading/night-kit/landing-anchor-2026-10-23/README.md). P-51 and Timber already provide authored positions; avoiding the discarded fallback lowers native complete-kit medians by 4.351 and 6.013 ms respectively in five processes. Captured child fields and three 1080p studio images remain exact. Full loading and pacing qualification remain open.
+
 Latest VQ-01d slice: [moving visibility references](../research/visual-quality-implementation/VQ-01d/README.md) add four lossless native clips with the existing pilot camera, matched poses and recorded projected sizes. Capture integrity is verified; background classification, the full matrix and owner orientation/response-time acceptance remain open. Material/camera adoption gates are unchanged.
 
 | Topic | Decision for this delivery | Reason / reopening condition |

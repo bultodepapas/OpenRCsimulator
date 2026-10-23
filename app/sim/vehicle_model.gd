@@ -26,6 +26,7 @@ var loads: Callable = func(_body: PackedFloat64Array, _t: float) -> PackedFloat6
 ## [, body_derivative: float64[13]][, stage_context: Dictionary]}: one joint evaluation per RK stage.
 ## `stage_context` is opaque to the kernel and is passed only to `substeps_joint` for this tick's k1 result.
 ## A body_derivative is a qualified open-system law (finite fuel mass/CG) replacing RigidBody.derivative for that stage.
+## Requires a nonempty continuous block at reset/restore/step; body-only models use `loads`.
 var stage: Callable
 ## Split route when `stage` is unset and continuous state exists:
 ## block_loads(body, continuous, t) -> float64[6]; block_derivative(body, continuous, t) -> float64[continuous].

@@ -1,0 +1,47 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "c3d909e9-738d-41fe-91ce-3d4b17743ee9",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--rendering-method",
+    "gl_compatibility",
+    "--resolution",
+    "1920x1080",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/landing-anchor-2026-10-23/capture.gd",
+    "--",
+    "--reference=C:/DEVELOPMENT/OpenRCsimulator/tmp/landing-anchor-20261023/reference.gd",
+    "--candidate=C:/DEVELOPMENT/OpenRCsimulator/tmp/landing-anchor-20261023/candidate.gd",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/landing-anchor-2026-10-23/captures"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T12:37:21.167192+00:00",
+  "label": "landing-anchor-native",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\landing-anchor-native-w34zohnw\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\landing-anchor-native-w34zohnw\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "landing-anchor native captures passed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.656,
+  "log_bytes": 211,
+  "log_sha256": "ca3324822fc1f64f597f439517f3fd0e11ffb67c9cb86f02283747da5bc77683"
+}

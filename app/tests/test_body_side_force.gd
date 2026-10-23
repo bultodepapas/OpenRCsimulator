@@ -2,6 +2,7 @@
 # body_crossflow_area, Allen-Perkins at the ARP). Checks the law against its formula, its symmetry and crossflow growth,
 # the small-sideslip agreement with the oracle, the loader's CYb rule, and that aircraft without the fields are untouched.
 # The Extra 300S declares it (EX-14d). This verifies the implementation; it does not validate the coefficients.
+# D10-R3-R1 adds Extra/F4U reverse-flow domain, crossflow retention and continuity regressions.
 # Run: godot --headless --path . --script res://tests/test_body_side_force.gd
 extends SceneTree
 
@@ -129,7 +130,81 @@ func _initialize() -> void:
 	var stik: Dictionary = AD.load_file(STIK)
 	_check("Stik model carries no fuselage side force (opt-in)", stik.get("ok", false)
 		and not stik.model.surfaces.has("body_cy_beta") and not stik.model.surfaces.has("body_crossflow_area"))
+	_reverse_flow_checks()
 	_finish()
+
+
+## D10-R3-R1: the forward-flight derivative must not turn into a side-force source
+## in tail-first translation. This is a model-domain check, not aircraft validation.
+func _reverse_flow_checks() -> void:
+	var neutral := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0}
+	for path in [EXTRA, "res://data/aircraft/f4u_corsair_250.json"]:
+		var loaded := AD.load_file(path)
+		_check("reverse-flow fixture loads: " + path, loaded.get("ok", false))
+		if not loaded.get("ok", false):
+			continue
+		var model: Dictionary = loaded.model
+		_check("reverse fixture declares both nonzero body terms: " + path,
+			float(model.surfaces.get("body_cy_beta", 0.0)) < 0.0 and float(model.surfaces.get("body_crossflow_area", 0.0)) > 0.0)
+		var bare: Dictionary = model.duplicate(true)
+		bare.surfaces.erase("body_cy_beta")
+		bare.surfaces.erase("body_crossflow_area")
+		var crossflow: Dictionary = model.duplicate(true)
+		crossflow.surfaces.erase("body_cy_beta")
+		var worst_power := 0.0
+		var worst_attached := 0.0
+		var worst_crossflow := 0.0
+		var negative_power_seen := false
+		var arm := M.v3(-(model.reference.arp_le[0] - model.cg_le[0]), model.reference.arp_le[1] - model.cg_le[1],
+			-(model.reference.arp_le[2] - model.cg_le[2]))
+		var cases := 0
+		for speed in [0.0, 2.0, 20.0, 40.0]:
+			for alpha in [-180.0, -179.0, -120.0, -91.0, 91.0, 120.0, 179.0, 180.0]:
+				for beta in [-60.0, -5.0, 0.0, 5.0, 60.0]:
+					var s := _state(speed, alpha, beta)
+					var air := Air.compute(s, M.v3(0.0, 0.0, 0.0), RHO)
+					var with_body := Aero.loads(s, air, neutral, model, RHO)
+					var without := Aero.loads(s, air, neutral, bare, RHO)
+					var cross_only := Aero.loads(s, air, neutral, crossflow, RHO)
+					var power: float = (with_body[1] - without[1]) * s[RB.VEL + 1]
+					worst_power = maxf(worst_power, power)
+					negative_power_seen = negative_power_seen or power < -1e-6
+					var v: PackedFloat64Array = air.v_air
+					var expected_fy: float = -0.5 * RHO * float(model.surfaces.body_crossflow_area) * sqrt(v[1]*v[1] + v[2]*v[2]) * v[1]
+					var expected := [0.0, expected_fy, 0.0, -arm[2]*expected_fy, 0.0, arm[0]*expected_fy]
+					for i in 6:
+						worst_attached = maxf(worst_attached, absf(with_body[i] - cross_only[i]))
+						worst_crossflow = maxf(worst_crossflow, absf((with_body[i] - without[i]) - expected[i]))
+					cases += 1
+		_check("tail-first body force resists lateral translation: " + path, worst_power <= 1e-10,
+			"%d zero-rate states; max positive body work %.9f W" % [cases, worst_power])
+		_check("reverse flow retains crossflow without extrapolated attached loads: " + path, worst_attached <= 1e-10,
+			"max six-load difference %.9f" % worst_attached)
+		_check("reverse crossflow remains nonzero with its ARP moments: " + path, worst_crossflow <= 1e-10 and negative_power_seen,
+			"max six-load error %.9f" % worst_crossflow)
+
+		# With fixed crossflow, approaching u=0 from either side must not jump.
+		var jumps: Array[float] = []
+		for epsilon in [1e-3, 1e-6, 1e-9]:
+			var ends: Array[float] = []
+			for u in [-epsilon, 0.0, epsilon]:
+				var s := RB.make_state(M.v3(0.0, 0.0, -300.0), M.v3(u, 1.0, 0.3), M.q_identity(), M.v3(0.0, 0.0, 0.0))
+				ends.append(_local(model, s, neutral)[1] - _local(bare, s, neutral)[1])
+			jumps.append(maxf(absf(ends[0] - ends[1]), absf(ends[2] - ends[1])))
+		_check("body-force jump tends to zero at axial-flow reversal: " + path,
+			jumps[1] < jumps[0] * 0.002 and jumps[2] < jumps[1] * 0.002,
+			"one-sided differences %s N" % str(jumps))
+
+		# Preserve the historical forward-flight map, including its existing rate convention.
+		var max_forward_error := 0.0
+		for alpha in [-25.0, 0.0, 30.0, 80.0]:
+			for beta in [-25.0, -5.0, 5.0, 25.0]:
+				var s := _state(22.0, alpha, beta, M.v3(0.4, -0.2, 0.3))
+				var v := s.slice(RB.VEL, RB.VEL + 3)
+				var expected: float = 0.5 * RHO * (float(model.reference.S) * float(model.surfaces.body_cy_beta) * v[0] * v[1]
+					- float(model.surfaces.body_crossflow_area) * sqrt(v[1]*v[1] + v[2]*v[2]) * v[1])
+				max_forward_error = maxf(max_forward_error, absf((_local(model, s, neutral)[1] - _local(bare, s, neutral)[1]) - expected))
+		_check("forward body-side law preserved: " + path, max_forward_error < 1e-10, str(max_forward_error))
 
 
 func _finish() -> void:
