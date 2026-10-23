@@ -526,6 +526,25 @@ func _ready() -> void:
 	if args.has("look_az"):
 		_look = Vector2(float(args.look_az), float(args.get("look_el", 0.0)))
 		_look_height = float(args.get("look_alt", field.pilot.eye_height))
+	# Reject session-independent options before building render resources or solving launch trim.
+	var failure_options: Dictionary = _failure_options(args)
+	if not failure_options.ok or (_scripted and failure_options.config.probability_percent > 0):
+		startup_error = "; ".join(failure_options.errors) if not failure_options.ok else "Failures require a physics flight."
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
+	var conditions: Dictionary = _weather_options(args)
+	if not conditions.ok:
+		startup_error = "; ".join(conditions.errors)
+		if not interactive_start:
+			printerr("weather refused: ", startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
 	if not _build_world():
 		set_process(false)
@@ -651,17 +670,6 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_DATA)
 			return
 	session.start_choice = start_choice
-	var failure_options: Dictionary = _failure_options(args)
-	if not failure_options.ok or (_scripted and failure_options.config.probability_percent > 0):
-		startup_error = "; ".join(failure_options.errors) if not failure_options.ok else "Failures require a physics flight."
-		session.free() # Refused before parenting: Main's deletion cannot reclaim this session.
-		session = null
-		if not interactive_start:
-			printerr(startup_error)
-			get_tree().quit(ERR_INVALID_PARAMETER)
-		set_process(false)
-		set_process_unhandled_input(false)
-		return
 	failure_config = failure_options.config.duplicate(true)
 	failure_seed = failure_options.seed
 	failure_notifications = failure_config.notify
@@ -675,9 +683,8 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	var conditions: Dictionary = _weather_options(args)
-	if not conditions.ok or not session.setup_weather(conditions.config):
-		startup_error = "; ".join(conditions.errors) if not conditions.ok else session.weather_error
+	if not session.setup_weather(conditions.config):
+		startup_error = session.weather_error
 		session.free()
 		session = null
 		if not interactive_start:

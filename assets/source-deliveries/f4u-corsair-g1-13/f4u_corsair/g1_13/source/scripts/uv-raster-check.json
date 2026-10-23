@@ -1,0 +1,93 @@
+{
+  "atlas_size": [
+    2048,
+    2048
+  ],
+  "painted_parts": 28,
+  "occupied_pixels": 964562,
+  "islands_strategy": "existing shared UV layout preserved; 8-pixel final-colour padding",
+  "liveries": [
+    {
+      "id": "three_tone",
+      "roughness_min": 0.44590264558792114,
+      "roughness_max": 0.8549180626869202,
+      "walkway_pixels": 4167,
+      "metallic": 0,
+      "padding_pixels": 8,
+      "details": {
+        "fastener_layer_pixels": 9219,
+        "stencil_pixels": 965,
+        "localized_wear_pixels": 25690,
+        "style": "interpreted visible detail at game-atlas resolution; not a measured rivet blueprint",
+        "race_wear_multiplier": 1.0
+      }
+    },
+    {
+      "id": "scarlet",
+      "roughness_min": 0.1889810711145401,
+      "roughness_max": 0.6019082069396973,
+      "walkway_pixels": 0,
+      "metallic": 0,
+      "padding_pixels": 8,
+      "details": {
+        "fastener_layer_pixels": 9194,
+        "stencil_pixels": 0,
+        "localized_wear_pixels": 18872,
+        "style": "interpreted visible detail at game-atlas resolution; not a measured rivet blueprint",
+        "race_wear_multiplier": 0.28,
+        "g1_7_racing_details": {
+          "layer_pixels": 54579,
+          "photo_labels": [
+            "EXPERIMENTAL",
+            "N5588N on tail"
+          ],
+          "underside": [
+            "ventral service cover",
+            "underwing painted fasteners and round covers",
+            "separate satin interior door coating",
+            "door perimeter details",
+            "localized lower engine residue"
+          ],
+          "interior_door_pixels": 27528,
+          "interpretation": "service-plate, interior reinforcement paint and fastener positions are visual details, not a measured engineering layout"
+        }
+      }
+    },
+    {
+      "id": "midnight",
+      "roughness_min": 0.23909583687782288,
+      "roughness_max": 0.824999988079071,
+      "walkway_pixels": 4167,
+      "metallic": 0,
+      "padding_pixels": 8,
+      "details": {
+        "fastener_layer_pixels": 9219,
+        "stencil_pixels": 2410,
+        "localized_wear_pixels": 24842,
+        "style": "interpreted visible detail at game-atlas resolution; not a measured rivet blueprint",
+        "race_wear_multiplier": 0.65,
+        "naval_g1_10": {
+          "design": "original naval 308, no real serial or squadron copied",
+          "reference_count": 2,
+          "layers": [
+            "Panel finish",
+            "Structural fasteners",
+            "Maintenance stencils",
+            "Naval identity",
+            "Airflow and service wear"
+          ],
+          "detail_pixels": {
+            "Panel finish": 91505,
+            "Structural fasteners": 2133,
+            "Maintenance stencils": 3126,
+            "Naval identity": 14086,
+            "Airflow and service wear": 41753
+          },
+          "access_panel_pixels": 37,
+          "rivet_pixels": 654,
+          "exhaust_pixels": 16710
+        }
+      }
+    }
+  ]
+}

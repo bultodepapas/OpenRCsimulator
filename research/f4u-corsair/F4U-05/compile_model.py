@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""F4U-05: compile the g1.3 Corsair model for the shared imported-scene builder.
+"""F4U-05: compile the delivered Corsair model (g1.13 since F4U-15) for the shared imported-scene builder.
 
 Reads only frozen inputs: the delivery identity (assets/aircraft/f4u-corsair-250/source-manifest.json), the
 delivered metadata and GLB, the runtime GLB copy in app/assets, and the GearRetract samples taken from the
@@ -110,7 +110,7 @@ def compile_model():
                                            positive="clockwise viewed from behind toward the nose", section="propeller")
     thrust = dict(rest("thrust_frame"), spin_node="propeller_spin", axis_local="+X",
                   propeller_diameter={"value": meta["propeller_diameter_m"], "unit": "m", "kind": "measured",
-                                      "source": "g1.3 metadata.json: three-blade visual propeller"})
+                                      "source": f"{manifest['delivery_revision']} metadata.json: three-blade visual propeller"})
     assert parent["propeller_spin"] == "thrust_frame" and parent["propeller_rotor"] == "propeller_spin"
     x_axis = thrust["rest_basis"]["x"]
     assert abs(x_axis[2] + 1.0) < 1e-6, "thrust_frame local +X must point at the nose (-Z)"
@@ -158,14 +158,14 @@ def compile_model():
     norm = math.sqrt(sum(v * v for v in direction))
     exhausts = [{"position": [bx, bz, -by], "direction": [round(v / norm, 6) for v in direction], "radius_m": 0.008,
                  "kind": "glow_prop", "pump": True,
-                 "source": "g1.3 metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"}]
+                 "source": f"{manifest['delivery_revision']} metadata landmark 'R43 | Escape unido -1 2' (left middle stack exit); direction estimated outboard, down and aft"}]
 
     data = {
         "schema": "openrc-f4u-model v1",
         "catalog_id": manifest["catalog_id"],
         "revision": manifest["visual_revision"],
         "source_alias": f"F4U Corsair {manifest['delivery_revision']} game model (author delivery derived from master {manifest['master']['revision']})",
-        "status": "Imported g1.3 presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
+        "status": f"Imported {manifest['delivery_revision']} presentation with sampled GearRetract; flaps follow the session; experimental physics (F4U-07).",
         "generator": SCRIPT,
         "units": "m",
         "axes": {"nose": "-Z", "right": "+X", "up": "+Y"},

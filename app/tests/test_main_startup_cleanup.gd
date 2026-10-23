@@ -89,12 +89,18 @@ func _close_main(flight: Node) -> void:
 	await process_frame
 
 
-func _test_main_refusal(label: String, args: PackedStringArray, expected_error: String) -> void:
+func _test_main_refusal(label: String, args: PackedStringArray, expected_error: String,
+		expect_no_children: bool = false, expected_absent_error: String = "") -> void:
 	var before_orphans: int = _orphans()
 	var flight: Node = _new_main(args)
 	root.add_child(flight) # _ready runs the production Main startup path synchronously.
 	var message := str(flight.startup_error)
 	_check(label + " reports the expected startup refusal", message.contains(expected_error), message)
+	if expect_no_children:
+		_check(label + " refuses before building render children", flight.get_child_count() == 0,
+			"children=%d" % flight.get_child_count())
+	if not expected_absent_error.is_empty():
+		_check(label + " preserves preflight error precedence", not message.contains(expected_absent_error), message)
 	_check(label + " clears the refused session immediately", flight.session == null)
 	_check(label + " does not create orphan nodes", _orphans() == before_orphans,
 		"before=%d after=%d" % [before_orphans, _orphans()])
@@ -198,8 +204,13 @@ func _run() -> void:
 		_check("native functional fixture uses the primary 1920x1080 target", native_size == Vector2i(1920, 1080),
 			str(native_size))
 	var baseline_orphans: int = _orphans()
-	await _test_main_refusal("invalid failure probability", PackedStringArray(["--failures=101"]), "between 0 and 100")
-	await _test_main_refusal("unknown weather preset", PackedStringArray(["--weather=qa-round3-unknown"]), "qa-round3-unknown")
+	await _test_main_refusal("invalid failure probability", PackedStringArray(["--failures=101"]),
+		"between 0 and 100", true)
+	await _test_main_refusal("failure validation precedes invalid weather",
+		PackedStringArray(["--failures=101", "--weather=qa-round4-conflicting"]),
+		"between 0 and 100", true, "qa-round4-conflicting")
+	await _test_main_refusal("unknown weather preset", PackedStringArray(["--weather=qa-round4-unknown"]),
+		"qa-round4-unknown", true)
 	await _test_main_refusal("range-valid but unusable fuel fill", PackedStringArray([
 		"--aircraft=" + AVANTI, "--fuel=0.001"]), "Fuel fill refused")
 	await _test_valid_fuel_fill(PackedStringArray(["--aircraft=" + AVANTI, "--fuel=0.25"]), 0.25)

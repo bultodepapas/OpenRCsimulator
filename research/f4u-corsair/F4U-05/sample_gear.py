@@ -1,9 +1,9 @@
 """F4U-05: sample the delivered GearRetract action for the shared retractable-gear rig.
 
-Runs inside Blender 5.2.2 LTS on the frozen g1.3 game source and never saves it:
+Runs inside Blender 5.2.2 LTS on the frozen game source (g1.13 since F4U-15) and never saves it:
 
     blender -b --factory-startup --disable-autoexec \
-      assets/source-deliveries/f4u-corsair-g1-3/f4u_corsair/g1_3/source/aircraft_game.blend \
+      assets/source-deliveries/f4u-corsair-g1-13/f4u_corsair/g1_13/source/aircraft_game.blend \
       --python research/f4u-corsair/F4U-05/sample_gear.py -- assets/aircraft/f4u-corsair-250/gear-samples.json
 
 Writes, in the glTF/Godot model frame (+X right, +Y up, -Z nose, origin D0):

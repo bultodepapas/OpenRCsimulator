@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "checks": {
+    "exterior": {
+      "passed": true,
+      "layers": 8,
+      "maximum_channel_composite_error": 1,
+      "resolution": [
+        2048,
+        2048
+      ],
+      "opaque": true
+    },
+    "interiors": {
+      "passed": true,
+      "layers": 4,
+      "maximum_channel_composite_error": 0,
+      "resolution": [
+        2048,
+        2048
+      ],
+      "opaque": true
+    }
+  },
+  "interior_normal_and_orm_preserved": true
+}
