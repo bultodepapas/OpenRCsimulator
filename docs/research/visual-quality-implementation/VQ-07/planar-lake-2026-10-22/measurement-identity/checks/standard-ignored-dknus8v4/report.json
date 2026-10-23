@@ -1,0 +1,50 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fc6cde40-9630-4046-8863-a8ac06d11033",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--resolution",
+    "1280x720",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--scripted",
+    "--aircraft=sebart-avanti-s-a200-p100rx",
+    "--view=pilot",
+    "--look_az=49",
+    "--look_el=-1",
+    "--look_alt=1.7",
+    "--frametimes=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\standard-ignored.json",
+    "--warmup=0",
+    "--t=0.5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-23T00:22:22.551144+00:00",
+  "label": "standard-ignored",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\checks\\standard-ignored-dknus8v4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-reflection-evidence-20261022\\checks\\standard-ignored-dknus8v4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "frame times:"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 14.516,
+  "log_bytes": 585,
+  "log_sha256": "ea36f189604ac17bb2acd213f7148db82d66b2eae7acf149d9a29577d112ecde"
+}

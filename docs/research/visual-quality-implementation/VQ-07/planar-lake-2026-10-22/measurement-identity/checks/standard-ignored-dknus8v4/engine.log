@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+frame times: p50 1588.43 ms, p95 1588.43 ms, p99 1588.43 ms over 1 frames (complete=true) → C:\DEVELOPMENT\OpenRCsimulator\tmp\aaa-reflection-evidence-20261022\standard-ignored.json

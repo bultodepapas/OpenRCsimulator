@@ -451,6 +451,38 @@ def _collect_dependencies(root: Path, family: dict[str, Any], source: dict[str, 
     return dependencies
 
 
+def _validate_retraction_rig(rig: Any, gear_keys: set[str]) -> None:
+    """Sampled retraction rig rules shared with app/aircraft/retractable_model.gd."""
+    wheels = set(rig.get("wheels", {})) if isinstance(rig, dict) else set()
+    if not isinstance(rig, dict) or rig.get("version") != 1 or wheels | {"steering"} not in RETRACT_ROLE_SETS:
+        raise ModelManifestError("Retractable model needs version 1, left/right wheels and one nose or tail wheel")
+    if wheels | {"steering"} != gear_keys:
+        raise ModelManifestError("Retractable model wheels must match the family's gear bindings")
+    samples = rig.get("retraction", {}).get("samples", [])
+    if not 2 <= len(samples) <= 513:
+        raise ModelManifestError("Retractable model requires 2..513 sampled poses")
+    names = set(samples[0]["nodes"])
+    helpers = set()
+    for index, sample in enumerate(samples):
+        if abs(sample["extension"] - index / (len(samples) - 1)) > 1e-8 or set(sample["nodes"]) != names:
+            raise ModelManifestError("Retractable model samples must share a uniform grid and node set")
+        for name, pose in sample["nodes"].items():
+            values = pose.get("translation", []) + pose.get("rotation_wxyz", [])
+            if len(pose.get("translation", [])) != 3 or len(pose.get("rotation_wxyz", [])) != 4 or any(type(v) not in (int, float) or not math.isfinite(v) for v in values) or abs(sum(v*v for v in pose["rotation_wxyz"]) - 1) > 1e-5 or name not in rig.get("bindings", {}):
+                raise ModelManifestError("Retractable model has an invalid pose or missing rest binding")
+    for role, wheel in rig["wheels"].items():
+        for key in ("spin_node", "compression_node") + (("steer_node",) if role in ("nose", "tail") else ()):
+            name = wheel.get(key)
+            # F4U-05: an oleo slider may be a sampled carrier; spin and steering helpers may not.
+            if name not in rig["bindings"] or (name in names and key != "compression_node") or name in helpers:
+                raise ModelManifestError("Retractable model has an invalid or reused wheel helper")
+            helpers.add(name)
+        for key in ("center_model", "contact_model"):
+            path = wheel.get(key, [])
+            if len(path) != len(samples) or any(len(p) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in p) for p in path):
+                raise ModelManifestError("Retractable wheel paths must match the sample grid")
+
+
 def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> dict[str, Any]:
     root = root.resolve()
     registry_path = registry_path.resolve()
@@ -492,33 +524,7 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
     if construction is not None:
         if "retraction" in construction:
             rig = _resolve(geometry, construction["retraction"]["geometry_ref"], f"{family['family_id']}.retraction")
-            wheels = set(rig.get("wheels", {})) if isinstance(rig, dict) else set()
-            if not isinstance(rig, dict) or rig.get("version") != 1 or wheels | {"steering"} not in RETRACT_ROLE_SETS:
-                raise ModelManifestError("Retractable model needs version 1, left/right wheels and one nose or tail wheel")
-            if wheels | {"steering"} != set(family["bindings"]["gear"]["keys"]):
-                raise ModelManifestError("Retractable model wheels must match the family's gear bindings")
-            samples = rig.get("retraction", {}).get("samples", [])
-            if not 2 <= len(samples) <= 513:
-                raise ModelManifestError("Retractable model requires 2..513 sampled poses")
-            names = set(samples[0]["nodes"])
-            helpers = set()
-            for index, sample in enumerate(samples):
-                if abs(sample["extension"] - index / (len(samples) - 1)) > 1e-8 or set(sample["nodes"]) != names:
-                    raise ModelManifestError("Retractable model samples must share a uniform grid and node set")
-                for name, pose in sample["nodes"].items():
-                    values = pose.get("translation", []) + pose.get("rotation_wxyz", [])
-                    if len(pose.get("translation", [])) != 3 or len(pose.get("rotation_wxyz", [])) != 4 or any(type(v) not in (int, float) or not math.isfinite(v) for v in values) or abs(sum(v*v for v in pose["rotation_wxyz"]) - 1) > 1e-5 or name not in rig.get("bindings", {}):
-                        raise ModelManifestError("Retractable model has an invalid pose or missing rest binding")
-            for role, wheel in rig["wheels"].items():
-                for key in ("spin_node", "compression_node") + (("steer_node",) if role in ("nose", "tail") else ()):
-                    name = wheel.get(key)
-                    if name not in rig["bindings"] or name in names or name in helpers:
-                        raise ModelManifestError("Retractable model has an invalid or reused wheel helper")
-                    helpers.add(name)
-                for key in ("center_model", "contact_model"):
-                    path = wheel.get(key, [])
-                    if len(path) != len(samples) or any(len(p) != 3 or any(type(v) not in (int, float) or not math.isfinite(v) for v in p) for p in path):
-                        raise ModelManifestError("Retractable wheel paths must match the sample grid")
+            _validate_retraction_rig(rig, set(family["bindings"]["gear"]["keys"]))
         if rotor_cfg["present"]:
             thrust_frame = _construction_ref(
                 geometry,

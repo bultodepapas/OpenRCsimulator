@@ -205,3 +205,46 @@ record this correction separately from the initial integration above.
 Keep the mode default-off. Sustained active flight, broader clipping/roughness,
 night/storm and full release/platform qualification remain open. The new cases
 extend the bounded camera evidence; they do not close those gates.
+
+## Reflection measurement identity, 2026-10-22
+
+The native reducer previously accepted a synthetic campaign containing one
+probe run and two planar runs, provided each passed its individual pacing gates.
+Frame reports and screenshot sidecars now describe the installed lake path.
+The reducer validates that descriptor and rejects mixed modes or mixed known
+and missing modes. All-historical missing data remains numerically compatible
+but explicitly configuration-incomplete. The [operating contract](../../../../../../research/performance/README.md#native-frame-evidence)
+defines the fields and their snapshot limits. No shader, physics, profile
+default or per-frame observer changed.
+
+Evidence under `measurement-identity/` includes:
+
+- The same three **synthetic**, short-policy inputs, retained old reducer and
+  before/after summaries: all three individual runs pass; the campaign changes
+  from exit 0/pass to exit 1/rejected. These are reducer fixtures, not flights.
+- Serialized production-app metadata checks at 1280×720: High probe, High
+  planar (active 640×360 capture), and Standard with planar requested (probe).
+  Each uses the existing scripted detailed-jet route, zero warmup and 0.5 s
+  collection. A separate native High screenshot with `--lake=off` records
+  `absent` through the screenshot-sidecar route. These are metadata smoke
+  checks, not new lake appearance or performance acceptance.
+- **61 planar contract checks** and **104 performance-tool Python tests** pass.
+  Descriptor checks cover absent lake, initialization, resize, underwater and
+  missing-camera fallback, teardown, plain values and unchanged scene state.
+  Python checks cover mixed/historical modes and malformed nested metadata.
+  Checked engine receipts and Python output are retained.
+
+Run `python <this-directory>/measurement-identity/verify.py` from the repository
+to recheck the retained campaign and four metadata cases. Native invocations
+are preserved in `checks/*/report.json`; use new output paths when rerunning.
+[Source identity](measurement-identity/identity.json) and
+[patch](measurement-identity/followup.patch) identify the implementation.
+Historical command/output paths in receipts and summaries are unmodified.
+
+The seven Texture RID shutdown warning persists in both High frame collectors;
+Standard and the no-lake screenshot do not emit it. Two separate World fixture
+diagnostics retain the same warning after four draining draw frames and after
+disabling SSAO. Their scripts/logs remain under `shutdown-diagnostics/`; neither
+result identifies the owning subsystem or justifies a production workaround.
+The focused headless contract has no errors or warnings. Full active-flight,
+lifecycle and High qualification remain open; no FPS improvement is claimed.

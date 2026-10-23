@@ -15,6 +15,7 @@ from build_models import (
     ModelManifestError,
     _normal_bytes,
     _validate_articulation,
+    _validate_retraction_rig,
     build_manifest,
     validate_dependency_hashes,
     validate_registry,
@@ -152,6 +153,32 @@ class AircraftModelManifestTests(unittest.TestCase):
         family["bindings"]["gear"]["keys"] = {"left": "left", "right": "right", "tail": "tail", "steering": "steering"}
         with self.assertRaisesRegex(ModelManifestError, "must match the family's gear bindings"):
             build_manifest(ROOT, REGISTRY_PATH, family)
+
+    def test_retraction_rig_accepts_a_sampled_oleo_slider_but_not_sampled_spin_or_steering(self):
+        # F4U-05: a compression helper may itself be a GearRetract carrier (the Corsair's oleo slider);
+        # presentation compression then offsets its sampled pose. Spin and steering helpers stay unsampled.
+        geometry = json.loads((ROOT / "assets/aircraft/avanti-s-a200/blender-geometry.json").read_text(encoding="utf-8"))
+        keys = {"left", "right", "nose", "steering"}
+        _validate_retraction_rig(geometry["gear"], keys)
+
+        def sample(helper_key):
+            rig = copy.deepcopy(geometry["gear"])
+            name = rig["wheels"]["left"][helper_key]
+            rest = rig["bindings"][name]
+            # Any valid unit quaternion: the rule concerns which nodes are sampled, not their values.
+            for item in rig["retraction"]["samples"]:
+                item["nodes"][name] = {"translation": list(rest["rest_translation"]), "rotation_wxyz": [1.0, 0.0, 0.0, 0.0]}
+            return rig
+
+        _validate_retraction_rig(sample("compression_node"), keys)
+        with self.assertRaisesRegex(ModelManifestError, "invalid or reused wheel helper"):
+            _validate_retraction_rig(sample("spin_node"), keys)
+        steered = copy.deepcopy(geometry["gear"])
+        name = steered["wheels"]["nose"]["steer_node"]
+        for item in steered["retraction"]["samples"]:
+            item["nodes"][name] = {"translation": [0.0, 0.0, 0.0], "rotation_wxyz": [1.0, 0.0, 0.0, 0.0]}
+        with self.assertRaisesRegex(ModelManifestError, "invalid or reused wheel helper"):
+            _validate_retraction_rig(steered, keys)
 
     def test_construction_references_resolve_and_gear_does_not_require_control_metadata(self):
         family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])

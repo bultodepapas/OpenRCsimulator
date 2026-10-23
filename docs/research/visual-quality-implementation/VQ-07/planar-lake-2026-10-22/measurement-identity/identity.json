@@ -1,0 +1,13 @@
+{
+  "date_local": "2026-10-22",
+  "scope": "Reflection report identity; no performance qualification",
+  "head_at_retention": "d2aa7d993f03f3e8d58fd10c77d9734fbe8954e9",
+  "source_sha256": {
+    "app/main.gd": "dcd6765a90cf8ea466529471d1205c544848605823057b0d366589c80536ed97",
+    "app/render/lake/lake_reflection.gd": "3345c31d8e53f751f7a20419cc999ff99d2171387a5374716192deb100eb4198",
+    "app/tests/test_lake_planar_reflection.gd": "edb1cdae0523a7f03848150ce6b2ed67765c29e1747b54fbfc2305dad27931a3",
+    "research/performance/native_summary.py": "0065e3b1f124e2a42308a1ef8a9072d2810b06a470b2d98b409cf9f5f281e412",
+    "research/performance/test_native_summary.py": "5137fcc6667fe2b1d0f71905cc57f4eb18aac74e2184ae2e302472d1f5c1d273"
+  },
+  "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+}
