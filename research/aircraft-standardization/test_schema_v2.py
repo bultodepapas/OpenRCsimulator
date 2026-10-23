@@ -26,6 +26,7 @@ LEGACY_V1 = Path(__file__).with_name("fixtures") / "legacy-stik-v1.json"
 DEFAULT_GODOT = ROOT / ".tools" / "Godot_v4.7.2-stable_linux.x86_64"
 DEFAULT_APP = ROOT / "app"
 EXPECTED_FLEET = {
+    "f4u_corsair_250",
     "jensen_ugly_stik_60",
     "gp_extra_300s_60",
     "p51d_mustang_120",
@@ -110,13 +111,13 @@ def build_cases(app: Path) -> list[Case]:
                    if read_json(path).get("vehicle") != "rotorcraft"}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
-            "expected the four catalog, four electric, five glow, and Turbo Lumber v2 files; "
+            "expected the five catalog, four electric, five glow, and Turbo Lumber v2 files; "
             f"missing={sorted(EXPECTED_FLEET - set(fleet_paths))}, "
             f"extra={sorted(set(fleet_paths) - EXPECTED_FLEET)}"
         )
     fleet = {name: read_json(path) for name, path in fleet_paths.items()}
     if any(data.get("format") != "openrc-aircraft v2" for data in fleet.values()):
-        raise AssertionError("all fourteen current fixed-wing aircraft data files must be explicitly migrated to v2")
+        raise AssertionError("all fifteen current fixed-wing aircraft data files must be explicitly migrated to v2")
     stik = fleet["jensen_ugly_stik_60"]
     p51 = fleet["p51d_mustang_120"]
     avanti = fleet["sebart_avanti_s_a200"]
