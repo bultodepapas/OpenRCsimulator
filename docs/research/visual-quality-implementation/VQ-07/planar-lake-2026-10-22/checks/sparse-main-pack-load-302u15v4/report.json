@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0df938ac-3ff1-4d77-b9e2-128477d48f27",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--main-pack",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\sparse-lake-planar-loadable.pck",
+    "--quit-after",
+    "5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:53:16.056939+00:00",
+  "label": "sparse-main-pack-load",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\sparse-main-pack-load-302u15v4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\sparse-main-pack-load-302u15v4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "pack resource load: helper/vendor scripts instantiated; LICENSE and CREDITS present"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.203,
+  "log_bytes": 160,
+  "log_sha256": "b2f4fcd3cb25ce5f6cc57210a4512469e33c5736f89ffed0f474280c243c7ad0"
+}

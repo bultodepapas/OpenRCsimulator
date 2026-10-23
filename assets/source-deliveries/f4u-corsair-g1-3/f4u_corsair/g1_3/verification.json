@@ -1,0 +1,170 @@
+{
+  "passed": true,
+  "errors": [],
+  "checks": {
+    "one_export_collection": {
+      "passed": true,
+      "detail": null
+    },
+    "root_identity": {
+      "passed": true,
+      "detail": null
+    },
+    "metres": {
+      "passed": true,
+      "detail": null
+    },
+    "unique_ascii_names": {
+      "passed": true,
+      "detail": null
+    },
+    "unit_node_scales": {
+      "passed": true,
+      "detail": null
+    },
+    "only_meshes_and_pivots": {
+      "passed": true,
+      "detail": null
+    },
+    "no_drivers_constraints": {
+      "passed": true,
+      "detail": null
+    },
+    "section_tags": {
+      "passed": true,
+      "detail": null
+    },
+    "no_cross_section_ancestors": {
+      "passed": true,
+      "detail": []
+    },
+    "required_nodes": {
+      "passed": true,
+      "detail": []
+    },
+    "one_gear_action": {
+      "passed": true,
+      "detail": null
+    },
+    "only_listed_carriers_animated": {
+      "passed": true,
+      "detail": []
+    },
+    "rigid_animation_channels": {
+      "passed": true,
+      "detail": [
+        "location",
+        "rotation_quaternion"
+      ]
+    },
+    "triangle_budget": {
+      "passed": true,
+      "detail": 90861
+    },
+    "hard_triangle_ceiling": {
+      "passed": true,
+      "detail": null
+    },
+    "surface_budget": {
+      "passed": true,
+      "detail": 54
+    },
+    "material_budget": {
+      "passed": true,
+      "detail": 11
+    },
+    "UVMap_on_painted_meshes": {
+      "passed": true,
+      "detail": null
+    },
+    "no_external_libraries": {
+      "passed": true,
+      "detail": null
+    },
+    "packed_runtime_images": {
+      "passed": true,
+      "detail": null
+    },
+    "no_reference_images": {
+      "passed": true,
+      "detail": null
+    },
+    "span_2_778m": {
+      "passed": true,
+      "detail": 2.777770519256592
+    },
+    "metadata_rest_transforms": {
+      "passed": true,
+      "detail": []
+    },
+    "sampled_gear_reproduction": {
+      "passed": true,
+      "detail": {
+        "translation_m": 0.0,
+        "angle_deg": 0.0
+      }
+    },
+    "glb_header": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_sha256": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_unique_ascii_names": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_required_nodes": {
+      "passed": true,
+      "detail": []
+    },
+    "glb_sections": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_unit_scales": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_no_cameras_lights": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_neutral_no_animations": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_embedded_images": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_no_compression": {
+      "passed": true,
+      "detail": null
+    },
+    "glb_counts": {
+      "passed": true,
+      "detail": {
+        "triangles": 90861,
+        "surfaces": 54,
+        "materials": 11,
+        "images": 1
+      }
+    },
+    "glb_matches_GearRetract_frame_100": {
+      "passed": true,
+      "detail": {
+        "passed": true,
+        "max_position_error_m": 1.837138534477048e-07,
+        "max_angle_error_degrees": 0.0,
+        "errors": []
+      }
+    },
+    "glb_span_2_778m": {
+      "passed": true,
+      "detail": 2.777770519256592
+    }
+  }
+}

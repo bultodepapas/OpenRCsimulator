@@ -1,0 +1,13 @@
+{
+  "head_at_retention": "c5a563351851998e0753a4b03e88b3998b0696cd",
+  "sha256": {
+    "app/render/lake/lake_planar_reflection.gd": "28470272bc9edcfbd3a5e1c974dd2bd4d961298e0628bf2e713086e645e978cd",
+    "app/render/lake/lake_reflection.gd": "09905585993eaf1191927bc31863aa72365bd277a279ca4969251dddbf4c7dc9",
+    "app/render/lake/water.gdshader": "5f24109204352a70ae83f110121959105353f6c758857ca6ed5d95fa4c4ec8f8",
+    "app/render/lake/vendor/smart_planar_reflector/planar_reflector.gd": "3a2333668ca01c71fa962308c75cac5596128ed101d634d71823d4f8b921a8e7",
+    "app/render/lake/vendor/smart_planar_reflector/LICENSE": "4260fc8c95b94fa3df3ad2bdbf104e045b60b69225d0b6a75ce55e843b79a7e6",
+    "app/export_presets.cfg": "ea024bdd43a85bb630f261ffc6059b3cb628d6a11029ba163adccb1977d6f8a9",
+    "app/tests/test_lake_planar_reflection.gd": "2313fe5bbf37361e0ded88e100e6c287dc602929c0618a80d2e09af68c3a4049"
+  },
+  "capture_note": "Native HDR candidate preceded vendor path relocation only. Final adapter tests use retained path. Shared tree advanced during work; no whole-tree baseline equivalence claim."
+}

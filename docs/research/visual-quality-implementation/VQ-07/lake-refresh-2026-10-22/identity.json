@@ -1,0 +1,17 @@
+{
+  "head_at_retention": "5004ae41b0eebdc5e92f4492e04a357474a08ad6",
+  "earlier_baseline_head": "2904410aae448f345068c2a6052aab27b713a663",
+  "baseline_note": "Initial sky baseline included the previous uncommitted sunlight correction. Shared-tree commits advanced during work. Full historical dirty-tree identity was not retained; this is not an exact whole-tree or performance comparison.",
+  "candidate_sha256": {
+    "app/render/atmosphere.gd": "318f26065021442c7096336dceee1c216b81fd3cc82133513824977f09403620",
+    "app/render/lake/lake_reflection.gd": "8d718d92093aa7b808536b2cc62126563d283989eeb74417a452c27f941a1b58",
+    "app/tests/test_sky_render.gd": "b45214b428de76103eec3d6c9b3930428a3439d07dfe85b368378b451ff8a70c",
+    "app/render/lake/water.gdshader": "bb79fff249437fb2cfecff4ebe12085d5bd22dff80ab36f064bc6ce5e5579bf0",
+    "app/render/lake/lake_terrain.gd": "b7467250cf9ba32bc59456aa851351b2c6930e18da5f1472ef89652e4cb996a8",
+    "tools/graphics/capture.gd": "1e694a3e1d8eff0a6d445202172addeb4190e21b56882ca70a85a3e70b494bd4",
+    "app/render/airplane.gd": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/render/world/world.gd": "73d0a7b28f0d3ec9d85eef5a38607a5d9caa8b8a7deea7dbf73a63955954dbfd"
+  },
+  "godot_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+}

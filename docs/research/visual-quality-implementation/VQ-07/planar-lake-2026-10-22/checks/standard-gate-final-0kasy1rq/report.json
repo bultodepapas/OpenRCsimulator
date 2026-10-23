@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3a1432cb-914a-40cb-9f55-63921490d401",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "standard",
+    "--script",
+    "../tmp/aaa-planar-20261022/integrated_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-planar-20261022/standard-gate-final",
+    "--view=lake"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:51:55.429979+00:00",
+  "label": "standard-gate-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\standard-gate-final-0kasy1rq\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\standard-gate-final-0kasy1rq\\report.json",
+  "timeout_seconds": 150.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "planar lake probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 18.594,
+  "log_bytes": 809,
+  "log_sha256": "6f2dba09c27fa4b48dc8e19ab0c86a53aea7d96d85a4b3a650664f7da13d1180"
+}

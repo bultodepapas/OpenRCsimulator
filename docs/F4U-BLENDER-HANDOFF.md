@@ -2,6 +2,8 @@
 
 2026-10-22 · Revision 3 · To the F4U Corsair model author · Request for game revision **g1.3**, derived from your **g1.2** delivery (master **R59**)
 
+**Status 2026-10-22:** g1.3 was delivered and accepted ([review](research/f4u-corsair/F4U-04/README.md#g13-accepted-2026-10-22)); this request is fulfilled.
+
 **Revision 3:** g1.2 is accepted in substance; [section 0](#0-review-of-g12-and-what-g13-changes) lists the review and the two changes for g1.3: the owner moved the model to **1:4.5**, and `aircraft.glb` must be exported with the gear **stowed** (`GearRetract` frame 100), as revision 2 already asked. Sections 1, 2, 3, 4, 12 and 13 are updated for the new scale.
 
 ## 0 Review of g1.2 and what g1.3 changes

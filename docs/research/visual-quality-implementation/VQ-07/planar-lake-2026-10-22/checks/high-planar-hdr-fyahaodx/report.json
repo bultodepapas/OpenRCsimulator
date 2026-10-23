@@ -1,0 +1,52 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0918d149-a153-4963-a481-fce19c9d8e6f",
+  "command": [
+    "python",
+    "tools/graphics/launch.py",
+    "--profile",
+    "high",
+    "--script",
+    "../tmp/aaa-planar-20261022/integrated_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/aaa-planar-20261022/high-planar-hdr",
+    "--view=lake",
+    "--seconds=5"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-22T23:45:13.861122+00:00",
+  "label": "high-planar-hdr",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\high-planar-hdr-fyahaodx\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aaa-planar-20261022\\checks\\high-planar-hdr-fyahaodx\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "planar lake probe complete"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 14,
+      "message": "7 RIDs of type \"Texture\" were leaked.",
+      "context": [
+        "   at: finalize (servers/rendering/rendering_device.cpp:8900)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 33.375,
+  "log_bytes": 1395,
+  "log_sha256": "632ba125344d92dbaea4d0e89ca7de837edc58714f80a9ba873e2a139f71c9d4"
+}

@@ -1,0 +1,101 @@
+{
+  "revision": "g1.3",
+  "request_revision": 3,
+  "base_revision": "g1.2",
+  "scale_factor": 0.2222222222222222,
+  "uniform_rescale": 1.1111111111111112,
+  "runtime_gear_frame": 100,
+  "source_saved_frame": 0,
+  "master_unchanged": true,
+  "accepted_g1_2_manifest_unchanged": true,
+  "accepted_g1_2_manifest_file_count": 79,
+  "g1_2_source_sha256": "b013b92d242f711db3c15f66d8d5a7ccbded4eb949f4675f6a08a19a05fa4fd7",
+  "glb_sha256": "c69151b3c96c53ff957d046c53600204598be854c10850e4bdda22ab333f464e",
+  "blender_sha256": "3b8dc7684d306db3e9d63e85a837e31136e6db286b063f9cb0ce1a5ce4cc8e8e",
+  "isolated_reexport_byte_identical": true,
+  "isolated_reexport_inputs": "Only .blend, export.py and metadata.json; no R59 or external textures",
+  "source_objects_accounted_once": 8725,
+  "all_livery_files_byte_identical_to_g1_2": true,
+  "livery_file_hashes": {
+    "textures/liveries/midnight/basecolor.png": "aab39e8a5acd107205829214483f8d0eabf8bdaec6c073aff2dca5bf34fac99f",
+    "textures/liveries/midnight/markings.png": "4577c7f722a16789a37d9e5395b0df8b2c75182fa6db5c15ca21a7daf17bbbe1",
+    "textures/liveries/midnight/paint_design.png": "9e30125f0c049eb2a49f75c54244057f95bc3aa8423772ca23d4085afb0a63aa",
+    "textures/liveries/midnight/source.ora": "49e259a3b2db74d85ea25756073893c30ca72bcb33b4ccec46a91bbe4933e92c",
+    "textures/liveries/scarlet/basecolor.png": "35ab068fc5ea317e2e0748b51b941e6edbdf44d16bbde0e433eddf317d45d609",
+    "textures/liveries/scarlet/markings.png": "944c26f493285034d86cbb5f65603874ea3765e7998fb11254a3bb71dd83d1f3",
+    "textures/liveries/scarlet/paint_design.png": "87c8ff55ec4be2f752861d6486e9966c48f60e8d888bf9ef01cd45b38d7f5769",
+    "textures/liveries/scarlet/source.ora": "b3dac5a5dca61d7d3e9922c4c90e0839e650b332754b1c5accddb81eceb556f0",
+    "textures/liveries/three_tone/basecolor.png": "273dbc9cf6e96e07bd01c81241f5577f863d00811fc076fc33311e48d92fc3a9",
+    "textures/liveries/three_tone/markings.png": "4577c7f722a16789a37d9e5395b0df8b2c75182fa6db5c15ca21a7daf17bbbe1",
+    "textures/liveries/three_tone/paint_design.png": "febdd2241ed2de450b5341d82651e5232bb03064110d53ac8e30ea3dcc52236f",
+    "textures/liveries/three_tone/source.ora": "690b789ad86244424dfb761bb52a7c6e0ff95085b59603de52e291fe4dffeb0e"
+  },
+  "topology_uv_material_assignments_preserved": true,
+  "nodes_and_action_rotations_preserved": true,
+  "maximum_world_position_scale_error_m": 2.388837865275353e-07,
+  "roundtrip": {
+    "passed": true,
+    "span_m": 2.777770519256592,
+    "maximum_node_position_error_m": 1.7881393432617188e-07,
+    "maximum_node_angle_error_deg": 0.0,
+    "errors": []
+  },
+  "glb_matches_frame_100": {
+    "passed": true,
+    "detail": {
+      "passed": true,
+      "max_position_error_m": 1.837138534477048e-07,
+      "max_angle_error_degrees": 0.0,
+      "errors": []
+    }
+  },
+  "negative_tests": {
+    "hinge": {
+      "exit_code": 1,
+      "expected_failure": "required_nodes",
+      "errors": [
+        "required_nodes",
+        "metadata_rest_transforms",
+        "glb_matches_GearRetract_frame_100"
+      ]
+    },
+    "tag": {
+      "exit_code": 1,
+      "expected_failure": "section_tags",
+      "errors": [
+        "section_tags"
+      ]
+    },
+    "pose": {
+      "exit_code": 1,
+      "expected_failure": "glb_matches_GearRetract_frame_100",
+      "errors": [
+        "glb_sha256",
+        "glb_matches_GearRetract_frame_100"
+      ]
+    },
+    "scale": {
+      "exit_code": 1,
+      "expected_failure": "glb_span_2_778m",
+      "errors": [
+        "glb_sha256",
+        "glb_matches_GearRetract_frame_100",
+        "glb_span_2_778m"
+      ]
+    }
+  },
+  "control_sweep_clear": true,
+  "motion_witness_passed": true,
+  "door_21_pose_contact_audit_clear": true,
+  "visuals_checked": [
+    "front.png",
+    "three_quarter.png",
+    "gear_50.png",
+    "gear_100.png",
+    "runtime_underside.png",
+    "silhouette_front_g1.png",
+    "silhouette_front_reference.png"
+  ],
+  "godot_runtime_test": "Not run here; receiving team handles integration",
+  "archive_directory": "f4u_corsair/g1_3/"
+}

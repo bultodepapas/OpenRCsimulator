@@ -1,0 +1,89 @@
+{
+  "method": "BVH surface contact candidates, includes seated seams. Not a penetration depth measurement.",
+  "samples": [
+    {
+      "frame": 0,
+      "contacts": []
+    },
+    {
+      "frame": 5,
+      "contacts": []
+    },
+    {
+      "frame": 10,
+      "contacts": []
+    },
+    {
+      "frame": 15,
+      "contacts": []
+    },
+    {
+      "frame": 20,
+      "contacts": []
+    },
+    {
+      "frame": 25,
+      "contacts": []
+    },
+    {
+      "frame": 30,
+      "contacts": []
+    },
+    {
+      "frame": 35,
+      "contacts": []
+    },
+    {
+      "frame": 40,
+      "contacts": []
+    },
+    {
+      "frame": 45,
+      "contacts": []
+    },
+    {
+      "frame": 50,
+      "contacts": []
+    },
+    {
+      "frame": 55,
+      "contacts": []
+    },
+    {
+      "frame": 60,
+      "contacts": []
+    },
+    {
+      "frame": 65,
+      "contacts": []
+    },
+    {
+      "frame": 70,
+      "contacts": []
+    },
+    {
+      "frame": 75,
+      "contacts": []
+    },
+    {
+      "frame": 80,
+      "contacts": []
+    },
+    {
+      "frame": 85,
+      "contacts": []
+    },
+    {
+      "frame": 90,
+      "contacts": []
+    },
+    {
+      "frame": 95,
+      "contacts": []
+    },
+    {
+      "frame": 100,
+      "contacts": []
+    }
+  ]
+}

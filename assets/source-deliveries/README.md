@@ -1,6 +1,6 @@
 # Source deliveries
 
-This directory groups eight source packages. The seven owner-supplied packages preserve delivered file bytes, license files and names; the Poly Haven barrier is an independently downloaded CC0 source. Current asset guides, manifests and integration evidence are linked below; they describe the repository's prepared or runtime copies.
+This directory groups nine source packages. The eight owner-supplied packages preserve delivered file bytes, license files and names; the Poly Haven barrier is an independently downloaded CC0 source. Current asset guides, manifests and integration evidence are linked below; they describe the repository's prepared or runtime copies.
 
 | Package | Supplied files | Current asset reference |
 | --- | --- | --- |
@@ -11,4 +11,5 @@ This directory groups eight source packages. The seven owner-supplied packages p
 | Turbo Timber Evolution R2 source | [turbo-timber-evolution-r2](turbo-timber-evolution-r2/) | [asset guide](../aircraft/turbo-lumber-evolution/README.md) · [source manifest](../aircraft/turbo-lumber-evolution/source-manifest.json) · [TT-19 evidence](../../docs/research/timber-integration/TT-19/README.md) |
 | Bisonte MT8 source | [mt8-bisonte](mt8-bisonte/) | [source manifest](../vehicles/mt8-bisonte/source-manifest.json) · [vehicle guide](../../research/rc-monster-truck/README.md) |
 | MONSTER CAR 2 source | [monster-car-2](monster-car-2/) | [asset guide](../vehicles/monster-car-2/README.md) · [source manifest](../vehicles/monster-car-2/source-manifest.json) · [vehicle guide](../../research/rc-monster-truck/README.md) |
+| F4U Corsair g1.3 game source (1:4.5) | [f4u-corsair-g1-3](f4u-corsair-g1-3/) | [asset guide](../aircraft/f4u-corsair-250/README.md) · [source manifest](../aircraft/f4u-corsair-250/source-manifest.json) · [F4U-04 review](../../docs/research/f4u-corsair/F4U-04/README.md) |
 | Poly Haven concrete road barrier | [concrete-road-barrier-polyhaven](concrete-road-barrier-polyhaven/) | [source manifest](concrete-road-barrier-polyhaven/source-manifest.json) · [runtime LOD2](../../app/assets/landscape/track-barrier/concrete-road-barrier-lod2.glb) · [export script](../../tools/landscape/export_track_barrier_lod.py) |

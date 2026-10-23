@@ -1,0 +1,29 @@
+{
+  "node": "gear_door_tail_mesh_right_1",
+  "uniform_mesh_factor_about_centroid": 0.979,
+  "maximum_vertex_displacement_m": 0.0020652005489582197,
+  "sweep_frames_step": 5,
+  "contacts": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}

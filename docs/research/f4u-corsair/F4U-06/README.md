@@ -28,6 +28,18 @@ Measured 2026-10-21 for the [F4U plan](../../../F4U-PLAN.md); re-extracted at 1/
 
 Planform and areas agree with the published aircraft within a few per cent, which supports using R59 (and therefore g1) for the physics planform. Angles (gull, dihedral, incidence) lack a primary source and should not be treated as validated.
 
+## Comparison with g1.3 (2026-10-22)
+
+g1.3's metadata landmarks, converted from its Blender frame to the le frame (`[−y, x, z]`, both from D0), agree with `geometry-r59.json`: right wingtip, tail-cone end, rudder trailing edge, propeller hub and all three wheel centres within 0.3 mm; span 2.77777 m in both. Differences:
+
+| Item | geometry-r59.json | g1.3 | Consequence |
+| --- | --- | --- | --- |
+| Main-wheel contact, lateral | 12 mm inboard of the wheel plane (lowest R59 vertex) | 12.5 mm outboard left, 1.3 mm outboard right (lowest g1.3 vertex); heights agree within 0.2 mm | The lowest vertex of a low-poly tyre is laterally ambiguous. Use the wheel-plane contact (`nominal_ground_contact_m`) when F4U-08 resamples paths from g1.3's `GearRetract` |
+| Visual propeller | R59's active four-blade, 0.8918 m | Three-blade, 0.9003 m; same hub | Propeller crash probes move 4 mm; take the diameter from g1.3 at F4U-05 |
+| Spinner tip | On the thrust axis by construction | 5.2 mm higher (retained R49 hub dome) | Spinner crash probe only |
+
+The physics sections stay with R59: g1.3 is a simplified copy of the same surfaces, so slicing it would add simplification error, not information.
+
 ## Limits
 
 Extreme-point leading and trailing edges overstate chord slightly where hardware or seams protrude; the inner slices also include the fuselage-buried root and fillet. The gull values come from the chord midline, not the spar line. Full-size Reynolds-number data are not adopted by this measurement.

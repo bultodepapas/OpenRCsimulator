@@ -1,9 +1,15 @@
-## LU-25: one bounded cubemap, refreshed only when the simulation-owned lighting changes.
+## LU-25: one bounded cubemap, refreshed by lighting changes or explicit sky edits.
 extends ReflectionProbe
+const PlanarReflection := preload("res://render/lake/lake_planar_reflection.gd")
 var water_material: ShaderMaterial
 var _signature := PackedByteArray()
 var _offset_sign := 1.0
 var _static_layers_ready := false
+
+## A paused sky edit can change clouds without changing any lighting uniform.
+## Coalesce explicit edits with the ordinary lighting refresh on the next process.
+func request_refresh() -> void:
+	_signature = PackedByteArray()
 
 func _process(_delta: float) -> void:
 	if water_material == null:
@@ -17,6 +23,11 @@ func _process(_delta: float) -> void:
 			if item is GeometryInstance3D and item != get_parent().get_node("Water"):
 				item.layers |= 8
 		_static_layers_ready = true
+		if PlanarReflection.requested():
+			var planar := PlanarReflection.new()
+			planar.name = "PlanarReflection"
+			get_parent().add_child(planar)
+			planar.configure(self, get_parent().get_node("Water"))
 	var signature := var_to_bytes([water_material.get_shader_parameter("sun_dir"),
 		water_material.get_shader_parameter("sun_lin"), water_material.get_shader_parameter("haze_lin"),
 		water_material.get_shader_parameter("lobe_lin")])
