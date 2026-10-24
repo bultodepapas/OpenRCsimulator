@@ -162,8 +162,10 @@ func _run() -> void:
 			var r := UiTheme.contrast(fg, bg)
 			_check("contrast: %s %s text %.2f:1 >= 4.5" % [b.name, state, r], r >= 4.5)
 	var focus := fly.get_theme_stylebox("focus") as StyleBoxFlat
-	_check("Fly inherits Button's focus outline, without fill", focus == quit_b.get_theme_stylebox("focus") and not focus.draw_center)
-	var r_focus := UiTheme.contrast(focus.border_color, panel_bg)
+	_check("Fly uses an inset focus outline inside fluorescent glass", not focus.draw_center
+		and focus.border_width_left == UiTheme.FOCUS_WIDTH
+		and UiTheme.contrast(focus.border_color, fly.get_theme_stylebox("normal").bg_color) >= 3.0)
+	var r_focus := UiTheme.contrast(quit_b.get_theme_stylebox("focus").border_color, panel_bg)
 	_check("contrast: focus outline on panel %.2f:1 >= 3" % r_focus, r_focus >= 3.0)
 	# Every label against the surface it sits on (sidebar, card or key cap), and the smallest text height.
 	var worst := INF

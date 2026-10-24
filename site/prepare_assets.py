@@ -3,7 +3,8 @@
 
 Requires Pillow==12.3.0. Source images remain untouched. Field and vehicle images
 are reduced to at most 1600 pixels wide and encoded as WebP at quality 85. Savox
-display copies are resized to 768 pixels wide and encoded losslessly;
+display copies are cropped to the official mark with clear space, resized to
+768 pixels wide and encoded losslessly;
 --brands-only rebuilds just those derivatives.
 """
 
@@ -96,12 +97,23 @@ def convert_field_images() -> None:
 
 
 def convert_brand_images() -> None:
-    """Preserve official PNG originals; size the used black web copy for 3x display."""
-    source = ASSET_DIR / "brands" / "savox" / "TeamSavox-Logo-Mono-Black.png"
+    """Preserve the official color PNG; trim excess transparent canvas for display."""
+    source = ASSET_DIR / "brands" / "savox" / "TeamSavox-Logo-LightBG.png"
     destination = source.with_suffix(".webp")
     with Image.open(source) as opened:
         require_supported_source_mode(opened, source)
-        image = opened.copy()
+        bounds = opened.getbbox()
+        if bounds is None:
+            raise ValueError(f"Logo has no visible pixels: {source}")
+        left, top, right, bottom = bounds
+        horizontal_space = round((right - left) * 0.05)
+        vertical_space = round((bottom - top) * 0.18)
+        image = opened.crop((
+            max(0, left - horizontal_space),
+            max(0, top - vertical_space),
+            min(opened.width, right + horizontal_space),
+            min(opened.height, bottom + vertical_space),
+        ))
         image.thumbnail((MAX_BRAND_WIDTH, MAX_BRAND_WIDTH), Image.Resampling.LANCZOS)
         image.save(destination, format="WEBP", lossless=True, exact=True, method=6, **metadata_for_webp(opened))
         size = image.size

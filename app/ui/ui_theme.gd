@@ -2,26 +2,30 @@
 # Font sizes are logical pixels at 1920x1080; UiScale selects a compact type set for smaller viewports.
 extends RefCounted
 
-const PANEL := Color("#111A20")
-const SIDEBAR := Color("#111A20", 0.92)
-const CARD := Color("#1A272E")
-const TEXT := Color("#F3F1EB")
-const TEXT_2 := Color("#B8C4C9")
-const FOCUS := Color("#EABF66")
-const EDGE := Color("#52616A")
+const PANEL := Color("#111111")
+const SIDEBAR := Color("#111111", 0.92)
+const CARD := Color("#202020")
+const TEXT := Color("#F2F2F2")
+const TEXT_2 := Color("#C4C4C4")
+const FOCUS := Color("#66FF16")
+const CRYSTAL := Color("#C4FFB3")
+const GLASS_EMISSION := Color("#3DFF0A")
+const SURFACE_LIGHT := Color("#F0F0F0")
+const EDGE := Color("#606060")
 const BUTTON := {
-	normal = Color("#26353D"),
-	hover = Color("#33444C"),
-	pressed = Color("#1C2930"),
-	disabled = Color("#263238"),
+	normal = Color("#292929"),
+	hover = Color("#363636"),
+	pressed = Color("#1D1D1D"),
+	disabled = Color("#292929"),
 }
 const PRIMARY := {
-	normal = Color("#EABF66"),
-	hover = Color("#F2CC7E"),
-	pressed = Color("#D8AA53"),
-	disabled = Color("#B99455"),
+	normal = Color("#08290F", 0.86),
+	hover = Color("#0B3A14", 0.88),
+	pressed = Color("#061E0B", 0.92),
+	disabled = Color("#242A24"),
 }
-const PRIMARY_TEXT := Color("#111A20")
+const PRIMARY_TEXT := Color("#E4FFDA")
+const ACCENT_INK := Color("#111111")
 const DANGER := {
 	normal = Color("#8E3735"),
 	hover = Color("#A44340"),
@@ -30,8 +34,8 @@ const DANGER := {
 }
 const DESTRUCTIVE := DANGER
 const ERROR := Color("#F08D83")
-const DISABLED_TEXT := Color("#A8B2B5")
-const KEYCAP := { bg = Color("#223139"), edge = Color("#66767C") }
+const DISABLED_TEXT := Color("#B0B0B0")
+const KEYCAP := { bg = Color("#252525"), edge = Color("#717171") }
 
 const SIZE := {
 	brand = 48,
@@ -77,7 +81,10 @@ static func build() -> Theme:
 	theme.set_type_variation("Card", "PanelContainer")
 	var card := _box(CARD, 18)
 	card.set_border_width_all(1)
-	card.border_color = EDGE
+	card.border_color = Color(SURFACE_LIGHT, 0.22)
+	card.shadow_color = Color(0, 0, 0, 0.24)
+	card.shadow_size = 8
+	card.shadow_offset = Vector2(0, 3)
 	theme.set_stylebox("panel", "Card", card)
 
 	theme.set_type_variation("Badge", "PanelContainer")
@@ -112,15 +119,10 @@ static func build() -> Theme:
 
 	_button(theme, "Button", BUTTON, EDGE, 1, SIZE.button)
 	theme.set_type_variation("PrimaryButton", "Button")
-	_button(theme, "PrimaryButton", PRIMARY, PRIMARY.normal, 0, SIZE.primary, PRIMARY_TEXT, PRIMARY_TEXT)
-	for state in ["normal", "hover"]:
-		var primary_box := theme.get_stylebox(state, "PrimaryButton") as StyleBoxFlat
-		primary_box.shadow_color = Color(0, 0, 0, 0.24)
-		primary_box.shadow_size = 4
-		primary_box.shadow_offset = Vector2(0, 2)
+	_primary_button(theme, "PrimaryButton", SIZE.primary)
 
 	theme.set_type_variation("CompactPrimaryButton", "PrimaryButton")
-	_button(theme, "CompactPrimaryButton", PRIMARY, PRIMARY.normal, 0, SIZE.button, PRIMARY_TEXT, PRIMARY_TEXT)
+	_primary_button(theme, "CompactPrimaryButton", SIZE.button)
 	theme.set_type_variation("DestructiveButton", "Button")
 	_button(theme, "DestructiveButton", DESTRUCTIVE, DESTRUCTIVE.normal, 0, SIZE.button)
 
@@ -173,8 +175,9 @@ static func _button(
 	for state in ["normal", "hover", "pressed", "disabled"]:
 		var box := _box(backgrounds[state], 12)
 		box.set_border_width_all(border_width)
-		box.border_color = border
+		box.border_color = CRYSTAL if state == "hover" and border_width > 0 else border
 		theme.set_stylebox(state, type, box)
+	theme.set_stylebox("hover_pressed", type, theme.get_stylebox("pressed", type))
 	theme.set_font_size("font_size", type, _font_size(font_size))
 	for key in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
 		theme.set_color(key, type, font_color)
@@ -188,6 +191,31 @@ static func _button(
 		focus.set_corner_radius_all(RADIUS)
 		focus.set_expand_margin_all(0)
 		theme.set_stylebox("focus", type, focus)
+
+
+## Native edge, halo and focus remain above the decorative crystal underlay.
+static func _primary_button(theme: Theme, type: String, font_size: int) -> void:
+	_button(theme, type, PRIMARY, FOCUS, 1, font_size, PRIMARY_TEXT, DISABLED_TEXT)
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		var box := theme.get_stylebox(state, type) as StyleBoxFlat
+		box.border_color = Color(GLASS_EMISSION, 0.20 if state == "pressed" else 0.28) if state != "disabled" else EDGE
+		box.border_width_top = 1
+		box.border_blend = true
+		box.set_corner_radius_all(12)
+		if opaque_panels: box.bg_color.a = 1.0
+		if state != "disabled":
+			box.shadow_color = Color(GLASS_EMISSION, 0.16 if state == "hover" else 0.10)
+			box.shadow_size = 8 if state == "hover" else (3 if state == "pressed" else 6)
+	# Native side brackets sit inside the dark well, clear of the luminous wall and label ink.
+	var focus := theme.get_stylebox("focus", "Button").duplicate() as StyleBoxFlat
+	focus.border_color = CRYSTAL
+	focus.set_expand_margin_all(-9.0)
+	focus.set_corner_radius_all(3)
+	focus.border_width_top = 0
+	focus.border_width_bottom = 0
+	theme.set_stylebox("focus", type, focus)
+	for state in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color", "icon_disabled_color"]:
+		theme.set_color(state, type, DISABLED_TEXT if state == "icon_disabled_color" else PRIMARY_TEXT)
 
 
 static func _controls(theme: Theme) -> void:
@@ -204,7 +232,7 @@ static func _controls(theme: Theme) -> void:
 			field.border_color = EDGE
 			theme.set_stylebox(state, type, field)
 		theme.set_color("caret_color", type, FOCUS)
-		theme.set_color("selection_color", type, Color("#43545B"))
+		theme.set_color("selection_color", type, Color("#435C35"))
 	for type in ["PopupMenu", "TooltipPanel"]:
 		theme.set_stylebox("panel", type, _box(PANEL, 12))
 		theme.set_color("font_color", type, TEXT)
@@ -225,11 +253,14 @@ static func _controls(theme: Theme) -> void:
 	theme.set_stylebox("panel", "TabContainer", _box(PANEL, 12))
 	# A visible full track makes a slider's range readable even at low volume.
 	for item: String in ["slider", "grabber_area", "grabber_area_highlight"]:
-		var track := _box(Color("#64737C") if item == "slider" else FOCUS, 0)
+		var track := _box(Color("#707070") if item == "slider" else (CRYSTAL if item == "grabber_area_highlight" else FOCUS), 0)
 		track.content_margin_top = 2.0
 		track.content_margin_bottom = 2.0
 		track.set_corner_radius_all(2)
 		theme.set_stylebox(item, "HSlider", track)
+	for state in ["grabber", "grabber_highlight", "grabber_disabled"]:
+		var fill: Color = DISABLED_TEXT if state == "grabber_disabled" else (CRYSTAL if state == "grabber_highlight" else FOCUS)
+		theme.set_icon(state, "HSlider", _svg_icon('<svg xmlns="http://www.w3.org/2000/svg" width="20" height="24"><circle cx="10" cy="12" r="8" fill="#%s" stroke="#%s" stroke-width="2"/><circle cx="10" cy="12" r="2" fill="#%s"/></svg>' % [fill.to_html(false), PANEL.to_html(false), PANEL.to_html(false)]))
 	# UI-35b (UI-30 VC-3): every focusable control shows the same inside outline, and toggles share one look.
 	theme.set_stylebox("focus", "HSlider", theme.get_stylebox("focus", "Button"))
 	for checked in [false, true]:
@@ -263,15 +294,15 @@ static func _svg_icon(svg: String) -> ImageTexture:
 static func _toggle_svg(checked: bool, disabled: bool) -> String:
 	var alpha := 0.45 if disabled else 1.0
 	return '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="24" opacity="%.2f"><rect x="1" y="1" width="42" height="22" rx="11" fill="%s" stroke="%s"/><circle cx="%d" cy="12" r="7" fill="%s"/></svg>' \
-		% [alpha, "#EABF66" if checked else "#26353D", "#EABF66" if checked else "#A8B2B5", 32 if checked else 12, "#111A20" if checked else "#F3F1EB"]
+		% [alpha, "#" + (FOCUS if checked else BUTTON.normal).to_html(false), "#" + (CRYSTAL if checked else DISABLED_TEXT).to_html(false), 32 if checked else 12, "#" + (ACCENT_INK if checked else TEXT).to_html(false)]
 
 
 ## A square check for multiple-choice lists (overlay sets, failure options).
 static func _check_svg(checked: bool, disabled: bool) -> String:
 	var alpha := 0.45 if disabled else 1.0
-	var mark := '<path d="M6 12.5l4 4 8-9" fill="none" stroke="#111A20" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' if checked else ""
+	var mark := '<path d="M6 12.5l4 4 8-9" fill="none" stroke="#%s" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' % ACCENT_INK.to_html(false) if checked else ""
 	return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" opacity="%.2f"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="%s" stroke="%s" stroke-width="1.5"/>%s</svg>' \
-		% [alpha, "#EABF66" if checked else "#26353D", "#EABF66" if checked else "#A8B2B5", mark]
+		% [alpha, "#" + (FOCUS if checked else BUTTON.normal).to_html(false), "#" + (CRYSTAL if checked else DISABLED_TEXT).to_html(false), mark]
 
 
 static func _box(color: Color, padding: int) -> StyleBoxFlat:
@@ -307,12 +338,13 @@ static func _settings(theme: Theme) -> void:
 	panel.content_margin_top = 20
 	panel.content_margin_bottom = 20
 	panel.set_border_width_all(1)
-	panel.border_color = EDGE
-	panel.shadow_color = Color(0, 0, 0, 0.22)
-	panel.shadow_size = 12
+	panel.border_color = Color(SURFACE_LIGHT, 0.24)
+	panel.shadow_color = Color(0, 0, 0, 0.42)
+	panel.shadow_size = 24
+	panel.shadow_offset = Vector2(0, 8)
 	theme.set_stylebox("panel", "SettingsPanel", panel)
 	theme.set_type_variation("SettingsAction", "Button")
-	_button(theme, "SettingsAction", PRIMARY, PRIMARY.normal, 0, SIZE.button, PRIMARY_TEXT, PRIMARY_TEXT)
+	_primary_button(theme, "SettingsAction", SIZE.button)
 	theme.set_stylebox("disabled", "SettingsAction", _box(BUTTON.disabled, 12))
 	theme.set_color("font_disabled_color", "SettingsAction", DISABLED_TEXT)
 	theme.set_type_variation("QuietButton", "Button")
@@ -351,7 +383,7 @@ static func _home(theme: Theme) -> void:
 	var nav := {normal = Color.TRANSPARENT, hover = Color(BUTTON.hover, 0.58), pressed = Color.TRANSPARENT, disabled = Color.TRANSPARENT}
 	theme.set_type_variation("HomeNav", "Button")
 	_button(theme, "HomeNav", nav, Color.TRANSPARENT, 0, SIZE.nav, TEXT_2)
-	var selected_nav := _box(Color.TRANSPARENT, 10)
+	var selected_nav := _box(Color(FOCUS, 0.07), 10)
 	selected_nav.border_width_bottom = 2
 	selected_nav.border_color = FOCUS
 	theme.set_stylebox("pressed", "HomeNav", selected_nav)

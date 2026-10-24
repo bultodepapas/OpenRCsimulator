@@ -21,14 +21,15 @@ The website uses the official OpenAI Blossom beside the ChatGPT product name. Co
 
 ## Savox
 
-The Savox monochrome PNGs came from the official [Savox Logos Package](https://www.teamsavox.com/TeamSavox-Logos-Package.zip), linked on the [Team Savox Download Page](https://www.teamsavox.com/download/). They are original black and white variants for light and dark surfaces.
+The Savox PNGs came from the official [Savox Logos Package](https://www.teamsavox.com/TeamSavox-Logos-Package.zip), linked on the [Team Savox Download Page](https://www.teamsavox.com/download/). The color variant was downloaded again on 2026-10-24.
 
 | File | Mark |
 | --- | --- |
 | `assets/brands/savox/TeamSavox-Logo-Mono-Black.png` | SAVOX wordmark, black |
 | `assets/brands/savox/TeamSavox-Logo-Mono-White.png` | SAVOX wordmark, white |
+| `assets/brands/savox/TeamSavox-Logo-LightBG.png` | SAVOX wordmark, orange and black for light backgrounds |
 
-The current website uses the black mark on white logo tiles. WEB-05's transparent 768×261 WebP is generated from `Black.png` with `python site/prepare_assets.py --brands-only`, Pillow 12.3.0, proportional Lanczos resizing and lossless encoding. The original black and white PNGs remain unchanged. The unused white WebP derivative is no longer generated; the publisher refreshes its assets directory from this source tree, so the file will leave `gh-pages` on the next publish. The white original is retained for other authorized uses. The black display copy is about 10.2 kB instead of 90.9 kB, with a decoded RGBA footprint of about 0.8 MB instead of 23.6 MB. Its display width is at most 240 CSS pixels, covering 3× pixel density.
+The README and website use `TeamSavox-Logo-LightBG.webp` on white tiles. `python site/prepare_assets.py --brands-only` crops excess transparent canvas while retaining 5% horizontal and 18% vertical clear space around the visible mark, then resizes to 768×171 with Pillow 12.3.0 and lossless WebP encoding. The official PNGs remain unchanged. This makes Savox visually comparable in scale with the neighboring logos on desktop and mobile.
 
 The project [README](../README.md#partners) records Savox's authorization to include representations of its products in OpenRC Simulator. The permission record in [D6-SAV-00](../docs/research/servos/D6-SAV-00/README.md) quotes the manufacturer's scope: “You have our permission to use Savox product representations in your project.” Keep the partner acknowledgment within that scope; do not imply manufacturer certification of simulator behavior. SAVOX marks remain Savox's property.
 
@@ -47,4 +48,15 @@ Reviewed 2026-10-17. Shawn Spiker's 2026-10-16 reply to “Hitec RCD Transmitter
 
 ## Public acknowledgment scope
 
-The README and website list Savox, SonicModell and Hitec as manufacturers authorizing product representations. Implementation status is stated separately. These acknowledgments do not claim financial sponsorship, delivered hardware, verified radio compatibility or manufacturer validation. FLYWING's unaccepted conditional offer is not included. Public acknowledgment uses no private contact details or mailbox links. All marks remain their owners' property, outside the MIT code license.
+Reviewed 2026-10-24. The README and website also name these participants from the maintainer's private correspondence and tracking sheet:
+
+| Brand | Written scope and presentation limit |
+| --- | --- |
+| FLYWING | Its 2026-10-18 confirmation permits product names, simplified exterior 3D models and real color schemes in the free project. The logo may appear in the README and website for attribution. `assets/brands/flywing/flywing-logo.png` is the unchanged [official storefront header logo](https://flywingrc.com/). Original 3D files stay outside the public repository and MIT license; forks gain no automatic asset rights. The aircraft introduction requires source attribution, an official product link and the prescribed simulation disclaimer. Authorization is revocable on 30 days' written notice. No FLYWING aircraft is integrated. |
+| GEMFAN | Its 2026-10-19 reply permits names and simplified 3D representations of current and future propeller ranges in the free simulator, with brand credit and product links. It does not separately license a logo or CAD files. Integration is pending. |
+| KONTRONIK | Its 2026-10-20 reply permits independently recreated product models and use of its name. No logo, CAD or confidential data was granted. Integration is pending. |
+| Leomotion Drives | Its 2026-10-18 reply permits selected product representations under official names. Any model using its name or branding needs screenshot or render approval before publication. A credit and link are welcome; no logo license, financial sponsorship or equipment was offered. No product model is published. |
+| REVOC Custom | Its 2026-10-20 reply welcomes a community-supporter credit, logo and website link in the simulator and on GitHub. `assets/brands/revoc/revoc-custom-logo.png` is the unchanged PNG from [REVOC's official download page](https://shop.revoc.eu/telechargement). A preview was requested; the public README and website now show the exact text and logo placement for review. A product or giveaway was offered for discussion only; none is promised. |
+| Aloft Hobbies | Wayne Flower's 2026-10-23 reply says he posted the project link in the Aloft forum and offers knowledge and feedback. No brand, model or logo permission or financial support was granted. |
+
+These acknowledgments do not claim completed integrations, financial sponsorship, delivered hardware, verified radio compatibility or manufacturer validation. Public acknowledgment uses no private contact details or mailbox links. Existing marks remain their owners' property, outside the MIT code license.

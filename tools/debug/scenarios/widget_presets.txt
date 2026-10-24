@@ -1,0 +1,25 @@
+# HUD-13-R9: all widget families, appearance changes and idle input dispatch. Starts/ends at Home.
+fly start=airborne
+eval expr="open_pause()"
+open screen=overlays
+select text=Preset index=5
+select text=OverlaysTabs index=3
+select text=WidgetSize index=2
+press text=CompactInstruments
+press text=CompactInstruments
+select text=WidgetSize index=1
+select text=Preset index=6
+assert expr="not flight._overlays.frames.attitude.is_processing_input()" message="idle classic widget does not listen globally"
+select text=Preset index=7
+assert expr="not flight._overlays.frames.pilot_radar.is_processing_input()" message="idle navigation widget does not listen globally"
+select text=Preset index=8
+select text=OverlaysTabs index=2
+mouse action=move text=Glide
+wait seconds=1
+assert expr="not flight._overlays.frames.glide.is_processing_input()" message="idle training widget does not listen globally"
+mouse action=move x=30 y=30
+select text=Preset index=2
+close
+assert expr="not flight._overlays.visible" message="overlay preview hidden under pause menu"
+home
+assert expr="flight == null and screens.is_top('home')" message="widget scenario returned Home"

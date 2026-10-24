@@ -4,6 +4,7 @@ extends Control
 
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const ScreenWidgets := preload("res://ui/widgets.gd")
+const Crystal := preload("res://ui/crystal_surface.gd")
 
 signal close_requested
 
@@ -59,11 +60,20 @@ func fade(width: int) -> TextureRect:
 func open(from: Control = null) -> void:
 	return_focus = from
 	set_active(true)
+	Crystal.decorate(self)
 	if is_inside_tree() and not ScreenTheme.reduced_motion and not DisplayServer.get_name() == "headless":
 		if _entrance != null: _entrance.kill()
 		modulate.a = 0.0
 		_entrance = create_tween()
-		_entrance.tween_property(self, "modulate:a", 1.0, 0.14)
+		_entrance.tween_method(_entrance_alpha, 0.0, 1.0, 0.14)
+
+
+func _entrance_alpha(value: float) -> void:
+	if ScreenTheme.reduced_motion or not _active:
+		if _entrance != null: _entrance.kill()
+		modulate.a = 1.0
+	else:
+		modulate.a = value
 
 
 func close(restore_focus := true) -> void:
@@ -85,6 +95,8 @@ func set_active(active: bool) -> void:
 	set_process_input(active)
 	set_process_unhandled_input(active)
 	if not active:
+		if _entrance != null: _entrance.kill()
+		modulate.a = 1.0
 		_focus_policy = focus_behavior_recursive
 		_mouse_policy = mouse_behavior_recursive
 		focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED

@@ -73,16 +73,26 @@ func reset() -> void:
 ## time_s: simulation time of `state`; state: electrical_state() of a dynamic battery, or {}. Takes a sample when
 ## one is due and returns the radio's view (see empty() for the fields). Time running backwards or a different pack
 ## restarts the sensor. Between samples the last reading holds, as on a radio screen.
-func update(time_s: float, state: Dictionary) -> Dictionary:
+func update(time_s: float, state: Dictionary, include_history := true) -> Dictionary:
 	if not state.get("ok", false) or not is_finite(time_s):
-		return _reading.duplicate(true)
+		return _export_reading(include_history)
 	var identity := _identity_of(state)
 	if _has_sample and (time_s < _sample_t or identity != _identity):
 		reset()
 	if not _has_sample or time_s - _sample_t >= SAMPLE_PERIOD_S - SAMPLE_SLACK_S:
 		_identity = identity
 		_sample(time_s, state)
-	return _reading.duplicate(true) # callers may keep or change it; the sensor's own state stays untouched
+	return _export_reading(include_history)
+
+
+## Keep collecting history for later inspection, but only copy it for a visible detailed battery panel.
+## Returned arrays/dictionaries remain caller-owned; scalar-only consumers receive empty history arrays.
+func _export_reading(include_history: bool) -> Dictionary:
+	var out := _reading.duplicate(true)
+	if include_history:
+		out.history_v = _history_v.duplicate()
+		out.history_a = _history_a.duplicate()
+	return out
 
 
 ## The reading before any sample: every number unknown (NAN), no alarms, empty history.
@@ -142,7 +152,7 @@ func _sample(time_s: float, state: Dictionary) -> void:
 		time_s = time_s, pack_voltage_v = volts, cell_avg_v = cell_avg, cell_min_v = cell_min, current_a = amps,
 		power_w = volts * amps, used_mah = used, used_mah_raw = _used_mah, remaining_pct = remaining,
 		temperature_c = temperature_c, esc_state = esc, alarms = alarms,
-		history_v = _history_v.duplicate(), history_a = _history_a.duplicate(),
+		history_v = PackedFloat64Array(), history_a = PackedFloat64Array(),
 	}
 
 

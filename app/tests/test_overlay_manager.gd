@@ -376,6 +376,13 @@ func _dialog() -> void:
 		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid)
 		and dialog._training_grid.get_child_count() == Settings.TRAINING_IDS.size()
 		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._training_grid))
+	_check("all player widget switches have measurement and common-use tooltips", _player_tooltips_complete(dialog))
+	var help_label: Label = dialog.switches.glide._make_custom_tooltip(dialog.switches.glide.tooltip_text)
+	_check("long instrument help wraps inside a bounded tooltip", help_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART
+		and help_label.custom_minimum_size.x <= 520.0 and help_label.text == dialog.switches.glide.tooltip_text)
+	_check("tooltip height is known before the popup is positioned", help_label.custom_minimum_size.y > 100.0
+		and help_label.custom_minimum_size.y < 672.0)
+	help_label.free()
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
 	var pinned_outside_scroll := (
@@ -464,6 +471,18 @@ func _dialog() -> void:
 	await process_frame
 
 
+func _player_tooltips_complete(dialog: CanvasLayer) -> bool:
+	if OverlaysDialog.DESCRIPTIONS.size() != Settings.PLAYER_IDS.size():
+		return false
+	for id: String in Settings.PLAYER_IDS:
+		if not OverlaysDialog.DESCRIPTIONS.has(id):
+			return false
+		var tooltip: String = str(dialog.switches[id].tooltip_text)
+		if not tooltip.begins_with(str(OverlaysDialog.DESCRIPTIONS[id])) or not tooltip.contains(str(OverlaysDialog.COMMON_WIDGET_HELP)):
+			return false
+	return true
+
+
 func _spanish_layout() -> void:
 	TranslationServer.set_locale("es")
 	var manager: CanvasLayer = Manager.new({}, "es")
@@ -490,6 +509,12 @@ func _spanish_layout() -> void:
 	await process_frame
 	_check("wind box keeps its size when an updraft line appears", manager.frames.wind.size == wind_calm_up,
 		"%s → %s" % [wind_calm_up, manager.frames.wind.size])
+	var dialog: CanvasLayer = OverlaysDialog.new(manager)
+	root.add_child(dialog)
+	await process_frame
+	_check("Spanish Flight tools tab is translated without moving its page", dialog.tab_bar.get_tab_title(2) == "Ayudas de vuelo"
+		and dialog._pages[2].name == "NavigationPage")
+	dialog.queue_free()
 	manager.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame

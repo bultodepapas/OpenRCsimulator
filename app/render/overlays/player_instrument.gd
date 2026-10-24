@@ -13,6 +13,7 @@ const BORDER := Color("627888", 0.48)
 const TITLES := {speed = "Airspeed", height = "Height & flight", power = "Energy", weather = "Wind conditions", fuel = "Fuel tank", trims = "Trims", engine = "Engine"}
 
 signal moved(id: String, normalized: Vector2)
+signal reset_position_requested(id: String)
 
 var handle: Control
 var value_label: Label
@@ -26,6 +27,7 @@ var graphic: Control
 var layout_locked := false
 var dragging := false
 var _grab := Vector2.ZERO
+var _drag_start_position := Vector2.ZERO
 var _fraction := NAN
 var _wind_from := NAN
 var _graphic_color := ACCENT
@@ -40,6 +42,9 @@ var _trim_tracks: Array[Control] = []
 var _trim_column: VBoxContainer
 var _sample_head := 0
 var _view_key: Array = []
+var _graphic_key: Array = []
+var _sample_revision := 0
+var _trim_graphic_keys: Array = []
 var _header_icon: TextureRect
 var _grip: Control
 var _footer: HBoxContainer
@@ -102,12 +107,13 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 	handle.name = "DragHandle"
 	handle.mouse_filter = Control.MOUSE_FILTER_STOP
 	handle.mouse_default_cursor_shape = Control.CURSOR_MOVE
-	handle.tooltip_text = tr("Drag to move · positions are saved")
+	handle.tooltip_text = tr("Drag to move · double-click to restore position")
 	handle.gui_input.connect(_handle_input)
 	handle.mouse_entered.connect(func() -> void: _header_hovered = true; _highlight(true))
 	handle.mouse_exited.connect(func() -> void: _header_hovered = false; _highlight(dragging))
 	visibility_changed.connect(_cancel_drag)
 	close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	close_button.tooltip_text = "%s %s" % [tr("Close"), title_label.text]
 	(body.get_parent() as VBoxContainer).add_theme_constant_override("separation", 8)
 	close_button.flat = false
 	close_button.add_theme_font_size_override("font_size", 18)
@@ -188,7 +194,6 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 		graphic.hide()
 		line.hide()
 		details.hide()
-	set_process_input(false)
 	graphic.resized.connect(graphic.queue_redraw)
 	_apply_density()
 
@@ -250,6 +255,7 @@ func _build_trims() -> void:
 		track.resized.connect(track.queue_redraw)
 		_trim_column.add_child(track)
 		_trim_tracks.append(track)
+		_trim_graphic_keys.append(null)
 
 
 func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
@@ -278,6 +284,7 @@ func _fit_content() -> void:
 
 
 func _apply_density() -> void:
+	var graphic_was_visible := graphic.visible
 	value_label.add_theme_font_size_override("font_size", 36 if _compact else 52)
 	unit_label.custom_minimum_size.y = 26 if _compact else 32
 	_style.content_margin_bottom = 10 if _compact else 16
@@ -286,10 +293,17 @@ func _apply_density() -> void:
 	_separator.visible = id != "trims" and not _compact
 	if _trim_column != null:
 		_trim_column.add_theme_constant_override("separation", 4 if _compact else 10)
+	if graphic.visible and not graphic_was_visible:
+		# Hidden density changes may have updated the cached key without drawing the graph.
+		_graphic_key.clear()
+		graphic.queue_redraw()
 	queue_redraw()
 
 
 func _ready() -> void:
+	# Godot automatically enables an overridden _input when entering the tree, after _init.
+	# Only a live drag needs global release events; idle/hidden widgets use header GUI input.
+	set_process_input(false)
 	get_window().focus_exited.connect(_finish_drag)
 
 
@@ -299,7 +313,7 @@ func set_locked(on: bool) -> void:
 	if on:
 		_finish_drag()
 	handle.mouse_default_cursor_shape = Control.CURSOR_ARROW if on else Control.CURSOR_MOVE
-	handle.tooltip_text = tr("Widget position locked") if on else tr("Drag to move · positions are saved")
+	handle.tooltip_text = tr("Widget position locked") if on else tr("Drag to move · double-click to restore position")
 	if changed:
 		_highlight(_header_hovered)
 
@@ -309,8 +323,14 @@ func _handle_input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
+			if event.double_click:
+				_cancel_drag_without_save()
+				reset_position_requested.emit(id)
+				handle.accept_event()
+				return
 			dragging = true
 			_grab = handle.get_global_transform() * event.position - global_position
+			_drag_start_position = position
 			move_to_front()
 			_highlight(true)
 			set_process_input(true)
@@ -335,15 +355,26 @@ func _cancel_drag() -> void:
 		_sample_head = 0
 		_last_sample_time = -INF
 		_view_key.clear()
+		_graphic_key.clear()
 
 
 func _finish_drag() -> void:
 	if not dragging:
 		return
+	var position_changed := not position.is_equal_approx(_drag_start_position)
 	dragging = false
 	set_process_input(false)
-	_highlight(false)
-	moved.emit(id, normalized_position())
+	_highlight(_header_hovered)
+	if position_changed:
+		moved.emit(id, normalized_position())
+
+
+func _cancel_drag_without_save() -> void:
+	if not dragging:
+		return
+	dragging = false
+	set_process_input(false)
+	_highlight(_header_hovered)
 
 
 func _highlight(on: bool) -> void:
@@ -374,7 +405,9 @@ func reset_flight() -> void:
 	_samples.clear()
 	_sample_head = 0
 	_view_key.clear()
+	_graphic_key.clear()
 	_last_sample_time = -INF
+	_sample_revision += 1
 	graphic.queue_redraw()
 
 
@@ -399,6 +432,7 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
 				else:
 					_samples[_sample_head] = speed
 					_sample_head = (_sample_head + 1) % 120
+				_sample_revision += 1
 				_last_sample_time = now
 		"height":
 			_reading(Units.length(float(t.get("height_agl", NAN)), system))
@@ -415,7 +449,10 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
 			for axis in 3:
 				_trim_values[axis] = float(trims.get(["roll", "pitch", "yaw"][axis], NAN))
 				_trim_labels[axis].text = _signed_percent(_trim_values[axis])
-				_trim_tracks[axis].queue_redraw()
+				var trim_key: Variant = clampf(_trim_values[axis], -1.0, 1.0) if is_finite(_trim_values[axis]) else null
+				if trim_key != _trim_graphic_keys[axis]:
+					_trim_graphic_keys[axis] = trim_key
+					_trim_tracks[axis].queue_redraw()
 		"engine":
 			_reading([rpm, "rpm"])
 			_fraction = float(t.get("throttle", NAN))
@@ -427,15 +464,21 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
 			subtitle.text = tr("No telemetry") if t.is_empty() else (tr("Calm") if float(t.get("wind_speed", 0.0)) < 0.05 else tr("Direction wind comes from"))
 			_details(tr("FROM"), Units.angle(_wind_from, 0, false), tr("VERTICAL AIR"), Units.format(Units.vertical(float(t.get("wind_up", NAN)), system), true))
 	subtitle.tooltip_text = subtitle.text
-	if graphic.visible:
-		graphic.queue_redraw()
+	if id != "trims":
+		var next_graphic_key := _make_graphic_key()
+		if next_graphic_key != _graphic_key:
+			_graphic_key = next_graphic_key
+			if graphic.visible:
+				graphic.queue_redraw()
 
 
 func _make_view_key(t: Dictionary, system: String, peak: float, battery: Dictionary, fuel: Dictionary, trims: Dictionary, rpm: float) -> Array:
 	var values: Array = [system, TranslationServer.get_locale()]
 	match id:
 		"speed": values.append_array([t.get("time_s"), t.get("airspeed"), t.get("ground_speed"), peak])
-		"height": values.append_array([t.get("height_agl"), t.get("distance_pilot"), t.get("vertical_speed"), t.get("time_s")])
+		"height":
+			var elapsed := float(t.get("time_s", NAN))
+			values.append_array([t.get("height_agl"), t.get("distance_pilot"), t.get("vertical_speed"), floori(elapsed) if is_finite(elapsed) else null])
 		"weather": values.append_array([t.is_empty(), t.get("wind_speed"), t.get("wind_from_deg"), t.get("wind_up")])
 		"trims": values.append_array([trims.is_empty(), trims.get("roll"), trims.get("pitch"), trims.get("yaw")])
 		"engine": values.append_array([rpm, t.get("throttle"), t.get("load_factor")])
@@ -450,6 +493,27 @@ func _make_view_key(t: Dictionary, system: String, peak: float, battery: Diction
 		if typeof(values[i]) == TYPE_FLOAT and not is_finite(values[i]):
 			values[i] = null
 	return values
+
+
+func _make_graphic_key() -> Array:
+	match id:
+		"speed":
+			# The graph uses only its ordered samples and these translated endpoint labels.
+			return [TranslationServer.get_locale(), _sample_revision]
+		"height":
+			# The symbol only has three visual states: climb, sink or near-level.
+			if not is_finite(_fraction): return [null]
+			return [0 if absf(_fraction) < 0.05 else (1 if _fraction > 0.0 else -1)]
+		"weather":
+			# Wind speed and vertical wind are footer values; only the bearing moves the arrow.
+			var bearing: Variant = fposmod(_wind_from, 360.0) if is_finite(_wind_from) else null
+			return [TranslationServer.get_locale(), bearing]
+		"fuel", "engine", "power":
+			# Gauge geometry uses the clamped fraction and alarm-selected color, not footer readings.
+			var fraction: Variant = clampf(_fraction, 0.0, 1.0) if is_finite(_fraction) else null
+			return [fraction, _graphic_color]
+		_:
+			return []
 
 
 static func _signed_percent(value: float) -> String:

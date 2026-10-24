@@ -953,3 +953,27 @@ parameters), collected through the pinned editor's headless language server on a
 line-independent baseline rather than fixing or suppressing the existing ones in bulk.
 [Guide](../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8).
 
+### 2026-10-24 — Radioactive lime and crystal accents for the shell (UI-22-R3)
+
+Replace the previous amber direction at the owner's request with luminous lime over green graphite surfaces. Centralize the palette in `ui_theme.gd`, including vector toggle/check icons and slider handles. Use native pale edges and bounded hover halos for the crystal effect; keep primary text and its inset focus dark enough to read against the bright fill. Preserve semantic danger/warning colors and the existing reduced-motion behavior. [Current theme and focused evidence](MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+### 2026-10-24 — Event-driven crystal lighting beneath native controls (UI-22-R4)
+
+Adapt free CC0/MIT shader techniques for primary actions and selected panel surfaces. Keep glass below native text/focus, outside container layout and pointer input. Drive brief reflections and press shading with finite node-bound tweens; hidden screens cancel them and live reduced motion settles them. Use analytic lighting without screen sampling, recurring pulses or a new UI framework. Keep upstream notices in the desktop export filters. [Sources, tradeoffs and checks](research/menu-investigations/README.md#ui-22-r4--crystal-lighting-and-finite-motion-2026-10-24).
+
+### 2026-10-24 — Neutral black backgrounds with lime accents (UI-22-R5)
+
+Refine the palette at the owner's request: keep green crystal buttons and selection accents, while backgrounds, panel reflections and shadows use neutral black/gray. Preserve the existing translucency, opaque-panel option and motion. [Palette and verification](research/menu-investigations/README.md#ui-22-r5--neutral-black-glass-lime-actions-2026-10-24).
+
+### 2026-10-24 — Refine glass through its contour and finite light (UI-22-R6)
+
+Twenty source investigations favor controlled hierarchy and material detail over adding decoration everywhere. Replace the hard halfway highlight with continuous lighting, a directional rounded-box bevel and a restrained inset light return. Concentrate the 560 ms eased glint at the contour. Keep neutral black surfaces and the existing native focus/contrast controls. Extend the licensed shader already in use; do not add scene refraction, texture noise, viewport glow or another library for this slice. [Source-by-source decisions and verification](research/menu-investigations/UI-22-R6/README.md).
+
+### 2026-10-24 — Fluorescent edges around a dark glass interior (UI-22-R7)
+
+Follow the owner's photographic references by moving primary actions from a filled lime gradient to dark translucent green with concentrated fluorescent contours and fine reflections. Use light text on the dark interior, separate dark ink for bright toggle/check marks, and a pale native inset focus. Keep black neutral panels and bounded event-driven motion. Preserve readability over bright backdrops and apply opaque mode to the new translucent buttons too. [Reference interpretation and rendered verification](research/menu-investigations/README.md#ui-22-r7--fluorescent-glass-from-owner-references-2026-10-24).
+
+### 2026-10-24 — Shape a glass wall instead of a uniform luminous frame (UI-22-R8)
+
+The next native comparison favors a broad rounded wall with thin grazing catches, an offset rear contour and curved internal reflections. Reduce the external halo, increase interior transparency and cap the text area's brightness. Use native inset side brackets for focus so the upper/lower material remains visible. Keep neutral panels on a separate shader branch. [Experiments and rendered contrast checks](research/menu-investigations/README.md#ui-22-r8--rounded-glass-wall-and-offset-reflections-2026-10-24).
+

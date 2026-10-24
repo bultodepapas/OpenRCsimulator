@@ -25,8 +25,8 @@ const websiteCopy = {
 };
 
 Object.assign(websiteCopy, {
-  "savoxEarly": "Savox, SonicModell and Hitec: thank you for welcoming your products into the project.",
-  "partnersIntro": "Thank you to Savox, SonicModell and Hitec for authorizing representations of their products.",
+  "savoxEarly": "Thanks to the manufacturers and community members helping OpenRC grow.",
+  "partnersIntro": "Thank you to the manufacturers who have authorized representations of their products.",
   "savoxCopy": "Savox authorizes representations of its products. Thank you for opening the catalogue to simulation and offering an engineering contact.",
   "savoxStatus": "Servo catalogue selection is planned.",
   "sonicmodellRole": "PARTNER / FPV AIRCRAFT",
@@ -36,7 +36,15 @@ Object.assign(websiteCopy, {
   "hitecCopy": "Hitec authorizes OpenRC Simulator to feature servos published on its websites, with references and official product links.",
   "hitecStatus": "Integration is pending. This permission does not announce radio compatibility.",
   "partnerVisit": "Visit the manufacturer ↗",
-  "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models."
+  "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models.",
+  "partnerMoreTitle": "More participating brands",
+  "flywingLogoScope": "Exterior model permission; integration pending.",
+  "revocLogoScope": "Community support with approved logo and link.",
+  "flywingScope": "Aircraft names and simplified exterior models; integration pending.",
+  "gemfanScope": "Propeller names and simplified 3D representations; integration pending.",
+  "kontronikScope": "Recreated propulsion products and name; integration pending.",
+  "leomotionScope": "Selected products; renders require approval before publication.",
+  "communityThanks": "Aloft Hobbies shared the project on its forum and offered knowledge and feedback."
 });
 
 Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});

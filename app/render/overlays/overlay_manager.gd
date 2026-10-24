@@ -94,6 +94,9 @@ func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> 
 	add_child(_fuel_warning_player)
 	_build()
 	apply(initial, false)
+	visibility_changed.connect(func() -> void:
+		if visible: _since_text = INF
+	)
 
 
 func _build() -> void:
@@ -138,6 +141,7 @@ func _build() -> void:
 		widget.theme = _player_theme
 		_place(widget, Control.PRESET_TOP_LEFT)
 		widget.moved.connect(_save_widget_position)
+		widget.reset_position_requested.connect(reset_widget_position)
 		widget.resized.connect(_queue_player_layout)
 	root.resized.connect(_queue_player_layout)
 	# Reflow only when layout changes, never once per simulation tick.
@@ -193,6 +197,20 @@ func reset_widget_positions() -> void:
 	var next := settings.duplicate(true)
 	next.erase("positions")
 	apply(next)
+
+
+## Restore one widget without discarding the rest of a custom layout.
+func reset_widget_position(id: String) -> void:
+	if id not in Settings.PLAYER_IDS or bool(settings.get("layout_locked", false)): return
+	var next := settings.duplicate(true)
+	var positions: Dictionary = next.get("positions", {})
+	if positions.has(id):
+		positions.erase(id)
+		if positions.is_empty(): next.erase("positions")
+		else: next.positions = positions
+		apply(next)
+	elif frames.has(id):
+		frames[id].place_normalized(PLAYER_POSITIONS[id])
 
 
 ## A session reset, even at identical sampled time, starts fresh flight extrema and battery sensors.
@@ -376,15 +394,15 @@ func refresh_numbers(snap: Dictionary) -> void:
 	_update_fuel_warning(mass_sample, bool(snap.get("paused", false)))
 	var system := unit_system()
 	# Hidden overlays skip their text: a changed label costs a relayout. apply() forces a refresh when one reappears.
-	if frames.flight.visible:
+	if visible and frames.flight.visible:
 		frames.flight.refresh(_last_telemetry, system, mass_sample)
-	if frames.wind.visible:
+	if visible and frames.wind.visible:
 		frames.wind.refresh(_last_telemetry, float(snap.get("view_heading_deg", 0.0)), system)
-	if frames.telemetry.visible:
+	if visible and frames.telemetry.visible:
 		frames.telemetry.refresh(_last_telemetry, float(snap.get("rpm", 0.0)))
-	if frames.transmitter.visible:
+	if visible and frames.transmitter.visible:
 		frames.transmitter.footer.text = str(snap.get("radio_status", ""))
-	if frames.controls.visible:
+	if visible and frames.controls.visible:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
@@ -404,7 +422,9 @@ func refresh_numbers(snap: Dictionary) -> void:
 					frames[id].refresh_training(_last_telemetry, system, peak_airspeed, metrics)
 				else:
 					frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
-	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
+	frames.warnings.visible = not _warning_codes.is_empty() and is_overlay_visible("warnings")
+	if visible and frames.warnings.visible:
+		frames.warnings.refresh(_warning_codes)
 
 
 ## BAT-14/15: samples the pack (battery: electrical_state() or {}), shows O9 and the developer truth, and replaces a
@@ -413,16 +433,18 @@ func _refresh_battery(battery: Dictionary, system: String) -> void:
 	_has_battery = battery.get("ok", false)
 	var reading: Dictionary = BatterySensors.empty()
 	if _has_battery:
-		reading = battery_sensors.update(float(battery.get("time_s", _last_telemetry.get("time_s", 0.0))), battery)
+		var needs_history: bool = visible and is_overlay_visible("battery") and frames.battery.detailed
+		reading = battery_sensors.update(float(battery.get("time_s", _last_telemetry.get("time_s", 0.0))), battery, needs_history)
 		if str(battery.get("battery_kind", "")) == "pack_ecm":
 			_warning_codes = Telemetry.with_battery_warnings(_warning_codes, Telemetry.battery_warnings(battery, reading.alarms))
 	_battery_reading = reading
 	frames.battery.visible = _has_battery and is_overlay_visible("battery")
-	if frames.battery.visible:
+	if visible and frames.battery.visible:
 		frames.battery.refresh(reading, system)
 		_dock_battery()
-	diagnostics_battery.text = BatteryPanel.truth_text(battery) if frames.diagnostics.visible else ""
-	diagnostics_battery.visible = not diagnostics_battery.text.is_empty()
+	if visible:
+		diagnostics_battery.text = BatteryPanel.truth_text(battery) if frames.diagnostics.visible else ""
+		diagnostics_battery.visible = not diagnostics_battery.text.is_empty()
 
 
 ## O9 sits centre right: against the edge in the Pilot preset (that side is free there), and left of the Telemetry

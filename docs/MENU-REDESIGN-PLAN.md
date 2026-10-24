@@ -1,8 +1,8 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 9 · 2026-10-20 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
+**Revision 15 · 2026-10-24 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
 
-**Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
+**Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, lime/graphite theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks for the earlier palette. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
 Build an aircraft-led RC club experience: a believable field, a well-lit model, a clear route to flight and a restrained interface that leaves the world visible. The [dated visual/resource investigation](research/menu-investigations/UI-20-R2/README.md) owns the current-screen diagnosis, reference analysis, Godot/GitHub research and source licenses.
 
@@ -33,11 +33,11 @@ No flight-model tuning, aircraft-geometry edits, new gameplay modes, recording c
 | Long weather/time descriptions on Home | Show an operational summary; put specifications, limitations and advanced controls in explicit destinations. Keep blocking reasons visible. |
 | Layout tests pass while the owner rejects the result | Require native visual review with concrete composition gates, separately from functional verification. |
 
-**Visual thesis:** a believable RC club photographed with care, framed by charcoal translucent surfaces, warm white type and a restrained amber selection/action accent.
+**Visual thesis:** a believable RC club photographed with care, framed by neutral black translucent surfaces, pale white type and fluorescent green glass actions with dark interiors and luminous edges.
 
 **Content plan:** world and aircraft first; compact activity navigation; selected aircraft and next-flight summary; one primary action; detail on request.
 
-**Interaction thesis:** immediate focus feedback, a short panel transition and a deliberate camera move when changing presentation context. Motion settles and never delays input. Reduced motion uses the same final compositions without camera travel.
+**Interaction thesis:** immediate focus feedback, a brief crystal reflection on primary actions, tactile shading on press and a short panel transition. Motion settles and never delays input. Reduced motion retains static lighting without the moving reflections or camera travel.
 
 Use the supplied airfield direction discussed around references 7–8 as the preferred composition; the wider concept around reference 6 informs horizontal organization with fewer lower-screen modules. Use Forza's grounded vehicle/space relationship, Cyberpunk's identity/focus hierarchy, MSFS's aircraft thumbnails and GT7's concise pause principle. [Reference inspection and limits](research/menu-investigations/UI-20-R2/README.md#reference-interpretation).
 
@@ -139,7 +139,11 @@ A bounded reflection-probe experiment must account for the existing lake and two
 
 ### Color and surfaces
 
-Implemented tokens are charcoal `#111A20`, warm white `#F3F1EB`, secondary gray `#B8C4C9` and amber `#EABF66`. Flat-color contrast checks pass; this is not a certification of every composited scene/state. Reserve red for destructive/error states; normal Fly/Resume no longer uses a large danger-colored area.
+UI-22-R7/R8 follow the owner's three fluorescent-glass photographs: green `#66FF16` accents, purer `#3DFF0A` glass emission, pale crystal `#C4FFB3`, and dark translucent primary fills (`#08290F` at 86% normal, `#0B3A14` at 88% hover, `#061E0B` at 92% pressed). Primary text/icons use pale `#E4FFDA`; checked symbols keep separate dark `ACCENT_INK` on bright green. Disabled actions are muted gray. Opaque mode also makes primary glass opaque. Backgrounds retain UI-22-R5's neutral black `#111111` panels, charcoal `#202020` cards, white `#F2F2F2` text and secondary gray `#C4C4C4`. Panel reflections, borders and shadows remain neutral. Primary actions have a restrained green halo, a rounded 12-pixel contour and pale native keyboard/gamepad focus brackets inset nine pixels inside the dark glass. The brackets retain three-pixel left/right strokes, leaving the upper/lower material visible. Toggles, checks, sliders and selected navigation share the fluorescent accent. Red remains reserved for destructive/error states.
+
+UI-22-R4 adds a shader underlay to primary buttons, Cards, sidebars and Settings panels. UI-22-R6 established directional contours and a 560 ms specular sweep with sine easing on focus/hover or panel appearance. UI-22-R8 shapes a rounded fluorescent wall, thin grazing highlights and an offset rear contour around a darker interior with curved/folded reflections. The text well has a bounded brightness. Neutral panels bypass this extra material calculation, and disabled buttons retain their flat muted fill. Edges gain opacity with thickness; this is stylized lighting rather than simulated refraction. Press/release shading remains 90/180 ms. The shared `Widgets.button()` factory covers dynamically created primary actions; `Screen.open()` decorates existing panels and directly created primary buttons. Native text, focus, shadows and layout remain above the noninteractive underlay. Effects and the screen entrance cancel when hidden or detached, and settle on the next animation update if reduced motion is enabled. Event-driven tweens stop at rest; there is no effect `_process`, automatic shader clock, screen copy, background blur or new runtime dependency. Screen-specific style overrides retain ownership. The shader adapts freely available CC0/MIT code, with its notice included by every desktop export preset.
+
+[UI-22-R8 evidence](research/menu-investigations/README.md#ui-22-r8--rounded-glass-wall-and-offset-reflections-2026-10-24) records the material experiments and native 1080p inspection. [UI-22-R6 research](research/menu-investigations/UI-22-R6/README.md) retains the twenty investigations; [UI-22-R4](research/menu-investigations/README.md#ui-22-r4--crystal-lighting-and-finite-motion-2026-10-24) retains integration and source-license evidence. Contrast checks bound the brightest translucent text interior and sample a grid of actual rendered glass over white, including underneath focus markers; they do not sample every composited scene.
 
 Use local scrims and limited translucent surfaces. Start opacity near 0.86–0.94, increasing it where measured contrast requires; opaque mode is 1.0. Start with quiet 1-pixel edges and 6–8-pixel radii. Avoid borders around every row and nested cards. Focus uses an outline/shape as well as color and remains distinguishable from selection.
 

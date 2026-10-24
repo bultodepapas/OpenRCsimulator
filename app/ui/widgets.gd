@@ -2,6 +2,7 @@
 extends RefCounted
 
 const UiTheme := preload("res://ui/ui_theme.gd")
+const Crystal := preload("res://ui/crystal_surface.gd")
 
 
 static func label(text: String, variation: String, wrap := false, translate := true) -> Label:
@@ -21,6 +22,7 @@ static func button(text: String, variation := "", node_name := "") -> Button:
 	control.theme_type_variation = variation
 	if node_name != "":
 		control.name = node_name
+	Crystal.attach(control)
 	return control
 
 

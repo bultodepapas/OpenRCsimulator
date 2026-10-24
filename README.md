@@ -89,10 +89,23 @@ Thank you to these manufacturers for authorizing product representations in Open
 
 | Savox | SonicModell | Hitec RCD |
 | --- | --- | --- |
-| [<img src="site/assets/brands/savox/TeamSavox-Logo-Mono-Black.webp" alt="Savox" width="180">](https://www.teamsavox.com/) | [<img src="site/assets/brands/sonicmodell/sonicmodell-logo.png" alt="SonicModell" width="180">](https://www.sonicmodell.com/) | [<img src="site/assets/brands/hitec/hitec-radio-logo-footer.png" alt="Hitec RCD" width="180">](https://www.hitecrcd.com/) |
+| [<img src="site/assets/brands/savox/TeamSavox-Logo-LightBG.webp" alt="Savox" width="180">](https://www.teamsavox.com/) | [<img src="site/assets/brands/sonicmodell/sonicmodell-logo.png" alt="SonicModell" width="180">](https://www.sonicmodell.com/) | [<img src="site/assets/brands/hitec/hitec-radio-logo-footer.png" alt="Hitec RCD" width="180">](https://www.hitecrcd.com/) |
 | Product representations authorized; engineering contact offered. [Servo catalogue integration is planned](docs/plans/savox-servos.md). | Appearance, names and branding authorized for the models covered by our request, including Skyhunter models. Integration is pending. | Servos published on Hitec websites may be featured with official product links. Integration is pending. |
 
 Permissions have specific scopes; they do not imply financial sponsorship or validation of our physical models. Brand assets remain outside the MIT code license. [Permission scope and logo sources](site/BRANDS.md).
+
+Additional manufacturers have granted limited permissions for future representations:
+
+| Manufacturer | Authorized scope and current status |
+| --- | --- |
+| [<img src="site/assets/brands/flywing/flywing-logo.png" alt="FLYWING" width="180">](https://flywingrc.com/) | Product names, simplified exterior models and real color schemes for the free simulator; attribution is permitted on the README and website. Models are pending. The permission has separate asset, disclaimer and revocation terms. |
+| [GEMFAN](https://www.gemfanhobby.com/) | Names and simplified 3D representations of its propeller ranges, with credit and product links. Integration is pending. |
+| [KONTRONIK](https://www.kontronik.com/) | Independently recreated product models and the KONTRONIK name. Integration is pending; logos and original CAD are not covered. |
+| [Leomotion Drives](https://www.leomotiondrives.com/) | Selected products under their official names. Any model using its name or branding requires render approval before publication; integration is pending. |
+
+[<img src="site/assets/brands/revoc/revoc-custom-logo.png" alt="REVOC Custom" width="180">](https://shop.revoc.eu/)
+
+REVOC Custom has agreed to a community-supporter acknowledgment and website link. [Aloft Hobbies](https://alofthobbies.com/) has shared the project in its forum and offered knowledge and feedback. These acknowledgments do not grant product-representation rights or promise financial or material support. [Permission and correspondence summary](site/BRANDS.md).
 
 ## Develop and contribute
 

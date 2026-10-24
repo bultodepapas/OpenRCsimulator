@@ -38,6 +38,10 @@ var lvc_label: Label
 var _chip_hard := -1 # the LVC chip's style: -1 none yet, 0 soft cut (caution), 1 hard cut (danger)
 ## The last BatterySensors reading shown.
 var reading: Dictionary = Sensors.empty()
+var _text_key: Array = []
+var _bar_key: Array = []
+var _plotted_v := PackedFloat64Array()
+var _plotted_a := PackedFloat64Array()
 
 
 func _init() -> void:
@@ -96,6 +100,8 @@ func _init() -> void:
 
 ## Compact (Pilot) or detailed (with the Telemetry overlay) layout.
 func set_detailed(on: bool) -> void:
+	if detailed != on:
+		_text_key.clear()
 	detailed = on
 	compact_label.visible = not on
 	detail.visible = on
@@ -104,6 +110,16 @@ func set_detailed(on: bool) -> void:
 ## r: BatterySensors.update() output; system: a resolved unit system (temperature in °F for imperial, as EdgeTX).
 func refresh(r: Dictionary, system: String) -> void:
 	reading = r
+	if detailed:
+		_refresh_graphics()
+	var next_text_key: Array = [system, TranslationServer.get_locale(), detailed]
+	for field: String in ["valid", "series", "parallel", "chemistry", "capacity_mah", "pack_voltage_v", "cell_avg_v",
+			"cell_min_v", "current_a", "power_w", "temperature_c", "used_mah", "remaining_pct", "esc_state"]:
+		var value: Variant = r.get(field)
+		next_text_key.append(null if typeof(value) == TYPE_FLOAT and not is_finite(value) else value)
+	if next_text_key == _text_key:
+		return
+	_text_key = next_text_key
 	title_label.text = title_for(r)
 	var esc := str(r.get("esc_state", ""))
 	lvc_chip.visible = esc in Sensors.LVC_STATES
@@ -115,6 +131,8 @@ func refresh(r: Dictionary, system: String) -> void:
 			values[key].text = "–"
 	else:
 		compact_label.text = compact_text(r)
+		if not detailed:
+			return
 		var cell_avg := float(r.get("cell_avg_v", NAN))
 		var cell_min := float(r.get("cell_min_v", NAN))
 		var capacity := float(r.get("capacity_mah", NAN))
@@ -134,9 +152,33 @@ func refresh(r: Dictionary, system: String) -> void:
 	for row in value_rows:
 		row.visible = row.get_children().any(func(label: Control) -> bool: return label.visible)
 	bar.visible = is_finite(float(r.get("remaining_pct", NAN)))
-	bar.queue_redraw()
-	spark_v.queue_redraw()
-	spark_a.queue_redraw()
+
+
+## Graphs have independent invalidation; changing temperature or units does not repaint 60 s of history.
+func _refresh_graphics() -> void:
+	var remaining := float(reading.get("remaining_pct", NAN))
+	var next_bar: Array = [clampf(remaining, 0.0, 100.0) if is_finite(remaining) else null,
+		alarm_color(reading.get("alarms", []))]
+	if next_bar != _bar_key:
+		_bar_key = next_bar
+		bar.queue_redraw()
+	var volts: PackedFloat64Array = reading.get("history_v", PackedFloat64Array())
+	var amps: PackedFloat64Array = reading.get("history_a", PackedFloat64Array())
+	if not _same_history(volts, _plotted_v):
+		_plotted_v = volts.duplicate()
+		spark_v.queue_redraw()
+	if not _same_history(amps, _plotted_a):
+		_plotted_a = amps.duplicate()
+		spark_a.queue_redraw()
+
+
+## Fast native equality for normal samples, with stable missing-value gaps (NaN != NaN).
+static func _same_history(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
+	if a == b: return true
+	if a.size() != b.size(): return false
+	for i in a.size():
+		if a[i] != b[i] and not (is_nan(a[i]) and is_nan(b[i])): return false
+	return true
 
 
 ## "BATTERY · 4S 3200 LiPo": the overlay name and, when the pack says, its short label.
