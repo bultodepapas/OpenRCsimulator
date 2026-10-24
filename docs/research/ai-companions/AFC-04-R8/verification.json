@@ -1,0 +1,490 @@
+{
+  "format": "openrc-terrain-traffic-verification v1",
+  "baseline_commit": "fa26760292501305018bc4ad39a71a0abfcb2300",
+  "baseline_pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+  "candidate_source_sha256": {
+    "app/ai/companions/pilot.gd": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+    "app/ai/companions/agent.gd": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+    "app/ai/companions/circuit_controller.gd": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+    "app/tests/test_companions_terrain_traffic.gd": "599b672c25b0098f4bcf5512934f88d82b1f580aa02a68bc42d4edb1b0743bfc",
+    "research/ai-companions/traffic_lifecycle_flight_probe.gd": "dd55fa162b418f86919fbe21dbe7c89431257f26e8d9192d2d75f89095595774"
+  },
+  "production_admission": false,
+  "qualification_owner": "Separate user agent; shared profile unmodified by this work.",
+  "engine": "Godot 4.7.2 stable Linux x86_64",
+  "artifact_root": "/tmp/openrc-ai-next",
+  "checks": [
+    {
+      "group": "red",
+      "path": "/tmp/openrc-ai-next/red/terrain-traffic-z435lvrt/report.json",
+      "sha256": "2714fc56ef50b120570f7f2f3ef42d2ab71fb4588ec64788c602a14aceaeacf3",
+      "ok": false,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "ed372f16daac3d23a1bc1e8c90912af89cb98dd728c855e25353cfbbb5ad5b50",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/tmp/openrc-ai-next/tests/test_companions_terrain_traffic.gd"
+      ]
+    },
+    {
+      "group": "green",
+      "path": "/tmp/openrc-ai-next/green/terrain-traffic-tnet54ny/report.json",
+      "sha256": "7549f4bffd76c805fe74aaf1668760c61572f93b37c27cd8698375e1d65840b6",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "096ba715b1b9f0b0ea7e952d6e2576ce25434c357fb1f46304a139c2a7dcbc85",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_terrain_traffic.gd"
+      ]
+    },
+    {
+      "group": "focused",
+      "path": "/tmp/openrc-ai-next/focused/test_companions_clearance-mpqve1_v/report.json",
+      "sha256": "b1d73d305926dc0f668b8bb7a1091fa823702af98dfe5560f2c14254662f48bb",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "26ca1dffe628294429d8d12ec7c41037b019e057d5330e41a95f681b632b73f3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_clearance.gd"
+      ]
+    },
+    {
+      "group": "focused",
+      "path": "/tmp/openrc-ai-next/focused/test_companions_pilot-hkktcfj1/report.json",
+      "sha256": "97734399ea7a4a8ed3352b155e8ac43781da9acb32d3a5ddc0931c5805d63088",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "b2d209a534ee50db9546805087c43d4eea205d914d45410a59788e7c222f55e1",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_pilot.gd"
+      ]
+    },
+    {
+      "group": "focused",
+      "path": "/tmp/openrc-ai-next/focused/test_companions_session-hzr_5v29/report.json",
+      "sha256": "c0e6dd1b15a2e1068fcd70fe5eec5bcf7b398d6b0ca82f2aa4196a37ddc07a82",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "c6cb71495270885bd214ed74d9efa1138ee575e9c59e35ae0fa678b3db6e01fd",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_session.gd"
+      ]
+    },
+    {
+      "group": "focused",
+      "path": "/tmp/openrc-ai-next/focused/test_companions_traffic_lifecycle-s02dd8r3/report.json",
+      "sha256": "a1010d9bd3f554ec9fab3266704a5c3aa3d71235ea5a5d0ad7ff26b9d0f8e3ff",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "007ee85d7dcbeb0fd4849e9992df976b8d51b6e566cbf63b3a981c556752207a",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_traffic_lifecycle.gd"
+      ]
+    },
+    {
+      "group": "regression",
+      "path": "/tmp/openrc-ai-next/regression/baseline-candidate-parity-final-q5tnztz4/report.json",
+      "sha256": "d6b675802866880cc5305549d1909de300076f953cbc6551999ce172b5dfba2c",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "1a49b6aafd992d10379ea1b557a965814ac7c09c88bea7ed51f88f22800a50f3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "/tmp/openrc-ai-next/regression/compare_baseline_candidate.gd"
+      ]
+    },
+    {
+      "group": "regression",
+      "path": "/tmp/openrc-ai-next/regression/terrain-traffic-candidate-sg3yh3lx/report.json",
+      "sha256": "0e329eedadd540395e19634056468fc6a3b705b229ac596b21219e5bcc0c4808",
+      "ok": true,
+      "complete": true,
+      "engine_diagnostics": {
+        "error": 0,
+        "warning": 0
+      },
+      "log_sha256": "096ba715b1b9f0b0ea7e952d6e2576ce25434c357fb1f46304a139c2a7dcbc85",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_terrain_traffic.gd"
+      ]
+    }
+  ],
+  "flight_comparison_sha256": "ac1e1275983f2c264c1a997ec32514f9b8151f246b58f148e15e457443b7933e",
+  "crossing_replays": [
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261020-crossing-right-ai.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261020-crossing-right-ai/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    },
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261020-crossing-right-player-coupled.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261020-crossing-right-player-coupled/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    },
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261020-crossing-right-player-exogenous.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261020-crossing-right-player-exogenous/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    },
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261021-crossing-left-ai.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261021-crossing-left-ai/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    },
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261021-crossing-left-player-coupled.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261021-crossing-left-player-coupled/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    },
+    {
+      "source": "/tmp/openrc-ai-next/crossings/seed-20261021-crossing-left-player-exogenous.orfl",
+      "report": "/tmp/openrc-ai-next/crossing-replays/seed-20261021-crossing-left-player-exogenous/replay.json",
+      "complete": true,
+      "solver_changed": false,
+      "rows": 2881,
+      "R7_csv_equal": true
+    }
+  ],
+  "performance": {
+    "block_order": [
+      "baseline_A1",
+      "candidate_B1",
+      "candidate_B2",
+      "baseline_A2"
+    ],
+    "calls_per_block": 32,
+    "checks": {
+      "failed": 0,
+      "total": 7
+    },
+    "complete": true,
+    "engine": "4.7.2-stable (official)",
+    "fixture_seed": 20261020,
+    "format": "openrc-afc-pilot-command-abba v1",
+    "measured_abba_rounds_per_case": 32,
+    "measurement_limit": "Direct microbenchmark evidence only. It does not qualify per-frame latency or supported fleet size.",
+    "method": "For each ABBA block, configure a fresh controller and make two untimed warmup calls, then time 32 repeated command() calls at fixed tick 0 with unchanged snapshot/traffic. Timing excludes configuration and correctness checks, but includes script call dispatch, output dictionary allocation, and loop overhead. The measured steady controller state is recorded per block; the low-altitude far-traffic baseline intentionally holds a terrain-only false avoidance turn while the candidate remains clear.",
+    "planning_tick": 0,
+    "platform": "Linux",
+    "processor": "Intel(R) Core(TM) i5-10500 CPU @ 3.10GHz",
+    "scenario_notes": "Fresh-controller checks assert equal control-axis bytes for normal-altitude far traffic and the 24 m head-on conflict. The low-24-m AGL far-traffic case asserts the intended baseline-held/candidate-clear state difference; full packets are not expected equal there.",
+    "scope": "Pilot.command() only, using a fixed snapshot and one prepared traffic item. No FlightSession, manager, planner cadence, tick, rendering, audio, frame time, or whole-flight claim.",
+    "source_identity_after": {
+      "baseline_pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+      "candidate_pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "circuit_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+      "field_loader_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "math3d_sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+      "probe_sha256": "2ced08abb79f885b0437ba3545edc6115c13fe672eff10a7af35dc79204d3850",
+      "rigid_body_sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    "source_identity_before": {
+      "baseline_pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+      "candidate_pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "circuit_controller_sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c",
+      "field_loader_sha256": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "math3d_sha256": "3fb2c705d38f0e27d58ac79981d7e57ac7952b6c755fcb0998b44c43a03528e1",
+      "probe_sha256": "2ced08abb79f885b0437ba3545edc6115c13fe672eff10a7af35dc79204d3850",
+      "rigid_body_sha256": "4e9a11a45bc6a442a6bf987d4efebbca11a893e5b6451d22e2d74b1b2905e5ce"
+    },
+    "warmup_calls_per_block": 2,
+    "raw_path": "/tmp/openrc-ai-next/performance/pilot-command-abba.json",
+    "raw_sha256": "de2287d49e7bfd9a04b932aea84356a9ee7825cfb59fbfccf4c6d9215506fc29",
+    "cases": [
+      {
+        "clearance_m": 24.0,
+        "condition": "low_altitude_far_traffic",
+        "fixture_sha256": "19155966f72efe81f68c868293eb74b9364e961f73dac8b25b559e7b9b57a3a1",
+        "fresh_controller_check": {
+          "baseline_avoidance_active": true,
+          "baseline_control_axes": [
+            0.471238898038469,
+            1.0,
+            0.0,
+            1.0
+          ],
+          "baseline_held": true,
+          "baseline_packet_ok": true,
+          "candidate_avoidance_active": false,
+          "candidate_control_axes": [
+            0.502737651568758,
+            1.0,
+            0.0,
+            1.0
+          ],
+          "candidate_held": false,
+          "candidate_packet_ok": true,
+          "control_axes_equal": false,
+          "fixture_unchanged": true,
+          "ok": true
+        },
+        "name": "low24_far1000",
+        "traffic_start_distance_m": 1000.0,
+        "timing": {
+          "baseline": {
+            "mean_usec_per_call": 514.046875,
+            "p50_block_mean_usec_per_call": 487.53125,
+            "p95_block_mean_usec_per_call": 679.0625,
+            "p99_block_mean_usec_per_call": 802.78125,
+            "samples": 64
+          },
+          "calls_per_arm": 2048,
+          "candidate": {
+            "mean_usec_per_call": 116.5615234375,
+            "p50_block_mean_usec_per_call": 109.78125,
+            "p95_block_mean_usec_per_call": 147.1875,
+            "p99_block_mean_usec_per_call": 202.90625,
+            "samples": 64
+          },
+          "candidate_over_baseline_paired_ratio": {
+            "max": 0.284006226608817,
+            "mean": 0.228053290676823,
+            "p50": 0.229397110114599,
+            "p95": 0.278424106193615,
+            "samples": 32
+          },
+          "complete": true,
+          "failure": ""
+        }
+      },
+      {
+        "clearance_m": 35.0,
+        "condition": "normal_altitude_far_traffic",
+        "fixture_sha256": "f255eab3e0a5be90ff00e9d647dcaf268a0621684815002322455922fb5200da",
+        "fresh_controller_check": {
+          "baseline_avoidance_active": false,
+          "baseline_control_axes": [
+            0.502737651568758,
+            0.0,
+            0.0,
+            0.45
+          ],
+          "baseline_held": false,
+          "baseline_packet_ok": true,
+          "candidate_avoidance_active": false,
+          "candidate_control_axes": [
+            0.502737651568758,
+            0.0,
+            0.0,
+            0.45
+          ],
+          "candidate_held": false,
+          "candidate_packet_ok": true,
+          "control_axes_equal": true,
+          "fixture_unchanged": true,
+          "ok": true
+        },
+        "name": "normal35_far1000",
+        "traffic_start_distance_m": 1000.0,
+        "timing": {
+          "baseline": {
+            "mean_usec_per_call": 109.9453125,
+            "p50_block_mean_usec_per_call": 106.9375,
+            "p95_block_mean_usec_per_call": 134.0,
+            "p99_block_mean_usec_per_call": 141.09375,
+            "samples": 64
+          },
+          "calls_per_arm": 2048,
+          "candidate": {
+            "mean_usec_per_call": 110.248046875,
+            "p50_block_mean_usec_per_call": 107.8125,
+            "p95_block_mean_usec_per_call": 125.59375,
+            "p99_block_mean_usec_per_call": 140.59375,
+            "samples": 64
+          },
+          "candidate_over_baseline_paired_ratio": {
+            "max": 1.18142256902761,
+            "mean": 1.00541577412547,
+            "p50": 1.00749752440232,
+            "p95": 1.15737514518002,
+            "samples": 32
+          },
+          "complete": true,
+          "failure": ""
+        }
+      },
+      {
+        "clearance_m": 35.0,
+        "condition": "close_head_on_conflict",
+        "fixture_sha256": "f73caaedf08a6a54cfe2e5f04c8bc4517335731b699b876a1609b0becbdce7a1",
+        "fresh_controller_check": {
+          "baseline_avoidance_active": true,
+          "baseline_control_axes": [
+            0.471238898038469,
+            0.0,
+            0.0,
+            0.45
+          ],
+          "baseline_held": true,
+          "baseline_packet_ok": true,
+          "candidate_avoidance_active": true,
+          "candidate_control_axes": [
+            0.471238898038469,
+            0.0,
+            0.0,
+            0.45
+          ],
+          "candidate_held": true,
+          "candidate_packet_ok": true,
+          "control_axes_equal": true,
+          "fixture_unchanged": true,
+          "ok": true
+        },
+        "name": "normal35_headon24",
+        "traffic_start_distance_m": 24.0,
+        "timing": {
+          "baseline": {
+            "mean_usec_per_call": 499.27880859375,
+            "p50_block_mean_usec_per_call": 480.90625,
+            "p95_block_mean_usec_per_call": 571.78125,
+            "p99_block_mean_usec_per_call": 962.0625,
+            "samples": 64
+          },
+          "calls_per_arm": 2048,
+          "candidate": {
+            "mean_usec_per_call": 510.57080078125,
+            "p50_block_mean_usec_per_call": 476.46875,
+            "p95_block_mean_usec_per_call": 682.5,
+            "p99_block_mean_usec_per_call": 843.78125,
+            "samples": 64
+          },
+          "candidate_over_baseline_paired_ratio": {
+            "max": 1.42049256925813,
+            "mean": 1.02610615013625,
+            "p50": 1.01592750240286,
+            "p95": 1.19190543969305,
+            "samples": 32
+          },
+          "complete": true,
+          "failure": ""
+        }
+      }
+    ],
+    "interference": "Runner and Godot pinned CPU11; unrelated Godot shell process remained alive. Observation of fixed-input steady commands only, not frame pacing."
+  },
+  "limits": [
+    "Single low-altitude far-peer research scenario; no production admission or physical-realism claim.",
+    "Candidate-specific terrain/ranking and infeasible-escape handling remain open.",
+    "Replays verify logged controls and physics, not AI decision replay.",
+    "No aircraft/aircraft physical collision implementation."
+  ],
+  "engine_validation": {
+    "report": "/tmp/openrc-ai-next/engine-validation.json",
+    "sha256": "3d0179e7cf88040a65715aae73d094a00817bf32fe44eba4c0a9c27efa03a749",
+    "ok": true,
+    "checked": 1320,
+    "resource_counts": {
+      "extensions": 0,
+      "plugins": 2,
+      "resources": 9,
+      "scenes": 4,
+      "scripts": 1234,
+      "shaders": 71
+    },
+    "diagnostics": {
+      "total": 1145,
+      "errors": 0,
+      "parse_errors": 0,
+      "warnings": 1145,
+      "info": 0
+    },
+    "new_test_diagnostics": []
+  }
+}

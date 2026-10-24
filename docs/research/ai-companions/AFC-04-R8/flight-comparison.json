@@ -1,0 +1,421 @@
+{
+  "canonical_verification": {
+    "candidate_far_report": "/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000/report.json",
+    "commands": [
+      "\"$(app/get-godot.sh)\" --headless --path app --audio-driver Dummy --script \"$PWD/research/ai-companions/traffic_lifecycle_flight_probe.gd\" -- --baseline-agent=/tmp/openrc-ai-next/baseline/agent.gd --baseline-pilot=/tmp/openrc-ai-next/baseline/pilot.gd --out=/tmp/openrc-ai-next/flight-test/canonical-no-traffic --height-agl=24 --distance=1000 --no-traffic",
+      "\"$(app/get-godot.sh)\" --headless --path app --audio-driver Dummy --script \"$PWD/research/ai-companions/traffic_lifecycle_flight_probe.gd\" -- --baseline-agent=/tmp/openrc-ai-next/baseline/agent.gd --baseline-pilot=/tmp/openrc-ai-next/baseline/pilot.gd --out=/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000 --height-agl=24 --distance=1000 --candidate-only"
+    ],
+    "comparisons": {
+      "candidate_far_exact_csv_equals_baseline_no_traffic_exact_csv": true,
+      "no_traffic_baseline_candidate_exact_csv_bytewise_equal": true,
+      "no_traffic_baseline_candidate_final_state_equal": true
+    },
+    "exact_replays": {
+      "candidate_far1000": {
+        "complete": true,
+        "csv_path": "/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000/replay-candidate/flight.csv",
+        "csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+        "mode": "exact",
+        "report_path": "/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000/replay-candidate/replay.json",
+        "rows": 2881,
+        "solver_changed": false,
+        "status": "ok"
+      },
+      "no_traffic_baseline": {
+        "complete": true,
+        "csv_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/replay-baseline/flight.csv",
+        "csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+        "mode": "exact",
+        "report_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/replay-baseline/replay.json",
+        "rows": 2881,
+        "solver_changed": false,
+        "status": "ok"
+      },
+      "no_traffic_candidate": {
+        "complete": true,
+        "csv_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/replay-candidate/flight.csv",
+        "csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+        "mode": "exact",
+        "report_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/replay-candidate/replay.json",
+        "rows": 2881,
+        "solver_changed": false,
+        "status": "ok"
+      }
+    },
+    "no_traffic_ab_report": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/report.json",
+    "probe_sha256": "dd55fa162b418f86919fbe21dbe7c89431257f26e8d9192d2d75f89095595774",
+    "runs": {
+      "baseline_no_traffic": {
+        "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+        "ai_log_rows": 2881,
+        "ai_orfl_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/baseline/ai.orfl",
+        "ai_orfl_sha256": "d5ad8c8b6acb55ff21fbd83bd127495a7f87d1b694a54bc9885e083aaf2b1d7f",
+        "complete": true,
+        "final_state_sha256": "2eb94e6abdac02e7145fe4109ac0cd4248ae7254a1b42f3bc041cecd76d3cd15",
+        "held_maneuver_plan_samples": 0,
+        "initial_center_distance_m": null,
+        "min_ai_agl_m": 23.9974100805751,
+        "min_center_distance_m": null,
+        "peak_abs_bank_deg": 26.8323550055622,
+        "pilot_source_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+        "probe_sha256": "dd55fa162b418f86919fbe21dbe7c89431257f26e8d9192d2d75f89095595774",
+        "requested_ticks": 2880,
+        "stopped_peer_orfl_path": null,
+        "stopped_peer_orfl_sha256": null,
+        "ticks": 2880
+      },
+      "candidate_far1000": {
+        "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+        "ai_log_rows": 2881,
+        "ai_orfl_path": "/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000/candidate/ai.orfl",
+        "ai_orfl_sha256": "3f15c4d8e8ede97c41845c23e1d7fe3d27a762ef857186f4d29aa9c869fd568d",
+        "complete": true,
+        "final_state_sha256": "2eb94e6abdac02e7145fe4109ac0cd4248ae7254a1b42f3bc041cecd76d3cd15",
+        "held_maneuver_plan_samples": 0,
+        "initial_center_distance_m": 1000.0,
+        "min_ai_agl_m": 23.9974100805751,
+        "min_center_distance_m": 840.959886341386,
+        "peak_abs_bank_deg": 26.8323550055622,
+        "pilot_source_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+        "probe_sha256": "dd55fa162b418f86919fbe21dbe7c89431257f26e8d9192d2d75f89095595774",
+        "requested_ticks": 2880,
+        "stopped_peer_orfl_path": "/tmp/openrc-ai-next/flight-test/canonical-candidate-far1000/candidate/stopped-peer.orfl",
+        "stopped_peer_orfl_sha256": "8abfb7413f9f13c65717bbc5a9f66156c9a2dc94ff8a089bb074e80a01c65d0f",
+        "ticks": 2880
+      },
+      "candidate_no_traffic": {
+        "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+        "ai_log_rows": 2881,
+        "ai_orfl_path": "/tmp/openrc-ai-next/flight-test/canonical-no-traffic/candidate/ai.orfl",
+        "ai_orfl_sha256": "119134e3fbbe9e74f014078ee00b3dd81e3b754a86e3061cc1e290e9c777c243",
+        "complete": true,
+        "final_state_sha256": "2eb94e6abdac02e7145fe4109ac0cd4248ae7254a1b42f3bc041cecd76d3cd15",
+        "held_maneuver_plan_samples": 0,
+        "initial_center_distance_m": null,
+        "min_ai_agl_m": 23.9974100805751,
+        "min_center_distance_m": null,
+        "peak_abs_bank_deg": 26.8323550055622,
+        "pilot_source_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+        "probe_sha256": "dd55fa162b418f86919fbe21dbe7c89431257f26e8d9192d2d75f89095595774",
+        "requested_ticks": 2880,
+        "stopped_peer_orfl_path": null,
+        "stopped_peer_orfl_sha256": null,
+        "ticks": 2880
+      }
+    },
+    "scope": "Research FlightSession direct Agent/Pilot fixture; production profile admission bypassed; software full-physics result, not GPU/render qualification, hull clearance, broad safety qualification, or physical flight validation."
+  },
+  "claim_scope": "One deterministic research-only full-physics baseline/candidate scenario on the Club field; not production companion admission, hull clearance, broad safety qualification, or physical validation.",
+  "comparisons": {
+    "baseline_far_traffic_vs_baseline_no_traffic": {
+      "initial_body_state_equal": true,
+      "metrics": {
+        "cmd_pitch": {
+          "far_value_at_max": 0.30491620638787825,
+          "first_different_row": 21,
+          "first_different_tick": 21,
+          "max_absolute_difference": 0.7461496092655406,
+          "max_difference_tick": 1145,
+          "no_traffic_value_at_max": -0.44123340287766244
+        },
+        "cmd_roll": {
+          "far_value_at_max": 0.3066009277046696,
+          "first_different_row": 1,
+          "first_different_tick": 1,
+          "max_absolute_difference": 0.3179242297784282,
+          "max_difference_tick": 1357,
+          "no_traffic_value_at_max": -0.01132330207375859
+        },
+        "cmd_throttle": {
+          "far_value_at_max": 0.0,
+          "first_different_row": 1117,
+          "first_different_tick": 1117,
+          "max_absolute_difference": 1.0,
+          "max_difference_tick": 1117,
+          "no_traffic_value_at_max": 1.0
+        },
+        "cmd_yaw": {
+          "far_value_at_max": 0.045788419398500674,
+          "first_different_row": 17,
+          "first_different_tick": 17,
+          "max_absolute_difference": 0.046663233352197325,
+          "max_difference_tick": 2801,
+          "no_traffic_value_at_max": -0.000874813953696655
+        },
+        "down_m": {
+          "far_value_at_max": -30.08683981454089,
+          "first_different_row": 13,
+          "first_different_tick": 13,
+          "max_absolute_difference": 0.1583397711304393,
+          "max_difference_tick": 1128,
+          "no_traffic_value_at_max": -29.928500043410452
+        },
+        "east_m": {
+          "far_value_at_max": 190.8515470655243,
+          "first_different_row": 13,
+          "first_different_tick": 13,
+          "max_absolute_difference": 44.55307226242701,
+          "max_difference_tick": 2880,
+          "no_traffic_value_at_max": 146.2984748030973
+        },
+        "north_m": {
+          "far_value_at_max": 185.90068916011163,
+          "first_different_row": 13,
+          "first_different_tick": 13,
+          "max_absolute_difference": 40.17388745753124,
+          "max_difference_tick": 2325,
+          "no_traffic_value_at_max": 145.7268017025804
+        },
+        "tas_mps": {
+          "far_value_at_max": 29.331456085745575,
+          "first_different_row": 13,
+          "first_different_tick": 13,
+          "max_absolute_difference": 0.8298532625171156,
+          "max_difference_tick": 1214,
+          "no_traffic_value_at_max": 30.16130934826269
+        }
+      },
+      "row_count_far": 2881,
+      "row_count_no_traffic": 2881,
+      "rows_equal": true,
+      "tick_sequence_equal": true
+    },
+    "candidate_far_vs_baseline_no_traffic": {
+      "baseline_no_traffic_csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+      "candidate_csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+      "control_and_position_columns_equal": true,
+      "csv_bytewise_equal": true,
+      "row_count_baseline_no_traffic": 2881,
+      "row_count_candidate": 2881
+    }
+  },
+  "configuration": {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "duration_s": 12,
+    "engine": "Godot 4.7.2-stable",
+    "far_peer_forward_offset_m": 1000.0,
+    "initial_agl_m": 24.0,
+    "no_traffic_control": "no external peer FlightSession; traffic array contains only own-agent observation",
+    "peer": "real trimmed FlightSession held before its first accepted tick",
+    "peer_lateral_offset_m": 0.0,
+    "physics_hz": 240,
+    "seed": 20261020,
+    "ticks": 2880,
+    "weather": "calm"
+  },
+  "exact_replays": {
+    "baseline_far_ai": {
+      "baseline_solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "complete": true,
+      "csv_path": "/tmp/openrc-ai-next/flight-test/replay-far-ai/flight.csv",
+      "csv_sha256": "5e942c9ad1695e11ea8d1f743b4e96b93f4bbea2f6e53e16d9370d4fdfbee4e6",
+      "error": "",
+      "mode": "exact",
+      "orfl_path": null,
+      "replay_report_path": "/tmp/openrc-ai-next/flight-test/replay-far-ai/replay.json",
+      "rows": 2881,
+      "solver_changed": false,
+      "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "status": "ok"
+    },
+    "baseline_far_peer": {
+      "baseline_solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "complete": true,
+      "csv_path": null,
+      "csv_sha256": null,
+      "error": "",
+      "mode": "exact",
+      "orfl_path": null,
+      "replay_report_path": "/tmp/openrc-ai-next/flight-test/replay-far-peer/replay.json",
+      "rows": 1,
+      "rows_exported": 1,
+      "solver_changed": false,
+      "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "status": "ok"
+    },
+    "baseline_no_traffic_ai": {
+      "baseline_solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "complete": true,
+      "csv_path": "/tmp/openrc-ai-next/flight-test/replay-no-traffic-ai/flight.csv",
+      "csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+      "error": "",
+      "mode": "exact",
+      "orfl_path": null,
+      "replay_report_path": "/tmp/openrc-ai-next/flight-test/replay-no-traffic-ai/replay.json",
+      "rows": 2881,
+      "solver_changed": false,
+      "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "status": "ok"
+    },
+    "candidate_far_ai": {
+      "baseline_solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "complete": true,
+      "csv_path": "/tmp/openrc-ai-next/flight-test/replay-candidate-ai/flight.csv",
+      "csv_sha256": "032feb859c20493deb867bc72e29e4a468db5a83a2699390f50ab7772f932f31",
+      "error": "",
+      "mode": "exact",
+      "orfl_path": null,
+      "replay_report_path": "/tmp/openrc-ai-next/flight-test/replay-candidate-ai/replay.json",
+      "rows": 2881,
+      "solver_changed": false,
+      "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "status": "ok"
+    },
+    "candidate_far_peer": {
+      "baseline_solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "complete": true,
+      "csv_path": null,
+      "csv_sha256": null,
+      "error": "",
+      "mode": "exact",
+      "orfl_path": null,
+      "replay_report_path": "/tmp/openrc-ai-next/flight-test/replay-candidate-peer/replay.json",
+      "rows": 1,
+      "rows_exported": 1,
+      "solver_changed": false,
+      "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+      "status": "ok"
+    }
+  },
+  "format": "openrc-terrain-common-traffic-regression-evidence v1",
+  "limits": [
+    "3D center distance is not hull clearance.",
+    "The 1000m stopped peer is an intentionally irrelevant far-threat regression trigger.",
+    "The no-traffic control has no peer session and receives only own observation.",
+    "The probe directly constructs Agent/Pilot and bypasses CompanionManager/profile admission.",
+    "This is software simulation evidence, not RC field validation."
+  ],
+  "runs": {
+    "baseline_far": {
+      "agent_source": "/tmp/openrc-ai-next/baseline/agent.gd",
+      "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+      "complete": true,
+      "final_state_sha256": "f67968e0b6cb00d9160762b949621ac7f11720b646eff88a91260c1aa1247c14",
+      "first_held_maneuver_tick": 0,
+      "flight_logs": {
+        "ai": {
+          "path": "/tmp/openrc-ai-next/flight-test/baseline-24m-far1000-run001/baseline/ai.orfl",
+          "rows": 2881,
+          "sha256": "89ab777c71fa50efaed2bb314b0f270d52361761835abc8a1d68b9790de05729",
+          "stop_error": 0
+        },
+        "stopped_peer": {
+          "path": "/tmp/openrc-ai-next/flight-test/baseline-24m-far1000-run001/baseline/stopped-peer.orfl",
+          "rows": 1,
+          "sha256": "cd57da49b04ee095e2e7163db0ec9a7ffe1999d7eee4147de0e033dfe4fc1aa2",
+          "stop_error": 0
+        }
+      },
+      "held_maneuver_plan_samples": 339,
+      "min_ai_agl_m": 23.9974100805751,
+      "min_center_distance_m": 806.223389626277,
+      "peak_abs_bank_deg": 26.8303678549508,
+      "pilot_source": "/tmp/openrc-ai-next/baseline/pilot.gd",
+      "pilot_source_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+      "probe_sha256": "df215a9e83e41bea0babfc7c12a500c85261b492d484000ad7ba2ae4ac7ae2c0",
+      "report_path": "/tmp/openrc-ai-next/flight-test/baseline-24m-far1000-run001/report.json",
+      "report_sha256": "5179fe412bf392b1f2a69ff23e142c95a65d5babe6d14db7e8c8b64206c92bf2",
+      "requested_ticks": 2880,
+      "scenario": {
+        "actual_metric": "AI-to-peer FlightSession 3D center distance sampled every accepted AI tick; not hull clearance",
+        "initial_height_agl_m": 24.0,
+        "peer_altitude_agl_m": 24.0,
+        "peer_forward_offset_m": 1000.0,
+        "peer_heading": "same as the AI initial course",
+        "peer_lateral_offset_right_m": 0.0,
+        "peer_state": "real trimmed FlightSession spawned at the tick-zero reset boundary, then stopped before its first accepted tick by a research fixture failure flag",
+        "peer_velocity_in_frozen_state_m_s": 15.0
+      },
+      "ticks": 2880
+    },
+    "baseline_no_traffic": {
+      "agent_source": "/tmp/openrc-ai-next/baseline/agent.gd",
+      "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+      "complete": true,
+      "final_state_sha256": "2eb94e6abdac02e7145fe4109ac0cd4248ae7254a1b42f3bc041cecd76d3cd15",
+      "first_held_maneuver_tick": null,
+      "flight_logs": {
+        "ai": {
+          "path": "/tmp/openrc-ai-next/flight-test/baseline-24m-no-traffic-run001/baseline/ai.orfl",
+          "rows": 2881,
+          "sha256": "061ad9efea778ee51cae22e9aa6ddc8c2212b4de945584a05d8c86bbc465c2d3",
+          "stop_error": 0
+        }
+      },
+      "held_maneuver_plan_samples": 0,
+      "min_ai_agl_m": 23.9974100805751,
+      "min_center_distance_m": null,
+      "peak_abs_bank_deg": 26.8323550055622,
+      "pilot_source": "/tmp/openrc-ai-next/baseline/pilot.gd",
+      "pilot_source_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+      "probe_sha256": "df215a9e83e41bea0babfc7c12a500c85261b492d484000ad7ba2ae4ac7ae2c0",
+      "report_path": "/tmp/openrc-ai-next/flight-test/baseline-24m-no-traffic-run001/report.json",
+      "report_sha256": "06c6d5c4401890b317cf467f9355ac90e17c5a38f27de538d802c6b17af3a86a",
+      "requested_ticks": 2880,
+      "scenario": {
+        "actual_metric": "single-aircraft trajectory and control response sampled at each accepted AI tick",
+        "initial_height_agl_m": 24.0,
+        "peer_altitude_agl_m": null,
+        "peer_forward_offset_m": null,
+        "peer_heading": "none",
+        "peer_lateral_offset_right_m": null,
+        "peer_state": "no external peer; pilot receives only its own observation",
+        "peer_velocity_in_frozen_state_m_s": null
+      },
+      "ticks": 2880
+    },
+    "candidate_far": {
+      "agent_source": "res://ai/companions/agent.gd",
+      "agent_source_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+      "complete": true,
+      "final_state_sha256": "2eb94e6abdac02e7145fe4109ac0cd4248ae7254a1b42f3bc041cecd76d3cd15",
+      "first_held_maneuver_tick": null,
+      "flight_logs": {
+        "ai": {
+          "path": "/tmp/openrc-ai-next/flight-test/candidate-24m-far1000-run001/candidate/ai.orfl",
+          "rows": 2881,
+          "sha256": "09185fe2e33335713c41196cf9aee87ce4077285052302fd3b1521d8c49c0ec9",
+          "stop_error": 0
+        },
+        "stopped_peer": {
+          "path": "/tmp/openrc-ai-next/flight-test/candidate-24m-far1000-run001/candidate/stopped-peer.orfl",
+          "rows": 1,
+          "sha256": "bde9d4773ce59e6f67f93fdf1065c5803202495e3b55997fbf1c2405c82ec22c",
+          "stop_error": 0
+        }
+      },
+      "held_maneuver_plan_samples": 0,
+      "min_ai_agl_m": 23.9974100805751,
+      "min_center_distance_m": 840.959886341386,
+      "peak_abs_bank_deg": 26.8323550055622,
+      "pilot_source": "res://ai/companions/pilot.gd",
+      "pilot_source_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "probe_sha256": "daabb54ad9bce5c9d53fa6471ce647e38fad05da6fd1af459f55370dfda37c3c",
+      "report_path": "/tmp/openrc-ai-next/flight-test/candidate-24m-far1000-run001/report.json",
+      "report_sha256": "0683dc36ec05ef54edf9dc09bfbfe4435c2174c4837b5604f3a54dd4e9c59c9a",
+      "requested_ticks": 2880,
+      "scenario": {
+        "actual_metric": "AI-to-peer FlightSession 3D center distance sampled every accepted AI tick; not hull clearance",
+        "initial_height_agl_m": 24.0,
+        "peer_altitude_agl_m": 24.0,
+        "peer_forward_offset_m": 1000.0,
+        "peer_heading": "same as the AI initial course",
+        "peer_lateral_offset_right_m": 0.0,
+        "peer_state": "real trimmed FlightSession spawned at the tick-zero reset boundary, then stopped before its first accepted tick by a research fixture failure flag",
+        "peer_velocity_in_frozen_state_m_s": 15.0
+      },
+      "ticks": 2880
+    }
+  },
+  "scratch_harness_note": "The first scratch no-traffic baseline completed all 2,880 ticks and wrote a complete report and ORFL, then hit a post-report float(null) formatting error before clean process exit. That printer was fixed. The canonical probe subsequently reran baseline and candidate no-traffic cases to clean exit 0; both canonical ORFLs exact-replayed complete with solver_changed=false and byte-identical CSVs. The canonical candidate far-traffic case also completed and exact-replayed cleanly.",
+  "source_identity": {
+    "aircraft_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "baseline_agent_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+    "baseline_pilot_sha256": "02fb6dca08cc2d906aae29a6cfdfc94bd4b5ec39fe782413a6a1977161ff93da",
+    "candidate_agent_sha256": "1ed07c71db2053d88eb139e924db28bfbd70ebd15b1d5e48e74fa7614183a47f",
+    "candidate_pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+    "field_sha256": "de142b1a71e0ad3f7cae79f25521fa392cfcf9eea5720126468e7692571cf47d",
+    "lake_sha256": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1"
+  }
+}

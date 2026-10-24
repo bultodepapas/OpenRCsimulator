@@ -12,6 +12,9 @@ Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md
 The [stopped-traffic and maneuver-continuity repair](research/ai-companions/AFC-04-R7/README.md)
 corrects frozen-aircraft forecasts and preserves held avoidance through observation
 gaps. Its candidate verification is separate from source-profile admission.
+The [terrain/traffic separation repair](research/ai-companions/AFC-04-R8/README.md)
+prevents low terrain clearance from creating or prolonging an avoidance maneuver
+when traffic is clear; terrain recovery and candidate-turn ranking remain separate.
 The [fresh Windows checkout receipt](research/ai-companions/AFC-02/controller-dependency-checkout/verification.json)
 records 1,200 successful script parses and all 16 companion regression groups;
 its source snapshot and checkout corrections are explicit.
