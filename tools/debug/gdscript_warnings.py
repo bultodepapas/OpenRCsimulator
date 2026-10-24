@@ -89,10 +89,13 @@ def scripts(app: Path, patterns: list[str]) -> list[str]:
 
 
 def snapshot(out: Path) -> Path:
-    """A disposable copy of app/ (with its import cache) beside an assets link, as res://../assets expects."""
+    """A disposable copy of app/ (with its import cache) beside links to the other top-level folders, which scripts
+    reach as res://../assets, res://../tools and so on."""
     target = out / "snapshot"
     shutil.copytree(REPO / "app", target / "app", symlinks=True, ignore=shutil.ignore_patterns("captures"))
-    (target / "assets").symlink_to(REPO / "assets", target_is_directory=True)
+    for sibling in REPO.iterdir():
+        if sibling.is_dir() and sibling.name not in ("app", "tmp", ".git"):
+            (target / sibling.name).symlink_to(sibling, target_is_directory=True)
     return target / "app"
 
 
