@@ -59,6 +59,7 @@ const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const HighGraphics := preload("res://render/high_graphics_profile.gd")
 const SceneDetail := preload("res://render/scene_detail.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
+const DebugBridge := preload("res://debug/debug_bridge.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
 const UiSurface := preload("res://ui/screen.gd")
@@ -177,6 +178,8 @@ func _enter_tree() -> void:
 
 
 func _ready() -> void:
+	if DebugBridge.requested(): # PT1h-R7: opt-in agent debug bridge; never changes the route
+		add_child(DebugBridge.new())
 	if InputReport.requested(user_args):
 		var options: Dictionary = InputReport.options(user_args)
 		if not options.ok:
