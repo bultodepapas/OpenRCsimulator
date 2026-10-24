@@ -48,6 +48,7 @@ var _gauge_track: StyleBoxFlat
 var _gauge_fill: StyleBoxFlat
 var _header_hovered := false
 var _icon_style: StyleBoxFlat
+var _fit_pending := false
 
 
 func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void:
@@ -256,16 +257,24 @@ func set_appearance(size_name: String, opacity: float, compact: bool) -> void:
 	if scale != next_scale:
 		_finish_drag()
 		scale = next_scale
-	_style.bg_color = Color(SURFACE, clampf(opacity, 0.80, 1.0))
+	var background := Color(SURFACE, clampf(opacity, 0.80, 1.0))
+	if _style.bg_color != background: _style.bg_color = background
 	if _compact != compact:
 		_compact = compact
 		_apply_density()
 		# Containers can grow automatically, but need an explicit shrink after hiding details.
-		_fit_content.call_deferred()
+		_queue_content_fit()
+
+
+func _queue_content_fit() -> void:
+	if _fit_pending: return
+	_fit_pending = true
+	_fit_content.call_deferred()
 
 
 func _fit_content() -> void:
-	reset_size()
+	_fit_pending = false
+	if not size.is_equal_approx(get_combined_minimum_size()): reset_size()
 
 
 func _apply_density() -> void:
@@ -377,9 +386,6 @@ func refresh(t: Dictionary, system: String, peak: float, battery: Dictionary, fu
 	_view_key = key
 	match id:
 		"speed":
-			for i in range(1, 5):
-				var x := w * i / 5.0
-				graphic.draw_line(Vector2(x, 5), Vector2(x, h - 18), Color(TRACK, 0.3), 1)
 			_reading(Units.speed(float(t.get("airspeed", NAN)), system))
 			subtitle.text = tr("Airspeed · recent trend")
 			_details(tr("FLIGHT MAX"), Units.format(Units.speed(peak, system)), tr("GROUND"), Units.format(Units.speed(float(t.get("ground_speed", NAN)), system)))
@@ -523,6 +529,9 @@ func _draw_instrument() -> void:
 	var h := graphic.size.y
 	match id:
 		"speed":
+			for i in range(1, 5):
+				var x := w * i / 5.0
+				graphic.draw_line(Vector2(x, 5), Vector2(x, h - 18), Color(TRACK, 0.3), 1)
 			for i in 3:
 				graphic.draw_line(Vector2(0, 5 + i * 17), Vector2(w, 5 + i * 17), Color(TRACK, 0.7), 1)
 			_graphic_text(tr("RECENT"), Vector2(0, h - 1), MUTED, 9)

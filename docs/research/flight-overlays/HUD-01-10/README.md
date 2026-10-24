@@ -202,3 +202,63 @@ in `tmp/debug-bridge/20261024-130050-47870/`, `20261024-130410-47870/` and the f
 `20261024-130901-47870/`. No images added to Git. Five default
 dials can overlap at 720p; choose fewer or rearrange them there. No physics, pilot-input mapping or sensor model
 changed. The full physics suite and target-hardware/pilot acceptance remain outside this UI verification.
+
+## Instrument finish (2026-10-24, HUD-13-R4)
+
+Refined both widget families around a dark matte panel and restrained amber instrument markings. Header icons
+have subtle surrounds; close buttons have clearer hover/pressed borders; the grip becomes a lock symbol when
+positions are locked. Secondary readings use a darker recessed band. Modern speed traces gain faint time
+divisions and a narrow line halo; wind has light reference axes; level rails have finer graduations and a top-edge
+highlight. Classic instruments gain layered bezels, small recessed fasteners, faceted needles with shadows,
+sharper hubs, 5° pitch-ladder subdivisions and framed 13 px numerical readouts. Existing free icons are reused.
+
+Native review exposed a transient-height issue: initial text could grow a classic panel which never shrank to its
+final content minimum. Classic panels now refit on minimum-size changes; the four outer normal dials were
+confirmed at the same 286×385 size after initialization. This is event-driven layout work. Static face commands
+remain cached, values keep their existing 10 Hz/cache behavior, and no animation loop, shader or asset was added.
+
+Verification: the existing modern widget suite passes 74 checks and the classic suite passes 58, including actual
+drawing, missing values, extreme attitudes, cache behavior, drag/close, scaled layouts and teardown. The classic
+suite was repeated after the height fix. Logs under `tmp/widget-polish-r4/` contain no engine errors. Native
+1920×1080 review covered modern, classic normal and 120% compact layouts, locked symbols, and the final aligned
+classic row. Bridge logs were clean and both rendered sessions were stopped. Captures stay outside Git under
+`tmp/debug-bridge/20261024-131416-47870/` and `20261024-131657-47870/`. Whitespace checks pass. No measured FPS
+improvement or full physics-suite qualification is claimed for this presentation-only change.
+
+## Widget efficiency and configuration UX (2026-10-24, HUD-13-R5)
+
+The dialog now separates Modern, Classic, Appearance and Other overlays. Preset, Units, section tabs and Done
+remain outside the scrolling page. Native TabBar navigation supports mouse/keyboard input; hidden page controls
+lose focusability, restoring their original focus modes when shown. Switching away from a focused page returns
+focus to the tab bar. Changing sections never writes settings. Checkbox synchronization uses silent setters and
+handlers no longer duplicate the synchronous settings-change refresh. The clamped 900×800 target and short tab
+labels fit all four Spanish tabs and all seven modern switches at 1080p; smaller windows scroll the active page.
+
+Settings application returns early for identical validated values. Actual changes update only their affected
+visibility, style, lock or layout work. Positions and appearance preserve the telemetry clock; units, stick mode
+and newly visible instruments still invalidate readings immediately. Resize notifications coalesce into one
+deferred full layout pass, and repeated content-fit requests share one deferred fit. The horizon reuses a 96-point
+disc owned by its widget, avoiding construction/rotation of that circle on each redraw. The clipped result remains
+identical. A draft static cache retained a GDScript resource at shutdown; the final instance-owned array passes
+clean teardown and preserves flight lifetime ownership.
+
+Evidence, native Windows / Godot 4.7.2:
+
+- `test_widget_efficiency`: 18 checks. Controlled requests demonstrate 200 identical settings calls produce zero
+  save events, layout passes or style changes; 12 resize notifications produce one full layout pass. Position
+  changes save/reflow once without restyling; opacity updates backdrops without layout; presentation-only changes
+  preserve telemetry cadence. Actual draw callbacks show static faces stay cached as attitude changes, and 100
+  repeated paused samples do not redraw. Cached/fresh clipping agrees for level, vertical, inverted and banked
+  cases, and clipping does not mutate the cached circle.
+- Existing modern widgets: 74; classic instruments: 58; overlay manager/dialog: 178; battery overlays: 123;
+  settings/preferences: 25. All pass. UI-language checks pass. Scene-level tests retain existing aircraft inertia
+  warnings; the focused widget tests and retained checked-runner diagnostics are clean.
+- Native 1080p Spanish review verified all four tabs, complete modern options without scrolling, classic preset
+  selection, size changes, lock and focus return. Clicking the tab bar and pressing Right selected the next
+  section. A real 1280×720 viewport retained the pinned choices and Done while scrolling the longer legacy
+  section. No bridge engine errors; rendered sessions stopped after review.
+
+Logs live in ignored `tmp/widget-efficiency-r5/`; captures in `tmp/debug-bridge/20261024-140049-47870/` and
+`20261024-140416-47870/`. New test code parsed outside `app/` before integration. Whitespace checks pass. These
+are measured reductions in UI work under controlled inputs, not an FPS or target-hardware performance claim;
+no physics/input mapping changed and the full physics suite was not rerun.

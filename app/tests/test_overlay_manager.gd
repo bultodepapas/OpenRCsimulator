@@ -372,6 +372,43 @@ func _dialog() -> void:
 		and Settings.IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed == Settings.PRESETS.pilot.has(id)))
 	_check("modern and classic widget sections remain separate", dialog._player_grid.get_child_count() == 7
 		and dialog._classic_grid.get_child_count() == Settings.CLASSIC_IDS.size())
+	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
+	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
+	var pinned_outside_scroll := (
+		scroll != null and not scroll.is_ancestor_of(dialog.preset_picker)
+		and not scroll.is_ancestor_of(dialog.units_picker) and not scroll.is_ancestor_of(dialog.done_button)
+	)
+	for tab_index in dialog.tab_bar.tab_count:
+		dialog.tab_bar.current_tab = tab_index
+		await process_frame
+		var active_pages := 0
+		for page: VBoxContainer in dialog._pages:
+			if page.visible:
+				active_pages += 1
+		_check("overlay tab shows only its matching page", active_pages == 1 and dialog._pages[tab_index].visible)
+		pinned_outside_scroll = (
+			pinned_outside_scroll and dialog.preset_picker.is_visible_in_tree()
+			and dialog.units_picker.is_visible_in_tree() and dialog.done_button.is_visible_in_tree()
+		)
+	_check("preset, units, and Done remain visible outside the scrolling page", pinned_outside_scroll)
+	_check("changing sections does not change overlay settings", manager.settings == settings_before_tabs, str(manager.settings))
+	var telemetry: CheckBox = dialog.switches.telemetry
+	telemetry.grab_focus()
+	await process_frame
+	_check("visible overlay checkbox can take keyboard focus", root.get_viewport().gui_get_focus_owner() == telemetry)
+	dialog.tab_bar.current_tab = 2
+	await process_frame
+	_check("hiding a focused page returns focus to its tab bar", not telemetry.is_visible_in_tree()
+		and root.get_viewport().gui_get_focus_owner() == dialog.tab_bar)
+	_check("a hidden overlay checkbox is removed from keyboard focus", telemetry.focus_mode == Control.FOCUS_NONE
+		and root.get_viewport().gui_get_focus_owner() == dialog.tab_bar)
+	dialog.tab_bar.current_tab = 0
+	dialog.switches.speed.button_pressed = true
+	_check("modern instrument switch applies from its page", manager.settings.preset == "custom"
+		and manager.settings.visible.has("speed"))
+	dialog.tab_bar.current_tab = 3
+	dialog.switches.speed.button_pressed = false
+	_check("hidden modern instrument switch still applies its direct signal", not manager.settings.visible.has("speed"))
 	dialog.switches.telemetry.button_pressed = true
 	_check("switching Telemetry on gives the Full preset", manager.settings.preset == "full" and dialog.preset_picker.selected == 2)
 	dialog.units_picker.item_selected.emit(2)

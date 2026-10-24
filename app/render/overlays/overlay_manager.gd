@@ -61,6 +61,8 @@ var peak_airspeed := NAN
 var _peak_time := -INF
 var _battery_reading := {}
 var _player_theme: Theme
+var _settings_applied := false
+var _player_layout_pending := false
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -122,8 +124,8 @@ func _build() -> void:
 		widget.theme = _player_theme
 		_place(widget, Control.PRESET_TOP_LEFT)
 		widget.moved.connect(_save_widget_position)
-		widget.resized.connect(_layout_player_widgets)
-	root.resized.connect(_layout_player_widgets)
+		widget.resized.connect(_queue_player_layout)
+	root.resized.connect(_queue_player_layout)
 	# Reflow only when layout changes, never once per simulation tick.
 	for id: String in ["controls", "diagnostics", "warnings"]:
 		frames[id].resized.connect(_dock_diagnostics)
@@ -131,7 +133,18 @@ func _build() -> void:
 	root.resized.connect(_dock_diagnostics)
 
 
+func _queue_player_layout() -> void:
+	if _player_layout_pending: return
+	_player_layout_pending = true
+	_flush_player_layout.call_deferred()
+
+
+func _flush_player_layout() -> void:
+	if _player_layout_pending: _layout_player_widgets()
+
+
 func _layout_player_widgets() -> void:
+	_player_layout_pending = false
 	var positions: Dictionary = settings.get("positions", {})
 	for id: String in PLAYER_POSITIONS:
 		if not frames.has(id): continue
@@ -216,25 +229,42 @@ func _place(overlay: Control, preset: Control.LayoutPreset) -> void:
 	frames[overlay.get("id")] = overlay
 
 
-## Replaces the settings (validated); `announce` emits settings_changed.
+## Applies changed settings only. A no-op neither redraws widgets nor asks the owner to save again.
 func apply(value: Variant, announce := true) -> void:
-	settings = Settings.validate(value)
-	frames.transmitter.set_radio_model(settings.radio_model)
-	for id: String in IDS:
-		var on: bool = settings.visible.has(id)
-		if id == "warnings":
-			frames[id].visible = on and not _warning_codes.is_empty()
-		elif id == "battery":
-			frames[id].visible = on and _has_battery
-		else:
-			frames[id].visible = on
-	frames.battery.set_detailed(Settings.battery_detailed(settings))
-	for id: String in PLAYER_POSITIONS:
-		frames[id].set_locked(bool(settings.get("layout_locked", false)))
-		frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
-	_layout_player_widgets()
-	_dock_battery()
-	_since_text = INF # show the new choice at once
+	var next := Settings.validate(value)
+	if _settings_applied and next == settings: return
+	var first := not _settings_applied
+	var previous := settings
+	settings = next
+	_settings_applied = true
+	var visibility_changed: bool = first or previous.visible != settings.visible
+	var appearance_changed := first or ["widget_size", "widget_opacity", "widget_compact"].any(
+		func(key: String) -> bool: return previous.get(key) != settings.get(key))
+	var layout_changed := first or ["positions", "widget_size", "widget_compact"].any(
+		func(key: String) -> bool: return previous.get(key) != settings.get(key))
+	var lock_changed: bool = first or previous.get("layout_locked", false) != settings.get("layout_locked", false)
+	if first or previous.radio_model != settings.radio_model:
+		frames.transmitter.set_radio_model(settings.radio_model)
+	if visibility_changed:
+		for id: String in IDS:
+			var on: bool = settings.visible.has(id)
+			if id == "warnings":
+				frames[id].visible = on and not _warning_codes.is_empty()
+			elif id == "battery":
+				frames[id].visible = on and _has_battery
+			else:
+				frames[id].visible = on
+	if first or Settings.battery_detailed(previous) != Settings.battery_detailed(settings):
+		frames.battery.set_detailed(Settings.battery_detailed(settings))
+	if lock_changed or appearance_changed:
+		for id: String in PLAYER_POSITIONS:
+			if lock_changed: frames[id].set_locked(bool(settings.get("layout_locked", false)))
+			if appearance_changed:
+				frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
+	if layout_changed or visibility_changed: _layout_player_widgets()
+	if visibility_changed: _dock_battery()
+	if visibility_changed or previous.units != settings.units or previous.stick_mode != settings.stick_mode:
+		_since_text = INF # changed readings/newly opened instruments refresh at once
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
 

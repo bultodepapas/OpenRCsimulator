@@ -6,7 +6,7 @@ const DIAL_ICONS := {airspeed_dial = "speed", attitude = "height", altimeter = "
 const SKY := Color("35789e")
 const EARTH := Color("78513b")
 const DIAL := Color("0b141c")
-const RADIUS := 100.0
+var _horizon_disc := PackedVector2Array()
 var _face: Control
 var _dial_value := NAN
 var _pitch := NAN
@@ -20,10 +20,20 @@ var _over_range := false
 
 func _init(instrument_id: String) -> void:
 	super(instrument_id, DIAL_TITLES[instrument_id], DIAL_ICONS[instrument_id])
+	if id == "attitude": _horizon_disc = _make_horizon_disc()
 	value_label.get_parent().hide()
 	graphic.custom_minimum_size = Vector2(240, 236)
 	body.move_child(graphic, 0)
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 13)
+	var readout := _surface_style(Color("071119", 0.85), 6)
+	readout.border_color = Color("627888", 0.25)
+	readout.set_border_width_all(1)
+	readout.content_margin_top = 5
+	readout.content_margin_bottom = 5
+	readout.content_margin_left = 6
+	readout.content_margin_right = 6
+	subtitle.add_theme_stylebox_override("normal", readout)
 	_face = Control.new()
 	_face.name = "DialFace"
 	_face.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -31,6 +41,9 @@ func _init(instrument_id: String) -> void:
 	graphic.add_child(_face)
 	_face.draw.connect(_draw_face)
 	graphic.resized.connect(_face.queue_redraw)
+	# Text can briefly require more height while telemetry/units initialize. Keep every dial fitted to
+	# its final contents instead of retaining that transient height and misaligning the cockpit row.
+	minimum_size_changed.connect(_queue_content_fit)
 	_apply_density()
 
 
@@ -115,9 +128,20 @@ func _draw_face() -> void:
 	_face.draw_circle(Vector2(0, 3), 111, Color(0, 0, 0, 0.5))
 	_face.draw_circle(Vector2.ZERO, 109, Color("3a4d5b"))
 	_face.draw_circle(Vector2.ZERO, 106, Color("101a22"))
+	_face.draw_circle(Vector2.ZERO, 104, Color("506575"))
+	_face.draw_circle(Vector2.ZERO, 102, Color("060e15"))
 	_face.draw_circle(Vector2.ZERO, 101, DIAL)
 	_face.draw_arc(Vector2.ZERO, 108, PI * 1.08, PI * 1.92, 40, Color("9bafbc", 0.5), 1.5, true)
 	_face.draw_arc(Vector2.ZERO, 103, 0, TAU, 90, Color("597181", 0.5), 1, true)
+	_face.draw_arc(Vector2.ZERO, 106, 0.12 * PI, 0.88 * PI, 32, Color("03090e", 0.9), 2, true)
+	_face.draw_arc(Vector2.ZERO, 99, PI * 1.08, PI * 1.92, 40, Color("8ca2b1", 0.12), 1, true)
+	# Small recessed fasteners stay on the static face, outside the scale and readout.
+	for x: float in [-99.0, 99.0]:
+		for y: float in [-99.0, 99.0]:
+			var at := Vector2(x, y)
+			_face.draw_circle(at + Vector2(0, 1), 4, Color("050c12"), true, -1, true)
+			_face.draw_circle(at, 2.8, Color("344653"), true, -1, true)
+			_face.draw_line(at - Vector2(1.4, 1.4), at + Vector2(1.4, 1.4), Color("0b151e"), 1, true)
 	match id:
 		"airspeed_dial":
 			var limit := 160.0 if _system == "imperial" else (70.0 if _system == "si" else 240.0)
@@ -149,7 +173,8 @@ func _scale(canvas: Control, low: float, high: float, divisions: int, major: int
 		var fraction := float(tick) / divisions
 		var direction := Vector2.RIGHT.rotated(deg_to_rad(lerpf(start, end, fraction)))
 		var bold := tick % major == 0
-		canvas.draw_line(direction * (83 if bold else 90), direction * 97, INK if bold else MUTED, 2 if bold else 1, true)
+		canvas.draw_line(direction * (83 if bold else 90), direction * 97, INK if bold else Color(MUTED, 0.65), 2 if bold else 1, true)
+		if bold: canvas.draw_line(direction * 98, direction * 100, Color(ACCENT, 0.65), 1.5, true)
 		if bold: _text(canvas, String.num(lerpf(low, high, fraction), 0), direction * 70, 16, INK)
 
 
@@ -169,9 +194,11 @@ func _draw_instrument() -> void:
 				_needle(altimeter_angles(_dial_value).x, 81, 3, INK)
 			"variometer": _needle(PI + clampf(_dial_value / _maximum, -1, 1) * PI * 0.75, 78, 3, INK)
 		if id not in ["attitude", "heading"]:
-			graphic.draw_circle(Vector2.ZERO, 9, Color("415665"))
-			graphic.draw_circle(Vector2.ZERO, 5, DIAL)
-			graphic.draw_circle(Vector2(-1, -2), 2, Color("8399a8"))
+			graphic.draw_circle(Vector2(1, 2), 10, Color(0, 0, 0, 0.45), true, -1, true)
+			graphic.draw_circle(Vector2.ZERO, 8, Color("637c8d"), true, -1, true)
+			graphic.draw_circle(Vector2.ZERO, 6, DIAL, true, -1, true)
+			graphic.draw_arc(Vector2.ZERO, 6, PI, TAU, 18, Color("b8c6cf", 0.65), 1, true)
+			graphic.draw_circle(Vector2.ZERO, 2, ACCENT, true, -1, true)
 	graphic.draw_set_transform(Vector2.ZERO)
 
 
@@ -183,7 +210,12 @@ func _needle(angle: float, length: float, width: float, color: Color) -> void:
 	var dir := Vector2.RIGHT.rotated(angle)
 	var side := dir.orthogonal() * width
 	var points := PackedVector2Array([-dir * 17 - side, dir * (length - 9) - side * 0.4, dir * length, dir * (length - 9) + side * 0.4, -dir * 17 + side])
+	var shadow := PackedVector2Array()
+	for point: Vector2 in points: shadow.append(point + Vector2(1.5, 2.5))
+	graphic.draw_colored_polygon(shadow, Color(0, 0, 0, 0.5))
 	graphic.draw_colored_polygon(points, color)
+	graphic.draw_colored_polygon(PackedVector2Array([-dir * 17, dir * length, dir * (length - 9) + side * 0.4, -dir * 17 + side]), color.darkened(0.25))
+	graphic.draw_line(dir * (length - 12), dir * (length - 2), ACCENT, 1.5, true)
 
 
 func _draw_heading() -> void:
@@ -206,15 +238,20 @@ static func horizon_point(point: Vector2, pitch: float, bank: float) -> Vector2:
 	return (point + Vector2(0, pitch * 2.0)).rotated(deg_to_rad(-bank))
 
 
-static func ground_polygon(pitch: float, bank: float) -> PackedVector2Array:
+static func _make_horizon_disc() -> PackedVector2Array:
 	var circle := PackedVector2Array()
 	for i in 96: circle.append(Vector2.RIGHT.rotated(float(i) / 96.0 * TAU) * 91)
+	return circle
+
+
+static func ground_polygon(pitch: float, bank: float, disc := PackedVector2Array()) -> PackedVector2Array:
+	if disc.is_empty(): disc = _make_horizon_disc()
 	var normal := Vector2.DOWN.rotated(deg_to_rad(-bank))
 	var offset := pitch * 2.0
 	var clipped := PackedVector2Array()
-	var previous := circle[circle.size() - 1]
+	var previous := disc[disc.size() - 1]
 	var prev_distance := normal.dot(previous) - offset
-	for current: Vector2 in circle:
+	for current: Vector2 in disc:
 		var distance := normal.dot(current) - offset
 		if (distance >= 0) != (prev_distance >= 0):
 			clipped.append(previous.lerp(current, prev_distance / (prev_distance - distance)))
@@ -226,15 +263,15 @@ static func ground_polygon(pitch: float, bank: float) -> PackedVector2Array:
 
 func _draw_horizon() -> void:
 	graphic.draw_circle(Vector2.ZERO, 91, SKY)
-	var ground := ground_polygon(_pitch, _bank)
+	var ground := ground_polygon(_pitch, _bank, _horizon_disc)
 	if ground.size() >= 3: graphic.draw_colored_polygon(ground, EARTH)
 	var offset := _pitch * 2.0
 	if absf(offset) < 91:
 		var half := sqrt(91.0 * 91.0 - offset * offset)
 		graphic.draw_line(horizon_point(Vector2(-half, 0), _pitch, _bank), horizon_point(Vector2(half, 0), _pitch, _bank), INK, 2, true)
-	for angle in range(-80, 81, 10):
+	for angle in range(-80, 81, 5):
 		if angle == 0: continue
-		var width := 27.0 if angle % 20 == 0 else 16.0
+		var width := 27.0 if angle % 20 == 0 else (16.0 if angle % 10 == 0 else 8.0)
 		var left := horizon_point(Vector2(-width, -angle * 2.0), _pitch, _bank)
 		var right := horizon_point(Vector2(width, -angle * 2.0), _pitch, _bank)
 		if maxf(left.length(), right.length()) < 75:
@@ -242,6 +279,7 @@ func _draw_horizon() -> void:
 			if angle % 20 == 0:
 				var label_position := horizon_point(Vector2(width + 13, -angle * 2.0), _pitch, _bank)
 				if label_position.length() < 73: _text(graphic, str(absi(angle)), label_position, 11, INK)
+	graphic.draw_arc(Vector2.ZERO, 91, 0, TAU, 96, Color("050c12", 0.65), 3, true)
 	var bank_tip := Vector2.UP.rotated(deg_to_rad(-_bank))
 	var bank_side := bank_tip.orthogonal() * 5
 	graphic.draw_colored_polygon(PackedVector2Array([bank_tip * 92, bank_tip * 82 + bank_side, bank_tip * 82 - bank_side]), INK)

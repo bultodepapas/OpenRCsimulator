@@ -1184,11 +1184,23 @@ msgstr "Jugador"
 msgid "Player instruments"
 msgstr "Instrumentos del jugador"
 
+msgid "Modern"
+msgstr "Modernos"
+
+msgid "Classic"
+msgstr "Clásicos"
+
 msgid "Use player layout"
 msgstr "Usar diseño de jugador"
 
 msgid "Drag an instrument header during flight to move it. Close with ×; reopen it here."
 msgstr "Arrastra el encabezado de un instrumento para moverlo durante el vuelo. Ciérralo con × y vuelve a abrirlo aquí."
+
+msgid "Drag a header in flight to move an instrument."
+msgstr "Arrastra un encabezado en vuelo para mover el instrumento."
+
+msgid "F2 cycles presets; F3 shows developer overlays."
+msgstr "F2 cambia de conjunto; F3 muestra los indicadores de desarrollo."
 
 msgid "Lock widget positions"
 msgstr "Bloquear posiciones de los widgets"
@@ -1198,6 +1210,9 @@ msgstr "Restablecer posiciones de los widgets"
 
 msgid "Other overlays & diagnostics"
 msgstr "Otros indicadores y diagnósticos"
+
+msgid "Other overlays"
+msgstr "Otros indicadores"
 
 msgid "Warnings"
 msgstr "Avisos"

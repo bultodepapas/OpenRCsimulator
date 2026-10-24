@@ -124,6 +124,11 @@ On supported Stik, P-51D and stock Ventage Jet configurations, **J** opens a sep
 
 ## 4. Settings and flight options
 
+The **Flight overlays** dialog has four sections: **Modern**, **Classic**, **Appearance** and **Other overlays**.
+Preset and Units stay above the scrolling section, and Done stays below it. Use Appearance for widget size,
+background, compact density, position lock and layout reset. Tabs support mouse and keyboard navigation; changing
+a section does not change your flight layout. Developer overlays and transmitter options are under Other overlays.
+
 **Settings.** Home pins Fly and utility actions; scroll for Workshop, practice and RC cars. Settings (Home or Pause) covers windowed/borderless display, themed text size, opaque panels, reduced motion, language, sound, Controls and Help/About. Game and menu-cue volume preview live. Display previews revert after 15 seconds unless kept; Back discards unkept display changes, while language saves immediately. Preferences are separate from aircraft and controller profiles.
 
 Current source adds **Settings → Graphics**: unlimited or 30/60/90/120/144/165/240 FPS,
