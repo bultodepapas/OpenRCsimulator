@@ -537,6 +537,7 @@ static func update(environment: Environment, clock_s: float, wind := Vector3.ZER
 		var wind_field: Node3D = field_ref.get_ref() as Node3D
 		if is_instance_valid(wind_field):
 			FieldBuilder.update_wind(wind_field, clock_s, wind)
+			FieldBuilder.update_people(wind_field)
 	if not _flow.is_empty():
 		flow_to(clock_s)
 		flow_frame(clock_s)

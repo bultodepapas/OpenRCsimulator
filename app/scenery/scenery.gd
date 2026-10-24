@@ -329,7 +329,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						var foot_height := SupportSurfaces.height_at(pl.north, pl.east, support_surfaces) if prefab.begins_with("person_") else 0.0
 						if prefab == "person_sitting":
 							foot_height += SupportSurfaces.SEATED_OFFSET_M
-						Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height)
+						Population.queue(population_batches, prefab, xf, pl.seed, spec.size, foot_height, str(group.get("zone", "")))
 					elif Prefabs.CATALOG.has(prefab):
 						kit.xf = xf
 						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)

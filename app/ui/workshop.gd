@@ -2134,10 +2134,16 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	for button: Button in [_guard_dialog.get_ok_button(), _guard_dialog.get_cancel_button(), discard]:
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_guard_dialog.confirmed.connect(_navigation_save)
+	# Save and Discard can close the Workshop, and this dialog with it, while the dialog's own viewport is still
+	# dispatching the keyboard Accept that pressed the button: end that dispatch first (PT1h-R8 monkey finding).
+	_guard_dialog.confirmed.connect(func() -> void:
+		_end_dialog_input(_guard_dialog)
+		_navigation_save())
 	_guard_dialog.canceled.connect(_navigation_abort)
 	_guard_dialog.custom_action.connect(func(action: String) -> void:
-		if action == "discard": _navigation_finish())
+		if action == "discard":
+			_end_dialog_input(_guard_dialog)
+			_navigation_finish())
 	host.add_child(_guard_dialog)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2162,6 +2168,11 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	if not _edit_valid(): _guard_error.text = tr("This build cannot be saved until its errors are resolved.")
 	_guard_dialog.popup_centered_clamped(Vector2i(popup_width, 440), 0.9)
 	_guard_dialog.get_cancel_button().grab_focus()
+
+
+static func _end_dialog_input(dialog: Window) -> void:
+	if is_instance_valid(dialog) and dialog.is_inside_tree():
+		dialog.set_input_as_handled()
 
 
 func _navigation_save() -> void:

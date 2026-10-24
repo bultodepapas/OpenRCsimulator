@@ -937,13 +937,15 @@ func _ready() -> void:
 		await _capture(t, c, args.get("out", "user://capture.png"))
 
 
-func _advance_windsock(_tick: int, time_s: float, _state: PackedFloat64Array,
+func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	var wind_ned: Array = Array(session.wind_at(time_s))
 	if _tick == 0:
 		FieldBuilder.reset_wind(_field_node, time_s, wind_ned)
 	else:
 		FieldBuilder.advance_wind(_field_node, time_s, wind_ned)
+	# SC-HUM-03: field people follow the aircraft (render-only head state).
+	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0)
 
 
 func _process(delta: float) -> void:

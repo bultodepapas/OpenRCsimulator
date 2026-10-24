@@ -75,6 +75,13 @@ def token() -> str:
 
 def parse_value(text: str):
     if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
+        if text[0] == '"':
+            try:
+                decoded = json.loads(text)  # "\n", "\u00d7" and \" escapes, as json.dumps writes them
+                if isinstance(decoded, str):
+                    return decoded
+            except json.JSONDecodeError:
+                pass
         return text[1:-1]  # quoted in a script: always a string ("2" names the key, not the number)
     try:
         return json.loads(text)
@@ -508,8 +515,7 @@ def split_line(line: str) -> list[str]:
                 word, escaped = word + ch, False
             elif ch == "\\":
                 escaped = True
-                if depth:
-                    word += ch
+                word += ch  # kept: parse_value decodes JSON escapes in double quotes
             elif ch == quote:
                 quote = None
                 word += ch
@@ -709,8 +715,14 @@ def rss_mib(pid) -> float | None:
     return None
 
 
-MONKEY_AVOID = re.compile(r"quit|exit|desktop|download|website|github|browser|open folder|report a bug|delete|uninstall",
-                          re.IGNORECASE)
+# Leaving the app or the machine is out of bounds; "Exit options" and "Return to Home" are fair game.
+MONKEY_AVOID = re.compile(r"\bquit\b|\bsalir\b|desktop|escritorio|download|descargar|website|github|browser|navegador|"
+                          r"open folder|report a bug|delete|borrar|uninstall", re.IGNORECASE)
+
+
+def monkey_allowed(control: dict) -> bool:
+    return (not control.get("disabled") and control["type"] not in ("LineEdit", "TextEdit")
+            and not MONKEY_AVOID.search(control["text"]) and control["path"].rsplit("/", 1)[-1] != "Quit")
 
 
 def monkey(argv: list[str]) -> int:
@@ -727,18 +739,23 @@ def monkey(argv: list[str]) -> int:
     trail = [f"# debugctl.py monkey --seed {seed}: replay with debugctl.py run {out.name}"]
     since = result_of("ping")["log_seq"]
     started_at: list[tuple[int, str]] = []  # (frame when the action was sent, action)
+    visited: set[str] = set()
+    route = result_of("ping")["route"]
     failure = None
     for step in range(steps):
         listing = result_of("ui")
-        controls = [c for c in listing["controls"] if not c.get("disabled") and not MONKEY_AVOID.search(c["text"])
-                    and c["type"] not in ("LineEdit", "TextEdit")]
+        controls = [c for c in listing["controls"] if monkey_allowed(c)]
+        visited.add(f"{route}:{short_path(listing['scope'] or '/root', '')}")
         line = monkey_action(rng, controls, keys)
         trail.append(line)
-        started_at.append((result_of("ping")["frame"], line))
+        ping = result_of("ping")
+        started_at.append((ping["frame"], line))
+        route = ping["route"]
         try:
             execute_quiet(line)
         except (Refused, ValueError) as error:
-            trail.append(f"# refused: {error}")  # a refused action is fine; the walk goes on
+            # A refused action changed nothing: comment it out so a replay follows the same path.
+            trail[-1] = f"# refused: {trail[-1]}  ({error})"
         except OSError as error:
             failure = f"step {step + 1}: the app stopped answering ({error})"
             break
@@ -755,6 +772,7 @@ def monkey(argv: list[str]) -> int:
         print(f"slow after {action}: {', '.join(f'{ms:.0f} ms' for ms in frames_ms)}")
     print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]),
                       "refused": len([l for l in trail if l.startswith("# refused")]), "failure": failure,
+                      "visited": sorted(visited),
                       "route": result_of("state")["route"] if failure is None or "answering" not in failure else None,
                       "trail": str(out)}))
     return 1 if failure else 0

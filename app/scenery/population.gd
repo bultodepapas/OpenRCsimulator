@@ -18,12 +18,13 @@ static func handles(id: String) -> bool:
 	return ASSETS.has(id)
 
 
-static func queue(batches: Dictionary, id: String, xf: Transform3D, seed: int, size: Vector3, foot_height: float = 0.0) -> void:
+static func queue(batches: Dictionary, id: String, xf: Transform3D, seed: int, size: Vector3, foot_height: float = 0.0,
+		zone: String = "") -> void:
 	var asset: String = ASSETS[id]
 	if not batches.has(asset):
 		batches[asset] = []
 	xf.origin.y += foot_height
-	batches[asset].append({id = id, transform = xf, seed = seed, size = size, foot_height = foot_height})
+	batches[asset].append({id = id, transform = xf, seed = seed, size = size, foot_height = foot_height, zone = zone})
 
 
 static func build(batches: Dictionary) -> Node3D:
@@ -32,6 +33,9 @@ static func build(batches: Dictionary) -> Node3D:
 	var instance_total := 0
 	var triangle_total := 0
 	var moving_total := 0
+	# SC-HUM-03: one entry per person for PeopleGaze; nodes per asset receive its yaw/pitch writes.
+	var people: Array[Dictionary] = []
+	var people_nodes := {}
 	for asset: String in batches:
 		var source := _source(asset)
 		if source.is_empty():
@@ -66,11 +70,20 @@ static func build(batches: Dictionary) -> Node3D:
 				instance_transforms.append(xf)
 				mm.set_instance_transform(i, xf)
 				var tint: Color = Palette.pick(Palette.PAINTS, int(p.seed), 17) if not human else Palette.pick(SHIRT_TINTS, int(p.seed), 2)
+				if human:
+					tint.a = 0.5 # Head pitch encoding: 0.5 + pitch / PI (level head).
 				mm.set_instance_color(i, tint)
 				var moving := human and (asset == "pilot" or Palette.hash01(int(p.seed), 91) < 0.30)
-				mm.set_instance_custom_data(i, Color(Palette.hash01(int(p.seed), 77), 1.0 if moving else 0.0, Palette.hash01(int(p.seed), 4), 0.0))
+				var custom := Color(Palette.hash01(int(p.seed), 77), 1.0 if moving else 0.0, Palette.hash01(int(p.seed), 4), 0.0)
+				mm.set_instance_custom_data(i, custom)
 				if part_index == 0 and moving:
 					moving_total += 1
+				if part_index == 0 and human and source.has("head"):
+					var placement: Transform3D = p.transform
+					people.append({asset = asset, index = i, seed = int(p.seed), id = str(p.id),
+						role = _role(str(p.id), str(p.get("zone", ""))),
+						pivot = placement * fit * (source.head.pivot as Vector3),
+						basis = placement.basis.orthonormalized(), tint = tint, custom = custom})
 				var box: AABB = xf * mesh.get_aabb()
 				combined = box if i == 0 else combined.merge(box)
 			var node := MultiMeshInstance3D.new()
@@ -88,11 +101,26 @@ static func build(batches: Dictionary) -> Node3D:
 			node.set_meta("instance_transforms", instance_transforms)
 			node.set_meta("source_bounds", bounds)
 			root.add_child(node)
+			if human:
+				if not people_nodes.has(asset):
+					people_nodes[asset] = []
+				people_nodes[asset].append(node)
 			triangle_total += triangles(mesh) * placements.size()
 	root.set_meta("instances", instance_total)
 	root.set_meta("triangles", triangle_total)
 	root.set_meta("moving_people", moving_total)
+	root.set_meta("people", people)
+	root.set_meta("people_nodes", people_nodes)
 	return root
+
+
+## Gaze role from the placement: flight-line pilots stay coupled to the aircraft.
+static func _role(id: String, zone: String) -> String:
+	if id == "person_pilot" or zone == "pilot_line":
+		return "pilot"
+	if zone == "pits":
+		return "pits"
+	return "spectator"
 
 
 static func triangles(mesh: Mesh) -> int:
@@ -137,6 +165,12 @@ static func _source(asset: String) -> Dictionary:
 		push_error("LU21 empty population geometry: " + asset)
 		return {}
 	var result := {parts = parts, bounds = bounds}
+	if asset in ["standing", "sitting", "pilot"]:
+		var head := head_rig(parts)
+		if not head.is_empty():
+			result.head = head
+			for part: Dictionary in parts:
+				_set_head_parameters(part, head)
 	_cache[asset] = result
 	return result
 
@@ -165,7 +199,7 @@ static func _collect(node: Node, parent_xf: Transform3D, parts: Array[Dictionary
 					elif "alloy" in original.resource_name.to_lower() or "chrome" in original.resource_name.to_lower():
 						material.roughness = maxf(material.roughness, 0.38)
 				mesh.surface_set_material(surface, material)
-		parts.append({mesh = mesh, transform = xf})
+		parts.append({mesh = mesh, transform = xf, name = str(node.name)})
 	for child: Node in node.get_children():
 		_collect(child, xf, parts, asset)
 
@@ -185,3 +219,64 @@ static func _person_material(original: StandardMaterial3D, asset: String) -> Sha
 	material.set_shader_parameter("skin", original.resource_name.ends_with(".body"))
 	material.set_shader_parameter("shirt_start", 0.53 if asset == "sitting" else 0.90)
 	return material
+
+
+## SC-HUM-03: neck pivot and weight band from the posed mesh itself, so regenerated people need
+## no authored head weights. The eye proxy gives the eye height; the cranium above it gives the
+## yaw axis. Below the band and outside the radius (shoulders, hands, transmitter) nothing moves.
+static func head_rig(parts: Array[Dictionary]) -> Dictionary:
+	var eye_y := NAN
+	var top := -INF
+	for part: Dictionary in parts:
+		if "transmitter" in str(part.name).to_lower():
+			continue
+		var box: AABB = (part.transform as Transform3D) * (part.mesh as Mesh).get_aabb()
+		top = maxf(top, box.end.y)
+		if "low-poly" in str(part.name).to_lower():
+			eye_y = box.get_center().y
+	if not is_finite(top):
+		return {}
+	if not is_finite(eye_y):
+		eye_y = top - 0.12
+	var sum := Vector2.ZERO
+	var count := 0
+	for part: Dictionary in parts:
+		if "transmitter" in str(part.name).to_lower():
+			continue
+		var xf: Transform3D = part.transform
+		var mesh: Mesh = part.mesh
+		for surface in mesh.get_surface_count():
+			var vertices: PackedVector3Array = mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX]
+			for vertex: Vector3 in vertices:
+				var v := xf * vertex
+				if v.y > eye_y:
+					sum += Vector2(v.x, v.z)
+					count += 1
+	if count == 0:
+		return {}
+	var axis := sum / float(count)
+	return {pivot = Vector3(axis.x, eye_y - 0.07, axis.y), band = Vector2(eye_y - 0.15, eye_y - 0.06),
+		radius = Vector2(0.13, 0.18), eye_y = eye_y}
+
+
+## CPU copy of the shader's head weight, for tests and diagnostics.
+static func head_weight(head: Dictionary, vertex: Vector3) -> float:
+	var band: Vector2 = head.band
+	var radius: Vector2 = head.radius
+	var pivot: Vector3 = head.pivot
+	var r := Vector2(vertex.x - pivot.x, vertex.z - pivot.z).length()
+	return smoothstep(band.x, band.y, vertex.y) * (1.0 - smoothstep(radius.x, radius.y, r))
+
+
+static func _set_head_parameters(part: Dictionary, head: Dictionary) -> void:
+	var mesh: Mesh = part.mesh
+	# Shader VERTEX is part-local; the pivot is in asset space.
+	var local_pivot: Vector3 = (part.transform as Transform3D).affine_inverse() * (head.pivot as Vector3)
+	for surface in mesh.get_surface_count():
+		var material := mesh.surface_get_material(surface) as ShaderMaterial
+		if material == null or material.shader != HUMAN_SHADER:
+			continue
+		material.set_shader_parameter("head_enabled", true)
+		material.set_shader_parameter("head_pivot", local_pivot)
+		material.set_shader_parameter("head_band", head.band)
+		material.set_shader_parameter("head_radius", head.radius)

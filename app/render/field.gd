@@ -18,6 +18,7 @@ const FieldProjectedShadows = preload("res://render/field_projected_shadows.gd")
 const FlightCueShadows = preload("res://render/flight_cue_shadows.gd")
 const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; explicit scenery-off remains a no-op.
+const PeopleGaze = preload("res://scenery/people_gaze.gd")
 const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
 const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
@@ -109,6 +110,11 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 	if lake_node != null:
 		materials.append_array(lake_node.get_meta("lighting_materials"))
 	var scenery_node := result.get_node_or_null("Scenery")
+	# SC-HUM-03: low scenery quality keeps the population static.
+	if scenery_node != null and str(scenery_options.quality) != "low":
+		var gaze: RefCounted = PeopleGaze.from_population(scenery_node.get_node_or_null("Population") as Node3D)
+		if gaze != null:
+			result.set_meta("people_gaze", gaze)
 	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
 	exclusions = exclusions.duplicate()
 	exclusions.append_array(extra_grass_exclusions)
@@ -171,6 +177,26 @@ static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> vo
 		return
 	for cue: Node3D in field_node.get_meta("wind_cues", []):
 		Windsock.reset(cue, time_s, wind_ned)
+
+
+## SC-HUM-03: advance the people's head state with the simulation tick. `aircraft_ned` is the
+## aircraft position in NED; reset restarts every head at rest (tick zero, restarts).
+static func advance_people(field_node: Node3D, time_s: float, aircraft_ned: Array, reset: bool = false) -> void:
+	if field_node == null or not field_node.has_meta("people_gaze"):
+		return
+	var gaze: RefCounted = field_node.get_meta("people_gaze")
+	var target: Vector3 = Frames.ned_to_render(aircraft_ned)
+	if reset:
+		gaze.reset(time_s, target)
+	else:
+		gaze.update_to(time_s, target)
+
+
+## Publish the latest head angles once per rendered frame.
+static func update_people(field_node: Node3D) -> void:
+	if field_node == null or not field_node.has_meta("people_gaze"):
+		return
+	(field_node.get_meta("people_gaze") as RefCounted).apply()
 
 
 ## Render boundary: world wind is east/up/south; the motion model consumes north/east/down.
