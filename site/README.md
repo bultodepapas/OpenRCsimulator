@@ -151,6 +151,9 @@ The README and partner section credit Savox, SonicModell and Hitec within their 
 
 2026-10-24 update: the partner section and project README add scoped text acknowledgments for FLYWING, GEMFAN, KONTRONIK and Leomotion Drives, plus REVOC Custom's community support and Aloft Hobbies' forum sharing. [The permission summary](BRANDS.md) records each limit. No additional logo or product asset was introduced.
 
+Later on 2026-10-24, the Savox tiles switched to the official orange-and-black variant for light backgrounds. The prepared WebP trims excess transparent canvas while retaining clear space; [brand provenance](BRANDS.md) records the source and preparation.
+Visual review at 1920×1080 and 390×844 checked the support logo strip and partner section: Savox, SonicModell and Hitec load, remain in order and have comparable visual scale. The mobile page has no horizontal overflow. The desktop partner row was also reviewed in night mode. Review screenshots stayed outside the Git repository.
+
 Verification: JavaScript syntax checks passed. Browser checks at 1280×900 and 390×900, both languages × both themes, found three decoded logos, no missing translations and no horizontal overflow. Desktop/day and mobile/night captures were visually reviewed. Console: zero errors or warnings. The eight partner captures are retained in [site media evidence](../docs/media/site/).
 
 WEB-06 support-strip refinement: centered the support content at a maximum 1280 px, enlarged development credits, replaced the single tiny Savox introduction with all three official logos and a clear partner link. Verified 3714, 1280 and 390 px widths × ES/EN × day/night: no overflow, missing translations or failed logo decodes. Desktop and mobile night captures were visually reviewed; [desktop](../docs/media/site/support-desktop.png) and [mobile](../docs/media/site/support-mobile.png) captures are retained.
