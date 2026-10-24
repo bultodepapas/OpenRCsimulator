@@ -212,8 +212,9 @@ TRANSMITTER_WRIST = (0.10, 0.04, 0.02)
 TRANSMITTER_KNUCKLES = (0.085, 0.035, 0.12)
 TRANSMITTER_THUMB = (0.05, -0.034, 0.10)
 FINGER_CURL_DEG = 55.0
-TRANSMITTER_MIN_PART_M = 0.006  # screws, LEDs and printed marks are below a pixel at field range
-TRANSMITTER_TRIANGLES = 2400  # plan §7: at most 3k triangles close; Godot adds automatic LODs
+TRANSMITTER_MIN_PART_M = 0.010  # screws, LEDs, knobs and printed marks are below a pixel at field range
+TRANSMITTER_TRIANGLES = 800  # keeps each pilot within the 8,000-triangle person cap; Godot adds automatic LODs
+TRANSMITTER_PART_FLOOR = 12  # triangles a small part keeps (a six-sided stick)
 
 def import_transmitter(path):
     """Append the transmitter's visible parts as frozen mesh objects, one per material, in its source frame.
@@ -234,6 +235,8 @@ def import_transmitter(path):
         return obj.name == TRANSMITTER_ROOT
     bpy.context.view_layer.update()
     gimbal_mid = (by_name[TRANSMITTER_GIMBALS[0]].matrix_world.translation + by_name[TRANSMITTER_GIMBALS[1]].matrix_world.translation) * 0.5
+    def evaluated_copy(obj):
+        return bpy.data.meshes.new_from_object(obj.evaluated_get(bpy.context.evaluated_depsgraph_get()))
     frozen = []
     for obj in loaded:
         if obj.type not in ('MESH', 'CURVE') or not under_root(obj) or max(obj.dimensions) < TRANSMITTER_MIN_PART_M:
@@ -241,15 +244,36 @@ def import_transmitter(path):
         for modifier in list(obj.modifiers):
             if modifier.type in ('BEVEL', 'WEIGHTED_NORMAL'):
                 obj.modifiers.remove(modifier)  # edge rounding is invisible at field range
-        mesh = bpy.data.meshes.new_from_object(obj.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+        mesh = evaluated_copy(obj)
         mesh.transform(obj.matrix_world)
         if not mesh.uv_layers:
             mesh.uv_layers.new()  # untextured parts become atlas swatches; the merge still reads a UV set
         part = bpy.data.objects.new('RC_Transmitter_' + obj.name, mesh)
         bpy.context.scene.collection.objects.link(part)
+        # Merge coplanar faces first (no shape change), so the collapse below spends nothing on flat panels.
+        planar = part.modifiers.new('Transmitter planar merge', 'DECIMATE')
+        planar.decimate_type = 'DISSOLVE'
+        planar.angle_limit = math.radians(5.0)
+        planar.delimit = {'MATERIAL'}
+        part.modifiers.new('Transmitter triangles', 'TRIANGULATE')
+        part.data = evaluated_copy(part)
+        part.modifiers.clear()
         frozen.append(part)
     for obj in loaded:
         bpy.data.objects.remove(obj, do_unlink=True)
+    def triangle_count(objects):
+        return sum(len(poly.vertices) - 2 for obj in objects for poly in obj.data.polygons)
+    source_triangles = triangle_count(frozen)
+    # Share the budget by surface area: the housing that is seen keeps its outline; small parts keep a floor.
+    areas = {part.name: sum(poly.area for poly in part.data.polygons) for part in frozen}
+    total_area = sum(areas.values())
+    for part in frozen:
+        target = max(TRANSMITTER_PART_FLOOR, TRANSMITTER_TRIANGLES * areas[part.name] / total_area)
+        if target < triangle_count([part]):
+            collapse = part.modifiers.new('Transmitter detail reduction', 'DECIMATE')
+            collapse.ratio = target / triangle_count([part])
+            part.data = evaluated_copy(part)
+            part.modifiers.clear()
     bpy.ops.object.select_all(action='DESELECT')
     for part in frozen:
         part.select_set(True)
@@ -257,10 +281,6 @@ def import_transmitter(path):
     bpy.ops.object.join()
     joined = bpy.context.object
     joined.name = 'RC_Transmitter'
-    source_triangles = sum(len(poly.vertices) - 2 for poly in joined.data.polygons)
-    decimate = joined.modifiers.new('Transmitter detail reduction', 'DECIMATE')
-    decimate.ratio = min(1.0, TRANSMITTER_TRIANGLES / source_triangles)
-    bpy.ops.object.modifier_apply(modifier=decimate.name)
     for material in joined.data.materials:
         if material and not material.name.startswith('RC_Transmitter_'):
             material.name = 'RC_Transmitter_' + material.name  # merge_people_atlas: rigid transmitter class
