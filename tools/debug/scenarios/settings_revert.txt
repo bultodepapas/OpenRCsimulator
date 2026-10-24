@@ -1,0 +1,6 @@
+# Settings without a mouse: change the resolution choice, revert it, close.
+open screen=settings
+select text=WindowResolution item="1920 × 1080"
+press text="Revert"
+close
+assert expr="screens.is_top('home')" message="settings closed"

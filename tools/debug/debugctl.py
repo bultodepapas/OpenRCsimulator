@@ -7,10 +7,13 @@
   debugctl.py status | ready [--timeout S] | stop [--force]                session: alive?, wait for it, quit it
   debugctl.py logs [--since N] [--level error,warning] [--follow]          engine/script log and state-change events
   debugctl.py watch [--every TICKS] [--count N] [--csv FILE] name=expr ... live values every n simulation ticks
+  debugctl.py timeline [--since N] [--top N]                               where wall time went between log lines
   debugctl.py run FILE|- [--keep-going] [--fail-on-error]                  a repro script: one command per line
   debugctl.py crawl [--shots]                                              open/list/close every screen here; report errors
   debugctl.py soak FILE [--cycles N] [--warmup N] [--tolerance N]          repeat a script; report what keeps growing
   debugctl.py monkey [--steps N] [--seed S] [--keys] [--out FILE]          seeded random UI walk; writes a repro on failure
+  debugctl.py smoke [--seed S] [--steps N] [--cycles N] [--app DIR]        own headless session: crawl, scenarios, monkey,
+                                                                           soak, exit report; one verdict (CI-ready)
   debugctl.py clean [--keep N]                                             delete old run folders (default keep 3; never a live one)
   debugctl.py repl                                                         interactive prompt (same syntax)
   debugctl.py <command> [key=value ...] [--pretty|--json|--paths]          any bridge command; `help` lists them
@@ -23,8 +26,10 @@ Guide: tools/debug/README.md.
 """
 from __future__ import annotations
 
+import contextlib
 import csv
 import datetime
+import io
 import json
 import os
 import random
@@ -334,6 +339,23 @@ def reserve_port(explicit: int | None) -> int | None:
     return None
 
 
+def live_sessions() -> list[int]:
+    ports = []
+    for claim in sorted(SESSIONS.glob("*.json")) if SESSIONS.exists() else []:
+        holder = session_for(int(claim.stem)) if claim.stem.isdigit() else {}
+        if holder.get("pid") and alive(holder.get("pid")):
+            ports.append(int(claim.stem))
+    return ports
+
+
+def ambiguous_target() -> list[int]:
+    """Several live sessions and no OPENRC_DEBUG_BRIDGE: the last launch may belong to another agent."""
+    if env_port() is not None:
+        return []
+    live = live_sessions()
+    return live if len(live) > 1 else []
+
+
 def forget_session(port_number: int, launcher_pid: int | None = None) -> None:
     """Remove a session's files, only if they still describe that launch (another agent may own the port now)."""
     claim = SESSIONS / f"{port_number}.json"
@@ -417,6 +439,11 @@ def status() -> int:
 
 
 def stop(argv: list[str]) -> int:
+    others = ambiguous_target()
+    if others:
+        print(f"debugctl: {len(others)} live sessions (ports {others}); stop yours with OPENRC_DEBUG_BRIDGE=<port>",
+              file=sys.stderr)
+        return 2
     session = current_session()
     pid = session.get("pid") or session.get("launcher_pid")
     if not pid and env_port() is None:
@@ -505,6 +532,24 @@ def logs(argv: list[str]) -> int:
             print(f"# last_seq {result['last_seq']}, dropped {result['dropped']}", file=sys.stderr)
             return 0
         time.sleep(0.25)
+
+
+def timeline(argv: list[str]) -> int:
+    """Phase attribution inside long frames: the largest wall-time gaps between consecutive log lines, with the line
+    before (what had just finished) and after. Launch with --verbose for one line per resource load."""
+    option = lambda name, default: int(argv[argv.index(name) + 1]) if name in argv else default  # noqa: E731
+    records = [r for r in result_of("logs", {"since": option("--since", 0), "limit": 2000})["records"]
+               if r["level"] != "event"]
+    if len(records) < 2:
+        print("timeline needs at least two log lines after the cursor (launch --verbose for resource loads)", file=sys.stderr)
+        return 1
+    gaps = sorted(((b["time_ms"] - a["time_ms"], a, b) for a, b in zip(records, records[1:])), key=lambda g: -g[0])
+    span = records[-1]["time_ms"] - records[0]["time_ms"]
+    print(f"# {len(records)} lines over {span} ms (frames {records[0]['frame']}..{records[-1]['frame']}); largest gaps:")
+    for gap, before, after in gaps[:option("--top", 12)]:
+        print(f"{gap:>7} ms  {gap * 100 / max(span, 1):4.1f} %  after: {before['text'][:100]}")
+        print(f"{'':>17}  next:  {after['text'][:100]}")
+    return 0
 
 
 def format_record(record: dict) -> str:
@@ -867,6 +912,65 @@ def slow_actions(started_at: list[tuple[int, str]]) -> dict:
     return slow
 
 
+SCENARIOS = Path(__file__).resolve().parent / "scenarios"
+
+
+def smoke(argv: list[str]) -> int:
+    """A self-contained regression pass in its own headless session (own port; other agents are untouched)."""
+    option = lambda name, default: argv[argv.index(name) + 1] if name in argv else default  # noqa: E731
+    seed, steps, cycles = option("--seed", "20261024"), option("--steps", "150"), option("--cycles", "3")
+    launch_args = ["--headless", "--timeout", "300"] + (["--app", option("--app", "")] if "--app" in argv else [])
+    capture = io.StringIO()
+    with contextlib.redirect_stdout(capture):
+        status = launch(launch_args)
+    if status != 0:
+        print("smoke: launch failed", file=sys.stderr)
+        return 2
+    session = json.loads(capture.getvalue().strip().splitlines()[-1])
+    os.environ["OPENRC_DEBUG_BRIDGE"] = str(session["port"])
+    results: list[tuple[str, int]] = []
+
+    def step(name: str, function, args: list[str]) -> None:
+        print(f"== {name}", flush=True)
+        try:
+            code = function(args)
+        except (Refused, OSError, ValueError) as error:
+            print(f"   {error}")
+            code = 1
+        results.append((name, code))
+
+    try:
+        step("crawl from Home", crawl, [])
+        for scenario in sorted(SCENARIOS.glob("*.txt")):
+            step(f"scenario {scenario.stem}", run_script, [str(scenario), "--fail-on-error"])
+        step("fly", lambda _: run_lines(["fly start=airborne", "wait frames=10"]), [])
+        step("crawl from the pause menu", crawl, [])
+        step("back to Home", lambda _: run_lines(["home"]), [])
+        step(f"monkey seed {seed}", monkey, ["--steps", steps, "--seed", seed, "--keys"])
+        step("back to Home", lambda _: run_lines(["home"]) if result_of("state")["route"] == "flight" else 0, [])
+        soak_file = Path(session["out"]) / "smoke-soak.txt"
+        soak_file.write_text("fly start=airborne\nwait frames=30\nhome\n")
+        step(f"soak fly/Home x{cycles}", soak, [str(soak_file), "--cycles", cycles, "--warmup", "1"])
+        hitches = result_of("frames")["hitch_total"]
+    finally:
+        capture = io.StringIO()
+        with contextlib.redirect_stdout(capture):
+            stop([])
+        ended = json.loads(capture.getvalue().strip().splitlines()[-1]) if capture.getvalue().strip() else {}
+    if ended.get("crash"):
+        results.append(("engine exit (crash)", 1))
+    failed = [name for name, code in results if code != 0]
+    print(json.dumps({"ok": not failed, "failed": failed, "steps": len(results), "hitches": hitches,
+                      "leaked_objects_at_exit": ended.get("leaked_objects", 0), "out": session["out"]}))
+    return 1 if failed else 0
+
+
+def run_lines(lines: list[str]) -> int:
+    for line in lines:
+        execute_quiet(line)
+    return 0
+
+
 def key_line(name: str) -> str:
     return f"key name={json.dumps(name, ensure_ascii=False)}"  # "Kp Enter" has a space
 
@@ -995,6 +1099,8 @@ def main(argv: list[str]) -> int:
             return logs(rest)
         if command == "watch":
             return watch(rest)
+        if command == "timeline":
+            return timeline(rest)
         if command == "run":
             return run_script(rest)
         if command == "repl":
@@ -1005,10 +1111,16 @@ def main(argv: list[str]) -> int:
             return soak(rest)
         if command == "monkey":
             return monkey(rest)
+        if command == "smoke":
+            return smoke(rest)
         if command == "ready":
             timeout = float(rest[rest.index("--timeout") + 1]) if "--timeout" in rest else 60.0
             print(json.dumps(wait_ready(timeout)["result"]))
             return 0
+        others = ambiguous_target()
+        if others:
+            print(f"debugctl: warning: live sessions on ports {others}; addressing the last launch ({port()}). "
+                  "Set OPENRC_DEBUG_BRIDGE=<port> when several agents share this machine.", file=sys.stderr)
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:

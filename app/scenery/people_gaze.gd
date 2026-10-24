@@ -25,9 +25,9 @@ var _nodes: Dictionary = {}
 var _epoch_time_s: float = 0.0
 var _step_index: int = 0
 var _last_observed_time_s: float = 0.0
-var _target := Vector3.ZERO
-var _previous_target := Vector3.ZERO
-var _velocity := Vector3.ZERO
+## Target 0 is the player's aircraft; target k + 1 is companion slot k (SC-HUM-04). Each holds
+## {valid, position, previous, velocity}; a companion that disappears falls back to the player.
+var _targets: Array[Dictionary] = []
 var _initialized: bool = false
 var _dirty: bool = true
 
@@ -47,9 +47,14 @@ static func from_population(population: Node3D) -> RefCounted:
 func configure(people: Array, nodes: Dictionary) -> void:
 	_nodes = nodes
 	_people.clear()
+	var next_slot := 0
 	for entry: Dictionary in people:
 		var person: Dictionary = entry.duplicate()
 		person.merge(_params(str(entry.get("role", "spectator")), int(entry.get("seed", 0))), true)
+		# Flight-line pilots fly the companions in roster order; everyone else watches the player.
+		person.companion_slot = next_slot if bool(person.coupled) else -1
+		if bool(person.coupled):
+			next_slot += 1
 		person.yaw = person.rest_yaw
 		person.pitch = person.rest_pitch
 		person.yaw_rate = 0.0

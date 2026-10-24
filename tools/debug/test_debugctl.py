@@ -301,6 +301,16 @@ class DebugctlTests(unittest.TestCase):
         self.run_cli("ping")
         self.assertEqual(self.bridge.requests[-1]["token"], "mine")
 
+    def test_stop_refuses_to_guess_between_live_sessions(self) -> None:
+        os.environ.pop("OPENRC_DEBUG_BRIDGE")
+        debugctl.SESSIONS.mkdir(parents=True)
+        for number in (40001, 40002):
+            (debugctl.SESSIONS / f"{number}.json").write_text(json.dumps({"port": number, "pid": os.getpid()}))
+        debugctl.CURRENT.write_text(json.dumps({"port": 40002}))
+        status, _, err = self.run_cli("stop")
+        self.assertEqual(status, 2)
+        self.assertIn("OPENRC_DEBUG_BRIDGE", err)
+
 
 if __name__ == "__main__":
     unittest.main()

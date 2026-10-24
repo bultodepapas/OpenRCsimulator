@@ -2,7 +2,7 @@
 
 2026-10-24 · Revision 3 · **Planning draft** · Step prefix: **SC-HUM** (Scenery subtrack; not yet in the [registry](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
 
-**Status:** proposal only. Nothing is implemented. Owner decisions D1–D10 (§9) are open. This plan expands the parked [SC-21 "Animated spectators"](../SCENERY-PLAN.md#remaining-work). Its evidence is the [web survey](../research/scenery-investigations/07-field-people-survey.md) (25 searches, 6 page reads); survey row IDs (H1, E1, A1, F1…) are cited inline.
+**Status:** in progress. [SC-HUM-03](../research/scenery-implementation/SC-HUM-03/README.md) (head aim, including the step-and-hold behaviour of SC-HUM-05 without the crash glance) is implemented and software-verified, 2026-10-24. Blender 5.2.2 LTS is installed in `.tools/` for the asset steps. SC-HUM-01 waits for the owner's transmitter models. The owner directed on 2026-10-24: proceed, and expose features that need more computing power as **advanced options** (§5.5). D1 is answered by that direction; D2–D10 remain open. This plan expands the parked [SC-21 "Animated spectators"](../SCENERY-PLAN.md#remaining-work). Its evidence is the [web survey](../research/scenery-investigations/07-field-people-survey.md) (25 searches, 6 page reads); survey row IDs (H1, E1, A1, F1…) are cited inline.
 
 **Revision 3** follows an independent Good Enemy review (2026-10-24, read-only, no shared context). The lead verified its main claims against the source:
 
@@ -160,7 +160,9 @@ Connect to the Scene detail preset ([VQ-06b](../research/visual-quality-implemen
 | --- | --- |
 | Low | Static merged meshes, no head motion |
 | Medium and above | Head state, cloth flutter |
-| Extreme (conditional) | Vertex animation or skinned crew if SC-HUM-09 approves it |
+| Advanced option (off by default) | Vertex-animated pits, skinned crew, blinks and stick motion, each only after its measurement step passes |
+
+Owner direction (2026-10-24): anything that needs more CPU/GPU than the head state becomes an explicit **advanced option** in Settings, off by default and independent of the preset, so players with strong machines can opt in. Its label states the cost. The preset never enables it implicitly.
 
 ## 6. Sources (download, do not model)
 
@@ -199,9 +201,9 @@ Each step is one reviewable change. Steps 01–07 need no skeletons, no vertex a
 | SC-HUM-00 | Baseline. Re-run the scene budget per preset. Run a **camera census**: replay a golden or flight-test flight and log, per camera mode, each person's in-frustum fraction and head size in pixels. Download candidate packs into isolated folders and verify each licence file. Build a reference photo board for the owner's silhouette overlay. | Budget table from `budget.sh`, census table, licence table with hashes. Only review-critical images in the repository. |
 | SC-HUM-01 | Owner transmitters (§7) baked into the pilot pose. | Intake manifest, close 1080p captures, grip fit against real dimensions, envelope unchanged, triangle budget. |
 | SC-HUM-02 | Merge each base/pose into one mesh and one atlas material (§5.1). No visual change intended. | Draws for population drop; image diff against the current captures within tolerance; budget passes. |
-| SC-HUM-03 | Head state for the two flight-line pilots, coupled to the player aircraft (§4.1, §5.1). | Low-pass captures at 1080p showing heads following; pause/step/reset/wrap hashes; zero draw delta; golden flights unchanged. |
+| SC-HUM-03 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-03/README.md)). Head state for all 13 people: pilots coupled to the player aircraft, others step-and-hold (§4.1, §5.1). The neck pivot and weight come from each posed mesh, so no asset was regenerated. | Met in software: unit/behaviour test headless and native, MultiMesh read-back, five existing regressions, rendered poses and a running-app close-up at 1080p; zero draw delta; scripted routes unchanged. Open: owner review on real hardware. |
 | SC-HUM-04 | Flight-line pilots bound to AI companions, using the two existing placements. With no companion, behavior per D4. | Companion flight captures; roster add/remove/restart; admission and collision identity unchanged. |
-| SC-HUM-05 | Head state for benches and veranda (step-and-hold, crash glance via the field-event signal). | Head-yaw time series differ across people during a scripted pass; crash capture; hashes repeat. |
+| SC-HUM-05 | Step-and-hold delivered with SC-HUM-03. Remaining: crash glance via the field-event signal. | Crash capture; hashes repeat. |
 | SC-HUM-06 | Static work poses at the existing pits placements (§4.4), inside existing envelopes. | Ground/chase/orbit captures from the census views; envelope check; collision identity unchanged. |
 | SC-HUM-07 | Variety: tints, caps, sunglasses, beards; then at most the new skins that fit the texture budget; skin shader (§5.4). | Before/after captures, owner silhouette overlay, texture and draw budget, fresh-import test. |
 | SC-HUM-08 | Cloth flutter (§4.3). | Wind-enabled bridge-driven captures; frozen when paused; no draw change. |
@@ -217,7 +219,7 @@ Verification rules for every step: scripts parse under `app/test.sh`; drafts liv
 
 | ID | Question | Recommendation |
 | --- | --- | --- |
-| D1 | Stop after SC-HUM-09 unless the owner asks for moving hands or close-camera faces? | Yes; decide with the result in front of you |
+| D1 | Stop after SC-HUM-09 unless the owner asks for moving hands or close-camera faces? | **Answered 2026-10-24:** continue; heavier features ship as advanced options (§5.5) |
 | D2 | Realistic MPFB characters or stylized Quaternius characters? | MPFB, consistent with today's field |
 | D3 | May High/Extreme exceed today's pilot-view budget, or must people pay for themselves? | People pay for themselves through mesh merging (SC-HUM-02) |
 | D4 | Flight-line pilots when companions are off: idle with radio, watching the player, or removed? | Watching the player with the radio on a strap |

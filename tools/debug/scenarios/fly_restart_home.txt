@@ -1,0 +1,7 @@
+# Fly the default aircraft, restart through the pause menu, return Home.
+fly start=airborne
+wait until="flight.session.sim.tick > 120" timeout_s=120
+restart
+wait until="flight.session.sim.tick > 60" timeout_s=120
+home
+assert expr="flight == null and screens.is_top('home')" message="back at Home"
