@@ -10,7 +10,7 @@ Studied 2026-10-24 for the [F4U plan](../../../F4U-PLAN.md). The owner found the
 4. **R59 as it is cannot ship.** Its 5,616 visible objects (5.66 M triangles, 5,723 surfaces) cost 15–22 ms per frame at 1080p, mostly in 9,000–17,000 reported draw calls, before any scenery is drawn. Other limits remain even when merged per material: the GLB is 137–200 MB, above GitHub's 100 MiB file limit and the 50 MiB repository check; it uses 454–535 MB of video memory and takes 1.3–1.6 s to load. About 2.45 M of its triangles sit mostly hidden inside the cowl and wings: the engine with its exhaust collectors (1.71 M, of which the six collectors are 1.24 M), the cowl-flap mechanics (0.42 M) and the wing mechanisms (0.32 M). The propeller hub's Subdivision adds 0.95 M. The active propeller is the F4U-4 four-blade reference, not the F4U-1D three-blade.
 5. **Triangles are cheap; draw calls and size are not.** The same 5.66 M triangles merged into 97 meshes cost 1.0–1.3 ms. The variants at 83 k, 236 k and 450 k triangles all measured 0.8 ms, the same as g1.21 within noise. Godot's automatic mesh LOD works in the Compatibility renderer: g1.21 drops from 60 k visible primitives at 4 m to 24 k at 120 m, and R59 merged from 0.50 M to 0.11 M. It produced almost no reduction on the unreduced `derive_full` meshes (1.74 M at 4 m, 1.64 M at 120 m).
 
-**Recommendation.** (a) The author fixes the fuselage winding in every livery (a g1.x revision), and the verifier and our preflight check winding from now on. (b) Commission a g2 tier of about 250–350 k triangles, with a 450 k ceiling and 70 or fewer surfaces. Build it by controlled reduction per part, not one global collapse. Add the missing visible parts: the engine front row, gear links and intake vanes. Bake panel seams and fasteners from R59 into a normal map. The request is [revision 4 of the delivery request](../../../F4U-BLENDER-HANDOFF.md#revision-4-fuselage-fix-and-a-g2-detail-tier). On this machine the bench shows no frame cost for that budget; slower GPUs are unmeasured.
+**Recommendation.** (a) The author fixes the fuselage winding in every livery (a g1.x revision), and the verifier and our preflight check winding from now on. (b) Commission a g2 tier of 300–350 k triangles, with a 450 k ceiling and 70 or fewer surfaces. Spend the triangles where the [visibility measurement](#visibility-what-r59-shows-to-the-simulators-cameras) shows the player looks. Build it by controlled reduction per part, not one global collapse. Add the missing visible parts: the engine front row, gear links and intake vanes. Bake panel seams and fasteners from R59 into a normal map. The request is [revision 4 of the delivery request](../../../F4U-BLENDER-HANDOFF.md#revision-4-fuselage-fix-and-a-g2-detail-tier). On this machine the bench shows no frame cost for that budget; slower GPUs are unmeasured.
 
 ## R59 composition
 
@@ -65,6 +65,21 @@ Second run with the fuselage faces reversed ([table](checks/bench-1080p-2-fixed-
 
 Screenshots of every model and camera, textured and in uniform grey, and side-by-side sheets are kept outside the repository under `D:\OpenRCsimulator-evidence\f4u-detail-20261024\results\` with the exported GLBs, logs and derivation sandboxes.
 
+## Visibility: what R59 shows to the simulator's cameras
+
+[visibility_r59.py](../../../../research/f4u-corsair/F4U-18/visibility_r59.py) casts primary rays (Blender `BVHTree`) through all 5,658,774 visible R59 triangles in four rig poses. The poses are ground (gear down), flight (gear up), landing (flaps 50°, ailerons 25°, elevator −25°, rudder 35°) and wings folded. Glazing is transparent.
+
+The camera positions stand in for the simulator's close views: 1.5 m model distance (×4.5 in R59) from six focus points, and 4 m from the centre. Azimuth runs every 30°; elevation runs from −45° to 75° in flight poses and from 5° to 75° on the ground. Each view is 45° vertical, 16:9, 256×144 or 320×180 rays. That gives 1,680 views and 66.9 M rays; one ray stands for 36–56 px of a 1080p frame. [visibility_merge.py](../../../../research/f4u-corsair/F4U-18/visibility_merge.py) combines the poses and maps each object to the g1 part it went into, using the author's `export-map.json`. Two runs gave identical hits.
+
+Results ([summary](checks/r59-visibility-summary.json), [per-object list for objects of 1,000 triangles or more](checks/r59-visibility.csv)):
+
+- 2,340 of 5,616 objects, 597,544 triangles, were never hit in any pose: engine internals 151,704, wing mechanisms R10 147,392, cowl-flap mechanics 94,948, joint cylinders R59 90,600 and hidden cockpit parts 27,520.
+- Coverage differs by three orders of magnitude between parts. The fuselage covers up to 2.04 M px in one 1080p view, the outer panels about 1 M, the flaps up to 0.51 M and the propeller hub 0.18 M. The exhaust collectors (1.24 M triangles) never exceed 1,068 px, and the cowl-flap mechanics (0.41 M) never exceed 3,487 px.
+- The visible "mechanism" collections are exterior trim: fold-joint end ribs, flush hinge covers, balance tabs, flap lips, cowl flaps and gun-port plates. They are seen in every pose, not only folded or deflected.
+- The density ceiling, one triangle per 10 px of an object's largest view, doubled and capped at its R59 count, totals 1.16 M. The g2 guide in [request revision 4](../../../F4U-BLENDER-HANDOFF.md#b5-budget-per-part) uses about 30 % of it.
+
+Limits: a ray stands for 6–7 px, so detail smaller than that can be missed. A triangle counts as seen when a ray hit it or its 4 cm full-size cell (`visible_tris` in the summary); dense meshes otherwise undercount, and the cell rule can credit a face hidden just behind a seen one. Coverage per part is the largest single view, not the union of views. Glass is not measured. The F4U-1D three-blade propeller is hidden in R59 and was not cast against.
+
 ## Reproduce
 
 Blender 5.2.2, R59 SHA-256 `94edd59b…cf4dc3`, the g1.21 delivery's `source/`:
@@ -79,6 +94,8 @@ F4U18_BUDGET_SCALE=3 blender --background --disable-autoexec --factory-startup \
 blender -b --factory-startup --disable-autoexec GAME.blend --python research/f4u-corsair/F4U-18/export_game_glb.py -- OUT.glb SCALE [fuselage_core]
 python research/f4u-corsair/F4U-18/glb_orientation.py MODEL.glb
 blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-corsair/F4U-18/fuselage_check.py -- r59 OUT.json
+blender -b -Y --factory-startup F4U_Corsair_R59.blend --python research/f4u-corsair/F4U-18/visibility_r59.py -- RUN_DIR POSE   # ground, flight, deflected, folded
+python research/f4u-corsair/F4U-18/visibility_merge.py RUN_DIR OUT.json g1_21/export-map.json --csv OUT.csv
 python research/f4u-corsair/F4U-18/run_bench.py --bench <new dir> --out <new dir> --godot <Godot 4.7.2 win64 console> name=MODEL.glb ...
 python research/f4u-corsair/F4U-18/make_sheets.py <result dir> name ...
 ```

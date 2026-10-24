@@ -770,7 +770,7 @@ msgid "Airspeed"
 msgstr "Velocidad aire"
 
 msgid "Airspeed dial"
-msgstr "Indicador de velocidad"
+msgstr "Velocímetro"
 
 msgid "Artificial horizon"
 msgstr "Horizonte artificial"
@@ -782,7 +782,10 @@ msgid "Heading indicator"
 msgstr "Indicador de rumbo"
 
 msgid "Vertical speed indicator"
-msgstr "Indicador de velocidad vertical"
+msgstr "Variómetro"
+
+msgid "Nose pitch"
+msgstr "Cabeceo"
 
 msgid "Bank"
 msgstr "Alabeo"
@@ -801,6 +804,9 @@ msgstr "Ascenso / descenso"
 
 msgid "Scale exceeded"
 msgstr "Escala superada"
+
+msgid "Dial range"
+msgstr "Escala"
 
 msgid "No attitude data"
 msgstr "Sin datos de actitud"

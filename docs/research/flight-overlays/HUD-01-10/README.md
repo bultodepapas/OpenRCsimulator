@@ -153,3 +153,51 @@ Verification, native Windows / Godot 4.7.2:
 - The first shared-tree import reported an unrelated ground-vehicle DLL copy failure while completing the asset import. The initial English world build also logged `rp_child` errors in `home_scene.gd`/`main.gd` and world teardown resource warnings. The later Spanish run had no engine errors or teardown warning reported by the bridge. These observations are separate from the clean focused widget checks; the full world/physics suite was not qualified here.
 
 Captures stay in ignored `tmp/debug-bridge/20261024-124351-47870/` and `20261024-124725-47870/`; checked logs in `tmp/player-v3-*`. No review screenshots were added to the repository.
+
+## Classic cockpit (2026-10-24, HUD-13-R3)
+
+Added an optional five-instrument cockpit: true airspeed, artificial horizon, datum altimeter, true heading and
+instantaneous vertical speed. The dedicated preset and individual switches coexist with the modern widgets;
+default Pilot and the seven-widget All instruments preset retain their previous sets. All five reuse the existing
+drag/close/lock/size/opacity/persistence behavior. Compact mode keeps their dial and numerical readout.
+
+Research and applicability, reviewed 2026-10-24:
+
+| Primary source | Finding and application |
+| --- | --- |
+| [jQuery Flight Indicators](https://github.com/sebmatton/jQuery-Flight-Indicators) | Provides the familiar attitude, heading, speed, altitude and vario group using SVG/web components; GPLv3. Used as a feature/layout reference, not bundled or ported. Its fixed scales and pressure API do not describe this simulator's sensor contracts. |
+| [Open Aviation Components](https://github.com/Open-Aviation-Solutions/open-aviation-components), [Unusual Attitudes](https://open-aviation-solutions.github.io/open-aviation-components/unusual-attitudes/) | MPL-2.0 web training components. The attitude-centred instrument scan informs the prominent central horizon. Their teaching scenario and VSI lag are not imported into live telemetry. |
+| [OpenKB Drone Godot](https://github.com/travisdetert/openkb-drone-godot) | Godot simulator paired with a separate web telemetry dashboard containing horizon/compass indicators. Reviewed for Godot integration context; adding its web/UDP stack is unnecessary for local widgets. |
+| [Godot custom 2D drawing](https://docs.godotengine.org/en/stable/tutorials/2d/custom_drawing_in_2d.html) | Draw commands are cached until invalidated. Static faces and moving indications use separate Controls, retaining native/offline operation and the existing 10 Hz update. |
+
+No suitable drop-in native instrument package was established by this bounded search. Reused the already pinned
+Lucide icons and the existing UI frame rather than adding another UI framework or raster assets. Native drawing
+adapts graduations, missing-value behavior and units to the actual telemetry. The horizon clips a ground half-plane
+to a disc, rotating opposite bank and shifting down for positive pitch; inverted flight exchanges sky and earth.
+Altimeter hands wrap every 1,000/10,000 display units, with a full numeric altitude and separate AGL. TAS/VSI
+needles saturate only at the visible scale and show an explicit overflow label; no artificial aircraft operating
+arcs, pressure setting, magnetic correction or slip-ball reading is invented.
+
+Verification on native Windows / Godot 4.7.2:
+
+- `test_classic_instruments`: 58 checks, no failures or engine diagnostics. Includes actual draw callbacks for
+  level, banked, inverted and vertical attitudes; datum/AGL distinction, north wrap, signed sink, negative altitude,
+  imperial/SI conversion, over-range and unavailable indications, unchanged-data redraw suppression, all five
+  close/reopen buttons, focus, drag persistence, lock and Spanish attitude terminology. All three sizes and both
+  densities fit without overlap at 1080p; bounds also pass at 1440p/4K and the 720p fallback.
+- Existing modern widgets: 74 checks; overlay manager: 167; settings/preferences: 25. UI-language checks pass.
+  The full-scene manager/language runs retain the existing aircraft inertia warnings; focused widget runs are clean.
+  New scripts parsed outside `app/` before integration. Editor import and whitespace checks pass.
+- Native 1920×1080 Spanish review: selected Classic cockpit through the real preset control, dragged the horizon,
+  closed heading with its ×, restarted with the same isolated profile and observed both saved changes. Reopened
+  the cockpit preset and reset positions through the dialog. Reviewed normal and 120% compact layouts and live
+  changing telemetry; no bridge engine errors. Rendered sessions were stopped after review.
+- Visual review widened the metric speed label spacing, shortened Spanish dial titles, distinguished nose pitch
+  from elevator trim, and raised the default horizon above the bottom-centre notice. The vario footer reports
+  its scale range. Static faces invalidate for units/language; hidden widgets and unchanged samples do not add
+  continuous redraw work. These are implementation bounds, not measured FPS gains.
+
+Checked outputs remain in ignored `tmp/classic-cockpit/` and `tmp/classic-options-checks/`; native review captures
+in `tmp/debug-bridge/20261024-130050-47870/` and `20261024-130410-47870/`. No images added to Git. Five default
+dials can overlap at 720p; choose fewer or rearrange them there. No physics, pilot-input mapping or sensor model
+changed. The full physics suite and target-hardware/pilot acceptance remain outside this UI verification.

@@ -6,7 +6,7 @@
 
 ## Revision 4: fuselage fix and a g2 detail tier
 
-Thank you for the twelve liveries through g1.21. The owner finds the Corsair too coarse at close range. We tested your R59 master, your game model and your derivation in Godot 4.7.2 ([F4U-18 evidence](research/f4u-corsair/F4U-18/README.md)). Most of the problem is one defect (A). The rest calls for a richer tier (B).
+Thank you for the twelve liveries through g1.21. The owner finds the Corsair too coarse at close range. We tested your R59 master, your game model and your derivation in Godot 4.7.2 ([F4U-18 evidence](research/f4u-corsair/F4U-18/README.md)). Most of the problem is one defect, described in A. The rest calls for a richer tier, g2, described in B. B also explains which parts of the aircraft players actually see, measured on R59, so that triangles go where they show.
 
 ### A: `fuselage_core` is inside out (every revision since g1, every livery)
 
@@ -20,44 +20,135 @@ Please deliver the next g1.x revision with only this change:
 4. Confirm from outside that markings on both sides read correctly. They were painted in 3D, so reversing the faces should be enough.
 5. Re-export every livery and update the manifest, metadata and changelog.
 
-### B: g2, a detail tier for close views
+Our preflight now rejects an inside-out skin: `python research/f4u-corsair/F4U-04/preflight_glb.py export/aircraft.glb` must pass.
 
-g2 is for the views where the model fills the screen: the Home backdrop, the Workshop, and chase or ground cameras at 1–5 m. The flight views at 20–150 m already run on Godot's automatic LODs, generated at import. Do not deliver separate LOD meshes. Everything in sections 3–7 and 9–12 still applies: names, hierarchy, `openrc_section` tags, pivots and their axes, the `GearRetract` carriers and 101 poses (equal to g1 within 0.01 mm and 0.01°), 1:4.5, export at frame 100, one GLB per livery. Deliver it as `f4u_corsair/g2_0/` beside g1, which stays as the fallback.
+### B: g2, triangles where the player looks
 
-**Budget.** Target 250,000–350,000 triangles, ceiling 450,000. At most 70 mesh × material surfaces, 16 materials and 30 MB per livery GLB. On the reference machine, 450,000 triangles in 53 surfaces cost nothing measurable over g1. R59 as built spends 15–22 ms per frame on its 5,616 objects alone, and as one file it is 137–200 MB: above GitHub's file limit and 14–20 times a livery GLB.
+#### B1 Purpose and contract
 
-**Method.** Do not apply one global collapse Decimate to the skins. g1 kept 4–14 % of each skin that way: irregular triangles, and at higher ratios dark patches near the left wing root. Start from R59's own skins, which are near the target density already (fuselage 53,660, cowl 67,968, each inner gull panel 40,404, each outer panel 43,706). Reduce only where the surface is flat: limited dissolve, planar reduction or local retopology. Keep silhouettes, hinge lines and panel boundaries exact. Leave Subdivision off and rebuild the propeller hub at about 6,000 triangles from its base mesh.
+g2 becomes the Corsair's model in the simulator once accepted; g1 stays as the fallback. It must hold up in the views where the aircraft fills the screen (B2). At flight distances Godot draws lighter versions automatically: it generates LODs when it imports the GLB. Measured on g1.21, they cut the drawn triangles from 60,000 at 4 m to 24,000 at 120 m. Do not deliver LOD meshes.
 
-| Part | g1 | g2 guide |
-| --- | ---: | ---: |
-| `fuselage_core` | 8,000 | 40,000–55,000 |
-| `cowl`, closed cowl flaps included | 5,000 | 30,000–45,000 |
-| `wing_center_fixed` | 11,599 | 50,000–70,000 |
-| `wing_left_fixed`, `wing_right_fixed`, each | 5,200 | 25,000–35,000 |
-| each aileron, each flap | 1,700, 1,100 | 6,000–8,000, 4,000–6,000 |
-| `stabilizer_fixed`, `elevator`, `fin_fixed`, `rudder` | 8,400 together | 40,000–55,000 together |
-| `propeller_rotor` (F4U-1D three-blade) | 5,400 | 12,000–20,000 |
-| `engine_face` | 4,000 | 25,000–40,000 |
-| `exhaust_stacks` (visible pipes and exits only) | 1,600 | 6,000–10,000 |
-| cockpit, windshield, canopy glass and frame | 5,300 | 20,000–30,000 |
-| gear, all three legs, doors and wheels | ≈ 30,000 | 50,000–70,000 |
-| wing details: gun ports, intake lips and vanes, pitot, lamps | — | 15,000–25,000 |
+Everything in sections 3–7 and 9–12 still applies: names, hierarchy, `openrc_section` tags, pivots and their axes, the `GearRetract` carriers and 101 poses (equal to g1 within 0.01 mm and 0.01°), 1:4.5, export at frame 100 with the gear stowed, one GLB per livery. One exception: section 8's budget is replaced by B5. Deliver it as `f4u_corsair/g2_0/` beside g1.
 
-**Add the visible parts g1 left out.** g1 selected too few sources here; decimation is not the cause.
+#### B2 How the simulator shows the Corsair
 
-- **Engine:** the front cylinder row with cooling fins, pushrods, the ignition harness ring, the reduction gear case and the magnetos visible through the cowl mouth. Take them from R42/R43. Include only what can be seen through the opening from within 60° of the nose.
-- **Gear:** the torque links, retraction strut, oleo and brake line of each main leg as rigid parts of the existing carriers, and the tail fork's detail.
-- **Wings:** the gun ports (R26) and the intake lips with their vanes (R20/R21). Model the honeycomb as texture, not geometry.
+The model is 2.778 m in span; distances below are in model metres.
 
-**Surface detail as texture.** Bake a tangent-space normal map and ambient occlusion from R59 onto the g2 UVs: panel seams (R13), fasteners, rivets, access panels and rib tapes. All liveries share them. Keep each skin's UV islands large. On the unreduced F4U-18 meshes, Godot's automatic LOD still drew 94 % of the triangles at 120 m. The cause is not isolated; many small Smart UV islands are a likely contributor.
+| View | Distance | Direction and pose | What fills the screen |
+| --- | --- | --- | --- |
+| Home backdrop | whole aircraft fitted to the screen, about 4 m | fixed three-quarter view, on the ground, gear down | the whole airframe |
+| Workshop | orbit; 4 m at 1×, about 1 m at the 4× zoom | any direction, on the ground, gear down, surfaces moved by the player | any part, up close |
+| Orbit, in flight | 1.7–56 m, 5.6 m by default | from 20° below to 85° above, any side; gear up or down | any part |
+| Close-up | 2.5 m | fixed, behind, left and above | fuselage, canopy, tail, left wing top |
+| Chase | 3.9–39 m, 9.7 m by default | behind and about 20° above | top surfaces and tail |
+| Pilot | 20–300 m from the ground, zoom up to 8× | mostly from below and from the side | silhouette and underside |
+| Crash | about 8 m from the impact | — | separated sections and their closure faces |
 
-**Liveries.** The new topology needs a new shared `UVMap`. Re-target each livery so it looks the same as on g1: rerun your paint scripts on the new layout, or bake each g1 texture onto g2 (*Selected to Active*). Deliver the default (Naval 308) first. The owner chooses the others; the simulator offers at most eight per aircraft.
+The rig moves too. The player folds the wings on the ground (112°, F4U-17). Flaps go to 50°, the other surfaces to ±25–35°, and the gear retracts in flight. Each pose exposes faces that the neutral pose hides.
 
-**Verification.** Run your verifier with the new budgets and the winding check from A. Report the surface deviation from R59 for the main skins, and render previews with back-face culling on. Our acceptance is our preflight, the model contract (`verify_f4u.gd`) and an in-engine comparison against g1.
+#### B3 The rule: triangle density follows screen size at the closest view
 
-**Revision 3:** g1.2 is accepted in substance; [section 0](#0-review-of-g12-and-what-g13-changes) lists the review and the two changes for g1.3: the owner moved the model to **1:4.5**, and `aircraft.glb` must be exported with the gear **stowed** (`GearRetract` frame 100), as revision 2 already asked. Sections 1, 2, 3, 4, 12 and 13 are updated for the new scale.
+At 1.5 m, the closest regular view, a 1080p screen with a 45° field of view shows **0.87 pixels per millimetre of the model**. The Workshop zoom reaches about 1 m, where this becomes 1.3 px/mm; the textures carry that last step. From this:
+
+- **Geometry only for relief of about 3 mm or more on the model** (13 mm full size), which is 2–3 px. Rivets (about 1 mm), panel seams, fastener heads, rib tapes, stencils and small steps belong in the normal map and ambient occlusion (B7).
+- **Round sections need enough sides** so the outline stays within half a pixel of the true circle at 1.5 m:
+
+  | Radius on the model | On screen at 1.5 m | Sides per full turn |
+  | ---: | ---: | ---: |
+  | 2 mm (wire, hose, brake line) | 1.7 px | 6 |
+  | 5 mm (pushrod, small tube, pitot) | 4.3 px | 7 |
+  | 10 mm (oleo, exhaust stub) | 8.7 px | 10 |
+  | 20 mm (hub, link boss) | 17 px | 14 |
+  | 39 mm (tail tyre) | 34 px | 19 |
+  | 94 mm (main tyre) | 82 px | 29 |
+  | 167–170 mm (fuselage, cowl) | 145–148 px | 38–39 |
+
+  Apply the same rule to rounded edges: a leading edge, wingtip or cowl lip needs the sides that its radius calls for over the arc it turns through. More sides than this are invisible; fewer show facets on the outline.
+- **Flat or gently curved areas get large triangles.** Add vertices only for the silhouette, real curvature, hinge lines, section boundaries and panel edges that carry a paint or UV seam.
+- **Faces that no camera sees get no triangles.**
+
+The GPU handles triangles cheaply. The costs are separate objects, file size and memory. 450,000 triangles in 53 meshes cost nothing measurable over g1. R59's 5,616 separate objects cost 15–22 ms per frame, the whole budget of a 60 Hz frame, and R59 as one file is 137–200 MB. Unused triangles also slow the import and weaken the automatic LODs.
+
+#### B4 What R59 actually shows (measured)
+
+We cast rays through the whole R59 aircraft from 1,680 camera positions: 1.5 m from six points (nose, cockpit, left main gear, tail, left wingtip, right wing root) and 4 m from the centre, every 30° around, from below to above. We did this in four poses: on the ground (gear down), in flight (gear up), landing (flaps 50°, every surface deflected) and wings folded. Rays pass through the glazing. One ray stands for 6–7 px of a 1080p frame. The tool is [visibility_r59.py](../research/f4u-corsair/F4U-18/visibility_r59.py).
+
+- **2,340 of R59's 5,616 visible objects, 597,544 triangles, were never hit by any ray in any pose.** The largest groups are the engine internals (151,704), the wing mechanisms R10 (147,392), the cowl-flap mechanics R14 (94,948), the joint cylinders R59 (90,600) and hidden cockpit parts (27,520). Leave them out.
+- **Other parts are seen only as a sliver.** The cowl-flap mechanics behind the closed flaps hold 413,568 triangles in all, the 94,948 above included, and never cover more than 3,487 px. Leave all of them out.
+- **Some parts are huge in R59 and tiny on screen.** The six exhaust collectors hold 1,237,232 triangles but never cover more than 1,068 px in any view: only their stub exits show through the cowl.
+- **Some parts fill the screen.** The fuselage reaches 2.0 million px (the whole frame), each outer wing panel about 1 million, each flap up to 0.5 million. They deserve their full R59 density.
+- **Some "mechanism" collections are visible exterior trim.** These are the fold-joint end ribs (R53), the flush hinge covers (R55/R56), the balance tabs (R10), the flap upper lips (R57), the cowl flaps (R14) and the gun-port plates (R26). They are visible in every pose. Merge them into the skin they sit on. The folded pose adds little beyond them.
+
+In the table, *largest view* is the most screen pixels the part covers in one 1080p view. The *density ceiling* sums, over the part's objects, one triangle per 10 px of each object's largest view, doubled because no single view shows a whole part, and caps each object at its R59 count. It is an upper bound, not a target. g2 aims at about 30 % of it. The complete per-object list (475 objects of 1,000 triangles or more, with the g1 part each one went to) is [r59-visibility.csv](research/f4u-corsair/F4U-18/checks/r59-visibility.csv). Use it to choose sources: an object with zero rays hit is out.
+
+#### B5 Budget per part
+
+**Target 300,000–350,000 triangles, ceiling 450,000. At most 70 mesh × material surfaces, 16 materials and 30 MB per livery GLB.**
+
+| Part | R59 triangles | Never seen | Largest view (px) | Density ceiling | g1 | g2 guide |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `fuselage_core` | 71,608 | 0 | 2,036,531 | 59,060 | 8,000 | 30,000–45,000 |
+| `cowl` with closed cowl flaps | 76,416 | 0 | 271,462 | 62,740 | 5,000 | 25,000–35,000 |
+| `wing_center_fixed`, with intake ducts and well roofs | 219,258 | 0 | 409,950 | 149,900 | 11,599 | 45,000–65,000 |
+| `wing_left_fixed`, `wing_right_fixed`, each | 44,664–46,966 | 0 | 869,118–1,067,175 | 43,839–44,426 | 5,200 | 20,000–28,000 |
+| ailerons, each | 20,934–26,980 | 0 | 148,781–227,475 | 18,260–22,182 | 1,700 | 5,000–7,000 |
+| flaps, each of six | 11,842–11,870 | 0 | 185,737–509,850 | 11,842–11,870 | 1,100 | 3,000–5,000 |
+| stabilizer, elevator, fin, rudder, together | 150,848 | 0 | 215,268 | 126,847 | 8,400 | 30,000–45,000 |
+| `propeller_rotor`: hub and dome (the F4U-1D blades are hidden in R59 and were not measured) | 1,002,128 | 0 | 181,012 | 42,254 | 5,400 | 12,000–18,000 |
+| `engine_face`: what the cowl mouth shows | 474,532 | 151,704 | 55,012 | 48,260 | 4,000 | 20,000–30,000 |
+| `exhaust_stacks` | 1,237,232 | 0 | 1,068 | 560 | 1,600 | 1,500–3,000 |
+| cockpit, windshield, canopy frame (glass not measured) | 366,304 | 27,520 | 22,725 | 36,827 | 5,300 | 15,000–22,000 |
+| gear: three legs, doors, wheels | 331,074 | 23,408 | 159,075 | 182,287 | ≈ 30,000 | 40,000–55,000 |
+| wing details: intake vanes, gun ports, lamps, pitot | 225,364 | 19,220 | 27,281 | 32,380 | — | 10,000–18,000 |
+| exterior trim: fold-joint ribs, hinge covers, balance tabs, flap lips, rib tapes | 671,434 | 275,340 | 104,512 | 98,077 | — | 6,000–12,000 |
+| fuselage seams and fasteners (R13) | 72,980 | 0 | 84,768 | 8,787 | — | normal map; at most 3,000 |
+| cowl-flap mechanics behind the closed flaps (R14) | 413,568 | 94,948 | 3,487 | 4,435 | — | none |
+| antenna and small parts | 4,708 | 1,028 | 1,800 | 538 | 140 | 500–1,500 |
+
+The guides sum to about 300,000 at the low end and 450,000 at the high end. The rows cover all 5,658,774 visible R59 triangles except R59's four-blade reference propeller (130,620). Rays pass through glass, so the canopy and windshield glass are not measured; give them about 3,000 triangles for a clean silhouette.
+
+Where to spend and where to save, part by part:
+
+- **Fuselage:** keep R59's density at the canopy and windshield junction, the cowl join, the wing-root fillets and the tail cone. The flat flanks can lose most of their vertices. Seams R13 (72,980 triangles, all under 1 px of relief) become normal map.
+- **Cowl:** the lip, the cowl-flap trailing edges and the front ring need 39 sides per turn. The inside of the cowl ring needs only the depth visible through the mouth.
+- **Wing centre:** the gull bend, the root fillets and the intake mouths carry the shape. Keep the wheel wells and their roofs: from below, with the gear down, each roof covers up to 82,237 px. Model them simply, without internal ribs.
+- **Outer panels:** spend on the leading edge, the tip, the fold joint and the aileron cove. The upper and lower surfaces between them can be coarse.
+- **Ailerons, flaps and tail surfaces:** the hinge gaps and coves show when deflected. Keep the trailing edges sharp; the flat panels need few triangles.
+- **Propeller:** blade outlines, root cuffs and the hub silhouette. R59's hub has 946,448 triangles only because of its Subdivision; it never covers more than 181,012 px. Rebuild it from the base mesh, at about 6,000 triangles.
+- **Engine:** only what the cowl mouth shows within 60° of the nose: the front row's heads and barrels, pushrod tubes, the ignition ring, the reduction gear case and the magnetos. A cooling fin is about 1 px thick at 1.5 m. Model the finned block with a few grooves, or put the fins in the normal map, never one by one. No ray reached most of the rear row or the accessories: 151,704 engine triangles were never hit.
+- **Exhausts:** only the stub exits, 1,500–3,000 triangles in total, against R59's 1,237,232.
+- **Cockpit:** seen through the glazing from above and the side at 1.5–2.5 m: seat, panel face, stick, gunsight, console tops and harness. Leave out what lies under the floor, behind the panel or below the sills.
+- **Gear:** everything shows with the gear down at 1.5 m: oleo, torque links, retraction strut, brake line, wheels, both faces of each door and the well liners. Keep each part rigid on the existing carriers. Doors need 2,000–4,000 triangles each; tyres take the sides in B3.
+- **Wing details:** the intake lips with their vanes (R20; the honeycomb as texture), the gun-port plates (R26), the lamps and the pitot.
+- **Exterior trim:** merge the fold-joint ribs, hinge covers, balance tabs and flap lips into the skin they sit on, with the same density rules. The fold mechanism inside the joint is not needed.
+
+#### B6 Method
+
+1. **Start from R59.** Select the source objects for each part, leaving out those the CSV lists with zero rays hit, and delete the faces no camera can reach (inner faces, faces against another part).
+2. **Reduce part by part. Do not use one global collapse Decimate.** g1 kept 4–14 % of each skin that way, and the result was irregular triangles and, at higher ratios, dark patches near the left wing root. Use limited dissolve and planar reduction on flat areas, remove edge loops along flat spans, and retopologize the hub, engine and gear by hand. Leave Subdivision off.
+3. **Keep these exact:** silhouettes, hinge lines, section boundaries, closure faces, wheel contacts, and the landmarks and pivots (within 0.1 mm).
+4. **Merge to stay within 70 surfaces.** Use one mesh per section and moving part, and share materials. Never keep R59's object split.
+5. **Normals:** every skin faces outward (A). Shade smooth, with sharp edges only on real creases (trailing edges, panel steps). Weighted normals are fine.
+6. **Measure the result.** Report the deviation from R59 for each main skin (maximum and 95th percentile, in mm), and overlay silhouettes from the front, side and top.
+
+#### B7 Surface detail, UVs and liveries
+
+**Bake detail into textures.** Bake a tangent-space normal map and ambient occlusion from R59 onto the g2 UVs: panel seams (R13), fasteners, rivets, access panels, rib tapes and engine fins. All liveries share them.
+
+**Keep UV islands large.** On the unreduced F4U-18 meshes, Godot's automatic LOD still drew 94 % of the triangles at 120 m. The cause is not isolated; many small Smart UV islands are a likely contributor.
+
+**Re-target the liveries.** The new topology needs a new shared `UVMap`. Make each livery look the same as on g1: rerun your paint scripts on the new layout, or bake each g1 texture onto g2 (*Selected to Active*). Deliver the default (Naval 308) first. The owner chooses the others; the simulator offers at most eight per aircraft.
+
+#### B8 Verification and delivery
+
+1. Run your verifier with the B5 budgets and the winding check from A.
+2. `python research/f4u-corsair/F4U-04/preflight_glb.py export/aircraft.glb --profile f4u-g2` must pass.
+3. Include the deviation report (B6) and a preview sheet with back-face culling on, from the B2 views: the Home three-quarter view, the orbit at 1.7 m around the nose, cockpit, main gear and tail, the chase view, and a view from below. Show the gear down and up, the flaps at 50° and the wings folded.
+4. Our acceptance is our preflight, the model contract (`verify_f4u.gd`) and a side-by-side render against g1 in our bench ([F4U-18](research/f4u-corsair/F4U-18/README.md#bench)).
 
 ## 0 Review of g1.2 and what g1.3 changes
+
+**Revision 3 (2026-10-22, fulfilled):** g1.2 is accepted in substance; [section 0](#0-review-of-g12-and-what-g13-changes) lists the review and the two changes for g1.3: the owner moved the model to **1:4.5**, and `aircraft.glb` must be exported with the gear **stowed** (`GearRetract` frame 100), as revision 2 already asked. Sections 1, 2, 3, 4, 12 and 13 are updated for the new scale.
 
 Reviewed 2026-10-22 from `f4u_corsair/g1_2/`: all 79 manifest SHA-256 values match; your verifier passes; our independent GLB preflight passes every structural rule; Godot 4.7.2 imports the GLB with 81 uniquely named nodes, every required pivot and gear helper, and `openrc_section` extras on all 44 meshes. The geometry, section split, closure work, door refinement, upper fold covers and the three liveries are what we hoped for. Thank you.
 
@@ -235,6 +326,8 @@ The simulator replays a **sampled** retraction. It interpolates rigid carrier tr
 Name carriers `gear_*`, tag them `gear`, and keep the gear subtree outside every other section. Keep the carrier count reasonable, roughly 20 or fewer.
 
 ## 8 Detail and rendering budget
+
+This section is the g1 budget. For g2, [revision 4, B3–B5](#b3-the-rule-triangle-density-follows-screen-size-at-the-closest-view) replaces it.
 
 The model is seen from 5 to 150 m. Protect the gull-wing outline, airfoil thickness, rounded tips, tail outlines, cowl profile, canopy profile, propeller silhouette and wheel size. Simplify hidden structure, fasteners, bevels, tubes and mechanisms first. Prefer controlled retessellation or local simplification to a global decimation that moves hinge boundaries or ruins shading.
 

@@ -55,8 +55,9 @@ func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _
 	for field: Variant in fields:
 		key.append(field if field != null and is_finite(float(field)) else null)
 	if key == _view_key: return
+	if _face != null and (_view_key.is_empty() or _view_key[0] != key[0] or _view_key[1] != key[1]):
+		_face.queue_redraw()
 	_view_key = key
-	if _system != system and _face != null: _face.queue_redraw()
 	_system = system
 	_over_range = false
 	match id:
@@ -64,21 +65,22 @@ func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _
 			_pitch = float(t.get("pitch_deg", NAN))
 			_bank = float(t.get("bank_deg", NAN))
 			_available = is_finite(_pitch) and is_finite(_bank)
-			subtitle.text = "%s %s · %s %s" % [tr("Pitch"), Units.angle(_pitch, 0), tr("Bank"), Units.angle(_bank, 0)] if _available else tr("No attitude data")
-			_details(tr("Pitch"), Units.angle(_pitch, 1), tr("Bank"), Units.angle(_bank, 1))
+			subtitle.text = "%s %s · %s %s" % [tr("Nose pitch"), Units.angle(_pitch, 0), tr("Bank"), Units.angle(_bank, 0)] if _available else tr("No attitude data")
+			_details(tr("Nose pitch"), Units.angle(_pitch, 1), tr("Bank"), Units.angle(_bank, 1))
 		"heading":
 			_dial_value = float(t.get("heading_deg", NAN))
 			_available = is_finite(_dial_value)
 			if _available: _dial_value = fposmod(_dial_value, 360.0)
 			subtitle.text = "%s · %s" % [Units.angle(fposmod(roundf(_dial_value), 360.0) if _available else NAN, 0, false), tr("True heading")]
-			_details(tr("True heading"), Units.angle(_dial_value, 1, false), tr("REFERENCE"), "N / E / S / W")
+			_details(tr("True heading"), Units.angle(_dial_value, 1, false), tr("Reference"), "N / E / S / W")
 		"altimeter":
 			var pair := Units.length(float(t.get("height_datum", NAN)), system)
 			_dial_value = pair[0]
 			_unit = pair[1]
 			_available = is_finite(_dial_value)
 			subtitle.text = "%s · %s" % [Units.format(pair), tr("Datum")]
-			_details(tr("Height above datum"), Units.format(pair), "AGL", Units.format(Units.length(float(t.get("height_agl", NAN)), system)))
+			_details(tr("Datum"), Units.format(pair), "AGL", Units.format(Units.length(float(t.get("height_agl", NAN)), system)))
+			left_value.tooltip_text = tr("Height above datum")
 		"airspeed_dial":
 			var pair := Units.speed(float(t.get("airspeed", NAN)), system)
 			_dial_value = pair[0]
@@ -96,7 +98,7 @@ func refresh(t: Dictionary, system: String, peak: float, _battery: Dictionary, _
 			_available = is_finite(_dial_value)
 			_over_range = _available and absf(_dial_value) > _maximum
 			subtitle.text = Units.format(pair, true)
-			_details(tr("Climb / sink"), Units.format(pair, true), tr("REFERENCE"), "↑ + / ↓ −")
+			_details(tr("Climb / sink"), Units.format(pair, true), tr("Dial range"), "±" + Units.format([_maximum, _unit]))
 	if _over_range: subtitle.text += " · " + tr("Scale exceeded")
 	subtitle.add_theme_color_override("font_color", ACCENT if _over_range else INK)
 	subtitle.tooltip_text = subtitle.text
@@ -119,7 +121,7 @@ func _draw_face() -> void:
 	match id:
 		"airspeed_dial":
 			var limit := 160.0 if _system == "imperial" else (70.0 if _system == "si" else 240.0)
-			_scale(_face, 0.0, limit, 32 if _system == "imperial" else (28 if _system == "si" else 48), 4, -225.0, 45.0)
+			_scale(_face, 0.0, limit, 32 if _system == "imperial" else (28 if _system == "si" else 48), 6 if _system == "metric" else 4, -225.0, 45.0)
 			_text(_face, "TAS", Vector2(0, -35), 13, MUTED)
 			_text(_face, str(Units.speed(0, _system)[1]), Vector2(0, 51), 13, ACCENT)
 		"altimeter":
@@ -148,7 +150,7 @@ func _scale(canvas: Control, low: float, high: float, divisions: int, major: int
 		var direction := Vector2.RIGHT.rotated(deg_to_rad(lerpf(start, end, fraction)))
 		var bold := tick % major == 0
 		canvas.draw_line(direction * (83 if bold else 90), direction * 97, INK if bold else MUTED, 2 if bold else 1, true)
-		if bold: _text(canvas, "%g" % lerpf(low, high, fraction), direction * 70, 16, INK)
+		if bold: _text(canvas, String.num(lerpf(low, high, fraction), 0), direction * 70, 16, INK)
 
 
 func _draw_instrument() -> void:

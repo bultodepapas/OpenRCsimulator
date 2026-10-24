@@ -1,0 +1,476 @@
+name,collection,g1_part,tris,rays_hit_tris,seen_area_share,max_px_close_1080p,max_px_hero_1080p,density_ceiling_tris,poses_seen
+Buje | cuerpo fundido continuo,05 Helice,propeller_rotor,946448,25273,0.829,181012,1512,36202,deflected flight folded ground
+R43 | Escape unido 1 3,01B Motor | detalles visibles,exhaust_stacks,278044,55,0.126,225,36,45,deflected flight folded ground
+R43 | Escape unido -1 3,01B Motor | detalles visibles,exhaust_stacks,267248,72,0.136,1068,36,213,deflected flight folded ground
+R43 | Escape unido -1 2,01B Motor | detalles visibles,exhaust_stacks,212020,63,0.161,393,36,78,deflected flight folded ground
+R43 | Escape unido 1 2,01B Motor | detalles visibles,exhaust_stacks,182568,36,0.124,506,36,101,deflected flight folded ground
+R43 | Escape unido 1 1,01B Motor | detalles visibles,exhaust_stacks,157396,60,0.234,281,36,56,deflected flight folded ground
+R43 | Escape unido -1 1,01B Motor | detalles visibles,exhaust_stacks,139956,61,0.287,337,72,67,deflected flight folded ground
+Capot radial | boca abierta y labio redondeado,01 Fuselaje y motor,cowl,67968,39430,0.969,271462,10548,54292,deflected flight folded ground
+Tapa hidromatica | perfil alargado,05 Helice,propeller_rotor,55680,21114,0.937,30262,1836,6052,deflected flight folded ground
+Fuselaje | volumen continuo,01 Fuselaje y motor,fuselage_core,53660,44221,0.925,2036531,47772,53660,deflected flight folded ground
+R51 | Panel exterior izquierda,02C | R51 Alas plegables,wing_left_fixed,43706,32826,0.967,869118,49680,43706,deflected flight folded ground
+R51 | Panel exterior derecha,02C | R51 Alas plegables,wing_right_fixed,43704,32364,0.974,1067175,49896,43704,deflected flight folded ground
+Ala derecha | gaviota invertida,02 Alas de gaviota,wing_center_fixed,40404,14628,0.8,409950,20160,40404,deflected flight folded ground
+Ala izquierda | gaviota invertida,02 Alas de gaviota,wing_center_fixed,40404,14521,0.798,345093,20160,40404,deflected flight folded ground
+R20 | panal perforado derecha,02C Tomas alares R20,(not in g1),39216,670,1.0,3543,216,708,deflected flight folded ground
+R20 | panal perforado izquierda,02C Tomas alares R20,(not in g1),39216,797,1.0,3543,216,708,deflected flight folded ground
+R12 | timon articulado,04C Timon R12,rudder,36286,26027,0.994,215268,10152,36286,deflected flight folded ground
+R22 | techo curvo pozo derecha,06B Tren principal R22,wing_center_fixed,31770,8942,0.996,82237,3996,16447,deflected flight folded ground
+R22 | techo curvo pozo izquierda,06B Tren principal R22,wing_center_fixed,31768,10291,0.997,81675,3996,16335,deflected flight folded ground
+Cubierta R7 | acrilico curvo,03 Cabina,canopy_glass,26240,24387,1.0,0,0,0,deflected flight folded ground
+Helice referencia | pala 1,05 Helice,(not in g1),25598,19597,0.971,171225,5220,25598,deflected flight folded ground
+Helice referencia | pala 2,05 Helice,(not in g1),25598,19067,0.971,258637,5616,25598,deflected flight folded ground
+Helice referencia | pala 3,05 Helice,(not in g1),25598,18969,0.972,159243,5364,25598,deflected flight folded ground
+Helice referencia | pala 4,05 Helice,(not in g1),25598,19527,0.971,300375,5868,25598,deflected flight folded ground
+Asiento R7 | cojin,03 Cabina,cockpit_interior,24300,709,0.681,9675,504,1935,deflected flight folded ground
+Asiento R7 | respaldo acolchado,03 Cabina,cockpit_interior,24300,958,0.94,13387,324,2677,deflected flight folded ground
+Asiento R7 | cubeta conformada,03 Cabina,cockpit_interior,23712,3315,0.732,8212,576,1642,deflected flight folded ground
+R14 | hombro fijo del diafragma,01C Refrigeracion motor R14,(not in g1),23424,415,0.664,450,72,90,deflected flight folded ground
+R11 | elevador derecho,04B Elevadores R11,elevator,23422,14186,0.981,84093,8388,16818,deflected flight folded ground
+R11 | elevador izquierdo,04B Elevadores R11,elevator,23422,14225,0.981,84093,8388,16818,deflected flight folded ground
+R13 | fijaciones de revestimiento,01B Fuselaje R13,(not in g1),21312,561,0.893,1350,144,270,deflected flight folded ground
+Estabilizador derecho,04 Empenaje,stabilizer_fixed,19846,14311,0.911,144281,11448,19846,deflected flight folded ground
+Estabilizador izquierdo,04 Empenaje,stabilizer_fixed,19846,14338,0.91,144281,11484,19846,deflected flight folded ground
+R22 | puerta pozo exterior derecha,06B Tren principal R22,gear_door_outer_mesh_right,18016,10806,1.0,159075,3564,18016,deflected flight folded ground
+R22 | puerta pozo exterior izquierda,06B Tren principal R22,gear_door_outer_mesh_left,18016,12053,1.0,86231,3564,17246,deflected flight folded ground
+Parabrisas R7 | junta con revestimiento,03 Cabina,(not in g1),17048,3198,0.966,12656,504,2531,deflected flight folded ground
+R38 | apoyo de cubeta -1 -0.16,03 Cabina,(not in g1),15552,2,0.532,56,0,11,deflected flight folded ground
+R38 | apoyo de cubeta -1 -0.415,03 Cabina,(not in g1),15552,4,0.362,56,36,11,deflected flight folded ground
+R38 | apoyo de cubeta 1 -0.16,03 Cabina,(not in g1),15552,1,0.527,56,0,11,deflected flight folded ground
+R38 | apoyo de cubeta 1 -0.415,03 Cabina,(not in g1),15552,4,0.404,56,36,11,deflected flight folded ground
+R14 | resorte 01,01C Refrigeracion motor R14,(not in g1),15476,0,0.077,0,0,0,
+R14 | resorte 02,01C Refrigeracion motor R14,(not in g1),15476,1,0.474,56,0,11,deflected flight folded ground
+R14 | resorte 03,01C Refrigeracion motor R14,(not in g1),15476,2,0.254,56,0,11,deflected flight folded ground
+R14 | resorte 04,01C Refrigeracion motor R14,(not in g1),15476,2,0.274,56,36,11,deflected flight folded ground
+R14 | resorte 05,01C Refrigeracion motor R14,(not in g1),15476,1,0.229,56,0,11,deflected flight
+R14 | resorte 06,01C Refrigeracion motor R14,(not in g1),15476,13,0.761,675,0,135,deflected flight folded ground
+R14 | resorte 07,01C Refrigeracion motor R14,(not in g1),15476,2,0.355,56,0,11,deflected flight folded ground
+R14 | resorte 08,01C Refrigeracion motor R14,(not in g1),15476,0,0.0,0,0,0,
+R14 | resorte 09,01C Refrigeracion motor R14,(not in g1),15476,3,0.586,56,0,11,deflected flight folded ground
+R14 | resorte 10,01C Refrigeracion motor R14,(not in g1),15476,0,0.0,0,0,0,
+R14 | resorte 11,01C Refrigeracion motor R14,(not in g1),15476,7,0.839,168,36,33,deflected flight folded ground
+R14 | resorte 12,01C Refrigeracion motor R14,(not in g1),15476,0,0.201,0,0,0,
+R14 | resorte 13,01C Refrigeracion motor R14,(not in g1),15476,5,0.5,56,0,11,deflected flight folded ground
+R14 | resorte 14,01C Refrigeracion motor R14,(not in g1),15476,1,0.424,56,0,11,deflected flight
+R14 | resorte 15,01C Refrigeracion motor R14,(not in g1),15476,1,0.247,56,0,11,deflected flight
+R14 | resorte 16,01C Refrigeracion motor R14,(not in g1),15476,1,0.238,56,0,11,deflected flight
+R20 | labio y conducto derecha,02C Tomas alares R20,wing_center_fixed,15360,4106,0.658,26043,1332,5208,deflected flight folded ground
+R20 | labio y conducto izquierda,02C Tomas alares R20,wing_center_fixed,15360,4278,0.675,38193,1332,7638,deflected flight folded ground
+Aleron R8 | derecha,02 Alas de gaviota,aileron_right,15268,13632,0.999,227475,7596,15268,deflected flight folded ground
+Aleron R8 | izquierda,02 Alas de gaviota,aileron_left,14544,12578,1.0,148781,6768,14544,deflected flight folded ground
+R22 | puerta pozo interior derecha,06B Tren principal R22,gear_door_inner_mesh_right,14208,8496,1.0,73687,3384,14208,deflected flight folded ground
+R22 | puerta pozo interior izquierda,06B Tren principal R22,gear_door_inner_mesh_left,14208,9084,1.0,100350,3384,14208,deflected flight folded ground
+R12 | deriva fija,04C Timon R12,fin_fixed,13538,5997,0.589,60468,3888,12093,deflected flight folded ground
+Carenado suave de raiz derecho,02 Alas de gaviota,wing_center_fixed,12096,2653,0.945,38137,2052,7627,deflected flight folded ground
+Carenado suave de raiz izquierdo,02 Alas de gaviota,wing_center_fixed,12096,2688,0.948,31106,2052,6221,deflected flight folded ground
+Flap articulado derecha 3,02 Alas de gaviota,flap_right_3,11870,10759,1.0,509850,4500,11870,deflected flight folded ground
+Flap articulado izquierda 3,02 Alas de gaviota,flap_left_3,11870,11003,1.0,509850,4500,11870,deflected flight folded ground
+Flap articulado derecha 2,02 Alas de gaviota,flap_right_2,11858,10036,1.0,190181,2304,11858,deflected flight folded ground
+Flap articulado izquierda 1,02 Alas de gaviota,flap_left_1,11858,10988,1.0,185737,3564,11858,deflected flight folded ground
+Flap articulado izquierda 2,02 Alas de gaviota,flap_left_2,11858,10410,1.0,190181,2304,11858,deflected flight folded ground
+Flap articulado derecha 1,02 Alas de gaviota,flap_right_1,11842,10918,1.0,189337,3672,11842,deflected flight folded ground
+R22 | puerta solidaria a pata derecha,06B Tren principal R22,gear_door_front_mesh_right,11488,6095,1.0,84318,3168,11488,deflected flight folded ground
+R22 | puerta solidaria a pata izquierda,06B Tren principal R22,gear_door_front_mesh_left,11488,6632,1.0,84318,3168,11488,deflected flight folded ground
+R21 | asiento formado rejilla derecha,02D Apoyos tomas R21,(not in g1),9984,341,0.995,1237,144,247,deflected flight folded ground
+R21 | asiento formado rejilla izquierda,02D Apoyos tomas R21,(not in g1),9984,417,0.995,1631,108,326,deflected flight folded ground
+R26 | reflector concavo luz,02E Bocas y luz R26,(not in g1),9600,0,0.415,0,0,0,
+R22 | neumatico principal derecha,06B Tren principal R22,gear_wheel_right,8448,6478,0.765,79481,2520,8448,deflected flight folded ground
+R22 | neumatico principal izquierda,06B Tren principal R22,gear_wheel_left,8448,6753,0.765,79481,2520,8448,deflected flight folded ground
+Cubierta R38 | junta perimetral acrilico,03 Cabina,(not in g1),7700,54,1.0,225,36,45,deflected flight folded ground
+R12 | compensador de direccion,04C Timon R12,rudder,7596,4637,1.0,17493,720,3498,deflected flight folded ground
+R29 | resorte paso variable derecha,06F Amortiguadores R29,(not in g1),7308,198,0.964,900,72,180,deflected flight folded ground
+R29 | resorte paso variable izquierda,06F Amortiguadores R29,(not in g1),7308,248,0.996,675,36,135,deflected flight folded ground
+R41 | labio enrasado de guia -1 -1,03 Cabina,(not in g1),7276,621,0.999,1237,252,247,deflected flight folded ground
+R41 | labio enrasado de guia -1 1,03 Cabina,(not in g1),7276,411,1.0,843,216,168,deflected flight folded ground
+R41 | labio enrasado de guia 1 -1,03 Cabina,(not in g1),7276,551,0.999,1968,252,393,deflected flight folded ground
+R41 | labio enrasado de guia 1 1,03 Cabina,(not in g1),7276,384,1.0,1012,216,202,deflected flight folded ground
+R42 | Aletas camisa 01,01B Motor | detalles visibles,(not in g1),7220,561,0.767,22443,180,4488,deflected flight folded ground
+R42 | Aletas camisa 02,01B Motor | detalles visibles,(not in g1),7220,254,0.632,2756,144,551,deflected flight folded ground
+R42 | Aletas camisa 03,01B Motor | detalles visibles,(not in g1),7220,235,0.47,2250,108,450,deflected flight folded ground
+R42 | Aletas camisa 04,01B Motor | detalles visibles,(not in g1),7220,251,0.703,4725,180,945,deflected flight folded ground
+R42 | Aletas camisa 05,01B Motor | detalles visibles,(not in g1),7220,236,0.395,3543,216,708,deflected flight folded ground
+R42 | Aletas camisa 06,01B Motor | detalles visibles,(not in g1),7220,270,0.709,4893,180,978,deflected flight folded ground
+R42 | Aletas camisa 07,01B Motor | detalles visibles,(not in g1),7220,254,0.743,3037,108,607,deflected flight folded ground
+R42 | Aletas camisa 08,01B Motor | detalles visibles,(not in g1),7220,250,0.648,3656,180,731,deflected flight folded ground
+R42 | Aletas camisa 09,01B Motor | detalles visibles,(not in g1),7220,239,0.684,3881,180,776,deflected flight folded ground
+R42 | Aletas camisa 10,01B Motor | detalles visibles,(not in g1),7220,25,0.236,337,36,67,deflected flight folded ground
+R42 | Aletas camisa 11,01B Motor | detalles visibles,(not in g1),7220,13,0.153,225,36,45,deflected flight folded ground
+R42 | Aletas camisa 12,01B Motor | detalles visibles,(not in g1),7220,11,0.091,225,36,45,deflected flight folded ground
+R42 | Aletas camisa 13,01B Motor | detalles visibles,(not in g1),7220,10,0.073,168,0,33,deflected flight folded ground
+R42 | Aletas camisa 14,01B Motor | detalles visibles,(not in g1),7220,6,0.049,225,0,45,deflected flight
+R42 | Aletas camisa 15,01B Motor | detalles visibles,(not in g1),7220,22,0.113,675,0,135,deflected flight folded ground
+R42 | Aletas camisa 16,01B Motor | detalles visibles,(not in g1),7220,27,0.076,506,36,101,deflected flight folded ground
+R42 | Aletas camisa 17,01B Motor | detalles visibles,(not in g1),7220,20,0.158,506,72,101,deflected flight folded ground
+R42 | Aletas camisa 18,01B Motor | detalles visibles,(not in g1),7220,30,0.15,843,72,168,deflected flight folded ground
+Cubierta R7 | faldon inferior,03 Cabina,canopy_frame,6926,1081,1.0,8156,396,1631,deflected flight folded ground
+Cubierta R7 | faldon inferior.001,03 Cabina,canopy_frame,6926,1109,1.0,6075,396,1215,deflected flight folded ground
+Compensador R9 | aleron izquierdo,02 Alas de gaviota,aileron_left,6770,5418,1.0,26831,756,5366,deflected flight folded ground
+Parabrisas R7 | asiento inferior,03 Cabina,fuselage_core,6524,1145,1.0,6975,288,1395,deflected flight folded ground
+R20 | junta perimetral de chapa derecha,02C Tomas alares R20,(not in g1),6144,111,0.999,225,36,45,deflected flight folded ground
+R20 | junta perimetral de chapa izquierda,02C Tomas alares R20,(not in g1),6144,129,0.999,225,36,45,deflected flight folded ground
+Cubierta R7 | arco delantero,03 Cabina,canopy_frame,5908,1027,1.0,6750,396,1350,deflected flight folded ground
+Parabrisas R7 | arco fijo,03 Cabina,fuselage_core,5908,1171,1.0,7762,216,1552,deflected flight folded ground
+R22 | paredes pozo izquierda,06B Tren principal R22,(not in g1),5840,1385,0.984,48375,1800,5840,deflected flight folded ground
+R13 | junta longitudinal inferior -1,01B Fuselaje R13,(not in g1),5756,662,0.786,3037,108,607,deflected flight folded ground
+R13 | junta longitudinal inferior 1,01B Fuselaje R13,(not in g1),5756,546,0.781,1518,108,303,deflected flight folded ground
+R13 | junta longitudinal superior -1,01B Fuselaje R13,(not in g1),5676,975,0.887,4781,144,956,deflected flight folded ground
+R13 | junta longitudinal superior 1,01B Fuselaje R13,(not in g1),5676,929,0.887,6693,144,1338,deflected flight folded ground
+R10 | aleta equilibrio derecha,02B Mecanismos R10,aileron_right,5666,3302,1.0,14962,396,2992,deflected flight folded ground
+R10 | aleta equilibrio izquierda,02B Mecanismos R10,aileron_left,5666,3845,1.0,11362,396,2272,deflected flight folded ground
+R10 | flap derecha 1 camisa,02B Mecanismos R10,(not in g1),5444,5,0.475,112,0,22,deflected
+R10 | flap derecha 2 camisa,02B Mecanismos R10,(not in g1),5444,107,0.998,2250,72,450,deflected flight folded
+R10 | flap derecha 3 camisa,02B Mecanismos R10,(not in g1),5444,0,0.027,0,0,0,
+R10 | flap izquierda 1 camisa,02B Mecanismos R10,(not in g1),5444,5,0.393,112,0,22,deflected
+R10 | flap izquierda 2 camisa,02B Mecanismos R10,(not in g1),5444,102,0.998,2250,72,450,deflected flight
+R10 | flap izquierda 3 camisa,02B Mecanismos R10,(not in g1),5444,0,0.027,0,0,0,
+R30 | cazoleta rotula 0 derecha,06G Articulaciones R30,(not in g1),5376,31,0.947,393,36,78,deflected folded
+R30 | cazoleta rotula 0 izquierda,06G Articulaciones R30,(not in g1),5376,21,0.961,393,36,78,deflected
+R30 | cazoleta rotula 1 derecha,06G Articulaciones R30,(not in g1),5376,74,1.0,450,36,90,deflected folded ground
+R30 | cazoleta rotula 1 izquierda,06G Articulaciones R30,(not in g1),5376,91,1.0,393,36,78,deflected flight folded ground
+R26 | placa y labio derecha 1,02E Bocas y luz R26,(not in g1),4992,1665,1.0,10968,432,2193,deflected flight folded ground
+R26 | placa y labio derecha 2,02E Bocas y luz R26,(not in g1),4992,1677,1.0,12318,432,2463,deflected flight folded ground
+R26 | placa y labio derecha 3,02E Bocas y luz R26,(not in g1),4992,1700,1.0,27281,468,4992,deflected flight folded ground
+R26 | placa y labio izquierda 1,02E Bocas y luz R26,(not in g1),4992,1824,1.0,10968,432,2193,deflected flight folded ground
+R26 | placa y labio izquierda 2,02E Bocas y luz R26,(not in g1),4992,1835,1.0,12318,432,2463,deflected flight folded ground
+R26 | placa y labio izquierda 3,02E Bocas y luz R26,(not in g1),4992,1849,1.0,13612,468,2722,deflected flight folded ground
+Cubierta R7 | junta arco delantero,03 Cabina,(not in g1),4988,881,1.0,4668,360,933,deflected flight folded ground
+Asiento R7 | reborde,03 Cabina,(not in g1),4340,401,0.998,1012,108,202,deflected flight folded ground
+Asiento R7 | reborde.001,03 Cabina,(not in g1),4340,417,0.994,843,108,168,deflected flight folded ground
+Cubierta R7 | arco posterior,03 Cabina,canopy_frame,4100,719,1.0,9787,288,1957,deflected flight folded ground
+Junta fina capot | anillo frontal,01 Fuselaje y motor,(not in g1),3840,881,1.0,843,144,168,deflected flight folded ground
+R13 | junta transversal 01,01B Fuselaje R13,(not in g1),3840,632,0.802,2981,108,596,deflected flight folded ground
+R13 | junta transversal 02,01B Fuselaje R13,(not in g1),3840,604,0.8,4893,108,978,deflected flight folded ground
+R13 | junta transversal 03,01B Fuselaje R13,(not in g1),3840,692,0.994,4950,108,990,deflected flight folded ground
+R13 | junta transversal 04,01B Fuselaje R13,(not in g1),3840,429,0.988,1912,144,382,deflected flight folded ground
+R13 | union ventral,01B Fuselaje R13,(not in g1),3564,536,0.994,956,108,191,deflected flight folded ground
+R11 | compensador derecho,04B Elevadores R11,elevator,3446,2291,1.0,4106,864,821,deflected flight folded ground
+R11 | compensador izquierdo,04B Elevadores R11,elevator,3446,2305,1.0,4106,864,821,deflected flight folded ground
+R54 | derecha retorno perimetral inferior.001,02E | R54 Caja y bisagras,(not in g1),3356,7,0.949,112,36,22,deflected flight folded ground
+R54 | izquierda retorno perimetral inferior.001,02E | R54 Caja y bisagras,(not in g1),3356,21,0.968,337,36,67,deflected flight folded ground
+R55 | derecha tapa enrasada bisagra 2,02G | R56 Ajuste de juntas,wing_center_fixed,3344,1266,1.0,7368,288,1473,deflected flight folded ground
+R55 | izquierda tapa enrasada bisagra 2,02G | R56 Ajuste de juntas,wing_center_fixed,3344,1452,1.0,2587,288,517,deflected flight folded ground
+R55 | derecha tapa enrasada bisagra 0,02G | R56 Ajuste de juntas,wing_center_fixed,3328,1998,1.0,12037,540,2407,deflected flight folded ground
+R55 | derecha tapa enrasada bisagra 1,02G | R56 Ajuste de juntas,wing_center_fixed,3328,1647,1.0,10912,432,2182,deflected flight folded ground
+R55 | izquierda tapa enrasada bisagra 0,02G | R56 Ajuste de juntas,wing_center_fixed,3328,2129,1.0,8831,540,1766,deflected flight folded ground
+R55 | izquierda tapa enrasada bisagra 1,02G | R56 Ajuste de juntas,wing_center_fixed,3328,1854,1.0,6356,432,1271,deflected flight folded ground
+Parabrisas R7 | cristal derecho,03 Cabina,windshield_glass,3296,2627,1.0,0,0,0,deflected flight folded ground
+Parabrisas R7 | cristal frontal,03 Cabina,windshield_glass,3296,3011,1.0,0,0,0,deflected flight folded ground
+Parabrisas R7 | cristal izquierdo,03 Cabina,windshield_glass,3296,2622,1.0,0,0,0,deflected flight folded ground
+Parabrisas R7 | montante de panel,03 Cabina,fuselage_core,3220,588,1.0,3318,216,663,deflected flight folded ground
+Parabrisas R7 | montante de panel.001,03 Cabina,(not in g1),3220,580,1.0,3318,216,663,deflected flight folded ground
+R13 | junta transversal 05,01B Fuselaje R13,(not in g1),3212,131,0.948,450,72,90,deflected flight folded ground
+R13 | junta transversal 06,01B Fuselaje R13,(not in g1),3212,53,0.745,168,72,33,deflected flight folded ground
+R14 | junta anterior de compuertas,01C Refrigeracion motor R14,(not in g1),3072,832,1.0,900,108,180,deflected flight folded ground
+R51 | derecha bisagra 1 orejeta fija.001,02F | R55 Bisagras alojadas,(not in g1),3032,48,0.951,618,36,123,deflected folded
+R51 | izquierda bisagra 1 orejeta fija,02F | R55 Bisagras alojadas,(not in g1),3032,42,0.875,281,36,56,deflected folded
+R51 | derecha bisagra 0 orejeta fija,02F | R55 Bisagras alojadas,(not in g1),3024,59,1.0,787,36,157,folded
+R51 | derecha bisagra 0 orejeta fija.001,02F | R55 Bisagras alojadas,(not in g1),3024,25,0.985,337,72,67,deflected folded
+R51 | izquierda bisagra 0 orejeta fija,02F | R55 Bisagras alojadas,(not in g1),3024,69,1.0,618,36,123,folded
+R51 | izquierda bisagra 0 orejeta fija.001,02F | R55 Bisagras alojadas,(not in g1),3024,21,0.986,506,36,101,deflected folded
+R51 | derecha bisagra 1 orejeta fija,02F | R55 Bisagras alojadas,(not in g1),3000,44,0.948,675,36,135,deflected flight folded ground
+R51 | izquierda bisagra 1 orejeta fija.001,02F | R55 Bisagras alojadas,(not in g1),3000,41,0.916,225,36,45,deflected folded
+R23 | cara llanta fundida derecha,06C Tren principal R23,gear_wheel_right,2816,1633,0.993,18900,864,2816,deflected folded ground
+R23 | cara llanta fundida izquierda,06C Tren principal R23,gear_wheel_left,2816,1697,0.993,35775,864,2816,deflected flight folded ground
+R42 | Colector encendido -0.225,01B Motor | detalles visibles,(not in g1),2576,640,0.996,9900,216,1980,deflected flight folded ground
+R42 | Colector encendido 0.505,01B Motor | detalles visibles,(not in g1),2576,8,0.11,112,0,22,deflected flight folded ground
+R42 | Junta reductor,01B Motor | detalles visibles,(not in g1),2576,139,0.89,1462,72,292,deflected flight folded ground
+R42 | Junta sobrealimentador 0.55,01B Motor | detalles visibles,(not in g1),2576,2,0.091,56,0,11,deflected flight folded ground
+R42 | Junta sobrealimentador 0.69,01B Motor | detalles visibles,(not in g1),2576,4,0.204,56,0,11,deflected flight folded ground
+R42 | Reborde mamparo,01B Motor | detalles visibles,(not in g1),2576,0,0.009,0,0,0,
+R43 | Anillo estructural bancada,01B Motor | detalles visibles,(not in g1),2576,0,0.0,0,0,0,
+R27 | nervio flanco caucho -1,06D Tren de cola R27,(not in g1),2560,0,1.0,0,0,0,
+R27 | nervio flanco caucho 1,06D Tren de cola R27,(not in g1),2560,0,1.0,0,0,0,
+R27 | compuerta derecha 1,06D Tren de cola R27,gear_door_tail_mesh_right_1,2544,2317,1.0,19293,1260,2544,deflected flight folded ground
+R27 | compuerta derecha 2,06D Tren de cola R27,gear_door_tail_mesh_right_2,2544,2054,1.0,16706,1044,2544,deflected flight folded ground
+R27 | compuerta izquierda 1,06D Tren de cola R27,gear_door_tail_mesh_left_1,2544,2313,1.0,43650,1260,2544,deflected flight folded ground
+R27 | compuerta izquierda 2,06D Tren de cola R27,gear_door_tail_mesh_left_2,2544,2050,1.0,16706,1044,2544,deflected flight folded ground
+R57 | flap derecha 1 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1785,0.999,16706,576,2544,deflected flight folded ground
+R57 | flap derecha 2 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1371,0.999,8943,324,1788,deflected flight folded ground
+R57 | flap derecha 3 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1626,1.0,6075,612,1215,deflected flight folded ground
+R57 | flap izquierda 1 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1793,1.0,12375,576,2475,deflected flight folded ground
+R57 | flap izquierda 2 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1435,1.0,4443,324,888,deflected flight folded ground
+R57 | flap izquierda 3 labio superior continuo,02H | R57 Flaps y continuidad,(not in g1),2544,1733,1.0,10687,612,2137,deflected flight folded ground
+R42 | Aletas culata 01,01B Motor | detalles visibles,(not in g1),2444,374,0.767,25931,108,2444,deflected flight folded ground
+R42 | Aletas culata 02,01B Motor | detalles visibles,(not in g1),2444,274,0.663,14568,180,2444,deflected flight folded ground
+R42 | Aletas culata 03,01B Motor | detalles visibles,(not in g1),2444,190,0.686,5512,108,1102,deflected flight folded ground
+R42 | Aletas culata 04,01B Motor | detalles visibles,(not in g1),2444,159,0.481,1631,144,326,deflected flight folded ground
+R42 | Aletas culata 05,01B Motor | detalles visibles,(not in g1),2444,123,0.468,900,144,180,deflected flight folded ground
+R42 | Aletas culata 06,01B Motor | detalles visibles,(not in g1),2444,136,0.578,1181,108,236,deflected flight folded ground
+R42 | Aletas culata 07,01B Motor | detalles visibles,(not in g1),2444,182,0.511,2418,144,483,deflected flight folded ground
+R42 | Aletas culata 08,01B Motor | detalles visibles,(not in g1),2444,154,0.431,1068,108,213,deflected flight folded ground
+R42 | Aletas culata 09,01B Motor | detalles visibles,(not in g1),2444,118,0.508,956,108,191,deflected flight folded ground
+R42 | Aletas culata 10,01B Motor | detalles visibles,(not in g1),2444,37,0.177,787,36,157,deflected flight folded ground
+R42 | Aletas culata 11,01B Motor | detalles visibles,(not in g1),2444,13,0.18,168,36,33,deflected flight folded ground
+R42 | Aletas culata 12,01B Motor | detalles visibles,(not in g1),2444,15,0.061,281,36,56,deflected flight folded ground
+R42 | Aletas culata 13,01B Motor | detalles visibles,(not in g1),2444,31,0.155,337,36,67,deflected flight folded ground
+R42 | Aletas culata 14,01B Motor | detalles visibles,(not in g1),2444,23,0.156,393,36,78,deflected flight folded ground
+R42 | Aletas culata 15,01B Motor | detalles visibles,(not in g1),2444,15,0.118,225,72,45,deflected flight folded ground
+R42 | Aletas culata 16,01B Motor | detalles visibles,(not in g1),2444,14,0.103,168,36,33,deflected flight folded ground
+R42 | Aletas culata 17,01B Motor | detalles visibles,(not in g1),2444,18,0.257,225,0,45,deflected flight folded ground
+R42 | Aletas culata 18,01B Motor | detalles visibles,(not in g1),2444,14,0.117,225,0,45,deflected flight folded ground
+R23 | fundicion inferior pata derecha,06C Tren principal R23,gear_lower_right,2428,548,0.997,7312,288,1462,deflected flight folded ground
+R23 | fundicion inferior pata izquierda,06C Tren principal R23,gear_lower_left,2428,602,0.998,6750,288,1350,deflected flight folded ground
+R51 | derecha costilla terminal exterior,02D | R53 Uniones mecanicas,(not in g1),2408,497,0.985,50287,720,2408,deflected flight folded ground
+R30 | bola apoyo 0 derecha,06G Articulaciones R30,(not in g1),2396,4,1.0,56,0,11,deflected
+R30 | bola apoyo 0 izquierda,06G Articulaciones R30,(not in g1),2396,8,1.0,56,0,11,deflected
+R30 | bola apoyo 1 derecha,06G Articulaciones R30,(not in g1),2396,0,1.0,0,0,0,
+R30 | bola apoyo 1 izquierda,06G Articulaciones R30,(not in g1),2396,0,1.0,0,0,0,
+R51 | izquierda costilla terminal exterior,02D | R53 Uniones mecanicas,(not in g1),2376,487,0.977,17156,720,2376,deflected flight folded ground
+R21 | aro retornado rejilla derecha,02D Apoyos tomas R21,(not in g1),2304,249,0.845,900,108,180,deflected flight folded ground
+R21 | aro retornado rejilla izquierda,02D Apoyos tomas R21,(not in g1),2304,289,0.975,1575,108,315,deflected flight folded ground
+R26 | cristal curvo luz,02E Bocas y luz R26,wing_left_fixed,2300,1184,1.0,0,0,0,folded
+R51 | Panel R8 | panel posterior derecha movil,02C | R51 Alas plegables,(not in g1),2224,499,1.0,1068,144,213,deflected flight folded ground
+R51 | Panel R8 | panel posterior izquierda movil,02C | R51 Alas plegables,(not in g1),2224,662,1.0,1181,144,236,deflected flight folded ground
+R42 | Linea aceite 1,01B Motor | detalles visibles,(not in g1),2216,0,0.0,0,0,0,
+R51 | Panel R8 | larguero derecha movil,02C | R51 Alas plegables,(not in g1),2192,488,1.0,562,144,112,deflected flight folded ground
+R51 | Panel R8 | larguero izquierda movil,02C | R51 Alas plegables,(not in g1),2192,654,1.0,1406,144,281,deflected flight folded ground
+R27 | neumatico cola,06D Tren de cola R27,gear_wheel_tail,2112,1730,0.745,9225,396,1845,deflected flight folded ground
+R54 | derecha labio aligeramiento.004,02E | R54 Caja y bisagras,(not in g1),2048,59,0.922,1631,36,326,deflected folded
+R54 | izquierda labio aligeramiento.004,02E | R54 Caja y bisagras,(not in g1),2048,60,0.851,1237,36,247,flight folded
+R59 | flap derecha 1 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,1.0,0,0,0,
+R59 | flap derecha 2 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,1.0,0,0,0,
+R59 | flap derecha 3 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,1.0,0,0,0,
+R59 | flap izquierda 1 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,1.0,0,0,0,
+R59 | flap izquierda 2 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,0.985,0,0,0,
+R59 | flap izquierda 3 guia de vastago,02J | R59 Articulaciones y cilindros,(not in g1),2048,0,1.0,0,0,0,
+R14 | canal circunferencial de soporte,01C Refrigeracion motor R14,(not in g1),1920,139,0.76,3487,180,697,deflected flight folded ground
+R22 | aro llanta derecha,06B Tren principal R22,gear_wheel_right,1920,747,0.323,7762,324,1552,deflected flight folded ground
+R22 | aro llanta izquierda,06B Tren principal R22,gear_wheel_left,1920,800,0.358,8043,324,1608,deflected flight folded ground
+R23 | nervadura flanco -1 derecha,06C Tren principal R23,(not in g1),1920,0,0.711,0,0,0,
+R23 | nervadura flanco -1 izquierda,06C Tren principal R23,(not in g1),1920,0,0.717,0,0,0,
+R23 | nervadura flanco 1 derecha,06C Tren principal R23,(not in g1),1920,0,0.78,0,0,0,
+R23 | nervadura flanco 1 izquierda,06C Tren principal R23,(not in g1),1920,0,0.788,0,0,0,
+R51 | derecha manguera flexible,02D | R53 Uniones mecanicas,(not in g1),1920,110,0.733,1237,72,247,deflected folded
+R51 | izquierda manguera flexible,02D | R53 Uniones mecanicas,(not in g1),1920,119,0.815,900,72,180,deflected flight folded ground
+R42 | Reductor frontal escalonado,01B Motor | detalles visibles,engine_face,1916,1187,0.733,55012,1656,1916,deflected flight folded ground
+R54 | derecha labio aligeramiento.005,02E | R54 Caja y bisagras,(not in g1),1852,29,0.89,787,36,157,deflected flight folded
+R54 | izquierda labio aligeramiento.005,02E | R54 Caja y bisagras,(not in g1),1852,51,0.971,1068,36,213,deflected flight folded
+R26 | bombilla interior,02E Bocas y luz R26,(not in g1),1836,0,0.329,0,0,0,
+R42 | Linea aceite -1,01B Motor | detalles visibles,(not in g1),1816,2,0.039,56,36,11,deflected flight
+R51 | derecha tapa indicadora 0,02G | R56 Ajuste de juntas,(not in g1),1728,741,1.0,3206,144,641,deflected flight folded ground
+R51 | derecha tapa indicadora 1,02G | R56 Ajuste de juntas,(not in g1),1728,915,1.0,6356,144,1271,deflected flight folded ground
+R51 | izquierda tapa indicadora 0,02G | R56 Ajuste de juntas,(not in g1),1728,863,1.0,2362,144,472,deflected flight folded ground
+R51 | izquierda tapa indicadora 1,02G | R56 Ajuste de juntas,(not in g1),1728,920,1.0,3093,144,618,deflected flight folded ground
+R41 | cierre superior de guia -1,03 Cabina,(not in g1),1676,195,1.0,731,72,146,deflected flight folded ground
+R41 | cierre superior de guia 1,03 Cabina,(not in g1),1676,192,1.0,731,72,146,deflected flight folded ground
+R51 | izquierda costilla terminal central,02D | R53 Uniones mecanicas,(not in g1),1648,555,0.997,77118,2160,1648,deflected flight folded ground
+R51 | derecha costilla terminal central,02D | R53 Uniones mecanicas,(not in g1),1638,731,1.0,104512,2160,1638,deflected flight folded ground
+Junta R8 | puntera derecha,02 Alas de gaviota,(not in g1),1600,344,1.0,956,252,191,deflected flight folded ground
+Junta R8 | puntera izquierda,02 Alas de gaviota,(not in g1),1600,413,1.0,1406,252,281,deflected flight folded ground
+R10 | flap derecha 1 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap derecha 1 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap derecha 1 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.28,0,0,0,
+R10 | flap derecha 1 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.641,0,0,0,
+R10 | flap derecha 2 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,0,1.0,0,0,0,
+R10 | flap derecha 2 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,4,1.0,56,0,11,deflected
+R10 | flap derecha 2 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.434,0,0,0,
+R10 | flap derecha 2 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap derecha 3 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap derecha 3 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap derecha 3 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.283,0,0,0,
+R10 | flap derecha 3 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.507,0,0,0,
+R10 | flap izquierda 1 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap izquierda 1 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap izquierda 1 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.641,0,0,0,
+R10 | flap izquierda 1 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.772,0,0,0,
+R10 | flap izquierda 2 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,4,1.0,56,0,11,deflected
+R10 | flap izquierda 2 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,2,1.0,56,0,11,deflected
+R10 | flap izquierda 2 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap izquierda 2 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.435,0,0,0,
+R10 | flap izquierda 3 bulon cilindro arandela,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap izquierda 3 bulon cilindro arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.0,0,0,0,
+R10 | flap izquierda 3 bulon salida arandela,02B Mecanismos R10,(not in g1),1536,0,0.504,0,0,0,
+R10 | flap izquierda 3 bulon salida arandela.001,02B Mecanismos R10,(not in g1),1536,0,0.357,0,0,0,
+R23 | plato de freno nervado derecha,06C Tren principal R23,(not in g1),1536,860,0.628,27506,1008,1536,deflected flight folded ground
+R23 | plato de freno nervado izquierda,06C Tren principal R23,(not in g1),1536,892,0.631,27506,1008,1536,deflected flight folded ground
+R26 | junta de marco luz,02E Bocas y luz R26,(not in g1),1536,123,1.0,337,36,67,deflected flight folded ground
+R26 | junta placa derecha 1,02E Bocas y luz R26,(not in g1),1536,137,1.0,393,72,78,deflected flight folded ground
+R26 | junta placa derecha 2,02E Bocas y luz R26,(not in g1),1536,140,1.0,900,36,180,deflected flight folded ground
+R26 | junta placa derecha 3,02E Bocas y luz R26,(not in g1),1536,159,1.0,1012,36,202,deflected flight folded ground
+R26 | junta placa izquierda 1,02E Bocas y luz R26,(not in g1),1536,183,1.0,393,72,78,deflected flight folded ground
+R26 | junta placa izquierda 2,02E Bocas y luz R26,(not in g1),1536,190,1.0,393,36,78,deflected flight folded ground
+R26 | junta placa izquierda 3,02E Bocas y luz R26,(not in g1),1536,204,1.0,506,36,101,deflected flight folded ground
+R26 | marco luz izquierda,02E Bocas y luz R26,(not in g1),1536,775,1.0,5287,288,1057,deflected flight folded ground
+R26 | sello del cristal,02E Bocas y luz R26,(not in g1),1536,189,1.0,675,36,135,deflected flight folded ground
+R59 | flap derecha 1 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 1 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 1 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.296,0,0,0,
+R59 | flap derecha 1 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.577,0,0,0,
+R59 | flap derecha 1 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 1 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 1 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.193,0,0,0,
+R59 | flap derecha 1 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.589,0,0,0,
+R59 | flap derecha 2 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,1,1.0,56,0,11,deflected
+R59 | flap derecha 2 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap derecha 2 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.508,0,0,0,
+R59 | flap derecha 2 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.635,0,0,0,
+R59 | flap derecha 2 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap derecha 2 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap derecha 2 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.468,0,0,0,
+R59 | flap derecha 2 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.324,0,0,0,
+R59 | flap derecha 3 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 3 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 3 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.42,0,0,0,
+R59 | flap derecha 3 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.597,0,0,0,
+R59 | flap derecha 3 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 3 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap derecha 3 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.282,0,0,0,
+R59 | flap derecha 3 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.586,0,0,0,
+R59 | flap izquierda 1 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 1 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 1 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.572,0,0,0,
+R59 | flap izquierda 1 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap izquierda 1 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 1 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 1 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.589,0,0,0,
+R59 | flap izquierda 1 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap izquierda 2 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,1,1.0,56,0,11,deflected
+R59 | flap izquierda 2 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap izquierda 2 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.638,0,0,0,
+R59 | flap izquierda 2 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.503,0,0,0,
+R59 | flap izquierda 2 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap izquierda 2 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,1.0,0,0,0,
+R59 | flap izquierda 2 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.314,0,0,0,
+R59 | flap izquierda 2 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.458,0,0,0,
+R59 | flap izquierda 3 arandela axial cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 3 arandela axial cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 3 arandela axial salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.595,0,0,0,
+R59 | flap izquierda 3 arandela axial salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.431,0,0,0,
+R59 | flap izquierda 3 casquillo horquilla cilindro 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 3 casquillo horquilla cilindro 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.0,0,0,0,
+R59 | flap izquierda 3 casquillo horquilla salida 0,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.586,0,0,0,
+R59 | flap izquierda 3 casquillo horquilla salida 1,02J | R59 Articulaciones y cilindros,(not in g1),1536,0,0.359,0,0,0,
+Registro R8 | derecha.001,02 Alas de gaviota,(not in g1),1536,484,1.0,1125,360,225,deflected flight folded ground
+Registro R8 | derecha.002,02 Alas de gaviota,(not in g1),1536,350,1.0,562,108,112,deflected flight folded ground
+Registro R8 | izquierda.001,02 Alas de gaviota,(not in g1),1536,612,1.0,5006,360,1001,deflected flight folded ground
+Registro R8 | izquierda.002,02 Alas de gaviota,(not in g1),1536,502,1.0,2587,108,517,deflected flight folded ground
+Mastil de antena,07 Detalles,fuselage_core,1532,969,1.0,12600,396,1532,deflected flight folded ground
+R30 | gancho curvado resorte inferior derecha,06G Articulaciones R30,(not in g1),1456,6,1.0,56,36,11,deflected folded ground
+R30 | gancho curvado resorte inferior izquierda,06G Articulaciones R30,(not in g1),1456,5,1.0,56,0,11,deflected folded ground
+R30 | gancho curvado resorte superior derecha,06G Articulaciones R30,(not in g1),1456,3,0.985,56,0,11,deflected folded
+R30 | gancho curvado resorte superior izquierda,06G Articulaciones R30,(not in g1),1456,5,0.985,56,0,11,deflected
+R51 | derecha bisagra 0 orejeta movil,02F | R55 Bisagras alojadas,(not in g1),1392,67,0.915,3150,108,630,deflected flight folded ground
+R51 | derecha bisagra 1 orejeta movil,02F | R55 Bisagras alojadas,(not in g1),1392,76,0.983,3712,72,742,deflected flight folded ground
+R51 | izquierda bisagra 0 orejeta movil,02F | R55 Bisagras alojadas,(not in g1),1392,66,0.961,2081,108,416,folded
+R51 | izquierda bisagra 1 orejeta movil,02F | R55 Bisagras alojadas,(not in g1),1392,73,0.963,1800,72,360,deflected flight folded ground
+Cubrejunta raiz R8 | derecha,02 Alas de gaviota,(not in g1),1368,666,0.983,7087,252,1368,deflected flight folded ground
+Cubrejunta raiz R8 | izquierda,02 Alas de gaviota,(not in g1),1368,705,0.983,7087,252,1368,deflected flight folded ground
+Cockpit R7 | canto interior del revestimiento,03 Cabina,(not in g1),1320,441,0.963,20812,288,1320,deflected flight folded ground
+Tablero R7 | borde acolchado,03 Cabina,(not in g1),1296,758,0.993,3825,216,765,deflected flight folded ground
+R14 | solape interior de bisagras,01C Refrigeracion motor R14,(not in g1),1280,326,0.992,2025,252,405,deflected flight folded ground
+R23 | sello inferior oleo derecha,06C Tren principal R23,(not in g1),1280,72,0.977,393,72,78,deflected folded ground
+R23 | sello inferior oleo izquierda,06C Tren principal R23,(not in g1),1280,82,0.977,393,72,78,deflected
+R54 | izquierda retorno perimetral superior.001,02E | R54 Caja y bisagras,(not in g1),1258,163,0.999,4950,180,990,deflected flight folded ground
+Cockpit R7 | nervio lateral,03 Cabina,(not in g1),1244,31,0.376,168,36,33,deflected flight folded ground
+Cockpit R7 | nervio lateral.001,03 Cabina,(not in g1),1244,16,0.237,112,36,22,deflected flight folded ground
+Cockpit R7 | nervio lateral.002,03 Cabina,(not in g1),1244,30,0.583,225,36,45,deflected flight folded ground
+Cockpit R7 | nervio lateral.003,03 Cabina,(not in g1),1244,32,0.336,168,36,33,deflected flight folded ground
+Cockpit R7 | nervio lateral.004,03 Cabina,(not in g1),1244,18,0.252,168,36,33,deflected flight folded ground
+Cockpit R7 | nervio lateral.005,03 Cabina,(not in g1),1244,29,0.599,337,36,67,deflected flight folded ground
+R54 | derecha retorno perimetral superior.001,02E | R54 Caja y bisagras,(not in g1),1240,151,1.0,4162,180,832,deflected flight folded ground
+Arnes R7 | hombro -1,03 Cabina,(not in g1),1228,329,0.995,3262,180,652,deflected flight folded ground
+Arnes R7 | hombro 1,03 Cabina,(not in g1),1228,331,0.993,3262,180,652,deflected flight folded ground
+R42 | Alimentacion circuito posterior -1,01B Motor | detalles visibles,(not in g1),1216,35,0.395,393,72,78,deflected flight folded ground
+R42 | Alimentacion circuito posterior 1,01B Motor | detalles visibles,(not in g1),1216,33,0.492,225,36,45,deflected flight folded ground
+R27 | larguero borde pozo -1,06D Tren de cola R27,(not in g1),1200,449,0.99,3600,504,720,deflected flight folded ground
+R27 | larguero borde pozo 1,06D Tren de cola R27,(not in g1),1200,431,0.987,3600,504,720,deflected flight folded ground
+Cubierta R7 | junta arco posterior,03 Cabina,(not in g1),1160,263,0.999,3037,144,607,deflected flight folded ground
+Anillo fino de asiento 1,05 Helice,(not in g1),1152,363,1.0,5343,108,1068,deflected flight folded ground
+Anillo fino de asiento 2,05 Helice,(not in g1),1152,359,1.0,8100,108,1152,deflected flight folded ground
+Anillo fino de asiento 3,05 Helice,(not in g1),1152,268,1.0,2193,72,438,deflected flight folded ground
+Anillo fino de asiento 4,05 Helice,(not in g1),1152,272,1.0,2193,72,438,deflected flight folded ground
+Sello de raiz 1,05 Helice,(not in g1),1152,0,0.991,0,0,0,
+Sello de raiz 2,05 Helice,(not in g1),1152,3,0.991,56,36,11,deflected flight folded ground
+Sello de raiz 3,05 Helice,(not in g1),1152,0,0.991,0,0,0,
+Sello de raiz 4,05 Helice,(not in g1),1152,1,0.991,56,0,11,deflected flight
+R22 | paredes pozo derecha,06B Tren principal R22,(not in g1),1138,101,0.95,1968,108,393,deflected flight folded
+Asiento R7 | soporte posterior,03 Cabina,(not in g1),1116,239,0.977,8887,432,1116,deflected flight folded ground
+Cockpit R7 | borde de acceso -1,03 Cabina,(not in g1),1088,50,0.972,4106,288,821,deflected flight folded ground
+Cockpit R7 | borde de acceso 1,03 Cabina,(not in g1),1088,48,0.972,4725,288,945,deflected flight folded ground
+R54 | derecha retorno perimetral superior,02E | R54 Caja y bisagras,(not in g1),1078,264,0.991,4050,216,810,deflected flight folded ground
+R54 | izquierda retorno perimetral superior,02E | R54 Caja y bisagras,(not in g1),1074,128,0.89,2025,72,405,deflected flight folded ground
+R10 | flap derecha 1 cabeza articulada,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap derecha 1 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,5,0.592,56,36,11,flight
+R10 | flap derecha 1 glandula,02B Mecanismos R10,(not in g1),1024,7,1.0,56,36,11,deflected flight folded ground
+R10 | flap derecha 1 racor,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap derecha 1 racor.001,02B Mecanismos R10,(not in g1),1024,0,0.363,0,0,0,
+R10 | flap derecha 2 cabeza articulada,02B Mecanismos R10,(not in g1),1024,33,0.993,225,36,45,deflected folded
+R10 | flap derecha 2 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,1,0.498,56,0,11,flight
+R10 | flap derecha 2 glandula,02B Mecanismos R10,(not in g1),1024,36,1.0,168,36,33,deflected flight folded ground
+R10 | flap derecha 2 racor,02B Mecanismos R10,(not in g1),1024,6,0.977,112,0,22,deflected
+R10 | flap derecha 2 racor.001,02B Mecanismos R10,(not in g1),1024,0,1.0,0,0,0,
+R10 | flap derecha 3 cabeza articulada,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap derecha 3 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,3,0.613,112,0,22,folded
+R10 | flap derecha 3 glandula,02B Mecanismos R10,(not in g1),1024,19,1.0,337,36,67,deflected flight folded
+R10 | flap derecha 3 racor,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap derecha 3 racor.001,02B Mecanismos R10,(not in g1),1024,0,0.784,0,0,0,
+R10 | flap izquierda 1 cabeza articulada,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap izquierda 1 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,9,0.9,56,36,11,deflected flight
+R10 | flap izquierda 1 glandula,02B Mecanismos R10,(not in g1),1024,9,1.0,112,36,22,deflected flight folded ground
+R10 | flap izquierda 1 racor,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap izquierda 1 racor.001,02B Mecanismos R10,(not in g1),1024,0,0.421,0,0,0,
+R10 | flap izquierda 2 cabeza articulada,02B Mecanismos R10,(not in g1),1024,35,0.993,225,36,45,deflected
+R10 | flap izquierda 2 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,1,0.505,56,0,11,flight
+R10 | flap izquierda 2 glandula,02B Mecanismos R10,(not in g1),1024,29,0.894,168,36,33,deflected
+R10 | flap izquierda 2 racor,02B Mecanismos R10,(not in g1),1024,9,1.0,56,0,11,deflected
+R10 | flap izquierda 2 racor.001,02B Mecanismos R10,(not in g1),1024,6,1.0,56,0,11,deflected
+R10 | flap izquierda 3 cabeza articulada,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap izquierda 3 cabeza articulada.001,02B Mecanismos R10,(not in g1),1024,3,0.61,112,0,22,folded
+R10 | flap izquierda 3 glandula,02B Mecanismos R10,(not in g1),1024,27,1.0,337,36,67,deflected flight folded
+R10 | flap izquierda 3 racor,02B Mecanismos R10,(not in g1),1024,0,0.0,0,0,0,
+R10 | flap izquierda 3 racor.001,02B Mecanismos R10,(not in g1),1024,0,1.0,0,0,0,
+R10 | flap derecha 1 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,0,0.0,0,0,0,
+R10 | flap derecha 1 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.32,0,0,0,
+R10 | flap derecha 1 piston,02B Mecanismos R10,(not in g1),1020,93,0.986,1237,72,247,deflected flight
+R10 | flap derecha 2 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,4,1.0,56,72,11,deflected
+R10 | flap derecha 2 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.534,0,0,0,
+R10 | flap derecha 2 piston,02B Mecanismos R10,(not in g1),1020,60,0.998,225,72,45,deflected flight folded ground
+R10 | flap derecha 3 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,0,0.0,0,0,0,
+R10 | flap derecha 3 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.444,0,0,0,
+R10 | flap derecha 3 piston,02B Mecanismos R10,(not in g1),1020,57,0.986,281,36,56,deflected flight folded
+R10 | flap izquierda 1 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,0,0.0,0,0,0,
+R10 | flap izquierda 1 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.693,0,0,0,
+R10 | flap izquierda 1 piston,02B Mecanismos R10,(not in g1),1020,101,0.986,1237,72,247,deflected flight
+R10 | flap izquierda 2 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,7,1.0,56,72,11,deflected
+R10 | flap izquierda 2 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.548,0,0,0,
+R10 | flap izquierda 2 piston,02B Mecanismos R10,(not in g1),1020,69,0.998,225,72,45,deflected flight folded ground
+R10 | flap izquierda 3 bulon cilindro eje,02B Mecanismos R10,(not in g1),1020,0,0.0,0,0,0,
+R10 | flap izquierda 3 bulon salida eje,02B Mecanismos R10,(not in g1),1020,0,0.459,0,0,0,
+R10 | flap izquierda 3 piston,02B Mecanismos R10,(not in g1),1020,71,0.986,562,36,112,deflected flight folded
+R20 | fondo de conducto derecha,02C Tomas alares R20,(not in g1),1020,29,0.45,3825,288,765,deflected flight folded ground
+R20 | fondo de conducto izquierda,02C Tomas alares R20,(not in g1),1020,30,0.557,1800,288,360,deflected flight folded ground
+R34 | eje rodillo -1 0 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo -1 0 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo -1 1 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo -1 1 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo 1 0 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo 1 0 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo 1 1 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | eje rodillo 1 1 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia -1 0 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia -1 0 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia -1 1 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia -1 1 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia 1 0 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia 1 0 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia 1 1 0,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R34 | rodillo guia 1 1 1,03 Cabina,(not in g1),1020,0,1.0,0,0,0,
+R42 | Admision cilindro 01,01B Motor | detalles visibles,(not in g1),1016,28,0.214,1518,36,303,deflected flight folded ground
+R42 | Admision cilindro 02,01B Motor | detalles visibles,(not in g1),1016,17,0.292,281,36,56,deflected flight folded ground
+R42 | Admision cilindro 03,01B Motor | detalles visibles,(not in g1),1016,19,0.228,618,0,123,deflected flight folded ground
+R42 | Admision cilindro 04,01B Motor | detalles visibles,(not in g1),1016,10,0.187,225,0,45,deflected flight folded ground
+R42 | Admision cilindro 05,01B Motor | detalles visibles,(not in g1),1016,10,0.161,112,0,22,deflected flight folded ground
+R42 | Admision cilindro 06,01B Motor | detalles visibles,(not in g1),1016,10,0.21,112,0,22,deflected flight folded ground
+R42 | Admision cilindro 07,01B Motor | detalles visibles,(not in g1),1016,8,0.182,337,0,67,deflected flight folded ground
+R42 | Admision cilindro 08,01B Motor | detalles visibles,(not in g1),1016,21,0.321,168,36,33,deflected flight folded ground
+R42 | Admision cilindro 09,01B Motor | detalles visibles,(not in g1),1016,10,0.204,168,36,33,deflected flight folded ground
+R42 | Cable bujia 01 1,01B Motor | detalles visibles,(not in g1),1016,9,0.302,393,0,78,deflected flight folded ground
+R42 | Cable bujia 02 1,01B Motor | detalles visibles,(not in g1),1016,4,0.577,168,0,33,deflected flight folded ground
+R42 | Cable bujia 03 1,01B Motor | detalles visibles,(not in g1),1016,2,0.176,56,0,11,deflected flight folded ground
+R42 | Cable bujia 04 1,01B Motor | detalles visibles,(not in g1),1016,2,0.235,56,0,11,deflected flight folded ground
+R42 | Cable bujia 05 1,01B Motor | detalles visibles,(not in g1),1016,2,0.194,56,0,11,deflected flight folded ground
+R42 | Cable bujia 06 1,01B Motor | detalles visibles,(not in g1),1016,0,0.148,0,0,0,
+R42 | Cable bujia 07 1,01B Motor | detalles visibles,(not in g1),1016,8,0.276,168,36,33,deflected flight
+R42 | Cable bujia 08 1,01B Motor | detalles visibles,(not in g1),1016,1,0.324,56,0,11,deflected flight folded ground
+R42 | Cable bujia 09 1,01B Motor | detalles visibles,(not in g1),1016,0,0.048,0,0,0,
