@@ -1,5 +1,30 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R9 — ten thinner glass variants, 2026-10-24
+
+The owner requested ten combinations with thinner edges, more transparency and fewer effects. All ten were applied to the real Home Fly button through the debug bridge and captured at 1920×1080 in rest and settled hover states. A local HTML comparison shows the original screenshot regions at 1:1 scale and links to the complete captures. Background materials were unchanged. The experiment used the same dark body color/opacity across interaction states to isolate the optical controls; production retains its separate hover/pressed colors and slightly higher opacities.
+
+Width, light, reflection and glint values below are multipliers relative to R8. Halo is native shadow radius/alpha. The native border remains one pixel, with alpha reduced from 0.28 to 0.12.
+
+| Variant | Width | Light | Reflection | Glint | Body alpha | Halo px/alpha | Visual assessment |
+| --- | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| 01 Polished | .55 | .85 | .55 | .65 | .80 | 3/.06 | Retains more exterior glow |
+| 02 Filament | .32 | .90 | .28 | .45 | .76 | 0/0 | Crisp, but less glass volume |
+| 03 Clear | .48 | .72 | .40 | .55 | .70 | 2/.04 | More transparent alternative |
+| 04 Quiet | .38 | .60 | .18 | .35 | .76 | 0/0 | Understated, relatively flat |
+| 05 Optical | .58 | .80 | .72 | .60 | .78 | 2/.05 | Interior reflection more prominent |
+| 06 Sharp | .42 | 1.00 | .32 | .55 | .78 | 1/.04 | Harder fluorescent contour |
+| 07 Diffuse | .68 | .64 | .32 | .50 | .78 | 0/0 | Wider, softer wall |
+| 08 Smoked | .48 | .80 | .25 | .50 | .84 | 2/.04 | Restrained but less transparent |
+| **09 Thin liquid** | **.52** | **.82** | **.48** | **.65** | **.76** | **2/.04** | **Selected: visible glass volume with a quieter rim** |
+| 10 Light glass | .40 | .68 | .22 | .45 | .73 | 1/.03 | Lighter, flatter material |
+
+Variant 09 is the visual choice, not a measured match to the photographs. Production normal/hover/pressed alpha is .76/.80/.84; shadow radius is 2/3/1 with alpha .04/.06/.04. Scaling contour depth and its antialias threshold together preserves screen-space smoothing. Opaque mode, native focus, neutral panels, disabled states and event-driven motion keep their existing contracts. No new assets or dependencies were added.
+
+Checked-runner passes: `test_ui_scale.gd`, `test_ui_home.gd` and `test_ui_crystal.gd` (22 native assertions). The existing crystal checks passed unchanged, including actual rendered text-area/focus contrast over white, brighter green lip, disabled fill, live reduced motion, opaque surfaces and teardown. Native Windows / NVIDIA RTX 3090 / OpenGL Compatibility Home and Settings captures were inspected at 1920×1080, including opaque/reduced-motion previews. Settings previews were discarded. Three debug sessions stopped with no crash or leaked objects; the final capture sessions logged no engine/script/shader errors. No full-suite run or performance qualification is claimed.
+
+Ignored local evidence: `tmp/glass-r9-variants/` contains `variants.csv`, the reproducible bridge command files, twenty candidate captures, the comparison `index.html` and final Home/Settings captures. Checked logs are in `tmp/glass-r9-checks/`; bridge sessions are `tmp/debug-bridge/20261024-163706-47870/`, `20261024-164017-47870/` and `20261024-164133-47870/`. Candidate hover captures were repeated with the tooltip hidden only in the isolated debug session so it would not cover the material. No screenshots are committed or shipped.
+
 ## UI-22-R8 — rounded glass wall and offset reflections, 2026-10-24
 
 The owner requested further experimentation against the same fluorescent-glass photographs. Starting from `c62e7348`, two native material candidates were inspected: a broad rounded wall (its soft edge remained too uniform), then an offset rear contour and curved face reflections. The selected refinement strengthens the green body slightly, reduces the exterior halo and uses a sharper grazing catch over the broad wall. The displaced contour follows the overlapping rims in the supplied bowls. These are art-direction judgments, not measured similarity or physical refraction. [Current material specification](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
