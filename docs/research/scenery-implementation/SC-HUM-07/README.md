@@ -1,6 +1,6 @@
 # SC-HUM-07 — Six different club members
 
-Status: **partial, software-verified, 2026-10-24.** People variety, faces and clothing are delivered; the skin shader (plan §5.4) is still open. Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Builds on [SC-HUM-02](../SC-HUM-02/README.md) (one draw per pose) and [SC-HUM-00](../SC-HUM-00/README.md) (toolchain).
+Status: **delivered except baseball caps (D9), software-verified, 2026-10-24.** People variety, faces and clothing are delivered; the skin, brow and eye shading followed in [SC-HUM-08](../SC-HUM-08/README.md). Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Builds on [SC-HUM-02](../SC-HUM-02/README.md) (one draw per pose) and [SC-HUM-00](../SC-HUM-00/README.md) (toolchain).
 
 ## What changed
 
@@ -60,7 +60,7 @@ Rejected:
 
 ## Limits
 
-- The skin shader (wrap lighting, warm terminator) and baseball caps (CC-BY, D9) are not done.
+- Baseball caps need CC-BY assets (D9). Skin, brows and eyes: see [SC-HUM-08](../SC-HUM-08/README.md).
 - The pilots still hold the primitive transmitter until the owner's models arrive (SC-HUM-01).
 - Texture memory is an estimate; a renderer memory reading on the owner's GPU is still needed.
 - Three work-pose variants were added by [SC-HUM-06](../SC-HUM-06/README.md) in the same atlas (13 people, 11 draws).

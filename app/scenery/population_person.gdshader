@@ -4,6 +4,7 @@ render_mode cull_disabled, diffuse_burley, specular_schlick_ggx;
 #include "res://scenery/vertex_color_linear.gdshaderinc"
 
 global uniform float sim_clock;
+global uniform vec3 wind_vec;
 uniform vec4 base_color : source_color = vec4(1.0);
 uniform sampler2D base_texture : source_color, filter_linear_mipmap_anisotropic;
 uniform bool has_texture = false;
@@ -17,6 +18,11 @@ uniform float shirt_start = 0.90;
 // SC-HUM-02 merged pose: one atlas material; UV2.x is the shading class (0 skin, 1 fabric, 2 plain,
 // 3 eyes, 4 flat) and UV2.y the roughness, replacing the per-part fabric/skin/roughness uniforms.
 uniform bool merged = false;
+// SC-HUM-07 faces: warm backlight on skin, wet eyes and the alpha cut that keeps thin brows and hair.
+uniform vec3 skin_backlight = vec3(0.42, 0.20, 0.14);
+uniform float alpha_cut = 0.3;
+uniform float eye_specular = 0.6;
+uniform float eye_roughness = 0.18;
 // SC-HUM-03 head aim: Population.head_rig() supplies the neck pivot and weight band per pose;
 // PeopleGaze writes yaw to INSTANCE_CUSTOM.w (yaw / PI) and pitch to COLOR.a (0.5 + pitch / PI).
 uniform bool head_enabled = false;
@@ -26,6 +32,9 @@ uniform vec2 head_radius = vec2(0.13, 0.18);
 varying float shirt_weight;
 varying vec3 shirt_tint;
 varying float skin_tone;
+// SC-HUM-08 cloth flutter: metres of hem travel per m/s of wind, capped; zero wind leaves geometry exact.
+const float FLUTTER_PER_MPS = 0.0015;
+const float FLUTTER_MAX_MPS = 8.0;
 
 void vertex() {
 	// Sub-centimeter breathing/weight shift, feet anchored. Integer cycles make the
@@ -60,6 +69,16 @@ void vertex() {
 		TANGENT = rotation * TANGENT;
 		BINORMAL = rotation * BINORMAL;
 	}
+	// SC-HUM-08: shirt hems and loose shirt fronts move with the field wind; shoulders and collars stay
+	// pinned (weight falls to zero towards the chest). The flutter uses whole cycles of the 1024 s clock.
+	bool tinted = merged ? (floor(UV2.x + 0.5) == 1.0) : fabric;
+	if (tinted) {
+		float hem = shirt_weight * (1.0 - smoothstep(shirt_start + 0.10, shirt_start + 0.40, VERTEX.y));
+		vec3 local_wind = inverse(mat3(MODEL_MATRIX)) * wind_vec;
+		local_wind *= FLUTTER_PER_MPS * min(1.0, FLUTTER_MAX_MPS / max(length(local_wind), 0.0001));
+		float gust = 0.65 + 0.35 * sin(sim_clock * (6.28318530718 * 2304.0 / 1024.0) + phase + VERTEX.y * 9.0);
+		VERTEX += local_wind * hem * gust;
+	}
 	VERTEX.x += sin(sim_clock * (6.28318530718 * 43.0 / 1024.0) + phase) * 0.004 * upper * motion;
 	VERTEX.z += sin(sim_clock * (6.28318530718 * 171.0 / 1024.0) + phase) * 0.002 * upper * motion;
 }
@@ -73,13 +92,22 @@ void fragment() {
 		ALBEDO = mix(ALBEDO, detail * shirt_tint * 2.2, shirt_weight);
 	}
 	if (skin || shading == 0.0) {
-		ALBEDO *= mix(vec3(1.0), vec3(0.58, 0.42, 0.32), skin_tone);
+		// LU-21's single skin was darkened per person; merged outfits carry their own skins (SC-HUM-07),
+		// so they vary only slightly. Compatibility has no subsurface scattering: a warm backlight term
+		// lifts the shadowed side and the terminator of skin (ears, nose, fingers) instead (plan §5.4).
+		ALBEDO *= merged ? mix(vec3(1.04), vec3(0.92, 0.89, 0.86), skin_tone) : mix(vec3(1.0), vec3(0.58, 0.42, 0.32), skin_tone);
+		BACKLIGHT = ALBEDO * skin_backlight;
 	}
 	ALPHA = base_color.a * texel.a;
-	ALPHA_SCISSOR_THRESHOLD = 0.5;
+	ALPHA_SCISSOR_THRESHOLD = alpha_cut;
 	ROUGHNESS = merged ? UV2.y : roughness_value;
 	METALLIC = 0.0;
 	SPECULAR = 0.22;
+	if (shading == 3.0 && eye_roughness >= 0.0) {
+		// Eyes: a small wet highlight keeps them alive instead of reading as dark holes.
+		ROUGHNESS = eye_roughness;
+		SPECULAR = eye_specular;
+	}
 	if (has_normal) {
 		NORMAL_MAP = texture(normal_texture, UV).rgb;
 		NORMAL_MAP_DEPTH = normal_strength;

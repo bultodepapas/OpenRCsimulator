@@ -69,8 +69,11 @@ func _run() -> void:
 			for node: MultiMeshInstance3D in population.get_children():
 				node.multimesh.set_instance_custom_data(0, Color(0.2, 1.0, 0.3, 0.0))
 			var hashes := {}
-			for entry: Array in [["start", 0.0], ["moving", 7.0], ["paused", 7.0], ["reset", 0.0], ["wrapped", 1024.0]]:
-				Clock.update(float(entry[1]))
+			# SC-HUM-08: the same instants with wind exercise the shirt-hem flutter (zero wind = exact rest).
+			var windy := Vector3(6.0, 0.0, 0.0)
+			for entry: Array in [["start", 0.0], ["moving", 7.0], ["paused", 7.0], ["reset", 0.0], ["wrapped", 1024.0],
+					["wind", 7.0, windy], ["wind_held", 7.0, windy], ["wind_later", 7.3, windy], ["calm_again", 7.0]]:
+				Clock.update(float(entry[1]), entry[2] if entry.size() > 2 else Vector3.ZERO)
 				await _settle()
 				var img := root.get_texture().get_image()
 				var file := "%s_%s.png" % [asset.replace("/", "_"), entry[0]]
@@ -81,7 +84,8 @@ func _run() -> void:
 				hashes[entry[0]] = hash.finish().hex_encode()
 			report.motion[asset] = {hashes = hashes, changed = hashes.start != hashes.moving,
 				pause_equal = hashes.moving == hashes.paused, reset_equal = hashes.start == hashes.reset,
-				wrap_equal = hashes.start == hashes.wrapped}
+				wrap_equal = hashes.start == hashes.wrapped, wind_changes = hashes.wind != hashes.moving,
+				wind_repeatable = hashes.wind == hashes.wind_held, calm_restored = hashes.calm_again == hashes.moving}
 		population.free()
 	var file := FileAccess.open(out.path_join("report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  "))

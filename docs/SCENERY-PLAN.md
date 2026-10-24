@@ -8,7 +8,7 @@
 
 ## Current implementation
 
-The normal Home and flight routes include the complete club field: parking, open pit shelters, pavilion, people, field boundaries, hay bales, animals, distant landmarks, bushes, flowers, ambience and birds (a vulture kettle, red kites and barn swallows; [birds plan](plans/birds-sky-life.md)). The launch profile may enable the flock and ambience; reference captures can select birds-off explicitly.
+The normal Home and flight routes include the complete club field: parking, open pit shelters, pavilion, people, field boundaries, hay bales, animals, distant landmarks, bushes, flowers, ambience and birds (a mixed vulture and stork kettle, red kites, barn swallows and an evening swift party, chosen by time of day; [birds plan](plans/birds-sky-life.md)). The launch profile may enable the flock and ambience; reference captures can select birds-off explicitly.
 
 [LU-28](research/landscape-upgrade/LU-28/README.md) extends the surrounding plain
 with eight houses, a second farm, fences, shrub crop rows and cattle using the

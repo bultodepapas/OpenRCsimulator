@@ -1,6 +1,6 @@
 # SC-BIRD-01…05 · First bird slice: vulture kettle, red kite, barn swallows
 
-2026-10-24 · Evidence for the [birds plan](../../../plans/birds-sky-life.md) (first slice). Software evidence on the Linux VM's llvmpipe; not target-hardware performance and not the owner's Gate SC judgement.
+2026-10-24 · Evidence for the [birds plan](../../../plans/birds-sky-life.md) (first slice). **Correction:** the colour tables of this slice never reached the shader, so these birds rendered black (fog-tinted); fixed and tested in [SC-BIRD-08](../SC-BIRD-08/README.md#correction-to-sc-bird-0105). The second slice also replaced the per-group atlas mesh and the shader-side activity threshold described below. Software evidence on the Linux VM's llvmpipe; not target-hardware performance and not the owner's Gate SC judgement.
 
 ## What was built
 

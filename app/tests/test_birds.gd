@@ -431,24 +431,24 @@ func _test_transitions() -> void:
 	_check("leaving and turning back is continuous (largest step %.4f of the way per 0.1 s)" % worst_step, worst_step < 0.01)
 	_check("after turning back it is fully home", Birds.departure_share(state, 300.0, duration) == 0.0)
 	# The wrap: a finished arrival must not replay 1024 s later; settle() makes it STEADY.
-	var root: Node3D = Birds.build({sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
+	var birds: Node3D = Birds.build({sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
 	ShaderClock.update(200.0)
-	Birds.apply_lighting(root, {sun_elevation_deg = -20.0, sun_azimuth_deg = 300.0})
+	Birds.apply_lighting(birds, {sun_elevation_deg = -20.0, sun_azimuth_deg = 300.0})
 	_check("night after noon: every bird starts leaving, none vanishes at once",
-		Birds.pending(root) and Birds.drawn(root).values().max() > 0, str(Birds.drawn(root)))
+		Birds.pending(birds) and Birds.drawn(birds).values().max() > 0, str(Birds.drawn(birds)))
 	ShaderClock.update(200.0 + 151.0)
-	Birds.settle(root, ShaderClock.last_clock)
+	Birds.settle(birds, ShaderClock.last_clock)
 	_check("after the longest departure every bird is away and costs nothing",
-		not Birds.pending(root) and Birds.drawn(root).values().max() == 0, str(Birds.drawn(root)))
-	Birds.apply_lighting(root, {sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
+		not Birds.pending(birds) and Birds.drawn(birds).values().max() == 0, str(Birds.drawn(birds)))
+	Birds.apply_lighting(birds, {sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
 	ShaderClock.update(351.0 + 151.0)
-	Birds.settle(root, ShaderClock.last_clock)
+	Birds.settle(birds, ShaderClock.last_clock)
 	var states_ok := true
-	for node: MultiMeshInstance3D in root.get_meta("bird_groups"):
+	for node: MultiMeshInstance3D in birds.get_meta("bird_groups"):
 		for s: float in node.get_meta("states"):
 			states_ok = states_ok and (s == Birds.STEADY or s == Birds.HIDDEN)
-	_check("arrivals settle to flying, so nothing replays when the clock wraps", states_ok and not Birds.pending(root))
-	root.free()
+	_check("arrivals settle to flying, so nothing replays when the clock wraps", states_ok and not Birds.pending(birds))
+	birds.free()
 	ShaderClock.update(100.0)
 
 
@@ -468,7 +468,6 @@ func _test_scene() -> void:
 		primitives += mm.visible_instance_count * floori(mm.mesh.get_faces().size() / 3.0)
 		var tracks: Array = node.get_meta("tracks")
 		var species: Array = node.get_meta("species_data")
-		var flocks: Array[Dictionary] = []
 		for item: Dictionary in node.get_meta("instances"):
 			var track: Dictionary = tracks[item.track]
 			var away: Vector3 = Birds.departure_vector(species[item.species], _flocks_of(node))
