@@ -48,7 +48,8 @@ Launch options:
 
 `$D help` prints the live list. Arguments are `key=value`. Values are JSON when they parse (`true`, `0.4`, `[1,2]`,
 `{"a":"b"}`), otherwise strings. Output is compact JSON; `--pretty` indents and `--json` forces JSON. `ui`, `help`,
-`shortcuts`, `control` and `methods` print readable tables. Exit status: 0 ok, 1 refused (the reason is on stderr),
+`shortcuts`, `control` and `methods` print readable tables. `ui` shows each path below its scope, without generated
+`@Type@123` segments; `--paths` prints full paths. Exit status: 0 ok, 1 refused (the reason is on stderr),
 2 usage or connection error.
 
 | Area | Commands |
@@ -59,7 +60,7 @@ Launch options:
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
 | Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]` |
-| Observe | `state`, `logs [--since N] [--level …] [--follow]`, `perf`, `screenshot [path=] [max_width=]`, `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
+| Observe | `state`, `logs [--since N] [--level …] [--follow]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
 | Scripts | `run FILE\|- [--keep-going]`, `repl`, `crawl [--shots]` |
@@ -122,8 +123,23 @@ $D call node=AppRoot method=set_landscape 'args=["green_paradise"]'
   (`OS.is_debug_build()`).
 - **Protocol.** The bridge reads one JSON object per line and answers with one line (`{"id","ok","result"|"error"}`).
   `debugctl.py` opens one connection per command and needs only the Python standard library.
+- **Invalid lines.** A line that is not such an object, or has a wrong token, gets one error and the connection
+  closes. A web page can POST to `127.0.0.1`, and its HTTP request line closes the connection before the body could
+  run.
+- **Threads.**
+  - A network thread owns the sockets and the JSONL file. It answers `help`, `ping`, `logs` and `state` at once, even
+    while a slow frame renders.
+  - `state` then comes from a snapshot published at most every 50 ms while a client is active. The snapshot is at most
+    100 ms or one frame old, and the reply carries `snapshot_age_ms`. Every command reply invalidates the snapshot,
+    so a `state` read after a command always sees that command's effect. Add `fresh=true` to read it on the main
+    thread.
+  - Every other command runs on the main thread at the start of the next frame. Replies are sent without blocking, so
+    a client that stops reading cannot stall the game.
+  - Screenshots are read back on the main thread, then scaled and encoded on a worker, which also sends the reply.
 - **Environment variables.**
-  - `OPENRC_DEBUG_TOKEN` requires a matching `token` field.
+  - `OPENRC_DEBUG_TOKEN` requires a matching `token` field, compared in constant time. `launch` generates a fresh
+    token per session and keeps it in `tmp/debug-bridge/current.json` (mode 0600), and the client sends it for that
+    port.
   - `OPENRC_DEBUG_LOG` names the JSONL log.
   - `OPENRC_DEBUG_OUT` is the screenshot folder.
   - `OPENRC_GODOT` overrides the engine executable.
@@ -147,8 +163,30 @@ Limits:
 - **Some inputs cannot be emulated.** Radio and gamepad axes are not emulated: `sticks` replaces the keyboard sample,
   and `control` runs the same handlers a bound controller button runs. `pause`, `step` and `sticks` apply to flights;
   the truck has `drive` and its own garage pause.
-- **`eval`, `call` and `set` can do anything.** They are debugging tools for your own machine, like the editor's
-  remote tree.
+- **`eval`, `call` and `set` can do anything**, and `screenshot path=` and `record path=` write where you tell them.
+  They are debugging tools for your own machine, like the editor's remote tree, behind the per-session token.
+
+## Performance
+
+Measured on the Linux dev VM, 2026-10-24, with the median of 5 calls. The rendered runs used Xvfb, llvmpipe, Home at
+1920×1080 and about 0.8 fps.
+
+| Command | Before the network thread | After |
+| --- | --- | --- |
+| `ping`, `state`, `logs` | 1.1–1.2 s (one rendered frame) | 3–5 ms |
+| `ui` | 1.2 s | 1.2 s (the next frame) |
+| `key`, `wait frames=1` | not measured | 2.3–2.4 s (the next frame plus one settle frame) |
+| `open` | 5.0 s | 2.4 s (one settle frame instead of three) |
+| `screenshot` (960 px) | 2.8 s | 2.3–2.4 s (the encoder replies; the frame no longer stalls on PNG or JPEG work) |
+
+Headless, every command takes about 7 ms. The bridge's own main-thread cost (`perf` → `bridge_usec`) was measured in
+a headless flight at about 140 fps:
+
+- 40 µs per frame with no client;
+- 58 µs per frame while a client is active (226 µs before the 50 ms snapshot rate limit).
+
+On a slow renderer, any command that touches the scene waits for frames. Use `--headless` whenever you do not need
+pictures.
 
 ## Choice of design
 
@@ -183,7 +221,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 50 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 58 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -196,14 +234,37 @@ to the bridge on a stand-in AppRoot. It covers:
 - `methods`, `shortcuts` and controller actions;
 - the sticks override and its release;
 - exact `step`, `resume` under a hold, and `wait` timeouts;
-- `sample` rows and errors, and `perf`.
+- `sample` rows and errors, and `perf`;
+- the network thread answering `ping`, `state` and `logs` while the main thread is blocked for 800 ms;
+- an old snapshot never served, and a `state` read right after a command showing that command's effect;
+- an HTTP POST answered once and closed without running its body;
+- bad stick values refused before anything is installed;
+- `release=1` read as true;
+- `set` on an unknown property and non-numeric arguments refused;
+- `wait` timeouts reporting the last value.
 
-**Client tests.** These run in `research/test-tools.sh`, with 11 tests against a fake server. They cover argument and
-JSON parsing, the token, exit codes, the `ui` table, the remembered session port, `run` stop and `--keep-going`,
-`watch` CSV chunks, `crawl` passes and failures, and `clean`.
+**Client tests.** These run in `research/test-tools.sh`, with 15 tests against a fake server. They cover argument and
+JSON parsing, the token, exit codes, the `ui` table and its short paths, the remembered session port and token (sent
+only to that port), `OPENRC_DEBUG_BRIDGE=1` not being read as a port, `stop` without a session, `run` stop and
+`--keep-going`, `watch` CSV chunks, `crawl` passes and failures, and `clean`.
 
 **Mutations.** On 2026-10-24, deliberate mutations on a disposable copy each failed exactly their check: no reader
-re-assert, step off by one, token ignored, release no-op.
+re-assert, step off by one, token ignored, release no-op, no network-thread fast path, a stale snapshot accepted, no
+snapshot invalidation on replies, and the log ring read from one sequence too late.
+
+**Independent review.** A read-only review on 2026-10-24 found 11 issues, all fixed and covered above:
+
+- browser POST injection;
+- blocking sends;
+- launch on the wrong port and orphaned engines;
+- a per-frame log scan;
+- numeric booleans;
+- timed-out sample jobs;
+- silent `call`/`set` failures;
+- partial side effects;
+- step and drive ending at frame boundaries;
+- the truck's pause;
+- several small items.
 
 **Real app on the Linux dev VM** (Godot 4.7.2, Xvfb/llvmpipe and headless), 2026-10-24:
 
@@ -212,7 +273,9 @@ re-assert, step off by one, token ignored, release no-op.
   views.
 - `sample` and `record` (start, mark, stop) worked, and so did the wheel and the screenshot. `home` returned.
 - The helicopter accepted arm and collective input. The MT8 drove 14 m with `drive` after `press text=drive`.
-- `crawl`: 8 screens from Home and 8 from the flight's pause menu, with 0 failures and 0 errors.
+- `crawl`: 8 screens from Home and 8 from the flight's pause menu, with 0 failures and 0 errors. This held again
+  after the network thread, once replies invalidated the snapshot: the first threaded build served a pre-`close`
+  state, and `crawl` caught it.
 - A nose-down dive crashed at tick 495 with `crashed`/`pause_reason` events. `ui` then showed only the accident
   report, and `press text="Restart flight"` restarted the flight.
 - `set_landscape` switched Home to Green paradise. A settings resolution choice enabled Revert and Keep.

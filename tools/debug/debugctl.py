@@ -10,7 +10,7 @@
   debugctl.py crawl [--shots]                                              open/list/close every screen here; report errors
   debugctl.py clean [--keep N]                                             delete old run folders (default keep 3; never a live one)
   debugctl.py repl                                                         interactive prompt (same syntax)
-  debugctl.py <command> [key=value ...] [--pretty|--json]                  any bridge command; `help` lists them
+  debugctl.py <command> [key=value ...] [--pretty|--json|--paths]          any bridge command; `help` lists them
 
 Values are JSON when they parse (true, 3, 0.5, [1,2], {"a":"b"}), else strings. One TCP connection per call.
 The port comes from OPENRC_DEBUG_BRIDGE, else the last `launch` (tmp/debug-bridge/current.json), else 47870.
@@ -24,6 +24,7 @@ import csv
 import datetime
 import json
 import os
+import secrets
 import shutil
 import signal
 import socket
@@ -49,11 +50,22 @@ def current_session() -> dict:
         return {}
 
 
-def port() -> int:
+def env_port() -> int | None:
+    """OPENRC_DEBUG_BRIDGE as a port; 1/on/true only enable the bridge (as in the engine) and name no port."""
     value = os.environ.get("OPENRC_DEBUG_BRIDGE", "")
-    if value.isdigit() and int(value) > 1:
-        return int(value)
-    return int(current_session().get("port", DEFAULT_PORT))
+    return int(value) if value.isdigit() and int(value) > 1 else None
+
+
+def port() -> int:
+    return env_port() or int(current_session().get("port", DEFAULT_PORT))
+
+
+def token() -> str:
+    """OPENRC_DEBUG_TOKEN, else the secret the last launch generated for its port."""
+    session = current_session()
+    if os.environ.get("OPENRC_DEBUG_TOKEN"):
+        return os.environ["OPENRC_DEBUG_TOKEN"]
+    return session.get("token", "") if int(session.get("port", 0)) == port() else ""
 
 
 def parse_value(text: str):
@@ -75,9 +87,9 @@ def parse_args(items: list[str]) -> dict:
 
 def request(cmd: str, args: dict | None = None, timeout: float = 900.0, to_port: int | None = None) -> dict:
     payload = {"id": 1, "cmd": cmd, **(args or {})}
-    token = os.environ.get("OPENRC_DEBUG_TOKEN")
-    if token:
-        payload["token"] = token
+    secret = token()
+    if secret:
+        payload["token"] = secret
     with socket.create_connection(("127.0.0.1", to_port or port()), timeout=timeout) as conn:
         conn.sendall((json.dumps(payload) + "\n").encode())
         data = b""
@@ -146,6 +158,8 @@ def alive(pid: int | None) -> bool:
 def godot() -> str:
     if os.environ.get("OPENRC_GODOT"):
         return os.environ["OPENRC_GODOT"]
+    if os.name == "nt":
+        raise ValueError("set OPENRC_GODOT to the Godot 4.7.2 executable (app/get-godot.sh is a Bash script)")
     return subprocess.run([str(REPO / "app" / "get-godot.sh")], check=True, capture_output=True, text=True).stdout.strip()
 
 
@@ -162,8 +176,8 @@ def launch(argv: list[str]) -> int:
             options[arg] = argv[i + 1]
     if options["--port"]:
         chosen = int(options["--port"])
-    elif "OPENRC_DEBUG_BRIDGE" in os.environ and os.environ["OPENRC_DEBUG_BRIDGE"].isdigit():
-        chosen = int(os.environ["OPENRC_DEBUG_BRIDGE"])
+    elif env_port():
+        chosen = env_port()
     else:
         chosen = DEFAULT_PORT if port_free(DEFAULT_PORT) else free_port()
     if not port_free(chosen):
@@ -190,8 +204,10 @@ def launch(argv: list[str]) -> int:
             command = [xvfb, "-a", "-s", f"-screen 0 {screen}"] + command + ["--audio-driver", "Dummy"]
     if app_args:
         command += ["--"] + app_args
+    # A fresh secret per session: other local users and web pages (which can POST to 127.0.0.1) cannot drive it.
+    secret = os.environ.get("OPENRC_DEBUG_TOKEN") or secrets.token_hex(16)
     env = dict(os.environ, OPENRC_DEBUG_BRIDGE=str(chosen), OPENRC_DEBUG_LOG=str(out / "log.jsonl"),
-               OPENRC_DEBUG_OUT=str(out))
+               OPENRC_DEBUG_OUT=str(out), OPENRC_DEBUG_TOKEN=secret)
     profile = None
     if "--real-profile" not in argv:
         # user:// (preferences, flight logs, caches) under the run, so a session never edits the player's settings.
@@ -205,16 +221,53 @@ def launch(argv: list[str]) -> int:
     session = {"port": chosen, "launcher_pid": process.pid, "out": str(out), "profile": str(profile) if profile else "real",
                "command": command}
     (out / "launch.json").write_text(json.dumps(session, indent=2) + "\n")
+    session["token"] = secret
+    write_private(CURRENT, session)  # before waiting, so ready/status/stop --force can find this session
     try:
         ready = wait_ready(float(options["--timeout"]), process, chosen)
-    except (RuntimeError, TimeoutError) as error:
-        print(f"{error}; see {out / 'engine.log'}", file=sys.stderr)
+    except (RuntimeError, TimeoutError, KeyboardInterrupt) as error:
+        kill_group(process.pid)  # never leave a 2-3 GB engine behind
+        CURRENT.unlink(missing_ok=True)
+        print(f"{error or 'interrupted'}; the launched app was stopped; see {out / 'engine.log'}", file=sys.stderr)
+        tail(out / "engine.log")
         return 2
     session["pid"] = ready["result"]["pid"]
-    RUNS.mkdir(parents=True, exist_ok=True)
-    CURRENT.write_text(json.dumps(session, indent=2) + "\n")
-    print(json.dumps({"ok": True, **session, "command": None, **ready["result"]}))
+    write_private(CURRENT, session)
+    shown = {k: v for k, v in session.items() if k not in ("command", "token")}
+    print(json.dumps({"ok": True, **shown, **ready["result"]}))
     return 0
+
+
+def write_private(path: Path, value: dict) -> None:
+    """The session file holds the token: readable by this user only."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(descriptor, "w") as handle:
+        handle.write(json.dumps(value, indent=2) + "\n")
+    if os.name != "nt":
+        os.chmod(path, 0o600)
+
+
+def kill_group(pid: int | None) -> None:
+    """Kill a process this tool launched, with its children (xvfb-run, Xvfb, Godot)."""
+    if not pid:
+        return
+    try:
+        if hasattr(os, "killpg"):
+            os.killpg(pid, signal.SIGKILL)  # the launcher leads its own session/process group
+        else:
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(pid)], capture_output=True)
+    except OSError:
+        pass
+
+
+def tail(path: Path, lines: int = 15) -> None:
+    try:
+        text = path.read_text(errors="replace").splitlines()[-lines:]
+    except OSError:
+        return
+    for line in text:
+        print(f"  | {line}", file=sys.stderr)
 
 
 def clean(argv: list[str]) -> int:
@@ -241,12 +294,18 @@ def status() -> int:
     except (OSError, Refused):
         report["bridge"] = False
     print(json.dumps(report))
+    if not report["bridge"] and session.get("out"):
+        print(f"no bridge; last lines of {session['out']}/engine.log:", file=sys.stderr)
+        tail(Path(session["out"]) / "engine.log")
     return 0 if report["bridge"] else 1
 
 
 def stop(argv: list[str]) -> int:
     session = current_session()
-    pid = session.get("pid")
+    pid = session.get("pid") or session.get("launcher_pid")
+    if not pid and env_port() is None:
+        print("debugctl: no launched session to stop (tmp/debug-bridge/current.json is missing)", file=sys.stderr)
+        return 1
     try:
         result_of("quit", timeout=5.0)
     except (OSError, Refused) as error:
@@ -257,14 +316,7 @@ def stop(argv: list[str]) -> int:
     while alive(pid) and time.monotonic() < deadline:
         time.sleep(0.2)
     if alive(pid) and "--force" in argv:
-        for target in (session.get("launcher_pid"), pid):
-            try:
-                if hasattr(os, "killpg"):
-                    os.killpg(target, signal.SIGKILL)  # the launcher leads the session's process group
-                else:
-                    subprocess.run(["taskkill", "/F", "/T", "/PID", str(target)], capture_output=True)
-            except (OSError, TypeError):
-                pass
+        kill_group(session.get("launcher_pid"))
         time.sleep(0.5)
     if alive(pid):
         print(f"debugctl: pid {pid} still running; use stop --force", file=sys.stderr)
@@ -463,6 +515,8 @@ def execute_line(line: str, pretty: bool = False) -> None:
         return
     command, rest = words[0], words[1:]
     if command == "sleep":
+        if len(rest) != 1:
+            raise ValueError("sleep needs one number of seconds")
         time.sleep(float(rest[0]))
         return
     if command == "echo":
@@ -470,7 +524,7 @@ def execute_line(line: str, pretty: bool = False) -> None:
         return
     flags = [w for w in rest if w.startswith("--")]
     result = result_of(command, parse_args([w for w in rest if not w.startswith("--")]))
-    show(command, result, pretty or "--pretty" in flags, "--json" in flags)
+    show(command, result, pretty or "--pretty" in flags, "--json" in flags, "--paths" in flags)
 
 
 def run_script(argv: list[str]) -> int:
@@ -525,9 +579,9 @@ def repl() -> int:
             print(f"connection: {error}", file=sys.stderr)
 
 
-def show(command: str, result, pretty: bool, raw_json: bool) -> None:
+def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = False) -> None:
     if command == "ui" and not raw_json and isinstance(result, dict):
-        print_ui(result)
+        print_ui(result, full_paths)
     elif command == "help" and not raw_json and isinstance(result, dict):
         width = max(map(len, result))
         for name, text in result.items():
@@ -550,8 +604,16 @@ def show(command: str, result, pretty: bool, raw_json: bool) -> None:
         print(json.dumps(result, indent=1 if pretty else None, ensure_ascii=False))
 
 
-def print_ui(result: dict) -> None:
-    """One line per control: focus mark, type, quoted label, state, path (the value press/focus path= accepts)."""
+def short_path(path: str, scope: str) -> str:
+    """The path below the scope, generated @Type@123 segments elided: readable and cheap; --paths prints it whole."""
+    if scope and path.startswith(scope + "/"):
+        path = path[len(scope) + 1:]
+    parts = [p for p in path.split("/") if not (p.startswith("@") and p.count("@") >= 2)]
+    return "/".join(parts[-3:]) if len(parts) > 3 else "/".join(parts)
+
+
+def print_ui(result: dict, full_paths: bool = False) -> None:
+    """One line per control: focus mark, type, quoted label, state, path. Labels are what press text= takes."""
     print(f"# scope {result['scope'] or '/root'}  focus {result['focus'] or '-'}")
     for item in result["controls"]:
         state = []
@@ -564,7 +626,8 @@ def print_ui(result: dict) -> None:
         if "items" in item:
             state.append(f"selected={item['selected']} of {item['items']}")
         mark = "*" if item["focused"] else " "
-        print(f"{mark} {item['type']:<13} {json.dumps(item['text'], ensure_ascii=False):<34} {' '.join(state):<16} {item['path']}")
+        shown = item["path"] if full_paths else short_path(item["path"], result["scope"])
+        print(f"{mark} {item['type']:<13} {json.dumps(item['text'], ensure_ascii=False):<34} {' '.join(state):<16} {shown}")
 
 
 def main(argv: list[str]) -> int:
@@ -595,7 +658,7 @@ def main(argv: list[str]) -> int:
             timeout = float(rest[rest.index("--timeout") + 1]) if "--timeout" in rest else 60.0
             print(json.dumps(wait_ready(timeout)["result"]))
             return 0
-        flags = [w for w in rest if w in ("--pretty", "--json")]
+        flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:
         print(f"error: {error}", file=sys.stderr)
@@ -605,7 +668,7 @@ def main(argv: list[str]) -> int:
     except (OSError, TimeoutError, ValueError) as error:
         print(f"debugctl: {error}", file=sys.stderr)
         return 2
-    show(command, result, "--pretty" in flags, "--json" in flags)
+    show(command, result, "--pretty" in flags, "--json" in flags, "--paths" in flags)
     return 0
 
 
