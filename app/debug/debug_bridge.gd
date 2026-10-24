@@ -964,7 +964,9 @@ func _cmd_wait(request: Dictionary) -> Dictionary:
 	if request.has("seconds"):
 		var until := Time.get_ticks_msec() + int(float(request.seconds) * 1000.0)
 		return {pending = func() -> Variant:
-			return _ok({frame = Engine.get_process_frames()}) if Time.get_ticks_msec() >= until else null,
+			if Time.get_ticks_msec() < until:
+				return null
+			return _ok({frame = Engine.get_process_frames()}),
 			timeout_s = float(request.seconds) + 5.0}
 	return _settle(maxi(1, int(request.get("frames", 1))), {})
 
@@ -1192,11 +1194,11 @@ func _cmd_sample(request: Dictionary) -> Dictionary:
 	if sources.is_empty():
 		return _fail("give exprs={\"name\": \"expression\"} (inputs: app, tree, bridge, session, sim, s = sim.state)")
 	var compiled := {}
-	for name: Variant in sources:
+	for column: Variant in sources:
 		var expression := Expression.new()
-		if expression.parse(str(sources[name]), _input_names(["session", "sim", "s"])) != OK:
-			return _fail("%s: parse error: %s" % [name, expression.get_error_text()])
-		compiled[str(name)] = expression
+		if expression.parse(str(sources[column]), _input_names(["session", "sim", "s"])) != OK:
+			return _fail("%s: parse error: %s" % [column, expression.get_error_text()])
+		compiled[str(column)] = expression
 	var job := {session = session, exprs = compiled, every = maxi(1, int(request.get("every_ticks", 24))),
 		count = clampi(int(request.get("count", 10)), 1, 100000), rows = [], last_tick = -1, error = ""}
 	_samples.append(job)
@@ -1223,11 +1225,11 @@ func _collect_samples() -> void:
 			continue
 		job.last_tick = tick
 		var row: Array = [tick, sim.time()]
-		for name: String in job.exprs:
-			var expression: Expression = job.exprs[name]
+		for column: String in job.exprs:
+			var expression: Expression = job.exprs[column]
 			var value: Variant = expression.execute(_input_values([job.session, sim, sim.state]), app, false)
 			if expression.has_execute_failed():
-				job.error = "%s failed at tick %d: %s" % [name, tick, expression.get_error_text()]
+				job.error = "%s failed at tick %d: %s" % [column, tick, expression.get_error_text()]
 				break
 			row.append(jsonable(value))
 		job.rows.append(row)
@@ -1445,15 +1447,15 @@ func _cmd_methods(request: Dictionary) -> Dictionary:
 	var seen := {}
 	var out: Array = []
 	for method: Dictionary in node.get_script().get_script_method_list():
-		var name := str(method.name)
-		if seen.has(name) or name.begins_with("@") or (name.begins_with("_") and not private): # @: property accessors
+		var method_name := str(method.name)
+		if seen.has(method_name) or method_name.begins_with("@") or (method_name.begins_with("_") and not private): # @: property accessors
 			continue
-		seen[name] = true
+		seen[method_name] = true
 		var args: Array = method.args.map(func(a: Dictionary) -> String: return str(a.name))
 		var defaults: int = method.default_args.size()
 		for i in defaults:
 			args[args.size() - defaults + i] += "?"
-		out.append("%s(%s)" % [name, ", ".join(args)])
+		out.append("%s(%s)" % [method_name, ", ".join(args)])
 	out.sort()
 	return _ok({node = _path(node), script = node.get_script().resource_path, methods = out})
 
@@ -1599,7 +1601,7 @@ func _recent_median(count: int) -> float:
 	for i in count:
 		values.append(_frame_ms[(_frame_count - 2 - i + FRAME_CAPACITY) % FRAME_CAPACITY])
 	values.sort()
-	return values[values.size() / 2]
+	return values[floori(values.size() / 2.0)]
 
 
 func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:
@@ -1619,7 +1621,7 @@ func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> vo
 	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
 		causes.append("scene/resource construction")
 	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
-		func(record: Dictionary) -> String: return str(record.text).left(160))
+		func(entry: Dictionary) -> String: return str(entry.text).left(160))
 	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
 		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
 		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
@@ -1662,7 +1664,7 @@ func _cmd_frames(request: Dictionary) -> Dictionary:
 	if window > 0:
 		var sorted := times.duplicate()
 		sorted.sort()
-		var worst := sorted.slice(sorted.size() - maxi(1, sorted.size() / 100))
+		var worst := sorted.slice(sorted.size() - maxi(1, floori(sorted.size() / 100.0)))
 		var mean := 0.0
 		for value: float in times:
 			mean += value
@@ -1706,7 +1708,9 @@ func _cmd_break(request: Dictionary) -> Dictionary:
 	if not _bool(request.get("wait", false)):
 		return _ok({name = watch.name, pause = watch.pause, once = watch.once})
 	return {pending = func() -> Variant:
-		return _ok(watch.hit) if not watch.hit.is_empty() else null,
+		if watch.hit.is_empty():
+			return null
+		return _ok(watch.hit),
 		timeout_s = 600.0}
 
 
@@ -2130,7 +2134,9 @@ static func _bool(value: Variant) -> bool:
 ## A finite number from JSON (or a numeric string), else null: callers refuse instead of failing mid-command.
 static func _number(value: Variant) -> Variant:
 	if value is int or value is float:
-		return float(value) if is_finite(float(value)) else null
+		if not is_finite(float(value)):
+			return null
+		return float(value)
 	if value is String and value.is_valid_float():
 		return value.to_float()
 	return null

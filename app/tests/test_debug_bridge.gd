@@ -187,8 +187,8 @@ func _ui(app: Node, slider: HSlider) -> void:
 	_check("a disabled button is refused", not disabled.ok and str(disabled.error).contains("disabled"))
 	var missing: Dictionary = await _call({cmd = "press", text = "Land"})
 	_check("an unknown label is refused", not missing.ok)
-	var set: Dictionary = await _call({cmd = "set_value", text = "Wind", value = 4.5})
-	_check("set_value moves a Range", set.ok and is_equal_approx(slider.value, 4.5), str(set))
+	var moved: Dictionary = await _call({cmd = "set_value", text = "Wind", value = 4.5})
+	_check("set_value moves a Range", moved.ok and is_equal_approx(slider.value, 4.5), str(moved))
 
 
 func _sticks(session: Node) -> void:
@@ -211,10 +211,10 @@ func _sticks(session: Node) -> void:
 
 
 func _step(session: Node) -> void:
-	var paused: Dictionary = await _call({cmd = "pause"})
+	var pause_reply: Dictionary = await _call({cmd = "pause"})
 	var start: int = session.sim.tick
 	var stepped: Dictionary = await _call({cmd = "step", ticks = 30})
-	_check("step advances exactly n ticks and pauses again", paused.ok and stepped.ok
+	_check("step advances exactly n ticks and pauses again", pause_reply.ok and stepped.ok
 		and stepped.result.tick == start + 30 and session.sim.paused and session.sim.stop_at_tick == -1, str(stepped))
 	session.holds.menu = true
 	var held: Dictionary = await _call({cmd = "resume"})
@@ -254,9 +254,9 @@ func _tools(bridge: Node, flight: Node) -> void:
 	var all: Dictionary = await _call({cmd = "get", node = path})
 	_check("get reads one property or all script variables", got.ok and got.result == "fake-plane"
 		and all.ok and all.result.has("camera_fov"), str(all))
-	var set: Dictionary = await _call({cmd = "set", node = path, prop = "offset", value = [1, 2, 3]})
+	var assigned: Dictionary = await _call({cmd = "set", node = path, prop = "offset", value = [1, 2, 3]})
 	var sub: Dictionary = await _call({cmd = "set", node = path, prop = "offset:y", value = 5})
-	_check("set coerces arrays to vectors and sets sub-properties", set.ok and sub.ok
+	_check("set coerces arrays to vectors and sets sub-properties", assigned.ok and sub.ok
 		and flight.offset == Vector3(1, 5, 3), str(flight.offset))
 	var called: Dictionary = await _call({cmd = "call", node = path, method = "scaled", args = [2.5, 4]})
 	var missing: Dictionary = await _call({cmd = "call", node = path, method = "nope"})
@@ -288,7 +288,7 @@ class KeySpy extends Node:
 			seen.append(event.as_text_physical_keycode() if event.keycode == KEY_NONE else event.as_text())
 
 
-func _everything(bridge: Node, app: Node, ui: Container) -> void:
+func _everything(_bridge: Node, app: Node, ui: Container) -> void:
 	var options := OptionButton.new()
 	options.name = "Language"
 	for label: String in ["English", "Español", "Deutsch"]:
