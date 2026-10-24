@@ -15,7 +15,7 @@ var above: bool = false
 var sampled_tick: int = -1
 var status: String = "waiting for radio"
 ## Set before adding: the flight overlays hold the right-hand side (Telemetry, Transmitter), so their flights show the
-## marker in the free lower centre, above Performance. The legacy route keeps it centre right.
+## marker beside the controls guide. The legacy route keeps it centre right.
 var left_side: bool = false
 var marker: ColorRect
 var caption: Label
@@ -55,11 +55,9 @@ func _ready() -> void:
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_theme_stylebox_override("panel", Frame.backplate())
 	if left_side:
-		margin.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
-		margin.grow_horizontal = Control.GROW_DIRECTION_BOTH
-		margin.grow_vertical = Control.GROW_DIRECTION_BEGIN
-		margin.offset_top = -90
-		margin.offset_bottom = -90
+		margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+		margin.offset_left = 332
+		margin.offset_top = 180
 	else:
 		margin.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
 		margin.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -75,6 +73,8 @@ func _ready() -> void:
 	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(header)
 	var heading := _label(tr("Latency camera marker"))
+	heading.custom_minimum_size.x = 220
+	heading.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(heading)
 	close_button = Frame.close_x(func() -> void:
@@ -92,6 +92,8 @@ func _ready() -> void:
 	caption = _label(tr(status))
 	stack.add_child(caption)
 	var explanation := _label(tr("Camera test only, not milliseconds.\nWhite: at/above threshold.\nBlack: below. Gray: inactive."))
+	explanation.custom_minimum_size.x = 252
+	explanation.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	explanation.add_theme_font_size_override("font_size", 13)
 	stack.add_child(explanation)
 	_sync_processing()
