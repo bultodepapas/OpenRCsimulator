@@ -91,3 +91,18 @@ Native Windows, Godot 4.7.2, Compatibility renderer on NVIDIA RTX 3090:
 - Real-flight 1280×720 Spanish viewport captures reviewed for keyboard, a simulated DualSense profile with remapped camera, and scrolled controller commands. Captures use fixture metadata, not a hardware-input acceptance claim. Scratch PNGs and capture harness are local outputs.
 
 No physics, control mapping or simulation state changed. This focused verification does not rerun the full physics suite or close HUD-12 pilot acceptance.
+
+## Close controls and camera marker (2026-10-24, HUD-03-R1)
+
+Native Windows, Godot 4.7.2, Compatibility renderer. The live debug bridge reproduced the guide covering Diagnostics and the default white latency square. The square is the F6a raw-axis camera target: equality at zero is white, not a latency result. Keep that measurement behavior; default new profiles to off and expose the existing preference in Flight overlays. Its independent × saves opt-out, survives pause/resume and stops the hidden physics callback. Existing saved choices remain valid.
+
+All nine overlay close targets are now 28×28 with a persistent background. Diagnostics reflows beside the guide and below warnings on layout/visibility changes. The overlay dialog follows manager changes, including external closes. The camera target has its own backplate, explanation and Spanish status labels; its 192×192 measurement square is unchanged. Compact wrapping keeps it clear of Battery at 720p.
+
+Verification:
+
+- `test_overlay_manager`: 164 checks pass, including real clicks on every overlay's × at 1920×1080, isolated visibility changes, keyboard focus, dialog synchronization, camera opt-in/save/close and pause persistence.
+- `test_latency_patch`: 539 checks pass, including hidden-processing suspension, reopening, 240 same-tick samples and byte-identical checkpoint pairs. Route: 5 checks; CLI: 39 checks. The CLI run first exceeded 90 seconds on this shared host, then completed with a 240-second limit.
+- `test_overlay_battery`: 123 checks pass, including English/Spanish Pilot and Full layouts with the optional marker at 1080p and 720p. `test_ui_home` and `test_ui_language` pass. Changed runtime/test scripts pass focused parse checks.
+- Real Spanish flight at exactly 1920×1080: inspected separate guide/diagnostic headers, clicked Diagnostics closed, enabled the camera target through the dialog, clicked its ×, checked the saved preference and pause/resume, and relaunched with the same isolated profile to confirm it stayed off. No engine errors in the bridge logs. Captures and checked-runner output remain in ignored `tmp/`; no images added to the repository.
+
+No solver or input mapping changed. The optimization removes hidden camera sampling and uses event-driven docking; no FPS improvement or full-suite/physical qualification is claimed. Long diagnostic text can still overlap other content in narrow Developer layouts.

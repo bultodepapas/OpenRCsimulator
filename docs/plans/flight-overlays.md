@@ -56,6 +56,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-01 | `units.gd`, `telemetry.gd` | `test_overlay_units` 23, `test_overlay_telemetry` 36 checks / done |
 | HUD-02 | `overlay_frame.gd`, `overlay_manager.gd`, legacy route for automation | trace identity; `test_overlay_manager` / done |
 | HUD-03 | ×, presets, F2/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |
+| HUD-03-R1 | Visible close targets, separate guide/diagnostics, optional camera marker with close/save/reopen and hidden-sampling suspension | [Native review and focused checks, 2026-10-24](../research/flight-overlays/HUD-01-10/README.md#close-controls-and-camera-marker-2026-10-24-hud-03-r1) / done |
 | HUD-04 | O1 Flight data | unit-formatted values in a live flight scene / done |
 | HUD-05 | O2 Transmitter | Mode 1/2 stick and trim layout checks / done |
 | HUD-05-R1 | JETI DS-24 II Carbon Line Orange visual with live controls and LCD | [source, captures and layout verification](../research/flight-overlays/HUD-05-R1/README.md) / done |

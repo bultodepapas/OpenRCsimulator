@@ -42,12 +42,14 @@ func _initialize() -> void:
 	var worst_euler := 0.0
 	var worst_comp := 0.0
 	var worst_frames := 0.0
+	var rotation_bytes_match := true
 	for i in 500:
 		var yaw := rng.randf_range(-PI, PI)
 		var pitch := rng.randf_range(-1.5, 1.5) # away from the ±90° singularity
 		var roll := rng.randf_range(-PI, PI)
 		var q := M.q_from_euler(yaw, pitch, roll)
 		var v := M.v3(rng.randf_range(-100, 100), rng.randf_range(-100, 100), rng.randf_range(-100, 100))
+		rotation_bytes_match = rotation_bytes_match and M.q_rotate(q, v).to_byte_array() == _rotation_reference(q, v).to_byte_array()
 
 		worst_len = maxf(worst_len, absf(M.norm(M.q_rotate(q, v)) - M.norm(v)) / M.norm(v))
 
@@ -68,6 +70,12 @@ func _initialize() -> void:
 	_check("euler round trip (500 samples)", worst_euler < 1e-12, str(worst_euler))
 	_check("composition q1*q2 = rotate q2 then q1", worst_comp < 1e-14, str(worst_comp))
 	_check("agrees with render/frames.gd", worst_frames < 1e-5, str(worst_frames))
+	_check("rotation preserves the original float64 bytes (500 samples)", rotation_bytes_match)
+	for special: float in [0.0, -0.0, 1.0e-310, 1.0e308, INF, -INF, NAN]:
+		var q := PackedFloat64Array([special, -special, 0.0, 2.0])
+		var v := PackedFloat64Array([-0.0, special, -3.0])
+		_check("rotation boundary bytes: " + str(special),
+			M.q_rotate(q, v).to_byte_array() == _rotation_reference(q, v).to_byte_array())
 
 	# Why 64-bit: a 1e-4 m/s² acceleration for 60 s at 240 Hz (see research/float32_vs_float64_integration.mjs).
 	var dt := 1.0 / 240.0
@@ -81,3 +89,10 @@ func _initialize() -> void:
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## Original allocating expression: guards arithmetic order, including non-unit inputs.
+func _rotation_reference(q: PackedFloat64Array, v: PackedFloat64Array) -> PackedFloat64Array:
+	var u := M.v3(q[1], q[2], q[3])
+	var t := M.scale(M.cross(u, v), 2.0)
+	return M.add(M.add(v, M.scale(t, q[0])), M.cross(u, t))

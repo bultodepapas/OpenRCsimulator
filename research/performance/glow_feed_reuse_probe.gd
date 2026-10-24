@@ -13,7 +13,7 @@ const AIRCRAFT := [
 	{"id":"Extra","path":"res://data/aircraft/gp_extra_300s_60.json"},
 ]
 const BATCHES := 9
-const CALLS := 10
+const CALLS := 100
 const WARMUPS := 8
 var _failures := 0
 var _comparisons := 0
@@ -32,43 +32,81 @@ func _run() -> void:
 	var alt55: Node = _session(str(AIRCRAFT[0].path))
 	var alt64: Node = _session(str(AIRCRAFT[1].path))
 	await process_frame
-	_freeze(alt55); _freeze(alt64)
+	if not _freeze(alt55) or not _freeze(alt64):
+		_failures += 1
 	var reports: Array[Dictionary] = []
 	for aircraft: Dictionary in AIRCRAFT:
 		var ro: Node = _session(str(aircraft.path))
 		var co: Node = _session(str(aircraft.path))
 		await process_frame
-		_freeze(ro); _freeze(co)
-		if not ro.is_flyable() or not co.is_flyable() or ro.get_meta(&"_probe_driver_setup_failed",false) or co.get_meta(&"_probe_driver_setup_failed",false):
+		var ref_frozen := _freeze(ro)
+		var candidate_frozen := _freeze(co)
+		if not ro.is_flyable() or not co.is_flyable() or not ref_frozen or not candidate_frozen:
 			_failures += 1; reports.append({"id":aircraft.id,"complete":false,"error":"session setup failed"})
 			ro.queue_free(); co.queue_free(); continue
 		_sync(ro,co)
 		var install: Dictionary = ro.aircraft.model.propulsion.glow
-		var cases := _cases(ro)
+		var case_result := _cases(ro)
+		if not case_result.ok:
+			_failures += 1
+			reports.append({"id":aircraft.id,"complete":false,"error":case_result.error})
+			ro.queue_free(); co.queue_free(); continue
+		var cases: Array[Dictionary] = case_result.cases
 		var alt: Node = alt64 if aircraft.id == "55AX" else alt55
 		var point_r := Callable(rs,"point"); var point_c := Callable(cs,"point")
 		var eval_r := Callable(rs,"evaluate"); var eval_c := Callable(cs,"evaluate")
 		var scenarios: Array[Dictionary] = []
+		var expected_ids: Array[String] = ["feed_main","maneuver_0","maneuver_1","stopped","fuel_starved","cut","failure_invalid_nan","stale_identity"]
+		if str(case_result.feed_line_status) == "covered": expected_ids.append("feed_line")
+		if not install.has("fuel_feed"): expected_ids.append("non_feed_main")
+		var observed_ids: Array[String] = []
+		var scenarios_complete := true
 		for s: Dictionary in cases:
 			_apply(ro,s); _apply(co,s)
 			if s.id == "stale_identity":
 				_swap_meta(alt,ro); _swap_meta(alt,co)
 			var body: PackedFloat64Array = s.body
 			var values: PackedFloat64Array = s.values
+			var pre_ref := _input_fingerprint(ro,body,values,0.0)
+			var pre_candidate := _input_fingerprint(co,body,values,0.0)
+			if pre_ref != pre_candidate:
+				_failures += 1; scenarios_complete = false
 			var checks: Array[Dictionary] = []
 			checks.append(_check("point_uncoupled",point_r,[ro,body,values,0.0,false],point_c,[co,body,values,0.0,false],s.id!="failure_invalid_nan"))
 			checks.append(_check("point_coupled",point_r,[ro,body,values,0.0,true],point_c,[co,body,values,0.0,true],s.id!="failure_invalid_nan"))
 			checks.append(_check("evaluate",eval_r,[body,values,0.0,ro],eval_c,[body,values,0.0,co],s.id!="failure_invalid_nan"))
 			if s.id == "failure_invalid_nan":
 				checks.append(_check("evaluate_wrong_size",eval_r,[body,s.short_values,0.0,ro],eval_c,[body,s.short_values,0.0,co],false))
-			scenarios.append({"id":s.id,"input_sha256":_input_sha(body,values,ro.sim.inputs),"checks":checks})
+			var post_ref := _input_fingerprint(ro,body,values,0.0)
+			var post_candidate := _input_fingerprint(co,body,values,0.0)
+			var unchanged := pre_ref == post_ref and pre_candidate == post_candidate
+			if not unchanged:
+				_failures += 1; scenarios_complete = false
+			for check: Dictionary in checks:
+				if not bool(check.passed): scenarios_complete = false
+			observed_ids.append(str(s.id))
+			scenarios.append({"id":s.id,"pre_reference_sha256":pre_ref,"pre_candidate_sha256":pre_candidate,
+				"post_reference_sha256":post_ref,"post_candidate_sha256":post_candidate,
+				"owners_match":pre_ref==pre_candidate,"owners_unchanged":unchanged,"checks":checks})
 			if s.id == "stale_identity": _restore_meta(ro); _restore_meta(co)
+		for expected_id: String in expected_ids:
+			if not observed_ids.has(expected_id):
+				_failures += 1; scenarios_complete = false
 		var report := {"id":aircraft.id,"path":aircraft.path,"has_fuel_feed":install.has("fuel_feed"),
-			"has_feed_line":install.has("feed_line"),"non_feed_control":not install.has("fuel_feed"),
-			"scenarios":scenarios,"complete":scenarios.size()==cases.size()}
+			"feed_line_coverage":case_result.feed_line_status,
+			"non_feed_control_available":not install.has("fuel_feed"),
+			"scenarios":scenarios,"complete":scenarios_complete}
 		if opt.bench:
 			_apply(ro,cases[0]); _apply(co,cases[0])
+			var bench_pre_ref := _input_fingerprint(ro,cases[0].body,cases[0].values,0.0)
+			var bench_pre_candidate := _input_fingerprint(co,cases[0].body,cases[0].values,0.0)
 			report.benchmark = _bench(point_r,point_c,eval_r,eval_c,ro,co,cases[0])
+			var bench_post_ref := _input_fingerprint(ro,cases[0].body,cases[0].values,0.0)
+			var bench_post_candidate := _input_fingerprint(co,cases[0].body,cases[0].values,0.0)
+			report.benchmark.owners_match = bench_pre_ref == bench_pre_candidate
+			report.benchmark.owners_unchanged = bench_pre_ref == bench_post_ref and bench_pre_candidate == bench_post_candidate
+			if not report.benchmark.owners_match or not report.benchmark.owners_unchanged:
+				_failures += 1; report.complete = false
 		reports.append(report); ro.queue_free(); co.queue_free()
 	alt55.queue_free(); alt64.queue_free()
 	var paths := [opt.reference,opt.candidate,str(get_script().resource_path),"res://physics/glow/flight.gd","res://sim/flight_session.gd","res://physics/glow/fuel_feed.gd"]
@@ -76,7 +114,7 @@ func _run() -> void:
 	for path: String in paths: hashes[path] = _sha(path)
 	for aircraft: Dictionary in AIRCRAFT: hashes[aircraft.path] = _sha(aircraft.path)
 	var result := {"format":"openrc-glow-feed-reuse-probe v1",
-		"complete":_failures==0 and reports.size()==AIRCRAFT.size(),
+		"complete":_failures==0 and reports.size()==AIRCRAFT.size() and _all_aircraft_complete(reports),
 		"correctness_only":not opt.bench,"comparator_nan_signed_zero_control":control,
 		"engine":Engine.get_version_info(),"os":OS.get_name(),"processor":OS.get_processor_name(),
 		"seed":20261024,"source_sha256":hashes,"comparison_count":_comparisons,
@@ -116,18 +154,27 @@ func _load_script(path: String) -> GDScript:
 	return script
 func _session(path: String) -> Node:
 	var owner: Node=Session.new(); owner.setup(path); owner.input_enabled=false
-	owner.set_physics_process(false); if not owner.configure_external_driver(): owner.set_meta(&"_probe_driver_setup_failed",true)
-	if owner.sim != null: owner.sim.set_physics_process(false)
-	root.add_child(owner); return owner
-func _freeze(owner: Node) -> void:
 	owner.set_physics_process(false)
-	if owner.sim != null: owner.sim.set_physics_process(false); owner.sim.set_paused(true)
+	if not owner.configure_external_driver(): owner.set_meta(&"_probe_driver_setup_failed",true)
+	if owner.sim != null:
+		owner.sim.set_physics_process(false)
+		owner.sim.set_paused(true)
+	root.add_child(owner); return owner
+func _freeze(owner: Node) -> bool:
+	if owner.sim == null: return false
+	owner.set_process(false); owner.set_physics_process(false)
+	owner.sim.set_physics_process(false); owner.sim.set_paused(true)
+	return not owner.get_meta(&"_probe_driver_setup_failed",false) and not owner.is_processing() \
+		and not owner.is_physics_processing() and not owner.sim.is_physics_processing() and owner.sim.paused
 func _sync(a: Node,b: Node) -> void:
-	b.sim.state=a.sim.state.duplicate(); b.sim.continuous=a.sim.continuous.duplicate()
-	b.sim.inputs=a.sim.inputs.duplicate(); b.sim.aux=a.sim.aux.duplicate(); b.sim.modes=a.sim.modes.duplicate()
+	b.sim.state=a.sim.state.duplicate(); b.sim.previous=a.sim.previous.duplicate()
+	b.sim.continuous=a.sim.continuous.duplicate(); b.sim.inputs=a.sim.inputs.duplicate()
+	b.sim.aux=a.sim.aux.duplicate(); b.sim.modes=a.sim.modes.duplicate()
+	b.sim.tick=a.sim.tick; b.sim.mass=a.sim.mass; b.sim.inertia=a.sim.inertia.duplicate()
+	b.sim.gravity=a.sim.gravity; b.sim.set_paused(a.sim.paused)
 func _case(id: String,body: PackedFloat64Array,values: PackedFloat64Array,throttle: float,mode: int) -> Dictionary:
 	return {"id":id,"body":body,"values":values,"throttle":throttle,"engine_mode":mode}
-func _cases(owner: Node) -> Array[Dictionary]:
+func _cases(owner: Node) -> Dictionary:
 	var body: PackedFloat64Array=owner.sim.state.duplicate()
 	var values: PackedFloat64Array=owner.sim.continuous.duplicate()
 	var main:=values.duplicate(); main[Flight.SOURCE_MODE_INDEX]=float(Flight.MODE_MAIN_TANK)
@@ -147,17 +194,22 @@ func _cases(owner: Node) -> Array[Dictionary]:
 	starved[8]=float(Flight.REASONS.find("fuel_starved"))
 	cases.append(_case("fuel_starved",body,starved,throttle,0))
 	var cut:=Life.cut(Flight.unpack(main,owner.aircraft.model.propulsion.glow))
-	if cut.get("ok",false): cases.append(_case("cut",body,Flight.put_state(main,cut.state),throttle,0))
+	if not cut.get("ok",false): return {"ok":false,"error":"required cut fixture failed: "+str(cut.get("message","unknown error"))}
+	cases.append(_case("cut",body,Flight.put_state(main,cut.state),throttle,0))
 	var invalid:=main.duplicate(); invalid[12]=NAN
 	var bad:=_case("failure_invalid_nan",body,invalid,throttle,mode)
 	bad.short_values=invalid.duplicate(); bad.short_values.resize(bad.short_values.size()-1); cases.append(bad)
 	cases.append(_case("stale_identity",body,main,throttle,mode))
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var feed_line_status := "skipped: installation has no feed_line"
 	if install.has("feed_line") and values[Flight.LINE_FUEL_INDEX]>0.0:
 		var line:=values.duplicate(); line[Flight.SOURCE_MODE_INDEX]=float(Flight.MODE_FEED_LINE)
 		cases.append(_case("feed_line",body,line,throttle,mode))
+		feed_line_status="covered"
+	elif install.has("feed_line"):
+		feed_line_status="skipped: initialized feed-line mass is not positive"
 	if not install.has("fuel_feed"): cases.append(_case("non_feed_main",body,main,throttle,mode))
-	return cases
+	return {"ok":true,"cases":cases,"feed_line_status":feed_line_status}
 func _apply(owner: Node,s: Dictionary) -> void:
 	owner.sim.state=s.body.duplicate(); owner.sim.continuous=s.values.duplicate()
 	owner.sim.inputs=owner.sim.inputs.duplicate(); owner.sim.inputs[3]=s.throttle
@@ -174,10 +226,11 @@ func _restore_meta(owner: Node) -> void:
 func _check(label: String,rf: Callable,ra: Array,cf: Callable,ca: Array,expect_ok: bool=true) -> Dictionary:
 	var a: Variant=rf.callv(ra); var b: Variant=cf.callv(ca)
 	var diff:=_diff(a,b,"$"); var aok:=_ok(a); var bok:=_ok(b)
+	var passed := diff.is_empty() and aok == expect_ok and bok == expect_ok
 	_comparisons+=1; _checksum+=int(aok)+int(bok)
-	if not diff.is_empty() or aok!=expect_ok or bok!=expect_ok:
+	if not passed:
 		_failures+=1; printerr("MISMATCH ",label,": ",diff if not diff.is_empty() else "unexpected success/failure")
-	return {"operation":label,"equal":diff.is_empty(),"mismatch":diff,"reference_ok":aok,"candidate_ok":bok}
+	return {"operation":label,"equal":diff.is_empty(),"passed":passed,"mismatch":diff,"reference_ok":aok,"candidate_ok":bok}
 func _ok(v: Variant) -> bool:
 	return v is Dictionary and (bool(v.get("ok",false)) or (v.has("loads") and v.has("derivative")))
 func _diff(a: Variant,b: Variant,path: String) -> String:
@@ -186,12 +239,14 @@ func _diff(a: Variant,b: Variant,path: String) -> String:
 		if a.size()!=b.size(): return path+" dictionary size differs"
 		for k: Variant in a:
 			if not b.has(k): return path+" missing "+str(k)
-			var d:=_diff(a[k],b[k],path+"."+str(k)); if not d.is_empty(): return d
+			var d:=_diff(a[k],b[k],path+"."+str(k))
+			if not d.is_empty(): return d
 		return ""
 	if a is Array:
 		if a.size()!=b.size(): return path+" array size differs"
 		for i: int in a.size():
-			var d:=_diff(a[i],b[i],path+"[%d]"%i); if not d.is_empty(): return d
+			var d:=_diff(a[i],b[i],path+"[%d]"%i)
+			if not d.is_empty(): return d
 		return ""
 	if a is PackedFloat64Array: return "" if a.to_byte_array()==b.to_byte_array() else path+" float64 bytes differ"
 	if a is PackedFloat32Array or a is PackedInt32Array or a is PackedInt64Array or a is PackedByteArray or a is PackedStringArray:
@@ -226,13 +281,25 @@ func _measure(f: Callable,args: Array) -> float:
 	return float(Time.get_ticks_usec()-start)/float(CALLS)
 func _median(values: Array[float]) -> float:
 	var sorted: Array[float]=values.duplicate(); sorted.sort(); return sorted[sorted.size()/2]
-func _input_sha(body: PackedFloat64Array,values: PackedFloat64Array,inputs: PackedFloat64Array) -> String:
+func _input_fingerprint(owner: Node,body: PackedFloat64Array,values: PackedFloat64Array,call_time: float) -> String:
+	var sim: Node=owner.sim
 	var hash:=HashingContext.new(); hash.start(HashingContext.HASH_SHA256)
-	hash.update(body.to_byte_array()); hash.update(values.to_byte_array()); hash.update(inputs.to_byte_array())
+	var arrays := [sim.state.to_byte_array(),sim.previous.to_byte_array(),sim.continuous.to_byte_array(),
+		sim.inputs.to_byte_array(),sim.aux.to_byte_array(),sim.modes.to_byte_array(),sim.inertia.to_byte_array(),
+		body.to_byte_array(),values.to_byte_array()]
+	for bytes: PackedByteArray in arrays: hash.update(bytes)
+	for scalar: Variant in [sim.tick,sim.time(),sim.mass,sim.gravity,sim.paused,owner.engine_running,call_time]:
+		hash.update(var_to_bytes(scalar))
 	return hash.finish().hex_encode()
+func _all_aircraft_complete(reports: Array[Dictionary]) -> bool:
+	if reports.size() != AIRCRAFT.size(): return false
+	for report: Dictionary in reports:
+		if not bool(report.get("complete",false)): return false
+	return true
 func _sha(path: String) -> String:
 	if not FileAccess.file_exists(path): return ""
-	var file:=FileAccess.open(path,FileAccess.READ); if file==null: return ""
+	var file:=FileAccess.open(path,FileAccess.READ)
+	if file==null: return ""
 	var hash:=HashingContext.new(); hash.start(HashingContext.HASH_SHA256)
 	hash.update(file.get_buffer(file.get_length())); file.close(); return hash.finish().hex_encode()
 
