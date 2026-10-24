@@ -38,7 +38,10 @@ godot --headless --path app --script res://tests/test_landscape_population_asset
 godot --path app --script res://tests/test_landscape_population_assets.gd
 godot --path app --script res://tests/capture_population_assets.gd -- --out=/your/capture/folder
 godot --headless --path app --script res://tests/test_field_people_gaze.gd
+godot --headless --path app --script $PWD/tools/scenery/population/camera_census.gd -- --out=/your/census.json
 ```
+
+`camera_census.gd` drives the production camera rig along a reference sortie and reports, per view and person, the share of the flight each person is in frame and their head size in 1080p pixels (geometry only, no occlusion; [SC-HUM-00](../../../docs/research/scenery-implementation/SC-HUM-00/README.md#camera-census-2026-10-24)).
 
 `test_field_people_gaze.gd` checks the head weight derived from each regenerated pose ([SC-HUM-03](../../../docs/research/scenery-implementation/SC-HUM-03/README.md)). A new pose must keep an eye proxy named `low-poly` and its parts' rotations at identity, or the head rig falls back to an estimate.
 

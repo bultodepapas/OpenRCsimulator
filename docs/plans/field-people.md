@@ -1,8 +1,23 @@
 # Field people: crew, pilots and spectators
 
-2026-10-24 · Revision 3 · **Planning draft** · Step prefix: **SC-HUM** (Scenery subtrack; not yet in the [registry](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
+2026-10-24 · Revision 4 · **Active plan** · Step prefix: **SC-HUM** (Scenery subtrack, [registered](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
 
-**Status:** in progress. [SC-HUM-03](../research/scenery-implementation/SC-HUM-03/README.md) (head aim, including the step-and-hold behaviour of SC-HUM-05 without the crash glance) [SC-HUM-04](../research/scenery-implementation/SC-HUM-04/README.md) (flight-line pilots fly the companions), [SC-HUM-05](../research/scenery-implementation/SC-HUM-05/README.md) (crash glance) and [SC-HUM-02](../research/scenery-implementation/SC-HUM-02/README.md) (one draw per pose) are implemented and software-verified, 2026-10-24; [SC-HUM-07](../research/scenery-implementation/SC-HUM-07/README.md) (six different club members; caps pending D9), [SC-HUM-06](../research/scenery-implementation/SC-HUM-06/README.md) (members preparing models at the pit tables) and [SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md) (shirts in the wind; skin, brows and eyes) are delivered. Next: SC-HUM-00's budget and camera census, then the owner review (SC-HUM-09). MPFB 2.0.18 is downloaded and hash-verified for the asset steps; the MakeHuman CC0 archives are downloading. Blender 5.2.2 LTS is installed in `.tools/` for the asset steps. SC-HUM-01 waits for the owner's transmitter models. The owner directed on 2026-10-24: proceed, and expose features that need more computing power as **advanced options** (§5.5). D1 is answered by that direction; D2–D10 remain open. This plan expands the parked [SC-21 "Animated spectators"](../SCENERY-PLAN.md#remaining-work). Its evidence is the [web survey](../research/scenery-investigations/07-field-people-survey.md) (25 searches, 6 page reads); survey row IDs (H1, E1, A1, F1…) are cited inline.
+**Status (2026-10-24):** all software steps are delivered and verified. The owner's part remains.
+
+| Delivered | Evidence |
+| --- | --- |
+| Head aim for every person; pilots fly the AI companions; crash glance | [SC-HUM-03](../research/scenery-implementation/SC-HUM-03/README.md), [-04](../research/scenery-implementation/SC-HUM-04/README.md), [-05](../research/scenery-implementation/SC-HUM-05/README.md) |
+| One mesh and atlas per outfit and pose; six CC0 club members; members preparing models at the pit tables | [SC-HUM-02](../research/scenery-implementation/SC-HUM-02/README.md), [-07](../research/scenery-implementation/SC-HUM-07/README.md), [-06](../research/scenery-implementation/SC-HUM-06/README.md) |
+| Shirts in the wind; skin, brows and eyes | [SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md) |
+| Toolchain reproduction, camera census, scene budget (13 people in 11 draws, all limits pass) | [SC-HUM-00](../research/scenery-implementation/SC-HUM-00/README.md) |
+
+Open:
+- **SC-HUM-01:** the owner's transmitter models. The census shows the flight-line pilots are the people seen in flight.
+- **SC-HUM-09:** the owner's review at Medium Scene detail or above.
+- Decisions D3–D10.
+- Baseball caps (D9).
+- The reference photo board.
+- The conditional advanced options SC-HUM-10…13.
 
 **Revision 3** follows an independent Good Enemy review (2026-10-24, read-only, no shared context). The lead verified its main claims against the source:
 
@@ -27,7 +42,10 @@ Source characters, clothing and animation from free, redistributable packs. Do n
 
 Non-goals: walking or pathfinding, crowds, lip sync and facial expressions, cloth simulation, voices, a player avatar. Any change to person placements or envelopes is a **collision-world change** (§4.5), not a render-only change.
 
-## 2. Current baseline
+## 2. Baseline before SC-HUM (LU-21)
+
+This table records the starting point the plan was written against; the status table above links what changed.
+
 
 | Fact | Where |
 | --- | --- |
@@ -60,6 +78,8 @@ At the default 50° vertical FOV, `px ≈ 1158 · size / d` (same law as [the bi
 | Transmitter width (TX16S class, F3) | 0.287 m | 13 m | 26 | 34 | 51 |
 | Transmitter stick | 0.02 m | 13 m | 1.8 | 2.4 | 3.6 |
 | Any person's head in a chase/orbit view | 0.23 m | 5–40 m from that camera | 7–53 | 9–71 | 13–107 |
+
+**Measured (SC-HUM-00 camera census, 2026-10-24):** over a reference sortie the pilot view shows the flight-line pilots 19 % of the time with heads of 32 px median (52 px max) because the auto zoom narrows the view near the runway; pits members, workers and spectators appear in the pilot view at most 1 % of the time, and in the chase, orbit and close-up views at 2–4 px median ([census](../research/scenery-implementation/SC-HUM-00/README.md#camera-census-2026-10-24)).
 
 Consequences:
 
@@ -198,20 +218,20 @@ Each step is one reviewable change. Steps 01–07 need no skeletons, no vertex a
 
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
-| SC-HUM-00 | **Partial 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-00/README.md)): toolchain verified, the recipe regenerates the frozen people within float noise, CC0 clothing/face/skin packs downloaded with hashes. Remaining below: budget, census, photo board. Baseline. Re-run the scene budget per preset. Run a **camera census**: replay a golden or flight-test flight and log, per camera mode, each person's in-frustum fraction and head size in pixels. Download candidate packs into isolated folders and verify each licence file. Build a reference photo board for the owner's silhouette overlay. | Budget table from `budget.sh`, census table, licence table with hashes. Only review-critical images in the repository. |
+| SC-HUM-00 | **Done except the photo board, 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-00/README.md)): toolchain and recipe reproduction, CC0 intake, camera census (flight-line pilots are the only people seen at readable size in flight) and scene budget (population 49 → 40 draws, all limits pass). | Remaining: reference photo board for the owner's silhouette overlay. |
 | SC-HUM-01 | Owner transmitters (§7) baked into the pilot pose. | Intake manifest, close 1080p captures, grip fit against real dimensions, envelope unchanged, triangle budget. |
 | SC-HUM-02 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-02/README.md)). One mesh and one atlas material per pose: people draw surfaces 19 → 3 with unchanged triangles; textures now VRAM-compressed with mipmaps. | Met: structural draw count, image diff within tolerance, population/scenery/shadow tests and native captures. Open: a `budget.sh` re-measure. |
 | SC-HUM-03 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-03/README.md)). Head state for all 13 people: pilots coupled to the player aircraft, others step-and-hold (§4.1, §5.1). The neck pivot and weight come from each posed mesh, so no asset was regenerated. | Met in software: unit/behaviour test headless and native, MultiMesh read-back, five existing regressions, rendered poses and a running-app close-up at 1080p; zero draw delta; scripted routes unchanged. Open: owner review on real hardware. |
 | SC-HUM-04 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-04/README.md)). The two existing flight-line pilots fly companion slots 0 and 1; an empty, faulted or removed slot returns its pilot to the player. | Met in software: behaviour tests, live two-companion run (on a disposable copy, because the current companion profile pin refuses admission), no placement or collision change. Open: owner review; third pilot via SC-HUM-13. |
 | SC-HUM-05 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-05/README.md)). Step-and-hold shipped with SC-HUM-03; the crash glance runs on the crash presentation clock because a crash pauses the simulation. Remaining: generalize the crash flag into the shared field-event signal when the birds plan needs it. | Met in software: behaviour test and a live crash run. Open: owner review. |
 | SC-HUM-06 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-06/README.md)): three pits members work at the tables with hands on the models (`person_working`, capsule +1.5 cm, layout regenerated by `place.py`); workers keep their eyes on the work unless a low pass or crash. | Met in software: gaze/population/collision/companion tests, live 1080p captures. Open: owner review; animated hands stay an advanced option. |
-| SC-HUM-07 | **Done 2026-10-24 except caps** ([evidence](../research/scenery-implementation/SC-HUM-07/README.md), [faces](../research/scenery-implementation/SC-HUM-08/README.md)): six CC0 club members in one shared atlas; warm skin backlight, visible brows, wet eyes. Baseball caps wait for D9 (CC-BY). | Met in software: population/gaze tests, native A/B face captures. Open: owner review. |
+| SC-HUM-07 | **Done 2026-10-24 except caps** ([evidence](../research/scenery-implementation/SC-HUM-07/README.md), [faces](../research/scenery-implementation/SC-HUM-08/README.md)): six CC0 club members in one shared atlas (age, gender, ethnicity, clothing, glasses, fedora, beard); warm skin backlight, visible brows, wet eyes. Baseball caps wait for D9 (CC-BY). | Met in software: population/gaze tests, outfit guards, native A/B face captures. Open: owner review. |
 | SC-HUM-08 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-08/README.md)): shirt hems move with the field wind (1.5 mm per m/s, ≤12 mm); zero wind is exact rest. | Met: native capture wind instants for all 11 variants (moves, repeats, calm restores); no draw change. Open: owner judgement of the amplitude. |
 | SC-HUM-09 | **Owner review and decision point.** The owner flies with steps 01–08 at 1080p (then 1440p/4K, 720p last) and decides whether moving hands, idle animation or close-camera faces are worth Layer A2/B. | Owner notes; frame p95 on the owner's machine in paired runs; draws/primitives per tier. |
 | SC-HUM-10 | (Conditional) Animation bake-off from the UAL archive's real clip list; retarget to the MPFB rig. | Clip list with licence, retarget notes. |
 | SC-HUM-11 | (Conditional) Layer A2 spike with OpenVAT on one pits clip. | Compatibility vertex fetch works natively, seams, memory, pause/wrap hashes. |
 | SC-HUM-12 | (Conditional) `CrewActor` prototype outside `app/` with manual mixer and skeleton advance. | Cost per actor at 1080p for 1, 8 and 20 actors; frames N and N+60 identical while paused mid-transition; go/no-go. |
-| SC-HUM-13 | (Conditional) Collision-world changes: third companion pilot, spotter, kneeling prefab or new pits positions, with collision and AFC owners. | Admission matrix, collision identity change recorded and explained. |
+| SC-HUM-13 | (Conditional) Further collision-world changes: third companion pilot, spotter or kneeling prefab, with collision and AFC owners. SC-HUM-06 already moved three pits members and added `person_working` with this verification. | Admission matrix, collision identity change recorded and explained. |
 
 Verification rules for every step: scripts parse under `app/test.sh`; drafts live outside `app/` until they parse; the population tests and captures in [the population README](../../tools/scenery/population/README.md#validation) pass; use the [debug bridge](../../tools/debug/README.md) for low passes, wind-enabled runs and screenshots. No physics or golden-flight change is allowed. Frame-time deltas below workstation noise (LU-21 measured +0.5 to +1.7 ms run-to-run) are not used as gates; draws and primitives are.
 

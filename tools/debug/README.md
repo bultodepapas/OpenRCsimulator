@@ -331,7 +331,7 @@ Limits:
 - **Some inputs cannot be emulated.** Radio and gamepad axes are not emulated: `sticks` replaces the keyboard sample,
   and `control` runs the same handlers a bound controller button runs. `pause`, `step` and `sticks` apply to flights;
   the truck has `drive` and its own garage pause.
-- **`eval`, `call` and `set` can do anything**, and `screenshot path=` and `record path=` write where you tell them.
+- **`eval`, `call` and `set` can do anything**, and `screenshot path=` and `record path=` write where you tell them. A relative `path=` resolves against the Godot project (`app/`), which git does not ignore; omit it (shots go to the run folder) or pass an absolute path under `tmp/`.
   They are debugging tools for your own machine, like the editor's remote tree, behind the per-session token.
 
 ## Performance

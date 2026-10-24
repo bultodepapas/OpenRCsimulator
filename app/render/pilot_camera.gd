@@ -25,11 +25,12 @@ static func projected_px(length: float, distance: float, fov_deg: float, viewpor
 	return length / (2.0 * maxf(distance, 1e-6) * tan(deg_to_rad(fov_deg) * 0.5)) * viewport_h
 
 
-## Vertical FOV (degrees) that shows `span` at `target_px` at this distance: never wider than the base FOV,
-## never narrower than the minimum.
-static func auto_fov(span: float, distance: float, viewport_h: float, target_px := float(Spec.AUTO_ZOOM.target_px),
-		base_fov := float(Spec.CAMERA.fov_deg), min_fov := float(Spec.AUTO_ZOOM.min_fov_deg)) -> float:
-	var fov := rad_to_deg(2.0 * atan(span * viewport_h / (2.0 * maxf(distance, 1e-6) * target_px)))
+## Vertical FOV (degrees) that shows `span` at `target_px` of a `reference_h`-tall view at this distance (the same
+## share of any viewport's height): never wider than the base FOV, never narrower than the minimum.
+static func auto_fov(span: float, distance: float, target_px := float(Spec.AUTO_ZOOM.target_px),
+		reference_h := float(Spec.AUTO_ZOOM.reference_height_px), base_fov := float(Spec.CAMERA.fov_deg),
+		min_fov := float(Spec.AUTO_ZOOM.min_fov_deg)) -> float:
+	var fov := rad_to_deg(2.0 * atan(span * reference_h / (2.0 * maxf(distance, 1e-6) * target_px)))
 	return clampf(fov, min_fov, base_fov)
 
 
@@ -61,8 +62,7 @@ static func aim(camera: Camera3D, target: Vector3, airplane: Transform3D, inspec
 		var eye_height: float = float(camera.get_meta("pilot_eye_height", Spec.CAMERA.eye_height))
 		camera.position = Frames.ned_to_render([station[0], station[1], float(station[2]) - eye_height])
 		if auto_zoom_span > 0.0:
-			var h := float(camera.get_viewport().get_visible_rect().size.y) if camera.is_inside_tree() else float(Spec.CAPTURE.height)
-			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target), h)
+			camera.fov = auto_fov(auto_zoom_span, camera.position.distance_to(target))
 	var direction := target - camera.global_position
 	# An eye-coincident target has no viewing direction. Preserve the last pose.
 	if direction.length_squared() < 1e-12:

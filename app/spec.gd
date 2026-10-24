@@ -75,6 +75,7 @@ const CAPTURE := { time = 3.0, width = 1280, height = 720 }
 const SHADOW := { height = 0.05, fade_height = 80.0, alpha_low = 0.6, alpha_high = 0.18 }
 ## Grass texture: tile size (m) and brightness variation (±).
 const GROUND := { tile_m = 6.0, contrast = 0.14 }
-## Auto-zoom: the pilot camera narrows its vertical FOV so the airplane's span covers at least target_px of the
-## viewport height (a 720p screen at 50° resolves ~4× worse than the eye); never below min_fov_deg.
-const AUTO_ZOOM := { target_px = 30.0, min_fov_deg = 6.0 }
+## Auto-zoom: the pilot camera narrows its vertical FOV so the airplane's span covers at least target_px of a
+## reference_height_px-tall view, i.e. the same share of the height at any resolution (CAM-23: an absolute 30 px
+## showed the aircraft at half the 1080p size on a 4K screen); never below min_fov_deg. 1080p is the reference.
+const AUTO_ZOOM := { target_px = 30.0, reference_height_px = 1080.0, min_fov_deg = 6.0 }

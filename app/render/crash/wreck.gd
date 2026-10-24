@@ -498,6 +498,13 @@ func sleeping_body_count() -> int:
 	return int(get_stats().sleeping_body_count)
 
 
+## CAM-27: the core wreck's centre (render), for cameras; null before start and after reset. Read-only.
+func core_position() -> Variant:
+	if not _started or _core_body == null or not is_instance_valid(_core_body) or not _core_body.is_inside_tree():
+		return null
+	return _core_body.global_position
+
+
 func _process(delta: float) -> void:
 	if not _started or _paused:
 		return

@@ -22,9 +22,12 @@ const SLOTS := 4 # species per MultiMesh (shader arrays, CUSTOM0..3)
 const TRACK_SLOTS := 8
 const SEGMENT_SLOTS := 48
 const SPECIES_STRIDE := 8.0 # INSTANCE_CUSTOM.y = track + 8 * species
+const HALF_WRAP_S := 512.0
 const AABB_MARGIN_M := 6.0
 # INSTANCE_CUSTOM.z: the bird's state. The Compatibility renderer stores MultiMesh custom data as half floats and
 # truncates (measured 2026-10-24: 1000.3 reads 1000.0, 100.3 reads 100.25), so every value is exact in a half float.
+const DRAWN_PRIMITIVE_LIMIT := 1000 # tools/scenery/scene_budget.json scenery_Birds
+const SNAP_SUN_DEG := 2.0 # a larger sun change between commits is a jump (paused edit, restore), not time passing
 const STEADY := 1500.0 # flying its circuit
 const HIDDEN := 2000.0 # away (not drawn)
 # departing: the half-second it started leaving, 0..1023.5; arriving: -(start + 0.5), -1024..-0.5
@@ -58,11 +61,29 @@ static func build(lighting: Dictionary = {}, quality: String = "high", path: Str
 
 ## Committed lighting → which birds fly. With `animate`, a bird whose state changes arrives or leaves over its
 ## species' departure time starting now (ShaderClock.last_clock); without it (build) it simply is or is not there.
-## Only writes MultiMesh buffers and counts, so it is safe at the checkpoint boundary.
-static func apply_lighting(root: Node, lighting: Dictionary, animate: bool = true) -> void:
+## A jump of the sun (more than SNAP_SUN_DEG since the last call) or an animation that would draw more than the
+## budget snaps instead. Only writes MultiMesh buffers and counts, so it is safe at the checkpoint boundary.
+## `clouds` < 0 reads the rendered weather's cover.
+static func apply_lighting(root: Node, lighting: Dictionary, animate: bool = true, clouds: float = -1.0) -> void:
 	if root == null or not root.has_meta("bird_groups"):
 		return
-	var c: Dictionary = BirdDirector.conditions(lighting, str(root.get_meta("quality", "high")))
+	var c: Dictionary = BirdDirector.conditions(lighting, str(root.get_meta("quality", "high")), clouds)
+	var previous: Dictionary = root.get_meta("conditions", {})
+	if animate and (previous.is_empty() or absf(float(c.sun_deg) - float(previous.sun_deg)) > SNAP_SUN_DEG):
+		animate = false
+	var before: Dictionary = {}
+	for node: MultiMeshInstance3D in root.get_meta("bird_groups"):
+		before[node] = (node.get_meta("states") as PackedFloat32Array).duplicate()
+	_apply(root, c, animate)
+	if animate and drawn_primitives(root) > DRAWN_PRIMITIVE_LIMIT:
+		for node: MultiMeshInstance3D in before:
+			node.set_meta("states", before[node])
+		_apply(root, c, false)
+	root.set_meta("conditions", c)
+	root.set_meta("lighting", lighting.duplicate(true))
+
+
+static func _apply(root: Node, c: Dictionary, animate: bool) -> void:
 	for node: MultiMeshInstance3D in root.get_meta("bird_groups"):
 		var species: Array = node.get_meta("species_data")
 		var shares: Array[float] = []
@@ -78,7 +99,14 @@ static func apply_lighting(root: Node, lighting: Dictionary, animate: bool = tru
 				else (STEADY if want else HIDDEN)
 		node.set_meta("states", states)
 		write_buffer(node)
-	root.set_meta("conditions", c)
+
+
+## Primitives the drawn birds cost (visible instances x the group's triangles).
+static func drawn_primitives(root: Node) -> int:
+	var total := 0
+	for node: MultiMeshInstance3D in root.get_meta("bird_groups", []):
+		total += node.multimesh.visible_instance_count * int(node.get_meta("triangles"))
+	return total
 
 
 ## A bird's next state at shader clock `clock` when its species wants it out (`want`) or not. A bird already on its
@@ -102,12 +130,14 @@ static func next_state(state: float, want: bool, clock: float, duration: float) 
 	return state
 
 
-## Transition progress in [0, 1] (1 = arrived or gone); STEADY and HIDDEN are complete.
+## Transition progress in [0, 1] (1 = arrived or gone); STEADY and HIDDEN are complete. The clock difference is
+## wrapped to [-512, 512) s, so a start a moment ahead (half-second rounding) or after a rewind waits at 0 instead of
+## reading as finished (transitions last at most 300 s and settle when done).
 static func progress(state: float, clock: float, duration: float) -> float:
 	if state == STEADY or state == HIDDEN:
 		return 1.0
 	var start: float = state if state >= 0.0 else -state - 0.5
-	return clampf(fposmod(clock - start, ShaderClock.WRAP_S) / duration, 0.0, 1.0)
+	return clampf((fposmod(clock - start + HALF_WRAP_S, ShaderClock.WRAP_S) - HALF_WRAP_S) / duration, 0.0, 1.0)
 
 
 ## Share of the departure offset applied (0 = on its circuit, 1 = away), as sky_birds.gdshader computes it.

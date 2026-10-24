@@ -27,12 +27,18 @@ const CHASE_ZOOM_MAX := 4.0
 const FOV_JUMP_HALF_LIFE := 0.15
 const PILOT_FOV_MIN := 1.0
 const PILOT_FOV_MAX := 120.0
+## CAM-27: the close-up's view of a wreck (the crash director's former fixed framing, now kept on the wreck itself).
+const WRECK_CLOSEUP_OFFSET := Vector3(5.0, 3.2, 6.0)
+const WRECK_CLOSEUP_FOV := 58.0
+const WRECK_CLEARANCE_M := 0.6
 
 var camera: Camera3D
 var view := "pilot"
 var auto_zoom := true
 ## Pilot view: multiplies tan(fov/2) on top of the auto-zoom law (1 = the law's own FOV).
 var pilot_zoom := 1.0
+## CAM-26: the vehicle's own pilot zoom, which Backspace restores (the helicopter needs more screen than an airplane).
+var default_pilot_zoom := 1.0
 ## Landscape review (L0): (azimuth, elevation) in degrees from the pilot's eye; NAN follows the airplane.
 var look := Vector2(NAN, NAN)
 var look_height := 1.7
@@ -42,6 +48,8 @@ var _span := 1.5
 var _fov_offset := 0.0 # ln(tan) difference still being blended out after a zoom change
 var _absorb_from := NAN # the FOV on screen just before a zoom change
 var _orbit_primed := false
+## The eye the orbit started from this frame (INF otherwise): focus() re-anchors that start on the wreck (CAM-27).
+var _orbit_entry_eye := Vector3.INF
 var _placed := false # the camera has been placed by a view at least once (orbit can start from it)
 
 
@@ -106,9 +114,9 @@ func zoom(steps: float) -> void:
 func reset_view() -> void:
 	match view:
 		"pilot":
-			if pilot_zoom != 1.0:
+			if pilot_zoom != default_pilot_zoom:
 				_mark_fov_jump()
-			pilot_zoom = 1.0
+			pilot_zoom = default_pilot_zoom
 		"chase":
 			chase.zoom = 1.0
 		"orbit":
@@ -129,10 +137,15 @@ func reset() -> void:
 
 
 ## Places the camera for this frame. target: the airplane's CG (render); airplane: its root transform (close-up
-## offset); dt: frame time (s); paused: the simulation is frozen; ground_y: Callable(x, z) → terrain height.
-func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable) -> void:
+## offset); dt: frame time (s); paused: the simulation is frozen; ground_y: Callable(x, z) → terrain height;
+## velocity: the CG velocity (render, m/s) from the simulation state, INF when unknown (views then estimate it).
+## Camera consumers (audio listener, lake reflection, sun glare) must run after this call, and after focus() during a
+## crash aftermath, in the same frame.
+func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paused: bool, ground_y: Callable,
+		velocity := Vector3.INF) -> void:
 	# SUN-04: the pilot's eyes see the sun as an eye (veil, afterimage); the other views are camera lenses (flares).
 	camera.set_meta(&"openrc_optics", "eye" if view == "pilot" or not is_nan(look.x) else "lens")
+	_orbit_entry_eye = Vector3.INF
 	if not is_nan(look.x):
 		PilotCamera.look(camera, look.x, look.y, look_height)
 		return
@@ -143,16 +156,40 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
 		"chase":
-			_apply(chase.update(target, body, dt, paused, ground_y))
+			_apply(chase.update(target, body, dt, paused, ground_y, velocity))
 		"orbit":
 			if not _orbit_primed:
 				if _placed:
+					_orbit_entry_eye = camera.position
 					orbit.start_from(camera.position, target)
 				else:
 					orbit.start_behind(body)
 				_orbit_primed = true
 			_apply(orbit.update(target, ground_y))
 	_placed = true
+
+
+## CAM-27: a crash aftermath, called after update() in the same frame. Non-pilot views look at `point` (the wreck's
+## core from the crash director) instead of a fixed spot near the impact: the orbit turns around it and stays under
+## the player's control, the chase holds its (paused) position and turns to it, and the close-up keeps its offset from
+## it above the terrain. The pilot view keeps the director's rule (main.gd).
+func focus(point: Vector3, ground_y: Callable) -> void:
+	if not is_nan(look.x):
+		return
+	match view:
+		"orbit":
+			if _orbit_entry_eye.is_finite():
+				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
+			_apply(orbit.update(point, ground_y))
+		"chase":
+			camera.basis = CameraMath.look_basis(camera.position, point)
+		"closeup":
+			var eye := point + WRECK_CLOSEUP_OFFSET
+			if ground_y.is_valid():
+				var y: float = ground_y.call(eye.x, eye.z)
+				eye.y = maxf(eye.y, (y if is_finite(y) else 0.0) + WRECK_CLEARANCE_M)
+			camera.transform = Transform3D(CameraMath.look_basis(eye, point), eye)
+			camera.fov = WRECK_CLOSEUP_FOV
 
 
 func evidence() -> Dictionary:

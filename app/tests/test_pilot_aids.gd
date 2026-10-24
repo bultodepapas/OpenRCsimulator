@@ -28,15 +28,24 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
-	# Auto-zoom: projected span ≥ 30 px from 20 to 150 m; without it ≈ 12 px at 100 m.
-	var worst := 1e9
-	for d in range(20, 151, 5):
-		worst = minf(worst, PilotCamera.projected_px(SPAN, d, PilotCamera.auto_fov(SPAN, d, H), H))
-	_check("auto-zoom: span ≥ 30 px from 20 to 150 m", worst >= 30.0 - 1e-9, "worst %.2f px" % worst)
+	# Auto-zoom (CAM-23): the span covers at least 30 px of a 1080 px view, i.e. the same share of the height at every
+	# resolution, from 20 to 150 m; without it ≈ 12 px at 100 m on 720p.
+	var reference: float = Spec.AUTO_ZOOM.reference_height_px
+	for h: float in [720.0, 1080.0, 1440.0, 2160.0]:
+		var worst := 1e9
+		for d in range(20, 151, 5):
+			worst = minf(worst, PilotCamera.projected_px(SPAN, d, PilotCamera.auto_fov(SPAN, d), h) / h)
+		_check("auto-zoom: span ≥ 30/1080 of the height from 20 to 150 m at %dp" % int(h), worst >= 30.0 / reference - 1e-12, "worst %.5f" % worst)
+	# 1080p keeps the former pixel law exactly: same FOV bit for bit as 2·atan(span·1080 / (2·d·30)).
+	var identical := true
+	for d in range(10, 2001, 7):
+		var former := clampf(rad_to_deg(2.0 * atan(SPAN * 1080.0 / (2.0 * maxf(d, 1e-6) * 30.0))), Spec.AUTO_ZOOM.min_fov_deg, Spec.CAMERA.fov_deg)
+		identical = identical and PilotCamera.auto_fov(SPAN, d) == former
+	_check("auto-zoom at 1080p is bit-identical to the former 30 px law", identical)
 	var fixed := PilotCamera.projected_px(SPAN, 100.0, Spec.CAMERA.fov_deg, H)
 	_check("fixed 50° FOV: ≈ 12 px at 100 m (the problem auto-zoom solves)", absf(fixed - 11.8) < 0.1, "%.2f px" % fixed)
-	_check("auto-zoom never widens beyond the base FOV (close airplane)", PilotCamera.auto_fov(SPAN, 5.0, H) == Spec.CAMERA.fov_deg)
-	_check("auto-zoom stops at the minimum FOV (very far)", PilotCamera.auto_fov(SPAN, 5000.0, H) == Spec.AUTO_ZOOM.min_fov_deg)
+	_check("auto-zoom never widens beyond the base FOV (close airplane)", PilotCamera.auto_fov(SPAN, 5.0) == Spec.CAMERA.fov_deg)
+	_check("auto-zoom stops at the minimum FOV (very far)", PilotCamera.auto_fov(SPAN, 5000.0) == Spec.AUTO_ZOOM.min_fov_deg)
 
 	# Shadow footprint: under the airplane, on the ground; banked 90° → no span; nose down 90° → no length.
 	var pos := Vector3(10.0, 30.0, -60.0)

@@ -25,7 +25,7 @@ Select **RC Helicopter Research Trainer** on Home. At Club field, the default st
 
 On the pad the rotor is stopped, the motor disarmed, hold engaged, and the collective initialized to zero blade pitch (about 17% stick on this model's normal curve). Center cyclic/yaw, press **B** to arm, then **H** to release hold. Wait for **GOVERNED** before increasing collective with W. The 12 s torque ramp is an explicit simulator estimate; it is not an identified engine or ESC response. The earlier 4 s candidate exceeded the configured skid yaw capacity.
 
-Arrow keys command cyclic: Up pitches the nose down, Down up. A/D command yaw; W/S change collective. Keyboard B disarms as well as arms. Keyboard H enters a latched zero-drive hold; the rotor coasts down physically. P pauses/resumes, C changes camera, Esc opens the pause menu. K and Enter operate radio calibration.
+Arrow keys command cyclic: Up pitches the nose down, Down up. A/D command yaw; W/S change collective. Keyboard B disarms as well as arms. Keyboard H enters a latched zero-drive hold; the rotor coasts down physically. P pauses/resumes, C changes camera (Shift+C back; 1/2/5 pilot/chase/orbit; =/− zoom, Backspace back to the helicopter's own zoom), Esc opens the pause menu. K and Enter operate radio calibration.
 
 Recognized standard gamepads receive these helicopter defaults automatically. Controller settings shows the active vehicle's assignments; **Remap**, **Clear** and **Save** preserve explicit choices. The flight HUD displays the actual bindings. Raw radios and unmapped joysticks require explicit configuration.
 

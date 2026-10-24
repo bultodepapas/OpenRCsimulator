@@ -1047,7 +1047,11 @@ func _process(delta: float) -> void:
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
-			_crash_director.aim(_camera, _rig.view != "pilot") # chase and orbit keep the director's wreck view
+			# CAM-27: the pilot keeps the director's view of the impact; the other views follow the wreck through the rig.
+			if _rig.view == "pilot":
+				_crash_director.aim(_camera, false)
+			else:
+				_rig.focus(_crash_director.focus_point(), _ground_height)
 		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
 	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
@@ -1333,8 +1337,11 @@ func _current_pose() -> Dictionary:
 	return _pose_of(session.sim.interpolated(fraction))
 
 
+## vel: the CG's inertial velocity in render axes (body FRD velocity rotated by the attitude), for the camera rig.
 func _pose_of(s: PackedFloat64Array) -> Dictionary:
-	return { pos = Frames.ned_to_render([s[RB.POS], s[RB.POS + 1], s[RB.POS + 2]]), basis = Frames.quat_to_render(s.slice(RB.ATT, RB.ATT + 4)) }
+	var attitude := Frames.quat_to_render(s.slice(RB.ATT, RB.ATT + 4))
+	return { pos = Frames.ned_to_render([s[RB.POS], s[RB.POS + 1], s[RB.POS + 2]]), basis = attitude,
+		vel = attitude * Frames.ned_to_render([s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]]) }
 
 
 ## Semantic gamepad actions share operations with keyboard shortcuts.
@@ -2611,7 +2618,7 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)
 	var paused: bool = session != null and session.sim.paused and not _scripted
-	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height)
+	_rig.update(pose.pos, _airplane.root.transform, pose.basis, _camera_dt, paused, _ground_height, pose.get("vel", Vector3.INF))
 
 
 func _write_trace_and_quit(ticks: int, path: String) -> void:

@@ -42,7 +42,7 @@ Rules the implementation keeps:
 | safe | radio connected, not armed | `radio.armed` |
 | stall | airborne (> 1 m), airspeed ≥ 3 m/s, α within 2° of the solved stall-blend start `envelope.a1`/`n1` (D5) | aircraft v2 envelope; none if absent |
 | low | airborne, sinking > 2 m/s, ground reached within 2 s | telemetry |
-| far | slant distance beyond where the 6° minimum auto-zoom FOV shows the span below 30 px at 720 px (Stik ≈ 349 m) | `Spec.AUTO_ZOOM`, model span |
+| far | slant distance beyond where the 6° minimum auto-zoom FOV shows the span below 30 px of a 1080 px reference height, i.e. where the pilot view's auto-zoom reaches its floor at every resolution (Stik ≈ 523 m; ≈ 349 m before CAM-23) | `Spec.AUTO_ZOOM`, model span |
 | battery | `ocv_resistance` packs: modelled battery exhausted or SOC < 20 %. `pack_ecm` packs: observable alarms only (`battery`, `battery_critical`, `battery_lvc`, `battery_hot`, `battery_empty`), see [BAT-15](../research/battery/BAT-15/README.md) | `electrical_state()` |
 | experimental | experimental aircraft-data route | main |
 

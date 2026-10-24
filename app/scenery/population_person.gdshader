@@ -72,9 +72,11 @@ void vertex() {
 	// SC-HUM-08: shirt hems and loose shirt fronts move with the field wind; shoulders and collars stay
 	// pinned (weight falls to zero towards the chest). The flutter uses whole cycles of the 1024 s clock.
 	bool tinted = merged ? (floor(UV2.x + 0.5) == 1.0) : fabric;
-	if (tinted) {
+	if (tinted && dot(wind_vec, wind_vec) > 0.0) {
 		float hem = shirt_weight * (1.0 - smoothstep(shirt_start + 0.10, shirt_start + 0.40, VERTEX.y));
-		vec3 local_wind = inverse(mat3(MODEL_MATRIX)) * wind_vec;
+		// People are placed by rotation × uniform scale, so the inverse is the scaled transpose.
+		mat3 model = mat3(MODEL_MATRIX);
+		vec3 local_wind = transpose(model) * wind_vec / dot(model[0], model[0]);
 		local_wind *= FLUTTER_PER_MPS * min(1.0, FLUTTER_MAX_MPS / max(length(local_wind), 0.0001));
 		float gust = 0.65 + 0.35 * sin(sim_clock * (6.28318530718 * 2304.0 / 1024.0) + phase + VERTEX.y * 9.0);
 		VERTEX += local_wind * hem * gust;

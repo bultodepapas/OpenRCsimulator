@@ -719,6 +719,15 @@ func _secondary(point: Vector3, strength: float) -> void:
 	if _audio_enabled:
 		audio.secondary(point,normalized)
 
+## CAM-27: where cameras look during the aftermath: the wreck's core once it is simulated (it can slide well clear of
+## the impact), else the impact point. Read-only; the rig places non-pilot views around it.
+func focus_point() -> Vector3:
+	if active and wreck != null:
+		var core: Variant = wreck.core_position()
+		if core is Vector3:
+			return core
+	return _impact_point + Vector3.UP * 0.5
+
 func aim(camera: Camera3D, inspect: bool) -> void:
 	if not active:
 		return

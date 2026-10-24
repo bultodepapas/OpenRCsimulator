@@ -236,6 +236,12 @@ Without `SurfaceTool.generate_tangents()`, Godot 4.7 fills an arbitrary orthonor
 
 A critically damped spring that follows a moving point trails it by 2v/ω in steady motion: about 7 m at 20 m/s with a 0.25 s half-life, so a chase camera sprung in world space slides back to its lag cap whenever the airplane flies straight. Spring the offset from the target instead, in the target's frame or as a world-axis offset, and smooth only changes of heading, height or zoom. Test steady straight flight at several frame rates, not only a step response. Also, compare render results (`Vector3`, 32-bit) to about 1e-6. [CAM evidence](research/camera-views/CAM-01-10/README.md)
 
+CAM-24 correction: "exact for any dt" holds only while the goal stands still during the step. Straight flight keeps the offset goal constant, so those tests passed; in a 60° bank the goal turns within each frame and the camera at 30 and 144 fps differed by 11 cm. Step the filters at the simulation rate (≤ 1/240 s) with the target interpolated inside the frame, and test a turn and a loop. Seed look-ahead from the simulation's velocity, not from zero: an estimate built from successive poses slid the aircraft 6.7° on screen every time the view was entered. [CAM-23…27 evidence](research/camera-views/CAM-23-27/README.md)
+
+## 2026-10-24 · CAM-23 — a pixel target must name its reference height
+
+The pilot auto-zoom aimed for 30 px of whatever viewport it rendered. On a 4K screen of the same size the aircraft was therefore half as large as at 1080p, and the FAR warning, computed for 720 px, disagreed with both. Express a readable size as pixels of a stated reference height (here 1080), i.e. a share of the screen, and derive every consumer from the same constant. [Audit F1](research/camera-views/CAM-AUD-2026-10-24/README.md#findings), [evidence](research/camera-views/CAM-23-27/README.md)
+
 ## 2026-10-13 · CAM-04 — Help has no spare row at 720p; key caps set the column width
 
 Help fit 598 of 600 px at 1280×720 before the camera keys. One extra row overflows, and a single wide key name ("Retroceso" in Spanish) widens the cap column so other rows wrap. Fold new keys into existing rows, prefer short key names, and run `test_ui_help.gd` in both languages before adding a shortcut. [CAM evidence](research/camera-views/CAM-01-10/README.md)

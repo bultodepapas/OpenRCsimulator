@@ -1,0 +1,385 @@
+{
+  "format": "openrc-camera-census v1",
+  "head_m": 0.23,
+  "occlusion": "not modelled",
+  "samples": 1014,
+  "sortie_s": 101.4,
+  "viewport": [
+    1920,
+    1080
+  ],
+  "views": {
+    "chase": {
+      "pilot pilot/pilot_polo:0": {
+        "asset": "pilot/pilot_polo",
+        "head_px_max": 10.4426467620266,
+        "head_px_median": 2.88950572957185,
+        "in_frame_share": 0.162721893491124,
+        "role": "pilot"
+      },
+      "pilot pilot/veteran_cap:0": {
+        "asset": "pilot/veteran_cap",
+        "head_px_max": 10.1734491716387,
+        "head_px_median": 2.69177018416681,
+        "in_frame_share": 0.209072978303748,
+        "role": "pilot"
+      },
+      "pits standing/casual_shirt:0": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 5.08998212152135,
+        "head_px_median": 2.61942953194685,
+        "in_frame_share": 0.113412228796844,
+        "role": "pits"
+      },
+      "pits standing/mechanic_overalls:0": {
+        "asset": "standing/mechanic_overalls",
+        "head_px_max": 4.66964382294182,
+        "head_px_median": 2.09372360405401,
+        "in_frame_share": 0.211045364891519,
+        "role": "pits"
+      },
+      "spectator sitting/veteran_cap:0": {
+        "asset": "sitting/veteran_cap",
+        "head_px_max": 4.96923446566185,
+        "head_px_median": 2.25986890342594,
+        "in_frame_share": 0.171597633136095,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:0": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 5.00391176841832,
+        "head_px_median": 2.39433657740451,
+        "in_frame_share": 0.132149901380671,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:1": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 5.01607532160253,
+        "head_px_median": 2.24445173916041,
+        "in_frame_share": 0.177514792899408,
+        "role": "spectator"
+      },
+      "spectator standing/casual_jacket:0": {
+        "asset": "standing/casual_jacket",
+        "head_px_max": 4.99335736172592,
+        "head_px_median": 2.29993391816954,
+        "in_frame_share": 0.159763313609467,
+        "role": "spectator"
+      },
+      "spectator standing/casual_shirt:1": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 4.89579072566213,
+        "head_px_median": 2.29308008650091,
+        "in_frame_share": 0.148915187376726,
+        "role": "spectator"
+      },
+      "spectator standing/woman_tee:0": {
+        "asset": "standing/woman_tee",
+        "head_px_max": 4.84416175998963,
+        "head_px_median": 2.27339151309336,
+        "in_frame_share": 0.154832347140039,
+        "role": "spectator"
+      },
+      "worker working/casual_shirt:0": {
+        "asset": "working/casual_shirt",
+        "head_px_max": 4.65316943341969,
+        "head_px_median": 2.61784195836395,
+        "in_frame_share": 0.103550295857988,
+        "role": "worker"
+      },
+      "worker working/mechanic_overalls:0": {
+        "asset": "working/mechanic_overalls",
+        "head_px_max": 4.63264894668496,
+        "head_px_median": 2.67765956711248,
+        "in_frame_share": 0.0986193293885602,
+        "role": "worker"
+      },
+      "worker working/woman_tee:0": {
+        "asset": "working/woman_tee",
+        "head_px_max": 4.61172165701074,
+        "head_px_median": 2.15824775192931,
+        "in_frame_share": 0.180473372781065,
+        "role": "worker"
+      }
+    },
+    "closeup": {
+      "pilot pilot/pilot_polo:0": {
+        "asset": "pilot/pilot_polo",
+        "head_px_max": 14.870991127649,
+        "head_px_median": 3.81602213976082,
+        "in_frame_share": 0.138067061143984,
+        "role": "pilot"
+      },
+      "pilot pilot/veteran_cap:0": {
+        "asset": "pilot/veteran_cap",
+        "head_px_max": 14.7229338031249,
+        "head_px_median": 4.32276114209885,
+        "in_frame_share": 0.175542406311637,
+        "role": "pilot"
+      },
+      "pits standing/casual_shirt:0": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 7.43187708788528,
+        "head_px_median": 3.6759601821916,
+        "in_frame_share": 0.100591715976331,
+        "role": "pits"
+      },
+      "pits standing/mechanic_overalls:0": {
+        "asset": "standing/mechanic_overalls",
+        "head_px_max": 6.93513757084192,
+        "head_px_median": 3.36964613346883,
+        "in_frame_share": 0.180473372781065,
+        "role": "pits"
+      },
+      "spectator sitting/veteran_cap:0": {
+        "asset": "sitting/veteran_cap",
+        "head_px_max": 7.53569066127385,
+        "head_px_median": 3.47895510934368,
+        "in_frame_share": 0.155818540433925,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:0": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 7.47750045472584,
+        "head_px_median": 3.34405402490359,
+        "in_frame_share": 0.124260355029586,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:1": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 7.48946349167297,
+        "head_px_median": 3.50531861800778,
+        "in_frame_share": 0.160749506903353,
+        "role": "spectator"
+      },
+      "spectator standing/casual_jacket:0": {
+        "asset": "standing/casual_jacket",
+        "head_px_max": 7.50381976095336,
+        "head_px_median": 3.21261157165189,
+        "in_frame_share": 0.144970414201183,
+        "role": "spectator"
+      },
+      "spectator standing/casual_shirt:1": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 7.28745766104465,
+        "head_px_median": 3.06271955858116,
+        "in_frame_share": 0.135108481262327,
+        "role": "spectator"
+      },
+      "spectator standing/woman_tee:0": {
+        "asset": "standing/woman_tee",
+        "head_px_max": 7.328307366969,
+        "head_px_median": 3.16392106774252,
+        "in_frame_share": 0.141025641025641,
+        "role": "spectator"
+      },
+      "worker working/casual_shirt:0": {
+        "asset": "working/casual_shirt",
+        "head_px_max": 6.94249119763125,
+        "head_px_median": 3.80069011251925,
+        "in_frame_share": 0.0996055226824458,
+        "role": "worker"
+      },
+      "worker working/mechanic_overalls:0": {
+        "asset": "working/mechanic_overalls",
+        "head_px_max": 6.97069107364169,
+        "head_px_median": 3.95916414249387,
+        "in_frame_share": 0.0976331360946746,
+        "role": "worker"
+      },
+      "worker working/woman_tee:0": {
+        "asset": "working/woman_tee",
+        "head_px_max": 6.91004522248712,
+        "head_px_median": 3.68972169733361,
+        "in_frame_share": 0.161735700197239,
+        "role": "worker"
+      }
+    },
+    "orbit": {
+      "pilot pilot/pilot_polo:0": {
+        "asset": "pilot/pilot_polo",
+        "head_px_max": 16.4856631442019,
+        "head_px_median": 1.83167717550384,
+        "in_frame_share": 0.438856015779093,
+        "role": "pilot"
+      },
+      "pilot pilot/veteran_cap:0": {
+        "asset": "pilot/veteran_cap",
+        "head_px_max": 15.8417915396937,
+        "head_px_median": 1.6815092155097,
+        "in_frame_share": 0.517751479289941,
+        "role": "pilot"
+      },
+      "pits standing/casual_shirt:0": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 8.28805575751758,
+        "head_px_median": 1.94635349191681,
+        "in_frame_share": 0.366863905325444,
+        "role": "pits"
+      },
+      "pits standing/mechanic_overalls:0": {
+        "asset": "standing/mechanic_overalls",
+        "head_px_max": 7.73696436684787,
+        "head_px_median": 1.51041866877048,
+        "in_frame_share": 0.553254437869823,
+        "role": "pits"
+      },
+      "spectator sitting/veteran_cap:0": {
+        "asset": "sitting/veteran_cap",
+        "head_px_max": 8.3056946963236,
+        "head_px_median": 1.60993350199035,
+        "in_frame_share": 0.489151873767258,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:0": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 8.33383370679867,
+        "head_px_median": 1.77412056091569,
+        "in_frame_share": 0.419132149901381,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:1": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 8.34352561415891,
+        "head_px_median": 1.59978266346288,
+        "in_frame_share": 0.498027613412229,
+        "role": "spectator"
+      },
+      "spectator standing/casual_jacket:0": {
+        "asset": "standing/casual_jacket",
+        "head_px_max": 8.36543997182728,
+        "head_px_median": 1.63975513340284,
+        "in_frame_share": 0.469428007889546,
+        "role": "spectator"
+      },
+      "spectator standing/casual_shirt:1": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 8.12703856488433,
+        "head_px_median": 1.6766385481211,
+        "in_frame_share": 0.449704142011834,
+        "role": "spectator"
+      },
+      "spectator standing/woman_tee:0": {
+        "asset": "standing/woman_tee",
+        "head_px_max": 8.03117592491715,
+        "head_px_median": 1.64312958235325,
+        "in_frame_share": 0.45956607495069,
+        "role": "spectator"
+      },
+      "worker working/casual_shirt:0": {
+        "asset": "working/casual_shirt",
+        "head_px_max": 7.7284404908796,
+        "head_px_median": 1.99361326536354,
+        "in_frame_share": 0.353057199211045,
+        "role": "worker"
+      },
+      "worker working/mechanic_overalls:0": {
+        "asset": "working/mechanic_overalls",
+        "head_px_max": 7.64902966981497,
+        "head_px_median": 2.03816278458419,
+        "in_frame_share": 0.343195266272189,
+        "role": "worker"
+      },
+      "worker working/woman_tee:0": {
+        "asset": "working/woman_tee",
+        "head_px_max": 7.70826748822968,
+        "head_px_median": 1.56497411333004,
+        "in_frame_share": 0.507889546351085,
+        "role": "worker"
+      }
+    },
+    "pilot": {
+      "pilot pilot/pilot_polo:0": {
+        "asset": "pilot/pilot_polo",
+        "head_px_max": 52.1020444624834,
+        "head_px_median": 31.568292413115,
+        "in_frame_share": 0.219921104536489,
+        "role": "pilot"
+      },
+      "pilot pilot/veteran_cap:0": {
+        "asset": "pilot/veteran_cap",
+        "head_px_max": 39.5219312992852,
+        "head_px_median": 22.160470611116,
+        "in_frame_share": 0.157790927021696,
+        "role": "pilot"
+      },
+      "pits standing/casual_shirt:0": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 7.26012741427138,
+        "head_px_median": 7.22815083474389,
+        "in_frame_share": 0.0029585798816568,
+        "role": "pits"
+      },
+      "pits standing/mechanic_overalls:0": {
+        "asset": "standing/mechanic_overalls",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "pits"
+      },
+      "spectator sitting/veteran_cap:0": {
+        "asset": "sitting/veteran_cap",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:0": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "spectator sitting/woman_tee:1": {
+        "asset": "sitting/woman_tee",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "spectator standing/casual_jacket:0": {
+        "asset": "standing/casual_jacket",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "spectator standing/casual_shirt:1": {
+        "asset": "standing/casual_shirt",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "spectator standing/woman_tee:0": {
+        "asset": "standing/woman_tee",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "spectator"
+      },
+      "worker working/casual_shirt:0": {
+        "asset": "working/casual_shirt",
+        "head_px_max": 6.22022298143549,
+        "head_px_median": 6.19282665914103,
+        "in_frame_share": 0.00394477317554241,
+        "role": "worker"
+      },
+      "worker working/mechanic_overalls:0": {
+        "asset": "working/mechanic_overalls",
+        "head_px_max": 6.60313519397337,
+        "head_px_median": 5.74163714324048,
+        "in_frame_share": 0.0256410256410256,
+        "role": "worker"
+      },
+      "worker working/woman_tee:0": {
+        "asset": "working/woman_tee",
+        "head_px_max": 0.0,
+        "head_px_median": 0.0,
+        "in_frame_share": 0.0,
+        "role": "worker"
+      }
+    }
+  }
+}

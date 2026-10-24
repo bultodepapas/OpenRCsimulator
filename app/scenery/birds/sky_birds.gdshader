@@ -1,7 +1,7 @@
 // SC-BIRD-04/05/08 (docs/plans/birds-sky-life.md): one MultiMesh of birds. Ours, MIT. No TIME: position, attitude,
 // wingbeat and arrivals/departures are functions of sim_clock (track periods and frequencies divide 1024 s), so the
 // same simulation time draws the same birds. bird_tracks.gd compiles the arc-line circuits into seg_a/seg_b and
-// mirrors track_pos() in float64; birds.gd mirrors the departure share. Per instance (INSTANCE_CUSTOM): x time offset
+// mirrors segment_pos() and smoothed_lateral() in float64; birds.gd mirrors the departure share. Per instance (INSTANCE_CUSTOM): x time offset
 // (s), y track + 8 * species, z state (1500 flying, 2000 away, 0..1023.5 leaving since that clock, -1024..-0.5 arriving
 // since -z - 0.5; all exact in the half floats Compatibility stores custom data in), w hash in [0, 1) (flap phase). The species' shape is CUSTOM0..3 (bird_planform.gd: xyz and the rig
 // weights packed as tail + 2 * hand). Mesh frame: nose +Z, wings +-X, up +Y.
@@ -10,10 +10,10 @@ render_mode cull_disabled;
 
 global uniform float sim_clock;
 
-const int MAX_SEGMENTS = 48;
+const int MAX_MOTIF_SEGMENTS = 16; // bird_data.gd MAX_MOTIF_SEGMENTS
 const float GRAVITY = 9.81;
-const float HEADING_STEP_S = 0.05;
-const float BANK_STEP_S = 0.8; // the bank follows the turn with ~1 s of roll-in and roll-out
+const float BANK_STEP_S = 0.8; // the bank follows the turn with ~1.6 s of roll-in and roll-out
+const int MAX_WINDOW_SEGMENTS = 8; // segments last >= 0.25 s (bird_tracks.gd), so +-0.8 s spans at most 8
 const float PITCH_SHARE = 0.3; // birds climb in thermals nearly level
 const float STEADY = 1500.0;
 const float HIDDEN = 2000.0;
@@ -36,21 +36,27 @@ varying vec3 v_under;
 varying vec3 v_tip;
 varying float v_shade;
 
-vec3 track_pos(int track, float t) {
-	vec4 info = track_info[track];
-	int first = int(info.x + 0.5);
-	int count = int(info.y + 0.5);
-	float tt = mod(t, info.z);
-	int index = first;
-	for (int i = 1; i < MAX_SEGMENTS; i++) {
-		if (i >= count || seg_a[first + i].w > tt) {
+// The active segment of a track at local time tt in [0, period). Every repeat of the motif lasts period / repeats,
+// so the repeat is found directly and only its motif's segments are searched (at most MAX_MOTIF_SEGMENTS).
+int track_segment(vec4 info, float tt) {
+	int repeats = int(info.w + 0.5);
+	int motif = int(info.y + 0.5) / repeats;
+	int repeat = min(int(tt / (info.z / float(repeats))), repeats - 1);
+	int base = int(info.x + 0.5) + repeat * motif;
+	int index = base;
+	for (int i = 1; i < MAX_MOTIF_SEGMENTS; i++) {
+		if (i >= motif || seg_a[base + i].w > tt) {
 			break;
 		}
-		index = first + i;
+		index = base + i;
 	}
+	return index;
+}
+
+// Position on segment `index` after d seconds.
+vec3 segment_pos(int index, float d) {
 	vec4 a = seg_a[index];
 	vec4 b = seg_b[index];
-	float d = tt - a.w;
 	float s = b.y * d;
 	vec2 p;
 	if (abs(b.x) < 1e-7) {
@@ -62,6 +68,48 @@ vec3 track_pos(int track, float t) {
 	return vec3(p, b.z + b.w * d);
 }
 
+// Integral of the triangle kernel (H - |x|) / H^2 from -H to x, H = BANK_STEP_S.
+float kernel_cdf(float x) {
+	float h = BANK_STEP_S;
+	x = clamp(x, -h, h);
+	return x <= 0.0 ? (x + h) * (x + h) / (2.0 * h * h) : 1.0 - (h - x) * (h - x) / (2.0 * h * h);
+}
+
+// Lateral acceleration (m/s^2, > 0 to the left) averaged with the triangle kernel over +-BANK_STEP_S, integrated
+// exactly over the piecewise-constant v^2 * curvature of the segments: what the position's second difference over
+// +-BANK_STEP_S gives, so the bank rolls in and out over ~1.6 s (bird_tracks.gd lateral_acceleration()).
+float smoothed_lateral(vec4 info, float tt) {
+	int first = int(info.x + 0.5);
+	int count = int(info.y + 0.5);
+	float period = info.z;
+	float w0 = tt - BANK_STEP_S;
+	float w1 = tt + BANK_STEP_S;
+	float offset = w0 < 0.0 ? -period : 0.0;
+	int index = track_segment(info, w0 - offset);
+	float lateral = 0.0;
+	for (int k = 0; k < MAX_WINDOW_SEGMENTS; k++) {
+		int last = first + count - 1;
+		float start = seg_a[index].w + offset;
+		float end = (index < last ? seg_a[index + 1].w : period) + offset;
+		vec4 b = seg_b[index];
+		float lo = max(start, w0);
+		float hi = min(end, w1);
+		if (hi > lo) {
+			lateral += b.x * b.y * b.y * (kernel_cdf(hi - tt) - kernel_cdf(lo - tt));
+		}
+		if (end >= w1) {
+			break;
+		}
+		if (index == last) {
+			index = first;
+			offset += period;
+		} else {
+			index += 1;
+		}
+	}
+	return lateral;
+}
+
 // Share of the departure displacement (0 on the circuit, 1 away); > 1 means not drawn (birds.gd departure_share()).
 float departure_share(float state, float duration) {
 	if (state > HIDDEN - 0.5) {
@@ -71,7 +119,7 @@ float departure_share(float state, float duration) {
 		return 0.0;
 	}
 	float start = state >= 0.0 ? state : -state - 0.5;
-	float p = clamp(mod(sim_clock - start, 1024.0) / duration, 0.0, 1.0);
+	float p = clamp((mod(sim_clock - start + 512.0, 1024.0) - 512.0) / duration, 0.0, 1.0); // a start ahead waits
 	float eased = smoothstep(0.0, 1.0, p);
 	return state >= 0.0 ? (p >= 1.0 ? 2.0 : eased) : 1.0 - eased;
 }
@@ -99,14 +147,16 @@ void vertex() {
 		VERTEX = vec3(0.0); // gone: birds.gd stops drawing it at the next settle
 	} else {
 		float t = sim_clock + INSTANCE_CUSTOM.x;
-		vec3 p = track_pos(track, t);
-		vec3 v = (track_pos(track, t + HEADING_STEP_S) - track_pos(track, t - HEADING_STEP_S)) / (2.0 * HEADING_STEP_S);
-		vec2 acc = (track_pos(track, t + BANK_STEP_S).xy - 2.0 * p.xy + track_pos(track, t - BANK_STEP_S).xy)
-			/ (BANK_STEP_S * BANK_STEP_S);
-		float vh = max(length(v.xy), 1e-4);
-		vec2 dir = v.xy / vh;
-		float bank = atan(dir.x * acc.y - dir.y * acc.x, GRAVITY); // > 0 turning left
-		float pitch = atan(v.z, vh) * PITCH_SHARE;
+		vec4 info = track_info[track];
+		float tt = mod(t, info.z);
+		int index = track_segment(info, tt);
+		float d = tt - seg_a[index].w;
+		vec3 p = segment_pos(index, d);
+		vec4 sb = seg_b[index];
+		float heading = seg_a[index].z + sb.x * sb.y * d; // the track is tangent-continuous: heading is analytic
+		vec2 dir = vec2(cos(heading), sin(heading));
+		float bank = atan(smoothed_lateral(info, tt), GRAVITY); // > 0 turning left
+		float pitch = atan(sb.w, max(sb.y, 1e-4)) * PITCH_SHARE;
 		// Track (x east, y north, z up) to mesh-instance axes (x east, y up, z south).
 		vec3 fwd = vec3(dir.x * cos(pitch), sin(pitch), -dir.y * cos(pitch));
 		vec3 left = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));

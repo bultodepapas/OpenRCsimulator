@@ -94,34 +94,50 @@ static func build(planform: Dictionary, span: float, finger_slots: int) -> Dicti
 	return out
 
 
-## One ArrayMesh for a MultiMesh: VERTEX and UV from the first species, each species' shape and rig weights in
-## CUSTOM0..3 (unused slots repeat the first species). All builds must share the topology (same vertex count).
+## One indexed ArrayMesh for a MultiMesh: VERTEX and UV from the first species, each species' shape and rig weights in
+## CUSTOM0..3 (unused slots repeat the first species). All builds must share the topology (same corner count). Corners
+## identical in every attribute (all species' shapes, weights and shade) become one vertex, so the vertex shader runs
+## once per distinct vertex instead of once per triangle corner.
 static func group_mesh(builds: Array) -> ArrayMesh:
 	var first: Dictionary = builds[0]
 	var count: int = (first.vertices as PackedVector3Array).size()
-	var normals := PackedVector3Array()
-	var uvs := PackedVector2Array()
-	for s: float in first.shades:
-		uvs.append(Vector2(0.0, s))
-		normals.append(Vector3.UP)
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = first.vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_TEX_UV] = uvs
-	var flags := 0
+	var slots: Array = []
 	for slot: int in MAX_SPECIES:
 		var b: Dictionary = builds[slot] if slot < builds.size() else first
 		assert((b.vertices as PackedVector3Array).size() == count, "bird species in one MultiMesh need one topology")
-		var custom := PackedFloat32Array()
-		custom.resize(count * 4)
-		for i: int in count:
-			var v: Vector3 = b.vertices[i]
-			custom[i * 4] = v.x
-			custom[i * 4 + 1] = v.y
-			custom[i * 4 + 2] = v.z
-			custom[i * 4 + 3] = b.weights[i]
-		arrays[Mesh.ARRAY_CUSTOM0 + slot] = custom
+		slots.append(b)
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var uvs := PackedVector2Array()
+	var customs: Array[PackedFloat32Array] = [PackedFloat32Array(), PackedFloat32Array(), PackedFloat32Array(),
+		PackedFloat32Array()]
+	var indices := PackedInt32Array()
+	var seen: Dictionary = {}
+	for i: int in count:
+		var key: Array = [first.shades[i]]
+		for b: Dictionary in slots:
+			key.append(b.vertices[i])
+			key.append(b.weights[i])
+		var index: int = seen.get(key, -1)
+		if index < 0:
+			index = vertices.size()
+			seen[key] = index
+			vertices.append(first.vertices[i])
+			normals.append(Vector3.UP)
+			uvs.append(Vector2(0.0, first.shades[i]))
+			for slot: int in MAX_SPECIES:
+				var v: Vector3 = slots[slot].vertices[i]
+				customs[slot].append_array([v.x, v.y, v.z, slots[slot].weights[i]])
+		indices.append(index)
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var flags := 0
+	for slot: int in MAX_SPECIES:
+		arrays[Mesh.ARRAY_CUSTOM0 + slot] = customs[slot]
 		flags |= Mesh.ARRAY_CUSTOM_RGBA_FLOAT << (Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT + slot * Mesh.ARRAY_FORMAT_CUSTOM_BITS)
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, flags)

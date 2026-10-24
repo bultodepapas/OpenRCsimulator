@@ -10,10 +10,11 @@ const ANCHORS: Array[String] = ["centre", "first_arc_centre"]
 const CLOCK_S := 1024.0
 const MAX_TIME_SCALE_CHANGE := 0.08
 const CLOSE_TOLERANCE_M := 1e-6
-const SAMPLE_STEP_S := 0.25
 const MIN_SPEED := 2.0 # m/s; slower is hovering, not a circuit (a kestrel's hover will be its own behaviour)
 const MAX_SPEED := 40.0 # m/s; swift dives reach ~23 m/s (Hedrick et al. 2018)
-const MIN_SEGMENT_S := 0.05
+const MIN_SEGMENT_S := 0.25 # so the shader's +-0.8 s bank window spans at most 8 segments
+const BANK_STEP_S := 0.8 # sky_birds.gdshader BANK_STEP_S
+const MAX_MOTIF_SEGMENTS := 16 # sky_birds.gdshader MAX_MOTIF_SEGMENTS
 const MAX_CLIMB_RATE := 10.0 # m/s
 
 
@@ -27,6 +28,8 @@ static func compile(motif: Variant, repeats: int, heading: float, anchor: String
 		return {ok = false, errors = ["repeats must be at least 1"]}
 	if not ANCHORS.has(anchor):
 		return {ok = false, errors = ["unknown anchor '%s'" % anchor]}
+	if (motif as Array).size() > MAX_MOTIF_SEGMENTS:
+		return {ok = false, errors = ["a motif has at most %d segments (sky_birds.gdshader)" % MAX_MOTIF_SEGMENTS]}
 	var parts: Array[Dictionary] = []
 	for i: int in (motif as Array).size():
 		var p: Dictionary = _part(i, (motif as Array)[i], errors)
@@ -83,7 +86,7 @@ static func compile(motif: Variant, repeats: int, heading: float, anchor: String
 		seg.duration *= scale
 		seg.v /= scale
 		seg.vz /= scale
-	var track := {segments = segments, period = period, time_scale = scale, length = length}
+	var track := {segments = segments, period = period, time_scale = scale, length = length, repeats = repeats}
 	var bounds: Array[Vector3] = _bounds(track)
 	if anchor == "centre":
 		var shift: Vector3 = (bounds[0] + bounds[1]) * 0.5
@@ -99,45 +102,85 @@ static func compile(motif: Variant, repeats: int, heading: float, anchor: String
 ## Position [x, y, z] at local time t (any real; the circuit repeats every period).
 static func evaluate(track: Dictionary, t: float) -> Array[float]:
 	var tt: float = fposmod(t, float(track.period))
-	var segments: Array = track.segments
-	var seg: Dictionary = segments[0]
-	for s: Dictionary in segments:
-		if float(s.t) <= tt:
-			seg = s
-		else:
-			break
+	var seg: Dictionary = track.segments[segment_index(track, tt)]
 	var d: float = tt - float(seg.t)
 	var end: Array[float] = _advance(seg.x, seg.y, seg.h, seg.kappa, float(seg.v) * d)
 	return [end[0], end[1], float(seg.z) + float(seg.vz) * d]
 
 
-## Central differences, as the shader does: heading speed from +-h, lateral acceleration (bank) from +-big_h.
-## Returns {speed, horizontal_speed, climb, lateral_acceleration, bank}; bank > 0 turning left.
-static func kinematics(track: Dictionary, t: float, h: float = 0.05, big_h: float = 0.8) -> Dictionary:
-	var a: Array[float] = evaluate(track, t - h)
-	var b: Array[float] = evaluate(track, t + h)
-	var vx: float = (b[0] - a[0]) / (2.0 * h)
-	var vy: float = (b[1] - a[1]) / (2.0 * h)
-	var vz: float = (b[2] - a[2]) / (2.0 * h)
-	var m: Array[float] = evaluate(track, t - big_h)
-	var c: Array[float] = evaluate(track, t)
-	var p: Array[float] = evaluate(track, t + big_h)
-	var ax: float = (p[0] - 2.0 * c[0] + m[0]) / (big_h * big_h)
-	var ay: float = (p[1] - 2.0 * c[1] + m[1]) / (big_h * big_h)
-	var vh: float = sqrt(vx * vx + vy * vy)
-	var lateral: float = (vx * ay - vy * ax) / maxf(vh, 1e-6)
-	return {speed = sqrt(vh * vh + vz * vz), horizontal_speed = vh, climb = vz, lateral_acceleration = lateral,
-		bank = atan2(lateral, 9.81)}
+## What sky_birds.gdshader computes for the attitude: speed, climb, the analytic heading and the bank from the
+## lateral acceleration averaged with a triangle kernel over +-BANK_STEP_S (exactly integrated over the segments, as
+## the position's second difference over +-BANK_STEP_S gives). Returns {speed, horizontal_speed, climb, heading,
+## lateral_acceleration, bank}; bank > 0 turning left.
+static func kinematics(track: Dictionary, t: float) -> Dictionary:
+	var tt: float = fposmod(t, float(track.period))
+	var index: int = segment_index(track, tt)
+	var seg: Dictionary = track.segments[index]
+	var d: float = tt - float(seg.t)
+	var v: float = seg.v
+	var vz: float = seg.vz
+	var lateral: float = lateral_acceleration(track, tt)
+	return {speed = sqrt(v * v + vz * vz), horizontal_speed = v, climb = vz,
+		heading = float(seg.h) + float(seg.kappa) * v * d, lateral_acceleration = lateral, bank = atan2(lateral, 9.81)}
+
+
+## The active segment's index at local time tt in [0, period): the repeat directly, then a search in its motif.
+static func segment_index(track: Dictionary, tt: float) -> int:
+	var segments: Array = track.segments
+	var repeats: int = track.get("repeats", 1)
+	@warning_ignore("integer_division")
+	var motif: int = segments.size() / repeats # exact: every repeat has the same segments
+	var base: int = mini(int(tt / (float(track.period) / repeats)), repeats - 1) * motif
+	var index := base
+	for i: int in range(1, motif):
+		if float(segments[base + i].t) > tt:
+			break
+		index = base + i
+	return index
+
+
+## Triangle-kernel average of v^2 * curvature over [tt - BANK_STEP_S, tt + BANK_STEP_S] (sky_birds.gdshader
+## smoothed_lateral()).
+static func lateral_acceleration(track: Dictionary, tt: float) -> float:
+	var segments: Array = track.segments
+	var period: float = track.period
+	var w0: float = tt - BANK_STEP_S
+	var w1: float = tt + BANK_STEP_S
+	var offset: float = -period if w0 < 0.0 else 0.0
+	var index: int = segment_index(track, w0 - offset)
+	var lateral := 0.0
+	for k: int in segments.size() + 2:
+		var seg: Dictionary = segments[index]
+		var start: float = float(seg.t) + offset
+		var end: float = (float(segments[index + 1].t) if index + 1 < segments.size() else period) + offset
+		var lo: float = maxf(start, w0)
+		var hi: float = minf(end, w1)
+		if hi > lo:
+			lateral += float(seg.kappa) * float(seg.v) * float(seg.v) * (_kernel_cdf(hi - tt) - _kernel_cdf(lo - tt))
+		if end >= w1:
+			break
+		index += 1
+		if index == segments.size():
+			index = 0
+			offset += period
+	return lateral
+
+
+static func _kernel_cdf(x: float) -> float:
+	var h := BANK_STEP_S
+	x = clampf(x, -h, h)
+	return (x + h) * (x + h) / (2.0 * h * h) if x <= 0.0 else 1.0 - (h - x) * (h - x) / (2.0 * h * h)
 
 
 ## Shader tables for one MultiMesh: seg_a = (x, y, h, t0), seg_b = (kappa, v, z0, vz), track_info = (first, count,
-## period, 0). Headings are wrapped to [-pi, pi) so float32 keeps their precision.
+## period, repeats). Every repeat of the motif lasts period / repeats, so the shader finds the repeat directly and
+## searches only its motif's segments. Headings are wrapped to [-pi, pi) so float32 keeps their precision.
 static func pack(tracks: Array) -> Dictionary:
 	var seg_a := PackedVector4Array()
 	var seg_b := PackedVector4Array()
 	var info := PackedVector4Array()
 	for track: Dictionary in tracks:
-		info.append(Vector4(seg_a.size(), (track.segments as Array).size(), float(track.period), 0.0))
+		info.append(Vector4(seg_a.size(), (track.segments as Array).size(), float(track.period), float(track.repeats)))
 		for s: Dictionary in track.segments:
 			seg_a.append(Vector4(s.x, s.y, _wrap_angle(s.h), s.t))
 			seg_b.append(Vector4(s.kappa, s.v, s.z, s.vz))
@@ -194,15 +237,27 @@ static func _advance(x: float, y: float, h: float, kappa: float, s: float) -> Ar
 	return [x + (sin(h2) - sin(h)) / kappa, y - (cos(h2) - cos(h)) / kappa, h2]
 
 
+## Exact bounds: each segment's ends, plus, on an arc, every point where the heading crosses a multiple of 90 deg
+## (where x or y is extreme). Height is linear within a segment, so its ends bound it.
 static func _bounds(track: Dictionary) -> Array[Vector3]:
 	var lo := Vector3(INF, INF, INF)
 	var hi := Vector3(-INF, -INF, -INF)
-	var steps: int = int(ceil(float(track.period) / SAMPLE_STEP_S))
-	for j: int in steps + 1:
-		var p: Array[float] = evaluate(track, j * SAMPLE_STEP_S)
-		var v := Vector3(p[0], p[1], p[2])
-		lo = lo.min(v)
-		hi = hi.max(v)
+	for s: Dictionary in track.segments:
+		var length: float = float(s.v) * float(s.duration)
+		var along: Array[float] = [0.0, length]
+		var kappa: float = s.kappa
+		if kappa != 0.0:
+			var h0: float = s.h
+			var h1: float = h0 + kappa * length
+			var k_lo: int = ceili(minf(h0, h1) / (PI * 0.5))
+			var k_hi: int = floori(maxf(h0, h1) / (PI * 0.5))
+			for k: int in range(k_lo, k_hi + 1):
+				along.append((k * PI * 0.5 - h0) / kappa)
+		for d: float in along:
+			var p: Array[float] = _advance(s.x, s.y, s.h, kappa, d)
+			var v := Vector3(p[0], p[1], float(s.z) + float(s.vz) * d / float(s.v))
+			lo = lo.min(v)
+			hi = hi.max(v)
 	return [lo, hi]
 
 

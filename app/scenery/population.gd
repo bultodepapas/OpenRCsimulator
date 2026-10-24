@@ -1,6 +1,6 @@
-## LU-21: textured CC0 population. Shared imported meshes retain UVs, smooth normals,
-## material boundaries and Godot's import-generated LODs. One MultiMesh per model part
-## groups the compact club population; no actor process callbacks or runtime plugins.
+## LU-21 / SC-HUM: textured CC0 population. Cars keep one MultiMesh per model part; people are one
+## merged mesh and atlas material per outfit and pose (SC-HUM-02/07), so each outfit-pose is one draw.
+## Imported meshes keep UVs, normals and Godot's generated LODs; no actor process callbacks or plugins.
 extends RefCounted
 
 const Palette = preload("res://scenery/palette.gd")
@@ -12,7 +12,7 @@ const ASSETS := {
 const DIR := "res://assets/scenery/population/"
 ## SC-HUM-07: outfit variants per pose (tools/scenery/population/outfits/). A person asset key is
 ## "<pose>/<outfit>" and loads people/<outfit>_<pose>.glb at natural scale. Placements take the
-## variants in turn per pose and zone, so neighbours differ; without the files the LU-21 pose is used.
+## variants in turn per pose and zone, so neighbours differ. Every listed variant must ship (tested).
 const HUMAN_POSES: Array[String] = ["standing", "sitting", "pilot", "working"]
 const OUTFITS := {
 	"pilot": ["pilot_polo", "veteran_cap"],
@@ -21,7 +21,9 @@ const OUTFITS := {
 	"working": ["mechanic_overalls", "casual_shirt", "woman_tee"],
 }
 const ZONE_OUTFITS := {
-	"pits": {"standing": ["mechanic_overalls", "casual_shirt", "mechanic_overalls", "casual_jacket", "woman_tee"]},
+	# The two standing pits members: east shelter, then west shelter; neither repeats the worker at
+	# their own shelter (west: mechanic and striped shirt, east: woman).
+	"pits": {"standing": ["mechanic_overalls", "casual_jacket"]},
 }
 const VARIANT_COUNTS := "__variant_counts"
 ## SC-HUM-02 merged people (tools/scenery/population/merge_people_atlas.py): UV2.x shading class.
@@ -47,8 +49,7 @@ static func queue(batches: Dictionary, id: String, xf: Transform3D, seed: int, s
 	batches[asset].append({id = id, transform = xf, seed = seed, size = size, foot_height = foot_height, zone = zone})
 
 
-## The next outfit for this pose and zone (round robin in placement order), or the LU-21 pose
-## when that outfit's file is not shipped.
+## The next outfit for this pose and zone (round robin in placement order).
 static func _outfit_variant(batches: Dictionary, pose: String, zone: String) -> String:
 	var choices: Array = ZONE_OUTFITS.get(zone, {}).get(pose, OUTFITS[pose])
 	if not batches.has(VARIANT_COUNTS):
@@ -57,8 +58,7 @@ static func _outfit_variant(batches: Dictionary, pose: String, zone: String) -> 
 	var key := pose + "|" + zone
 	var turn: int = counts.get(key, 0)
 	counts[key] = turn + 1
-	var asset := pose + "/" + str(choices[turn % choices.size()])
-	return asset if ResourceLoader.exists(asset_path(asset)) else pose
+	return pose + "/" + str(choices[turn % choices.size()])
 
 
 ## Every person asset key the field can use (outfit variants), for tests and captures.
@@ -230,7 +230,7 @@ static func _source(asset: String) -> Dictionary:
 		return _cache[asset]
 	var packed := load(asset_path(asset)) as PackedScene
 	if packed == null:
-		push_error("LU21 missing population asset: " + asset)
+		push_error("missing population asset %s (%s)" % [asset, asset_path(asset)])
 		return {}
 	var root := packed.instantiate()
 	var parts: Array[Dictionary] = []
