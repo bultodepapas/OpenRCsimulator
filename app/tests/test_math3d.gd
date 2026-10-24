@@ -71,9 +71,16 @@ func _initialize() -> void:
 	_check("composition q1*q2 = rotate q2 then q1", worst_comp < 1e-14, str(worst_comp))
 	_check("agrees with render/frames.gd", worst_frames < 1e-5, str(worst_frames))
 	_check("rotation preserves the original float64 bytes (500 samples)", rotation_bytes_match)
-	for special: float in [0.0, -0.0, 1.0e-310, 1.0e308, INF, -INF, NAN]:
+	# Construct these bits at runtime: decimal parsing/constant folding can turn
+	# tiny literals or signed zero into ordinary zero before the test runs.
+	var negative_zero_bytes := PackedByteArray([0, 0, 0, 0, 0, 0, 0, 128])
+	var negative_zero: float = negative_zero_bytes.decode_double(0)
+	var subnormal: float = PackedByteArray([1, 0, 0, 0, 0, 0, 0, 0]).decode_double(0)
+	_check("boundary fixtures retain negative zero and a positive subnormal",
+		PackedFloat64Array([negative_zero]).to_byte_array() == negative_zero_bytes and subnormal > 0.0)
+	for special: float in [0.0, negative_zero, subnormal, 1.0e308, INF, -INF, NAN]:
 		var q := PackedFloat64Array([special, -special, 0.0, 2.0])
-		var v := PackedFloat64Array([-0.0, special, -3.0])
+		var v := PackedFloat64Array([negative_zero, special, -3.0])
 		_check("rotation boundary bytes: " + str(special),
 			M.q_rotate(q, v).to_byte_array() == _rotation_reference(q, v).to_byte_array())
 
