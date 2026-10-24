@@ -38,6 +38,10 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 		for key: String in ["authoring_sources", "dependencies"]:
 			for record: Dictionary in manifest[key]:
 				model_sources[str(record.path)] = true
+		# F4U-16: the registry verifies a selected livery's GLB and import sidecar on use.
+		for record: Dictionary in manifest.get("liveries", []):
+			model_sources[str(record.path)] = true
+			model_sources[str(record.path) + ".import"] = true
 		manifests_by_family[family] = result
 	for aircraft_id: String in Catalog.ids():
 		if Catalog.is_rotorcraft(aircraft_id):

@@ -12,6 +12,7 @@ extends Node
 const ScreenStack := preload("res://ui/screen_stack.gd")
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
@@ -105,6 +106,8 @@ var home: Control:
 		return screens.get_screen("home") as Control
 var home_scene: Node3D
 var _home_preview_resources: Node
+var _home_rebuild_queued := false
+var _home_rebuild_source: WeakRef
 var flight: Node
 var ground_vehicle: Node3D
 var selected_ground_vehicle_id := "mt8-bisonte"
@@ -325,7 +328,8 @@ func show_home() -> void:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults()), landscape_id) # still backdrop
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults()), landscape_id,
+		_livery_for(aircraft)) # still backdrop
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
@@ -337,6 +341,7 @@ func show_home() -> void:
 	home.set_landscape(landscape_id)
 	home.set_battery_mode(preferences.get("battery_mode", Preferences.DEFAULTS.battery_mode))
 	home.set_fuel_fill(preferences.get("fuel_fill", Preferences.DEFAULTS.fuel_fill))
+	home.set_livery_preferences(preferences.get("liveries", {}))
 	home.set_aircraft(aircraft)
 	home.set_start_preferences(preferences.get("start_choice", Preferences.DEFAULTS.start_choice),
 		preferences.get("rotorcraft_start_choice", Preferences.DEFAULTS.rotorcraft_start_choice))
@@ -351,6 +356,7 @@ func show_home() -> void:
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
+	home.livery_requested.connect(set_livery)
 	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(quit_app)
@@ -468,8 +474,31 @@ func set_aircraft(id: String) -> void:
 	if preferences.start_choice == FlightSession.START_HALF_POWER:
 		preferences.start_choice = "airborne" # D6e-R4: the former explicit choice is Home's airborne start
 	if home_scene != null:
-		home_scene.request_aircraft(id)
+		home_scene.request_aircraft(id, home.livery_id)
 	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+
+
+## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
+func set_livery(livery: String) -> void:
+	if home == null:
+		return
+	var id: String = home.aircraft_id
+	var resolved: String = AirplaneBuilder.resolve_livery(id, livery)
+	var liveries: Dictionary = preferences.get("liveries", {}).duplicate()
+	if resolved.is_empty():
+		liveries.erase(id)
+	else:
+		liveries[id] = resolved
+	preferences.liveries = liveries
+	home.set_livery(resolved)
+	if home_scene != null:
+		home_scene.request_aircraft(id, home.livery_id)
+	_report_selection_save(Preferences.save_to(preferences_path, preferences))
+
+
+## The saved paint scheme that `id` still offers, else "" (its default paint).
+func _livery_for(id: String) -> String:
+	return AirplaneBuilder.resolve_livery(id, str(preferences.get("liveries", {}).get(id, "")))
 
 
 ## UI-32 (UI-30 F8): a selection keeps Home's note (failure debrief, launch rejection) unless saving it failed;
@@ -513,7 +542,7 @@ func set_time_of_day(preset: String) -> void:
 	Conditions.session_preset = preset
 	home.set_time_of_day(preset)
 	home.set_lighting_config(preferences.lighting_config)
-	_rebuild_home_scene.call_deferred()
+	_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
@@ -645,6 +674,8 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""
 	if "fuel_start_fill" in flight: # FUEL-07: Home's fuel choice; random and direct routes start full or use --fuel=
 		flight.fuel_start_fill = chosen_fuel if has_home and not is_random else 1.0
+	if "livery" in flight: # F4U-16: the pilot's paint scheme for this aircraft; the direct route uses --livery=
+		flight.livery = _livery_for(route_aircraft_id) if has_home else ""
 	# UI-32 (UI-30 AS-3): rotorcraft fly without the turbulence they cannot use; the saved selection keeps it.
 	flight.weather_config = (weather_for_aircraft(route_aircraft_id, chosen_weather) if helicopter_route else chosen_weather).duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
@@ -1153,7 +1184,7 @@ func close_natural_random() -> void:
 	if screens.is_top("natural_random"):
 		screens.pop()
 		if home_scene != null and home != null:
-			home_scene.request_aircraft(home.aircraft_id) # UI-34c: Home shows its own selection again
+			home_scene.request_aircraft(home.aircraft_id, home.livery_id) # UI-34c: Home shows its own selection again
 
 
 func _draw_random_scenario() -> void:
@@ -1179,7 +1210,7 @@ func _prepare_random_briefing(scenario: Dictionary) -> void:
 	natural_random_screen.set_scenario(scenario)
 	# UI-34c (UI-30 AS-11): the backdrop shows the airplane the briefing describes, never Home's selection.
 	if home_scene != null:
-		home_scene.request_aircraft(str(scenario.get("aircraft_id", "")))
+		home_scene.request_aircraft(str(scenario.get("aircraft_id", "")), _livery_for(str(scenario.get("aircraft_id", ""))))
 	var sources: Dictionary = ScenarioConfig.validate_sources(scenario, field_path)
 	if not sources.ok:
 		natural_random_screen.show_error(tr("Could not prepare random flight: %s") % "; ".join(sources.errors))
@@ -1961,7 +1992,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 		if lighting_changed:
 			home.set_time_of_day("day")
 	if lighting_changed or night_changed or sky_changed:
-		_rebuild_home_scene.call_deferred()
+		_queue_home_scene_rebuild()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 	if err == OK and turbulence_removed:
@@ -1982,6 +2013,27 @@ func _weather_keeping_saved_turbulence(aircraft_id: String, applied: Dictionary)
 		merged.turbulence_rms_mps = saved.turbulence_rms_mps.duplicate()
 	var checked := WeatherSettings.validate(merged)
 	return checked.config if checked.ok else weather_for_aircraft(aircraft_id, applied)
+
+
+## Apply the latest menu selection once per event batch. Rebuilding the complete
+## backdrop for intermediate selections stalls input without displaying those worlds.
+func _queue_home_scene_rebuild() -> void:
+	if not is_instance_valid(home_scene):
+		return
+	_home_rebuild_source = weakref(home_scene)
+	if _home_rebuild_queued:
+		return
+	_home_rebuild_queued = true
+	_flush_home_scene_rebuild.call_deferred()
+
+
+func _flush_home_scene_rebuild() -> void:
+	_home_rebuild_queued = false
+	var source: Node = _home_rebuild_source.get_ref() if _home_rebuild_source != null else null
+	_home_rebuild_source = null
+	# A flight or landscape transition may have already replaced this world.
+	if source != null and source == home_scene and source.is_inside_tree():
+		_rebuild_home_scene()
 
 
 ## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.

@@ -86,6 +86,7 @@ static var _base_when := {}
 static var _live := {}
 
 const PRESENTATION_CONTEXT_FORMAT := "openrc-world-presentation v1"
+const SkyRetirement := preload("res://render/world/sky_retirement.gd")
 
 
 ## A detached world can be restored by Workshop; only destruction releases its active flow cache.
@@ -94,14 +95,29 @@ class OwnedWorldEnvironment extends WorldEnvironment:
 	var release_flow: Callable
 
 	func _notification(what: int) -> void:
-		if what == NOTIFICATION_PREDELETE and release_flow.is_valid():
-			release_flow.call()
+		if what == NOTIFICATION_PREDELETE:
+			var flow_sky: Sky = release_flow.call() if release_flow.is_valid() else null
+			var owned_sky: Sky = environment.sky if environment != null else null
+			SkyRetirement.retain_until_draw(owned_sky)
+			if flow_sky != owned_sky:
+				SkyRetirement.retain_until_draw(flow_sky)
 
 
-static func _release_flow_environment(environment_id: int) -> void:
+static func _release_flow_environment(environment_id: int) -> Sky:
 	var active_environment: Environment = _flow.get("environment")
 	if active_environment != null and active_environment.get_instance_id() == environment_id:
+		# The owner may have replaced its environment while flow still owns the original.
+		var sky: Sky = active_environment.sky
 		_flow = {}
+		return sky
+	return null
+
+
+static func _replace_flow(replacement: Dictionary) -> void:
+	var previous: Environment = _flow.get("environment")
+	if previous != null and previous != replacement.get("environment"):
+		SkyRetirement.retain_until_draw(previous.sky)
+	_flow = replacement
 
 
 ## Captures the one active world's mutable presentation state before a temporary world is built.
@@ -172,7 +188,7 @@ static func restore_presentation_context(context: Variant) -> bool:
 	_ground_light = ground_light
 	_adapt_clock = adapt_clock
 	_adapt_log = adapt_log
-	_flow = restored_flow if flow_ok else {}
+	_replace_flow(restored_flow if flow_ok else {})
 	Atmosphere.state = state.duplicate(true)
 	Exposure.set_value(exposure_value)
 	ShaderClock.update(float(shader_clock.clock), shader_clock.wind)
@@ -271,7 +287,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	# FW-22/23: every material built below reads the chosen hour; no time = the calibrated fixed sun.
 	Atmosphere.state = SkyState.state(Ephemeris.sky(conditions.when), _moon_config) if conditions.time_of_day else {}
 	var flowing: bool = conditions.time_of_day and float(conditions.get("time_scale", 0.0)) > 0.0
-	_flow = {}
+	_replace_flow({})
 	if flowing:
 		var start_el: float = Atmosphere.state.sun_elevation_deg
 		Atmosphere.state.tonemapper = "agx" if start_el < FLOW_AGX_BELOW_SUN_DEG else "aces"

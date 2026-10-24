@@ -55,6 +55,37 @@ static func validate_manifest(manifest: Dictionary, expected_family_id := "") ->
 	return {"ok": ok, "errors": errors, "diagnostics": diagnostics, "manifest": accepted if ok else {}}
 
 
+## F4U-16: the livery a build will use, from a manifest describe() accepted. An empty id selects the default asset,
+## which describe() verified; any other livery's GLB and import sidecar are verified here, on use, so describing a
+## model never hashes every livery. Returns {ok, errors, diagnostics, livery = {id, label, path, sha256}}.
+static func livery(manifest: Dictionary, livery_id := "") -> Dictionary:
+	var asset: Dictionary = manifest.get("asset", {})
+	var options: Array = manifest.get("liveries", [])
+	if options.is_empty():
+		if not livery_id.is_empty():
+			return _failure("MODEL_LIVERY_UNKNOWN", "$.liveries", "this model has no selectable liveries")
+		return {"ok": true, "errors": PackedStringArray(), "diagnostics": [], "livery": {
+			"id": "", "label": "", "path": str(asset.get("path", "")), "sha256": str(asset.get("sha256", ""))}}
+	var index := 0 if livery_id.is_empty() else -1
+	for i in options.size():
+		if options[i].get("id") == livery_id: index = i
+	if index < 0:
+		return _failure("MODEL_LIVERY_UNKNOWN", "$.liveries", "unknown livery: " + livery_id)
+	var record: Dictionary = options[index]
+	var selected := {"id": str(record.id), "label": str(record.label), "path": str(record.path), "sha256": str(record.sha256)}
+	var errors := PackedStringArray()
+	var diagnostics: Array[Dictionary] = []
+	if index > 0:
+		var package_result := _read_package_proofs()
+		if not package_result.ok:
+			return package_result
+		var item := "$.liveries[%d]" % index
+		_check_resource_record({"path": selected.path, "sha256": selected.sha256, "hash_mode": BINARY_HASH}, item, package_result.files, errors, diagnostics)
+		_check_resource_record({"path": selected.path + ".import", "sha256": str(record.import_sha256), "hash_mode": TEXT_HASH}, item + ".import", package_result.files, errors, diagnostics)
+	var ok := errors.is_empty()
+	return {"ok": ok, "errors": errors, "diagnostics": diagnostics, "livery": selected if ok else {}}
+
+
 static func validate_derived(manifest: Dictionary, built: Dictionary) -> Dictionary:
 	var structural: Dictionary = Manifest.validate(manifest)
 	if not structural.ok:
@@ -233,7 +264,14 @@ static func _check_gltf_section(node: Node, inherited: String, errors: PackedStr
 static func _check_derived_asset(manifest: Dictionary, root: Node3D, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
 	var asset: Dictionary = manifest.asset
 	if asset.kind != "imported_glb": return
-	if str(root.get_meta("asset_sha256", "")) != str(asset.sha256):
+	# F4U-16: a livery build carries its own GLB identity; any other root must carry the default asset's.
+	var expected := str(asset.sha256)
+	var livery_id := str(root.get_meta("livery", ""))
+	if not livery_id.is_empty():
+		var matches: Array = manifest.get("liveries", []).filter(func(record: Dictionary) -> bool: return record.id == livery_id)
+		if matches.is_empty(): _fail(errors, diagnostics, "MODEL_BUILD_LIVERY_UNKNOWN", "$.liveries", "builder root names an unknown livery")
+		else: expected = str(matches[0].sha256)
+	if str(root.get_meta("asset_sha256", "")) != expected:
 		_fail(errors, diagnostics, "MODEL_BUILD_ASSET_HASH_MISMATCH", "$.asset.sha256", "builder root identity does not match the imported asset hash")
 	if str(root.get_meta("visual_revision", "")) != str(asset.revision):
 		_fail(errors, diagnostics, "MODEL_BUILD_ASSET_REVISION_MISMATCH", "$.asset.revision", "builder root revision does not match the imported asset revision")

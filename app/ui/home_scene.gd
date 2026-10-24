@@ -48,6 +48,8 @@ signal preview_state_changed(id: String, state: String)
 var preview_resources: Node
 var preview_pending := false
 var requested_aircraft := ""
+## F4U-16: the requested preview's paint scheme; "" is the default paint (AirplaneBuilder.resolve_livery).
+var requested_livery := ""
 var _preview_generation := 0
 
 var airplane: Dictionary
@@ -58,7 +60,7 @@ var _presentation: Dictionary = {}
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID, livery := "") -> void:
 	name = "HomeScene"
 	if not Landscapes.has(landscape_id):
 		field_errors = PackedStringArray(["Unknown landscape: " + landscape_id])
@@ -92,7 +94,8 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	_environment = World.build(self, field, build_field, {}, snapshot, night_options).environment
 
 	_shadow = Shadow.create(self)
-	show_aircraft(aircraft)
+	requested_livery = livery
+	show_aircraft(aircraft, livery)
 	camera = Camera3D.new()
 	camera.near = Spec.CAMERA.near
 	camera.far = Spec.CAMERA.far
@@ -128,9 +131,11 @@ func _ready() -> void:
 
 ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
 ## Flight still builds and validates independently; replacing Home drops the cache and its resources.
-func show_aircraft(id: String) -> bool:
-	var retained := _preview_models.has(id)
-	var built: Dictionary = _preview_models[id] if retained else AirplaneBuilder.build(id)
+## A non-default `livery` (F4U-16) is its own cached model.
+func show_aircraft(id: String, livery := "") -> bool:
+	var key := _preview_key(id, livery)
+	var retained := _preview_models.has(key)
+	var built: Dictionary = _preview_models[key] if retained else AirplaneBuilder.build(id, NAN, {}, livery)
 	if built.is_empty():
 		return false
 	if not airplane.is_empty():
@@ -138,12 +143,12 @@ func show_aircraft(id: String) -> bool:
 		airplane.root.process_mode = Node.PROCESS_MODE_DISABLED
 	airplane = built
 	if not retained:
-		_preview_models[id] = built
+		_preview_models[key] = built
 		add_child(airplane.root)
 	airplane.root.show()
 	airplane.root.process_mode = Node.PROCESS_MODE_INHERIT
-	_preview_order.erase(id)
-	_preview_order.append(id)
+	_preview_order.erase(key)
+	_preview_order.append(key)
 	if _preview_order.size() > PREVIEW_MODEL_LIMIT:
 		var evicted: String = _preview_order.pop_front()
 		var obsolete: Node3D = _preview_models[evicted].root
@@ -153,8 +158,8 @@ func show_aircraft(id: String) -> bool:
 		obsolete.queue_free()
 	var rotorcraft: bool = Catalog.is_rotorcraft(id)
 	if not retained:
-		_preview_geometry[id] = {presentation = Presentation.prepare(airplane)}
-	_presentation = _preview_geometry[id].presentation
+		_preview_geometry[key] = {presentation = Presentation.prepare(airplane)}
+	_presentation = _preview_geometry[key].presentation
 	var basis := Frames.attitude_to_render(deg_to_rad(PARKED_YAW_DEG), 0.0, 0.0) * (_presentation.alignment as Basis)
 	var pos := _parking_position(_presentation.lift)
 	airplane.root.transform = Transform3D(basis, pos)
@@ -167,8 +172,8 @@ func show_aircraft(id: String) -> bool:
 	if not retained:
 		# Capture the neutral model before the night kit is fitted; it must not enter the silhouette.
 		_presentation.bounds = Presentation.mesh_bounds(airplane.root, airplane.root)
-		_preview_geometry[id].merge({extent = Shadow.model_extent(airplane.root), shape = ProjectedShadow.collect(airplane.root)})
-	var geometry: Dictionary = _preview_geometry[id]
+		_preview_geometry[key].merge({extent = Shadow.model_extent(airplane.root), shape = ProjectedShadow.collect(airplane.root)})
+	var geometry: Dictionary = _preview_geometry[key]
 	var extent: Vector2 = geometry.extent
 	Shadow.bind_model(_shadow, airplane.root, geometry.shape)
 	if not retained:
@@ -197,40 +202,46 @@ func _update_aircraft_lights() -> void:
 
 ## The card updates immediately. Cache misses allow a frame to present before
 ## starting resource preparation; only the most recent intent may build a model.
-func request_aircraft(id: String) -> void:
+func request_aircraft(id: String, livery := "") -> void:
 	_preview_generation += 1
 	requested_aircraft = id
+	requested_livery = livery
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, false)
-	if _preview_models.has(id):
+	if _preview_models.has(_preview_key(id, livery)):
 		preview_pending = false
-		preview_state_changed.emit(id, "ready" if show_aircraft(id) else "failed")
+		preview_state_changed.emit(id, "ready" if show_aircraft(id, livery) else "failed")
 		return
 	preview_pending = true
 	preview_state_changed.emit(id, "loading")
-	_prepare_preview(id, _preview_generation)
+	_prepare_preview(id, livery, _preview_generation)
 
 
-func _prepare_preview(id: String, generation: int) -> void:
+static func _preview_key(id: String, livery: String) -> String:
+	return id if livery.is_empty() else id + "#" + livery
+
+
+func _prepare_preview(id: String, livery: String, generation: int) -> void:
 	if not is_inside_tree(): return
 	# process_frame precedes node processing, so two boundaries guarantee one
 	# opportunity to render the new card even for requests made during input.
 	await get_tree().process_frame
-	if not _current_preview(id, generation): return
+	if not _current_preview(id, livery, generation): return
 	await get_tree().process_frame
-	if not _current_preview(id, generation): return
+	if not _current_preview(id, livery, generation): return
 	if is_instance_valid(preview_resources):
-		preview_resources.request(preview_resources.path_for(id), _preview_resource_ready.bind(id, generation))
+		var path: String = preview_resources.path_for(id) if livery.is_empty() else preview_resources.path_for(id, livery)
+		preview_resources.request(path, _preview_resource_ready.bind(id, livery, generation))
 	else:
-		_preview_resource_ready(true, id, generation)
+		_preview_resource_ready(true, id, livery, generation)
 
 
-func _current_preview(id: String, generation: int) -> bool:
-	return is_inside_tree() and not is_queued_for_deletion() and generation == _preview_generation and id == requested_aircraft
+func _current_preview(id: String, livery: String, generation: int) -> bool:
+	return is_inside_tree() and not is_queued_for_deletion() and generation == _preview_generation and id == requested_aircraft 		and livery == requested_livery
 
 
-func _preview_resource_ready(ok: bool, id: String, generation: int) -> void:
-	if not _current_preview(id, generation): return
-	var shown := ok and show_aircraft(id)
+func _preview_resource_ready(ok: bool, id: String, livery: String, generation: int) -> void:
+	if not _current_preview(id, livery, generation): return
+	var shown := ok and show_aircraft(id, livery)
 	preview_pending = false
 	preview_state_changed.emit(id, "ready" if shown else "failed")
 
@@ -242,4 +253,4 @@ func _exit_tree() -> void:
 
 func _enter_tree() -> void:
 	# Ground-vehicle/failed-flight routes may temporarily detach the same Home.
-	if preview_pending: request_aircraft.call_deferred(requested_aircraft)
+	if preview_pending: request_aircraft.call_deferred(requested_aircraft, requested_livery)

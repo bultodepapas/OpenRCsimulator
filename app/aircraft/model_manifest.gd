@@ -7,6 +7,9 @@ const CONTROL_ROLES := ["aileron_left", "aileron_right", "elevator", "rudder", "
 const GEAR_ROLES := ["left", "right", "tail", "steering", "nose"]
 const DEPENDENCY_ROLES := ["builder", "generated_geometry", "imported_asset", "crash_metadata", "script_dependency", "resource_dependency"]
 const SHARED_IMPORTED_BUILDER := "res://aircraft/imported_model.gd"
+const LIVERY_LIMIT := 8
+const LIVERY_ID_LIMIT := 32
+const LIVERY_LABEL_LIMIT := 48
 
 
 static func validate(manifest: Dictionary, expected_family_id := "") -> Dictionary:
@@ -19,6 +22,8 @@ static func validate(manifest: Dictionary, expected_family_id := "") -> Dictiona
 		elif float(version_value) == 2.0: model_version = 2
 	var top_level_fields := ["schema", "version", "family_id", "builder", "surface_method", "datum", "coordinates", "root_node", "source_registry", "geometry", "asset", "bindings", "authoring_sources", "dependencies"]
 	if model_version == 2: top_level_fields.append("construction")
+	# F4U-16: optional selectable liveries of the same airframe, for version 2 imported scenes only.
+	if model_version == 2 and manifest.has("liveries"): top_level_fields.append("liveries")
 	_check_fields(manifest, top_level_fields, "$", errors, diagnostics)
 	if manifest.get("schema") != "openrc-aircraft-model": _fail(errors, diagnostics, "MODEL_SCHEMA_UNKNOWN", "$.schema", "expected openrc-aircraft-model")
 	if model_version == 0: _fail(errors, diagnostics, "MODEL_VERSION_UNSUPPORTED", "$.version", "only model manifest versions 1 and 2 are supported")
@@ -110,6 +115,7 @@ static func validate(manifest: Dictionary, expected_family_id := "") -> Dictiona
 	elif typeof(builder) == TYPE_DICTIONARY and builder.get("script") == SHARED_IMPORTED_BUILDER:
 		_fail(errors, diagnostics, "MODEL_V2_REQUIRED", "$.version", "the shared imported model builder requires manifest version 2")
 
+	if model_version == 2 and manifest.has("liveries"): _check_liveries(manifest.get("liveries"), asset, errors, diagnostics)
 	_check_sources(manifest.get("authoring_sources", []), "$.authoring_sources", errors, diagnostics)
 	_check_dependencies(manifest.get("dependencies", []), manifest, errors, diagnostics)
 	var ok := errors.is_empty()
@@ -308,6 +314,44 @@ static func _check_fields(value: Variant, fields: Array, path: String, errors: P
 		var field := str(field_variant)
 		if not fields.has(field): _fail(errors, diagnostics, "MODEL_FIELD_UNKNOWN", path + "." + field, "unknown field is not supported")
 	return true
+
+
+## F4U-16: each livery is a whole GLB of one airframe, pinned with its import sidecar. The first is the default asset.
+static func _check_liveries(value: Variant, asset: Variant, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:
+	var path := "$.liveries"
+	if typeof(value) != TYPE_ARRAY or value.size() < 2 or value.size() > LIVERY_LIMIT:
+		_fail(errors, diagnostics, "MODEL_LIVERIES_INVALID", path, "liveries must list 2 to %d entries" % LIVERY_LIMIT)
+		return
+	var ids := {}
+	var paths := {}
+	for index in value.size():
+		var entry: Variant = value[index]
+		var item_path := "%s[%d]" % [path, index]
+		if not _check_fields(entry, ["id", "label", "path", "sha256", "import_sha256"], item_path, errors, diagnostics): continue
+		var id: Variant = entry.get("id")
+		if not is_livery_id(id) or ids.has(id): _fail(errors, diagnostics, "MODEL_LIVERY_ID_INVALID", item_path + ".id", "livery id must be a unique lowercase identifier")
+		ids[id] = true
+		var label: Variant = entry.get("label")
+		if typeof(label) != TYPE_STRING or str(label).strip_edges().is_empty() or str(label).length() > LIVERY_LABEL_LIMIT or _has_control(str(label)):
+			_fail(errors, diagnostics, "MODEL_LIVERY_LABEL_INVALID", item_path + ".label", "livery label must be 1 to %d printable characters" % LIVERY_LABEL_LIMIT)
+		var glb := str(entry.get("path", ""))
+		if not _resource_path(glb, ["assets"]) or not glb.ends_with(".glb") or paths.has(glb):
+			_fail(errors, diagnostics, "MODEL_LIVERY_PATH_INVALID", item_path + ".path", "livery must be a unique safe aircraft GLB resource")
+		paths[glb] = true
+		_check_sha(entry.get("sha256"), item_path + ".sha256", errors, diagnostics)
+		_check_sha(entry.get("import_sha256"), item_path + ".import_sha256", errors, diagnostics)
+		if index == 0 and (typeof(asset) != TYPE_DICTIONARY or glb != str(asset.get("path", "")) or entry.get("sha256") != asset.get("sha256")):
+			_fail(errors, diagnostics, "MODEL_LIVERY_DEFAULT_MISMATCH", item_path, "the first livery must be the default imported asset")
+
+
+static func is_livery_id(value: Variant) -> bool:
+	return typeof(value) == TYPE_STRING and str(value).length() <= LIVERY_ID_LIMIT and _is_key(str(value))
+
+
+static func _has_control(value: String) -> bool:
+	for character in value:
+		if character.unicode_at(0) < 32 or character.unicode_at(0) == 127: return true
+	return false
 
 
 static func _check_finite(value: Variant, path: String, errors: PackedStringArray, diagnostics: Array[Dictionary]) -> void:

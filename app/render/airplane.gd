@@ -30,8 +30,9 @@ static func _mat(color: Color) -> StandardMaterial3D:
 	return UglyStik.material(color)
 
 
-## Returns an independently built, validated visual for a catalog physical configuration.
-static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}) -> Dictionary:
+## Returns an independently built, validated visual for a catalog physical configuration. `livery_id` selects one of
+## the visual family's liveries (F4U-16); empty is the default paint.
+static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentation: Dictionary = {}, livery_id := "") -> Dictionary:
 	var family: String = Catalog.visual_family(id)
 	if family.is_empty():
 		push_error("render/airplane.gd: unknown aircraft '%s'" % id)
@@ -40,7 +41,7 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	# airplane manifest, propeller, control hinges, or AircraftData v2 record.
 	# Keep that visual route explicit and out of the airplane model registry.
 	if Catalog.is_rotorcraft(id):
-		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty():
+		if id != X_CELL_ID or family != "hx-700" or not expected_presentation.is_empty() or not livery_id.is_empty():
 			push_error("render/airplane.gd: unsupported rotorcraft presentation '%s'" % id)
 			return {}
 		var helicopter: Dictionary = HX700.build()
@@ -64,8 +65,13 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if builder == null or not builder.has_method("build"):
 		push_error("Aircraft model builder has no build method: " + str(manifest.builder.script))
 		return {}
+	# F4U-16: a livery's GLB is verified before its scene loads. V1 manifests have no liveries.
+	var livery: Dictionary = registry.livery(manifest, livery_id)
+	if not livery.get("ok", false):
+		push_error("Aircraft livery: " + str(livery.get("errors", [])))
+		return {}
 	# V1 builders keep their zero-argument ABI. V2 constructs imported scenes from checked bindings.
-	var airplane: Dictionary = builder.call("build", manifest) if manifest.version == 2 else builder.call("build")
+	var airplane: Dictionary = builder.call("build", manifest, livery_id) if manifest.version == 2 else builder.call("build")
 	var verified: Dictionary = registry.validate_derived(manifest, airplane)
 	if not verified.get("ok", false):
 		if airplane.get("root") is Node:
@@ -130,6 +136,29 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 		TimberVisualLighting.apply(airplane.root)
 	_accepted_datums[id] = Vector2(float(manifest.datum.model_z_le), float(manifest.datum.model_y_thrust))
 	return airplane
+
+
+## F4U-16: the selectable liveries of an aircraft's visual family as [{id, label}], default first; empty when the family
+## has one paint. A menu listing read from the generated manifest; build() verifies whichever livery is chosen.
+static func livery_choices(id: String) -> Array:
+	var family: String = Catalog.visual_family(id)
+	if family.is_empty() or Catalog.is_rotorcraft(id): return []
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft_models/" + family + ".json"))
+	var choices := []
+	if parsed is Dictionary and parsed.get("liveries") is Array:
+		for record: Variant in parsed.liveries:
+			if record is Dictionary and record.get("id") is String and record.get("label") is String:
+				choices.append({id = str(record.id), label = str(record.label)})
+	return choices
+
+
+## F4U-16: `wanted` if it is one of the aircraft's other liveries, else "" (the default paint), so a stale or default
+## choice builds, caches and preloads exactly as the default model.
+static func resolve_livery(id: String, wanted: String) -> String:
+	var choices := livery_choices(id)
+	for index in range(1, choices.size()):
+		if choices[index].id == wanted: return wanted
+	return ""
 
 
 ## Always scale from the authored diameter, so repeated setup/reload calls never compound scale.

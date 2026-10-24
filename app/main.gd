@@ -102,6 +102,9 @@ var _electric_demo: String = ""
 var battery_mode: String = ""
 ## FUEL-07: start fill of a finite-fuel tank (0, 1]. Home sets it; else --fuel=<fraction>; 1 = full tank.
 var fuel_start_fill: float = 1.0
+## F4U-16: paint scheme of the visual model; "" is the default paint. Home sets it; else --livery=<id>. A Workshop
+## trial flies the default paint its appearance profile was authored on.
+var livery: String = ""
 ## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
 ## D6e-R4: Home and Quick Flight trim every airplane for level flight at this throttle, in the air or as the runway
@@ -490,6 +493,14 @@ func _ready() -> void:
 		fuel_start_fill = float(fuel_arg) if fuel_arg.is_valid_float() else NAN
 	if not is_finite(fuel_start_fill) or fuel_start_fill <= 0.0 or fuel_start_fill > 1.0:
 		printerr("fuel fill refused: use --fuel=<fraction> with 0 < fraction <= 1 (1 = full tank)")
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	if args.has("livery"):
+		livery = str(args.get("livery", ""))
+	if not livery.is_empty() and not AirplaneBuilder.livery_choices(aircraft_id).any(func(choice: Dictionary) -> bool: return choice.id == livery):
+		printerr("livery refused: '%s' is not a paint scheme of %s" % [livery, aircraft_id])
 		set_process(false)
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
@@ -2435,7 +2446,7 @@ func _view_name() -> String:
 
 
 func _build_world() -> bool:
-	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}))
+	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
 	if _airplane.is_empty():
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
 		return false

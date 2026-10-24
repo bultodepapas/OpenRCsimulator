@@ -14,6 +14,7 @@ const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const FailureConfig := preload("res://failures/config.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
+const ModelManifest := preload("res://aircraft/model_manifest.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_FIELD_ACTIVATION_CHOICES: Array[String] = ["auto", "on", "off"]
@@ -64,6 +65,9 @@ const DEFAULTS := {
 	moon_config = MoonConfig.DEFAULTS,
 	# AI companions are an additive section. Keep the existing schema so newer files remain protected by `writable`.
 	companion_config = CompanionConfig.DEFAULTS,
+	# F4U-16: the paint scheme chosen per catalog aircraft ([liveries] section). Additive: no schema change. Home
+	# resolves an ID the aircraft no longer offers to its default paint.
+	liveries = {},
 }
 
 
@@ -178,6 +182,11 @@ static func load_from(path: String) -> Dictionary:
 		prefs.companion_config = checked_companions.config.duplicate(true)
 	else:
 		prefs.note = _append_note(prefs.note, "invalid companion settings; using defaults")
+	if cfg.has_section("liveries"):
+		for aircraft_id: String in cfg.get_section_keys("liveries"):
+			var livery: Variant = cfg.get_value("liveries", aircraft_id)
+			if Catalog.has(aircraft_id) and ModelManifest.is_livery_id(livery):
+				prefs.liveries[aircraft_id] = livery
 	return prefs
 
 
@@ -222,6 +231,12 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	)
 	if not checked_companions.get("ok", false):
 		return ERR_INVALID_DATA
+	var liveries: Variant = prefs.get("liveries", DEFAULTS.liveries)
+	if not liveries is Dictionary:
+		return ERR_INVALID_DATA
+	for aircraft_id: Variant in liveries:
+		if typeof(aircraft_id) != TYPE_STRING or not Catalog.has(aircraft_id) or not ModelManifest.is_livery_id(liveries[aircraft_id]):
+			return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
 	var weather_schema: int = 5 if checked_weather.config.format == WeatherSettings.COLUMN_FORMAT else (3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
@@ -254,6 +269,10 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("hud", "units", hud.units)
 	cfg.set_value("hud", "stick_mode", hud.stick_mode)
 	cfg.set_value("hud", "radio_model", hud.radio_model)
+	var aircraft_ids: Array = liveries.keys()
+	aircraft_ids.sort()
+	for aircraft_id: String in aircraft_ids:
+		cfg.set_value("liveries", aircraft_id, liveries[aircraft_id])
 	return cfg.save(path)
 
 

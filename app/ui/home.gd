@@ -25,6 +25,7 @@ const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
+const AirplaneBuilder := preload("res://render/airplane.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -44,6 +45,8 @@ signal controls_requested(from: Control)
 signal settings_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
+## F4U-16: the pilot chose another paint scheme for the current aircraft (a livery ID from its model manifest).
+signal livery_requested(livery: String)
 signal landscape_requested(id: String)
 signal start_requested(choice: String)
 ## The player asked to edit draft flight conditions; closing the dialog returns focus to `from`.
@@ -84,6 +87,12 @@ var fuel_start_fill: float = 1.0
 var _fuel_preference: float = 1.0
 var fuel_button: Button
 var battery_button: Button
+## F4U-16: the paint scheme Home shows and flies for the current aircraft; "" is its default paint. Each aircraft
+## remembers its own choice; aircraft with one paint show no row.
+var livery_id := ""
+var livery_button: Button
+var _livery_choices: Array = []
+var _livery_preferences: Dictionary = {}
 
 var fly_button: Button
 var ground_vehicle_button: Button
@@ -323,6 +332,17 @@ func _init() -> void:
 	aircraft_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	aircraft_preview_label.visible = false
 	flight_card_lines.add_child(aircraft_preview_label)
+	livery_button = _button("", "HomeChoice")
+	livery_button.name = "LiveryChoice"
+	Widgets.mark_row(livery_button, "cycle")
+	livery_button.custom_minimum_size.y = 36
+	livery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	livery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	livery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	livery_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); livery names are proper names
+	livery_button.visible = false
+	livery_button.pressed.connect(_cycle_livery)
+	flight_card_lines.add_child(livery_button)
 	start_button = _button("", "HomeChoice")
 	start_button.name = "StartChoice"
 	Widgets.mark_row(start_button, "cycle")
@@ -1035,6 +1055,7 @@ func set_aircraft(id: String) -> void:
 	reapply_start_preference()
 	set_battery_mode(_battery_preference)
 	set_fuel_fill(_fuel_preference)
+	_update_livery()
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
@@ -1179,6 +1200,42 @@ func set_fuel_fill(fill: float) -> void:
 	fuel_button.text = tr("Fuel: full tank") if fuel_start_fill == 1.0 \
 		else tr("Fuel: %d %% of the tank") % roundi(fuel_start_fill * 100.0)
 	fuel_button.tooltip_text = tr("Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties.")
+
+
+## F4U-16: the saved paint scheme per catalog aircraft ([liveries] preferences).
+func set_livery_preferences(preferences: Dictionary) -> void:
+	_livery_preferences = preferences.duplicate()
+	_update_livery()
+
+
+## Records `livery` for the current aircraft and shows it; an ID the aircraft does not offer shows its default paint.
+func set_livery(livery: String) -> void:
+	_livery_preferences[aircraft_id] = livery
+	_update_livery()
+
+
+func _update_livery() -> void:
+	if livery_button == null:
+		return
+	_livery_choices = AirplaneBuilder.livery_choices(aircraft_id)
+	livery_id = AirplaneBuilder.resolve_livery(aircraft_id, str(_livery_preferences.get(aircraft_id, "")))
+	livery_button.visible = _livery_choices.size() > 1
+	if not livery_button.visible:
+		return
+	var shown: Dictionary = _livery_choices[_livery_index()]
+	livery_button.text = tr("Paint: %s") % shown.label
+	livery_button.tooltip_text = tr("Paint scheme for this aircraft. Every scheme flies the same model.")
+
+
+func _livery_index() -> int:
+	for index in _livery_choices.size():
+		if _livery_choices[index].id == livery_id: return index
+	return 0
+
+
+func _cycle_livery() -> void:
+	if _livery_choices.size() > 1:
+		livery_requested.emit(_livery_choices[(_livery_index() + 1) % _livery_choices.size()].id)
 
 
 func _cycle_fuel_fill() -> void:
@@ -1406,6 +1463,7 @@ func _update_texts() -> void:
 	_update_flight_capability()
 	_update_catalog_texts()
 	_update_details_disclosure()
+	_update_livery()
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")
 	_update_weather_text()

@@ -18,6 +18,9 @@ REGISTRY_PATH = Path("assets/aircraft/model-bindings.json")
 OUTPUT_DIR = Path("app/data/aircraft_models")
 FAMILY_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 HASH_RE = re.compile(r"^[0-9a-f]{64}$")
+LIVERY_RE = re.compile(r"^[a-z][a-z0-9_]{0,31}$")
+LIVERY_LIMIT = 8
+LIVERY_LABEL_LIMIT = 48
 RESOURCE_RE = re.compile(r"\b(?:preload|load)\s*\(\s*[\"']res://([^\"']+)[\"']\s*\)")
 TEXT_SUFFIXES = {".cfg", ".gd", ".godot", ".import", ".json", ".md", ".svg", ".tres", ".tscn", ".txt"}
 ADAPTERS = {"euler_hinges", "axis_hinges", "imported_glb"}
@@ -300,11 +303,17 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
                 if builder["adapter"] == "imported_glb":
                     raise ModelManifestError(f"{label} imported adapter requires an imported GLB asset")
             else:
-                _check_keys(asset, {"kind", "path", "identity_path"}, f"{label}.asset")
+                _check_keys(asset, {"kind", "path", "identity_path"}, f"{label}.asset", {"liveries_path"})
                 if not _safe_resource_path(asset["path"], f"{label}.asset.path").startswith("res://assets/aircraft/"):
                     raise ModelManifestError(f"{label}.asset.path must be an aircraft asset")
                 if not asset["path"].endswith(".glb") or builder["adapter"] != "imported_glb":
                     raise ModelManifestError(f"{label} imported_glb must bind an imported GLB adapter")
+                # F4U-16: selectable liveries of one airframe, a dotted geometry reference; version 2 scenes only.
+                if "liveries_path" in asset:
+                    if not isinstance(asset["liveries_path"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", asset["liveries_path"]) is None:
+                        raise ModelManifestError(f"{label}.asset.liveries_path must be a dotted source reference")
+                    if "construction" not in family:
+                        raise ModelManifestError(f"{label}.asset.liveries_path requires a version 2 imported construction")
 
             bindings = _check_keys(family["bindings"], {"controls", "rotor", "gear", "crash"}, f"{label}.bindings")
             controls = bindings["controls"]
@@ -463,6 +472,37 @@ def _collect_dependencies(root: Path, family: dict[str, Any], source: dict[str, 
             role = "resource_dependency"
         dependencies.append({"path": resource, "sha256": _hash(_normal_bytes(path, mode)), "hash_mode": mode, "role": role})
     return dependencies
+
+
+def _liveries(root: Path, source: dict[str, Any], reference: str, asset: dict[str, Any], label: str) -> list[dict[str, str]]:
+    """F4U-16: selectable paint schemes of one airframe, each its own GLB with the default's import settings. The
+    first is the default and must be the manifest asset. Every GLB and import sidecar is pinned by SHA-256."""
+    records = _resolve(source, reference, label)
+    if not isinstance(records, list) or not 2 <= len(records) <= LIVERY_LIMIT:
+        raise ModelManifestError(f"{label} must list 2 to {LIVERY_LIMIT} liveries")
+    liveries = []
+    for index, record in enumerate(records):
+        item = f"{label}[{index}]"
+        record = _check_keys(record, {"id", "label", "path", "glb_sha256"}, item)
+        if not isinstance(record["id"], str) or LIVERY_RE.fullmatch(record["id"]) is None or record["id"] in {r["id"] for r in liveries}:
+            raise ModelManifestError(f"{item}.id must be a unique lowercase identifier")
+        text = record["label"]
+        if not isinstance(text, str) or not text.strip() or len(text) > LIVERY_LABEL_LIMIT or any(ord(c) < 32 for c in text):
+            raise ModelManifestError(f"{item}.label must be 1 to {LIVERY_LABEL_LIMIT} printable characters")
+        path = _safe_resource_path(record["path"], f"{item}.path")
+        if not path.startswith("res://assets/aircraft/") or not path.endswith(".glb") or path in {r["path"] for r in liveries}:
+            raise ModelManifestError(f"{item}.path must be a unique aircraft GLB")
+        glb, sidecar = _resource_file(root, path), _resource_file(root, path + ".import")
+        if not glb.is_file() or not sidecar.is_file():
+            raise ModelManifestError(f"{item} GLB or its import sidecar is missing")
+        digest = _hash(glb.read_bytes())
+        if digest != record["glb_sha256"]:
+            raise ModelManifestError(f"{item} geometry's livery hash is stale")
+        if index == 0 and (path != asset["path"] or digest != asset["sha256"]):
+            raise ModelManifestError(f"{label}[0] must be the default imported asset")
+        liveries.append({"id": record["id"], "label": text, "path": path, "sha256": digest,
+                         "import_sha256": _hash(_normal_bytes(sidecar, "lf_text"))})
+    return liveries
 
 
 def _validate_retraction_rig(rig: Any, gear_keys: set[str]) -> None:
@@ -646,6 +686,8 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
     }
     if construction is not None:
         manifest["construction"] = construction
+    if "liveries_path" in asset_cfg:
+        manifest["liveries"] = _liveries(root, geometry, asset_cfg["liveries_path"], asset, f"{family['family_id']}.liveries")
     return manifest
 
 
