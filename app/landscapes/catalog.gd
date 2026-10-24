@@ -38,7 +38,10 @@ static func build_staged(id: String, field: Dictionary, lighting: Dictionary, ch
 		return null
 	if adapter.has_method("build_staged"):
 		return await adapter.build_staged(field, lighting, checkpoint)
-	return adapter.build(field, lighting)
+	var begin := Time.get_ticks_usec()
+	var result: Node3D = adapter.build(field, lighting)
+	if result != null: result.set_meta("field_build_ms", (Time.get_ticks_usec() - begin) / 1000.0)
+	return result
 
 
 static func collision_world(id: String, field: Dictionary) -> Dictionary:

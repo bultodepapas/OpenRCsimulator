@@ -1589,10 +1589,8 @@ func _on_fly() -> void:
 		return
 	_fly_sent = true
 	fly_button.disabled = true
-	# UI-34c (UI-30 HN-7): one rendered frame acknowledges the press before the synchronous flight build.
+	# AppRoot owns the opaque acknowledgement and its post-draw barrier.
 	fly_button.text = "Preparing flight…"
-	if is_inside_tree():
-		await get_tree().process_frame
 	fly_requested.emit()
 
 

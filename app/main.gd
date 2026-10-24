@@ -632,6 +632,8 @@ func _prepare_flight() -> void:
 		session.workshop_identity = workshop_trial.identity.duplicate(true)
 		session.workshop_presentation_identity = workshop_trial.get("presentation_identity", {}).duplicate(true)
 		session.setup("workshop://" + str(workshop_trial.identity.trial_id), str(workshop_trial.data.model.id), workshop_trial.data)
+	if not await _startup_stage("Preparing flight model"):
+		return
 	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
 	# each time also handles installation-profile reloads that retain the same aircraft ID.
 	if session.aircraft.get("ok", false):
@@ -652,6 +654,8 @@ func _prepare_flight() -> void:
 			_extent = Shadow.model_extent(_airplane.root)
 			Shadow.bind_model(_shadow, _airplane.root)
 			_rig.set_span(_extent.x)
+		elif startup_checkpoint.is_valid():
+			Shadow.bind_model(_shadow, _airplane.root)
 	# D6e: keyboard and gamepad flights use the aircraft's normal rates and expo (controls.rates.normal) unless
 	# --rates=full asks for the maximum throws; radios keep their own rates either way.
 	var rates := str(args.get("rates", "normal"))
@@ -684,29 +688,33 @@ func _prepare_flight() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
+	if not await _startup_stage("Preparing contacts"):
+		return
 	session.set_field(field) # E3a: the wheels roll on this field's runway, mown and rough surfaces
 	# The accepted scene definition also owns the float64 contact surface. Never fly a refused lake.
 	var lake_context: Dictionary = _field_node.get_meta("lake_context", {}) if _field_node != null else {}
 	var lake_error: String = str(_field_node.get_meta("lake_error", "")) if _field_node != null else ""
 	if not lake_error.is_empty() or not session.set_lake_context(lake_context):
 		startup_error = "Lake configuration refused: " + lake_error
-		printerr(startup_error)
 		session.free()
 		session = null
 		set_process(false)
 		set_process_unhandled_input(false)
-		get_tree().quit(ERR_INVALID_DATA)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_DATA)
 		return
 	if not _scripted and _capture_scene_id() == "field":
 		var obstacles: Dictionary = Landscapes.collision_world(landscape_id, field)
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
 			startup_error = "Scenery collision inventory refused: " + "; ".join(obstacles.errors)
-			printerr(startup_error)
 			session.free()
 			session = null
 			set_process(false)
 			set_process_unhandled_input(false)
-			get_tree().quit(ERR_INVALID_DATA)
+			if not interactive_start:
+				printerr(startup_error)
+				get_tree().quit(ERR_INVALID_DATA)
 			return
 	session.start_choice = start_choice
 	failure_config = failure_options.config.duplicate(true)
@@ -731,6 +739,8 @@ func _prepare_flight() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 		set_process(false)
 		set_process_unhandled_input(false)
+		return
+	if not await _startup_stage("Preparing start"):
 		return
 	_update_cg_model()
 	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
@@ -2576,7 +2586,10 @@ func _build_world() -> bool:
 	add_child(_airplane.root)
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
-	Shadow.bind_model(_shadow, _airplane.root)
+	# Staged startup binds once after applying the validated propeller diameter below.
+	# Direct/capture routes retain their historical construction order.
+	if not startup_checkpoint.is_valid():
+		Shadow.bind_model(_shadow, _airplane.root)
 	_update_aircraft_lights(0.0) # after the extent is measured; fixed TOD and field-world clocks share the policy
 	_camera = PilotCamera.create(self, field.pilot)
 	_storm_fx = Lightning.new()
@@ -2617,11 +2630,15 @@ func _build_field() -> void:
 	add_child(_field_node)
 
 
-func _build_field_staged() -> void:
+func _build_field_staged() -> Dictionary:
 	_field_node = await Landscapes.build_staged(landscape_id, field,
 		_lighting if lighting_config.get("mode", "legacy") != "legacy" else {}, startup_checkpoint)
-	if _field_node != null:
-		add_child(_field_node)
+	if _field_node == null:
+		return {cancelled = true}
+	var attach_begin := Time.get_ticks_usec()
+	add_child(_field_node)
+	return {cancelled = false, field_build_ms = float(_field_node.get_meta("field_build_ms", 0.0))
+		+ (Time.get_ticks_usec() - attach_begin) / 1000.0}
 
 
 ## Hides every field object (today: the treeline and its L8a-R1 3D front trees) for a background-only

@@ -1,0 +1,4062 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 2260416,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"active_at_first_draw_usec": 4791056,
+			"cycle": 1,
+			"fly_first_draw_usec": 4791056,
+			"fly_ready_usec": 4709758,
+			"fly_sync_usec": 119,
+			"handoff_frames_usec": [
+				4718,
+				69779,
+				49614,
+				2253329,
+				17444,
+				177268,
+				13365,
+				4568,
+				2097,
+				58990,
+				18577,
+				37301,
+				9275,
+				53868,
+				4488,
+				4314,
+				327336,
+				64253,
+				2316,
+				8433,
+				2750,
+				4777,
+				123471,
+				3123,
+				15043,
+				49006,
+				6639,
+				127054,
+				290203,
+				69062,
+				44366,
+				347931,
+				33838,
+				47674,
+				203696,
+				126932,
+				32728
+			],
+			"loading": {
+				"accepted_usec": 12668751,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 121266,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 1017
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 2246384
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 15772
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 175486
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11798
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 48
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 958
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 56036
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 17035
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 36148
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 7149
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 52404
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 2532
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2968
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 325904
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 62335
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 213
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 6759
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1375
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 2427
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 121249
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 1047
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10089
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 47071
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 4722
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 125384
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 150380
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 40919
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 30207
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 338851
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 19998
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 33737
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 186921
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 43194
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2553,
+				"total_usec": 4689777
+			},
+			"loading_first_draw_usec": 122782,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1235861,
+			"return_sync_usec": 1117205,
+			"tick_at_first_draw": 19
+		},
+		{
+			"active_at_first_draw_usec": 2139976,
+			"cycle": 2,
+			"fly_first_draw_usec": 2139976,
+			"fly_ready_usec": 2081217,
+			"fly_sync_usec": 87,
+			"handoff_frames_usec": [
+				4183,
+				25598,
+				126099,
+				7340,
+				15313,
+				144857,
+				13753,
+				5413,
+				2482,
+				43257,
+				12665,
+				27092,
+				8196,
+				42113,
+				3821,
+				3771,
+				257724,
+				58262,
+				2607,
+				7454,
+				2461,
+				2627,
+				121456,
+				1978,
+				20455,
+				72953,
+				13233,
+				102459,
+				179020,
+				44524,
+				39802,
+				308687,
+				34269,
+				34440,
+				191460,
+				77611,
+				21684
+			],
+			"loading": {
+				"accepted_usec": 18709465,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 52650,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 101732
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4749
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 13440
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 143094
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11890
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 44
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 992
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 41772
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10732
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25583
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 6826
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 40544
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1704
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2182
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 256244
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 56364
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 251
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 6111
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1095
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1256
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 116862
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 648
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14162
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 70860
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 6432
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 100818
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 142805
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 32954
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 31251
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 300023
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 24794
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 24686
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 181509
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 34752
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2250,
+				"total_usec": 2067878
+			},
+			"loading_first_draw_usec": 53972,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1225665,
+			"return_sync_usec": 1115051,
+			"tick_at_first_draw": 15
+		},
+		{
+			"active_at_first_draw_usec": 2226869,
+			"cycle": 3,
+			"fly_first_draw_usec": 2226869,
+			"fly_ready_usec": 2156160,
+			"fly_sync_usec": 78,
+			"handoff_frames_usec": [
+				3411,
+				24000,
+				165033,
+				15169,
+				19318,
+				163562,
+				14577,
+				5959,
+				5351,
+				44051,
+				17829,
+				39344,
+				10285,
+				54911,
+				5895,
+				4978,
+				269333,
+				58486,
+				4124,
+				9092,
+				2591,
+				6872,
+				116983,
+				6494,
+				17544,
+				69911,
+				11638,
+				109182,
+				164595,
+				38517,
+				45128,
+				248076,
+				33471,
+				35052,
+				216470,
+				72244,
+				26595
+			],
+			"loading": {
+				"accepted_usec": 22089324,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 58843,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 132217
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 6156
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 17221
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 161403
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 12616
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 35
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 2978
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 42743
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 15202
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 36533
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 8235
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 52367
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 2991
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2732
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 263924
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 55116
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 332
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 7447
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1109
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1681
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 114799
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 793
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10335
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 67342
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7899
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 107068
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 136462
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 25350
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 31083
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 230949
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 19355
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 21082
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 196968
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 40121
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 1769,
+				"total_usec": 2143202
+			},
+			"loading_first_draw_usec": 59995,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1183409,
+			"return_sync_usec": 1063876,
+			"tick_at_first_draw": 18
+		},
+		{
+			"active_at_first_draw_usec": 2256429,
+			"cycle": 4,
+			"fly_first_draw_usec": 2256429,
+			"fly_ready_usec": 2177984,
+			"fly_sync_usec": 118,
+			"handoff_frames_usec": [
+				4450,
+				27034,
+				131142,
+				8880,
+				19230,
+				181848,
+				13614,
+				6916,
+				5334,
+				45008,
+				13692,
+				35107,
+				9293,
+				51692,
+				5818,
+				4574,
+				261133,
+				48101,
+				2827,
+				7560,
+				3037,
+				5106,
+				121326,
+				3381,
+				18791,
+				56854,
+				7493,
+				90838,
+				176852,
+				51545,
+				55638,
+				296877,
+				33048,
+				31150,
+				233017,
+				77119,
+				32527
+			],
+			"loading": {
+				"accepted_usec": 25515934,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 55370,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 105618
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 6037
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 17243
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 179727
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11664
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 40
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 2858
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 43090
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10961
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 33039
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 7501
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 48931
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 2416
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2848
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 259134
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 44638
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 216
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5501
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1175
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1594
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 119268
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 936
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 13710
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 53989
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 4655
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 88736
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 148634
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 33052
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 39419
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 280733
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 19330
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17381
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 214939
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 41347
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2436,
+				"total_usec": 2160026
+			},
+			"loading_first_draw_usec": 56816,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1223169,
+			"return_sync_usec": 1111031,
+			"tick_at_first_draw": 19
+		},
+		{
+			"active_at_first_draw_usec": 2392123,
+			"cycle": 5,
+			"fly_first_draw_usec": 2392123,
+			"fly_ready_usec": 2333639,
+			"fly_sync_usec": 105,
+			"handoff_frames_usec": [
+				4440,
+				27178,
+				134410,
+				8931,
+				21832,
+				166732,
+				17158,
+				6965,
+				3363,
+				48906,
+				14761,
+				36817,
+				10297,
+				55467,
+				5298,
+				3593,
+				323609,
+				62243,
+				3208,
+				7586,
+				2991,
+				3510,
+				114454,
+				3370,
+				15623,
+				69597,
+				10602,
+				119227,
+				177359,
+				45920,
+				54355,
+				325597,
+				39139,
+				39212,
+				240000,
+				84082,
+				25691
+			],
+			"loading": {
+				"accepted_usec": 29009526,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 56039,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 108396
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 6059
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 18002
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 164763
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 15004
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 46
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1361
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 47563
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 11934
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 34514
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 7511
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 52739
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1982
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 1981
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 321153
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 59617
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 263
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5719
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1087
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1473
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 112053
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 840
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 11268
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 67202
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7873
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 116561
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 147671
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 29138
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 38927
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 310229
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 21919
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 25126
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 223786
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 41271
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2403,
+				"total_usec": 2321757
+			},
+			"loading_first_draw_usec": 57488,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1262591,
+			"return_sync_usec": 1142789,
+			"tick_at_first_draw": 17
+		},
+		{
+			"active_at_first_draw_usec": 2350065,
+			"cycle": 6,
+			"fly_first_draw_usec": 2350065,
+			"fly_ready_usec": 2272023,
+			"fly_sync_usec": 99,
+			"handoff_frames_usec": [
+				4447,
+				24885,
+				129505,
+				9444,
+				19831,
+				187206,
+				17471,
+				6802,
+				3263,
+				53995,
+				18385,
+				34115,
+				7824,
+				53823,
+				6218,
+				4887,
+				300790,
+				62032,
+				3512,
+				9133,
+				3004,
+				3445,
+				121032,
+				2012,
+				17471,
+				60051,
+				10276,
+				123317,
+				167322,
+				39056,
+				51529,
+				281067,
+				38094,
+				40863,
+				228351,
+				95123,
+				32332
+			],
+			"loading": {
+				"accepted_usec": 32672527,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 52378,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 104846
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 6603
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 18088
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 184578
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 15372
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 39
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1336
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 49437
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 16040
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 31821
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 6106
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 51850
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 2608
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 3034
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 298888
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 58337
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 272
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 6957
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1147
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1498
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 118355
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 651
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 12504
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 56803
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7773
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 121142
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 144437
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 24005
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 35292
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 267237
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 23848
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 23969
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 211716
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 56022
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2395,
+				"total_usec": 2254874
+			},
+			"loading_first_draw_usec": 53787,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1237202,
+			"return_sync_usec": 1118466,
+			"tick_at_first_draw": 20
+		},
+		{
+			"active_at_first_draw_usec": 2364430,
+			"cycle": 7,
+			"fly_first_draw_usec": 2364430,
+			"fly_ready_usec": 2284384,
+			"fly_sync_usec": 87,
+			"handoff_frames_usec": [
+				3601,
+				26350,
+				155812,
+				7152,
+				13310,
+				176501,
+				18925,
+				6151,
+				4955,
+				51219,
+				15360,
+				27926,
+				7321,
+				41721,
+				5217,
+				3516,
+				273794,
+				51449,
+				3754,
+				9861,
+				2912,
+				6604,
+				128798,
+				5321,
+				17342,
+				61193,
+				9397,
+				120561,
+				178756,
+				43864,
+				53803,
+				323066,
+				41092,
+				36018,
+				238949,
+				85395,
+				27320
+			],
+			"loading": {
+				"accepted_usec": 36276918,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 57127,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 127225
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4635
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11308
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 174590
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 16509
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 49
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1381
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 49270
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 12711
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 26017
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5402
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 39920
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1918
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 1944
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 272151
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 48784
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 267
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 7424
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1226
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1588
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 126546
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 835
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 12071
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 58253
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 6706
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 118595
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 153719
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 28766
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 36135
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 306878
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 25690
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 19464
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 221348
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 47708
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 1925,
+				"total_usec": 2271506
+			},
+			"loading_first_draw_usec": 58337,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1292518,
+			"return_sync_usec": 1172434,
+			"tick_at_first_draw": 19
+		},
+		{
+			"active_at_first_draw_usec": 2439241,
+			"cycle": 8,
+			"fly_first_draw_usec": 2439241,
+			"fly_ready_usec": 2362966,
+			"fly_sync_usec": 118,
+			"handoff_frames_usec": [
+				5029,
+				24843,
+				132111,
+				7805,
+				21087,
+				186300,
+				18398,
+				8031,
+				4346,
+				52816,
+				20134,
+				35468,
+				10650,
+				55607,
+				5341,
+				4031,
+				317460,
+				56187,
+				3426,
+				8245,
+				3150,
+				3675,
+				127483,
+				2764,
+				15951,
+				76583,
+				11290,
+				113837,
+				166544,
+				40404,
+				54666,
+				339953,
+				39918,
+				40677,
+				237199,
+				82356,
+				29069
+			],
+			"loading": {
+				"accepted_usec": 39952272,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 53441,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 106683
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 5214
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 19163
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 183872
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 16297
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 54
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 2003
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 47855
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 17003
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 32784
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 8387
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 53351
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1818
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2206
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 314168
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 52129
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 224
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 6215
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1322
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1507
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 124553
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 678
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10331
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 73736
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7836
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 111580
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 140797
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 24091
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 37765
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 322948
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 24930
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 24684
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 219927
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 42224
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2752,
+				"total_usec": 2346518
+			},
+			"loading_first_draw_usec": 55097,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1215607,
+			"return_sync_usec": 1098515,
+			"tick_at_first_draw": 19
+		},
+		{
+			"active_at_first_draw_usec": 2333703,
+			"cycle": 9,
+			"fly_first_draw_usec": 2333703,
+			"fly_ready_usec": 2256768,
+			"fly_sync_usec": 101,
+			"handoff_frames_usec": [
+				4566,
+				28114,
+				116782,
+				9379,
+				13249,
+				153481,
+				14249,
+				6996,
+				3644,
+				52269,
+				19544,
+				41373,
+				10338,
+				54338,
+				5969,
+				4779,
+				294181,
+				49800,
+				3079,
+				12525,
+				3405,
+				6356,
+				123180,
+				2769,
+				20016,
+				66492,
+				11064,
+				132765,
+				184136,
+				52984,
+				48594,
+				307577,
+				37854,
+				32551,
+				218287,
+				80055,
+				29917
+			],
+			"loading": {
+				"accepted_usec": 43624400,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 56077,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 91730
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 6653
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11631
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 151596
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 12065
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 46
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1318
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 50918
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 16424
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 39228
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 8501
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 52040
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 2766
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 3108
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 292177
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 46040
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 234
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 9019
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1340
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1755
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 121008
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 1044
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14360
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 63990
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 8391
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 130630
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 155423
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 36726
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 33010
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 292223
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 21456
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 19092
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 202697
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 47350
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2435,
+				"total_usec": 2242169
+			},
+			"loading_first_draw_usec": 57579,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1142308,
+			"return_sync_usec": 1026718,
+			"tick_at_first_draw": 20
+		},
+		{
+			"active_at_first_draw_usec": 2031021,
+			"cycle": 10,
+			"fly_first_draw_usec": 2031021,
+			"fly_ready_usec": 1959895,
+			"fly_sync_usec": 119,
+			"handoff_frames_usec": [
+				4666,
+				25035,
+				121040,
+				7320,
+				14227,
+				131891,
+				14332,
+				7023,
+				4785,
+				43645,
+				16260,
+				28701,
+				7347,
+				40287,
+				5644,
+				3965,
+				239408,
+				45930,
+				3155,
+				9088,
+				3762,
+				3558,
+				106208,
+				2297,
+				19562,
+				62728,
+				10147,
+				126273,
+				180842,
+				40739,
+				47384,
+				228148,
+				34976,
+				33699,
+				191449,
+				67137,
+				27105
+			],
+			"loading": {
+				"accepted_usec": 47119023,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 53270,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 95725
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4530
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11836
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 129881
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11565
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 50
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1498
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 41668
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 13188
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25665
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5465
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 38001
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1876
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2276
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 237277
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 41854
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 263
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 6598
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1155
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1493
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 103688
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 679
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14076
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 60055
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7665
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 123985
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 153499
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 24149
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 28614
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 214418
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18892
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 18192
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 175499
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 41436
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2617,
+				"total_usec": 1947627
+			},
+			"loading_first_draw_usec": 54878,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1023430,
+			"return_sync_usec": 910667,
+			"tick_at_first_draw": 17
+		},
+		{
+			"active_at_first_draw_usec": 2002395,
+			"cycle": 11,
+			"fly_first_draw_usec": 2002395,
+			"fly_ready_usec": 1942149,
+			"fly_sync_usec": 98,
+			"handoff_frames_usec": [
+				4369,
+				24533,
+				115277,
+				7031,
+				13679,
+				139912,
+				14129,
+				6941,
+				3533,
+				46338,
+				13609,
+				27463,
+				7172,
+				40046,
+				4886,
+				4028,
+				238727,
+				46138,
+				3275,
+				7669,
+				3136,
+				3877,
+				99811,
+				2669,
+				18204,
+				67521,
+				10499,
+				114921,
+				174713,
+				37447,
+				51361,
+				230589,
+				35170,
+				34734,
+				198431,
+				65746,
+				24456
+			],
+			"loading": {
+				"accepted_usec": 50189422,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 50650,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 92004
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4381
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11789
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 136031
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11560
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 40
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1488
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 42012
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10953
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25363
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5492
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 37909
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1793
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2308
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 236798
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 43187
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 290
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5492
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1260
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1323
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 97679
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 643
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 13222
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 64560
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7813
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 112746
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 148547
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 23431
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 34754
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 215819
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18643
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17862
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 181768
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 38875
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2343,
+				"total_usec": 1931613
+			},
+			"loading_first_draw_usec": 52060,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1014479,
+			"return_sync_usec": 902923,
+			"tick_at_first_draw": 16
+		},
+		{
+			"active_at_first_draw_usec": 1987540,
+			"cycle": 12,
+			"fly_first_draw_usec": 1987540,
+			"fly_ready_usec": 1926874,
+			"fly_sync_usec": 71,
+			"handoff_frames_usec": [
+				4116,
+				23540,
+				137088,
+				6952,
+				12855,
+				132092,
+				13259,
+				6153,
+				5444,
+				42544,
+				13177,
+				27588,
+				7116,
+				41125,
+				4775,
+				4502,
+				239239,
+				47236,
+				3248,
+				7868,
+				3103,
+				2942,
+				100919,
+				5344,
+				17710,
+				53854,
+				10432,
+				112255,
+				175774,
+				39006,
+				44971,
+				230853,
+				33289,
+				32268,
+				195060,
+				66871,
+				22226
+			],
+			"loading": {
+				"accepted_usec": 53215431,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 49947,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 113317
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4517
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11056
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 130173
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11200
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 34
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1716
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 40568
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10841
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25426
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5493
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 39098
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1921
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2142
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 237211
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 43992
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 230
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5947
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1185
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1340
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 96835
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 674
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 12035
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 50714
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7732
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 110244
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 151253
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 23484
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 28995
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 217356
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18803
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17765
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 179700
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 37461
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2243,
+				"total_usec": 1917125
+			},
+			"loading_first_draw_usec": 51256,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1203804,
+			"return_sync_usec": 1090707,
+			"tick_at_first_draw": 16
+		},
+		{
+			"active_at_first_draw_usec": 1968646,
+			"cycle": 13,
+			"fly_first_draw_usec": 1968646,
+			"fly_ready_usec": 1911124,
+			"fly_sync_usec": 105,
+			"handoff_frames_usec": [
+				4798,
+				26526,
+				118259,
+				7296,
+				13763,
+				132243,
+				13699,
+				6761,
+				3444,
+				45958,
+				15365,
+				27163,
+				7267,
+				40655,
+				4832,
+				4313,
+				237228,
+				45391,
+				3310,
+				7731,
+				3134,
+				4584,
+				101440,
+				2177,
+				16957,
+				61441,
+				10460,
+				120197,
+				169445,
+				42308,
+				47089,
+				226872,
+				32385,
+				29532,
+				188814,
+				65532,
+				22640
+			],
+			"loading": {
+				"accepted_usec": 56416670,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 55275,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 92627
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4692
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11794
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 130455
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11184
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 39
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1439
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 42180
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10651
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25220
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5637
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 38591
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1895
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 1994
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 235569
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 42143
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 241
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5803
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1293
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1521
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 99533
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 711
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 12454
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 58746
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7783
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 118143
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 145712
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 26319
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 28521
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 213342
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18355
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 16759
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 171731
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 37515
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2619,
+				"total_usec": 1901032
+			},
+			"loading_first_draw_usec": 56799,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1012415,
+			"return_sync_usec": 899080,
+			"tick_at_first_draw": 16
+		},
+		{
+			"active_at_first_draw_usec": 2012622,
+			"cycle": 14,
+			"fly_first_draw_usec": 2012622,
+			"fly_ready_usec": 1955782,
+			"fly_sync_usec": 116,
+			"handoff_frames_usec": [
+				4395,
+				27723,
+				130521,
+				6954,
+				19307,
+				146096,
+				14237,
+				6701,
+				3400,
+				46573,
+				14549,
+				28028,
+				7170,
+				40448,
+				4724,
+				3982,
+				236255,
+				47092,
+				2805,
+				7519,
+				3049,
+				3896,
+				106727,
+				3492,
+				15179,
+				74087,
+				10545,
+				90247,
+				177967,
+				39451,
+				44476,
+				236214,
+				33545,
+				32984,
+				194357,
+				65862,
+				25098
+			],
+			"loading": {
+				"accepted_usec": 59407605,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 57527,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 103430
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4552
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 16828
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 144300
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11666
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 43
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1380
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 41947
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 11838
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25764
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5540
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 38306
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1882
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2287
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 234365
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 43466
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 255
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5705
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1209
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1556
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 104770
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 793
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10447
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 71579
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7781
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 88175
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 152235
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 23831
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 28985
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 221585
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18782
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17753
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 178997
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 38594
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2428,
+				"total_usec": 1944725
+			},
+			"loading_first_draw_usec": 59076,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1034605,
+			"return_sync_usec": 924415,
+			"tick_at_first_draw": 16
+		},
+		{
+			"active_at_first_draw_usec": 2259988,
+			"cycle": 15,
+			"fly_first_draw_usec": 2259988,
+			"fly_ready_usec": 2179950,
+			"fly_sync_usec": 80,
+			"handoff_frames_usec": [
+				3667,
+				26836,
+				124496,
+				6916,
+				15304,
+				160017,
+				14517,
+				6600,
+				4099,
+				50003,
+				19700,
+				35022,
+				8188,
+				57255,
+				6456,
+				5524,
+				290748,
+				55294,
+				2822,
+				7950,
+				3134,
+				3704,
+				123332,
+				2718,
+				19732,
+				62838,
+				10044,
+				100393,
+				179619,
+				43869,
+				50808,
+				270117,
+				36464,
+				35698,
+				223838,
+				78948,
+				33190
+			],
+			"loading": {
+				"accepted_usec": 62464924,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 52066,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 101557
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4487
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 12992
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 157363
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11696
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 56
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 2028
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 46454
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 16865
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 32588
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 6286
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 55009
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 3197
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 3512
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 286769
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 52117
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 242
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5665
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1297
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1346
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 121417
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 733
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14188
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 60064
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7424
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 97944
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 155856
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 26676
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 34557
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 254465
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 23274
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 20675
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 207481
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 49014
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 1832,
+				"total_usec": 2164532
+			},
+			"loading_first_draw_usec": 53252,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1243625,
+			"return_sync_usec": 1129501,
+			"tick_at_first_draw": 21
+		},
+		{
+			"active_at_first_draw_usec": 2285340,
+			"cycle": 16,
+			"fly_first_draw_usec": 2285340,
+			"fly_ready_usec": 2220299,
+			"fly_sync_usec": 111,
+			"handoff_frames_usec": [
+				4325,
+				25536,
+				134928,
+				10301,
+				13383,
+				160922,
+				15393,
+				7559,
+				4026,
+				47552,
+				16142,
+				37230,
+				10899,
+				49105,
+				4917,
+				4031,
+				296978,
+				55251,
+				3107,
+				10598,
+				3295,
+				3741,
+				125654,
+				3118,
+				15383,
+				74755,
+				10336,
+				127075,
+				175435,
+				41215,
+				56272,
+				258451,
+				36881,
+				39430,
+				227926,
+				81711,
+				27317
+			],
+			"loading": {
+				"accepted_usec": 65983173,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 54620,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 108470
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 7432
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11539
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 158890
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 13149
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 51
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1798
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 42779
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 13405
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 34874
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 8642
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 46806
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1906
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2102
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 295013
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 51229
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 258
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 7345
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1253
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1694
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 122450
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 750
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 10510
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 72195
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7747
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 124913
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 150607
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 25460
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 40418
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 242308
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 20327
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 24851
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 210768
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 42138
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2334,
+				"total_usec": 2206009
+			},
+			"loading_first_draw_usec": 56181,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1221126,
+			"return_sync_usec": 1111637,
+			"tick_at_first_draw": 18
+		},
+		{
+			"active_at_first_draw_usec": 2287097,
+			"cycle": 17,
+			"fly_first_draw_usec": 2287097,
+			"fly_ready_usec": 2208469,
+			"fly_sync_usec": 87,
+			"handoff_frames_usec": [
+				4417,
+				27999,
+				145118,
+				10511,
+				16687,
+				157527,
+				16713,
+				7629,
+				4765,
+				51781,
+				18257,
+				34119,
+				7986,
+				52558,
+				6762,
+				5930,
+				278032,
+				54622,
+				3803,
+				8703,
+				3697,
+				3728,
+				123311,
+				3658,
+				19571,
+				65993,
+				11417,
+				102992,
+				180635,
+				46671,
+				55274,
+				275256,
+				38878,
+				41065,
+				217150,
+				77747,
+				27411
+			],
+			"loading": {
+				"accepted_usec": 69506315,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 56109,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 119769
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 7465
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 14310
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 155108
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 13956
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 55
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1429
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 49726
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 15167
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 31407
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5781
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 49864
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 3380
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 3310
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 275451
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 51749
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 359
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5942
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1357
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1778
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 120496
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 1320
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14504
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 63338
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 8385
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 98639
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 150178
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 30785
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 37075
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 261332
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 21097
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 25773
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 201047
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 44172
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2442,
+				"total_usec": 2196334
+			},
+			"loading_first_draw_usec": 57459,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1214631,
+			"return_sync_usec": 1105660,
+			"tick_at_first_draw": 19
+		},
+		{
+			"active_at_first_draw_usec": 2179431,
+			"cycle": 18,
+			"fly_first_draw_usec": 2179431,
+			"fly_ready_usec": 2117507,
+			"fly_sync_usec": 86,
+			"handoff_frames_usec": [
+				4501,
+				24160,
+				138289,
+				10769,
+				14231,
+				163508,
+				19861,
+				6758,
+				3207,
+				53144,
+				17944,
+				33123,
+				9274,
+				54172,
+				5132,
+				4294,
+				302521,
+				52561,
+				3201,
+				10486,
+				3091,
+				4035,
+				120278,
+				3597,
+				18409,
+				74796,
+				10023,
+				91987,
+				180346,
+				37170,
+				46331,
+				241659,
+				31887,
+				31248,
+				196983,
+				67220,
+				27216
+			],
+			"loading": {
+				"accepted_usec": 73023163,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 51332,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 114107
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 7407
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11884
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 161514
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 17895
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 44
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1301
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 48386
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 15325
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 30915
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 7328
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 51965
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1791
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2641
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 299079
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 49115
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 376
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 7328
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1377
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1903
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 117806
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 1134
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14047
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 72189
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7645
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 90011
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 154199
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 23507
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 30457
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 225721
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18803
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17419
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 181009
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 40665
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2516,
+				"total_usec": 2106016
+			},
+			"loading_first_draw_usec": 52654,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1028957,
+			"return_sync_usec": 921038,
+			"tick_at_first_draw": 18
+		},
+		{
+			"active_at_first_draw_usec": 2027483,
+			"cycle": 19,
+			"fly_first_draw_usec": 2027483,
+			"fly_ready_usec": 1966680,
+			"fly_sync_usec": 85,
+			"handoff_frames_usec": [
+				4278,
+				26944,
+				125654,
+				7298,
+				15938,
+				145241,
+				14193,
+				7130,
+				3317,
+				46273,
+				12780,
+				27573,
+				7918,
+				42075,
+				4839,
+				3874,
+				239346,
+				47753,
+				4523,
+				8636,
+				3216,
+				3439,
+				104734,
+				5277,
+				18447,
+				66654,
+				10268,
+				126347,
+				175709,
+				38909,
+				45668,
+				222234,
+				33956,
+				33036,
+				188320,
+				67404,
+				27385
+			],
+			"loading": {
+				"accepted_usec": 76240635,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 55954,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 99502
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4904
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 14005
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 143235
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 12092
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 75
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 1603
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 44276
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10585
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25071
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5614
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 38909
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1860
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 2051
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 237142
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 44532
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 259
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5664
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1229
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1470
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 100809
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 884
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 14270
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 64104
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7644
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 124232
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 151413
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 23680
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 29491
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 206860
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18759
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 18019
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 172276
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 40893
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 2370,
+				"total_usec": 1955176
+			},
+			"loading_first_draw_usec": 57249,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1031905,
+			"return_sync_usec": 930072,
+			"tick_at_first_draw": 17
+		},
+		{
+			"active_at_first_draw_usec": 1997979,
+			"cycle": 20,
+			"fly_first_draw_usec": 1997979,
+			"fly_ready_usec": 1936476,
+			"fly_sync_usec": 92,
+			"handoff_frames_usec": [
+				3337,
+				26517,
+				126013,
+				7008,
+				13110,
+				134836,
+				13268,
+				7308,
+				5412,
+				43180,
+				13196,
+				27719,
+				7419,
+				40931,
+				4706,
+				3958,
+				239704,
+				48019,
+				3320,
+				8363,
+				3152,
+				3233,
+				104772,
+				3062,
+				16145,
+				64380,
+				10565,
+				105343,
+				163023,
+				41482,
+				51784,
+				239570,
+				33150,
+				31978,
+				191874,
+				70268,
+				25269
+			],
+			"loading": {
+				"accepted_usec": 79309634,
+				"aircraft": "jensen-das-ugly-stik-60",
+				"feedback_usec": 54072,
+				"landscape": "club_field",
+				"phases": [
+					{
+						"stage": "Preparing resources",
+						"work_usec": 100521
+					},
+					{
+						"stage": "Preparing flight scene",
+						"work_usec": 4590
+					},
+					{
+						"stage": "Checking landscape",
+						"work_usec": 11299
+					},
+					{
+						"stage": "Preparing aircraft",
+						"work_usec": 131659
+					},
+					{
+						"stage": "Preparing world",
+						"work_usec": 11206
+					},
+					{
+						"stage": "Building landscape",
+						"work_usec": 42
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 3266
+					},
+					{
+						"stage": "Field ground",
+						"work_usec": 41246
+					},
+					{
+						"stage": "Field trees",
+						"work_usec": 10959
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 25289
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 5579
+					},
+					{
+						"stage": "Flight cues",
+						"work_usec": 38756
+					},
+					{
+						"stage": "Flight cue shadows",
+						"work_usec": 1792
+					},
+					{
+						"stage": "Resolving field scenery",
+						"work_usec": 1930
+					},
+					{
+						"stage": "Building field scenery",
+						"work_usec": 237793
+					},
+					{
+						"stage": "Building field lake",
+						"work_usec": 44194
+					},
+					{
+						"stage": "Preparing field vegetation",
+						"work_usec": 263
+					},
+					{
+						"stage": "Near grass",
+						"work_usec": 5978
+					},
+					{
+						"stage": "Distant ridges",
+						"work_usec": 1236
+					},
+					{
+						"stage": "Countryside",
+						"work_usec": 1309
+					},
+					{
+						"stage": "Projected shadows",
+						"work_usec": 101435
+					},
+					{
+						"stage": "Attaching landscape",
+						"work_usec": 833
+					},
+					{
+						"stage": "Preparing sky",
+						"work_usec": 11478
+					},
+					{
+						"stage": "Preparing field lighting",
+						"work_usec": 61366
+					},
+					{
+						"stage": "Finalizing world",
+						"work_usec": 7702
+					},
+					{
+						"stage": "Preparing aircraft lighting",
+						"work_usec": 102853
+					},
+					{
+						"stage": "Preparing instruments",
+						"work_usec": 137475
+					},
+					{
+						"stage": "Checking flight",
+						"work_usec": 26451
+					},
+					{
+						"stage": "Preparing flight model",
+						"work_usec": 35523
+					},
+					{
+						"stage": "Preparing contacts",
+						"work_usec": 223424
+					},
+					{
+						"stage": "Preparing start",
+						"work_usec": 18714
+					},
+					{
+						"stage": "Preparing effects",
+						"work_usec": 17545
+					},
+					{
+						"stage": "Preparing sound",
+						"work_usec": 175617
+					},
+					{
+						"stage": "Finishing flight",
+						"work_usec": 38925
+					}
+				],
+				"status": "ready",
+				"surface_prepare_usec": 1745,
+				"total_usec": 1925719
+			},
+			"loading_first_draw_usec": 55235,
+			"nodes_at_home": 869,
+			"nodes_in_flight": 1682,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": false,
+			"return_first_draw_usec": 1026699,
+			"return_sync_usec": 915826,
+			"tick_at_first_draw": 17
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fly_timing_semantics": "fly_sync_usec is pressed.emit dispatch only; fly_ready_usec includes deferred handoff and validated scene readiness; fly_first_draw_usec additionally waits for post-draw",
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 12667204,
+	"home_first_draw_from_load_usec": 6858364,
+	"home_sync_usec": 3530763,
+	"max_fps": 0,
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 296249,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1920,
+		1080
+	],
+	"vsync_mode": 1
+}

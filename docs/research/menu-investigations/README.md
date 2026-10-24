@@ -2,7 +2,11 @@
 
 ## UI-34c-R1 — Home/Fly loading audit, 2026-10-24
 
-[Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Current button feedback, cache boundaries, prior rejected preloading and source-tree limits are explicit. [Implementation plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) remains pending; no loading runtime change or screenshots are included.
+[Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Audited button feedback, cache boundaries, rejected preloading and source-tree limits are explicit. This audit contains no runtime changes or screenshots.
+
+## UI-34c-R2/R3/R4 — Home/Fly implementation, 2026-10-24
+
+[Implementation and verification](UI-34c-R2/README.md): owned EN/ES loading surface, rendered acknowledgement, cancellation/rollback, shared World/Field stages, selected-resource handoff and bounded exact trim reuse. Native 1080p samples, 20-cycle lifecycle results, software parity and focused checks are retained with explicit limits. The [execution plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) keeps unresolved cold-loading and package qualification gates open.
 
 ## UI-22-R10 — hover, focus and activation feedback, 2026-10-24
 

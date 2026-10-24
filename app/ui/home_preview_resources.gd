@@ -60,6 +60,15 @@ func _start(path: String, callback: Callable) -> void:
 	_active_callback = callback
 	set_process(true)
 
+## A main-thread scene load uses the same bounded ownership as background model loads.
+func retain_loaded(path: String, resource: PackedScene) -> void:
+	if resource == null: return
+	_resources[path] = resource
+	_order.erase(path)
+	_order.append(path)
+	while _order.size() > RESOURCE_LIMIT:
+		_resources.erase(_order.pop_front())
+
 func _process(_delta: float) -> void:
 	if _active_path.is_empty():
 		set_process(false)
@@ -76,11 +85,7 @@ func _process(_delta: float) -> void:
 	var ok := resource is PackedScene
 	# Obsolete completions are drained, not retained or applied.
 	if ok and callback.is_valid():
-		_resources[path] = resource
-		_order.erase(path)
-		_order.append(path)
-		while _order.size() > RESOURCE_LIMIT:
-			_resources.erase(_order.pop_front())
+		retain_loaded(path, resource)
 	var next_path := _queued_path
 	var next_callback := _queued_callback
 	_queued_path = ""

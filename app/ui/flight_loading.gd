@@ -34,14 +34,14 @@ class ImmediateScreen extends "res://ui/screen.gd":
 		set_active(true)
 
 
-func _init() -> void:
+func _init(existing_theme: Theme = null) -> void:
 	name = "FlightLoading"
 	layer = LAYER
 
 	var screen := ImmediateScreen.new()
 	surface = screen
 	screen.name = "Screen"
-	screen.theme = UiTheme.build()
+	screen.theme = existing_theme if existing_theme != null else UiTheme.build()
 	screen.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(screen)
 	screen.close_requested.connect(_request_cancel)

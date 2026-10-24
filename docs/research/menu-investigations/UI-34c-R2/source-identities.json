@@ -1,0 +1,18 @@
+{
+  "head": "8bbc27d93de84321f51895fc755c39a86f6960db",
+  "scope": "Final native feedback run; shared-tree files hashed immediately before launch; not a frozen A/B campaign",
+  "sha256": {
+    "app/app_root.gd": "8fb11fac52c1953a31c8c0286dd72d4ec86bf0fac244cae6b6ed9f53bc068ef3",
+    "app/main.gd": "abb9b037e9faf46e606ddd1bcf5f66075fca246bd9cf7a62df1348d459baf766",
+    "app/ui/home.gd": "a9d010d12bd6e52ef747ed250e67980e16f405ebe4ca295a48500f0dcb8afea9",
+    "app/ui/home_scene.gd": "0218de670a271bb8357a988400ecafba9582317f9f5e71f50914d20e779f283a",
+    "app/ui/home_preview_resources.gd": "78b13d86a8afceecaa02811f4c734741b0173f4e69d4d841d84de970ea4924b9",
+    "app/ui/flight_loading.gd": "fba211b6ed1c9aedd003018676dc98931d3ce737843fd924e3dafcf7226bd9be",
+    "app/render/world/world.gd": "6807c69c4a13510196704039c85b94e1cab0d704e44ce564335e6a04c44327f4",
+    "app/render/field.gd": "9883da737d2faa1ee582f272622c06e93398401d78304dd2e4a0e174bce6ede5",
+    "app/landscapes/catalog.gd": "83cad766dc8c1e0028ef38a7398989a454aa9dc4b33b4924e081318b12a817df",
+    "app/landscapes/club_field/landscape.gd": "8fcb535061ef4f62066cfd4461e04b90da52401017cd2a14545e9a784f96843e",
+    "app/i18n/es.po": "1e66ff6c094b60b5af08b4dd89bb8911cf5694386af0e1089d2a5b00e9d4bb6e",
+    "research/performance/loading_probe.gd": "79cb91df2f964bf115a6a50aa1989cf465e66161d04a788874169bcb4f965531"
+  }
+}

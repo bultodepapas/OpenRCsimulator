@@ -96,9 +96,14 @@ func _run() -> void:
 			"fly_first_draw_usec": drawn - begin,
 			"tick_at_first_draw": sim.get("tick"), "paused_at_first_draw": sim.get("paused"),
 			"nodes_in_flight": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+			"handoff_frames_usec": handoff.frames_usec,
 		}
 		if "last_flight_loading" in app:
 			sample["loading"] = app.last_flight_loading.duplicate(true)
+			if app.last_flight_loading.has("feedback_usec"):
+				sample["loading_first_draw_usec"] = app.last_flight_loading.accepted_usec + app.last_flight_loading.feedback_usec - begin
+		if not sim.paused:
+			sample["active_at_first_draw_usec"] = drawn - begin
 		await process_frame
 		var return_begin := Time.get_ticks_usec()
 		app.call("end_flight")
@@ -148,7 +153,12 @@ func _run() -> void:
 ## An external process timeout still bounds synchronous construction blocking a frame.
 func _wait_for_flight(app: Node, home: Node, max_frames: int = 7200) -> Dictionary:
 	var begin := Time.get_ticks_usec()
+	var last_frame := begin
+	var frames_usec: Array[int] = []
 	for index in range(max_frames + 1):
+		var frame_now := Time.get_ticks_usec()
+		if index > 0: frames_usec.append(frame_now - last_frame)
+		last_frame = frame_now
 		if not is_instance_valid(app) or not app.is_inside_tree():
 			return {ok = false, error = "Home Fly cancelled: app left the tree"}
 		if Time.get_ticks_usec() - begin > 60000000:
@@ -164,7 +174,7 @@ func _wait_for_flight(app: Node, home: Node, max_frames: int = 7200) -> Dictiona
 			var session: Node = flight.get("session")
 			if session == null or not session.is_flyable():
 				return {ok = false, error = "Flight session is not flyable"}
-			return {ok = true, flight = flight, ready_usec = Time.get_ticks_usec()}
+			return {ok = true, flight = flight, ready_usec = Time.get_ticks_usec(), frames_usec = frames_usec}
 		if not is_instance_valid(home) or not home.is_inside_tree():
 			return {ok = false, error = "Home Fly cancelled: Home left without a flight"}
 		var fly: Button = home.get("fly_button")

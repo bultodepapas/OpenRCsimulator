@@ -1,0 +1,941 @@
+[
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_field_staged_build/godot-7pftqf2x/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6e13885b-9e47-4729-9d4b-6d753ee68543",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_field_staged_build.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:53:03.994259+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_field_staged_build\\godot-7pftqf2x\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_field_staged_build\\godot-7pftqf2x\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.547,
+      "log_bytes": 595,
+      "log_sha256": "f14cc884e81aa6a986e248e43eee1b0420f9df549b7794d7a642148fa90dc1ad"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_flight_loading/godot-pw_zmpae/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b1318be5-dd78-42e9-8738-e098186f013a",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_flight_loading.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:52:18.067854+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_flight_loading\\godot-pw_zmpae\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_flight_loading\\godot-pw_zmpae\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 19.0,
+      "log_bytes": 1205,
+      "log_sha256": "99d4ba310a4c88e60d957e68d7519a9d07ac498189240612543cca4b92a9b420"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_flight_loading_surface/godot-tcwxgdvh/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6bf440c1-7f7c-4ed3-b04a-a582a4b069a5",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_flight_loading_surface.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:52:37.283794+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_flight_loading_surface\\godot-tcwxgdvh\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_flight_loading_surface\\godot-tcwxgdvh\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.438,
+      "log_bytes": 974,
+      "log_sha256": "32a24049944ebb660d7f306e8609821fc1af69d33f03a775a9ca4f1c472dbbce"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_landscape_runtime/godot-4ohv6j0y/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "a01b641c-4e7d-453b-be28-48b118a91a85",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_landscape_runtime.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:53:09.746912+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_landscape_runtime\\godot-4ohv6j0y\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_landscape_runtime\\godot-4ohv6j0y\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 4
+      },
+      "diagnostics": [
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 9,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 30,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 64,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        },
+        {
+          "severity": "warning",
+          "kind": "WARNING",
+          "line": 85,
+          "message": "Scenery wreck contact budget reached; farther secondary contacts omitted.",
+          "context": [
+            "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+            "   GDScript backtrace (most recent call first):",
+            "       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 11.5,
+      "log_bytes": 6120,
+      "log_sha256": "b16bae9a6e5b3d97a44bcba76846f7c813b9b0a52785325b194462903d71f97a"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_ui_natural_random/godot-prfbllk2/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "df31c5f4-bf5e-40da-814d-48e74b4604f7",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_natural_random.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:53:21.443071+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_natural_random\\godot-prfbllk2\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_natural_random\\godot-prfbllk2\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 2,
+        "warning": 0
+      },
+      "diagnostics": [
+        {
+          "severity": "error",
+          "kind": "SCRIPT ERROR",
+          "line": 3,
+          "message": "Parse Error: Function \"_build_world()\" is a coroutine, so it must be called with \"await\".",
+          "context": [
+            "   at: GDScript::reload (res://tests/test_ui_natural_random.gd:15)"
+          ]
+        },
+        {
+          "severity": "error",
+          "kind": "ERROR",
+          "line": 5,
+          "message": "Failed to load script \"res://tests/test_ui_natural_random.gd\" with error \"Parse error\".",
+          "context": [
+            "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+          ]
+        }
+      ],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 0.89,
+      "log_bytes": 408,
+      "log_sha256": "dce2d8f855c18c6de72145de88f6be585709be7e897a6743626f5178a180a765"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_ui_preview_requests/godot-_8o7burz/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "6da67861-0b00-43a6-87e1-1cd248714e06",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_preview_requests.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:52:38.572006+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_preview_requests\\godot-_8o7burz\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_preview_requests\\godot-_8o7burz\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 22.0,
+      "log_bytes": 1487,
+      "log_sha256": "364256212ad187c2a532e77294f0de477066a134a15ce696a0ebdb8e393d407c"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_ui_preview_resources/godot-j5jzlhbp/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "223eced7-8aef-4199-a1d7-9f04d39311e2",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_preview_resources.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:52:37.944587+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_preview_resources\\godot-j5jzlhbp\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_ui_preview_resources\\godot-j5jzlhbp\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.422,
+      "log_bytes": 822,
+      "log_sha256": "9e50c97a073029589bf3e9892f4ce019077f99ccbf9719646c298196e73641a2"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks/test_world_staged_build/godot-5e3j219a/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "07df005b-a039-4f8c-aff2-ed11771da09a",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_world_staged_build.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:53:00.766475+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_world_staged_build\\godot-5e3j219a\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks\\test_world_staged_build\\godot-5e3j219a\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.031,
+      "log_bytes": 116,
+      "log_sha256": "cf95b781f7deea632f396499479ab8440a7045d6278dc4c3fdfc072c7c2f8461"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks-retry/test_golden/godot-n1x9mzze/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "516b4038-6fbb-4c65-ae79-917c66673eb6",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:57:06.809428+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_golden\\godot-n1x9mzze\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_golden\\godot-n1x9mzze\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.64,
+      "log_bytes": 1073,
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks-retry/test_session_guards/godot-9o65niyy/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "f29593c9-1e70-4e22-ae7c-1f343c7bec9b",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_session_guards.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:57:03.917513+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_session_guards\\godot-9o65niyy\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_session_guards\\godot-9o65niyy\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 2.688,
+      "log_bytes": 2439,
+      "log_sha256": "71320a484fa953a2787c08e2df7325229212c054a51035c3c62af5f6c2d4bbec"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks-retry/test_ui_natural_random/godot-gpvb5e2r/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "61f70d7b-989b-470b-b3cf-22b327f5ef6d",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_natural_random.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:54:06.307445+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_ui_natural_random\\godot-gpvb5e2r\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_ui_natural_random\\godot-gpvb5e2r\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 138.218,
+      "log_bytes": 2328,
+      "log_sha256": "d4c3ca5ffbc536c58f5c6ffde8a6ee6ccc5bece06ba664c8c5a2cab52e7acff9"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/final-checks-retry/test_ui_pause/godot-ocj9y4k6/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "66f7f48a-b3dc-4a1a-a7e1-5aef973388f3",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_ui_pause.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T22:56:24.742891+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_ui_pause\\godot-ocj9y4k6\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\final-checks-retry\\test_ui_pause\\godot-ocj9y4k6\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 38.984,
+      "log_bytes": 5097,
+      "log_sha256": "6407884ca3cf3df3864b601c2fda6d0d16c2664187735a87c3c6dc7ae57de57e"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/combined-final/test_flight_loading/godot-5a29i84e/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "527b1f72-88d5-458a-8120-83ded9baa260",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_loading.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:18:26.115459+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_flight_loading\\godot-5a29i84e\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_flight_loading\\godot-5a29i84e\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 19.765,
+      "log_bytes": 1205,
+      "log_sha256": "99d4ba310a4c88e60d957e68d7519a9d07ac498189240612543cca4b92a9b420"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/combined-final/test_golden/godot-gpqiub4i/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "58a9748a-e1cd-401f-b823-89e04f611a1c",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:18:19.920795+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_golden\\godot-gpqiub4i\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_golden\\godot-gpqiub4i\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 5.984,
+      "log_bytes": 1073,
+      "log_sha256": "1cb52c8d6be1e486f10bc083655130d0686330e203ea62de9ee15f8c5f9c6737"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/combined-final/test_launch_trim_cache/godot-idmdy8is/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "8022274b-7338-498d-9071-e94227ac351d",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_launch_trim_cache.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:18:16.469136+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_launch_trim_cache\\godot-idmdy8is\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_launch_trim_cache\\godot-idmdy8is\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.25,
+      "log_bytes": 448,
+      "log_sha256": "d35426baf040fa61060606e18449cc27ee7c72376e9ac50cde2f65f0796c0112"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/native-electric-final/godot-hss4zf90/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "749099c3-8f34-4d9b-9df7-505996c0d802",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1920x1080",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+        "--",
+        "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/fly-implementation-20261024/electric-final.json",
+        "--cycles=2",
+        "--aircraft=turbo-lumber-evolution"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:18:58.163552+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\native-electric-final\\godot-hss4zf90\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\native-electric-final\\godot-hss4zf90\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 30.266,
+      "log_bytes": 292,
+      "log_sha256": "2d501ff7554894e5ddfa903565bd48891525c639ec1b251d827d85df5455ce5c"
+    }
+  },
+  {
+    "path": "tmp/godot-checks/electric-trim-reuse-cache-20261024/test-launch-trim-cache-ng8o_zyt/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "afe3b46e-539e-4700-a6d7-ab90fb8b52f0",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_launch_trim_cache.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:12:02.480924+00:00",
+      "label": "test-launch-trim-cache",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-cache-20261024\\test-launch-trim-cache-ng8o_zyt\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-cache-20261024\\test-launch-trim-cache-ng8o_zyt\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 2.578,
+      "log_bytes": 414,
+      "log_sha256": "437725fdce499ef47aa78cd87983345b6be140d1565f12d3875efdacbe09d892"
+    }
+  },
+  {
+    "path": "tmp/godot-checks/electric-trim-reuse-cruise-trim-20261024/test-cruise-trim-xlo69kbr/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "43f45f11-131d-456d-80ac-47825e2d8d64",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_cruise_trim.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:11:58.464020+00:00",
+      "label": "test-cruise-trim",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-cruise-trim-20261024\\test-cruise-trim-xlo69kbr\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-cruise-trim-20261024\\test-cruise-trim-xlo69kbr\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 1.344,
+      "log_bytes": 1657,
+      "log_sha256": "f6867762850d99ba75945def65ac601c8d326b124689a1383e977ba7898f8267"
+    }
+  },
+  {
+    "path": "tmp/godot-checks/electric-trim-reuse-electric-propulsion-20261024/test-electric-propulsion-0wjczyn4/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "873de520-5f51-4b62-82d1-1ef91abd7cb7",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_electric_propulsion.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:11:54.550515+00:00",
+      "label": "test-electric-propulsion",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-electric-propulsion-20261024\\test-electric-propulsion-0wjczyn4\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-electric-propulsion-20261024\\test-electric-propulsion-0wjczyn4\\report.json",
+      "timeout_seconds": 120.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.984,
+      "log_bytes": 2133,
+      "log_sha256": "54dc24ba77613523f873847fe09254e4016bff8681bcfc2e8402d6c8c2c392ac"
+    }
+  },
+  {
+    "path": "tmp/godot-checks/electric-trim-reuse-focused-20261024/electric-trim-reuse-focused-javuyosp/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "2d52603a-bfa3-4a0b-a853-a6ea71dbf7ab",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--script",
+        "res://tests/test_electric_trim_reuse.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:10:54.694166+00:00",
+      "label": "electric-trim-reuse-focused",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-focused-20261024\\electric-trim-reuse-focused-javuyosp\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\electric-trim-reuse-focused-20261024\\electric-trim-reuse-focused-javuyosp\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 0.984,
+      "log_bytes": 1080,
+      "log_sha256": "ef2f61d595d6dcff09cabaa030c405bb74f9222712a680074d6da2d7d4fdab66"
+    }
+  },
+  {
+    "path": "tmp/godot-checks/launch-trim-cache-two-entry-koj8fre_/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "b52dc8dc-ab40-4f74-af84-03a2d6f3209a",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_launch_trim_cache.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:15:18.315447+00:00",
+      "label": "launch-trim-cache-two-entry",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\launch-trim-cache-two-entry-koj8fre_\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\launch-trim-cache-two-entry-koj8fre_\\report.json",
+      "timeout_seconds": 180.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 0,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "passed",
+      "detail": "",
+      "exit_code": 0,
+      "ok": true,
+      "elapsed_seconds": 3.437,
+      "log_bytes": 448,
+      "log_sha256": "d35426baf040fa61060606e18449cc27ee7c72376e9ac50cde2f65f0796c0112"
+    }
+  },
+  {
+    "path": "tmp/fly-implementation-20261024/combined-final/test_companions_profiles/godot-uagn7mpy/report.json",
+    "report": {
+      "format": "openrc-godot-check v1",
+      "capture_id": "157fdf7c-80c4-4a42-b938-4c2dfc2ca086",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_companions_profiles.gd"
+      ],
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "started_utc": "2026-10-24T23:21:56.271555+00:00",
+      "label": "godot",
+      "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_companions_profiles\\godot-uagn7mpy\\engine.log",
+      "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\fly-implementation-20261024\\combined-final\\test_companions_profiles\\godot-uagn7mpy\\report.json",
+      "timeout_seconds": 90.0,
+      "max_log_bytes": 8388608,
+      "warnings_as_errors": false,
+      "required_text": [],
+      "process_exit": 1,
+      "complete": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "diagnostics": [],
+      "missing_required_text": [],
+      "reason": "process_exit",
+      "detail": "",
+      "exit_code": 1,
+      "ok": false,
+      "elapsed_seconds": 1.25,
+      "log_bytes": 373,
+      "log_sha256": "6a69fcbf4a2eceffff860132d7d93e10ac82cceb6465316fede609dcfb192e04"
+    }
+  }
+]

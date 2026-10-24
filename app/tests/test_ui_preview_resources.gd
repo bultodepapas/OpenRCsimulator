@@ -40,6 +40,12 @@ func _run() -> void:
 	broker.request(paths[3], _complete.bind("d"))
 	await _drain(broker)
 	_check("resource cache is bounded to two", broker._resources.size() == 2 and not broker._resources.has(paths[2]))
+	broker.retain_loaded(paths[2], load(paths[2]) as PackedScene)
+	_check("foreground scene shares the two-resource bound", broker._resources.size() == 2
+		and broker._resources.has(paths[2]) and not broker._resources.has(paths[0]))
+	broker.request(paths[2], _complete.bind("foreground-cached"))
+	_check("foreground scene is reusable without a worker request", completions[-1] == "foreground-cached"
+		and broker._active_path.is_empty())
 	broker.request(paths[3], _complete.bind("cached"))
 	_check("cached resource completes synchronously", completions[-1] == "cached" and broker._active_path.is_empty())
 	broker.request(paths[1], _complete.bind("cancelled"))

@@ -1,0 +1,30 @@
+{
+  "finding": "Pre-existing controller source/profile mismatch, independent of the launch trim solver rebind. Do not update this separate qualification pin as a loading repair.",
+  "current_pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+  "revisions": [
+    {
+      "revision": "a92a3192c28d46dbf767464869be5654fe351fec",
+      "pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "profile_controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "matches": false
+    },
+    {
+      "revision": "8bbc27d93de84321f51895fc755c39a86f6960db",
+      "pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "profile_controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "matches": false
+    },
+    {
+      "revision": "4f64d030",
+      "pilot_sha256": "6c9eb4c53f4f80c284249fc143f976b2e5becc555a50ee415afe92bb8129b151",
+      "profile_controller_sha256": "3842cbdba80c7bef5041844132a811bfd27c1cb68de759ce06f39bb97ca1f024",
+      "matches": false
+    }
+  ],
+  "checked_profile_result": "solver identity gate passes; current Stik and Club profile validation fails on controller.sha256",
+  "solver_rebind_receipt": "docs/research/ai-companions/AFC-02/rebinds/2026-10-24-eab5dcbc-to-83b06513.json",
+  "rebind_python_tests": {
+    "tests": 9,
+    "result": "passed"
+  }
+}
