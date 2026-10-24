@@ -1,0 +1,59 @@
+# Independent AFC-02 parity check, one disposable copy of 4c760f66 without unreferenced app/assets,
+# pre-F4U wheel_profiles.json (98f4c84f); A = physics/sim/failures of ee054047, B = 4c760f66; candidate mode.
+phase A current 69bf5c78c4bab72460a7f31f0caf7f70b21051233089fae8d99a09429ffc7290 sources 133
+phase B current 3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1 sources 134
+compare AFC-04-R1_baseline_parallel-two-threats-ai A/B identical; B no retained replay; rows 997
+compare AFC-04-R1_baseline_parallel-two-threats-peer A/B identical; B no retained replay; rows 997
+compare AFC-04-R1_baseline_parallel-two-threats-player A/B identical; B no retained replay; rows 997
+compare AFC-04-R1_candidate_parallel-two-threats-ai A/B identical; B no retained replay; rows 2882
+compare AFC-04-R1_candidate_parallel-two-threats-peer A/B identical; B no retained replay; rows 2882
+compare AFC-04-R1_candidate_parallel-two-threats-player A/B identical; B no retained replay; rows 2882
+compare AFC-04-R2_baseline_seed-20261020-crossing-right-ai A/B identical; B = retained; rows 2440
+compare AFC-04-R2_baseline_seed-20261020-crossing-right-player-coupled A/B identical; B = retained; rows 2440
+compare AFC-04-R2_baseline_seed-20261020-crossing-right-player-exogenous A/B identical; B = retained; rows 2882
+compare AFC-04-R2_baseline_seed-20261021-crossing-left-ai A/B identical; B = retained; rows 2424
+compare AFC-04-R2_baseline_seed-20261021-crossing-left-player-coupled A/B identical; B = retained; rows 2424
+compare AFC-04-R2_baseline_seed-20261021-crossing-left-player-exogenous A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261020-crossing-right-ai A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261020-crossing-right-player-coupled A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261020-crossing-right-player-exogenous A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261021-crossing-left-ai A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261021-crossing-left-player-coupled A/B identical; B = retained; rows 2882
+compare AFC-04-R2_candidate_seed-20261021-crossing-left-player-exogenous A/B identical; B = retained; rows 2882
+SUMMARY identical=18 different=0
+A AFC-04-R1_baseline_parallel-two-threats-ai 0 complete=True solver_changed=True
+A AFC-04-R1_baseline_parallel-two-threats-peer 0 complete=True solver_changed=True
+A AFC-04-R1_baseline_parallel-two-threats-player 0 complete=True solver_changed=True
+A AFC-04-R1_candidate_parallel-two-threats-ai 0 complete=True solver_changed=True
+A AFC-04-R1_candidate_parallel-two-threats-peer 0 complete=True solver_changed=True
+A AFC-04-R1_candidate_parallel-two-threats-player 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261020-crossing-right-ai 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261020-crossing-right-player-coupled 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261020-crossing-right-player-exogenous 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261021-crossing-left-ai 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261021-crossing-left-player-coupled 0 complete=True solver_changed=True
+A AFC-04-R2_baseline_seed-20261021-crossing-left-player-exogenous 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261020-crossing-right-ai 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261020-crossing-right-player-coupled 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261020-crossing-right-player-exogenous 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261021-crossing-left-ai 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261021-crossing-left-player-coupled 0 complete=True solver_changed=True
+A AFC-04-R2_candidate_seed-20261021-crossing-left-player-exogenous 0 complete=True solver_changed=True
+B AFC-04-R1_baseline_parallel-two-threats-ai 0 complete=True solver_changed=True
+B AFC-04-R1_baseline_parallel-two-threats-peer 0 complete=True solver_changed=True
+B AFC-04-R1_baseline_parallel-two-threats-player 0 complete=True solver_changed=True
+B AFC-04-R1_candidate_parallel-two-threats-ai 0 complete=True solver_changed=True
+B AFC-04-R1_candidate_parallel-two-threats-peer 0 complete=True solver_changed=True
+B AFC-04-R1_candidate_parallel-two-threats-player 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261020-crossing-right-ai 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261020-crossing-right-player-coupled 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261020-crossing-right-player-exogenous 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261021-crossing-left-ai 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261021-crossing-left-player-coupled 0 complete=True solver_changed=True
+B AFC-04-R2_baseline_seed-20261021-crossing-left-player-exogenous 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261020-crossing-right-ai 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261020-crossing-right-player-coupled 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261020-crossing-right-player-exogenous 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261021-crossing-left-ai 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261021-crossing-left-player-coupled 0 complete=True solver_changed=True
+B AFC-04-R2_candidate_seed-20261021-crossing-left-player-exogenous 0 complete=True solver_changed=True

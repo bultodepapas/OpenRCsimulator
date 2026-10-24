@@ -58,21 +58,27 @@ func settle() -> void:
 func _release_audio_players(node: Node) -> void:
 	if node is AudioStreamPlayer3D:
 		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D
+		player_3d.set_process(false)
+		player_3d.set_physics_process(false)
 		player_3d.stop()
 		player_3d.stream = null
 	elif node is AudioStreamPlayer2D:
 		var player_2d: AudioStreamPlayer2D = node as AudioStreamPlayer2D
+		player_2d.set_process(false)
+		player_2d.set_physics_process(false)
 		player_2d.stop()
 		player_2d.stream = null
 	elif node is AudioStreamPlayer:
 		var player: AudioStreamPlayer = node as AudioStreamPlayer
+		player.set_process(false)
+		player.set_physics_process(false)
 		player.stop()
 		player.stream = null
 	for child: Node in node.get_children():
 		_release_audio_players(child)
 
 
-## Stop app-owned audio and drain one mixer interval before releasing the UI scene.
+## Quiesce app-owned audio players, drain one mixer interval, then release the UI scene.
 func close_app(app: Node) -> void:
 	app.set_process(false)
 	app.set_physics_process(false)
