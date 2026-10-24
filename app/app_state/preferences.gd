@@ -135,7 +135,7 @@ static func load_from(path: String) -> Dictionary:
 		prefs.weather_config = checked_weather.config.duplicate(true)
 	if cfg.has_section("hud"):
 		var hud := {}
-		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model"]:
+		for key: String in ["preset", "visible", "units", "stick_mode", "radio_model", "positions", "layout_locked", "widget_size", "widget_opacity", "widget_compact"]:
 			if cfg.has_section_key("hud", key):
 				hud[key] = cfg.get_value("hud", key)
 		prefs.hud = OverlaySettings.validate(hud)
@@ -269,6 +269,16 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("hud", "units", hud.units)
 	cfg.set_value("hud", "stick_mode", hud.stick_mode)
 	cfg.set_value("hud", "radio_model", hud.radio_model)
+	if hud.has("positions"):
+		cfg.set_value("hud", "positions", hud.positions)
+	if hud.has("layout_locked"):
+		cfg.set_value("hud", "layout_locked", hud.layout_locked)
+	if hud.has("widget_size"):
+		cfg.set_value("hud", "widget_size", hud.widget_size)
+	if hud.has("widget_opacity"):
+		cfg.set_value("hud", "widget_opacity", hud.widget_opacity)
+	if hud.has("widget_compact"):
+		cfg.set_value("hud", "widget_compact", hud.widget_compact)
 	var aircraft_ids: Array = liveries.keys()
 	aircraft_ids.sort()
 	for aircraft_id: String in aircraft_ids:

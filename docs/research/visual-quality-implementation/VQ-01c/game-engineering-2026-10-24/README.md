@@ -3,6 +3,9 @@
 Follow-up: [all nine airplane configurations tested](all-planes.md), with native
 frame-time screening, input checks and aircraft-specific performance findings.
 
+Further follow-up: [allocation and repeated-work reductions](helpers.md), including
+all-aircraft numeric parity and mixed native frame-time results.
+
 Two bounded changes survived the investigation: `Main._update_storm()` now reads
 the current atmosphere's sound speed without building a second full audio snapshot;
 `AppRoot._rebuild_home_scene()` now passes the selected livery to the replacement

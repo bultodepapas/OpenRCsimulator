@@ -1,17 +1,28 @@
 # Flight overlay settings (HUD-03/06): the overlay IDs, presets and validation shared by the overlay manager and the
-# preferences file. Pure; no nodes. A settings dictionary: { preset, visible: [ids], units, stick_mode, radio_model }.
+# preferences file. Pure; no nodes. A settings dictionary also accepts optional player widget layout and style keys.
 extends RefCounted
 
 const Units := preload("res://render/overlays/units.gd")
 
 ## BAT-15: "battery" is O9; it shows only when the aircraft has a dynamic battery.
-const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery"]
-const PRESET_ORDER := ["off", "pilot", "full", "developer"]
+const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery", "speed", "height", "power", "weather", "fuel", "trims", "engine"]
+const PLAYER_IDS := ["speed", "height", "power", "weather", "fuel", "trims", "engine"]
+const WIDGET_SIZES := ["small", "normal", "large"]
+const WIDGET_SIZE_SCALES := {"small": 0.85, "normal": 1.0, "large": 1.2}
+const DEFAULT_WIDGET_SIZE := "normal"
+const WIDGET_OPACITY_STEPS := [0.80, 0.94, 1.0]
+const DEFAULT_WIDGET_OPACITY := 0.94
+const WIDGET_OPACITY_MIN := 0.80
+const WIDGET_OPACITY_MAX := 1.0
+const DEFAULT_WIDGET_COMPACT := false
+const PRESET_ORDER := ["off", "pilot", "full", "developer", "player", "instruments"]
 const PRESETS := {
 	off = [],
 	pilot = ["flight", "transmitter", "warnings", "wind", "controls", "battery"],
 	full = ["flight", "transmitter", "warnings", "wind", "telemetry", "controls", "battery"],
 	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery"],
+	player = ["warnings", "speed", "height", "power", "weather"],
+	instruments = ["warnings", "speed", "height", "power", "weather", "fuel", "trims", "engine"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
 const RADIO_MODELS := ["jeti_ds24_ii", "radiolink_t16d"]
@@ -40,6 +51,33 @@ static func validate(value: Variant) -> Dictionary:
 	var radio_model: Variant = value.get("radio_model")
 	if typeof(radio_model) == TYPE_STRING and RADIO_MODELS.has(radio_model):
 		out.radio_model = radio_model
+	var widget_size: Variant = value.get("widget_size")
+	if typeof(widget_size) == TYPE_STRING and WIDGET_SIZES.has(widget_size):
+		out.widget_size = widget_size
+	var widget_opacity: Variant = value.get("widget_opacity")
+	if _is_finite_number(widget_opacity):
+		out.widget_opacity = clampf(float(widget_opacity), WIDGET_OPACITY_MIN, WIDGET_OPACITY_MAX)
+	var widget_compact: Variant = value.get("widget_compact")
+	if typeof(widget_compact) == TYPE_BOOL:
+		out.widget_compact = widget_compact
+	# These are optional so legacy settings keep their exact shape. Validate them before a preset returns early.
+	var raw_positions: Variant = value.get("positions")
+	if typeof(raw_positions) == TYPE_DICTIONARY:
+		var positions: Dictionary = {}
+		for id: String in PLAYER_IDS:
+			if not raw_positions.has(id):
+				continue
+			var raw_pair: Variant = raw_positions[id]
+			if typeof(raw_pair) != TYPE_ARRAY:
+				continue
+			var pair: Array = raw_pair
+			if pair.size() != 2 or not _is_finite_number(pair[0]) or not _is_finite_number(pair[1]):
+				continue
+			positions[id] = [clampf(float(pair[0]), 0.0, 1.0), clampf(float(pair[1]), 0.0, 1.0)]
+		out.positions = positions
+	var layout_locked: Variant = value.get("layout_locked")
+	if typeof(layout_locked) == TYPE_BOOL:
+		out.layout_locked = layout_locked
 	if out.preset != "custom":
 		out.visible = PRESETS[out.preset].duplicate()
 		return out
@@ -75,3 +113,8 @@ static func with_visible(settings: Dictionary, ids: Array) -> Dictionary:
 			next.visible.append(id)
 	next.preset = preset_for(next.visible)
 	return next
+
+
+static func _is_finite_number(value: Variant) -> bool:
+	var value_type: int = typeof(value)
+	return (value_type == TYPE_INT or value_type == TYPE_FLOAT) and is_finite(float(value))

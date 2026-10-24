@@ -4,13 +4,16 @@
 Reads the GLB directly (no Blender, no Godot) and checks the structural rules in docs/F4U-BLENDER-HANDOFF.md:
 ASCII unique node names, identity root, unit node scales, `openrc_section` extras on every mesh and pivot, no
 detachable ancestor capturing another section, required control pivots and gear helpers, paint-region materials,
-embedded images, no cameras/lights/animation/compression extensions, triangle/surface/material budgets, span and
-the stowed gear pose (no gear vertex more than 10 mm below the lowest airframe vertex, propeller excluded).
+embedded images, no cameras/lights/animation/compression extensions, triangle/surface/material budgets, span,
+the stowed gear pose (no gear vertex more than 10 mm below the lowest airframe vertex, propeller excluded) and,
+since F4U-18, outward-facing skins (Godot culls back faces, so an inside-out skin shows its far inner wall).
 
     python research/f4u-corsair/F4U-04/preflight_glb.py PATH/aircraft.glb [--report out.json]
+    python research/f4u-corsair/F4U-04/preflight_glb.py PATH/aircraft.glb --profile f4u-g2
     python research/f4u-corsair/F4U-04/preflight_glb.py PATH/other.glb --profile generic [--gear-stowed]
 
-`--profile f4u-g1` (default) applies every rule. `--profile generic` keeps only aircraft-independent rules, so the
+`--profile f4u-g1` (default) applies every rule with the g1 budgets; `f4u-g2` applies them with the budgets of
+request revision 4 (F4U-18). `--profile generic` keeps only aircraft-independent rules, so the
 counting code can be checked against the accepted Avanti and Timber assets; `--gear-stowed` adds the stowed-gear
 rule to it (the Avanti is exported stowed, the Timber has fixed gear). Exit status is 1 when any mandatory
 check fails, 2 on unreadable input. Python standard library only. A pass is software preflight, not acceptance.
@@ -50,12 +53,19 @@ GEAR_HELPERS = [f"gear_{kind}_{role}" for role in ("left", "right", "tail")
 PAINT_MATERIALS = ["paint_body", "paint_wing", "paint_wing_tip", "paint_tail"]
 SPAN_M = 12.5 / 4.5  # request revision 3: 1/4.5 of R59's 12.5 m span
 SPAN_TOLERANCE_M = 0.010
-TRIANGLE_CEILING = 150000
-TRIANGLE_TARGET = 100000
-SURFACE_TARGET = 60
-MATERIAL_TARGET = 24
-IMAGE_MAX_PX = 2048
+# Budgets per tier: section 8 of the request for g1, revision 4 for g2.
+BUDGETS = {
+    "f4u-g1": {"triangle_ceiling": 150000, "triangle_target": 100000, "surfaces": 60, "materials": 24, "image_px": 2048},
+    "f4u-g2": {"triangle_ceiling": 450000, "triangle_target": 350000, "surfaces": 70, "materials": 16, "image_px": 4096},
+}
 GEAR_STOWED_TOLERANCE_M = 0.010
+# Outward-facing skins (F4U-18). The fuselage is measured about the thrust axis (the glTF Z axis through D0) and
+# closed shells about their own centroid, as area shares. Accepted values: R59's fuselage 0.88, shells 0.86-1.00;
+# the inside-out g1 fuselage measures 0.14. The cowl ring and wing centre (well liners) have no clear outside.
+FUSELAGE = "fuselage_core"
+CLOSED_SHELLS = ["wing_left_fixed", "wing_right_fixed", "stabilizer_fixed", "fin_fixed", "elevator", "rudder",
+                 "aileron_left", "aileron_right"] + [f"flap_{side}_{i}" for side in ("left", "right") for i in (1, 2, 3)]
+OUTWARD_MIN = 0.6
 COMPONENTS = {5120: ("b", 1), 5121: ("B", 1), 5122: ("h", 2), 5123: ("H", 2), 5125: ("I", 4), 5126: ("f", 4)}
 TYPE_WIDTH = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4, "MAT4": 16}
 
@@ -122,6 +132,36 @@ def node_scale_ok(node):
     return all(abs(value - 1.0) < 1e-6 for value in node.get("scale", [1.0, 1.0, 1.0]))
 
 
+def outward_share(gltf, binary, node, matrix, about_axis):
+    """Area share of a mesh's triangles whose winding normal points away from the thrust axis or the centroid."""
+    triangles = []
+    for primitive in gltf["meshes"][node["mesh"]]["primitives"]:
+        points = [[matrix[r][0] * x + matrix[r][1] * y + matrix[r][2] * z + matrix[r][3] for r in range(3)]
+                  for x, y, z in accessor_values(gltf, binary, primitive["attributes"]["POSITION"])]
+        if "indices" in primitive:
+            flat = [row[0] for row in accessor_values(gltf, binary, primitive["indices"])]
+        else:
+            flat = list(range(len(points)))
+        triangles += [(points[flat[i]], points[flat[i + 1]], points[flat[i + 2]]) for i in range(0, len(flat) - 2, 3)]
+    records = []
+    for a, b, c in triangles:
+        u = [b[k] - a[k] for k in range(3)]
+        v = [c[k] - a[k] for k in range(3)]
+        cross = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
+        area = 0.5 * math.sqrt(sum(value * value for value in cross))
+        records.append((cross, [(a[k] + b[k] + c[k]) / 3 for k in range(3)], area))
+    total = sum(area for _, _, area in records)
+    if total <= 0:
+        return None
+    centroid = [sum(centre[k] * area for _, centre, area in records) / total for k in range(3)]
+    outward = 0.0
+    for cross, centre, area in records:
+        away = [centre[0], centre[1], 0.0] if about_axis else [centre[k] - centroid[k] for k in range(3)]
+        if sum(cross[k] * away[k] for k in range(3)) > 0:
+            outward += area
+    return outward / total
+
+
 def png_size(blob):
     if blob[:8] == b"\x89PNG\r\n\x1a\n":
         return struct.unpack(">II", blob[16:24])
@@ -139,6 +179,7 @@ def png_size(blob):
 def inspect(path, profile, gear_stowed=None):
     gltf, binary = read_glb(path)
     failures, warnings = [], []
+    strict = profile in BUDGETS
     nodes = gltf.get("nodes", [])
     names = [node.get("name", "") for node in nodes]
     parent = {}
@@ -149,7 +190,7 @@ def inspect(path, profile, gear_stowed=None):
     for index, name in enumerate(names):
         if not name or not name.isascii() or not re.fullmatch(r"[A-Za-z0-9_]+", name):
             failures.append(f"node {index} name {name!r} is not ASCII [A-Za-z0-9_]")
-        elif re.search(r"_\d{3}$|\.\d{3}$", name) and profile == "f4u-g1":
+        elif re.search(r"_\d{3}$|\.\d{3}$", name) and strict:
             failures.append(f"node {name} ends with an automatic numeric suffix")
     duplicates = sorted({name for name in names if names.count(name) > 1})
     if duplicates:
@@ -167,7 +208,7 @@ def inspect(path, profile, gear_stowed=None):
         identity = local_matrix(nodes[root])
         if any(abs(identity[r][c] - (1.0 if r == c else 0.0)) > 1e-9 for r in range(4) for c in range(4)):
             failures.append(f"root {names[root]} is not an identity transform")
-        if profile == "f4u-g1" and names[root] != ROOT_NAME:
+        if strict and names[root] != ROOT_NAME:
             failures.append(f"root is named {names[root]!r}, expected {ROOT_NAME!r}")
 
     for key, label in (("cameras", "cameras"), ("animations", "animations")):
@@ -205,7 +246,7 @@ def inspect(path, profile, gear_stowed=None):
                 failures.append(f"{value} node {names[index]} captures {sections[child]} node {names[child]}")
 
     by_name = {name: index for index, name in enumerate(names)}
-    if profile == "f4u-g1":
+    if strict:
         for pivot, child in PIVOTS.items():
             if pivot not in by_name or child not in by_name:
                 failures.append(f"missing pivot pair {pivot} -> {child}")
@@ -277,7 +318,7 @@ def inspect(path, profile, gear_stowed=None):
     length = high[2] - low[2]
     # Stowed gear: retracted carriers sit inside the wing and fuselage, so no gear vertex hangs below the airframe.
     airframe_low = min((v for key, v in lowest.items() if key not in ("gear", "propeller")), default=math.inf)
-    if (profile == "f4u-g1" if gear_stowed is None else gear_stowed) and "gear" in lowest:
+    if (strict if gear_stowed is None else gear_stowed) and "gear" in lowest:
         drop = airframe_low - lowest["gear"]
         if drop > GEAR_STOWED_TOLERANCE_M:
             failures.append(f"gear reaches {drop:.3f} m below the lowest airframe vertex: export the GLB with the gear "
@@ -292,19 +333,33 @@ def inspect(path, profile, gear_stowed=None):
         start = view.get("byteOffset", 0)
         size = png_size(binary[start:start + view["byteLength"]])
         images.append({"name": image.get("name", ""), "mime": image.get("mimeType", ""), "size": size})
-        if size and max(size) > IMAGE_MAX_PX:
-            warnings.append(f"image {image.get('name', '?')} is {size[0]}x{size[1]}, above {IMAGE_MAX_PX}")
+        image_px = BUDGETS.get(profile, BUDGETS["f4u-g1"])["image_px"]
+        if size and max(size) > image_px:
+            warnings.append(f"image {image.get('name', '?')} is {size[0]}x{size[1]}, above {image_px}")
+
+    orientation = {}
+    if strict:
+        for name in [FUSELAGE] + CLOSED_SHELLS:
+            if name in by_name and "mesh" in nodes[by_name[name]] and by_name[name] in world:
+                share = outward_share(gltf, binary, nodes[by_name[name]], world[by_name[name]], name == FUSELAGE)
+                if share is None:
+                    continue
+                orientation[name] = round(share, 3)
+                if share < OUTWARD_MIN:
+                    failures.append(f"{name} is inside out: only {share:.0%} of its area faces outward "
+                                    f"(minimum {OUTWARD_MIN:.0%}); reverse its faces")
 
     materials = len(gltf.get("materials", []))
-    if profile == "f4u-g1":
-        if triangles > TRIANGLE_CEILING:
-            failures.append(f"{triangles} triangles exceed the {TRIANGLE_CEILING} ceiling")
-        elif triangles > TRIANGLE_TARGET:
-            warnings.append(f"{triangles} triangles exceed the {TRIANGLE_TARGET} target")
-        if surfaces > SURFACE_TARGET:
-            warnings.append(f"{surfaces} surfaces exceed the {SURFACE_TARGET} target; the delivery must state why")
-        if materials > MATERIAL_TARGET:
-            warnings.append(f"{materials} materials exceed the {MATERIAL_TARGET} target")
+    if strict:
+        budget = BUDGETS[profile]
+        if triangles > budget["triangle_ceiling"]:
+            failures.append(f"{triangles} triangles exceed the {budget['triangle_ceiling']} ceiling")
+        elif triangles > budget["triangle_target"]:
+            warnings.append(f"{triangles} triangles exceed the {budget['triangle_target']} target")
+        if surfaces > budget["surfaces"]:
+            warnings.append(f"{surfaces} surfaces exceed the {budget['surfaces']} target; the delivery must state why")
+        if materials > budget["materials"]:
+            warnings.append(f"{materials} materials exceed the {budget['materials']} target")
         if abs(span - SPAN_M) > SPAN_TOLERANCE_M:
             failures.append(f"span {span:.4f} m differs from {SPAN_M} m by more than {SPAN_TOLERANCE_M} m")
 
@@ -318,6 +373,7 @@ def inspect(path, profile, gear_stowed=None):
                      "lowest_up_by_section": {key: round(v, 6) for key, v in sorted(lowest.items())}},
         "sections": sorted({value for value in sections.values()}),
         "extensions_used": sorted(used),
+        "outward_share": orientation,
         "meshes": mesh_stats, "images": images,
     }
 
@@ -325,7 +381,7 @@ def inspect(path, profile, gear_stowed=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("glb")
-    parser.add_argument("--profile", choices=("f4u-g1", "generic"), default="f4u-g1")
+    parser.add_argument("--profile", choices=("f4u-g1", "f4u-g2", "generic"), default="f4u-g1")
     parser.add_argument("--gear-stowed", action="store_true", help="apply the stowed-gear rule in the generic profile")
     parser.add_argument("--report", help="write the full JSON report here")
     args = parser.parse_args()

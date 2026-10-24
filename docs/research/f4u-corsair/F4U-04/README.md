@@ -22,6 +22,8 @@ It is not taken into `assets/source-deliveries/`: the accepted revision will be,
 
 Neither the author's verifier nor this preflight checked the exported gear pose. The preflight now does: no gear vertex may lie more than 10 mm below the lowest airframe vertex, propeller excluded (the default in the strict profile, `--gear-stowed` in the generic one). On the repository's assets it passes the Avanti (exported stowed) and rejects the fixed-gear Timber. The mutation suite gained the Timber and Avanti cases and an Avanti main gear moved 0.1 m down: 12 of 12 pass. The span rule follows revision 3 (12.5 m / 4.5 = 2.778 m).
 
+**2026-10-24 (F4U-18):** the strict profiles also require outward-facing skins. `fuselage_core` is measured about the thrust axis, and the outer wing panels, tail and control surfaces about their own centroids; each needs at least 60 % of its area facing outward. The shipped g1.13 fails only this rule (`fuselage_core` 14 %), and so do all twelve g1.21 liveries. A `f4u-g2` profile applies the budgets of [request revision 4](../../../F4U-BLENDER-HANDOFF.md#revision-4-fuselage-fix-and-a-g2-detail-tier). The suite adds four cases: the shipped Corsair fails only the fuselage rule, the same file with the fuselage winding reversed passes `f4u-g1` and `f4u-g2`, and an inside-out outer wing panel is rejected. 16 of 16 pass. [F4U-18](../F4U-18/README.md)
+
 Under revision 3 the preflight rejects g1.2 for exactly the two requested changes: `gear reaches 0.267 m below the lowest airframe vertex` and `span 2.5000 m differs from 2.7778 m`.
 
 ## g1.3: accepted, 2026-10-22

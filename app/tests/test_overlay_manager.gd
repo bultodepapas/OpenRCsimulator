@@ -196,10 +196,10 @@ func _manager() -> void:
 	manager.cycle_preset()
 	_check("F2 after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
 	var order: Array = []
-	for i in 4:
+	for i in 6:
 		manager.cycle_preset()
 		order.append(manager.settings.preset)
-	_check("F2 cycles Pilot → Full → Developer → Off", order == ["pilot", "full", "developer", "off"], str(order))
+	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Off", order == ["pilot", "full", "developer", "player", "instruments", "off"], str(order))
 	manager.set_preset("pilot")
 	manager.toggle_developer()
 	_check("F3 adds diagnostics and performance", manager.is_overlay_visible("diagnostics") and manager.is_overlay_visible("performance") and manager.settings.preset == "custom")
@@ -250,7 +250,7 @@ func _all_close_buttons() -> void:
 	await process_frame
 	await process_frame
 	_check("diagnostics and guide are separate at 1080p", not manager.frames.diagnostics.get_global_rect().intersects(manager.frames.controls.get_global_rect()))
-	for id: String in Settings.IDS:
+	for id: String in Settings.PRESETS.developer:
 		var before: Array = manager.settings.visible.duplicate()
 		var button: Button = manager.frames[id].close_button
 		_check(id + " close target is on screen", Rect2(Vector2.ZERO, Vector2(1920, 1080)).encloses(button.get_global_rect()))

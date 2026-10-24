@@ -1,0 +1,500 @@
+{
+  "scope": "Method costs only; no whole-frame gain established",
+  "glow": {
+    "checksum": 14574,
+    "comparator_nan_signed_zero_control": true,
+    "comparison_count": 103,
+    "complete": true,
+    "correctness_only": false,
+    "failures": 0,
+    "format": "openrc-glow-feed-reuse-probe v1",
+    "os": "Windows",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+    "seed": 20261024,
+    "source_sha256": {
+      "C:/DEVELOPMENT/OpenRCsimulator/research/performance/glow_feed_reuse_probe.gd": "5b3acfff668213614cb221a368a7a06c0b997f75c26c04825c3030cf884b75a6",
+      "D:/OpenRCsimulator-evidence/optimization-20261024-code/glow_flight_before.gd": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+      "D:/OpenRCsimulator-evidence/optimization-20261024-code/glow_flight_candidate.gd": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+      "res://data/aircraft/gp_extra_300s_60.json": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f",
+      "res://data/aircraft/stik_glow_55ax_2t.json": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
+      "res://data/aircraft/stik_glow_61fx_2t.json": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
+      "res://data/aircraft/stik_glow_fs64v_4t.json": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796",
+      "res://physics/glow/flight.gd": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+      "res://physics/glow/fuel_feed.gd": "343cbfa7b1f651ac60635ac873e122a3fd99524e634e7712b57ef90e3b04b6f4",
+      "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f"
+    }
+  },
+  "glow_aircraft": [
+    {
+      "id": "55AX",
+      "benchmark": {
+        "batches": 9,
+        "owners_match": true,
+        "owners_unchanged": true,
+        "results": {
+          "evaluate": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 341.39,
+            "candidate_us_per_call": [
+              338.14,
+              344.65,
+              385.65,
+              535.42,
+              354.24,
+              336.57,
+              335.07,
+              334.06,
+              341.39
+            ],
+            "reference_median_us": 366.37,
+            "reference_us_per_call": [
+              361.26,
+              409.1,
+              387.74,
+              411.5,
+              379.01,
+              363.99,
+              361.44,
+              363.71,
+              366.37
+            ]
+          },
+          "point_coupled": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 329.23,
+            "candidate_us_per_call": [
+              328.36,
+              333.84,
+              341.77,
+              346.69,
+              326.58,
+              328.49,
+              329.23,
+              329.61,
+              325.99
+            ],
+            "reference_median_us": 357.46,
+            "reference_us_per_call": [
+              357.46,
+              365.02,
+              355.8,
+              362.8,
+              353.9,
+              353.89,
+              367.22,
+              357.75,
+              357.38
+            ]
+          }
+        },
+        "warmup_calls_per_operation": 8
+      }
+    },
+    {
+      "id": "FS64V",
+      "benchmark": {
+        "batches": 9,
+        "owners_match": true,
+        "owners_unchanged": true,
+        "results": {
+          "evaluate": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 327.49,
+            "candidate_us_per_call": [
+              325.21,
+              328.34,
+              327.49,
+              326.2,
+              330.17,
+              325.05,
+              333.06,
+              328.66,
+              327.06
+            ],
+            "reference_median_us": 353.05,
+            "reference_us_per_call": [
+              354.4,
+              355.99,
+              353.05,
+              352.6,
+              352.66,
+              355.96,
+              360.3,
+              352.94,
+              351.71
+            ]
+          },
+          "point_coupled": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 320.57,
+            "candidate_us_per_call": [
+              324.13,
+              320.57,
+              324.7,
+              318.38,
+              315.67,
+              317.49,
+              340.04,
+              327.25,
+              317.85
+            ],
+            "reference_median_us": 345.86,
+            "reference_us_per_call": [
+              344.74,
+              349.02,
+              347.64,
+              345.86,
+              344.38,
+              348.84,
+              367.53,
+              342.87,
+              344.43
+            ]
+          }
+        },
+        "warmup_calls_per_operation": 8
+      }
+    },
+    {
+      "id": "61FX",
+      "benchmark": {
+        "batches": 9,
+        "owners_match": true,
+        "owners_unchanged": true,
+        "results": {
+          "evaluate": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 555.84,
+            "candidate_us_per_call": [
+              559.59,
+              551.77,
+              553.61,
+              554.65,
+              553.07,
+              556.65,
+              565.46,
+              556.3,
+              555.84
+            ],
+            "reference_median_us": 581.37,
+            "reference_us_per_call": [
+              586.06,
+              581.37,
+              578.06,
+              591.52,
+              579.97,
+              580.09,
+              576.84,
+              586.01,
+              581.78
+            ]
+          },
+          "point_coupled": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 549.3,
+            "candidate_us_per_call": [
+              549.24,
+              549.3,
+              545.15,
+              544.78,
+              547.12,
+              576.76,
+              565.88,
+              567.91,
+              584.13
+            ],
+            "reference_median_us": 577.96,
+            "reference_us_per_call": [
+              581.8,
+              577.19,
+              570.47,
+              570.86,
+              591.13,
+              608.67,
+              638.7,
+              575.2,
+              577.96
+            ]
+          }
+        },
+        "warmup_calls_per_operation": 8
+      }
+    },
+    {
+      "id": "Extra",
+      "benchmark": {
+        "batches": 9,
+        "owners_match": true,
+        "owners_unchanged": true,
+        "results": {
+          "evaluate": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 372.32,
+            "candidate_us_per_call": [
+              369.66,
+              372.87,
+              369.28,
+              370.75,
+              388.03,
+              370.19,
+              372.32,
+              373.8,
+              381.76
+            ],
+            "reference_median_us": 370.69,
+            "reference_us_per_call": [
+              377.84,
+              369.53,
+              367.69,
+              370.69,
+              372.39,
+              367.93,
+              370.61,
+              388.45,
+              374.44
+            ]
+          },
+          "point_coupled": {
+            "batch_order": [
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate",
+              "candidate_then_reference",
+              "reference_then_candidate"
+            ],
+            "calls_per_batch": 100,
+            "candidate_median_us": 131.88,
+            "candidate_us_per_call": [
+              131.37,
+              140.35,
+              139.7,
+              135.37,
+              130.04,
+              130.75,
+              131.88,
+              144.45,
+              129.82
+            ],
+            "reference_median_us": 130.91,
+            "reference_us_per_call": [
+              131.93,
+              136.19,
+              134.56,
+              130.63,
+              129.9,
+              130.91,
+              130.09,
+              130.9,
+              138.51
+            ]
+          }
+        },
+        "warmup_calls_per_operation": 8
+      }
+    }
+  ],
+  "rotation": {
+    "before_sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "after_sha256": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+    "exact_cases": 10021,
+    "output_sha256": "cf35465711d0399e67c051a8c52818a77172a050ab9e0a80cc623e094d80608c",
+    "calls_per_batch": 10000,
+    "warmup_calls": 1000,
+    "reference_batch_usec": [
+      34140,
+      33915,
+      34221,
+      34445,
+      34191,
+      34224,
+      34627,
+      34801,
+      33670
+    ],
+    "candidate_batch_usec": [
+      8027,
+      7967,
+      8030,
+      7827,
+      7945,
+      7894,
+      7619,
+      7839,
+      7648
+    ],
+    "order": "alternating AB/BA",
+    "median_before_usec_per_call": 3.4221,
+    "median_after_usec_per_call": 0.7894,
+    "runtime_bit_fixture_control": true,
+    "strengthened_diff_probe": "D:/OpenRCsimulator-evidence/optimization-20261024-code/math3d_diff_runtime_bits.gd",
+    "permanent_math_checks": 20
+  },
+  "fleet": {
+    "scope": "Numeric fingerprint parity; observer disabled, no timing claim",
+    "results": [
+      {
+        "aircraft": "f4u-corsair-250",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "896e71f4bfe448f79c11a3f04b52c0fc0aeac4a0f8bd8e030879df828f578e6e"
+      },
+      {
+        "aircraft": "gp-extra-300s-60",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "72b5b610ceccb42aff9c9fddd4e88190e6e9efa33a83ba980e51ef9656941d0a"
+      },
+      {
+        "aircraft": "jensen-das-ugly-stik-60",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "b0594ecdee698411cedc23a60d1ddda5e565df8454937fd973dd7278ecf250b9"
+      },
+      {
+        "aircraft": "p51d-mustang-120",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "cf73d8f436b8e6e1081e41dbda31ab02498df5b738416b5a80bb936274b5ef87"
+      },
+      {
+        "aircraft": "sebart-avanti-s-a200-p100rx",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "b482e2ab146bed23a9f0228867d135a4f4dd49c69f77b1e9d87cf0865afa2595"
+      },
+      {
+        "aircraft": "stik-glow-55ax-2t",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "dd64cd4e1c1cbf12409f2c3e569af663898911f57e4400a091a646953c22c004"
+      },
+      {
+        "aircraft": "stik-glow-61fx-2t",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "f8d5e8afab432f984ddc472fa066539999538cb5cfadf6ee02af593de4846842"
+      },
+      {
+        "aircraft": "stik-glow-fs64v-4t",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "b317cef0fe3f5968b16f984f99ea836a792b7a4c87e5bc32898b6dacc1ebd798"
+      },
+      {
+        "aircraft": "turbo-lumber-evolution",
+        "equal": true,
+        "ticks": {
+          "sample_ticks": 1200,
+          "warmup_ticks": 240
+        },
+        "fingerprint": "b8e6f1923c3526362187262ea486795eccea05201edcc2891021e4e9f07bc281"
+      }
+    ]
+  },
+  "raw_local_root": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code"
+}

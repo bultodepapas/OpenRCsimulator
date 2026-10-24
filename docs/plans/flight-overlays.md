@@ -1,13 +1,13 @@
 # Flight overlays plan
 
-**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-05-R1/R2 add selectable JETI and Radiolink views; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-12 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
+**Date:** 2026-10-13. **Status:** HUD-00…10 implemented (b0b0347); HUD-11 done with 720p and 1080p rendered captures; HUD-05-R1/R2 add selectable JETI and Radiolink views; HUD-13 implements movable player instruments; HUD-12 waits for owner reading on target hardware. **Prefix:** HUD-00…HUD-13 ([registry](../README.md#tracks-plans-and-step-ids)). **Owner:** flight-overlays track, under the main line's acceptance. Supersedes [MENU-REDESIGN-PLAN](../MENU-REDESIGN-PLAN.md) UI-27 (D1).
 **Owns:** `app/render/overlays/`, `app/ui/overlays_dialog.gd`, `app/tests/test_overlay_*.gd`, `docs/research/flight-overlays/`.
 **Coordinated, not owned:** the seams in `app/main.gd` (main line), `app/app_root.gd`, `app/ui/pause_menu.gd`, `app/ui/controls_reference.gd`, `app/app_state/preferences.gd`, `app/i18n/es.po` (menu track). `render/hud.gd` and `render/panel.gd` are unchanged and still build the diagnostic text.
 **Evidence:** [HUD-01…10](../research/flight-overlays/HUD-01-10/README.md), [HUD-05-R1](../research/flight-overlays/HUD-05-R1/README.md), [HUD-05-R2](../research/flight-overlays/HUD-05-R2/README.md).
 
 ## 1. What exists
 
-Home flights provide nine independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus. Diagnostics docks beside the control guide and below active warning chips to keep their headers accessible.
+Home flights provide nine legacy overlays and seven player instruments on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus. Diagnostics docks beside the control guide and below active warning chips to keep their headers accessible.
 
 | ID | Overlay | Anchor | Content |
 | --- | --- | --- | --- |
@@ -21,7 +21,7 @@ Home flights provide nine independent overlays on one `CanvasLayer` (`render/ove
 | O8 | Control guide | top left | keyboard reference and active controller axes/buttons/AUX; aircraft equipment availability, accepted gear status and smoke output; scrollable, with device tabs and existing Kenney prompts |
 | O9 | Battery (BAT-15) | right | finite packs only: pack V, V/cell and lowest cell, A, W, temperature, used/rated mAh, radio-side %, ESC LVC chip, 60 s V/A sparklines; compact line in Pilot. Owned by the [battery plan](battery-realism.md); [evidence](../research/battery/BAT-15/README.md) |
 
-Presets: Off, Pilot (O1–O4 + O8, default), Full (O1–O5 + O8), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode and previews them live above the paused flight. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it). Named presets include the guide; saved custom sets retain their explicit visibility choices.
+Presets: Off, Pilot (O1–O4 + O8, default), Full (O1–O5 + O8), Developer (all legacy overlays), Player (four core HUD-13 instruments + warnings), All instruments (seven + warnings), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer → Player → All instruments; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode and previews them live above the paused flight. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it). Legacy named presets include the guide; saved custom sets retain their explicit visibility choices.
 
 Pause → **Flight overlays** → **Radio appearance** selects JETI DS-24 II or Radiolink T16D. The choice is saved in `[hud]` and changes O2 immediately. It affects the illustration only; the device profile and control mapping remain independent.
 
@@ -70,6 +70,8 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-11-R1 | Visual review repairs: "-0°", wind jitter, warning wrap, dialog preview, hint and latency-marker placement | [review](../research/flight-overlays/HUD-01-10/README.md#visual-review-and-repairs-2026-10-13-hud-11-r1) / done |
 | HUD-11-R2 | Default-open controls guide, profile-aware prompts, keyboard reference, close/reopen and Spanish copy | [verification](../research/flight-overlays/HUD-01-10/README.md#controls-guide-2026-10-15-hud-11-r2) / done |
 | HUD-12 | Cost and pilot acceptance | VM (no GPU): ≈ 60 µs mean per frame, ≈ 0.26 ms on the 10 Hz refresh frames / owner reads Pilot preset in flight at 720p and 1080p: pending |
+| HUD-13 | Player instruments, flight maximum, bounded dragging, persistent positions, lock/reset and independent switches/× | [Focused checks and native 1080p review](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13) / implemented |
+| HUD-13-R1 | Fuel, trims, engine, size/background/compact settings, crisp scaled text and cached drawing | [Verification](../research/flight-overlays/HUD-01-10/README.md#expanded-instruments-2026-10-24-hud-13-r1) / implemented |
 
 ## 3. Decisions
 
@@ -82,9 +84,25 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | D5 | Stall source | Aircraft envelope `a1`/`n1`, 2° margin |
 | D6 | Height reference | Above the ground under the aircraft |
 
-## 4. Open work and limits
+## 4. Player instruments and remaining limits
+
+### HUD-13 — Player instruments (2026-10-24)
+
+Visual thesis: restrained charcoal instruments with large white readings, a warm accent, and a clear central flight view. Reuse the existing Godot theme, telemetry, unit conversions and battery sensors; no downloaded art or replacement UI framework is needed.
+
+Content: four core instruments — airspeed with sampled flight maximum and ground speed; height above terrain with climb, distance and flight time; estimated battery remaining or accepted finite-fuel level; wind speed and a north-referenced direction dial. HUD-13-R1 adds fuel percentage/volume/mass/reserve, three signed trim axes, and engine RPM/throttle command/flight load. Unknown/unavailable readings stay explicit. Existing diagnostic overlays remain separate.
+
+Interaction: drag the header with bounded movement and save on release; hover and dragging highlight the handle; instrument arcs and bars update with accepted telemetry. No ornamental animation or continuous hidden redraws. A Player preset opts into these instruments; existing saved/custom layouts remain valid. Options provide individual switches, position locking and reset layout. Close buttons never take flight keyboard focus.
+
+Implemented in `player_instrument.gd`: `speed`, `height`, `power`, `weather`, `fuel`, `trims` and `engine`. Coordinates use normalized available travel inside a 12 px viewport margin, accounting for the chosen widget scale. Settings accept only finite numeric pairs for these IDs. Saving occurs on drag release, not each motion. Existing 10 Hz snapshots feed visible instruments; battery readings share the existing sensor instance. The recent-speed graph is a 120-sample circular buffer. Each instrument skips unchanged relevant data, including paused snapshots; hidden instruments skip refresh. Session reset clears sampled extrema and sensor history; maximum speed continues sampling while its widget is closed. No per-frame widget polling is needed.
+
+HUD-13-R1 appearance options apply to player instruments only: sizes 85/100/120%, background opacity 80/94/100%, and compact density. The minimum opacity preserves secondary text contrast against bright sky; text itself stays opaque. A shared, flight-owned MSDF copy of the bundled font keeps scaled text sharp without changing other UI or retaining a static font resource after teardown. Compact mode retains numerical details, status and trim bars. The All instruments default leaves the centre clear and raises Trims above the bottom-centre notices. Fuel uses `fuel_remaining_kg`, never live aircraft mass or an inferred voltage percentage; no unsupported flow/endurance is invented. RPM is the existing fixed-wing engine value (propeller shaft or turbine spool), not a general cross-vehicle auxiliary-index contract.
+
+See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.
+
+References: [EdgeTX widgets](https://manual.edgetx.org/v2.10/color-radios/screen-settings/widgets), [flight extrema](https://manual.edgetx.org/v2.10/color-radios/model-settings/telemetry/common-telemetry-sensors), and [Godot Control input](https://docs.godotengine.org/en/stable/classes/class_control.html). The design adopts configurable sensor widgets and flight-scoped maxima; it retains this simulator's existing charge-estimation policy rather than inferring percentage from voltage.
 
 - Pilot reading at 720p and 1080p on target hardware (HUD-12).
 - The developer preset may overlap at 720p with long diagnostic lines; only "on screen" is checked there.
-- Overlays have fixed anchors; dragging and per-overlay scale are not implemented.
+- Legacy overlays retain fixed anchors. Player instruments support dragging and a common size setting; individual per-widget scale is not implemented. Compact mode is the dense-layout fallback at 720p; custom placement can overlap.
 - Warning thresholds and the transmitter view are presentation aids, not validated against a real flight.

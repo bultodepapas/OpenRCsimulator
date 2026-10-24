@@ -138,9 +138,15 @@ static func q_normalized(q: PackedFloat64Array) -> PackedFloat64Array:
 
 ## Rotate a body-frame vector into the world frame: v' = q v q*.
 static func q_rotate(q: PackedFloat64Array, v: PackedFloat64Array) -> PackedFloat64Array:
-	var u := v3(q[1], q[2], q[3])
-	var t := scale(cross(u, v), 2.0)
-	return add(add(v, scale(t, q[0])), cross(u, t))
+	var tx: float = (q[2] * v[2] - q[3] * v[1]) * 2.0
+	var ty: float = (q[3] * v[0] - q[1] * v[2]) * 2.0
+	var tz: float = (q[1] * v[1] - q[2] * v[0]) * 2.0
+	# Preserve the helper sequence's (v + t * q[0]) + cross(u, t) grouping.
+	return v3(
+		(v[0] + tx * q[0]) + (q[2] * tz - q[3] * ty),
+		(v[1] + ty * q[0]) + (q[3] * tx - q[1] * tz),
+		(v[2] + tz * q[0]) + (q[1] * ty - q[2] * tx),
+	)
 
 
 static func q_from_axis_angle(axis: PackedFloat64Array, angle: float) -> PackedFloat64Array:
