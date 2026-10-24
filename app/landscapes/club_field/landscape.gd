@@ -12,5 +12,9 @@ static func build(field: Dictionary, lighting: Dictionary = {}) -> Node3D:
 	return Field.build(field, lighting)
 
 
+static func build_staged(field: Dictionary, lighting: Dictionary, checkpoint: Callable) -> Node3D:
+	return await Field.build_staged(field, lighting, [], checkpoint)
+
+
 static func collision_world(field: Dictionary) -> Dictionary:
 	return CollisionSetup.build(field)

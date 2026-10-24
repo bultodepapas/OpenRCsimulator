@@ -31,6 +31,16 @@ static func build(id: String, field: Dictionary, lighting: Dictionary = {}) -> N
 	return adapter.build(field, lighting) if adapter != null else null
 
 
+## Builders that support checkpoints yield on the main thread; simple landscapes retain their normal builder.
+static func build_staged(id: String, field: Dictionary, lighting: Dictionary, checkpoint: Callable) -> Node3D:
+	var adapter: Variant = _adapter(id)
+	if adapter == null:
+		return null
+	if adapter.has_method("build_staged"):
+		return await adapter.build_staged(field, lighting, checkpoint)
+	return adapter.build(field, lighting)
+
+
 static func collision_world(id: String, field: Dictionary) -> Dictionary:
 	var adapter: Variant = _adapter(id)
 	if adapter != null:

@@ -429,12 +429,16 @@ static func _build_field_stage(context: Dictionary) -> void:
 	var build_field: Callable = context.build_field
 	if build_field.is_valid():
 		build_field.call()
+		var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
+		_finish_field_stage(context, started, elapsed_ms, elapsed_ms)
 	else:
 		var field_node: Node3D = FieldBuilder.build(context.field, context.lighting)
+		var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
 		context.field_node = field_node
 		if field_node != null:
 			context.parent.add_child(field_node)
-	_finish_field_stage(context, started, (Time.get_ticks_usec() - started) / 1000.0)
+		var wall_ms := (Time.get_ticks_usec() - started) / 1000.0
+		_finish_field_stage(context, started, elapsed_ms, wall_ms)
 
 
 static func _build_field_stage_async(context: Dictionary) -> bool:
@@ -443,16 +447,19 @@ static func _build_field_stage_async(context: Dictionary) -> bool:
 	var callback_result: Variant = null
 	if build_field.is_valid():
 		callback_result = await build_field.call()
+		var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
+		var synchronous_ms := elapsed_ms
+		if callback_result is Dictionary and _finite_number(callback_result.get("field_build_ms", NAN)):
+			synchronous_ms = maxf(float(callback_result.field_build_ms), 0.0)
+		_finish_field_stage(context, started, synchronous_ms, elapsed_ms)
 	else:
 		var field_node: Node3D = FieldBuilder.build(context.field, context.lighting)
+		var synchronous_ms := (Time.get_ticks_usec() - started) / 1000.0
 		context.field_node = field_node
 		if field_node != null:
 			context.parent.add_child(field_node)
-	var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
-	var synchronous_ms := elapsed_ms
-	if callback_result is Dictionary and _finite_number(callback_result.get("field_build_ms", NAN)):
-		synchronous_ms = maxf(float(callback_result.field_build_ms), 0.0)
-	_finish_field_stage(context, started, synchronous_ms, elapsed_ms)
+		var elapsed_ms := (Time.get_ticks_usec() - started) / 1000.0
+		_finish_field_stage(context, started, synchronous_ms, elapsed_ms)
 	return not (callback_result is Dictionary and bool(callback_result.get("cancelled", false)))
 
 

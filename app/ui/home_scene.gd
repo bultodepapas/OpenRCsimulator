@@ -249,6 +249,16 @@ func _preview_resource_ready(ok: bool, id: String, livery: String, generation: i
 var retain_resources_on_exit := false
 
 
+## Loading owns the next scene. Invalidate callbacks before they can block its first feedback frame.
+func suspend_preview() -> void:
+	_preview_generation += 1
+	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, false)
+
+
+func resume_preview() -> void:
+	if preview_pending: request_aircraft.call_deferred(requested_aircraft, requested_livery)
+
+
 func _exit_tree() -> void:
 	_preview_generation += 1
 	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, not retain_resources_on_exit)

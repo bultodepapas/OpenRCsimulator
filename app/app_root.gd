@@ -614,6 +614,9 @@ func start_flight(request: Dictionary = {}) -> void:
 	if flight != null or _loading_active or _quit_audio_pending:
 		return
 	var launch_preferences: Dictionary = preferences.duplicate(true)
+	var launch_landscape := landscape_id
+	var launch_field_path := field_path
+	var launch_night := _night_options_from_preferences()
 	var staged := has_home and flight_loading_enabled
 	var is_random: bool = not request.is_empty()
 	if is_random:
@@ -638,6 +641,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	# UI-32: the pilot's preferences (not the per-aircraft effective values) are what a successful Fly saves.
 	var battery_preference: String = departing_home.battery_preference() if departing_home != null else Preferences.DEFAULTS.battery_mode
 	var fuel_preference: float = departing_home.fuel_preference() if departing_home != null else Preferences.DEFAULTS.fuel_fill
+	var saved_fixed_start: String = departing_home.start_preference(false) if departing_home != null else "airborne"
+	var saved_rotor_start: String = departing_home.start_preference(true) if departing_home != null else "runway"
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -672,11 +677,16 @@ func start_flight(request: Dictionary = {}) -> void:
 		_loading_started_usec = Time.get_ticks_usec()
 		_loading_phase_usec = _loading_started_usec
 		_loading_phase = ""
-		last_flight_loading = {status = "loading", phases = [], aircraft = route_aircraft_id, landscape = landscape_id}
+		last_flight_loading = {status = "loading", phases = [], aircraft = route_aircraft_id, landscape = launch_landscape}
+		# Stop obsolete preview work before the first feedback frame; preserve its bounded resource cache.
+		_home_rebuild_queued = false
+		_home_rebuild_source = null
+		if home_scene != null:
+			home_scene.suspend_preview()
 		_loading_screen = FlightLoading.new()
 		_loading_screen.name = "FlightLoading"
 		_loading_screen.configure("%s · %s · %s" % [tr(Catalog.short_name(route_aircraft_id)),
-			tr(Landscapes.entry(landscape_id).name), tr("Runway" if chosen_start == "runway" else "Airborne")])
+			tr(Landscapes.entry(launch_landscape).name), tr("Runway" if chosen_start == "runway" else "Airborne")])
 		_loading_screen.cancel_requested.connect(cancel_flight_loading)
 		screens.push("loading", _loading_screen, null, false)
 		if not await _flight_loading_checkpoint("Preparing resources"):
@@ -730,9 +740,9 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = candidate_flight
 	_flight_companions_available = not is_random and not helicopter_route \
-		and landscape_id == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config")
-	flight.field_path = field_path
-	flight.landscape_id = landscape_id
+		and launch_landscape == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config")
+	flight.field_path = launch_field_path
+	flight.landscape_id = launch_landscape
 	if flight.has_method("set_user_args"):
 		flight.call("set_user_args", user_args)
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
@@ -745,13 +755,13 @@ func start_flight(request: Dictionary = {}) -> void:
 	if "fuel_start_fill" in flight: # FUEL-07: Home's fuel choice; random and direct routes start full or use --fuel=
 		flight.fuel_start_fill = chosen_fuel if has_home and not is_random else 1.0
 	if "livery" in flight: # F4U-16: the pilot's paint scheme for this aircraft; the direct route uses --livery=
-		flight.livery = _livery_for(route_aircraft_id) if has_home else ""
+		flight.livery = AirplaneBuilder.resolve_livery(route_aircraft_id, str(launch_preferences.get("liveries", {}).get(route_aircraft_id, ""))) if has_home else ""
 	# UI-32 (UI-30 AS-3): rotorcraft fly without the turbulence they cannot use; the saved selection keeps it.
 	flight.weather_config = (weather_for_aircraft(route_aircraft_id, chosen_weather) if helicopter_route else chosen_weather).duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:
 		flight.sky_config = launch_preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
-	flight.night_options = _night_options_from_preferences() if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
+	flight.night_options = launch_night if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	flight.interactive_start = has_home
 	flight.external_controller_selection = controllers != null
 	if not helicopter_route:
@@ -766,7 +776,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.set("failure_notifications", bool(failure_config_for_flight.get("notify", true)))
 	# Home preferences feed only the ordinary Club fixed-wing route. Direct CLI arguments and Natural Random
 	# remain owned by their flight entry points, and are never overwritten with Home settings.
-	if has_home and not is_random and not helicopter_route and landscape_id == Landscapes.DEFAULT_ID \
+	if has_home and not is_random and not helicopter_route and launch_landscape == Landscapes.DEFAULT_ID \
 			and _has_property(flight, "companion_config"):
 		var checked_companions: Dictionary = CompanionConfig.validate(
 			launch_preferences.get("companion_config", CompanionConfig.defaults())
@@ -825,13 +835,13 @@ func start_flight(request: Dictionary = {}) -> void:
 	_loading_retained_random = null
 	if has_home and not is_random:
 		if departing_home != null:
-			preferences.start_choice = departing_home.start_preference(false)
-			preferences.rotorcraft_start_choice = departing_home.start_preference(true)
+			preferences.start_choice = saved_fixed_start
+			preferences.rotorcraft_start_choice = saved_rotor_start
 		preferences.battery_mode = battery_preference
 		preferences.fuel_fill = fuel_preference
 		preferences.weather_config = chosen_weather.duplicate(true)
 		preferences.lighting_config = chosen_lighting.duplicate(true)
-		var selected_night: Dictionary = _night_options_from_preferences()
+		var selected_night: Dictionary = launch_night
 		preferences.night_field_lighting = selected_night.field_lighting
 		preferences.night_campfire = selected_night.campfire
 		preferences.night_field_activation = selected_night.field_activation
@@ -994,6 +1004,7 @@ func _cancel_loading_before_candidate(departing_home: Control, error := "") -> v
 		home_scene.camera.make_current()
 	if home_scene != null:
 		home_scene.retain_resources_on_exit = false
+		home_scene.resume_preview()
 	_remove_flight_loading_screen()
 	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % error
 	departing_home.reject_start(note)
@@ -2248,7 +2259,7 @@ func _flush_home_scene_rebuild() -> void:
 	var source: Node = _home_rebuild_source.get_ref() if _home_rebuild_source != null else null
 	_home_rebuild_source = null
 	# A flight or landscape transition may have already replaced this world.
-	if source != null and source == home_scene and source.is_inside_tree():
+	if not _loading_active and source != null and source == home_scene and source.is_inside_tree():
 		_rebuild_home_scene()
 
 

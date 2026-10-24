@@ -2559,9 +2559,12 @@ func _build_world() -> bool:
 			return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	Atmosphere.configure_appearance(sky_config)
-	if not await _startup_stage("Building landscape"):
-		return false
-	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot, night_options)
+	var built: Dictionary
+	if startup_checkpoint.is_valid():
+		built = await World.build_staged(self, field, _build_field_staged, {}, snapshot, night_options, startup_checkpoint)
+		if built.get("cancelled", false): return false
+	else:
+		built = World.build(self, field, _build_field, {}, snapshot, night_options)
 	_field_world_lighting = bool(built.conditions.time_of_day)
 	_env = built.environment
 	_world_environment = built.world_environment
@@ -2612,6 +2615,13 @@ func set_night_options(profile: String, campfire: bool, activation: String = "au
 func _build_field() -> void:
 	_field_node = Landscapes.build(landscape_id, field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {})
 	add_child(_field_node)
+
+
+func _build_field_staged() -> void:
+	_field_node = await Landscapes.build_staged(landscape_id, field,
+		_lighting if lighting_config.get("mode", "legacy") != "legacy" else {}, startup_checkpoint)
+	if _field_node != null:
+		add_child(_field_node)
 
 
 ## Hides every field object (today: the treeline and its L8a-R1 3D front trees) for a background-only
