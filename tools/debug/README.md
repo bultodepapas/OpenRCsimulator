@@ -4,7 +4,38 @@ Drive a **running** app from the shell, with no mouse and no editor. You can rea
 menu, setting, shortcut and controller action, fly with stick values or drive the RC truck, pause and step exact
 physics ticks, sample telemetry, take screenshots, record flight logs and evaluate expressions. For batch checks of
 one script, use the [checked runner](../godot/README.md) instead. Claude Code and Codex find this tool through the
-`openrc-debug` skill.
+`openrc-debug` skill; the [tool index](../../docs/tools/README.md) routes every other task.
+
+Contents: [quick start](#quick-start) · [I want to…](#i-want-to) · [commands](#commands) ·
+[stutter, leaks and bugs](#hunting-stutter-leaks-and-bugs-pt1h-r8) · [recipes](#recipes) ·
+[how it works and limits](#how-it-works-and-limits) · [performance](#performance) · [verification](#verification).
+`python3 tools/debug/debugctl.py --help` prints the client's commands; `debugctl.py help` asks a running app for its
+own list.
+
+## I want to…
+
+`D="python3 tools/debug/debugctl.py"`; after `launch`, prefix commands with `OPENRC_DEBUG_BRIDGE=<port>` when other
+agents share the machine.
+
+| Task | Commands |
+| --- | --- |
+| Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 under Xvfb); `$D status`; `$D stop` |
+| See what is on screen and click it | `$D ui`, `$D press text="Fly"`, `$D select text=Language item="Español"`, `$D close` |
+| Open a menu or setting directly | `$D open screen=settings` (no screen: list them) |
+| Fly, restart, go back | `$D fly aircraft=<id> start=airborne`, `$D restart`, `$D home` |
+| Press keys and controller buttons | `$D shortcuts`, `$D key name=Shift+C`, `$D control name=gear_toggle` |
+| Fly with stick values / drive the truck | `$D sticks pitch=0.3 throttle=0.8 for_s=2`, `$D drive throttle=0.6 for_s=1` |
+| Read the state / the live log | `$D state`, `$D logs --follow`, `$D logs --summary` |
+| Take a picture | `$D screenshot max_width=960 format=jpg` (not under `--headless`) |
+| Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
+| Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
+| Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --since <seq>`; `launch --script-profile` + `$D profile` |
+| Find a leak | `$D soak scenario.txt --cycles 5`, `$D objects baseline=true` then `$D objects diff=true` |
+| Find UI bugs | `$D crawl`, `$D monkey --steps 300 --seed 1 --keys` |
+| Reproduce a bug as a script | write `tmp/repro.txt` (one command per line), `$D run tmp/repro.txt --fail-on-error` |
+| Check everything before a commit | `$D smoke` (own session, about 3.5 min) |
+| Any property or method | `$D methods node=AppRoot`, `$D get node=… prop=…`, `$D call …`, `$D eval expr="…"` |
+| GDScript compiler warnings | `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'` |
 
 ## Quick start
 
@@ -39,9 +70,16 @@ Launch options:
 - `profile/` holds `user://` (preferences, flight logs, caches), so a session never edits the player's settings.
   `--profile DIR` reuses a profile between launches. `--real-profile` uses the real one: Home's Fly then saves the
   selection like a person would.
-- The port comes from `OPENRC_DEBUG_BRIDGE`, else the last launch (`tmp/debug-bridge/current.json`), else 47870.
-  A busy 47870 makes `launch` pick a free port. `status` tells whether the app is alive. `stop` waits for the process
-  to exit; `stop --force` kills it.
+- **Several agents on one machine.**
+  - Each launch claims its own port atomically, in `tmp/debug-bridge/sessions/<port>.json` (0600, with its token),
+    and skips ports held by a live session.
+  - Commands address `OPENRC_DEBUG_BRIDGE`'s port, else the last launch on the machine. That may be another agent's,
+    so when you share the machine, put `OPENRC_DEBUG_BRIDGE=<your port>` on every command.
+  - `stop` refuses to guess when several sessions are live, and other commands warn.
+  - `status` tells whether the app is alive. `stop` waits up to 60 s for the process to exit; `stop --force` kills
+    the process group it launched.
+- `--app DIR` runs a candidate copy (with its import cache and the sibling folders linked beside it), for
+  before/after comparisons without touching the shared tree.
 - `--script-profile` adds `-d --profiling --ignore-error-breaks`, so the engine prints its per-function GDScript
   profile about once a second (read it with `profile`). `--verbose` names each object leaked at exit.
 - `stop` reports how the engine ended: `leaked_objects` / `leaked_instances` at exit, and a `crash` with its reason
@@ -62,14 +100,14 @@ Launch options:
 | --- | --- |
 | Session | `launch`, `status`, `ready`, `stop [--force]`, `ping`, `quit`, `clean [--keep N]` (old run folders hold about 11 MB of shader cache each; never removes the live one) |
 | Routes | `fly aircraft=<id> start=<runway\|airborne\|…>` (from Home), `home`, `restart`; truck: `call node=AppRoot method=start_ground_vehicle args=["mt8-bisonte"]`, then `press text=drive` |
-| Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [submit=true]`, `focus`, `prefs` |
+| Menus and settings | `open screen=<…>` (no screen lists them), `close` (Esc/Back; never Home itself), `ui [all=true] [labels=true] [text=]`, `press text=\|path= [mode=signal]`, `select text=<OptionButton/TabBar/ItemList name or label> item=<label>\|index=`, `select popup=true item=` for an open PopupMenu, `set_value value=`, `type text= [into=<label or placeholder>] [submit=true]` (a dialog's field has its own focus), `focus`, `prefs` |
 | Keys and controller | `shortcuts`; `key name=<C\|Shift+C\|F10\|Escape…> [action=tap\|press\|release] [hold_s=]`; `control [name=<action>] [hold=]` (the same handlers as a bound controller button); `action name=<input action>`; `mouse action=click\|double\|right\|move\|down\|up\|drag\|wheel x= y=` or `text=` |
 | Pilot input | `sticks roll= pitch= yaw= throttle= [for_s=]` / `sticks release=true` (fixed wing and helicopter); `drive throttle= steering= brake= reverse= [for_s=]` / `drive release=true` (RC truck) |
 | Time | `pause`, `resume`, `step ticks=<n>`, `time_scale value=`, `wait frames=\|seconds=\|until=<expr> [timeout_s=]`, `break expr= [name=] [pause=] [once=] [wait=]` / `break list=true` / `break clear=<name\|all>` |
 | Observe | `state`, `logs [--since N] [--level …] [--follow] [--summary]`, `frames [window=] [hitch_ms=] [factor=] [reset=]`, `objects [baseline=] [diff=] [top=]`, `profile [since=] [top=] [sort=self\|total]`, `perf`, `screenshot [path=] [format=png\|jpg] [max_width=]` (JPEG at quality 85 is about 8× smaller for looking), `view [name=]`, `window [size=WxH] [mode=]`, `record action=start\|stop\|mark\|status` |
 | Telemetry | `sample exprs={"h":"-s[2]"} every_ticks= count=` (rows per simulation tick); client `watch [--every N] [--count N] [--csv FILE] h=-s[2] …` streams CSV |
 | Introspection | `methods node=<path>`, `find name=<glob> type=<class>`, `get node= [prop=]`, `set node= prop= value=`, `call node= method= args=[…]`, `eval expr= [node=]`, `assert expr= [message=]`, `nodes path= depth=` |
-| Scripts | `run FILE\|- [--keep-going] [--fail-on-error]`, `repl`, `crawl [--shots]`, `soak FILE [--cycles N] [--warmup N] [--tolerance N]`, `monkey [--steps N] [--seed S] [--keys] [--out FILE]` |
+| Scripts | `smoke [--seed S] [--steps N] [--cycles N] [--app DIR]`, `run FILE\|- [--keep-going] [--fail-on-error]`, `repl`, `crawl [--shots]`, `timeline [--since N] [--top N]`, `soak FILE [--cycles N] [--warmup N] [--tolerance N]`, `monkey [--steps N] [--seed S] [--keys] [--out FILE]` |
 
 Notes on the commands:
 
@@ -128,6 +166,19 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - It aggregates the engine's own profile prints (one frame per second) into functions sorted by self or total
     time per sample, with call counts.
   - Profiling adds overhead, and it attributes GDScript, not rendering.
+- **Load phases: `timeline`.** Launch with `--verbose`, take `log_seq` from `ping`, act, then run
+  `timeline --since <seq>`. It lists the largest wall-time gaps between consecutive log lines (a resource load is a
+  line under `--verbose`), with what had just finished. This is the phase breakdown inside one long frame, where the
+  1 s script-profile samples miss it.
+- **One-command regression pass: `smoke`.**
+  - It runs its own headless session on its own port: `crawl` from Home, every scenario in
+    `tools/debug/scenarios/*.txt` with `--fail-on-error`, a flight and `crawl` from its pause menu, a seeded
+    `monkey`, a fly/Home `soak`, and the exit report.
+  - Between steps it returns to a bare Home: it ends flights and the truck, closes dialogs and discards unsaved
+    Workshop edits.
+  - It prints one JSON verdict and exits 1 when any step failed or the engine crashed. It takes about 3.5 minutes
+    on the VM.
+  - Add a scenario file for every UI or flow bug you fix. Each must start and end at Home.
 - **Random UI testing: `monkey`.**
   - It runs a seeded walk over the visible controls: presses, selects, slider values, close, and with `--keys` the
     vehicle's shortcuts.
@@ -135,6 +186,8 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
   - It stops at the first new engine error, or when the app stops answering. The trail is written as a replayable
     `run` script (`tmp/debug-bridge/monkey-<seed>.txt`), with the hitches attributed to the action before them
     ("slow after key F5: 73 ms…").
+  - Refused actions are commented out of the trail, so a replay follows the same path. The verdict lists the
+    route/screen pairs the walk `visited`.
 - **Compiler warnings: `gdscript_warnings.py`.**
   - It opens every script in the pinned editor's language server, headless and on a snapshot of `app/` (the
     shared tree is never opened by an editor), and collects the engine's own errors and warnings with the project's
@@ -353,7 +406,7 @@ to the bridge on a stand-in AppRoot. It covers:
   exact tick and `once` removes it; `logs` summary groups messages differing only in numbers; `objects diff` names 5
   new orphan `Node`s; `profile` parses the engine's profile format.
 
-**Client tests.** These run in `research/test-tools.sh`, with 21 tests, mostly against a fake server. They cover:
+**Client tests.** These run in `research/test-tools.sh`, with 25 tests, mostly against a fake server. They cover:
 
 - argument and JSON parsing, and quoted values that stay strings;
 - the token, exit codes, and the `ui` table with its short paths;
@@ -363,7 +416,9 @@ to the bridge on a stand-in AppRoot. It covers:
 - `watch` CSV chunks, `crawl` passes and failures, and `clean`;
 - the crash and leak exit report, using the engine's real output format;
 - hitch attribution to the action before it, and seed-reproducible monkey actions;
-- `gdscript_warnings.py` script selection and line-independent baseline keys.
+- `gdscript_warnings.py` script selection and line-independent baseline keys;
+- exclusive port claims with stale takeover, per-port tokens, `stop` refusing ambiguous targets, and zombie children
+  counted as gone.
 
 **Mutations.** On 2026-10-24, deliberate mutations on a disposable copy each failed exactly their check: no reader
 re-assert, step off by one, token ignored, release no-op, no network-thread fast path, a stale snapshot accepted, no

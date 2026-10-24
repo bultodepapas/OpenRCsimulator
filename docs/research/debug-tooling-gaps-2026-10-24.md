@@ -94,6 +94,21 @@ capture on the VM (llvmpipe/Compatibility; RenderDoc and `--gpu-validation` belo
 Also fixed during the review: `eval` could not reach engine singletons; `launch` could talk to another app's bridge
 when the port was still being released.
 
+## Bug hunt with the new tools (same day)
+
+The findings, and what was done about each:
+
+| Finding | Tool | Action |
+| --- | --- | --- |
+| A keyboard Accept on the Workshop's "Discard changes" closed the Workshop while the dialog was still dispatching the event: `Condition "!is_inside_tree()"` in `_push_unhandled_input_internal`, and 4 objects leaked at exit. A mouse-style press was clean. | `monkey --seed 5`, replayed with `run --fail-on-error`, then minimized | Fixed in `app/ui/workshop.gd`: Save and Discard mark the event as handled in the dialog before closing. A copy of the old file (`launch --app`) reproduces the error; the fixed tree does not. The Workshop UI, quit, recovery and pause tests pass. Regression scenario: `tools/debug/scenarios/workshop_discard_keyboard.txt`. |
+| Quitting during startup sometimes leaks `AudioStreamMP3` and `AudioStreamPlaybackMP3` (the lake ambience in `render/lake/water_effects.gd`); 1 of 4 immediate quits. | `stop` exit report, `launch --verbose` | Reported to the lake/audio owners; an exit-time leak only. |
+| Home → Fly takes 3.25–3.7 s in one frame. The largest gaps follow the smoke `process.gdshader` load (712 ms), `main.tscn` (524 ms), `profile_process.gdshader` (407 ms), the aircraft data check (324 ms), tree setup (311 ms) and the `main.gd` load (289 ms). | `frames`, `timeline` with `--verbose` | Input for a loading screen or a staged build (UI/VQ owners). The 1 s script-profile samples miss this frame; `timeline` does not. |
+| Restart (R) costs 120–145 ms and the aircraft data reload (F5) 58–86 ms in one frame. | `monkey --keys` hitch attribution | Expected heavy actions; recorded as a baseline. |
+| A `scenery.gd` "Nonexistent function 'handles'" error appeared once. | `run --fail-on-error` | Transient: another session was editing `population.gd`. It did not reproduce on the next tree. |
+| Two agents launching within 2 s shared port 47870 and `current.json`. | Concurrent `launch` | Fixed in the client: per-port session files claimed atomically, tokens resolved by port, `stop` refuses ambiguous targets. |
+
+`smoke` (12 steps: crawl ×2, 5 scenarios, monkey, soak) passes on the fixed tree in about 3.5 minutes.
+
 ## Recommended order
 
 1, 2 and 3 first: each is small, uses only verified 4.7.2 APIs, adds microseconds per frame, and turns the bridge

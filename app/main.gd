@@ -946,7 +946,8 @@ func _advance_windsock(_tick: int, time_s: float, state: PackedFloat64Array,
 		FieldBuilder.advance_wind(_field_node, time_s, wind_ned)
 	# SC-HUM-03/04: field people follow the aircraft; flight-line pilots follow their companion
 	# (render-only head state; companions are read before they advance this tick).
-	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0, _companion_positions())
+	FieldBuilder.advance_people(_field_node, time_s, [state[0], state[1], state[2]], _tick == 0, _companion_positions(),
+		not session.crash.is_empty())
 
 
 ## Companion aircraft positions (NED) by slot, or null for one that has faulted. Read-only.

@@ -18,6 +18,10 @@ const REAR_GATE_MARGIN_RAD: float = 0.35
 const VELOCITY_TIME_CONSTANT_S: float = 0.2
 ## Shader encoding: INSTANCE_CUSTOM.w = yaw / PI, instance COLOR.a = 0.5 + pitch / PI.
 const ENCODE_EPSILON: float = 1.0e-4
+## SC-HUM-05 crash glance: after a seeded startle delay, spectators and pits members look at the
+## player's crash for this long regardless of their usual range and with a small dead zone.
+const ALERT_DURATION_S: float = 8.0
+const ALERT_DEAD_ZONE_SCALE: float = 0.25
 
 var simulated_time_s: float = 0.0
 var _people: Array[Dictionary] = []
@@ -28,6 +32,8 @@ var _last_observed_time_s: float = 0.0
 ## Target 0 is the player's aircraft; target k + 1 is companion slot k (SC-HUM-04). Each holds
 ## {valid, position, previous, velocity}; a companion that disappears falls back to the player.
 var _targets: Array[Dictionary] = []
+var _alert_input: bool = false
+var _alert_start_s: float = -INF
 var _initialized: bool = false
 var _dirty: bool = true
 
@@ -78,6 +84,7 @@ static func _params(role: String, seed: int) -> Dictionary:
 		mover = 0.85 + 0.15 * h.call(303),
 		rest_yaw = deg_to_rad(-6.0 + 12.0 * h.call(304)),
 		rest_pitch = deg_to_rad(-3.0 + 6.0 * h.call(305)),
+		reaction_s = 0.2 + 0.6 * h.call(310),
 	}
 	if coupled:
 		params.merge({dead_zone = 0.0, omega = 7.0 + 2.0 * h.call(306), lead_s = 0.15 + 0.10 * h.call(307), range_m = INF}, true)
@@ -109,14 +116,17 @@ func companion_slot(index: int) -> int:
 
 
 ## Restart at time_s with the player's aircraft at `target` (render space) and the companions at
-## `companions` (render-space Vector3, or null for an absent slot). Heads return to rest.
-func reset(time_s: float, target: Vector3, companions: Array = []) -> void:
+## `companions` (render-space Vector3, or null for an absent slot). `alert` is true while the
+## player's aircraft is crashed. Heads return to rest.
+func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
 	_epoch_time_s = time_s
 	_last_observed_time_s = time_s
 	_step_index = 0
 	simulated_time_s = time_s
 	_targets.clear()
 	_set_targets(target, companions, 0.0)
+	_alert_input = alert
+	_alert_start_s = time_s if alert else -INF
 	_initialized = true
 	for person: Dictionary in _people:
 		person.yaw = person.rest_yaw
@@ -131,13 +141,16 @@ func reset(time_s: float, target: Vector3, companions: Array = []) -> void:
 
 ## Advance to time_s with the aircraft positions (render space, see reset). Repeated timestamps are
 ## ignored; a backward jump (restart, checkpoint restore) resets, as the windsock does.
-func update_to(time_s: float, target: Vector3, companions: Array = []) -> void:
+func update_to(time_s: float, target: Vector3, companions: Array = [], alert: bool = false) -> void:
 	if not _initialized or not is_finite(time_s) or time_s < _last_observed_time_s - 1.0e-12:
-		reset(time_s, target, companions)
+		reset(time_s, target, companions, alert)
 		return
 	var elapsed: float = time_s - _last_observed_time_s
 	_last_observed_time_s = time_s
 	_set_targets(target, companions, elapsed)
+	if alert and not _alert_input:
+		_alert_start_s = time_s
+	_alert_input = alert
 	var target_index: int = int(floor((time_s - _epoch_time_s) / STEP_S + 1.0e-9))
 	var steps: int = target_index - _step_index
 	if steps > MAX_STEPS_PER_UPDATE:
@@ -182,19 +195,23 @@ func _target_for(person: Dictionary) -> Dictionary:
 
 
 func _step(dt: float) -> void:
+	var since_alert: float = _epoch_time_s + float(_step_index + 1) * STEP_S - _alert_start_s
 	for person: Dictionary in _people:
-		var want := _desired(person)
+		var alerted: bool = not bool(person.coupled) and since_alert >= float(person.reaction_s) \
+			and since_alert < float(person.reaction_s) + ALERT_DURATION_S
+		var want := _desired(person, alerted)
 		if bool(person.coupled):
 			person.goal_yaw = want.x
 			person.goal_pitch = want.y
 		else:
+			var dead_zone: float = float(person.dead_zone) * (ALERT_DEAD_ZONE_SCALE if alerted else 1.0)
 			var error: float = Vector2(want.x - float(person.yaw), want.y - float(person.pitch)).length()
 			if bool(person.tracking):
 				person.goal_yaw = want.x
 				person.goal_pitch = want.y
-				if error < float(person.dead_zone) * 0.25:
+				if error < dead_zone * 0.25:
 					person.tracking = false
-			elif Vector2(want.x - float(person.goal_yaw), want.y - float(person.goal_pitch)).length() > float(person.dead_zone):
+			elif Vector2(want.x - float(person.goal_yaw), want.y - float(person.goal_pitch)).length() > dead_zone:
 				person.tracking = true
 				person.goal_yaw = want.x
 				person.goal_pitch = want.y
@@ -214,15 +231,16 @@ static func _follow(person: Dictionary, angle_key: String, rate_key: String, goa
 
 
 ## Head direction toward the (lead-corrected) aircraft in the person's frame, or rest when the
-## aircraft is out of range or behind. Local forward is −Z, as the source meshes face.
-func _desired(person: Dictionary) -> Vector2:
+## aircraft is out of range or behind. Local forward is −Z, as the source meshes face. A crash
+## alert lifts the range limit.
+func _desired(person: Dictionary, alerted: bool = false) -> Vector2:
 	var rest := Vector2(person.rest_yaw, person.rest_pitch)
 	var target: Dictionary = _target_for(person)
 	if not bool(target.valid):
 		return rest
 	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * float(person.lead_s)
 	var offset: Vector3 = aim - (person.pivot as Vector3)
-	if offset.length() > float(person.range_m):
+	if not alerted and offset.length() > float(person.range_m):
 		return rest
 	var local: Vector3 = (person.basis as Basis).inverse() * offset
 	var horizontal: float = Vector2(local.x, local.z).length()

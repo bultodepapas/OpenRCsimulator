@@ -1,28 +1,33 @@
 #!/usr/bin/env python3
-"""Drive a running OpenRC app through its debug bridge (PT1h-R7). Standard library only.
+"""Drive a running OpenRC app through its debug bridge (PT1h-R7/R8). Standard library only.
+Guide: tools/debug/README.md (the "I want to..." table). Task index for every other tool: docs/tools/README.md.
 
-  debugctl.py launch [--headless] [--resolution WxH] [--port N] [--out DIR] [--profile DIR | --real-profile]
-                     [--script-profile] [--verbose] [--app DIR] [-- <app args>]
-                                                                           start the app with the bridge; wait until ready
-  debugctl.py status | ready [--timeout S] | stop [--force]                session: alive?, wait for it, quit it
-  debugctl.py logs [--since N] [--level error,warning] [--follow]          engine/script log and state-change events
-  debugctl.py watch [--every TICKS] [--count N] [--csv FILE] name=expr ... live values every n simulation ticks
-  debugctl.py timeline [--since N] [--top N]                               where wall time went between log lines
-  debugctl.py run FILE|- [--keep-going] [--fail-on-error]                  a repro script: one command per line
-  debugctl.py crawl [--shots]                                              open/list/close every screen here; report errors
-  debugctl.py soak FILE [--cycles N] [--warmup N] [--tolerance N]          repeat a script; report what keeps growing
-  debugctl.py monkey [--steps N] [--seed S] [--keys] [--out FILE]          seeded random UI walk; writes a repro on failure
-  debugctl.py smoke [--seed S] [--steps N] [--cycles N] [--app DIR]        own headless session: crawl, scenarios, monkey,
-                                                                           soak, exit report; one verdict (CI-ready)
-  debugctl.py clean [--keep N]                                             delete old run folders (default keep 3; never a live one)
-  debugctl.py repl                                                         interactive prompt (same syntax)
-  debugctl.py <command> [key=value ...] [--pretty|--json|--paths]          any bridge command; `help` lists them
+Session
+  launch [--headless] [--resolution WxH] [--port N] [--app DIR] [--script-profile] [--verbose]
+         [--profile DIR | --real-profile] [-- <app args>]   start the app; prints its port (isolated user:// profile)
+  status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
+  clean [--keep N]                                          delete old run folders (never a live session)
+Drive the app (any bridge command; `help` asks the app for its list)
+  ui | press text="Fly" | select text=X item="Y" | open screen=settings | close | type text=… into=…
+  fly aircraft=<id> start=airborne | home | restart | key name=Shift+C | control name=gear_toggle
+  sticks pitch=0.3 throttle=0.8 for_s=2 | drive throttle=0.6 for_s=1 | pause | step ticks=240
+Observe and hunt bugs
+  state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
+  break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
+  watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
+  timeline [--since N] [--top N]                               where a long frame's time went (launch --verbose)
+Scripts and checks
+  run FILE|- [--keep-going] [--fail-on-error]                  a repro script, one command per line
+  crawl [--shots]                                              open/list/close every screen; report errors
+  soak FILE [--cycles N] [--warmup N] [--tolerance N]          repeat a scenario; report what keeps growing
+  monkey [--steps N] [--seed S] [--keys] [--out FILE]          seeded random UI walk; a failure leaves a repro script
+  smoke [--seed S] [--steps N] [--cycles N] [--app DIR]        own headless session: everything above, one verdict
+  repl                                                         interactive prompt (same syntax as run scripts)
 
-Values are JSON when they parse (true, 3, 0.5, [1,2], {"a":"b"}), else strings. One TCP connection per call.
-The port comes from OPENRC_DEBUG_BRIDGE, else the last `launch` (tmp/debug-bridge/current.json), else 47870.
-OPENRC_GODOT names the engine executable (default: app/get-godot.sh).
-Exit status: 0 ok, 1 the bridge refused or an assertion failed, 2 usage or connection error.
-Guide: tools/debug/README.md.
+Values are JSON when they parse (true, 3, 0.5, [1,2], {"a":"b"}), else strings; quoted values stay strings.
+Output flags: --pretty, --json, --paths. Exit status: 0 ok, 1 refused or a check failed, 2 usage or connection error.
+Port: OPENRC_DEBUG_BRIDGE, else the last launch on this machine (another agent's, if one launched after you: set
+OPENRC_DEBUG_BRIDGE=<your port> on every command when sharing the machine). OPENRC_GODOT overrides the engine.
 """
 from __future__ import annotations
 
@@ -210,7 +215,10 @@ def alive(pid: int | None) -> bool:
         return False
     except PermissionError:
         return True
-    return True
+    try:  # an exited child that its parent (e.g. this process, under smoke) has not reaped yet is a zombie: gone
+        return Path(f"/proc/{pid}/stat").read_text().rsplit(")", 1)[1].split()[0] != "Z"
+    except (OSError, IndexError):
+        return True
 
 
 def godot() -> str:

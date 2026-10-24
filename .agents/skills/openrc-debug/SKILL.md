@@ -5,12 +5,14 @@ description: Launch, inspect and drive the running OpenRC simulator from the she
 
 # Drive the running app
 
-The tool and its full command reference live in [tools/debug/README.md](../../../tools/debug/README.md). Read it
-before anything beyond the quick start.
+The tool and its full command reference live in [tools/debug/README.md](../../../tools/debug/README.md): start at
+its "I want to…" table. `python3 tools/debug/debugctl.py --help` lists the client commands offline. For any other
+task (tests, traces, flight-test battery, captures) use the `openrc-tools` skill.
 
 ```sh
 D="python3 tools/debug/debugctl.py"
-$D launch                       # isolated profile, 1920x1080 under Xvfb (add --headless: no renderer, lighter)
+$D launch --headless            # prints its port; plain `launch` renders 1920x1080 under Xvfb (for screenshots)
+export OPENRC_DEBUG_BRIDGE=<port> # in the same shell command as the calls below when other agents share the machine
 $D ui                           # what is on screen; press text=<label>, select, set_value, type, close
 $D fly aircraft=<catalog-id> start=airborne
 $D state                        # route, screens, pose, pause, crash, log counts
@@ -29,4 +31,7 @@ $D stop
   `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`.
 - Discover anything else with `$D methods node=AppRoot`, `$D find name=*Camera*`, `$D get node=... `, then `call`/`set`/`eval`.
 - It is software inspection, not flight evidence: exact replays use flight logs (`record action=start`).
+- Regression pass in one command: `$D smoke` (own headless session; add a `tools/debug/scenarios/*.txt` file for
+  each flow bug you fix). Load phases inside one long frame: `launch --verbose`, then `$D timeline --since <seq>`.
+- Other agents may share this machine: put `OPENRC_DEBUG_BRIDGE=<your port>` on every command after `launch`.
 - Run one rendered app at a time on the shared VM; always `stop` it.

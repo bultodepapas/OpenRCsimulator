@@ -79,7 +79,7 @@
 | --- | --- | --- | --- |
 | L1 | Quaternius Animal Pack Vol. 2 (eagle, CC0 per OGA page) [V-search]; BlendSwap low-poly seagull (CC0, rigged) [V-search] | The only free CC0 flying birds found | T2 candidates; record archive hashes in SC-BIRD-00 |
 | L2 | Fab packs, itch.io voxel birds, VertexCat common birds, CGTrader pigeon [V-search] | Paid or unclear licences | Not used |
-| L3 | No CC0 vulture, stork, kite or kestrel model found [V-search] | — | Parametric silhouette generator for these species (none available to download) |
+| L3 | No CC0 vulture, stork, kite or kestrel model found [V-search] | **Corrected by [SC-BIRD-00](SC-BIRD-00/README.md#1--3d-models-40-files):** CC-BY animated stork, vulture, gulls and a kestrel exist on Sketchfab behind a login; CC0 animated raven and pigeon are on OpenGameArt | Parametric generator still needed for vulture, kites, swift, swallow, heron and starling |
 | L4 | xeno-canto terms [V-search]; recordings of red kite, swift, gull calls are CC BY-NC-SA / BY-NC-ND [V-search] | Non-commercial licences | **Not usable** |
 | L5 | Freesound clips cited by a natural-history site: buzzard CC-BY-3.0, swift and gull CC-BY-NC [V-search]; Sonniss red-kite pack (paid) [V-search] | Few permissive calls found | Prefer synthesis, as SC-19a already does; CC0 Freesound check in SC-BIRD-00 |
 
@@ -96,10 +96,7 @@
 
 ## 8 · Open items
 
-1. Read the full Bruderer et al. 2010 and Pennycuick tables (wingbeats) and the Williams et al. 2018 data (climb rates).
-2. Verify the three.js licence and the godot_boids code before reading code closely.
-3. Check Freesound CC0 bird calls one by one; listen for speech, traffic and aircraft.
-4. Download and hash candidate CC0 models; count triangles (02's 25-line glTF recipe).
+Items 1–4 of the first snapshot were worked in [SC-BIRD-00](SC-BIRD-00/README.md) on 2026-10-24: measured climb rates, circling and wingbeats from open data (Bruderer 2010 and Pennycuick 1990/1996 stayed behind publisher walls); three.js is MIT and godot_boids an MIT Rust GDExtension; 92 sounds and 40 models hashed with licences. Still open: the listening pass and the owner decisions in SC-BIRD-00 §8.
 
 ## Sources
 
