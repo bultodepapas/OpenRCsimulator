@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "blender": {
+      "type": "stdio",
+      "command": "tools/blender/mcp-server.sh",
+      "args": [],
+      "env": {
+        "BLENDER_MCP_PORT": "9876"
+      }
+    }
+  }
+}

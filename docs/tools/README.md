@@ -29,6 +29,7 @@ Find the tool for your task here before you write ad-hoc test or debug code. Rea
 | Find out why CI failed | [shared](shared.md#ci) | `gh run view <id> --log-failed` |
 | Menus and UI | [shared](shared.md#one-godot-script) for `app/tests/test_ui_*.gd`; UI screenshots run inside `app/capture.sh` | — |
 | Audio | [tools/audio](../../tools/audio/README.md) | read the requirements caveat in [shared](shared.md#known-broken-or-stale-tools) |
+| Inspect or drive Blender from an agent (scene queries, Python, renders, API and manual search) | [tools/blender](../../tools/blender/README.md) | `tools/blender/mcp-setup.sh`, then `tools/blender/mcp-bridge.sh <file.blend>` |
 | Aircraft Workshop | [TOOLS → Aircraft Workshop](../TOOLS.md#aircraft-workshop) | — |
 | Radio and controller diagnostics | [TOOLS → Radio diagnostics](../TOOLS.md#radio-diagnostics) | — |
 | Helicopter, ground vehicle | [HELICOPTER](../HELICOPTER.md), [RC monster truck](../../research/rc-monster-truck/README.md) | — |
