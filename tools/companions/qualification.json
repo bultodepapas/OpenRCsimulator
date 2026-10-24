@@ -1,0 +1,26 @@
+{
+  "format": "openrc-ai-solver-qualification v1",
+  "profile": "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json",
+  "candidate_aircraft": "app/data/aircraft/jensen_ugly_stik_60.json",
+  "solver_directories": [
+    "app/physics",
+    "app/sim",
+    "app/failures"
+  ],
+  "accepted": {
+    "solver_sha256": "3a8ebbc5e531f3ba1bbeff22a469abcb05e6f1fb7dda356aefa4d196c37ccad1",
+    "rev": "cb43600c96e4ddae6ee1e8a7b3335a14cb81e442"
+  },
+  "tapes": [
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl",
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl",
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl",
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl",
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl",
+    "docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl",
+    "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-ai.orfl",
+    "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-peer.orfl",
+    "docs/research/ai-companions/AFC-04-R1/baseline/parallel-two-threats-player.orfl"
+  ],
+  "receipts": "docs/research/ai-companions/AFC-02/rebinds"
+}

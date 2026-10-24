@@ -257,6 +257,10 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 			checkpoint.configuration = candidate_checkpoint.configuration
 			for key in ["mass", "inertia", "gravity"]:
 				checkpoint.simulation[key] = candidate_checkpoint.simulation[key]
+			# wheel_profiles.json gains rows when other aircraft are added. Adopt the candidate's file identity,
+			# but keep the recorded canonical profile of this aircraft (wheel_profile_sha256), which restore checks.
+			if checkpoint.has("wheel_profile_input_sha256") and candidate_checkpoint.has("wheel_profile_input_sha256"):
+				checkpoint.wheel_profile_input_sha256 = candidate_checkpoint.wheel_profile_input_sha256
 	if not ready or not flight.restore_checkpoint(checkpoint):
 		flight.free()
 		return {ok = false, error = "Recorded configuration/checkpoint is incompatible with the selected aircraft or solver."}

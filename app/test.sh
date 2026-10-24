@@ -166,6 +166,9 @@ echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check
 python3 "$HERE/../tools/trees/test_place.py"
 
+echo "== AFC-02-R3: companion re-bind tool and its qualification record stay consistent"
+python3 "$HERE/../tools/companions/test_rebind.py"
+
 echo "== L7-R1 woodland-edge recipe and full-envelope exclusions stay current"
 python3 "$HERE/../tools/trees/place_woodland_edges.py" --check
 python3 "$HERE/../tools/trees/test_place_woodland_edges.py"

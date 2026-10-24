@@ -163,8 +163,7 @@ func _avoidance_velocity(
 	# This branch is deliberately the production implementation, preserving the
 	# original controller path exactly when no moving traffic is present.
 	if traffic.is_empty():
-		_release_held_maneuver_if_clear()
-		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+		return _clear_traffic_response(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var own_air_north: float = own_velocity[0] - _planning_wind[0]
 	var own_air_east: float = own_velocity[1] - _planning_wind[1]
@@ -180,8 +179,7 @@ func _avoidance_velocity(
 	var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps, G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
 	var threats: Array[Dictionary] = _prepare_threats(traffic, own_velocity)
 	if threats.is_empty():
-		_release_held_maneuver_if_clear()
-		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
+		return _clear_traffic_response(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var clearance: float = _planning_clearance_m
 	if not is_finite(clearance):
@@ -435,6 +433,23 @@ func _bank_response(base_air_north: float, base_air_east: float,
 func _unmodified_traffic_response(base_air_north: float, base_air_east: float) -> Dictionary:
 	return {"active": false, "air_north": base_air_north,
 		"air_east": base_air_east, "altitude_delta": 0.0}
+
+
+func _clear_traffic_response(state: PackedFloat64Array, attitude: PackedFloat64Array,
+		own_velocity: PackedFloat64Array, base_air_north: float, base_air_east: float,
+		traffic: Array) -> Dictionary:
+	_release_held_maneuver_if_clear()
+	# Missing observations start the clear dwell; they do not cancel a held turn.
+	# Preserve the reachable predictor's low-speed fallback on this path too.
+	if _has_held_maneuver:
+		var air_north: float = own_velocity[0] - _planning_wind[0]
+		var air_east: float = own_velocity[1] - _planning_wind[1]
+		var air_speed: float = AvoidanceMath.sqrt_(air_north * air_north + air_east * air_east)
+		if is_finite(air_speed) and air_speed >= 3.0:
+			var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps,
+				G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+			return _bank_response(base_air_north, base_air_east, nominal_bank, _held_bank_rad)
+	return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 
 func _release_held_maneuver_if_clear() -> void:
