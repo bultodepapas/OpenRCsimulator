@@ -124,7 +124,7 @@ On supported Stik, P-51D and stock Ventage Jet configurations, **J** opens a sep
 
 ## 4. Settings and flight options
 
-The **Flight overlays** dialog has five sections: **Modern**, **Classic**, **Navigation**, **Appearance** and **Other overlays**.
+The **Flight overlays** dialog has five sections: **Modern**, **Classic**, **Flight tools**, **Appearance** and **Other overlays**.
 Preset and Units stay above the scrolling section, and Done stays below it. Use Appearance for widget size,
 background, compact density, position lock and layout reset. Tabs support mouse and keyboard navigation; changing
 a section does not change your flight layout. Developer overlays and transmitter options are under Other overlays.
@@ -168,7 +168,10 @@ Select **All instruments** to add **Fuel tank**, **Trims** and **Engine**, or en
 
 The horizon shows pitch and bank, including inverted flight. The altimeter reads height above the simulation datum, with a separate AGL readout; its long and short hands indicate hundreds and thousands of the selected unit. This is not a pressure altimeter. TAS is true airspeed, heading is true rather than magnetic, and the vario shows instantaneous vertical speed. A clipped needle is marked **Scale exceeded**, while its numerical value remains available. Missing telemetry suppresses the needle/horizon instead of implying zero.
 
-**RC navigation.** In the Navigation section, choose **Use RC navigation layout**, or enable its three widgets
+When positions are unlocked, double-click a player widget's header to restore only that widget to its default position.
+Hover an instrument's switch for its measurement description and missing-data behavior; the switch also reopens a closed widget.
+
+**RC navigation.** In the Flight tools section, choose **Use RC navigation layout**, or enable its three widgets
 individually. Pilot radar shows horizontal distance and aircraft position relative to the pilot, north up, with an
 automatic range and recent position trail. Its centre is the pilot, not a recorded launch point. Wind & drift shows
 ground track minus nose heading (positive to the right), plus heading-relative head/tailwind and wind blowing to
@@ -179,7 +182,7 @@ reserve. Slow flight, missing readings, long sampling gaps and flight resets cle
 widget stops its sampling; reopening starts a fresh window. All three support dragging, ×, saved positions,
 locking and shared size/background controls. Compact mode retains their navigation diagrams.
 
-**Training instruments.** The Navigation tab also offers **Use training layout** and three individual switches.
+**Training instruments.** The Flight tools tab also offers **Use training layout** and three individual switches.
 Maneuver meter shows signed body-axis load factor, bank, angle of attack, and sampled minimum/maximum load.
 Its -4…+8 g arc clips with a **Scale exceeded** message while preserving the numerical value; it is not a
 structural-limit warning. Glide monitor shows instantaneous vertical speed and a recent history. Its ground

@@ -891,14 +891,14 @@ msgstr "Carga restante de la batería con voltaje/corriente, o nivel y reserva d
 msgid "Wind speed, direction it comes from and vertical airflow. Missing telemetry shows dashes; calm wind is labeled."
 msgstr "Velocidad y procedencia del viento, y flujo vertical del aire. Sin telemetría aparecen guiones; el viento en calma se indica."
 
-msgid "Remaining tank volume, fuel mass and reserve. If finite fuel data is missing, shows “No finite fuel tank” and dashes."
-msgstr "Volumen de combustible restante, masa y reserva. Si faltan datos finitos del tanque, muestra «Sin depósito finito de combustible» y guiones."
+msgid "Remaining tank volume and fuel mass, plus a low-reserve warning. If finite fuel data is missing, shows “No finite fuel tank” and dashes."
+msgstr "Volumen y masa del combustible restante, con aviso de reserva baja. Si faltan datos finitos del tanque, muestra «Sin depósito finito» y guiones."
 
 msgid "Roll, pitch and yaw trim offsets as % of full travel. Missing trim telemetry is marked unavailable."
 msgstr "Desplazamientos de trim de alabeo, cabeceo y guiñada como % del recorrido total. Sin telemetría de trim, se indica como no disponible."
 
-msgid "Engine RPM, throttle command and flight load (g). Unavailable without RPM telemetry."
-msgstr "RPM del motor, mando de acelerador y carga de vuelo (g). No disponible sin telemetría de RPM."
+msgid "Engine RPM, throttle command and flight load (g). RPM is unavailable without engine telemetry; other readings may remain."
+msgstr "RPM del motor, mando de acelerador y carga de vuelo (g). Sin telemetría del motor, las RPM no están disponibles; los otros datos pueden seguir apareciendo."
 
 msgid "True airspeed and flight maximum on a dial. Blank when airspeed data is missing."
 msgstr "Velocidad aérea verdadera y máximo del vuelo en un dial. Vacío si faltan datos de velocidad aérea."
@@ -921,8 +921,8 @@ msgstr "Posición norte-arriba y distancia horizontal respecto al piloto, con an
 msgid "Nose heading, ground track, drift angle, headwind and crosswind. Track is unavailable below 1 m/s or without ground-course data."
 msgstr "Rumbo del morro, trayectoria sobre el suelo, ángulo de deriva, viento de frente y cruzado. La trayectoria no está disponible por debajo de 1 m/s o si faltan datos del curso terrestre."
 
-msgid "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power and ground speed ≥3 m/s."
-msgstr "Consumo eléctrico en 10 s por distancia en tierra (Wh/km o Wh/mi), no autonomía. Requiere potencia válida y velocidad sobre el suelo ≥3 m/s."
+msgid "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power, ≥3 m/s ground speed and 2 s of samples."
+msgstr "Consumo eléctrico en ventana móvil de 10 s por distancia en tierra (Wh/km o Wh/mi), no autonomía. Requiere potencia válida, velocidad ≥3 m/s y 2 s de muestras."
 
 msgid "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data."
 msgstr "G sobre el eje vertical del cuerpo (fuerza específica en −z), actual y mín./máx. a 10 Hz; también alabeo y AoA. Los guiones indican carga ausente."

@@ -8,6 +8,16 @@ const Settings := preload("res://render/overlays/overlay_settings.gd")
 
 signal closed
 
+## Native tooltips do not wrap long descriptions. Keep the player's help inside the viewport.
+class InstrumentSwitch extends CheckBox:
+	func _make_custom_tooltip(for_text: String) -> Object:
+		var label := Label.new()
+		label.theme_type_variation = &"TooltipLabel"
+		label.text = for_text
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.custom_minimum_size.x = minf(520.0, maxf(120.0, get_viewport_rect().size.x - 48.0))
+		return label
+
 const LAYER: int = 12
 ## Overlay names as the player reads them, in Settings.IDS order.
 const NAMES := {
@@ -26,9 +36,9 @@ const DESCRIPTIONS := {
 	height = "Height above ground, distance to pilot, climb/sink rate and flight time. Dashes indicate missing telemetry.",
 	power = "Battery remaining with voltage/current, or fuel level and reserve. Unavailable if valid power and finite fuel data are both missing.",
 	weather = "Wind speed, direction it comes from and vertical airflow. Missing telemetry shows dashes; calm wind is labeled.",
-	fuel = "Remaining tank volume, fuel mass and reserve. If finite fuel data is missing, shows “No finite fuel tank” and dashes.",
+	fuel = "Remaining tank volume and fuel mass, plus a low-reserve warning. If finite fuel data is missing, shows “No finite fuel tank” and dashes.",
 	trims = "Roll, pitch and yaw trim offsets as % of full travel. Missing trim telemetry is marked unavailable.",
-	engine = "Engine RPM, throttle command and flight load (g). Unavailable without RPM telemetry.",
+	engine = "Engine RPM, throttle command and flight load (g). RPM is unavailable without engine telemetry; other readings may remain.",
 	airspeed_dial = "True airspeed and flight maximum on a dial. Blank when airspeed data is missing.",
 	attitude = "Nose pitch and bank angles. Blank unless both attitude readings are available.",
 	altimeter = "Height above datum and above ground (AGL). Blank when datum height is unavailable.",
@@ -36,7 +46,7 @@ const DESCRIPTIONS := {
 	variometer = "Vertical speed (climb/sink) on a dial. Blank when vertical-speed data is unavailable.",
 	pilot_radar = "North-up aircraft position and horizontal distance relative to the pilot, plus range ring and AGL. Requires a valid pilot-relative position sample.",
 	wind_track = "Nose heading, ground track, drift angle, headwind and crosswind. Track is unavailable below 1 m/s or without ground-course data.",
-	cruise_efficiency = "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power and ground speed ≥3 m/s.",
+	cruise_efficiency = "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power, ≥3 m/s ground speed and 2 s of samples.",
 	maneuver = "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data.",
 	glide = "Vertical-speed history. Ground-glide ratio = ground speed/sink rate; uncorrected for wind or energy height, not aerodynamic L/D. Unavailable without data or while powered, turning, slow, or not descending.",
 	flight_summary = "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial.",
@@ -248,7 +258,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	grid.add_theme_constant_override("h_separation", 24)
 	other_page.add_child(grid)
 	for id: String in Settings.IDS:
-		var box := CheckBox.new()
+		var box := InstrumentSwitch.new()
 		box.name = id.capitalize().replace(" ", "")
 		box.text = tr(NAMES[id])
 		if id in Settings.PLAYER_IDS:

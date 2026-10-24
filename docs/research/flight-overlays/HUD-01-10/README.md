@@ -409,3 +409,42 @@ ratio; numeric low-throttle glide cases are covered by the focused tests. A nati
 the scrolling page with pinned controls. Captures remain ignored in
 `tmp/debug-bridge/20261024-144614-47870/shots/` (001 options, 002 flight, 003 fallback dialog). No bridge engine
 errors were reported; both rendered sessions were stopped. No screenshot is added to Git.
+
+## Widget efficiency and usability (2026-10-24, HUD-13-R8)
+
+Modern widgets now invalidate graphics independently from labels: RPM/load changes preserve the throttle bar;
+voltage/current changes preserve an unchanged charge bar; wind speed/updraft changes preserve the bearing
+diagram; and a trim change redraws only its axis. The height clock uses whole seconds. Compact-to-full mode
+redraws the latest value, while repeated paused samples retain cached drawings. Existing classic/navigation/
+training static-face caches and bounded histories remain in use.
+
+The manager skips legacy label, warning-chip and battery-panel presentation while its layer is hidden. Charge,
+alarms and constant-size flight aggregates continue updating. Battery sensor exports omit both 600-sample
+float64 histories unless a visible detailed panel needs them; internal recording continues. This avoids up
+to 9,600 bytes of history payload per scalar export, and removes the old intermediate history copy for detailed
+exports. Reopening restores complete history and requests an immediate telemetry refresh.
+
+All 18 player headers support double-click restore of that widget alone when unlocked. An ordinary stationary
+click no longer saves a position. Existing drag, close, lock and persisted layout remain. The third options tab
+is now Flight tools (Ayudas de vuelo); every instrument switch explains its measurements and unavailable data.
+Native review caught unwrapped default tooltips extending beyond the screen; instrument switches now provide
+word-wrapped help capped at 520 px, with viewport-aware width.
+
+Checked-runner evidence in ignored `tmp/widget-efficiency-r8/checks/`: battery 135, efficiency 21, modern 74,
+classic 58, navigation 57, training 56, manager/dialog 187, settings 27 and redraw 17: **632 checks, zero failures**.
+The new redraw suite counts actual Control draw callbacks, including geometry changes as positive controls.
+History tests cover bounded retention, scalar/full charge equivalence, caller mutation isolation and reopening.
+Manager checks cover hidden sampling/presentation, immediate refresh, individual restore and lock protection.
+UI-language checks pass with 1,841 Spanish entries; current scripts parse and whitespace checks pass. Initial
+test-authoring syntax and an incorrect test filename were corrected before the final passing runs. Existing
+aircraft inertia warnings remain. No physics code changed; the full physics suite was not rerun.
+
+These are controlled reductions in work, not measurements of a whole-game FPS gain.
+
+Native Windows/Godot 4.7.2 review in Spanish at 1920×1080 verified all five tabs, all six flight-tool switches,
+and the longest glide tooltip fitting inside the viewport after the wrapping fix. A training widget was dragged,
+restored by header double-click to normalized (0, 1), closed with × and reopened from its switch. The 720p
+fallback retained the scrolling page and pinned controls. Ignored captures are in
+`tmp/debug-bridge/20261024-145930-47870/shots/` (interaction/options) and
+`tmp/debug-bridge/20261024-150219-47870/shots/` (001 corrected tooltip, 002 fallback dialog). Both native sessions
+reported no bridge engine errors and stopped with no crash or leaked objects. No screenshots are added to Git.

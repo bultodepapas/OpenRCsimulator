@@ -376,11 +376,11 @@ func _dialog() -> void:
 		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid)
 		and dialog._training_grid.get_child_count() == Settings.TRAINING_IDS.size()
 		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._training_grid))
-	_check("all player widget switches have measurement and common-use tooltips", OverlaysDialog.DESCRIPTIONS.size() == Settings.PLAYER_IDS.size()
-		and Settings.PLAYER_IDS.all(func(id: String) -> bool:
-			return (OverlaysDialog.DESCRIPTIONS.has(id)
-				and dialog.switches[id].tooltip_text.begins_with(str(OverlaysDialog.DESCRIPTIONS[id]))
-				and dialog.switches[id].tooltip_text.contains(str(OverlaysDialog.COMMON_WIDGET_HELP)))))
+	_check("all player widget switches have measurement and common-use tooltips", _player_tooltips_complete(dialog))
+	var help_label: Label = dialog.switches.glide._make_custom_tooltip(dialog.switches.glide.tooltip_text)
+	_check("long instrument help wraps inside a bounded tooltip", help_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART
+		and help_label.custom_minimum_size.x <= 520.0 and help_label.text == dialog.switches.glide.tooltip_text)
+	help_label.free()
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
 	var pinned_outside_scroll := (
@@ -467,6 +467,18 @@ func _dialog() -> void:
 	dialog.queue_free()
 	manager.queue_free()
 	await process_frame
+
+
+func _player_tooltips_complete(dialog: CanvasLayer) -> bool:
+	if OverlaysDialog.DESCRIPTIONS.size() != Settings.PLAYER_IDS.size():
+		return false
+	for id: String in Settings.PLAYER_IDS:
+		if not OverlaysDialog.DESCRIPTIONS.has(id):
+			return false
+		var tooltip: String = str(dialog.switches[id].tooltip_text)
+		if not tooltip.begins_with(str(OverlaysDialog.DESCRIPTIONS[id])) or not tooltip.contains(str(OverlaysDialog.COMMON_WIDGET_HELP)):
+			return false
+	return true
 
 
 func _spanish_layout() -> void:
