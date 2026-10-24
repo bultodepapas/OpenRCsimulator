@@ -1,5 +1,9 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R6 — twenty investigations and crystalline edges, 2026-10-24
+
+[Research, selected changes and evidence](UI-22-R6/README.md): twenty inspected sources covering game UI, free rendering tools, glass, motion and accessibility. The implemented refinement adds continuous convex lighting, a directional bevel, a lower inset light return and a shorter contour-weighted glint. Backgrounds remain neutral black; native text, focus and accessibility preferences retain ownership.
+
 ## UI-22-R5 — neutral black glass, lime actions, 2026-10-24
 
 Owner refinement: keep radioactive green on buttons and selection accents, with neutral black translucent backgrounds. Panel/card/secondary-control fills, borders, shadows and text are now neutral grays. Crystal panel reflections use `SURFACE_LIGHT`; primary buttons retain `CRYSTAL` and the existing motion. Opacity preferences and transparency amounts are unchanged. The [current palette](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns the tokens.

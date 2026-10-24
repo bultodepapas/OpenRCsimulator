@@ -962,3 +962,7 @@ Adapt free CC0/MIT shader techniques for primary actions and selected panel surf
 
 Refine the palette at the owner's request: keep green crystal buttons and selection accents, while backgrounds, panel reflections and shadows use neutral black/gray. Preserve the existing translucency, opaque-panel option and motion. [Palette and verification](research/menu-investigations/README.md#ui-22-r5--neutral-black-glass-lime-actions-2026-10-24).
 
+### 2026-10-24 — Refine glass through its contour and finite light (UI-22-R6)
+
+Twenty source investigations favor controlled hierarchy and material detail over adding decoration everywhere. Replace the hard halfway highlight with continuous lighting, a directional rounded-box bevel and a restrained inset light return. Concentrate the 560 ms eased glint at the contour. Keep neutral black surfaces and the existing native focus/contrast controls. Extend the licensed shader already in use; do not add scene refraction, texture noise, viewport glow or another library for this slice. [Source-by-source decisions and verification](research/menu-investigations/UI-22-R6/README.md).
+
