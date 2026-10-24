@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 import contextlib
+import csv
 import io
+import tempfile
 import json
 import os
 import socket
@@ -22,6 +24,8 @@ class FakeBridge:
         self.server = socket.create_server(("127.0.0.1", 0))
         self.port = self.server.getsockname()[1]
         self.requests: list[dict] = []
+        self.screens = ["home"]
+        self.stuck = False
         threading.Thread(target=self._serve, daemon=True).start()
 
     def _serve(self) -> None:
@@ -41,9 +45,38 @@ class FakeBridge:
                     reply = {"id": request["id"], "ok": True, "result": result}
                 elif request["cmd"] == "nope":
                     reply = {"id": request["id"], "ok": False, "error": "unknown command 'nope'; try help"}
+                elif request["cmd"] in ("open", "close", "state", "logs"):
+                    reply = self._screens(request)
+                elif request["cmd"] == "assert":
+                    reply = {"id": request["id"], "ok": str(request["expr"]).lower() == "true", "error": "assertion failed: x"}
+                elif request["cmd"] == "sample":
+                    start = 24 * len([r for r in self.requests if r["cmd"] == "sample"])
+                    rows = [[start + i * request["every_ticks"], 0.1 * i, i] for i in range(request["count"])]
+                    reply = {"id": request["id"], "ok": True,
+                             "result": {"columns": ["tick", "time_s"] + list(request["exprs"]), "rows": rows}}
                 else:
                     reply = {"id": request["id"], "ok": True, "result": {"echo": request}}
                 conn.sendall((json.dumps(reply) + "\n").encode())
+
+    def _screens(self, request: dict) -> dict:
+        command, ok, result = request["cmd"], True, None
+        if command == "open" and "screen" not in request:
+            result = ["pause", "settings", "help"]
+        elif command == "open":
+            ok = request["screen"] != "pause"
+            if ok:
+                self.screens.append(request["screen"])
+                result = {"opened": request["screen"]}
+        elif command == "close":
+            if not self.stuck or self.screens[-1] != "help":
+                self.screens.pop()
+            result = {"closed": True}
+        elif command == "state":
+            result = {"route": "home", "screens": list(self.screens)}
+        else:
+            records = [{"seq": 6, "level": "script_error", "text": "boom"}] if request.get("since") else []
+            result = {"last_seq": 5, "dropped": 0, "records": records if self.stuck else []}
+        return {"id": request["id"], "ok": ok, "result": result, "error": "did not open here"}
 
     def close(self) -> None:
         with contextlib.suppress(OSError):
@@ -57,8 +90,13 @@ class DebugctlTests(unittest.TestCase):
         self.env = dict(os.environ)
         os.environ["OPENRC_DEBUG_BRIDGE"] = str(self.bridge.port)
         os.environ.pop("OPENRC_DEBUG_TOKEN", None)
+        self.tmp = tempfile.TemporaryDirectory()
+        self.saved_current = debugctl.CURRENT
+        debugctl.CURRENT = Path(self.tmp.name) / "current.json"
 
     def tearDown(self) -> None:
+        debugctl.CURRENT = self.saved_current
+        self.tmp.cleanup()
         self.bridge.close()
         os.environ.clear()
         os.environ.update(self.env)
@@ -104,6 +142,69 @@ class DebugctlTests(unittest.TestCase):
         self.assertTrue(lines[1].startswith("* Button") and lines[1].endswith("AppRoot/Home/Fly"))
         self.assertIn("value=2.5 [0..10]", lines[2])
         self.assertEqual(json.loads(self.run_cli("ui", "--json")[1])["focus"], "AppRoot/Home/Fly")
+
+    def test_last_launch_supplies_the_port(self) -> None:
+        os.environ.pop("OPENRC_DEBUG_BRIDGE")
+        self.assertEqual(debugctl.port(), debugctl.DEFAULT_PORT)
+        debugctl.CURRENT.write_text(json.dumps({"port": self.bridge.port, "pid": os.getpid()}))
+        status, out, _ = self.run_cli("status")
+        report = json.loads(out)
+        self.assertEqual((status, report["port"], report["alive"], report["bridge"]), (0, self.bridge.port, True, True))
+
+    def test_run_script_stops_at_the_first_failure(self) -> None:
+        script = Path(self.tmp.name) / "repro.txt"
+        script.write_text("# comment\nping\nassert expr=true\n\nassert expr=false\nping note='after failure'\n")
+        status, out, err = self.run_cli("run", str(script))
+        self.assertEqual(status, 1)
+        self.assertIn("line 5: assertion failed", err)
+        self.assertNotIn("after failure", out)
+        self.assertEqual([r["cmd"] for r in self.bridge.requests], ["ping", "assert", "assert"])
+        status, out, _ = self.run_cli("run", str(script), "--keep-going")
+        self.assertEqual(status, 1)
+        self.assertEqual(self.bridge.requests[-1]["note"], "after failure")
+
+    def test_watch_streams_csv_in_chunks(self) -> None:
+        target = Path(self.tmp.name) / "watch.csv"
+        status, out, _ = self.run_cli("watch", "--every", "6", "--count", "13", "--csv", str(target), "height=-s[2]")
+        self.assertEqual(status, 0)
+        rows = list(csv.reader(io.StringIO(out)))
+        self.assertEqual(rows[0], ["tick", "time_s", "height"])
+        self.assertEqual(len(rows), 14)
+        self.assertEqual(rows, list(csv.reader(target.open())))
+        samples = [r for r in self.bridge.requests if r["cmd"] == "sample"]
+        self.assertEqual([r["count"] for r in samples], [10, 3])
+        self.assertEqual(samples[0]["exprs"], {"height": "-s[2]"})
+
+    def test_crawl_opens_lists_and_closes_every_screen(self) -> None:
+        status, out, _ = self.run_cli("crawl")
+        self.assertEqual(status, 0, out)
+        self.assertIn("pause           unavailable here", out)
+        self.assertRegex(out, r"settings\s+ok\s+2 controls")
+        self.assertTrue(out.rstrip().endswith("# 0 screen failures, 0 errors, 0 warnings"))
+
+    def test_crawl_fails_on_a_screen_that_stays_open_or_new_errors(self) -> None:
+        self.bridge.stuck = True
+        status, out, _ = self.run_cli("crawl")
+        self.assertEqual(status, 1)
+        self.assertIn("help            did not return", out)
+        self.assertIn("script_error", out)
+
+    def test_clean_keeps_recent_runs_and_foreign_folders(self) -> None:
+        saved = debugctl.RUNS
+        debugctl.RUNS = Path(self.tmp.name) / "runs"
+        try:
+            for i in range(4):
+                run = debugctl.RUNS / f"run-{i}"
+                run.mkdir(parents=True)
+                (run / "launch.json").write_text("{}")
+                os.utime(run, (1000 + i, 1000 + i))
+            (debugctl.RUNS / "notes").mkdir()
+            os.utime(debugctl.RUNS / "notes", (1, 1))
+            status, out, _ = self.run_cli("clean", "--keep", "2")
+            self.assertEqual((status, json.loads(out)["removed"]), (0, 2))
+            self.assertEqual(sorted(p.name for p in debugctl.RUNS.iterdir()), ["notes", "run-2", "run-3"])
+        finally:
+            debugctl.RUNS = saved
 
 
 if __name__ == "__main__":

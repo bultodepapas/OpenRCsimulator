@@ -10,6 +10,8 @@ var _mutex := Mutex.new()
 var _records: Array[Dictionary] = []
 var _next_seq := 1
 var dropped := 0
+## Totals since the logger was added, per level (the ring forgets; these do not).
+var _counts := {}
 
 
 func _log_message(message: String, error: bool) -> void:
@@ -36,6 +38,7 @@ func _append(record: Dictionary) -> void:
 	record.time_ms = Time.get_ticks_msec()
 	record.frame = Engine.get_process_frames()
 	_next_seq += 1
+	_counts[record.level] = int(_counts.get(record.level, 0)) + 1
 	_records.append(record)
 	if _records.size() > CAPACITY:
 		_records.pop_front()
@@ -55,6 +58,21 @@ func since(after: int, limit: int, levels: PackedStringArray = PackedStringArray
 			break
 	_mutex.unlock()
 	return out
+
+
+## A bridge-observed state change (route, screen, pause, crash, fault), interleaved with the engine messages.
+func event(text: String, detail: Dictionary = {}) -> void:
+	var record := {level = "event", text = text}
+	if not detail.is_empty():
+		record.detail = detail
+	_append(record)
+
+
+func counts() -> Dictionary:
+	_mutex.lock()
+	var value := _counts.duplicate()
+	_mutex.unlock()
+	return value
 
 
 func last_seq() -> int:

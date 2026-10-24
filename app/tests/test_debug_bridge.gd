@@ -1,7 +1,10 @@
 # PT1h-R7: the agent debug bridge end to end over real loopback TCP inside this process, against a stand-in
 # AppRoot (fake flight session and simulation, two buttons, a slider): protocol and errors, the token, log capture,
 # eval, UI listing and press by label, slider values, the sticks override on the keyboard seam (including a seam
-# re-installed behind its back), exact pause/step and wait. The real app route is checked in tools/debug/README.md.
+# re-installed behind its back), exact pause/step and wait; tick sampling, assert, find/get/set/call, performance
+# counters, state-change events; select by item text (OptionButton, TabBar, PopupMenu), key modifiers, dialogs on top
+# of the UI scope (internal OK/Cancel buttons), close, mouse clicks, methods, shortcuts and controller actions. The real app routes (fly/home/restart/view/record) are checked in
+# tools/debug/README.md.
 # Run: godot --headless --path . --script res://tests/test_debug_bridge.gd
 extends SceneTree
 
@@ -60,6 +63,11 @@ class FakeSession extends Node:
 class FakeFlight extends Node:
 	var session := FakeSession.new()
 	var aircraft_id := "fake-plane"
+	var camera_fov := 60.0
+	var offset := Vector3.ZERO
+
+	func scaled(x: float, k: float) -> float:
+		return x * k
 
 	func _ready() -> void:
 		add_child(session)
@@ -114,6 +122,8 @@ func _run() -> void:
 	await _ui(app, slider)
 	await _sticks(flight.session)
 	await _step(flight.session)
+	await _tools(bridge, flight)
+	await _everything(bridge, app, ui)
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -207,6 +217,158 @@ func _step(session: Node) -> void:
 	var timeout: Dictionary = await _call({cmd = "wait", until = "false", timeout_s = 0.1})
 	_check("wait times out with an error", not timeout.ok and timeout.error == "timed out")
 
+
+
+func _tools(bridge: Node, flight: Node) -> void:
+	var session: Node = flight.session
+	session.sim.set_paused(false)
+	var sampled: Dictionary = await _call({cmd = "sample", exprs = {height = "-s[2]", roll = "session.commands.roll"},
+		every_ticks = 5, count = 4})
+	var rows: Array = sampled.result.rows if sampled.ok else []
+	_check("sample returns one row per n simulation ticks", sampled.ok
+		and sampled.result.columns == ["tick", "time_s", "height", "roll"] and rows.size() == 4
+		and rows[1][0] - rows[0][0] == 5 and rows[3][0] - rows[0][0] == 15 and is_equal_approx(rows[0][2], 30.0), str(sampled))
+	var bad_sample: Dictionary = await _call({cmd = "sample", exprs = {x = "nope_missing"}, count = 2})
+	_check("a failing sample expression is reported", not bad_sample.ok and str(bad_sample.error).contains("x failed"), str(bad_sample))
+	_check("finished samples are released", bridge._samples.is_empty())
+	var passed: Dictionary = await _call({cmd = "assert", expr = "flight.session.sim.tick > 0"})
+	var failed: Dictionary = await _call({cmd = "assert", expr = "flight.aircraft_id == 'other'", message = "wrong plane"})
+	_check("assert passes truthy and fails falsy with its message", passed.ok and not failed.ok
+		and str(failed.error).contains("wrong plane"), str(failed))
+	var found: Dictionary = await _call({cmd = "find", name = "Fly*", type = "Button"})
+	_check("find matches name glob and class", found.ok and found.result.nodes.size() == 1
+		and str(found.result.nodes[0].path).ends_with("/Fly"), str(found))
+	var path := str(bridge.get_tree().root.get_path_to(flight))
+	var got: Dictionary = await _call({cmd = "get", node = path, prop = "aircraft_id"})
+	var all: Dictionary = await _call({cmd = "get", node = path})
+	_check("get reads one property or all script variables", got.ok and got.result == "fake-plane"
+		and all.ok and all.result.has("camera_fov"), str(all))
+	var set: Dictionary = await _call({cmd = "set", node = path, prop = "offset", value = [1, 2, 3]})
+	var sub: Dictionary = await _call({cmd = "set", node = path, prop = "offset:y", value = 5})
+	_check("set coerces arrays to vectors and sets sub-properties", set.ok and sub.ok
+		and flight.offset == Vector3(1, 5, 3), str(flight.offset))
+	var called: Dictionary = await _call({cmd = "call", node = path, method = "scaled", args = [2.5, 4]})
+	var missing: Dictionary = await _call({cmd = "call", node = path, method = "nope"})
+	_check("call returns the result and refuses unknown methods", called.ok and is_equal_approx(called.result, 10.0)
+		and not missing.ok)
+	var perf: Dictionary = await _call({cmd = "perf"})
+	_check("perf reports engine counters and the simulation step", perf.ok and perf.result.nodes > 0
+		and perf.result.has("orphan_nodes") and perf.result.has("sim_step_usec"), str(perf))
+	var before: int = bridge.debug_log.last_seq()
+	session.sim.set_paused(true)
+	await process_frame
+	await process_frame
+	var events: Dictionary = await _call({cmd = "logs", since = before, level = "event"})
+	var texts: Array = events.result.records.map(func(r: Dictionary) -> String: return r.text)
+	_check("a pause is logged as an event with its tick", texts.has("paused: true")
+		and events.result.records[0].detail.has("tick"), str(texts))
+	var no_view: Dictionary = await _call({cmd = "view", name = "chase"})
+	var no_log: Dictionary = await _call({cmd = "record"})
+	_check("view and record explain a missing seam", not no_view.ok and not no_log.ok)
+	var state: Dictionary = await _call({cmd = "state"})
+	_check("state counts log levels", state.result.log_counts.get("warning", 0) >= 1, str(state.result.log_counts))
+
+
+class KeySpy extends Node:
+	var seen: Array[String] = []
+
+	func _input(event: InputEvent) -> void:
+		if event is InputEventKey and event.pressed:
+			seen.append(event.as_text_physical_keycode() if event.keycode == KEY_NONE else event.as_text())
+
+
+func _everything(bridge: Node, app: Node, ui: Container) -> void:
+	var options := OptionButton.new()
+	options.name = "Language"
+	for label: String in ["English", "Español", "Deutsch"]:
+		options.add_item(label)
+	ui.add_child(options)
+	var tabs := TabBar.new()
+	tabs.name = "Pages"
+	for title: String in ["Flight", "Aircraft", "Practice"]:
+		tabs.add_tab(title)
+	ui.add_child(tabs)
+	var clicks := [0]
+	var target := Button.new()
+	target.text = "Mouse target"
+	target.position = Vector2(4, 4) # a headless --script root window is 64×64: the GUI ignores points outside it
+	target.size = Vector2(50, 30)
+	target.pressed.connect(func() -> void: clicks[0] += 1)
+	app.add_child(target)
+	await process_frame
+	var chose: Dictionary = await _call({cmd = "select", text = "Language", item = "español"})
+	var tabbed: Dictionary = await _call({cmd = "select", text = "Pages", item = "Pract"})
+	var refused: Dictionary = await _call({cmd = "select", text = "Language", item = "nope"})
+	_check("select by item label: OptionButton exact (case-insensitive), TabBar unique prefix, unknown refused",
+		chose.ok and options.selected == 1 and tabbed.ok and tabs.current_tab == 2 and not refused.ok, str([chose, tabbed]))
+	var spy := KeySpy.new()
+	root.add_child(spy)
+	var shifted: Dictionary = await _call({cmd = "key", name = "Shift+F"})
+	var bad: Dictionary = await _call({cmd = "key", name = "Hyper+F"})
+	_check("key sends modifiers and refuses unknown ones", shifted.ok and spy.seen.has("Shift+F") and not bad.ok, str(spy.seen))
+	spy.queue_free()
+	var dialog := ConfirmationDialog.new()
+	dialog.title = "Discard trace?"
+	dialog.ok_button_text = "Discard"
+	var answers := []
+	dialog.confirmed.connect(func() -> void: answers.append("ok"))
+	dialog.canceled.connect(func() -> void: answers.append("cancel"))
+	app.add_child(dialog)
+	dialog.popup_centered()
+	await process_frame
+	var listing: Dictionary = await _call({cmd = "ui"})
+	var labels: Array = listing.result.controls.map(func(c: Dictionary) -> String: return c.text)
+	_check("an open dialog becomes the UI scope with its internal buttons", listing.result.get("window", {}).get("title") == "Discard trace?"
+		and labels.has("Discard") and labels.has("Cancel") and not labels.has("Fly"), str(listing.result))
+	var confirmed: Dictionary = await _call({cmd = "press", text = "Discard"})
+	_check("press confirms a dialog", confirmed.ok and answers == ["ok"] and not dialog.visible, str([confirmed, answers]))
+	dialog.popup_centered()
+	await process_frame
+	var closed: Dictionary = await _call({cmd = "close"})
+	_check("close cancels the top dialog", closed.ok and answers == ["ok", "cancel"] and not dialog.visible, str([closed, answers]))
+	var popup := PopupMenu.new()
+	popup.add_item("Copy")
+	popup.add_item("Paste", 7)
+	var picked := []
+	popup.id_pressed.connect(func(id: int) -> void: picked.append(id))
+	app.add_child(popup)
+	popup.popup(Rect2i(10, 10, 100, 60))
+	await process_frame
+	var popped: Dictionary = await _call({cmd = "select", popup = true, item = "paste"})
+	_check("select picks a PopupMenu item by label", popped.ok and picked == [7] and not popup.visible, str(popped))
+	var clicked: Dictionary = await _call({cmd = "mouse", text = "Mouse target"})
+	_check("mouse clicks a control at its centre", clicked.ok and clicks[0] == 1 and Vector2(clicked.result.at[0], clicked.result.at[1]) == target.get_global_rect().get_center(), str(clicked))
+	var methods: Dictionary = await _call({cmd = "methods", node = str(root.get_path_to(app.flight))})
+	_check("methods lists script methods with arguments", methods.ok and methods.result.methods.has("scaled(x, k)"), str(methods))
+	var shortcuts: Dictionary = await _call({cmd = "shortcuts"})
+	var keys: Array = shortcuts.result.shortcuts.map(func(r: Dictionary) -> String: return ",".join(r.keys)) if shortcuts.ok else []
+	_check("shortcuts come from the controls reference with key names", shortcuts.ok and shortcuts.result.vehicle == "airplane"
+		and keys.has("F10,F11") and shortcuts.result.input_actions.has("smoke_pump"), str(keys))
+	var listed: Dictionary = await _call({cmd = "control"})
+	var unknown: Dictionary = await _call({cmd = "control", name = "warp_drive"})
+	_check("control lists controller actions and refuses unknown ids", listed.ok and listed.result.size() > 20 and not unknown.ok)
+	var hinted := Button.new()
+	hinted.text = "DRIVE · Enter"
+	var other := Button.new()
+	other.text = "Free drive"
+	var drives := [0]
+	hinted.pressed.connect(func() -> void: drives[0] += 1)
+	ui.add_child(hinted)
+	ui.add_child(other)
+	await process_frame
+	var tiered: Dictionary = await _call({cmd = "press", text = "drive", mode = "signal"})
+	_check("a label without its key hint beats a substring elsewhere", tiered.ok and drives[0] == 1, str(tiered))
+	var no_truck: Dictionary = await _call({cmd = "drive", throttle = 0.5})
+	_check("drive explains how to start a ground vehicle", not no_truck.ok and str(no_truck.error).contains("start_ground_vehicle"))
+	hinted.queue_free()
+	other.queue_free()
+	var screen: Dictionary = await _call({cmd = "open", screen = "garage"})
+	_check("open refuses unknown screens", not screen.ok and str(screen.error).contains("settings"))
+	options.queue_free()
+	tabs.queue_free()
+	target.queue_free()
+	dialog.queue_free()
+	popup.queue_free()
 
 func _call(payload: Dictionary) -> Dictionary:
 	return await _raw_line(JSON.stringify(payload))
