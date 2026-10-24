@@ -916,3 +916,13 @@ reference-velocity convention. This is a conservative applicability limit, not a
 calibrated reverse-flow model or a proof of whole-airframe passivity. Neither an
 `abs(u)` continuation nor new rotational damping is supported by the present data.
 [Source review, replay and checks](research/flight-dynamics/body-side-reverse-flow-2026-10-23/README.md).
+
+### 2026-10-24 — Build a small loopback debug bridge for agents (PT1h-R7)
+
+Coding agents need to drive a running app without a mouse or the editor. No free tool fits a
+standalone Godot 4.7 game: godot-mcp-runtime (MIT) rewrites `project.godot` while running and needs
+Node, editor-plugin MCP servers need the editor, and in-game consoles have no remote access. Add an
+opt-in `app/debug/` node (environment variable, debug builds, `127.0.0.1` only, optional token) with
+newline-delimited JSON and a standard-library Python client. It enters pilot input only through the
+session's keyboard seam and never changes the launch route; exact replays stay with flight logs.
+[Guide and verification](../tools/debug/README.md).
