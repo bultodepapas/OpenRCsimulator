@@ -1,4 +1,4 @@
-"""SC-HUM-07 guards for the field-people outfits and their shipped assets (stdlib only, no Blender).
+"""SC-HUM-07/01 guards for the field-people outfits, the pilots' transmitter and their shipped assets (stdlib only, no Blender).
 
 Checks the outfit specifications, that Population.OUTFITS and the shipped GLBs agree in both directions,
 that rejected assets do not return, and that the source and runtime manifests still describe the files.
@@ -17,6 +17,7 @@ PEOPLE_DIR = ROOT / "app/assets/scenery/population/people"
 RUNTIME_ROOT = ROOT / "app/assets/scenery/population"
 HUMAN_SOURCES = ROOT / "assets/scenery/population/HUMAN_SOURCES.json"
 RUNTIME_MANIFEST = ROOT / "assets/scenery/population/RUNTIME_MANIFEST.json"
+TRANSMITTER_DIR = ROOT / "assets/source-deliveries/radiolink-t12d"
 POSES = {"standing", "sitting", "pilot", "working"}
 SUBDIRS = {"eyes", "eyebrows", "eyelashes", "hair", "clothes"}
 # Rejected in SC-HUM-07: political slogan, no material line, 26k triangles, women's short shorts.
@@ -96,6 +97,12 @@ class Manifests(unittest.TestCase):
         current = {str(path.relative_to(RUNTIME_ROOT)): sha256(path)
                    for path in sorted(PEOPLE_DIR.rglob("*")) if path.is_file()}
         self.assertEqual(recorded, current, "RUNTIME_MANIFEST.json people entries are stale")
+
+    def test_transmitter_delivery_is_the_one_baked_into_the_pilots(self):
+        recorded = json.loads(HUMAN_SOURCES.read_text())["sc_hum_01_transmitter"]["files"]
+        current = {path.name: sha256(path) for path in sorted(TRANSMITTER_DIR.glob("Radiolink_T12D.*"))}
+        self.assertEqual({name: entry["sha256"] for name, entry in recorded.items()}, current,
+                         "a new transmitter delivery: regenerate both pilots, merge all poses and update HUMAN_SOURCES.json")
 
     def test_atlas_imports_are_compressed_with_mipmaps(self):
         for path in sorted((PEOPLE_DIR / "textures").glob("*.png.import")):

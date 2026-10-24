@@ -16,6 +16,8 @@ const EXPECTED_CAR_IDS := ["car_sedan", "car_hatch", "car_suv", "car_sport"]
 const EXPECTED_HUMAN_IDS := ["person_standing", "person_sitting", "person_pilot", "person_working"]
 const CAR_TRIANGLE_LIMIT := 30000
 const HUMAN_TRIANGLE_LIMIT := 8000
+## SC-HUM-01: pilots also hold the owner's transmitter (plan §7 allows up to 3k; the T12D ships at about 1.1k).
+const TRANSMITTER_TRIANGLE_ALLOWANCE := 1200
 
 var _failures := 0
 
@@ -128,6 +130,8 @@ func _inspect_mesh_data(asset: String, parts: Array[Dictionary]) -> void:
 					missing_uv += 1
 	var is_car := CAR_ASSETS.has(asset)
 	var limit := CAR_TRIANGLE_LIMIT if is_car else HUMAN_TRIANGLE_LIMIT
+	if Population.pose_of(asset) == "pilot":
+		limit += TRANSMITTER_TRIANGLE_ALLOWANCE
 	_check("%s stays within its source triangle cap (%d <= %d)" % [asset, triangle_total, limit],
 		triangle_total > 0 and triangle_total <= limit, str(triangle_total))
 	_check("%s retains usable textured surfaces and UVs" % asset,

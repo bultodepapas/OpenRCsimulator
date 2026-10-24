@@ -40,6 +40,8 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 - **A 0.5 alpha cut erases thin strands once mipmaps are on.** Eyebrows and fine hair average below the threshold in mips and disappear, so MPFB faces looked browless; an alpha cut of 0.3 restored them without visible hair-edge bloat at 1080p ([SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md#faces-and-skin-sc-hum-07-remainder)).
 
+- **Reduce a detailed hard-surface model per part, not as one mesh.** One collapse decimation of the joined 36k-triangle owner transmitter, to 800 triangles, tore holes in its flat face panel while small knobs kept their triangles. Merge coplanar faces of each part first (planar dissolve, materials delimited), then share the triangle budget by surface area with a small floor per part. The housing kept its outline at a similar total ([SC-HUM-01](../research/scenery-implementation/SC-HUM-01/README.md#recipe)).
+
 ## Rendering and visual evidence
 
 - **Separate vertex metadata from display colors.** In Godot 4.7.2, raw packed vertex values reach `vertex()` in both renderers. Applying an sRGB transfer to material tags or variation seeds can preserve classification while collapsing variation and shifting UVs. Diagnose the actual stage with native reference panels; keep ALBEDO color decoding separate. [Barrier/shelter GPU evidence](../research/visual-quality-implementation/VQ-07/material-tags-2026-10-22/README.md).

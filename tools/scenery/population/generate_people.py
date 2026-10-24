@@ -213,8 +213,8 @@ TRANSMITTER_KNUCKLES = (0.085, 0.035, 0.12)
 TRANSMITTER_THUMB = (0.05, -0.034, 0.10)
 FINGER_CURL_DEG = 55.0
 TRANSMITTER_MIN_PART_M = 0.010  # screws, LEDs, knobs and printed marks are below a pixel at field range
-TRANSMITTER_TRIANGLES = 800  # keeps each pilot within the 8,000-triangle person cap; Godot adds automatic LODs
-TRANSMITTER_PART_FLOOR = 12  # triangles a small part keeps (a six-sided stick)
+TRANSMITTER_TRIANGLES = 560  # keeps each pilot within the 8,000-triangle person cap; Godot adds automatic LODs
+TRANSMITTER_PART_FLOOR = 8  # triangles a small part keeps (a four-sided stick)
 
 def import_transmitter(path):
     """Append the transmitter's visible parts as frozen mesh objects, one per material, in its source frame.
@@ -238,6 +238,7 @@ def import_transmitter(path):
     def evaluated_copy(obj):
         return bpy.data.meshes.new_from_object(obj.evaluated_get(bpy.context.evaluated_depsgraph_get()))
     frozen = []
+    source_triangles = 0
     for obj in loaded:
         if obj.type not in ('MESH', 'CURVE') or not under_root(obj) or max(obj.dimensions) < TRANSMITTER_MIN_PART_M:
             continue
@@ -250,6 +251,7 @@ def import_transmitter(path):
             mesh.uv_layers.new()  # untextured parts become atlas swatches; the merge still reads a UV set
         part = bpy.data.objects.new('RC_Transmitter_' + obj.name, mesh)
         bpy.context.scene.collection.objects.link(part)
+        source_triangles += sum(len(poly.vertices) - 2 for poly in mesh.polygons)
         # Merge coplanar faces first (no shape change), so the collapse below spends nothing on flat panels.
         planar = part.modifiers.new('Transmitter planar merge', 'DECIMATE')
         planar.decimate_type = 'DISSOLVE'
@@ -263,7 +265,6 @@ def import_transmitter(path):
         bpy.data.objects.remove(obj, do_unlink=True)
     def triangle_count(objects):
         return sum(len(poly.vertices) - 2 for obj in objects for poly in obj.data.polygons)
-    source_triangles = triangle_count(frozen)
     # Share the budget by surface area: the housing that is seen keeps its outline; small parts keep a floor.
     areas = {part.name: sum(poly.area for poly in part.data.polygons) for part in frozen}
     total_area = sum(areas.values())
