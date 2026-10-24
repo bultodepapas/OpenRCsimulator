@@ -931,3 +931,12 @@ session's keyboard seam and never changes the launch route; exact replays stay w
 ### 2026-10-24 — Make the latency camera marker opt-in (HUD-03-R1)
 
 The F6a square is an external-camera threshold target, not a latency readout; a centred raw axis legitimately makes it white. New Home profiles leave it off. Flight overlays exposes the existing saved preference, and its × closes it without changing the flight or the camera-measurement threshold semantics. Hidden markers suspend sampling. Preserve existing saved choices and the explicit CLI flags. [Review and verification](research/flight-overlays/HUD-01-10/README.md#close-controls-and-camera-marker-2026-10-24-hud-03-r1).
+### 2026-10-24 — Debug bridge: network thread and a token per session (PT1h-R7)
+
+The first bridge answered only in `_process`, so each command waited a rendered frame (1.2 s on the
+llvmpipe VM at 1080p). A network thread now answers ping, logs and a rate-limited state snapshot
+(3–5 ms) and queues scene commands for the main thread. The connection closes on the first non-JSON
+or wrong-token line, and `launch` generates a token per session: a web page can POST to
+`127.0.0.1`, and an optional token alone left `eval` open to it. Measured cost is 40 µs per frame idle
+and 58 µs active. [Guide, measurements and review](../tools/debug/README.md#performance).
+

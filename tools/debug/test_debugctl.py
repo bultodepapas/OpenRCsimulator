@@ -139,7 +139,8 @@ class DebugctlTests(unittest.TestCase):
         lines = out.splitlines()
         self.assertEqual(status, 0)
         self.assertTrue(lines[0].startswith("# scope AppRoot/Home"))
-        self.assertTrue(lines[1].startswith("* Button") and lines[1].endswith("AppRoot/Home/Fly"))
+        self.assertTrue(lines[1].startswith("* Button") and lines[1].endswith(" Fly"), lines[1])
+        self.assertTrue(self.run_cli("ui", "--paths")[1].splitlines()[1].endswith("AppRoot/Home/Fly"))
         self.assertIn("value=2.5 [0..10]", lines[2])
         self.assertEqual(json.loads(self.run_cli("ui", "--json")[1])["focus"], "AppRoot/Home/Fly")
 
@@ -205,6 +206,30 @@ class DebugctlTests(unittest.TestCase):
             self.assertEqual(sorted(p.name for p in debugctl.RUNS.iterdir()), ["notes", "run-2", "run-3"])
         finally:
             debugctl.RUNS = saved
+
+    def test_short_paths_drop_the_scope_and_generated_segments(self) -> None:
+        path = "AppRoot/Settings/@Control@91/@CenterContainer@93/@VBoxContainer@95/@GridContainer@98/DisplayCategory"
+        self.assertEqual(debugctl.short_path(path, "AppRoot/Settings"), "DisplayCategory")
+        self.assertEqual(debugctl.short_path("AppRoot/Main/A/B/C/D", "AppRoot"), "B/C/D")
+
+    def test_the_launch_token_is_sent_for_its_port_only(self) -> None:
+        os.environ.pop("OPENRC_DEBUG_BRIDGE")
+        debugctl.CURRENT.write_text(json.dumps({"port": self.bridge.port, "token": "abc123"}))
+        self.run_cli("ping")
+        self.assertEqual(self.bridge.requests[-1]["token"], "abc123")
+        os.environ["OPENRC_DEBUG_BRIDGE"] = str(self.bridge.port + 1)  # another session's port: no stray token
+        self.assertEqual(debugctl.token(), "")
+
+    def test_enable_value_one_is_not_a_port(self) -> None:
+        os.environ["OPENRC_DEBUG_BRIDGE"] = "1"
+        self.assertIsNone(debugctl.env_port())
+        self.assertEqual(debugctl.port(), debugctl.DEFAULT_PORT)
+
+    def test_stop_without_a_session_says_so(self) -> None:
+        os.environ.pop("OPENRC_DEBUG_BRIDGE")
+        status, _, err = self.run_cli("stop")
+        self.assertEqual(status, 1)
+        self.assertIn("no launched session", err)
 
 
 if __name__ == "__main__":

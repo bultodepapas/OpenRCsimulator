@@ -34,12 +34,15 @@ const ENV_OUT := "OPENRC_DEBUG_OUT"
 const DEFAULT_PORT := 47870
 const MAX_CLIENTS := 8
 const MAX_LINE_BYTES := 1 << 20
+const MAX_OUT_BYTES := 64 << 20
 const UI_LIMIT := 400
 const NODE_LIMIT := 600
 ## Commands the network thread answers itself; everything else touches the scene and runs on the main thread.
 const THREAD_COMMANDS := ["help", "ping", "logs", "state"]
 ## Keep publishing state snapshots this long after the last request (idle sessions cost nothing).
 const SNAPSHOT_IDLE_MS := 30000
+## Publish at most this often (a state read is then at most this old, or one frame on a slow renderer).
+const SNAPSHOT_INTERVAL_MS := 50
 const COMMANDS := {
 	"help": "this list",
 	"ping": "liveness: pid, engine version, frame, fps",
@@ -50,13 +53,17 @@ const COMMANDS := {
 	"view": "name=pilot|chase|orbit|closeup: camera view (no name: the current one)",
 	"record": "action=start|stop|mark|status: the flight log (.orfl), like F10/F11",
 	"perf": "frame/physics time, fps, memory, objects, nodes, orphans, draw calls, simulation step cost",
+	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
+	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint",
+	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
+	"profile": "since=<seq> top=<n> sort=self|total: GDScript functions by time (launch --profile)",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
 	"find": "name=<glob> type=<class> under=<path> limit=<n>: nodes by name pattern and class",
 	"get": "node=<path> prop=<property>: one property (or all script variables when prop is empty)",
 	"set": "node=<path> prop=<property> value=<json>: assign; arrays become vectors/colours when the property is one",
 	"call": "node=<path> method=<name> args=[...]: call a method and return its result",
-	"logs": "since=<seq> limit=<n> level=<error,warning,...>: engine/script log records after a cursor",
+	"logs": "since=<seq> limit=<n> level=<error,warning,...> summary=<bool>: log records after a cursor, or grouped",
 	"ui": "all=<bool> labels=<bool> text=<substring>: visible controls of the top dialog/popup/screen (or everything)",
 	"open": "screen=<pause|settings|controls|help|weather|time_of_day|overlays|failures|companions|natural_random|workshop> (none: list)",
 	"close": "close the top dialog, popup or menu screen (like Esc/Back)",
@@ -80,8 +87,8 @@ const COMMANDS := {
 	"time_scale": "value=<x>: Engine.time_scale (0.05..16)",
 	"window": "size=<WxH> mode=windowed|fullscreen: OS window (1920x1080 is the primary target); no args reports it",
 	"wait": "frames=<n> | seconds=<s> | until=<expr> timeout_s=<s>",
-	"screenshot": "path=<png> max_width=<px>: viewport picture (needs a renderer: Xvfb, not --headless)",
-	"eval": "expr=<GDScript expression> node=<path>: evaluate on AppRoot (inputs: app, tree, bridge)",
+	"screenshot": "path=<png|jpg> format=png|jpg max_width=<px>: viewport picture (needs a renderer: Xvfb, not --headless)",
+	"eval": "expr=<GDScript expression> node=<path>: evaluate on AppRoot (inputs: app, tree, bridge, engine singletons)",
 	"nodes": "path=<node> depth=<n>: scene-tree outline",
 	"quit": "code=<n>: quit the engine after replying",
 }
@@ -106,10 +113,12 @@ var _outbox: Array[Dictionary] = [] # replies for the network thread to send
 var _dropped: Array[int] = [] # disconnected peers whose pending work the main thread forgets
 var _snapshot := {} # last published state reply (jsonable), with its frame
 var _last_request_ms := 0
+var _snapshot_ms := 0
 var _display_name := ""
 var _clients := {} # network thread only: peer id -> {peer, buffer}
 var _next_peer_id := 1
 var _pending: Array[Dictionary] = []
+var _current := {} # the request being dispatched on the main thread: {peer_id, id}, for replies sent by workers
 var _scheduled: Array[Dictionary] = []
 var _log_file: FileAccess
 var _log_file_seq := 0
@@ -125,6 +134,21 @@ var out_dir := ""
 var _samples: Array[Dictionary] = []
 var _watch := {}
 var _rate_mark := {msec = 0, tick = -1}
+## Frame history (PT1h-R8): wall time per frame, physics ticks per frame, and recent hitches with their context.
+const FRAME_CAPACITY := 7200
+var _frame_ms := PackedFloat64Array()
+var _frame_ticks := PackedInt32Array()
+var _frame_count := 0
+var _frame_last_us := 0
+var _frame_ema_ms := 0.0
+var _frame_physics_ticks := 0
+var _frame_monitors := {}
+var _frame_log_seq := 0
+var hitch_ms := 50.0
+var hitch_factor := 3.0
+var _hitches: Array[Dictionary] = []
+var _breaks: Array[Dictionary] = []
+var _objects_baseline := {}
 var _drive_vehicle: Node
 var _drive_until_tick := -1
 var realtime_factor := -1.0
@@ -177,6 +201,7 @@ func _exit_tree() -> void:
 
 func _process(_delta: float) -> void:
 	var started := Time.get_ticks_usec()
+	_record_frame(started)
 	_net_mutex.lock()
 	var inbox := _inbox
 	_inbox = []
@@ -190,12 +215,16 @@ func _process(_delta: float) -> void:
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
-	_finish_step()
-	_expire_drive()
 	_observe()
-	if active:
+	var now_ms := Time.get_ticks_msec()
+	_net_mutex.lock()
+	var invalidated := _snapshot.is_empty()
+	_net_mutex.unlock()
+	if active and (invalidated or now_ms - _snapshot_ms >= SNAPSHOT_INTERVAL_MS):
+		_snapshot_ms = now_ms
 		var snapshot: Dictionary = jsonable(_cmd_state({}))
 		snapshot.frame = Engine.get_process_frames()
+		snapshot.ms = now_ms
 		_net_mutex.lock()
 		_snapshot = snapshot
 		_net_mutex.unlock()
@@ -215,13 +244,16 @@ func _serve() -> void:
 				peer.disconnect_from_host()
 				continue
 			peer.set_no_delay(true)
-			_clients[_next_peer_id] = {peer = peer, buffer = PackedByteArray()}
+			_clients[_next_peer_id] = {peer = peer, buffer = PackedByteArray(), out = PackedByteArray(), closing = false}
 			_next_peer_id += 1
 		for peer_id: int in _clients.keys():
 			_read_client(peer_id)
 		_send_outbox()
+		for peer_id: int in _clients.keys():
+			_flush_client(peer_id)
 		_write_log_file()
 		if stopping:
+			_drain_clients()
 			break
 		OS.delay_msec(2)
 	for client: Dictionary in _clients.values():
@@ -237,6 +269,8 @@ func _read_client(peer_id: int) -> void:
 	if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
 		_drop_client(peer_id)
 		return
+	if client.closing:
+		return
 	var available := peer.get_available_bytes()
 	if available > 0:
 		var got: Array = peer.get_partial_data(available)
@@ -246,16 +280,62 @@ func _read_client(peer_id: int) -> void:
 		var newline: int = client.buffer.find(10)
 		if newline < 0:
 			if client.buffer.size() > MAX_LINE_BYTES:
-				_send_now(peer, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
-				_drop_client(peer_id)
+				_close_with(peer_id, {ok = false, error = "request line exceeds %d bytes" % MAX_LINE_BYTES})
 			return
 		var line: String = client.buffer.slice(0, newline).get_string_from_utf8().strip_edges()
 		client.buffer = client.buffer.slice(newline + 1)
-		if not line.is_empty():
-			_route_line(peer_id, peer, line)
+		if not line.is_empty() and not _route_line(peer_id, line):
+			return # the connection is closing: nothing after an invalid line runs
+
+
+## Send what fits without blocking; a client that stops reading only fills its own buffer, never stalls the bridge.
+func _flush_client(peer_id: int) -> void:
+	if not _clients.has(peer_id):
+		return
+	var client: Dictionary = _clients[peer_id]
+	if not client.out.is_empty():
+		var sent: Array = client.peer.put_partial_data(client.out)
+		if sent[0] == OK:
+			client.out = client.out.slice(int(sent[1]))
+		elif sent[0] != ERR_BUSY:
+			_drop_client(peer_id)
+			return
+	if client.closing and client.out.is_empty():
+		client.peer.disconnect_from_host()
+		_drop_client(peer_id)
+	elif client.out.size() > MAX_OUT_BYTES:
+		_drop_client(peer_id) # a reader this far behind is gone or stuck
+
+
+## Bounded final flush when the engine quits, so the reply to quit and other queued replies still leave.
+func _drain_clients() -> void:
+	var deadline := Time.get_ticks_msec() + 500
+	while Time.get_ticks_msec() < deadline:
+		var waiting := false
+		for peer_id: int in _clients.keys():
+			_clients[peer_id].peer.poll()
+			_flush_client(peer_id)
+			waiting = waiting or (_clients.has(peer_id) and not _clients[peer_id].out.is_empty())
+		if not waiting:
+			return
+		OS.delay_msec(1)
+
+
+func _queue_bytes(peer_id: int, bytes: PackedByteArray) -> void:
+	if _clients.has(peer_id):
+		_clients[peer_id].out.append_array(bytes)
+
+
+## Answer once, then close: used for protocol violations so the rest of the stream is never interpreted.
+func _close_with(peer_id: int, reply: Dictionary) -> void:
+	_queue_bytes(peer_id, _encode(reply))
+	_clients[peer_id].closing = true
+	_clients[peer_id].buffer = PackedByteArray()
 
 
 func _drop_client(peer_id: int) -> void:
+	if not _clients.has(peer_id):
+		return
 	_clients.erase(peer_id)
 	_net_mutex.lock()
 	_dropped.append(peer_id)
@@ -263,12 +343,14 @@ func _drop_client(peer_id: int) -> void:
 
 
 ## Network thread: validate one request line, answer thread-safe commands, queue the rest for the main thread.
-func _route_line(peer_id: int, peer: StreamPeerTCP, line: String) -> void:
+## Returns false when the line was invalid and the connection is now closing. A web page can POST to 127.0.0.1;
+## its HTTP request line is not JSON, so the connection closes before the body could be read as a command.
+func _route_line(peer_id: int, line: String) -> bool:
 	var parser := JSON.new() # parse_string would log an engine error for every malformed line
 	var request: Variant = parser.data if parser.parse(line) == OK else null
 	if not request is Dictionary or not request.has("cmd"):
-		_send_now(peer, {ok = false, error = "expected one JSON object with \"cmd\" per line"})
-		return
+		_close_with(peer_id, {ok = false, error = "expected one JSON object with \"cmd\" per line; closing"})
+		return false
 	var id: Variant = request.get("id")
 	if id is float and id == floorf(id):
 		id = int(id) # JSON numbers parse as floats
@@ -277,19 +359,30 @@ func _route_line(peer_id: int, peer: StreamPeerTCP, line: String) -> void:
 	_last_request_ms = Time.get_ticks_msec()
 	var snapshot := _snapshot
 	_net_mutex.unlock()
-	if not expected.is_empty() and str(request.get("token", "")) != expected:
-		_send_now(peer, {id = id, ok = false, error = "bad or missing token"})
-		return
+	if not expected.is_empty() and not _same_secret(str(request.get("token", "")), expected):
+		_close_with(peer_id, {id = id, ok = false, error = "bad or missing token; closing"})
+		return false
 	var cmd := str(request.cmd)
 	if cmd in THREAD_COMMANDS and not _bool(request.get("fresh", false)):
 		var reply := _thread_reply(cmd, request, snapshot)
 		if not reply.is_empty():
 			reply.id = id
-			_send_now(peer, reply)
-			return
+			_queue_bytes(peer_id, _encode(reply))
+			return true
 	_net_mutex.lock()
 	_inbox.append({peer_id = peer_id, id = id, request = request})
 	_net_mutex.unlock()
+	return true
+
+
+## Constant-time comparison: the time taken does not reveal how much of a guessed token matched.
+static func _same_secret(given: String, expected: String) -> bool:
+	var a := given.to_utf8_buffer()
+	var b := expected.to_utf8_buffer()
+	var difference := a.size() ^ b.size()
+	for i in b.size():
+		difference |= (a[i] if i < a.size() else 0) ^ b[i]
+	return difference == 0
 
 
 ## Replies built only from thread-safe sources: constants, the locked log and the published snapshot.
@@ -306,11 +399,14 @@ func _thread_reply(cmd: String, request: Dictionary, snapshot: Dictionary) -> Di
 				log_seq = debug_log.last_seq(), log_counts = debug_log.counts(),
 				route = snapshot.get("result", {}).get("route", "unknown"), out_dir = out_dir})
 		"state":
-			if snapshot.is_empty() or int(snapshot.frame) < Engine.get_process_frames() - 1:
+			var age_ms := Time.get_ticks_msec() - int(snapshot.get("ms", 0))
+			if snapshot.is_empty() or (int(snapshot.frame) < Engine.get_process_frames() - 1 and age_ms > 2 * SNAPSHOT_INTERVAL_MS):
 				return {}
 			var reply: Dictionary = snapshot.duplicate(true)
 			reply.result.snapshot_frame = reply.frame
+			reply.result.snapshot_age_ms = age_ms
 			reply.erase("frame")
+			reply.erase("ms")
 			return reply
 	return {}
 
@@ -321,20 +417,21 @@ func _send_outbox() -> void:
 	_outbox = []
 	_net_mutex.unlock()
 	for item: Dictionary in outbox:
-		if _clients.has(item.peer_id):
-			var peer: StreamPeerTCP = _clients[item.peer_id].peer
-			if peer.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-				peer.put_data(item.bytes)
+		_queue_bytes(item.peer_id, item.bytes)
 
 
-static func _send_now(peer: StreamPeerTCP, reply: Dictionary) -> void:
-	if peer.get_status() == StreamPeerTCP.STATUS_CONNECTED:
-		peer.put_data((JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer())
+static func _encode(reply: Dictionary) -> PackedByteArray:
+	return (JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer()
 
 
 # ---- main thread dispatch -------------------------------------------------------------------------------------
 
 func _physics_process(_delta: float) -> void:
+	_frame_physics_ticks += 1
+	# Before the session samples input and the simulation steps: a step or drive ends exactly at its tick.
+	_finish_step()
+	_check_breaks()
+	_expire_drive()
 	_collect_samples()
 	if _sticks.is_empty():
 		return
@@ -352,8 +449,12 @@ func _physics_process(_delta: float) -> void:
 
 func _forget_peer(peer_id: int) -> void:
 	for item: Dictionary in _pending:
-		if item.peer_id == peer_id and not item.job.is_empty():
+		if item.peer_id != peer_id:
+			continue
+		if not item.job.is_empty():
 			_samples.erase(item.job) # an abandoned sample stops collecting
+		if item.on_timeout.is_valid():
+			item.on_timeout.call() # its cleanup (e.g. awaiting a screenshot encoder) still runs
 	_pending = _pending.filter(func(item: Dictionary) -> bool: return item.peer_id != peer_id)
 
 
@@ -363,13 +464,16 @@ func _handle(peer_id: int, id: Variant, request: Dictionary) -> void:
 	if not COMMANDS.has(cmd):
 		reply = _fail("unknown command '%s'; try help" % cmd)
 	else:
+		_current = {peer_id = peer_id, id = id}
 		var result: Variant = call("_cmd_" + cmd, request)
 		# A script error inside a handler returns nothing; its message is already in the log.
 		reply = result if result is Dictionary and not result.is_empty() \
 			else _fail("'%s' failed with a script error; see logs level=script_error" % cmd)
 	if reply.has("pending"):
-		var timeout_s: float = float(request.get("timeout_s", reply.get("timeout_s", 30.0)))
+		var given: Variant = _number(request.get("timeout_s", reply.get("timeout_s", 30.0)))
+		var timeout_s: float = given if given != null else 30.0
 		_pending.append({peer_id = peer_id, id = id, check = reply.pending, job = reply.get("job", {}),
+			on_timeout = reply.get("on_timeout", Callable()),
 			deadline_ms = Time.get_ticks_msec() + int(clampf(timeout_s, 0.0, 3600.0) * 1000.0)})
 		return
 	_reply(peer_id, id, reply)
@@ -381,14 +485,21 @@ func _run_pending() -> void:
 		if result == null and Time.get_ticks_msec() < item.deadline_ms:
 			continue
 		_pending.erase(item)
-		_reply(item.peer_id, item.id, result if result is Dictionary else _fail("timed out"))
+		if not item.job.is_empty():
+			_samples.erase(item.job) # a timed-out sample stops collecting
+		var final: Dictionary = result if result is Dictionary \
+			else (item.on_timeout.call() if item.on_timeout.is_valid() else _fail("timed out"))
+		if not final.get("_replied", false): # else a worker already sent the reply
+			_reply(item.peer_id, item.id, final)
 
 
 func _reply(peer_id: int, id: Variant, reply: Dictionary) -> void:
 	reply.id = id
-	var bytes := (JSON.stringify(jsonable(reply), "", false, true) + "\n").to_utf8_buffer()
+	var bytes := _encode(reply)
 	_net_mutex.lock()
 	_outbox.append({peer_id = peer_id, bytes = bytes})
+	# Read-after-write: a client that sees this reply must not then read a snapshot taken before the command.
+	_snapshot = {}
 	_net_mutex.unlock()
 
 
@@ -435,6 +546,8 @@ func _cmd_state(_request: Dictionary) -> Dictionary:
 
 
 func _cmd_logs(request: Dictionary) -> Dictionary:
+	if _bool(request.get("summary", false)):
+		return _log_summary(request)
 	var levels := PackedStringArray()
 	if request.has("level"):
 		levels = str(request.level).split(",", false)
@@ -526,7 +639,10 @@ func _cmd_select(request: Dictionary) -> Dictionary:
 	var labels := _item_labels(target)
 	if labels.is_empty() and not (target is OptionButton or target is ItemList or target is TabBar or target is PopupMenu):
 		return _fail("%s is not an OptionButton, ItemList, TabBar or PopupMenu" % target.get_class())
-	var index := int(request.get("index", -1))
+	var given_index: Variant = _number(request.get("index", -1))
+	if given_index == null:
+		return _fail("index must be a number")
+	var index := int(given_index)
 	if request.has("item"):
 		var wanted := str(request.item).to_lower()
 		var partial: Array[int] = []
@@ -640,18 +756,24 @@ func _cmd_sticks(request: Dictionary) -> Dictionary:
 	if _bool(request.get("release", false)):
 		_restore_sticks()
 		return _ok({released = true})
+	var values := {}
+	for key: String in ["roll", "pitch", "yaw", "throttle", "for_s"]:
+		if request.has(key):
+			values[key] = _number(request[key])
+			if values[key] == null:
+				return _fail("%s must be a number" % key)
 	if _sticks_session != session:
 		_restore_sticks()
 		_sticks_session = session
 		_sticks_original = session.read_raw
 		_sticks_reader = _read_override
 	for axis: String in ["roll", "pitch", "yaw"]:
-		_sticks[axis] = clampf(float(request.get(axis, _sticks.get(axis, 0.0))), -1.0, 1.0)
-	if request.has("throttle"):
-		_sticks.throttle = clampf(float(request.throttle), 0.0, 1.0)
+		_sticks[axis] = clampf(values.get(axis, _sticks.get(axis, 0.0)), -1.0, 1.0)
+	if values.has("throttle"):
+		_sticks.throttle = clampf(values.throttle, 0.0, 1.0)
 	_sticks_until_tick = -1
-	if request.has("for_s"):
-		_sticks_until_tick = int(session.sim.tick) + maxi(1, roundi(float(request.for_s) / session.sim.dt()))
+	if values.has("for_s"):
+		_sticks_until_tick = int(session.sim.tick) + maxi(1, roundi(values.for_s / session.sim.dt()))
 	session.read_raw = _sticks_reader
 	var warning := ""
 	if "radio" in session and session.radio.connected:
@@ -686,13 +808,18 @@ func _cmd_drive(request: Dictionary) -> Dictionary:
 	if _bool(request.get("release", false)):
 		_release_drive()
 		return _ok({released = true})
-	var controls := {throttle = clampf(float(request.get("throttle", 0.0)), 0.0, 1.0),
-		steering = clampf(float(request.get("steering", 0.0)), -1.0, 1.0), brake = clampf(float(request.get("brake", 0.0)), 0.0, 1.0),
-		reverse = _bool(request.get("reverse", false)), source = "debug_bridge", armed = true}
+	var values := {}
+	for key: String in ["throttle", "steering", "brake", "for_s"]:
+		values[key] = _number(request.get(key, 0.0))
+		if values[key] == null:
+			return _fail("%s must be a number" % key)
+	var controls := {throttle = clampf(values.throttle, 0.0, 1.0), steering = clampf(values.steering, -1.0, 1.0),
+		brake = clampf(values.brake, 0.0, 1.0), reverse = _bool(request.get("reverse", false)), source = "debug_bridge",
+		armed = true}
 	_drive_vehicle = vehicle
 	_drive_until_tick = -1
 	if request.has("for_s"):
-		_drive_until_tick = int(vehicle.session.tick) + maxi(1, roundi(float(request.for_s) * Engine.physics_ticks_per_second))
+		_drive_until_tick = int(vehicle.session.tick) + maxi(1, roundi(values.for_s * Engine.physics_ticks_per_second))
 	vehicle.scripted_controls = func(_tick: int) -> Dictionary: return controls.duplicate()
 	return _ok({controls = controls, until_tick = _drive_until_tick})
 
@@ -709,16 +836,22 @@ func _release_drive() -> void:
 	_drive_until_tick = -1
 
 
-func _cmd_pause(_request: Dictionary) -> Dictionary:
+## pause, resume and step act on flight simulations; the RC truck has its own garage pause (and drive).
+func _flight_session() -> Node:
 	var session := _session()
+	return session if session != null and app.get("flight") != null else null
+
+
+func _cmd_pause(_request: Dictionary) -> Dictionary:
+	var session := _flight_session()
 	if session == null:
-		return _fail("no flight")
+		return _fail("no flight (the RC truck pauses through its garage: press text=Garage)")
 	session.sim.set_paused(true)
 	return _ok(_flight_state(session))
 
 
 func _cmd_resume(_request: Dictionary) -> Dictionary:
-	var session := _session()
+	var session := _flight_session()
 	if session == null:
 		return _fail("no flight")
 	if session.has_method("resume"):
@@ -731,14 +864,17 @@ func _cmd_resume(_request: Dictionary) -> Dictionary:
 
 
 func _cmd_step(request: Dictionary) -> Dictionary:
-	var session := _session()
+	var session := _flight_session()
 	if session == null:
 		return _fail("no flight")
 	if not session.sim.paused:
 		return _fail("pause first: step advances a paused flight")
 	if _step_target >= 0:
 		return _fail("a step is already running")
-	var ticks := clampi(int(request.get("ticks", 1)), 1, 240 * 600)
+	var requested_ticks: Variant = _number(request.get("ticks", 1))
+	if requested_ticks == null:
+		return _fail("ticks must be a number")
+	var ticks := clampi(int(requested_ticks), 1, 240 * 600)
 	_step_sim = session.sim
 	_step_target = int(session.sim.tick) + ticks
 	session.sim.stop_at_tick = _step_target
@@ -768,7 +904,10 @@ func _finish_step(force := false) -> void:
 
 func _cmd_time_scale(request: Dictionary) -> Dictionary:
 	if request.has("value"):
-		Engine.time_scale = clampf(float(request.value), 0.05, 16.0)
+		var scale: Variant = _number(request.value)
+		if scale == null:
+			return _fail("value must be a number")
+		Engine.time_scale = clampf(scale, 0.05, 16.0)
 	return _ok({time_scale = Engine.time_scale, max_physics_steps_per_frame = Engine.max_physics_steps_per_frame})
 
 
@@ -802,14 +941,19 @@ func _cmd_window(request: Dictionary) -> Dictionary:
 func _cmd_wait(request: Dictionary) -> Dictionary:
 	if request.has("until"):
 		var expression := Expression.new()
-		if expression.parse(str(request.until), PackedStringArray(["app", "tree", "bridge"])) != OK:
+		if expression.parse(str(request.until), _input_names()) != OK:
 			return _fail("parse error: " + expression.get_error_text())
+		var last := ["never evaluated"]
 		return {pending = func() -> Variant:
-			var value: Variant = expression.execute([app, get_tree(), self], app, false)
-			if expression.has_execute_failed() or not value:
+			var value: Variant = expression.execute(_input_values(), app, false)
+			if expression.has_execute_failed():
+				last[0] = "last evaluation failed: " + expression.get_error_text()
+				return null
+			if not value:
+				last[0] = "last value " + JSON.stringify(jsonable(value))
 				return null
 			return _ok({frame = Engine.get_process_frames(), value = value}),
-			timeout_s = 10.0}
+			timeout_s = 10.0, on_timeout = func() -> Dictionary: return _fail("timed out; " + last[0])}
 	if request.has("seconds"):
 		var until := Time.get_ticks_msec() + int(float(request.seconds) * 1000.0)
 		return {pending = func() -> Variant:
@@ -821,26 +965,49 @@ func _cmd_wait(request: Dictionary) -> Dictionary:
 func _cmd_screenshot(request: Dictionary) -> Dictionary:
 	if DisplayServer.get_name() == "headless":
 		return _fail("no renderer under --headless; launch under Xvfb or a desktop")
+	var format := str(request.get("format", str(request.get("path", "")).get_extension().to_lower()))
+	format = "jpg" if format in ["jpg", "jpeg"] else "png"
 	_shot_index += 1
 	var default_dir := out_dir.path_join("shots") if not out_dir.is_empty() else "user://debug_bridge"
-	var path := str(request.get("path", default_dir.path_join("shot-%d-%03d.png" % [OS.get_process_id(), _shot_index])))
-	var max_width := int(request.get("max_width", 0))
+	var path := str(request.get("path", default_dir.path_join("shot-%d-%03d.%s" % [OS.get_process_id(), _shot_index, format])))
+	var width_limit: Variant = _number(request.get("max_width", 0))
+	if width_limit == null:
+		return _fail("max_width must be a number")
+	var max_width := int(width_limit)
 	var drawn := [false]
+	var task := [-1]
+	var saved := {}
+	var target := _current.duplicate()
 	RenderingServer.frame_post_draw.connect(func() -> void: drawn[0] = true, CONNECT_ONE_SHOT)
 	return {pending = func() -> Variant:
 		if not drawn[0]:
 			return null
-		var image := get_viewport().get_texture().get_image()
-		if image == null or image.is_empty():
-			return _fail("the viewport returned no image")
-		if max_width > 0 and image.get_width() > max_width:
-			image.resize(max_width, roundi(image.get_height() * float(max_width) / image.get_width()), Image.INTERPOLATE_LANCZOS)
-		var absolute := ProjectSettings.globalize_path(path)
-		DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
-		var err := image.save_png(absolute)
-		return _ok({path = absolute, width = image.get_width(), height = image.get_height()}) if err == OK \
-			else _fail("cannot save %s: %s" % [absolute, error_string(err)]),
-		timeout_s = 10.0}
+		if task[0] < 0:
+			# Read back on the main thread (the renderer's); scale and encode on a worker so the frame does not hitch.
+			var image := get_viewport().get_texture().get_image()
+			if image == null or image.is_empty():
+				return _fail("the viewport returned no image")
+			var absolute := ProjectSettings.globalize_path(path)
+			task[0] = WorkerThreadPool.add_task(func() -> void:
+				if max_width > 0 and image.get_width() > max_width:
+					image.resize(max_width, roundi(image.get_height() * float(max_width) / image.get_width()), Image.INTERPOLATE_LANCZOS)
+				DirAccess.make_dir_recursive_absolute(absolute.get_base_dir())
+				var err: Error = image.save_jpg(absolute, 0.85) if format == "jpg" else image.save_png(absolute)
+				var info := {path = absolute, width = image.get_width(), height = image.get_height(), format = format}
+				# Reply from the worker as soon as the file exists, not one rendered frame later.
+				_reply(target.peer_id, target.id, _ok(info) if err == OK \
+					else _fail("cannot save %s: %s" % [absolute, error_string(err)]))
+				saved.done = true,
+				false, "debug bridge screenshot")
+			return null
+		if not WorkerThreadPool.is_task_completed(task[0]):
+			return null
+		WorkerThreadPool.wait_for_task_completion(task[0])
+		return {_replied = true},
+		timeout_s = 20.0, on_timeout = func() -> Dictionary:
+			if task[0] >= 0:
+				WorkerThreadPool.wait_for_task_completion(task[0]) # every pool task must be awaited once
+			return {_replied = true} if saved.get("done", false) else _fail("timed out")}
 
 
 func _cmd_eval(request: Dictionary) -> Dictionary:
@@ -850,12 +1017,29 @@ func _cmd_eval(request: Dictionary) -> Dictionary:
 		if base == null:
 			return _fail("no node at '%s'" % request.node)
 	var expression := Expression.new()
-	if expression.parse(str(request.get("expr", "")), PackedStringArray(["app", "tree", "bridge"])) != OK:
+	if expression.parse(str(request.get("expr", "")), _input_names()) != OK:
 		return _fail("parse error: " + expression.get_error_text())
-	var value: Variant = expression.execute([app, get_tree(), self], base, false)
+	var value: Variant = expression.execute(_input_values(), base, false)
 	if expression.has_execute_failed():
 		return _fail("execution failed: " + expression.get_error_text())
 	return _ok(value)
+
+
+## Expression inputs: app, tree, bridge, then every engine singleton by name (Expression cannot reach them itself:
+## `Performance.get_monitor(...)`, `OS.get_static_memory_usage()`, `RenderingServer...` work through these).
+func _input_names(extra: Array = []) -> PackedStringArray:
+	var names := PackedStringArray(["app", "tree", "bridge"])
+	names.append_array(Engine.get_singleton_list())
+	names.append_array(PackedStringArray(extra))
+	return names
+
+
+func _input_values(extra: Array = []) -> Array:
+	var values: Array = [app, get_tree(), self]
+	for singleton: String in Engine.get_singleton_list():
+		values.append(Engine.get_singleton(singleton))
+	values.append_array(extra)
+	return values
 
 
 func _cmd_nodes(request: Dictionary) -> Dictionary:
@@ -1003,7 +1187,7 @@ func _cmd_sample(request: Dictionary) -> Dictionary:
 	var compiled := {}
 	for name: Variant in sources:
 		var expression := Expression.new()
-		if expression.parse(str(sources[name]), PackedStringArray(["app", "tree", "bridge", "session", "sim", "s"])) != OK:
+		if expression.parse(str(sources[name]), _input_names(["session", "sim", "s"])) != OK:
 			return _fail("%s: parse error: %s" % [name, expression.get_error_text()])
 		compiled[str(name)] = expression
 	var job := {session = session, exprs = compiled, every = maxi(1, int(request.get("every_ticks", 24))),
@@ -1034,7 +1218,7 @@ func _collect_samples() -> void:
 		var row: Array = [tick, sim.time()]
 		for name: String in job.exprs:
 			var expression: Expression = job.exprs[name]
-			var value: Variant = expression.execute([app, get_tree(), self, job.session, sim, sim.state], app, false)
+			var value: Variant = expression.execute(_input_values([job.session, sim, sim.state]), app, false)
 			if expression.has_execute_failed():
 				job.error = "%s failed at tick %d: %s" % [name, tick, expression.get_error_text()]
 				break
@@ -1097,9 +1281,15 @@ func _cmd_set(request: Dictionary) -> Dictionary:
 	if node == null:
 		return _fail("no node at '%s'" % request.get("node", ""))
 	var prop := NodePath(str(request.get("prop", "")))
+	if prop.get_name_count() + prop.get_subname_count() == 0 or not str(prop).get_slice(":", 0) in node:
+		return _fail("%s has no property '%s' (get node=... lists them)" % [_path(node), prop])
 	var current: Variant = node.get_indexed(prop)
 	var value: Variant = _coerce(request.get("value"), current)
+	var before := debug_log.last_seq()
 	node.set_indexed(prop, value)
+	var errors := _errors_since(before)
+	if not errors.is_empty():
+		return _fail("set %s failed: %s" % [prop, errors])
 	return _ok({before = current, after = node.get_indexed(prop)})
 
 
@@ -1128,7 +1318,19 @@ func _cmd_call(request: Dictionary) -> Dictionary:
 	if not node.has_method(method):
 		return _fail("%s has no method '%s'" % [_path(node), method])
 	var args: Variant = request.get("args", [])
-	return _ok(node.callv(method, args if args is Array else [args]))
+	var before := debug_log.last_seq()
+	var result: Variant = node.callv(method, args if args is Array else [args])
+	# A wrong argument count or an error inside the method only logs and returns null: report it as a failure.
+	var errors := _errors_since(before)
+	if not errors.is_empty():
+		return _fail("%s(...) failed: %s" % [method, errors])
+	return _ok(result)
+
+
+func _errors_since(seq: int) -> String:
+	var texts: Array = debug_log.since(seq, 5, PackedStringArray(["error", "script_error"])).map(
+		func(record: Dictionary) -> String: return str(record.text))
+	return "; ".join(texts)
 
 
 func _cmd_open(request: Dictionary) -> Dictionary:
@@ -1288,12 +1490,15 @@ func _cmd_mouse(request: Dictionary) -> Dictionary:
 		_:
 			return _fail("action must be click, double, right, move, down, up, drag or wheel")
 	var last := 0
+	var mine: Array = []
 	for item: Array in events:
 		_scheduled.append({at_ms = now + int(item[0]), event = item[1]})
+		mine.append(item[1])
 		last = maxi(last, int(item[0]))
 	var until := now + last
 	return {pending = func() -> Variant:
-		if Time.get_ticks_msec() < until or not _scheduled.is_empty():
+		# Only this gesture's events count; another command's held key may still be scheduled.
+		if Time.get_ticks_msec() < until or _scheduled.any(func(entry: Dictionary) -> bool: return mine.has(entry.event)):
 			return null
 		var result := {action = action, at = [at.x, at.y], screens = _screen_ids(), focus = _path(get_viewport().gui_get_focus_owner())}
 		if not Rect2(Vector2.ZERO, Vector2(get_tree().root.size)).has_point(at):
@@ -1330,6 +1535,319 @@ static func _button(at: Vector2, button: MouseButton, pressed: bool, double: boo
 	if pressed and button <= MOUSE_BUTTON_MIDDLE:
 		event.button_mask = 1 << (button - 1)
 	return event
+
+
+# ---- frame history and hitches (PT1h-R8) -----------------------------------------------------------------------
+
+const _HITCH_MONITORS := {
+	pipelines = [Performance.PIPELINE_COMPILATIONS_CANVAS, Performance.PIPELINE_COMPILATIONS_MESH,
+		Performance.PIPELINE_COMPILATIONS_SURFACE, Performance.PIPELINE_COMPILATIONS_DRAW,
+		Performance.PIPELINE_COMPILATIONS_SPECIALIZATION],
+	objects = [Performance.OBJECT_COUNT], nodes = [Performance.OBJECT_NODE_COUNT],
+	resources = [Performance.OBJECT_RESOURCE_COUNT], orphans = [Performance.OBJECT_ORPHAN_NODE_COUNT],
+	static_memory = [Performance.MEMORY_STATIC],
+}
+
+
+## One sample per frame at the start of the bridge's _process: the wall time since the previous frame and the
+## counter deltas over that interval. A long interval becomes a "hitch" event naming what changed during it.
+func _record_frame(now_us: int) -> void:
+	var monitors := {}
+	for key: String in _HITCH_MONITORS:
+		var total := 0.0
+		for monitor: int in _HITCH_MONITORS[key]:
+			total += Performance.get_monitor(monitor)
+		monitors[key] = total
+	var ticks := _frame_physics_ticks
+	_frame_physics_ticks = 0
+	if _frame_last_us == 0:
+		_frame_last_us = now_us
+		_frame_monitors = monitors
+		_frame_log_seq = debug_log.last_seq()
+		_frame_ms.resize(FRAME_CAPACITY)
+		_frame_ticks.resize(FRAME_CAPACITY)
+		return
+	var ms := (now_us - _frame_last_us) / 1000.0
+	_frame_last_us = now_us
+	var index := _frame_count % FRAME_CAPACITY
+	_frame_ms[index] = ms
+	_frame_ticks[index] = ticks
+	_frame_count += 1
+	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
+	if _frame_ema_ms > 0.0 and ms > threshold:
+		_hitch(ms, threshold, ticks, monitors)
+	else:
+		_frame_ema_ms = ms if _frame_ema_ms == 0.0 else lerpf(_frame_ema_ms, ms, 0.05)
+	_frame_monitors = monitors
+	_frame_log_seq = debug_log.last_seq()
+
+
+func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:
+	var deltas := {}
+	for key: String in monitors:
+		var change: float = monitors[key] - float(_frame_monitors.get(key, monitors[key]))
+		if change != 0.0:
+			deltas[key] = change / 1048576.0 if key == "static_memory" else change
+	if deltas.has("static_memory"):
+		deltas.static_memory_mib = snappedf(deltas.static_memory, 0.01)
+		deltas.erase("static_memory")
+	var causes: Array = []
+	if deltas.get("pipelines", 0.0) > 0.0:
+		causes.append("pipeline/shader compilation")
+	if ticks >= Engine.max_physics_steps_per_frame:
+		causes.append("physics catch-up (%d ticks, the per-frame maximum)" % ticks)
+	if absf(deltas.get("nodes", 0.0)) >= 50.0 or deltas.get("resources", 0.0) >= 20.0:
+		causes.append("scene/resource construction")
+	var lines: Array = debug_log.since(_frame_log_seq, 8, PackedStringArray(["info", "warning", "error", "script_error"])).map(
+		func(record: Dictionary) -> String: return str(record.text).left(160))
+	var record := {frame = Engine.get_process_frames(), ms = snappedf(ms, 0.1), threshold_ms = snappedf(threshold, 0.1),
+		physics_ticks = ticks, deltas = deltas, causes = causes, route = _route(), screens = _screen_ids(), log = lines,
+		process_ms = snappedf(Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0, 0.01),
+		physics_ms = snappedf(Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0, 0.01)}
+	var session := _session()
+	if session != null:
+		record.tick = session.sim.tick
+	_hitches.append(record)
+	if _hitches.size() > 200:
+		_hitches.pop_front()
+	debug_log.event("hitch %.0f ms%s" % [ms, (": " + ", ".join(causes)) if not causes.is_empty() else ""], record)
+
+
+func _cmd_frames(request: Dictionary) -> Dictionary:
+	for key: String in ["hitch_ms", "factor"]:
+		if request.has(key):
+			var value: Variant = _number(request[key])
+			if value == null or value <= 0.0:
+				return _fail("%s must be a positive number" % key)
+			if key == "hitch_ms":
+				hitch_ms = value
+			else:
+				hitch_factor = value
+	if _bool(request.get("reset", false)):
+		_frame_count = 0
+		_hitches.clear()
+	var available := mini(_frame_count, FRAME_CAPACITY)
+	var window_value: Variant = _number(request.get("window", available))
+	var window := clampi(int(window_value) if window_value != null else available, 0, available)
+	var times := PackedFloat64Array()
+	var catch_up := 0
+	for i in window:
+		var index := (_frame_count - 1 - i) % FRAME_CAPACITY
+		times.append(_frame_ms[index])
+		if _frame_ticks[index] >= Engine.max_physics_steps_per_frame:
+			catch_up += 1
+	var out := {frames = window, hitch_ms = hitch_ms, factor = hitch_factor, typical_ms = snappedf(_frame_ema_ms, 0.01),
+		hitches = _hitches.slice(maxi(0, _hitches.size() - 20)), hitch_total = _hitches.size(),
+		physics_catch_up_frames = catch_up, max_physics_steps_per_frame = Engine.max_physics_steps_per_frame}
+	if window > 0:
+		var sorted := times.duplicate()
+		sorted.sort()
+		var worst := sorted.slice(sorted.size() - maxi(1, sorted.size() / 100))
+		var mean := 0.0
+		for value: float in times:
+			mean += value
+		mean /= window
+		var worst_mean := 0.0
+		for value: float in worst:
+			worst_mean += value
+		worst_mean /= worst.size()
+		out.merge({mean_ms = snappedf(mean, 0.01), p50_ms = _percentile(sorted, 0.5), p95_ms = _percentile(sorted, 0.95),
+			p99_ms = _percentile(sorted, 0.99), max_ms = snappedf(sorted[sorted.size() - 1], 0.01),
+			fps_mean = snappedf(1000.0 / mean, 0.1), fps_1pct_low = snappedf(1000.0 / worst_mean, 0.1)})
+	return _ok(out)
+
+
+static func _percentile(sorted: PackedFloat64Array, q: float) -> float:
+	return snappedf(sorted[clampi(int(ceil(q * sorted.size())) - 1, 0, sorted.size() - 1)], 0.01)
+
+
+# ---- simulation watchpoints (PT1h-R8) --------------------------------------------------------------------------
+
+func _cmd_break(request: Dictionary) -> Dictionary:
+	if _bool(request.get("list", false)):
+		return _ok(_breaks.map(func(b: Dictionary) -> Dictionary:
+			return {name = b.name, expr = b.source, pause = b.pause, once = b.once, hits = b.hits, last_tick = b.last_tick}))
+	if request.has("clear"):
+		var target := str(request.clear)
+		var before := _breaks.size()
+		_breaks = _breaks.filter(func(b: Dictionary) -> bool: return target != "all" and b.name != target)
+		return _ok({cleared = before - _breaks.size()})
+	if _flight_session() == null:
+		return _fail("watchpoints run on flight ticks: fly first")
+	var source := str(request.get("expr", ""))
+	var expression := Expression.new()
+	if source.is_empty() or expression.parse(source, _input_names(["session", "sim", "s"])) != OK:
+		return _fail("parse error: " + expression.get_error_text() if not source.is_empty() else "give expr=<expression>")
+	var watch := {name = str(request.get("name", "break%d" % (_breaks.size() + 1))), source = source,
+		expression = expression, pause = _bool(request.get("pause", true)), once = _bool(request.get("once", false)),
+		hits = 0, last_tick = -1, was_true = false, hit = {}}
+	_breaks = _breaks.filter(func(b: Dictionary) -> bool: return b.name != watch.name)
+	_breaks.append(watch)
+	if not _bool(request.get("wait", false)):
+		return _ok({name = watch.name, pause = watch.pause, once = watch.once})
+	return {pending = func() -> Variant:
+		return _ok(watch.hit) if not watch.hit.is_empty() else null,
+		timeout_s = 600.0}
+
+
+## Before each tick (priority -10): edge-triggered, so a condition that stays true fires once per entry.
+func _check_breaks() -> void:
+	if _breaks.is_empty():
+		return
+	var session := _flight_session()
+	if session == null:
+		return
+	var sim: Node = session.sim
+	if sim.paused:
+		return
+	for watch: Dictionary in _breaks.duplicate():
+		var value: Variant = watch.expression.execute(_input_values([session, sim, sim.state]), app, false)
+		if watch.expression.has_execute_failed():
+			_breaks.erase(watch)
+			debug_log.event("break %s removed: %s" % [watch.name, watch.expression.get_error_text()], {expr = watch.source})
+			continue
+		var now_true := bool(value) if (value is bool or value is int or value is float) else value != null
+		if now_true and not watch.was_true:
+			watch.hits += 1
+			watch.last_tick = sim.tick
+			if watch.pause:
+				sim.set_paused(true)
+			watch.hit = {name = watch.name, tick = sim.tick, time_s = sim.time(), value = jsonable(value),
+				paused = sim.paused, state = jsonable(_flight_state(session))}
+			debug_log.event("break %s at tick %d" % [watch.name, sim.tick], {expr = watch.source, value = jsonable(value)})
+			if watch.once:
+				_breaks.erase(watch)
+		watch.was_true = now_true
+
+
+# ---- log triage, object census, script profile (PT1h-R8) -------------------------------------------------------
+
+## Groups records after a cursor by level, text with numbers masked, and script location (network-thread safe).
+func _log_summary(request: Dictionary) -> Dictionary:
+	var levels := PackedStringArray()
+	if request.has("level"):
+		levels = str(request.level).split(",", false)
+	var digits := RegEx.create_from_string("0x[0-9a-fA-F]+|[-+]?\\d+(\\.\\d+)?")
+	var groups := {}
+	var since_value: Variant = _number(request.get("since", 0))
+	for record: Dictionary in debug_log.since(int(since_value) if since_value != null else 0, DebugLog.CAPACITY, levels):
+		var key := "%s|%s|%s" % [record.level, digits.sub(str(record.text), "#", true), record.get("script", "")]
+		if not groups.has(key):
+			groups[key] = {level = record.level, text = str(record.text).left(300), script = record.get("script", ""),
+				count = 0, first_seq = record.seq, first_frame = record.frame}
+		groups[key].count += 1
+		groups[key].last_seq = record.seq
+		groups[key].last_frame = record.frame
+	var rows: Array = groups.values()
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return a.count > b.count if a.count != b.count else a.first_seq < b.first_seq)
+	return _ok({groups = rows, last_seq = debug_log.last_seq(), dropped = debug_log.dropped})
+
+
+func _cmd_objects(request: Dictionary) -> Dictionary:
+	var census := {}
+	var stack: Array[Node] = [get_tree().root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		var key := _object_key(node)
+		census[key] = int(census.get(key, 0)) + 1
+		stack.append_array(node.get_children(true))
+	var orphan_census := {}
+	var orphan_samples: Array = []
+	for id: int in ClassDB.class_call_static("Node", "get_orphan_node_ids"):
+		var orphan: Object = instance_from_id(id)
+		if orphan == null:
+			continue
+		var key := _object_key(orphan)
+		orphan_census[key] = int(orphan_census.get(key, 0)) + 1
+		if orphan_samples.size() < 20:
+			orphan_samples.append({key = key, name = str(orphan.name), children = orphan.get_child_count()})
+	var totals := {objects = Performance.get_monitor(Performance.OBJECT_COUNT), nodes = Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		resources = Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT), orphans = Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT),
+		static_memory_mib = snappedf(OS.get_static_memory_usage() / 1048576.0, 0.01), tree_nodes = census.values().reduce(func(a: int, b: int) -> int: return a + b, 0)}
+	var top_value: Variant = _number(request.get("top", 25))
+	var top := clampi(int(top_value) if top_value != null else 25, 1, 500)
+	var out := {totals = totals, orphans = _top_counts(orphan_census, top), orphan_samples = orphan_samples,
+		classes = _top_counts(census, top)}
+	if _bool(request.get("diff", false)):
+		if _objects_baseline.is_empty():
+			return _fail("no baseline: run objects baseline=true first")
+		out.diff = {totals = _deltas(_objects_baseline.totals, totals, top), classes = _deltas(_objects_baseline.census, census, top),
+			orphans = _deltas(_objects_baseline.orphans, orphan_census, top)}
+	if _bool(request.get("baseline", false)):
+		_objects_baseline = {totals = totals, census = census, orphans = orphan_census}
+		out.baseline = "saved"
+	return _ok(out)
+
+
+static func _object_key(object: Object) -> String:
+	var script: Variant = object.get_script()
+	return object.get_class() + (":" + str(script.resource_path).get_file() if script != null and not str(script.resource_path).is_empty() else "")
+
+
+static func _top_counts(counts: Dictionary, top: int) -> Array:
+	var rows: Array = counts.keys().map(func(k: String) -> Array: return [k, counts[k]])
+	rows.sort_custom(func(a: Array, b: Array) -> bool: return a[1] > b[1])
+	return rows.slice(0, top)
+
+
+static func _deltas(before: Dictionary, after: Dictionary, top: int) -> Array:
+	var rows: Array = []
+	for key: Variant in after.keys() + before.keys().filter(func(k: Variant) -> bool: return not after.has(k)):
+		var change: float = float(after.get(key, 0)) - float(before.get(key, 0))
+		if change != 0.0:
+			rows.append([key, change])
+	rows.sort_custom(func(a: Array, b: Array) -> bool: return absf(a[1]) > absf(b[1]))
+	return rows.slice(0, top)
+
+
+## Parses the local debugger's script profile (launch --profile: -d --profiling --ignore-error-breaks), which the
+## engine prints about once a second: a FRAME line, then per function "n:path::line::name" and its total/self/calls.
+func _cmd_profile(request: Dictionary) -> Dictionary:
+	var since_value: Variant = _number(request.get("since", 0))
+	var header := RegEx.create_from_string("^\\d+:(.+)::(\\d+)::(.+)$")
+	var timing := RegEx.create_from_string("total: ([0-9.e-]+)/\\d+ %\\s+self: ([0-9.e-]+)/\\d+ % tcalls: (\\d+)")
+	var functions := {}
+	var samples := 0
+	var script_s := 0.0
+	var frame_s := 0.0
+	var current := ""
+	for record: Dictionary in debug_log.since(int(since_value) if since_value != null else 0, DebugLog.CAPACITY, PackedStringArray(["info"])):
+		for line: String in str(record.text).split("\n"):
+			line = line.strip_edges()
+			if line.begins_with("FRAME: total:"):
+				samples += 1
+				var parts := line.split(" ", false)
+				frame_s += parts[2].to_float()
+				script_s += parts[4].get_slice("/", 0).to_float()
+				continue
+			var matched := header.search(line)
+			if matched != null:
+				current = "%s:%s %s" % [matched.get_string(1), matched.get_string(2), matched.get_string(3)]
+				continue
+			matched = timing.search(line)
+			if matched != null and not current.is_empty():
+				var entry: Dictionary = functions.get(current, {function = current, total_ms = 0.0, self_ms = 0.0, calls = 0, samples = 0})
+				entry.total_ms += matched.get_string(1).to_float() * 1000.0
+				entry.self_ms += matched.get_string(2).to_float() * 1000.0
+				entry.calls += matched.get_string(3).to_int()
+				entry.samples += 1
+				functions[current] = entry
+				current = ""
+	if samples == 0:
+		return _fail("no script profile in the log: launch with debugctl.py launch --profile")
+	var key := "total_ms" if str(request.get("sort", "self")) == "total" else "self_ms"
+	var rows: Array = functions.values()
+	for row: Dictionary in rows:
+		for field: String in ["total_ms", "self_ms"]:
+			row[field + "_per_sample"] = snappedf(row[field] / samples, 0.001)
+			row.erase(field)
+	rows.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a[key + "_per_sample"] > b[key + "_per_sample"])
+	var top_value: Variant = _number(request.get("top", 20))
+	return _ok({samples = samples, frame_ms_per_sample = snappedf(frame_s * 1000.0 / samples, 0.001),
+		script_ms_per_sample = snappedf(script_s * 1000.0 / samples, 0.001),
+		functions = rows.slice(0, clampi(int(top_value) if top_value != null else 20, 1, 500)),
+		note = "samples are the engine's ~1 s profile prints (one frame each); profiling adds overhead"})
 
 
 ## Frame-level change detection: one "event" log record per changed field, so `logs --follow` tells the story.
@@ -1582,7 +2100,20 @@ func _outline(node: Node, depth: int, count: Array) -> Dictionary:
 
 
 static func _bool(value: Variant) -> bool:
-	return value if value is bool else str(value).to_lower() in ["1", "true", "yes", "on"]
+	if value is bool:
+		return value
+	if value is int or value is float:
+		return value != 0 # JSON gives 1 as 1.0
+	return str(value).to_lower() in ["1", "true", "yes", "on"]
+
+
+## A finite number from JSON (or a numeric string), else null: callers refuse instead of failing mid-command.
+static func _number(value: Variant) -> Variant:
+	if value is int or value is float:
+		return float(value) if is_finite(float(value)) else null
+	if value is String and value.is_valid_float():
+		return value.to_float()
+	return null
 
 
 ## JSON-safe copy: non-finite floats become strings, vectors arrays, objects a short description.

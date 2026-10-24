@@ -127,6 +127,8 @@ func _run() -> void:
 	await _everything(bridge, app, ui)
 	await _threaded()
 	await _stale_snapshot(bridge)
+	await _read_after_write(bridge)
+	await _hardening(flight.session)
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -157,6 +159,10 @@ func _protocol(bridge: Node) -> void:
 	_check("logs capture print", everything.result.records.any(func(r: Dictionary) -> bool: return r.text == "bridge-test info"))
 	var value: Dictionary = await _call({cmd = "eval", expr = "flight.aircraft_id + str(flight.session.sim.state[2])"})
 	_check("eval reads AppRoot properties", value.ok and value.result == "fake-plane-30.0", str(value))
+	var singletons: Dictionary = await _call({cmd = "eval",
+		expr = "[OS.get_process_id(), Performance.get_monitor(Performance.OBJECT_NODE_COUNT) > 0, Engine.get_process_frames() > 0]"})
+	_check("eval reaches engine singletons", singletons.ok and int(singletons.result[0]) == OS.get_process_id()
+		and singletons.result[1] == true and singletons.result[2] == true, str(singletons))
 	var broken: Dictionary = await _call({cmd = "eval", expr = "flight.("})
 	_check("eval parse errors are reported", not broken.ok and str(broken.error).begins_with("parse error"))
 	var state: Dictionary = await _call({cmd = "state"})
@@ -218,7 +224,8 @@ func _step(session: Node) -> void:
 	var waited: Dictionary = await _call({cmd = "wait", until = "flight.session.sim.tick > %d" % (start + 40), timeout_s = 5})
 	_check("wait until an expression holds", waited.ok and session.sim.tick > start + 40, str(waited))
 	var timeout: Dictionary = await _call({cmd = "wait", until = "false", timeout_s = 0.1})
-	_check("wait times out with an error", not timeout.ok and timeout.error == "timed out")
+	_check("wait times out with the last evaluated value", not timeout.ok
+		and str(timeout.error).begins_with("timed out") and str(timeout.error).contains("last value false"), str(timeout))
 
 
 
@@ -397,9 +404,62 @@ func _stale_snapshot(bridge: Node) -> void:
 	bridge._last_request_ms = -bridge.SNAPSHOT_IDLE_MS # idle: the main thread stops publishing snapshots
 	for i in 3:
 		await process_frame
+	await create_timer(3.0 * bridge.SNAPSHOT_INTERVAL_MS / 1000.0).timeout # older than the accepted age too
 	var state: Dictionary = await _call({cmd = "state"})
 	_check("an old snapshot is never served: the main thread answers instead", state.ok
 		and not state.result.has("snapshot_frame") and state.result.frame >= Engine.get_process_frames() - 1, str(state).left(200))
+
+
+func _hardening(session: Node) -> void:
+	# A web page POSTing to 127.0.0.1 sends an HTTP request line first: the bridge must answer once and close
+	# before the body line could run as a command.
+	var peer := StreamPeerTCP.new()
+	peer.connect_to_host("127.0.0.1", PORT)
+	var deadline := Time.get_ticks_msec() + 5000
+	while peer.get_status() != StreamPeerTCP.STATUS_CONNECTED and Time.get_ticks_msec() < deadline:
+		await process_frame
+		peer.poll()
+	var before_pause: bool = session.sim.paused
+	peer.put_data("POST / HTTP/1.1\nHost: 127.0.0.1\n\n{\"cmd\":\"pause\"}\n".to_utf8_buffer())
+	var received := PackedByteArray()
+	while peer.get_status() == StreamPeerTCP.STATUS_CONNECTED and Time.get_ticks_msec() < deadline:
+		await process_frame
+		peer.poll()
+		if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
+			break
+		var available := peer.get_available_bytes()
+		if available > 0:
+			received.append_array(peer.get_partial_data(available)[1])
+	var lines := received.get_string_from_utf8().strip_edges().split("\n")
+	_check("an HTTP request is answered once and closed; its body never runs", lines.size() == 1
+		and lines[0].contains("closing") and peer.get_status() != StreamPeerTCP.STATUS_CONNECTED
+		and session.sim.paused == before_pause, str(lines))
+	var bad: Dictionary = await _call({cmd = "sticks", roll = 0.5, pitch = [1]})
+	await physics_frame
+	await physics_frame
+	_check("a bad stick value is refused before anything is installed", not bad.ok
+		and str(bad.error).contains("pitch") and session.read_raw == session.keyboard_reader, str(bad))
+	var installed: Dictionary = await _call({cmd = "sticks", roll = 0.2})
+	var released: Dictionary = await _call({cmd = "sticks", release = 1})
+	_check("numeric booleans: release=1 releases", installed.ok and released.ok and released.result.has("released"))
+	var path := str(root.get_path_to(session.get_parent()))
+	var missing: Dictionary = await _call({cmd = "set", node = path, prop = "no_such_property", value = 3})
+	_check("set refuses an unknown property", not missing.ok and str(missing.error).contains("no property"), str(missing))
+	var index: Dictionary = await _call({cmd = "step", ticks = "many"})
+	_check("a non-numeric argument is refused", not index.ok and str(index.error).contains("number"), str(index))
+
+
+func _read_after_write(bridge: Node) -> void:
+	await _call({cmd = "state"}) # snapshots on
+	await process_frame
+	await process_frame
+	bridge._snapshot_ms = Time.get_ticks_msec() + 60000 # no periodic publish: only an invalidation can refresh it
+	var changed: Dictionary = await _call({cmd = "sticks", roll = 0.3})
+	var seen: Dictionary = await _call({cmd = "state"})
+	bridge._snapshot_ms = 0
+	await _call({cmd = "sticks", release = true})
+	_check("a state read right after a command never shows the state before it", changed.ok and seen.ok
+		and is_equal_approx(float(seen.result.sticks_override.get("roll", 0.0)), 0.3), str(seen).left(300))
 
 ## A plain blocking client for a worker thread (the main-thread helper awaits frames).
 static func _blocking_call(line: String) -> Dictionary:
