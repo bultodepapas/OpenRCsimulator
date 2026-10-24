@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import contextlib
 import csv
+import random
 import io
 import tempfile
 import json
@@ -230,6 +231,55 @@ class DebugctlTests(unittest.TestCase):
         status, _, err = self.run_cli("stop")
         self.assertEqual(status, 1)
         self.assertIn("no launched session", err)
+
+    def test_quoted_values_stay_strings_in_scripts(self) -> None:
+        words = debugctl.split_line('key name="2" note=\'a b\' count=3 exprs={"h":"-s[2]"}')
+        values = [debugctl.parse_value(w.split("=", 1)[1]) for w in words[1:]]
+        self.assertEqual(values, ["2", "a b", 3, {"h": "-s[2]"}])
+
+    def test_exit_report_reads_crashes_and_leaks(self) -> None:
+        log = Path(self.tmp.name) / "engine.log"
+        log.write_text(
+            "ERROR: probe crash\n   at: crash (core/core_bind.cpp:349)\n\n"
+            "================================================================\n"
+            "handle_crash: Program crashed with signal 4\nEngine version: Godot Engine v4.7.2\n"
+            "Dumping the backtrace.\n[1] 788d6aa45330 (libc.so.6+45330)\n-- END OF C++ BACKTRACE --\n"
+            "================================================================\nGDScript backtrace (most recent call first):\n"
+            "    [0] deep (res://crash.gd:3)\n    [1] _init (res://crash.gd:5)\n-- END OF GDSCRIPT BACKTRACE --\n"
+            "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n"
+            "Leaked instance: Node:123\n")
+        report = debugctl.exit_report(log)
+        self.assertEqual(report["leaked_objects"], 2)
+        self.assertEqual(report["leaked_instances"], ["Node:123"])
+        self.assertEqual(report["crash"]["reason"], "Program crashed with signal 4")
+        self.assertEqual(report["crash"]["gdscript_backtrace"], ["[0] deep (res://crash.gd:3)", "[1] _init (res://crash.gd:5)"])
+        log.write_text("clean exit\n")
+        self.assertEqual(debugctl.exit_report(log), {})
+
+    def test_hitches_are_attributed_to_the_last_action_before_them(self) -> None:
+        saved = debugctl.result_of
+        debugctl.result_of = lambda cmd, args=None, **kw: {"hitches": [{"frame": 15, "ms": 80.0}, {"frame": 31, "ms": 60.0},
+                                                                        {"frame": 2, "ms": 900.0}]}
+        try:
+            slow = debugctl.slow_actions([(10, "key name=\"F5\""), (30, "press text=\"Fly\""), (40, "close")])
+        finally:
+            debugctl.result_of = saved
+        self.assertEqual(slow, {'key name="F5"': [80.0], 'press text="Fly"': [60.0]})
+
+    def test_monkey_actions_are_reproducible_from_the_seed(self) -> None:
+        controls = [{"text": "Fly", "path": "A/Fly", "type": "Button"},
+                    {"text": "×", "path": "A/X1", "type": "Button"}, {"text": "×", "path": "A/X2", "type": "Button"},
+                    {"text": "Wind", "path": "A/Wind", "type": "HSlider", "value": 1, "min": 0, "max": 10}]
+        first = [debugctl.monkey_action(random.Random(5), controls, ["Kp Enter"]) for _ in range(1)]
+        runs = [[debugctl.monkey_action(rng, controls, ["Kp Enter"]) for _ in range(40)] for rng in (random.Random(5), random.Random(5))]
+        self.assertEqual(runs[0], runs[1])
+        self.assertTrue(first)
+        joined = "\n".join(runs[0])
+        self.assertNotIn("\\u", joined)  # labels stay literal UTF-8
+        self.assertIn('key name="Kp Enter"', joined)
+        self.assertIn('path="A/X', joined)  # ambiguous labels are addressed by path
+        for line in runs[0]:
+            debugctl.split_line(line)  # every generated line reads back
 
 
 if __name__ == "__main__":

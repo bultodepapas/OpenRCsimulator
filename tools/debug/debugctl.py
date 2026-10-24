@@ -74,6 +74,8 @@ def token() -> str:
 
 
 def parse_value(text: str):
+    if len(text) >= 2 and text[0] == text[-1] and text[0] in "\"'":
+        return text[1:-1]  # quoted in a script: always a string ("2" names the key, not the number)
     try:
         return json.loads(text)
     except json.JSONDecodeError:
@@ -496,7 +498,8 @@ def watch(argv: list[str]) -> int:
 
 def split_line(line: str) -> list[str]:
     """Shell-like words, but JSON inside {...} or [...] keeps its quotes: exprs={"h":"-s[2]"} stays valid JSON.
-    Quotes outside brackets group words and are removed (expr="a == b"); # starts a comment between words."""
+    Quotes outside brackets group words and are kept around the value (name="2" stays the string "2"; parse_value
+    removes them); # starts a comment between words."""
     words: list[str] = []
     word, depth, quote, started, escaped = "", 0, None, False, False
     for ch in line:
@@ -509,15 +512,13 @@ def split_line(line: str) -> list[str]:
                     word += ch
             elif ch == quote:
                 quote = None
-                if depth:
-                    word += ch
+                word += ch
             else:
                 word += ch
             continue
         if ch in "\"'":
             quote, started = ch, True
-            if depth:
-                word += ch
+            word += ch
             continue
         if ch == "#" and not depth and not started:
             break
@@ -605,7 +606,7 @@ def execute_line(line: str, pretty: bool = False) -> None:
         time.sleep(float(rest[0]))
         return
     if command == "echo":
-        print(" ".join(rest))
+        print(" ".join(parse_value(w) if isinstance(parse_value(w), str) else w for w in rest))
         return
     display = ("--pretty", "--json", "--paths")
     flags = [w for w in rest if w in display]
@@ -725,6 +726,7 @@ def monkey(argv: list[str]) -> int:
         keys = [k for row in table["shortcuts"] for k in row["keys"] if k not in ("Escape", "F10")]
     trail = [f"# debugctl.py monkey --seed {seed}: replay with debugctl.py run {out.name}"]
     since = result_of("ping")["log_seq"]
+    started_at: list[tuple[int, str]] = []  # (frame when the action was sent, action)
     failure = None
     for step in range(steps):
         listing = result_of("ui")
@@ -732,9 +734,10 @@ def monkey(argv: list[str]) -> int:
                     and c["type"] not in ("LineEdit", "TextEdit")]
         line = monkey_action(rng, controls, keys)
         trail.append(line)
+        started_at.append((result_of("ping")["frame"], line))
         try:
             execute_quiet(line)
-        except Refused as error:
+        except (Refused, ValueError) as error:
             trail.append(f"# refused: {error}")  # a refused action is fine; the walk goes on
         except OSError as error:
             failure = f"step {step + 1}: the app stopped answering ({error})"
@@ -743,8 +746,13 @@ def monkey(argv: list[str]) -> int:
         if errors:
             failure = f"step {step + 1}: new errors: " + " | ".join(format_record(r) for r in errors[:3])
             break
+    slow = slow_actions(started_at)
+    for action, frames_ms in slow.items():
+        trail.append(f"# slow: {action} -> {', '.join(f'{ms:.0f} ms' for ms in frames_ms)}")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text("\n".join(trail) + "\n", encoding="utf-8")
+    for action, frames_ms in sorted(slow.items(), key=lambda item: -max(item[1]))[:10]:
+        print(f"slow after {action}: {', '.join(f'{ms:.0f} ms' for ms in frames_ms)}")
     print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]),
                       "refused": len([l for l in trail if l.startswith("# refused")]), "failure": failure,
                       "route": result_of("state")["route"] if failure is None or "answering" not in failure else None,
@@ -755,9 +763,9 @@ def monkey(argv: list[str]) -> int:
 def monkey_action(rng: random.Random, controls: list, keys: list) -> str:
     roll = rng.random()
     if roll < 0.12 or not controls:
-        return "close" if roll < 0.08 or not keys else f"key name={rng.choice(keys)}"
+        return "close" if roll < 0.08 or not keys else key_line(rng.choice(keys))
     if keys and roll < 0.25:
-        return f"key name={rng.choice(keys)}"
+        return key_line(rng.choice(keys))
     control = rng.choice(controls)
     labels = [c["text"] for c in controls]
     # Literal UTF-8 (×, ·, ñ): a JSON \\u escape would not survive the run-script reader.
@@ -769,6 +777,22 @@ def monkey_action(rng: random.Random, controls: list, keys: list) -> str:
         value = control["min"] + rng.random() * (control["max"] - control["min"])
         return f"set_value {target} value={value:.3f}"
     return f"press {target}"
+
+
+def slow_actions(started_at: list[tuple[int, str]]) -> dict:
+    """Attribute each recorded hitch to the last action sent at or before its frame."""
+    slow: dict = {}
+    if not started_at:
+        return slow
+    for hitch in result_of("frames")["hitches"]:
+        earlier = [line for frame, line in started_at if frame <= hitch["frame"]]
+        if earlier and hitch["frame"] >= started_at[0][0]:
+            slow.setdefault(earlier[-1], []).append(hitch["ms"])
+    return slow
+
+
+def key_line(name: str) -> str:
+    return f"key name={json.dumps(name, ensure_ascii=False)}"  # "Kp Enter" has a space
 
 
 def execute_quiet(line: str) -> None:

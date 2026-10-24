@@ -315,6 +315,8 @@ func _everything(bridge: Node, app: Node, ui: Container) -> void:
 	var spy := KeySpy.new()
 	root.add_child(spy)
 	var shifted: Dictionary = await _call({cmd = "key", name = "Shift+F"})
+	var numeric: Dictionary = await _call({cmd = "key", name = 2})
+	_check("a numeric key name is the digit key", numeric.ok, str(numeric))
 	var bad: Dictionary = await _call({cmd = "key", name = "Hyper+F"})
 	_check("key sends modifiers and refuses unknown ones", shifted.ok and spy.seen.has("Shift+F") and not bad.ok, str(spy.seen))
 	spy.queue_free()

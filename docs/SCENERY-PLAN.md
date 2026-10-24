@@ -45,7 +45,7 @@ Static object contact uses the separate float64 LU-05 collision world. [CR-17a l
 | SC-22 | Offer the existing five postcard compositions from Home. | Partial: captures and compositions exist; menu integration belongs to UI-06. |
 | SC-24 | Connect low/balanced/high scenery quality to product presets. | Connected 2026-10-22: the VQ-06b Scene detail preset selects the tier (Low → low, Medium → balanced, High/Extreme → high); `--scenery_quality` still overrides ([evidence](research/visual-quality-implementation/VQ-06b-scene-detail/README.md)). |
 | SC-19b | Recorded ambient samples with per-file source and license proof. | Optional; not started. |
-| SC-21 | Animated spectators. | Optional; not started. |
+| SC-21 | Animated spectators. | Optional; not started. Proposed expansion: [field people plan](plans/field-people.md) (SC-HUM, draft). |
 
 SC-19a synthesized ambience and SC-20 analytic birds are implemented. The current Home launch profile enables the decorative flock; the old birds-off default applies only to historical reference captures. SC-23 field palettes are implemented; the ground tint remains a landscape request.
 

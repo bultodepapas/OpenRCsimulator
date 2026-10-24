@@ -695,7 +695,10 @@ func _cmd_set_value(request: Dictionary) -> Dictionary:
 
 
 func _cmd_key(request: Dictionary) -> Dictionary:
-	var parts := str(request.get("name", "")).split("+")
+	var raw_name: Variant = request.get("name", "")
+	if raw_name is float and raw_name == floorf(raw_name):
+		raw_name = int(raw_name) # JSON makes key 1 the number 1.0
+	var parts := str(raw_name).split("+")
 	var keycode := OS.find_keycode_from_string(parts[parts.size() - 1])
 	if keycode == KEY_NONE:
 		return _fail("unknown key name '%s' (examples: W, Escape, Enter, Space, F2, Up, Shift+F; see shortcuts)" % request.get("name", ""))
