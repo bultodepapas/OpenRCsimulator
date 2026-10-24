@@ -4,7 +4,9 @@ Guide: tools/debug/README.md (the "I want to..." table). Task index for every ot
 
 Session
   launch [--headless] [--resolution WxH] [--port N] [--app DIR] [--script-profile] [--verbose]
-         [--profile DIR | --real-profile] [-- <app args>]   start the app; prints its port (isolated user:// profile)
+         [--profile DIR | --real-profile] [--import] [-- <app args>]
+                                                            start the app; prints its port (isolated user:// profile);
+                                                            --import first refreshes the import cache (new assets)
   status | ready [--timeout S] | stop [--force]            alive? / wait for it / quit it (prints crash + exit leaks)
   clean [--keep N]                                          delete old run folders (never a live session)
 Drive the app (any bridge command; `help` asks the app for its list)
@@ -15,7 +17,7 @@ Observe and hunt bugs
   state | logs [--since N] [--level …] [--follow] [--summary] | frames | objects [baseline|diff=true]
   break expr="-s[2] < 1" wait=true | profile (launch --script-profile) | screenshot max_width=960 format=jpg
   watch [--every TICKS] [--count N] [--csv FILE] name=expr …   live values every n simulation ticks
-  timeline [--since N] [--top N]                               where a long frame's time went (launch --verbose)
+  timeline [--hitch] [--since N] [--until N] [--top N]         where a long frame's time went (launch --verbose)
 Scripts and checks
   run FILE|- [--keep-going] [--fail-on-error]                  a repro script, one command per line
   crawl [--shots]                                              open/list/close every screen; report errors
@@ -256,6 +258,12 @@ def launch(argv: list[str]) -> int:
     out.mkdir(parents=True, exist_ok=False)
     # --app runs a candidate copy (it needs the import cache and the sibling folders, as app/ has them).
     command = [godot(), "--path", str(Path(options["--app"]).resolve())]
+    if "--import" in argv:  # assets pulled since the last import load as "Unable to open file: …ctex"
+        imported = subprocess.run([command[0], "--headless", "--path", command[2], "--audio-driver", "Dummy", "--import"],
+                                  capture_output=True, text=True, timeout=1800)
+        if imported.returncode != 0:
+            print("import failed:\n" + imported.stdout[-2000:], file=sys.stderr)
+            return 2
     if "--script-profile" in argv:
         # The local debugger prints a per-function GDScript profile about once a second; `profile` parses it.
         command += ["-d", "--profiling", "--ignore-error-breaks"]
@@ -320,6 +328,7 @@ def launch(argv: list[str]) -> int:
     write_private(SESSIONS / f"{chosen}.json", session)
     write_private(CURRENT, session)
     shown = {k: v for k, v in session.items() if k not in ("command", "token")}
+    shown["use"] = f"OPENRC_DEBUG_BRIDGE={chosen} python3 tools/debug/debugctl.py <command>"
     print(json.dumps({"ok": True, **shown, **ready["result"]}))
     return 0
 
@@ -362,6 +371,14 @@ def ambiguous_target() -> list[int]:
         return []
     live = live_sessions()
     return live if len(live) > 1 else []
+
+
+def refuse_ambiguous() -> bool:
+    others = ambiguous_target()
+    if others:
+        print(f"debugctl: {len(others)} live sessions on ports {others}: set OPENRC_DEBUG_BRIDGE=<your port>",
+              file=sys.stderr)
+    return bool(others)
 
 
 def forget_session(port_number: int, launcher_pid: int | None = None) -> None:
@@ -428,6 +445,8 @@ def clean(argv: list[str]) -> int:
 
 
 def status() -> int:
+    if refuse_ambiguous():
+        return 2
     session = current_session()
     report = {"port": port(), "session": session.get("out"), "pid": session.get("pid"),
               "alive": alive(session.get("pid"))}
@@ -475,7 +494,7 @@ def stop(argv: list[str]) -> int:
     if session:
         forget_session(int(session.get("port", port())), session.get("launcher_pid"))
     report = exit_report(Path(session["out"]) / "engine.log") if session.get("out") else {}
-    print(json.dumps({"stopped": True, "pid": pid, **report}))
+    print(json.dumps({"stopped": True, "pid": pid, **report}))  # crash null and leaked_objects 0 mean a clean exit
     return 1 if report.get("crash") else 0
 
 
@@ -485,7 +504,7 @@ def exit_report(path: Path) -> dict:
         text = path.read_text(errors="replace")
     except OSError:
         return {}
-    report: dict = {}
+    report: dict = {"crash": None, "leaked_objects": 0}
     leaked = re.search(r"(\d+) ObjectDB instances? (?:were|was) leaked at exit", text)
     if leaked:
         report["leaked_objects"] = int(leaked.group(1))
@@ -505,6 +524,8 @@ def exit_report(path: Path) -> dict:
 
 
 def logs(argv: list[str]) -> int:
+    if refuse_ambiguous():
+        return 2
     since = 0
     level = None
     follow = "--follow" in argv
@@ -545,9 +566,19 @@ def logs(argv: list[str]) -> int:
 def timeline(argv: list[str]) -> int:
     """Phase attribution inside long frames: the largest wall-time gaps between consecutive log lines, with the line
     before (what had just finished) and after. Launch with --verbose for one line per resource load."""
+    if refuse_ambiguous():
+        return 2
     option = lambda name, default: int(argv[argv.index(name) + 1]) if name in argv else default  # noqa: E731
     records = [r for r in result_of("logs", {"since": option("--since", 0), "limit": 2000})["records"]
-               if r["level"] != "event"]
+               if r["level"] != "event" and r["seq"] <= option("--until", 1 << 62)]
+    if "--hitch" in argv:  # only the lines printed during the longest recorded hitch frame
+        hitches = result_of("frames")["hitches"]
+        if not hitches:
+            print("no hitch recorded yet (frames lists them)", file=sys.stderr)
+            return 1
+        longest = max(hitches, key=lambda h: h["ms"])
+        records = [r for r in records if longest["frame"] - 1 <= r["frame"] <= longest["frame"]]
+        print(f"# hitch at frame {longest['frame']}: {longest['ms']} ms; {', '.join(longest['causes']) or 'no counter changed'}")
     if len(records) < 2:
         print("timeline needs at least two log lines after the cursor (launch --verbose for resource loads)", file=sys.stderr)
         return 1
@@ -567,6 +598,8 @@ def format_record(record: dict) -> str:
 
 
 def watch(argv: list[str]) -> int:
+    if refuse_ambiguous():
+        return 2
     every, count, csv_path = 24, 0, None
     exprs = {}
     i = 0
@@ -659,6 +692,8 @@ def split_line(line: str) -> list[str]:
 def crawl(argv: list[str]) -> int:
     """UI smoke test of the current route: every screen opens, lists its controls and closes back to where it
     started, without new errors. In a flight the second pass starts from the pause menu, as a pilot reaches them."""
+    if refuse_ambiguous():
+        return 2
     shots = "--shots" in argv
     since = result_of("logs", {"since": 0, "limit": 1})["last_seq"]
     state = result_of("state")
@@ -735,6 +770,8 @@ def execute_line(line: str, pretty: bool = False) -> None:
 
 
 def run_script(argv: list[str]) -> int:
+    if refuse_ambiguous():
+        return 2
     if not argv:
         print("run needs a file (or - for stdin)", file=sys.stderr)
         return 2
@@ -776,6 +813,8 @@ def new_errors(since: int) -> list:
 def soak(argv: list[str]) -> int:
     """Repeat a scenario script; after a warm-up, every cycle is compared with the first measured baseline. A class
     or total that grows in every cycle is reported with its growth per cycle (a leak suspect, not a proof)."""
+    if refuse_ambiguous():
+        return 2
     files = [a for a in argv if not a.startswith("--") and not a.isdigit()]
     if len(files) != 1:
         print("soak needs one scenario script", file=sys.stderr)
@@ -812,7 +851,8 @@ def soak(argv: list[str]) -> int:
         print("GROWS " + line)
     for record in errors[:10]:
         print("ERROR " + format_record(record))
-    print(f"# {len(suspects)} growing counters, {len(errors)} errors over {cycles} measured cycles")
+    print(f"# {len(suspects)} growing counters, {len(errors)} errors: baseline + {max(cycles - 1, 0)} compared cycles "
+          f"(after {warmup} warm-up)")
     return 1 if suspects or errors else 0
 
 
@@ -839,6 +879,8 @@ def monkey_allowed(control: dict) -> bool:
 def monkey(argv: list[str]) -> int:
     """Seeded random walk over what is on screen. Every step is written as a `run` line; a step that logs a new
     error, or an app that stops answering, ends the walk and leaves the trail as a repro script."""
+    if refuse_ambiguous():
+        return 2
     option = lambda name, default: argv[argv.index(name) + 1] if name in argv else default  # noqa: E731
     steps, seed = int(option("--steps", 200)), int(option("--seed", random.randrange(1 << 30)))
     out = Path(option("--out", str(RUNS / f"monkey-{seed}.txt")))
@@ -1117,7 +1159,7 @@ def print_ui(result: dict, full_paths: bool = False) -> None:
 
 
 def main(argv: list[str]) -> int:
-    if not argv or argv[0] in ("-h", "--help"):
+    if not argv or "-h" in argv or "--help" in argv:  # never contacts an app, whatever comes before it
         print(__doc__)
         return 0 if argv else 2
     command, rest = argv[0], argv[1:]
@@ -1154,8 +1196,9 @@ def main(argv: list[str]) -> int:
             return 0
         others = ambiguous_target()
         if others:
-            print(f"debugctl: warning: live sessions on ports {others}; addressing the last launch ({port()}). "
-                  "Set OPENRC_DEBUG_BRIDGE=<port> when several agents share this machine.", file=sys.stderr)
+            print(f"debugctl: {len(others)} live sessions on ports {others}: which one is yours? Repeat with "
+                  f"OPENRC_DEBUG_BRIDGE=<port> {Path(sys.argv[0]).name} {command} …", file=sys.stderr)
+            return 2
         flags = [w for w in rest if w in ("--pretty", "--json", "--paths")]
         result = result_of(command, parse_args([w for w in rest if w not in flags]))
     except Refused as error:

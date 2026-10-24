@@ -510,6 +510,15 @@ func _gap_tools(bridge: Node, session: Node) -> void:
 	_check("profile parses the engine's script profile, hottest self time first", profile.ok and profile.result.samples == 1
 		and top.size() == 2 and str(top[0].function).ends_with("forces") and is_equal_approx(top[0].self_ms_per_sample, 2.0)
 		and int(top[0].calls) == 960, str(profile).left(300))
+	var flood_seq: int = bridge.debug_log.last_seq()
+	push_warning("gap-test kept warning")
+	for i in 5000: # --script-profile prints this much in a minute; it must not evict errors and warnings
+		print("FRAME: total: 0.001 script: 0.001/50 %")
+	var kept: Dictionary = await _call({cmd = "logs", since = flood_seq, level = "warning"})
+	_check("profile lines never evict warnings from the main log", kept.ok and kept.result.records.size() == 1
+		and kept.result.dropped == 0, str(kept).left(200))
+	var flooded: Dictionary = await _call({cmd = "profile", seconds = 60})
+	_check("profile reads its own ring", flooded.ok and flooded.result.samples >= 5000, str(flooded).left(160))
 
 ## A plain blocking client for a worker thread (the main-thread helper awaits frames).
 static func _blocking_call(line: String) -> Dictionary:

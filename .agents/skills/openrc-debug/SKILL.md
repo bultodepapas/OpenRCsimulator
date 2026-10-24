@@ -27,7 +27,7 @@ $D stop
   failure or new engine error; `assert expr=`).
 - Stutter: `$D frames` (percentiles, hitches with causes). Leaks: `$D objects baseline=true` … `diff=true`, or
   `$D soak scenario.txt`. Physics bugs: `$D break expr="-s[2] < 1" wait=true`. Script CPU: `launch --script-profile`,
-  then `$D profile`. Random UI testing: `$D monkey --seed N --keys`. Compiler warnings:
+  then `$D profile seconds=20`. A long load frame: `launch --verbose`, then `$D timeline --hitch`. Random UI testing: `$D monkey --seed N --keys`. Compiler warnings:
   `python3 tools/debug/gdscript_warnings.py --files 'area/*.gd'`.
 - Discover anything else with `$D methods node=AppRoot`, `$D find name=*Camera*`, `$D get node=... `, then `call`/`set`/`eval`.
 - It is software inspection, not flight evidence: exact replays use flight logs (`record action=start`).

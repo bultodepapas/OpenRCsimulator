@@ -120,3 +120,32 @@ Uncertainties: the outside-in timing has 3–5 ms resolution and includes the po
 headless frames, not rendered ones. On the VM's Compatibility renderer all five pipeline counters stayed 0 through
 Home and a full flight build (rendered under Xvfb, 1280×720); they matter for Forward+ (High graphics) on real GPUs,
 which this review did not run.
+
+## Discoverability check (DX-06, same day)
+
+Two fresh agents with no briefing on the tools got these tasks in plain words:
+
+- measure the Home → Fly time and its phases;
+- check Settings open/close for growth, and find the costliest GDScript function in flight.
+
+Both ran at once on the shared VM. Each found the tools in 4–5 reads (`AGENTS.md`/`CLAUDE.md`, the `openrc-debug`
+skill, `tools/debug/README.md`), took its own port without conflict, finished its task and stopped its session.
+
+Their friction became fixes:
+
+- `timeline` had no end bound; it gained `--hitch` and `--until`.
+- `stop` was silent on a clean exit; it now prints `"crash": null, "leaked_objects": 0`.
+- A subcommand's `--help` contacted another agent's app; `--help` is now local everywhere.
+- Commands without a port only warned when the target was ambiguous; they now refuse.
+- `--script-profile` lines evicted errors from the log ring; they now have their own ring, and `profile seconds=`
+  sets the window.
+- The default aircraft, case-insensitive labels, `launch --import` and the port prefix in recipes are now
+  documented.
+- The soak wording now reads "baseline + N-1 compared cycles".
+
+They also saw two tree states that are not tool problems:
+
+- an `advance_people` argument mismatch, caught in the middle of another session's edit and already consistent
+  again;
+- missing import-cache files for the new instrument SVGs. Run `--import`, or `launch --import`.
+

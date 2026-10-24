@@ -56,7 +56,7 @@ const COMMANDS := {
 	"frames": "window=<n> hitch_ms=<ms> factor=<x> reset=<bool>: frame-time percentiles, 1 % low, hitches with causes",
 	"break": "expr=<expression> name=<s> pause=<bool> once=<bool> wait=<bool> | list=true | clear=<name|all>: tick watchpoint",
 	"objects": "top=<n> baseline=<bool> diff=<bool>: live nodes by class/script, orphan nodes, totals (leak hunting)",
-	"profile": "since=<seq> top=<n> sort=self|total: GDScript functions by time (launch --profile)",
+	"profile": "seconds=<s> | since=<log seq> top=<n> sort=self|total: GDScript functions by time (launch --script-profile)",
 	"sample": "exprs={name: expr} every_ticks=<n> count=<m>: values each n simulation ticks (live telemetry)",
 	"assert": "expr=<expression> message=<s>: ok when truthy, else an error (for repro scripts)",
 	"find": "name=<glob> type=<class> under=<path> limit=<n>: nodes by name pattern and class",
@@ -1830,7 +1830,14 @@ static func _deltas(before: Dictionary, after: Dictionary, top: int) -> Array:
 ## Parses the local debugger's script profile (launch --profile: -d --profiling --ignore-error-breaks), which the
 ## engine prints about once a second: a FRAME line, then per function "n:path::line::name" and its total/self/calls.
 func _cmd_profile(request: Dictionary) -> Dictionary:
+	# Window: seconds=<s> back from now, else from the time of main-log record since=<seq>, else everything kept.
+	var from_ms := 0
+	var seconds: Variant = _number(request.get("seconds", -1))
 	var since_value: Variant = _number(request.get("since", 0))
+	if seconds != null and seconds > 0.0:
+		from_ms = Time.get_ticks_msec() - int(seconds * 1000.0)
+	elif since_value != null and since_value > 0:
+		from_ms = maxi(0, debug_log.time_of(int(since_value))) # a forgotten record (-1) means "everything kept"
 	var header := RegEx.create_from_string("^\\d+:(.+)::(\\d+)::(.+)$")
 	var timing := RegEx.create_from_string("total: ([0-9.e-]+)/\\d+ %\\s+self: ([0-9.e-]+)/\\d+ % tcalls: (\\d+)")
 	var functions := {}
@@ -1838,8 +1845,8 @@ func _cmd_profile(request: Dictionary) -> Dictionary:
 	var script_s := 0.0
 	var frame_s := 0.0
 	var current := ""
-	for record: Dictionary in debug_log.since(int(since_value) if since_value != null else 0, DebugLog.CAPACITY, PackedStringArray(["info"])):
-		for line: String in str(record.text).split("\n"):
+	for text: String in debug_log.profile_since(from_ms):
+		for line: String in text.split("\n"):
 			line = line.strip_edges()
 			if line.begins_with("FRAME: total:"):
 				samples += 1

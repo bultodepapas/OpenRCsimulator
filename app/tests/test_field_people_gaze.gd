@@ -35,6 +35,7 @@ func _initialize() -> void:
 	_test_determinism_and_desync()
 	_test_reset_and_repeats()
 	_test_companion_pilots()
+	_test_crash_glance()
 	_test_default_scenery()
 	print("people gaze: %s" % ("PASS" if _failures == 0 else "FAIL (%d)" % _failures))
 	quit(1 if _failures > 0 else 0)
@@ -247,6 +248,36 @@ func _test_companion_pilots() -> void:
 	for target: Dictionary in model._targets:
 		before_rate = maxf(before_rate, (target.get("velocity", Vector3.ZERO) as Vector3).length())
 	_check("a new companion target has no velocity spike", before_rate < 1.0, str(before_rate))
+
+
+## SC-HUM-05: a crash lifts the range limit for a while after each person's startle delay.
+func _test_crash_glance() -> void:
+	var model: RefCounted = PeopleGaze.new()
+	model.configure([_person("pits", 41), _person("pilot", 42)], {})
+	var p := PeopleGaze._params("pits", 41)
+	var rest := Vector2(p.rest_yaw, p.rest_pitch) * float(p.mover)
+	var wreck := Vector3(-400.0, 0.5, -400.0) # beyond any pits range, 45° left
+	model.reset(0.0, wreck)
+	for i in 240:
+		model.update_to(float(i + 1) / 240.0, wreck)
+	_check("a distant aircraft is ignored before the crash", model.head_angles(0).distance_to(rest) < deg_to_rad(0.5))
+	var t := 1.0
+	var reacted_at := -1.0
+	while t < 1.0 + float(p.reaction_s) + 3.0:
+		t += 1.0 / 60.0 # presentation frames while the simulation is paused
+		model.update_to(t, wreck, [], true)
+		if reacted_at < 0.0 and model.head_angles(0).distance_to(rest) > deg_to_rad(1.0):
+			reacted_at = t - 1.0
+	_check("the crash glance starts after the startle delay", reacted_at >= float(p.reaction_s) - 0.02 and reacted_at < float(p.reaction_s) + 0.3,
+		"%.2f vs %.2f" % [reacted_at, float(p.reaction_s)])
+	_check("the pits member looks at the crash", absf(model.head_angles(0).x - deg_to_rad(45.0) * float(p.mover)) < deg_to_rad(2.0), str(rad_to_deg(model.head_angles(0).x)))
+	while t < 1.0 + float(p.reaction_s) + PeopleGaze.ALERT_DURATION_S + 3.0:
+		t += 1.0 / 60.0
+		model.update_to(t, wreck, [], true)
+	_check("interest fades after the alert window", model.head_angles(0).distance_to(rest) < deg_to_rad(1.0), str(model.head_angles(0)))
+	# A restart (time back to zero, no crash) resets everything.
+	model.update_to(0.0, wreck, [], false)
+	_check("restart clears the alert", model.head_angles(0).distance_to(rest) < 1.0e-6)
 
 
 func _test_default_scenery() -> void:
