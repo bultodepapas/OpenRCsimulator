@@ -984,3 +984,7 @@ A ten-variant native comparison selects a thinner wall with subdued interior ref
 ### 2026-10-24 — Interruptible interaction feedback with native focus (UI-22-R10)
 
 Share short color transitions between pointer hover and keyboard/gamepad focus across supported buttons. Keep the focus marker immediate and retain native selection and hit geometry. Use local reflected light on primary glass and a finite activation pulse; do not confirm cancelled presses or restart a sweep when hover becomes click focus. Settle every channel for hidden, disabled, unsupported and reduced-motion states. [Behavior and native-input evidence](research/menu-investigations/README.md#ui-22-r10--hover-focus-and-activation-feedback-2026-10-24).
+
+### 2026-10-24 — Bound interaction work and preserve shader output (UI-22-R11)
+
+Coalesce pointer bursts before retargeting, use one owner for each tween channel and make settlement idempotent. Compute and animate only the channels each material consumes. Keep native behavior and prove the material result with paired rendered comparisons; distinguish allocation improvements from unmeasured FPS claims. [Measurements and regression evidence](research/menu-investigations/README.md#ui-22-r11--bounded-work-and-equivalent-shader-output-2026-10-24).

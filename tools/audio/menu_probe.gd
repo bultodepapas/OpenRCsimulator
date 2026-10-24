@@ -53,14 +53,19 @@ func run() -> void:
 		_capture(recorder, "menu-%d" % roundi(level * 100.0))
 	# Use the production quit transaction without actually closing this probe.
 	var original_time_scale := Engine.time_scale
-	for time_scale: float in [1.0, 0.0, 16.0]:
+	for scenario: Dictionary in [
+		{time_scale = 1.0, stall_ms = 0}, {time_scale = 1.0, stall_ms = 100},
+		{time_scale = 0.0, stall_ms = 0}, {time_scale = 16.0, stall_ms = 0},
+	]:
 		var app := QuitTailApp.new()
 		app.quit_recorder = recorder
 		root.add_child(app)
 		var surface := preload("res://ui/screen.gd").new()
 		app.screens.push("home", surface)
 		app.menu_audio.set_volume(0.35)
-		Engine.time_scale = time_scale
+		Engine.time_scale = float(scenario.time_scale)
+		if int(scenario.stall_ms) > 0:
+			OS.delay_msec(int(scenario.stall_ms)) # completed save work in the same frame as Quit
 		recorder.set_recording_active(true)
 		var started := Time.get_ticks_msec()
 		app.quit_app()
@@ -71,8 +76,9 @@ func run() -> void:
 			and surface.focus_behavior_recursive == Control.FOCUS_BEHAVIOR_DISABLED
 		await create_timer(0.65, true, false, true).timeout
 		recorder.set_recording_active(false)
-		_capture(recorder, "quit-tail-%d" % roundi(time_scale))
-		report.quit_tails.append({time_scale = time_scale, waited = waited, input_locked = input_locked,
+		_capture(recorder, "quit-tail-%d-stall-%d" % [roundi(scenario.time_scale), int(scenario.stall_ms)])
+		report.quit_tails.append({time_scale = scenario.time_scale, pre_quit_stall_ms = scenario.stall_ms,
+			waited = waited, input_locked = input_locked,
 			calls = app.quit_calls, elapsed_ms = app.quit_at_msec - started if app.quit_at_msec >= 0 else -1,
 			expected_ms = expected_ms})
 		app.queue_free()
