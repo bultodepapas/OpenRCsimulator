@@ -196,11 +196,11 @@ func _manager() -> void:
 	manager.cycle_preset()
 	_check("F2 after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
 	var order: Array = []
-	for i in 7:
+	for i in 8:
 		manager.cycle_preset()
 		order.append(manager.settings.preset)
-	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Classic cockpit → Off",
-		order == ["pilot", "full", "developer", "player", "instruments", "cockpit", "off"], str(order))
+	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Classic cockpit → Navigation → Off",
+		order == ["pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "off"], str(order))
 	manager.set_preset("pilot")
 	manager.toggle_developer()
 	_check("F3 adds diagnostics and performance", manager.is_overlay_visible("diagnostics") and manager.is_overlay_visible("performance") and manager.settings.preset == "custom")
@@ -370,8 +370,10 @@ func _dialog() -> void:
 	await process_frame
 	_check("dialog shows the Pilot preset and its switches", dialog.preset_picker.selected == 1
 		and Settings.IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed == Settings.PRESETS.pilot.has(id)))
-	_check("modern and classic widget sections remain separate", dialog._player_grid.get_child_count() == 7
-		and dialog._classic_grid.get_child_count() == Settings.CLASSIC_IDS.size())
+	_check("modern, classic and navigation widget sections remain separate", dialog._player_grid.get_child_count() == 7
+		and dialog._classic_grid.get_child_count() == Settings.CLASSIC_IDS.size()
+		and dialog._navigation_grid.get_child_count() == Settings.NAVIGATION_IDS.size()
+		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid))
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
 	var pinned_outside_scroll := (
@@ -392,11 +394,26 @@ func _dialog() -> void:
 		)
 	_check("preset, units, and Done remain visible outside the scrolling page", pinned_outside_scroll)
 	_check("changing sections does not change overlay settings", manager.settings == settings_before_tabs, str(manager.settings))
+	dialog.tab_bar.current_tab = 2
+	await process_frame
+	_check("Navigation tab 2 shows its three switches", dialog._pages[2].name == "NavigationPage"
+		and dialog._pages[2].visible and Settings.NAVIGATION_IDS.all(
+			func(id: String) -> bool: return dialog.switches[id].is_visible_in_tree())
+		and not dialog.switches.telemetry.is_visible_in_tree())
+	dialog.tab_bar.current_tab = 3
+	await process_frame
+	_check("Appearance tab 3 shows the appearance controls", dialog._pages[3].name == "AppearancePage"
+		and dialog._pages[3].visible and dialog.widget_size_picker.is_visible_in_tree())
+	dialog.tab_bar.current_tab = 4
+	await process_frame
+	_check("Other overlays tab 4 shows diagnostic switches", dialog._pages[4].name == "OtherOverlaysPage"
+		and dialog._pages[4].visible and dialog.switches.telemetry.is_visible_in_tree())
+	_check("selecting the new and shifted tabs leaves overlay settings unchanged", manager.settings == settings_before_tabs, str(manager.settings))
 	var telemetry: CheckBox = dialog.switches.telemetry
 	telemetry.grab_focus()
 	await process_frame
 	_check("visible overlay checkbox can take keyboard focus", root.get_viewport().gui_get_focus_owner() == telemetry)
-	dialog.tab_bar.current_tab = 2
+	dialog.tab_bar.current_tab = 3
 	await process_frame
 	_check("hiding a focused page returns focus to its tab bar", not telemetry.is_visible_in_tree()
 		and root.get_viewport().gui_get_focus_owner() == dialog.tab_bar)
@@ -406,7 +423,7 @@ func _dialog() -> void:
 	dialog.switches.speed.button_pressed = true
 	_check("modern instrument switch applies from its page", manager.settings.preset == "custom"
 		and manager.settings.visible.has("speed"))
-	dialog.tab_bar.current_tab = 3
+	dialog.tab_bar.current_tab = 4
 	dialog.switches.speed.button_pressed = false
 	_check("hidden modern instrument switch still applies its direct signal", not manager.settings.visible.has("speed"))
 	dialog.switches.telemetry.button_pressed = true

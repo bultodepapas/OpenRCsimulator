@@ -124,7 +124,7 @@ On supported Stik, P-51D and stock Ventage Jet configurations, **J** opens a sep
 
 ## 4. Settings and flight options
 
-The **Flight overlays** dialog has four sections: **Modern**, **Classic**, **Appearance** and **Other overlays**.
+The **Flight overlays** dialog has five sections: **Modern**, **Classic**, **Navigation**, **Appearance** and **Other overlays**.
 Preset and Units stay above the scrolling section, and Done stays below it. Use Appearance for widget size,
 background, compact density, position lock and layout reset. Tabs support mouse and keyboard navigation; changing
 a section does not change your flight layout. Developer overlays and transmitter options are under Other overlays.
@@ -167,6 +167,17 @@ Select **All instruments** to add **Fuel tank**, **Trims** and **Engine**, or en
 **Classic cockpit.** Select this preset in Flight overlays, or **Use cockpit layout**, for five optional round instruments: true airspeed, artificial horizon, altimeter, true heading and vertical speed. Individual switches allow mixing them with modern widgets. Drag the headers, close with ×, or use the shared size, background and position-lock options. Compact mode keeps the dials and numerical readout visible. The default 1080p layout raises the central horizon above bottom-centre notices. On narrow windows, show fewer dials or reposition them; custom layouts may overlap.
 
 The horizon shows pitch and bank, including inverted flight. The altimeter reads height above the simulation datum, with a separate AGL readout; its long and short hands indicate hundreds and thousands of the selected unit. This is not a pressure altimeter. TAS is true airspeed, heading is true rather than magnetic, and the vario shows instantaneous vertical speed. A clipped needle is marked **Scale exceeded**, while its numerical value remains available. Missing telemetry suppresses the needle/horizon instead of implying zero.
+
+**RC navigation.** In the Navigation section, choose **Use RC navigation layout**, or enable its three widgets
+individually. Pilot radar shows horizontal distance and aircraft position relative to the pilot, north up, with an
+automatic range and recent position trail. Its centre is the pilot, not a recorded launch point. Wind & drift shows
+ground track minus nose heading (positive to the right), plus heading-relative head/tailwind and wind blowing to
+the left/right. Track is unavailable below 1 m/s. Cruise efficiency shows sampled electrical consumption per
+ground distance in Wh/km or Wh/mi, power and a trend. It needs finite battery telemetry and at least two seconds
+at 3 m/s or faster, using up to the last ten seconds. It measures consumption, not remaining range or return-home
+reserve. Slow flight, missing readings, long sampling gaps and flight resets clear the estimate. Closing this
+widget stops its sampling; reopening starts a fresh window. All three support dragging, ×, saved positions,
+locking and shared size/background controls. Compact mode retains their navigation diagrams.
 
 **Battery (experimental).** Turbo Lumber Evolution uses a finite pack by default; **More flight details → Battery** selects ideal constant voltage. The pack sags under load, recovers at idle, warms and triggers 50% ESC power at low cells (**LVC · land now**). The overlay shows voltage, cell readings, current, power, temperature, mAh used and remaining percentage estimated from mAh, not true charge. Direct routes also use the pack; add `--battery=ideal` for constant voltage. [Plan](plans/battery-realism.md).
 

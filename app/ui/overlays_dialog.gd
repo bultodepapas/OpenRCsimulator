@@ -1,4 +1,4 @@
-# Pause-menu flight overlays panel (HUD-06, docs/plans/flight-overlays.md §7): preset, one switch per overlay, units
+# Pause-menu flight overlays panel (HUD-06/HUD-13, docs/plans/flight-overlays.md §7): preset, one switch per overlay, units
 # transmitter appearance and stick mode. Changes apply at once through the flight's overlay manager, which saves them.
 extends CanvasLayer
 
@@ -18,8 +18,9 @@ const NAMES := {
 	fuel = "Fuel tank", trims = "Trims", engine = "Engine",
 	airspeed_dial = "Airspeed dial", attitude = "Artificial horizon", altimeter = "Altimeter",
 	heading = "Heading indicator", variometer = "Vertical speed indicator",
+	pilot_radar = "Pilot radar", wind_track = "Wind & drift", cruise_efficiency = "Cruise efficiency",
 }
-const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", custom = "Custom" }
+const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
 const WIDGET_BACKGROUND_NAMES := ["Light", "Balanced", "Solid"]
@@ -43,6 +44,7 @@ var lock_switch: CheckBox
 var compact_switch: CheckBox
 var _player_grid: GridContainer
 var _classic_grid: GridContainer
+var _navigation_grid: GridContainer
 var cockpit_action: Button
 var tab_bar: TabBar
 var _scroll: ScrollContainer
@@ -93,7 +95,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	tab_bar.clip_tabs = true
 	tab_bar.scroll_to_selected = true
 	tab_bar.scrolling_enabled = true
-	for section: String in ["Modern", "Classic", "Appearance", "Other overlays"]:
+	for section: String in ["Modern", "Classic", "Navigation", "Appearance", "Other overlays"]:
 		tab_bar.add_tab(tr(section))
 	tab_bar.current_tab = 0
 	shell.add_child(tab_bar)
@@ -144,6 +146,23 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	_classic_grid.columns = 2
 	_classic_grid.add_theme_constant_override("h_separation", 24)
 	classic_page.add_child(_classic_grid)
+
+	var navigation_page := VBoxContainer.new()
+	navigation_page.name = "NavigationPage"
+	navigation_page.add_theme_constant_override("separation", 8)
+	navigation_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	navigation_page.visible = false
+	pages.add_child(navigation_page)
+	_pages.append(navigation_page)
+	navigation_page.add_child(Widgets.label(tr("Navigation"), "SectionLabel", true, false))
+	var navigation_action := Widgets.button(tr("Use RC navigation layout"), "PrimaryButton", "NavigationLayout")
+	navigation_action.pressed.connect(func() -> void: manager.set_preset("navigation"))
+	navigation_page.add_child(navigation_action)
+	navigation_page.add_child(Widgets.label(tr("The RC navigation layout shows a north-up pilot radar, wind and drift, and cruise efficiency."), "SecondaryLabel", true, false))
+	_navigation_grid = GridContainer.new()
+	_navigation_grid.columns = 2
+	_navigation_grid.add_theme_constant_override("h_separation", 24)
+	navigation_page.add_child(_navigation_grid)
 
 	var appearance_page := VBoxContainer.new()
 	appearance_page.name = "AppearancePage"
@@ -209,6 +228,8 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 			)
 		if id in Settings.CLASSIC_IDS:
 			_classic_grid.add_child(box)
+		elif id in Settings.NAVIGATION_IDS:
+			_navigation_grid.add_child(box)
 		elif id in Settings.PLAYER_IDS:
 			_player_grid.add_child(box)
 		else:
@@ -269,9 +290,12 @@ func _resize_layout() -> void:
 	_switch_grid.columns = 1 if stacked else 2
 	_player_grid.columns = 1 if stacked else 2
 	_classic_grid.columns = 1 if stacked else 2
+	_navigation_grid.columns = 1 if stacked else 2
 	for row in _picker_rows:
 		row.vertical = stacked
 	if tab_bar != null:
+		# Five sections fit at the primary 1080p/default-text target; larger text retains native tab scrolling.
+		tab_bar.add_theme_font_size_override("font_size", roundi(22 * preload("res://ui/ui_theme.gd").text_scale))
 		tab_bar.ensure_tab_visible(tab_bar.current_tab)
 
 

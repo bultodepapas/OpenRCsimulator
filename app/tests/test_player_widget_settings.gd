@@ -21,15 +21,18 @@ func _run() -> void:
 		units = "auto", stick_mode = 2, radio_model = "jeti_ds24_ii",
 	})
 	_check("player IDs append to the existing overlay IDs", Settings.IDS.slice(Settings.IDS.size() - Settings.PLAYER_IDS.size()) == Settings.PLAYER_IDS
-		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"] + Settings.CLASSIC_IDS
+		and Settings.PLAYER_IDS == ["speed", "height", "power", "weather", "fuel", "trims", "engine"] + Settings.CLASSIC_IDS + Settings.NAVIGATION_IDS
+		and Settings.NAVIGATION_IDS == ["pilot_radar", "wind_track", "cruise_efficiency"]
 		and Settings.CLASSIC_IDS == ["airspeed_dial", "attitude", "altimeter", "heading", "variometer"])
-	_check("player preset stays unchanged, instruments stay modern, and cockpit appends", Settings.PRESET_ORDER == ["off", "pilot", "full", "developer", "player", "instruments", "cockpit"]
+	_check("existing presets stay unchanged and navigation appends", Settings.PRESET_ORDER == ["off", "pilot", "full", "developer", "player", "instruments", "cockpit", "navigation"]
 		and Settings.PRESETS.player == ["warnings", "speed", "height", "power", "weather"]
 		and Settings.PRESETS.instruments == ["warnings", "speed", "height", "power", "weather", "fuel", "trims", "engine"]
 		and Settings.PRESETS.cockpit == ["warnings", "airspeed_dial", "attitude", "altimeter", "heading", "variometer"]
+		and Settings.PRESETS.navigation == ["warnings", "pilot_radar", "wind_track", "cruise_efficiency"]
 		and Settings.preset_for(Settings.PRESETS.player) == "player"
 		and Settings.preset_for(Settings.PRESETS.instruments) == "instruments"
-		and Settings.preset_for(Settings.PRESETS.cockpit) == "cockpit")
+		and Settings.preset_for(Settings.PRESETS.cockpit) == "cockpit"
+		and Settings.preset_for(Settings.PRESETS.navigation) == "navigation")
 	var player: Dictionary = Settings.validate({"preset": "player"})
 	_check("player preset validates to the five player overlays", player.preset == "player"
 		and player.visible == Settings.PRESETS.player)
@@ -39,6 +42,9 @@ func _run() -> void:
 	var cockpit: Dictionary = Settings.validate({"preset": "cockpit"})
 	_check("classic cockpit preset validates to warnings and five classic widgets", cockpit.preset == "cockpit"
 		and cockpit.visible == Settings.PRESETS.cockpit)
+	var navigation: Dictionary = Settings.validate({"preset": "navigation"})
+	_check("navigation preset validates to warnings and exactly three navigation widgets", navigation.preset == "navigation"
+		and navigation.visible == Settings.PRESETS.navigation and navigation.visible.size() == 4)
 	_check("legacy settings do not gain optional position keys", not Settings.validate(Settings.DEFAULTS).has("positions")
 		and not Settings.validate(Settings.DEFAULTS).has("layout_locked")
 		and not Settings.validate(Settings.DEFAULTS).has("widget_size")
@@ -66,6 +72,9 @@ func _run() -> void:
 			"power": [INF, 0.6],
 			"weather": ["0.3", 0.5],
 			"fuel": [0.44, 0.67],
+			"pilot_radar": [0.61, 0.22],
+			"wind_track": [0.29, 0.52],
+			"cruise_efficiency": [0.8, 0.91],
 			"warnings": [1.4, -0.2],
 			"flight": [0.2, 0.2],
 			"unknown": [0.7, 0.8],
@@ -74,7 +83,7 @@ func _run() -> void:
 		"layout_locked": true,
 	})
 	_check("named presets still validate optional positions and lock state", positioned.preset == "player"
-		and positioned.positions == {"speed": [0.0, 1.0], "fuel": [0.44, 0.67]} and positioned.layout_locked)
+		and positioned.positions == {"speed": [0.0, 1.0], "fuel": [0.44, 0.67], "pilot_radar": [0.61, 0.22], "wind_track": [0.29, 0.52], "cruise_efficiency": [0.8, 0.91]} and positioned.layout_locked)
 	var wrong_position_type: Dictionary = Settings.validate({"preset": "pilot", "positions": [0.2, 0.3]})
 	_check("wrong positions container type is discarded", not wrong_position_type.has("positions"))
 	var wrong_lock_type: Dictionary = Settings.validate({"preset": "pilot", "layout_locked": "true"})
@@ -110,6 +119,9 @@ func _preferences_round_trip() -> void:
 			"power": [0.5, 0.45],
 			"weather": [0.7, 0.11],
 			"fuel": [0.21, 0.37],
+			"pilot_radar": [0.61, 0.22],
+			"wind_track": [0.29, 0.52],
+			"cruise_efficiency": [0.8, 0.91],
 		},
 		"layout_locked": true,
 		"widget_size": "large",

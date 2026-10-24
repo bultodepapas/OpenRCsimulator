@@ -19,7 +19,9 @@ const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
 const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
 const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1)}
+const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
+const NavigationData := preload("res://render/overlays/navigation_data.gd")
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -63,6 +65,7 @@ var _battery_reading := {}
 var _player_theme: Theme
 var _settings_applied := false
 var _player_layout_pending := false
+var navigation_data := NavigationData.new()
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -120,7 +123,13 @@ func _build() -> void:
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
 	for id: String in PLAYER_POSITIONS:
-		var widget: Control = ClassicInstrument.new(id) if id in Settings.CLASSIC_IDS else PlayerInstrument.new(id)
+		var widget: Control
+		if id in Settings.NAVIGATION_IDS:
+			widget = NavigationInstrument.new(id)
+		elif id in Settings.CLASSIC_IDS:
+			widget = ClassicInstrument.new(id)
+		else:
+			widget = PlayerInstrument.new(id)
 		widget.theme = _player_theme
 		_place(widget, Control.PRESET_TOP_LEFT)
 		widget.moved.connect(_save_widget_position)
@@ -186,6 +195,7 @@ func reset_flight() -> void:
 	peak_airspeed = NAN
 	_peak_time = -INF
 	battery_sensors.reset()
+	navigation_data.reset()
 	_battery_reading = {}
 	_fuel_state_known = false
 	_since_text = INF
@@ -369,10 +379,18 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
+	var cruise := {}
+	if visible and frames.cruise_efficiency.visible:
+		cruise = navigation_data.update(_last_telemetry, _battery_reading)
+	else:
+		navigation_data.reset()
 	if visible:
 		for id: String in PLAYER_POSITIONS:
 			if frames[id].visible:
-				frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
+				if id in Settings.NAVIGATION_IDS:
+					frames[id].refresh_navigation(_last_telemetry, system, _battery_reading, cruise)
+				else:
+					frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
 
 

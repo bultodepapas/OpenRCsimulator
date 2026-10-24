@@ -840,6 +840,93 @@ msgstr "Cabina clásica"
 msgid "Use cockpit layout"
 msgstr "Usar diseño de cabina"
 
+msgid "Navigation"
+msgstr "Navegación"
+
+msgid "RC navigation"
+msgstr "Navegación RC"
+
+msgid "Use RC navigation layout"
+msgstr "Usar diseño de navegación RC"
+
+msgid "The RC navigation layout shows a north-up pilot radar, wind and drift, and cruise efficiency."
+msgstr "El diseño de navegación RC muestra un radar del piloto con el norte arriba, el viento y la deriva, y la eficiencia de crucero."
+
+msgid "Pilot radar"
+msgstr "Radar del piloto"
+
+msgid "Wind & drift"
+msgstr "Viento y deriva"
+
+msgid "Cruise efficiency"
+msgstr "Eficiencia de crucero"
+
+msgid "North-up · aircraft position relative to the pilot"
+msgstr "Norte arriba · posición del avión respecto al piloto"
+
+msgid "White: nose heading · amber: ground track"
+msgstr "Blanco: rumbo del morro · ámbar: trayectoria sobre el suelo"
+
+msgid "Rolling consumption per ground distance; not remaining range"
+msgstr "Consumo móvil por distancia sobre el suelo; no indica la autonomía restante"
+
+msgid "Pilot at centre · north up"
+msgstr "Piloto en el centro · norte arriba"
+
+msgid "Position unavailable"
+msgstr "Posición no disponible"
+
+msgid "RANGE RING"
+msgstr "ANILLO DE DISTANCIA"
+
+msgid "Horizontal distance to the pilot, not the launch point"
+msgstr "Distancia horizontal al piloto, no al punto de despegue"
+
+msgid "Track"
+msgstr "Trayectoria"
+
+msgid "Track unavailable below 1 m/s"
+msgstr "Trayectoria no disponible por debajo de 1 m/s"
+
+msgid "Ground track unavailable"
+msgstr "Trayectoria no disponible"
+
+msgid "Ground speed unavailable"
+msgstr "Velocidad sobre el suelo no disponible"
+
+msgid "HEADWIND"
+msgstr "VIENTO DE FRENTE"
+
+msgid "TAILWIND"
+msgstr "VIENTO DE COLA"
+
+msgid "WIND TO RIGHT"
+msgstr "HACIA DERECHA"
+
+msgid "WIND TO LEFT"
+msgstr "HACIA IZQUIERDA"
+
+msgid "Ground track minus nose heading; positive is right"
+msgstr "Trayectoria sobre el suelo menos rumbo del morro; positivo hacia la derecha"
+
+msgid "10 s rolling window · lower uses less"
+msgstr "Media de 10 s · menos es mejor"
+
+msgid "Collecting cruise data"
+msgstr "Recopilando datos de crucero"
+
+msgid "Cruise above 3 m/s to measure"
+msgstr "Vuela a más de 3 m/s para medir"
+
+msgid "Electric power telemetry unavailable"
+msgstr "Sin telemetría eléctrica"
+
+msgid "POWER"
+msgstr "POTENCIA"
+
+msgid "NOSE"
+msgstr "MORRO"
+
 msgid "Small"
 msgstr "Pequeño"
 

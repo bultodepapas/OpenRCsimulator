@@ -262,3 +262,50 @@ Logs live in ignored `tmp/widget-efficiency-r5/`; captures in `tmp/debug-bridge/
 `20261024-140416-47870/`. New test code parsed outside `app/` before integration. Whitespace checks pass. These
 are measured reductions in UI work under controlled inputs, not an FPS or target-hardware performance claim;
 no physics/input mapping changed and the full physics suite was not rerun.
+
+## Player widget ideas from RC telemetry (2026-10-24, HUD-13 research)
+
+Research only: the concepts below are not implemented or accepted performance claims. The aim is to add
+navigation, energy management and training information beyond the existing modern and classic instruments.
+
+Primary references reviewed:
+
+- [INAV Lua Telemetry for EdgeTX/OpenTX](https://github.com/iNavFlight/OpenTX-Telemetry-Widget): pilot-relative
+  orientation, radar, altitude history, flight extrema and selectable views. Its Lua runtime targets radios;
+  it is a design reference, not a drop-in Godot dependency.
+- [INAV OSD](https://inavflight.github.io/docs/next/core-features/osd/) and
+  [HUD/home markers](https://inavflight.github.io/docs/next/advanced-features/osd-hud-and-craft-radar/): individually
+  positioned elements and spatial navigation cues. These URLs describe the development documentation, not a
+  promise that every released firmware/display supports each feature.
+- [INAV energy estimates](https://inavflight.github.io/docs/next/core-features/battery/#remaining-flight-time-and-flight-distance-estimation):
+  return estimates depend on configured capacity, cruise consumption/speed and optional wind compensation.
+- [ArduPilot soaring](https://ardupilot.org/plane/docs/soaring-4_1.html): rising-air estimation and thermalling
+  motivate a glider view. This does not establish thermal estimation or autonomous soaring in OpenRC.
+
+Candidate designs, in recommended implementation order:
+
+| Concept | Player use and visual treatment | Local data readiness / boundary |
+| --- | --- | --- |
+| Pilot radar | Compact compass disc with aircraft silhouette, pilot marker, range rings and a short trail; north-up or heading-up. Recover orientation during distant RC flight. | Existing position offsets and heading; expose horizontal offsets in the presentation snapshot. Label pilot and fixed launch point separately; a launch anchor needs explicit capture/reset. |
+| Track and wind | Two distinct arrows for nose heading and ground track, with drift angle and signed head/crosswind. Makes wind correction visible. | Existing world velocity and wind; export ground course and suppress it near zero horizontal speed. Heading-relative crosswind is not runway-relative crosswind. |
+| Cruise efficiency | Large consumption-per-distance reading, power and a short trend; compare steady cruise settings. | Shared battery sensor supplies sampled current, voltage, power and used mAh. Derive mAh/km or Wh/km with a low-speed guard and time-window averaging. Consumed Wh needs integration of sensor power; do not expose model-truth SOC. |
+| Maneuver meter | Signed load-factor arc with session extrema, bank and angle of attack; useful for loops and pull-ups. | Existing body-z specific load and alpha. Label the measured axis; it is not total acceleration magnitude. Existing stall-blend thresholds are presentation references, not validated stall predictions. |
+| Glider view | Large vario, altitude/sink history and optional audio; descent trend makes gliding practice easier. | Existing vertical speed and height support the first version. A ground glide ratio must be labelled explicitly and suppressed outside meaningful descent; it is not aerodynamic L/D. Total-energy compensation and thermal centering require separate work. |
+| Approach aid | Runway diagram, lateral alignment, AGL and sink rate; optional touchdown recap. | AGL/sink exist. Selected runway geometry and verified touchdown/contact events must be audited before alignment or landing scores are offered. No fabricated ILS or forward terrain clearance. |
+| Flight card | Small timer and flight extrema during flight, expandable recap after landing. | Reuse existing extrema and flight recording boundaries; define reset/end-of-flight events. Do not introduce a competing unbounded recorder. |
+| FPV presentation | Optional sparse layout with peripheral speed/altitude tapes, horizon and home cue, leaving the centre readable. | Reuse instrument data. Spatial markers require the actual camera transform/FOV; aircraft heading alone is insufficient for chase or orbit cameras. |
+
+Recommended first slice: pilot radar, track/wind and electric cruise efficiency. Keep endurance/return reserve
+for a later, explicitly estimated mode with sufficient sampling and aircraft-specific assumptions. Fuel quantity
+exists for finite fuel stores, but a generic fuel-flow/endurance signal is not currently exposed. USB controller
+status does not provide RF RSSI, link quality, GPS satellite count or video latency; these should not be invented.
+
+All candidates should inherit the existing drag header, close button, persistent placement, lock, units and size
+controls. Offer purpose-based presets (RC navigation, glider, aerobatics, FPV) with individual opt-in switches.
+Prefer one dominant reading and an expandable detail area over denser default panels. Preserve the current
+shared sampling pipeline, bounded histories, cached static drawing and changed-value redraws; qualify new
+layouts at 1080p first. New capability-dependent readings should state unavailable rather than show zero.
+
+Local readiness was checked against `telemetry.gd`, `overlay_manager.gd` and `battery_sensors.gd`; no runtime
+code or dependency changed for this research. Any reused code/assets require their existing license and
+provenance review; no external code/assets were imported here.
