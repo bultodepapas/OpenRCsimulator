@@ -41,6 +41,16 @@ func _initialize() -> void:
 		and manager.frames.flight.values.fuel.text == expected, manager.frames.flight.values.fuel.text)
 	_check("real tank reserve basis appears in the row tooltip", manager.frames.flight.values.fuel.get_parent()
 		.get_child(manager.frames.flight.values.fuel.get_index() - 1).tooltip_text.contains("reserve"))
+	manager.set_preset("instruments")
+	manager.refresh_numbers(snapshot)
+	_check("player fuel widget reads the production sample rather than fixture-only keys",
+		manager.frames.fuel.value_label.text == str(roundi(float(initial.fill_fraction) * 100.0))
+		and manager.frames.fuel.left_value.text == String.num(float(initial.volume_ml), 0) + " mL"
+		and manager.frames.fuel.right_value.text == String.num(float(initial.fuel_remaining_kg) * 1000.0, 0) + " g")
+	_check("engine widget reads production RPM", manager.frames.engine.value_label.text == str(roundi(snapshot.rpm)))
+	var original_roll: float = session.trims.roll
+	snapshot.trims.roll = 0.123
+	_check("snapshot trim values are detached from the flight session", session.trims.roll == original_roll)
 	var tanks: Array = session.aircraft.model.get("fuel_system", {}).get("tanks", [])
 	_check("fixture has one authored finite tank", tanks.size() == 1)
 	if tanks.size() == 1:

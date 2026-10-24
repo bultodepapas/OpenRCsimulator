@@ -2307,6 +2307,8 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	if _overlays != null:
+		_overlays.reset_flight()
 	if _companions_initialized and (companions != null or companion_config.enabled) and not _companions_reset_pending:
 		_companions_reset_pending = true
 		session.hold("companions-reset")

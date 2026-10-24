@@ -769,6 +769,176 @@ msgstr "Rendimiento"
 msgid "Airspeed"
 msgstr "Velocidad aire"
 
+# HUD-13 player instruments.
+msgid "RECENT"
+msgstr "RECIENTE"
+
+msgid "NOW"
+msgstr "AHORA"
+
+# HUD-13-R1 expanded player instruments and appearance.
+msgid "Fuel tank"
+msgstr "Depósito de combustible"
+
+msgid "Trims"
+msgstr "Trims"
+
+msgid "All instruments"
+msgstr "Todos los instrumentos"
+
+msgid "Small"
+msgstr "Pequeño"
+
+msgid "Background"
+msgstr "Fondo"
+
+msgid "Balanced"
+msgstr "Equilibrado"
+
+msgid "Solid"
+msgstr "Sólido"
+
+msgid "Compact instruments"
+msgstr "Instrumentos compactos"
+
+msgid "Aileron"
+msgstr "Alerones"
+
+msgid "Elevator"
+msgstr "Profundidad"
+
+msgid "Trim offset · % of full travel"
+msgstr "Trim · % del recorrido total"
+
+msgid "No trim data"
+msgstr "Trims no disponibles"
+
+msgid "Engine RPM · throttle command"
+msgstr "RPM del motor · mando de gas"
+
+msgid "Engine telemetry unavailable"
+msgstr "Datos del motor no disponibles"
+
+msgid "THROTTLE"
+msgstr "GAS"
+
+msgid "FLIGHT LOAD"
+msgstr "CARGA AVIÓN"
+
+msgid "No finite fuel tank"
+msgstr "Sin depósito finito"
+
+msgid "REMAINING"
+msgstr "RESTANTE"
+
+msgid "FUEL MASS"
+msgstr "MASA COMB."
+
+msgid "Tank level · remaining fuel"
+msgstr "Nivel de combustible restante"
+
+msgid "Estimated reserve · land soon"
+msgstr "Reserva estimada · aterriza pronto"
+
+msgid "E"
+msgstr "E"
+
+msgid "S"
+msgstr "S"
+
+msgid "W"
+msgstr "O"
+
+msgid "Speed & flight maximum"
+msgstr "Velocidad y máx. del vuelo"
+
+msgid "Height & flight"
+msgstr "Altura y vuelo"
+
+msgid "Energy"
+msgstr "Energía"
+
+msgid "Wind conditions"
+msgstr "Condiciones del viento"
+
+msgid "Drag to move · positions are saved"
+msgstr "Arrastra para mover · posición guardada"
+
+msgid "Widget position locked"
+msgstr "Posición del widget bloqueada"
+
+msgid "Airspeed · recent trend"
+msgstr "Velocidad del aire · tendencia reciente"
+
+msgid "FLIGHT MAX"
+msgstr "MÁX. DEL VUELO"
+
+msgid "GROUND"
+msgstr "SUELO"
+
+msgid "Above terrain · %s from pilot"
+msgstr "Sobre el terreno · a %s del piloto"
+
+msgid "CLIMB / SINK"
+msgstr "ASCENSO / DESC."
+
+msgid "FLIGHT TIME"
+msgstr "TIEMPO"
+
+msgid "No telemetry"
+msgstr "Sin telemetría"
+
+msgid "Direction wind comes from"
+msgstr "Procedencia del viento"
+
+msgid "FROM"
+msgstr "DESDE"
+
+msgid "VERTICAL AIR"
+msgstr "AIRE VERTICAL"
+
+msgid "Battery · estimated remaining"
+msgstr "Batería · carga restante estimada"
+
+msgid "PACK VOLTAGE"
+msgstr "VOLTAJE"
+
+msgid "CURRENT"
+msgstr "CORRIENTE"
+
+msgid "Battery critical · land now"
+msgstr "Batería crítica · aterriza ahora"
+
+msgid "Battery warning · check pack"
+msgstr "Aviso de batería · revisa el pack"
+
+msgid "Fuel remaining"
+msgstr "Combustible restante"
+
+msgid "FUEL"
+msgstr "COMBUSTIBLE"
+
+msgid "RESERVE"
+msgstr "RESERVA"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Fuel reserve · land soon"
+msgstr "Reserva de combustible · aterriza pronto"
+
+msgid "Energy level unavailable"
+msgstr "Nivel de energía no disponible"
+
+msgid "Maximum sampled airspeed this flight (10 Hz). Resets with the flight."
+msgstr "Máxima velocidad del aire registrada en este vuelo (10 Hz). Se reinicia con el vuelo."
+
+msgid "BATTERY"
+msgstr "BATERÍA"
+
+msgid "N"
+msgstr "N"
+
 msgid "Ground speed"
 msgstr "Velocidad suelo"
 
@@ -953,6 +1123,27 @@ msgstr "Completo"
 
 msgid "Developer"
 msgstr "Desarrollo"
+
+msgid "Player"
+msgstr "Jugador"
+
+msgid "Player instruments"
+msgstr "Instrumentos del jugador"
+
+msgid "Use player layout"
+msgstr "Usar diseño de jugador"
+
+msgid "Drag an instrument header during flight to move it. Close with ×; reopen it here."
+msgstr "Arrastra el encabezado de un instrumento para moverlo durante el vuelo. Ciérralo con × y vuelve a abrirlo aquí."
+
+msgid "Lock widget positions"
+msgstr "Bloquear posiciones de los widgets"
+
+msgid "Reset widget positions"
+msgstr "Restablecer posiciones de los widgets"
+
+msgid "Other overlays & diagnostics"
+msgstr "Otros indicadores y diagnósticos"
 
 msgid "Warnings"
 msgstr "Avisos"

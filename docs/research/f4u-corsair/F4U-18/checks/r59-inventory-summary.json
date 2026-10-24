@@ -1,0 +1,371 @@
+{
+ "blender": "5.2.2 LTS",
+ "objects": 5616,
+ "tris": 5658774,
+ "base_tris": 4435208,
+ "materials": 97,
+ "surfaces": 5719,
+ "by_top": {
+  "01B Motor | detalles visibles": {
+   "objects": 1492,
+   "tris": 1711764,
+   "base_tris": 1710004,
+   "subsurf_objects": 0,
+   "materials": 13
+  },
+  "05 Helice": {
+   "objects": 124,
+   "tris": 1132748,
+   "base_tris": 417728,
+   "subsurf_objects": 1,
+   "materials": 11
+  },
+  "01C Refrigeracion motor R14": {
+   "objects": 445,
+   "tris": 422016,
+   "base_tris": 422016,
+   "subsurf_objects": 0,
+   "materials": 6
+  },
+  "03 Cabina": {
+   "objects": 366,
+   "tris": 381956,
+   "base_tris": 209826,
+   "subsurf_objects": 0,
+   "materials": 15
+  },
+  "02B Mecanismos R10": {
+   "objects": 1135,
+   "tris": 316824,
+   "base_tris": 177656,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "02 Alas de gaviota": {
+   "objects": 81,
+   "tris": 251626,
+   "base_tris": 237370,
+   "subsurf_objects": 0,
+   "materials": 12
+  },
+  "06B Tren principal R22": {
+   "objects": 68,
+   "tris": 192860,
+   "base_tris": 192860,
+   "subsurf_objects": 0,
+   "materials": 10
+  },
+  "01 Fuselaje y motor": {
+   "objects": 81,
+   "tris": 135836,
+   "base_tris": 135836,
+   "subsurf_objects": 0,
+   "materials": 7
+  },
+  "02C Tomas alares R20": {
+   "objects": 72,
+   "tris": 135064,
+   "base_tris": 112856,
+   "subsurf_objects": 0,
+   "materials": 7
+  },
+  "02C | R51 Alas plegables": {
+   "objects": 94,
+   "tris": 110450,
+   "base_tris": 108338,
+   "subsurf_objects": 0,
+   "materials": 9
+  },
+  "02J | R59 Articulaciones y cilindros": {
+   "objects": 66,
+   "tris": 93672,
+   "base_tris": 29160,
+   "subsurf_objects": 0,
+   "materials": 2
+  },
+  "04B Elevadores R11": {
+   "objects": 140,
+   "tris": 82016,
+   "base_tris": 75856,
+   "subsurf_objects": 0,
+   "materials": 3
+  },
+  "02E Bocas y luz R26": {
+   "objects": 181,
+   "tris": 81992,
+   "base_tris": 81992,
+   "subsurf_objects": 0,
+   "materials": 8
+  },
+  "04C Timon R12": {
+   "objects": 135,
+   "tris": 80184,
+   "base_tris": 78168,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "01B Fuselaje R13": {
+   "objects": 20,
+   "tris": 72980,
+   "base_tris": 72980,
+   "subsurf_objects": 0,
+   "materials": 3
+  },
+  "06G Articulaciones R30": {
+   "objects": 152,
+   "tris": 64632,
+   "base_tris": 62584,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "02F | R55 Bisagras alojadas": {
+   "objects": 114,
+   "tris": 44744,
+   "base_tris": 21584,
+   "subsurf_objects": 0,
+   "materials": 3
+  },
+  "06C Tren principal R23": {
+   "objects": 116,
+   "tris": 42008,
+   "base_tris": 33304,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "02D Apoyos tomas R21": {
+   "objects": 72,
+   "tris": 41328,
+   "base_tris": 21616,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "06D Tren de cola R27": {
+   "objects": 197,
+   "tris": 40856,
+   "base_tris": 39928,
+   "subsurf_objects": 0,
+   "materials": 6
+  },
+  "04 Empenaje": {
+   "objects": 2,
+   "tris": 39692,
+   "base_tris": 39692,
+   "subsurf_objects": 0,
+   "materials": 1
+  },
+  "02D | R53 Uniones mecanicas": {
+   "objects": 112,
+   "tris": 37176,
+   "base_tris": 34712,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "02G | R56 Ajuste de juntas": {
+   "objects": 44,
+   "tris": 31880,
+   "base_tris": 24552,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "02E | R54 Caja y bisagras": {
+   "objects": 48,
+   "tris": 30674,
+   "base_tris": 14506,
+   "subsurf_objects": 0,
+   "materials": 3
+  },
+  "06E Mecanica principal R28": {
+   "objects": 136,
+   "tris": 30080,
+   "base_tris": 28544,
+   "subsurf_objects": 0,
+   "materials": 6
+  },
+  "06F Amortiguadores R29": {
+   "objects": 52,
+   "tris": 24176,
+   "base_tris": 23152,
+   "subsurf_objects": 0,
+   "materials": 2
+  },
+  "02H | R57 Flaps y continuidad": {
+   "objects": 54,
+   "tris": 22536,
+   "base_tris": 21384,
+   "subsurf_objects": 0,
+   "materials": 6
+  },
+  "07B Antena R25": {
+   "objects": 16,
+   "tris": 5472,
+   "base_tris": 5472,
+   "subsurf_objects": 0,
+   "materials": 4
+  },
+  "07 Detalles": {
+   "objects": 1,
+   "tris": 1532,
+   "base_tris": 1532,
+   "subsurf_objects": 0,
+   "materials": 1
+  }
+ },
+ "source_sha256": "94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3",
+ "heaviest_objects": [
+  {
+   "name": "Buje | cuerpo fundido continuo",
+   "tris": 946448,
+   "base_tris": 236612,
+   "subsurf": [
+    [
+     1,
+     1
+    ]
+   ]
+  },
+  {
+   "name": "R43 | Escape unido 1 3",
+   "tris": 278044,
+   "base_tris": 278044,
+   "subsurf": []
+  },
+  {
+   "name": "R43 | Escape unido -1 3",
+   "tris": 267248,
+   "base_tris": 267248,
+   "subsurf": []
+  },
+  {
+   "name": "R43 | Escape unido -1 2",
+   "tris": 212020,
+   "base_tris": 212020,
+   "subsurf": []
+  },
+  {
+   "name": "R43 | Escape unido 1 2",
+   "tris": 182568,
+   "base_tris": 182568,
+   "subsurf": []
+  },
+  {
+   "name": "R43 | Escape unido 1 1",
+   "tris": 157396,
+   "base_tris": 157396,
+   "subsurf": []
+  },
+  {
+   "name": "R43 | Escape unido -1 1",
+   "tris": 139956,
+   "base_tris": 139956,
+   "subsurf": []
+  },
+  {
+   "name": "Capot radial | boca abierta y labio redondeado",
+   "tris": 67968,
+   "base_tris": 67968,
+   "subsurf": []
+  },
+  {
+   "name": "Tapa hidromatica | perfil alargado",
+   "tris": 55680,
+   "base_tris": 55680,
+   "subsurf": []
+  },
+  {
+   "name": "Fuselaje | volumen continuo",
+   "tris": 53660,
+   "base_tris": 53660,
+   "subsurf": []
+  },
+  {
+   "name": "R51 | Panel exterior izquierda",
+   "tris": 43706,
+   "base_tris": 43706,
+   "subsurf": []
+  },
+  {
+   "name": "R51 | Panel exterior derecha",
+   "tris": 43704,
+   "base_tris": 43704,
+   "subsurf": []
+  },
+  {
+   "name": "Ala derecha | gaviota invertida",
+   "tris": 40404,
+   "base_tris": 40404,
+   "subsurf": []
+  },
+  {
+   "name": "Ala izquierda | gaviota invertida",
+   "tris": 40404,
+   "base_tris": 40404,
+   "subsurf": []
+  },
+  {
+   "name": "R20 | panal perforado derecha",
+   "tris": 39216,
+   "base_tris": 39216,
+   "subsurf": []
+  },
+  {
+   "name": "R20 | panal perforado izquierda",
+   "tris": 39216,
+   "base_tris": 39216,
+   "subsurf": []
+  },
+  {
+   "name": "R12 | timon articulado",
+   "tris": 36286,
+   "base_tris": 36286,
+   "subsurf": []
+  },
+  {
+   "name": "R22 | techo curvo pozo derecha",
+   "tris": 31770,
+   "base_tris": 31770,
+   "subsurf": []
+  },
+  {
+   "name": "R22 | techo curvo pozo izquierda",
+   "tris": 31768,
+   "base_tris": 31768,
+   "subsurf": []
+  },
+  {
+   "name": "Cubierta R7 | acrilico curvo",
+   "tris": 26240,
+   "base_tris": 12800,
+   "subsurf": []
+  },
+  {
+   "name": "Helice referencia | pala 1",
+   "tris": 25598,
+   "base_tris": 25598,
+   "subsurf": []
+  },
+  {
+   "name": "Helice referencia | pala 2",
+   "tris": 25598,
+   "base_tris": 25598,
+   "subsurf": []
+  },
+  {
+   "name": "Helice referencia | pala 3",
+   "tris": 25598,
+   "base_tris": 25598,
+   "subsurf": []
+  },
+  {
+   "name": "Helice referencia | pala 4",
+   "tris": 25598,
+   "base_tris": 25598,
+   "subsurf": []
+  },
+  {
+   "name": "Asiento R7 | cojin",
+   "tris": 24300,
+   "base_tris": 24300,
+   "subsurf": []
+  }
+ ]
+}

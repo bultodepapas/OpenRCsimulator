@@ -40,6 +40,8 @@ On `main` at `4c760f66`, `test_companions_shell.gd` failed: a Home flight with c
 
 The AI-companions line re-bound the profile to `3a8ebbc5…` on 2026-10-24 ([record](../../ai-companions/AFC-02/rebinds/2026-10-24-69bf5c78-to-3a8ebbc5.json)). An independent run here agrees: [checks/afc-parity.log](checks/afc-parity.log). One disposable copy of `4c760f66` was used, with the pre-F4U `wheel_profiles.json` and only the assets that scripts preload, because drive C: had about 2 GB free. Run with the solver sources of `ee054047` it reproduced `69bf5c78…`; with those of `4c760f66` it gave `3a8ebbc5…`. All 18 retained AFC-04-R1/R2 tapes (baseline and candidate sets) replayed in candidate mode with `complete=true` and byte-identical CSVs on both. The twelve R2 replays also equal the replays retained beside the tapes. The rolling-law change is inert there: every Club field surface has a rolling factor of at least 1 (runway 2.5, mown 5, rough 7.5); only the helicopter pad's 0.5 takes the new branch. This is parity on these tapes, not exact replay or a scope expansion.
 
+At `dcc10cde` the companion suites fail for another reason: "controller.sha256: current pilot source does not match this profile". [AFC-04-R8](../../ai-companions/AFC-04-R8/README.md) changed the runtime pilot and leaves profile admission to its qualification owner.
+
 ## Costs
 
 Headless on the development machine, a default Corsair build takes about 0.48 s; another scheme takes 0.53–0.60 s, including its 9.4–10 MB hash. The four added schemes add 48.5 MB of imported scenes (11.1–14.6 MB each) and 38.3 MB of export proof copies to a package. Only the chosen scheme loads.

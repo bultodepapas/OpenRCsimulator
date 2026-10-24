@@ -488,6 +488,11 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		var current_transport: float=maxf(0.0,float(state.fuel_transport_kg_s))
 		var active_transport: bool=bool(state.running) and float(state.fuel_kg)>lifecycle_floor
 		var transport_tau: float=float(install.settings.fuel_transport_time_constant_s)
+		# The reused body/rotor response makes apparent gravity and its feed target
+		# invariant across this stage's solver candidates. Keep the solver and its
+		# validation/telemetry unchanged; the fallback still samples each response.
+		var reused_target: float=FuelFeed.factor_for_stage(feed_context,feed_force_body,feed_mass.mass_kg,
+			tank_arm,base_coupling.alpha_body,omega,pickup) if reuse_response else NAN
 		var solve: Dictionary=FuelFeed.solve_factor(func(candidate_factor: float) -> Dictionary:
 			var candidate_evaluation: Dictionary
 			if reuse_response:
@@ -508,8 +513,8 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 			var candidate_coupling: Dictionary=base_coupling if reuse_response else _stage_coupling(
 				owner,body,values,install,state,candidate_evaluation.source,load,airframe,feed_mass,ambient)
 			if not candidate_coupling.get("ok",false): return {ok=false}
-			var target_factor: float=FuelFeed.factor_for_stage(feed_context,feed_force_body,feed_mass.mass_kg,
-				tank_arm,candidate_coupling.alpha_body,omega,pickup)
+			var target_factor: float=reused_target if reuse_response else FuelFeed.factor_for_stage(
+				feed_context,feed_force_body,feed_mass.mass_kg,tank_arm,candidate_coupling.alpha_body,omega,pickup)
 			if not is_finite(target_factor): return {ok=false}
 			return {ok=true,target_factor=target_factor,evaluation=candidate_evaluation,
 				coupling=candidate_coupling}

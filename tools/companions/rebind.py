@@ -204,7 +204,7 @@ def main() -> int:
     parser.add_argument("--godot", help="Godot executable (default: app/get-godot.sh)")
     parser.add_argument("--jobs", type=int, default=max(1, min(6, (os.cpu_count() or 2) // 2)))
     parser.add_argument("--report", type=Path, help="also write the full JSON report to this new file")
-    parser.add_argument("--keep", action="store_true", help="keep the disposable copies under tmp/")
+    parser.add_argument("--keep", action="store_true", help="keep the disposable project copies")
     parser.add_argument("--workspace-root", type=Path,
                         help="parent for disposable project copies (default: repository tmp/)")
     args = parser.parse_args()

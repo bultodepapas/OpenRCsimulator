@@ -2,8 +2,9 @@
 """F4U-04: deliberate mutations of an accepted GLB must make preflight_glb.py exit nonzero.
 
 Uses the shipped Timber r2 GLB as a known-good sectioned asset and the Avanti GLB (exported with its retractable
-gear stowed) for the stowed-gear rule, writes each mutation to a disposable temporary copy and never touches the
-originals.
+gear stowed) for the stowed-gear rule. For the skin-orientation rule (F4U-18) it uses the shipped Corsair, whose
+fuselage is inside out, and a copy with that mesh's triangle winding reversed. Writes each mutation to a disposable
+temporary copy and never touches the originals.
 
     python research/f4u-corsair/F4U-04/test_preflight_glb.py
 """
@@ -18,7 +19,9 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 BASE = ROOT / "app/assets/aircraft/turbo-lumber-evolution/timber.glb"
 STOWED = ROOT / "app/assets/aircraft/avanti-s-a200/avanti_s.glb"
+CORSAIR = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
 TOOL = HERE / "preflight_glb.py"
+INDEX_FORMATS = {5121: "B", 5123: "H", 5125: "I"}
 sys.path.insert(0, str(HERE))
 import preflight_glb  # noqa: E402
 
@@ -43,6 +46,22 @@ def first(gltf, predicate):
 
 def section(node):
     return (node.get("extras") or {}).get("openrc_section")
+
+
+def reverse_winding(gltf, binary, name):
+    """Return a copy of the binary chunk with every triangle of mesh node `name` wound the other way."""
+    out = bytearray(binary)
+    node = gltf["nodes"][first(gltf, lambda n: n.get("name") == name)]
+    for primitive in gltf["meshes"][node["mesh"]]["primitives"]:
+        accessor = gltf["accessors"][primitive["indices"]]
+        fmt = INDEX_FORMATS[accessor["componentType"]]
+        size = struct.calcsize(fmt)
+        start = gltf["bufferViews"][accessor["bufferView"]].get("byteOffset", 0) + accessor.get("byteOffset", 0)
+        for t in range(accessor["count"] // 3):
+            at = start + 3 * t * size
+            a, b, c = struct.unpack_from("<" + fmt * 3, out, at)
+            struct.pack_into("<" + fmt * 3, out, at, a, c, b)
+    return bytes(out)
 
 
 def main():
@@ -110,6 +129,17 @@ def main():
         pivot["translation"][1] -= 0.1  # child of the identity root: 0.1 m straight down
         write_glb(Path(directory) / "gear_down.glb", stowed, stowed_binary)
         expect("preflight rejects: a main gear 0.1 m below its stowed pose", run(Path(directory) / "gear_down.glb", "generic", "--gear-stowed") == 1)
+        shipped = preflight_glb.inspect(CORSAIR, "f4u-g1")
+        expect("shipped g1.13 Corsair fails only the inside-out fuselage",
+               len(shipped["failures"]) == 1 and shipped["failures"][0].startswith("fuselage_core is inside out"))
+        corsair, corsair_binary = preflight_glb.read_glb(CORSAIR)
+        fixed_binary = reverse_winding(corsair, corsair_binary, "fuselage_core")
+        fixed = Path(directory) / "fuselage_reversed.glb"
+        write_glb(fixed, corsair, fixed_binary)
+        expect("the same Corsair with the fuselage reversed passes f4u-g1", run(fixed, "f4u-g1") == 0)
+        expect("and passes the f4u-g2 budgets", run(fixed, "f4u-g2") == 0)
+        write_glb(fixed, corsair, reverse_winding(corsair, fixed_binary, "wing_left_fixed"))
+        expect("preflight rejects: an inside-out outer wing panel", run(fixed, "f4u-g1") == 1)
         bad = Path(directory) / "broken.glb"
         bad.write_bytes(b"not a glb")
         expect("unreadable input exits 2", run(bad) == 2)

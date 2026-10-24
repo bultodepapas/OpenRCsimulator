@@ -1,0 +1,22 @@
+; F4U-18 isolated render bench: the app's renderer, MSAA and Godot version, vsync off so frame time is measured.
+config_version=5
+
+[application]
+
+config/name="F4U-18 Corsair detail bench"
+config/features=PackedStringArray("4.7")
+run/max_fps=0
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/vsync/vsync_mode=0
+; Borderless so the client area is the full requested resolution on a 1080p display.
+window/size/borderless=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2

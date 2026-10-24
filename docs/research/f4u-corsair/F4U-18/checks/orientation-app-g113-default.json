@@ -1,0 +1,313 @@
+{
+ "file": "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+ "meshes": [
+  {
+   "node": "fuselage_core",
+   "triangles": 8000,
+   "outward_share": 0.152,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.136
+  },
+  {
+   "node": "canopy_glass",
+   "triangles": 1200,
+   "outward_share": 0.503,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.5
+  },
+  {
+   "node": "gear_door_front_mesh_left",
+   "triangles": 1358,
+   "outward_share": 0.504,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.492
+  },
+  {
+   "node": "gear_door_front_mesh_right",
+   "triangles": 1414,
+   "outward_share": 0.504,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.492
+  },
+  {
+   "node": "windshield_glass",
+   "triangles": 550,
+   "outward_share": 0.504,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.501
+  },
+  {
+   "node": "gear_door_inner_mesh_right",
+   "triangles": 1426,
+   "outward_share": 0.505,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.489
+  },
+  {
+   "node": "gear_door_inner_mesh_left",
+   "triangles": 1418,
+   "outward_share": 0.506,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.489
+  },
+  {
+   "node": "cowl",
+   "triangles": 5000,
+   "outward_share": 0.512,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.502
+  },
+  {
+   "node": "gear_door_tail_mesh_left_1",
+   "triangles": 588,
+   "outward_share": 0.513,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.504
+  },
+  {
+   "node": "gear_door_tail_mesh_right_1",
+   "triangles": 604,
+   "outward_share": 0.513,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.504
+  },
+  {
+   "node": "canopy_frame",
+   "triangles": 848,
+   "outward_share": 0.519,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.471
+  },
+  {
+   "node": "exhaust_stacks",
+   "triangles": 1600,
+   "outward_share": 0.52,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.507
+  },
+  {
+   "node": "gear_door_outer_mesh_right",
+   "triangles": 1750,
+   "outward_share": 0.525,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.497
+  },
+  {
+   "node": "gear_door_outer_mesh_left",
+   "triangles": 1744,
+   "outward_share": 0.527,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.498
+  },
+  {
+   "node": "gear_door_tail_mesh_right_2",
+   "triangles": 668,
+   "outward_share": 0.54,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.51
+  },
+  {
+   "node": "gear_door_tail_mesh_left_2",
+   "triangles": 648,
+   "outward_share": 0.547,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.5
+  },
+  {
+   "node": "cockpit_interior",
+   "triangles": 2722,
+   "outward_share": 0.576,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.439
+  },
+  {
+   "node": "wing_center_fixed",
+   "triangles": 11599,
+   "outward_share": 0.608,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.563
+  },
+  {
+   "node": "propeller_rotor",
+   "triangles": 5400,
+   "outward_share": 0.618,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.649
+  },
+  {
+   "node": "gear_strut_left",
+   "triangles": 750,
+   "outward_share": 0.625,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.508
+  },
+  {
+   "node": "gear_strut_right",
+   "triangles": 750,
+   "outward_share": 0.625,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.508
+  },
+  {
+   "node": "gear_wheel_tail",
+   "triangles": 3320,
+   "outward_share": 0.702,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.668
+  },
+  {
+   "node": "gear_wheel_left",
+   "triangles": 5752,
+   "outward_share": 0.722,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.511
+  },
+  {
+   "node": "gear_wheel_right",
+   "triangles": 5752,
+   "outward_share": 0.722,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.511
+  },
+  {
+   "node": "gear_tail_fork",
+   "triangles": 304,
+   "outward_share": 0.735,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.539
+  },
+  {
+   "node": "core_details",
+   "triangles": 140,
+   "outward_share": 0.774,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.5
+  },
+  {
+   "node": "engine_face",
+   "triangles": 4000,
+   "outward_share": 0.781,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.64
+  },
+  {
+   "node": "wing_left_fixed",
+   "triangles": 5200,
+   "outward_share": 0.863,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.489
+  },
+  {
+   "node": "wing_right_fixed",
+   "triangles": 5200,
+   "outward_share": 0.864,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.489
+  },
+  {
+   "node": "gear_lower_left",
+   "triangles": 750,
+   "outward_share": 0.908,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.509
+  },
+  {
+   "node": "gear_lower_right",
+   "triangles": 750,
+   "outward_share": 0.908,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.511
+  },
+  {
+   "node": "flap_left_1",
+   "triangles": 1100,
+   "outward_share": 0.925,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.486
+  },
+  {
+   "node": "flap_right_1",
+   "triangles": 1100,
+   "outward_share": 0.925,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.486
+  },
+  {
+   "node": "aileron_left",
+   "triangles": 1700,
+   "outward_share": 0.927,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.481
+  },
+  {
+   "node": "elevator",
+   "triangles": 2200,
+   "outward_share": 0.951,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.494
+  },
+  {
+   "node": "aileron_right",
+   "triangles": 1700,
+   "outward_share": 0.953,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.474
+  },
+  {
+   "node": "fin_fixed",
+   "triangles": 1500,
+   "outward_share": 0.961,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.883
+  },
+  {
+   "node": "rudder",
+   "triangles": 2200,
+   "outward_share": 0.971,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.925
+  },
+  {
+   "node": "stabilizer_fixed",
+   "triangles": 2500,
+   "outward_share": 0.99,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.506
+  },
+  {
+   "node": "flap_left_2",
+   "triangles": 1100,
+   "outward_share": 0.998,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.489
+  },
+  {
+   "node": "flap_right_2",
+   "triangles": 1100,
+   "outward_share": 0.998,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.488
+  },
+  {
+   "node": "flap_right_3",
+   "triangles": 1100,
+   "outward_share": 0.998,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.487
+  },
+  {
+   "node": "flap_left_3",
+   "triangles": 1100,
+   "outward_share": 0.999,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.487
+  },
+  {
+   "node": "gear_tail_strut",
+   "triangles": 124,
+   "outward_share": 1.0,
+   "normals_agree_share": 1.0,
+   "away_from_thrust_axis_share": 0.582
+  }
+ ]
+}

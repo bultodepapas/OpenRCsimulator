@@ -928,6 +928,9 @@ newline-delimited JSON and a standard-library Python client. It enters pilot inp
 session's keyboard seam and never changes the launch route; exact replays stay with flight logs.
 [Guide and verification](../tools/debug/README.md).
 
+### 2026-10-24 — Make the latency camera marker opt-in (HUD-03-R1)
+
+The F6a square is an external-camera threshold target, not a latency readout; a centred raw axis legitimately makes it white. New Home profiles leave it off. Flight overlays exposes the existing saved preference, and its × closes it without changing the flight or the camera-measurement threshold semantics. Hidden markers suspend sampling. Preserve existing saved choices and the explicit CLI flags. [Review and verification](research/flight-overlays/HUD-01-10/README.md#close-controls-and-camera-marker-2026-10-24-hud-03-r1).
 ### 2026-10-24 — Debug bridge: network thread and a token per session (PT1h-R7)
 
 The first bridge answered only in `_process`, so each command waited a rendered frame (1.2 s on the

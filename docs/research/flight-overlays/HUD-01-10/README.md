@@ -91,3 +91,50 @@ Native Windows, Godot 4.7.2, Compatibility renderer on NVIDIA RTX 3090:
 - Real-flight 1280×720 Spanish viewport captures reviewed for keyboard, a simulated DualSense profile with remapped camera, and scrolled controller commands. Captures use fixture metadata, not a hardware-input acceptance claim. Scratch PNGs and capture harness are local outputs.
 
 No physics, control mapping or simulation state changed. This focused verification does not rerun the full physics suite or close HUD-12 pilot acceptance.
+
+## Close controls and camera marker (2026-10-24, HUD-03-R1)
+
+Native Windows, Godot 4.7.2, Compatibility renderer. The live debug bridge reproduced the guide covering Diagnostics and the default white latency square. The square is the F6a raw-axis camera target: equality at zero is white, not a latency result. Keep that measurement behavior; default new profiles to off and expose the existing preference in Flight overlays. Its independent × saves opt-out, survives pause/resume and stops the hidden physics callback. Existing saved choices remain valid.
+
+All nine overlay close targets are now 28×28 with a persistent background. Diagnostics reflows beside the guide and below warnings on layout/visibility changes. The overlay dialog follows manager changes, including external closes. The camera target has its own backplate, explanation and Spanish status labels; its 192×192 measurement square is unchanged. Compact wrapping keeps it clear of Battery at 720p.
+
+Verification:
+
+- `test_overlay_manager`: 164 checks pass, including real clicks on every overlay's × at 1920×1080, isolated visibility changes, keyboard focus, dialog synchronization, camera opt-in/save/close and pause persistence.
+- `test_latency_patch`: 539 checks pass, including hidden-processing suspension, reopening, 240 same-tick samples and byte-identical checkpoint pairs. Route: 5 checks; CLI: 39 checks. The CLI run first exceeded 90 seconds on this shared host, then completed with a 240-second limit.
+- `test_overlay_battery`: 123 checks pass, including English/Spanish Pilot and Full layouts with the optional marker at 1080p and 720p. `test_ui_home` and `test_ui_language` pass. Changed runtime/test scripts pass focused parse checks.
+- Real Spanish flight at exactly 1920×1080: inspected separate guide/diagnostic headers, clicked Diagnostics closed, enabled the camera target through the dialog, clicked its ×, checked the saved preference and pause/resume, and relaunched with the same isolated profile to confirm it stayed off. No engine errors in the bridge logs. Captures and checked-runner output remain in ignored `tmp/`; no images added to the repository.
+
+No solver or input mapping changed. The optimization removes hidden camera sampling and uses event-driven docking; no FPS improvement or full-suite/physical qualification is claimed. Long diagnostic text can still overlap other content in narrow Developer layouts.
+
+## Player instruments (2026-10-24, HUD-13)
+
+Implemented the [HUD-13 design](../../../plans/flight-overlays.md#hud-13--player-instruments-2026-10-24): four optional instruments for airspeed/flight maximum, height/flight, energy and wind. Player preset and individual switches sit separately from legacy diagnostics. Header dragging saves bounded normalized positions on release; lock, reset positions and each × use the existing preference path. Existing defaults and saved layouts retain their behavior. The maximum is sampled at 10 Hz, including while hidden, and clears on the session reset signal. Battery percentage reuses the radio-side sensor estimate; absent finite battery/fuel data remains explicitly unavailable.
+
+Native Windows, Godot 4.7.2, Compatibility renderer:
+
+- `test_player_widget_settings`: 17 checks pass for validation, malformed/unknown positions, unchanged legacy defaults and preference round-trip.
+- `test_player_widgets`: 41 checks pass for values and missing data, fuel/battery fixtures, flight maxima and reset, 10 Hz cadence after rewind, actual multi-frame mouse drag, all four close/reopen buttons without focus capture, locking, dialog controls and viewport bounds at 1920×1080, 2560×1440, 3840×2160 and 1280×720.
+- `test_overlay_manager`: 164 checks; `test_overlay_battery`: 123 checks; live battery flight: 12 checks; live fuel flight: 9 checks. UI language checks pass, including the Spanish catalog. Focused parser/import checks pass.
+- Rendered 1920×1080 review in English and Spanish through the live debug bridge. The default Stik correctly shows energy unavailable; Turbo Lumber's finite pack shows estimated charge, voltage and current. Reviewed the four default corners, moved Speed through actual mouse motion, locked it and confirmed another drag did not move it. Restarted with the same isolated profile and verified the saved position and lock. Clicked Energy's ×, reopened through Use player layout, and reset positions through the dialog. Injected a sentinel display maximum and pressed the actual flight reset key to verify the main reset seam clears it. No engine errors in the bridge logs; rendered app stopped after verification.
+
+Visual review found a clipped Spanish wind caption and repaired it to “DESDE”; the compass keeps its north marker. Multi-frame native dragging exposed an OS-mouse polling problem in the first draft: final dragging consumes GUI event coordinates and enables release handling only during the gesture. The regression test spans multiple frames.
+
+Local checked-runner outputs and captures stay in ignored `tmp/player-*-checks/` and `tmp/debug-bridge/`; no images committed. Widgets skip hidden refreshes, bound the speed history to 120 samples and reuse the existing 10 Hz snapshot/sensor work. This is software/UI verification, not measured FPS improvement, full-suite qualification or physical validation. HUD-12 hardware/pilot acceptance remains open.
+
+## Expanded instruments (2026-10-24, HUD-13-R1)
+
+Added independent Fuel tank, Trims and Engine instruments, alongside the unchanged four-instrument Player preset. All instruments enables seven. Fuel uses accepted `fuel_remaining_kg`, `volume_ml`, `fill_fraction` and reserve flags; it does not substitute total aircraft mass or infer consumption/endurance. The copied trim snapshot preserves signed roll/pitch/yaw fractions of full travel. Engine RPM retains the existing fixed-wing snapshot semantics; throttle is the simulation command and flight load is the aircraft's g reading.
+
+Appearance options persist under `[hud]`: Small/Normal/Large (85/100/120%), background opacity (80/94/100%) and compact density. Text remains opaque. Wind gains four compass labels, the speed trace marks its latest sample, fuel/throttle have ruled bars, and trims have centred signed tracks. The default trim position leaves space above bottom-centre flight notices. Scaling accounts for widget bounds during layout and dragging. One flight-owned MSDF font atlas keeps scaled text crisp; it copies the bundled font and is released with the manager, without changing the application's global font. This follows the [Godot Control scaling guidance](https://docs.godotengine.org/en/stable/classes/class_control.html#class-control-property-scale).
+
+Optimization: per-instrument keys exclude unrelated telemetry and skip unchanged values/redraws, including paused snapshots. Non-finite values normalize consistently in cache keys. The speed history uses a 120-entry circular buffer rather than shifting its contents on every update. These are bounded UI-work reductions; no FPS or physics-performance improvement is claimed.
+
+Verification on native Windows with Godot 4.7.2:
+
+- Player widgets: 72 checks pass. Coverage includes live draw callbacks proving unchanged fuel does not redraw, invalidation/reopen/missing values, ring ordering and immediate paused-reopen sampling, all seven × controls, real multi-frame scaled drag, compact sizing, appearance controls, shared MSDF font isolation, 1080p default separation, viewport bounds at 1080p/1440p/4K/720p and compact separation at 720p.
+- Settings: 24 checks pass for legacy compatibility, new IDs/preset, malformed appearance values, finite bounds and preference round-trip. Overlay manager: 164; Battery: 123. Live fuel: 12, including the production fuel mass key, RPM and detached trims. UI-language checks pass (1742 Spanish catalog entries).
+- Native 1920×1080 Spanish glow flight: reviewed normal and large/compact instruments, actual declining finite fuel, RPM and all three trims. Page Down and Bracket Right update the trim readings. Changed size/background/density through the real dialog; restarted the app with the same isolated profile and verified all three choices survived. Dragged the enlarged trim panel, clicked its ×, reopened its individual switch and reset positions. No engine errors; stopped the rendered app after checking.
+- Visual review repaired a bottom-centre notice covering the rudder trim and raster-font blur at 120% scale. A first static font cache retained resources at exit; moving atlas ownership into the flight manager removed the leak. The checked widget suite passes teardown without resource/RID warnings.
+
+Checked outputs stay in ignored `tmp/player-v2-*`; native captures/logs are under `tmp/debug-bridge/20261024-122803-47870/` and `20261024-123143-47870/`. No images added to Git. The full physics suite and target-hardware/pilot acceptance were not rerun; no solver or input mappings were changed.

@@ -17,6 +17,8 @@ const Settings := preload("res://render/overlays/overlay_settings.gd")
 const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
 const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
+const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -54,6 +56,10 @@ var _battery_dock := Vector3(-1.0, -1.0, -1.0)
 var _fuel_warning_player: AudioStreamPlayer
 var _fuel_state_known := false
 var _last_fuel_low := false
+var peak_airspeed := NAN
+var _peak_time := -INF
+var _battery_reading := {}
+var _player_theme: Theme
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -66,6 +72,11 @@ func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> 
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
+	# Share one font atlas per manager, released with the flight. Keep scaling crisp without changing other UI.
+	_player_theme = Theme.new()
+	_player_theme.default_font = ThemeDB.fallback_font.duplicate()
+	if _player_theme.default_font is FontFile:
+		(_player_theme.default_font as FontFile).multichannel_signed_distance_field = true
 	_fuel_warning_player = AudioStreamPlayer.new()
 	_fuel_warning_player.name = "FuelReserveWarning"
 	_fuel_warning_player.stream = FUEL_RESERVE_WARNING_STREAM
@@ -105,11 +116,67 @@ func _build() -> void:
 	var controls := ControlsGuide.new()
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
+	for id: String in PLAYER_POSITIONS:
+		var widget := PlayerInstrument.new(id)
+		widget.theme = _player_theme
+		_place(widget, Control.PRESET_TOP_LEFT)
+		widget.moved.connect(_save_widget_position)
+		widget.resized.connect(_layout_player_widgets)
+	root.resized.connect(_layout_player_widgets)
 	# Reflow only when layout changes, never once per simulation tick.
 	for id: String in ["controls", "diagnostics", "warnings"]:
 		frames[id].resized.connect(_dock_diagnostics)
 		frames[id].visibility_changed.connect(_dock_diagnostics)
 	root.resized.connect(_dock_diagnostics)
+
+
+func _layout_player_widgets() -> void:
+	var positions: Dictionary = settings.get("positions", {})
+	for id: String in PLAYER_POSITIONS:
+		if not frames.has(id): continue
+		var point: Vector2 = PLAYER_POSITIONS[id]
+		if positions.has(id): point = Vector2(positions[id][0], positions[id][1])
+		frames[id].place_normalized(point)
+
+
+func _save_widget_position(id: String, point: Vector2) -> void:
+	var next := settings.duplicate(true)
+	var positions: Dictionary = next.get("positions", {})
+	positions[id] = [point.x, point.y]
+	next.positions = positions
+	apply(next)
+
+
+func set_layout_locked(on: bool) -> void:
+	var next := settings.duplicate(true)
+	next.layout_locked = on
+	apply(next)
+
+
+func set_widget_option(key: String, value: Variant) -> void:
+	if key not in ["widget_size", "widget_opacity", "widget_compact"]:
+		return
+	var next := settings.duplicate(true)
+	next[key] = value
+	apply(next)
+
+
+func reset_widget_positions() -> void:
+	var next := settings.duplicate(true)
+	next.erase("positions")
+	apply(next)
+
+
+## A session reset, even at identical sampled time, starts fresh flight extrema and battery sensors.
+func reset_flight() -> void:
+	peak_airspeed = NAN
+	_peak_time = -INF
+	battery_sensors.reset()
+	_battery_reading = {}
+	_fuel_state_known = false
+	_since_text = INF
+	for id: String in PLAYER_POSITIONS:
+		frames[id].reset_flight()
 
 
 ## Keep the guide and diagnostic header independently readable and clickable.
@@ -161,6 +228,10 @@ func apply(value: Variant, announce := true) -> void:
 		else:
 			frames[id].visible = on
 	frames.battery.set_detailed(Settings.battery_detailed(settings))
+	for id: String in PLAYER_POSITIONS:
+		frames[id].set_locked(bool(settings.get("layout_locked", false)))
+		frames[id].set_appearance(str(settings.get("widget_size", "normal")), float(settings.get("widget_opacity", 0.94)), bool(settings.get("widget_compact", false)))
+	_layout_player_widgets()
 	_dock_battery()
 	_since_text = INF # show the new choice at once
 	if announce:
@@ -189,7 +260,7 @@ func set_overlay_visible(id: String, on: bool) -> void:
 	apply(Settings.with_visible(settings, shown))
 
 
-## [F2]: Off → Pilot → Full → Developer → Off. A custom set continues with Off.
+## [F2]: cycle saved presets in Settings order. A custom set continues with Off.
 func cycle_preset() -> void:
 	var index: int = Settings.PRESET_ORDER.find(settings.preset)
 	set_preset(Settings.PRESET_ORDER[(index + 1) % Settings.PRESET_ORDER.size()])
@@ -243,8 +314,14 @@ func tick(delta: float) -> bool:
 
 ## The 10 Hz part. snap: snapshot() output ({} = no flight to describe).
 func refresh_numbers(snap: Dictionary) -> void:
-	_since_text = 0.0
 	_last_telemetry = snap.get("telemetry", {})
+	var sample_time := float(_last_telemetry.get("time_s", NAN))
+	var speed := float(_last_telemetry.get("airspeed", NAN))
+	if is_finite(sample_time) and is_finite(speed) and speed >= 0.0:
+		if sample_time < _peak_time: reset_flight()
+		peak_airspeed = speed if is_nan(peak_airspeed) else maxf(peak_airspeed, speed)
+		_peak_time = sample_time
+	_since_text = 0.0 # this refresh also satisfies a rewind/reset's pending refresh
 	var mass_sample: Dictionary = snap.get("mass_sample", {})
 	_update_fuel_warning(mass_sample, bool(snap.get("paused", false)))
 	var system := unit_system()
@@ -261,6 +338,10 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	_refresh_battery(snap.get("battery", {}), system)
+	if visible:
+		for id: String in PLAYER_POSITIONS:
+			if frames[id].visible:
+				frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
 
 
@@ -273,6 +354,7 @@ func _refresh_battery(battery: Dictionary, system: String) -> void:
 		reading = battery_sensors.update(float(battery.get("time_s", _last_telemetry.get("time_s", 0.0))), battery)
 		if str(battery.get("battery_kind", "")) == "pack_ecm":
 			_warning_codes = Telemetry.with_battery_warnings(_warning_codes, Telemetry.battery_warnings(battery, reading.alarms))
+	_battery_reading = reading
 	frames.battery.visible = _has_battery and is_overlay_visible("battery")
 	if frames.battery.visible:
 		frames.battery.refresh(reading, system)
@@ -345,7 +427,7 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	})
 	return {
 		telemetry = t, warnings = warnings, view_heading_deg = view_heading_deg, rpm = sim.aux[0], battery = battery,
-		mass_sample = live, paused = sim.paused,
+		mass_sample = live, paused = sim.paused, trims = session.trims.duplicate(),
 		radio_status = radio_status(session),
 		control_guide = {
 			connected = radio.connected, profile = radio.profile,
