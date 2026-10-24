@@ -18,7 +18,8 @@ const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
 const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
 const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
 const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53)}
+const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd")
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 1), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -117,7 +118,7 @@ func _build() -> void:
 	_place(controls, Control.PRESET_TOP_LEFT)
 	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
 	for id: String in PLAYER_POSITIONS:
-		var widget := PlayerInstrument.new(id)
+		var widget: Control = ClassicInstrument.new(id) if id in Settings.CLASSIC_IDS else PlayerInstrument.new(id)
 		widget.theme = _player_theme
 		_place(widget, Control.PRESET_TOP_LEFT)
 		widget.moved.connect(_save_widget_position)

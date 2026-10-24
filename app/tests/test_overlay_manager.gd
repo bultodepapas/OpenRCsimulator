@@ -196,10 +196,11 @@ func _manager() -> void:
 	manager.cycle_preset()
 	_check("F2 after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
 	var order: Array = []
-	for i in 6:
+	for i in 7:
 		manager.cycle_preset()
 		order.append(manager.settings.preset)
-	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Off", order == ["pilot", "full", "developer", "player", "instruments", "off"], str(order))
+	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Classic cockpit → Off",
+		order == ["pilot", "full", "developer", "player", "instruments", "cockpit", "off"], str(order))
 	manager.set_preset("pilot")
 	manager.toggle_developer()
 	_check("F3 adds diagnostics and performance", manager.is_overlay_visible("diagnostics") and manager.is_overlay_visible("performance") and manager.settings.preset == "custom")
@@ -369,6 +370,8 @@ func _dialog() -> void:
 	await process_frame
 	_check("dialog shows the Pilot preset and its switches", dialog.preset_picker.selected == 1
 		and Settings.IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed == Settings.PRESETS.pilot.has(id)))
+	_check("modern and classic widget sections remain separate", dialog._player_grid.get_child_count() == 7
+		and dialog._classic_grid.get_child_count() == Settings.CLASSIC_IDS.size())
 	dialog.switches.telemetry.button_pressed = true
 	_check("switching Telemetry on gives the Full preset", manager.settings.preset == "full" and dialog.preset_picker.selected == 2)
 	dialog.units_picker.item_selected.emit(2)
@@ -378,6 +381,15 @@ func _dialog() -> void:
 		and manager.settings.radio_model == "radiolink_t16d" and manager.settings.stick_mode == 1)
 	dialog.preset_picker.item_selected.emit(0)
 	_check("choosing Off clears every switch", manager.settings.preset == "off" and not dialog.switches.flight.button_pressed)
+	dialog.cockpit_action.pressed.emit()
+	_check("Use cockpit layout selects warnings and the five classic instruments",
+		manager.settings.preset == "cockpit" and manager.settings.visible == Settings.PRESETS.cockpit
+		and Settings.CLASSIC_IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed))
+	dialog.switches.altimeter.button_pressed = false
+	_check("a classic cockpit checkbox changes only its instrument", manager.settings.preset == "custom"
+		and not manager.settings.visible.has("altimeter")
+		and Settings.CLASSIC_IDS.filter(func(id: String) -> bool: return id != "altimeter").all(
+			func(id: String) -> bool: return manager.settings.visible.has(id)))
 	manager.set_preset("pilot")
 	manager.frames.wind.close_button.pressed.emit()
 	_check("external close synchronizes the dialog", not dialog.switches.wind.button_pressed and dialog.preset_picker.selected == Settings.PRESET_ORDER.size())
