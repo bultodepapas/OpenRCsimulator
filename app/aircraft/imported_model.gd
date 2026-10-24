@@ -7,20 +7,24 @@ const Retraction := preload("res://aircraft/retractable_model.gd")
 const REST_TOLERANCE := 0.00002 # Source measurements rounded to six decimal places.
 
 
-static func build(manifest: Dictionary) -> Dictionary:
-	var result := build_checked(manifest)
+static func build(manifest: Dictionary, livery_id := "") -> Dictionary:
+	var result := build_checked(manifest, livery_id)
 	if not result.ok:
 		push_warning("Imported aircraft: " + str(result.errors))
 	return result.model
 
 
-static func build_checked(manifest: Dictionary) -> Dictionary:
+static func build_checked(manifest: Dictionary, livery_id := "") -> Dictionary:
 	var checked := Manifest.validate(manifest)
 	if not checked.ok: return _failure(checked.errors)
 	if manifest.get("version") != 2 or manifest.builder.script != "res://aircraft/imported_model.gd":
 		return _failure(["The common importer requires a version 2 imported model manifest."])
+	# F4U-16: a livery is another GLB of the same airframe; the registry verifies its bytes before this boundary,
+	# and build_scene checks it against the same generated geometry.
+	var livery := _livery(manifest, livery_id)
+	if livery.is_empty(): return _failure(["Unknown livery: " + livery_id])
 	var geometry: Script = load(str(manifest.geometry.script))
-	var scene: PackedScene = load(str(manifest.asset.path)) as PackedScene
+	var scene: PackedScene = load(str(livery.path)) as PackedScene
 	if geometry == null or scene == null: return _failure(["Missing imported scene or generated geometry."])
 	var data: Variant = geometry.get("DATA")
 	if not data is Dictionary: return _failure(["Generated geometry must expose DATA."])
@@ -28,12 +32,22 @@ static func build_checked(manifest: Dictionary) -> Dictionary:
 	if not instance is Node3D:
 		instance.free()
 		return _failure(["Imported scene root must be Node3D."])
-	return build_scene(instance, data, manifest)
+	return build_scene(instance, data, manifest, livery)
+
+
+## The manifest's livery record by id ({} if unknown); an empty id selects the default asset.
+static func _livery(manifest: Dictionary, livery_id: String) -> Dictionary:
+	var options: Array = manifest.get("liveries", [])
+	if options.is_empty():
+		return {id = "", path = str(manifest.asset.path), sha256 = str(manifest.asset.sha256)} if livery_id.is_empty() else {}
+	for record: Dictionary in options:
+		if record.id == (livery_id if not livery_id.is_empty() else str(options[0].id)): return record
+	return {}
 
 
 ## Takes ownership of the unmodified instance, freeing it on any validation failure.
 ## The registry verifies provenance before this boundary; fixtures may pass an in-memory scene.
-static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) -> Dictionary:
+static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary, livery: Dictionary = {}) -> Dictionary:
 	var checked := Manifest.validate(manifest)
 	if not checked.ok:
 		root.free()
@@ -110,7 +124,8 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 	root.scene_file_path = ""
 	root.set_meta("status", data.get("status", ""))
 	root.set_meta("visual_revision", manifest.asset.revision)
-	root.set_meta("asset_sha256", manifest.asset.sha256)
+	root.set_meta("asset_sha256", livery.get("sha256", manifest.asset.sha256))
+	root.set_meta("livery", str(livery.get("id", "")))
 	root.set_meta("aircraft_id", manifest.family_id)
 	_apply_materials(config.material_grow, nodes)
 	var propeller := Node3D.new()
@@ -137,7 +152,7 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 			gear[bindings.gear.keys[role]] = retract.gear[role]
 	return {ok = true, errors = PackedStringArray(), model = {
 		root = root, propeller = propeller, hinges = hinges, gear = gear,
-		gear_retraction = retract.get("rig", {}), folds = folds,
+		gear_retraction = retract.get("rig", {}), folds = folds, livery = str(livery.get("id", "")),
 		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.family_id,
 		model_manifest = manifest.duplicate(true)}}
 

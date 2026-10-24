@@ -29,6 +29,7 @@ MANIFEST = ASSET_DIR / "source-manifest.json"
 SAMPLES = ASSET_DIR / "gear-samples.json"
 WING_FOLD = ASSET_DIR / "wing-fold-r59.json"
 RUNTIME_GLB = ROOT / "app/assets/aircraft/f4u-corsair-250/f4u_corsair.glb"
+DEFAULT_LIVERY = "midnight"  # aircraft.glb, the delivery's default paint (D3)
 OUT_JSON = ASSET_DIR / "model-geometry.json"
 OUT_GD = ROOT / "app/aircraft/f4u_corsair_geometry.gd"
 SCRIPT = "research/f4u-corsair/F4U-05/compile_model.py"
@@ -51,6 +52,59 @@ def read_glb(path):
     raw = path.read_bytes()
     assert raw[:4] == b"glTF" and struct.unpack_from("<II", raw, 4) == (2, len(raw)), path
     return json.loads(raw[20:20 + struct.unpack_from("<I", raw, 12)[0]])
+
+
+def triangle_count(gltf):
+    return sum(gltf["accessors"][p["indices"]]["count"] // 3 for m in gltf["meshes"] for p in m["primitives"])
+
+
+def node_shape(gltf):
+    """Per node: hierarchy, rest transform, section tag and the bounds of its mesh positions."""
+    shape = {}
+    for node in gltf["nodes"]:
+        bounds = None
+        if "mesh" in node:
+            lows, highs = zip(*((gltf["accessors"][p["attributes"]["POSITION"]]["min"], gltf["accessors"][p["attributes"]["POSITION"]]["max"])
+                               for p in gltf["meshes"][node["mesh"]]["primitives"]))
+            bounds = [min(v[i] for v in lows) for i in range(3)] + [max(v[i] for v in highs) for i in range(3)]
+        shape[node["name"]] = {"children": sorted(gltf["nodes"][c]["name"] for c in node.get("children", [])),
+                               "transform": [node.get(k) for k in ("translation", "rotation", "scale", "matrix")],
+                               "extras": node.get("extras"), "bounds": bounds}
+    return shape
+
+
+def same_shape(a, b):
+    if a.keys() != b.keys():
+        return False
+    for name, left in a.items():
+        right = b[name]
+        if left["children"] != right["children"] or left["transform"] != right["transform"] or left["extras"] != right["extras"]:
+            return False
+        if (left["bounds"] is None) != (right["bounds"] is None) or (left["bounds"] and any(abs(x - y) > 1e-6 for x, y in zip(left["bounds"], right["bounds"]))):
+            return False
+    return True
+
+
+def compile_liveries(manifest, meta, gltf):
+    """F4U-16: the delivered liveries in the author's order, default first, with the author's names. Each runtime
+    copy must be the frozen GLB, and each livery the same airframe as the default: node names, hierarchy, rest
+    transforms, crash-section tags, mesh bounds and triangle count. Materials, textures and surface splits may differ."""
+    frozen = manifest["livery_glbs"]
+    names = {livery["id"]: livery["name"] for livery in meta["liveries"]}
+    order = [record["id"] for record in meta["primary_livery_deliveries"]]
+    assert order[0] == DEFAULT_LIVERY and sorted(order) == sorted(frozen), "delivered livery list differs from source-manifest.json"
+    assert all(frozen[r["id"]]["path"] == r["glb"] for r in meta["primary_livery_deliveries"])
+    shape = node_shape(gltf)
+    out = []
+    for livery in order:
+        path = RUNTIME_GLB if livery == DEFAULT_LIVERY else RUNTIME_GLB.with_name(f"f4u_corsair_{livery}.glb")
+        assert sha256(path) == frozen[livery]["sha256"], f"{path.name} must be the delivered {frozen[livery]['path']} (install_liveries.py)"
+        other = read_glb(path)
+        assert same_shape(shape, node_shape(other)), f"livery {livery} is not the same airframe as {DEFAULT_LIVERY}"
+        assert triangle_count(other) == triangle_count(gltf), livery
+        out.append({"id": livery, "label": names[livery], "path": "res://" + path.relative_to(ROOT / "app").as_posix(),
+                    "glb_sha256": frozen[livery]["sha256"]})
+    return out
 
 
 def basis_columns(xyzw):
@@ -213,6 +267,7 @@ def compile_model():
         "thrust": thrust,
         "exhausts": exhausts,
         "folds": folds,
+        "liveries": compile_liveries(manifest, meta, gltf),
         "gear": {
             "version": 1,
             "bindings": bindings,

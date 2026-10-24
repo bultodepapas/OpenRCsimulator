@@ -527,6 +527,38 @@ const DATA := {
 			"source": "R59 94edd59b44f5 R51 pivot and CONTROL ALAS angulo_maximo (assets/aircraft/f4u-corsair-250/wing-fold-r59.json), mapped by D0 and the 1:4.5 scale"
 		}
 	},
+	"liveries": [
+		{
+			"id": "midnight",
+			"label": "Naval 308 — Midnight",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+			"glb_sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8"
+		},
+		{
+			"id": "scarlet",
+			"label": "Super Corsair 57 / SOHIO",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
+			"glb_sha256": "3238f69854a1b0a2d3d6dcbd03045fab78d18b2e6273b5f59bb4fc6531b94979"
+		},
+		{
+			"id": "splash",
+			"label": "Sunburst Splash",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
+			"glb_sha256": "27b60bce9d9eee59909f096502dcc6261d764ec3c173e323701b5a7ca4414622"
+		},
+		{
+			"id": "spectrum",
+			"label": "Spectrum Wings",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
+			"glb_sha256": "8434ef4b0ca6930a2228da763f926251ba73c06f8fbaac8bda11f7207fbea445"
+		},
+		{
+			"id": "blueangels",
+			"label": "Blue Angels Corsair",
+			"path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
+			"glb_sha256": "c319ad9a3dc7cd9da484e5b613751809753cc6419c02950092dc715fca480a57"
+		}
+	],
 	"gear": {
 		"version": 1,
 		"bindings": {

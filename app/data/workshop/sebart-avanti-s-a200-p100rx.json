@@ -133,7 +133,7 @@
   ],
   "presentation": {
     "visual_family": "sebart-avanti-s-a200-p100rx",
-    "model_manifest_sha256": "2922b58720294dce409f81eba1c001ce8cc52c5db039f0f49a55d3e4b64858e9",
+    "model_manifest_sha256": "3255fe826b67caa16f0362141c39ce566fb946769ccfd7d2258969aab083b921",
     "scale_root": "airplane"
   }
 }

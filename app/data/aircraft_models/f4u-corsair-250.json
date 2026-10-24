@@ -20,14 +20,14 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "7da750eda06f0c5299479b36fc0921b024f12559f822068e4fb49cee2453c93b",
+    "sha256": "0131fa2992eb25b98f6a914f9afd751841c356098762d3dc734a4eca573fd5f9",
     "hash_mode": "lf_text"
   },
   "geometry": {
     "script": "res://aircraft/f4u_corsair_geometry.gd",
     "source": {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "0962b00cf16fe679f82160f8ca8a30251e048a4a865e3937e43e6c24e00fd2fd",
+      "sha256": "4e0ecba8f5d2f5a51adfc41f4658a917b17718f964bb3a99873216bab41f6637",
       "hash_mode": "lf_text"
     },
     "revision": "g1.13-03d66d8dc142",
@@ -165,7 +165,7 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/f4u-corsair-250/model-geometry.json",
-      "sha256": "0962b00cf16fe679f82160f8ca8a30251e048a4a865e3937e43e6c24e00fd2fd",
+      "sha256": "4e0ecba8f5d2f5a51adfc41f4658a917b17718f964bb3a99873216bab41f6637",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
@@ -191,13 +191,13 @@
   "dependencies": [
     {
       "path": "res://aircraft/f4u_corsair_geometry.gd",
-      "sha256": "2d5387eeacdc290439af28eb8184a71a054ad22bba7c55ced429ee81963b46d9",
+      "sha256": "13e3705971945a5510bfa775f87747d355c7dfb147a5aef9446b693c7027b43e",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "ba2d204a26be371fc76bcb3869294f1c1f1550cb127c0e40b7c91c41f67e3c1a",
+      "sha256": "d1a5fcaa30a163c88ca81e3b25bebdc3673f3739c2d89bf113200133cecd6de4",
       "hash_mode": "lf_text",
       "role": "builder"
     },
@@ -209,7 +209,7 @@
     },
     {
       "path": "res://aircraft/model_manifest.gd",
-      "sha256": "9bf210209c791be07ba8f2636fa95c52f74fb9dbcc97e8b04b017a883cbb9156",
+      "sha256": "a384fbfb22653a89449deb94d98a4839f500ec769b06d90f0f6da0570c25dc25",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -255,5 +255,42 @@
         "geometry_ref": "folds.right"
       }
     ]
-  }
+  },
+  "liveries": [
+    {
+      "id": "midnight",
+      "label": "Naval 308 — Midnight",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair.glb",
+      "sha256": "03d66d8dc1423309a80e88acd8ce87d06a02867a06b41bb4a089c50b78dd1be8",
+      "import_sha256": "9a951afd2de50da7a1f8cc643fd869942aac16377f154257afd2fc35b094aa3b"
+    },
+    {
+      "id": "scarlet",
+      "label": "Super Corsair 57 / SOHIO",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_scarlet.glb",
+      "sha256": "3238f69854a1b0a2d3d6dcbd03045fab78d18b2e6273b5f59bb4fc6531b94979",
+      "import_sha256": "199df9afb3b7dac5cd321abc96cfcd9dac4ed53ed71b0fe86f7dd48e9d727263"
+    },
+    {
+      "id": "splash",
+      "label": "Sunburst Splash",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_splash.glb",
+      "sha256": "27b60bce9d9eee59909f096502dcc6261d764ec3c173e323701b5a7ca4414622",
+      "import_sha256": "4f7e665f3310606d3e64c72f597e7aac471561f26f4f1166e212b32eb4202fac"
+    },
+    {
+      "id": "spectrum",
+      "label": "Spectrum Wings",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_spectrum.glb",
+      "sha256": "8434ef4b0ca6930a2228da763f926251ba73c06f8fbaac8bda11f7207fbea445",
+      "import_sha256": "a49faad7c82fd18f791a173cd7dd1b2e7d694aacd9b2d0beff2523b218ebfbb4"
+    },
+    {
+      "id": "blueangels",
+      "label": "Blue Angels Corsair",
+      "path": "res://assets/aircraft/f4u-corsair-250/f4u_corsair_blueangels.glb",
+      "sha256": "c319ad9a3dc7cd9da484e5b613751809753cc6419c02950092dc715fca480a57",
+      "import_sha256": "0fe46f6293b6e40dd967406165cdfb0d06cc1dc8c95b1e915666097924cc8e82"
+    }
+  ]
 }

@@ -16,7 +16,8 @@ func _init() -> void:
 	set_process(false)
 
 ## Only a loading hint. The normal builder still checks all provenance and data.
-static func path_for(id: String) -> String:
+## `livery` names a non-default paint scheme (F4U-16); its own GLB is preloaded instead of the default asset.
+static func path_for(id: String, livery := "") -> String:
 	if Catalog.is_rotorcraft(id):
 		return HX700.SCENE_PATH if id == "xcell-60-research" else ""
 	var family := Catalog.visual_family(id)
@@ -26,6 +27,10 @@ static func path_for(id: String) -> String:
 	var asset: Variant = parsed.get("asset", {})
 	if not asset is Dictionary or asset.get("kind") != "imported_glb": return ""
 	var path: String = str(asset.get("path", ""))
+	if not livery.is_empty():
+		path = ""
+		for record: Variant in parsed.get("liveries", []):
+			if record is Dictionary and record.get("id") == livery: path = str(record.get("path", ""))
 	return path if path == path.simplify_path() and path.begins_with("res://assets/aircraft/") and path.ends_with(".glb") else ""
 
 func request(path: String, callback: Callable) -> void:
