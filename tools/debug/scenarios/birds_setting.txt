@@ -1,0 +1,10 @@
+# SC-BIRD: Settings → Graphics → Birds applies at once on Home's still clock (birds settle away), and Revert brings
+# them back. Guards the still-clock settle in scenery/birds/birds_runtime.gd.
+open screen=settings
+press text=GraphicsCategory
+select text=Birds item="Off"
+wait until="get_node('/root/AppRoot/HomeScene/Field/Scenery/Birds').get_meta('bird_groups')[1].multimesh.visible_instance_count == 0" timeout_s=10
+press text="Revert"
+wait until="get_node('/root/AppRoot/HomeScene/Field/Scenery/Birds').get_meta('bird_groups')[1].multimesh.visible_instance_count > 0" timeout_s=10
+close
+assert expr="screens.is_top('home')" message="settings closed"

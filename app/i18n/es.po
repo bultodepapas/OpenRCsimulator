@@ -5662,6 +5662,7 @@ msgstr "Mueve el eje seleccionado"
 msgid "invalid axis sample"
 msgstr "Lectura del eje no válida"
 
+
 msgid "Preparing resources"
 msgstr "Preparando recursos"
 
@@ -5793,3 +5794,18 @@ msgstr "Cargando recursos de compañeros"
 
 msgid "Preparing flight scene"
 msgstr "Cargando escena de vuelo"
+
+msgid "Birds"
+msgstr "Pájaros"
+
+msgid "Few"
+msgstr "Pocos"
+
+msgid "Many"
+msgstr "Muchos"
+
+msgid "Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level."
+msgstr "Buitres y cigüeñas en térmicas, milanos, golondrinas y vencejos al atardecer, según la hora y el tiempo. Los cambios se aplican al momento: los pájaros se van o llegan volando. Normal sigue el detalle de escena; Muchos mantiene las bandadas completas en todos los niveles."
+
+msgid "Renderer: %s"
+msgstr "Renderizador: %s"

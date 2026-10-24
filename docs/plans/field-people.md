@@ -2,17 +2,18 @@
 
 2026-10-24 · Revision 4 · **Active plan** · Step prefix: **SC-HUM** (Scenery subtrack, [registered](../README.md#tracks-plans-and-step-ids)) · Gate: **SC**
 
-**Status (2026-10-24):** all software steps are delivered and verified. The owner's part remains.
+**Status (2026-10-24):** all software steps are delivered and verified. The pilots hold the owner's draft transmitter. The owner's part remains.
 
 | Delivered | Evidence |
 | --- | --- |
 | Head aim for every person; pilots fly the AI companions; crash glance | [SC-HUM-03](../research/scenery-implementation/SC-HUM-03/README.md), [-04](../research/scenery-implementation/SC-HUM-04/README.md), [-05](../research/scenery-implementation/SC-HUM-05/README.md) |
 | One mesh and atlas per outfit and pose; six CC0 club members; members preparing models at the pit tables | [SC-HUM-02](../research/scenery-implementation/SC-HUM-02/README.md), [-07](../research/scenery-implementation/SC-HUM-07/README.md), [-06](../research/scenery-implementation/SC-HUM-06/README.md) |
 | Shirts in the wind; skin, brows and eyes | [SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md) |
+| Pilots hold the owner's Radiolink T12D (draft), thumbs on the sticks | [SC-HUM-01](../research/scenery-implementation/SC-HUM-01/README.md) |
 | Toolchain reproduction, camera census, scene budget (13 people in 11 draws, all limits pass) | [SC-HUM-00](../research/scenery-implementation/SC-HUM-00/README.md) |
 
 Open:
-- **SC-HUM-01:** the owner's transmitter models. The census shows the flight-line pilots are the people seen in flight.
+- **SC-HUM-01:** the final T12D model and its licence. Regenerate the two pilots when it arrives.
 - **SC-HUM-09:** the owner's review at Medium Scene detail or above.
 - Decisions D3–D10.
 - Baseball caps (D9).
@@ -210,7 +211,7 @@ Please provide, per radio:
 5. Any textures as separate PNG/JPEG files.
 6. Optionally a transmitter tray, for a pinch-grip variant (F2).
 
-Intake: record licence and SHA-256 in `assets/scenery/population/`; normalize scale and axes in the existing Blender recipe; ≤3k triangles close with Godot auto LOD; grip markers `grip_L`, `grip_R`, `thumb_L`, `thumb_R`, `strap`. The radio is baked into the merged pilot pose. Default grip: thumbs and neck strap (F2). The pose must stay inside the existing `person_pilot` envelope (§4.5).
+Intake: keep the delivery in `assets/source-deliveries/<radio>/` and record licence and SHA-256 in `assets/scenery/population/HUMAN_SOURCES.json`. The pilot recipe reduces the model to about 1.1k triangles with Godot auto LOD and bakes it into the merged pilot pose. Grip points are derived from the two stick shafts and fixed offsets in the radio frame instead of authored markers ([SC-HUM-01](../research/scenery-implementation/SC-HUM-01/README.md)). Default grip: thumbs and neck strap (F2). The pose must stay inside the existing `person_pilot` envelope (§4.5).
 
 ## 8. Steps
 
@@ -219,7 +220,7 @@ Each step is one reviewable change. Steps 01–07 need no skeletons, no vertex a
 | ID | Scope | Acceptance evidence |
 | --- | --- | --- |
 | SC-HUM-00 | **Done except the photo board, 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-00/README.md)): toolchain and recipe reproduction, CC0 intake, camera census (flight-line pilots are the only people seen at readable size in flight) and scene budget (population 49 → 40 draws, all limits pass). | Remaining: reference photo board for the owner's silhouette overlay. |
-| SC-HUM-01 | Owner transmitters (§7) baked into the pilot pose. | Intake manifest, close 1080p captures, grip fit against real dimensions, envelope unchanged, triangle budget. |
+| SC-HUM-01 | **Done 2026-10-24 with the owner's draft T12D** ([evidence](../research/scenery-implementation/SC-HUM-01/README.md)): owner transmitter baked into both pilot outfits, thumbs on the gimbals. The pilot envelope depth went from 0.45 to 0.47 m; the collision capsule is unchanged. | Met in software: native captures, rigid-transmitter and triangle checks (1,200-triangle pilot allowance), envelope fit at natural height. Open: final model, licence, owner review. |
 | SC-HUM-02 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-02/README.md)). One mesh and one atlas material per pose: people draw surfaces 19 → 3 with unchanged triangles; textures now VRAM-compressed with mipmaps. | Met: structural draw count, image diff within tolerance, population/scenery/shadow tests and native captures. Open: a `budget.sh` re-measure. |
 | SC-HUM-03 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-03/README.md)). Head state for all 13 people: pilots coupled to the player aircraft, others step-and-hold (§4.1, §5.1). The neck pivot and weight come from each posed mesh, so no asset was regenerated. | Met in software: unit/behaviour test headless and native, MultiMesh read-back, five existing regressions, rendered poses and a running-app close-up at 1080p; zero draw delta; scripted routes unchanged. Open: owner review on real hardware. |
 | SC-HUM-04 | **Done 2026-10-24** ([evidence](../research/scenery-implementation/SC-HUM-04/README.md)). The two existing flight-line pilots fly companion slots 0 and 1; an empty, faulted or removed slot returns its pilot to the player. | Met in software: behaviour tests, live two-companion run (on a disposable copy, because the current companion profile pin refuses admission), no placement or collision change. Open: owner review; third pilot via SC-HUM-13. |
@@ -243,7 +244,7 @@ Verification rules for every step: scripts parse under `app/test.sh`; drafts liv
 | D2 | Realistic MPFB characters or stylized Quaternius characters? | MPFB, consistent with today's field (used for SC-HUM-07) |
 | D3 | May High/Extreme exceed today's pilot-view budget, or must people pay for themselves? | People pay for themselves through mesh merging (SC-HUM-02) |
 | D4 | Flight-line pilots when companions are off: idle with radio, watching the player, or removed? | Watching the player with the radio on a strap |
-| D5 | Which transmitters, Mode 1 or Mode 2, and which grips? | Owner models, Mode 2, thumbs and neck strap |
+| D5 | Which transmitters, Mode 1 or Mode 2, and which grips? | Owner models, Mode 2, thumbs. **Applied:** Radiolink T12D draft, thumbs; neck strap not modelled yet |
 | D6 | Animate transmitter sticks from companion commands? | Only if SC-HUM-09 approves Layer B |
 | D7 | Crash reaction: heads only, or also a standing-up / pointing clip? | Heads only until SC-HUM-09 |
 | D8 | Regional look and climate (clothing, hats, skin tones) | Owner to describe the home field |

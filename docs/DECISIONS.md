@@ -848,6 +848,16 @@ legitimately at full detail, so allocate the trees their measured cost +10% and 
 total from 973,000 to 1,307,000.
 [Evidence](research/visual-quality-implementation/L8a-R1/README.md).
 
+### 2026-10-24 — Birds setting in Settings → Graphics (SC-BIRD D2)
+
+Following the [birds plan](plans/birds-sky-life.md)'s recommendation for D2, the display store gains an optional
+`birds` key (Off, Few, **Normal** default, Many) and the Graphics page a Birds row under Scene detail. Normal keeps the
+scene-detail tier's bird density, Few halves it, Many ignores the tier and Off draws none; it is a presentation
+setting, previewed and reverted like Scene detail, and applied live: a built bird layer sends birds away or brings
+them in on `sim_clock`, at once while the clock stands still (Home, Pause). To keep the Graphics page within 1080p
+the information line is one line ending with the effective VSync state, and the renderer name moved to its tooltip.
+The owner may still change the levels or their meaning. [Evidence](research/scenery-implementation/SC-BIRD-08/README.md#settings--graphics--birds).
+
 ### 2026-10-22 — Scene detail preset: Low, Medium, High (default), Extreme (VQ-06b)
 
 The owner asked for graphics tiers so that scene cost becomes the player's choice. Add one saved

@@ -37,7 +37,7 @@ const CATALOG := {
 	"person_standing": {size = Vector3(0.65, 1.78, 0.36), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB posed mesh envelope; uniform adult scale"},
 	"person_working": {size = Vector3(0.68, 1.78, 0.68), tier = "ornament", shadow = true, kind = "estimated", source = "SC-HUM-06 work pose at a 0.90 m pit table (largest of three outfits 0.676 × 1.663 × 0.672 m); capsule radius 0.34 m"},
 	"person_sitting": {size = Vector3(0.61, 1.444, 0.75), tier = "ornament", shadow = false, kind = "estimated", source = "LU-21 Anrico sitting03; seat-contact height 0.4742 m plus 0.006 m fitting offset"},
-	"person_pilot": {size = Vector3(0.67, 1.78, 0.45), tier = "ornament", shadow = true, kind = "estimated", source = "LU-21 MPFB pilot pose with transmitter; uniform adult scale"},
+	"person_pilot": {size = Vector3(0.67, 1.78, 0.47), tier = "ornament", shadow = true, kind = "estimated", source = "SC-HUM-01 MPFB pilots holding the owner's Radiolink T12D (0.465 m deep); uniform adult scale"},
 	"avanti_cradle": {size = Vector3(0.7, 0.48, 1.63), tier = "standard", shadow = true, kind = "estimated",
 		source = "Original padded trestle cradle for the gear-up Ventage Jet fleet snapshot; visual support estimate"},
 	"barn": {size = Vector3(10.8, 7.5, 14.8), tier = "landmark", shadow = false, kind = "estimated", source = "Gambrel barn 10 × 14 m"},

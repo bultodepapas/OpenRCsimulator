@@ -1,7 +1,8 @@
 ## SC-BIRD-08 (first part): which share of each species is out, from the committed lighting and the scene detail.
 ## Pure functions of their inputs, so a lighting snapshot always gives the same birds. Inputs: the true solar elevation
 ## (time-of-day snapshots clamp `sun_elevation_deg` for the sky), morning or afternoon (an evening species only
-## flies in the afternoon), cloud cover (thermal soarers fade under an overcast sky) and the scenery quality tier.
+## flies in the afternoon), cloud cover (thermal soarers fade under an overcast sky), the scenery quality tier and the
+## player's Birds preference.
 ## Seasons wait for owner decision D9; rain and storm events for a weather input the scenery does not receive yet.
 extends RefCounted
 
@@ -9,11 +10,40 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 
 # Scene detail (VQ-06b scenery tier) -> share of each flock that is drawn [est].
 const DENSITY := {low = 0.5, balanced = 0.75, high = 1.0}
+# Settings → Graphics → Birds (display.cfg "birds"; plan D2). Normal follows the scene-detail tier, Few halves it,
+# Many keeps full flocks at every tier, Off sends every bird away. Mirrored by DisplayPreferences.BIRD_LEVELS.
+const PREFERENCES: Array[String] = ["off", "few", "normal", "many"]
+const DEFAULT_PREFERENCE := "normal"
+
+static var preference := DEFAULT_PREFERENCE
+## Bumped on every change, so built bird layers (birds_runtime.gd) apply it at once.
+static var preference_serial := 0
+
+
+static func set_preference(level: String) -> void:
+	var chosen: String = level if PREFERENCES.has(level) else DEFAULT_PREFERENCE
+	if chosen != preference:
+		preference = chosen
+		preference_serial += 1
+
+
+## Share of each flock drawn for a preference and scenery tier.
+static func density(level: String, quality: String) -> float:
+	var tier: float = float(DENSITY.get(quality, 1.0))
+	match level:
+		"off":
+			return 0.0
+		"few":
+			return 0.5 * tier
+		"many":
+			return 1.0
+	return tier
 const EDGE_DEG := 4.0 # sun-elevation half width of every threshold's smooth step
 const CLOUD_EDGE := 0.25
 
 
-## {sun_deg, afternoon, clouds, density} from a lighting snapshot ({} = the flow state or the legacy default).
+## {sun_deg, afternoon, clouds, density} from a lighting snapshot ({} = the flow state or the legacy default) and
+## the Birds preference.
 ## Cloud cover is the rendered weather's (Atmosphere.cloud_state_snapshot); snapshots only carry a fixed constant.
 ## `clouds` >= 0 overrides it (tests, captures).
 static func conditions(lighting: Dictionary, quality: String = "high", clouds: float = -1.0) -> Dictionary:
@@ -24,7 +54,7 @@ static func conditions(lighting: Dictionary, quality: String = "high", clouds: f
 		source = Atmosphere.parameters(lighting)
 	var cover: float = clouds if clouds >= 0.0 else cloud_cover()
 	return {sun_deg = sun_elevation_deg(lighting), afternoon = afternoon(source), clouds = clampf(cover, 0.0, 1.0),
-		density = float(DENSITY.get(quality, 1.0))}
+		density = density(preference, quality)}
 
 
 static func cloud_cover() -> float:

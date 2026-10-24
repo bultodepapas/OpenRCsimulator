@@ -419,7 +419,7 @@
       "working": [
         "mechanic_overalls",
         "casual_shirt",
-        "woman_tee (SC-HUM-06: standing02 with a 7\u00b0+7\u00b0 spine lean, 26\u00b0 head/neck tilt and IK hands at 0.94 m)"
+        "woman_tee (SC-HUM-06: standing02 with a 7°+7° spine lean, 26° head/neck tilt and IK hands at 0.94 m)"
       ]
     },
     "additional_cc0_archives": {
@@ -478,8 +478,33 @@
     "retires": "SC-HUM-02 standing/sitting/pilot GLBs and their atlas (the LU-21 person stays reproducible from the default recipe)",
     "evidence": "docs/research/scenery-implementation/SC-HUM-07/README.md; work poses: docs/research/scenery-implementation/SC-HUM-06/README.md",
     "runtime_textures": [
-      "1d43206c4610c39a9bb155e3e7cceefc4ec08495c2d753945feae082ef955aa8.png",
+      "aa996a41d59cb85abc94edb1d8601011cac23693a00cc83b78c8fd9261c9ee9b.png",
       "66c9f49e389241fbe494483f1ba9746beec679052f7faa8db53c3680e7d06919.png"
     ]
+  },
+  "sc_hum_01_transmitter": {
+    "step": "SC-HUM-01",
+    "observed_on": "2026-10-24",
+    "delivery": "assets/source-deliveries/radiolink-t12d/ (owner draft; the final model replaces it in place)",
+    "files": {
+      "Radiolink_T12D.blend": {
+        "sha256": "8bae3db01812fb6bf6ff2b36696ba80e7fa5db261ff83c399db0330e83f530c6",
+        "bytes": 901807
+      },
+      "Radiolink_T12D.glb": {
+        "sha256": "eecd1e5887ad395092f199d8565d826ad7f6baa16ca7976c4473597de5f8496e",
+        "bytes": 3458880
+      }
+    },
+    "author": "repository owner (supplied for this project)",
+    "license": "owner-authored for OpenRC Simulator; redistribution terms to be confirmed by the owner",
+    "used_by": [
+      "pilot/pilot_polo",
+      "pilot/veteran_cap"
+    ],
+    "recipe": "tools/scenery/population/generate_people.py --pose pilot (import_transmitter): parts under T12D_root at least 10 mm, bevels dropped, planar merge, area-weighted collapse to about 1.1k triangles, rigid class 4 in the merged atlas",
+    "hold": "Mode 2 thumbs on both gimbals, face elevated 35 degrees toward the eyes, gimbal midpoint 0.255 m ahead of and 1.11 m above the feet; no neck strap yet",
+    "pilot_depth_m": 0.465,
+    "prefab_envelope": "person_pilot depth 0.45 -> 0.47 m; the collision capsule radius (0.335 m from the 0.67 m width) is unchanged"
   }
 }

@@ -93,9 +93,10 @@ func _test_head_mask(asset: String) -> void:
 	_check("%s hair and brows above the eyes are mostly rigid" % asset, crown.x > 0 and crown.y >= int(0.85 * crown.x), str(crown))
 	var feet: Vector3i = stats.call(groups.get(2, PackedVector3Array()), func(v: Vector3) -> bool: return v.y < 0.4)
 	_check("%s shoes never move" % asset, feet.x > 0 and feet.z == 0, str(feet))
-	if groups.has(Population.CLASS_FLAT):
-		var radio: Vector3i = stats.call(groups[Population.CLASS_FLAT], all)
-		_check("%s transmitter never moves" % asset, radio.z == 0, str(radio))
+	if Population.pose_of(asset) == "pilot":
+		# SC-HUM-01: every pilot holds the owner's transmitter (rigid class, screen included) in front of the waist.
+		var radio: Vector3i = stats.call(groups.get(Population.CLASS_FLAT, PackedVector3Array()), all)
+		_check("%s holds a transmitter that never moves" % asset, radio.x > 0 and radio.z == 0, str(radio))
 	# Only collars inside the neck band may follow the neck; garments below it never move.
 	var below_band := func(v: Vector3) -> bool: return v.y < (head.band as Vector2).x
 	var cloth: Vector3i = stats.call(groups.get(1, PackedVector3Array()), below_band)

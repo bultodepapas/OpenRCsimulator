@@ -52,6 +52,18 @@ Behaviour change, deliberate: the bank is now the true lateral acceleration. The
 
 Unchanged and already cheap: `apply_lighting` ≈ 80 µs per commit, the runtime's `poll()` ≈ 4 µs per frame, `test_birds.gd` ≈ 3–4 s (309 checks).
 
+## Settings → Graphics → Birds
+
+| Part | Where | Check |
+| --- | --- | --- |
+| Saved choice `birds` (off, few, normal, many; Normal default), optional schema-1 key | [display_preferences.gd](../../../../app/app_state/display_preferences.gd) | `test_birds.gd`: round trip, unknown value refused, levels mirror the director's; `test_display_preferences.gd` unchanged and passing |
+| Density: Off 0, Few ½ × tier, Normal = scene-detail tier, Many 1; a change bumps a serial | [bird_director.gd](../../../../app/scenery/birds/bird_director.gd) | `test_birds.gd`: densities, live Off (all leave, none vanishes) and Many (all back), built while Off draws nothing, Few ≈ half |
+| Live apply: `app_root._apply_presentation` sets the preference; the runtime re-runs the director; with the clock still for 0.25 s real time (Home, Pause) transitions settle at once | [app_root.gd](../../../../app/app_root.gd), [birds_runtime.gd](../../../../app/scenery/birds/birds_runtime.gd) | Debug bridge, real app: Home Off → 0 birds drawn within 2 s, Few/Many/Revert follow; in flight, Pause → Settings → Off → 0 birds, Many → 21 back; scenario [birds_setting.txt](../../../../tools/debug/scenarios/birds_setting.txt) |
+| Row under Scene detail with tooltip; Restore graphics defaults → Normal; English and Spanish | [settings_screen.gd](../../../../app/ui/settings_screen.gd), [es.po](../../../../app/i18n/es.po) | [test_ui_birds_setting.gd](../../../../app/tests/test_ui_birds_setting.gd); `test_ui_settings_integration`, `test_ui_language`, `test_scene_detail` pass |
+| 1080p fit | Graphics information on one line ending with the VSync state; renderer name in the tooltip | Bridge at 1920×1080: the row overflowed the page by 31 px; after the change the page fits with 3 px to spare in English and Spanish (no scroll bar) |
+
+`debugctl smoke`: crawl (0 failures), `settings_revert`, `fly_restart_home`, `helicopter_arm`, `truck_drive`, monkey and soak pass; `widget_presets` fails because the previous scenario leaves the helicopter selected and its Pause menu has no overlays screen, and `workshop_discard_keyboard` and `fly` then fail inside that flight. Not related to birds and left to their owners.
+
 ## Measured renderer facts
 
 - **MultiMesh custom data is a truncated half float in Compatibility.** A probe read back 1000.3 as 1000.0, 100.3 as 100.25 and 1.6 as 1.5996. Every custom value is therefore exact in a half float: time offsets in whole half-seconds, hashes in 1/1024 steps, `track + 8 · species`, and states (1500 flying, 2000 away, 0…1023.5 leaving since, −1024…−0.5 arriving since). Recorded in [LEARNINGS](../../../learnings/models-and-rendering.md).
@@ -63,6 +75,6 @@ The first slice's colour tables never reached the shader: `(pair[0] as PackedVec
 
 ## Observations and limits
 
-- An exit warning "4 ObjectDB instances were leaked" appeared in 3 of about 26 headless 3 s flights with birds and in none of 19 without; six `--verbose` runs and the lifecycle check were clean, so the objects are not identified and the cause is not attributed.
+- The intermittent exit warning "4 ObjectDB instances were leaked" is **not the birds**: a `--verbose` run that opened Settings and quit at once listed `AudioStreamOggVorbis`, `AudioStreamPlaybackOggVorbis`, `OggPacketSequence` and its playback for `res://assets/ui/audio/accept.ogg` (the menu accept cue still playing at exit). The earlier headless-flight cases were the same class of object (unverified per run). Left to the menu-audio owner.
 - Not checked: the web export, Windows, target hardware, the owner's look; storks' black secondaries are only partly dark (the shade ramp is shared by all species).
 - Seasons (D9), rain and storms (no weather input reaches the scenery), kettle drift with the mean wind and the exclusion cone (SC-BIRD-09) remain open.

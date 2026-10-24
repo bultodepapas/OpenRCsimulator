@@ -46,6 +46,7 @@ var _fps_picker: OptionButton
 var _vsync_picker: OptionButton
 var _msaa_picker: OptionButton
 var _scene_detail_picker: OptionButton
+var _birds_picker: OptionButton
 var _graphics_info: Label
 var _graphics_restart_button: Button
 var _scale_picker: OptionButton
@@ -212,6 +213,15 @@ func _build() -> void:
 	var detected: Dictionary = SceneDetail.detected()
 	_scene_detail_picker.tooltip_text = tr("Trees, props and model detail, from your next flight. Automatic picks a level for your GPU. Extreme draws every nearby field tree in 3D and needs a strong GPU.") \
 		+ "\n" + tr("Detected: %s (%s).") % [RenderingServer.get_video_adapter_name(), tr(str(detected.reason))]
+	# SC-BIRD (birds-sky-life plan D2): presentation only and live; birds fly away or arrive instead of popping.
+	_birds_picker = OptionButton.new()
+	_birds_picker.name = "Birds"
+	for level: String in DisplayPreferences.BIRD_LEVELS:
+		_birds_picker.add_item(_choice_caption("birds", level))
+		_birds_picker.set_item_metadata(_birds_picker.item_count - 1, level)
+	_birds_picker.item_selected.connect(_birds_selected)
+	_add_row(graphics_page, "Birds", _birds_picker)
+	_birds_picker.tooltip_text = tr("Vultures and storks in thermals, kites, swallows and evening swifts, by time of day and weather. Changes apply at once: birds fly away or arrive. Normal follows Scene detail; Many keeps full flocks at every level.")
 	_graphics_info = _label("", "SecondaryLabel", true)
 	graphics_page.add_child(_graphics_info)
 	var defaults_button := _button("Restore graphics defaults", "QuietButton", "GraphicsDefaults")
@@ -421,6 +431,7 @@ func _choice_caption(key: String, value: Variant) -> String:
 			if value == SceneDetail.AUTO:
 				return tr("Automatic (%s)") % tr(str(SceneDetail.detected().level).capitalize())
 			return tr(str(value).capitalize())
+		"birds": return {off = tr("Off"), few = tr("Few"), normal = tr("Normal"), many = tr("Many")}.get(value, str(value))
 	return str(value)
 
 
@@ -442,7 +453,7 @@ func _on_graphics_option_changed() -> void:
 
 
 func _restore_graphics_defaults() -> void:
-	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail"]:
+	for key: String in ["max_fps", "vsync_mode", "msaa_3d", "scene_detail", "birds"]:
 		_draft[key] = DisplayPreferences.DEFAULTS[key]
 	_on_graphics_option_changed()
 
@@ -450,11 +461,13 @@ func _restore_graphics_defaults() -> void:
 func _refresh_graphics_info() -> void:
 	if not is_inside_tree() or _graphics_info == null:
 		return
-	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.")
-	_graphics_info.text = tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
+	# SC-BIRD: one line (the renderer name moved to the tooltip) so the Graphics page, with its Birds row, still fits
+	# at 1080p; it ends with the effective VSync state.
+	_graphics_info.tooltip_text = tr("The driver or desktop compositor may override VSync.") + "\n" \
+		+ tr("Renderer: %s") % RenderingServer.get_current_rendering_method()
+	_graphics_info.text = tr("Graphics mode: %s") % (tr("High (experimental)") if HighGraphics.active() else tr("Standard")) \
+		+ " · " + tr("Output: %d × %d · VSync: %s") % [get_window().size.x, get_window().size.y,
 		tr("On") if DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED else tr("Off")]
-	_graphics_info.text += "\n" + tr("Graphics mode: %s") % (tr("High (experimental)") if HighGraphics.active() else tr("Standard"))
-	_graphics_info.text += " · " + RenderingServer.get_current_rendering_method()
 	if HighGraphics.requested() == "high" and not HighGraphics.active():
 		_graphics_info.text += "\n" + tr("High is unavailable with the current renderer. Standard remains active.")
 
@@ -474,6 +487,11 @@ func _scale_selected(index: int) -> void:
 
 func _scene_detail_selected(index: int) -> void:
 	_draft.scene_detail = str(_scene_detail_picker.get_item_metadata(index))
+	_on_presentation_option_changed()
+
+
+func _birds_selected(index: int) -> void:
+	_draft.birds = str(_birds_picker.get_item_metadata(index))
 	_on_presentation_option_changed()
 
 
@@ -551,6 +569,7 @@ func _sync_controls() -> void:
 	_select_metadata(_vsync_picker, _draft.vsync_mode)
 	_select_metadata(_msaa_picker, _draft.msaa_3d)
 	_select_metadata(_scene_detail_picker, _draft.scene_detail)
+	_select_metadata(_birds_picker, _draft.get("birds", DisplayPreferences.DEFAULTS.birds))
 	_select_metadata(_scale_picker, _draft.ui_scale)
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))

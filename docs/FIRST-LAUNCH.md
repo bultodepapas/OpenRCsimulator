@@ -144,6 +144,10 @@ from the next flight: Low and Medium draw all field trees as cards with fewer pr
 draws the trees in front of the pilot in 3D, and Extreme every nearby field tree. Automatic
 (default) picks Low, Medium or High from your GPU at each launch; its tooltip names the GPU. Tree
 collision is the same at every level. [Presets and measured cost](research/visual-quality-implementation/VQ-06b-scene-detail/README.md).
+**Birds** (Off, Few, Normal, Many) sets how many birds fly over the field: vultures and storks circling in
+thermals, kites, swallows and evening swifts, chosen by time of day and weather. Normal follows Scene detail, Few
+halves it, Many keeps full flocks at every level and Off sends them all away. The change applies at once, also from
+the Pause menu: in flight the birds fly off or arrive over a minute or two. [Birds plan](plans/birds-sky-life.md).
 Workshop's separate preview images do not use the main-view MSAA setting.
 
 From Home, **Graphics → Try High (restart)** starts a temporary experimental
