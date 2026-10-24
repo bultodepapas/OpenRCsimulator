@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bxb0s8ml68y8f"
-path="res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn"
+uid="uid://dqv6y1qrmq626"
+path="res://.godot/imported/casual_shirt_standing.glb-c6c68c01384639ab98d09974f0a2a4b3.scn"
 
 [deps]
 
-source_file="res://assets/scenery/population/pilot.glb"
-dest_files=["res://.godot/imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn"]
+source_file="res://assets/scenery/population/people/casual_shirt_standing.glb"
+dest_files=["res://.godot/imported/casual_shirt_standing.glb-c6c68c01384639ab98d09974f0a2a4b3.scn"]
 
 [params]
 
@@ -25,12 +25,12 @@ nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
 meshes/generate_lods=true
-meshes/create_shadow_meshes=false
+meshes/create_shadow_meshes=true
 meshes/light_baking=1
 meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
-animation/import=false
+animation/import=true
 animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true

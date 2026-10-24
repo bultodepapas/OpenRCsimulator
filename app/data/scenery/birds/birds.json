@@ -1,7 +1,7 @@
 {
  "format": "openrc-birds v1",
  "evidence": "docs/research/scenery-investigations/SC-BIRD-00/README.md",
- "note": "SC-BIRD-02. Physical numbers carry their source; planform shapes are estimated from the CC0 PhyloPic and CC BY Commons silhouettes listed in the evidence. Tracks are closed arc-line circuits in local metres (x east, y north, z up) repeated with rotational symmetry; birds.gd compiles them and the shader evaluates them on sim_clock.",
+ "note": "SC-BIRD-02 and 08. Physical numbers carry their source; planform shapes are estimated from the CC0 PhyloPic and CC BY Commons silhouettes listed in the evidence. Tracks are closed arc-line circuits in local metres (x east, y north, z up) repeated with rotational symmetry; birds.gd compiles them and the shader evaluates them on sim_clock.",
  "species": {
   "griffon_vulture": {
    "name": "Griffon vulture",
@@ -36,7 +36,16 @@
     "tail_twist": {"value": 0.15, "unit": "1", "kind": "estimated", "source": "Tail barely steers"},
     "tail_wobble": {"value": 1.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
    },
-   "activity": {"sun_min": {"value": 15.0, "unit": "deg", "kind": "estimated", "source": "Thermal soaring needs warm daytime sun"}}
+   "activity": {
+    "sun_min": {"value": 15.0, "unit": "deg", "kind": "estimated", "source": "Thermal soaring needs warm daytime sun"},
+    "period": "day",
+    "clouds_max": {"value": 0.85, "unit": "1", "kind": "estimated", "source": "Thermals weaken under a nearly overcast sky"}
+   },
+   "departure": {
+    "mode": "away",
+    "distance": {"value": 600.0, "unit": "m", "kind": "estimated", "source": "Glides off toward its roost"},
+    "duration": {"value": 75.0, "unit": "s", "kind": "estimated", "source": "About an inter-thermal glide at 13-14 m/s"}
+   }
   },
   "red_kite": {
    "name": "Red kite",
@@ -71,7 +80,15 @@
     "tail_twist": {"value": 0.9, "unit": "1", "kind": "estimated", "source": "Steers by twisting the forked tail (survey 06 B10)"},
     "tail_wobble": {"value": 7.0, "unit": "deg", "kind": "estimated", "source": "Constant tail twisting even in light wind"}
    },
-   "activity": {"sun_min": {"value": 6.0, "unit": "deg", "kind": "estimated", "source": "Daytime forager"}}
+   "activity": {
+    "sun_min": {"value": 6.0, "unit": "deg", "kind": "estimated", "source": "Daytime forager"},
+    "period": "day"
+   },
+   "departure": {
+    "mode": "away",
+    "distance": {"value": 400.0, "unit": "m", "kind": "estimated", "source": "Leaves low over the fields"},
+    "duration": {"value": 60.0, "unit": "s", "kind": "estimated", "source": "At 7 m/s"}
+   }
   },
   "barn_swallow": {
    "name": "Barn swallow",
@@ -106,7 +123,103 @@
     "tail_twist": {"value": 0.4, "unit": "1", "kind": "estimated", "source": "Tail helps tight turns"},
     "tail_wobble": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
    },
-   "activity": {"sun_min": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Feeds from dawn to dusk"}}
+   "activity": {
+    "sun_min": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Feeds from dawn to dusk"},
+    "period": "day"
+   },
+   "departure": {
+    "mode": "away",
+    "distance": {"value": 300.0, "unit": "m", "kind": "estimated", "source": "Leaves low over the grass, away from the pilot (never up through the flight box)"},
+    "duration": {"value": 40.0, "unit": "s", "kind": "estimated", "source": "At about 8 m/s"}
+   }
+  },
+  "white_stork": {
+   "name": "White stork",
+   "span": {"value": 1.91, "unit": "m", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "mass": {"value": 3.43, "unit": "kg", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "planform": {
+    "body_length": {"value": 0.95, "unit": "m", "kind": "estimated", "source": "Neck and bill extended; PhyloPic CC0 planform"},
+    "body_width": {"value": 0.18, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform"},
+    "wrist": {"value": 0.45, "unit": "1", "kind": "estimated", "source": "Broad rectangular wing; PhyloPic CC0 planform"},
+    "root_chord": {"value": 0.36, "unit": "m", "kind": "estimated", "source": "Wing area 0.533 m2 at 1.91 m span (Alerstam 2007)"},
+    "wrist_chord": {"value": 0.34, "unit": "m", "kind": "estimated", "source": "Almost constant chord"},
+    "tip_chord": {"value": 0.26, "unit": "m", "kind": "estimated", "source": "Slotted hand"},
+    "wrist_sweep": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Straight leading edge"},
+    "tip_sweep": {"value": -0.04, "unit": "m", "kind": "estimated", "source": "Straight leading edge"},
+    "fingers": {"value": 6, "unit": "1", "kind": "estimated", "source": "Deeply slotted primaries"},
+    "finger_length": {"value": 0.3, "unit": "1", "kind": "estimated", "source": "Fraction of the hand"},
+    "tail_shape": "square",
+    "tail_length": {"value": 0.22, "unit": "m", "kind": "estimated", "source": "Short tail (AVONET tail 250 mm)"},
+    "tail_width": {"value": 0.2, "unit": "m", "kind": "estimated", "source": "Short rounded tail"},
+    "tail_fork": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Square tail"}
+   },
+   "colors": {"top": [0.86, 0.86, 0.83], "under": [0.8, 0.8, 0.78], "tip": [0.06, 0.06, 0.07]},
+   "gait": {
+    "flap_frequency": {"value": 3.14, "unit": "Hz", "kind": "measured", "source": "Accelerometer bursts of 59 storks (SC-BIRD-00 section 4)"},
+    "flap_amplitude": {"value": 30.0, "unit": "deg", "kind": "estimated", "source": "Slow deep beats"},
+    "burst_period": {"value": 32.0, "unit": "s", "kind": "estimated", "source": "Soars; followers flap more (Flack et al. 2018)"},
+    "burst_duty": {"value": 0.12, "unit": "1", "kind": "estimated", "source": "Short flapping bouts"},
+    "dihedral": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Flat wings when soaring"},
+    "hand_lag": {"value": 30.0, "unit": "deg", "kind": "estimated", "source": "Hand trails the arm"},
+    "tip_curl": {"value": 5.0, "unit": "deg", "kind": "estimated", "source": "Upturned primaries when soaring"},
+    "fold": {"value": 0.15, "unit": "1", "kind": "estimated", "source": "Little upstroke flexion"},
+    "tail_twist": {"value": 0.15, "unit": "1", "kind": "estimated", "source": "Tail barely steers"},
+    "tail_wobble": {"value": 1.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
+   },
+   "activity": {
+    "sun_min": {"value": 12.0, "unit": "deg", "kind": "estimated", "source": "Thermal soaring needs daytime sun"},
+    "period": "day",
+    "clouds_max": {"value": 0.85, "unit": "1", "kind": "estimated", "source": "Thermals weaken under a nearly overcast sky"}
+   },
+   "departure": {
+    "mode": "away",
+    "distance": {"value": 600.0, "unit": "m", "kind": "estimated", "source": "Glides off toward its roost"},
+    "duration": {"value": 75.0, "unit": "s", "kind": "estimated", "source": "At about 14.5 m/s"}
+   }
+  },
+  "common_swift": {
+   "name": "Common swift",
+   "span": {"value": 0.4, "unit": "m", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "mass": {"value": 0.038, "unit": "kg", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "planform": {
+    "body_length": {"value": 0.12, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform, without the tail"},
+    "body_width": {"value": 0.035, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform"},
+    "wrist": {"value": 0.28, "unit": "1", "kind": "estimated", "source": "Very short arm, long scythe hand"},
+    "root_chord": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Wing area 0.0168 m2 at 0.40 m span (Alerstam 2007)"},
+    "wrist_chord": {"value": 0.045, "unit": "m", "kind": "estimated", "source": "Narrow wing"},
+    "tip_chord": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Pointed tip"},
+    "wrist_sweep": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Scythe wing"},
+    "tip_sweep": {"value": -0.085, "unit": "m", "kind": "estimated", "source": "Strongly swept hand"},
+    "fingers": {"value": 0, "unit": "1", "kind": "measured", "source": "Pointed wing without slots"},
+    "finger_length": {"value": 0.0, "unit": "1", "kind": "estimated", "source": "No fingers"},
+    "tail_shape": "forked",
+    "tail_length": {"value": 0.067, "unit": "m", "kind": "measured", "source": "AVONET tail length 67 mm"},
+    "tail_width": {"value": 0.04, "unit": "m", "kind": "estimated", "source": "Narrow tail"},
+    "tail_fork": {"value": 0.015, "unit": "m", "kind": "estimated", "source": "Shallow fork"}
+   },
+   "colors": {"top": [0.07, 0.06, 0.06], "under": [0.12, 0.11, 0.1], "tip": [0.04, 0.04, 0.04]},
+   "gait": {
+    "flap_frequency": {"value": 8.1, "unit": "Hz", "kind": "derived", "source": "Pennycuick 1996 formula (SC-BIRD-00 section 4)"},
+    "flap_amplitude": {"value": 32.0, "unit": "deg", "kind": "estimated", "source": "Fast shallow beats"},
+    "burst_period": {"value": 4.0, "unit": "s", "kind": "estimated", "source": "Flap-glide (Hedrick et al. 2018: 23 % flapping in 0.68 s bouts)"},
+    "burst_duty": {"value": 0.2, "unit": "1", "kind": "estimated", "source": "About a fifth of the time flapping"},
+    "dihedral": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Flat scythe wings"},
+    "hand_lag": {"value": 20.0, "unit": "deg", "kind": "estimated", "source": "Hand trails the arm"},
+    "tip_curl": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Flat hand"},
+    "fold": {"value": 0.3, "unit": "1", "kind": "estimated", "source": "Upstroke flexion"},
+    "tail_twist": {"value": 0.3, "unit": "1", "kind": "estimated", "source": "Tail helps tight turns"},
+    "tail_wobble": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
+   },
+   "activity": {
+    "sun_min": {"value": -1.0, "unit": "deg", "kind": "estimated", "source": "Screaming parties until about sunset (survey 06 B11)"},
+    "sun_max": {"value": 8.0, "unit": "deg", "kind": "estimated", "source": "The last hour or so before sunset; after the thermal soarers have left, so both never fill the bird budget together"},
+    "period": "evening"
+   },
+   "departure": {
+    "mode": "climb",
+    "distance": {"value": 350.0, "unit": "m", "kind": "estimated", "source": "The twilight ascent toward 2-3 km (Dokter et al. 2013)"},
+    "duration": {"value": 150.0, "unit": "s", "kind": "estimated", "source": "About 2.3 m/s"}
+   }
   }
  },
  "flocks": [
@@ -123,17 +236,60 @@
    "heading": {"value": 22.4, "unit": "deg", "kind": "estimated", "source": "Initial heading (math angle from east, counter-clockwise); after 5.5 turns the glide heads 202.4 deg, to thermal B 300 m south and 729 m west"},
    "repeats": 2,
    "tracks": [
-    {"motif": [
-     {"radius": 17.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
-     {"line": 788.0, "duration": 57.6, "climb": -57.0}]},
-    {"motif": [
-     {"radius": 22.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
-     {"line": 788.0, "duration": 57.6, "climb": -57.0}]},
-    {"motif": [
-     {"radius": 27.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
-     {"line": 788.0, "duration": 57.6, "climb": -57.0}]}
+    {
+     "motif": [
+      {"radius": 17.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+      {"line": 788.0, "duration": 57.6, "climb": -57.0}
+     ]
+    },
+    {
+     "motif": [
+      {"radius": 22.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+      {"line": 788.0, "duration": 57.6, "climb": -57.0}
+     ]
+    },
+    {
+     "motif": [
+      {"radius": 27.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+      {"line": 788.0, "duration": 57.6, "climb": -57.0}
+     ]
+    }
    ],
    "track_source": "Measured from 578 CC0 GPS turns (Williams et al. 2018): radius 22 m (16-30), 12.9 s per turn, climb 0.81 m/s, bout median 5 turns and 57 m gain; glides at 13-14 m/s. Here: 5.5 turns of 12.8 s, 0.81 m/s, glide 788 m in 57.6 s (13.7 m/s, sink 0.99 m/s); period 256 s."
+  },
+  {
+   "id": "stork_kettle",
+   "group": "soaring",
+   "species": "white_stork",
+   "count": 6,
+   "origin": {"value": [680.0, -421.0, 0.0], "unit": "m", "kind": "estimated", "source": "Mixed kettle in the vultures' thermal A (storks and griffons share thermals)"},
+   "base_height": {"value": 100.0, "unit": "m", "kind": "estimated", "source": "Low part of the climb"},
+   "spread_time": {"value": 30.0, "unit": "s", "kind": "estimated", "source": "Followers enter after the leaders, so the kettle stacks"},
+   "spread_height": {"value": 4.0, "unit": "m", "kind": "estimated", "source": "Small vertical scatter"},
+   "anchor": "first_arc_centre",
+   "heading": {"value": 22.4, "unit": "deg", "kind": "estimated", "source": "As the vulture kettle: after 5.5 turns the glide heads 202.4 deg to thermal B"},
+   "repeats": 2,
+   "tracks": [
+    {
+     "motif": [
+      {"radius": 18.0, "turn": 1980.0, "duration": 75.093333, "climb": 69.0859},
+      {"line": 788.0, "duration": 52.906667, "climb": -69.0859}
+     ]
+    },
+    {
+     "motif": [
+      {"radius": 20.0, "turn": 1980.0, "duration": 75.093333, "climb": 69.0859},
+      {"line": 788.0, "duration": 52.906667, "climb": -69.0859}
+     ]
+    },
+    {
+     "motif": [
+      {"radius": 23.0, "turn": 1980.0, "duration": 75.093333, "climb": 69.0859},
+      {"line": 788.0, "duration": 52.906667, "climb": -69.0859}
+     ]
+    }
+   ],
+   "track_source": "Weinzierl et al. 2016 Table 1 (24,495 CC0 GPS circling events): radius 20.3 m (15.7-25.5), 13.65 s per turn, climb 0.92 m/s, airspeed 9.4 m/s; straight glides 14.5 m/s. Here: 5.5 turns of 1024/75 s at 18/20/23 m, 0.92 m/s, glide 788 m at 14.9 m/s; period 256 s."
   },
   {
    "id": "kite_quartering",
@@ -148,14 +304,17 @@
    "heading": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Track orientation"},
    "repeats": 3,
    "tracks": [
-    {"motif": [
-     {"line": 42.0, "speed": 7.0},
-     {"radius": 36.0, "turn": 100.0, "speed": 7.0},
-     {"radius": 11.0, "turn": 720.0, "speed": 6.4, "climb": 19.0},
-     {"line": 24.0, "speed": 7.5, "climb": -7.0},
-     {"radius": 27.0, "turn": -40.0, "speed": 7.5, "climb": -4.0},
-     {"line": 18.0, "speed": 7.5, "climb": -4.0},
-     {"radius": 48.0, "turn": 60.0, "speed": 7.0, "climb": -4.0}]}
+    {
+     "motif": [
+      {"line": 42.0, "speed": 7.0},
+      {"radius": 36.0, "turn": 100.0, "speed": 7.0},
+      {"radius": 11.0, "turn": 720.0, "speed": 6.4, "climb": 19.0},
+      {"line": 24.0, "speed": 7.5, "climb": -7.0},
+      {"radius": 27.0, "turn": -40.0, "speed": 7.5, "climb": -4.0},
+      {"line": 18.0, "speed": 7.5, "climb": -4.0},
+      {"radius": 48.0, "turn": 60.0, "speed": 7.0, "climb": -4.0}
+     ]
+    }
    ],
    "track_source": "Circling measured from 2,169 CC0 GPS circles (Skrabal 2023): radius 11 m, 11 s per turn, 6.4 m/s, climb 0.92 m/s; flapping airspeed 12 m/s (Alerstam 2007). Here: two circling turns per bout at 6.4 m/s, low glides at 7-7.5 m/s."
   },
@@ -175,14 +334,45 @@
    "heading": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Rotated per bird"},
    "repeats": 5,
    "tracks": [
-    {"motif": [
-     {"line": 14.0, "speed": 9.5},
-     {"radius": 9.0, "turn": 130.0, "speed": 9.0, "climb": 0.4},
-     {"radius": 5.0, "turn": -95.0, "speed": 8.0, "climb": 2.6},
-     {"line": 8.0, "speed": 8.5, "climb": -2.6},
-     {"radius": 12.0, "turn": 37.0, "speed": 10.0, "climb": -0.4}]}
+    {
+     "motif": [
+      {"line": 14.0, "speed": 9.5},
+      {"radius": 9.0, "turn": 130.0, "speed": 9.0, "climb": 0.4},
+      {"radius": 5.0, "turn": -95.0, "speed": 8.0, "climb": 2.6},
+      {"line": 8.0, "speed": 8.5, "climb": -2.6},
+      {"radius": 12.0, "turn": 37.0, "speed": 10.0, "climb": -0.4}
+     ]
+    }
    ],
    "track_source": "Warrick et al. 2016 (47 CC0 3D tracks): 9.5 +- 2.7 m/s, turn radius 5.1 +- 3.0 m, height 0.43 +- 0.78 m (max 4.1 m)."
+  },
+  {
+   "id": "swift_party",
+   "group": "small",
+   "species": "common_swift",
+   "count": 12,
+   "origin": {"value": [-85.0, -25.0, 0.0], "unit": "m", "kind": "estimated", "source": "Over the club behind the pilot line, 45 m or more from the pilot"},
+   "base_height": {"value": 22.0, "unit": "m", "kind": "estimated", "source": "Above the 14 m club trees and the roofs"},
+   "spread_time": {"value": 24.0, "unit": "s", "kind": "estimated", "source": "About one circuit"},
+   "spread_height": {"value": 3.0, "unit": "m", "kind": "estimated", "source": "Small vertical scatter"},
+   "spread_offset": {"value": 10.0, "unit": "m", "kind": "estimated", "source": "The party spreads over the club"},
+   "rotate_instances": true,
+   "mirror_instances": true,
+   "anchor": "centre",
+   "heading": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Rotated per bird"},
+   "repeats": 4,
+   "tracks": [
+    {
+     "motif": [
+      {"line": 15.0, "speed": 10.9},
+      {"radius": 10.0, "turn": 120.0, "speed": 8.5, "climb": 4.0},
+      {"radius": 6.0, "turn": -60.0, "speed": 7.7, "climb": -2.0},
+      {"line": 8.0, "speed": 11.0, "climb": -2.0},
+      {"radius": 13.0, "turn": 30.0, "speed": 9.7}
+     ]
+    }
+   ],
+   "track_source": "Hedrick et al. 2018 (73 tracks): 9.71 +- 1.36 m/s (straight 10.9, circling 7.7), median curvature radius 19.8 m (circling 10.4 m). Screaming parties of 10-20 on summer evenings (survey 06 B11)."
   }
  ]
 }

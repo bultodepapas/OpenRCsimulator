@@ -11,7 +11,6 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
-const HUMAN_ASSETS := ["standing", "sitting", "pilot"]
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
 
 var _failures := 0
@@ -27,7 +26,7 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _initialize() -> void:
 	ShaderClock.register()
-	for asset: String in HUMAN_ASSETS:
+	for asset: String in _human_assets():
 		_test_head_mask(asset)
 	_test_coupled_pilot()
 	_test_step_and_hold()
@@ -36,7 +35,7 @@ func _initialize() -> void:
 	_test_reset_and_repeats()
 	_test_companion_pilots()
 	_test_crash_glance()
-	for asset: String in HUMAN_ASSETS:
+	for asset: String in _human_assets():
 		_test_shader_mirror(asset)
 	_test_rotated_person()
 	_test_teleport_and_nonfinite()
@@ -44,6 +43,17 @@ func _initialize() -> void:
 	_test_default_scenery()
 	print("people gaze: %s" % ("PASS" if _failures == 0 else "FAIL (%d)" % _failures))
 	quit(1 if _failures > 0 else 0)
+
+
+## Shipped outfit variants (SC-HUM-07), else the LU-21 poses.
+func _human_assets() -> Array[String]:
+	var keys: Array[String] = []
+	for key: String in Population.human_assets():
+		if ResourceLoader.exists(Population.asset_path(key)):
+			keys.append(key)
+	if keys.is_empty():
+		keys.assign(["standing", "sitting", "pilot"])
+	return keys
 
 
 func _vertices(part: Dictionary) -> PackedVector3Array:
@@ -90,9 +100,12 @@ func _test_head_mask(asset: String) -> void:
 	if groups.has(Population.CLASS_FLAT):
 		var radio: Vector3i = stats.call(groups[Population.CLASS_FLAT], all)
 		_check("%s transmitter never moves" % asset, radio.z == 0, str(radio))
-	var cloth: Vector3i = stats.call(groups.get(1, PackedVector3Array()), all)
-	# Only the collar may follow the neck.
-	_check("%s clothing barely moves" % asset, cloth.x > 0 and cloth.z <= int(0.06 * cloth.x), str(cloth))
+	# Only collars inside the neck band may follow the neck; garments below it never move.
+	var below_band := func(v: Vector3) -> bool: return v.y < (head.band as Vector2).x
+	var cloth: Vector3i = stats.call(groups.get(1, PackedVector3Array()), below_band)
+	_check("%s clothing below the neck band is fixed" % asset, cloth.z == 0, str(cloth))
+	var plain_low: Vector3i = stats.call(groups.get(2, PackedVector3Array()), below_band)
+	_check("%s plain garments below the neck band are fixed" % asset, plain_low.z == 0, str(plain_low))
 	var low_skin: Vector3i = stats.call(groups.get(0, PackedVector3Array()), func(v: Vector3) -> bool: return v.y < (head.band as Vector2).x)
 	_check("%s body below the neck band is fixed" % asset, low_skin.x > 0 and low_skin.z == 0, str(low_skin))
 

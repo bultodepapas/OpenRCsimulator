@@ -48,7 +48,7 @@ Downloaded from the fast mirror into `.tools/sc-hum-sources/` with a local `INTA
 | eyebrows01, eyelashes01 | Faces | Catalog per-asset CC0; `license CC0` in each asset |
 | skins01, skins02, system_eye_materials01 | Skin and eye variety | Catalog "shared under CC0" (no licence line inside the material files) |
 
-`pants01` provides CC0 shorts, so the CC-BY question in plan decision D9 now matters only for items CC0 lacks.
+`pants01`'s CC0 jeans shorts turned out to be women's short shorts, so CC0 still lacks men's shorts and baseball caps; plan decision D9 stays open for those ([SC-HUM-07](../SC-HUM-07/README.md)).
 
 ## Open in this step
 

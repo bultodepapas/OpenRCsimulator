@@ -1,6 +1,6 @@
 # SC-HUM-02 — One mesh, one material per person pose
 
-Status: **implemented and software-verified, 2026-10-24.** Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Toolchain and reproduction: [SC-HUM-00](../SC-HUM-00/README.md).
+Status: **implemented and software-verified, 2026-10-24.** The merge pipeline is current; its three LU-21 merged GLBs and atlas were replaced the same day by the six [SC-HUM-07](../SC-HUM-07/README.md) club members. Owner: Scenery and field life. Plan: [field people plan](../../../plans/field-people.md). Toolchain and reproduction: [SC-HUM-00](../SC-HUM-00/README.md).
 
 ## Why
 

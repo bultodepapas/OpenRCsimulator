@@ -17,21 +17,17 @@ Repeat packaging for hatch and crossover. The conversion checks source/license h
 
 Use Blender **5.2.2**, **MPFB 2.0.18**, and the exact CC0 system archive pinned in `HUMAN_SOURCES.json`. Install it into an isolated MPFB data directory. Start Blender with a separate user configuration for asset authoring; do not reuse interactive preferences. The generator redirects MPFB's data preference for the process and does not save Blender preferences.
 
-```text
-blender --background --factory-startup --python tools/scenery/population/generate_people.py -- --pose standing --mpfb-user-data /your/isolated/mpfb-data --output-dir /your/temporary/output
-python tools/scenery/population/package_population.py /your/temporary/output/person_standing.gltf /your/staged/assets/standing.glb
-```
-
-Repeat with `--pose seated` → `person_seated.gltf` → `sitting.glb`, and `--pose pilot` → `person_pilot.gltf` → `pilot.glb`.
-
-Since SC-HUM-02 the shipped people are merged before packaging: one mesh, one atlas material and one draw per pose ([evidence](../../../docs/research/scenery-implementation/SC-HUM-02/README.md)).
+The shipped people are six club members ([SC-HUM-07](../../../docs/research/scenery-implementation/SC-HUM-07/README.md)), each defined by an outfit file in [outfits/](outfits/): MPFB macros (gender, age, weight, height, ethnicity), proxy, skin, clothing, accessories, decimation, texture sizes and, optionally, a CC0 pose per pose kind. Generate each outfit and pose, merge all of them into one shared atlas, then package each pose:
 
 ```text
-blender --background --factory-startup --python tools/scenery/population/merge_people_atlas.py -- /your/temporary/output/person_standing.gltf /your/merged/person_standing.gltf
-python tools/scenery/population/package_population.py /your/merged/person_standing.gltf /your/staged/assets/standing.glb
+blender --background --factory-startup --python tools/scenery/population/generate_people.py -- --pose standing --outfit tools/scenery/population/outfits/woman_tee.json --mpfb-user-data /your/isolated/mpfb-data --output-dir /your/out/woman_tee
+blender --background --factory-startup --python tools/scenery/population/merge_people_atlas.py -- --shared /your/merged people /your/out/*/person_*.gltf
+python tools/scenery/population/package_population.py /your/merged/person_woman_tee_standing.gltf /your/staged/assets/people/woman_tee_standing.glb
 ```
 
-Set the two atlas textures' import to VRAM compressed with mipmaps (`compress/mode=2`, `mipmaps/generate=true`; `compress/normal_map=1` for the normal atlas), then update the human entries of `RUNTIME_MANIFEST.json`. Default poses are the vendored CC0 BVHs. An optional `--pose-file` is an authoring override: review its license and update the source/hash manifest before distributing its output. The frozen meshes were imported/rendered and audited. On 2026-10-24 the parameterized recipe regenerated all three poses on Linux within float noise of the frozen meshes (same topology and indices, ≤2.8 µm, ≤8 × 10⁻⁶ UV); only the primitive-built pilot transmitter changes vertex order and UVs ([SC-HUM-00](../../../docs/research/scenery-implementation/SC-HUM-00/README.md), which also gives the Linux setup). Prefer the `files.makehumancommunity.org` mirror; `files2` was about 50× slower.
+Poses are `standing`, `seated` (packaged as `<outfit>_sitting.glb`) and `pilot`. `Population.OUTFITS` lists which outfit appears in which pose and zone; every listed variant must ship. Set the two atlas textures' import to VRAM compressed with mipmaps (`compress/mode=2`, `mipmaps/generate=true`; `compress/normal_map=1` for the normal atlas) and update `RUNTIME_MANIFEST.json`. Each person must stay within 8,000 triangles and, at natural size, inside its prefab's collision envelope (`test_scenery_build.gd` enforces both the envelope and a cap of at most 8 % shrink). Check the materials of new assets: an `.mhclo` without a `material` line exports untextured, and the merge refuses it.
+
+Without `--outfit` the generator reproduces the LU-21 person exactly; with `--outfit`, people keep MPFB's metric height instead of LU-21's 1.75 m normalization. An explicit `--pose-file` overrides the outfit's pose: review its license and record it in the source manifest before distributing its output. On 2026-10-24 the default recipe regenerated the LU-21 poses on Linux within float noise of the frozen meshes; only the primitive-built pilot transmitter changes vertex order between runs ([SC-HUM-00](../../../docs/research/scenery-implementation/SC-HUM-00/README.md), which also gives the Linux setup). Prefer the `files.makehumancommunity.org` mirror; `files2` was about 50× slower.
 
 The packager preserves exact PNG/JPEG bytes and writes shared `textures/<sha256>` files plus a `.source.json` record. It accepts the selected one-buffer Blender glTF/GLB exports, not arbitrary glTF extensions, remote images or data URIs. Preserve those output records in the source manifest; ship only referenced textures and import settings. Check a fresh Godot import, native 5/15/40 m views, fitted bounds, source licensing and scene budgets before replacing a frozen asset.
 

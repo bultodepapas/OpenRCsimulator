@@ -564,7 +564,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	if opts.get("audio", false):
 		root.add_child(Ambience.player())
 	if opts.get("birds", false):
-		var birds: Node3D = Birds.build(lighting)
+		var birds: Node3D = Birds.build(lighting, str(opts.get("quality", "high")))
 		if birds != null:
 			root.add_child(birds)
 	timing["meshes"] = (Time.get_ticks_usec() - m0) / 1000.0

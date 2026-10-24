@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bk35c76oy4otq"
-path="res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn"
+uid="uid://colh6xituelcv"
+path="res://.godot/imported/woman_tee_sitting.glb-132fa45f682f2da750ff0f68e061b312.scn"
 
 [deps]
 
-source_file="res://assets/scenery/population/standing.glb"
-dest_files=["res://.godot/imported/standing.glb-3d2db20a525321499495f9d901e53356.scn"]
+source_file="res://assets/scenery/population/people/woman_tee_sitting.glb"
+dest_files=["res://.godot/imported/woman_tee_sitting.glb-132fa45f682f2da750ff0f68e061b312.scn"]
 
 [params]
 
@@ -25,12 +25,12 @@ nodes/use_name_suffixes=true
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
 meshes/generate_lods=true
-meshes/create_shadow_meshes=false
+meshes/create_shadow_meshes=true
 meshes/light_baking=1
 meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
-animation/import=false
+animation/import=true
 animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true

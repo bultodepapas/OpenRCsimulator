@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """SC-BIRD-01/05: the bird layer renders where its float64 reference says, at true size, and repeats byte for byte.
 
-Runs tools/scenery/capture_birds.gd twice (independent processes) at 1920x1080 on the Compatibility renderer. For the
-birds with the smallest and the largest time offset of every flock, the birds-on minus birds-off difference isolates
-the bird; the connected blob nearest the image centre must sit within CENTRE_TOLERANCE_PX of the centre (where the CPU
-track predicts it) and span a plausible fraction of the requested size. The in-process repeat and the second process must produce identical images.
+Runs tools/scenery/capture_birds.gd at noon and in the evening, twice each (independent processes), at 1920x1080 on
+the Compatibility renderer. For the flying birds with the smallest and the largest time offset of every flock, the
+birds-on minus birds-off difference isolates the bird; the connected blob nearest the image centre must sit within
+CENTRE_TOLERANCE_PX of the centre (where the CPU track predicts it) and span a plausible fraction of the requested
+size. The in-process repeat and the second process must produce identical images.
 """
 import argparse
 import json
@@ -26,6 +27,10 @@ CENTRE_TOLERANCE_PX = 10.0
 MIN_PIXELS = 12
 SPAN_RANGE = (0.25, 1.6)  # blob extent / requested span (the planform is seen obliquely and banked)
 DIFF_THRESHOLD = 3
+# Local hour (default lighting config, astronomical) -> flocks that must be flying and pass the position check.
+LIGHTS = {'noon': 12.0, 'evening': 17.8}
+REQUIRED = {'noon': ('vulture_kettle', 'stork_kettle', 'kite_quartering', 'swallow_coursing'),
+            'evening': ('swallow_coursing', 'swift_party')}
 MERGE_PX = 3
 
 
@@ -113,29 +118,36 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, LP_NUM_THREADS='1', OPENRC_SCENERY='on', OPENRC_SCENERY_AUDIO='off',
                OPENRC_SCENERY_BIRDS='on')
-    reports, commands, hashes = {}, {}, {}
-    for run in ('first', 'second'):
-        command = ['xvfb-run', '-a', '-s', f'-screen 0 {RESOLUTION[0]}x{RESOLUTION[1]}x24', str(godot), '--path', str(app),
-                   '--resolution', f'{RESOLUTION[0]}x{RESOLUTION[1]}', '--rendering-driver', 'opengl3',
-                   '--audio-driver', 'Dummy', '--script', str(CAPTURE), '--', f'--out={out / run}', f'--t={args.t}']
-        commands[run] = command
-        checked_run(command, out / f'{run}.log', env, 600)
-        reports[run] = json.loads((out / run / 'birds.json').read_text())
-        hashes[run] = {p.name: sha256(p) for p in sorted((out / run).glob('*.png'))}
-    if hashes['first'] != hashes['second']:
-        raise RuntimeError('the second process rendered different images')
-    views = reports['first']['views']
-    flocks = ('vulture_kettle', 'kite_quartering', 'swallow_coursing')
-    if set(views) != {f'{f}_{which}' for f in flocks for which in ('early', 'late')}:
-        raise RuntimeError(f'unexpected flock views {sorted(views)}')
-    metrics = {name: check_view(out / 'first', name, view) for name, view in sorted(views.items())}
+    commands, hashes, metrics, lights = {}, {}, {}, {}
+    for light, hour in LIGHTS.items():
+        reports = {}
+        for run in ('first', 'second'):
+            folder = out / light / run
+            command = ['xvfb-run', '-a', '-s', f'-screen 0 {RESOLUTION[0]}x{RESOLUTION[1]}x24', str(godot), '--path',
+                       str(app), '--resolution', f'{RESOLUTION[0]}x{RESOLUTION[1]}', '--rendering-driver', 'opengl3',
+                       '--audio-driver', 'Dummy', '--script', str(CAPTURE), '--', f'--out={folder}', f'--t={args.t}',
+                       f'--hour={hour}']
+            commands[f'{light}_{run}'] = command
+            checked_run(command, out / f'{light}-{run}.log', env, 900)
+            reports[run] = json.loads((folder / 'birds.json').read_text())
+            hashes[f'{light}_{run}'] = {p.name: sha256(p) for p in sorted(folder.glob('*.png'))}
+        if hashes[f'{light}_first'] != hashes[f'{light}_second']:
+            raise RuntimeError(f'{light}: the second process rendered different images')
+        views = reports['first']['views']
+        wanted = {f'{f}_{which}' for f in REQUIRED[light] for which in ('early', 'late')}
+        if not wanted <= set(views):
+            raise RuntimeError(f'{light}: missing flock views {sorted(wanted - set(views))} (got {sorted(views)})')
+        lights[light] = {'hour': hour, 'sun_deg': reports['first']['sun_deg'], 'drawn': reports['first']['drawn']}
+        for name, view in sorted(views.items()):
+            metrics[f'{light}/{name}'] = check_view(out / light / 'first', name, view)
     sources = {str(p.relative_to(ROOT)): sha256(p) for p in (
         app / 'scenery/birds.gd', app / 'scenery/birds/bird_data.gd', app / 'scenery/birds/bird_tracks.gd',
-        app / 'scenery/birds/bird_planform.gd', app / 'scenery/birds/sky_birds.gdshader',
+        app / 'scenery/birds/bird_planform.gd', app / 'scenery/birds/bird_director.gd',
+        app / 'scenery/birds/birds_runtime.gd', app / 'scenery/birds/sky_birds.gdshader',
         app / 'data/scenery/birds/birds.json', CAPTURE, Path(__file__).resolve())}
-    summary = {'format': 'openrc-sc-bird-capture v1', 'complete': True, 'sim_clock': reports['first']['sim_clock'],
+    summary = {'format': 'openrc-sc-bird-capture v2', 'complete': True, 'sim_clock': args.t, 'lights': lights,
                'resolution': list(RESOLUTION), 'renderer': reports['first']['adapter'], 'metrics': metrics,
-               'identical_repeat': True, 'identical_second_process': True, 'image_sha256': hashes['first'],
+               'identical_repeat': True, 'identical_second_process': True, 'image_sha256': hashes,
                'sources_sha256': sources, 'commands': commands,
                'godot_version': subprocess.run([str(godot), '--version'], check=True, capture_output=True,
                                                text=True).stdout.strip()}

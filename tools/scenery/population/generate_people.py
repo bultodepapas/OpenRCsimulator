@@ -28,6 +28,8 @@ def parse_arguments():
     parser.add_argument('--output-dir', required=True, type=Path)
     parser.add_argument('--pose-file', type=Path,
                         help='Optional BVH override; defaults to the pinned source included in assets/scenery/population/source/')
+    parser.add_argument('--outfit', type=Path,
+                        help='SC-HUM-07 outfit JSON (tools/scenery/population/outfits/); omitted = the LU-21 person exactly')
     args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
     args.mpfb_user_data = args.mpfb_user_data.resolve()
     args.output_dir = args.output_dir.resolve()
@@ -46,6 +48,30 @@ def parse_arguments():
 ARGS = parse_arguments()
 stage = str(ARGS.output_dir)
 user_home = str(ARGS.mpfb_user_data)
+
+# The LU-21 person. An outfit file overrides any of these keys; the defaults reproduce the frozen meshes.
+LU21_OUTFIT = {
+    'id': None,
+    'macros': None,
+    'proxy': 'male1591.proxy',
+    'skin': 'middleage_caucasian_male.mhmat',
+    'assets': [
+        ['eyes', 'low-poly.mhclo', 'Eyes'],
+        ['eyebrows', 'eyebrow001.mhclo', 'Eyebrows'],
+        ['hair', 'short01.mhclo', 'Hair'],
+        ['clothes', 'male_casualsuit04.mhclo', 'Clothes'],
+        ['clothes', 'shoes02.mhclo', 'Clothes'],
+    ],
+    'decimate': {'male1591': 0.70, 'male_casualsuit04': 0.80, 'shoes02': 0.50, 'short01': 0.35},
+    'image_max_edge': {'skins': 1024, 'clothes': 1024, 'hair': 512, 'eyes': 256, 'other': 512},
+    # 'all': normalize standing poses to 1.75 m including hair (LU-21); 'natural': keep the macro height.
+    'height': 'all',
+}
+OUTFIT = dict(LU21_OUTFIT)
+if ARGS.outfit:
+    OUTFIT.update(json.loads(ARGS.outfit.read_text()))
+    print('OUTFIT=' + json.dumps(OUTFIT, sort_keys=True))
+name_stem = 'person_' + (OUTFIT['id'] + '_' if OUTFIT['id'] else '')
 
 def preference(name):
     if name == 'mpfb_user_data':
@@ -82,36 +108,37 @@ HumanService = importlib.import_module(prefix + 'humanservice').HumanService
 AssetService = importlib.import_module(prefix + 'assetservice').AssetService
 ExportService = importlib.import_module(prefix + 'exportservice').ExportService
 ObjectService = importlib.import_module(prefix + 'objectservice').ObjectService
+TargetService = importlib.import_module(prefix + 'targetservice').TargetService
 AnimationService = importlib.import_module(prefix + 'animationservice').AnimationService
 
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
-human = HumanService.create_human()
+if OUTFIT['macros'] is None:
+    human = HumanService.create_human()
+else:
+    macros = TargetService.get_default_macro_info_dict()
+    macros.update({k: v for k, v in OUTFIT['macros'].items() if k != 'race'})
+    macros['race'].update(OUTFIT['macros'].get('race', {}))
+    human = HumanService.create_human(macro_detail_dict=macros)
 print('BASE_DIMENSIONS=' + str(tuple(round(v, 4) for v in human.dimensions)))
 print('BASE_TRIANGLES=' + str(mesh_stats([human])[0]))
 
 rig = HumanService.add_builtin_rig(human, 'default')
 
-# Replace the detailed source surface with the official CC0 1,591-triangle
-# male proxy. This keeps a recognizable face and hands while avoiding the
-# 15k-triangle base body. Use the same skin material on the proxy.
-proxy_path = AssetService.find_asset_absolute_path('male1591.proxy', asset_subdir='proxymeshes')
+# Replace the detailed source surface with the official CC0 low-poly proxy
+# (LU-21: the 1,591-triangle male). This keeps a recognizable face and hands
+# while avoiding the 15k-triangle base body. Use the same skin material on the proxy.
+proxy_path = AssetService.find_asset_absolute_path(OUTFIT['proxy'], asset_subdir='proxymeshes')
 if not proxy_path:
-    raise RuntimeError('missing male1591 proxy')
+    raise RuntimeError('missing proxy ' + OUTFIT['proxy'])
 body_proxy = HumanService.add_mhclo_asset(proxy_path, human, asset_type='Proxymeshes', subdiv_levels=0, material_type='NONE')
-skin = AssetService.find_asset_absolute_path('middleage_caucasian_male.mhmat', asset_subdir='skins')
+skin = AssetService.find_asset_absolute_path(OUTFIT['skin'], asset_subdir='skins')
 if not skin:
-    raise RuntimeError('missing system skin asset')
+    raise RuntimeError('missing skin asset ' + OUTFIT['skin'])
 HumanService.set_character_skin(skin, human, bodyproxy=body_proxy, skin_type='GAMEENGINE')
 
-assets = [
-    ('eyes', 'low-poly.mhclo', 'Eyes'),
-    ('eyebrows', 'eyebrow001.mhclo', 'Eyebrows'),
-    ('hair', 'short01.mhclo', 'Hair'),
-    ('clothes', 'male_casualsuit04.mhclo', 'Clothes'),
-    ('clothes', 'shoes02.mhclo', 'Clothes'),
-]
+assets = [tuple(entry) for entry in OUTFIT['assets']]
 for subdir, filename, asset_type in assets:
     path = AssetService.find_asset_absolute_path(filename, asset_subdir=subdir)
     if not path:
@@ -120,6 +147,12 @@ for subdir, filename, asset_type in assets:
 
 pose_kind = ARGS.pose
 pose_path = str(ARGS.pose_file)
+# An outfit may name a CC0 pose from the pinned MPFB pose packs per pose kind (an explicit --pose-file wins).
+outfit_pose = OUTFIT.get('pose_files', {}).get(pose_kind)
+if outfit_pose and '--pose-file' not in sys.argv:
+    pose_path = str(ARGS.mpfb_user_data / 'data' / 'poses' / outfit_pose / (outfit_pose + '.bvh'))
+    if not os.path.isfile(pose_path):
+        raise RuntimeError('missing outfit pose ' + pose_path)
 addon_utils.enable('io_anim_bvh', default_set=False, persistent=False)
 AnimationService.import_bvh_file_as_pose(rig, pose_path)
 print('POSE=' + pose_kind + ':' + pose_path)
@@ -158,21 +191,23 @@ def reset_pose_bones(names):
             bone.location = (0.0, 0.0, 0.0)
 
 source_scale = 1.75 / 1.6594
+# MPFB works in metres; LU-21 rescaled its androgynous default to 1.75 m. Natural outfits keep metres.
+pose_scale = 1.0 if OUTFIT['height'] == 'natural' else source_scale
 radio_obj = None
 if pose_kind == 'seated':
     # The CC0 Anrico chair pose supplies both legs and arms; move its pelvis
     # to the field bench height before the final adult-scale bake.
     hip = rig.pose.bones['root'].head.z
-    rig.location.z += (0.45 / source_scale) - hip
+    rig.location.z += (0.45 / pose_scale) - hip
 elif pose_kind == 'pilot':
     # Hold a compact two-stick transmitter just ahead of the abdomen.
     for side, sign in [('L', 1.0), ('R', -1.0)]:
         reset_pose_bones([part + '.' + side for part in ['clavicle', 'shoulder01', 'upperarm01', 'upperarm02', 'lowerarm01', 'lowerarm02']])
-        make_ik_target('RadioHand_' + side, (sign * 0.145 / source_scale, -0.27 / source_scale, 1.065 / source_scale), 'lowerarm02.' + side, 4, (sign * 0.36 / source_scale, 0.22 / source_scale, 1.15 / source_scale))
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -0.265 / source_scale, 1.015 / source_scale))
+        make_ik_target('RadioHand_' + side, (sign * 0.145 / pose_scale, -0.27 / pose_scale, 1.065 / pose_scale), 'lowerarm02.' + side, 4, (sign * 0.36 / pose_scale, 0.22 / pose_scale, 1.15 / pose_scale))
+    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -0.265 / pose_scale, 1.015 / pose_scale))
     radio_obj = bpy.context.object
     radio_obj.name = 'RC_Transmitter'
-    radio_obj.dimensions = (0.23 / source_scale, 0.09 / source_scale, 0.15 / source_scale)
+    radio_obj.dimensions = (0.23 / pose_scale, 0.09 / pose_scale, 0.15 / pose_scale)
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
     radio_mat = bpy.data.materials.new('RC_Transmitter_Matte_Dark')
     radio_mat.diffuse_color = (0.015, 0.02, 0.03, 1.0)
@@ -182,7 +217,7 @@ elif pose_kind == 'pilot':
     radio_obj.data.materials.append(radio_mat)
     radio_parts = [radio_obj]
     for side, sign in [('Left', 1.0), ('Right', -1.0)]:
-        bpy.ops.mesh.primitive_cylinder_add(vertices=8, radius=0.014 / source_scale, depth=0.04 / source_scale, location=(sign * 0.055 / source_scale, -0.265 / source_scale, (1.015 + 0.09) / source_scale))
+        bpy.ops.mesh.primitive_cylinder_add(vertices=8, radius=0.014 / pose_scale, depth=0.04 / pose_scale, location=(sign * 0.055 / pose_scale, -0.265 / pose_scale, (1.015 + 0.09) / pose_scale))
         part = bpy.context.object
         part.name = 'RC_Stick_' + side
         part.data.materials.append(radio_mat)
@@ -193,7 +228,7 @@ elif pose_kind == 'pilot':
     bpy.context.view_layer.objects.active = radio_obj
     bpy.ops.object.join()
     bevel = radio_obj.modifiers.new('Radio housing edge bevel', 'BEVEL')
-    bevel.width = 0.008 / source_scale
+    bevel.width = 0.008 / pose_scale
     bevel.segments = 2
 bpy.context.view_layer.update()
 for bone_name in ['root', 'pelvis.L', 'pelvis.R', 'upperleg02.L', 'upperleg02.R', 'lowerleg01.L', 'lowerleg01.R', 'foot.L', 'foot.R', 'lowerarm02.L', 'lowerarm02.R']:
@@ -206,16 +241,17 @@ for image in list(bpy.data.images):
     if image.source != 'FILE' or image.size[0] <= 0 or image.size[1] <= 0:
         continue
     path = image.filepath.lower().replace('\\', '/')
+    edges = OUTFIT['image_max_edge']
     if '/skins/' in path:
-        max_edge = 1024
+        max_edge = edges['skins']
     elif '/clothes/' in path or '/shoes/' in path:
-        max_edge = 1024
+        max_edge = edges['clothes']
     elif '/hair/' in path:
-        max_edge = 512
+        max_edge = edges['hair']
     elif '/eyes/' in path or '/eyebrows/' in path or '/eyelashes/' in path:
-        max_edge = 256
+        max_edge = edges['eyes']
     else:
-        max_edge = 512
+        max_edge = edges['other']
     largest = max(image.size[0], image.size[1])
     if largest > max_edge:
         new_width = max(1, round(image.size[0] * max_edge / largest))
@@ -238,18 +274,11 @@ static_meshes = []
 for obj in list(export_objects):
     if obj.type != 'MESH' or obj == export_base:
         continue
-    if 'male1591' in obj.name:
-        decimate = obj.modifiers.new('Export detail reduction', 'DECIMATE')
-        decimate.ratio = 0.70
-    elif 'male_casualsuit04' in obj.name:
-        decimate = obj.modifiers.new('Export detail reduction', 'DECIMATE')
-        decimate.ratio = 0.80
-    elif 'shoes02' in obj.name:
-        decimate = obj.modifiers.new('Export detail reduction', 'DECIMATE')
-        decimate.ratio = 0.50
-    elif 'short01' in obj.name:
-        decimate = obj.modifiers.new('Export detail reduction', 'DECIMATE')
-        decimate.ratio = 0.35
+    for key, ratio in OUTFIT['decimate'].items():
+        if key in obj.name:
+            decimate = obj.modifiers.new('Export detail reduction', 'DECIMATE')
+            decimate.ratio = ratio
+            break
     bpy.context.view_layer.update()
     depsgraph = bpy.context.evaluated_depsgraph_get()
     evaluated = obj.evaluated_get(depsgraph)
@@ -278,7 +307,7 @@ min_y = min(v.y for v in all_world)
 max_y = max(v.y for v in all_world)
 min_z = min(v.z for v in all_world)
 max_z = max(v.z for v in all_world)
-height_scale = source_scale if pose_kind == 'seated' else 1.75 / (max_z - min_z)
+height_scale = 1.0 if OUTFIT['height'] == 'natural' else (source_scale if pose_kind == 'seated' else 1.75 / (max_z - min_z))
 center_x = (min_x + max_x) * 0.5
 center_y = (min_y + max_y) * 0.5
 for obj in static_meshes:
@@ -330,7 +359,7 @@ for obj in export_objects:
     obj.select_set(True)
 bpy.context.view_layer.objects.active = export_root
 out_dir = stage
-out_gltf = os.path.join(out_dir, 'person_' + pose_kind + '.gltf')
+out_gltf = os.path.join(out_dir, name_stem + pose_kind + '.gltf')
 bpy.ops.export_scene.gltf(filepath=out_gltf, export_format='GLTF_SEPARATE', use_selection=True, export_animations=False, export_apply=True, export_image_format='AUTO')
 print('GLTF_BYTES=' + str(os.path.getsize(out_gltf)))
 print('GLTF_PATH=' + out_gltf)
@@ -355,7 +384,7 @@ scene.render.resolution_x = 640
 scene.render.resolution_y = 800
 scene.render.resolution_percentage = 100
 scene.render.image_settings.file_format = 'PNG'
-scene.render.filepath = os.path.join(stage, 'person_' + pose_kind + '_preview.png')
+scene.render.filepath = os.path.join(stage, name_stem + pose_kind + '_preview.png')
 scene.render.film_transparent = False
 scene.world.color = (0.045, 0.055, 0.07)
 scene.view_settings.view_transform = 'AgX'
@@ -385,6 +414,6 @@ scene.render.image_settings.color_mode = 'RGBA'
 bpy.ops.render.render(write_still=True)
 print('PREVIEW=' + scene.render.filepath)
 
-blend_path = os.path.join(stage, 'person_' + pose_kind + '.blend')
+blend_path = os.path.join(stage, name_stem + pose_kind + '.blend')
 bpy.ops.wm.save_as_mainfile(filepath=blend_path)
 print('BLEND_BYTES=' + str(os.path.getsize(blend_path)))

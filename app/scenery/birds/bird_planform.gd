@@ -1,20 +1,24 @@
 ## SC-BIRD-03: species silhouettes built from the planform data (birds.json), true size, in the mesh's XZ plane:
 ## nose +Z, wings along +-X, up +Y; a keel and the arm's leading-edge strip give depth when seen edge-on.
-## Vertex COLOR carries the shader rig's weights: r = span fraction, g = hand (outboard of the wrist), b = tail (0 at
-## the tail root, 1 at its end), a = 1. UV.y is the feather shade (0 body colour, 1 dark tips); UV.x is set by atlas()
-## to the species' index in its MultiMesh, so several species share a draw.
+## Every species of a MultiMesh shares one topology (the group's finger slots; a three-triangle tail whose notch is
+## forward for a forked tail, on the end line for a square one and behind it for a wedge), so group_mesh() can store
+## each species' shape in CUSTOM0..3 and a bird draws only its own triangles. CUSTOMn.w packs the rig weights as
+## tail + 2 * hand (hand: outboard of the wrist; tail: 0 at its root, 1 at its end). UV.y is the feather shade.
 extends RefCounted
 
 const FINGER_FILL := 0.72 # share of each finger slot covered by the feather; the rest is the gap
 const LEADING_EDGE_THICKNESS := 0.06 # arm depth at the root as a share of the root chord [est]
+const WEDGE_POINT := 0.35 # a wedge tail's point lies this share of the tail length behind its corners [est]
+const MAX_SPECIES := 4 # CUSTOM0..3
 const PART_BODY := 0 # per-vertex part labels (build().parts), for the tests
 const PART_WING := 1
 const PART_TAIL := 2
 
 
-## {vertices, colors, shades, parts, rig: Vector4(shoulder x, wrist x, tail root z, half span), triangles}.
-static func build(planform: Dictionary, span: float) -> Dictionary:
-	var out := {vertices = PackedVector3Array(), colors = PackedColorArray(), shades = PackedFloat32Array(),
+## {vertices, weights, shades, parts, rig: Vector4(shoulder x, wrist x, tail root z, half span), triangles}.
+## finger_slots: the group's finger count (a species with fewer fingers leaves the rest as zero-area triangles).
+static func build(planform: Dictionary, span: float, finger_slots: int) -> Dictionary:
+	var out := {vertices = PackedVector3Array(), weights = PackedFloat32Array(), shades = PackedFloat32Array(),
 		parts = PackedByteArray()}
 	var half: float = span * 0.5
 	var length: float = planform.body_length
@@ -28,7 +32,7 @@ static func build(planform: Dictionary, span: float) -> Dictionary:
 	var wrist_te: float = wrist_le - float(planform.wrist_chord)
 	var tip_le: float = le0 + float(planform.tip_sweep)
 	var tip_te: float = tip_le - float(planform.tip_chord)
-	var ctx := {out = out, half = half, wrist = wrist, tail_root = tail_root, tail_length = 0.0, part = PART_BODY}
+	var ctx := {out = out, wrist = wrist, tail_root = tail_root, tail_length = 0.0, part = PART_BODY}
 	# Body: nose, shoulders and tail root.
 	var n := _v(0.0, nose)
 	var rl := _v(shoulder, le0)
@@ -47,6 +51,7 @@ static func build(planform: Dictionary, span: float) -> Dictionary:
 	_tri(ctx, [n, t, Vector3(0.0, -depth, mid)], [0.0, 0.0, 0.0])
 	_tail(ctx, planform, shoulder)
 	var thickness: float = float(planform.root_chord) * LEADING_EDGE_THICKNESS
+	var fingers: int = mini(int(planform.fingers), finger_slots)
 	ctx.part = PART_WING
 	for side: float in [1.0, -1.0]:
 		var a_le := _v(side * shoulder, le0)
@@ -58,16 +63,14 @@ static func build(planform: Dictionary, span: float) -> Dictionary:
 		var a_low := Vector3(side * shoulder, -thickness, le0 - thickness)
 		var w_low := Vector3(side * wrist, -thickness * 0.6, wrist_le - thickness * 0.6)
 		_quad(ctx, [a_le, a_low, w_low, w_le], [0.0, 0.2, 0.3, 0.3])
-		var fingers: int = int(planform.fingers)
-		if fingers == 0:
-			var t_le := _v(side * half, tip_le)
-			var t_te := _v(side * half, tip_te)
-			if float(planform.tip_chord) <= 1e-4:
-				_tri(ctx, [w_le, w_te, t_le], [0.3, 0.65, 1.0])
-			else:
-				_quad(ctx, [w_le, w_te, t_te, t_le], [0.3, 0.65, 1.0, 1.0])
+		var t_le := _v(side * half, tip_le)
+		var t_te := _v(side * half, tip_te)
+		if finger_slots == 0:
+			# Pointed or square hand; with a zero tip chord the second triangle has no area.
+			_quad(ctx, [w_le, w_te, t_te, t_le], [0.3, 0.65, 1.0, 1.0])
 			continue
-		var base_x: float = wrist + (1.0 - float(planform.finger_length)) * (half - wrist)
+		var finger_length: float = float(planform.finger_length) if fingers > 0 else 0.0
+		var base_x: float = wrist + (1.0 - finger_length) * (half - wrist)
 		var f: float = (base_x - wrist) / maxf(half - wrist, 1e-6)
 		var b_le := _v(side * base_x, lerpf(wrist_le, tip_le, f))
 		var b_te := _v(side * base_x, lerpf(wrist_te, tip_te, f))
@@ -75,7 +78,10 @@ static func build(planform: Dictionary, span: float) -> Dictionary:
 		var nearest := INF # the longest finger reaches the wing tip exactly, so the silhouette keeps its span
 		for i: int in fingers:
 			nearest = minf(nearest, absf((float(i) + FINGER_FILL * 0.5) / fingers - 0.45))
-		for i: int in fingers:
+		for i: int in finger_slots:
+			if i >= fingers:
+				_tri(ctx, [t_le, t_le, t_le], [1.0, 1.0, 1.0]) # unused slot: zero area at the tip
+				continue
 			var u0: float = float(i) / fingers
 			var u1: float = u0 + FINGER_FILL / fingers
 			var um: float = (u0 + u1) * 0.5
@@ -88,59 +94,73 @@ static func build(planform: Dictionary, span: float) -> Dictionary:
 	return out
 
 
-## One ArrayMesh with every species of a MultiMesh; UV.x = species index (0, 1, ...).
-static func atlas(builds: Array) -> ArrayMesh:
-	var vertices := PackedVector3Array()
+## One ArrayMesh for a MultiMesh: VERTEX and UV from the first species, each species' shape and rig weights in
+## CUSTOM0..3 (unused slots repeat the first species). All builds must share the topology (same vertex count).
+static func group_mesh(builds: Array) -> ArrayMesh:
+	var first: Dictionary = builds[0]
+	var count: int = (first.vertices as PackedVector3Array).size()
 	var normals := PackedVector3Array()
-	var colors := PackedColorArray()
 	var uvs := PackedVector2Array()
-	for index: int in builds.size():
-		var b: Dictionary = builds[index]
-		vertices.append_array(b.vertices)
-		colors.append_array(b.colors)
-		for s: float in b.shades:
-			uvs.append(Vector2(index, s))
-			normals.append(Vector3.UP)
+	for s: float in first.shades:
+		uvs.append(Vector2(0.0, s))
+		normals.append(Vector3.UP)
 	var arrays := []
 	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_VERTEX] = first.vertices
 	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_COLOR] = colors
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
+	var flags := 0
+	for slot: int in MAX_SPECIES:
+		var b: Dictionary = builds[slot] if slot < builds.size() else first
+		assert((b.vertices as PackedVector3Array).size() == count, "bird species in one MultiMesh need one topology")
+		var custom := PackedFloat32Array()
+		custom.resize(count * 4)
+		for i: int in count:
+			var v: Vector3 = b.vertices[i]
+			custom[i * 4] = v.x
+			custom[i * 4 + 1] = v.y
+			custom[i * 4 + 2] = v.z
+			custom[i * 4 + 3] = b.weights[i]
+		arrays[Mesh.ARRAY_CUSTOM0 + slot] = custom
+		flags |= Mesh.ARRAY_CUSTOM_RGBA_FLOAT << (Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT + slot * Mesh.ARRAY_FORMAT_CUSTOM_BITS)
 	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, flags)
 	return mesh
 
 
+## Unpacks a CUSTOMn.w rig weight into [hand, tail] (as sky_birds.gdshader does).
+static func unpack_weight(w: float) -> Array[float]:
+	var hand: float = 1.0 if w > 1.5 else 0.0
+	return [hand, w - 2.0 * hand]
+
+
+## Three triangles for every tail shape (the topology is shared): the notch is forward of the end line by the fork
+## for a forked tail, on it for a square tail, and behind it for a wedge. A missing tail collapses to its root.
 static func _tail(ctx: Dictionary, planform: Dictionary, shoulder: float) -> void:
 	var length: float = planform.tail_length
-	if length <= 1e-4:
-		return
 	var root: float = ctx.tail_root
 	var root_half: float = maxf(shoulder * 0.7, 1e-3)
 	var end_half: float = maxf(float(planform.tail_width) * 0.5, root_half)
 	var end_z: float = root - length
+	var notch_z: float = end_z
+	match str(planform.tail_shape):
+		"forked":
+			notch_z = end_z + float(planform.tail_fork)
+		"wedge":
+			notch_z = end_z - length * WEDGE_POINT
+	if length <= 1e-4:
+		end_half = root_half
+		notch_z = root
 	var rl := _v(-root_half, root)
 	var rr := _v(root_half, root)
 	var el := _v(-end_half, end_z)
 	var er := _v(end_half, end_z)
-	ctx.tail_length = length
+	var notch := _v(0.0, notch_z)
+	ctx.tail_length = maxf(length * (1.0 + WEDGE_POINT), 1e-4)
 	ctx.part = PART_TAIL
-	match str(planform.tail_shape):
-		"forked":
-			var notch := _v(0.0, end_z + float(planform.tail_fork))
-			_tri(ctx, [rl, rr, notch], [0.0, 0.0, 0.4])
-			_tri(ctx, [rr, er, notch], [0.0, 0.6, 0.4])
-			_tri(ctx, [rl, notch, el], [0.0, 0.4, 0.6])
-		"wedge":
-			var ml := _v(-end_half, root - length * 0.6)
-			var mr := _v(end_half, root - length * 0.6)
-			_tri(ctx, [rl, rr, mr], [0.0, 0.0, 0.4])
-			_tri(ctx, [rl, mr, ml], [0.0, 0.4, 0.4])
-			_tri(ctx, [ml, mr, _v(0.0, end_z)], [0.4, 0.4, 0.6])
-		_:
-			_tri(ctx, [rl, rr, er], [0.0, 0.0, 0.5])
-			_tri(ctx, [rl, er, el], [0.0, 0.5, 0.5])
+	_tri(ctx, [rl, rr, notch], [0.0, 0.0, 0.4])
+	_tri(ctx, [rr, er, notch], [0.0, 0.6, 0.4])
+	_tri(ctx, [rl, notch, el], [0.0, 0.4, 0.6])
 	ctx.tail_length = 0.0
 	ctx.part = PART_BODY
 
@@ -150,19 +170,19 @@ static func _quad(ctx: Dictionary, p: Array, shade: Array) -> void:
 	_tri(ctx, [p[0], p[2], p[3]], [shade[0], shade[2], shade[3]])
 
 
-## Appends one triangle; the rig weights follow from each vertex's position.
+## Appends one triangle; the rig weights follow from each vertex's position and part.
 static func _tri(ctx: Dictionary, p: Array, shade: Array) -> void:
 	var out: Dictionary = ctx.out
-	var tail_length: float = ctx.tail_length
 	for i: int in 3:
 		var v: Vector3 = p[i]
-		var x: float = absf(v.x)
-		var hand: float = 1.0 if x > float(ctx.wrist) + 1e-5 else 0.0
-		# Vertices on the tail root edge stay with the body (float32 rounding must not give them a tiny tail weight).
-		var tail: float = (float(ctx.tail_root) - v.z) / tail_length if tail_length > 0.0 else 0.0
-		tail = 0.0 if tail < 1e-4 else minf(tail, 1.0)
+		var hand: float = 1.0 if int(ctx.part) == PART_WING and absf(v.x) > float(ctx.wrist) + 1e-5 else 0.0
+		var tail := 0.0
+		if int(ctx.part) == PART_TAIL:
+			# Vertices on the tail root edge stay with the body (rounding must not give them a tiny tail weight).
+			tail = (float(ctx.tail_root) - v.z) / float(ctx.tail_length)
+			tail = 0.0 if tail < 1e-4 else minf(tail, 1.0)
 		out.vertices.append(v)
-		out.colors.append(Color(clampf(x / float(ctx.half), 0.0, 1.0), hand, tail, 1.0))
+		out.weights.append(tail + 2.0 * hand)
 		out.shades.append(float(shade[i]))
 		out.parts.append(int(ctx.part))
 

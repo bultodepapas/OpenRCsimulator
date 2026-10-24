@@ -1,0 +1,79 @@
+{
+  "id": "woman_tee",
+  "notes": "Club member: tucked t-shirt, cargo pants, sneakers, ponytail.",
+  "macros": {
+    "gender": 0.0,
+    "age": 0.45,
+    "muscle": 0.48,
+    "weight": 0.48,
+    "height": 0.55,
+    "race": {
+      "caucasian": 0.7,
+      "asian": 0.1,
+      "african": 0.2
+    }
+  },
+  "proxy": "female1605.proxy",
+  "skin": "young_caucasian_female.mhmat",
+  "assets": [
+    [
+      "eyes",
+      "low-poly.mhclo",
+      "Eyes"
+    ],
+    [
+      "eyebrows",
+      "eyebrow006.mhclo",
+      "Eyebrows"
+    ],
+    [
+      "hair",
+      "ponytail01.mhclo",
+      "Hair"
+    ],
+    [
+      "clothes",
+      "toigo_basic_tucked_t-shirt.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "cortu_cargo_pants.mhclo",
+      "Clothes"
+    ],
+    [
+      "clothes",
+      "shoes03.mhclo",
+      "Clothes"
+    ]
+  ],
+  "image_max_edge": {
+    "skins": 512,
+    "clothes": 512,
+    "hair": 512,
+    "eyes": 256,
+    "other": 256
+  },
+  "height": "natural",
+  "decimate": {
+    "male1591": 0.62,
+    "female1605": 0.62,
+    "polo": 0.5,
+    "cargo": 0.75,
+    "shorts": 0.7,
+    "t-shirt": 0.6,
+    "worksuit": 0.6,
+    "casualsuit": 0.6,
+    "boots": 0.25,
+    "shoes": 0.35,
+    "flats": 0.45,
+    "short0": 0.3,
+    "ponytail": 0.3,
+    "cap": 0.5,
+    "beard": 0.4,
+    "glasses": 0.35
+  },
+  "pose_files": {
+    "seated": "callharvey3d_sittingnatural"
+  }
+}
