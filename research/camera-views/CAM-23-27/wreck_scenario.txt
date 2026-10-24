@@ -1,0 +1,27 @@
+fly start=airborne
+wait seconds=3
+key name=5
+sticks pitch=-1 throttle=1 for_s=6
+wait until="not flight.session.crash.is_empty()" timeout_s=60
+wait seconds=4
+press text="Inspect wreck"
+wait seconds=1
+eval expr="[flight._rig.view, flight._crash_director.focus_point().distance_to(flight._crash_director._impact_point), flight._camera.unproject_position(flight._crash_director.focus_point()), flight._camera.get_viewport().get_visible_rect().size]"
+eval expr="flight._camera.global_position"
+eval expr="flight._rig.drag(Vector2(500, 0))"
+wait seconds=1
+eval expr="[flight._camera.global_position, flight._camera.unproject_position(flight._crash_director.focus_point())]"
+screenshot format=jpg max_width=960
+key name=2
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.unproject_position(flight._crash_director.focus_point()), flight._camera.is_position_behind(flight._crash_director.focus_point())]"
+screenshot format=jpg max_width=960
+key name=C
+key name=C
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.unproject_position(flight._crash_director.focus_point()), flight._camera.global_position.y]"
+screenshot format=jpg max_width=960
+key name=1
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.unproject_position(flight._crash_director.focus_point())]"
+logs --summary

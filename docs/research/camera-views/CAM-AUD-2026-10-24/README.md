@@ -2,6 +2,8 @@
 
 2026-10-24. A full audit of the game's cameras: defects, smoothness, options, realism, effects and quality, with measurements and an external survey. No runtime file was changed. The [camera plan](../../../plans/camera-views.md) owns the remaining work; the steps this audit proposes are added there as CAM-23…CAM-31.
 
+Follow-up: [CAM-23…27](../CAM-23-27/README.md) (2026-10-24) fixed F1, F2, F3, F5, F7, F8 (truck) and F9 (helicopter); this report keeps the state it measured.
+
 Base commit `4e0a3710`, Godot 4.7.2 (Compatibility renderer, MSAA 2×, 240 Hz physics). Software checks ran on the shared VM (Mesa llvmpipe, no GPU, no display, no sound). They establish behaviour and relative cost only: not readability, comfort or target-machine performance (Gate 2, CAM-21/22).
 
 ## Verdict

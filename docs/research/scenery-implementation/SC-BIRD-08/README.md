@@ -15,7 +15,7 @@
 
 | Check | Result |
 | --- | --- |
-| [test_birds.gd](../../../../app/tests/test_birds.gd) | 289 checks pass, among them: real time-of-day snapshots (night and dawn: none; noon: vultures, storks, kites, swallows, no swifts; evening at sun 4.8°: swifts and swallows, no vultures; morning at the same sun: no swifts); overcast noon: no vultures or storks; low detail: half; transitions continuous (largest step < 0.8 % of the way per 0.1 s, turning round included), easing in from any fraction of a second and at the clock wrap, settled to flying or away; a noon-to-evening jump snaps within the budget; the runtime follows a flow-state sun; low detail draws about half the birds; **drawn primitives ≤ 1,000 at every sun elevation, morning and afternoon, clouds 0/0.7/0.95, with birds still on their way from ±1° of sun (worst 805)**; every bird stays out of the flight box and 30 m from the pilot on its circuit and along its way out; shared topology and per-species shapes in CUSTOM0..3; per-species colour, gait, departure and rig uniforms hold their data |
+| [test_birds.gd](../../../../app/tests/test_birds.gd) | 309 checks pass, among them: real time-of-day snapshots (night and dawn: none; noon: vultures, storks, kites, swallows, no swifts; evening at sun 4.8°: swifts and swallows, no vultures; morning at the same sun: no swifts); overcast noon: no vultures or storks; low detail: half; transitions continuous (largest step < 0.8 % of the way per 0.1 s, turning round included), easing in from any fraction of a second and at the clock wrap, settled to flying or away; a noon-to-evening jump snaps within the budget; the runtime follows a flow-state sun; low detail draws about half the birds; **drawn primitives ≤ 1,000 at every sun elevation, morning and afternoon, clouds 0/0.7/0.95, with birds still on their way from ±1° of sun (worst 805)**; every bird stays out of the flight box and 30 m from the pilot on its circuit and along its way out; shared topology and per-species shapes in CUSTOM0..3; per-species colour, gait, departure and rig uniforms hold their data |
 | [check_birds.py](../../../../tools/scenery/check_birds.py) at 1920×1080, noon and 17:48 | 14 views, earliest and latest flying bird of each flock: all drawn 1.9–4.9 px from the CPU prediction. Noon: 17 soaring + 10 small birds drawn; evening (sun 4.8°): 1 kite + 21 small. Mean bird colour at noon: storks (229, 233, 234), vultures (96–119), kites (81–95), swallows dark. Repeats and second processes byte-identical |
 | [lifecycle_check.py](../../../../tools/godot/lifecycle_check.py) `--scenario flight --cycles 4`, birds on | Passed: no node, orphan, object or resource growth over Home → flight → Home; no shutdown leak warnings |
 | Regressions | `test_time_of_day_scenery_update`, `test_scenery_build`, `test_landscape_scenery_grass_mask` pass; GDScript warnings clean in the bird scripts |
@@ -35,6 +35,22 @@ A second read-only review (Good Enemy role) confirmed the half-float exactness o
 | A restore commits lighting before the clock: transitions started at the pre-restore clock | Covered by the wrapped difference (waits) and the jump snap | — |
 | Tests: "none vanishes" counted drawn slots; loose continuity bound; low detail checked shares only | Departure share read per bird; bound 0.008; drawn counts compared | — |
 | No limit on departure speed or birds per group | ≤ 30 m/s; ≤ 32 birds per group | Mutations |
+
+## Efficiency round
+
+Measured before changing anything, then one change at a time ([bench_birds.gd](../../../../tools/scenery/bench_birds.gd): the bird layer alone at 1920×1080, 20 copies, pilot-eye camera, best of 3–4 alternating rounds; llvmpipe on the shared VM, so it ranks versions on this machine only).
+
+| Change | Before → after | Evidence |
+| --- | --- | --- |
+| Indexed group mesh: corners identical in every attribute (all species' shapes, weights, shade) share a vertex | 105 → 69 vertex-shader runs per soaring bird, 63 → 25 per small bird | Test: every corner keeps each species' attributes |
+| One track evaluation per vertex instead of five: analytic heading on the tangent-continuous segment; bank from the lateral acceleration averaged with the same ±0.8 s triangle kernel, integrated exactly over the segments (no trigonometry) | 5 lookups + 5 positions → 2 lookups, a ≤ 8-segment walk, 1 position | Tests: bank exact (`atan(v²κ/g)`) inside arcs, roll continuous across joints, the float32 shader copy within 0.00005 m/s² of the float64 reference |
+| Segment lookup by motif repeat (every repeat lasts period / repeats): search ≤ 7 segments instead of up to 25 | Swallow circuit 25 → ≤ 5 iterations | Shader tables test over 0–2048 s |
+| GPU, combined (same process, old shader `be42c196` and de-indexed mesh vs current) | **1,090–1,096 → 578–675 µs per layer copy** (−38…−47 %; the spread follows the machine's load) | Bench rounds above |
+| Exact track bounds (segment ends and the arc points where the heading crosses a multiple of 90°) instead of sampling every 0.25 s | Data validation and compile ≈ 45 → ≈ 5 ms; `Birds.build` ≈ 50 → 11–15 ms (headless, loaded machine) | Test: exact bounds hold every 0.05 s sample and are within 0.1 m of it |
+
+Behaviour change, deliberate: the bank is now the true lateral acceleration. The old second difference of positions shortens it on tight turns by the chord factor 2(1 − cos θ)/θ² (swift 6 m turn: 42.6° instead of 45.2°). Positions are unchanged: the 1080p capture still draws every bird 1.9–4.9 px from the CPU prediction (14 views). `MIN_SEGMENT_S` is now 0.25 s and a motif has at most 16 segments, so the shader's fixed loops hold.
+
+Unchanged and already cheap: `apply_lighting` ≈ 80 µs per commit, the runtime's `poll()` ≈ 4 µs per frame, `test_birds.gd` ≈ 3–4 s (309 checks).
 
 ## Measured renderer facts
 

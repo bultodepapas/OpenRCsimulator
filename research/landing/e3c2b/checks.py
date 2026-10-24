@@ -67,7 +67,9 @@ def check_records(manifest, capture, manifest_hash, pilot_eye, throws):
         if record['view'] == 'pilot':
             close(record['camera_position'], pilot_eye, 1e-6, 'pilot eye moved')
             distance = math.dist(record['rendered_cg'], pilot_eye)
-            expected_fov = math.degrees(2*math.atan(camera['auto_zoom_span']*540/(2*distance*camera['target_px'])))
+            # CAM-23: target_px of a reference height; manifests from before it measured the 540 px capture itself.
+            reference_h = camera.get('reference_height_px', 540)
+            expected_fov = math.degrees(2*math.atan(camera['auto_zoom_span']*reference_h/(2*distance*camera['target_px'])))
             expected_fov = min(camera['base_fov_deg'], max(camera['min_fov_deg'], expected_fov))
         else:
             basis, origin, offset = record['root_basis'], record['root_origin'], camera['inspect_offset']

@@ -81,9 +81,10 @@ func _initialize() -> void:
 	_check("render forward −z is north", _near(Telemetry.heading_of_render_forward(0.0, -1.0), 0.0))
 	_check("render forward +x is east", _near(Telemetry.heading_of_render_forward(1.0, 0.0), 90.0))
 
-	# FAR: span 1.524 m at the 6° minimum FOV is 30 px tall on 720 px at 1.524·720 / (2·tan 3°·30) m.
+	# FAR (CAM-23): span 1.524 m at the 6° minimum FOV covers 30 px of a 1080 px view at 1.524·1080 / (2·tan 3°·30) m,
+	# where the pilot view's auto-zoom reaches its floor at every resolution.
 	var far := Telemetry.far_distance(1.524)
-	_check("far distance of the Stik span ≈ 348.9 m", _near(far, 1.524 * 720.0 / (2.0 * tan(deg_to_rad(3.0)) * 30.0), 1e-6), "%.3f" % far)
+	_check("far distance of the Stik span ≈ 523.4 m", _near(far, 1.524 * 1080.0 / (2.0 * tan(deg_to_rad(3.0)) * 30.0), 1e-6), "%.3f" % far)
 
 	# Warnings.
 	var base := { airspeed = 15.0, alpha_deg = 0.0, height_agl = 40.0, vertical_speed = 0.0, distance_pilot = 80.0 }

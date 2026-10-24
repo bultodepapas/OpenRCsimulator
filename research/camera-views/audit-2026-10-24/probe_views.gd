@@ -280,21 +280,23 @@ func _pilot_pass(label: String, lateral: float, height: float, speed: float) -> 
 
 func _autozoom_table() -> void:
 	var span := 1.5
-	print("AUTOZOOM span %.1f m, target %d px, FOV clamp %.0f–%.0f°" % [span, Spec.AUTO_ZOOM.target_px, Spec.AUTO_ZOOM.min_fov_deg, Spec.CAMERA.fov_deg])
-	# Physical screen: 27-inch 16:9 (height 33.6 cm) seen from 60 cm.
-	var screen_h_cm := 27.0 * 2.54 * 9.0 / sqrt(16.0 * 16.0 + 9.0 * 9.0)
-	for h: float in [720.0, 1080.0, 1440.0, 2160.0]:
-		var line := "  %4dp:" % int(h)
-		for d: float in [25.0, 50.0, 100.0, 200.0, 300.0, 500.0, 800.0]:
-			var fov := PilotCamera.auto_fov(span, d, h)
-			var px := PilotCamera.projected_px(span, d, fov, h)
-			var on_screen_arcmin := rad_to_deg(2.0 * atan(px / h * screen_h_cm * 0.5 / 60.0)) * 60.0
-			var real_arcmin := rad_to_deg(2.0 * atan(span * 0.5 / d)) * 60.0
-			line += "  %3dm %4.1f° %4.0fpx ×%.1f" % [int(d), fov, px, on_screen_arcmin / real_arcmin]
-		print(line)
-	print("  (×N = on-screen angular size / real angular size, 27-inch 16:9 at 60 cm)")
-	var natural := rad_to_deg(2.0 * atan(screen_h_cm * 0.5 / 60.0))
-	print("  natural (orthoscopic) vertical FOV for that screen: %.1f°" % natural)
+	# The audit measured the former law (30 px of the actual viewport height). CAM-23 replaced it with 30 px of a
+	# 1080 px reference, i.e. the same share of any height; both are printed so the table stays reproducible.
+	for law: String in ["former 30 px absolute", "CAM-23 30/1080 of the height"]:
+		print("AUTOZOOM %s, span %.1f m, FOV clamp %.0f–%.0f°" % [law, span, Spec.AUTO_ZOOM.min_fov_deg, Spec.CAMERA.fov_deg])
+		# Physical screen: 27-inch 16:9 (height 33.6 cm) seen from 60 cm.
+		var screen_h_cm := 27.0 * 2.54 * 9.0 / sqrt(16.0 * 16.0 + 9.0 * 9.0)
+		for h: float in [720.0, 1080.0, 1440.0, 2160.0]:
+			var line := "  %4dp:" % int(h)
+			for d: float in [25.0, 50.0, 100.0, 200.0, 300.0, 500.0, 800.0]:
+				var fov := PilotCamera.auto_fov(span, d, 30.0, h) if law.begins_with("former") else PilotCamera.auto_fov(span, d)
+				var px := PilotCamera.projected_px(span, d, fov, h)
+				var on_screen_arcmin := rad_to_deg(2.0 * atan(px / h * screen_h_cm * 0.5 / 60.0)) * 60.0
+				var real_arcmin := rad_to_deg(2.0 * atan(span * 0.5 / d)) * 60.0
+				line += "  %3dm %4.1f° %4.0fpx ×%.1f" % [int(d), fov, px, on_screen_arcmin / real_arcmin]
+			print(line)
+		print("  (×N = on-screen angular size / real angular size, 27-inch 16:9 at 60 cm)")
+		print("  natural (orthoscopic) vertical FOV for that screen: %.1f°" % rad_to_deg(2.0 * atan(screen_h_cm * 0.5 / 60.0)))
 
 
 func _cost() -> void:

@@ -172,6 +172,7 @@ func _run() -> void:
 			"base_fov_deg": Spec.CAMERA.fov_deg,
 			"min_fov_deg": Spec.AUTO_ZOOM.min_fov_deg,
 			"target_px": Spec.AUTO_ZOOM.target_px,
+			"reference_height_px": Spec.AUTO_ZOOM.reference_height_px,
 			"inspect_offset": [Spec.INSPECT_OFFSET.x, Spec.INSPECT_OFFSET.y, Spec.INSPECT_OFFSET.z],
 			"auto_zoom_span": extent.x,
 		},

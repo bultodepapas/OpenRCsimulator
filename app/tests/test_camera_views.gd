@@ -2,6 +2,8 @@
 #   - pilot, close-up and landscape views are exactly what render/pilot_camera.gd produces (no picture change);
 #   - a Z toggle or manual zoom never jumps the FOV and settles on the law; Backspace returns to it;
 #   - chase: settled pose, frame-rate independence, circle/vertical/tail-slide/terrain/teleport cases;
+#   - CAM-24: chase frame-rate independence in a bank and a loop (sub-steps), no slide after entry (state velocity);
+#   - CAM-27: after a crash the orbit, chase and close-up look at the wreck; the orbit still turns; pilot untouched;
 #   - orbit: starts where the previous view was, clamps, keeps clear of the ground.
 # Run: godot --headless --path . --script res://tests/test_camera_views.gd
 extends SceneTree
@@ -62,10 +64,13 @@ func _initialize() -> void:
 func _run() -> void:
 	_pilot_parity()
 	_pilot_singularities()
+	_pilot_fov_reference()
 	_pilot_zoom()
 	_cycle()
 	_chase()
+	_chase_smoothness()
 	_orbit()
+	_wreck_focus()
 	print("all %d camera view checks passed" % _count if _failures == 0 else "%d of %d failed" % [_failures, _count])
 	quit(1 if _failures > 0 else 0)
 
@@ -126,6 +131,18 @@ func _pilot_singularities() -> void:
 	_check("ordinary pilot target retains exact look_at basis", cam.basis == reference.basis)
 	cam.free()
 	reference.free()
+
+
+## CAM-23: the pilot view's FOV comes from the 1080 px reference, whatever viewport the camera renders into (the
+## headless test viewport is 64 px tall; the former law read that height and gave its 6° floor here). Camera3D.fov is
+## 32-bit, hence the tolerance.
+func _pilot_fov_reference() -> void:
+	var cam := _camera()
+	var target := Vector3(0, 40, -250)
+	PilotCamera.aim(cam, target, Transform3D(Basis.IDENTITY, target), false, SPAN)
+	var expected := PilotCamera.auto_fov(SPAN, cam.position.distance_to(target))
+	_check("CAM-23 pilot view: FOV from the reference height, not the viewport (%d px tall)" % int(cam.get_viewport().get_visible_rect().size.y), absf(cam.fov - expected) < 1e-4, "%.4f vs %.4f" % [cam.fov, expected])
+	cam.free()
 
 
 func _pilot_zoom() -> void:
@@ -246,6 +263,105 @@ func _chase() -> void:
 	_check("chase: frozen while paused", (placed.position as Vector3) == before)
 
 
+## A 60° bank turn at 20 m/s (radius 23.5 m), level, starting north: { pos, basis, vel } at time t.
+static func _bank(t: float) -> Dictionary:
+	var v := 20.0
+	var r := v * v / (9.81 * tan(deg_to_rad(60.0)))
+	var th := v / r * t
+	var center := Vector3(r, 30.0, 0.0)
+	var pos := center + r * Vector3(-cos(th), 0.0, -sin(th))
+	var forward := Vector3(sin(th), 0.0, -cos(th))
+	var up := (Vector3.UP * cos(deg_to_rad(60.0)) + (center - pos).normalized() * sin(deg_to_rad(60.0))).normalized()
+	return { pos = pos, basis = Basis.looking_at(forward, up), vel = forward * v }
+
+
+## Straight north for 2 s, then a 15 m loop at 20 m/s, then straight again.
+static func _loop(t: float) -> Dictionary:
+	var v := 20.0
+	var r := 15.0
+	if t < 2.0:
+		return { pos = Vector3(0, 30, -v * t), basis = Basis.IDENTITY, vel = Vector3(0, 0, -v) }
+	var th := minf(v * (t - 2.0) / r, TAU)
+	var center := Vector3(0, 30 + r, -2.0 * v)
+	var pos := center + r * Vector3(0, -cos(th), -sin(th))
+	var forward := Vector3(0, sin(th), -cos(th))
+	if th >= TAU:
+		pos += Vector3(0, 0, -v * (t - 2.0 - TAU * r / v))
+	return { pos = pos, basis = Basis.looking_at(forward, (center - pos).normalized() if th < TAU else Vector3.UP), vel = forward * v }
+
+
+## The chase camera's position at time `until` for a trajectory sampled at fps; measured velocity or estimated.
+func _chase_at(trajectory: Callable, fps: float, until: float, measured: bool) -> Vector3:
+	var chase := ChaseView.new()
+	chase.configure(SPAN)
+	var dt := 1.0 / fps
+	var placed := {}
+	for i in roundi(until * fps) + 1:
+		var s: Dictionary = trajectory.call(i * dt)
+		placed = chase.update(s.pos, s.basis, dt if i > 0 else 0.0, false, _flat, s.vel if measured else Vector3.INF)
+	return placed.position
+
+
+func _chase_smoothness() -> void:
+	for measured: bool in [true, false]:
+		var label := "state velocity" if measured else "estimated velocity"
+		var bank := _chase_at(_bank, 30.0, 6.0, measured).distance_to(_chase_at(_bank, 144.0, 6.0, measured))
+		_check("CAM-24 chase (%s): 60° bank, camera at 30 and 144 fps within 1 cm" % label, bank < 0.01, "%.4f m" % bank)
+		var loop := _chase_at(_loop, 30.0, 7.0, measured).distance_to(_chase_at(_loop, 144.0, 7.0, measured))
+		_check("CAM-24 chase (%s): loop, camera at 30 and 144 fps within 2 cm" % label, loop < 0.02, "%.4f m" % loop)
+	# Entry: with the state velocity the look-ahead is settled on the first frame, so the airplane does not slide.
+	var chase := ChaseView.new()
+	chase.configure(SPAN)
+	var first := NAN
+	var worst := 0.0
+	var outside := 0
+	for i in 60:
+		var s := _loop(i / 60.0)
+		var placed := chase.update(s.pos, s.basis, 1.0 / 60.0 if i > 0 else 0.0, false, _flat, s.vel)
+		var b: Basis = placed.basis
+		var angle := rad_to_deg((-b.z).angle_to((s.pos as Vector3) - (placed.position as Vector3)))
+		if is_nan(first):
+			first = angle
+		worst = maxf(worst, absf(angle - first))
+	_check("CAM-24 chase: no slide after entry with the state velocity (≤ 0.01°)", worst < 0.01, "%.4f°" % worst)
+	chase.reset()
+	for i in 600:
+		var s := _loop(i / 60.0)
+		var placed := chase.update(s.pos, s.basis, 1.0 / 60.0 if i > 0 else 0.0, false, _flat, s.vel)
+		var local: Vector3 = (placed.basis as Basis).inverse() * ((s.pos as Vector3) - (placed.position as Vector3))
+		if absf(rad_to_deg(atan2(local.y, -local.z))) > ChaseView.FOV_DEG * 0.5 or local.z > 0.0:
+			outside += 1
+	_check("CAM-24 chase: the airplane stays in frame through a loop", outside == 0, "%d frames outside" % outside)
+	# A hard touchdown: 15 → 5 m/s within two ticks. The state velocity is damped like the estimate, so the aim moves
+	# 0.33° per 60 fps frame at most (0.96° with the estimate); an unfiltered velocity gave 1.8° (CAM-24 review).
+	chase.reset()
+	var worst_turn := 0.0
+	var previous_forward := Vector3.ZERO
+	var x := 0.0
+	for i in 120:
+		var t := i / 60.0
+		var speed := 15.0 if t < 1.0 else (5.0 if t > 1.0 + 2.0 / 240.0 else 10.0)
+		x += speed / 60.0
+		var placed := chase.update(Vector3(0, 0.3, -x), _level(0.0), 1.0 / 60.0 if i > 0 else 0.0, false, _flat, Vector3(0, 0, -speed))
+		var forward := -(placed.basis as Basis).z
+		if previous_forward != Vector3.ZERO:
+			worst_turn = maxf(worst_turn, rad_to_deg(previous_forward.angle_to(forward)))
+		previous_forward = forward
+	_check("CAM-24 chase: a hard touchdown turns the aim ≤ 0.6° per 60 fps frame", worst_turn <= 0.6, "%.2f°" % worst_turn)
+	# A hovering pirouette (no track, nose turning 180°/s): the nose is interpolated inside each frame, so 30 and 144 fps
+	# agree; stepping every sub-step with the frame-end attitude would not.
+	var at := {}
+	for fps: float in [30.0, 144.0]:
+		var spin := ChaseView.new()
+		spin.configure(SPAN)
+		var placed := {}
+		for i in roundi(2.0 * fps) + 1:
+			placed = spin.update(Vector3(0, 3, 0), _level(PI * i / fps), 1.0 / fps if i > 0 else 0.0, false, _flat, Vector3.ZERO)
+		at[fps] = placed.position
+	var spin_gap: float = (at[30.0] as Vector3).distance_to(at[144.0])
+	_check("CAM-24 chase: hovering pirouette, 30 and 144 fps within 1 cm", spin_gap < 0.01, "%.4f m" % spin_gap)
+
+
 func _orbit() -> void:
 	var orbit := OrbitView.new()
 	orbit.configure(SPAN)
@@ -287,3 +403,48 @@ func _orbit() -> void:
 	var from_target := cam.position - airplane.origin
 	_check("rig: a flight that starts in orbit sees it from behind-left, above", from_target.z > 0.0 and from_target.x < 0.0 and from_target.y > 0.0, str(from_target))
 	cam.queue_free()
+
+
+static func _aims_at(cam: Camera3D, point: Vector3) -> bool:
+	return (-cam.basis.z).dot((point - cam.position).normalized()) > 0.9999
+
+
+func _wreck_focus() -> void:
+	var cam := _camera()
+	var rig := CameraRig.new(cam, SPAN)
+	var impact := Vector3(40, 0.3, -50)
+	var wreck := Vector3(28, 0.4, -43) # the core slid 14 m from the impact
+	var airplane := Transform3D(_level(0.0), impact)
+	var hill := func(_x: float, _z: float) -> float: return 2.0
+	rig.set_view("orbit")
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
+	rig.focus(wreck, _flat)
+	_check("CAM-27 orbit: looks at the wreck, not the impact", _aims_at(cam, wreck))
+	_check("CAM-27 orbit: at the orbit distance from the wreck", absf(cam.position.distance_to(wreck) - rig.orbit.distance) < 1e-3, "%.3f vs %.3f" % [cam.position.distance_to(wreck), rig.orbit.distance])
+	var before := cam.position
+	rig.drag(Vector2(400, 0))
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
+	rig.focus(wreck, _flat)
+	_check("CAM-27 orbit: a drag still turns the camera around the wreck", cam.position.distance_to(before) > 0.5 and _aims_at(cam, wreck))
+	rig.set_view("chase")
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
+	var held := cam.position
+	rig.focus(wreck, _flat)
+	_check("CAM-27 chase: holds its position and turns to the wreck", cam.position == held and _aims_at(cam, wreck))
+	rig.set_view("orbit")
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
+	rig.focus(wreck, _flat)
+	_check("CAM-27 orbit entered after the slide starts where the chase was (no jump)", cam.position.distance_to(held) < 1e-3 and _aims_at(cam, wreck), "%.3f m" % cam.position.distance_to(held))
+	rig.set_view("closeup")
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, hill)
+	rig.focus(wreck, hill)
+	_check("CAM-27 close-up: keeps its offset from the wreck, above the terrain", cam.position.distance_to(wreck + CameraRig.WRECK_CLOSEUP_OFFSET) < 1e-4 and cam.position.y >= 2.6 and _aims_at(cam, wreck) and cam.fov == CameraRig.WRECK_CLOSEUP_FOV)
+	var high_hill := func(_x: float, _z: float) -> float: return 10.0
+	rig.focus(wreck, high_hill)
+	_check("CAM-27 close-up: lifted clear of terrain higher than its offset", cam.position.y >= 10.6 - 1e-6 and _aims_at(cam, wreck))
+	rig.set_view("pilot")
+	rig.update(impact, airplane, _level(0.0), 1.0 / 60.0, true, _flat)
+	var pilot := cam.transform
+	rig.focus(wreck, _flat)
+	_check("CAM-27 pilot: focus leaves the pilot view to the crash director", cam.transform == pilot)
+	cam.free()

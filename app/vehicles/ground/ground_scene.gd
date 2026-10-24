@@ -186,7 +186,9 @@ func _ready() -> void:
 	if _vehicle_entry.get("nitro", false) and enable_vehicle_effects:
 		GroundEffects.NitroLights.configure_environment(_environment)
 	camera = Camera3D.new()
-	camera.near = 0.01
+	# CAM-26: 5 cm, not 1 cm. The 24-bit depth step grows as z²/near (6 m at 1 km with 1 cm); the closest camera
+	# (orbit 0.9 m from the truck, 0.12 m above the ground) never comes near 5 cm of a surface.
+	camera.near = 0.05
 	camera.far = Spec.CAMERA.far
 	add_child(camera)
 	camera.make_current()

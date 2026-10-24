@@ -187,7 +187,7 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Camera views
 
-[CAM-00…10 first delivery](camera-views/CAM-01-10/README.md) records camera math, routing, native comparisons, trace identity and measured cost in its stated environment. The [2026-10-24 camera audit](camera-views/CAM-AUD-2026-10-24/README.md) measures the remaining defects (resolution-dependent auto-zoom, chase frame-rate dependence, overhead flip, crash and route bypasses) and surveys simulators, real cameras, comfort and Godot 4.7/4.8. The [camera plan](../plans/camera-views.md) owns remaining view, audio-listener and pilot-acceptance work.
+[CAM-00…10 first delivery](camera-views/CAM-01-10/README.md) records camera math, routing, native comparisons, trace identity and measured cost in its stated environment. The [2026-10-24 camera audit](camera-views/CAM-AUD-2026-10-24/README.md) measures the remaining defects (resolution-dependent auto-zoom, chase frame-rate dependence, overhead flip, crash and route bypasses) and surveys simulators, real cameras, comfort and Godot 4.7/4.8. [CAM-23…27](camera-views/CAM-23-27/README.md) fixes its first findings: resolution-independent auto-zoom and FAR, frame-rate-independent chase, wreck framing after a crash, helicopter camera parity, truck near plane and the jitter-fix setting. The [camera plan](../plans/camera-views.md) owns remaining view, audio-listener and pilot-acceptance work.
 
 ### Visual quality and landscape
 

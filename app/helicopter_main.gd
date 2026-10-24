@@ -106,8 +106,9 @@ func _ready() -> void:
  add_child(_airplane.root)
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
- # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum.
- _rig.pilot_zoom=.35
+ # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum (Backspace keeps it).
+ _rig.default_pilot_zoom=.35
+ _rig.pilot_zoom=_rig.default_pilot_zoom
  _rig.set_view(str(args.get("view","pilot")))
  session=Session.new()
  session.external_controller_selection=external_controller_selection
@@ -219,7 +220,9 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
   _rotors.visible=false
   _night_kit.visible=false
   pos=_crash_presentation.focus_position()
- _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height)
+ # CAM-24: the chase settles its look-ahead from the state velocity (body FRD → render); a wreck focus has none.
+ var velocity: Vector3=Vector3.INF if wreck_active else body*Frames.ned_to_render(s.slice(3,6))
+ _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height,velocity)
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
  if _night_kit!=null and not wreck_active:
   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed,World.aircraft_local_seconds(lighting_config,session.sim.time()))
@@ -261,6 +264,7 @@ func _on_session_resetting() -> void:
  _rotor_phase_rebase_pending=true
  _aftermath_paused=false
  if _crash_presentation!=null: _crash_presentation.reset()
+ if _rig!=null: _rig.reset() # CAM-26: a restarted flight starts the chase settled, as on the airplane route
  if _airplane.get("root") is Node3D: _airplane.root.visible=true
  if _rotors!=null: _rotors.visible=true
 
@@ -420,8 +424,13 @@ func controller_action(action: String) -> bool:
 
 func _unhandled_input(event: InputEvent) -> void:
  if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
-  _rig.zoom(1 if event.button_index==MOUSE_BUTTON_WHEEL_UP else -1)
- elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_RIGHT: _rig.drag(event.relative)
+  # CAM-26: smooth wheels and trackpads send fractional notches, as on the airplane route.
+  var notches: float=event.factor if event.factor>0.0 else 1.0
+  _rig.zoom(notches if event.button_index==MOUSE_BUTTON_WHEEL_UP else -notches)
+  get_viewport().set_input_as_handled()
+ elif event is InputEventMouseMotion and event.button_mask&MOUSE_BUTTON_MASK_RIGHT:
+  _rig.drag(event.relative)
+  get_viewport().set_input_as_handled()
  elif event is InputEventKey and event.pressed and not event.echo:
   match event.physical_keycode:
    KEY_R: _request_restart()
@@ -432,12 +441,13 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_ESCAPE:
     session.cancel_calibration() # UI-31: Esc leaves a running wizard and shows Pause
     pause_requested.emit()
-   KEY_C: _rig.cycle(1)
+   KEY_C: _rig.cycle(-1 if event.shift_pressed else 1)
    KEY_1: _rig.set_view("pilot")
    KEY_2: _rig.set_view("chase")
    KEY_5: _rig.set_view("orbit")
    KEY_EQUAL: _rig.zoom(1)
    KEY_MINUS: _rig.zoom(-1)
+   KEY_BACKSPACE: _rig.reset_view()
    KEY_Z: _rig.toggle_auto_zoom()
    KEY_G: session.trainer_enabled=not session.trainer_enabled
    KEY_H: session.set_drive_hold(not session.zero_drive_hold)

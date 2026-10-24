@@ -29,6 +29,10 @@ smoke_pump={
 ; slower than that, the simulation runs in slow motion instead of spiraling.
 common/physics_ticks_per_second=240
 common/max_physics_steps_per_frame=12
+; CAM-25: the flight presents its own interpolation of the 240 Hz state (Engine.get_physics_interpolation_fraction);
+; Godot's docs ask for jitter fix 0 with a custom interpolation. At 50 fps the default 0.5 tripled the presented-time
+; error against the wall clock on the dev VM (docs/research/camera-views/CAM-AUD-2026-10-24). Ticks stay fixed steps.
+common/physics_jitter_fix=0.0
 
 [rendering]
 

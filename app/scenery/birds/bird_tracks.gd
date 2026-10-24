@@ -128,7 +128,8 @@ static func kinematics(track: Dictionary, t: float) -> Dictionary:
 static func segment_index(track: Dictionary, tt: float) -> int:
 	var segments: Array = track.segments
 	var repeats: int = track.get("repeats", 1)
-	var motif: int = segments.size() / repeats
+	@warning_ignore("integer_division")
+	var motif: int = segments.size() / repeats # exact: every repeat has the same segments
 	var base: int = mini(int(tt / (float(track.period) / repeats)), repeats - 1) * motif
 	var index := base
 	for i: int in range(1, motif):

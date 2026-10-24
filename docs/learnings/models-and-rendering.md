@@ -36,6 +36,10 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 - **Make geometry generators repeatable and regenerate before verification.** Write absolute values from source data or a template instead of applying cumulative offsets, and ensure generated geometry and its source are synchronized before running checks. A stale generated file can let a working copy pass while the current source would produce a different model. ([P51-02b](../research/p51-silhouette-review-v1.md), [US-02](../research/ugly-stik-model-v2.md))
 
+- **Check MakeHuman/MPFB defaults and asset files before trusting a generated person.** MPFB's default macros are gender 0.5, so LU-21's "man" was androgynous; set the macros explicitly. A CC0 `.mhclo` without a `material` line (the newsboy cap) exports untextured. Read the thumbnail and the asset before use: one CC0 hat carried a political slogan, the "jeans shorts" were women's short shorts and a pair of flats kept 25,920 triangles after decimation ([SC-HUM-07](../research/scenery-implementation/SC-HUM-07/README.md#sources-and-rejections)).
+
+- **A 0.5 alpha cut erases thin strands once mipmaps are on.** Eyebrows and fine hair average below the threshold in mips and disappear, so MPFB faces looked browless; an alpha cut of 0.3 restored them without visible hair-edge bloat at 1080p ([SC-HUM-08](../research/scenery-implementation/SC-HUM-08/README.md#faces-and-skin-sc-hum-07-remainder)).
+
 ## Rendering and visual evidence
 
 - **Separate vertex metadata from display colors.** In Godot 4.7.2, raw packed vertex values reach `vertex()` in both renderers. Applying an sRGB transfer to material tags or variation seeds can preserve classification while collapsing variation and shifting UVs. Diagnose the actual stage with native reference panels; keep ALBEDO color decoding separate. [Barrier/shelter GPU evidence](../research/visual-quality-implementation/VQ-07/material-tags-2026-10-22/README.md).

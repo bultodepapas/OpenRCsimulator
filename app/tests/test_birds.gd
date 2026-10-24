@@ -638,6 +638,7 @@ func _check_species_uniforms(node: MultiMeshInstance3D) -> void:
 ## GDScript copy of sky_birds.gdshader track_segment(): the repeat directly, then its motif (float32 tables).
 func _shader_segment(packed: Dictionary, info: Vector4, tt: float) -> int:
 	var repeats: int = int(info.w + 0.5)
+	@warning_ignore("integer_division")
 	var motif: int = int(info.y + 0.5) / repeats
 	var base: int = int(info.x + 0.5) + mini(int(tt / (info.z / float(repeats))), repeats - 1) * motif
 	var index: int = base
@@ -682,8 +683,6 @@ func _shader_lateral(packed: Dictionary, track: int, tt: float) -> float:
 ## GDScript copy of sky_birds.gdshader segment lookup and segment_pos() (float32 tables, same branch structure).
 func _shader_track_pos(packed: Dictionary, track: int, t: float) -> Vector3:
 	var info: Vector4 = packed.track_info[track]
-	var first: int = int(info.x + 0.5)
-	var count: int = int(info.y + 0.5)
 	var tt: float = fposmod(t, info.z)
 	var index: int = _shader_segment(packed, info, tt)
 	var a: Vector4 = packed.seg_a[index]

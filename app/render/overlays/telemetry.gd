@@ -15,8 +15,6 @@ const AIRBORNE_HEIGHT := 1.0 # m CG above the ground
 ## LOW: the current sink rate would reach the ground within this time, sinking faster than a landing approach.
 const LOW_TIME_S := 2.0
 const LOW_MIN_SINK := 2.0 # m/s
-## FAR: even the narrowest auto-zoom shows the span smaller than the readable target (Spec.AUTO_ZOOM, 720 px tall).
-const FAR_VIEW_H := 720.0
 ## HUD-09 rule for the older battery kinds only (synthetic ocv_resistance packs): BATTERY LOW below this model SOC.
 const BATTERY_LOW_SOC := 0.2
 ## BAT-15: every battery warning code, most urgent first. pack_ecm packs raise them only from BatterySensors alarms.
@@ -86,9 +84,10 @@ static func heading_of_render_forward(x: float, z: float) -> float:
 	return fposmod(rad_to_deg(M.atan2_(x, -z)), 360.0)
 
 
-## Distance (m) beyond which the narrowest auto-zoom shows `span` below the readable target size.
+## FAR: distance (m) beyond which even the narrowest auto-zoom shows `span` below its readable share of the screen
+## height (Spec.AUTO_ZOOM, the same at every resolution: where the pilot view's auto-zoom reaches its floor).
 static func far_distance(span: float) -> float:
-	var at_one_m := PilotCamera.projected_px(span, 1.0, float(Spec.AUTO_ZOOM.min_fov_deg), FAR_VIEW_H)
+	var at_one_m := PilotCamera.projected_px(span, 1.0, float(Spec.AUTO_ZOOM.min_fov_deg), float(Spec.AUTO_ZOOM.reference_height_px))
 	return at_one_m / float(Spec.AUTO_ZOOM.target_px)
 
 
