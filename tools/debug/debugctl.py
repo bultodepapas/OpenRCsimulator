@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Drive a running OpenRC app through its debug bridge (PT1h-R7). Standard library only.
 
-  debugctl.py launch [--headless] [--resolution WxH] [--port N] [--out DIR] [--profile DIR | --real-profile] [-- <app args>]
+  debugctl.py launch [--headless] [--resolution WxH] [--port N] [--out DIR] [--profile DIR | --real-profile]
+                     [--script-profile] [--verbose] [-- <app args>]
                                                                            start the app with the bridge; wait until ready
   debugctl.py status | ready [--timeout S] | stop [--force]                session: alive?, wait for it, quit it
   debugctl.py logs [--since N] [--level error,warning] [--follow]          engine/script log and state-change events
   debugctl.py watch [--every TICKS] [--count N] [--csv FILE] name=expr ... live values every n simulation ticks
-  debugctl.py run FILE|- [--keep-going]                                    a repro script: one command per line
+  debugctl.py run FILE|- [--keep-going] [--fail-on-error]                  a repro script: one command per line
   debugctl.py crawl [--shots]                                              open/list/close every screen here; report errors
+  debugctl.py soak FILE [--cycles N] [--warmup N] [--tolerance N]          repeat a script; report what keeps growing
+  debugctl.py monkey [--steps N] [--seed S] [--keys] [--out FILE]          seeded random UI walk; writes a repro on failure
   debugctl.py clean [--keep N]                                             delete old run folders (default keep 3; never a live one)
   debugctl.py repl                                                         interactive prompt (same syntax)
   debugctl.py <command> [key=value ...] [--pretty|--json|--paths]          any bridge command; `help` lists them
@@ -24,6 +27,8 @@ import csv
 import datetime
 import json
 import os
+import random
+import re
 import secrets
 import shutil
 import signal
@@ -187,6 +192,11 @@ def launch(argv: list[str]) -> int:
     out = Path(options["--out"]).resolve() if options["--out"] else RUNS / f"{stamp}-{chosen}"
     out.mkdir(parents=True, exist_ok=False)
     command = [godot(), "--path", str(REPO / "app")]
+    if "--script-profile" in argv:
+        # The local debugger prints a per-function GDScript profile about once a second; `profile` parses it.
+        command += ["-d", "--profiling", "--ignore-error-breaks"]
+    if "--verbose" in argv:
+        command += ["--verbose"]  # names each ObjectDB instance leaked at exit (stop reports them)
     if headless:
         command += ["--headless", "--audio-driver", "Dummy"]
     else:
@@ -295,6 +305,9 @@ def status() -> int:
         report["bridge"] = False
     print(json.dumps(report))
     if not report["bridge"] and session.get("out"):
+        ended = exit_report(Path(session["out"]) / "engine.log")
+        if ended:
+            print(json.dumps({"engine_exit": ended}, indent=1))
         print(f"no bridge; last lines of {session['out']}/engine.log:", file=sys.stderr)
         tail(Path(session["out"]) / "engine.log")
     return 0 if report["bridge"] else 1
@@ -323,8 +336,34 @@ def stop(argv: list[str]) -> int:
         return 1
     if session and str(session.get("port")) == str(port()):
         CURRENT.unlink(missing_ok=True)
-    print(json.dumps({"stopped": True, "pid": pid}))
-    return 0
+    report = exit_report(Path(session["out"]) / "engine.log") if session.get("out") else {}
+    print(json.dumps({"stopped": True, "pid": pid, **report}))
+    return 1 if report.get("crash") else 0
+
+
+def exit_report(path: Path) -> dict:
+    """What the engine said when it ended: leaked objects/resources at exit, and a crash with its script stack."""
+    try:
+        text = path.read_text(errors="replace")
+    except OSError:
+        return {}
+    report: dict = {}
+    leaked = re.search(r"(\d+) ObjectDB instances? (?:were|was) leaked at exit", text)
+    if leaked:
+        report["leaked_objects"] = int(leaked.group(1))
+        instances = re.findall(r"Leaked instance: ([^\n]+)", text)
+        if instances:
+            report["leaked_instances"] = instances[:30]
+    resources = re.search(r"(\d+) resources? still in use at exit", text)
+    if resources:
+        report["resources_in_use_at_exit"] = int(resources.group(1))
+    crash = re.search(r"handle_crash: (.+)", text)
+    if crash:
+        script = re.search(r"END OF C\+\+ BACKTRACE --\s*=+\s*GDScript backtrace[^\n]*\n(.*?)-- END OF GDSCRIPT", text, re.S)
+        before = text[:crash.start()].strip().splitlines()[-6:]
+        report["crash"] = {"reason": crash.group(1).strip(), "last_lines": before,
+                           "gdscript_backtrace": [l.strip() for l in script.group(1).splitlines() if l.strip()] if script else []}
+    return report
 
 
 def logs(argv: list[str]) -> int:
@@ -336,6 +375,16 @@ def logs(argv: list[str]) -> int:
             since = int(argv[i + 1])
         elif arg == "--level":
             level = argv[i + 1]
+    if "--summary" in argv:
+        args = {"since": since, "summary": True}
+        if level:
+            args["level"] = level
+        result = result_of("logs", args, timeout=10.0)
+        for group in result["groups"]:
+            where = f" [{group['script']}]" if group["script"] else ""
+            print(f"{group['count']:>6}x {group['level']:<12} {group['text']}{where}  (seq {group['first_seq']}…{group['last_seq']})")
+        print(f"# {len(result['groups'])} distinct messages up to seq {result['last_seq']}", file=sys.stderr)
+        return 0
     while True:
         args = {"since": since, "limit": 2000}
         if level:
@@ -522,8 +571,12 @@ def execute_line(line: str, pretty: bool = False) -> None:
     if command == "echo":
         print(" ".join(rest))
         return
-    flags = [w for w in rest if w.startswith("--")]
-    result = result_of(command, parse_args([w for w in rest if not w.startswith("--")]))
+    display = ("--pretty", "--json", "--paths")
+    flags = [w for w in rest if w in display]
+    # Other --name flags become name=true, so `logs --summary` in a script means what it means on the command line.
+    args = parse_args([w for w in rest if not w.startswith("--")] + [w[2:] + "=true" for w in rest
+                                                                     if w.startswith("--") and w not in display])
+    result = result_of(command, args)
     show(command, result, pretty or "--pretty" in flags, "--json" in flags, "--paths" in flags)
 
 
@@ -532,7 +585,8 @@ def run_script(argv: list[str]) -> int:
         print("run needs a file (or - for stdin)", file=sys.stderr)
         return 2
     keep_going = "--keep-going" in argv
-    files = [a for a in argv if a != "--keep-going"]
+    fail_on_error = "--fail-on-error" in argv
+    files = [a for a in argv if a not in ("--keep-going", "--fail-on-error")]
     if len(files) != 1:
         print("run needs exactly one file (or - for stdin)", file=sys.stderr)
         return 2
@@ -544,7 +598,12 @@ def run_script(argv: list[str]) -> int:
                 continue
             print(f"> {line.rstrip()}", flush=True)
             try:
+                seq = result_of("ping")["log_seq"] if fail_on_error else 0
                 execute_line(line)
+                if fail_on_error:
+                    new = new_errors(seq)
+                    if new:
+                        raise Refused("new engine errors: " + " | ".join(format_record(r) for r in new[:5]))
             except (Refused, ValueError) as error:
                 failures += 1
                 print(f"line {number}: {error}", file=sys.stderr)
@@ -554,6 +613,127 @@ def run_script(argv: list[str]) -> int:
                 print(f"line {number}: connection: {error}", file=sys.stderr)
                 return 2
     return 1 if failures else 0
+
+
+def new_errors(since: int) -> list:
+    return result_of("logs", {"since": since, "level": "error,script_error,shader_error", "limit": 50})["records"]
+
+
+def soak(argv: list[str]) -> int:
+    """Repeat a scenario script; after a warm-up, every cycle is compared with the first measured baseline. A class
+    or total that grows in every cycle is reported with its growth per cycle (a leak suspect, not a proof)."""
+    files = [a for a in argv if not a.startswith("--") and not a.isdigit()]
+    if len(files) != 1:
+        print("soak needs one scenario script", file=sys.stderr)
+        return 2
+    option = lambda name, default: int(argv[argv.index(name) + 1]) if name in argv else default  # noqa: E731
+    cycles, warmup, tolerance = option("--cycles", 5), option("--warmup", 1), option("--tolerance", 0)
+    lines = [l for l in Path(files[0]).read_text().splitlines() if l.strip() and not l.lstrip().startswith("#")]
+    since = result_of("ping")["log_seq"]
+    history: list[dict] = []
+    for cycle in range(warmup + cycles):
+        for line in lines:
+            execute_quiet(line)
+        result_of("wait", {"frames": 5})
+        measured = cycle >= warmup
+        census = result_of("objects", {"baseline": cycle == warmup, "diff": cycle > warmup, "top": 400})
+        rss = rss_mib(current_session().get("pid"))
+        label = "warm-up" if not measured else ("baseline" if cycle == warmup else f"cycle {cycle - warmup}")
+        totals = census["totals"]
+        print(f"{label:<9} nodes {totals['nodes']:>7.0f}  orphans {totals['orphans']:>5.0f}  resources {totals['resources']:>6.0f}  "
+              f"static {totals['static_memory_mib']:>8.1f} MiB  rss {rss if rss is not None else '?':>7} MiB", flush=True)
+        if cycle > warmup:
+            diff = census["diff"]
+            history.append({"totals": dict(diff["totals"]), "classes": dict(diff["classes"]), "orphans": dict(diff["orphans"])})
+    suspects = []
+    if len(history) >= 2:
+        for section in ("totals", "classes", "orphans"):
+            keys = set().union(*(h[section] for h in history))
+            for key in sorted(keys):
+                series = [h[section].get(key, 0) for h in history]
+                if all(b > a for a, b in zip(series, series[1:])) and series[-1] > tolerance and key != "static_memory_mib":
+                    suspects.append(f"{section}: {key} +{series[-1]:g} after {len(series)} cycles ({series})")
+    errors = new_errors(since)
+    for line in suspects:
+        print("GROWS " + line)
+    for record in errors[:10]:
+        print("ERROR " + format_record(record))
+    print(f"# {len(suspects)} growing counters, {len(errors)} errors over {cycles} measured cycles")
+    return 1 if suspects or errors else 0
+
+
+def rss_mib(pid) -> float | None:
+    try:
+        for line in Path(f"/proc/{pid}/status").read_text().splitlines():
+            if line.startswith("VmRSS:"):
+                return round(int(line.split()[1]) / 1024, 1)
+    except (OSError, ValueError, TypeError):
+        return None
+    return None
+
+
+MONKEY_AVOID = re.compile(r"quit|exit|desktop|download|website|github|browser|open folder|report a bug|delete|uninstall",
+                          re.IGNORECASE)
+
+
+def monkey(argv: list[str]) -> int:
+    """Seeded random walk over what is on screen. Every step is written as a `run` line; a step that logs a new
+    error, or an app that stops answering, ends the walk and leaves the trail as a repro script."""
+    option = lambda name, default: argv[argv.index(name) + 1] if name in argv else default  # noqa: E731
+    steps, seed = int(option("--steps", 200)), int(option("--seed", random.randrange(1 << 30)))
+    out = Path(option("--out", str(RUNS / f"monkey-{seed}.txt")))
+    rng = random.Random(seed)
+    keys = []
+    if "--keys" in argv:
+        table = result_of("shortcuts")
+        keys = [k for row in table["shortcuts"] for k in row["keys"] if k not in ("Escape", "F10")]
+    trail = [f"# debugctl.py monkey --seed {seed}: replay with debugctl.py run {out.name}"]
+    since = result_of("ping")["log_seq"]
+    failure = None
+    for step in range(steps):
+        listing = result_of("ui")
+        controls = [c for c in listing["controls"] if not c.get("disabled") and not MONKEY_AVOID.search(c["text"])
+                    and c["type"] not in ("LineEdit", "TextEdit")]
+        line = monkey_action(rng, controls, keys)
+        trail.append(line)
+        try:
+            execute_quiet(line)
+        except Refused as error:
+            trail.append(f"# refused: {error}")  # a refused action is fine; the walk goes on
+        except OSError as error:
+            failure = f"step {step + 1}: the app stopped answering ({error})"
+            break
+        errors = new_errors(since)
+        if errors:
+            failure = f"step {step + 1}: new errors: " + " | ".join(format_record(r) for r in errors[:3])
+            break
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text("\n".join(trail) + "\n")
+    print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]), "failure": failure,
+                      "trail": str(out)}))
+    return 1 if failure else 0
+
+
+def monkey_action(rng: random.Random, controls: list, keys: list) -> str:
+    roll = rng.random()
+    if roll < 0.12 or not controls:
+        return "close" if roll < 0.08 or not keys else f"key name={rng.choice(keys)}"
+    if keys and roll < 0.25:
+        return f"key name={rng.choice(keys)}"
+    control = rng.choice(controls)
+    labels = [c["text"] for c in controls]
+    target = f"text={json.dumps(control['text'])}" if labels.count(control["text"]) == 1 else f"path={json.dumps(control['path'])}"
+    if "items" in control and control["items"]:
+        return f"select {target} index={rng.randrange(len(control['items']))}"
+    if "value" in control:
+        value = control["min"] + rng.random() * (control["max"] - control["min"])
+        return f"set_value {target} value={value:.3f}"
+    return f"press {target}"
+
+
+def execute_quiet(line: str) -> None:
+    words = split_line(line)
+    result_of(words[0], parse_args(words[1:]))
 
 
 def repl() -> int:
@@ -597,6 +777,33 @@ def show(command: str, result, pretty: bool, raw_json: bool, full_paths: bool = 
     elif command == "control" and not raw_json and isinstance(result, list):
         for action in result:
             print(f"{action['id']:<20} {action['context']:<7} {action['mode']:<6} {action['label']}")
+    elif command == "frames" and not raw_json and isinstance(result, dict) and "p50_ms" in result:
+        print(f"{result['frames']} frames: mean {result['mean_ms']} ms, p50 {result['p50_ms']}, p95 {result['p95_ms']}, "
+              f"p99 {result['p99_ms']}, max {result['max_ms']} ms; {result['fps_mean']} fps, 1 % low {result['fps_1pct_low']} fps; "
+              f"physics catch-up frames {result['physics_catch_up_frames']}; hitches {result['hitch_total']} "
+              f"(> max({result['hitch_ms']} ms, {result['factor']}x typical {result['typical_ms']} ms))")
+        for hitch in result["hitches"]:
+            causes = ", ".join(hitch["causes"]) or "no counter changed"
+            print(f"  frame {hitch['frame']}: {hitch['ms']} ms, {hitch['physics_ticks']} ticks; {causes}; deltas {hitch['deltas']}")
+            for text in hitch["log"][:3]:
+                print(f"      log: {text}")
+    elif command == "objects" and not raw_json and isinstance(result, dict):
+        print("totals " + ", ".join(f"{k} {v:g}" for k, v in result["totals"].items()))
+        for title in ("diff",):
+            for section, rows in result.get(title, {}).items():
+                for key, change in rows:
+                    print(f"  diff {section:<8} {change:+g}  {key}")
+        print("classes: " + ", ".join(f"{k} {v}" for k, v in result["classes"][:15]))
+        if result["orphans"]:
+            print("orphans: " + ", ".join(f"{k} {v}" for k, v in result["orphans"]))
+    elif command == "profile" and not raw_json and isinstance(result, dict):
+        print(f"# {result['samples']} samples: frame {result['frame_ms_per_sample']} ms, script {result['script_ms_per_sample']} ms per sample")
+        for row in result["functions"]:
+            print(f"{row['self_ms_per_sample']:>9.3f} self {row['total_ms_per_sample']:>9.3f} total ms  {row['calls']:>8} calls  {row['function']}")
+    elif command == "logs" and not raw_json and isinstance(result, dict) and "groups" in result:
+        for group in result["groups"]:
+            where = f" [{group['script']}]" if group["script"] else ""
+            print(f"{group['count']:>6}x {group['level']:<12} {group['text']}{where}")
     elif command == "methods" and not raw_json and isinstance(result, dict):
         print(f"# {result['node']} ({result['script']})")
         print("\n".join(result["methods"]))
@@ -654,6 +861,10 @@ def main(argv: list[str]) -> int:
             return repl()
         if command == "crawl":
             return crawl(rest)
+        if command == "soak":
+            return soak(rest)
+        if command == "monkey":
+            return monkey(rest)
         if command == "ready":
             timeout = float(rest[rest.index("--timeout") + 1]) if "--timeout" in rest else 60.0
             print(json.dumps(wait_ready(timeout)["result"]))

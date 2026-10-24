@@ -102,7 +102,7 @@ var token := "":
 var log_path := ""
 var debug_log := DebugLog.new()
 var app: Node
-## Smoothed main-thread cost of the bridge per frame (µs), shown by perf and state.
+## Smoothed main-thread overhead of the bridge per frame (µs), excluding the work commands request; perf and state.
 var bridge_usec := 0.0
 var _server := TCPServer.new()
 var _thread := Thread.new()
@@ -211,10 +211,13 @@ func _process(_delta: float) -> void:
 	_net_mutex.unlock()
 	for peer_id: int in dropped:
 		_forget_peer(peer_id)
+	var handlers_started := Time.get_ticks_usec()
 	for item: Dictionary in inbox:
 		_handle(item.peer_id, item.id, item.request)
 	_run_scheduled()
 	_run_pending()
+	# The work a command asked for (building a flight, a screenshot readback) is not bridge overhead.
+	started += Time.get_ticks_usec() - handlers_started
 	_observe()
 	var now_ms := Time.get_ticks_msec()
 	_net_mutex.lock()
@@ -1573,13 +1576,26 @@ func _record_frame(now_us: int) -> void:
 	_frame_ms[index] = ms
 	_frame_ticks[index] = ticks
 	_frame_count += 1
+	# Typical = median of the previous (up to) 60 frames, refreshed every 15: robust to the hitches themselves and to
+	# long startup frames, and it adapts to slow renderers (llvmpipe frames are seconds long, and not hitches).
+	if _frame_count % 15 == 1 or _frame_ema_ms == 0.0:
+		_frame_ema_ms = _recent_median(mini(_frame_count - 1, 60))
 	var threshold := maxf(hitch_ms, hitch_factor * _frame_ema_ms)
 	if _frame_ema_ms > 0.0 and ms > threshold:
 		_hitch(ms, threshold, ticks, monitors)
-	else:
-		_frame_ema_ms = ms if _frame_ema_ms == 0.0 else lerpf(_frame_ema_ms, ms, 0.05)
 	_frame_monitors = monitors
 	_frame_log_seq = debug_log.last_seq()
+
+
+## Median of the `count` frames before the newest one (0 when there are none).
+func _recent_median(count: int) -> float:
+	if count <= 0:
+		return 0.0
+	var values := PackedFloat64Array()
+	for i in count:
+		values.append(_frame_ms[(_frame_count - 2 - i + FRAME_CAPACITY) % FRAME_CAPACITY])
+	values.sort()
+	return values[values.size() / 2]
 
 
 func _hitch(ms: float, threshold: float, ticks: int, monitors: Dictionary) -> void:

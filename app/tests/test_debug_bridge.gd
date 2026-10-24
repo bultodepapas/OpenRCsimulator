@@ -129,6 +129,7 @@ func _run() -> void:
 	await _stale_snapshot(bridge)
 	await _read_after_write(bridge)
 	await _hardening(flight.session)
+	await _gap_tools(bridge, flight.session)
 	bridge.queue_free()
 	await process_frame
 	print("debug bridge: %d failed" % _failures if _failures > 0 else "all debug bridge checks passed")
@@ -460,6 +461,53 @@ func _read_after_write(bridge: Node) -> void:
 	await _call({cmd = "sticks", release = true})
 	_check("a state read right after a command never shows the state before it", changed.ok and seen.ok
 		and is_equal_approx(float(seen.result.sticks_override.get("roll", 0.0)), 0.3), str(seen).left(300))
+
+
+## PT1h-R8: hitch recorder, tick watchpoints, grouped logs, object census and the script-profile parser.
+func _gap_tools(bridge: Node, session: Node) -> void:
+	for i in 20:
+		await process_frame
+	var before: int = bridge.debug_log.last_seq()
+	OS.delay_msec(150) # one long frame
+	await process_frame
+	await process_frame
+	var frames: Dictionary = await _call({cmd = "frames"})
+	var hitches: Dictionary = await _call({cmd = "logs", since = before, level = "event"})
+	var hitch_texts: Array = hitches.result.records.map(func(r: Dictionary) -> String: return r.text)
+	_check("a long frame becomes a hitch event and frames reports percentiles", frames.ok and frames.result.frames > 10
+		and frames.result.max_ms >= 140.0 and frames.result.p50_ms < 100.0 and frames.result.has("fps_1pct_low")
+		and hitch_texts.any(func(t: String) -> bool: return t.begins_with("hitch 1")), str(hitch_texts))
+	session.sim.set_paused(false)
+	var target: int = session.sim.tick + 12
+	var armed: Dictionary = await _call({cmd = "break", name = "at_target", expr = "sim.tick >= %d" % target, once = true, wait = true})
+	_check("a watchpoint pauses the flight at the exact tick", armed.ok and int(armed.result.tick) == target
+		and session.sim.paused and session.sim.tick == target, str(armed).left(200))
+	var listed: Dictionary = await _call({cmd = "break", list = true})
+	_check("a once watchpoint is removed after it fires", listed.ok and listed.result.is_empty())
+	var bad: Dictionary = await _call({cmd = "break", expr = "sim.("})
+	_check("a watchpoint with a parse error is refused", not bad.ok)
+	var seq: int = bridge.debug_log.last_seq()
+	for value in [3, 17, 250]:
+		print("gap-test wheel load %d N at tick %d" % [value, value * 2])
+	var summary: Dictionary = await _call({cmd = "logs", since = seq, summary = true})
+	var groups: Array = summary.result.groups.filter(func(g: Dictionary) -> bool: return str(g.text).begins_with("gap-test"))
+	_check("logs summary groups messages that differ only in numbers", groups.size() == 1 and groups[0].count == 3, str(groups))
+	var baseline: Dictionary = await _call({cmd = "objects", baseline = true})
+	var leaked: Array = []
+	for i in 5:
+		leaked.append(Node.new())
+	var diff: Dictionary = await _call({cmd = "objects", diff = true})
+	var orphan_rows: Array = diff.result.diff.orphans if diff.ok else []
+	_check("objects diff names the class that grew", baseline.ok and diff.ok and orphan_rows.size() >= 1
+		and orphan_rows[0][0] == "Node" and int(orphan_rows[0][1]) == 5, str(orphan_rows))
+	for node: Node in leaked:
+		node.free()
+	print("FRAME: total: 0.004 script: 0.003/75 %\n0:res://sim/a.gd::10::step\n\ttotal: 0.003/75 % \tself: 0.001/25 % tcalls: 240\n1:res://sim/b.gd::4::forces\n\ttotal: 0.002/50 % \tself: 0.002/50 % tcalls: 960")
+	var profile: Dictionary = await _call({cmd = "profile", since = seq})
+	var top: Array = profile.result.functions if profile.ok else []
+	_check("profile parses the engine's script profile, hottest self time first", profile.ok and profile.result.samples == 1
+		and top.size() == 2 and str(top[0].function).ends_with("forces") and is_equal_approx(top[0].self_ms_per_sample, 2.0)
+		and int(top[0].calls) == 960, str(profile).left(300))
 
 ## A plain blocking client for a worker thread (the main-thread helper awaits frames).
 static func _blocking_call(line: String) -> Dictionary:
