@@ -4,6 +4,8 @@ extends SceneTree
 const Preferences := preload("res://app_state/preferences.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const CORSAIR := "f4u-corsair-250"
+const CORSAIR_LIVERY := "spectrum"
 const PREFS := "user://test_ui_home_rebuild.cfg"
 
 class CountingRoot extends "res://app_root.gd":
@@ -50,6 +52,18 @@ func _run() -> void:
 		and Preferences.load_from(PREFS).time_of_day == "evening")
 	_check("aircraft and current camera preserved", app.home.aircraft_id == aircraft
 		and root.get_camera_3d() == app.home_scene.camera)
+	app.set_aircraft(CORSAIR)
+	app.set_livery(CORSAIR_LIVERY)
+	_check("Home remembers selected non-default Corsair livery", app.home.aircraft_id == CORSAIR
+		and app.home.livery_id == CORSAIR_LIVERY)
+	var painted_scene: WeakRef = weakref(app.home_scene)
+	_check("Home world rebuild succeeds with selected paint", app._rebuild_home_scene())
+	await ui.settle()
+	_check("Home world rebuild preserves non-default livery", app.home_scene.airplane.get("livery", "") == CORSAIR_LIVERY)
+	_check("replaced painted Home scene is released", painted_scene.get_ref() == null)
+	app.set_aircraft(aircraft)
+	app.rebuild_count = 1 # keep later assertions scoped to the existing time-of-day requests
+	_check("original aircraft selection restored after livery check", app.home.aircraft_id == aircraft)
 	app.home.time_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("later keyboard selection builds normally", app.rebuild_count == 2
@@ -73,7 +87,9 @@ func _run() -> void:
 	await ui.settle()
 	_check("new Home accepts a fresh lighting request", app.rebuild_count == 1 and app.home != null
 		and app.home.time_of_day == "day")
+	var closing_scene: WeakRef = weakref(app.home_scene)
 	await ui.close_app(app)
+	_check("Home scene is released at app teardown", closing_scene.get_ref() == null)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("Home rebuild: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)

@@ -164,6 +164,27 @@ timeouts, incomplete ticks, malformed samples and mismatched pair identities. It
 nearest-rank percentiles and keeps aircraft/case distributions separate. Stop on faults;
 never bypass a pause/crash, weaken numerical guards or re-record goldens to finish a run.
 
+### FlightAudio sound-speed accessor microprobe
+
+`sound_speed_probe.gd` instantiates and freezes the production `main.tscn` flight scene for Stik,
+Extra and P-51, checks exact equality between the full audio snapshot and the direct
+sound-speed accessor at each accepted atmosphere, then times nine alternating batches
+of 150 calls per method. Its JSON retains every batch, engine version, and SHA-256
+identities for the probe and relevant source files. It records the display server and
+scopes timings to these per-call CPU methods on a frozen real scene; it does not measure
+full callback or native-frame cost. Nine batches support a median screen, not a stable
+tail percentile.
+
+```powershell
+$Probe = (Resolve-Path research/performance/sound_speed_probe.gd).Path
+$Out = Join-Path $PWD 'tmp/engineering-perf/cpu/sound-speed-new.json'
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --audio-driver Dummy `
+  --path app --script $Probe -- "--output=$Out"
+```
+
+The output parent must exist and the destination must be new.
+[Dated CPU batches, native comparison and verification limits](../../docs/research/visual-quality-implementation/VQ-01c/game-engineering-2026-10-24/README.md).
+
 ## Native frame evidence
 
 For neutral keyboard collection with a connected radio, explicitly select the

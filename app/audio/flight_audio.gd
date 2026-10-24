@@ -60,6 +60,12 @@ static func silence_legacy_ambience(scene: Node) -> void:
 		(legacy as AudioStreamPlayer).stop()
 
 
+## Current speed of sound from the accepted flight atmosphere, without building full audio telemetry.
+func sound_speed_mps() -> float:
+	var atmosphere: Dictionary = flight.session.atmosphere_configuration()
+	return sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15)))
+
+
 func snapshot() -> Dictionary:
 	var session: Node = flight.session
 	var source_running: bool = propulsion_source_running(session)

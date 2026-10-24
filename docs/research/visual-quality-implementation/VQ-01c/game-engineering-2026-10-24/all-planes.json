@@ -1,0 +1,3175 @@
+{
+  "format": "openrc-all-planes-native-campaign-summary-v1",
+  "evidence_root": "D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da",
+  "qualification": {
+    "full_performance_qualification": false,
+    "reason": "One primary valid sample per airplane, plus a final Stik reference; no three-run qualification campaign. Corsair has no valid Club 60 s run and its valid sample is a separate Green Paradise scene.",
+    "no_fps_gain_claim": true,
+    "input_to_photon_latency_measured": false
+  },
+  "conditions": {
+    "engine": "Godot 4.7.2-stable official",
+    "hardware": "AMD Ryzen 9 5900X / NVIDIA RTX 3090",
+    "display": "Windows native OpenGL Compatibility, 1920x1080, 60 Hz, VSync mode 1, max_fps 0",
+    "frame_diagnostics": "Enabled on all new native frame samples. Render CPU/GPU and engine memory are diagnostic estimates with stated scopes.",
+    "route": "Live keyboard selected, radio disconnected, physics enabled; airborne; electrical storm; audio seed 27031. Club default except explicit Corsair Green Paradise sample.",
+    "process_sampler": "Checked-runner psutil at about 1 Hz; RSS/CPU and C: disk minima."
+  },
+  "native_baseline_runs": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": true,
+        "single_run_performance_pass": true,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-stik-canary\\jensen-das-ugly-stik-60\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3599,
+        "sample_s": 60.0001870000001,
+        "observed_fps_frames_divided_by_sample_s": 59.983,
+        "wall_frame_ms": {
+          "p50": 16.666,
+          "p95": 17.821,
+          "p99": 18.673,
+          "max": 36.745
+        },
+        "sample_simulation_ticks": 14397,
+        "sample_simulation_span_s": 59.987500000000026,
+        "simulation_wall_ratio": 1.0000633838880695,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 4175,
+          "gpu_polls_including_warmup": 4180,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3599,
+              "p50": 1.009,
+              "p95": 1.4894,
+              "p99": 1.9191,
+              "max": 2.618
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3599,
+              "p50": 3.92,
+              "p95": 4.132,
+              "p99": 4.214,
+              "max": 6.258
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3599,
+              "p50": 0.099,
+              "p95": 0.14,
+              "p99": 0.167,
+              "max": 0.286
+            },
+            "process_time_ms": {
+              "n": 3599,
+              "p50": 13.056,
+              "p95": 13.2941,
+              "p99": 28.819,
+              "max": 28.819
+            },
+            "physics_process_ms": {
+              "n": 3599,
+              "p50": 1.949,
+              "p95": 2.3615,
+              "p99": 2.458,
+              "max": 2.458
+            },
+            "texture_memory_bytes": {
+              "n": 3599,
+              "p50": 635434568.0,
+              "p95": 635434568.0,
+              "p99": 635434568.0,
+              "max": 635434568.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3599,
+              "p50": 75277506.0,
+              "p95": 75277506.0,
+              "p99": 75277506.0,
+              "max": 75277506.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3599,
+              "p50": 710712074.0,
+              "p95": 710712074.0,
+              "p99": 710712074.0,
+              "max": 710712074.0
+            },
+            "node_count": {
+              "n": 3599,
+              "p50": 1033.0,
+              "p95": 1033.0,
+              "p99": 1033.0,
+              "max": 1033.0
+            },
+            "object_count": {
+              "n": 3599,
+              "p50": 4979.0,
+              "p95": 4981.0,
+              "p99": 4982.0,
+              "max": 4982.0
+            },
+            "orphan_node_count": {
+              "n": 3599,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3599,
+              "p50": 884.0,
+              "p95": 884.0,
+              "p99": 884.0,
+              "max": 884.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 80,
+          "peak_rss_bytes": 1352224768,
+          "peak_rss_mib": 1289.6,
+          "peak_cpu_percent": 152.13322873080577,
+          "cpu_user_seconds": 44.859375,
+          "cpu_system_seconds": 6.5,
+          "minimum_C_free_bytes": 198926336,
+          "sidecar": "native-stik-canary/jensen-das-ugly-stik-60/checks/all-planes-jensen-das-ugly-stik-60-adltzfbk/resources.json",
+          "sidecar_sha256": "44f330b1e2d7ad862f9e87c12ebbb0a4a143a0ab7e4cfdb55f472834531ad79a"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-stik-canary/jensen-das-ugly-stik-60/run-1.json",
+        "frame_report_sha256": "f2945bdede73f31f27e5eedb46cc59fca3599ef6a85dea91d8e3d7301a20c36f",
+        "log": "native-stik-canary/jensen-das-ugly-stik-60/run-1.log",
+        "log_sha256": "4a6a33b879aaffc2004a6e01acafff551c772295a75329b226e94bf61a3858e9",
+        "native_summary": "native-stik-canary/jensen-das-ugly-stik-60/native-summary.json",
+        "native_summary_sha256": "4a87d24bd3c95982d19252fbcfb8644580556337ffe9fe17cf7ddbc6ef389a15",
+        "checked_runner_report": "native-stik-canary/jensen-das-ugly-stik-60/checks/all-planes-jensen-das-ugly-stik-60-adltzfbk/report.json",
+        "checked_runner_report_sha256": "29213510a40e55c8825605f718417f32d7cf8e83fe7d90b92ec17658e7f6b3ee"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "stik-glow-61fx-2t",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": false,
+        "single_run_performance_pass": false,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=stik-glow-61fx-2t",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\stik-glow-61fx-2t\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3379,
+        "sample_s": 60.0015040000001,
+        "observed_fps_frames_divided_by_sample_s": 56.315,
+        "wall_frame_ms": {
+          "p50": 16.663,
+          "p95": 24.282,
+          "p99": 30.695,
+          "max": 41.093
+        },
+        "sample_simulation_ticks": 14398,
+        "sample_simulation_span_s": 59.991666666666696,
+        "simulation_wall_ratio": 1.000074243600327,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 3878,
+          "gpu_polls_including_warmup": 3883,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3379,
+              "p50": 1.02,
+              "p95": 1.4411,
+              "p99": 1.749,
+              "max": 10.908
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3379,
+              "p50": 3.985,
+              "p95": 5.5554,
+              "p99": 5.9606,
+              "max": 18.98
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3379,
+              "p50": 0.105,
+              "p95": 0.141,
+              "p99": 0.1702,
+              "max": 0.218
+            },
+            "process_time_ms": {
+              "n": 3379,
+              "p50": 8.398,
+              "p95": 10.995,
+              "p99": 15.891,
+              "max": 15.891
+            },
+            "physics_process_ms": {
+              "n": 3379,
+              "p50": 4.307,
+              "p95": 5.297,
+              "p99": 12.471,
+              "max": 12.471
+            },
+            "texture_memory_bytes": {
+              "n": 3379,
+              "p50": 635434568.0,
+              "p95": 635434568.0,
+              "p99": 635434568.0,
+              "max": 635434568.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3379,
+              "p50": 62496354.0,
+              "p95": 62496354.0,
+              "p99": 62496354.0,
+              "max": 62496354.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3379,
+              "p50": 697930922.0,
+              "p95": 697930922.0,
+              "p99": 697930922.0,
+              "max": 697930922.0
+            },
+            "node_count": {
+              "n": 3379,
+              "p50": 1033.0,
+              "p95": 1033.0,
+              "p99": 1033.0,
+              "max": 1033.0
+            },
+            "object_count": {
+              "n": 3379,
+              "p50": 4982.0,
+              "p95": 4984.0,
+              "p99": 4985.0,
+              "max": 4985.0
+            },
+            "orphan_node_count": {
+              "n": 3379,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3379,
+              "p50": 884.0,
+              "p95": 884.0,
+              "p99": 884.0,
+              "max": 884.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 86,
+          "peak_rss_bytes": 1308876800,
+          "peak_rss_mib": 1248.2,
+          "peak_cpu_percent": 133.65675441312982,
+          "cpu_user_seconds": 82.390625,
+          "cpu_system_seconds": 7.84375,
+          "minimum_C_free_bytes": 197627904,
+          "sidecar": "native-rest/stik-glow-61fx-2t/checks/all-planes-stik-glow-61fx-2t-618fdgv8/resources.json",
+          "sidecar_sha256": "dde9f60cb5619f16c33ed60e0443b129959267cb2e47ab268318bf1d2b4f7323"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/stik_glow_61fx_2t.json": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/stik-glow-61fx-2t/run-1.json",
+        "frame_report_sha256": "272382158ae3b6f725d54e8e200d8fcc7cec7858119eede8889586dd52817209",
+        "log": "native-rest/stik-glow-61fx-2t/run-1.log",
+        "log_sha256": "1cf771ea2e848ad743fdf52385375b0540256124b62ef3cc57f9cdddde52e14c",
+        "native_summary": "native-rest/stik-glow-61fx-2t/native-summary.json",
+        "native_summary_sha256": "18827c4f3fa353367e9242bad5ee9ff5e4df16fdc00db2e5357317c40a35c2f2",
+        "checked_runner_report": "native-rest/stik-glow-61fx-2t/checks/all-planes-stik-glow-61fx-2t-618fdgv8/report.json",
+        "checked_runner_report_sha256": "5ca2b3afdf5e74a2328c83a9a07c6ef91f38bde86e6e98800ee9d72e46d02e16"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "stik-glow-55ax-2t",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": false,
+        "single_run_performance_pass": false,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=stik-glow-55ax-2t",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\stik-glow-55ax-2t\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 2716,
+        "sample_s": 60.004878,
+        "observed_fps_frames_divided_by_sample_s": 45.263,
+        "wall_frame_ms": {
+          "p50": 19.907,
+          "p95": 40.597,
+          "p99": 59.443,
+          "max": 69.067
+        },
+        "sample_simulation_ticks": 14254,
+        "sample_simulation_span_s": 59.391666666666666,
+        "simulation_wall_ratio": 0.9900669625337379,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 3154,
+          "gpu_polls_including_warmup": 3159,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 2716,
+              "p50": 1.019,
+              "p95": 1.5765,
+              "p99": 1.9122,
+              "max": 2.456
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 2716,
+              "p50": 4.36,
+              "p95": 6.2743,
+              "p99": 7.3857,
+              "max": 10.881
+            },
+            "frame_setup_cpu_ms": {
+              "n": 2716,
+              "p50": 0.106,
+              "p95": 0.156,
+              "p99": 0.178,
+              "max": 0.291
+            },
+            "process_time_ms": {
+              "n": 2716,
+              "p50": 8.688,
+              "p95": 10.913,
+              "p99": 12.92,
+              "max": 12.92
+            },
+            "physics_process_ms": {
+              "n": 2716,
+              "p50": 4.568,
+              "p95": 5.967,
+              "p99": 6.125,
+              "max": 6.125
+            },
+            "texture_memory_bytes": {
+              "n": 2716,
+              "p50": 635434568.0,
+              "p95": 635434568.0,
+              "p99": 635434568.0,
+              "max": 635434568.0
+            },
+            "buffer_memory_bytes": {
+              "n": 2716,
+              "p50": 62496354.0,
+              "p95": 62496354.0,
+              "p99": 62496354.0,
+              "max": 62496354.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 2716,
+              "p50": 697930922.0,
+              "p95": 697930922.0,
+              "p99": 697930922.0,
+              "max": 697930922.0
+            },
+            "node_count": {
+              "n": 2716,
+              "p50": 1033.0,
+              "p95": 1033.0,
+              "p99": 1033.0,
+              "max": 1033.0
+            },
+            "object_count": {
+              "n": 2716,
+              "p50": 4982.0,
+              "p95": 4984.0,
+              "p99": 4985.0,
+              "max": 4985.0
+            },
+            "orphan_node_count": {
+              "n": 2716,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 2716,
+              "p50": 884.0,
+              "p95": 884.0,
+              "p99": 884.0,
+              "max": 884.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 85,
+          "peak_rss_bytes": 1292726272,
+          "peak_rss_mib": 1232.8,
+          "peak_cpu_percent": 138.38131306601323,
+          "cpu_user_seconds": 86.453125,
+          "cpu_system_seconds": 4.375,
+          "minimum_C_free_bytes": 195829760,
+          "sidecar": "native-rest/stik-glow-55ax-2t/checks/all-planes-stik-glow-55ax-2t-kptih392/resources.json",
+          "sidecar_sha256": "809a5661a8d03e312a5230f9d9b936abb66fa8239908980d4d4e35f2772db3a6"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/stik_glow_55ax_2t.json": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
+          "res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json": "02ca95d22c2098af0cc1ae6bddba63f6fe6a95d4a1297650d77becd618e2e9a7"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/stik-glow-55ax-2t/run-1.json",
+        "frame_report_sha256": "4fab8aeb7e50be8e4b92b8173a325471d0c44a67b0fc64aeaccca8f9fa309158",
+        "log": "native-rest/stik-glow-55ax-2t/run-1.log",
+        "log_sha256": "227b036efbc507097cdd3e4db30ce3842599de5defe1908b7de0b8c13a54dfa9",
+        "native_summary": "native-rest/stik-glow-55ax-2t/native-summary.json",
+        "native_summary_sha256": "c8745851a600b35fbcc4662d61034fa3bb13e1abdda24142f50ace5115045ec0",
+        "checked_runner_report": "native-rest/stik-glow-55ax-2t/checks/all-planes-stik-glow-55ax-2t-kptih392/report.json",
+        "checked_runner_report_sha256": "87ea4b4fb713c0b30be5755b8edb3d970c38fe9e183f293aacc65fa64d489345"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "stik-glow-fs64v-4t",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": false,
+        "single_run_performance_pass": false,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=stik-glow-fs64v-4t",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\stik-glow-fs64v-4t\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 2994,
+        "sample_s": 60.012744,
+        "observed_fps_frames_divided_by_sample_s": 49.889,
+        "wall_frame_ms": {
+          "p50": 18.904,
+          "p95": 29.466,
+          "p99": 43.948,
+          "max": 61.627
+        },
+        "sample_simulation_ticks": 14371,
+        "sample_simulation_span_s": 59.879166666666634,
+        "simulation_wall_ratio": 0.9981233197968054,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 3470,
+          "gpu_polls_including_warmup": 3475,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 2994,
+              "p50": 1.026,
+              "p95": 1.51,
+              "p99": 1.8382,
+              "max": 11.199
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 2994,
+              "p50": 4.2005,
+              "p95": 5.7848,
+              "p99": 6.3289,
+              "max": 10.976
+            },
+            "frame_setup_cpu_ms": {
+              "n": 2994,
+              "p50": 0.108,
+              "p95": 0.149,
+              "p99": 0.175,
+              "max": 0.258
+            },
+            "process_time_ms": {
+              "n": 2994,
+              "p50": 8.425,
+              "p95": 10.845,
+              "p99": 11.129,
+              "max": 16.131
+            },
+            "physics_process_ms": {
+              "n": 2994,
+              "p50": 4.436,
+              "p95": 5.398,
+              "p99": 6.162,
+              "max": 6.162
+            },
+            "texture_memory_bytes": {
+              "n": 2994,
+              "p50": 635434568.0,
+              "p95": 635434568.0,
+              "p99": 635434568.0,
+              "max": 635434568.0
+            },
+            "buffer_memory_bytes": {
+              "n": 2994,
+              "p50": 62496354.0,
+              "p95": 62496354.0,
+              "p99": 62496354.0,
+              "max": 62496354.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 2994,
+              "p50": 697930922.0,
+              "p95": 697930922.0,
+              "p99": 697930922.0,
+              "max": 697930922.0
+            },
+            "node_count": {
+              "n": 2994,
+              "p50": 1033.0,
+              "p95": 1033.0,
+              "p99": 1033.0,
+              "max": 1033.0
+            },
+            "object_count": {
+              "n": 2994,
+              "p50": 4982.0,
+              "p95": 4984.0,
+              "p99": 4985.0,
+              "max": 4985.0
+            },
+            "orphan_node_count": {
+              "n": 2994,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 2994,
+              "p50": 884.0,
+              "p95": 884.0,
+              "p99": 884.0,
+              "max": 884.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 83,
+          "peak_rss_bytes": 1281363968,
+          "peak_rss_mib": 1222.0,
+          "peak_cpu_percent": 135.88062901554343,
+          "cpu_user_seconds": 78.03125,
+          "cpu_system_seconds": 9.03125,
+          "minimum_C_free_bytes": 195002368,
+          "sidecar": "native-rest/stik-glow-fs64v-4t/checks/all-planes-stik-glow-fs64v-4t-fl1r094t/resources.json",
+          "sidecar_sha256": "cae83463de93bd651f8fa52d02d305aed6e45992a7aee352f979e39b6cfc76fa"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/stik_glow_fs64v_4t.json": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796",
+          "res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json": "ff8be94c0a6eb58e75cc179e75e3419b947b4339e5ae6d03a13f03136b6523f6"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/stik-glow-fs64v-4t/run-1.json",
+        "frame_report_sha256": "5b45efdc520fe947a222cca098cf6431916a042f4ec62a49a4260f373efee3f8",
+        "log": "native-rest/stik-glow-fs64v-4t/run-1.log",
+        "log_sha256": "5bab8de71083940dbf4f53efea8f2cfbf287a3e5ba6ebef981f224de59fe054e",
+        "native_summary": "native-rest/stik-glow-fs64v-4t/native-summary.json",
+        "native_summary_sha256": "1bd96349d2d941b6d066b5e8d5772c9bd642028a0d5aac73813da8745ac1af81",
+        "checked_runner_report": "native-rest/stik-glow-fs64v-4t/checks/all-planes-stik-glow-fs64v-4t-fl1r094t/report.json",
+        "checked_runner_report_sha256": "75df5823693211ee292dc1187e931b0682e098ab0d02cf21e1188aa4c3a7ba44"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": false,
+        "single_run_performance_pass": false,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=gp-extra-300s-60",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\gp-extra-300s-60\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3409,
+        "sample_s": 60.007416,
+        "observed_fps_frames_divided_by_sample_s": 56.81,
+        "wall_frame_ms": {
+          "p50": 16.606,
+          "p95": 23.319,
+          "p99": 51.771,
+          "max": 63.77
+        },
+        "sample_simulation_ticks": 14348,
+        "sample_simulation_span_s": 59.783333333333374,
+        "simulation_wall_ratio": 0.9965528384400268,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 3952,
+          "gpu_polls_including_warmup": 3957,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3409,
+              "p50": 0.756,
+              "p95": 1.237,
+              "p99": 1.5009,
+              "max": 2.057
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3409,
+              "p50": 4.593,
+              "p95": 5.4576,
+              "p99": 6.8558,
+              "max": 10.836
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3409,
+              "p50": 0.062,
+              "p95": 0.097,
+              "p99": 0.1149,
+              "max": 0.223
+            },
+            "process_time_ms": {
+              "n": 3409,
+              "p50": 8.37,
+              "p95": 9.408,
+              "p99": 22.598,
+              "max": 22.598
+            },
+            "physics_process_ms": {
+              "n": 3409,
+              "p50": 4.495,
+              "p95": 5.441,
+              "p99": 5.52,
+              "max": 5.52
+            },
+            "texture_memory_bytes": {
+              "n": 3409,
+              "p50": 608324500.0,
+              "p95": 608324500.0,
+              "p99": 608324500.0,
+              "max": 608324500.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3409,
+              "p50": 57694466.0,
+              "p95": 57694466.0,
+              "p99": 57694466.0,
+              "max": 57694466.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3409,
+              "p50": 666018966.0,
+              "p95": 666018966.0,
+              "p99": 666018966.0,
+              "max": 666018966.0
+            },
+            "node_count": {
+              "n": 3409,
+              "p50": 793.0,
+              "p95": 793.0,
+              "p99": 793.0,
+              "max": 793.0
+            },
+            "object_count": {
+              "n": 3409,
+              "p50": 4439.0,
+              "p95": 4441.0,
+              "p99": 4442.0,
+              "max": 4442.0
+            },
+            "orphan_node_count": {
+              "n": 3409,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3409,
+              "p50": 888.0,
+              "p95": 888.0,
+              "p99": 888.0,
+              "max": 888.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 87,
+          "peak_rss_bytes": 1289650176,
+          "peak_rss_mib": 1229.9,
+          "peak_cpu_percent": 129.33287295674643,
+          "cpu_user_seconds": 78.859375,
+          "cpu_system_seconds": 8.09375,
+          "minimum_C_free_bytes": 193658880,
+          "sidecar": "native-rest/gp-extra-300s-60/checks/all-planes-gp-extra-300s-60-7tsmc94y/resources.json",
+          "sidecar_sha256": "da50881feef58dbb5a44ac6be3bbfbf56eb5431369ce25b8d37cc5bf519dba93"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed",
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/gp_extra_300s_60.json": "0db71ff170ea90764ecad325940e4cbee7ed80a7200cd0171eca09e74ab1401f"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/gp-extra-300s-60/run-1.json",
+        "frame_report_sha256": "a570b5fb822d4e4735493936763693c2b10585178656da37335e14ff29911e5f",
+        "log": "native-rest/gp-extra-300s-60/run-1.log",
+        "log_sha256": "afff97965e3a6e6aebd8e002ea961b302ca82e94cb63fac5d680ba5c33c87ae8",
+        "native_summary": "native-rest/gp-extra-300s-60/native-summary.json",
+        "native_summary_sha256": "e193b4e2ff2784cfdf17ad857eec10316372de2744b37a3613a2ef8774465a2a",
+        "checked_runner_report": "native-rest/gp-extra-300s-60/checks/all-planes-gp-extra-300s-60-7tsmc94y/report.json",
+        "checked_runner_report_sha256": "2f4a59561c0762aee8911e69e27fb0c18bf590e2dc13f3a3794b817336e63066"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": false,
+        "single_run_performance_pass": false,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=p51d-mustang-120",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\p51d-mustang-120\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 1736,
+        "sample_s": 60.018924,
+        "observed_fps_frames_divided_by_sample_s": 28.924,
+        "wall_frame_ms": {
+          "p50": 31.529,
+          "p95": 67.14,
+          "p99": 75.706,
+          "max": 89.936
+        },
+        "sample_simulation_ticks": 13413,
+        "sample_simulation_span_s": 55.887499999999996,
+        "simulation_wall_ratio": 0.9314436475718232,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 2269,
+          "gpu_polls_including_warmup": 2274,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 1736,
+              "p50": 1.386,
+              "p95": 1.9988,
+              "p99": 3.8228,
+              "max": 4.377
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 1736,
+              "p50": 5.159,
+              "p95": 8.1295,
+              "p99": 9.0962,
+              "max": 18.021
+            },
+            "frame_setup_cpu_ms": {
+              "n": 1736,
+              "p50": 0.1645,
+              "p95": 0.227,
+              "p99": 0.27,
+              "max": 2.29
+            },
+            "process_time_ms": {
+              "n": 1736,
+              "p50": 8.844,
+              "p95": 12.538,
+              "p99": 19.175,
+              "max": 27.462
+            },
+            "physics_process_ms": {
+              "n": 1736,
+              "p50": 4.668,
+              "p95": 7.216,
+              "p99": 7.468,
+              "max": 7.57
+            },
+            "texture_memory_bytes": {
+              "n": 1736,
+              "p50": 608346344.0,
+              "p95": 608346344.0,
+              "p99": 608346344.0,
+              "max": 608346344.0
+            },
+            "buffer_memory_bytes": {
+              "n": 1736,
+              "p50": 60655006.0,
+              "p95": 60655006.0,
+              "p99": 60655006.0,
+              "max": 60655006.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 1736,
+              "p50": 669001350.0,
+              "p95": 669001350.0,
+              "p99": 669001350.0,
+              "max": 669001350.0
+            },
+            "node_count": {
+              "n": 1736,
+              "p50": 1038.0,
+              "p95": 1038.0,
+              "p99": 1038.0,
+              "max": 1038.0
+            },
+            "object_count": {
+              "n": 1736,
+              "p50": 4969.0,
+              "p95": 4971.25,
+              "p99": 4972.0,
+              "max": 4972.0
+            },
+            "orphan_node_count": {
+              "n": 1736,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 1736,
+              "p50": 887.0,
+              "p95": 887.0,
+              "p99": 887.0,
+              "max": 887.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 80,
+          "peak_rss_bytes": 1344274432,
+          "peak_rss_mib": 1282.0,
+          "peak_cpu_percent": 132.59046493131217,
+          "cpu_user_seconds": 73.796875,
+          "cpu_system_seconds": 5.390625,
+          "minimum_C_free_bytes": 191881216,
+          "sidecar": "native-rest/p51d-mustang-120/checks/all-planes-p51d-mustang-120-8decwcb5/resources.json",
+          "sidecar_sha256": "7a40e09380be1c163ff912d6e8ca4a1087c4e107160aa9906f36fe193fe1ff16"
+        }
+      },
+      "errors": [],
+      "warnings": [],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/p51d_mustang_120.json": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/p51d-mustang-120/run-1.json",
+        "frame_report_sha256": "33b7947b23e02ae78712f9b83cc94a5d66dab4dcd724add9f396a89e56df76a1",
+        "log": "native-rest/p51d-mustang-120/run-1.log",
+        "log_sha256": "c5ed1bcbfa032328bf4d23eda2a1ce42d2bc609df5cd3da9bf038575bda5786f",
+        "native_summary": "native-rest/p51d-mustang-120/native-summary.json",
+        "native_summary_sha256": "5dcac771cf250a1dd471b25d5e935d32662608923cd6d424788fa8a44a6d3fcd",
+        "checked_runner_report": "native-rest/p51d-mustang-120/checks/all-planes-p51d-mustang-120-8decwcb5/report.json",
+        "checked_runner_report_sha256": "767c1c0bb4c661c6acea48caee6f2e58f446b2bd17f53c2f6ccbf16983d6d0ab"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": true,
+        "single_run_performance_pass": true,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=sebart-avanti-s-a200-p100rx",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\sebart-avanti-s-a200-p100rx\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3600,
+        "sample_s": 60.0000519999999,
+        "observed_fps_frames_divided_by_sample_s": 60.0,
+        "wall_frame_ms": {
+          "p50": 16.676,
+          "p95": 17.651,
+          "p99": 18.461,
+          "max": 27.058
+        },
+        "sample_simulation_ticks": 14396,
+        "sample_simulation_span_s": 59.98333333333336,
+        "simulation_wall_ratio": 0.9999961211598083,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 4175,
+          "gpu_polls_including_warmup": 4180,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3600,
+              "p50": 0.835,
+              "p95": 1.0561,
+              "p99": 1.3412,
+              "max": 2.237
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3600,
+              "p50": 3.406,
+              "p95": 3.774,
+              "p99": 4.864,
+              "max": 6.345
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3600,
+              "p50": 0.069,
+              "p95": 0.092,
+              "p99": 0.113,
+              "max": 0.167
+            },
+            "process_time_ms": {
+              "n": 3600,
+              "p50": 10.818,
+              "p95": 11.0477,
+              "p99": 11.204,
+              "max": 11.204
+            },
+            "physics_process_ms": {
+              "n": 3600,
+              "p50": 2.4455,
+              "p95": 3.6194,
+              "p99": 4.149,
+              "max": 4.149
+            },
+            "texture_memory_bytes": {
+              "n": 3600,
+              "p50": 676919576.0,
+              "p95": 676919576.0,
+              "p99": 676919576.0,
+              "max": 676919576.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3600,
+              "p50": 82672882.0,
+              "p95": 82672882.0,
+              "p99": 82672882.0,
+              "max": 82672882.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3600,
+              "p50": 759592458.0,
+              "p95": 759592458.0,
+              "p99": 759592458.0,
+              "max": 759592458.0
+            },
+            "node_count": {
+              "n": 3600,
+              "p50": 832.0,
+              "p95": 832.0,
+              "p99": 832.0,
+              "max": 832.0
+            },
+            "object_count": {
+              "n": 3600,
+              "p50": 4547.0,
+              "p95": 4549.0,
+              "p99": 4550.0,
+              "max": 4550.0
+            },
+            "orphan_node_count": {
+              "n": 3600,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3600,
+              "p50": 1007.0,
+              "p95": 1007.0,
+              "p99": 1007.0,
+              "max": 1007.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 80,
+          "peak_rss_bytes": 1359323136,
+          "peak_rss_mib": 1296.4,
+          "peak_cpu_percent": 126.30370063415934,
+          "cpu_user_seconds": 50.046875,
+          "cpu_system_seconds": 6.71875,
+          "minimum_C_free_bytes": 196018176,
+          "sidecar": "native-rest/sebart-avanti-s-a200-p100rx/checks/all-planes-sebart-avanti-s-a200-p100rx-vfqhgvge/resources.json",
+          "sidecar_sha256": "afcba8ddfbdf5c560bebd5dc8e5301f69ab4e604c4dc7a63cb56582a63f92a48"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed"
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/sebart_avanti_s_a200.json": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+        "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/sebart-avanti-s-a200-p100rx/run-1.json",
+        "frame_report_sha256": "9d6d187eee8bce7e4e69d282f516ce19608b2943e5360e2e8ac3bfba9f1a3ecf",
+        "log": "native-rest/sebart-avanti-s-a200-p100rx/run-1.log",
+        "log_sha256": "eab95878ed916cb3eac0e29f051d532b851689bc0ac4cf032be56147d981055a",
+        "native_summary": "native-rest/sebart-avanti-s-a200-p100rx/native-summary.json",
+        "native_summary_sha256": "61327edd2619128e621173af9995e91ce3fd5605bd567bf002665b0fa877b349",
+        "checked_runner_report": "native-rest/sebart-avanti-s-a200-p100rx/checks/all-planes-sebart-avanti-s-a200-p100rx-vfqhgvge/report.json",
+        "checked_runner_report_sha256": "84c1c2d907cafca304eb9e8010801b54512e8a9fff7b84ee42bf6884e6df0a78"
+      },
+      "notes": []
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "role": "primary native 60 s sample",
+      "scene": "club_default",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": true,
+        "single_run_performance_pass": true,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=turbo-lumber-evolution",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\turbo-lumber-evolution-run3\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3601,
+        "sample_s": 60.0154830000001,
+        "observed_fps_frames_divided_by_sample_s": 60.001,
+        "wall_frame_ms": {
+          "p50": 16.67,
+          "p95": 17.663,
+          "p99": 18.555,
+          "max": 21.378
+        },
+        "sample_simulation_ticks": 14400,
+        "sample_simulation_span_s": 60.00000000000001,
+        "simulation_wall_ratio": 1.000027234075008,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 4178,
+          "gpu_polls_including_warmup": 4183,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3601,
+              "p50": 0.893,
+              "p95": 1.138,
+              "p99": 1.53,
+              "max": 2.436
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3601,
+              "p50": 3.609,
+              "p95": 3.855,
+              "p99": 3.942,
+              "max": 5.829
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3601,
+              "p50": 0.084,
+              "p95": 0.109,
+              "p99": 0.137,
+              "max": 0.272
+            },
+            "process_time_ms": {
+              "n": 3601,
+              "p50": 11.456,
+              "p95": 11.676,
+              "p99": 11.747,
+              "max": 26.96
+            },
+            "physics_process_ms": {
+              "n": 3601,
+              "p50": 2.271,
+              "p95": 3.24,
+              "p99": 3.54,
+              "max": 3.54
+            },
+            "texture_memory_bytes": {
+              "n": 3601,
+              "p50": 608455572.0,
+              "p95": 608455572.0,
+              "p99": 608455572.0,
+              "max": 608455572.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3601,
+              "p50": 74386246.0,
+              "p95": 74386246.0,
+              "p99": 74386246.0,
+              "max": 74386246.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3601,
+              "p50": 682841818.0,
+              "p95": 682841818.0,
+              "p99": 682841818.0,
+              "max": 682841818.0
+            },
+            "node_count": {
+              "n": 3601,
+              "p50": 906.0,
+              "p95": 906.0,
+              "p99": 906.0,
+              "max": 906.0
+            },
+            "object_count": {
+              "n": 3601,
+              "p50": 4639.0,
+              "p95": 4641.0,
+              "p99": 4642.0,
+              "max": 4642.0
+            },
+            "orphan_node_count": {
+              "n": 3601,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3601,
+              "p50": 924.0,
+              "p95": 924.0,
+              "p99": 924.0,
+              "max": 924.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 99,
+          "peak_rss_bytes": 1279397888,
+          "peak_rss_mib": 1220.1,
+          "peak_cpu_percent": 124.73192183921857,
+          "cpu_user_seconds": 66.140625,
+          "cpu_system_seconds": 6.703125,
+          "minimum_C_free_bytes": 196255744,
+          "sidecar": "native-rest/turbo-lumber-evolution-run3/checks/all-planes-turbo-lumber-evolution-retry-cis3q7e3/resources.json",
+          "sidecar_sha256": "406a86428dfa644e8d6431dd4ba78a985f8b2a822ce05dc435cb3ce986d96c4c"
+        }
+      },
+      "errors": [],
+      "warnings": [],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d",
+          "res://data/aircraft/turbo_lumber_evolution.json": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "D:/OpenRCsimulator-evidence/all-planes-20261024-4049e4da/tooling/native_main_pair_battery_identity.gd",
+        "bootstrap_sha256": "f3020e162928a5604eefa520b8b3bc1f4327a60ebc012fd709f98e2eaa255db9"
+      },
+      "artifacts": {
+        "frame_report": "native-rest/turbo-lumber-evolution-run3/run-1.json",
+        "frame_report_sha256": "c7b14a37539ca69c9f851061a0aabe50e21ec0c495804115c4113d95a1d30e07",
+        "log": "native-rest/turbo-lumber-evolution-run3/run-1.log",
+        "log_sha256": "20f4a6d78309c7148871daef17f4baddc03a9eff3c5ec9b41a6053497631aca8",
+        "native_summary": "native-rest/turbo-lumber-evolution-run3/native-summary.json",
+        "native_summary_sha256": "b908cc2fe0f3075b913b84fe070d84945a6b268075896ebdb4156a8077dea91b",
+        "checked_runner_report": "native-rest/turbo-lumber-evolution-run3/checks/all-planes-turbo-lumber-evolution-retry-cis3q7e3/report.json",
+        "checked_runner_report_sha256": "d17bd223f1bb6e1d3b5643c25ef2deb8645c491690327f80437887d629a3d1b0"
+      },
+      "notes": [
+        "Catalog-default battery mode is pack; path is printed in bootstrap identity."
+      ]
+    }
+  ],
+  "alternate_scene_runs": [
+    {
+      "aircraft_id": "f4u-corsair-250",
+      "role": "alternate scene native 60 s sample",
+      "scene": "green_paradise",
+      "status": {
+        "collection_valid": true,
+        "active_flight_qualifier": true,
+        "single_run_pacing_gate_pass": true,
+        "single_run_performance_pass": true,
+        "frame_report_complete": true,
+        "focus": true,
+        "crashed": false,
+        "paused_at_report": false,
+        "fault": "",
+        "collection_reasons": [],
+        "active_flight_reasons": []
+      },
+      "configuration": {
+        "window": "1920x1080",
+        "refresh_hz": 60.0,
+        "engine": "4.7.2-stable (official)",
+        "backend": "gl_compatibility",
+        "api": "3.3.0 NVIDIA 617.42",
+        "adapter": "NVIDIA GeForce RTX 3090",
+        "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+        "vsync_mode": 1,
+        "max_fps": 0,
+        "msaa_3d_enum": 2,
+        "msaa_3d_samples": 4,
+        "flight_args": [
+          "--aircraft=f4u-corsair-250",
+          "--quick-flight",
+          "--start=airborne",
+          "--sky=electrical_storm",
+          "--landscape=green_paradise",
+          "--audio-seed=27031",
+          "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-corsair-green-paradise\\run-1.json",
+          "--warmup=10",
+          "--t=60",
+          "--frame-diagnostics",
+          "--frametimes-max-frames=60000"
+        ],
+        "keyboard_selected": true,
+        "radio_connected": false,
+        "physics_enabled": true,
+        "prescribed_pose": false,
+        "physics_advance_override": false
+      },
+      "metrics": {
+        "frames": 3601,
+        "sample_s": 60.0163450000002,
+        "observed_fps_frames_divided_by_sample_s": 60.0,
+        "wall_frame_ms": {
+          "p50": 16.651,
+          "p95": 17.776,
+          "p99": 19.222,
+          "max": 27.034
+        },
+        "sample_simulation_ticks": 14400,
+        "sample_simulation_span_s": 59.99999999999999,
+        "simulation_wall_ratio": 1.000003066676071,
+        "render_diagnostics": {
+          "timing_available": true,
+          "positive_gpu_polls_including_warmup": 4190,
+          "gpu_polls_including_warmup": 4195,
+          "invalid_numeric_values": 0,
+          "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+          "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+          "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+          "sample_percentiles": {
+            "render_cpu_ms": {
+              "n": 3601,
+              "p50": 0.548,
+              "p95": 0.657,
+              "p99": 0.828,
+              "max": 1.365
+            },
+            "render_gpu_ms_positive_only": {
+              "n": 3601,
+              "p50": 2.754,
+              "p95": 4.718,
+              "p99": 5.731,
+              "max": 9.291
+            },
+            "frame_setup_cpu_ms": {
+              "n": 3601,
+              "p50": 0.051,
+              "p95": 0.072,
+              "p99": 0.094,
+              "max": 0.14
+            },
+            "process_time_ms": {
+              "n": 3601,
+              "p50": 8.502,
+              "p95": 8.738,
+              "p99": 9.2,
+              "max": 9.2
+            },
+            "physics_process_ms": {
+              "n": 3601,
+              "p50": 3.307,
+              "p95": 4.678,
+              "p99": 4.774,
+              "max": 4.774
+            },
+            "texture_memory_bytes": {
+              "n": 3601,
+              "p50": 360236415.0,
+              "p95": 360236415.0,
+              "p99": 360236415.0,
+              "max": 360236415.0
+            },
+            "buffer_memory_bytes": {
+              "n": 3601,
+              "p50": 37804448.0,
+              "p95": 37804448.0,
+              "p99": 37804448.0,
+              "max": 37804448.0
+            },
+            "video_memory_estimate_bytes": {
+              "n": 3601,
+              "p50": 398040863.0,
+              "p95": 398040863.0,
+              "p99": 398040863.0,
+              "max": 398040863.0
+            },
+            "node_count": {
+              "n": 3601,
+              "p50": 417.0,
+              "p95": 417.0,
+              "p99": 417.0,
+              "max": 417.0
+            },
+            "object_count": {
+              "n": 3601,
+              "p50": 3145.0,
+              "p95": 3147.0,
+              "p99": 3147.0,
+              "max": 3147.0
+            },
+            "orphan_node_count": {
+              "n": 3601,
+              "p50": 0.0,
+              "p95": 0.0,
+              "p99": 0.0,
+              "max": 0.0
+            },
+            "resource_count": {
+              "n": 3601,
+              "p50": 651.0,
+              "p95": 651.0,
+              "p99": 651.0,
+              "max": 651.0
+            }
+          }
+        },
+        "external_process_resources": {
+          "status": "ok",
+          "sample_count": 77,
+          "peak_rss_bytes": 662663168,
+          "peak_rss_mib": 632.0,
+          "peak_cpu_percent": 119.78399076802017,
+          "cpu_user_seconds": 57.3125,
+          "cpu_system_seconds": 7.046875,
+          "minimum_C_free_bytes": 199778304,
+          "sidecar": "native-corsair-green-paradise/checks/all-planes-corsair-green-paradise-jsvncl2n/resources.json",
+          "sidecar_sha256": "d356b23abdc7fe4e52fbc527b39d017bb5619fd5943bba7b783fa1163992101b"
+        }
+      },
+      "errors": [],
+      "warnings": [
+        "WARNING: 17 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ],
+      "source_identity": {
+        "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "shared_source_sha256": {
+          "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+          "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+        },
+        "aircraft_and_relevant_source_sha256": {
+          "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+          "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+          "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+          "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+          "res://data/aircraft/f4u_corsair_250.json": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016"
+        },
+        "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+        "bootstrap": "D:/OpenRCsimulator-evidence/all-planes-20261024-4049e4da/tooling/native_main_pair_focus_watch.gd",
+        "bootstrap_sha256": "c40256f297e6447a5c38d50c06ef032a35d43ec3dc76cc0fb3aad2451b499596"
+      },
+      "artifacts": {
+        "frame_report": "native-corsair-green-paradise/run-1.json",
+        "frame_report_sha256": "2d5c056ec8d2b33c4886c7108fd658d8b91e730160f75e205f497bf185750d3f",
+        "log": "native-corsair-green-paradise/run-1.log",
+        "log_sha256": "827945769a3ccebf45694653c2868a3de44822b2fad3967628ea200df8814fee",
+        "native_summary": "native-corsair-green-paradise/native-summary.json",
+        "native_summary_sha256": "89020c5614daeccd6bc3cf9fbaf4ea24f12bfd49d2b758037b5862a2df8fbd4d",
+        "checked_runner_report": "native-corsair-green-paradise/checks/all-planes-corsair-green-paradise-jsvncl2n/report.json",
+        "checked_runner_report_sha256": "06b84d4bf89e1526a2a7a99d6826d675f64547c9e754e06df73c44234cd0f1b8"
+      },
+      "notes": [
+        "Valid active sample in Green Paradise. Not a matched Club field case and excluded from same-scene comparisons.",
+        "Observer logged startup/attach only. 17 ObjectDB instances leaked at exit (warning only)."
+      ]
+    }
+  ],
+  "excluded_attempts": {
+    "corsair_club": [
+      {
+        "aircraft_id": "f4u-corsair-250",
+        "role": "excluded Club attempt: pause with no recorded cause",
+        "scene": "club_default",
+        "status": {
+          "collection_valid": true,
+          "active_flight_qualifier": false,
+          "single_run_pacing_gate_pass": false,
+          "single_run_performance_pass": false,
+          "frame_report_complete": true,
+          "focus": true,
+          "crashed": false,
+          "paused_at_report": true,
+          "fault": "",
+          "collection_reasons": [],
+          "active_flight_reasons": [
+            "simulation was paused",
+            "simulation did not advance during the measured sample",
+            "simulation did not advance for more than 250 ms"
+          ]
+        },
+        "configuration": {
+          "window": "1920x1080",
+          "refresh_hz": 60.0,
+          "engine": "4.7.2-stable (official)",
+          "backend": "gl_compatibility",
+          "api": "3.3.0 NVIDIA 617.42",
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+          "vsync_mode": 1,
+          "max_fps": 0,
+          "msaa_3d_enum": 2,
+          "msaa_3d_samples": 4,
+          "flight_args": [
+            "--aircraft=f4u-corsair-250",
+            "--quick-flight",
+            "--start=airborne",
+            "--sky=electrical_storm",
+            "--audio-seed=27031",
+            "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\f4u-corsair-250\\run-1.json",
+            "--warmup=10",
+            "--t=60",
+            "--frame-diagnostics",
+            "--frametimes-max-frames=60000"
+          ],
+          "keyboard_selected": true,
+          "radio_connected": false,
+          "physics_enabled": true,
+          "prescribed_pose": false,
+          "physics_advance_override": false
+        },
+        "metrics": {
+          "frames": 3600,
+          "sample_s": 60.0163769999999,
+          "observed_fps_frames_divided_by_sample_s": 59.984,
+          "wall_frame_ms": {
+            "p50": 16.667,
+            "p95": 17.092,
+            "p99": 17.282,
+            "max": 33.169
+          },
+          "sample_simulation_ticks": 0,
+          "sample_simulation_span_s": 0.0,
+          "simulation_wall_ratio": 0.0,
+          "render_diagnostics": {
+            "timing_available": true,
+            "positive_gpu_polls_including_warmup": 4151,
+            "gpu_polls_including_warmup": 4156,
+            "invalid_numeric_values": 0,
+            "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+            "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+            "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+            "sample_percentiles": {
+              "render_cpu_ms": {
+                "n": 3600,
+                "p50": 1.286,
+                "p95": 1.762,
+                "p99": 2.13,
+                "max": 3.452
+              },
+              "render_gpu_ms_positive_only": {
+                "n": 3600,
+                "p50": 4.342,
+                "p95": 4.485,
+                "p99": 4.662,
+                "max": 4.921
+              },
+              "frame_setup_cpu_ms": {
+                "n": 3600,
+                "p50": 0.037,
+                "p95": 0.057,
+                "p99": 0.075,
+                "max": 0.177
+              },
+              "process_time_ms": {
+                "n": 3600,
+                "p50": 16.921,
+                "p95": 17.3372,
+                "p99": 32.879,
+                "max": 32.879
+              },
+              "physics_process_ms": {
+                "n": 3600,
+                "p50": 0.163,
+                "p95": 0.282,
+                "p99": 0.425,
+                "max": 0.425
+              },
+              "texture_memory_bytes": {
+                "n": 3600,
+                "p50": 681397544.0,
+                "p95": 681397544.0,
+                "p99": 681397544.0,
+                "max": 681397544.0
+              },
+              "buffer_memory_bytes": {
+                "n": 3600,
+                "p50": 64530682.0,
+                "p95": 64530682.0,
+                "p99": 64530682.0,
+                "max": 64530682.0
+              },
+              "video_memory_estimate_bytes": {
+                "n": 3600,
+                "p50": 745928226.0,
+                "p95": 745928226.0,
+                "p99": 745928226.0,
+                "max": 745928226.0
+              },
+              "node_count": {
+                "n": 3600,
+                "p50": 861.0,
+                "p95": 861.0,
+                "p99": 861.0,
+                "max": 861.0
+              },
+              "object_count": {
+                "n": 3600,
+                "p50": 4589.0,
+                "p95": 4589.0,
+                "p99": 4589.0,
+                "max": 4590.0
+              },
+              "orphan_node_count": {
+                "n": 3600,
+                "p50": 0.0,
+                "p95": 0.0,
+                "p99": 0.0,
+                "max": 0.0
+              },
+              "resource_count": {
+                "n": 3600,
+                "p50": 1000.0,
+                "p95": 1000.0,
+                "p99": 1000.0,
+                "max": 1000.0
+              }
+            }
+          },
+          "external_process_resources": {
+            "status": "ok",
+            "sample_count": 81,
+            "peak_rss_bytes": 1403793408,
+            "peak_rss_mib": 1338.8,
+            "peak_cpu_percent": 130.67054837232914,
+            "cpu_user_seconds": 24.671875,
+            "cpu_system_seconds": 5.890625,
+            "minimum_C_free_bytes": 198492160,
+            "sidecar": "native-rest/f4u-corsair-250/checks/all-planes-f4u-corsair-250-v5b2h7vf/resources.json",
+            "sidecar_sha256": "25a825a37ff47f954741e6b71c5799972987e642f08f2f863bc87e3db0472894"
+          }
+        },
+        "errors": [],
+        "warnings": [],
+        "source_identity": {
+          "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "shared_source_sha256": {
+            "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+            "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+          },
+          "aircraft_and_relevant_source_sha256": {
+            "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+            "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+            "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "res://data/aircraft/f4u_corsair_250.json": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016"
+          },
+          "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+          "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+          "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+        },
+        "artifacts": {
+          "frame_report": "native-rest/f4u-corsair-250/run-1.json",
+          "frame_report_sha256": "3924975a62af2607d2a15546e46735ff6f61e7643b8829835ce900949592e5fb",
+          "log": "native-rest/f4u-corsair-250/run-1.log",
+          "log_sha256": "436ece8827a4d8bce65f5ae495f780b445763f7d30e560352a77b993c0cf3113",
+          "native_summary": "native-rest/f4u-corsair-250/native-summary.json",
+          "native_summary_sha256": "4dd32910996eec0c21ca46b604ff5437a860bd229252ced8b5dab55c4f60f3a9",
+          "checked_runner_report": "native-rest/f4u-corsair-250/checks/all-planes-f4u-corsair-250-v5b2h7vf/report.json",
+          "checked_runner_report_sha256": "fdb0b87ff552b236fdb33bacb2bc184328a4873422018e548cfe9f5257b192a6"
+        },
+        "notes": [
+          "Only 336 ticks / about 1.4 simulated seconds advanced; end snapshot has focus true, crash false and no fault.",
+          "Pause reason is empty and no focus timeline was collected; trigger remains inconclusive."
+        ]
+      },
+      {
+        "aircraft_id": "f4u-corsair-250",
+        "role": "excluded Club repeat: obstacle collision",
+        "scene": "club_default",
+        "status": {
+          "collection_valid": true,
+          "active_flight_qualifier": false,
+          "single_run_pacing_gate_pass": false,
+          "single_run_performance_pass": false,
+          "frame_report_complete": true,
+          "focus": true,
+          "crashed": true,
+          "paused_at_report": true,
+          "fault": "",
+          "collection_reasons": [],
+          "active_flight_reasons": [
+            "simulation was paused",
+            "simulation did not advance for more than 250 ms"
+          ]
+        },
+        "configuration": {
+          "window": "1920x1080",
+          "refresh_hz": 60.0,
+          "engine": "4.7.2-stable (official)",
+          "backend": "gl_compatibility",
+          "api": "3.3.0 NVIDIA 617.42",
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+          "vsync_mode": 1,
+          "max_fps": 0,
+          "msaa_3d_enum": 2,
+          "msaa_3d_samples": 4,
+          "flight_args": [
+            "--aircraft=f4u-corsair-250",
+            "--quick-flight",
+            "--start=airborne",
+            "--sky=electrical_storm",
+            "--audio-seed=27031",
+            "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-corsair-focus-repeat\\run-1.json",
+            "--warmup=10",
+            "--t=60",
+            "--frame-diagnostics",
+            "--frametimes-max-frames=60000"
+          ],
+          "keyboard_selected": true,
+          "radio_connected": false,
+          "physics_enabled": true,
+          "prescribed_pose": false,
+          "physics_advance_override": false
+        },
+        "metrics": {
+          "frames": 3601,
+          "sample_s": 60.0069730000001,
+          "observed_fps_frames_divided_by_sample_s": 60.01,
+          "wall_frame_ms": {
+            "p50": 16.676,
+            "p95": 17.135,
+            "p99": 17.605,
+            "max": 52.518
+          },
+          "sample_simulation_ticks": 1617,
+          "sample_simulation_span_s": 6.737500000000031,
+          "simulation_wall_ratio": 0.11231058725693374,
+          "render_diagnostics": {
+            "timing_available": true,
+            "positive_gpu_polls_including_warmup": 4166,
+            "gpu_polls_including_warmup": 4171,
+            "invalid_numeric_values": 0,
+            "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+            "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+            "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+            "sample_percentiles": {
+              "render_cpu_ms": {
+                "n": 3601,
+                "p50": 0.996,
+                "p95": 1.326,
+                "p99": 1.56,
+                "max": 2.589
+              },
+              "render_gpu_ms_positive_only": {
+                "n": 3601,
+                "p50": 4.026,
+                "p95": 4.826,
+                "p99": 5.289,
+                "max": 15.757
+              },
+              "frame_setup_cpu_ms": {
+                "n": 3601,
+                "p50": 0.038,
+                "p95": 0.087,
+                "p99": 0.103,
+                "max": 0.163
+              },
+              "process_time_ms": {
+                "n": 3601,
+                "p50": 16.876,
+                "p95": 17.081,
+                "p99": 50.423,
+                "max": 50.423
+              },
+              "physics_process_ms": {
+                "n": 3601,
+                "p50": 0.168,
+                "p95": 3.948,
+                "p99": 4.861,
+                "max": 4.861
+              },
+              "texture_memory_bytes": {
+                "n": 3601,
+                "p50": 682839334.0,
+                "p95": 682839334.0,
+                "p99": 682839334.0,
+                "max": 682839334.0
+              },
+              "buffer_memory_bytes": {
+                "n": 3601,
+                "p50": 73103650.0,
+                "p95": 73103650.0,
+                "p99": 73103650.0,
+                "max": 73103650.0
+              },
+              "video_memory_estimate_bytes": {
+                "n": 3601,
+                "p50": 755942984.0,
+                "p95": 755942984.0,
+                "p99": 755942984.0,
+                "max": 755942984.0
+              },
+              "node_count": {
+                "n": 3601,
+                "p50": 893.0,
+                "p95": 893.0,
+                "p99": 893.0,
+                "max": 893.0
+              },
+              "object_count": {
+                "n": 3601,
+                "p50": 4667.0,
+                "p95": 4667.0,
+                "p99": 4667.0,
+                "max": 4667.0
+              },
+              "orphan_node_count": {
+                "n": 3601,
+                "p50": 0.0,
+                "p95": 0.0,
+                "p99": 0.0,
+                "max": 0.0
+              },
+              "resource_count": {
+                "n": 3601,
+                "p50": 1000.0,
+                "p95": 1000.0,
+                "p99": 1000.0,
+                "max": 1000.0
+              }
+            }
+          },
+          "external_process_resources": {
+            "status": "ok",
+            "sample_count": 80,
+            "peak_rss_bytes": 1366638592,
+            "peak_rss_mib": 1303.3,
+            "peak_cpu_percent": 144.49468131692583,
+            "cpu_user_seconds": 33.734375,
+            "cpu_system_seconds": 7.84375,
+            "minimum_C_free_bytes": 196534272,
+            "sidecar": "native-corsair-focus-repeat/checks/all-planes-corsair-focus-watch-1nx_y5pn/resources.json",
+            "sidecar_sha256": "786e37618ed291206838a023cc7e9201ad4724be83858e67130bda6392c1acfe"
+          }
+        },
+        "errors": [],
+        "warnings": [],
+        "source_identity": {
+          "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "shared_source_sha256": {
+            "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+            "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+          },
+          "aircraft_and_relevant_source_sha256": {
+            "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+            "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+            "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "res://data/aircraft/f4u_corsair_250.json": "ee97e6e40fc3a2e46c5de20d0c43eaf52d0520d430bf77275005db4ae35de016"
+          },
+          "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+          "bootstrap": "D:/OpenRCsimulator-evidence/all-planes-20261024-4049e4da/tooling/native_main_pair_focus_watch.gd",
+          "bootstrap_sha256": "c40256f297e6447a5c38d50c06ef032a35d43ec3dc76cc0fb3aad2451b499596"
+        },
+        "artifacts": {
+          "frame_report": "native-corsair-focus-repeat/run-1.json",
+          "frame_report_sha256": "4e0cd9ee6676fcd5da357e4152e440ba399fa382a42e851767581146e0d0621f",
+          "log": "native-corsair-focus-repeat/run-1.log",
+          "log_sha256": "1a308d6cf88af5ec84129b37e5cd4d4a55f1c5ca659edba37baa77ee334fb188",
+          "native_summary": "native-corsair-focus-repeat/native-summary.json",
+          "native_summary_sha256": "27c70ca5f65f8511fd7f101b937379afb3d89a8b2a9035032c24fcc0b8bfeda3",
+          "checked_runner_report": "native-corsair-focus-repeat/checks/all-planes-corsair-focus-watch-1nx_y5pn/report.json",
+          "checked_runner_report_sha256": "c1df66ea192b2d23ba63f28543e5d3058595b7579b467f4b994ff6322cd129c9"
+        },
+        "notes": [
+          "Focus timeline had no focus-out, focus change or pause transition.",
+          "At sim tick 3934, aircraft collided with landmark:pylons:01:pylon_leg:3:section:2 at 49.31 m/s; route obstacle, not engine fault.",
+          "All post-crash frames are excluded from baseline performance summaries."
+        ]
+      }
+    ],
+    "turbo_lumber": [
+      {
+        "aircraft_id": "turbo-lumber-evolution",
+        "role": "runner setup failure, not a game run and not counted as a game failure",
+        "error": "PowerShell split --frametimes= and its path into separate argv tokens; Godot rejected the empty path before flight creation.",
+        "checked_runner_report": "native-rest/turbo-lumber-evolution/checks/all-planes-turbo-lumber-evolution-0vqusr0b/report.json",
+        "checked_runner_report_sha256": "b5924d121fb0ece3ff060ff5fd86157c44c9077d669c3aab9375561671744eda"
+      },
+      {
+        "aircraft_id": "turbo-lumber-evolution",
+        "role": "excluded Turbo retry: engine shader-cache ERROR",
+        "scene": "club_default",
+        "status": {
+          "collection_valid": false,
+          "active_flight_qualifier": false,
+          "single_run_pacing_gate_pass": true,
+          "single_run_performance_pass": false,
+          "frame_report_complete": true,
+          "focus": true,
+          "crashed": false,
+          "paused_at_report": false,
+          "fault": "",
+          "collection_reasons": [
+            "matching log contains Godot ERROR output"
+          ],
+          "active_flight_reasons": [
+            "collection is invalid"
+          ]
+        },
+        "configuration": {
+          "window": "1920x1080",
+          "refresh_hz": 60.0,
+          "engine": "4.7.2-stable (official)",
+          "backend": "gl_compatibility",
+          "api": "3.3.0 NVIDIA 617.42",
+          "adapter": "NVIDIA GeForce RTX 3090",
+          "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+          "vsync_mode": 1,
+          "max_fps": 0,
+          "msaa_3d_enum": 2,
+          "msaa_3d_samples": 4,
+          "flight_args": [
+            "--aircraft=turbo-lumber-evolution",
+            "--quick-flight",
+            "--start=airborne",
+            "--sky=electrical_storm",
+            "--audio-seed=27031",
+            "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-rest\\turbo-lumber-evolution-run2\\run-1.json",
+            "--warmup=10",
+            "--t=60",
+            "--frame-diagnostics",
+            "--frametimes-max-frames=60000"
+          ],
+          "keyboard_selected": true,
+          "radio_connected": false,
+          "physics_enabled": true,
+          "prescribed_pose": false,
+          "physics_advance_override": false
+        },
+        "metrics": {
+          "frames": 3600,
+          "sample_s": 60.015779,
+          "observed_fps_frames_divided_by_sample_s": 59.984,
+          "wall_frame_ms": {
+            "p50": 16.664,
+            "p95": 17.628,
+            "p99": 18.427,
+            "max": 34.578
+          },
+          "sample_simulation_ticks": 14395,
+          "sample_simulation_span_s": 59.97916666666667,
+          "simulation_wall_ratio": 0.9996643738845149,
+          "render_diagnostics": {
+            "timing_available": true,
+            "positive_gpu_polls_including_warmup": 4166,
+            "gpu_polls_including_warmup": 4171,
+            "invalid_numeric_values": 0,
+            "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+            "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+            "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+            "sample_percentiles": {
+              "render_cpu_ms": {
+                "n": 3600,
+                "p50": 0.864,
+                "p95": 1.094,
+                "p99": 1.3551,
+                "max": 2.346
+              },
+              "render_gpu_ms_positive_only": {
+                "n": 3600,
+                "p50": 3.605,
+                "p95": 3.8281,
+                "p99": 3.888,
+                "max": 5.846
+              },
+              "frame_setup_cpu_ms": {
+                "n": 3600,
+                "p50": 0.082,
+                "p95": 0.104,
+                "p99": 0.128,
+                "max": 0.206
+              },
+              "process_time_ms": {
+                "n": 3600,
+                "p50": 11.466,
+                "p95": 11.6979,
+                "p99": 28.682,
+                "max": 28.682
+              },
+              "physics_process_ms": {
+                "n": 3600,
+                "p50": 2.234,
+                "p95": 3.1688,
+                "p99": 3.581,
+                "max": 3.581
+              },
+              "texture_memory_bytes": {
+                "n": 3600,
+                "p50": 608455572.0,
+                "p95": 608455572.0,
+                "p99": 608455572.0,
+                "max": 608455572.0
+              },
+              "buffer_memory_bytes": {
+                "n": 3600,
+                "p50": 74386246.0,
+                "p95": 74386246.0,
+                "p99": 74386246.0,
+                "max": 74386246.0
+              },
+              "video_memory_estimate_bytes": {
+                "n": 3600,
+                "p50": 682841818.0,
+                "p95": 682841818.0,
+                "p99": 682841818.0,
+                "max": 682841818.0
+              },
+              "node_count": {
+                "n": 3600,
+                "p50": 906.0,
+                "p95": 906.0,
+                "p99": 906.0,
+                "max": 906.0
+              },
+              "object_count": {
+                "n": 3600,
+                "p50": 4639.0,
+                "p95": 4641.0,
+                "p99": 4642.0,
+                "max": 4642.0
+              },
+              "orphan_node_count": {
+                "n": 3600,
+                "p50": 0.0,
+                "p95": 0.0,
+                "p99": 0.0,
+                "max": 0.0
+              },
+              "resource_count": {
+                "n": 3600,
+                "p50": 924.0,
+                "p95": 924.0,
+                "p99": 924.0,
+                "max": 924.0
+              }
+            }
+          },
+          "external_process_resources": {
+            "status": "ok",
+            "sample_count": 99,
+            "peak_rss_bytes": 1354137600,
+            "peak_rss_mib": 1291.4,
+            "peak_cpu_percent": 129.4698670094735,
+            "cpu_user_seconds": 64.546875,
+            "cpu_system_seconds": 7.90625,
+            "minimum_C_free_bytes": 196677632,
+            "sidecar": "native-rest/turbo-lumber-evolution-run2/checks/all-planes-turbo-lumber-evolution-l89y9ie6/resources.json",
+            "sidecar_sha256": "f0383bb5bff660675acd3ed326754102aaa31ea88bc10a3e4ca01d64b55dcba0"
+          }
+        },
+        "errors": [
+          "ERROR: Condition \"br != variant_size\" is true. Returning: false"
+        ],
+        "warnings": [],
+        "source_identity": {
+          "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+          "shared_source_sha256": {
+            "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+            "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+          },
+          "aircraft_and_relevant_source_sha256": {
+            "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+            "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+            "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+            "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+            "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+            "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json": "c645e3213a6f8b718ea96f1891ace859764a670f7db489d98527e50817d3586d",
+            "res://data/aircraft/turbo_lumber_evolution.json": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+          },
+          "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+          "bootstrap": "D:/OpenRCsimulator-evidence/all-planes-20261024-4049e4da/tooling/native_main_pair_battery_identity.gd",
+          "bootstrap_sha256": "f3020e162928a5604eefa520b8b3bc1f4327a60ebc012fd709f98e2eaa255db9"
+        },
+        "artifacts": {
+          "frame_report": "native-rest/turbo-lumber-evolution-run2/run-1.json",
+          "frame_report_sha256": "7acd1145a03adeee9ca060b9ceb89e02625a841ae809ed0e0b3e8b2a2fd86b9b",
+          "log": "native-rest/turbo-lumber-evolution-run2/run-1.log",
+          "log_sha256": "65d00101301f2671e618846274fc7bae89ee15007e6741aa4d7d068121e94144",
+          "native_summary": "native-rest/turbo-lumber-evolution-run2/native-summary.json",
+          "native_summary_sha256": "7d348a9a1ae4a3f5a66a0c9fe9eba62f2f5f07f220d22e7b763fe90b1cdc9b01",
+          "checked_runner_report": "native-rest/turbo-lumber-evolution-run2/checks/all-planes-turbo-lumber-evolution-l89y9ie6/report.json",
+          "checked_runner_report_sha256": "69f16cebc68b06a903ac6c4ef978084db8697d3dcb86bb911b3587d861cdc7d8"
+        },
+        "notes": [
+          "Completed 60.0158 s / 3600 frames / 14,395 sample ticks, but native_summary invalidated collection because log contains shader_gles3.cpp:592 br != variant_size ERROR.",
+          "Process exited 0; retained as invalid evidence. No cache deletion or feature toggle."
+        ]
+      }
+    ]
+  },
+  "control_smokes": {
+    "passed_aircraft": 9,
+    "aircraft_count": 9,
+    "assertions_passed": 90,
+    "assertions_failed": 0,
+    "cases": [
+      {
+        "aircraft_id": "jensen-das-ugly-stik-60",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value"
+        ],
+        "peak_process_rss_mib": null,
+        "artifacts": {
+          "log": "controls/jensen-das-ugly-stik-60/checks/controls-jensen-das-ugly-stik-60-aeg5v0pq/engine.log",
+          "log_sha256": "a748979bde8088f9af75b010c35401f37b0748d9ee61e2089c93af7d33bbae04",
+          "checked_runner_report": "controls/jensen-das-ugly-stik-60/checks/controls-jensen-das-ugly-stik-60-aeg5v0pq/report.json",
+          "checked_runner_report_sha256": "b3096c0b72183ca8d2a2bd36cc34c523bd4d2dc38e87832e5ed2be86018e6233",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "stik-glow-61fx-2t",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+        ],
+        "peak_process_rss_mib": 1271.7,
+        "artifacts": {
+          "log": "controls/stik-glow-61fx-2t/run-1.log",
+          "log_sha256": "c9674dbcc742150b7bebfee00988c6bce8450a5e6eff4a6c2c8f8eaf4a633c36",
+          "checked_runner_report": "controls/stik-glow-61fx-2t/checks/all-planes-controls-stik-glow-61fx-2t-qpzfhqnl/report.json",
+          "checked_runner_report_sha256": "bd5c774c05b1faac4e7bde40587cf70ddb6ffc39c400ba669836ed2f2a877585",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "stik-glow-55ax-2t",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+        ],
+        "peak_process_rss_mib": 1253.9,
+        "artifacts": {
+          "log": "controls/stik-glow-55ax-2t/run-1.log",
+          "log_sha256": "677c8ad0d7bbf2ddcc78ae9573a553b6c3a950cf49c0aae925d6445c5cede82b",
+          "checked_runner_report": "controls/stik-glow-55ax-2t/checks/all-planes-controls-stik-glow-55ax-2t-xvojv87q/report.json",
+          "checked_runner_report_sha256": "052eb5c75dff4ca6ddb8ba9571b013e5b6fb6053862c8cade95f51b713959393",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "stik-glow-fs64v-4t",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+        ],
+        "peak_process_rss_mib": 1287.1,
+        "artifacts": {
+          "log": "controls/stik-glow-fs64v-4t/run-1.log",
+          "log_sha256": "5e01eedf9f9fae63e01aa6a7aef2e71e316ea1add873c8e090f7ed14b997c782",
+          "checked_runner_report": "controls/stik-glow-fs64v-4t/checks/all-planes-controls-stik-glow-fs64v-4t-vwkx0o80/report.json",
+          "checked_runner_report_sha256": "df47cac6e0fce54760eaac6e7f7f475ae0b3b6d1caa870c80dce77aa6463a404",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "gp-extra-300s-60",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed",
+          "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending"
+        ],
+        "peak_process_rss_mib": 1221.2,
+        "artifacts": {
+          "log": "controls/gp-extra-300s-60/run-1.log",
+          "log_sha256": "ee7095666f0a51d6e1894e7981aead51fca7f45f6f3a96b7555a585a0b7b16a9",
+          "checked_runner_report": "controls/gp-extra-300s-60/checks/all-planes-controls-gp-extra-300s-60-w4aazqs7/report.json",
+          "checked_runner_report_sha256": "7eae0943cdbcb658acec2604d7c6064fa450fe948d4dd4d386cb6410ff5a4b10",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "p51d-mustang-120",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [],
+        "peak_process_rss_mib": 1265.4,
+        "artifacts": {
+          "log": "controls/p51d-mustang-120/run-1.log",
+          "log_sha256": "a867b9cece6308509c41fa0cafef7d22a6a9aedc4e9574f7891ed753fadaae1f",
+          "checked_runner_report": "controls/p51d-mustang-120/checks/all-planes-controls-p51d-mustang-120-g9_bo603/report.json",
+          "checked_runner_report_sha256": "e7c9b5995672943b1ce1db1dad64582dc738501ed23a8d6e4c48ca3fc53a9e03",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "f4u-corsair-250",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [],
+        "peak_process_rss_mib": 1313.5,
+        "artifacts": {
+          "log": "controls/f4u-corsair-250/run-1.log",
+          "log_sha256": "765f0f3de8e1d50e8850413f2aed1bdea2e6fdfcb02635ee7d9ad76398ca7840",
+          "checked_runner_report": "controls/f4u-corsair-250/checks/all-planes-controls-f4u-corsair-250-3_0obd1e/report.json",
+          "checked_runner_report_sha256": "343b178ebac9f8374e0531a99f6ebeabd6db5c3e4aa2f7a754515ff45229e4d6",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "sebart-avanti-s-a200-p100rx",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [
+          "aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed"
+        ],
+        "peak_process_rss_mib": 1285.2,
+        "artifacts": {
+          "log": "controls/sebart-avanti-s-a200-p100rx/run-1.log",
+          "log_sha256": "ef03f593f9fb18a4756f9730ec2d1d868eb8800f931de1e6c67f1a545deaf893",
+          "checked_runner_report": "controls/sebart-avanti-s-a200-p100rx/checks/all-planes-controls-sebart-avanti-s-a200-p100rx-9756je6s/report.json",
+          "checked_runner_report_sha256": "cbbf34388aebc621f3f59fca3d0c9dc44d66d27ba4ce4a9e952aec0a6810ebf5",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      },
+      {
+        "aircraft_id": "turbo-lumber-evolution",
+        "passed": true,
+        "assertions_passed": 10,
+        "assertion_failures": [],
+        "actual_id_checked": true,
+        "cameras": [
+          "chase",
+          "orbit",
+          "pilot"
+        ],
+        "physical_axes": [
+          "roll",
+          "pitch",
+          "throttle"
+        ],
+        "log_warnings": [],
+        "peak_process_rss_mib": 1208.5,
+        "artifacts": {
+          "log": "controls/turbo-lumber-evolution/run-1.log",
+          "log_sha256": "fe0697b17af99f1bcfbefc8ecbfbedf3c5aa968cba52a0f53625e1f4dab027cb",
+          "checked_runner_report": "controls/turbo-lumber-evolution/checks/all-planes-controls-turbo-lumber-evolution-thrxdt0x/report.json",
+          "checked_runner_report_sha256": "2f7d9fedc08e27deed143e5245c3bfc3eac47c8c94dd9eaacf2505db9644ea93",
+          "controls_script_sha256": "682f6b1e93dae65213097dbde01172489b75d22d442b5894ac00a6457a7ef781"
+        }
+      }
+    ]
+  },
+  "stik_order_drift_reference": {
+    "baseline_report": "native-stik-canary/jensen-das-ugly-stik-60/run-1.json",
+    "end_report": "native-stik-end/run-1.json",
+    "delta_ms": {
+      "p50": 0.006,
+      "p95": -0.239,
+      "p99": -0.506
+    },
+    "interpretation": "Small endpoint differences do not suggest adverse order/host drift in this check; one run at each endpoint is not repeatability qualification."
+  },
+  "end_reference_run": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "role": "end-of-campaign Stik host/order reference only",
+    "scene": "club_default",
+    "status": {
+      "collection_valid": true,
+      "active_flight_qualifier": true,
+      "single_run_pacing_gate_pass": true,
+      "single_run_performance_pass": true,
+      "frame_report_complete": true,
+      "focus": true,
+      "crashed": false,
+      "paused_at_report": false,
+      "fault": "",
+      "collection_reasons": [],
+      "active_flight_reasons": []
+    },
+    "configuration": {
+      "window": "1920x1080",
+      "refresh_hz": 60.0,
+      "engine": "4.7.2-stable (official)",
+      "backend": "gl_compatibility",
+      "api": "3.3.0 NVIDIA 617.42",
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+      "vsync_mode": 1,
+      "max_fps": 0,
+      "msaa_3d_enum": 2,
+      "msaa_3d_samples": 4,
+      "flight_args": [
+        "--aircraft=jensen-das-ugly-stik-60",
+        "--quick-flight",
+        "--start=airborne",
+        "--sky=electrical_storm",
+        "--audio-seed=27031",
+        "--frametimes=D:\\OpenRCsimulator-evidence\\all-planes-20261024-4049e4da\\native-stik-end\\run-1.json",
+        "--warmup=10",
+        "--t=60",
+        "--frame-diagnostics",
+        "--frametimes-max-frames=60000"
+      ],
+      "keyboard_selected": true,
+      "radio_connected": false,
+      "physics_enabled": true,
+      "prescribed_pose": false,
+      "physics_advance_override": false
+    },
+    "metrics": {
+      "frames": 3599,
+      "sample_s": 60.0002339999999,
+      "observed_fps_frames_divided_by_sample_s": 59.983,
+      "wall_frame_ms": {
+        "p50": 16.672,
+        "p95": 17.582,
+        "p99": 18.167,
+        "max": 35.52
+      },
+      "sample_simulation_ticks": 14396,
+      "sample_simulation_span_s": 59.983333333333334,
+      "simulation_wall_ratio": 1.0000004556823416,
+      "render_diagnostics": {
+        "timing_available": true,
+        "positive_gpu_polls_including_warmup": 4178,
+        "gpu_polls_including_warmup": 4183,
+        "invalid_numeric_values": 0,
+        "render_cpu_scope": "Viewport rendering CPU only; excludes script and other engine CPU.",
+        "gpu_timing_note": "GPU timing may be delayed; zero is ambiguous between unavailable and zero measured time.",
+        "engine_memory_note": "Rendering memory values are engine estimates in bytes, not process RSS or free VRAM.",
+        "sample_percentiles": {
+          "render_cpu_ms": {
+            "n": 3599,
+            "p50": 1.017,
+            "p95": 1.2611,
+            "p99": 1.5791,
+            "max": 2.498
+          },
+          "render_gpu_ms_positive_only": {
+            "n": 3599,
+            "p50": 3.917,
+            "p95": 4.1281,
+            "p99": 4.194,
+            "max": 6.253
+          },
+          "frame_setup_cpu_ms": {
+            "n": 3599,
+            "p50": 0.105,
+            "p95": 0.131,
+            "p99": 0.162,
+            "max": 0.24
+          },
+          "process_time_ms": {
+            "n": 3599,
+            "p50": 13.238,
+            "p95": 13.5006,
+            "p99": 28.619,
+            "max": 28.619
+          },
+          "physics_process_ms": {
+            "n": 3599,
+            "p50": 1.629,
+            "p95": 2.3918,
+            "p99": 2.636,
+            "max": 2.636
+          },
+          "texture_memory_bytes": {
+            "n": 3599,
+            "p50": 635434568.0,
+            "p95": 635434568.0,
+            "p99": 635434568.0,
+            "max": 635434568.0
+          },
+          "buffer_memory_bytes": {
+            "n": 3599,
+            "p50": 75277506.0,
+            "p95": 75277506.0,
+            "p99": 75277506.0,
+            "max": 75277506.0
+          },
+          "video_memory_estimate_bytes": {
+            "n": 3599,
+            "p50": 710712074.0,
+            "p95": 710712074.0,
+            "p99": 710712074.0,
+            "max": 710712074.0
+          },
+          "node_count": {
+            "n": 3599,
+            "p50": 1033.0,
+            "p95": 1033.0,
+            "p99": 1033.0,
+            "max": 1033.0
+          },
+          "object_count": {
+            "n": 3599,
+            "p50": 4979.0,
+            "p95": 4981.0,
+            "p99": 4982.0,
+            "max": 4982.0
+          },
+          "orphan_node_count": {
+            "n": 3599,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0,
+            "max": 0.0
+          },
+          "resource_count": {
+            "n": 3599,
+            "p50": 884.0,
+            "p95": 884.0,
+            "p99": 884.0,
+            "max": 884.0
+          }
+        }
+      },
+      "external_process_resources": {
+        "status": "ok",
+        "sample_count": 79,
+        "peak_rss_bytes": 1336176640,
+        "peak_rss_mib": 1274.3,
+        "peak_cpu_percent": 124.59644288766249,
+        "cpu_user_seconds": 42.765625,
+        "cpu_system_seconds": 6.375,
+        "minimum_C_free_bytes": 194306048,
+        "sidecar": "native-stik-end/checks/all-planes-jensen-das-ugly-stik-60-bwbrvlwd/resources.json",
+        "sidecar_sha256": "020ee0840e794b85af1c506e06f9c48497f34260b85686c8fe7179f352791c8a"
+      }
+    },
+    "errors": [],
+    "warnings": [
+      "aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value"
+    ],
+    "source_identity": {
+      "main_sha256": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+      "shared_source_sha256": {
+        "flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "sky_config": "5570e46ba475327c00096fd58498fb5a611dd832474c99d68c97627227227f68"
+      },
+      "aircraft_and_relevant_source_sha256": {
+        "res://app_state/aircraft_catalog.gd": "41c3284a0eafa32583b3c5442a4b47704967e55f955f2c67734c619a71edbe73",
+        "res://main.gd": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+        "res://project.godot": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "res://render/frame_samples.gd": "da7c0249111cb886d697d0e7d93d82e3b946c52eef02cf08ed74d45b2d8555fa",
+        "res://sim/flight_session.gd": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "res://data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+      },
+      "full_runtime_source_manifest_sha256": "43aa86cccfaaca8429c085101a5098b16076718d7a548a38a27d42ac4faabebe",
+      "bootstrap": "C:/DEVELOPMENT/OpenRCsimulator/tmp/engineering-perf/native_main_pair.gd",
+      "bootstrap_sha256": "d8bc0a80e53016d8a31a93511303c1dc6d9ef99f5aa16b984ab86f4a3c12a572"
+    },
+    "artifacts": {
+      "frame_report": "native-stik-end/run-1.json",
+      "frame_report_sha256": "3cf039d0141a8b85b99cd7056b00a15f02586fef7097ded616dce41b8c2db446",
+      "log": "native-stik-end/run-1.log",
+      "log_sha256": "11b2db06af89ba33c9a301a59c23e75a190f75f9e2b13e5296694fae7ecfa7f6",
+      "native_summary": "native-stik-end/native-summary.json",
+      "native_summary_sha256": "26c85110fba06d5ccd0e64df1a247255d8496d06ec28f88193f27abbce743060",
+      "checked_runner_report": "native-stik-end/checks/all-planes-jensen-das-ugly-stik-60-bwbrvlwd/report.json",
+      "checked_runner_report_sha256": "43de5420cd944f6416fb9ab55b2ee93d9053bfa3c5ece6cde72d09a6ed22bf3d"
+    },
+    "notes": [
+      "Unchanged endpoint reference, not a second per-aircraft qualification repetition."
+    ]
+  },
+  "caveats": [
+    "Do not aggregate percentiles across aircraft, attempts or scenes.",
+    "Viewport render CPU excludes scripts and other engine CPU. GPU timing can be delayed; zero is ambiguous.",
+    "Godot video/render memory fields are engine estimates, not process RSS or free VRAM.",
+    "The 60 Hz VSync setup caps apparent throughput near 60 FPS; frame-time distributions are more informative.",
+    "Single-run pacing pass is descriptive only, not performance certification or pilot acceptance.",
+    "No input-to-photon measurement was made."
+  ],
+  "ui_coverage_evidence": {
+    "coverage": "ui-coverage.json",
+    "observation": "observation.md",
+    "note": "The separate real Home-to-flight UI pass is owned by QA; the direct native bootstrap samples are not UI-route evidence."
+  },
+  "per_aircraft_frame_summary": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.0001870000001,
+      "frames": 3599,
+      "observed_fps": 59.983,
+      "p50_ms": 16.666,
+      "p95_ms": 17.821,
+      "p99_ms": 18.673,
+      "sample_simulation_ticks": 14397,
+      "sample_simulation_span_s": 59.987500000000026,
+      "simulation_wall_ratio": 1.0000633838880695,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": true,
+      "frame_report": "native-stik-canary/jensen-das-ugly-stik-60/run-1.json"
+    },
+    {
+      "aircraft_id": "stik-glow-61fx-2t",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.0015040000001,
+      "frames": 3379,
+      "observed_fps": 56.315,
+      "p50_ms": 16.663,
+      "p95_ms": 24.282,
+      "p99_ms": 30.695,
+      "sample_simulation_ticks": 14398,
+      "sample_simulation_span_s": 59.991666666666696,
+      "simulation_wall_ratio": 1.000074243600327,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": false,
+      "frame_report": "native-rest/stik-glow-61fx-2t/run-1.json"
+    },
+    {
+      "aircraft_id": "stik-glow-55ax-2t",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.004878,
+      "frames": 2716,
+      "observed_fps": 45.263,
+      "p50_ms": 19.907,
+      "p95_ms": 40.597,
+      "p99_ms": 59.443,
+      "sample_simulation_ticks": 14254,
+      "sample_simulation_span_s": 59.391666666666666,
+      "simulation_wall_ratio": 0.9900669625337379,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": false,
+      "frame_report": "native-rest/stik-glow-55ax-2t/run-1.json"
+    },
+    {
+      "aircraft_id": "stik-glow-fs64v-4t",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.012744,
+      "frames": 2994,
+      "observed_fps": 49.889,
+      "p50_ms": 18.904,
+      "p95_ms": 29.466,
+      "p99_ms": 43.948,
+      "sample_simulation_ticks": 14371,
+      "sample_simulation_span_s": 59.879166666666634,
+      "simulation_wall_ratio": 0.9981233197968054,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": false,
+      "frame_report": "native-rest/stik-glow-fs64v-4t/run-1.json"
+    },
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.007416,
+      "frames": 3409,
+      "observed_fps": 56.81,
+      "p50_ms": 16.606,
+      "p95_ms": 23.319,
+      "p99_ms": 51.771,
+      "sample_simulation_ticks": 14348,
+      "sample_simulation_span_s": 59.783333333333374,
+      "simulation_wall_ratio": 0.9965528384400268,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": false,
+      "frame_report": "native-rest/gp-extra-300s-60/run-1.json"
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.018924,
+      "frames": 1736,
+      "observed_fps": 28.924,
+      "p50_ms": 31.529,
+      "p95_ms": 67.14,
+      "p99_ms": 75.706,
+      "sample_simulation_ticks": 13413,
+      "sample_simulation_span_s": 55.887499999999996,
+      "simulation_wall_ratio": 0.9314436475718232,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": false,
+      "frame_report": "native-rest/p51d-mustang-120/run-1.json"
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.0000519999999,
+      "frames": 3600,
+      "observed_fps": 60.0,
+      "p50_ms": 16.676,
+      "p95_ms": 17.651,
+      "p99_ms": 18.461,
+      "sample_simulation_ticks": 14396,
+      "sample_simulation_span_s": 59.98333333333336,
+      "simulation_wall_ratio": 0.9999961211598083,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": true,
+      "frame_report": "native-rest/sebart-avanti-s-a200-p100rx/run-1.json"
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "sample_role": "Club default native sample",
+      "scene": "club_default",
+      "sample_s": 60.0154830000001,
+      "frames": 3601,
+      "observed_fps": 60.001,
+      "p50_ms": 16.67,
+      "p95_ms": 17.663,
+      "p99_ms": 18.555,
+      "sample_simulation_ticks": 14400,
+      "sample_simulation_span_s": 60.00000000000001,
+      "simulation_wall_ratio": 1.000027234075008,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": true,
+      "frame_report": "native-rest/turbo-lumber-evolution-run3/run-1.json"
+    },
+    {
+      "aircraft_id": "f4u-corsair-250",
+      "sample_role": "Alternate scene, not matched Club baseline",
+      "scene": "green_paradise",
+      "sample_s": 60.0163450000002,
+      "frames": 3601,
+      "observed_fps": 60.0,
+      "p50_ms": 16.651,
+      "p95_ms": 17.776,
+      "p99_ms": 19.222,
+      "sample_simulation_ticks": 14400,
+      "sample_simulation_span_s": 59.99999999999999,
+      "simulation_wall_ratio": 1.000003066676071,
+      "collection_valid": true,
+      "active_flight": true,
+      "single_run_pacing_gate_pass": true,
+      "frame_report": "native-corsair-green-paradise/run-1.json"
+    }
+  ],
+  "native_frame_coverage": {
+    "aircraft_count": 9,
+    "valid_active_samples": 9,
+    "club_default_samples": 8,
+    "green_paradise_alternate_samples": 1,
+    "performance_qualification": false
+  }
+}

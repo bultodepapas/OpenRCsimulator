@@ -1,0 +1,170 @@
+{
+	"batch_count": 9,
+	"cases": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"batch_order": [
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter"
+			],
+			"calls_per_batch": 150,
+			"case": "stik-calm",
+			"exact_parity": true,
+			"expected_sound_speed_mps": 340.292286865277,
+			"getter_median_us_per_call": 2.58,
+			"getter_sound_speed_mps": 340.292286865277,
+			"getter_us_per_call_by_batch": [
+				3.05333333333333,
+				3.00666666666667,
+				3.79333333333333,
+				2.37333333333333,
+				2.46,
+				2.44666666666667,
+				2.38,
+				3.34,
+				2.58
+			],
+			"snapshot_median_us_per_call": 61.7466666666667,
+			"snapshot_sound_speed_mps": 340.292286865277,
+			"snapshot_us_per_call_by_batch": [
+				67.8333333333333,
+				56.0933333333333,
+				60.82,
+				91.94,
+				66.14,
+				57.26,
+				61.7466666666667,
+				61.98,
+				60.8466666666667
+			],
+			"temperature_k": 288.15,
+			"weather_id": "calm"
+		},
+		{
+			"aircraft_id": "gp-extra-300s-60",
+			"batch_order": [
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter"
+			],
+			"calls_per_batch": 150,
+			"case": "extra-hot-high",
+			"exact_parity": true,
+			"expected_sound_speed_mps": 351.903737547642,
+			"getter_median_us_per_call": 2.45333333333333,
+			"getter_sound_speed_mps": 351.903737547642,
+			"getter_us_per_call_by_batch": [
+				2.46666666666667,
+				2.44,
+				2.62666666666667,
+				2.4,
+				2.65333333333333,
+				2.40666666666667,
+				2.45333333333333,
+				2.44,
+				2.49333333333333
+			],
+			"snapshot_median_us_per_call": 343.633333333333,
+			"snapshot_sound_speed_mps": 351.903737547642,
+			"snapshot_us_per_call_by_batch": [
+				337.986666666667,
+				377.246666666667,
+				383.993333333333,
+				339.0,
+				343.633333333333,
+				363.24,
+				351.746666666667,
+				331.66,
+				339.666666666667
+			],
+			"temperature_k": 308.15,
+			"weather_id": "hot-high"
+		},
+		{
+			"aircraft_id": "p51d-mustang-120",
+			"batch_order": [
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter",
+				"getter-then-snapshot",
+				"snapshot-then-getter"
+			],
+			"calls_per_batch": 150,
+			"case": "p51-cool-dense",
+			"exact_parity": true,
+			"expected_sound_speed_mps": 334.335371296547,
+			"getter_median_us_per_call": 2.44,
+			"getter_sound_speed_mps": 334.335371296547,
+			"getter_us_per_call_by_batch": [
+				2.44666666666667,
+				2.43333333333333,
+				2.45333333333333,
+				2.44666666666667,
+				2.43333333333333,
+				2.41333333333333,
+				2.44,
+				2.62,
+				2.44
+			],
+			"snapshot_median_us_per_call": 72.48,
+			"snapshot_sound_speed_mps": 334.335371296547,
+			"snapshot_us_per_call_by_batch": [
+				74.2733333333333,
+				73.4666666666667,
+				70.0133333333333,
+				73.16,
+				70.94,
+				71.7066666666667,
+				72.48,
+				74.4066666666667,
+				71.06
+			],
+			"temperature_k": 278.15,
+			"weather_id": "cool-dense"
+		}
+	],
+	"checksum": 2771634.76841556,
+	"complete": true,
+	"display_server": "headless",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": 0,
+	"format": "openrc-sound-speed-probe v1",
+	"os": "Windows",
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"scope": "per-call CPU timing on snapshot/getter methods of a frozen, instantiated production flight scene; excludes rendered-frame and full-callback cost",
+	"source_sha256": {
+		"flight_audio": "12703ffd5a9b5bdf8722d66253dc666b7fa9feb2e98913a83bf8fa496ba00d23",
+		"flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+		"main": "3bc5c377dae754f6e1bcb038aecb2be0f9abdca43433a524f7c665bc30479334",
+		"probe": "06739f2029438c4535f62f4e7fcdca248b733d23a6d4b249f6c106527ca16dae",
+		"wind_config": "9606d30ddc7f4d54195cf58e98eef133b98a053e53435f0bee64b00ec995f3f5"
+	},
+	"warmup_calls_per_path": 50
+}
