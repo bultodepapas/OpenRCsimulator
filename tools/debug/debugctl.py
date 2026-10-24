@@ -2,7 +2,7 @@
 """Drive a running OpenRC app through its debug bridge (PT1h-R7). Standard library only.
 
   debugctl.py launch [--headless] [--resolution WxH] [--port N] [--out DIR] [--profile DIR | --real-profile]
-                     [--script-profile] [--verbose] [-- <app args>]
+                     [--script-profile] [--verbose] [--app DIR] [-- <app args>]
                                                                            start the app with the bridge; wait until ready
   debugctl.py status | ready [--timeout S] | stop [--force]                session: alive?, wait for it, quit it
   debugctl.py logs [--since N] [--level error,warning] [--follow]          engine/script log and state-change events
@@ -204,7 +204,8 @@ def launch(argv: list[str]) -> int:
         argv, app_args = argv[:split], argv[split + 1:]
     headless = "--headless" in argv
     # Rendered sessions open at 1920x1080, the primary display target (AGENTS.md); --resolution 1280x720 is faster.
-    options = {"--out": None, "--timeout": "180", "--port": None, "--profile": None, "--resolution": "1920x1080"}
+    options = {"--out": None, "--timeout": "180", "--port": None, "--profile": None, "--resolution": "1920x1080",
+               "--app": str(REPO / "app")}
     for i, arg in enumerate(argv):
         if arg in options and i + 1 < len(argv):
             options[arg] = argv[i + 1]
@@ -225,7 +226,8 @@ def launch(argv: list[str]) -> int:
             suffix += 1
             out = RUNS / f"{stamp}-{chosen}-{suffix}"
     out.mkdir(parents=True, exist_ok=False)
-    command = [godot(), "--path", str(REPO / "app")]
+    # --app runs a candidate copy (it needs the import cache and the sibling folders, as app/ has them).
+    command = [godot(), "--path", str(Path(options["--app"]).resolve())]
     if "--script-profile" in argv:
         # The local debugger prints a per-function GDScript profile about once a second; `profile` parses it.
         command += ["-d", "--profiling", "--ignore-error-breaks"]

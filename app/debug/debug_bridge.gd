@@ -74,7 +74,7 @@ const COMMANDS := {
 	"mouse": "action=click|double|right|move|down|up|drag|wheel x= y= | text=|path= [to_x= to_y=] [amount=]",
 	"press": "text=<label>|path=<node> mode=accept|signal: activate a button like Enter on the focused control",
 	"focus": "text=|path=: give a control keyboard focus",
-	"type": "text=<s> submit=<bool> [path=]: insert text into the focused (or named) LineEdit/TextEdit",
+	"type": "text=<s> submit=<bool> [into=<label>|path=]: insert text into the focused (or named) LineEdit/TextEdit",
 	"select": "path=|text= index=<i>|item=<label>: OptionButton/ItemList item or TabBar tab; popup=true: open PopupMenu",
 	"set_value": "path=|text= value=<v>: set a Range (slider/spin box) value",
 	"key": "name=<W|Escape|F2|Shift+F|Ctrl+S...> action=tap|press|release hold_s=<s>: keyboard event (see shortcuts)",
@@ -611,14 +611,16 @@ func _cmd_focus(request: Dictionary) -> Dictionary:
 
 
 func _cmd_type(request: Dictionary) -> Dictionary:
-	var control: Control = get_viewport().gui_get_focus_owner()
-	if request.has("path"):
-		var found := _find_control({path = request.path})
+	# An open dialog is its own viewport with its own focus.
+	var window := _top_window()
+	var control: Control = (window if window != null else get_viewport()).gui_get_focus_owner()
+	if request.has("path") or request.has("into"):
+		var found := _find_control({path = request.path} if request.has("path") else {text = request.into})
 		if found.has("error"):
 			return _fail(found.error)
 		control = found.control
 	if not (control is LineEdit or control is TextEdit):
-		return _fail("no LineEdit/TextEdit focused or named")
+		return _fail("no LineEdit/TextEdit focused; name one with into=<label or placeholder> or path=")
 	control.insert_text_at_caret(str(request.get("text", "")))
 	if control is LineEdit:
 		control.text_changed.emit(control.text)
