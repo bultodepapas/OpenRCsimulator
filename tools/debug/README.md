@@ -14,12 +14,14 @@ own list.
 
 ## I want to…
 
-`D="python3 tools/debug/debugctl.py"`; after `launch`, prefix commands with `OPENRC_DEBUG_BRIDGE=<port>` when other
-agents share the machine.
+`D="python3 tools/debug/debugctl.py"`. `launch` prints its port and a ready-made prefix (`"use"`); when other agents
+share the machine, put `OPENRC_DEBUG_BRIDGE=<port>` on every command (or `export` it in the same shell command).
+Commands without it refuse to guess when several sessions are live. Labels match case-insensitively (`text=Fly`
+finds "FLY"); `fly` without `aircraft=` flies Home's selection, the Ugly Stik in a fresh profile.
 
 | Task | Commands |
 | --- | --- |
-| Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 under Xvfb); `$D status`; `$D stop` |
+| Start / stop the app | `$D launch --headless` (no pictures, light) or `$D launch` (1920×1080 under Xvfb); add `--import` after pulling new assets; `$D status`; `$D stop` (prints `"crash": null, "leaked_objects": 0` on a clean exit) |
 | See what is on screen and click it | `$D ui`, `$D press text="Fly"`, `$D select text=Language item="Español"`, `$D close` |
 | Open a menu or setting directly | `$D open screen=settings` (no screen: list them) |
 | Fly, restart, go back | `$D fly aircraft=<id> start=airborne`, `$D restart`, `$D home` |
@@ -29,7 +31,7 @@ agents share the machine.
 | Take a picture | `$D screenshot max_width=960 format=jpg` (not under `--headless`) |
 | Pause, step, stop at a condition | `$D pause`, `$D step ticks=240`, `$D break expr="-s[2] < 1" wait=true` |
 | Record values per tick | `$D watch --every 24 --csv tmp/w.csv h=-s[2]`, `$D record action=start` (flight log) |
-| Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --since <seq>`; `launch --script-profile` + `$D profile` |
+| Find a stutter / slow load / hot script | `$D frames`; `launch --verbose` + `$D timeline --hitch`; `launch --script-profile` + `$D profile seconds=20` |
 | Find a leak | `$D soak scenario.txt --cycles 5`, `$D objects baseline=true` then `$D objects diff=true` |
 | Find UI bugs | `$D crawl`, `$D monkey --steps 300 --seed 1 --keys` |
 | Reproduce a bug as a script | write `tmp/repro.txt` (one command per line), `$D run tmp/repro.txt --fail-on-error` |
@@ -161,15 +163,18 @@ Closing the gaps in the [2026-10-24 review](../../docs/research/debug-tooling-ga
     measured one, and reports counters that grow in every cycle and any new errors. It also prints process RSS from
     `/proc` on Linux.
 - **Script CPU: `profile`.**
-  - Launch with `--script-profile`. Read `profile since=<log_seq>`, taking the sequence from `ping` before the action
-    you want to measure.
+  - Launch with `--script-profile`. Read `profile seconds=20` (the last 20 s), or `profile since=<log_seq>` with the
+    sequence `ping` gave before the action you want to measure. The engine prints a sample about every 1–3 s, so use
+    windows of 20 s or more for a stable ranking.
+  - Profile lines go to their own ring, so they never evict errors and warnings from `logs`.
   - It aggregates the engine's own profile prints (one frame per second) into functions sorted by self or total
     time per sample, with call counts.
   - Profiling adds overhead, and it attributes GDScript, not rendering.
-- **Load phases: `timeline`.** Launch with `--verbose`, take `log_seq` from `ping`, act, then run
-  `timeline --since <seq>`. It lists the largest wall-time gaps between consecutive log lines (a resource load is a
-  line under `--verbose`), with what had just finished. This is the phase breakdown inside one long frame, where the
-  1 s script-profile samples miss it.
+- **Load phases: `timeline`.** Launch with `--verbose`, act, then run `timeline --hitch`: it keeps only the lines
+  printed during the longest recorded hitch frame and lists the largest wall-time gaps between them (a resource load
+  is a line under `--verbose`), with what had just finished. `--since <seq>` / `--until <seq>` choose any other
+  window. The gaps name what finished before the time went, not the work inside it. This is the phase breakdown inside
+  one long frame, where the script-profile samples miss it.
 - **One-command regression pass: `smoke`.**
   - It runs its own headless session on its own port: `crawl` from Home, every scenario in
     `tools/debug/scenarios/*.txt` with `--fail-on-error`, a flight and `crawl` from its pause menu, a seeded
@@ -235,6 +240,9 @@ The engine's own warnings are the better signal.
 
 ## Recipes
 
+These assume one session. When other agents share the machine, start each shell command with
+`export OPENRC_DEBUG_BRIDGE=<your port>` (from `launch`'s output).
+
 ```sh
 # Reproduce a bug as a script; it stops at the first failed command or assertion.
 cat > tmp/repro.txt <<'EOF'
@@ -260,8 +268,9 @@ $D open screen=settings; $D ui; $D select text=WindowResolution item="1920 × 10
 $D pause; $D step ticks=240; $D state
 
 # Where does a stutter come from, and what costs script time?
-$D launch --headless --script-profile; SEQ=$($D ping --json | python3 -c 'import json,sys; print(json.load(sys.stdin)["log_seq"])')
-$D fly start=airborne; $D frames; $D profile since=$SEQ top=15
+$D launch --headless --script-profile          # note its port, then in each later shell command:
+export OPENRC_DEBUG_BRIDGE=<port>
+$D fly start=airborne; $D frames; $D wait seconds=25; $D profile seconds=20 top=15
 
 # Stop at the tick something goes wrong.
 $D break name=ground expr="-s[2] < 0.5" wait=true timeout_s=600; $D state; $D sample exprs={"h":"-s[2]"} count=1
@@ -380,7 +389,7 @@ python3 tools/godot/run_checked.py --timeout 90 --require-text 'all debug bridge
 python3 -m unittest discover -s tools/debug -p 'test_*.py'
 ```
 
-**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 67 checks. It talks real loopback TCP
+**Bridge test.** `app/tests/test_debug_bridge.gd` runs in `app/test.sh`, with 69 checks. It talks real loopback TCP
 to the bridge on a stand-in AppRoot. It covers:
 
 - protocol errors and the token;
@@ -404,7 +413,8 @@ to the bridge on a stand-in AppRoot. It covers:
 - engine singletons in `eval` and a numeric key name;
 - PT1h-R8 tools: a 150 ms frame becomes a `hitch` event and `frames` reports percentiles; a watchpoint pauses at the
   exact tick and `once` removes it; `logs` summary groups messages differing only in numbers; `objects diff` names 5
-  new orphan `Node`s; `profile` parses the engine's profile format.
+  new orphan `Node`s; `profile` parses the engine's profile format, and 5,000 profile lines evict no warning from
+  the main log.
 
 **Client tests.** These run in `research/test-tools.sh`, with 25 tests, mostly against a fake server. They cover:
 

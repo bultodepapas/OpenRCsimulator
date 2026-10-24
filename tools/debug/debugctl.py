@@ -851,7 +851,8 @@ def soak(argv: list[str]) -> int:
         print("GROWS " + line)
     for record in errors[:10]:
         print("ERROR " + format_record(record))
-    print(f"# {len(suspects)} growing counters, {len(errors)} errors over {cycles} measured cycles")
+    print(f"# {len(suspects)} growing counters, {len(errors)} errors: baseline + {max(cycles - 1, 0)} compared cycles "
+          f"(after {warmup} warm-up)")
     return 1 if suspects or errors else 0
 
 
