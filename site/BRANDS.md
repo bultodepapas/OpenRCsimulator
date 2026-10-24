@@ -21,14 +21,15 @@ The website uses the official OpenAI Blossom beside the ChatGPT product name. Co
 
 ## Savox
 
-The Savox monochrome PNGs came from the official [Savox Logos Package](https://www.teamsavox.com/TeamSavox-Logos-Package.zip), linked on the [Team Savox Download Page](https://www.teamsavox.com/download/). They are original black and white variants for light and dark surfaces.
+The Savox PNGs came from the official [Savox Logos Package](https://www.teamsavox.com/TeamSavox-Logos-Package.zip), linked on the [Team Savox Download Page](https://www.teamsavox.com/download/). The color variant was downloaded again on 2026-10-24.
 
 | File | Mark |
 | --- | --- |
 | `assets/brands/savox/TeamSavox-Logo-Mono-Black.png` | SAVOX wordmark, black |
 | `assets/brands/savox/TeamSavox-Logo-Mono-White.png` | SAVOX wordmark, white |
+| `assets/brands/savox/TeamSavox-Logo-LightBG.png` | SAVOX wordmark, orange and black for light backgrounds |
 
-The current website uses the black mark on white logo tiles. WEB-05's transparent 768×261 WebP is generated from `Black.png` with `python site/prepare_assets.py --brands-only`, Pillow 12.3.0, proportional Lanczos resizing and lossless encoding. The original black and white PNGs remain unchanged. The unused white WebP derivative is no longer generated; the publisher refreshes its assets directory from this source tree, so the file will leave `gh-pages` on the next publish. The white original is retained for other authorized uses. The black display copy is about 10.2 kB instead of 90.9 kB, with a decoded RGBA footprint of about 0.8 MB instead of 23.6 MB. Its display width is at most 240 CSS pixels, covering 3× pixel density.
+The README and website use `TeamSavox-Logo-LightBG.webp` on white tiles. `python site/prepare_assets.py --brands-only` crops excess transparent canvas while retaining 5% horizontal and 18% vertical clear space around the visible mark, then resizes to 768×171 with Pillow 12.3.0 and lossless WebP encoding. The official PNGs remain unchanged. This makes Savox visually comparable in scale with the neighboring logos on desktop and mobile.
 
 The project [README](../README.md#partners) records Savox's authorization to include representations of its products in OpenRC Simulator. The permission record in [D6-SAV-00](../docs/research/servos/D6-SAV-00/README.md) quotes the manufacturer's scope: “You have our permission to use Savox product representations in your project.” Keep the partner acknowledgment within that scope; do not imply manufacturer certification of simulator behavior. SAVOX marks remain Savox's property.
 

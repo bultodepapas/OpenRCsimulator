@@ -89,7 +89,7 @@ Thank you to these manufacturers for authorizing product representations in Open
 
 | Savox | SonicModell | Hitec RCD |
 | --- | --- | --- |
-| [<img src="site/assets/brands/savox/TeamSavox-Logo-Mono-Black.webp" alt="Savox" width="180">](https://www.teamsavox.com/) | [<img src="site/assets/brands/sonicmodell/sonicmodell-logo.png" alt="SonicModell" width="180">](https://www.sonicmodell.com/) | [<img src="site/assets/brands/hitec/hitec-radio-logo-footer.png" alt="Hitec RCD" width="180">](https://www.hitecrcd.com/) |
+| [<img src="site/assets/brands/savox/TeamSavox-Logo-LightBG.webp" alt="Savox" width="180">](https://www.teamsavox.com/) | [<img src="site/assets/brands/sonicmodell/sonicmodell-logo.png" alt="SonicModell" width="180">](https://www.sonicmodell.com/) | [<img src="site/assets/brands/hitec/hitec-radio-logo-footer.png" alt="Hitec RCD" width="180">](https://www.hitecrcd.com/) |
 | Product representations authorized; engineering contact offered. [Servo catalogue integration is planned](docs/plans/savox-servos.md). | Appearance, names and branding authorized for the models covered by our request, including Skyhunter models. Integration is pending. | Servos published on Hitec websites may be featured with official product links. Integration is pending. |
 
 Permissions have specific scopes; they do not imply financial sponsorship or validation of our physical models. Brand assets remain outside the MIT code license. [Permission scope and logo sources](site/BRANDS.md).

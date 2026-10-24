@@ -197,7 +197,7 @@ static func _primary_button(theme: Theme, type: String, font_size: int) -> void:
 	for state in ["normal", "hover", "pressed", "disabled"]:
 		var box := theme.get_stylebox(state, type) as StyleBoxFlat
 		box.border_color = CRYSTAL if state in ["normal", "hover"] else PRIMARY[state]
-		box.border_width_top = 2
+		box.border_width_top = 1
 		box.border_blend = true
 		if state != "disabled":
 			box.shadow_color = Color(FOCUS, 0.30 if state == "hover" else 0.16)

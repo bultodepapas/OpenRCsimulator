@@ -134,8 +134,8 @@ func _engage() -> void:
 	_energy_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	_energy_tween.tween_method(_energy, float(_uniforms.get(&"energy", 0.0)), 1.0, 0.18)
 	if _shine_tween != null: _shine_tween.kill()
-	_shine_tween = create_tween()
-	_shine_tween.tween_method(_shine, -0.25, 1.65, 0.72)
+	_shine_tween = create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_shine_tween.tween_method(_shine, -0.25, 1.65, 0.56)
 
 
 func _release() -> void:
