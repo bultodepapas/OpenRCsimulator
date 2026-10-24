@@ -82,7 +82,7 @@ def build() -> dict:
         "scale_factor": meta["scale_factor"],
         "visual_revision": f"{meta['revision']}-{glb['sha256'][:12]}",
         "master": {"revision": meta["master_revision"], "sha256": meta["master_sha256"]},
-        "terms": "NOT SET (g1.3 LICENSE.txt: private project delivery, no redistribution grant); owner decision F4U-13 blocks packaging",
+        "terms": "owner-authored (R59 lineage); shipped in OpenRC releases by owner decision 2026-10-24; g1.3 LICENSE.txt kept unchanged",
         "author_manifest": f"all {len(author)} entries of {KEY_FILES['author_manifest']} match",
         "key_files": {role: dict(path=path, **{k: by_path[path][k] for k in ("sha256", "bytes")}) for role, path in KEY_FILES.items()},
         "file_count": len(rows),

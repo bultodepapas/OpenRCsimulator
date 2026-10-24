@@ -84,8 +84,7 @@ const ENTRIES := [
 		data = "res://data/aircraft/p51d_mustang_120.json",
 	},
 	{
-		# F4U-09: the author's g1.3 model (1:4.5, CARF-Models class) with a Moki S250 radial; historical name as the P-51,
-		# pending the F4U-13 name-use assessment for any public release.
+		# F4U-09: the author's g1.3 model (1:4.5, CARF-Models class) with a Moki S250 radial; historical name as the P-51.
 		id = "f4u-corsair-250",
 		visual_family = "f4u-corsair-250",
 		name = "F4U-1D Corsair 1/4.5",

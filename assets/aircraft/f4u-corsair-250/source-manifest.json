@@ -12,7 +12,7 @@
   "revision": "R59",
   "sha256": "94edd59b44f578b5a1f7c1fe4004c736dff47a63e2866e4b8a04532851cf4dc3"
  },
- "terms": "NOT SET (g1.3 LICENSE.txt: private project delivery, no redistribution grant); owner decision F4U-13 blocks packaging",
+ "terms": "owner-authored (R59 lineage); shipped in OpenRC releases by owner decision 2026-10-24; g1.3 LICENSE.txt kept unchanged",
  "author_manifest": "all 89 entries of manifest.sha256.json match",
  "key_files": {
   "glb": {

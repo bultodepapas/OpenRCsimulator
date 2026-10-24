@@ -171,7 +171,7 @@
     },
     {
       "path": "assets/aircraft/f4u-corsair-250/source-manifest.json",
-      "sha256": "4b91a84f258230f007d753ea6e96e16445da52c7d66c98abcbd125da3f2331e0",
+      "sha256": "ece2242c0e0144218c31f71d2670eebec18de4037d5b670616ead56a2337644b",
       "hash_mode": "lf_text",
       "role": "asset_identity"
     },
