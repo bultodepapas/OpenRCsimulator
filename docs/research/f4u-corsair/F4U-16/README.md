@@ -34,6 +34,10 @@ The livery suite ended with `Pages in use exist at exit in PagedAllocator`, whic
 | Parked-aircraft bakes | Rebaked for the importer pin; meshes byte-identical, `--check` 6/6 | [checks/parked-bake.log](checks/parked-bake.log) |
 | Generators | `install_liveries.py`, `manifest.py`, `compile_model.py`, `derive_physics.py`, `costing_entry.py`, `build_models.py`, `build_descriptors.py`, `build_customization.py` and `build_runtime.py` current in `--check` mode | — |
 
+## Found during verification: companion flights refused
+
+`test_companions_shell.gd` fails on `main` (`4c760f66`): a Home flight with companions enabled is refused with "solver.sha256: current normalized physics and simulation sources do not match this profile". The Jensen Stik companion profile pins solver identity `69bf5c78…9ffc7290` (133 sources, re-bound in `ee054047` on GitHub's line). The merged tree hashes to `3a8ebbc5…c37ccad1` (134 sources), from parallel changes since: `ground_wheels.gd` rolling law (`e76a72f5`); `mass_inventory.gd`, `simulation.gd` and `vehicle_model.gd` (`7dedb38f`); the launch-trim cache, `launch_trim_cache.gd` and `flight_session.gd`; and F4U-17's throttle hold in `flight_session.gd`. F4U-16 changes no solver source. The [AFC-02 re-bind procedure](../../ai-companions/AFC-02/README.md#electric-hub-inflow-solver-re-bind-69bf5c78-2026-10-23) replays nine retained tapes on two disposable app copies. It was not run: drive C: had 2.1 GB free. The rolling-law change can alter ground runs, so parity is not assumed. The AI-companions owner decides between re-bind and requalification. Companions stay off by default.
+
 ## Costs
 
 Headless on the development machine, a default Corsair build takes about 0.48 s; another scheme takes 0.53–0.60 s, including its 9.4–10 MB hash. The four added schemes add 48.5 MB of imported scenes (11.1–14.6 MB each) and 38.3 MB of export proof copies to a package. Only the chosen scheme loads.
