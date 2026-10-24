@@ -15,7 +15,16 @@ class InstrumentSwitch extends CheckBox:
 		label.theme_type_variation = &"TooltipLabel"
 		label.text = for_text
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		label.custom_minimum_size.x = minf(520.0, maxf(120.0, get_viewport_rect().size.x - 48.0))
+		var help_font := get_theme_font("font", "TooltipLabel")
+		var help_size := get_theme_font_size("font_size", "TooltipLabel")
+		label.add_theme_font_override("font", help_font)
+		label.add_theme_font_size_override("font_size", help_size)
+		label.add_theme_constant_override("line_spacing", 0)
+		var width := minf(520.0, maxf(120.0, get_viewport_rect().size.x - 48.0))
+		var wrapped := help_font.get_multiline_string_size(for_text, HORIZONTAL_ALIGNMENT_LEFT, width, help_size,
+			-1, TextServer.BREAK_MANDATORY | TextServer.BREAK_WORD_BOUND | TextServer.BREAK_ADAPTIVE)
+		# The popup chooses its position before the first container layout. Supply both dimensions now.
+		label.custom_minimum_size = Vector2(width, ceilf(wrapped.y))
 		return label
 
 const LAYER: int = 12
@@ -47,11 +56,11 @@ const DESCRIPTIONS := {
 	pilot_radar = "North-up aircraft position and horizontal distance relative to the pilot, plus range ring and AGL. Requires a valid pilot-relative position sample.",
 	wind_track = "Nose heading, ground track, drift angle, headwind and crosswind. Track is unavailable below 1 m/s or without ground-course data.",
 	cruise_efficiency = "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power, ≥3 m/s ground speed and 2 s of samples.",
-	maneuver = "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data.",
-	glide = "Vertical-speed history. Ground-glide ratio = ground speed/sink rate; uncorrected for wind or energy height, not aerodynamic L/D. Unavailable without data or while powered, turning, slow, or not descending.",
+	maneuver = "Current G load and flight minimum/maximum, bank angle and angle of attack. Dashes indicate missing readings.",
+	glide = "Climb/sink history and ground glide ratio. Requires descending, low-power flight with little bank and enough speed. Wind affects the ratio; it is not aerodynamic L/D.",
 	flight_summary = "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial.",
 }
-const COMMON_WIDGET_HELP := "When unlocked, drag a header to move the widget or double-click its header to restore its default position. Close with ×; reopen it with this switch. Appearance settings apply to all widgets."
+const COMMON_WIDGET_HELP := "Unlocked: drag the header to move; double-click to restore its position. × closes; this switch reopens. Appearance applies to all widgets."
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }

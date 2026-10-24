@@ -380,6 +380,8 @@ func _dialog() -> void:
 	var help_label: Label = dialog.switches.glide._make_custom_tooltip(dialog.switches.glide.tooltip_text)
 	_check("long instrument help wraps inside a bounded tooltip", help_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART
 		and help_label.custom_minimum_size.x <= 520.0 and help_label.text == dialog.switches.glide.tooltip_text)
+	_check("tooltip height is known before the popup is positioned", help_label.custom_minimum_size.y > 100.0
+		and help_label.custom_minimum_size.y < 672.0)
 	help_label.free()
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)

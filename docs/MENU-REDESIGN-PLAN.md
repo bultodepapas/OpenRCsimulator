@@ -1,8 +1,8 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 9 · 2026-10-20 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
+**Revision 11 · 2026-10-24 · Owner: product shell · UI-20…29; audit repairs UI-31…38 in [§11](#11-ui-30-audit-repairs).**
 
-**Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
+**Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, lime/graphite theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks for the earlier palette. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
 Build an aircraft-led RC club experience: a believable field, a well-lit model, a clear route to flight and a restrained interface that leaves the world visible. The [dated visual/resource investigation](research/menu-investigations/UI-20-R2/README.md) owns the current-screen diagnosis, reference analysis, Godot/GitHub research and source licenses.
 
@@ -33,11 +33,11 @@ No flight-model tuning, aircraft-geometry edits, new gameplay modes, recording c
 | Long weather/time descriptions on Home | Show an operational summary; put specifications, limitations and advanced controls in explicit destinations. Keep blocking reasons visible. |
 | Layout tests pass while the owner rejects the result | Require native visual review with concrete composition gates, separately from functional verification. |
 
-**Visual thesis:** a believable RC club photographed with care, framed by charcoal translucent surfaces, warm white type and a restrained amber selection/action accent.
+**Visual thesis:** a believable RC club photographed with care, framed by green graphite translucent surfaces, pale white type and a luminous radioactive lime selection/action accent with restrained crystal edges.
 
 **Content plan:** world and aircraft first; compact activity navigation; selected aircraft and next-flight summary; one primary action; detail on request.
 
-**Interaction thesis:** immediate focus feedback, a short panel transition and a deliberate camera move when changing presentation context. Motion settles and never delays input. Reduced motion uses the same final compositions without camera travel.
+**Interaction thesis:** immediate focus feedback, a brief crystal reflection on primary actions, tactile shading on press and a short panel transition. Motion settles and never delays input. Reduced motion retains static lighting without the moving reflections or camera travel.
 
 Use the supplied airfield direction discussed around references 7–8 as the preferred composition; the wider concept around reference 6 informs horizontal organization with fewer lower-screen modules. Use Forza's grounded vehicle/space relationship, Cyberpunk's identity/focus hierarchy, MSFS's aircraft thumbnails and GT7's concise pause principle. [Reference inspection and limits](research/menu-investigations/UI-20-R2/README.md#reference-interpretation).
 
@@ -139,7 +139,11 @@ A bounded reflection-probe experiment must account for the existing lake and two
 
 ### Color and surfaces
 
-Implemented tokens are charcoal `#111A20`, warm white `#F3F1EB`, secondary gray `#B8C4C9` and amber `#EABF66`. Flat-color contrast checks pass; this is not a certification of every composited scene/state. Reserve red for destructive/error states; normal Fly/Resume no longer uses a large danger-colored area.
+UI-22-R3 replaces the amber accent with graphite `#101C18`, pale white `#F0F6EB`, secondary gray-green `#BACBBF`, radioactive lime `#B6FF43` and crystal highlights `#E3FFC2`. Primary actions share a pale beveled edge, a bounded lime halo that brightens on hover, and a dark inset keyboard/gamepad focus outline. Toggles, checks, sliders and navigation use the same tokens. Red remains reserved for destructive/error states; operational warning colors retain their meaning.
+
+UI-22-R4 adds a shader underlay to primary buttons, Cards and Settings panels: layered glass lighting, a finite 720 ms specular sweep on focus/hover or panel appearance, and 90/180 ms press/release shading. The shared `Widgets.button()` factory covers dynamically created primary actions; `Screen.open()` decorates existing panels and directly created primary buttons. Native text, focus, shadows and layout remain above the noninteractive underlay. Effects cancel when hidden or detached, and settle on the next animation update if reduced motion is enabled. Event-driven tweens stop at rest; there is no effect `_process`, automatic shader clock, screen copy, background blur or new runtime dependency. Screen-specific style overrides retain ownership. The shader adapts freely available CC0/MIT code, with its notice included by every desktop export preset.
+
+[UI-22-R4 sources and verification](research/menu-investigations/README.md#ui-22-r4--crystal-lighting-and-finite-motion-2026-10-24) record the implementation and current native 1080p inspection. [UI-22-R3](research/menu-investigations/README.md#ui-22-r3--radioactive-lime-theme-2026-10-24) retains the preceding palette evidence. Contrast checks include the darkest glass gradient endpoint, not every composited scene.
 
 Use local scrims and limited translucent surfaces. Start opacity near 0.86–0.94, increasing it where measured contrast requires; opaque mode is 1.0. Start with quiet 1-pixel edges and 6–8-pixel radii. Avoid borders around every row and nested cards. Focus uses an outline/shape as well as color and remains distinguishable from selection.
 

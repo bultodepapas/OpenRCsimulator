@@ -194,7 +194,6 @@ func _init(instrument_id: String, instrument_title := "", icon_id := "") -> void
 		graphic.hide()
 		line.hide()
 		details.hide()
-	set_process_input(false)
 	graphic.resized.connect(graphic.queue_redraw)
 	_apply_density()
 
@@ -302,6 +301,9 @@ func _apply_density() -> void:
 
 
 func _ready() -> void:
+	# Godot automatically enables an overridden _input when entering the tree, after _init.
+	# Only a live drag needs global release events; idle/hidden widgets use header GUI input.
+	set_process_input(false)
 	get_window().focus_exited.connect(_finish_drag)
 
 

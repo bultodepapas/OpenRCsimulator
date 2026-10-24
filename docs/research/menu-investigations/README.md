@@ -1,5 +1,30 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R4 — crystal lighting and finite motion, 2026-10-24
+
+The follow-up owner request adds glass, shadow and motion to the lime theme. The [current guide](../../MENU-REDESIGN-PLAN.md#color-and-surfaces) owns behavior. The implementation reuses free shader techniques rather than introducing a UI library or texture pack.
+
+| Primary source, checked 2026-10-24 | Use and scope |
+| --- | --- |
+| [sentinelcmd: Liquid Glass UI v2](https://godotshaders.com/shader/liquid-glass-ui-customizable/) — CC0, updated 2026-01-17 | Adapted rounded-box mask and edge-lighting approach. Omitted screen refraction, blur and chromatic aberration. Retained native focus instead of following the example's instruction to hide it. |
+| [DimensionAlmios: Shine Sweep](https://godotshaders.com/shader/shine-sweep-for-items-and-ui/) — MIT, 2026-09-29 | Adapted the projected soft/hard light band; replaced automatic clock playback with finite event-driven progress. |
+| [Jettelly: UI Animation and Specular v0.1](https://jettelly.com/game-assets/ui-animation-and-specular) — CC0 | Reviewed as an alternative; not downloaded or installed. |
+| [Godot 4.7 screen-reading shaders](https://docs.godotengine.org/en/4.7/tutorials/shaders/screen-reading_shaders.html), [Tween](https://docs.godotengine.org/en/4.7/classes/class_tween.html) | Screen sampling requires back-buffer copies and needs care with overlap. This slice uses analytic surface lighting and node-bound finite tweens; it makes no measured GPU-speedup claim. |
+
+The [runtime notice](../../../app/ui/shaders/LICENSE.txt) records source revisions, fetched shader-block hashes and the MIT grant. Only adapted code is shipped; no upstream imagery is included. All three desktop export presets explicitly include that notice.
+
+Verification: native Godot 4.7.2 checked-runner passes for `test_ui_crystal.gd` (14 assertions), `test_ui_scale.gd`, `test_ui_home.gd`, `test_ui_modal_consistency.gd`, `test_ui_screen_stack.gd`, `test_settings_ui.gd` and `test_ui_settings_integration.gd`. New scripts were parsed outside `app/` before integration. The crystal test covers unchanged geometry, noninteractive draw order, full-panel sizing, no process loops, finite focus motion, cancellation on suspension, live reduced motion without theme rebuilding, opaque theme replacement, preservation of external style overrides, darkest-gradient text contrast and tween teardown. Repeated navigation retained a stable node count.
+
+The production app compiled and rendered the shader through the debug bridge on Windows / NVIDIA RTX 3090 / Compatibility at a confirmed 1920×1080 viewport. EN/ES Home and Settings captures were inspected for glossy actions, hovered reflections, dark panels, text/focus visibility and opaque/reduced-motion previews. The session logged no engine/script/shader errors and exited without a crash or leaked objects. Raw captures/logs stay in ignored `tmp/debug-bridge/20261024-152052-62050/`; checked logs stay in `tmp/lime-glass-checks/`. This is focused UI evidence, not a full suite, release-package or performance qualification.
+
+## UI-22-R3 — radioactive lime theme, 2026-10-24
+
+The owner's requested lime/crystal direction replaces the amber accent in the shared theme. Current tokens and effects live in the [redesign guide](../../MENU-REDESIGN-PLAN.md#color-and-surfaces). Changes are presentation-only; no flight law, aircraft data or saved-setting schema changes.
+
+Native Windows Godot 4.7.2 checked-runner verification passed `test_ui_scale.gd`, `test_ui_home.gd`, `test_ui_modal_consistency.gd`, `test_settings_ui.gd` and `test_ui_settings_integration.gd`; the theme also passed `--check-only`. Home initially encountered missing imported population scenes; refreshing the import cache resolved the errors before the successful rerun. Primary-action text contrast measured 14.46:1 normal, 15.28:1 hover and 10.57:1 pressed. Primary focus is checked against its bright fill, and secondary focus against the dark panel. Scale checks cover 1080p, 1440p and 4K plus compact fallback sizes and 200% text.
+
+The [debug bridge](../../../tools/debug/README.md) drove the production app on NVIDIA RTX 3090 / OpenGL Compatibility at a confirmed 1920×1080 viewport. Actual captures were inspected for EN/ES Home, Settings, on/off switches, enabled/disabled actions, primary hover, sliders and Spanish Pause. Opaque-panel and reduced-motion previews were exercised. The session logged no engine/script errors and exited with no crash or leaked objects. Local captures and logs remain under ignored `tmp/debug-bridge/20261024-150836-47870/`; no image assets were added. This is focused UI evidence, not a complete test-suite run, higher-resolution visual qualification or a performance benchmark.
+
 2026-10-20: UI-30 repairs: [UI-31 recovery dead ends](UI-31/README.md), [UI-32 preserved choices](UI-32/README.md), [UI-33 interaction and words](UI-33/README.md), [UI-34a switch from Pause](UI-34a/README.md), [UI-34b–d aircraft flow](UI-34b-d/README.md), [UI-35 shared dialog states](UI-35/README.md), [UI-35c wide canvases and opaque fades](UI-35c/README.md), [UI-36 Settings and content](UI-36/README.md). Each lists its tests, captures and the findings that remain open.
 
 2026-10-20: [UI-30 — menu system audit at 1080p and above](UI-30/README.md). Software-rendered (Xvfb/llvmpipe) captures of the production app from 1920×1080 to 5120×1440 (16:9, 16:10, 21:9, 32:9; EN/ES; 150% text), code review of pause, aircraft switching, theme and chrome, and 62 graded findings. The repair order is UI-31…38 in [the redesign plan](../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).

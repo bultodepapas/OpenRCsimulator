@@ -40,7 +40,7 @@ func run() -> void:
 	_check("zero-sized window does not invent a logical canvas", Scale.logical_size_for(Vector2i.ZERO) == Vector2i.ZERO)
 	_check("text contrast on charcoal meets 4.5:1", UiTheme.contrast(UiTheme.TEXT, UiTheme.PANEL) >= 4.5)
 	_check("secondary text on translucent navigation surface meets 4.5:1", UiTheme.contrast(UiTheme.TEXT_2, UiTheme.SIDEBAR) >= 4.5)
-	_check("amber focus on charcoal meets 3:1", UiTheme.contrast(UiTheme.FOCUS, UiTheme.PANEL) >= 3.0)
+	_check("lime focus on graphite meets 3:1", UiTheme.contrast(UiTheme.FOCUS, UiTheme.PANEL) >= 3.0)
 	await _check_popup_anchor_after_resize()
 
 	UiTheme.compact_layout = true
@@ -58,8 +58,11 @@ func run() -> void:
 			var primary_box := large_theme.get_stylebox(state, type) as StyleBoxFlat
 			var primary_text_key := "font_pressed_color" if state == "pressed" else "font_color"
 			var primary_text: Color = large_theme.get_color(primary_text_key, type)
-			_check("%s %s state uses readable dark text on amber" % [type, state], UiTheme.contrast(primary_text, primary_box.bg_color) >= 4.5)
-			_check("%s %s state keeps the amber primary palette" % [type, state], primary_box.bg_color == UiTheme.PRIMARY[state])
+			_check("%s %s state uses readable dark text on lime" % [type, state], UiTheme.contrast(primary_text, primary_box.bg_color) >= 4.5)
+			_check("%s %s state keeps the lime primary palette" % [type, state], primary_box.bg_color == UiTheme.PRIMARY[state])
+			var focus := large_theme.get_stylebox("focus", type) as StyleBoxFlat
+			_check("%s %s focus remains visible on its luminous fill" % [type, state],
+				not focus.draw_center and UiTheme.contrast(focus.border_color, primary_box.bg_color) >= 3.0)
 	var destructive_box := large_theme.get_stylebox("normal", "DestructiveButton") as StyleBoxFlat
 	var destructive_text: Color = large_theme.get_color("font_color", "DestructiveButton")
 	_check("destructive action uses readable text on red", UiTheme.contrast(destructive_text, destructive_box.bg_color) >= 4.5)

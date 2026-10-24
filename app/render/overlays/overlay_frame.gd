@@ -34,6 +34,7 @@ func _init(overlay_id: String, title: String) -> void:
 	title_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title_label)
 	close_button = close_x(func() -> void: close_requested.emit(id))
+	close_button.tooltip_text = "%s · %s" % [tr("Close"), title]
 	header.add_child(close_button)
 	body = VBoxContainer.new()
 	body.mouse_filter = Control.MOUSE_FILTER_IGNORE

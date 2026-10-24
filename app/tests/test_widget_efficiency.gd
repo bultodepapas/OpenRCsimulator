@@ -23,6 +23,9 @@ func _initialize() -> void:
 	var manager := CountingManager.new({preset = "instruments", units = "metric"})
 	root.add_child(manager)
 	for i in 4: await process_frame
+	var idle_listeners: int = Settings.PLAYER_IDS.filter(func(id: String) -> bool: return manager.frames[id].is_processing_input()).size()
+	print("idle player widget global input listeners=", idle_listeners)
+	_check("all 18 idle player widgets skip global input dispatch", idle_listeners == 0)
 	manager.settings_changed.connect(func(_settings: Dictionary) -> void: writes += 1)
 	for id: String in Settings.PLAYER_IDS:
 		manager.frames[id]._style.changed.connect(func() -> void: style_changes += 1)

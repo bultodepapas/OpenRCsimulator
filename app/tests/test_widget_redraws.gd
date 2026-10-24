@@ -168,14 +168,14 @@ func _run() -> void:
 	motion.button_mask = MOUSE_BUTTON_MASK_LEFT
 	Input.parse_input_event(motion)
 	await process_frame
-	var drag_started := speed.dragging and not speed.position.is_equal_approx(position_before_drag)
+	var drag_started := speed.dragging and speed.is_processing_input() and not speed.position.is_equal_approx(position_before_drag)
 	var moved_point: Vector2 = speed.handle.get_global_rect().get_center()
 	_push_header(speed, moved_point, true, true)
 	await process_frame
 	_push_header(speed, moved_point, false)
 	await process_frame
 	_check("unlocked header double-click requests one position restore and cancels drag without a move save",
-		drag_started and restored == ["speed"] and moved.is_empty() and not speed.dragging, "%s %s" % [restored, moved])
+		drag_started and restored == ["speed"] and moved.is_empty() and not speed.dragging and not speed.is_processing_input(), "%s %s" % [restored, moved])
 	speed.set_locked(true)
 	_push_header(speed, speed.handle.get_global_rect().get_center(), true, true)
 	await process_frame

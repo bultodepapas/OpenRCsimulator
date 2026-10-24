@@ -62,11 +62,15 @@ static func trim_layout(stick_mode: int, trims: Dictionary) -> Array:
 
 ## Every frame. sticks/trims: see stick_layout() and trim_layout(). The footer is set at 10 Hz by the manager.
 func refresh(sticks: Dictionary, trims: Dictionary, stick_mode: int) -> void:
+	var next_layout := stick_layout(stick_mode, sticks)
+	var next_trims := trim_layout(stick_mode, trims)
+	if stick_mode == mode and next_layout == _layout and next_trims == _trims:
+		return
 	if stick_mode != mode:
 		mode = stick_mode
 		_set_title()
-	_layout = stick_layout(mode, sticks)
-	_trims = trim_layout(mode, trims)
+	_layout = next_layout
+	_trims = next_trims
 	gimbals.queue_redraw()
 
 

@@ -48,6 +48,7 @@ func _init() -> void:
 
 ## t: Telemetry.compute() output or {}; view_heading_deg: where the pilot looks.
 func refresh(t: Dictionary, view_heading_deg: float, system: String) -> void:
+	var previous_arrow := arrow_deg
 	if t.is_empty() or (float(t.wind_speed) < 0.05 and absf(float(t.wind_up)) < 0.05):
 		arrow_deg = NAN
 		speed_label.text = tr("Calm") if not t.is_empty() else "–"
@@ -59,7 +60,8 @@ func refresh(t: Dictionary, view_heading_deg: float, system: String) -> void:
 		detail_label.text = tr("from %03d°") % (roundi(t.wind_from_deg) % 360) if is_finite(t.wind_from_deg) else ""
 		updraft_label.text = tr("up %s") % Units.format(Units.vertical(t.wind_up, system), true) \
 			if absf(float(t.wind_up)) >= 0.05 else ""
-	dial.queue_redraw()
+	if arrow_deg != previous_arrow and not (is_nan(arrow_deg) and is_nan(previous_arrow)):
+		dial.queue_redraw()
 
 
 func _draw_dial() -> void:

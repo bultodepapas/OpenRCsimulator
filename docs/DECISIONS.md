@@ -950,3 +950,11 @@ parameters), collected through the pinned editor's headless language server on a
 line-independent baseline rather than fixing or suppressing the existing ones in bulk.
 [Guide](../tools/debug/README.md#hunting-stutter-leaks-and-bugs-pt1h-r8).
 
+### 2026-10-24 — Radioactive lime and crystal accents for the shell (UI-22-R3)
+
+Replace the previous amber direction at the owner's request with luminous lime over green graphite surfaces. Centralize the palette in `ui_theme.gd`, including vector toggle/check icons and slider handles. Use native pale edges and bounded hover halos for the crystal effect; keep primary text and its inset focus dark enough to read against the bright fill. Preserve semantic danger/warning colors and the existing reduced-motion behavior. [Current theme and focused evidence](MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+### 2026-10-24 — Event-driven crystal lighting beneath native controls (UI-22-R4)
+
+Adapt free CC0/MIT shader techniques for primary actions and selected panel surfaces. Keep glass below native text/focus, outside container layout and pointer input. Drive brief reflections and press shading with finite node-bound tweens; hidden screens cancel them and live reduced motion settles them. Use analytic lighting without screen sampling, recurring pulses or a new UI framework. Keep upstream notices in the desktop export filters. [Sources, tradeoffs and checks](research/menu-investigations/README.md#ui-22-r4--crystal-lighting-and-finite-motion-2026-10-24).
+

@@ -924,17 +924,17 @@ msgstr "Rumbo del morro, trayectoria sobre el suelo, ángulo de deriva, viento d
 msgid "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power, ≥3 m/s ground speed and 2 s of samples."
 msgstr "Consumo eléctrico en ventana móvil de 10 s por distancia en tierra (Wh/km o Wh/mi), no autonomía. Requiere potencia válida, velocidad ≥3 m/s y 2 s de muestras."
 
-msgid "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data."
-msgstr "G sobre el eje vertical del cuerpo (fuerza específica en −z), actual y mín./máx. a 10 Hz; también alabeo y AoA. Los guiones indican carga ausente."
+msgid "Current G load and flight minimum/maximum, bank angle and angle of attack. Dashes indicate missing readings."
+msgstr "Carga G actual y mínima/máxima del vuelo, ángulo de alabeo y ángulo de ataque. Los guiones indican datos no disponibles."
 
-msgid "Vertical-speed history. Ground-glide ratio = ground speed/sink rate; uncorrected for wind or energy height, not aerodynamic L/D. Unavailable without data or while powered, turning, slow, or not descending."
-msgstr "Historial de velocidad vertical. Relación de planeo en tierra = velocidad sobre el suelo/tasa de descenso; sin corrección por viento o altura de energía, no es L/D aerodinámico. No disponible si faltan datos, hay potencia, giro, poca velocidad o no hay descenso."
+msgid "Climb/sink history and ground glide ratio. Requires descending, low-power flight with little bank and enough speed. Wind affects the ratio; it is not aerodynamic L/D."
+msgstr "Historial de ascenso/descenso y relación de planeo sobre el suelo. Requiere descender con poco gas, poco alabeo y suficiente velocidad. El viento afecta la relación; no es L/D aerodinámico."
 
 msgid "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial."
 msgstr "Desde el reinicio: tiempo transcurrido, incluido el tiempo en tierra, velocidad aérea máx., AGL máx., distancia terrestre y G mín./máx. Los guiones indican datos ausentes; la distancia puede ser parcial."
 
-msgid "When unlocked, drag a header to move the widget or double-click its header to restore its default position. Close with ×; reopen it with this switch. Appearance settings apply to all widgets."
-msgstr "Con las posiciones desbloqueadas, arrastra el encabezado para mover el widget o haz doble clic en él para restaurar su posición predeterminada. Ciérralo con × y vuelve a abrirlo con este interruptor. Los ajustes de apariencia se aplican a todos los widgets."
+msgid "Unlocked: drag the header to move; double-click to restore its position. × closes; this switch reopens. Appearance applies to all widgets."
+msgstr "Sin bloqueo: arrastra el título para mover; doble clic para restaurar su posición. × cierra; este interruptor reabre. Apariencia se aplica a todos los widgets."
 
 msgid "Body-axis load factor, not total acceleration. Flight extrema are sampled at 10 Hz."
 msgstr "Factor de carga en el eje vertical del avión, no aceleración total. Los extremos del vuelo se muestrean a 10 Hz."

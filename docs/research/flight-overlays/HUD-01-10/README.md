@@ -448,3 +448,47 @@ fallback retained the scrolling page and pinned controls. Ignored captures are i
 `tmp/debug-bridge/20261024-145930-47870/shots/` (interaction/options) and
 `tmp/debug-bridge/20261024-150219-47870/shots/` (001 corrected tooltip, 002 fallback dialog). Both native sessions
 reported no bridge engine errors and stopped with no crash or leaked objects. No screenshots are added to Git.
+
+## Widget runtime audit (2026-10-24, HUD-13-R9)
+
+Used the repository tool index, checked runner and debug bridge (`profile`, `frames`, `objects`, `soak`,
+scripted UI actions, screenshots and exit reports). Graph search did not locate the overlay implementations;
+current source was inspected directly. Modern/classic/navigation/training caches remain intact. The audit found
+unconditional legacy drawing and an input lifecycle issue affecting every player widget.
+
+- `test_legacy_widget_efficiency` counts actual draw callbacks for transmitter, battery bar, voltage/current
+  histories and wind dial. Before changes, 30 identical refreshes produced `[30, 30, 30, 30, 30]` redraws;
+  afterward they produce `[0, 0, 0, 0, 0]`. Positive controls change sticks, mode, radio model, charge, history,
+  alarm color and camera-relative wind bearing. Unit/temperature-only changes retain graphs. NaN gaps compare
+  stably, compact mode skips hidden details, and reopening shows current readings. Battery history comparison
+  retains two bounded snapshots for independent invalidation; it is not an unbounded cache.
+- Native script profiling recorded 198 `PlayerInstrument._input` calls across 11 sampled frames with no drag.
+  The constructor opt-out was overwritten by automatic tree-entry registration. Moving it to `_ready` changes
+  the controlled idle count from 18 global listeners to zero. Drag temporarily enables it; release/reset disables
+  it again. Tests cover every player family, and a native drag/double-click restored the default position.
+- Help text is shorter and legacy close tooltips name their panel. First-hover native review caught tooltip
+  height being resolved after popup placement; measured font/wrap dimensions now keep the first popup inside
+  the 1080p viewport. Measurement uses Godot's documented
+  [Font.get_multiline_string_size](https://docs.godotengine.org/en/4.7/classes/class_font.html#class-font-method-get-multiline-string-size).
+
+Checked-runner final results under ignored `tmp/widget-r9/checks/`: legacy efficiency 14, battery 135, shared
+efficiency 22, modern redraw 17, modern 74, classic 58, navigation 57, training 56 and manager/dialog 188:
+**621 checks, zero failures**. UI-language checks pass with 1,841 Spanish entries. Baseline failures demonstrating
+the defects are stored separately in `tmp/widget-r9/baseline/`. The draft was parsed outside `app/` before
+integration. Parse checks caught and resolved a local variable collision during development.
+
+Native Windows/Godot 4.7.2 at 1920×1080, Turbo Lumber: the preset/size/compact soak completed one warm-up,
+a baseline and two compared cycles with 1,616 nodes, 1,003 resources, zero orphans, zero growing counters and
+zero engine errors (static memory 262.2–262.4 MiB). This is a bounded lifecycle check, not proof against every
+possible leak. The reusable `tools/debug/scenarios/widget_presets.txt` also passed with `--fail-on-error`,
+covering all player families and returning Home. It moves the cursor off tooltips before further label-based
+actions because the bridge scopes those actions to the currently open popup. First-hover screenshot:
+`tmp/debug-bridge/20261024-152040-47870/shots/shot-11008-001.jpg`; no captures are added to Git. Native sessions
+were stopped without crashes or leaked objects.
+
+Tool limits: an initial profiling session reported missing imported scenery assets; a checked `--import` restored
+the cache and later native sessions had no engine errors. The 12-sample report at `tmp/widget-r9/profile-full.json`
+was dominated by debug logging and exposed the idle input calls; profiler wall-frame timings are not used for
+an FPS claim. The snapshot LSP check was inconclusive (`NO_DIAGNOSTICS` for battery_panel.gd after 30 s,
+`tmp/widget-r9/compiler.json`); direct engine parsing and executable checks passed. Existing aircraft inertia
+warnings remain. No physics code changed and the full physics suite was not rerun.

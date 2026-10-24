@@ -133,6 +133,13 @@ double-click position reset without moving other widgets; clicks without movemen
 The Flight tools tab groups navigation/training, with measurement and usage tooltips for every player widget.
 Controlled draw, export and interaction checks are recorded in the existing evidence report.
 
+HUD-13-R9 extends change-driven drawing to legacy transmitter, wind and detailed battery graphs. Compact
+battery mode skips detail formatting; voltage/current histories invalidate independently and missing samples
+compare stably. All 18 player widgets disable global input in `_ready`, after Godot's automatic registration;
+only active drags enable it. Help text is shorter, legacy close buttons identify their panel, and tooltips supply
+their measured height before popup placement. Checked-runner draw counts, native script profiling and repeated
+preset-switch object censuses support the changes; see the R9 section of the existing evidence report.
+
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.

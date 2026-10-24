@@ -4,6 +4,7 @@ extends Control
 
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const ScreenWidgets := preload("res://ui/widgets.gd")
+const Crystal := preload("res://ui/crystal_surface.gd")
 
 signal close_requested
 
@@ -59,6 +60,7 @@ func fade(width: int) -> TextureRect:
 func open(from: Control = null) -> void:
 	return_focus = from
 	set_active(true)
+	Crystal.decorate(self)
 	if is_inside_tree() and not ScreenTheme.reduced_motion and not DisplayServer.get_name() == "headless":
 		if _entrance != null: _entrance.kill()
 		modulate.a = 0.0
