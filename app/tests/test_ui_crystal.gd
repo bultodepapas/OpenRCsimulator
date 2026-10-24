@@ -32,6 +32,15 @@ func _run() -> void:
 	var original_rect := button.get_rect()
 	var original_minimum := button.get_combined_minimum_size()
 	screen.open()
+	if DisplayServer.get_name() != "headless":
+		UiTheme.reduced_motion = true
+		screen._entrance.custom_step(0.016)
+		_check("live reduced motion settles the screen entrance too", not screen._entrance.is_running() and screen.modulate.a == 1.0)
+		UiTheme.reduced_motion = false
+		screen.open()
+		screen.set_active(false)
+		_check("suspension cancels the screen entrance", not screen._entrance.is_running() and screen.modulate.a == 1.0)
+		screen.set_active(true)
 	await process_frame
 	await process_frame
 	var effect := button.get_node("CrystalSurface")
@@ -53,6 +62,18 @@ func _run() -> void:
 	_check("keyboard focus starts a finite shine", effect._shine_tween != null and effect._shine_tween.is_running())
 	effect._shine_tween.custom_step(0.36)
 	_check("the reflection advances through the surface", effect._material.get_shader_parameter("shine_progress") > 0.0)
+	button.disabled = true
+	effect._shine_tween.custom_step(0.016)
+	_check("disabling an active button settles its motion", not effect._shine_tween.is_running()
+		and effect._material.get_shader_parameter("shine_progress") == -1.0)
+	await process_frame
+	await process_frame
+	if DisplayServer.get_name() != "headless":
+		_check("disabled glass keeps its muted native fill", effect._material.get_shader_parameter("disabled") == 1.0
+			and effect._material.get_shader_parameter("base_color") == UiTheme.PRIMARY.disabled)
+	button.disabled = false
+	button.release_focus()
+	button.grab_focus()
 	screen.set_active(false)
 	_check("suspending a screen kills its decorative motion", not effect._shine_tween.is_running()
 		and effect._material.get_shader_parameter("shine_progress") == -1.0)

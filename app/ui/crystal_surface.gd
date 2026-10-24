@@ -4,7 +4,7 @@ extends Node2D
 const UiTheme := preload("res://ui/ui_theme.gd")
 const GLASS := preload("res://ui/shaders/crystal.gdshader")
 const PRIMARY_TYPES := [&"PrimaryButton", &"CompactPrimaryButton", &"SettingsAction"]
-const PANEL_TYPES := [&"SettingsPanel", &"Card"]
+const PANEL_TYPES := [&"SettingsPanel", &"Card", &"Sidebar", &"HomeSidebar"]
 const STATES := [&"normal", &"pressed", &"hover", &"disabled", &"hover_pressed"]
 
 var _target: Control
