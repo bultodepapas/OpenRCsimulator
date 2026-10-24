@@ -2209,6 +2209,7 @@ func _save_profile(close_on_success := true) -> bool:
 	if profile_name.is_empty():
 		_mark_field_error(profile_name_edit)
 		select_section("profile")
+		profile_name_edit.grab_focus()
 		_set_status(tr("Enter a profile name before saving."), true)
 		return false
 	candidate["name"] = profile_name
