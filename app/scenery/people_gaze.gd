@@ -3,6 +3,8 @@
 ## Pilots stay coupled to the aircraft; spectators and pits members hold their head until the
 ## aircraft leaves a dead zone, then follow it. Nothing here touches simulation state, and the
 ## population keeps its MultiMesh batches: apply() only rewrites per-instance yaw/pitch.
+## The per-step state lives in packed float64 arrays (struct of arrays); `_people` keeps the
+## per-person metadata and seeded parameters for apply(), tests and diagnostics.
 extends RefCounted
 
 const Palette = preload("res://scenery/palette.gd")
@@ -37,6 +39,30 @@ var _alert_start_s: float = -INF
 var _initialized: bool = false
 var _dirty: bool = true
 
+# Seeded parameters, one entry per person.
+var _coupled := PackedByteArray()
+var _slot := PackedInt32Array()
+var _omega := PackedFloat64Array()
+var _dead_zone := PackedFloat64Array()
+var _lead_s := PackedFloat64Array()
+var _range_m := PackedFloat64Array()
+var _yaw_limit := PackedFloat64Array()
+var _pitch_up_limit := PackedFloat64Array()
+var _mover := PackedFloat64Array()
+var _rest_yaw := PackedFloat64Array()
+var _rest_pitch := PackedFloat64Array()
+var _reaction_s := PackedFloat64Array()
+var _pivot := PackedVector3Array()
+var _to_local: Array[Basis] = []
+# Head state.
+var _yaw := PackedFloat64Array()
+var _pitch := PackedFloat64Array()
+var _yaw_rate := PackedFloat64Array()
+var _pitch_rate := PackedFloat64Array()
+var _goal_yaw := PackedFloat64Array()
+var _goal_pitch := PackedFloat64Array()
+var _tracking := PackedByteArray()
+
 
 ## Builds the model from Population.build() metadata, or returns null when the population has no people.
 static func from_population(population: Node3D) -> RefCounted:
@@ -53,6 +79,7 @@ static func from_population(population: Node3D) -> RefCounted:
 func configure(people: Array, nodes: Dictionary) -> void:
 	_nodes = nodes
 	_people.clear()
+	_to_local.clear()
 	var next_slot := 0
 	for entry: Dictionary in people:
 		var person: Dictionary = entry.duplicate()
@@ -61,14 +88,29 @@ func configure(people: Array, nodes: Dictionary) -> void:
 		person.companion_slot = next_slot if bool(person.coupled) else -1
 		if bool(person.coupled):
 			next_slot += 1
-		person.yaw = person.rest_yaw
-		person.pitch = person.rest_pitch
-		person.yaw_rate = 0.0
-		person.pitch_rate = 0.0
-		person.goal_yaw = person.rest_yaw
-		person.goal_pitch = person.rest_pitch
-		person.tracking = false
 		_people.append(person)
+		_to_local.append((person.basis as Basis).inverse())
+	var count := _people.size()
+	for array: Variant in [_coupled, _slot, _omega, _dead_zone, _lead_s, _range_m, _yaw_limit, _pitch_up_limit,
+			_mover, _rest_yaw, _rest_pitch, _reaction_s, _pivot, _yaw, _pitch, _yaw_rate, _pitch_rate,
+			_goal_yaw, _goal_pitch, _tracking]:
+		array.resize(count)
+	for i in count:
+		var person: Dictionary = _people[i]
+		_coupled[i] = 1 if bool(person.coupled) else 0
+		_slot[i] = int(person.companion_slot)
+		_omega[i] = person.omega
+		_dead_zone[i] = person.dead_zone
+		_lead_s[i] = person.lead_s
+		_range_m[i] = person.range_m
+		_yaw_limit[i] = person.yaw_limit
+		_pitch_up_limit[i] = person.pitch_up_limit
+		_mover[i] = person.mover
+		_rest_yaw[i] = person.rest_yaw
+		_rest_pitch[i] = person.rest_pitch
+		_reaction_s[i] = person.reaction_s
+		_pivot[i] = person.pivot
+	_rest_heads()
 	_dirty = true
 
 
@@ -103,8 +145,7 @@ func person_count() -> int:
 
 ## Displayed head angles (yaw, pitch) in radians, as written to the shader.
 func head_angles(index: int) -> Vector2:
-	var person: Dictionary = _people[index]
-	return Vector2(float(person.yaw) * float(person.mover), float(person.pitch) * float(person.mover))
+	return Vector2(_yaw[index] * _mover[index], _pitch[index] * _mover[index])
 
 
 func person_role(index: int) -> String:
@@ -112,7 +153,18 @@ func person_role(index: int) -> String:
 
 
 func companion_slot(index: int) -> int:
-	return int(_people[index].companion_slot)
+	return _slot[index]
+
+
+func _rest_heads() -> void:
+	for i in _people.size():
+		_yaw[i] = _rest_yaw[i]
+		_pitch[i] = _rest_pitch[i]
+		_yaw_rate[i] = 0.0
+		_pitch_rate[i] = 0.0
+		_goal_yaw[i] = _rest_yaw[i]
+		_goal_pitch[i] = _rest_pitch[i]
+		_tracking[i] = 0
 
 
 ## Restart at time_s with the player's aircraft at `target` (render space) and the companions at
@@ -128,14 +180,7 @@ func reset(time_s: float, target: Vector3, companions: Array = [], alert: bool =
 	_alert_input = alert
 	_alert_start_s = time_s if alert else -INF
 	_initialized = true
-	for person: Dictionary in _people:
-		person.yaw = person.rest_yaw
-		person.pitch = person.rest_pitch
-		person.yaw_rate = 0.0
-		person.pitch_rate = 0.0
-		person.goal_yaw = person.rest_yaw
-		person.goal_pitch = person.rest_pitch
-		person.tracking = false
+	_rest_heads()
 	_dirty = true
 
 
@@ -187,8 +232,8 @@ func _set_targets(player: Vector3, companions: Array, elapsed: float) -> void:
 		_targets[index] = entry
 
 
-func _target_for(person: Dictionary) -> Dictionary:
-	var slot: int = person.companion_slot
+func _target_for(index: int) -> Dictionary:
+	var slot: int = _slot[index]
 	if slot >= 0 and slot + 1 < _targets.size() and bool(_targets[slot + 1].valid):
 		return _targets[slot + 1]
 	return _targets[0]
@@ -196,62 +241,59 @@ func _target_for(person: Dictionary) -> Dictionary:
 
 func _step(dt: float) -> void:
 	var since_alert: float = _epoch_time_s + float(_step_index + 1) * STEP_S - _alert_start_s
-	for person: Dictionary in _people:
-		var alerted: bool = not bool(person.coupled) and since_alert >= float(person.reaction_s) \
-			and since_alert < float(person.reaction_s) + ALERT_DURATION_S
-		var want := _desired(person, alerted)
-		if bool(person.coupled):
-			person.goal_yaw = want.x
-			person.goal_pitch = want.y
+	for i in _people.size():
+		var coupled: bool = _coupled[i] != 0
+		var alerted: bool = not coupled and since_alert >= _reaction_s[i] and since_alert < _reaction_s[i] + ALERT_DURATION_S
+		var want := _desired(i, alerted)
+		if coupled:
+			_goal_yaw[i] = want.x
+			_goal_pitch[i] = want.y
 		else:
-			var dead_zone: float = float(person.dead_zone) * (ALERT_DEAD_ZONE_SCALE if alerted else 1.0)
-			var error: float = Vector2(want.x - float(person.yaw), want.y - float(person.pitch)).length()
-			if bool(person.tracking):
-				person.goal_yaw = want.x
-				person.goal_pitch = want.y
+			var dead_zone: float = _dead_zone[i] * (ALERT_DEAD_ZONE_SCALE if alerted else 1.0)
+			var error: float = Vector2(want.x - _yaw[i], want.y - _pitch[i]).length()
+			if _tracking[i] != 0:
+				_goal_yaw[i] = want.x
+				_goal_pitch[i] = want.y
 				if error < dead_zone * 0.25:
-					person.tracking = false
-			elif Vector2(want.x - float(person.goal_yaw), want.y - float(person.goal_pitch)).length() > dead_zone:
-				person.tracking = true
-				person.goal_yaw = want.x
-				person.goal_pitch = want.y
-		_follow(person, "yaw", "yaw_rate", float(person.goal_yaw), dt)
-		_follow(person, "pitch", "pitch_rate", float(person.goal_pitch), dt)
-
-
-## Critically damped follower with a rate limit (semi-implicit Euler; omega·dt ≤ 0.08 at 120 Hz).
-static func _follow(person: Dictionary, angle_key: String, rate_key: String, goal: float, dt: float) -> void:
-	var omega: float = person.omega
-	var angle: float = person[angle_key]
-	var rate: float = person[rate_key]
-	rate += (omega * omega * (goal - angle) - 2.0 * omega * rate) * dt
-	rate = clampf(rate, -RATE_LIMIT_RAD_S, RATE_LIMIT_RAD_S)
-	person[rate_key] = rate
-	person[angle_key] = angle + rate * dt
+					_tracking[i] = 0
+			elif Vector2(want.x - _goal_yaw[i], want.y - _goal_pitch[i]).length() > dead_zone:
+				_tracking[i] = 1
+				_goal_yaw[i] = want.x
+				_goal_pitch[i] = want.y
+		# Critically damped follower with a rate limit (semi-implicit Euler; omega·dt ≤ 0.08 at 120 Hz).
+		var omega: float = _omega[i]
+		var rate: float = _yaw_rate[i] + (omega * omega * (_goal_yaw[i] - _yaw[i]) - 2.0 * omega * _yaw_rate[i]) * dt
+		rate = clampf(rate, -RATE_LIMIT_RAD_S, RATE_LIMIT_RAD_S)
+		_yaw_rate[i] = rate
+		_yaw[i] = _yaw[i] + rate * dt
+		rate = _pitch_rate[i] + (omega * omega * (_goal_pitch[i] - _pitch[i]) - 2.0 * omega * _pitch_rate[i]) * dt
+		rate = clampf(rate, -RATE_LIMIT_RAD_S, RATE_LIMIT_RAD_S)
+		_pitch_rate[i] = rate
+		_pitch[i] = _pitch[i] + rate * dt
 
 
 ## Head direction toward the (lead-corrected) aircraft in the person's frame, or rest when the
 ## aircraft is out of range or behind. Local forward is −Z, as the source meshes face. A crash
 ## alert lifts the range limit.
-func _desired(person: Dictionary, alerted: bool = false) -> Vector2:
-	var rest := Vector2(person.rest_yaw, person.rest_pitch)
-	var target: Dictionary = _target_for(person)
+func _desired(i: int, alerted: bool = false) -> Vector2:
+	var rest := Vector2(_rest_yaw[i], _rest_pitch[i])
+	var target: Dictionary = _target_for(i)
 	if not bool(target.valid):
 		return rest
-	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * float(person.lead_s)
-	var offset: Vector3 = aim - (person.pivot as Vector3)
-	if not alerted and offset.length() > float(person.range_m):
+	var aim: Vector3 = (target.position as Vector3) + (target.velocity as Vector3) * _lead_s[i]
+	var offset: Vector3 = aim - _pivot[i]
+	if not alerted and offset.length() > _range_m[i]:
 		return rest
-	var local: Vector3 = (person.basis as Basis).inverse() * offset
+	var local: Vector3 = _to_local[i] * offset
 	var horizontal: float = Vector2(local.x, local.z).length()
 	if horizontal < 1.0e-6 and absf(local.y) < 1.0e-6:
 		return rest
 	var yaw: float = atan2(-local.x, -local.z)
-	var limit: float = person.yaw_limit
+	var limit: float = _yaw_limit[i]
 	if absf(yaw) > limit + REAR_GATE_MARGIN_RAD:
 		return rest
 	var pitch: float = atan2(local.y, horizontal)
-	return Vector2(clampf(yaw, -limit, limit), clampf(pitch, PITCH_DOWN_LIMIT_RAD, float(person.pitch_up_limit)))
+	return Vector2(clampf(yaw, -limit, limit), clampf(pitch, PITCH_DOWN_LIMIT_RAD, _pitch_up_limit[i]))
 
 
 ## Write the current head angles to the MultiMesh instances. Cheap when nothing changed.
@@ -259,8 +301,9 @@ func apply() -> void:
 	if not _dirty:
 		return
 	_dirty = false
-	for person: Dictionary in _people:
-		var angles := Vector2(float(person.yaw) * float(person.mover), float(person.pitch) * float(person.mover))
+	for i in _people.size():
+		var person: Dictionary = _people[i]
+		var angles := head_angles(i)
 		var encoded := Vector2(angles.x / PI, 0.5 + angles.y / PI)
 		var written: Variant = person.get("written", null)
 		if written is Vector2 and (written as Vector2).distance_to(encoded) < ENCODE_EPSILON:

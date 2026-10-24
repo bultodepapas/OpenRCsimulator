@@ -1,0 +1,188 @@
+{
+ "format": "openrc-birds v1",
+ "evidence": "docs/research/scenery-investigations/SC-BIRD-00/README.md",
+ "note": "SC-BIRD-02. Physical numbers carry their source; planform shapes are estimated from the CC0 PhyloPic and CC BY Commons silhouettes listed in the evidence. Tracks are closed arc-line circuits in local metres (x east, y north, z up) repeated with rotational symmetry; birds.gd compiles them and the shader evaluates them on sim_clock.",
+ "species": {
+  "griffon_vulture": {
+   "name": "Griffon vulture",
+   "span": {"value": 2.6, "unit": "m", "kind": "measured", "source": "Field-guide range 2.3-2.8 m (SC-BIRD-00 section 4)"},
+   "mass": {"value": 7.436, "unit": "kg", "kind": "measured", "source": "AVONET (Tobias et al. 2022)"},
+   "planform": {
+    "body_length": {"value": 1.0, "unit": "m", "kind": "estimated", "source": "Total length 0.93-1.22 m (Wikipedia), PhyloPic CC0 planform"},
+    "body_width": {"value": 0.24, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform"},
+    "wrist": {"value": 0.46, "unit": "1", "kind": "estimated", "source": "Fraction of the half-span; RaptorialSilhouettes.svg (CC BY 3.0)"},
+    "root_chord": {"value": 0.62, "unit": "m", "kind": "estimated", "source": "Broad plank wing; Ruppell's vulture proxy area 0.892 m2 at 2.50 m span"},
+    "wrist_chord": {"value": 0.6, "unit": "m", "kind": "estimated", "source": "Plank wing: almost constant chord to the wrist"},
+    "tip_chord": {"value": 0.5, "unit": "m", "kind": "estimated", "source": "Deeply slotted hand"},
+    "wrist_sweep": {"value": 0.02, "unit": "m", "kind": "estimated", "source": "Straight leading edge"},
+    "tip_sweep": {"value": -0.06, "unit": "m", "kind": "estimated", "source": "Straight leading edge"},
+    "fingers": {"value": 7, "unit": "1", "kind": "measured", "source": "Seven primary fingers (raptor identification guides, survey 06)"},
+    "finger_length": {"value": 0.36, "unit": "1", "kind": "estimated", "source": "Fraction of the hand; PhyloPic CC0 planform"},
+    "tail_shape": "square",
+    "tail_length": {"value": 0.29, "unit": "m", "kind": "measured", "source": "AVONET tail length 291 mm"},
+    "tail_width": {"value": 0.3, "unit": "m", "kind": "estimated", "source": "Short square tail"},
+    "tail_fork": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Square tail"}
+   },
+   "colors": {"top": [0.33, 0.24, 0.15], "under": [0.2, 0.14, 0.09], "tip": [0.07, 0.06, 0.05]},
+   "gait": {
+    "flap_frequency": {"value": 2.7, "unit": "Hz", "kind": "derived", "source": "Pennycuick 1996 formula (SC-BIRD-00 section 4)"},
+    "flap_amplitude": {"value": 32.0, "unit": "deg", "kind": "estimated", "source": "Slow deep beats when leaving a thermal"},
+    "burst_period": {"value": 64.0, "unit": "s", "kind": "estimated", "source": "Soars; flaps rarely (Williams et al. 2018)"},
+    "burst_duty": {"value": 0.06, "unit": "1", "kind": "estimated", "source": "A few beats per minute"},
+    "dihedral": {"value": 7.0, "unit": "deg", "kind": "estimated", "source": "Shallow V when soaring"},
+    "hand_lag": {"value": 29.0, "unit": "deg", "kind": "estimated", "source": "Hand trails the arm"},
+    "tip_curl": {"value": 9.0, "unit": "deg", "kind": "estimated", "source": "Upturned primaries when soaring"},
+    "fold": {"value": 0.15, "unit": "1", "kind": "estimated", "source": "Little upstroke flexion"},
+    "tail_twist": {"value": 0.15, "unit": "1", "kind": "estimated", "source": "Tail barely steers"},
+    "tail_wobble": {"value": 1.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
+   },
+   "activity": {"sun_min": {"value": 15.0, "unit": "deg", "kind": "estimated", "source": "Thermal soaring needs warm daytime sun"}}
+  },
+  "red_kite": {
+   "name": "Red kite",
+   "span": {"value": 1.66, "unit": "m", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "mass": {"value": 1.012, "unit": "kg", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "planform": {
+    "body_length": {"value": 0.42, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform, without the tail"},
+    "body_width": {"value": 0.13, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform"},
+    "wrist": {"value": 0.5, "unit": "1", "kind": "estimated", "source": "Angled wing; RaptorialSilhouettes.svg (CC BY 3.0)"},
+    "root_chord": {"value": 0.3, "unit": "m", "kind": "estimated", "source": "Wing area 0.325 m2 at 1.66 m span (Alerstam 2007)"},
+    "wrist_chord": {"value": 0.27, "unit": "m", "kind": "estimated", "source": "Long narrow arm"},
+    "tip_chord": {"value": 0.17, "unit": "m", "kind": "estimated", "source": "Long fingered hand"},
+    "wrist_sweep": {"value": 0.07, "unit": "m", "kind": "estimated", "source": "Wrist held forward"},
+    "tip_sweep": {"value": -0.12, "unit": "m", "kind": "estimated", "source": "Hand swept back"},
+    "fingers": {"value": 5, "unit": "1", "kind": "estimated", "source": "Long fingered primaries (survey 06 B10)"},
+    "finger_length": {"value": 0.3, "unit": "1", "kind": "estimated", "source": "Fraction of the hand"},
+    "tail_shape": "forked",
+    "tail_length": {"value": 0.32, "unit": "m", "kind": "measured", "source": "AVONET tail length 317 mm"},
+    "tail_width": {"value": 0.2, "unit": "m", "kind": "estimated", "source": "Spread tail"},
+    "tail_fork": {"value": 0.11, "unit": "m", "kind": "estimated", "source": "Very deeply forked tail"}
+   },
+   "colors": {"top": [0.45, 0.24, 0.12], "under": [0.36, 0.18, 0.09], "tip": [0.08, 0.07, 0.06]},
+   "gait": {
+    "flap_frequency": {"value": 2.6, "unit": "Hz", "kind": "derived", "source": "Pennycuick 1996 formula (SC-BIRD-00 section 4)"},
+    "flap_amplitude": {"value": 28.0, "unit": "deg", "kind": "estimated", "source": "Loose elastic beats"},
+    "burst_period": {"value": 16.0, "unit": "s", "kind": "estimated", "source": "Mostly glides and soars"},
+    "burst_duty": {"value": 0.22, "unit": "1", "kind": "estimated", "source": "Short flapping bouts"},
+    "dihedral": {"value": -2.0, "unit": "deg", "kind": "estimated", "source": "Arched, slightly drooping wings"},
+    "hand_lag": {"value": 34.0, "unit": "deg", "kind": "estimated", "source": "Hand trails the arm"},
+    "tip_curl": {"value": -6.0, "unit": "deg", "kind": "estimated", "source": "Hands held slightly down"},
+    "fold": {"value": 0.2, "unit": "1", "kind": "estimated", "source": "Upstroke flexion"},
+    "tail_twist": {"value": 0.9, "unit": "1", "kind": "estimated", "source": "Steers by twisting the forked tail (survey 06 B10)"},
+    "tail_wobble": {"value": 7.0, "unit": "deg", "kind": "estimated", "source": "Constant tail twisting even in light wind"}
+   },
+   "activity": {"sun_min": {"value": 6.0, "unit": "deg", "kind": "estimated", "source": "Daytime forager"}}
+  },
+  "barn_swallow": {
+   "name": "Barn swallow",
+   "span": {"value": 0.32, "unit": "m", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "mass": {"value": 0.016, "unit": "kg", "kind": "measured", "source": "Alerstam et al. 2007 Protocol S1"},
+   "planform": {
+    "body_length": {"value": 0.11, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform, without the streamers"},
+    "body_width": {"value": 0.03, "unit": "m", "kind": "estimated", "source": "PhyloPic CC0 planform"},
+    "wrist": {"value": 0.35, "unit": "1", "kind": "estimated", "source": "Short arm, long hand"},
+    "root_chord": {"value": 0.055, "unit": "m", "kind": "estimated", "source": "Wing area 0.0136 m2 at 0.32 m span (Alerstam 2007)"},
+    "wrist_chord": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Narrow swept wing"},
+    "tip_chord": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Pointed tip"},
+    "wrist_sweep": {"value": 0.005, "unit": "m", "kind": "estimated", "source": "Swept wing"},
+    "tip_sweep": {"value": -0.06, "unit": "m", "kind": "estimated", "source": "Swept-back hand"},
+    "fingers": {"value": 0, "unit": "1", "kind": "measured", "source": "Pointed wing without slots"},
+    "finger_length": {"value": 0.0, "unit": "1", "kind": "estimated", "source": "No fingers"},
+    "tail_shape": "forked",
+    "tail_length": {"value": 0.07, "unit": "m", "kind": "measured", "source": "AVONET tail length 71 mm"},
+    "tail_width": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Narrow tail"},
+    "tail_fork": {"value": 0.04, "unit": "m", "kind": "estimated", "source": "Long outer streamers"}
+   },
+   "colors": {"top": [0.04, 0.05, 0.11], "under": [0.62, 0.55, 0.47], "tip": [0.03, 0.03, 0.05]},
+   "gait": {
+    "flap_frequency": {"value": 6.6, "unit": "Hz", "kind": "measured", "source": "Warrick et al. 2016: 6.6 +- 3.2 Hz"},
+    "flap_amplitude": {"value": 42.0, "unit": "deg", "kind": "estimated", "source": "Deep fast beats"},
+    "burst_period": {"value": 2.0, "unit": "s", "kind": "estimated", "source": "Flap-glide coursing"},
+    "burst_duty": {"value": 0.6, "unit": "1", "kind": "estimated", "source": "Mostly flapping with short glides"},
+    "dihedral": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Flat wings"},
+    "hand_lag": {"value": 23.0, "unit": "deg", "kind": "estimated", "source": "Hand trails the arm"},
+    "tip_curl": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Flat hand"},
+    "fold": {"value": 0.35, "unit": "1", "kind": "estimated", "source": "Strong upstroke flexion"},
+    "tail_twist": {"value": 0.4, "unit": "1", "kind": "estimated", "source": "Tail helps tight turns"},
+    "tail_wobble": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Small corrections"}
+   },
+   "activity": {"sun_min": {"value": 2.0, "unit": "deg", "kind": "estimated", "source": "Feeds from dawn to dusk"}}
+  }
+ },
+ "flocks": [
+  {
+   "id": "vulture_kettle",
+   "group": "soaring",
+   "species": "griffon_vulture",
+   "count": 9,
+   "origin": {"value": [680.0, -421.0, 0.0], "unit": "m", "kind": "estimated", "source": "Thermal A 800 m from the pilot at azimuth -32 deg (birds_watch view), outside the flight box"},
+   "base_height": {"value": 95.0, "unit": "m", "kind": "estimated", "source": "Low part of a thermal climb, above the treeline"},
+   "spread_time": {"value": 44.0, "unit": "s", "kind": "estimated", "source": "Birds enter the thermal one after another, so the kettle stacks"},
+   "spread_height": {"value": 4.0, "unit": "m", "kind": "estimated", "source": "Small vertical scatter"},
+   "anchor": "first_arc_centre",
+   "heading": {"value": 22.4, "unit": "deg", "kind": "estimated", "source": "Initial heading (math angle from east, counter-clockwise); after 5.5 turns the glide heads 202.4 deg, to thermal B 300 m south and 729 m west"},
+   "repeats": 2,
+   "tracks": [
+    {"motif": [
+     {"radius": 17.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+     {"line": 788.0, "duration": 57.6, "climb": -57.0}]},
+    {"motif": [
+     {"radius": 22.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+     {"line": 788.0, "duration": 57.6, "climb": -57.0}]},
+    {"motif": [
+     {"radius": 27.0, "turn": 1980.0, "duration": 70.4, "climb": 57.0},
+     {"line": 788.0, "duration": 57.6, "climb": -57.0}]}
+   ],
+   "track_source": "Measured from 578 CC0 GPS turns (Williams et al. 2018): radius 22 m (16-30), 12.9 s per turn, climb 0.81 m/s, bout median 5 turns and 57 m gain; glides at 13-14 m/s. Here: 5.5 turns of 12.8 s, 0.81 m/s, glide 788 m in 57.6 s (13.7 m/s, sink 0.99 m/s); period 256 s."
+  },
+  {
+   "id": "kite_quartering",
+   "group": "soaring",
+   "species": "red_kite",
+   "count": 2,
+   "origin": {"value": [190.0, 430.0, 0.0], "unit": "m", "kind": "estimated", "source": "Over the east paddock and fields, outside the flight box (east edge 305 m)"},
+   "base_height": {"value": 34.0, "unit": "m", "kind": "estimated", "source": "Above the 12-25 m treeline"},
+   "spread_time": {"value": 90.0, "unit": "s", "kind": "estimated", "source": "The two birds work the area apart"},
+   "spread_height": {"value": 3.0, "unit": "m", "kind": "estimated", "source": "Small vertical scatter"},
+   "anchor": "centre",
+   "heading": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Track orientation"},
+   "repeats": 3,
+   "tracks": [
+    {"motif": [
+     {"line": 42.0, "speed": 7.0},
+     {"radius": 36.0, "turn": 100.0, "speed": 7.0},
+     {"radius": 11.0, "turn": 720.0, "speed": 6.4, "climb": 19.0},
+     {"line": 24.0, "speed": 7.5, "climb": -7.0},
+     {"radius": 27.0, "turn": -40.0, "speed": 7.5, "climb": -4.0},
+     {"line": 18.0, "speed": 7.5, "climb": -4.0},
+     {"radius": 48.0, "turn": 60.0, "speed": 7.0, "climb": -4.0}]}
+   ],
+   "track_source": "Circling measured from 2,169 CC0 GPS circles (Skrabal 2023): radius 11 m, 11 s per turn, 6.4 m/s, climb 0.92 m/s; flapping airspeed 12 m/s (Alerstam 2007). Here: two circling turns per bout at 6.4 m/s, low glides at 7-7.5 m/s."
+  },
+  {
+   "id": "swallow_coursing",
+   "group": "small",
+   "species": "barn_swallow",
+   "count": 10,
+   "origin": {"value": [95.0, -120.0, 0.0], "unit": "m", "kind": "estimated", "source": "Mown grass west of the flight line, 35 m or more from the runway centreline"},
+   "base_height": {"value": 0.35, "unit": "m", "kind": "measured", "source": "Warrick et al. 2016: height 0.43 +- 0.78 m, max 4.1 m"},
+   "spread_time": {"value": 32.0, "unit": "s", "kind": "estimated", "source": "One full circuit"},
+   "spread_height": {"value": 0.0, "unit": "m", "kind": "estimated", "source": "Height follows the track"},
+   "spread_offset": {"value": 10.0, "unit": "m", "kind": "estimated", "source": "Each bird works its own patch"},
+   "rotate_instances": true,
+   "mirror_instances": true,
+   "anchor": "centre",
+   "heading": {"value": 0.0, "unit": "deg", "kind": "estimated", "source": "Rotated per bird"},
+   "repeats": 5,
+   "tracks": [
+    {"motif": [
+     {"line": 14.0, "speed": 9.5},
+     {"radius": 9.0, "turn": 130.0, "speed": 9.0, "climb": 0.4},
+     {"radius": 5.0, "turn": -95.0, "speed": 8.0, "climb": 2.6},
+     {"line": 8.0, "speed": 8.5, "climb": -2.6},
+     {"radius": 12.0, "turn": 37.0, "speed": 10.0, "climb": -0.4}]}
+   ],
+   "track_source": "Warrick et al. 2016 (47 CC0 3D tracks): 9.5 +- 2.7 m/s, turn radius 5.1 +- 3.0 m, height 0.43 +- 0.78 m (max 4.1 m)."
+  }
+ ]
+}
