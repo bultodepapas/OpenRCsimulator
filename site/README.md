@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild the black Savox display copy with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=release-v017-20261020`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=release-v018-20261024`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 
@@ -162,3 +162,7 @@ Prepared Spanish and English release copy from `docs/releases/v0.1.7.md`. The pa
 The [tag CI](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/39583319215) passed every job and published the [stable release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.7). The downloaded `SHA256SUMS` file matches its published SHA-256 digest, and its three ZIP hashes match the corresponding release-asset digests. [Pages deployment](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/39597561362) succeeded at `ee4833792a61a19c7683566f1a4eaf1fad0ef0db` on `gh-pages`.
 
 The public Spanish and English pages show all four v0.1.7 download links, the tagged first-flight guide and release notes. All six release links returned HTTP 200. Chrome at 390×844 showed no horizontal overflow or empty translations, and no console warnings or errors. The opening and download section were visually reviewed on the public page.
+
+## WEB-07 — v0.1.8 release page, 2026-10-24
+
+Updated the Spanish and English release copy from `docs/releases/v0.1.8.md`: version labels, highlights (F4U Corsair, Scene detail, 3D field trees and far woods, optional High profile), the three platform archives, `SHA256SUMS`, first-launch guide and release notes on tag v0.1.8, and the `release-v018-20261024` asset query. The open Stik sideslip and R02 yaw checks remain listed. All six release links returned HTTP 200. Local Chromium at 1440×1000 and 390×844, both languages: no horizontal overflow, no empty translations, no remaining v0.1.7 text and no console warnings or errors; the mobile download and release sections were visually reviewed.
