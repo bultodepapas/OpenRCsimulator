@@ -265,8 +265,9 @@ no physics/input mapping changed and the full physics suite was not rerun.
 
 ## Player widget ideas from RC telemetry (2026-10-24, HUD-13 research)
 
-Research only: the concepts below are not implemented or accepted performance claims. The aim is to add
-navigation, energy management and training information beyond the existing modern and classic instruments.
+Research recorded before HUD-13-R6: the implementation section below identifies delivered work; the remaining
+concepts are proposals, not accepted performance claims. The aim is to add navigation, energy management and
+training information beyond the existing modern and classic instruments.
 
 Primary references reviewed:
 
@@ -309,3 +310,102 @@ layouts at 1080p first. New capability-dependent readings should state unavailab
 Local readiness was checked against `telemetry.gd`, `overlay_manager.gd` and `battery_sensors.gd`; no runtime
 code or dependency changed for this research. Any reused code/assets require their existing license and
 provenance review; no external code/assets were imported here.
+
+## RC navigation instruments (2026-10-24, HUD-13-R6)
+
+Implemented the first three research candidates as an opt-in RC navigation preset and a separate Navigation
+settings page. `navigation_instrument.gd` inherits the player frame, drag/close signals, lock, normalized saved
+positions, opacity, size and compact controls. Existing modern/classic presets and the Pilot default are unchanged.
+The five settings tabs use a smaller, text-scale-aware font; large accessibility text retains native tab scrolling.
+Existing bundled icons and native Godot drawing are reused; no external dependency or asset was imported.
+
+Radar reads horizontal aircraft-minus-pilot N/E offsets, draws a north-up aircraft silhouette and pilot centre,
+and selects a 1/2/5 range with edge clearance. Its trail is bounded to 60 relative position samples, sampled no
+faster than twice per simulated second. The centre is the pilot, not a launch/home anchor. Wind & drift presents
+signed ground-course-minus-heading, plus heading-relative head/tailwind and wind-to-left/right components.
+Course becomes unavailable below 1 m/s; missing telemetry has a separate status.
+
+Cruise efficiency integrates the existing battery sensor's sampled power/current and horizontal ground speed,
+holding each prior sample over its interval. The estimate needs two seconds of contiguous samples at >=3 m/s,
+uses at most ten seconds/120 intervals, and reports Wh/km or Wh/mi. Invalid power/speed, slower movement, time
+rewind or a gap over one second resets it. Closing the widget stops/resets its estimator; temporary layer hiding
+for a pause/menu preserves its window. Sensor validity is
+checked even at identical paused timestamps; an invalid channel cannot leave a stale estimate. No true SOC,
+remaining endurance or return reserve is used. Status distinguishes unavailable data, slow movement and warm-up.
+
+The shared manager still samples at its existing 10 Hz cadence. Hidden widgets skip presentation work; diagram
+faces cache static drawing. A 60-point consumption graph samples at 2 Hz; power footer changes do not redraw
+the unchanged graph. Radar redraws skip repeated paused values. The simulation kernel, solver, controller
+mapping and aircraft data are unchanged.
+
+Checked-runner evidence in ignored `tmp/navigation-widgets/checks/`:
+
+- New data tests: 27 checks, including hand-calculated N/E/wind signs, heading wrap, 360 W at 10 m/s = 10 Wh/km,
+  sample discontinuities, invalid channels during pause, bounded history, and independence from model SOC.
+- New widget tests: 57 checks, including metric/imperial conversion, pause/static drawing, graph invalidation,
+  individual close/reopen, saved drag/lock behavior, reset/unavailable statuses and bounded histories. Preset
+  separation is checked at 1080p across all size/density settings; viewport bounds at 1440p, 4K and fallback 720p.
+- Existing telemetry 41, modern widgets 74, classic widgets 58, efficiency 18, settings 26, manager/dialog 183,
+  and battery overlay 123: all pass, for 607 focused checks in total. UI-language checks pass with 1796 Spanish
+  entries. Scene-level checks retain the existing aircraft inertia warnings.
+
+An initial preset-cycle assertion expected the old seven-entry sequence and was updated for Navigation. A later
+changed-value condition needed an explicit GDScript bool annotation; the final parse and focused checks pass.
+These checks establish UI/software behavior, not physical validation or a whole-game FPS gain. The full physics
+suite was not rerun for this presentation-only change.
+
+Native Windows/Godot 4.7.2 review at 1920×1080 covered the Spanish Navigation page, all five visible tabs,
+individual switches and normal/large layouts. Ugly Stick/ideal power showed an unavailable electric reading;
+Turbo Lumber with its finite pack produced 1.7 Wh/km and 95 W after 4.47 simulated seconds. This is a runtime
+sample, not a calibrated aircraft efficiency claim. Captures remain ignored under
+`tmp/debug-bridge/20261024-142940-47870/shots/` (001 flight, 002 Navigation, 003 large/Appearance). Bridge logs
+contained no engine errors and both rendered sessions were stopped. The menu review exposed an unwanted
+efficiency reset on temporary layer hiding; the final code preserves it, with a dedicated passing regression.
+
+## Training instruments (2026-10-24, HUD-13-R7)
+
+Implemented three additional research candidates in the Training preset: maneuver load meter, glide monitor
+and live flight summary. Settings remain opt-in, with three switches and a preset action below Navigation on
+the existing page. The dialog target grows to 900×860, clamped to the viewport, so all six navigation/training
+switches fit at 1080p/default text size in Spanish. Smaller windows scroll while keeping Preset, Units and Done
+outside the scrolling area. Shared player frames supply drag, close, normalized persistence, lock and appearance.
+
+`flight_metrics.gd` keeps only constant-size session aggregates: sampled signed body-axis load extrema,
+maximum AGL and integrated horizontal ground distance. It samples at the manager's existing 10 Hz cadence
+even when its widgets are closed. Repeated timestamps do not advance statistics; rewind/explicit reset clears
+them. Distance holds the previous valid speed through intervals <=1 s, excludes discontinuities and marks
+incomplete totals. Missing speed breaks continuity. No recorder, landing detector, physics callback or
+aircraft-specific kernel branch was added. Flight time reuses simulation time and includes ground time.
+
+The load arc spans -4…+8 g; overflow retains the actual number and labels the clipped scale. It is not a tested
+airframe limit. Bank and AoA remain separate quantities. The glide ratio is instantaneous horizontal ground
+speed divided by sink, with availability guards for speed >=3 m/s, throttle <=5%, bank magnitude <=20° and
+sink >0.2 m/s. Powered, turning, slow, non-descending and missing-data cases suppress it. Labels/tooltips identify
+the ground reference and avoid claims of aerodynamic L/D, energy compensation or thermal detection.
+
+The glide graph retains at most 60 samples at 2 Hz, clears on unavailable/time-discontinuous data, and shares
+cached static grid drawing. Foreground invalidation is separate from static faces; repeated paused samples
+avoid redraw. Existing bundled icons and native Godot drawing are reused; no downloaded dependency/assets.
+
+Checked-runner logs in ignored `tmp/training-widgets/checks/`:
+
+- `test_flight_metrics`: 29 checks. Analytic distance/glide ratio, pause/rewind/reset, invalid/missing samples,
+  partial-distance marking, late sampling, negative-g extrema and threshold/status priorities.
+- `test_training_widgets`: 56 checks. Hidden-widget statistics, units, glide guards, over-range/missing values,
+  bounded graph, static/foreground drawing, drag/close/reopen/lock, flight reset and Spanish captions. All three
+  sizes and both densities fit the 1080p preset; bounds also checked at 1440p, 4K and fallback 720p. All six
+  Spanish navigation/training switches fit at 1080p; the 720p dialog retains pinned controls.
+- Existing navigation 57, efficiency 18, modern 74, classic 58, settings 27 and manager/dialog 184 checks pass:
+  503 focused checks in total. UI-language checks pass (1820 Spanish entries). Existing scene-level aircraft
+  inertia warnings remain. New scripts parsed outside `app/` before integration; whitespace checks pass.
+
+These checks establish presentation and sampling behavior, not physical validation or a whole-game FPS gain.
+The full physics suite was not rerun; no simulation behavior changed.
+
+Native Windows/Godot 4.7.2 review used Turbo Lumber in Spanish at 1920×1080: all six switches are visible after
+the dialog-height fix, and normal plus large/compact flight layouts keep the centre clear. The live powered
+flight showed load, vertical-speed history and advancing session distance while correctly suppressing the glide
+ratio; numeric low-throttle glide cases are covered by the focused tests. A native 1280×720 review confirmed
+the scrolling page with pinned controls. Captures remain ignored in
+`tmp/debug-bridge/20261024-144614-47870/shots/` (001 options, 002 flight, 003 fallback dialog). No bridge engine
+errors were reported; both rendered sessions were stopped. No screenshot is added to Git.

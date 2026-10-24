@@ -19,8 +19,9 @@ const NAMES := {
 	airspeed_dial = "Airspeed dial", attitude = "Artificial horizon", altimeter = "Altimeter",
 	heading = "Heading indicator", variometer = "Vertical speed indicator",
 	pilot_radar = "Pilot radar", wind_track = "Wind & drift", cruise_efficiency = "Cruise efficiency",
+	maneuver = "Maneuver meter", glide = "Glide monitor", flight_summary = "Flight summary",
 }
-const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", custom = "Custom" }
+const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
 const WIDGET_BACKGROUND_NAMES := ["Light", "Balanced", "Solid"]
@@ -45,7 +46,9 @@ var compact_switch: CheckBox
 var _player_grid: GridContainer
 var _classic_grid: GridContainer
 var _navigation_grid: GridContainer
+var _training_grid: GridContainer
 var cockpit_action: Button
+var training_action: Button
 var tab_bar: TabBar
 var _scroll: ScrollContainer
 var _pages: Array[VBoxContainer] = []
@@ -163,6 +166,14 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	_navigation_grid.columns = 2
 	_navigation_grid.add_theme_constant_override("h_separation", 24)
 	navigation_page.add_child(_navigation_grid)
+	navigation_page.add_child(Widgets.label(tr("Training"), "SectionLabel", true, false))
+	training_action = Widgets.button(tr("Use training layout"), "PrimaryButton", "TrainingLayout")
+	training_action.pressed.connect(func() -> void: manager.set_preset("training"))
+	navigation_page.add_child(training_action)
+	_training_grid = GridContainer.new()
+	_training_grid.columns = 2
+	_training_grid.add_theme_constant_override("h_separation", 24)
+	navigation_page.add_child(_training_grid)
 
 	var appearance_page := VBoxContainer.new()
 	appearance_page.name = "AppearancePage"
@@ -230,6 +241,8 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 			_classic_grid.add_child(box)
 		elif id in Settings.NAVIGATION_IDS:
 			_navigation_grid.add_child(box)
+		elif id in Settings.TRAINING_IDS:
+			_training_grid.add_child(box)
 		elif id in Settings.PLAYER_IDS:
 			_player_grid.add_child(box)
 		else:
@@ -285,12 +298,13 @@ func _ready() -> void:
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
 	var available := _screen.size - Vector2(32, 32)
-	dialog_panel.custom_minimum_size = Vector2(minf(900, available.x), minf(800, available.y))
+	dialog_panel.custom_minimum_size = Vector2(minf(900, available.x), minf(860, available.y))
 	var stacked := preload("res://ui/ui_theme.gd").text_scale > 1.25 or available.x < 760
 	_switch_grid.columns = 1 if stacked else 2
 	_player_grid.columns = 1 if stacked else 2
 	_classic_grid.columns = 1 if stacked else 2
 	_navigation_grid.columns = 1 if stacked else 2
+	_training_grid.columns = 1 if stacked else 2
 	for row in _picker_rows:
 		row.vertical = stacked
 	if tab_bar != null:

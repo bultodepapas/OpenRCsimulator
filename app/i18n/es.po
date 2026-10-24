@@ -861,6 +861,78 @@ msgstr "Viento y deriva"
 msgid "Cruise efficiency"
 msgstr "Eficiencia de crucero"
 
+msgid "Training"
+msgstr "Entrenamiento"
+
+msgid "Use training layout"
+msgstr "Usar diseño de entrenamiento"
+
+msgid "Maneuver meter"
+msgstr "Medidor de maniobra"
+
+msgid "Glide monitor"
+msgstr "Monitor de planeo"
+
+msgid "Flight summary"
+msgstr "Resumen del vuelo"
+
+msgid "Body-axis load factor, not total acceleration. Flight extrema are sampled at 10 Hz."
+msgstr "Factor de carga en el eje vertical del avión, no aceleración total. Los extremos del vuelo se muestrean a 10 Hz."
+
+msgid "Vertical speed history. Ground glide is distance over height lost, not aerodynamic L/D."
+msgstr "Historial de velocidad vertical. Relación entre distancia horizontal sobre el suelo y altura perdida; no es L/D aerodinámico."
+
+msgid "Sampled statistics since flight reset, including time on the ground. Distance follows the ground track."
+msgstr "Estadísticas muestreadas desde el reinicio del vuelo, incluido el tiempo en tierra. La distancia sigue la trayectoria sobre el suelo."
+
+msgid "MIN LOAD"
+msgstr "CARGA MÍN."
+
+msgid "MAX LOAD"
+msgstr "CARGA MÁX."
+
+msgid "Low throttle · ground glide"
+msgstr "Planeo relativo al suelo"
+
+msgid "Reduce throttle to measure glide"
+msgstr "Reduce el gas para medir el planeo"
+
+msgid "Level the wings to measure glide"
+msgstr "Nivela las alas para medir planeo"
+
+msgid "Too slow to measure glide"
+msgstr "Demasiado lento para medir planeo"
+
+msgid "No descent to measure"
+msgstr "Sin descenso para medir"
+
+msgid "Glide data unavailable"
+msgstr "Datos de planeo no disponibles"
+
+msgid "GROUND GLIDE"
+msgstr "PLANEO / SUELO"
+
+msgid "This flight · sampled statistics"
+msgstr "Este vuelo · datos muestreados"
+
+msgid "* Distance excludes missing samples"
+msgstr "* Distancia omite datos ausentes"
+
+msgid "MAX AIRSPEED"
+msgstr "VEL. AIRE MÁX."
+
+msgid "MAX AGL"
+msgstr "ALT. AGL MÁX."
+
+msgid "BODY LOAD"
+msgstr "FACTOR DE CARGA"
+
+msgid "TRACK DISTANCE"
+msgstr "DIST. RECORRIDA"
+
+msgid "LOAD MIN / MAX"
+msgstr "CARGA MÍN./MÁX."
+
 msgid "North-up · aircraft position relative to the pilot"
 msgstr "Norte arriba · posición del avión respecto al piloto"
 

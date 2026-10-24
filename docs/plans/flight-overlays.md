@@ -116,6 +116,15 @@ shared battery sensor power/current and ground speed over a rolling ten-second w
 or reads true SOC. Hidden efficiency stops sampling, histories are bounded, and static diagram faces remain
 cached. The original modern/classic presets remain unchanged. Other research concepts remain proposals.
 
+HUD-13-R7 adds the opt-in **Training** preset with `maneuver`, `glide`, and `flight_summary`. Its controls sit below
+Navigation on the same page; a clamped 900×860 dialog fits all six switches in Spanish at the 1080p/default-text
+target. The maneuver arc shows signed body-axis load and sampled extrema, with bank/AoA context. Glide shows
+vertical speed, bounded history and a guarded instantaneous ground glide ratio; it does not infer aerodynamic
+L/D, total-energy compensation or thermal centering. Constant-size flight aggregates keep distance and maxima
+while widgets are closed, with a partial-distance flag for missing intervals. No automatic landing detection or
+separate flight recorder is added. Existing presets and the flight kernel remain unchanged. See the
+[training evidence](../research/flight-overlays/HUD-01-10/README.md#training-instruments-2026-10-24-hud-13-r7).
+
 The presentation reads existing telemetry only: TAS, pitch/bank, height above datum plus AGL, true heading and instantaneous vertical speed. No pressure setting, magnetic correction, pitot system, calibrated airspeed arcs, gyro dynamics or slip-ball indication is implied. Fixed needle scales mark overflow without discarding the numeric reading; missing values suppress the indication. The horizon clips the ground half-plane to a disc and handles inverted/vertical attitudes without a shader. Static faces have their own cached draw commands; only visible, changed values redraw the foreground at the existing 10 Hz rate. Unit/language changes invalidate the face. Research, source applicability and verification live in the [HUD-13-R3 evidence](../research/flight-overlays/HUD-01-10/README.md#classic-cockpit-2026-10-24-hud-13-r3).
 
 See the [player instructions](../FIRST-LAUNCH.md#4-settings-and-flight-options) and [verification](../research/flight-overlays/HUD-01-10/README.md#player-instruments-2026-10-24-hud-13). Layout bounds are checked at 1080p, 1440p, 4K and the 720p fallback; native visual review is at 1080p. This does not qualify GPU performance or pilot readability on other hardware.

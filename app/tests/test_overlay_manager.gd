@@ -196,11 +196,11 @@ func _manager() -> void:
 	manager.cycle_preset()
 	_check("F2 after a custom set: Off", manager.settings.preset == "off" and _shown(manager).is_empty())
 	var order: Array = []
-	for i in 8:
+	for i in Settings.PRESET_ORDER.size():
 		manager.cycle_preset()
 		order.append(manager.settings.preset)
-	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Classic cockpit → Navigation → Off",
-		order == ["pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "off"], str(order))
+	_check("F2 cycles Pilot → Full → Developer → Player → Instruments → Classic cockpit → Navigation → Training → Off",
+		order == ["pilot", "full", "developer", "player", "instruments", "cockpit", "navigation", "training", "off"], str(order))
 	manager.set_preset("pilot")
 	manager.toggle_developer()
 	_check("F3 adds diagnostics and performance", manager.is_overlay_visible("diagnostics") and manager.is_overlay_visible("performance") and manager.settings.preset == "custom")
@@ -370,10 +370,12 @@ func _dialog() -> void:
 	await process_frame
 	_check("dialog shows the Pilot preset and its switches", dialog.preset_picker.selected == 1
 		and Settings.IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed == Settings.PRESETS.pilot.has(id)))
-	_check("modern, classic and navigation widget sections remain separate", dialog._player_grid.get_child_count() == 7
+	_check("modern, classic, navigation and training widget sections remain separate", dialog._player_grid.get_child_count() == 7
 		and dialog._classic_grid.get_child_count() == Settings.CLASSIC_IDS.size()
 		and dialog._navigation_grid.get_child_count() == Settings.NAVIGATION_IDS.size()
-		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid))
+		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid)
+		and dialog._training_grid.get_child_count() == Settings.TRAINING_IDS.size()
+		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._training_grid))
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
 	var pinned_outside_scroll := (
@@ -396,9 +398,12 @@ func _dialog() -> void:
 	_check("changing sections does not change overlay settings", manager.settings == settings_before_tabs, str(manager.settings))
 	dialog.tab_bar.current_tab = 2
 	await process_frame
-	_check("Navigation tab 2 shows its three switches", dialog._pages[2].name == "NavigationPage"
+	_check("Navigation tab 2 shows navigation and training switches", dialog._pages[2].name == "NavigationPage"
 		and dialog._pages[2].visible and Settings.NAVIGATION_IDS.all(
 			func(id: String) -> bool: return dialog.switches[id].is_visible_in_tree())
+		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].is_visible_in_tree())
+		and dialog.training_action.get_parent() == dialog._pages[2]
+		and dialog._training_grid.get_index() > dialog._navigation_grid.get_index()
 		and not dialog.switches.telemetry.is_visible_in_tree())
 	dialog.tab_bar.current_tab = 3
 	await process_frame
@@ -444,6 +449,11 @@ func _dialog() -> void:
 		and not manager.settings.visible.has("altimeter")
 		and Settings.CLASSIC_IDS.filter(func(id: String) -> bool: return id != "altimeter").all(
 			func(id: String) -> bool: return manager.settings.visible.has(id)))
+	dialog.training_action.pressed.emit()
+	_check("Use training layout selects the preset and its switches", manager.settings.preset == "training"
+		and manager.settings.visible == Settings.PRESETS.training
+		and dialog.preset_picker.selected == Settings.PRESET_ORDER.find("training")
+		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].button_pressed))
 	manager.set_preset("pilot")
 	manager.frames.wind.close_button.pressed.emit()
 	_check("external close synchronizes the dialog", not dialog.switches.wind.button_pressed and dialog.preset_picker.selected == Settings.PRESET_ORDER.size())

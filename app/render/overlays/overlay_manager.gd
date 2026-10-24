@@ -21,7 +21,9 @@ const PlayerInstrument := preload("res://render/overlays/player_instrument.gd")
 const ClassicInstrument := preload("res://render/overlays/classic_instrument.gd")
 const NavigationInstrument := preload("res://render/overlays/navigation_instrument.gd")
 const NavigationData := preload("res://render/overlays/navigation_data.gd")
-const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0)}
+const TrainingInstrument := preload("res://render/overlays/training_instrument.gd")
+const FlightMetrics := preload("res://render/overlays/flight_metrics.gd")
+const PLAYER_POSITIONS := {speed = Vector2(0, 1), height = Vector2(1, 1), power = Vector2(0, 0), weather = Vector2(1, 0), fuel = Vector2(0, 0.5), trims = Vector2(0.5, 0.82), engine = Vector2(1, 0.53), heading = Vector2(0, 1), airspeed_dial = Vector2(0.25, 1), attitude = Vector2(0.5, 0.82), altimeter = Vector2(0.75, 1), variometer = Vector2(1, 1), pilot_radar = Vector2(0, 1), wind_track = Vector2(1, 1), cruise_efficiency = Vector2(1, 0), maneuver = Vector2(0, 1), glide = Vector2(1, 1), flight_summary = Vector2(1, 0)}
 const FUEL_RESERVE_WARNING_STREAM: AudioStream = preload("res://assets/ui/audio/reject.ogg")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
@@ -66,6 +68,7 @@ var _player_theme: Theme
 var _settings_applied := false
 var _player_layout_pending := false
 var navigation_data := NavigationData.new()
+var flight_metrics := FlightMetrics.new()
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -126,6 +129,8 @@ func _build() -> void:
 		var widget: Control
 		if id in Settings.NAVIGATION_IDS:
 			widget = NavigationInstrument.new(id)
+		elif id in Settings.TRAINING_IDS:
+			widget = TrainingInstrument.new(id)
 		elif id in Settings.CLASSIC_IDS:
 			widget = ClassicInstrument.new(id)
 		else:
@@ -196,6 +201,7 @@ func reset_flight() -> void:
 	_peak_time = -INF
 	battery_sensors.reset()
 	navigation_data.reset()
+	flight_metrics.reset()
 	_battery_reading = {}
 	_fuel_state_known = false
 	_since_text = INF
@@ -264,6 +270,7 @@ func apply(value: Variant, announce := true) -> void:
 				frames[id].visible = on and _has_battery
 			else:
 				frames[id].visible = on
+		if not frames.cruise_efficiency.visible: navigation_data.reset()
 	if first or Settings.battery_detailed(previous) != Settings.battery_detailed(settings):
 		frames.battery.set_detailed(Settings.battery_detailed(settings))
 	if lock_changed or appearance_changed:
@@ -363,6 +370,8 @@ func refresh_numbers(snap: Dictionary) -> void:
 		peak_airspeed = speed if is_nan(peak_airspeed) else maxf(peak_airspeed, speed)
 		_peak_time = sample_time
 	_since_text = 0.0 # this refresh also satisfies a rewind/reset's pending refresh
+	# Constant-size aggregates keep the flight summary complete while its widgets are closed.
+	var metrics := flight_metrics.update(_last_telemetry)
 	var mass_sample: Dictionary = snap.get("mass_sample", {})
 	_update_fuel_warning(mass_sample, bool(snap.get("paused", false)))
 	var system := unit_system()
@@ -382,13 +391,17 @@ func refresh_numbers(snap: Dictionary) -> void:
 	var cruise := {}
 	if visible and frames.cruise_efficiency.visible:
 		cruise = navigation_data.update(_last_telemetry, _battery_reading)
-	else:
+	elif not frames.cruise_efficiency.visible:
+		# Menus temporarily hide the layer while simulation time is paused; preserve that window.
+		# Only closing/disabling the actual widget discards its samples.
 		navigation_data.reset()
 	if visible:
 		for id: String in PLAYER_POSITIONS:
 			if frames[id].visible:
 				if id in Settings.NAVIGATION_IDS:
 					frames[id].refresh_navigation(_last_telemetry, system, _battery_reading, cruise)
+				elif id in Settings.TRAINING_IDS:
+					frames[id].refresh_training(_last_telemetry, system, peak_airspeed, metrics)
 				else:
 					frames[id].refresh(_last_telemetry, system, peak_airspeed, _battery_reading, mass_sample, snap.get("trims", {}), float(snap.get("rpm", NAN)))
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")

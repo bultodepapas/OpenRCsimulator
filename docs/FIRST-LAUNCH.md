@@ -179,6 +179,17 @@ reserve. Slow flight, missing readings, long sampling gaps and flight resets cle
 widget stops its sampling; reopening starts a fresh window. All three support dragging, ×, saved positions,
 locking and shared size/background controls. Compact mode retains their navigation diagrams.
 
+**Training instruments.** The Navigation tab also offers **Use training layout** and three individual switches.
+Maneuver meter shows signed body-axis load factor, bank, angle of attack, and sampled minimum/maximum load.
+Its -4…+8 g arc clips with a **Scale exceeded** message while preserving the numerical value; it is not a
+structural-limit warning. Glide monitor shows instantaneous vertical speed and a recent history. Its ground
+glide ratio is horizontal ground speed divided by sink, shown only at >=3 m/s, <=5% throttle, <=20° bank and
+more than 0.2 m/s descent. This is wind-dependent and is not aerodynamic L/D or an energy-compensated vario.
+Flight summary shows simulation time since reset (including ground time), sampled maximum airspeed/AGL,
+integrated ground-track distance and load extrema. Asterisked distance excludes missing or long sampling
+intervals. Statistics continue while the widgets are closed and clear on flight reset. All three share the existing
+drag, ×, lock, saved placement and appearance controls; compact mode keeps diagrams visible.
+
 **Battery (experimental).** Turbo Lumber Evolution uses a finite pack by default; **More flight details → Battery** selects ideal constant voltage. The pack sags under load, recovers at idle, warms and triggers 50% ESC power at low cells (**LVC · land now**). The overlay shows voltage, cell readings, current, power, temperature, mAh used and remaining percentage estimated from mAh, not true charge. Direct routes also use the pack; add `--battery=ideal` for constant voltage. [Plan](plans/battery-realism.md).
 
 **Weather** sets uniform wind, repeating gusts, seeded turbulence, field elevation, temperature, QNH and humidity. Apply validates and saves; Cancel/Esc keeps the prior settings. Wind direction is where it comes from; positive vertical gusts point up. Restart repeats the forcing. These are practice conditions, not measured club weather. [Wind](WIND-PLAN.md) · [Atmosphere](ATMOSPHERE-PLAN.md).
