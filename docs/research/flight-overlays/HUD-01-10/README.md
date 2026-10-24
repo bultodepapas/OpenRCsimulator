@@ -198,6 +198,7 @@ Verification on native Windows / Godot 4.7.2:
   continuous redraw work. These are implementation bounds, not measured FPS gains.
 
 Checked outputs remain in ignored `tmp/classic-cockpit/` and `tmp/classic-options-checks/`; native review captures
-in `tmp/debug-bridge/20261024-130050-47870/` and `20261024-130410-47870/`. No images added to Git. Five default
+in `tmp/debug-bridge/20261024-130050-47870/`, `20261024-130410-47870/` and the final normal-layout review
+`20261024-130901-47870/`. No images added to Git. Five default
 dials can overlap at 720p; choose fewer or rearrange them there. No physics, pilot-input mapping or sensor model
 changed. The full physics suite and target-hardware/pilot acceptance remain outside this UI verification.
