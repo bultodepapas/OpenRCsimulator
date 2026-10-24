@@ -15,7 +15,7 @@ from pathlib import Path
 
 import bpy
 import addon_utils
-from mathutils import Quaternion, Vector
+from mathutils import Matrix, Quaternion, Vector
 
 
 def parse_arguments():
@@ -30,6 +30,8 @@ def parse_arguments():
                         help='Optional BVH override; defaults to the pinned source included in assets/scenery/population/source/')
     parser.add_argument('--outfit', type=Path,
                         help='SC-HUM-07 outfit JSON (tools/scenery/population/outfits/); omitted = the LU-21 person exactly')
+    parser.add_argument('--transmitter', type=Path,
+                        help='SC-HUM-01 owner transmitter .blend for the pilot pose; defaults to the Radiolink T12D delivery')
     args = parser.parse_args(sys.argv[sys.argv.index('--') + 1:])
     args.mpfb_user_data = args.mpfb_user_data.resolve()
     args.output_dir = args.output_dir.resolve()
@@ -39,6 +41,7 @@ def parse_arguments():
     default_pose = 'anrico_sitting03' if args.pose == 'seated' else 'standing02'
     pose_directory = repo_root / 'assets/scenery/population/source/poses' / default_pose
     args.pose_file = (args.pose_file or (pose_directory / (default_pose + '.bvh'))).resolve()
+    args.transmitter = (args.transmitter or (repo_root / 'assets/source-deliveries/radiolink-t12d/Radiolink_T12D.blend')).resolve()
     if not args.pose_file.is_file():
         parser.error('Pose BVH does not exist: ' + str(args.pose_file))
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -198,46 +201,111 @@ def bend_pose_bone(name, degrees):
     bone.rotation_mode = 'QUATERNION'
     bone.rotation_quaternion = bone.rotation_quaternion @ Quaternion((1.0, 0.0, 0.0), math.radians(degrees))
 
+# SC-HUM-01 transmitter hold, in metres. Source frame (owner model): width X, face toward -Y, up +Z.
+TRANSMITTER_ROOT = 'T12D_root'
+TRANSMITTER_GIMBALS = ('Stick_Izq_eje', 'Stick_Der_eje')  # their midpoint is the hold reference
+TRANSMITTER_HOLD = (0.0, -0.255, 1.11)  # gimbal midpoint in the pose frame (pilot faces -Y)
+TRANSMITTER_TILT_DEG = 35.0  # face elevation above horizontal, toward the pilot's eyes
+# Right hand in the source frame (the left mirrors X): wrist below the side of the rear grip, the hand
+# pointing up along the grip with the fingers curled behind it, the thumb tip on the gimbal stick.
+TRANSMITTER_WRIST = (0.10, 0.04, 0.02)
+TRANSMITTER_KNUCKLES = (0.085, 0.035, 0.12)
+TRANSMITTER_THUMB = (0.05, -0.034, 0.10)
+FINGER_CURL_DEG = 55.0
+TRANSMITTER_MIN_PART_M = 0.006  # screws, LEDs and printed marks are below a pixel at field range
+TRANSMITTER_TRIANGLES = 2400  # plan §7: at most 3k triangles close; Godot adds automatic LODs
+
+def import_transmitter(path):
+    """Append the transmitter's visible parts as frozen mesh objects, one per material, in its source frame.
+    Returns (objects, frame): frame maps the source frame to the pose frame (gimbal midpoint, then tilt)."""
+    if not path.is_file():
+        raise RuntimeError('missing transmitter ' + str(path))
+    with bpy.data.libraries.load(str(path), link=False) as (source, target):
+        target.objects = list(source.objects)
+    loaded = [obj for obj in target.objects if obj is not None]
+    by_name = {obj.name: obj for obj in loaded}
+    if TRANSMITTER_ROOT not in by_name or not all(name in by_name for name in TRANSMITTER_GIMBALS):
+        raise RuntimeError('transmitter needs ' + TRANSMITTER_ROOT + ' and ' + ', '.join(TRANSMITTER_GIMBALS))
+    for obj in loaded:
+        bpy.context.scene.collection.objects.link(obj)
+    def under_root(obj):
+        while obj.parent is not None:
+            obj = obj.parent
+        return obj.name == TRANSMITTER_ROOT
+    bpy.context.view_layer.update()
+    gimbal_mid = (by_name[TRANSMITTER_GIMBALS[0]].matrix_world.translation + by_name[TRANSMITTER_GIMBALS[1]].matrix_world.translation) * 0.5
+    frozen = []
+    for obj in loaded:
+        if obj.type not in ('MESH', 'CURVE') or not under_root(obj) or max(obj.dimensions) < TRANSMITTER_MIN_PART_M:
+            continue
+        for modifier in list(obj.modifiers):
+            if modifier.type in ('BEVEL', 'WEIGHTED_NORMAL'):
+                obj.modifiers.remove(modifier)  # edge rounding is invisible at field range
+        mesh = bpy.data.meshes.new_from_object(obj.evaluated_get(bpy.context.evaluated_depsgraph_get()))
+        mesh.transform(obj.matrix_world)
+        if not mesh.uv_layers:
+            mesh.uv_layers.new()  # untextured parts become atlas swatches; the merge still reads a UV set
+        part = bpy.data.objects.new('RC_Transmitter_' + obj.name, mesh)
+        bpy.context.scene.collection.objects.link(part)
+        frozen.append(part)
+    for obj in loaded:
+        bpy.data.objects.remove(obj, do_unlink=True)
+    bpy.ops.object.select_all(action='DESELECT')
+    for part in frozen:
+        part.select_set(True)
+    bpy.context.view_layer.objects.active = frozen[0]
+    bpy.ops.object.join()
+    joined = bpy.context.object
+    joined.name = 'RC_Transmitter'
+    source_triangles = sum(len(poly.vertices) - 2 for poly in joined.data.polygons)
+    decimate = joined.modifiers.new('Transmitter detail reduction', 'DECIMATE')
+    decimate.ratio = min(1.0, TRANSMITTER_TRIANGLES / source_triangles)
+    bpy.ops.object.modifier_apply(modifier=decimate.name)
+    for material in joined.data.materials:
+        if material and not material.name.startswith('RC_Transmitter_'):
+            material.name = 'RC_Transmitter_' + material.name  # merge_people_atlas: rigid transmitter class
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.separate(type='MATERIAL')  # one glTF primitive per part
+    bpy.ops.object.mode_set(mode='OBJECT')
+    parts = [obj for obj in bpy.context.scene.objects if obj.name.startswith('RC_Transmitter')]
+    print('TRANSMITTER=' + json.dumps({'source': str(path), 'source_triangles': source_triangles,
+                                      'triangles': sum(len(p.vertices) - 2 for o in parts for p in o.data.polygons),
+                                      'parts': len(parts)}, sort_keys=True))
+    # Face from -Y to +Y (toward the pilot), tilt its top away by the face elevation, gimbals at the hold point.
+    frame = (Matrix.Translation(TRANSMITTER_HOLD) @ Matrix.Rotation(math.radians(TRANSMITTER_TILT_DEG), 4, 'X')
+             @ Matrix.Rotation(math.pi, 4, 'Z') @ Matrix.Translation(-gimbal_mid))
+    return parts, frame
+
 source_scale = 1.75 / 1.6594
 # MPFB works in metres; LU-21 rescaled its androgynous default to 1.75 m. Natural outfits keep metres.
 pose_scale = 1.0 if OUTFIT['height'] == 'natural' else source_scale
-radio_obj = None
+radio_parts = []
 if pose_kind == 'seated':
     # The CC0 Anrico chair pose supplies both legs and arms; move its pelvis
     # to the field bench height before the final adult-scale bake.
     hip = rig.pose.bones['root'].head.z
     rig.location.z += (0.45 / pose_scale) - hip
 elif pose_kind == 'pilot':
-    # Hold a compact two-stick transmitter just ahead of the abdomen.
+    # SC-HUM-01: the owner's transmitter, face tilted up toward the eyes, thumbs on the gimbals and the
+    # wrists just outside its rear grips (IK). Both are placed from the transmitter frame, not by hand.
+    radio_parts, radio_frame = import_transmitter(ARGS.transmitter)
     for side, sign in [('L', 1.0), ('R', -1.0)]:
         reset_pose_bones([part + '.' + side for part in ['clavicle', 'shoulder01', 'upperarm01', 'upperarm02', 'lowerarm01', 'lowerarm02']])
-        make_ik_target('RadioHand_' + side, (sign * 0.145 / pose_scale, -0.27 / pose_scale, 1.065 / pose_scale), 'lowerarm02.' + side, 4, (sign * 0.36 / pose_scale, 0.22 / pose_scale, 1.15 / pose_scale))
-    bpy.ops.mesh.primitive_cube_add(size=1, location=(0, -0.265 / pose_scale, 1.015 / pose_scale))
-    radio_obj = bpy.context.object
-    radio_obj.name = 'RC_Transmitter'
-    radio_obj.dimensions = (0.23 / pose_scale, 0.09 / pose_scale, 0.15 / pose_scale)
-    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
-    radio_mat = bpy.data.materials.new('RC_Transmitter_Matte_Dark')
-    radio_mat.diffuse_color = (0.015, 0.02, 0.03, 1.0)
-    radio_mat.use_nodes = True
-    radio_mat.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value = (0.015, 0.02, 0.03, 1.0)
-    radio_mat.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value = 0.82
-    radio_obj.data.materials.append(radio_mat)
-    radio_parts = [radio_obj]
-    for side, sign in [('Left', 1.0), ('Right', -1.0)]:
-        bpy.ops.mesh.primitive_cylinder_add(vertices=8, radius=0.014 / pose_scale, depth=0.04 / pose_scale, location=(sign * 0.055 / pose_scale, -0.265 / pose_scale, (1.015 + 0.09) / pose_scale))
-        part = bpy.context.object
-        part.name = 'RC_Stick_' + side
-        part.data.materials.append(radio_mat)
-        radio_parts.append(part)
-    bpy.ops.object.select_all(action='DESELECT')
+        # The pose faces -Y, so the pilot's left hand (+X) holds the transmitter's -X (left) side.
+        wrist = radio_frame @ Vector((-sign * TRANSMITTER_WRIST[0], TRANSMITTER_WRIST[1], TRANSMITTER_WRIST[2]))
+        make_ik_target('RadioHand_' + side, tuple(wrist / pose_scale), 'lowerarm02.' + side, 4, (sign * 0.36 / pose_scale, 0.22 / pose_scale, 1.15 / pose_scale))
+        # Aim the hand and the thumb at grip points; curl the other fingers behind the grip.
+        for bone_name, point in [('wrist.' + side, TRANSMITTER_KNUCKLES), ('finger1-1.' + side, TRANSMITTER_THUMB)]:
+            target = bpy.data.objects.new('RadioAim_' + bone_name, None)
+            bpy.context.scene.collection.objects.link(target)
+            target.location = radio_frame @ Vector((-sign * point[0], point[1], point[2])) / pose_scale
+            rig.pose.bones[bone_name].constraints.new('DAMPED_TRACK').target = target
+        for finger in range(2, 6):
+            for joint in range(1, 4):
+                bend_pose_bone('finger%d-%d.%s' % (finger, joint, side), FINGER_CURL_DEG)
     for part in radio_parts:
-        part.select_set(True)
-    bpy.context.view_layer.objects.active = radio_obj
-    bpy.ops.object.join()
-    bevel = radio_obj.modifiers.new('Radio housing edge bevel', 'BEVEL')
-    bevel.width = 0.008 / pose_scale
-    bevel.segments = 2
+        part.data.transform(Matrix.Scale(1.0 / pose_scale, 4) @ radio_frame)
 elif pose_kind == 'working':
     # SC-HUM-06: standing at a 0.90 m pit table working on a model: a slight forward lean, eyes on the
     # work and both hands on the model in front (IK). Procedural placement of the CC0 standing pose only.
@@ -281,8 +349,7 @@ export_root = ExportService.create_character_copy(human, name_suffix='_export')
 export_base = ObjectService.find_object_of_type_amongst_nearest_relatives(export_root, 'Basemesh')
 ExportService.bake_modifiers_remove_helpers(export_base, bake_masks=True, bake_subdiv=True, remove_helpers=True, also_proxy=True)
 export_objects = [export_root] + ObjectService.get_list_of_children(export_root)
-if radio_obj is not None:
-    export_objects.append(radio_obj)
+export_objects += radio_parts
 
 # Freeze the already posed rig into ordinary mesh data; runtime animation,
 # skeletons and unused body surfaces are not needed for a scenery crowd.

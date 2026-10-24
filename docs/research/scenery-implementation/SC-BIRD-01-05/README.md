@@ -52,7 +52,7 @@ The reviewer's numpy float32 emulation of `track_pos()` and the bank differences
 
 - From the pilot's eye the soaring birds are seen 5–10° from below, so level wings are often edge-on: a thin line with the dihedral and tip curl, as distant soaring birds look. As they circle and bank they show their upper or lower surface in turn. MSAA 2× breaks a sub-pixel edge-on wing into dashes; the keel and the leading-edge strip keep a body visible.
 - Through the 20.7° `birds_watch` lens the kettle reads as seven vultures wheeling at different heights over the hazy ridges.
-- The first 3 s headless flight with birds printed "4 ObjectDB instances were leaked at exit"; the eleven later flights (six with birds, five without) printed none. Not reproduced, not attributed.
+- The first 3 s headless flight with birds printed "4 ObjectDB instances were leaked at exit"; the eleven later flights (six with birds, five without) printed none. Later identified as Ogg audio playback alive at exit (the menu accept cue), not the birds ([SC-BIRD-08](../SC-BIRD-08/README.md#observations-and-limits)).
 
 ## Limits and open work
 

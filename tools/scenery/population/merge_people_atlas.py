@@ -9,7 +9,7 @@ Each source part keeps its geometry, normals and UVs exactly; UVs are remapped i
 with edge-extended gutters (no mip bleeding between parts) and a half-resolution normal atlas. The
 second UV set carries (shading class, roughness) so one runtime material reproduces the per-part
 shading: 0 skin, 1 fabric, 2 plain, 3 eyes (also marks the eye height for the head rig),
-4 untextured transmitter. PNGs are written with zlib directly, so equal pixels give equal bytes.
+4 flat (untextured parts and the rigid transmitter). PNGs are written with zlib directly, so equal pixels give equal bytes.
 Then package the result with package_population.py as before.
 """
 
@@ -54,7 +54,8 @@ def read_accessor(document, binary, index):
 
 def shading_class(material_name, has_texture):
     name = material_name.lower()
-    if not has_texture:
+    # The transmitter is rigid (never in the head rig), textured screen included (SC-HUM-01).
+    if not has_texture or name.startswith('rc_transmitter'):
         return CLASS_FLAT
     if name.endswith('.body'):
         return CLASS_SKIN
