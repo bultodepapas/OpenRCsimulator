@@ -1,5 +1,15 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-22-R7 — fluorescent glass from owner references, 2026-10-24
+
+The owner supplied three photographs of intensely green fluorescent glass: dark transparent interiors, saturated luminous rims, layered edges and narrow reflections. The implementation transfers these material cues to primary actions while retaining neutral black menu backgrounds. This is a visual interpretation, not a physical glass/fluorescence simulation. The photos were inspected in the conversation and are not copied into the repository. [Current palette and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+The shared accent is now `#66FF16`. Primary actions use dark translucent green, pale text/icons, a rounded double contour with directional light falloff, a faint folded reflection and edge-weighted finite sheen. The outer edge becomes more opaque; opaque mode also makes the interior opaque. Focus remains a separate pale native inset outline. `ACCENT_INK` separates the dark toggle/check marks from light primary text; disabled labels/icons remain muted. Layout, input, panel neutrality and motion cancellation retain their existing contracts. No downloaded assets, new dependencies or continuous animation were added.
+
+Checked-runner passes: `test_ui_scale.gd`, `test_ui_home.gd` and `test_ui_crystal.gd` with 20 native rendered assertions. Scale checks now use state-specific normal/hover/pressed/disabled text colors; the crystal test bounds the brightest alpha-composited interior and samples actual shader output over a white backdrop for text contrast and a brighter green rim. Opaque-theme replacement checks both panel and button. Home's EN/ES, text growth and navigation checks passed.
+
+Native Windows / NVIDIA RTX 3090 / OpenGL Compatibility captures were inspected at a confirmed 1920×1080 viewport for Spanish Home, Settings and Pause, including primary hover, focus, disabled controls, opaque panels and reduced motion. Settings previews were discarded on close. No engine/script/shader errors, crash or leaked objects occurred. Flight construction logged its aircraft-data notice and a 3.24-second load hitch; this UI work does not establish performance qualification. Final local captures/logs: ignored `tmp/debug-bridge/20261024-155016-47870/`; initial material comparison: `tmp/debug-bridge/20261024-154807-47870/`; tests: `tmp/fluorescent-r7-checks/`. No screenshots are shipped or committed. This is scoped software and 1080p visual evidence, not full-suite or human visual acceptance.
+
 ## UI-22-R6 — twenty investigations and crystalline edges, 2026-10-24
 
 [Research, selected changes and evidence](UI-22-R6/README.md): twenty inspected sources covering game UI, free rendering tools, glass, motion and accessibility. The implemented refinement adds continuous convex lighting, a directional bevel, a lower inset light return and a shorter contour-weighted glint. Backgrounds remain neutral black; native text, focus and accessibility preferences retain ownership.

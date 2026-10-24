@@ -162,7 +162,7 @@ func _run() -> void:
 			var r := UiTheme.contrast(fg, bg)
 			_check("contrast: %s %s text %.2f:1 >= 4.5" % [b.name, state, r], r >= 4.5)
 	var focus := fly.get_theme_stylebox("focus") as StyleBoxFlat
-	_check("Fly uses an inset focus outline without obscuring its luminous fill", not focus.draw_center
+	_check("Fly uses an inset focus outline inside fluorescent glass", not focus.draw_center
 		and focus.border_width_left == UiTheme.FOCUS_WIDTH
 		and UiTheme.contrast(focus.border_color, fly.get_theme_stylebox("normal").bg_color) >= 3.0)
 	var r_focus := UiTheme.contrast(quit_b.get_theme_stylebox("focus").border_color, panel_bg)

@@ -966,3 +966,7 @@ Refine the palette at the owner's request: keep green crystal buttons and select
 
 Twenty source investigations favor controlled hierarchy and material detail over adding decoration everywhere. Replace the hard halfway highlight with continuous lighting, a directional rounded-box bevel and a restrained inset light return. Concentrate the 560 ms eased glint at the contour. Keep neutral black surfaces and the existing native focus/contrast controls. Extend the licensed shader already in use; do not add scene refraction, texture noise, viewport glow or another library for this slice. [Source-by-source decisions and verification](research/menu-investigations/UI-22-R6/README.md).
 
+### 2026-10-24 — Fluorescent edges around a dark glass interior (UI-22-R7)
+
+Follow the owner's photographic references by moving primary actions from a filled lime gradient to dark translucent green with concentrated fluorescent contours and fine reflections. Use light text on the dark interior, separate dark ink for bright toggle/check marks, and a pale native inset focus. Keep black neutral panels and bounded event-driven motion. Preserve readability over bright backdrops and apply opaque mode to the new translucent buttons too. [Reference interpretation and rendered verification](research/menu-investigations/README.md#ui-22-r7--fluorescent-glass-from-owner-references-2026-10-24).
+

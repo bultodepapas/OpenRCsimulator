@@ -7,8 +7,8 @@ const SIDEBAR := Color("#111111", 0.92)
 const CARD := Color("#202020")
 const TEXT := Color("#F2F2F2")
 const TEXT_2 := Color("#C4C4C4")
-const FOCUS := Color("#B6FF43")
-const CRYSTAL := Color("#E3FFC2")
+const FOCUS := Color("#66FF16")
+const CRYSTAL := Color("#C4FFB3")
 const SURFACE_LIGHT := Color("#F0F0F0")
 const EDGE := Color("#606060")
 const BUTTON := {
@@ -18,12 +18,13 @@ const BUTTON := {
 	disabled = Color("#292929"),
 }
 const PRIMARY := {
-	normal = FOCUS,
-	hover = Color("#D0FF8A"),
-	pressed = Color("#91DE32"),
-	disabled = Color("#78935A"),
+	normal = Color("#08290F", 0.92),
+	hover = Color("#0B3A14", 0.94),
+	pressed = Color("#061E0B", 0.96),
+	disabled = Color("#242A24"),
 }
-const PRIMARY_TEXT := Color("#111111")
+const PRIMARY_TEXT := Color("#E4FFDA")
+const ACCENT_INK := Color("#111111")
 const DANGER := {
 	normal = Color("#8E3735"),
 	hover = Color("#A44340"),
@@ -193,21 +194,25 @@ static func _button(
 
 ## Native edge, halo and focus remain above the decorative crystal underlay.
 static func _primary_button(theme: Theme, type: String, font_size: int) -> void:
-	_button(theme, type, PRIMARY, FOCUS, 1, font_size, PRIMARY_TEXT, PRIMARY_TEXT)
+	_button(theme, type, PRIMARY, FOCUS, 1, font_size, PRIMARY_TEXT, DISABLED_TEXT)
 	for state in ["normal", "hover", "pressed", "disabled"]:
 		var box := theme.get_stylebox(state, type) as StyleBoxFlat
-		box.border_color = CRYSTAL if state in ["normal", "hover"] else PRIMARY[state]
+		box.border_color = Color(FOCUS, 0.30 if state == "pressed" else 0.42) if state != "disabled" else EDGE
 		box.border_width_top = 1
 		box.border_blend = true
+		box.set_corner_radius_all(9)
+		if opaque_panels: box.bg_color.a = 1.0
 		if state != "disabled":
-			box.shadow_color = Color(FOCUS, 0.30 if state == "hover" else 0.16)
-			box.shadow_size = 14 if state == "hover" else (3 if state == "pressed" else 8)
-	# A dark inset remains visible against every luminous fill, including keyboard/gamepad focus.
+			box.shadow_color = Color(FOCUS, 0.24 if state == "hover" else 0.12)
+			box.shadow_size = 12 if state == "hover" else (3 if state == "pressed" else 7)
+	# Pale focus sits inside the dark glass, separated from the fluorescent outer lip.
 	var focus := theme.get_stylebox("focus", "Button").duplicate() as StyleBoxFlat
-	focus.border_color = PRIMARY_TEXT
+	focus.border_color = CRYSTAL
+	focus.set_expand_margin_all(-4.0)
+	focus.set_corner_radius_all(5)
 	theme.set_stylebox("focus", type, focus)
 	for state in ["icon_normal_color", "icon_hover_color", "icon_pressed_color", "icon_focus_color", "icon_disabled_color"]:
-		theme.set_color(state, type, PRIMARY_TEXT)
+		theme.set_color(state, type, DISABLED_TEXT if state == "icon_disabled_color" else PRIMARY_TEXT)
 
 
 static func _controls(theme: Theme) -> void:
@@ -286,13 +291,13 @@ static func _svg_icon(svg: String) -> ImageTexture:
 static func _toggle_svg(checked: bool, disabled: bool) -> String:
 	var alpha := 0.45 if disabled else 1.0
 	return '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="24" opacity="%.2f"><rect x="1" y="1" width="42" height="22" rx="11" fill="%s" stroke="%s"/><circle cx="%d" cy="12" r="7" fill="%s"/></svg>' \
-		% [alpha, "#" + (FOCUS if checked else BUTTON.normal).to_html(false), "#" + (CRYSTAL if checked else DISABLED_TEXT).to_html(false), 32 if checked else 12, "#" + (PRIMARY_TEXT if checked else TEXT).to_html(false)]
+		% [alpha, "#" + (FOCUS if checked else BUTTON.normal).to_html(false), "#" + (CRYSTAL if checked else DISABLED_TEXT).to_html(false), 32 if checked else 12, "#" + (ACCENT_INK if checked else TEXT).to_html(false)]
 
 
 ## A square check for multiple-choice lists (overlay sets, failure options).
 static func _check_svg(checked: bool, disabled: bool) -> String:
 	var alpha := 0.45 if disabled else 1.0
-	var mark := '<path d="M6 12.5l4 4 8-9" fill="none" stroke="#%s" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' % PRIMARY_TEXT.to_html(false) if checked else ""
+	var mark := '<path d="M6 12.5l4 4 8-9" fill="none" stroke="#%s" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' % ACCENT_INK.to_html(false) if checked else ""
 	return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" opacity="%.2f"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="%s" stroke="%s" stroke-width="1.5"/>%s</svg>' \
 		% [alpha, "#" + (FOCUS if checked else BUTTON.normal).to_html(false), "#" + (CRYSTAL if checked else DISABLED_TEXT).to_html(false), mark]
 

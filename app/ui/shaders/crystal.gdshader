@@ -1,13 +1,14 @@
 shader_type canvas_item;
 render_mode unshaded;
 
-// UI-22-R6. Adapted from sentinelcmd's CC0 Liquid Glass UI (rounded mask/edge)
+// UI-22-R7. Adapted from sentinelcmd's CC0 Liquid Glass UI (rounded mask/edge)
 // and DimensionAlmios' MIT Shine Sweep (projected glint). See LICENSE.txt.
 // Explicit event-driven progress; no wall clock, screen copy or background blur.
 uniform vec2 rect_size = vec2(320.0, 56.0);
 uniform float corner_radius = 7.0;
-uniform vec4 base_color : source_color = vec4(0.714, 1.0, 0.263, 1.0);
-uniform vec4 crystal_color : source_color = vec4(0.89, 1.0, 0.76, 1.0);
+uniform vec4 base_color : source_color = vec4(0.031, 0.161, 0.059, 0.92);
+uniform vec4 crystal_color : source_color = vec4(0.769, 1.0, 0.702, 1.0);
+uniform vec4 emission_color : source_color = vec4(0.4, 1.0, 0.086, 1.0);
 uniform float primary = 1.0;
 uniform float energy = 0.0;
 uniform float shine_progress = -1.0;
@@ -41,40 +42,49 @@ void fragment() {
 	float aa = max(fwidth(sdf), 0.6);
 	float mask = 1.0 - smoothstep(-aa, aa, sdf);
 	float depth = max(-sdf, 0.0);
-	float bevel = 1.0 - smoothstep(1.0, mix(2.5, 6.0, primary), depth);
+	float bevel = 1.0 - smoothstep(1.0, mix(2.5, 9.0, primary), depth);
 	float light = pow(1.0 - UV.y, 2.0);
 	float diagonal = UV.x * cos(0.38) + UV.y * sin(0.38);
 	float reflection = 1.0 - smoothstep(0.0, 0.36, abs(diagonal - 0.26));
 
-	// A continuous convex highlight replaces the hard halfway stripe. The saturated
-	// body remains readable; all extra light stays above the tested .76 * .88 floor.
-	vec3 bright = mix(base_color.rgb, crystal_color.rgb, 0.24);
-	vec3 button_body = mix(base_color.rgb * 0.76, bright, 1.0 - UV.y);
-	button_body = mix(button_body, crystal_color.rgb, light * 0.16);
-	button_body += crystal_color.rgb * reflection * 0.025;
-	button_body *= 1.0 - press_depth * 0.12;
+	// The reference glass holds darkness inside and concentrates fluorescence at its
+	// thickness. Keep the text well dark, including during the specular sweep.
+	vec3 button_body = base_color.rgb * (0.74 + light * 0.26);
+	button_body += emission_color.rgb * reflection * 0.022;
+	float folded_reflection = 1.0 - smoothstep(0.005, 0.060, abs(diagonal - 0.31));
+	float reflection_echo = 1.0 - smoothstep(0.002, 0.012, abs(diagonal - 0.37));
+	button_body += emission_color.rgb * (folded_reflection * 0.060 + reflection_echo * 0.018);
+	button_body *= 1.0 - press_depth * 0.16;
 	vec3 panel_body = base_color.rgb + crystal_color.rgb * (light * 0.012 + reflection * 0.006);
 	vec3 body = mix(panel_body, button_body, primary);
 
-	// Two opposing edge catches suggest polished thickness, without sampling or
-	// distorting the scene. The lower inset is a stylized light return, not a caustic simulation.
+	// Opposing polished catches and two nested contours suggest thick fluorescent
+	// glass. These are analytic light cues, not scene refraction or physical caustics.
 	vec2 normal = contour_normal(p, half_size, radius);
 	float key_light = pow(max(dot(normal, vec2(-0.45, -0.893)), 0.0), 2.0);
 	float return_light = pow(max(dot(normal, vec2(0.3, 0.954)), 0.0), 4.0);
 	float edge_light = bevel * (0.12 + key_light * 0.64 + return_light * 0.24);
-	body = mix(body, crystal_color.rgb, edge_light * mix(0.09, 0.58, primary) * (1.0 - press_depth * 0.45));
-	float inset = 1.0 - smoothstep(0.45, 0.45 + aa, abs(depth - 4.0));
-	float lower_edge = smoothstep(0.62, 0.94, UV.y);
-	body += crystal_color.rgb * inset * lower_edge * primary * (0.055 + energy * 0.045);
-	body += base_color.rgb * bevel * energy * primary * 0.045;
+	vec3 panel_edge = mix(body, crystal_color.rgb, edge_light * 0.09);
+	float lip = 1.0 - smoothstep(0.65, 0.65 + aa, abs(depth - 1.6));
+	float inset = 1.0 - smoothstep(0.45, 0.45 + aa, abs(depth - 5.0));
+	float lower_edge = smoothstep(0.48, 0.95, UV.y);
+	float key_falloff = 0.35 + 0.65 * pow(1.0 - UV.x, 2.0);
+	float return_falloff = 0.35 + 0.65 * pow(UV.x, 2.0);
+	float fluorescence = bevel * (0.14 + return_light * return_falloff * 0.20 + energy * 0.10);
+	fluorescence += lip * (0.24 + key_light * key_falloff * 0.50 + return_light * return_falloff * 0.20);
+	fluorescence += inset * (0.14 + lower_edge * 0.34) * (1.0 - press_depth * 0.35);
+	vec3 glass_edge = body + emission_color.rgb * fluorescence;
+	glass_edge += crystal_color.rgb * lip * pow(key_light, 3.0) * 0.16;
+	body = mix(panel_edge, glass_edge, primary);
 
 	// One manually driven specular sweep; the published auto-clock branch is deliberately omitted.
 	float distance_to_shine = abs(diagonal - shine_progress);
 	float soft = 1.0 - smoothstep(0.0, 0.12, distance_to_shine);
 	float hard = 1.0 - smoothstep(0.012 - fwidth(diagonal), 0.012 + fwidth(diagonal), distance_to_shine);
 	float shine = mix(soft, hard, 0.24);
-	float sheen_strength = mix(0.025, 0.14 + bevel * 0.36, primary) * (1.0 - disabled);
-	body += crystal_color.rgb * shine * sheen_strength;
+	float sheen_strength = mix(0.025, 0.012 + bevel * 0.44, primary) * (1.0 - disabled);
+	body += mix(crystal_color.rgb, emission_color.rgb, primary * 0.72) * shine * sheen_strength;
 	body = mix(body, base_color.rgb, disabled);
-	COLOR = vec4(body, mask * base_color.a) * vertex_tint;
+	float opacity = mix(base_color.a, 1.0, bevel * primary * (1.0 - disabled));
+	COLOR = vec4(body, mask * opacity) * vertex_tint;
 }

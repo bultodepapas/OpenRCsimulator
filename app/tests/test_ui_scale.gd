@@ -54,16 +54,18 @@ func run() -> void:
 	var large_theme := UiTheme.build()
 	_check("200% body scaling remains available", large_theme.default_font_size == 52)
 	for type in ["PrimaryButton", "CompactPrimaryButton", "SettingsAction"]:
-		for state in ["normal", "hover", "pressed"]:
+		for state in ["normal", "hover", "pressed", "disabled"]:
 			var primary_box := large_theme.get_stylebox(state, type) as StyleBoxFlat
-			var primary_text_key := "font_pressed_color" if state == "pressed" else "font_color"
+			var primary_text_key: String = {"normal": "font_color", "hover": "font_hover_color", "pressed": "font_pressed_color", "disabled": "font_disabled_color"}[state]
 			var primary_text: Color = large_theme.get_color(primary_text_key, type)
-			_check("%s %s state uses readable dark text on lime" % [type, state], UiTheme.contrast(primary_text, primary_box.bg_color) >= 4.5)
-			_check("%s %s state keeps the lime primary palette" % [type, state], primary_box.bg_color == UiTheme.PRIMARY[state])
+			_check("%s %s light text contrasts with composited glass" % [type, state], UiTheme.contrast(primary_text, primary_box.bg_color) >= 4.5)
+			var expected: Color = UiTheme.BUTTON.disabled if type == "SettingsAction" and state == "disabled" else UiTheme.PRIMARY[state]
+			_check("%s %s state keeps its glass or disabled palette" % [type, state], primary_box.bg_color == expected)
 			var focus := large_theme.get_stylebox("focus", type) as StyleBoxFlat
-			_check("%s %s focus remains visible on its luminous fill" % [type, state],
+			_check("%s %s focus remains visible inside dark glass" % [type, state],
 				not focus.draw_center and UiTheme.contrast(focus.border_color, primary_box.bg_color) >= 3.0)
 	var destructive_box := large_theme.get_stylebox("normal", "DestructiveButton") as StyleBoxFlat
+	_check("checked symbols retain dark ink on fluorescent green", UiTheme.contrast(UiTheme.ACCENT_INK, UiTheme.FOCUS) >= 4.5)
 	var destructive_text: Color = large_theme.get_color("font_color", "DestructiveButton")
 	_check("destructive action uses readable text on red", UiTheme.contrast(destructive_text, destructive_box.bg_color) >= 4.5)
 	_check("danger announcement chip uses readable text on red", UiTheme.contrast(UiTheme.TEXT, UiTheme.DANGER.pressed) >= 4.5)

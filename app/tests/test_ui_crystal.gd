@@ -54,10 +54,32 @@ func _run() -> void:
 		and not panel_effect.is_processing())
 	_check("focus remains a native visible outline", not button.get_theme_stylebox("focus").draw_center
 		and button.get_theme_stylebox("focus").border_width_left == UiTheme.FOCUS_WIDTH)
-	# Even the darkest pressed gradient endpoint stays readable (including tactile darkening).
-	var darkest := Color(UiTheme.PRIMARY.pressed.r * 0.76 * 0.88, UiTheme.PRIMARY.pressed.g * 0.76 * 0.88,
-		UiTheme.PRIMARY.pressed.b * 0.76 * 0.88)
-	_check("dark text meets 4.5:1 at the darkest glass endpoint", UiTheme.contrast(UiTheme.PRIMARY_TEXT, darkest) >= 4.5)
+	# Brightest text-well upper bound: hover body + reflection + peak interior sweep.
+	# Edge fluorescence ends before the content; alpha is checked over white AND black.
+	var brightest := Color(UiTheme.PRIMARY.hover.r + 0.112, UiTheme.PRIMARY.hover.g + 0.112,
+		UiTheme.PRIMARY.hover.b + 0.112, UiTheme.PRIMARY.normal.a)
+	_check("light text meets 4.5:1 at the brightest translucent glass interior", UiTheme.contrast(UiTheme.PRIMARY_TEXT, brightest) >= 4.5)
+	if DisplayServer.get_name() != "headless":
+		# Read the actual shader result against the most demanding bright backdrop.
+		# Hide glyphs only for sampling, keeping native surface geometry and styles.
+		var backdrop := ColorRect.new()
+		backdrop.color = Color.WHITE
+		backdrop.position = button.position
+		backdrop.size = button.size
+		backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		screen.add_child(backdrop)
+		screen.move_child(backdrop, 0)
+		button.text = ""
+		button.release_focus()
+		await RenderingServer.frame_post_draw
+		var rendered := root.get_texture().get_image()
+		var origin := Vector2i(button.get_global_rect().position)
+		var center := rendered.get_pixelv(origin + Vector2i(160, 28))
+		var rim := rendered.get_pixelv(origin + Vector2i(160, 2))
+		_check("rendered glass center keeps light text readable over white", UiTheme.contrast(UiTheme.PRIMARY_TEXT, center) >= 4.5)
+		_check("rendered green fluorescence is concentrated at the lip", rim.g > center.g + 0.15 and rim.g > rim.r * 1.4)
+		button.text = "Continue"
+		backdrop.queue_free()
 	button.grab_focus()
 	_check("keyboard focus starts a finite shine", effect._shine_tween != null and effect._shine_tween.is_running())
 	effect._shine_tween.custom_step(0.36)
@@ -93,7 +115,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	_check("theme replacement retains decoration and opaque surfaces", not button.get_theme_stylebox("normal").draw_center
-		and panel_effect._sources[&"panel"].bg_color.a == 1.0)
+		and panel_effect._sources[&"panel"].bg_color.a == 1.0 and effect._sources[&"normal"].bg_color.a == 1.0)
 	var custom := StyleBoxFlat.new()
 	custom.bg_color = Color.DARK_GREEN
 	button.add_theme_stylebox_override("normal", custom)
