@@ -47,7 +47,7 @@ const DEFAULTS := {
 	time_of_day = "evening",
 	# UI-06d: only fresh interactive preferences use gentle moving air; technical routes remain calm by default.
 	weather_config = WeatherSettings.GENTLE_PRACTICE,
-	latency_marker = true,
+	latency_marker = false,
 	# A separate, visual-only selection. Its default preserves the original fixed daylight image.
 	lighting_config = TimeOfDay.DEFAULTS,
 	lighting_invalid = false,

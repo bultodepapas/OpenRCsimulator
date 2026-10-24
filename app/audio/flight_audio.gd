@@ -204,8 +204,11 @@ func _process(delta: float) -> void:
 	_last_tick = tick
 	var sound_snapshot: Dictionary = snapshot()
 	soundscape.update_sound(sound_snapshot, delta)
-	var ground_contacts: Array[Dictionary] = contact_snapshot()
+	var paused: bool = bool(sound_snapshot.get("paused", false))
+	var ground_contacts: Array[Dictionary] = []
+	if not paused:
+		ground_contacts = contact_snapshot()
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
-	ground_audio.update_contacts(tick, bool(sound_snapshot.get("paused", false)), ground_contacts,
+	ground_audio.update_contacts(tick, paused, ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
 	last_update_usec = Time.get_ticks_usec() - started

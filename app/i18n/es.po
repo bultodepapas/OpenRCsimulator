@@ -5137,3 +5137,45 @@ msgstr "acelerador retenido en ralentí"
 
 msgid "Fold / spread folding wings (on the ground, stopped)"
 msgstr "Plegar / desplegar alas plegables (en tierra, detenido)"
+
+msgid "Latency camera marker"
+msgstr "Marcador para medir latencia con cámara"
+
+msgid "For filming stick-to-screen delay. White means the raw axis is at or above the threshold; this does not display milliseconds."
+msgstr "Para filmar el retardo entre el mando y la pantalla. Blanco significa que el eje está en el umbral o por encima; no muestra milisegundos."
+
+msgid "Raw axis %d · threshold %s"
+msgstr "Eje sin filtrar %d · umbral %s"
+
+msgid "Camera test only, not milliseconds.\nWhite: at/above threshold.\nBlack: below. Gray: inactive."
+msgstr "Prueba con cámara, no milisegundos.\nBlanco: en el umbral o por encima.\nNegro: debajo. Gris: inactivo."
+
+msgid "above threshold"
+msgstr "En el umbral o por encima"
+
+msgid "below threshold"
+msgstr "Por debajo del umbral"
+
+msgid "waiting for radio"
+msgstr "Esperando mando"
+
+msgid "no flight"
+msgstr "Sin vuelo"
+
+msgid "input disabled"
+msgstr "Entrada desactivada"
+
+msgid "flight fault"
+msgstr "Error de vuelo"
+
+msgid "calibrating"
+msgstr "Calibrando"
+
+msgid "flight paused"
+msgstr "Vuelo en pausa"
+
+msgid "move selected axis"
+msgstr "Mueve el eje seleccionado"
+
+msgid "invalid axis sample"
+msgstr "Lectura del eje no válida"

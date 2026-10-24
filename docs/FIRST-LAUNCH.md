@@ -189,6 +189,10 @@ The current source report records observed controllers, reconnects, axes/ranges,
 
 ## 8. Film stick-to-screen latency (F6a)
 
+Home flights leave the camera marker off by default. Enable it in Pause → Session options → Flight overlays → **Latency camera marker**. Its × closes it and saves that choice, including across pauses and later flights. Existing saved choices are preserved. Hidden markers stop sampling.
+
 Use `-- --latency-patch` for a direct flight with a raw-input marker: axis 0 below zero is black, at/above zero is white; gray means inactive (pause, calibration, crash or disconnection). `--latency-axis=0..9` and `--latency-threshold=0.5` can select another crossing.
+
+A centred axis at exactly zero is white with the default threshold. A steady white square is a threshold state, not a latency value or an error. Move the selected raw axis across the threshold to produce a black/white transition.
 
 Film stick and screen together at 240 fps and use the [F6 protocol](research/radio-input/F6a/README.md#owner-camera-protocol-f6-still-pending). The marker does not calculate latency; physical acceptance remains open.

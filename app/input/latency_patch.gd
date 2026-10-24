@@ -2,6 +2,9 @@
 # CanvasLayer HUD pattern adapted from the Godot skill; containers lay out non-interactive controls.
 extends CanvasLayer
 
+const Frame := preload("res://render/overlays/overlay_frame.gd")
+signal closed
+
 const INACTIVE: Color = Color(0.4, 0.4, 0.4)
 const SIZE: int = 192
 var axis: int = 0
@@ -12,10 +15,11 @@ var above: bool = false
 var sampled_tick: int = -1
 var status: String = "waiting for radio"
 ## Set before adding: the flight overlays hold the right-hand side (Telemetry, Transmitter), so their flights show the
-## marker beside the controls guide, above Flight data. The legacy route keeps it centre right.
+## marker in the free lower centre, above Performance. The legacy route keeps it centre right.
 var left_side: bool = false
 var marker: ColorRect
 var caption: Label
+var close_button: Button
 
 
 static func options(args: Dictionary) -> Dictionary:
@@ -46,12 +50,16 @@ func _ready() -> void:
 	name = "LatencyPatch"
 	layer = 2 # above the flight HUD, below the pause menu
 	process_physics_priority = 1 # FlightSession samples at -1, Simulation advances at 0.
-	var margin: MarginContainer = MarginContainer.new()
+	visibility_changed.connect(_sync_processing)
+	var margin := PanelContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_stylebox_override("panel", Frame.backplate())
 	if left_side:
-		margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-		margin.offset_left = 332 # beside the controls guide; keep both readable
-		margin.offset_top = 180 # clear of wrapped warnings; ends above Flight data at 720p
+		margin.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+		margin.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		margin.grow_vertical = Control.GROW_DIRECTION_BEGIN
+		margin.offset_top = -90
+		margin.offset_bottom = -90
 	else:
 		margin.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
 		margin.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -63,17 +71,37 @@ func _ready() -> void:
 	var stack: VBoxContainer = VBoxContainer.new()
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_child(stack)
-	var heading: Label = _label("LATENCY / axis %d\nraw >= %s" % [axis, JSON.stringify(threshold)])
-	stack.add_child(heading)
+	var header := HBoxContainer.new()
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_child(header)
+	var heading := _label(tr("Latency camera marker"))
+	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(heading)
+	close_button = Frame.close_x(func() -> void:
+		visible = false
+		closed.emit())
+	header.add_child(close_button)
+	stack.add_child(_label(tr("Raw axis %d · threshold %s") % [axis, JSON.stringify(threshold)]))
 	marker = ColorRect.new()
 	marker.name = "Marker"
 	marker.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	marker.custom_minimum_size = Vector2(SIZE, SIZE)
-	marker.size_flags_horizontal = Control.SIZE_SHRINK_END
+	marker.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	marker.color = INACTIVE
 	stack.add_child(marker)
-	caption = _label(status)
+	caption = _label(tr(status))
 	stack.add_child(caption)
+	var explanation := _label(tr("Camera test only, not milliseconds.\nWhite: at/above threshold.\nBlack: below. Gray: inactive."))
+	explanation.add_theme_font_size_override("font_size", 13)
+	stack.add_child(explanation)
+	_sync_processing()
+
+
+## Hidden/closed targets do no work. Revealing samples again before the next drawn frame.
+func _sync_processing() -> void:
+	set_physics_process(visible)
+	if visible:
+		_physics_process(0.0)
 
 
 static func _label(text: String) -> Label:
@@ -117,4 +145,4 @@ func _physics_process(_delta: float) -> void:
 		marker.color = color
 	if status != next_status:
 		status = next_status
-		caption.text = status
+		caption.text = tr(status)

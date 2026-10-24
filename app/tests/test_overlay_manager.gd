@@ -48,6 +48,7 @@ func _run() -> void:
 	_contrast()
 	_preferences()
 	await _manager()
+	await _all_close_buttons()
 	await _fuel()
 	await _dialog()
 	await _spanish_layout()
@@ -236,6 +237,44 @@ func _manager() -> void:
 	await process_frame
 
 
+## Every actual close target remains reachable with all overlays enabled at the primary resolution.
+func _all_close_buttons() -> void:
+	root.size = Vector2i(1920, 1080)
+	var manager: CanvasLayer = Manager.new({preset = "developer"}, "en")
+	root.add_child(manager)
+	manager.diagnostics_panel.text = "Diagnostic input values\nChannel data\nStatus"
+	manager.performance_label.text = "60 fps"
+	var snap := _snapshot(PackedStringArray(["stall"]))
+	manager.update(snap, 1.0)
+	manager.frames.battery.visible = true # include the conditional panel's actual close target
+	await process_frame
+	await process_frame
+	_check("diagnostics and guide are separate at 1080p", not manager.frames.diagnostics.get_global_rect().intersects(manager.frames.controls.get_global_rect()))
+	for id: String in Settings.IDS:
+		var before: Array = manager.settings.visible.duplicate()
+		var button: Button = manager.frames[id].close_button
+		_check(id + " close target is on screen", Rect2(Vector2.ZERO, Vector2(1920, 1080)).encloses(button.get_global_rect()))
+		for pressed in [true, false]:
+			var click := InputEventMouseButton.new()
+			click.button_index = MOUSE_BUTTON_LEFT
+			click.pressed = pressed
+			click.position = button.get_global_rect().get_center()
+			click.global_position = click.position
+			root.push_input(click)
+		await process_frame
+		before.erase(id)
+		_check(id + " real click closes only its panel", not manager.frames[id].visible and manager.settings.visible == before)
+		_check(id + " close keeps keyboard focus free", root.gui_get_focus_owner() == null)
+		manager.set_overlay_visible(id, true)
+		manager.frames.battery.visible = true
+		await process_frame
+		await process_frame
+	manager.queue_free()
+	await process_frame
+	root.size = Vector2i(1280, 720)
+	await process_frame
+
+
 func _fuel() -> void:
 	var manager: CanvasLayer = Manager.new({}, "en")
 	root.add_child(manager)
@@ -339,6 +378,9 @@ func _dialog() -> void:
 		and manager.settings.radio_model == "radiolink_t16d" and manager.settings.stick_mode == 1)
 	dialog.preset_picker.item_selected.emit(0)
 	_check("choosing Off clears every switch", manager.settings.preset == "off" and not dialog.switches.flight.button_pressed)
+	manager.set_preset("pilot")
+	manager.frames.wind.close_button.pressed.emit()
+	_check("external close synchronizes the dialog", not dialog.switches.wind.button_pressed and dialog.preset_picker.selected == Settings.PRESET_ORDER.size())
 	await UiDriver.new(self).tap(KEY_ESCAPE)
 	_check("Esc closes the dialog", closed.size() == 1)
 	dialog.queue_free()
@@ -613,13 +655,7 @@ func _pause_preview() -> void:
 			clear = clear and not card.intersects(overlays.frames[id].get_global_rect())
 		_check("the first-flight hint overlaps no Pilot overlay at 1280×720", clear, "hint %s; %s" % [card, _rects(overlays)])
 	var patch: Node = app.flight.get_node_or_null("LatencyPatch")
-	_check("Home flights show the default latency marker", patch != null)
-	if patch != null:
-		var area: Rect2 = (patch.get_child(0) as Control).get_global_rect()
-		var marker_clear := Rect2(Vector2.ZERO, Vector2(1280, 720)).encloses(area)
-		for id: String in _shown(overlays):
-			marker_clear = marker_clear and not area.intersects(overlays.frames[id].get_global_rect())
-		_check("the latency marker overlaps no Pilot overlay at 1280×720", marker_clear, "marker %s; %s" % [area, _rects(overlays)])
+	_check("Home flights do not create a camera marker by default", patch == null and not Preferences.load_from(PREFS).latency_marker)
 	await ui.tap(KEY_ESCAPE)
 	_check("pause hides the overlays", overlays != null and not overlays.visible)
 	app.pause_menu.session_options_button.grab_focus()
@@ -632,6 +668,11 @@ func _pause_preview() -> void:
 	_check("the dialog previews the overlays above the pause menu", overlays.visible and overlays.layer > app.pause_menu.layer
 		and overlays.layer < app.screens.top().layer, "overlays %d pause %d dialog %d" % [overlays.layer, app.pause_menu.layer, app.screens.top().layer])
 	_check("the suspended pause column steps aside during the preview", not app.pause_menu.visible)
+	var dialog: CanvasLayer = app.screens.top()
+	dialog.latency_switch.button_pressed = true
+	patch = app.flight.get_node_or_null("LatencyPatch")
+	_check("camera marker can be enabled from the dialog and saved", patch != null and Preferences.load_from(PREFS).latency_marker)
+	_check("enabling under a menu does not run hidden sampling", not patch.visible and not patch.is_physics_processing())
 	await ui.tap(KEY_ESCAPE)
 	_check("closing the dialog hides them again under the pause menu", app.pause_menu != null and not overlays.visible
 		and overlays.layer == Manager.FLIGHT_LAYER and app.pause_menu.visible)
@@ -642,4 +683,10 @@ func _pause_preview() -> void:
 	await ui.tap(KEY_ESCAPE) # Continue
 	await ui.settle()
 	_check("continue shows them at the flight layer", overlays.visible and overlays.layer == Manager.FLIGHT_LAYER)
+	_check("continue shows the enabled camera marker", patch.visible and patch.is_physics_processing())
+	patch.close_button.pressed.emit()
+	_check("camera close saves opt-out", not patch.visible and not Preferences.load_from(PREFS).latency_marker)
+	app.flight.set_overlays_visible(false)
+	app.flight.set_overlays_visible(true)
+	_check("closed marker stays closed after a menu", not patch.visible and not patch.is_physics_processing())
 	await ui.close_app(app)

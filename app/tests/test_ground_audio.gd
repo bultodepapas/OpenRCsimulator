@@ -5,6 +5,26 @@ const GroundModel := preload("res://audio/ground_audio_model.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const Soundscape := preload("res://audio/soundscape.gd")
+
+class AudioSessionStub extends Node:
+	var sim := {"tick": 0}
+
+
+class AudioFlightStub extends Node3D:
+	var session: AudioSessionStub
+
+
+class ContactCountingFlightAudio extends "res://audio/flight_audio.gd":
+	var paused_snapshot := true
+	var contact_snapshot_calls := 0
+
+	func snapshot() -> Dictionary:
+		return {"paused": paused_snapshot}
+
+	func contact_snapshot() -> Array[Dictionary]:
+		contact_snapshot_calls += 1
+		return []
 
 var _checks: int = 0
 var _failures: int = 0
@@ -25,6 +45,7 @@ func _run() -> void:
 	_test_surface_selection()
 	_test_real_session_snapshot()
 	_test_contact_audio_state_machine()
+	_test_flight_audio_skips_paused_contact_snapshot()
 	_test_reattachment()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -187,6 +208,27 @@ func _test_contact_audio_state_machine() -> void:
 	audio.stop()
 	root.remove_child(audio)
 	audio.free()
+
+
+func _test_flight_audio_skips_paused_contact_snapshot() -> void:
+	var session := AudioSessionStub.new()
+	var flight := AudioFlightStub.new()
+	flight.session = session
+	var audio := ContactCountingFlightAudio.new()
+	audio.flight = flight
+	audio.soundscape = Soundscape.new()
+	audio.ground_audio = GroundAudio.new()
+	audio._process(1.0 / 60.0)
+	_check("FlightAudio skips contact snapshot while paused", audio.contact_snapshot_calls == 0)
+	audio.paused_snapshot = false
+	session.sim["tick"] = 1
+	audio._process(1.0 / 60.0)
+	_check("FlightAudio refreshes contacts after resume", audio.contact_snapshot_calls == 1)
+	audio.ground_audio.free()
+	audio.soundscape.free()
+	audio.free()
+	flight.free()
+	session.free()
 
 
 func _test_reattachment() -> void:
