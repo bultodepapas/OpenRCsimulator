@@ -148,6 +148,30 @@ python3 tools/debug/gdscript_warnings.py --files 'debug/*.gd'          # one are
 python3 tools/debug/gdscript_warnings.py --baseline tools/debug/gdscript_warnings_baseline.json
 ```
 
+The first full pass took 672 s on the VM: 1,239 scripts, 0 errors, and 1,160 warnings, now the baseline. By code:
+
+| Warnings | Code |
+| --- | --- |
+| 321 | `SHADOWED_GLOBAL_IDENTIFIER` |
+| 245 | `SHADOWED_VARIABLE_BASE_CLASS` |
+| 215 | `INTEGER_DIVISION` |
+| 108 | `CONFUSABLE_LOCAL_DECLARATION` |
+| 73 | `UNUSED_VARIABLE` |
+| 58 | `INCOMPATIBLE_TERNARY` |
+| 52 | `UNUSED_PARAMETER` |
+| 43 | `SHADOWED_VARIABLE` |
+| 63 | others |
+
+The rarer, bug-shaped codes were reviewed:
+
+- In production code, `UNASSIGNED_VARIABLE` (`rc_ground_material.gd`) and `CONFUSABLE_LOCAL_USAGE` (`app_root.gd`)
+  are false positives. A typed object variable starts as null, and the shadowed property is not read afterwards.
+- The test-only `INT_AS_ENUM_WITHOUT_MATCH` values are deliberate out-of-range inputs.
+- No existing warning was fixed in bulk. Owners can work down the baseline.
+
+The gate was checked both ways: a pass over 5 files against the baseline reports 0 new warnings, and removing one
+key from a copy of the baseline makes the matching warning new (exit 1).
+
 [gdlint](https://pypi.org/project/gdtoolkit/) 4.5.0 was evaluated and not adopted:
 
 - On 1,239 scripts it reported 29,317 items. 27,817 were line length and 1,094 definition order.
