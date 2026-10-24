@@ -246,9 +246,12 @@ func _preview_resource_ready(ok: bool, id: String, livery: String, generation: i
 	preview_state_changed.emit(id, "ready" if shown else "failed")
 
 
+var retain_resources_on_exit := false
+
+
 func _exit_tree() -> void:
 	_preview_generation += 1
-	if is_instance_valid(preview_resources): preview_resources.cancel_for(self)
+	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, not retain_resources_on_exit)
 
 
 func _enter_tree() -> void:

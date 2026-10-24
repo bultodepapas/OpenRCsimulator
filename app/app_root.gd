@@ -14,6 +14,7 @@ const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
+const FlightLoading := preload("res://ui/flight_loading.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
@@ -108,6 +109,21 @@ var home: Control:
 		return screens.get_screen("home") as Control
 var home_scene: Node3D
 var _home_preview_resources: Node
+## UI-34c: rendered interactive launches are staged; headless callers retain their synchronous contract.
+var flight_loading_enabled := DisplayServer.get_name() != "headless"
+var last_flight_loading: Dictionary = {}
+var _loading_active := false
+var _loading_cancelled := false
+var _loading_quit_requested := false
+var _loading_focus_lost := false
+var _loading_screen: CanvasLayer
+var _loading_retained_home: Control
+var _loading_retained_random: CanvasLayer
+var _loading_started_usec := 0
+var _loading_phase_usec := 0
+var _loading_phase := ""
+var _loading_resource_done := false
+var _loading_resource_ok := false
 var _home_rebuild_queued := false
 var _home_rebuild_source: WeakRef
 var flight: Node
@@ -472,6 +488,7 @@ func set_language(code: String) -> void:
 ## Shows another aircraft on Home (card and backdrop) and remembers it, like the language: a failed save keeps the
 ## choice for this session and says so.
 func set_aircraft(id: String) -> void:
+	if _loading_active: return
 	if home == null or not Catalog.has(id):
 		return
 	preferences.aircraft = id
@@ -487,6 +504,7 @@ func set_aircraft(id: String) -> void:
 
 ## F4U-16: the paint scheme of Home's aircraft. The default paint keeps no [liveries] entry.
 func set_livery(livery: String) -> void:
+	if _loading_active: return
 	if home == null:
 		return
 	var id: String = home.aircraft_id
@@ -538,12 +556,14 @@ func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
 
 ## Preview the launch choice; only a successful Fly remembers it.
 func set_start_choice(choice: String) -> void:
+	if _loading_active: return
 	if home != null:
 		home.set_start_choice(choice)
 
 
 ## Applies an FW preset immediately and clears any explicit lighting selection so the Home and flight agree.
 func set_time_of_day(preset: String) -> void:
+	if _loading_active: return
 	if home == null or not Conditions.HOME_CHOICES.has(preset):
 		return
 	preferences.time_of_day = preset
@@ -589,10 +609,12 @@ func _night_options_from_preferences() -> Dictionary:
 	return checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
 
 
-## Creates the flight scene in this same frame (captures and traces stay frame-for-frame identical) and frees Home.
+## Interactive rendering gets explicit loading checkpoints; direct/headless entry retains same-frame construction.
 func start_flight(request: Dictionary = {}) -> void:
-	if flight != null:
+	if flight != null or _loading_active or _quit_audio_pending:
 		return
+	var launch_preferences: Dictionary = preferences.duplicate(true)
+	var staged := has_home and flight_loading_enabled
 	var is_random: bool = not request.is_empty()
 	if is_random:
 		if not has_home or not screens.is_top("natural_random"):
@@ -619,10 +641,10 @@ func start_flight(request: Dictionary = {}) -> void:
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
-		var checked_weather := WeatherSettings.validate(preferences.get("weather_config", WeatherSettings.defaults()))
+		var checked_weather := WeatherSettings.validate(launch_preferences.get("weather_config", WeatherSettings.defaults()))
 		if checked_weather.ok:
 			chosen_weather = checked_weather.config.duplicate(true)
-		var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
+		var checked_lighting: Dictionary = TimeOfDay.validate(launch_preferences.get("lighting_config", TimeOfDay.defaults()))
 		if checked_lighting.get("ok", false):
 			chosen_lighting = checked_lighting.config.duplicate(true)
 	if is_random:
@@ -637,13 +659,48 @@ func start_flight(request: Dictionary = {}) -> void:
 	var failure_config_for_flight: Dictionary = FailureConfig.defaults()
 	if has_home and not is_random and not helicopter_route:
 		var checked_failures: Dictionary = FailureConfig.validate(
-			preferences.get("failure_config", FailureConfig.defaults())
+			launch_preferences.get("failure_config", FailureConfig.defaults())
 		)
 		if checked_failures.get("ok", false):
 			failure_config_for_flight = checked_failures.config.duplicate(true)
+	if staged:
+		_loading_active = true
+		_loading_cancelled = false
+		_loading_quit_requested = false
+		_loading_focus_lost = false
+		_loading_retained_home = departing_home
+		_loading_started_usec = Time.get_ticks_usec()
+		_loading_phase_usec = _loading_started_usec
+		_loading_phase = ""
+		last_flight_loading = {status = "loading", phases = [], aircraft = route_aircraft_id, landscape = landscape_id}
+		_loading_screen = FlightLoading.new()
+		_loading_screen.name = "FlightLoading"
+		_loading_screen.configure("%s · %s · %s" % [tr(Catalog.short_name(route_aircraft_id)),
+			tr(Landscapes.entry(landscape_id).name), tr("Runway" if chosen_start == "runway" else "Airborne")])
+		_loading_screen.cancel_requested.connect(cancel_flight_loading)
+		screens.push("loading", _loading_screen, null, false)
+		if not await _flight_loading_checkpoint("Preparing resources"):
+			_cancel_loading_before_candidate(departing_home)
+			return
+		# Keep the preview's bounded resource references, but stop its builders and world updates.
+		if home_scene != null and home_scene.is_inside_tree():
+			home_scene.retain_resources_on_exit = true
+			remove_child(home_scene)
+		var resource_ready := true
+		if not helicopter_route:
+			resource_ready = await _prepare_flight_resource(flight_script_path_for_aircraft(route_aircraft_id))
+		if _loading_cancelled:
+			_cancel_loading_before_candidate(departing_home)
+			return
+		if not resource_ready:
+			_cancel_loading_before_candidate(departing_home, tr("Flight scene could not be loaded."))
+			return
 	# Build before removing Home so a missing or unusable route resource cannot strand the shell.
 	var candidate_flight: Node = _create_flight(route_aircraft_id)
 	if candidate_flight == null:
+		if staged:
+			_cancel_loading_before_candidate(departing_home, tr("Flight scene could not be created."))
+			return
 		var reason := tr("Flight scene could not be created.")
 		var route_path := flight_script_path_for_aircraft(route_aircraft_id)
 		if is_random:
@@ -656,8 +713,11 @@ func start_flight(request: Dictionary = {}) -> void:
 		if has_home:
 			_menu_feedback(&"reject")
 		return
+	if staged:
+		screens.pop(false, false) # keep the loading layer while taking Home/briefing out of the stack
 	if is_random:
 		departing_random = screens.pop(false, false) as CanvasLayer
+		_loading_retained_random = departing_random if staged else null
 	while screens.top() != null and not screens.is_top("home"):
 		screens.pop()
 	if helicopter_route:
@@ -666,7 +726,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		Atmosphere.configure_appearance(SkyConfig.defaults())
 	if departing_home != null:
 		screens.pop(false, false)
-	if home_scene != null:
+	if home_scene != null and home_scene.is_inside_tree():
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = candidate_flight
 	_flight_companions_available = not is_random and not helicopter_route \
@@ -690,16 +750,16 @@ func start_flight(request: Dictionary = {}) -> void:
 	flight.weather_config = (weather_for_aircraft(route_aircraft_id, chosen_weather) if helicopter_route else chosen_weather).duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:
-		flight.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
+		flight.sky_config = launch_preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
 	flight.night_options = _night_options_from_preferences() if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	flight.interactive_start = has_home
 	flight.external_controller_selection = controllers != null
 	if not helicopter_route:
 		flight.remember_lighting_selection = not is_random
-	flight.latency_marker_enabled = has_home and bool(preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
+	flight.latency_marker_enabled = has_home and bool(launch_preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
 	# HUD: the Home route flies with the player's overlays; the direct route keeps the legacy labels (--hud=).
 	flight.overlays_enabled = has_home
-	flight.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud)
+	flight.overlay_settings = launch_preferences.get("hud", Preferences.DEFAULTS.hud)
 	if not helicopter_route and _has_property(flight, "failure_config"):
 		flight.set("failure_config", failure_config_for_flight.duplicate(true))
 	if not helicopter_route and _has_property(flight, "failure_notifications"):
@@ -709,16 +769,31 @@ func start_flight(request: Dictionary = {}) -> void:
 	if has_home and not is_random and not helicopter_route and landscape_id == Landscapes.DEFAULT_ID \
 			and _has_property(flight, "companion_config"):
 		var checked_companions: Dictionary = CompanionConfig.validate(
-			preferences.get("companion_config", CompanionConfig.defaults())
+			launch_preferences.get("companion_config", CompanionConfig.defaults())
 		)
 		flight.set("companion_config", checked_companions.config if checked_companions.get("ok", false) else CompanionConfig.defaults())
+	if staged:
+		screens.push("loading", _loading_screen, null, false)
+		flight.process_mode = Node.PROCESS_MODE_DISABLED
+		if _has_property(flight, "startup_checkpoint"):
+			flight.startup_checkpoint = _flight_loading_checkpoint
 	add_child(flight)
+	if staged and _has_property(flight, "startup_complete") and not flight.startup_complete:
+		await flight.startup_finished
+	if staged and not _loading_cancelled and flight.startup_error.is_empty():
+		if flight.session != null:
+			flight.session.hold("loading")
+		flight.process_mode = Node.PROCESS_MODE_INHERIT
+		await _flight_loading_checkpoint("Finishing flight")
+	if staged and _loading_cancelled:
+		flight.startup_error = tr("Flight preparation cancelled.")
 	if is_random and flight.startup_error.is_empty():
 		var accepted: Dictionary = flight.bind_scenario(request)
 		if not accepted.ok:
 			flight.startup_error = "; ".join(accepted.errors)
 	if has_home and not flight.startup_error.is_empty():
 		var reason: String = flight.startup_error
+		if staged: _remove_flight_loading_screen()
 		if flight.recorder != null:
 			flight.recorder.detach()
 		remove_child(flight)
@@ -736,13 +811,18 @@ func start_flight(request: Dictionary = {}) -> void:
 		if is_random:
 			screens.push("natural_random", departing_random, departing_home.natural_random_button, false)
 			departing_random.show_error(tr("Could not start flight: %s") % reason)
-		_menu_feedback(&"reject")
+		_menu_feedback(&"back" if staged and _loading_cancelled else &"reject")
+		if staged: _finish_flight_loading("cancelled" if _loading_cancelled else "failed")
 		return
 	_menu_feedback(&"accept")
+	if staged:
+		_loading_screen.set_committing()
 	for screen in [departing_home, home_scene, departing_random]:
 		if screen != null:
 			screen.queue_free()
 	home_scene = null
+	_loading_retained_home = null
+	_loading_retained_random = null
 	if has_home and not is_random:
 		if departing_home != null:
 			preferences.start_choice = departing_home.start_preference(false)
@@ -786,6 +866,18 @@ func start_flight(request: Dictionary = {}) -> void:
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
 
+	if staged:
+		# Let disposal and the fully configured paused candidate draw behind the opaque layer.
+		await _flight_loading_draw()
+		_remove_flight_loading_screen()
+		if flight.session != null:
+			flight.session.release("loading")
+		_finish_flight_loading("ready")
+		if _loading_focus_lost or not window_focus_probe.call():
+			open_pause()
+		elif flight.session != null:
+			_finish_controller_launch(flight.session)
+
 
 ## Fly is the explicit launch action; a ready airplane needs no second Continue action.
 func _finish_controller_launch(target: Node) -> void:
@@ -823,11 +915,99 @@ func _create_flight(aircraft_id: String = "") -> Node:
 	return flight_scene.instantiate()
 
 
+## Only the loading owner may cancel; a worker result is drained without applying an obsolete request.
+func cancel_flight_loading() -> void:
+	if not _loading_active:
+		return
+	_loading_cancelled = true
+	if is_instance_valid(_loading_screen):
+		_loading_screen.set_cancelling()
+
+
+func _flight_loading_draw() -> void:
+	await get_tree().process_frame
+	if DisplayServer.get_name() != "headless":
+		await RenderingServer.frame_post_draw
+	else:
+		await get_tree().process_frame
+
+
+func _flight_loading_checkpoint(stage: String) -> bool:
+	if _loading_cancelled or not is_inside_tree():
+		return false
+	var now := Time.get_ticks_usec()
+	if not _loading_phase.is_empty():
+		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	_loading_phase = stage
+	_loading_screen.set_stage(stage)
+	await _flight_loading_draw()
+	if not last_flight_loading.has("feedback_usec"):
+		last_flight_loading.feedback_usec = Time.get_ticks_usec() - _loading_started_usec
+	_loading_phase_usec = Time.get_ticks_usec()
+	return not _loading_cancelled and is_inside_tree()
+
+
+func _prepare_flight_resource(path: String) -> bool:
+	_loading_resource_done = false
+	_loading_resource_ok = false
+	if not is_instance_valid(_home_preview_resources):
+		_home_preview_resources = HomePreviewResources.new()
+		add_child(_home_preview_resources)
+	_home_preview_resources.request(path, _flight_resource_ready)
+	while not _loading_resource_done and not _loading_cancelled:
+		await get_tree().process_frame
+	if _loading_cancelled:
+		_home_preview_resources.cancel_for(self, false)
+	return _loading_resource_ok and not _loading_cancelled
+
+
+func _flight_resource_ready(ok: bool) -> void:
+	_loading_resource_ok = ok
+	_loading_resource_done = true
+
+
+func _remove_flight_loading_screen() -> void:
+	if screens.is_top("loading"):
+		screens.pop(true, false)
+	_loading_screen = null
+
+
+func _finish_flight_loading(outcome: String) -> void:
+	var now := Time.get_ticks_usec()
+	if not _loading_phase.is_empty():
+		last_flight_loading.phases.append({stage = _loading_phase, work_usec = now - _loading_phase_usec})
+	last_flight_loading.status = outcome
+	last_flight_loading.total_usec = now - _loading_started_usec
+	_loading_phase = ""
+	_loading_active = false
+	_loading_retained_home = null
+	_loading_retained_random = null
+	if _loading_quit_requested:
+		quit_app.call_deferred()
+
+
+func _cancel_loading_before_candidate(departing_home: Control, error := "") -> void:
+	if is_instance_valid(_home_preview_resources):
+		_home_preview_resources.cancel_for(self, false)
+	if home_scene != null and not home_scene.is_inside_tree():
+		add_child(home_scene)
+		home_scene.camera.make_current()
+	if home_scene != null:
+		home_scene.retain_resources_on_exit = false
+	_remove_flight_loading_screen()
+	var note := tr("Flight preparation cancelled.") if error.is_empty() else tr("Could not start flight: %s") % error
+	departing_home.reject_start(note)
+	if natural_random_screen != null:
+		natural_random_screen.show_error(note)
+	_finish_flight_loading("cancelled" if error.is_empty() else "failed")
+
+
 func open_settings(from: Control = null) -> void:
 	if not has_home or not (screens.is_top("home") or screens.is_top("pause")):
 		return
 	_automatic_window_size = get_window().size if _display_window_mode == "windowed" else _windowed_size
 	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
+	settings.window_close_managed = true
 	settings.presentation_changed.connect(_apply_presentation)
 	var window_checkpoint := _capture_display_window_state()
 	_display_preview_checkpoint = window_checkpoint
@@ -1339,6 +1519,9 @@ func _notification(what: int) -> void:
 	# Losing focus already pauses the simulation (simulation.gd); show the menu so continuing is one visible action.
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
+	if _loading_active and what in [NOTIFICATION_WM_WINDOW_FOCUS_OUT, NOTIFICATION_APPLICATION_FOCUS_OUT]:
+		_loading_focus_lost = true
+		return
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT:
 		_check_window_focus_out.call_deferred()
 		return
@@ -1368,6 +1551,8 @@ func _handle_wm_close_deferred() -> void:
 
 ## Freezes the flight under the pause menu. A running calibration is cancelled first (Esc already does that).
 func open_pause() -> void:
+	if _loading_active:
+		return
 	if flight == null or pause_menu != null or _quit_audio_pending:
 		return
 	_release_controller_holds()
@@ -1602,6 +1787,12 @@ func _commit_return_to_workshop() -> void:
 
 
 func _exit_tree() -> void:
+	_loading_cancelled = true
+	for retained: Node in [_loading_retained_home, _loading_retained_random, home_scene]:
+		if _loading_active and is_instance_valid(retained) and retained.get_parent() == null:
+			retained.free()
+	_loading_retained_home = null
+	_loading_retained_random = null
 	# Suspended nodes are intentionally outside the tree, so the host must own their cleanup.
 	for entry: Dictionary in _workshop_screens:
 		if is_instance_valid(entry.node):
@@ -2210,6 +2401,9 @@ func _flight_identity(trial: bool) -> String:
 
 ## End a flight or return from a trial only after a trace is saved or explicitly resolved.
 func end_flight() -> void:
+	if _loading_active:
+		cancel_flight_loading()
+		return
 	if not _workshop_screens.is_empty():
 		_return_to_workshop()
 		return
@@ -2240,6 +2434,10 @@ func _commit_end_flight() -> void:
 
 
 func quit_app() -> void:
+	if _loading_active:
+		_loading_quit_requested = true
+		cancel_flight_loading()
+		return
 	if not is_inside_tree() or _quit_audio_pending:
 		return
 	_begin_exit_request("quit", _quit_recorders(), Callable(self, "_commit_app_quit"), true)
@@ -2263,7 +2461,7 @@ func _commit_app_quit() -> void:
 			surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
 		set_process_input(false)
 		set_process_unhandled_input(false)
-		await get_tree().create_timer(delay).timeout
+		await get_tree().create_timer(delay, true, false, true).timeout
 		if not is_inside_tree(): return
 	_request_app_quit()
 

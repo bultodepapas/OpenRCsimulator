@@ -207,6 +207,10 @@ func _render_wind(time_s: float) -> Vector3:
 		return Vector3.ZERO
 	return Frames.ned_to_render(Array(session.wind_at(time_s)))
 var interactive_start: bool = false
+## UI-34c: optional presentation-only checkpoints. Direct/capture/trace routes stay synchronous.
+var startup_checkpoint := Callable()
+var startup_complete := false
+signal startup_finished
 ## UI-06d: Home injects the saved diagnostic choice; technical launches retain their explicit marker flag.
 var latency_marker_enabled: bool = false
 ## Flight overlays instead of the legacy text labels: Home sets it with the saved settings; the direct route uses
@@ -326,6 +330,20 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 
 func _ready() -> void:
+	if startup_checkpoint.is_valid():
+		process_mode = Node.PROCESS_MODE_DISABLED
+	await _prepare_flight()
+	startup_complete = true
+	startup_finished.emit()
+
+
+func _startup_stage(label: String) -> bool:
+	if startup_checkpoint.is_valid():
+		return await startup_checkpoint.call(label)
+	return true
+
+
+func _prepare_flight() -> void:
 	var args := _user_args()
 	var companion_options: Dictionary = CompanionConfig.from_args(user_args, companion_config)
 	if not companion_options.ok:
@@ -432,6 +450,8 @@ func _ready() -> void:
 		return
 	if field_path == FieldLoader.DEFAULT_PATH:
 		field_path = Landscapes.entry(landscape_id).field_path
+	if not await _startup_stage("Checking landscape"):
+		return
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	if not loaded_field.ok:
 		if interactive_start:
@@ -563,7 +583,7 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	Atmosphere.engine_shadows = Atmosphere.engine_shadows_enabled(args, interactive_start)
-	if not _build_world():
+	if not await _build_world():
 		set_process(false)
 		set_process_unhandled_input(false)
 		if not interactive_start:
@@ -587,6 +607,8 @@ func _ready() -> void:
 			set_process(false)
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
+	if not await _startup_stage("Checking flight"):
+		return
 	session = FlightSession.new()
 	session.external_controller_selection = external_controller_selection
 	session.physics_enabled = not _scripted
@@ -727,6 +749,8 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	add_child(session)
+	if startup_checkpoint.is_valid():
+		session.hold("loading")
 	# Sample the committed wind at every tick, including OU gusts between render frames.
 	# The windsock is a read-only presentation consumer; uploads happen in World.update.
 	if not _scripted:
@@ -752,6 +776,8 @@ func _ready() -> void:
 	PropellerBlur.attach(_airplane, session, self)
 	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses
 	# either runtime, while technical trace/capture routes may still render a profile.
+	if not await _startup_stage("Preparing effects"):
+		return
 	var selected_smoke_profile: Dictionary = workshop_trial.get("presentation_profile", {})
 	# Stock effects use authored show mounts, never inferred engine exhaust. A saved
 	# Workshop appearance (including an empty smoke selection) owns its own choices.
@@ -807,6 +833,8 @@ func _ready() -> void:
 			return
 		# Headless trace: record from the start to t, save, quit. No window needed.
 		_write_trace_and_quit(trace_ticks, str(args.trace))
+		return
+	if not await _startup_stage("Preparing sound"):
 		return
 	if not _scripted and not args.has("capture") and str(args.get("soundscape", "on")) == "on":
 		_soundscape_audio = FlightAudio.new()
@@ -876,6 +904,8 @@ func _ready() -> void:
 		if not archived.is_empty():
 			_accident_report.show_archived(archived)
 		session.crash_auto_restart = false
+	if companion_config.enabled and not await _startup_stage("Preparing companions"):
+		return
 	var companion_launch: Dictionary = _start_companions()
 	if not companion_launch.ok:
 		startup_error = "; ".join(companion_launch.errors)
@@ -2318,6 +2348,13 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	# A cancelled staged build can stop before attaching these owners to the scene.
+	if not _airplane.is_empty() and is_instance_valid(_airplane.get("root")) and _airplane.root.get_parent() == null:
+		_airplane.root.free()
+		_airplane = {}
+	if is_instance_valid(session) and session.get_parent() == null:
+		session.free()
+		session = null
 	if companions != null and is_instance_valid(companions):
 		companions.stop_recording("flight closed")
 	if _frame_diagnostics != null:
@@ -2507,6 +2544,8 @@ func _view_name() -> String:
 
 
 func _build_world() -> bool:
+	if not await _startup_stage("Preparing aircraft"):
+		return false
 	_airplane = AirplaneBuilder.build(aircraft_id, NAN, workshop_trial.get("presentation", {}), livery if workshop_trial.is_empty() else "")
 	if _airplane.is_empty():
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
@@ -2520,11 +2559,15 @@ func _build_world() -> bool:
 			return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	Atmosphere.configure_appearance(sky_config)
+	if not await _startup_stage("Building landscape"):
+		return false
 	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot, night_options)
 	_field_world_lighting = bool(built.conditions.time_of_day)
 	_env = built.environment
 	_world_environment = built.world_environment
 	_sun = built.sun
+	if not await _startup_stage("Preparing aircraft lighting"):
+		return false
 
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	add_child(_airplane.root)
@@ -2540,6 +2583,8 @@ func _build_world() -> bool:
 	var storm_args: Dictionary = _user_args()
 	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
+	if not await _startup_stage("Preparing instruments"):
+		return false
 	if overlays_enabled:
 		_overlays = OverlayManager.new(overlay_settings, TranslationServer.get_locale().substr(0, 2))
 		_overlays.settings_changed.connect(func(settings: Dictionary) -> void: overlay_settings_changed.emit(settings))

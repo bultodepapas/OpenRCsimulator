@@ -1,0 +1,29 @@
+export/aircraft.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 57 surfaces, 13 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_blueangels.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_carbon.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 11 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+WARN image emission is 4096x4096, above 2048
+WARN image Image is 4096x4096, above 2048
+WARN image normal is 4096x4096, above 2048
+WARN image basecolor is 4096x4096, above 2048
+WARN image orm is 4096x4096, above 2048
+PASS
+export/aircraft_chrome.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 60 surfaces, 15 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_italy.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 9 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_japan.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 9 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_luftwaffe.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 9 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_p40.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 9 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_spectrum.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 57 surfaces, 13 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_splash.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_super57.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 57 surfaces, 13 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS
+export/aircraft_thunderbirds.glb [f4u-g1]: 99729 triangles, 44 mesh nodes, 58 surfaces, 14 materials, 8 images; span 2.7778 m, length 2.3811 m; sections ['canopy', 'core', 'engine', 'gear', 'horizontal_tail', 'propeller', 'vertical_tail', 'wing_center', 'wing_left', 'wing_right']
+PASS

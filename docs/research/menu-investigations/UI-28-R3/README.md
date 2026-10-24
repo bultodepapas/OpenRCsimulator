@@ -1,5 +1,15 @@
 # UI-28-R3 — menu feedback and flow refinement
 
+## 2026-10-24 — natural feedback follow-up
+
+The owner's listening feedback replaces the electronic Interface Sounds palette with fourteen unmodified wood/soft-impact clips from Kenney Impact Sounds 1.0 (CC0). Navigation rotates three takes with small downward pitch variation. [Current source hashes, license and interaction contract](../../../../assets/ui-audio/README.md).
+
+The service distinguishes open, pause, resume, restart, activity exit, committed quit, saved, cancel and rejection. Failed restart, failed Settings persistence and failed trace recovery report rejection before any success/exit cue. Same-action incidental sounds yield to outcomes; replaced tails fade over 18 ms within the existing two-voice budget. Quit keeps its native tail for at most 500 ms after all recording/draft decisions, blocking further input; muted/Dummy routes quit immediately.
+
+`test_menu_audio`, `test_ui_settings_integration`, `test_ui_pause` and `test_ui_quit` pass through the checked runner. They exercise actual input, successful/rejected restart, failed-save retry, Stay/Discard, nested Workshop/trace quit guards and repeated Home/flight cleanup. The existing aircraft inertia warning remains unrelated.
+
+The [WASAPI report](audio/natural-2026-10-24.json) records all sixteen logical cues at 48 kHz: peak 0.14731 at 35%, 0.42093 at 100%, and zero nonzero PCM samples at mute. The [final closing-tail check](audio/natural-quit-2026-10-24.json) observes one deferred quit, locked input and nonzero tail output. Reproduce with [tools/audio/menu_probe.gd](../../../../tools/audio/README.md#menu-feedback); WAVs are kept outside Git. These are mixer/routing checks; speaker listening remains subjective. The original evidence below describes the earlier palette.
+
 2026-10-15. Implemented in `app/`, following the [revision 7 plan](../../../MENU-REDESIGN-PLAN.md). This is a local-source result, not an exported-release or human usability acceptance claim.
 
 ## Delivered behavior

@@ -104,7 +104,6 @@ var _voice_fades: Array[Tween] = []
 
 var _observed_screens: Dictionary = {}
 var _observed_controls: Dictionary = {}
-var _control_screen_ids: Dictionary = {}
 var _last_automatic_ms: Dictionary = {}
 var _last_semantic_frame: int = -1
 var _last_semantic_cue: StringName = &""
@@ -147,19 +146,38 @@ func set_top_screen_provider(provider: Callable) -> void:
 	_top_screen_provider = provider
 
 
-## Connects once to controls already built inside a menu screen. Call this after adding
-## each screen to the tree. Flight views should not be passed to this method.
+## Observes a mounted menu, including controls added or reparented later.
+## Flight views should not be passed to this method.
 func observe(screen: Control) -> int:
 	if screen == null or not is_instance_valid(screen) or not screen.is_inside_tree():
 		return 0
 	var screen_id := screen.get_instance_id()
-	if _observed_screens.has(screen_id):
-		return 0
-	_observed_screens[screen_id] = weakref(screen)
+	_observed_screens[screen_id] = true
+	if not get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.connect(_on_node_added)
 	var exiting := Callable(self, "_on_screen_tree_exiting").bind(screen_id)
 	if not screen.tree_exiting.is_connected(exiting):
 		screen.tree_exiting.connect(exiting)
 	return _observe_subtree(screen, screen)
+
+
+func _on_node_added(node: Node) -> void:
+	if node is Control:
+		# node_added precedes _ready: wait until focus/mouse properties are configured.
+		_observe_added_control.call_deferred(node.get_instance_id())
+
+
+func _observe_added_control(control_id: int) -> void:
+	var control := instance_from_id(control_id) as Control
+	if control == null or not control.is_inside_tree() or control.is_queued_for_deletion():
+		return
+	var ancestor: Node = control
+	while ancestor != null:
+		if _observed_screens.has(ancestor.get_instance_id()):
+			if not _is_excluded(control, ancestor as Control):
+				_connect_control(control, ancestor as Control)
+			return
+		ancestor = ancestor.get_parent()
 
 
 ## Emits a semantic cue such as `&"accept"`, `&"back"`, or `&"reject"`.
@@ -232,41 +250,38 @@ func _connect_control(control: Control, screen: Control) -> bool:
 	var control_id := control.get_instance_id()
 	if _observed_controls.has(control_id):
 		return false
-	var connected := false
+	var connections: Array[Dictionary] = []
 	if control.focus_mode != Control.FOCUS_NONE:
-		var focus_callback := Callable(self, "_on_control_focused").bind(control, screen)
-		if not control.focus_entered.is_connected(focus_callback):
-			control.focus_entered.connect(focus_callback)
-		connected = true
+		_connect_control_signal(control, &"focus_entered", &"_on_control_focused", screen, connections)
 	var pointer_target := control is BaseButton or control is Range
 	if pointer_target and control.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		var hover_callback := Callable(self, "_on_control_hovered").bind(control, screen)
-		if not control.mouse_entered.is_connected(hover_callback):
-			control.mouse_entered.connect(hover_callback)
-		connected = true
+		_connect_control_signal(control, &"mouse_entered", &"_on_control_hovered", screen, connections)
 	if control is BaseButton:
-		var press_callback := Callable(self, "_on_button_pressed").bind(control, screen)
-		if not (control as BaseButton).pressed.is_connected(press_callback):
-			(control as BaseButton).pressed.connect(press_callback)
-		connected = true
+		_connect_control_signal(control, &"pressed", &"_on_button_pressed", screen, connections)
 	if control is OptionButton:
-		var selection_callback := Callable(self, "_on_option_selected").bind(control, screen)
-		if not (control as OptionButton).item_selected.is_connected(selection_callback):
-			(control as OptionButton).item_selected.connect(selection_callback)
-		connected = true
+		_connect_control_signal(control, &"item_selected", &"_on_option_selected", screen, connections)
 	if control is Range:
-		var range_callback := Callable(self, "_on_range_changed").bind(control, screen)
-		if not (control as Range).value_changed.is_connected(range_callback):
-			(control as Range).value_changed.connect(range_callback)
-		connected = true
-	if not connected:
+		_connect_control_signal(control, &"value_changed", &"_on_range_changed", screen, connections)
+	if connections.is_empty():
 		return false
-	_observed_controls[control_id] = weakref(control)
-	_control_screen_ids[control_id] = screen.get_instance_id()
+	# Property names are structural; values remain live (e.g. a slider becoming read-only).
+	var checks: Array[StringName] = []
+	for property_info: Dictionary in control.get_property_list():
+		var property_name := StringName(property_info.get("name", ""))
+		if property_name == &"editable" or property_name == &"disabled":
+			checks.append(property_name)
 	var exiting_callback := Callable(self, "_on_control_tree_exiting").bind(control_id)
-	if not control.tree_exiting.is_connected(exiting_callback):
-		control.tree_exiting.connect(exiting_callback)
+	control.tree_exiting.connect(exiting_callback)
+	connections.append({signal = control.tree_exiting, callback = exiting_callback})
+	_observed_controls[control_id] = {checks = checks, connections = connections}
 	return true
+
+
+func _connect_control_signal(control: Control, signal_name: StringName, handler: StringName,
+		screen: Control, connections: Array[Dictionary]) -> void:
+	var callback := Callable(self, handler).bind(control, screen)
+	control.connect(signal_name, callback)
+	connections.append({signal = Signal(control, signal_name), callback = callback})
 
 
 func _is_excluded(node: Node, screen: Control) -> bool:
@@ -329,7 +344,7 @@ func _range_was_user_adjusted(range_control: Range) -> bool:
 		return false
 	if _current_input_kind == &"pointer_button" or _current_input_kind == &"pointer_drag" or _current_input_kind == &"pointer_wheel":
 		return range_control.get_global_rect().has_point(_pointer_position)
-	if _current_input_kind != &"navigation":
+	if _current_input_kind != &"navigation" and _current_input_kind != &"range":
 		return false
 	var focus_owner := get_viewport().gui_get_focus_owner()
 	if focus_owner == null or (focus_owner != range_control and not range_control.is_ancestor_of(focus_owner)):
@@ -345,12 +360,15 @@ func _play_automatic(cue: StringName, control: Control, screen: Control, debounc
 			return false
 	var source_id := control.get_instance_id()
 	var shared_cue := &"navigation" if cue == &"focus" or cue == &"hover" else cue
-	var key := "%d:%s" % [source_id, String(shared_cue)]
+	var previous: Dictionary = _last_automatic_ms.get(source_id, {})
 	var now_ms := Time.get_ticks_msec()
-	if now_ms - int(_last_automatic_ms.get(key, -1000000)) < debounce_ms:
+	if now_ms - int(previous.get(shared_cue, -1000000)) < debounce_ms:
 		return false
-	_last_automatic_ms[key] = now_ms
-	return _request_cue(cue, control)
+	if not _request_cue(cue, control):
+		return false
+	previous[shared_cue] = now_ms
+	_last_automatic_ms[source_id] = previous
+	return true
 
 
 func _is_eligible(control: Control, screen: Control) -> bool:
@@ -368,10 +386,10 @@ func _is_eligible(control: Control, screen: Control) -> bool:
 			return false
 	else:
 		return false
-	if control is BaseButton and (control as BaseButton).disabled:
+	var observed: Dictionary = _observed_controls.get(control.get_instance_id(), {})
+	if observed.is_empty():
 		return false
-	for property_info: Dictionary in control.get_property_list():
-		var property_name := StringName(property_info.get("name", ""))
+	for property_name: StringName in observed.checks:
 		if property_name == &"editable" and not bool(control.get(property_name)):
 			return false
 		if property_name == &"disabled" and bool(control.get(property_name)):
@@ -455,6 +473,7 @@ func _cancel_fade(index: int) -> void:
 func _retire_voice(index: int) -> void:
 	_cancel_fade(index)
 	var fade := create_tween()
+	fade.set_ignore_time_scale(true)
 	_voice_fades[index] = fade
 	fade.tween_property(_voices[index], "volume_db", -80.0, TAIL_FADE_SECONDS)
 	fade.tween_callback(func() -> void:
@@ -493,6 +512,9 @@ func _input(event: InputEvent) -> void:
 	if _event_matches_actions(event, NAVIGATION_ACTIONS):
 		_current_input_frame = frame
 		_current_input_kind = &"navigation"
+	elif _event_matches_actions(event, RANGE_ACTIONS):
+		_current_input_frame = frame
+		_current_input_kind = &"range"
 
 
 func _event_matches_actions(event: InputEvent, actions: PackedStringArray) -> bool:
@@ -504,11 +526,15 @@ func _event_matches_actions(event: InputEvent, actions: PackedStringArray) -> bo
 
 func _on_screen_tree_exiting(screen_id: int) -> void:
 	_observed_screens.erase(screen_id)
+	if _observed_screens.is_empty() and get_tree().node_added.is_connected(_on_node_added):
+		get_tree().node_added.disconnect(_on_node_added)
 
 
 func _on_control_tree_exiting(control_id: int) -> void:
+	var observed: Dictionary = _observed_controls.get(control_id, {})
+	for connection: Dictionary in observed.get("connections", []):
+		var control_signal: Signal = connection.signal
+		if control_signal.is_connected(connection.callback):
+			control_signal.disconnect(connection.callback)
 	_observed_controls.erase(control_id)
-	_control_screen_ids.erase(control_id)
-	for key: Variant in _last_automatic_ms.keys():
-		if String(key).begins_with("%d:" % control_id):
-			_last_automatic_ms.erase(key)
+	_last_automatic_ms.erase(control_id)

@@ -24,6 +24,7 @@ const LANGUAGE_CODES: Array[String] = ["en", "es"]
 const SCALE_CHOICES: Array[int] = [100, 125, 150, 175, 200]
 
 var display_preferences: DisplayPreferences
+var window_close_managed := false # AppRoot owns save/recovery decisions before closing this route.
 var _surface: Control
 var _saved: Dictionary
 var _draft: Dictionary
@@ -88,7 +89,7 @@ func _process(_delta: float) -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST and not window_close_managed:
 		close()
 	elif what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_refresh_translated_text()

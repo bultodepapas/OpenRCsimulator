@@ -2,7 +2,7 @@
 
 2026-10-24 · Revision 4 · To the F4U Corsair model author · Two requests: **A**, a fuselage correction for every delivered livery, and **B**, a new detail tier **g2** derived from master **R59**
 
-**Status:** revision 4 is open. Revision 3 (g1.3) was delivered and accepted on 2026-10-22 ([review](research/f4u-corsair/F4U-04/README.md#g13-accepted-2026-10-22)). Sections 0–13 below remain the base specification; revision 4 states what changes.
+**Status 2026-10-24:** revision 4 is delivered. A arrived as g1.24 and is accepted. B arrived as g2.0 and is accepted in substance; [B9](#b9-review-of-g20-and-what-g21-changes) lists the corrections for g2.1 ([review](research/f4u-corsair/F4U-19/README.md)). Revision 3 (g1.3) was delivered and accepted on 2026-10-22 ([review](research/f4u-corsair/F4U-04/README.md#g13-accepted-2026-10-22)). Sections 0–13 below remain the base specification; revision 4 states what changes.
 
 ## Revision 4: fuselage fix and a g2 detail tier
 
@@ -145,6 +145,30 @@ Where to spend and where to save, part by part:
 2. `python research/f4u-corsair/F4U-04/preflight_glb.py export/aircraft.glb --profile f4u-g2` must pass.
 3. Include the deviation report (B6) and a preview sheet with back-face culling on, from the B2 views: the Home three-quarter view, the orbit at 1.7 m around the nose, cockpit, main gear and tail, the chase view, and a view from below. Show the gear down and up, the flaps at 50° and the wings folded.
 4. Our acceptance is our preflight, the model contract (`verify_f4u.gd`) and a side-by-side render against g1 in our bench ([F4U-18](research/f4u-corsair/F4U-18/README.md#bench)).
+
+#### B9 Review of g2.0 and what g2.1 changes
+
+Reviewed 2026-10-24 ([F4U-19](research/f4u-corsair/F4U-19/README.md)). Thank you; g2.0 is what we asked for in most respects.
+
+- Our preflight passes with the `f4u-g2` profile and no warnings.
+- Every g1 node keeps its parent, section and rest transform.
+- Wheel contacts match g1 within 0.01 mm.
+- The frame cost is unchanged on our reference machine.
+- The engine, cockpit, intakes, gear links and baked seams are a clear step up in close views.
+
+A is accepted as g1.24.
+
+Please deliver g2.1 with these corrections only. The rig, the other parts and Naval 308's airframe paint stay as they are.
+
+1. **Propeller paint.** In g2.0 the yellow tips are irregular slivers on one face of each blade, and the blade decals are gone. Your own `previews/nose_close.png` shows it too. Repaint the blades on the g2 UVs:
+   - a yellow tip band of constant width on both faces, ending square to the blade axis, as on g1;
+   - the circular logo and the stencil marks restored on both faces.
+
+   Check it in a close preview of one blade tip.
+2. **Wheels.** g2.0's tyres are smooth and its rims are simple discs (1,664 triangles per main wheel). g1, since g1.8, has grooved tyres, open rims with bolts, caps and valves (5,752). Bring that detail back: reuse the g1.24 wheel meshes and gear atlas, which have the same radius, axle and contact, or rebuild them to that level, at 3,000–5,000 triangles per main wheel and 1,500–2,500 for the tail wheel. Keep the new torque links.
+3. **Budget balance.** Reduce `propeller_rotor` from 35,811 to 12,000–18,000 and `canopy_glass` from 6,431 to about 3,000 (B5). The engine face may take the triangles freed (guide 20,000–30,000; g2.0 has 13,940).
+4. **Shading noise, lower priority.** Without its normal map, the fuselage, canopy and cowl show small dents. 23.7 % of neighbouring `fuselage_core` triangles meet at more than 10°, against 2.7 % on R59. The baked map hides most of this, but faint blotches remain below the canopy in direct light. Where reduction left dents in curved skin, relax or re-project those vertices onto R59 and re-bake. Aim for under 10 % on `fuselage_core`, measured with `research/f4u-corsair/F4U-18/glb_shading.py`.
+5. **Liveries.** The owner will name the schemes g2 carries, at most eight. Until then, deliver Naval 308 only.
 
 ## 0 Review of g1.2 and what g1.3 changes
 
