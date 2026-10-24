@@ -24,4 +24,10 @@ screenshot format=jpg max_width=960
 key name=1
 wait seconds=1
 eval expr="[flight._rig.view, flight._camera.unproject_position(flight._crash_director.focus_point())]"
+key name=2
+wait seconds=1
+eval expr="flight._camera.global_position"
+key name=5
+wait seconds=1
+eval expr="[flight._rig.view, flight._camera.global_position, flight._camera.unproject_position(flight._crash_director.focus_point())]"
 logs --summary
