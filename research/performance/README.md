@@ -534,3 +534,19 @@ It retains three P-51 trim repeats, a maneuver case, an unchanged Stik control,
 component measurements and exact parity tests. Its frozen baseline includes
 LU-25-R2 and H16. Follow the report's candidate generator and campaign commands;
 the original-method regression fixture checks the changed law directly.
+
+## Glow feed-target reuse (VQ-01c)
+
+`glow_feed_reuse_probe.gd` loads original and candidate Glow flight scripts,
+compares full outputs and input immutability across four aircraft, then alternates
+nine timing batches. It rejects an existing output file. Export the before source
+from commit `044e2590` with a UTF-8 writer; use absolute paths for both scripts.
+
+```powershell
+$probe = (Resolve-Path research/performance/glow_feed_reuse_probe.gd).Path
+.tools/Godot_v4.7.2-stable_win64.exe --headless --audio-driver Dummy --path app --script $probe -- --reference=D:/evidence/glow_before.gd --candidate=$PWD/app/physics/glow/flight.gd --output=D:/evidence/glow-result.json
+```
+
+Wrap execution with `tools/godot/run_checked.py` to retain errors and exit status.
+`--correctness-only` skips timings. Timing measures these method calls, not FPS;
+run it alone for timing comparisons. [Dated evidence and limits](../../docs/research/visual-quality-implementation/VQ-01c/game-engineering-2026-10-24/helpers.md).

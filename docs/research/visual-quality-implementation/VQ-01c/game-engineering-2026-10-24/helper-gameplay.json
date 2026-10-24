@@ -1,0 +1,409 @@
+{
+  "scope": "Bounded actual rendered bridge controls, camera, pause/resume and Home smoke; not performance, long-session, human-pilot or physical qualification",
+  "aircraft": [
+    {
+      "aircraft": "stik-glow-61fx-2t",
+      "complete": true,
+      "final_tick": 757,
+      "viewport": [
+        1920,
+        1061
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6354166659557343
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "complete": true,
+      "final_tick": 765,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.635416666112279
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "complete": true,
+      "final_tick": 766,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.649999998513314
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "complete": true,
+      "final_tick": 755,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6395833266162168
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "complete": true,
+      "final_tick": 758,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6499999975712195
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "f4u-corsair-250",
+      "complete": true,
+      "final_tick": 758,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6624999999999684
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "complete": true,
+      "final_tick": 765,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6562499944203101
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-live\\cases.json",
+      "cases_sha256": "a5a04251b6f14054f8aa6ce09b687d9387f5da6cf6a061effe12563fdc923235",
+      "commands_sha256": "aeb5f8b0cec592164b675adbca183fa33437efcde34a18d37bf4cf2441829a04"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "complete": true,
+      "final_tick": 763,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6374999994536392
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-retest-1080\\cases.json",
+      "cases_sha256": "5c66db99bdfe20ae79bf7202d84ea31726458c6b10b7b5e6bcfc690705a04a90",
+      "commands_sha256": "45b9314d93107b907c85c696b1f03c1fd5b6cb7c6fa6ee1ba7aa1a76db25adb3"
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "complete": true,
+      "final_tick": 763,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "raw_input_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 1.0
+      },
+      "command_sample": {
+        "roll": 0.15,
+        "pitch": 0.1,
+        "yaw": 0.0,
+        "throttle": 0.6583333321119211
+      },
+      "end_crashed": false,
+      "end_fault": "",
+      "chase_view": {
+        "view": "chase",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "pilot_view": {
+        "view": "pilot",
+        "views": [
+          "pilot",
+          "chase",
+          "orbit",
+          "closeup"
+        ]
+      },
+      "cases_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-final-retries\\cases.json",
+      "cases_sha256": "351a827483a4cd1418a133e452c8c2488b1ed58d13717b4c4454366d103cdc91",
+      "commands_sha256": "1918506f6eab0721bfc43952bda63b402db115f7039411b231a78cffcebe744f"
+    }
+  ],
+  "limits": [
+    "61FX completed workflow at 1920x1061; separate 1080p input/chase retest interrupted before pilot/resume/Home",
+    "Optional landscape change not reached",
+    "External user processes and first viewport mismatch retained; no user process stopped",
+    "Visual inspection is not a before/after pixel comparison"
+  ],
+  "raw_summary": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\gameplay-qa-summary.md",
+  "raw_summary_sha256": "7219ef98ac7c5caca49f1b4d5d264d94e8c73d6a07c7cb8b08d2962a63b58142"
+}

@@ -1,0 +1,1321 @@
+{
+  "format": "openrc-native-matched-candidate-comparison-v1",
+  "conclusion": "No reliable native performance gain is established. P51 results are mixed and close; 55AX has one near-baseline candidate sample and one severe outlier. Two original-source reversal captures were contaminated by system pressure; the P51 reversal ended unfocused and paused. Keep candidate effect unresolved.",
+  "test_scope": {
+    "engine": "Godot 4.7.2-stable official",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+    "api": "OpenGL 3.3.0 NVIDIA 617.42 Compatibility",
+    "viewport": "1920x1080",
+    "refresh_hz": 60,
+    "vsync_mode": 1,
+    "max_fps": 0,
+    "msaa_3d_samples": 4,
+    "route": "direct Main keyboard bootstrap, active airborne flight, electrical storm",
+    "warmup_s": 10,
+    "requested_sample_s": 60,
+    "frame_diagnostics": true,
+    "external_process_sampler": "pinned psutil checked runner about 1 Hz",
+    "baseline_candidate_shared_app_path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\source\\frozen-baseline\\app",
+    "sequence": [
+      "P51",
+      "55AX",
+      "55AX",
+      "P51"
+    ]
+  },
+  "source_receipts": {
+    "baseline_manifest": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\source-manifest.json",
+    "baseline_manifest_sha256": "180bb47487e8cf87b52e0654b7818eb1851f746268a228b254b1229ee7ce1566",
+    "candidate_manifest": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\source-manifest.json",
+    "candidate_manifest_sha256": "0b2e1d149ec9fcb3ce041a45a315b0a5f2ec13b3567d8253d8085ed96af1c7b9",
+    "candidate_end_receipt": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\candidate-end-source.json",
+    "candidate_end_receipt_sha256": "2f14e400118e1fc55113b82c6895f08111e6b8fffc7276ebb351681dd859ec65",
+    "candidate_restored_receipt": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\candidate-restored-source.json",
+    "candidate_restored_receipt_sha256": "93506ec0ca2f97704a2a5eeb9f52abf9e8d712598ae1f33778dfca730d6cd753",
+    "reversal_manifest": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\source-manifest.json",
+    "reversal_manifest_sha256": "ce4dd8d8c955b8f50373a78b45918ee788fb96d822f06d902bdf3f066936482b",
+    "reversal_status": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\reversal-status.json",
+    "reversal_status_sha256": "a7ef21d01c55e0551774dd4595fd48392f6cd709ce73acab9c06c4819633094d"
+  },
+  "source_identity": {
+    "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+    "flight_audio": "6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac",
+    "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+    "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a",
+    "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+    "baseline_math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "candidate_math3d": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+    "baseline_glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+    "candidate_glow_flight": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+    "per_run_code_provenance_embedded": true
+  },
+  "baseline_original": [
+    {
+      "campaign": "original-baseline",
+      "case": "01-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "scene": "club_default",
+      "sample_wall_s": 60.0156819999998,
+      "frames": 3592,
+      "observed_fps": 59.8510236041308,
+      "frame_ms": {
+        "max": 39.453,
+        "p50": 16.624,
+        "p95": 18.139,
+        "p99": 22.952
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.624,
+        "p95": 18.139,
+        "p99": 22.952
+      },
+      "frames_ge_30ms": 9,
+      "frames_ge_50ms": 0,
+      "sample_ticks": 14408,
+      "sample_simulation_s": 60.0333,
+      "simulation_wall_ratio": 1.00029,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3592,
+          "p50": 2200.456,
+          "p95": 2429.484,
+          "p99": 2650.174
+        },
+        "process_cpu_ms": {
+          "n": 3592,
+          "p50": 7.649,
+          "p95": 9.694,
+          "p99": 10.671
+        },
+        "physics_process_cpu_ms": {
+          "n": 3592,
+          "p50": 3.879,
+          "p95": 5.609,
+          "p99": 5.959
+        },
+        "render_cpu_ms": {
+          "n": 3592,
+          "p50": 0.913,
+          "p95": 1.181,
+          "p99": 1.844
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3592,
+          "p50": 5.23,
+          "p95": 5.843,
+          "p99": 6.769
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3592,
+          "p50": 0.12,
+          "p95": 0.162,
+          "p99": 0.202
+        },
+        "observer_poll_usec": {
+          "n": 3592,
+          "p50": 17.0,
+          "p95": 22.0,
+          "p99": 32.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 81,
+        "elapsed_s": 82.453,
+        "peak_rss_mib": 1002.3,
+        "peak_process_cpu_percent": 121.3,
+        "process_cpu_user_s": 63.734375,
+        "process_cpu_system_s": 9.921875,
+        "minimum_system_available_gib": 28.4,
+        "minimum_c_free_gib": 0.399
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\01-p51\\run-1.json",
+        "report_sha256": "bed41cd97b55f966b92f083066f484bd5686b33896eeaab696c3d1c35893a44c",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\01-p51\\run-1.log",
+        "log_sha256": "e8bc0dd7cc70e855e7ceb674d944b023e1f72049b6d39608f31a55fbc6862391",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\01-p51\\checks\\matched-p51d-mustang-120-yx07tgfy\\resources.json",
+        "resources_sha256": "7f407c7313b1409605d54bfd206e482ced2314d6fbff5bdde8b641e3c9e7e436"
+      },
+      "warning_or_error_lines": [
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=p51d-mustang-120\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-baseline\\\\baseline-runs-final\\\\01-p51\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.49999999757122,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}",
+        "WARNING: 23 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ]
+    },
+    {
+      "campaign": "original-baseline",
+      "case": "02-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "scene": "club_default",
+      "sample_wall_s": 60.0125150000002,
+      "frames": 3264,
+      "observed_fps": 54.3886554329541,
+      "frame_ms": {
+        "max": 59.506,
+        "p50": 16.906,
+        "p95": 24.971,
+        "p99": 33.967
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.906,
+        "p95": 24.971,
+        "p99": 33.967
+      },
+      "frames_ge_30ms": 65,
+      "frames_ge_50ms": 7,
+      "sample_ticks": 14388,
+      "sample_simulation_s": 59.95,
+      "simulation_wall_ratio": 0.99896,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3264,
+          "p50": 2622.37,
+          "p95": 2815.149,
+          "p99": 3032.141
+        },
+        "process_cpu_ms": {
+          "n": 3264,
+          "p50": 8.116,
+          "p95": 10.814,
+          "p99": 14.318
+        },
+        "physics_process_cpu_ms": {
+          "n": 3264,
+          "p50": 4.043,
+          "p95": 5.956,
+          "p99": 7.827
+        },
+        "render_cpu_ms": {
+          "n": 3264,
+          "p50": 0.919,
+          "p95": 1.136,
+          "p99": 1.582
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3264,
+          "p50": 4.257,
+          "p95": 5.847,
+          "p99": 6.366
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3264,
+          "p50": 0.095,
+          "p95": 0.13,
+          "p99": 0.164
+        },
+        "observer_poll_usec": {
+          "n": 3264,
+          "p50": 16.0,
+          "p95": 21.0,
+          "p99": 28.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 86,
+        "elapsed_s": 86.687,
+        "peak_rss_mib": 965.1,
+        "peak_process_cpu_percent": 121.9,
+        "process_cpu_user_s": 82.84375,
+        "process_cpu_system_s": 6.3125,
+        "minimum_system_available_gib": 28.57,
+        "minimum_c_free_gib": 0.398
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\02-55ax\\run-1.json",
+        "report_sha256": "efc0201ef09a314c8b112476209b2032780b1e0a9caafef23f8710b452f5fe04",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\02-55ax\\run-1.log",
+        "log_sha256": "1616cf14b8bad0f451668a84500290565f40ebc486a126ed2a55b565bc545115",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\02-55ax\\checks\\matched-stik-glow-55ax-2t-4pyhii15\\resources.json",
+        "resources_sha256": "1980a55f9594fc1ec4005bb1e715fa895188ec8d762c1a30124cfee5e9bd931f"
+      },
+      "warning_or_error_lines": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending",
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=stik-glow-55ax-2t\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-baseline\\\\baseline-runs-final\\\\02-55ax\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.499999999445613,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    },
+    {
+      "campaign": "original-baseline",
+      "case": "03-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "scene": "club_default",
+      "sample_wall_s": 60.006672,
+      "frames": 3452,
+      "observed_fps": 57.5269363380126,
+      "frame_ms": {
+        "max": 46.998,
+        "p50": 16.663,
+        "p95": 21.107,
+        "p99": 31.445
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.663,
+        "p95": 21.107,
+        "p99": 31.445
+      },
+      "frames_ge_30ms": 43,
+      "frames_ge_50ms": 0,
+      "sample_ticks": 14445,
+      "sample_simulation_s": 60.1875,
+      "simulation_wall_ratio": 1.00301,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3452,
+          "p50": 2614.608,
+          "p95": 2721.737,
+          "p99": 2958.647
+        },
+        "process_cpu_ms": {
+          "n": 3452,
+          "p50": 7.327,
+          "p95": 9.448,
+          "p99": 11.558
+        },
+        "physics_process_cpu_ms": {
+          "n": 3452,
+          "p50": 3.742,
+          "p95": 5.922,
+          "p99": 6.54
+        },
+        "render_cpu_ms": {
+          "n": 3452,
+          "p50": 0.892,
+          "p95": 1.117,
+          "p99": 1.313
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3452,
+          "p50": 4.154,
+          "p95": 5.692,
+          "p99": 6.038
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3452,
+          "p50": 0.091,
+          "p95": 0.126,
+          "p99": 0.157
+        },
+        "observer_poll_usec": {
+          "n": 3452,
+          "p50": 15.0,
+          "p95": 20.0,
+          "p99": 27.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 85,
+        "elapsed_s": 86.016,
+        "peak_rss_mib": 962.9,
+        "peak_process_cpu_percent": 124.5,
+        "process_cpu_user_s": 77.78125,
+        "process_cpu_system_s": 10.71875,
+        "minimum_system_available_gib": 31.43,
+        "minimum_c_free_gib": 0.395
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\03-55ax\\run-1.json",
+        "report_sha256": "03d1c2061f4c32a2a4a3b5ee08f533a905642dae87c33e44ca0b2a4494546f5c",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\03-55ax\\run-1.log",
+        "log_sha256": "62ed88b6ee79770b4037aae1dcd3eacdb390f3c293a6e4b2947aba2c051cd54f",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\03-55ax\\checks\\matched-stik-glow-55ax-2t-o54rmy8_\\resources.json",
+        "resources_sha256": "b47f963e7c86beaa84e90b33a5119c3ce314707f0bea3843441e072d83bd7a29"
+      },
+      "warning_or_error_lines": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending",
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=stik-glow-55ax-2t\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-baseline\\\\baseline-runs-final\\\\03-55ax\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.499999999445613,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    },
+    {
+      "campaign": "original-baseline",
+      "case": "04-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "scene": "club_default",
+      "sample_wall_s": 60.016301,
+      "frames": 3598,
+      "observed_fps": 59.9503791478252,
+      "frame_ms": {
+        "max": 36.887,
+        "p50": 16.643,
+        "p95": 17.791,
+        "p99": 20.57
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.643,
+        "p95": 17.791,
+        "p99": 20.57
+      },
+      "frames_ge_30ms": 2,
+      "frames_ge_50ms": 0,
+      "sample_ticks": 14408,
+      "sample_simulation_s": 60.0333,
+      "simulation_wall_ratio": 1.00028,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3598,
+          "p50": 2180.914,
+          "p95": 2319.025,
+          "p99": 2547.456
+        },
+        "process_cpu_ms": {
+          "n": 3598,
+          "p50": 7.59,
+          "p95": 9.747,
+          "p99": 16.95
+        },
+        "physics_process_cpu_ms": {
+          "n": 3598,
+          "p50": 3.553,
+          "p95": 5.232,
+          "p99": 5.418
+        },
+        "render_cpu_ms": {
+          "n": 3598,
+          "p50": 0.879,
+          "p95": 1.112,
+          "p99": 1.601
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3598,
+          "p50": 5.281,
+          "p95": 5.86,
+          "p99": 7.002
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3598,
+          "p50": 0.114,
+          "p95": 0.149,
+          "p99": 0.177
+        },
+        "observer_poll_usec": {
+          "n": 3598,
+          "p50": 15.0,
+          "p95": 21.0,
+          "p99": 27.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 80,
+        "elapsed_s": 81.36,
+        "peak_rss_mib": 955.1,
+        "peak_process_cpu_percent": 123.5,
+        "process_cpu_user_s": 64.28125,
+        "process_cpu_system_s": 7.15625,
+        "minimum_system_available_gib": 30.32,
+        "minimum_c_free_gib": 0.394
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\04-p51\\run-1.json",
+        "report_sha256": "a4c3ce37713091bb6193f2710c98b764f33eabc63a4623d41e9af0ed017658bf",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\04-p51\\run-1.log",
+        "log_sha256": "17043eb79477ef248102d1c00083a35e483f59ba3b19a8faa276ffb8fc720901",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-baseline\\baseline-runs-final\\04-p51\\checks\\matched-p51d-mustang-120-8aqdqlrg\\resources.json",
+        "resources_sha256": "2ac3b331c446d677bf6029c5196653fad9934d2b1c6dd7b98f63b4043c381cfb"
+      },
+      "warning_or_error_lines": [
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=p51d-mustang-120\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-baseline\\\\baseline-runs-final\\\\04-p51\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.49999999757122,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    }
+  ],
+  "candidate": [
+    {
+      "campaign": "candidate",
+      "case": "01-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "scene": "club_default",
+      "sample_wall_s": 60.00091,
+      "frames": 3555,
+      "observed_fps": 59.249101388629,
+      "frame_ms": {
+        "max": 80.601,
+        "p50": 16.627,
+        "p95": 18.821,
+        "p99": 26.761
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.627,
+        "p95": 18.821,
+        "p99": 26.761
+      },
+      "frames_ge_30ms": 28,
+      "frames_ge_50ms": 10,
+      "sample_ticks": 14388,
+      "sample_simulation_s": 59.95,
+      "simulation_wall_ratio": 0.99915,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3555,
+          "p50": 2265.367,
+          "p95": 2429.304,
+          "p99": 2795.39
+        },
+        "process_cpu_ms": {
+          "n": 3555,
+          "p50": 7.452,
+          "p95": 13.44,
+          "p99": 23.539
+        },
+        "physics_process_cpu_ms": {
+          "n": 3555,
+          "p50": 4.039,
+          "p95": 5.139,
+          "p99": 11.85
+        },
+        "render_cpu_ms": {
+          "n": 3555,
+          "p50": 1.01,
+          "p95": 1.31,
+          "p99": 1.789
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3555,
+          "p50": 5.001,
+          "p95": 5.644,
+          "p99": 6.449
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3555,
+          "p50": 0.133,
+          "p95": 0.168,
+          "p99": 0.208
+        },
+        "observer_poll_usec": {
+          "n": 3555,
+          "p50": 19.0,
+          "p95": 23.0,
+          "p99": 31.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 83,
+        "elapsed_s": 84.594,
+        "peak_rss_mib": 933.1,
+        "peak_process_cpu_percent": 126.6,
+        "process_cpu_user_s": 71.953125,
+        "process_cpu_system_s": 6.984375,
+        "minimum_system_available_gib": 19.54,
+        "minimum_c_free_gib": 0.338
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+        "glow_flight": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\01-p51\\run-1.json",
+        "report_sha256": "022d5978b5128fa4e27de9cd7b720e9cc0b051f3808e43f060a7be0d578e596a",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\01-p51\\run-1.log",
+        "log_sha256": "c896bda490dcf1b24ae0bd268a3beba8d3a3aa5e253197baaa90b9ec9fa2577e",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\01-p51\\checks\\matched-p51d-mustang-120-d48d9ynz\\resources.json",
+        "resources_sha256": "208ce4e034836ebe9a24a2ca369b5bee1d4b3953ae7183dd2766928237b38d04"
+      },
+      "warning_or_error_lines": [
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=p51d-mustang-120\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-after\\\\01-p51\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.49999999757122,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}",
+        "WARNING: 23 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ]
+    },
+    {
+      "campaign": "candidate",
+      "case": "02-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "scene": "club_default",
+      "sample_wall_s": 60.0098959999999,
+      "frames": 2548,
+      "observed_fps": 42.4596636528083,
+      "frame_ms": {
+        "max": 91.513,
+        "p50": 19.438,
+        "p95": 64.023,
+        "p99": 79.05
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 19.438,
+        "p95": 64.023,
+        "p99": 79.05
+      },
+      "frames_ge_30ms": 292,
+      "frames_ge_50ms": 192,
+      "sample_ticks": 13536,
+      "sample_simulation_s": 56.4,
+      "simulation_wall_ratio": 0.93984,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 2548,
+          "p50": 2550.837,
+          "p95": 4109.476,
+          "p99": 4889.295
+        },
+        "process_cpu_ms": {
+          "n": 2548,
+          "p50": 9.099,
+          "p95": 14.606,
+          "p99": 15.363
+        },
+        "physics_process_cpu_ms": {
+          "n": 2548,
+          "p50": 4.605,
+          "p95": 7.686,
+          "p99": 20.549
+        },
+        "render_cpu_ms": {
+          "n": 2548,
+          "p50": 1.092,
+          "p95": 1.884,
+          "p99": 2.394
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 2548,
+          "p50": 4.279,
+          "p95": 7.94,
+          "p99": 8.247
+        },
+        "frame_setup_cpu_ms": {
+          "n": 2548,
+          "p50": 0.124,
+          "p95": 0.188,
+          "p99": 0.221
+        },
+        "observer_poll_usec": {
+          "n": 2548,
+          "p50": 19.0,
+          "p95": 31.0,
+          "p99": 36.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 86,
+        "elapsed_s": 86.969,
+        "peak_rss_mib": 956.5,
+        "peak_process_cpu_percent": 124.6,
+        "process_cpu_user_s": 83.0,
+        "process_cpu_system_s": 5.34375,
+        "minimum_system_available_gib": 16.93,
+        "minimum_c_free_gib": 0.336
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+        "glow_flight": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\02-55ax\\run-1.json",
+        "report_sha256": "2e89968db20730e7d2e76fa475d0d4235c9660652fa194aa615a5dd9c53830cb",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\02-55ax\\run-1.log",
+        "log_sha256": "cae0b0d2ab8a3c9d4c0cfd645b2886a5cc1bb2ee4fbfa5c70da19b8de82b23ad",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\02-55ax\\checks\\matched-stik-glow-55ax-2t-ydhq5ohb\\resources.json",
+        "resources_sha256": "f25695c0253617fd0c02d2d879c2bfc9eccdfcb024c7a4230cf4b24deeb73d7c"
+      },
+      "warning_or_error_lines": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending",
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=stik-glow-55ax-2t\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-after\\\\02-55ax\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.499999999445613,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    },
+    {
+      "campaign": "candidate",
+      "case": "03-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "scene": "club_default",
+      "sample_wall_s": 60.01219,
+      "frames": 3510,
+      "observed_fps": 58.4881171641962,
+      "frame_ms": {
+        "max": 55.983,
+        "p50": 16.586,
+        "p95": 20.355,
+        "p99": 28.346
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.586,
+        "p95": 20.355,
+        "p99": 28.346
+      },
+      "frames_ge_30ms": 27,
+      "frames_ge_50ms": 1,
+      "sample_ticks": 14404,
+      "sample_simulation_s": 60.0167,
+      "simulation_wall_ratio": 1.00007,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3510,
+          "p50": 2494.086,
+          "p95": 2625.874,
+          "p99": 2820.317
+        },
+        "process_cpu_ms": {
+          "n": 3510,
+          "p50": 7.688,
+          "p95": 11.302,
+          "p99": 11.887
+        },
+        "physics_process_cpu_ms": {
+          "n": 3510,
+          "p50": 3.84,
+          "p95": 5.339,
+          "p99": 6.265
+        },
+        "render_cpu_ms": {
+          "n": 3510,
+          "p50": 0.996,
+          "p95": 1.235,
+          "p99": 1.457
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3510,
+          "p50": 3.977,
+          "p95": 5.417,
+          "p99": 6.027
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3510,
+          "p50": 0.108,
+          "p95": 0.139,
+          "p99": 0.168
+        },
+        "observer_poll_usec": {
+          "n": 3510,
+          "p50": 17.0,
+          "p95": 21.0,
+          "p99": 29.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 85,
+        "elapsed_s": 86.672,
+        "peak_rss_mib": 969.2,
+        "peak_process_cpu_percent": 142.8,
+        "process_cpu_user_s": 77.859375,
+        "process_cpu_system_s": 11.21875,
+        "minimum_system_available_gib": 18.39,
+        "minimum_c_free_gib": 0.334
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+        "glow_flight": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\03-55ax\\run-1.json",
+        "report_sha256": "331b4e84aa85d2c8cd2363edeecedf7502b36cf75c458ad1e976b09788dc108e",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\03-55ax\\run-1.log",
+        "log_sha256": "3e471754fdaa23860962200f3b41957b8b20240998b7cf6fbe614f56713425c5",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\03-55ax\\checks\\matched-stik-glow-55ax-2t-_kgwvzut\\resources.json",
+        "resources_sha256": "331d3bfabfca8cefe404a912a228152a7b1f3b9daef39f2a394c1fd9aa032bd3"
+      },
+      "warning_or_error_lines": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending",
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=stik-glow-55ax-2t\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-after\\\\03-55ax\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.499999999445613,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    },
+    {
+      "campaign": "candidate",
+      "case": "04-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "scene": "club_default",
+      "sample_wall_s": 60.000813,
+      "frames": 3600,
+      "observed_fps": 59.999187011016,
+      "frame_ms": {
+        "max": 34.498,
+        "p50": 16.626,
+        "p95": 18.109,
+        "p99": 20.122
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.626,
+        "p95": 18.109,
+        "p99": 20.122
+      },
+      "frames_ge_30ms": 1,
+      "frames_ge_50ms": 0,
+      "sample_ticks": 14403,
+      "sample_simulation_s": 60.0125,
+      "simulation_wall_ratio": 1.00019,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3600,
+          "p50": 2220.535,
+          "p95": 2374.593,
+          "p99": 2576.654
+        },
+        "process_cpu_ms": {
+          "n": 3600,
+          "p50": 7.506,
+          "p95": 9.758,
+          "p99": 24.229
+        },
+        "physics_process_cpu_ms": {
+          "n": 3600,
+          "p50": 3.754,
+          "p95": 5.411,
+          "p99": 5.631
+        },
+        "render_cpu_ms": {
+          "n": 3600,
+          "p50": 0.961,
+          "p95": 1.183,
+          "p99": 1.528
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3600,
+          "p50": 5.03,
+          "p95": 5.65,
+          "p99": 6.711
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3600,
+          "p50": 0.128,
+          "p95": 0.157,
+          "p99": 0.193
+        },
+        "observer_poll_usec": {
+          "n": 3600,
+          "p50": 17.0,
+          "p95": 22.0,
+          "p99": 31.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 80,
+        "elapsed_s": 81.078,
+        "peak_rss_mib": 963.0,
+        "peak_process_cpu_percent": 124.5,
+        "process_cpu_user_s": 64.953125,
+        "process_cpu_system_s": 8.3125,
+        "minimum_system_available_gib": 26.85,
+        "minimum_c_free_gib": 0.333
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "1d64907b5acdd8030f92671605ff99011bbf44c60e72190b530257410aaa2a65",
+        "glow_flight": "c5e36ca66ae7f0ce9c01f2c13eb75da238ae57851f1242d557908ee1f334e5eb",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\04-p51\\run-1.json",
+        "report_sha256": "059f22dd919c27740e23addeb5e0908b5221e991a2fe75af3edd1632e3bff471",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\04-p51\\run-1.log",
+        "log_sha256": "92471037472c9c409322eaff4609beaafc53d7e6c2cb546948fabd7fb651e7f9",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-after\\04-p51\\checks\\matched-p51d-mustang-120-azkuc32c\\resources.json",
+        "resources_sha256": "531a5f912b6ced791f7386728c31c88c33dc4bff427259abb5828b33dfe90b8e"
+      },
+      "warning_or_error_lines": [
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=p51d-mustang-120\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-after\\\\04-p51\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.49999999757122,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    }
+  ],
+  "paired_deltas": [
+    {
+      "case": "01-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "before_frame_p95_ms": 18.139,
+      "candidate_frame_p95_ms": 18.821,
+      "delta_p95_ms": 0.682,
+      "before_frame_p99_ms": 22.952,
+      "candidate_frame_p99_ms": 26.761,
+      "delta_p99_ms": 3.809,
+      "before_fps": 59.851,
+      "candidate_fps": 59.249,
+      "delta_fps": -0.602,
+      "before_ticks": 14408,
+      "candidate_ticks": 14388,
+      "source_effect_interpretation": "Descriptive per-run delta only; two samples per aircraft, one candidate 55AX outlier, no qualification."
+    },
+    {
+      "case": "02-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "before_frame_p95_ms": 24.971,
+      "candidate_frame_p95_ms": 64.023,
+      "delta_p95_ms": 39.052,
+      "before_frame_p99_ms": 33.967,
+      "candidate_frame_p99_ms": 79.05,
+      "delta_p99_ms": 45.083,
+      "before_fps": 54.389,
+      "candidate_fps": 42.46,
+      "delta_fps": -11.929,
+      "before_ticks": 14388,
+      "candidate_ticks": 13536,
+      "source_effect_interpretation": "Descriptive per-run delta only; two samples per aircraft, one candidate 55AX outlier, no qualification."
+    },
+    {
+      "case": "03-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "before_frame_p95_ms": 21.107,
+      "candidate_frame_p95_ms": 20.355,
+      "delta_p95_ms": -0.752,
+      "before_frame_p99_ms": 31.445,
+      "candidate_frame_p99_ms": 28.346,
+      "delta_p99_ms": -3.099,
+      "before_fps": 57.527,
+      "candidate_fps": 58.488,
+      "delta_fps": 0.961,
+      "before_ticks": 14445,
+      "candidate_ticks": 14404,
+      "source_effect_interpretation": "Descriptive per-run delta only; two samples per aircraft, one candidate 55AX outlier, no qualification."
+    },
+    {
+      "case": "04-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "before_frame_p95_ms": 17.791,
+      "candidate_frame_p95_ms": 18.109,
+      "delta_p95_ms": 0.318,
+      "before_frame_p99_ms": 20.57,
+      "candidate_frame_p99_ms": 20.122,
+      "delta_p99_ms": -0.448,
+      "before_fps": 59.95,
+      "candidate_fps": 59.999,
+      "delta_fps": 0.049,
+      "before_ticks": 14408,
+      "candidate_ticks": 14403,
+      "source_effect_interpretation": "Descriptive per-run delta only; two samples per aircraft, one candidate 55AX outlier, no qualification."
+    }
+  ],
+  "original_source_reversal": [
+    {
+      "campaign": "original-reversal-contaminated",
+      "case": "02-55ax",
+      "aircraft_id": "stik-glow-55ax-2t",
+      "scene": "club_default",
+      "sample_wall_s": 60.0370760000001,
+      "frames": 1146,
+      "observed_fps": 19.088204762004,
+      "frame_ms": {
+        "max": 95.253,
+        "p50": 52.723,
+        "p95": 73.77,
+        "p99": 84.026
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 52.723,
+        "p95": 73.77,
+        "p99": 84.026
+      },
+      "frames_ge_30ms": 1108,
+      "frames_ge_50ms": 668,
+      "sample_ticks": 12758,
+      "sample_simulation_s": 53.1583,
+      "simulation_wall_ratio": 0.88543,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 1146,
+          "p50": 3431.042,
+          "p95": 4433.882,
+          "p99": 5231.439
+        },
+        "process_cpu_ms": {
+          "n": 1146,
+          "p50": 13.135,
+          "p95": 18.756,
+          "p99": 25.377
+        },
+        "physics_process_cpu_ms": {
+          "n": 1146,
+          "p50": 6.546,
+          "p95": 8.449,
+          "p99": 8.799
+        },
+        "render_cpu_ms": {
+          "n": 1146,
+          "p50": 1.583,
+          "p95": 2.601,
+          "p99": 3.369
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 1146,
+          "p50": 8.124,
+          "p95": 11.516,
+          "p99": 12.431
+        },
+        "frame_setup_cpu_ms": {
+          "n": 1146,
+          "p50": 0.18,
+          "p95": 0.286,
+          "p99": 0.363
+        },
+        "observer_poll_usec": {
+          "n": 1146,
+          "p50": 27.0,
+          "p95": 42.0,
+          "p99": 53.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 96,
+        "elapsed_s": 97.0,
+        "peak_rss_mib": 941.0,
+        "peak_process_cpu_percent": 136.7,
+        "process_cpu_user_s": 93.0,
+        "process_cpu_system_s": 4.765625,
+        "minimum_system_available_gib": 7.39,
+        "minimum_c_free_gib": 0.0
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": true,
+        "paused_at_report": false,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\02-55ax\\run-1.json",
+        "report_sha256": "a7c92f8c7d7e2bebb50df420d681590a1cd97d021ce25aa092d2c5b59a5ccf57",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\02-55ax\\run-1.log",
+        "log_sha256": "389f9d37d96616b9bca301f625aebed7d9e72bd7dbdf98c07b19c51c9387fb8d",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\02-55ax\\checks\\matched-stik-glow-55ax-2t-xmq8_euk\\resources.json",
+        "resources_sha256": "c93ecae953255e59d816214b4816e7c920a3dbdc371412baf77f250b1055a97e"
+      },
+      "warning_or_error_lines": [
+        "aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending",
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=stik-glow-55ax-2t\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-reversal\\\\02-55ax\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.499999999445613,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    },
+    {
+      "campaign": "original-reversal-contaminated",
+      "case": "04-p51",
+      "aircraft_id": "p51d-mustang-120",
+      "scene": "club_default",
+      "sample_wall_s": 60.0071750000002,
+      "frames": 3329,
+      "observed_fps": 55.4766992447151,
+      "frame_ms": {
+        "max": 78.88,
+        "p50": 16.693,
+        "p95": 27.896,
+        "p99": 45.993
+      },
+      "frame_interval_ms_nearest_rank": {
+        "p50": 16.693,
+        "p95": 27.896,
+        "p99": 45.993
+      },
+      "frames_ge_30ms": 153,
+      "frames_ge_50ms": 17,
+      "sample_ticks": 5738,
+      "sample_simulation_s": 23.9083,
+      "simulation_wall_ratio": 0.39842,
+      "diagnostic_cpu_gpu_pctl": {
+        "physics_step_usec": {
+          "n": 3329,
+          "p50": 3302.288,
+          "p95": 3302.288,
+          "p99": 3302.288
+        },
+        "process_cpu_ms": {
+          "n": 3329,
+          "p50": 16.928,
+          "p95": 19.263,
+          "p99": 23.519
+        },
+        "physics_process_cpu_ms": {
+          "n": 3329,
+          "p50": 0.252,
+          "p95": 5.745,
+          "p99": 7.778
+        },
+        "render_cpu_ms": {
+          "n": 3329,
+          "p50": 1.501,
+          "p95": 2.596,
+          "p99": 3.311
+        },
+        "render_gpu_ms_positive_only": {
+          "n": 3329,
+          "p50": 3.944,
+          "p95": 6.092,
+          "p99": 7.416
+        },
+        "frame_setup_cpu_ms": {
+          "n": 3329,
+          "p50": 0.092,
+          "p95": 0.199,
+          "p99": 0.277
+        },
+        "observer_poll_usec": {
+          "n": 3329,
+          "p50": 29.0,
+          "p95": 48.0,
+          "p99": 64.0
+        }
+      },
+      "resource_sampling": {
+        "status": "ok",
+        "samples": 81,
+        "elapsed_s": 82.437,
+        "peak_rss_mib": 988.4,
+        "peak_process_cpu_percent": 126.3,
+        "process_cpu_user_s": 48.84375,
+        "process_cpu_system_s": 7.25,
+        "minimum_system_available_gib": 16.5,
+        "minimum_c_free_gib": 0.0
+      },
+      "state": {
+        "complete": true,
+        "focus_at_report": false,
+        "paused_at_report": true,
+        "crashed": false,
+        "physics_enabled": true,
+        "fault": "",
+        "failure": "",
+        "invalid_numeric_values": 0
+      },
+      "source_identity": {
+        "main": "dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296",
+        "math3d": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+        "glow_flight": "a45772b2d2091e55d78a2e5ecf253c774956711f4b0fa7c53e911959df8d5e37",
+        "project": "99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0",
+        "flight_session": "44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f",
+        "frame_samples": "9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a"
+      },
+      "artifacts": {
+        "report": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\04-p51\\run-1.json",
+        "report_sha256": "4e1f086aef27445c0ebc630bac7a3880e154a0ad44375bd1bcd3167a29a8ec52",
+        "log": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\04-p51\\run-1.log",
+        "log_sha256": "405ad4a435601033d93446baee145dad1e9281bc169107d864d72f161e253569",
+        "resources": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\native-reversal\\04-p51\\checks\\matched-p51d-mustang-120-uvdhs0m3\\resources.json",
+        "resources_sha256": "d67843baf71f176c929b659c8f009ddf525c38f147b43de2cead2f5d1f932f3a"
+      },
+      "warning_or_error_lines": [
+        "Paired keyboard flight ready: {\"custom_bootstrap\":true,\"display_server\":\"Windows\",\"engine\":\"4.7.2-stable (official)\",\"flight_args\":[\"--aircraft=p51d-mustang-120\",\"--quick-flight\",\"--start=airborne\",\"--sky=electrical_storm\",\"--audio-seed=27031\",\"--frametimes=D:\\\\OpenRCsimulator-evidence\\\\optimization-20261024-code\\\\native-reversal\\\\04-p51\\\\run-1.json\",\"--warmup=10\",\"--t=60\",\"--frame-diagnostics\",\"--frametimes-max-frames=60000\"],\"initial_paused\":false,\"initial_throttle\":0.49999999757122,\"initial_tick\":0,\"input_enabled\":true,\"keyboard_selected\":true,\"main_mode\":\"current\",\"main_sha256\":\"dfc08643caace4d6a19a402f0c2bf83386cd7c4335c42f228385763dd0358296\",\"physics_advance_override\":false,\"physics_enabled\":true,\"pilot_acceptance\":false,\"prescribed_pose\":false,\"radio_connected\":false,\"shared_source_sha256\":{\"flight_audio\":\"6f12fefb805cb5dc64fd64a6899ca78efe1b2f0826b3ebbc87d72b1c0968f7ac\",\"flight_session\":\"44baef65ccbb13cd13a80faca27740625395835c1799439f605bc7c10dc5b22f\",\"frame_samples\":\"9761d36e13214f9d41a6f173b49235c79f46c76bb248d04d35969b024550311a\",\"project\":\"99753b1054e100d5b3ed6dc96915e77ba5b6ddbdec95505710986d4dd856d6f0\",\"sky_config\":\"d29c5d96d0a7c7fa39700436325f7bb504318dc5fdbb7b4ff55b0c818c2e110e\"},\"startup_error\":\"\",\"viewport_size\":\"(1920, 1080)\",\"window_focused\":true}"
+      ]
+    }
+  ],
+  "reversal_validity": "Do not use either reversal for code-effect inference. The 55AX sample had C: free space at 0.00 GiB and only 7.39 GiB minimum system-available RAM; the P51 sample reached 0.00 GiB C: free, ended unfocused+paused, and overlapped external live C-app Godot processes (PIDs 56464 console, 31488 native) observed by parent. No processes were stopped.",
+  "numeric_state_parity": {
+    "path": "D:\\OpenRCsimulator-evidence\\optimization-20261024-code\\fleet-parity-summary.json",
+    "sha256": "b2661381f3f06fc918c854bf406076cc7717392ccaf36be8af57d87f762ad9c3",
+    "all_nine_aircraft_equal": true,
+    "sample_scope": "240 warmup ticks + 1200 maneuver ticks, observer off; fingerprint covers numeric simulation state and effective inputs at selected boundaries only, not all session/event state; no wall-clock timing claim."
+  },
+  "limitations": [
+    "Only two original and two candidate native samples per aircraft; no three-run performance qualification.",
+    "Candidate capture 02-55AX had 2548 frames, 13,536 simulation ticks and 292 measured frame intervals >=30 ms; it is retained, not filtered.",
+    "Candidate 03-55AX produced 3510 frames and 14,404 ticks, showing high within-candidate variability.",
+    "Frame diagnostics and resource sampling add overhead; observer identity/hash is retained.",
+    "Render GPU values may be delayed and are not directly additive to frame time.",
+    "Process CPU/RSS are direct process counters; engine rendering memory estimates are not VRAM.",
+    "No input-to-photon measurement.",
+    "Candidate comparisons use direct flight bootstrap, not AppRoot/Home UI route.",
+    "Concurrent user app/resource pressure made reversals unusable; no causal attribution to code changes is supported.",
+    "The final frozen D app was restored to candidate source hashes; the live C app was never modified by this campaign."
+  ],
+  "diagnostic_findings": {
+    "scope": "Offline correlation of frame intervals with sampled process/physics CPU, render CPU/GPU, collector poll and setup arrays. Raw-array quantiles use nearest-rank; frame percentiles are taken from each native report.",
+    "candidate_55ax": {
+      "run_02": {
+        "frames": 2548,
+        "sample_ticks": 13536,
+        "simulation_wall_ratio": 0.93984,
+        "wall_frames_ge_30ms": 292,
+        "wall_frames_ge_50ms": 192,
+        "process_cpu_ms_p95": 14.606,
+        "physics_process_cpu_ms_p95": 7.686,
+        "physics_step_usec_p95": 4109.476,
+        "render_cpu_ms_p95": 1.884,
+        "positive_gpu_ms_p95": 7.94,
+        "frame_setup_cpu_ms_p95": 0.188,
+        "observer_poll_usec_p95": 31,
+        "min_system_available_gib": 16.93,
+        "min_c_free_gib": 0.336
+      },
+      "run_03": {
+        "frames": 3510,
+        "sample_ticks": 14404,
+        "simulation_wall_ratio": 1.00007,
+        "wall_frames_ge_30ms": 27,
+        "wall_frames_ge_50ms": 1,
+        "process_cpu_ms_p95": 11.302,
+        "physics_process_cpu_ms_p95": 5.339,
+        "physics_step_usec_p95": 2625.874,
+        "render_cpu_ms_p95": 1.235,
+        "positive_gpu_ms_p95": 5.417,
+        "frame_setup_cpu_ms_p95": 0.139,
+        "observer_poll_usec_p95": 21,
+        "min_system_available_gib": 18.39,
+        "min_c_free_gib": 0.334
+      },
+      "baseline_run_02": {
+        "frames": 3264,
+        "sample_ticks": 14388,
+        "wall_frames_ge_30ms": 65,
+        "process_cpu_ms_p95": 10.814,
+        "physics_process_cpu_ms_p95": 5.956,
+        "physics_step_usec_p95": 2815.149,
+        "render_cpu_ms_p95": 1.136,
+        "positive_gpu_ms_p95": 5.847
+      },
+      "baseline_run_03": {
+        "frames": 3452,
+        "sample_ticks": 14445,
+        "wall_frames_ge_30ms": 43,
+        "process_cpu_ms_p95": 9.448,
+        "physics_process_cpu_ms_p95": 5.922,
+        "physics_step_usec_p95": 2721.737,
+        "render_cpu_ms_p95": 1.117,
+        "positive_gpu_ms_p95": 5.692
+      },
+      "interpretation": "Candidate run 02 is a captured outlier across process CPU, physics CPU, render CPU and positive GPU timing versus candidate run 03. It had 292 frame intervals >=30 ms, of which 192 were >=50 ms. Setup and observer-poll p95 were below 0.2 ms and 0.04 ms. These sampled scopes are not additive to wall frame time, GPU timestamps may be delayed, and this does not identify a root cause. Candidate 03 returned near the original 55AX timing range."
+    },
+    "reversal_environment": {
+      "original_55ax": {
+        "frames": 1146,
+        "sample_ticks": 12758,
+        "wall_frames_ge_30ms": 1108,
+        "min_system_available_gib": 7.39,
+        "min_c_free_gib": 0.0,
+        "focus": true,
+        "paused": false
+      },
+      "original_p51": {
+        "frames": 3329,
+        "sample_ticks": 5738,
+        "wall_frames_ge_30ms": 153,
+        "wall_frames_ge_50ms": 17,
+        "min_system_available_gib": 16.5,
+        "min_c_free_gib": 0.0,
+        "focus": false,
+        "paused": true
+      },
+      "interpretation": "Both original-source reversals are excluded from causal comparison. The P51 ended out of focus and paused. The 55AX coincided with zero measured free space on C: and a 7.39 GiB low watermark for system-available memory; the parent observed external C-app Godot processes during the reversal window."
+    }
+  }
+}
