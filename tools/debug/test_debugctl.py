@@ -6,6 +6,7 @@ import csv
 import random
 import io
 import tempfile
+import time
 import json
 import os
 import socket
@@ -310,6 +311,17 @@ class DebugctlTests(unittest.TestCase):
         status, _, err = self.run_cli("stop")
         self.assertEqual(status, 2)
         self.assertIn("OPENRC_DEBUG_BRIDGE", err)
+
+    def test_an_unreaped_exited_child_is_not_alive(self) -> None:
+        if not Path("/proc/self/stat").exists():
+            self.skipTest("needs /proc")
+        import subprocess
+        child = subprocess.Popen([sys.executable, "-c", "pass"])
+        deadline = time.monotonic() + 10
+        while debugctl.alive(child.pid) and time.monotonic() < deadline:
+            time.sleep(0.05)  # never reaped by wait() here: it stays a zombie
+        self.assertFalse(debugctl.alive(child.pid))
+        child.wait()
 
 
 if __name__ == "__main__":

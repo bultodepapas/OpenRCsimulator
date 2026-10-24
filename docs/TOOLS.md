@@ -2,7 +2,7 @@
 
 Resolution priority: **1080p primary; above-1080p resolutions (including 1440p, 4K and higher) secondary desirable; 720p tertiary and last**. Follow the [shared policy](../AGENTS.md#display-resolution-priorities). Existing 720p defaults, fixtures and historical results retain their stated scope and do not qualify the primary target.
 
-Canonical setup and command index. Code, configuration and generated data define implemented behavior. Run commands from the repository root in Bash unless labeled PowerShell; native Windows Python examples use `python` instead of `python3`. Detailed tool contracts live in the linked READMEs.
+Canonical setup and command index. Code, configuration and generated data define implemented behavior. Run commands from the repository root in Bash unless labeled PowerShell; native Windows Python examples use `python` instead of `python3`. Detailed tool contracts live in the linked READMEs. To find the tool for a task, start at the [tool index](tools/README.md).
 
 ## Developer setup
 
@@ -51,14 +51,11 @@ Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.
 | Experimental High | `python tools/graphics/launch.py --profile high` | Temporary Forward+ trial; also available from Home settings. [Scope, launcher and native probes](../tools/graphics/README.md). |
 | Club scenery | `app/run-landscape.sh` | Forces scenery on for Club field. Normal launches already default to on; opt out with `-- --scenery=off`. This flag does not select a landscape or add club scenery to Green paradise. |
 | Landscape checks | `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_landscapes.gd` | Loading, keyboard switching, saved selection, restart and lighting isolation. For rendered captures, omit `--headless` and add `-- --capture-landscapes=<absolute-dir>`; inspect both Home and flight images. |
-| Flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/openrc-trace.csv --t=3` | Initial state plus each 240 Hz tick; [trace contract](research/trace-integrity/C7-R2/README.md). |
 | Live debug bridge | `python3 tools/debug/debugctl.py launch`, then `ui`, `press text=Fly`, `fly aircraft=<id>`, `shortcuts`, `control name=<action>`, `state`, `logs --follow`, `crawl`, `run repro.txt` | Drive a running app from the shell without a mouse: every menu, setting, shortcut and controller action, sticks/truck input, pause/step, telemetry CSV, screenshots, flight logs, live log and events, UI crawl. Isolated profile, 1080p by default, loopback only, debug builds. Bug hunting: `frames` (hitches with causes), `break` (tick watchpoints), `objects`/`soak` (leaks), `profile` (GDScript CPU), `monkey` (seeded UI fuzzing), `logs --summary`; `tools/debug/gdscript_warnings.py` collects the engine's own compiler warnings against a baseline. [Guide](../tools/debug/README.md). |
-| Flight log and replay | `python3 tools/flight_log/flight_log.py record --godot "$(app/get-godot.sh)" --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |
 | Companion solver re-bind | `python3 tools/companions/rebind.py` | After a physics/sim edit: replays the companion tapes on the accepted and current solver; `--accept` re-pins when identical. [Guide](../tools/companions/README.md). |
+| Traces, flight logs, physics benches, frame diagnosis | [Physics tools](tools/physics.md), [graphics tools](tools/graphics.md#frame-diagnosis), [shared tools](tools/shared.md#launch-flags) | Commands, result reading and gotchas. [Flight-log manual](FLIGHT-LOGGING.md). |
 | Repository size | `python3 tools/repo/check_large_files.py` | Refuses tracked files above 50 MiB not recorded in `tools/repo/large_files.json` and any above GitHub's 100 MiB push limit; run by `app/test.sh` and the opt-in pre-push hook. [Evidence-size convention](README.md#conventions-for-documents). |
 | Crash-cost data | `python3 research/crash-economics/build_runtime.py` | Regenerates the accident-cost sidecar after aircraft or price-source edits; `--check` only verifies. Opt-in pre-push check: `git config core.hooksPath tools/hooks`. |
-| Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
-| CPU/GPU frame diagnosis | Add `--frame-diagnostics --frametimes=<new.json>` after the engine's `--`, then run `python research/performance/frame_diagnose.py --report <json> --log <engine.log> --out <new-diagnosis.json>` | Opt-in render timings, memory context, worst frames and budget bursts; [options and measurement limits](../research/performance/README.md#cpu-gpu-and-memory-diagnosis). |
 | Process RAM and disk | Checked runner `--resources`; `python tools/godot/storage_audit.py . --out <new.json>` | Optional process RAM/CPU/I/O, system pressure, volume capacity and read-only file-size audit; [setup, limits and usage](../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4). |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
@@ -235,47 +232,11 @@ Each README owns its input format, command and tests. Without torque, static thr
 
 ## Flight and physics experiments
 
-Use fresh output directories and the pinned Godot build. Run timing experiments alone; fixture equivalence proves software preservation, not physical validity.
-
-| Area | Entrypoint / authoritative contract |
-| --- | --- |
-| Aircraft authoring | `python3 research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
-| Natural Random | `python3 research/natural-random/verify.py --godot <godot> --out <fresh-dir>`; [evidence](research/natural-random/README.md). |
-| Glow 2T/4T | `python3 research/glow-engines/verify_integration.py --godot <godot> --out <fresh-dir> --parse-all`; [current integration](GLOW-ENGINES.md), [isolated kernels](../research/glow-engines/README.md). |
-| Helicopter | [current experimental flight session and checks](HELICOPTER.md); `research/helicopter/verify_kernels.py` owns independent kernel references and disposable defects. |
-| Bisonte ground vehicle | [runtime/experiments](../research/rc-monster-truck/README.md), [native builder/parity](../research/rc-monster-truck/native/README.md). |
-| Electric coupling | [EL2a-P1](../research/propulsion/el2a-p1/README.md), [EL2a-P2 event qualification](../research/propulsion/el2a-p2/README.md). Reference runs use their pinned NumPy/SciPy environment. |
-| Taildragger and nose-over | `python3 research/ground-contact/e5a/verify.py --out /tmp/e5a-proof --mutations`; analogous `e5b/verify.py`. [E5a](../research/ground-contact/e5a/README.md), [E5b](../research/ground-contact/e5b/README.md). |
-| Long-circuit sensitivity | `python3 research/landing/e4b/measure.py --out /tmp/e4b-proof`; [E4b limits](research/ground-contact/E4b/README.md). Experiment completion does not mean every perturbation passed. |
-| Standard flight-test battery | `python3 research/flight-test/run.py --out <fresh-dir> [--aircraft <ids>] [--app <candidate copy>] [--only <tests>]`, then `python3 research/flight-test/compare.py <baseline> <candidate>`; [card, pilots and workflow](../research/flight-test/README.md), [card v5 fleet baseline](research/flight-test/FT-05/README.md). Card v4 added aerobatic figures, inverted flight, engine failure, stall variants and the go-around; v5 adds `power_step`, hands-off throttle steps from the trimmed start (`--only power_step` flies it alone in about four minutes). `--only aero_sweep` shows, without flying, which aerodynamic model carries the loads at each sideslip and α and what each gives. Model predictions, not validation. |
-| Part-throttle thrust and neutral points | `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/part_throttle_probe.gd" -- --out=<csv>`; `python3 research/flight-dynamics/power-climb/fleet_neutral_point.py`; [tools](../research/flight-dynamics/power-climb/README.md), [D6e-R3 evidence](research/flight-dynamics/power-climb-2026-10-19/README.md). Read-only: each propulsion law's steady rpm, thrust and shaft power on a throttle × airspeed grid beside the polar's level-flight drag; the geometric neutral point against the data's. |
-| Parameter sensitivity | `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"`. |
-| Modal dashboard | `python3 research/validation/dashboard.py --check`; [validation tools](../research/validation/README.md). Red reference comparisons are diagnostic results. |
-| Aircraft generators | Source pipelines in the aircraft guides; examples: [P51-05](../research/p51/p51-05/derivation.md), [EX-05](../research/extra-300/ex05/derivation.md), [AV-06](../research/avanti-s/av06/derivation.md). |
-
-[Research index](research/README.md) maps dated evidence; the [tools/input map](../research/README.md) pairs experiment folders with their reports. The [literature-library workflow](research/flight-dynamics/rc-validation-library-2026-10-18/README.md#recheck-the-collection) verifies local originals and regenerates CSV/BibTeX from source manifests. Some source studies require ignored `references/` files and cannot run from a fresh clone.
+The flight-test battery, aircraft generators, golden flights, probes and track verifiers live in [physics tools](tools/physics.md); debugging steps in the [physics playbook](tools/debugging-physics.md). [Research index](research/README.md) maps dated evidence; the [tools/input map](../research/README.md) pairs experiment folders with their reports. The [literature-library workflow](research/flight-dynamics/rc-validation-library-2026-10-18/README.md#recheck-the-collection) verifies local originals and regenerates CSV/BibTeX from source manifests. Some source studies require ignored `references/` files and cannot run from a fresh clone.
 
 ## Rendering, field, audio and asset tools
 
-Focused commands and dependency pins belong to the tool README. Most render checks need a display or Xvfb, OpenGL, and a fresh output directory. Headless simulation does not measure GPU performance; llvmpipe captures do not qualify target hardware.
-
-| Tool family | Contract |
-| --- | --- |
-| Audio generation, native capture and packs | [tools/audio](../tools/audio/README.md) |
-| Landscape lighting and glare | [tools/landscape](../tools/landscape/README.md) |
-| Projected shadows | [tools/shadows](../tools/shadows/README.md) |
-| Sky, stars and time progression | [tools/world](../tools/world/README.md) |
-| Tree placement and atlas baking | [tools/trees](../tools/trees/README.md) |
-| Grass placement and seams | [tools/grass](../tools/grass/README.md) |
-| Horizon generation | [tools/terrain](../tools/terrain/README.md) |
-| Ground surfaces and windsock | [tools/ground](../tools/ground/README.md) |
-| Atmosphere and cloud probes | [tools/atmosphere](../tools/atmosphere/README.md) |
-| Scenery sources, placement and capture | [tools/scenery](../tools/scenery/README.md) |
-| Engine smoke | [tools/smoke](../tools/smoke/README.md) |
-| Gallery/media | [media workflow](media/README.md) |
-| Propeller blur | `res://tests/capture_propeller_blur.gd`; [VQ-05 contract](research/visual-quality-implementation/VQ-05/README.md). |
-
-`app/capture.sh` writes a complete-run manifest only after all checks pass. Legacy landscape references explicitly disable scenery; scenery cases enable it. Fixed captures are not the normal Home/Fly route.
+Capture, comparison, per-area checkers and frame diagnosis live in [graphics tools](tools/graphics.md); debugging steps in the [graphics playbook](tools/debugging-graphics.md). Each tool family's README owns its commands and dependency pins: [audio](../tools/audio/README.md), [landscape](../tools/landscape/README.md), [shadows](../tools/shadows/README.md), [world](../tools/world/README.md), [trees](../tools/trees/README.md), [grass](../tools/grass/README.md), [terrain](../tools/terrain/README.md), [ground](../tools/ground/README.md), [atmosphere](../tools/atmosphere/README.md), [scenery](../tools/scenery/README.md), [smoke](../tools/smoke/README.md). Headless simulation does not measure GPU performance; llvmpipe captures do not qualify target hardware.
 
 ## Native performance experiments
 

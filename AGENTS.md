@@ -14,6 +14,15 @@ do not creat thing that you can free download
 
 Use this order for planning, optimization and acceptance evidence. A 720p viewport default, capture fixture or historical benchmark does not make 720p the product target; 720p results cannot establish 1080p qualification. These are development priorities, not claims that any resolution is already qualified on particular hardware.
 
+## Tools
+
+- Find the tool for your task in the [tool index](docs/tools/README.md) before writing ad-hoc test, probe or debug code.
+- To inspect or drive a running app (state, live log, menus, keys, sticks, pause/step, screenshots, hitches, leaks,
+  watchpoints, UI fuzzing), use the [debug bridge](tools/debug/README.md) instead of ad-hoc probes or mouse automation.
+  `python3 tools/debug/debugctl.py smoke` is the one-command regression pass for the running app.
+- Agent skills: `openrc-tools` (which tool for which task) and `openrc-debug` (the running app), in `.claude/skills/`
+  and `.agents/skills/`.
+
 ## Start here
 
 - [STACK.md](docs/STACK.md): current architecture and dependencies.
@@ -43,7 +52,6 @@ Keep aircraft node/hinge names (`airplane`, `propeller`, `*_hinge`) stable. Gene
 - Aircraft data uses `openrc-aircraft v2`; quantities carry `{value, unit, kind, source}`. Capabilities and conditional modules are explicit. Invalid data cannot fly. V1 is an explicit historical-research path.
 - Do not name constants after built-in classes such as `Panel` or `Label`.
 - A session installs one `VehicleModel` (`app/sim/vehicle_model.gd`) into `Simulation`; the kernel reads layout and evaluators only from that model. Do not add vehicle-specific branches or callbacks to the kernel.
-- To inspect or drive a running app (state, live log, menus, keys, sticks, pause/step, screenshots), use the [debug bridge](tools/debug/README.md) instead of ad-hoc probes or mouse automation.
 - Keep drafts outside `app/` until they parse. `app/test.sh` parses every GDScript file; validate scripts before integration and run the relevant checks after integration. Run deliberate mutations on disposable copies.
 - Re-record golden flights only for an intentional, explained physics change. Software verification does not establish physical validation.
 - For flight-feel, controls or aircraft-physics tuning, use the [flight logging workflow](docs/FLIGHT-LOGGING.md): preserve a baseline `.orfl`, verify exact replay, then compare one explicit candidate using the same tick/input tape. Retain source/config identities, markers, CSV and reports with the owning track's evidence. Check `solver_changed` and `complete`; recovered prefixes and candidate runs never establish exact equivalence or physical realism. Keep the recorder read-only and bounded; use existing free plotting tools for visualization.
