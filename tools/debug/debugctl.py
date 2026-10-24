@@ -115,17 +115,37 @@ def result_of(cmd: str, args: dict | None = None, **kwargs):
     return reply.get("result")
 
 
-def wait_ready(timeout: float, process: subprocess.Popen | None = None, to_port: int | None = None) -> dict:
+class PortTaken(RuntimeError):
+    """The launched engine could not listen: another process holds (or is still releasing) the port."""
+
+
+def wait_ready(timeout: float, process: subprocess.Popen | None = None, to_port: int | None = None,
+               log: Path | None = None) -> dict:
+    """Ping until the bridge answers. With `process`, the answer must come from that launch: a bridge of another
+    app on the same port (with another token) is refused instead of being mistaken for ours."""
     deadline = time.monotonic() + timeout
     last = None
     while time.monotonic() < deadline:
         if process is not None and process.poll() is not None:
             raise RuntimeError(f"the app exited with status {process.returncode} before the bridge answered")
+        if log is not None and "debug bridge: cannot listen" in log.read_text(errors="replace"):
+            raise PortTaken(f"port {to_port} is taken")
         try:
-            return request("ping", timeout=2.0, to_port=to_port)
+            reply = request("ping", timeout=2.0, to_port=to_port)
         except OSError as error:
             last = error
             time.sleep(0.25)
+            continue
+        if not reply.get("ok"):
+            raise RuntimeError(f"another bridge answered on port {to_port}: {reply.get('error')}")
+        if process is not None and hasattr(os, "getpgid"):
+            try:
+                ours = os.getpgid(reply["result"]["pid"]) == process.pid  # the launcher leads its process group
+            except OSError:
+                ours = False
+            if not ours:
+                raise RuntimeError(f"pid {reply['result']['pid']} answered on port {to_port}, not the launched app")
+        return reply
     raise TimeoutError(f"no bridge on 127.0.0.1:{to_port or port()} after {timeout:.0f} s ({last})")
 
 
@@ -190,6 +210,11 @@ def launch(argv: list[str]) -> int:
         return 2
     stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     out = Path(options["--out"]).resolve() if options["--out"] else RUNS / f"{stamp}-{chosen}"
+    if not options["--out"]:
+        suffix = 1
+        while out.exists():  # two launches in the same second
+            suffix += 1
+            out = RUNS / f"{stamp}-{chosen}-{suffix}"
     out.mkdir(parents=True, exist_ok=False)
     command = [godot(), "--path", str(REPO / "app")]
     if "--script-profile" in argv:
@@ -225,22 +250,33 @@ def launch(argv: list[str]) -> int:
         profile.mkdir(parents=True, exist_ok=True)
         env["XDG_DATA_HOME"] = str(profile)  # Linux/BSD
         env["APPDATA"] = str(profile)  # Windows; macOS keeps ~/Library (use --real-profile knowingly there)
-    with open(out / "engine.log", "wb") as engine_log:
-        process = subprocess.Popen(command, cwd=REPO, env=env, stdout=engine_log, stderr=subprocess.STDOUT,
-                                   stdin=subprocess.DEVNULL, start_new_session=True)
-    session = {"port": chosen, "launcher_pid": process.pid, "out": str(out), "profile": str(profile) if profile else "real",
-               "command": command}
-    (out / "launch.json").write_text(json.dumps(session, indent=2) + "\n")
-    session["token"] = secret
-    write_private(CURRENT, session)  # before waiting, so ready/status/stop --force can find this session
-    try:
-        ready = wait_ready(float(options["--timeout"]), process, chosen)
-    except (RuntimeError, TimeoutError, KeyboardInterrupt) as error:
-        kill_group(process.pid)  # never leave a 2-3 GB engine behind
-        CURRENT.unlink(missing_ok=True)
-        print(f"{error or 'interrupted'}; the launched app was stopped; see {out / 'engine.log'}", file=sys.stderr)
-        tail(out / "engine.log")
-        return 2
+    explicit_port = bool(options["--port"] or env_port())
+    for attempt in range(2):
+        env["OPENRC_DEBUG_BRIDGE"] = str(chosen)
+        with open(out / "engine.log", "wb") as engine_log:
+            process = subprocess.Popen(command, cwd=REPO, env=env, stdout=engine_log, stderr=subprocess.STDOUT,
+                                       stdin=subprocess.DEVNULL, start_new_session=True)
+        session = {"port": chosen, "launcher_pid": process.pid, "out": str(out),
+                   "profile": str(profile) if profile else "real", "command": command, "attempt": attempt + 1}
+        (out / "launch.json").write_text(json.dumps(session, indent=2) + "\n")
+        session["token"] = secret
+        write_private(CURRENT, session)  # before waiting, so ready/status/stop --force can find this session
+        try:
+            ready = wait_ready(float(options["--timeout"]), process, chosen, out / "engine.log")
+            break
+        except PortTaken:
+            kill_group(process.pid)
+            CURRENT.unlink(missing_ok=True)
+            if explicit_port or attempt == 1:
+                print(f"port {chosen} is taken; the launched app was stopped (pass another --port)", file=sys.stderr)
+                return 2
+            chosen = free_port()  # the default port was still being released: retry once elsewhere
+        except (RuntimeError, TimeoutError, KeyboardInterrupt) as error:
+            kill_group(process.pid)  # never leave a 2-3 GB engine behind
+            CURRENT.unlink(missing_ok=True)
+            print(f"{error or 'interrupted'}; the launched app was stopped; see {out / 'engine.log'}", file=sys.stderr)
+            tail(out / "engine.log")
+            return 2
     session["pid"] = ready["result"]["pid"]
     write_private(CURRENT, session)
     shown = {k: v for k, v in session.items() if k not in ("command", "token")}
@@ -708,8 +744,10 @@ def monkey(argv: list[str]) -> int:
             failure = f"step {step + 1}: new errors: " + " | ".join(format_record(r) for r in errors[:3])
             break
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(trail) + "\n")
-    print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]), "failure": failure,
+    out.write_text("\n".join(trail) + "\n", encoding="utf-8")
+    print(json.dumps({"seed": seed, "steps": len([l for l in trail if not l.startswith("#")]),
+                      "refused": len([l for l in trail if l.startswith("# refused")]), "failure": failure,
+                      "route": result_of("state")["route"] if failure is None or "answering" not in failure else None,
                       "trail": str(out)}))
     return 1 if failure else 0
 
@@ -722,7 +760,9 @@ def monkey_action(rng: random.Random, controls: list, keys: list) -> str:
         return f"key name={rng.choice(keys)}"
     control = rng.choice(controls)
     labels = [c["text"] for c in controls]
-    target = f"text={json.dumps(control['text'])}" if labels.count(control["text"]) == 1 else f"path={json.dumps(control['path'])}"
+    # Literal UTF-8 (×, ·, ñ): a JSON \\u escape would not survive the run-script reader.
+    target = (f"text={json.dumps(control['text'], ensure_ascii=False)}" if labels.count(control["text"]) == 1
+              else f"path={json.dumps(control['path'], ensure_ascii=False)}")
     if "items" in control and control["items"]:
         return f"select {target} index={rng.randrange(len(control['items']))}"
     if "value" in control:

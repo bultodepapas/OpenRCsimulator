@@ -225,7 +225,8 @@ func _process(_delta: float) -> void:
 	_net_mutex.unlock()
 	if active and (invalidated or now_ms - _snapshot_ms >= SNAPSHOT_INTERVAL_MS):
 		_snapshot_ms = now_ms
-		var snapshot: Dictionary = jsonable(_cmd_state({}))
+		# Plain values only (no objects): the network thread converts it when it sends, off the frame.
+		var snapshot: Dictionary = _cmd_state({})
 		snapshot.frame = Engine.get_process_frames()
 		snapshot.ms = now_ms
 		_net_mutex.lock()
