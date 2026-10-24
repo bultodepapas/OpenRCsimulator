@@ -1,5 +1,25 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-34c-R1 — Home/Fly loading audit, 2026-10-24
+
+[Native 1080p audit and measurements](UI-34c-R1/README.md): first Stik Fly blocks one frame for 4.67 s; five warm repeats have a 1.73 s median maximum frame. The existing loading probe separately records 4.64 s to the first draw (paused), then 2.04/2.33 s on active warm draws. Current button feedback, cache boundaries, prior rejected preloading and source-tree limits are explicit. [Implementation plan](../../MENU-REDESIGN-PLAN.md#12-home-to-flight-loading-ui-34c-and-dt-11a) remains pending; no loading runtime change or screenshots are included.
+
+## UI-22-R10 — hover, focus and activation feedback, 2026-10-24
+
+The owner requested better pointer, controller-navigation and selection feedback while retaining R9's thin glass. Supported standard Button subclasses now use interruptible state-color transitions, with a separate neutral shader branch for secondary actions. Native focus/selection markers, glyphs, activation, layout and hit areas retain ownership. Primary glass adds pointer-local edge light; hover and focus acquisition share one sweep. Native activation has a bounded rim pulse, separate from press/release shading so a cancelled click never confirms. [Current timings and behavior](../../MENU-REDESIGN-PLAN.md#color-and-surfaces).
+
+Implementation uses the existing [Button styles](https://docs.godotengine.org/en/4.7/classes/class_button.html), [BaseButton signals](https://docs.godotengine.org/en/4.7/classes/class_basebutton.html) and [node-bound Tween cancellation](https://docs.godotengine.org/en/4.7/classes/class_tween.html). One tween owns each animated parameter; interruption starts at its current value. No new assets, dependencies, automatic shader clock or per-frame effect processing were added. Destructive actions keep a red response. A read-only review identified invisible-surface animation, which was fixed by settling unsupported/flat styles and gating animation on visibility; the follow-up found no remaining concrete defect.
+
+Checked-runner passes in `tmp/ui-r10-checks/`:
+
+- `test_ui_crystal.gd`: 38 native assertions and 31 headless assertions. New coverage sends native mouse/key/selected-gamepad events for pointer tracking, duplicate hover/focus suppression, click cancellation, one activation, D-pad navigation and toggle selection. It also covers interrupted color fades, all-channel reduced motion, suspension, custom/flat styles and teardown. Existing rendered text/focus contrast over white still passes.
+- `test_ui_home.gd` and `test_ui_settings_integration.gd`: routing, language/text-scale behavior, live preferences, nested menus and focus restoration passed.
+- `test_controller_sections.gd`: 105/105 checks, including selected-device navigation and rejection of another controller. These are injected native input events, not a physical-controller hardware qualification.
+
+Native Windows / NVIDIA RTX 3090 / OpenGL Compatibility captures were inspected at 1920×1080: focused primary action, pointer at both sides, held/cancelled press, secondary navigation, Settings toggles, reduced motion, opaque glass and the native option popup. Successful session `tmp/debug-bridge/20261024-171812-47870/` had no engine/script/shader errors and stopped with no crash or leaked objects. An initial launch encountered newly added parallel audio assets without an import cache; the existing import command completed and the next launch succeeded. Settings previews were discarded; the isolated profile's Spanish language was restored. Full-suite and performance qualification remain outside this check.
+
+Screenshots and reproducible bridge scripts are ignored under `tmp/ui-r10-interaction-captures/`; none are committed or shipped.
+
 ## UI-22-R9 — ten thinner glass variants, 2026-10-24
 
 The owner requested ten combinations with thinner edges, more transparency and fewer effects. All ten were applied to the real Home Fly button through the debug bridge and captured at 1920×1080 in rest and settled hover states. A local HTML comparison shows the original screenshot regions at 1:1 scale and links to the complete captures. Background materials were unchanged. The experiment used the same dark body color/opacity across interaction states to isolate the optical controls; production retains its separate hover/pressed colors and slightly higher opacities.

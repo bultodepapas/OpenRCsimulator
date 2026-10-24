@@ -1,0 +1,26 @@
+# hitch at frame 2132: 4669.1 ms; scene/resource construction
+# 203 lines over 4281 ms (frames 2132..2132); largest gaps:
+    804 ms  18.8 %  after: Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+                   next:  Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+    629 ms  14.7 %  after: Completed load for: 'res://render/smoke/process.gdshader' remapped 'res://render/smoke/process.gdsha
+                   next:  Loading resource: res://assets/audio/landing_gear/hard_roll.wav remapped: res://assets/audio/landing
+    332 ms   7.8 %  after: Completed load for: 'res://render/smoke/profile_process.gdshader' remapped 'res://render/smoke/profi
+                   next:  Completed load for: 'res://main.gd' remapped 'res://main.gd' at thread -1
+    310 ms   7.2 %  after: aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+                   next:  Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape
+    308 ms   7.2 %  after: Loading resource: res://main.gd remapped: res://main.gd
+                   next:  Loading resource: res://assets/crash/smoke.png remapped: res://assets/crash/smoke.png
+    262 ms   6.1 %  after: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+                   next:  Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landsca
+    142 ms   3.3 %  after: Completed load for: 'res://assets/landscape/regional-lighting/radio_tower.glb' remapped 'res://asset
+                   next:  Loading resource: res://assets/ui/instruments/speed.svg remapped: res://assets/ui/instruments/speed.
+    131 ms   3.1 %  after: Completed load for: 'res://assets/ui/instruments/engine.svg' remapped 'res://assets/ui/instruments/e
+                   next:  aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+    120 ms   2.8 %  after: Completed load for: 'res://assets/ui/radiolink_t16d.png' remapped 'res://assets/ui/radiolink_t16d.pn
+                   next:  Loading resource: res://render/smoke/profile_process.gdshader remapped: res://render/smoke/profile_p
+    110 ms   2.6 %  after: Completed load for: 'res://render/weather/lightning_bolt.gdshader' remapped 'res://render/weather/li
+                   next:  Loading resource: res://assets/ui/jeti_ds24_ii_orange.png remapped: res://assets/ui/jeti_ds24_ii_ora
+     78 ms   1.8 %  after: Completed load for: 'res://assets/audio/landing_gear/touchdown.wav' remapped 'res://assets/audio/lan
+                   next:  Loading resource: res://render/weather/cloud_flash.gdshader remapped: res://render/weather/cloud_fla
+     45 ms   1.1 %  after: Completed load for: 'res://assets/audio/soundscape/recorded/windsock_fabric.wav' remapped 'res://ass
+                   next:  Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png

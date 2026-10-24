@@ -112,6 +112,7 @@ func _check_home_route(initial_auto_accept: bool) -> void:
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	await process_frame
 	_check("same-frame Window close requests coalesce on Home", app.quit_requests == 1, str(app.quit_requests))
+	_check("committed Quit emits one closing cue", app.menu_audio.cue_count(&"quit") == 1)
 	await ui.close_app(app)
 	_check("AppRoot restores the host close policy after Home removal", auto_accept_quit == initial_auto_accept)
 	_remove_prefs(HOME_PREFS)

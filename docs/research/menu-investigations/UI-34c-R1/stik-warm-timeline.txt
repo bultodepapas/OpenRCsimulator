@@ -1,0 +1,26 @@
+# hitch at frame 3332: 1728.7 ms; scene/resource construction
+# 172 lines over 1649 ms (frames 3332..3332); largest gaps:
+    419 ms  25.4 %  after: Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+                   next:  Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+    295 ms  17.9 %  after: aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+                   next:  Loading resource: res://assets/audio/soundscape/airframe.wav remapped: res://assets/audio/soundscape
+    248 ms  15.0 %  after: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+                   next:  Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landsca
+    139 ms   8.4 %  after: Completed load for: 'res://assets/landscape/regional-lighting/radio_tower.glb' remapped 'res://asset
+                   next:  Loading resource: res://assets/ui/instruments/speed.svg remapped: res://assets/ui/instruments/speed.
+    106 ms   6.4 %  after: Completed load for: 'res://assets/ui/instruments/engine.svg' remapped 'res://assets/ui/instruments/e
+                   next:  aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+     37 ms   2.2 %  after: Completed load for: 'res://assets/audio/soundscape/recorded/windsock_fabric.wav' remapped 'res://ass
+                   next:  Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+     13 ms   0.8 %  after: Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/lan
+                   next:  Loading resource: res://assets/landscape/regional-lighting/radio_tower.glb remapped: res://assets/la
+      8 ms   0.5 %  after: Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/lan
+                   next:  Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landsca
+      6 ms   0.4 %  after: Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread
+                   next:  Loading resource: res://assets/audio/crash/crack_light.wav remapped: res://assets/audio/crash/crack_
+      5 ms   0.3 %  after: Loading resource: res://.godot/imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex remapped: re
+                   next:  Completed load for: 'res://assets/crash/flame.png' remapped 'res://assets/crash/flame.png' at thread
+      4 ms   0.2 %  after: Completed load for: 'res://assets/audio/soundscape/recorded/wind_low.wav' remapped 'res://assets/aud
+                   next:  Loading resource: res://assets/audio/soundscape/recorded/wind_high.wav remapped: res://assets/audio/
+      4 ms   0.2 %  after: Completed load for: 'res://assets/audio/soundscape/foliage.wav' remapped 'res://assets/audio/soundsc
+                   next:  Loading resource: res://assets/audio/soundscape/foliage.wav remapped: res://assets/audio/soundscape/

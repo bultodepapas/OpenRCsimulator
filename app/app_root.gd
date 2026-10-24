@@ -910,7 +910,7 @@ func _leave_maximized_preview(window: Window) -> void:
 
 
 func _menu_feedback(cue: StringName) -> void:
-	if is_instance_valid(menu_audio):
+	if is_instance_valid(menu_audio) and not _quit_audio_pending:
 		menu_audio.play(cue)
 
 
@@ -1328,6 +1328,8 @@ func _on_update_download(url: String) -> void:
 
 
 func _notification(what: int) -> void:
+	if _quit_audio_pending:
+		return
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		# Defer mutations until this notification has finished propagating through the tree.
 		if not _wm_close_pending:
@@ -1349,7 +1351,7 @@ func _notification(what: int) -> void:
 ## UI-31 (UI-30 PS-12): on X11 the window's focus loss arrives about 250 ms before the application's. Embedded
 ## dialogs also take focus from the root viewport, so only a real OS focus loss while flying opens Pause.
 func _check_window_focus_out() -> void:
-	if screens == null or screens.top() != null or _exit_request_active or window_focus_probe.call():
+	if screens == null or screens.top() != null or _exit_request_active or _quit_audio_pending or window_focus_probe.call():
 		return
 	if flight != null and flight.session != null and flight.session.input_enabled:
 		_clear_controller_actions()
@@ -1366,7 +1368,7 @@ func _handle_wm_close_deferred() -> void:
 
 ## Freezes the flight under the pause menu. A running calibration is cancelled first (Esc already does that).
 func open_pause() -> void:
-	if flight == null or pause_menu != null:
+	if flight == null or pause_menu != null or _quit_audio_pending:
 		return
 	_release_controller_holds()
 	var session: Node = flight.session
@@ -2255,6 +2257,10 @@ func _commit_app_quit() -> void:
 		for child: Node in get_children():
 			if child != menu_audio:
 				child.process_mode = Node.PROCESS_MODE_DISABLED
+		var surface := ScreenStack._surface(screens.top()) if screens.top() != null else null
+		if surface != null:
+			surface.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_DISABLED
+			surface.focus_behavior_recursive = Control.FOCUS_BEHAVIOR_DISABLED
 		set_process_input(false)
 		set_process_unhandled_input(false)
 		await get_tree().create_timer(delay).timeout

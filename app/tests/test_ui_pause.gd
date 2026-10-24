@@ -156,9 +156,14 @@ func _run() -> void:
 	_check("wreck persists after Continue until explicit restart", not session.crash.is_empty() and session.sim.paused)
 	app.open_pause()
 	await ui.settle()
+	var restarts_before: int = app.menu_audio.cue_count(&"restart")
+	var resumes_before: int = app.menu_audio.cue_count(&"resume")
 	app.restart_flight()
 	await ui.settle()
 	_check("menu Restart clears the wreck and resumes flight", session.crash.is_empty() and not session.sim.paused and app.pause_menu == null)
+	_check("Restart has one dedicated cue without a duplicate Resume",
+		app.menu_audio.cue_count(&"restart") == restarts_before + 1
+		and app.menu_audio.cue_count(&"resume") == resumes_before)
 
 	# --- Losing focus pauses (simulation.gd) and shows the menu.
 	# The real path (research 24): SceneTree releases held keys, then propagates to every node.
@@ -199,12 +204,17 @@ func _run() -> void:
 	var runway_field: Dictionary = session._runway_field
 	session._runway_field = {}
 	var rejected_state := var_to_bytes([session.sim.state, session.sim.aux, session.sim.continuous, session.sim.tick])
+	var rejected_before: int = app.menu_audio.cue_count(&"reject")
+	restarts_before = app.menu_audio.cue_count(&"restart")
 	app.restart_flight()
 	await _wait(0.1)
 	_check("rejected restart keeps its menu, hold and explanation", app.pause_menu == held_menu
 		and session.holds.has("menu") and session.sim.paused and "Could not restart" in held_menu.note_label.text)
 	_check("rejected restart preserves the frozen flight", rejected_state == var_to_bytes(
 		[session.sim.state, session.sim.aux, session.sim.continuous, session.sim.tick]))
+	_check("rejected restart sounds error without claiming success",
+		app.menu_audio.cue_count(&"reject") == rejected_before + 1
+		and app.menu_audio.cue_count(&"restart") == restarts_before)
 	session._runway_field = runway_field
 	app.restart_flight()
 	_check("retry after rejected restart resumes keyboard flight", app.pause_menu == null and not session.sim.paused
@@ -269,9 +279,14 @@ func _run() -> void:
 	app.flight.recorder = failed_recorder
 	app.open_pause()
 	await ui.settle()
+	rejected_before = app.menu_audio.cue_count(&"reject")
+	var exits_before: int = app.menu_audio.cue_count(&"exit")
 	app.end_flight()
 	await ui.settle()
 	var recovery := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	_check("failed trace save sounds error before any exit",
+		app.menu_audio.cue_count(&"reject") == rejected_before + 1
+		and app.menu_audio.cue_count(&"exit") == exits_before)
 	var recovery_message := recovery.find_child("TraceRecoveryMessage", true, false) as Label if recovery != null else null
 	_check("failed save opens explicit recovery with Stay as the safe default",
 		recovery != null and recovery.visible and recovery.get_ok_button().text == "Stay"
@@ -283,6 +298,8 @@ func _run() -> void:
 	if recovery != null:
 		recovery.confirmed.emit() # Stay cancels this End request without resolving the trace.
 	await ui.settle()
+	_check("Stay cancels the departure audibly", app.menu_audio.cue_count(&"cancel") > 0
+		and app.menu_audio.cue_count(&"exit") == exits_before)
 	_check("Stay keeps the failed trace pending and the flight in place", app.flight != null
 		and failed_recorder.stop_calls == 1
 		and app._trace_recovery.pending_count() == 1)
@@ -298,6 +315,7 @@ func _run() -> void:
 	_check("only explicit Discard trace and continue ends the flight", app.flight == null
 		and app.home != null and failed_recorder.stop_calls == 1
 		and app._trace_recovery.pending_count() == 0)
+	_check("resolved End flight emits exactly one departure", app.menu_audio.cue_count(&"exit") == exits_before + 1)
 
 	# --- Five Home -> Fly -> End cycles leave nothing behind.
 	var counts := []

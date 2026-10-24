@@ -980,3 +980,7 @@ The next native comparison favors a broad rounded wall with thin grazing catches
 ### 2026-10-24 — Thin the fluorescent rim and separate optical strengths (UI-22-R9)
 
 A ten-variant native comparison selects a thinner wall with subdued interior reflections and a small external halo. Keep width, emission, reflection and glint independently tunable in the shader; reduce primary interior opacity while retaining the rendered text/focus contrast gates. Preserve the black panel palette and native interaction states. [Variant matrix and verification](research/menu-investigations/README.md#ui-22-r9--ten-thinner-glass-variants-2026-10-24).
+
+### 2026-10-24 — Interruptible interaction feedback with native focus (UI-22-R10)
+
+Share short color transitions between pointer hover and keyboard/gamepad focus across supported buttons. Keep the focus marker immediate and retain native selection and hit geometry. Use local reflected light on primary glass and a finite activation pulse; do not confirm cancelled presses or restart a sweep when hover becomes click focus. Settle every channel for hidden, disabled, unsupported and reduced-motion states. [Behavior and native-input evidence](research/menu-investigations/README.md#ui-22-r10--hover-focus-and-activation-feedback-2026-10-24).

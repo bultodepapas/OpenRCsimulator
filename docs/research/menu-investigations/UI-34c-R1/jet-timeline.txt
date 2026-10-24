@@ -1,0 +1,22 @@
+# hitch at frame 4661: 140.6 ms; physics catch-up (12 ticks, the per-frame maximum)
+# 184 lines over 2761 ms (frames 4660..4660); largest gaps:
+    592 ms  21.4 %  after: aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stal
+                   next:  Loading resource: res://assets/audio/soundscape/turbine_whine.wav remapped: res://assets/audio/sound
+    426 ms  15.4 %  after: Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+                   next:  Loading resource: res://assets/landscape/night-lighting/lamp-head.glb remapped: res://assets/landsca
+    396 ms  14.3 %  after: Completed load for: 'res://assets/landscape/regional-lighting/radio_tower.glb' remapped 'res://asset
+                   next:  Loading resource: res://assets/ui/instruments/speed.svg remapped: res://assets/ui/instruments/speed.
+    366 ms  13.3 %  after: Completed load for: 'res://assets/aircraft/avanti-s-a200/avanti_s.glb' remapped 'res://assets/aircra
+                   next:  Tree wind is disabled for maple_tree: no measured collision-bounded sway limit
+    265 ms   9.6 %  after: Completed load for: 'res://assets/ui/instruments/engine.svg' remapped 'res://assets/ui/instruments/e
+                   next:  aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stal
+    102 ms   3.7 %  after: Completed load for: 'res://assets/audio/soundscape/recorded/windsock_fabric.wav' remapped 'res://ass
+                   next:  Loading resource: res://assets/crash/flame.png remapped: res://assets/crash/flame.png
+     59 ms   2.1 %  after: Completed load for: 'res://main.tscn' remapped 'res://main.tscn' at thread -1
+                   next:  Loading resource: res://assets/aircraft/avanti-s-a200/avanti_s.glb remapped: res://assets/aircraft/a
+     20 ms   0.7 %  after: Completed load for: 'res://assets/landscape/night-lighting/lamp-head.glb' remapped 'res://assets/lan
+                   next:  Loading resource: res://assets/landscape/regional-lighting/radio_tower.glb remapped: res://assets/la
+     19 ms   0.7 %  after: Loading resource: res://.godot/imported/turbine_designed.wav-88db209ad05ba0d43a9d70bbf8bdce81.sample
+                   next:  Completed load for: 'res://assets/audio/powertrains/turbine_designed.wav' remapped 'res://assets/aud
+     12 ms   0.4 %  after: Loading resource: res://.godot/imported/turbine_whine.wav-b154500d0f2040c95b59f88340b61dbc.sample re
+                   next:  Completed load for: 'res://assets/audio/soundscape/turbine_whine.wav' remapped 'res://assets/audio/s
