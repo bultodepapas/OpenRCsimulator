@@ -17,6 +17,8 @@ const MAX_SPECIES_PER_GROUP := 4
 const MAX_TRACKS_PER_GROUP := 8
 const MAX_SEGMENTS_PER_GROUP := 48
 const MAX_COUNT := 64
+const MAX_BIRDS_PER_GROUP := 32 # with 35 soaring triangles: 1,120 primitives if every bird were out at once
+const MAX_DEPARTURE_SPEED := 30.0 # m/s
 
 # [key, unit, min, max]
 const SPECIES_FIELDS := [["span", "m", 0.1, 3.5], ["mass", "kg", 0.005, 15.0]]
@@ -158,6 +160,9 @@ static func _species(id: String, raw: Variant, errors: Array[String]) -> Diction
 		if not DEPARTURES.has(mode):
 			errors.append("species '%s' departure: mode must be one of %s" % [id, DEPARTURES])
 		departure.mode = mode
+		if departure.has("distance") and departure.has("duration") \
+				and float(departure.distance) / float(departure.duration) > MAX_DEPARTURE_SPEED:
+			errors.append("species '%s' departure: faster than %s m/s" % [id, MAX_DEPARTURE_SPEED])
 	out.departure = departure
 	return out if errors.size() == before else {}
 
@@ -244,13 +249,17 @@ static func _check_group_limits(flocks: Array[Dictionary], errors: Array[String]
 		var species: Dictionary = {}
 		var tracks := 0
 		var segments := 0
+		var birds := 0
 		for f: Dictionary in flocks:
 			if f.group != group:
 				continue
 			species[f.species] = true
+			birds += int(f.get("count", 0))
 			tracks += (f.tracks as Array).size()
 			for t: Dictionary in f.tracks:
 				segments += (t.segments as Array).size()
+		if birds > MAX_BIRDS_PER_GROUP:
+			errors.append("group '%s': %d birds, more than %d" % [group, birds, MAX_BIRDS_PER_GROUP])
 		if species.size() > MAX_SPECIES_PER_GROUP:
 			errors.append("group '%s': more than %d species" % [group, MAX_SPECIES_PER_GROUP])
 		if tracks > MAX_TRACKS_PER_GROUP:

@@ -50,8 +50,22 @@ Downloaded from the fast mirror into `.tools/sc-hum-sources/` with a local `INTA
 
 `pants01`'s CC0 jeans shorts turned out to be women's short shorts, so CC0 still lacks men's shorts and baseball caps; plan decision D9 stays open for those ([SC-HUM-07](../SC-HUM-07/README.md)).
 
+## Camera census (2026-10-24)
+
+[camera_census.gd](../../../../tools/scenery/population/camera_census.gd) drives the production `CameraRig` along a 101 s reference sortie at the default field (take-off, circuit at 40 m, low pass at 4 m, approach, landing; 1,014 samples). For each camera view it projects every person's head (0.23 m) at 1920×1080, inside a 1080p viewport so the pilot auto zoom behaves as in play. Geometry only: occlusion by shelters and trees is not modelled, so "in frame" is an upper bound. Raw output: [camera-census.json](camera-census.json).
+
+| View | Flight-line pilots | Pits standing | Pit workers | Spectators and veranda |
+| --- | --- | --- | --- | --- |
+| Pilot (auto zoom) | **18.9 % in frame, head 31.6 px median, 52.1 px max** | 0.1 %, 7 px | 1.0 %, 6 px | 0 % |
+| Chase | 18.6 %, 2.9 px (max 10.4) | 16.2 %, 2.6 px | 12.8 %, 2.6 px | 15.7 %, 2.3 px |
+| Orbit | 47.8 %, 1.8 px (max 16.5) | 46.0 %, 1.9 px | 40.1 %, 2.0 px | 46.4 %, 1.6 px |
+| Close-up | 15.7 %, 4.3 px (max 14.9) | 14.1 %, 3.7 px | 12.0 %, 3.8 px | 14.4 %, 3.3 px |
+
+Consequences for the plan:
+- In flight, the **flight-line pilots are the only people seen at readable size**. The auto zoom makes their heads larger than the plan's 50° estimate (17–20 px). Their transmitters (SC-HUM-01) and faces matter most.
+- Pits, workers and spectators are behind the pilot. In the flight cameras they are a few pixels tall. Their detail serves ground, taxi, Home and trailer views, not flight.
+
 ## Open in this step
 
 - Scene budget per preset with `tools/scenery/budget.sh`.
-- Camera census: per camera mode, each person's in-frustum share and head size in pixels.
 - Reference photo board for the owner's silhouette overlay.

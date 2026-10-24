@@ -25,7 +25,7 @@ Non-goals: skinned animals everywhere, an ornithology simulator, birds that chan
 | Director: true solar elevation, morning/afternoon, cloud cover, detail tier; only birds out or on their way are drawn; at most 805 primitives / 2 draws all day | [bird_director.gd](../../app/scenery/birds/bird_director.gd), [birds.gd](../../app/scenery/birds.gd), [birds_runtime.gd](../../app/scenery/birds/birds_runtime.gd), [scenery.gd](../../app/scenery/scenery.gd) |
 | On in the Home launch profile; off in reference captures (`OPENRC_SCENERY_BIRDS=off`) | [scenery.gd](../../app/scenery/scenery.gd), [capture.sh](../../app/capture.sh) |
 | Budget `scenery_Birds`: 1,000 primitives / 2 draws per view class (unchanged) | [scene_budget.json](../../tools/scenery/scene_budget.json) |
-| Checks: 283-check unit test; 1080p capture checker at noon and evening (position vs CPU reference, byte repeats) | [test_birds.gd](../../app/tests/test_birds.gd), [check_birds.py](../../tools/scenery/check_birds.py) |
+| Checks: 289-check unit test; 1080p capture checker at noon and evening (position vs CPU reference, byte repeats) | [test_birds.gd](../../app/tests/test_birds.gd), [check_birds.py](../../tools/scenery/check_birds.py) |
 | A calendar date exists (`{year, month, day, hour}` for sun and moon), so seasons are possible | [lunar.gd](../../app/render/world/lunar.gd), [moon_config.gd](../../app/environment/moon_config.gd) |
 | Wind presets are uniform; "Updraft" is a uniform vertical gust, not a spatial thermal | [wind_config.gd](../../app/physics/wind_config.gd) |
 

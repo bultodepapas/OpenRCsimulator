@@ -61,6 +61,8 @@ At the default 50° vertical FOV, `px ≈ 1158 · size / d` (same law as [the bi
 | Transmitter stick | 0.02 m | 13 m | 1.8 | 2.4 | 3.6 |
 | Any person's head in a chase/orbit view | 0.23 m | 5–40 m from that camera | 7–53 | 9–71 | 13–107 |
 
+**Measured (SC-HUM-00 camera census, 2026-10-24):** over a reference sortie the pilot view shows the flight-line pilots 19 % of the time with heads of 32 px median (52 px max) because the auto zoom narrows the view near the runway; pits members, workers and spectators appear in the pilot view at most 1 % of the time, and in the chase, orbit and close-up views at 2–4 px median ([census](../research/scenery-implementation/SC-HUM-00/README.md#camera-census-2026-10-24)).
+
 Consequences:
 
 1. **The flight-line pilots and the owner's transmitters come first.** They are the people the player sees while flying.

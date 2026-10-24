@@ -16,6 +16,7 @@ const Birds = preload("res://scenery/birds.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
+const Atmosphere = preload("res://render/atmosphere.gd")
 
 const BUDGET_PRIMITIVES := 1000 # tools/scenery/scene_budget.json scenery_Birds (every view class)
 const BUDGET_DRAWS := 2
@@ -103,6 +104,10 @@ func _test_mutations() -> void:
 	_rejects("a departure without a mode", func(d: Dictionary) -> void: d.species.red_kite.departure.erase("mode"), "mode")
 	_rejects("a departure that never ends", func(d: Dictionary) -> void:
 		d.species.red_kite.departure.duration.value = 5000.0, "outside")
+	_rejects("a departure faster than any bird", func(d: Dictionary) -> void:
+		d.species.red_kite.departure.duration.value = 10.0, "faster than")
+	_rejects("more birds in a group than the budget allows", func(d: Dictionary) -> void: d.flocks[3].count = 25,
+		"birds, more than")
 	_rejects("an unknown species in a flock", func(d: Dictionary) -> void: d.flocks[0].species = "dodo", "unknown")
 	_rejects("too many birds", func(d: Dictionary) -> void: d.flocks[3].count = 500, "count")
 	_rejects("a non-boolean instance flag", func(d: Dictionary) -> void: d.flocks[3].mirror_instances = "no", "true or false")
@@ -324,19 +329,16 @@ func _test_planforms(loaded: Dictionary) -> void:
 		_check("%s: CUSTOM0..3 carry each species' shape and rig weights" % group, shapes_ok)
 
 
-func _snapshot(local_hour: float, cloud := -1.0) -> Dictionary:
+func _snapshot(local_hour: float) -> Dictionary:
 	var config: Dictionary = LightingConfig.defaults()
 	config.mode = "astronomical"
 	config.local_seconds = int(local_hour * 3600.0)
 	var validated: Dictionary = LightingConfig.validate(config)
-	var snapshot: Dictionary = Lighting.snapshot(validated.config)
-	if cloud >= 0.0:
-		snapshot.cloud_coverage = cloud
-	return snapshot
+	return Lighting.snapshot(validated.config)
 
 
-func _shares(loaded: Dictionary, lighting: Dictionary, quality := "high") -> Dictionary:
-	var c: Dictionary = BirdDirector.conditions(lighting, quality)
+func _shares(loaded: Dictionary, lighting: Dictionary, quality := "high", clouds := 0.2) -> Dictionary:
+	var c: Dictionary = BirdDirector.conditions(lighting, quality, clouds)
 	var out := {}
 	for id: String in loaded.species:
 		out[id] = snappedf(BirdDirector.activity(loaded.species[id], c), 0.001)
@@ -350,10 +352,10 @@ func _test_director(loaded: Dictionary) -> void:
 		var s: Dictionary = _shares(loaded, pair[1])
 		_check("%s snapshot (sky clamp %.2f deg, sun %.1f deg): no species out" % [pair[0],
 			float(pair[1].sun_elevation_deg), BirdDirector.sun_elevation_deg(pair[1])], s.values().max() == 0.0, str(s))
-	var noon: Dictionary = _shares(loaded, _snapshot(12.0, 0.2))
+	var noon: Dictionary = _shares(loaded, _snapshot(12.0))
 	_check("noon: vultures, storks, kites and swallows out; no swifts", noon.griffon_vulture == 1.0 and noon.white_stork == 1.0 \
 		and noon.red_kite == 1.0 and noon.barn_swallow == 1.0 and noon.common_swift == 0.0, str(noon))
-	var evening_light: Dictionary = _snapshot(17.8, 0.2)
+	var evening_light: Dictionary = _snapshot(17.8)
 	var evening: Dictionary = _shares(loaded, evening_light)
 	_check("evening (sun %.1f deg, afternoon): swifts and swallows out; no vultures" % BirdDirector.sun_elevation_deg(evening_light),
 		evening.common_swift > 0.9 and evening.barn_swallow > 0.9 and evening.griffon_vulture == 0.0, str(evening))
@@ -361,18 +363,26 @@ func _test_director(loaded: Dictionary) -> void:
 	var morning_light: Dictionary = {}
 	var hour := 5.5
 	while hour < 9.0 and morning_light.is_empty(): # the morning hour with the same sun as the evening one
-		var candidate: Dictionary = _snapshot(hour, 0.2)
+		var candidate: Dictionary = _snapshot(hour)
 		if BirdDirector.sun_elevation_deg(candidate) >= evening_sun:
 			morning_light = candidate
 		hour += 0.01
 	var morning: Dictionary = _shares(loaded, morning_light)
 	_check("morning at the same sun (%.1f deg): no evening swifts" % BirdDirector.sun_elevation_deg(morning_light),
 		morning.common_swift == 0.0 and morning.barn_swallow > 0.9, str(morning))
-	var overcast: Dictionary = _shares(loaded, _snapshot(12.0, 0.95))
+	var overcast: Dictionary = _shares(loaded, _snapshot(12.0), "high", 0.95)
 	_check("overcast noon: no thermals, so no vultures or storks; kites and swallows still out",
 		overcast.griffon_vulture == 0.0 and overcast.white_stork == 0.0 and overcast.red_kite == 1.0, str(overcast))
-	var low: Dictionary = _shares(loaded, _snapshot(12.0, 0.2), "low")
-	_check("low scene detail draws half the birds", low.griffon_vulture == 0.5 and low.barn_swallow == 0.5, str(low))
+	var low: Dictionary = _shares(loaded, _snapshot(12.0), "low")
+	_check("low scene detail halves each species' share", low.griffon_vulture == 0.5 and low.barn_swallow == 0.5, str(low))
+	var high_birds: Node3D = Birds.build(_snapshot(12.0), "high")
+	var low_birds: Node3D = Birds.build(_snapshot(12.0), "low")
+	var drawn_high: int = Birds.drawn(high_birds).values().reduce(func(a: int, b: int) -> int: return a + b)
+	var drawn_low: int = Birds.drawn(low_birds).values().reduce(func(a: int, b: int) -> int: return a + b)
+	_check("low scene detail draws about half the birds at noon (%d of %d)" % [drawn_low, drawn_high],
+		drawn_low >= roundi(drawn_high * 0.35) and drawn_low <= roundi(drawn_high * 0.65))
+	high_birds.free()
+	low_birds.free()
 
 
 ## Drawn primitives over a whole day: birds out at a sun elevation, plus those still on their way in or out from the
@@ -428,27 +438,68 @@ func _test_transitions() -> void:
 		worst_step = maxf(worst_step, absf(share - previous))
 		previous = share
 		clock += 0.1
-	_check("leaving and turning back is continuous (largest step %.4f of the way per 0.1 s)" % worst_step, worst_step < 0.01)
+	_check("leaving and turning back is continuous (largest step %.4f of the way per 0.1 s)" % worst_step, worst_step < 0.008)
 	_check("after turning back it is fully home", Birds.departure_share(state, 300.0, duration) == 0.0)
+	# Starts on any fraction of a second, also just before the wrap: rounding may put the start a moment ahead, which
+	# must wait at 0, never read as finished (a pop).
+	var starts_ok := true
+	for start_clock: float in [100.0, 100.2, 100.3, 100.8, 511.6, 1023.8]:
+		for want: bool in [false, true]:
+			var s: float = Birds.next_state(Birds.HIDDEN if want else Birds.STEADY, want, start_clock, duration)
+			var away_now: float = Birds.departure_share(s, start_clock, duration)
+			var away_later: float = Birds.departure_share(s, fposmod(start_clock + 10.0, 1024.0), duration)
+			var expected_now := 1.0 if want else 0.0
+			starts_ok = starts_ok and absf(away_now - expected_now) < 0.01 and absf(away_later - expected_now) > 0.01 \
+				and absf(away_later - expected_now) < 0.2 and s == roundf(s * 2.0) * 0.5
+	_check("transitions started on any fraction of a second ease in (no pop), also at the clock wrap", starts_ok)
+	var root_birds: Node3D = Birds.build({sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
+	# A small sun step animates; every bird that leaves starts at its circuit.
+	ShaderClock.update(200.3)
+	Birds.apply_lighting(root_birds, {sun_elevation_deg = 43.5, sun_azimuth_deg = 182.0}, true, 0.95)
+	var leaving_ok := Birds.pending(root_birds)
+	for node: MultiMeshInstance3D in root_birds.get_meta("bird_groups"):
+		var species: Array = node.get_meta("species_data")
+		var layout: Array = node.get_meta("instances")
+		var states: PackedFloat32Array = node.get_meta("states")
+		for i: int in layout.size():
+			if states[i] == Birds.HIDDEN:
+				continue # already away before the clouds came (the evening swifts)
+			var d: float = species[layout[i].species].departure.duration
+			leaving_ok = leaving_ok and Birds.departure_share(states[i], ShaderClock.last_clock, d) < 0.01
+	_check("clouds coming over: soarers start leaving from their circuits, none vanishes at once", leaving_ok)
+	ShaderClock.update(200.3 + 151.0)
+	Birds.settle(root_birds, ShaderClock.last_clock)
+	_check("after the longest departure the leavers are away and cost nothing",
+		not Birds.pending(root_birds) and Birds.drawn(root_birds).Birds_soaring == 2, str(Birds.drawn(root_birds)))
+	# A jump of the time of day (paused edit, restore) snaps and stays within the budget.
+	Birds.apply_lighting(root_birds, {sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0}, true, 0.2)
+	Birds.apply_lighting(root_birds, _snapshot(17.8), true, 0.2)
+	_check("noon to evening in one step snaps (no transitions) within %d primitives (%d)" % [Birds.DRAWN_PRIMITIVE_LIMIT,
+		Birds.drawn_primitives(root_birds)], not Birds.pending(root_birds) \
+		and Birds.drawn_primitives(root_birds) <= Birds.DRAWN_PRIMITIVE_LIMIT)
+	# Flowing time: the runtime follows Atmosphere.state without a lighting commit.
+	var saved_state: Dictionary = Atmosphere.state
+	Atmosphere.state = {sun_elevation_deg = 4.0, sun_azimuth_deg = 265.0}
+	root_birds.call("poll")
+	Atmosphere.state = {sun_elevation_deg = 40.0, sun_azimuth_deg = 200.0}
+	var followed: bool = root_birds.call("poll")
+	ShaderClock.update(1000.0)
+	for i: int in 3:
+		root_birds.call("poll")
+	_check("flowing time: the birds follow the flow state's sun (swifts gone at 40 deg)", followed \
+		and float((root_birds.get_meta("conditions") as Dictionary).sun_deg) == 40.0)
+	Atmosphere.state = saved_state
 	# The wrap: a finished arrival must not replay 1024 s later; settle() makes it STEADY.
-	var birds: Node3D = Birds.build({sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
-	ShaderClock.update(200.0)
-	Birds.apply_lighting(birds, {sun_elevation_deg = -20.0, sun_azimuth_deg = 300.0})
-	_check("night after noon: every bird starts leaving, none vanishes at once",
-		Birds.pending(birds) and Birds.drawn(birds).values().max() > 0, str(Birds.drawn(birds)))
-	ShaderClock.update(200.0 + 151.0)
-	Birds.settle(birds, ShaderClock.last_clock)
-	_check("after the longest departure every bird is away and costs nothing",
-		not Birds.pending(birds) and Birds.drawn(birds).values().max() == 0, str(Birds.drawn(birds)))
-	Birds.apply_lighting(birds, {sun_elevation_deg = 45.0, sun_azimuth_deg = 180.0})
-	ShaderClock.update(351.0 + 151.0)
-	Birds.settle(birds, ShaderClock.last_clock)
+	Birds.apply_lighting(root_birds, {sun_elevation_deg = 44.0, sun_azimuth_deg = 180.0}, true, 0.2)
+	ShaderClock.update(fposmod(1000.0 + 151.0, 1024.0))
+	Birds.settle(root_birds, ShaderClock.last_clock)
 	var states_ok := true
-	for node: MultiMeshInstance3D in birds.get_meta("bird_groups"):
+	for node: MultiMeshInstance3D in root_birds.get_meta("bird_groups"):
 		for s: float in node.get_meta("states"):
 			states_ok = states_ok and (s == Birds.STEADY or s == Birds.HIDDEN)
-	_check("arrivals settle to flying, so nothing replays when the clock wraps", states_ok and not Birds.pending(birds))
-	birds.free()
+	_check("transitions settle to flying or away, so nothing replays when the clock wraps", states_ok \
+		and not Birds.pending(root_birds))
+	root_birds.free()
 	ShaderClock.update(100.0)
 
 

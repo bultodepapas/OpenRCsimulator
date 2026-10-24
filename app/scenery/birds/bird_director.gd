@@ -2,7 +2,7 @@
 ## Pure functions of their inputs, so a lighting snapshot always gives the same birds. Inputs: the true solar elevation
 ## (time-of-day snapshots clamp `sun_elevation_deg` for the sky), morning or afternoon (an evening species only
 ## flies in the afternoon), cloud cover (thermal soarers fade under an overcast sky) and the scenery quality tier.
-## Seasons wait for owner decision D9; rain and storms for a weather input the scenery does not receive yet.
+## Seasons wait for owner decision D9; rain and storm events for a weather input the scenery does not receive yet.
 extends RefCounted
 
 const Atmosphere = preload("res://render/atmosphere.gd")
@@ -14,14 +14,21 @@ const CLOUD_EDGE := 0.25
 
 
 ## {sun_deg, afternoon, clouds, density} from a lighting snapshot ({} = the flow state or the legacy default).
-static func conditions(lighting: Dictionary, quality: String = "high") -> Dictionary:
+## Cloud cover is the rendered weather's (Atmosphere.cloud_state_snapshot); snapshots only carry a fixed constant.
+## `clouds` >= 0 overrides it (tests, captures).
+static func conditions(lighting: Dictionary, quality: String = "high", clouds: float = -1.0) -> Dictionary:
 	var source: Dictionary = lighting
 	if lighting.is_empty() and not Atmosphere.state.is_empty():
 		source = Atmosphere.state
 	elif lighting.is_empty():
 		source = Atmosphere.parameters(lighting)
-	return {sun_deg = sun_elevation_deg(lighting), afternoon = afternoon(source),
-		clouds = clampf(float(source.get("cloud_coverage", 0.0)), 0.0, 1.0), density = float(DENSITY.get(quality, 1.0))}
+	var cover: float = clouds if clouds >= 0.0 else cloud_cover()
+	return {sun_deg = sun_elevation_deg(lighting), afternoon = afternoon(source), clouds = clampf(cover, 0.0, 1.0),
+		density = float(DENSITY.get(quality, 1.0))}
+
+
+static func cloud_cover() -> float:
+	return float(Atmosphere.cloud_state_snapshot().get("cloud_cover", 0.0))
 
 
 ## The true solar elevation (deg).

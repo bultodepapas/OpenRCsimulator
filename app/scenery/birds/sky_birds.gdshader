@@ -71,7 +71,7 @@ float departure_share(float state, float duration) {
 		return 0.0;
 	}
 	float start = state >= 0.0 ? state : -state - 0.5;
-	float p = clamp(mod(sim_clock - start, 1024.0) / duration, 0.0, 1.0);
+	float p = clamp((mod(sim_clock - start + 512.0, 1024.0) - 512.0) / duration, 0.0, 1.0); // a start ahead waits
 	float eased = smoothstep(0.0, 1.0, p);
 	return state >= 0.0 ? (p >= 1.0 ? 2.0 : eased) : 1.0 - eased;
 }

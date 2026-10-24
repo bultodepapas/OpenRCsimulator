@@ -29,6 +29,11 @@ const SORTIE := [
 
 
 func _initialize() -> void:
+	# Cameras need to be inside the tree for global transforms; run once the tree has started.
+	_run.call_deferred()
+
+
+func _run() -> void:
 	ShaderClock.register()
 	var out := "user://camera_census.json"
 	for arg: String in OS.get_cmdline_user_args():
@@ -38,12 +43,17 @@ func _initialize() -> void:
 	var scenery: Dictionary = SceneryLoader.load_from(SceneryLoader.DEFAULT_PATH, field).scenery
 	var world := Scenery.build(field, scenery, {audio = false, birds = false, theme = "", quality = "high"})
 	var people: Array = world.get_node("Population").get_meta("people")
-	var pilot := {north = float(field.pilot.north.value), east = float(field.pilot.east.value)}
+	print("census: %d people, scenery built in %d ms" % [people.size(), Time.get_ticks_msec()])
+	var pilot: Dictionary = field.pilot
 	var samples := _sortie()
 	var report := {format = "openrc-camera-census v1", viewport = [1920, 1080], head_m = HEAD_M, samples = samples.size(),
 		sortie_s = samples.size() * DT, occlusion = "not modelled", views = {}}
 	for view: String in CameraRig.VIEWS:
-		var camera := PilotCamera.create(root, pilot)
+		# A 1080p SubViewport: the pilot auto zoom reads the viewport height (the headless root is 64 px).
+		var viewport := SubViewport.new()
+		viewport.size = Vector2i(1920, 1080)
+		root.add_child(viewport)
+		var camera := PilotCamera.create(viewport, pilot)
 		var rig := CameraRig.new(camera, SPAN_M)
 		rig.set_view(view)
 		var stats := {}
@@ -53,14 +63,16 @@ func _initialize() -> void:
 			var to_camera := camera.global_transform.affine_inverse()
 			var tan_v := tan(deg_to_rad(camera.fov) * 0.5)
 			for person: Dictionary in people:
-				var key := "%s %s" % [person.role, person.id.trim_prefix("person_")] + ":%d" % int(person.index)
+				var key := "%s %s:%d" % [person.role, person.asset, int(person.index)]
 				var head: Vector3 = (person.pivot as Vector3) + Vector3(0.0, 0.07, 0.0)
 				var local := to_camera * head
 				var entry: Dictionary = stats.get(key, {role = person.role, asset = person.asset, seen = 0, px = PackedFloat64Array()})
 				var depth := -local.z
 				if depth > camera.near and absf(local.y) <= depth * tan_v and absf(local.x) <= depth * tan_v * ASPECT:
 					entry.seen = int(entry.seen) + 1
-					(entry.px as PackedFloat64Array).append(PilotCamera.projected_px(HEAD_M, local.length(), camera.fov, VIEWPORT_H))
+					var px: PackedFloat64Array = entry.px # packed arrays are values: append, then store back
+					px.append(PilotCamera.projected_px(HEAD_M, local.length(), camera.fov, VIEWPORT_H))
+					entry.px = px
 				stats[key] = entry
 		var rows := {}
 		for key: String in stats:
@@ -70,7 +82,8 @@ func _initialize() -> void:
 			rows[key] = {role = e.role, asset = e.asset, in_frame_share = float(e.seen) / samples.size(),
 				head_px_median = px[px.size() / 2] if not px.is_empty() else 0.0, head_px_max = px[-1] if not px.is_empty() else 0.0}
 		report.views[view] = rows
-		camera.free()
+		print("census: view %s done at %d ms" % [view, Time.get_ticks_msec()])
+		viewport.free()
 	world.free()
 	var file := FileAccess.open(out, FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  "))
