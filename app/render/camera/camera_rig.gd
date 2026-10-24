@@ -7,6 +7,7 @@
 # session. Pilot and close-up delegate to PilotCamera, so their pictures are unchanged when no zoom is applied.
 extends RefCounted
 
+const Spec := preload("res://spec.gd")
 const PilotCamera := preload("res://render/pilot_camera.gd")
 const CameraMath := preload("res://render/camera/camera_math.gd")
 const ChaseView := preload("res://render/camera/chase_view.gd")
@@ -46,6 +47,8 @@ var auto_zoom := true
 var pilot_zoom := 1.0
 ## CAM-26: the vehicle's own pilot zoom, which Backspace restores (the helicopter needs more screen than an airplane).
 var default_pilot_zoom := 1.0
+## CAM-17: the pilot view's widest vertical FOV (deg), the player's setting; the auto-zoom narrows from it.
+var base_fov := float(Spec.CAMERA.fov_deg)
 ## Landscape review (L0): (azimuth, elevation) in degrees from the pilot's eye; NAN follows the airplane.
 var look := Vector2(NAN, NAN)
 var look_height := 1.7
@@ -97,6 +100,14 @@ func set_view(id: String) -> bool:
 
 func cycle(step: int) -> void:
 	set_view(VIEWS[posmod(VIEWS.find(view) + step, VIEWS.size())])
+
+
+## CAM-17: a new widest pilot FOV, reached smoothly like a zoom change.
+func set_base_fov(fov_deg: float) -> void:
+	if is_equal_approx(fov_deg, base_fov):
+		return
+	_mark_fov_jump()
+	base_fov = fov_deg
 
 
 func toggle_auto_zoom() -> void:
@@ -159,7 +170,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 		return
 	match view:
 		"pilot":
-			PilotCamera.aim(camera, target, airplane, false, _span if auto_zoom else 0.0)
+			PilotCamera.aim(camera, target, airplane, false, _span if auto_zoom else 0.0, base_fov)
 			_apply_pilot_zoom(dt)
 		"closeup":
 			PilotCamera.aim(camera, target, airplane, true)
@@ -173,7 +184,7 @@ func update(target: Vector3, airplane: Transform3D, body: Basis, dt: float, paus
 				else:
 					orbit.start_behind(body)
 				_orbit_primed = true
-			_apply(orbit.update(target, ground_y))
+			_apply(orbit.update(target, ground_y, dt))
 	_placed = true
 
 
@@ -188,7 +199,7 @@ func focus(point: Vector3, ground_y: Callable) -> void:
 		"orbit":
 			if _orbit_entry_eye.is_finite():
 				orbit.start_from(_orbit_entry_eye, point) # entered this frame: start where the last view was, around the wreck
-			_apply(orbit.update(point, ground_y))
+			_apply(orbit.update(point, ground_y, 0.0)) # eased once this frame already, in update()
 		"chase":
 			camera.basis = CameraMath.look_basis(camera.position, point)
 		"closeup":
@@ -204,7 +215,8 @@ func focus(point: Vector3, ground_y: Callable) -> void:
 func near_plane() -> float:
 	if view == "orbit" and is_nan(look.x):
 		# Half the gap between the camera and a sphere of 0.7 span around the CG: 0.25 m at the default two spans.
-		return clampf(0.5 * (orbit.distance - 0.7 * _span), ORBIT_NEAR_MIN, ORBIT_NEAR_MAX)
+		var closest := minf(orbit.distance, orbit.shown_distance()) # easing in or out, the nearer of the two
+		return clampf(0.5 * (closest - 0.7 * _span), ORBIT_NEAR_MIN, ORBIT_NEAR_MAX)
 	return float(NEAR_M.get(view if is_nan(look.x) else "pilot", NEAR_M.pilot))
 
 
