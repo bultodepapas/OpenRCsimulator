@@ -21,6 +21,27 @@ const NAMES := {
 	pilot_radar = "Pilot radar", wind_track = "Wind & drift", cruise_efficiency = "Cruise efficiency",
 	maneuver = "Maneuver meter", glide = "Glide monitor", flight_summary = "Flight summary",
 }
+const DESCRIPTIONS := {
+	speed = "Current airspeed, recent trend, flight maximum and ground speed. Dashes indicate missing readings.",
+	height = "Height above ground, distance to pilot, climb/sink rate and flight time. Dashes indicate missing telemetry.",
+	power = "Battery remaining with voltage/current, or fuel level and reserve. Unavailable if valid power and finite fuel data are both missing.",
+	weather = "Wind speed, direction it comes from and vertical airflow. Missing telemetry shows dashes; calm wind is labeled.",
+	fuel = "Remaining tank volume, fuel mass and reserve. If finite fuel data is missing, shows “No finite fuel tank” and dashes.",
+	trims = "Roll, pitch and yaw trim offsets as % of full travel. Missing trim telemetry is marked unavailable.",
+	engine = "Engine RPM, throttle command and flight load (g). Unavailable without RPM telemetry.",
+	airspeed_dial = "True airspeed and flight maximum on a dial. Blank when airspeed data is missing.",
+	attitude = "Nose pitch and bank angles. Blank unless both attitude readings are available.",
+	altimeter = "Height above datum and above ground (AGL). Blank when datum height is unavailable.",
+	heading = "True nose heading (0–360°), referenced to N/E/S/W. No reading when heading data is missing.",
+	variometer = "Vertical speed (climb/sink) on a dial. Blank when vertical-speed data is unavailable.",
+	pilot_radar = "North-up aircraft position and horizontal distance relative to the pilot, plus range ring and AGL. Requires a valid pilot-relative position sample.",
+	wind_track = "Nose heading, ground track, drift angle, headwind and crosswind. Track is unavailable below 1 m/s or without ground-course data.",
+	cruise_efficiency = "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power and ground speed ≥3 m/s.",
+	maneuver = "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data.",
+	glide = "Vertical-speed history. Ground-glide ratio = ground speed/sink rate; uncorrected for wind or energy height, not aerodynamic L/D. Unavailable without data or while powered, turning, slow, or not descending.",
+	flight_summary = "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial.",
+}
+const COMMON_WIDGET_HELP := "When unlocked, drag a header to move the widget or double-click its header to restore its default position. Close with ×; reopen it with this switch. Appearance settings apply to all widgets."
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", player = "Player", instruments = "All instruments", cockpit = "Classic cockpit", navigation = "RC navigation", training = "Training", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }
 const RADIO_NAMES := { jeti_ds24_ii = "JETI DS-24 II", radiolink_t16d = "Radiolink T16D" }
@@ -98,7 +119,7 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 	tab_bar.clip_tabs = true
 	tab_bar.scroll_to_selected = true
 	tab_bar.scrolling_enabled = true
-	for section: String in ["Modern", "Classic", "Navigation", "Appearance", "Other overlays"]:
+	for section: String in ["Modern", "Classic", "Flight tools", "Appearance", "Other overlays"]:
 		tab_bar.add_tab(tr(section))
 	tab_bar.current_tab = 0
 	shell.add_child(tab_bar)
@@ -230,6 +251,8 @@ func _init(overlay_manager: CanvasLayer, flight: Node = null) -> void:
 		var box := CheckBox.new()
 		box.name = id.capitalize().replace(" ", "")
 		box.text = tr(NAMES[id])
+		if id in Settings.PLAYER_IDS:
+			box.tooltip_text = "%s\n\n%s" % [tr(DESCRIPTIONS[id]), tr(COMMON_WIDGET_HELP)]
 		box.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		box.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED

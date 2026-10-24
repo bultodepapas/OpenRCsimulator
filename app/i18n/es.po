@@ -876,6 +876,66 @@ msgstr "Monitor de planeo"
 msgid "Flight summary"
 msgstr "Resumen del vuelo"
 
+msgid "Flight tools"
+msgstr "Ayudas de vuelo"
+
+msgid "Current airspeed, recent trend, flight maximum and ground speed. Dashes indicate missing readings."
+msgstr "Velocidad aérea actual, tendencia reciente, máximo del vuelo y velocidad sobre el suelo. Los guiones indican lecturas ausentes."
+
+msgid "Height above ground, distance to pilot, climb/sink rate and flight time. Dashes indicate missing telemetry."
+msgstr "Altura sobre el terreno, distancia al piloto, tasa de ascenso/descenso y tiempo de vuelo. Los guiones indican telemetría ausente."
+
+msgid "Battery remaining with voltage/current, or fuel level and reserve. Unavailable if valid power and finite fuel data are both missing."
+msgstr "Carga restante de la batería con voltaje/corriente, o nivel y reserva de combustible. No disponible si faltan datos válidos de energía y de combustible."
+
+msgid "Wind speed, direction it comes from and vertical airflow. Missing telemetry shows dashes; calm wind is labeled."
+msgstr "Velocidad y procedencia del viento, y flujo vertical del aire. Sin telemetría aparecen guiones; el viento en calma se indica."
+
+msgid "Remaining tank volume, fuel mass and reserve. If finite fuel data is missing, shows “No finite fuel tank” and dashes."
+msgstr "Volumen de combustible restante, masa y reserva. Si faltan datos finitos del tanque, muestra «Sin depósito finito de combustible» y guiones."
+
+msgid "Roll, pitch and yaw trim offsets as % of full travel. Missing trim telemetry is marked unavailable."
+msgstr "Desplazamientos de trim de alabeo, cabeceo y guiñada como % del recorrido total. Sin telemetría de trim, se indica como no disponible."
+
+msgid "Engine RPM, throttle command and flight load (g). Unavailable without RPM telemetry."
+msgstr "RPM del motor, mando de acelerador y carga de vuelo (g). No disponible sin telemetría de RPM."
+
+msgid "True airspeed and flight maximum on a dial. Blank when airspeed data is missing."
+msgstr "Velocidad aérea verdadera y máximo del vuelo en un dial. Vacío si faltan datos de velocidad aérea."
+
+msgid "Nose pitch and bank angles. Blank unless both attitude readings are available."
+msgstr "Ángulos de cabeceo y alabeo. Vacío si falta cualquiera de las lecturas de actitud."
+
+msgid "Height above datum and above ground (AGL). Blank when datum height is unavailable."
+msgstr "Altura sobre el datum y sobre el suelo (AGL). Vacío si no está disponible la altura de referencia."
+
+msgid "True nose heading (0–360°), referenced to N/E/S/W. No reading when heading data is missing."
+msgstr "Rumbo verdadero del morro (0–360°), con referencia N/E/S/W. Sin lectura cuando falta la telemetría de rumbo."
+
+msgid "Vertical speed (climb/sink) on a dial. Blank when vertical-speed data is unavailable."
+msgstr "Velocidad vertical (ascenso/descenso) en un dial. Vacío si no hay datos de velocidad vertical."
+
+msgid "North-up aircraft position and horizontal distance relative to the pilot, plus range ring and AGL. Requires a valid pilot-relative position sample."
+msgstr "Posición norte-arriba y distancia horizontal respecto al piloto, con anillo de alcance y altura AGL. Requiere una posición válida relativa al piloto."
+
+msgid "Nose heading, ground track, drift angle, headwind and crosswind. Track is unavailable below 1 m/s or without ground-course data."
+msgstr "Rumbo del morro, trayectoria sobre el suelo, ángulo de deriva, viento de frente y cruzado. La trayectoria no está disponible por debajo de 1 m/s o si faltan datos del curso terrestre."
+
+msgid "10 s rolling electric energy per ground distance (Wh/km or Wh/mi), not range. Needs valid power and ground speed ≥3 m/s."
+msgstr "Consumo eléctrico en 10 s por distancia en tierra (Wh/km o Wh/mi), no autonomía. Requiere potencia válida y velocidad sobre el suelo ≥3 m/s."
+
+msgid "Body-vertical G (specific force along body −z), current and min/max at 10 Hz, plus bank and AoA. Dashes mark missing load data."
+msgstr "G sobre el eje vertical del cuerpo (fuerza específica en −z), actual y mín./máx. a 10 Hz; también alabeo y AoA. Los guiones indican carga ausente."
+
+msgid "Vertical-speed history. Ground-glide ratio = ground speed/sink rate; uncorrected for wind or energy height, not aerodynamic L/D. Unavailable without data or while powered, turning, slow, or not descending."
+msgstr "Historial de velocidad vertical. Relación de planeo en tierra = velocidad sobre el suelo/tasa de descenso; sin corrección por viento o altura de energía, no es L/D aerodinámico. No disponible si faltan datos, hay potencia, giro, poca velocidad o no hay descenso."
+
+msgid "Since flight reset: elapsed time including ground time, peak airspeed, max AGL, ground-track distance and min/max body G. Dashes mark missing values; distance may be partial."
+msgstr "Desde el reinicio: tiempo transcurrido, incluido el tiempo en tierra, velocidad aérea máx., AGL máx., distancia terrestre y G mín./máx. Los guiones indican datos ausentes; la distancia puede ser parcial."
+
+msgid "When unlocked, drag a header to move the widget or double-click its header to restore its default position. Close with ×; reopen it with this switch. Appearance settings apply to all widgets."
+msgstr "Con las posiciones desbloqueadas, arrastra el encabezado para mover el widget o haz doble clic en él para restaurar su posición predeterminada. Ciérralo con × y vuelve a abrirlo con este interruptor. Los ajustes de apariencia se aplican a todos los widgets."
+
 msgid "Body-axis load factor, not total acceleration. Flight extrema are sampled at 10 Hz."
 msgstr "Factor de carga en el eje vertical del avión, no aceleración total. Los extremos del vuelo se muestrean a 10 Hz."
 
@@ -1076,6 +1136,9 @@ msgstr "Condiciones del viento"
 
 msgid "Drag to move · positions are saved"
 msgstr "Arrastra para mover · posición guardada"
+
+msgid "Drag to move · double-click to restore position"
+msgstr "Arrastra para mover · haz doble clic para restaurar la posición"
 
 msgid "Widget position locked"
 msgstr "Posición del widget bloqueada"

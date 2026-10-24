@@ -44,12 +44,63 @@ func _run() -> void:
 	_other_alarms()
 	_legacy()
 	_history()
+	_history_policy()
 	_settings_and_texts()
 	await _panel()
 	await _layout()
 	await _warnings_in_flight()
+	await _hidden_presentation()
 	print("overlay battery: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
+
+
+func _history_policy() -> void:
+	var compact := Sensors.new()
+	var full := Sensors.new()
+	var scalar := {}
+	var detailed := {}
+	for i in 650:
+		var state := _ecm({pack_current_a = 20.0 + float(i % 5)})
+		scalar = compact.update(i * 0.1, state, false)
+		detailed = full.update(i * 0.1, state)
+	_check("scalar exports omit both history arrays", scalar.history_v.is_empty() and scalar.history_a.is_empty())
+	_check("history policy preserves consumed charge and alarms", scalar.used_mah_raw == detailed.used_mah_raw and scalar.alarms == detailed.alarms)
+	var reopened := compact.update(64.9, _ecm())
+	_check("reopening exports the complete bounded history", reopened.history_v.size() == 600 and reopened.history_a == detailed.history_a)
+	reopened.history_a[0] = -999.0
+	reopened.alarms.append("caller_only")
+	var isolated := compact.update(64.9, _ecm())
+	_check("export mutation cannot change sensor buffers or alarms", isolated.history_a[0] != -999.0 and not isolated.alarms.has("caller_only"))
+	compact.reset()
+	_check("reset clears omitted history too", compact.update(0.0, _ecm()).history_v.size() == 1)
+
+
+func _hidden_presentation() -> void:
+	var manager := Manager.new({preset = "full"}, "en")
+	root.add_child(manager)
+	manager.refresh_numbers(_snapshot(_ecm({time_s = 0.0})))
+	var panel: Control = manager.frames.battery
+	var old_voltage: String = panel.values.pack_v.text
+	var old_footer: String = manager.frames.transmitter.footer.text
+	var old_codes: PackedStringArray = manager.frames.warnings.codes.duplicate()
+	manager.visible = false
+	var next := _snapshot(_ecm({time_s = 1.0, bus_voltage_v = 13.0}), PackedStringArray(["stall"]))
+	next.radio_status = "New radio status"
+	next.telemetry.airspeed = 55.0
+	manager.refresh_numbers(next)
+	_check("hidden layer skips battery, transmitter and warning presentation", panel.values.pack_v.text == old_voltage and manager.frames.transmitter.footer.text == old_footer and manager.frames.warnings.codes == old_codes)
+	_check("hidden layer still samples charge and peak speed", manager._battery_reading.used_mah_raw > 0.0 and manager.peak_airspeed == 55.0)
+	_check("hidden detailed battery does not export histories", manager._battery_reading.history_v.is_empty())
+	manager.visible = true
+	_check("showing layer requests immediate refresh", is_inf(manager._since_text))
+	manager.refresh_numbers(next)
+	_check("reappearing panel catches up with full history", panel.values.pack_v.text == "13.00 V" and panel.reading.history_v.size() == 2 and manager.frames.transmitter.footer.text == "New radio status")
+	_check("reappearing warnings reconcile their displayed codes", manager.frames.warnings.codes.has("stall"))
+	manager.set_preset("pilot")
+	manager.refresh_numbers(next)
+	_check("compact visible battery omits unused history exports", manager._battery_reading.history_v.is_empty())
+	manager.queue_free()
+	await process_frame
 
 
 ## A 4S 3200 mAh LiPo pack_ecm state as the physics side publishes it (BAT-06…11 contract).

@@ -84,6 +84,18 @@ func _initialize() -> void:
 		same_geometry = same_geometry and cached == fresh
 	_check("cached horizon geometry matches fresh clipping at edge cases", same_geometry)
 	_check("clipping never mutates cached circle points", horizon._horizon_disc == cached_disc and cached_disc.size() == 96)
+	manager.set_layout_locked(false)
+	manager._save_widget_position("speed", Vector2(0.4, 0.3))
+	manager._save_widget_position("height", Vector2(0.6, 0.7))
+	var before_reset := manager.settings.duplicate(true)
+	var saves_before_reset := writes
+	manager.frames.speed.reset_position_requested.emit("speed")
+	_check("individual reset saves once and removes only its position", writes == saves_before_reset + 1 and not manager.settings.positions.has("speed") and manager.settings.positions.height == before_reset.positions.height)
+	_check("individual reset restores default and preserves appearance/visibility", manager.frames.speed.normalized_position().distance_to(manager.PLAYER_POSITIONS.speed) < 0.001 and manager.settings.visible == before_reset.visible and manager.settings.widget_opacity == before_reset.widget_opacity)
+	manager.set_layout_locked(true)
+	saves_before_reset = writes
+	manager.reset_widget_position("height")
+	_check("locked position cannot be reset individually", writes == saves_before_reset and manager.settings.positions.height == before_reset.positions.height)
 	manager.queue_free()
 	await process_frame
 	print("widget efficiency checks=%d failures=%d" % [checks, failures])

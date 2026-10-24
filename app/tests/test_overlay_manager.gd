@@ -376,6 +376,11 @@ func _dialog() -> void:
 		and Settings.NAVIGATION_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._navigation_grid)
 		and dialog._training_grid.get_child_count() == Settings.TRAINING_IDS.size()
 		and Settings.TRAINING_IDS.all(func(id: String) -> bool: return dialog.switches[id].get_parent() == dialog._training_grid))
+	_check("all player widget switches have measurement and common-use tooltips", OverlaysDialog.DESCRIPTIONS.size() == Settings.PLAYER_IDS.size()
+		and Settings.PLAYER_IDS.all(func(id: String) -> bool:
+			return (OverlaysDialog.DESCRIPTIONS.has(id)
+				and dialog.switches[id].tooltip_text.begins_with(str(OverlaysDialog.DESCRIPTIONS[id]))
+				and dialog.switches[id].tooltip_text.contains(str(OverlaysDialog.COMMON_WIDGET_HELP)))))
 	var scroll: ScrollContainer = dialog.find_child("OverlaysScroll", true, false) as ScrollContainer
 	var settings_before_tabs: Dictionary = manager.settings.duplicate(true)
 	var pinned_outside_scroll := (
@@ -490,6 +495,12 @@ func _spanish_layout() -> void:
 	await process_frame
 	_check("wind box keeps its size when an updraft line appears", manager.frames.wind.size == wind_calm_up,
 		"%s → %s" % [wind_calm_up, manager.frames.wind.size])
+	var dialog: CanvasLayer = OverlaysDialog.new(manager)
+	root.add_child(dialog)
+	await process_frame
+	_check("Spanish Flight tools tab is translated without moving its page", dialog.tab_bar.get_tab_title(2) == "Ayudas de vuelo"
+		and dialog._pages[2].name == "NavigationPage")
+	dialog.queue_free()
 	manager.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame
